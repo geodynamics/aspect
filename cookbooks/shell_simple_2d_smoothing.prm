@@ -56,7 +56,6 @@ subsection Model settings
 
   set Fixed temperature boundary indicators   = inner, outer
 
-  set Include shear heating                   = true
 end
 
 
@@ -100,3 +99,7 @@ subsection Postprocess
   end
 end
 
+
+subsection Heating model
+  set List of model names =  shear heating
+end

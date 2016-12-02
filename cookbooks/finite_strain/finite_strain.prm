@@ -145,8 +145,6 @@ subsection Model settings
   set Zero velocity boundary indicators       =
 #  set Remove nullspace                        = net x translation
 
-  set Include adiabatic heating               = false
-  set Include latent heat                     = false
 end
 
 

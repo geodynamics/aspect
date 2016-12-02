@@ -291,20 +291,6 @@ end
 
 
 subsection Model settings
-  # Whether to include adiabatic heating into the model or not. From a
-  # physical viewpoint, adiabatic heating should always be used but may be
-  # undesirable when comparing results with known benchmarks that do not
-  # include this term in the temperature equation.
-  set Include adiabatic heating               = false
-
-  # Whether to include shear heating into the model or not. From a physical
-  # viewpoint, shear heating should always be used but may be undesirable when
-  # comparing results with known benchmarks that do not include this term in
-  # the temperature equation.
-  set Include shear heating                   = false # default: true
-
-  # H0
-
   # A comma separated list of integers denoting those boundaries on which the
   # temperature is fixed and described by the boundary temperature object
   # selected in its own section of this input file. All boundary indicators

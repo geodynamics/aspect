@@ -302,19 +302,11 @@ subsection Model settings
   # no-flux (insulating) boundary conditions.
   set Fixed temperature boundary indicators   = 0,1
 
-  # Whether to include shear heating into the model or not. From a physical
-  # viewpoint, shear heating should always be used but may be undesirable when
-  # comparing results with known benchmarks that do not include this term in
-  # the temperature equation.
-  set Include shear heating                   = true
-
   # A comma separated list of integers denoting those boundaries on which the
   # velocity is tangential but prescribed, i.e., where external forces act to
   # prescribe a particular velocity. This is often used to prescribe a
   # velocity that equals that of overlying plates.
   set Prescribed velocity boundary indicators =
-
-  # H0
 
   # A comma separated list of integers denoting those boundaries on which the
   # velocity is tangential and unrestrained, i.e., where no external forces
@@ -401,3 +393,7 @@ subsection Postprocess
 end
 
 
+
+subsection Heating model
+  set List of model names =  shear heating
+end

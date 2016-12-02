@@ -38,7 +38,6 @@ subsection Model settings
 
   set Fixed temperature boundary indicators   = inner, outer, east, west, north, south
 
-  set Include shear heating                   = false
 end
 
 

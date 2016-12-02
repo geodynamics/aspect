@@ -68,15 +68,6 @@ subsection Model settings
   set Prescribed velocity boundary indicators = 2:function
   set Tangential velocity boundary indicators = 0,1
   set Fixed temperature boundary indicators   = 2
-
-  # The final part of this section describes whether we
-  # want to include adiabatic heating (from a small
-  # compressibility of the medium) or from shear friction,
-  # as well as the rate of internal heating. We do not
-  # want to use any of these options here:
-  set Include adiabatic heating               = true
-  set Include latent heat                     = true
-  set Include shear heating                   = false
 end
 
 
@@ -146,3 +137,7 @@ subsection Postprocess
   end
 end
 
+
+subsection Heating model
+  set List of model names = adiabatic heating, latent heat
+end

@@ -30,14 +30,14 @@ subsection Gravity model
 end
 
 
-subsection Model settings
-
+subsection Heating model
   # As we only want to look at the effects of latent heating, we disable all
   # the other heating terms. 
-  set Include adiabatic heating               = false
-  set Include latent heat                     = true
-  set Include shear heating                   = false
+  set List of model names =  latent heat
+end
 
+
+subsection Model settings
   # We only fix the temperature at the upper boundary, the other boundaries
   # are isolating. To guarantuee a steady downward flow, we fix the velocity
   # at the top and bottom, and set it to free slip on the sides. 

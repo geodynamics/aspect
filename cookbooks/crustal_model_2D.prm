@@ -28,8 +28,6 @@ subsection Geometry model
 end
 
 subsection Model settings
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
   set Prescribed velocity boundary indicators = left: function, right:function, bottom:function
   set Free surface boundary indicators        = top
 end

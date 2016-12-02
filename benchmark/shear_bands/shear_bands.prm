@@ -135,7 +135,6 @@ subsection Model settings
   set Zero velocity boundary indicators       = 
 
   set Include melt transport                  = true
-  set Include shear heating                   = false
 end
 
 subsection Melt settings

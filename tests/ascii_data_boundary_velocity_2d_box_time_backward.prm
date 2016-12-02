@@ -38,8 +38,6 @@ subsection Model settings
   set Prescribed velocity boundary indicators = top: ascii data, bottom: function
   set Tangential velocity boundary indicators = left,right
 
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
 end
 
 

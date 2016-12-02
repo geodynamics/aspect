@@ -69,14 +69,6 @@ subsection Model settings
   set Zero velocity boundary indicators       =
   set Prescribed velocity boundary indicators =
   set Tangential velocity boundary indicators = 0,1,2,3
-
-  # The final part of this section describes whether we
-  # want to include adiabatic heating (from a small
-  # compressibility of the medium) or from shear friction,
-  # as well as the rate of internal heating. We do not
-  # want to use any of these options here:
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
 end
 
 
