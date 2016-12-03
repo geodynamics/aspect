@@ -6,6 +6,12 @@
  *
  * <ol>
  *
+ * <li> New: ASPECT now also generates a <code>output/particles.visit</code>
+ * file that allows Visit to read in all files from all processors and
+ * all time steps that contain particle data.
+ * <br>
+ * (Wolfgang Bangerth, 2016/12/02)
+ *
  * <li> Changed: The 'Stokes only' nonlinear solver scheme now uses
  * the nonlinear solver tolerance parameter (previously it was hard-
  * coded to 1e-8), and it computes the nonlinear residual as current
