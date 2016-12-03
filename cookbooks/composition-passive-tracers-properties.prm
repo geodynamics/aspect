@@ -94,7 +94,7 @@ subsection Postprocess
   end
 
   subsection Tracers
-    set Number of tracers        = 1000
+    set Number of tracers        = 50000
     set Time between data output = 0.1
     set Data output format       = vtu
     set List of tracer properties = function, initial composition, initial position, pT path
