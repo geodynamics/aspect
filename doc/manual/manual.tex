@@ -611,6 +611,12 @@ temperature and compositional boundary conditions is due to the fact
 that the temperature equation contains a (possibly small) diffusion
 component, whereas the compositional equations do not.
 
+There are other equations that \aspect{} can optionally solve. For example, it
+can deal with free surfaces (see Section~\ref{sec:freesurface}), melt generation and
+transport (see Section~\ref{sec:melt_transport}), and it can advect along
+particles or tracers (see Section~\ref{sec:particles}). These optional models
+are discussed in more detail in the indicated sections.
+
 
 \subsubsection{Comments on the final set of equations}
 \aspect{} solves these equations in essentially the form stated. In
@@ -1857,6 +1863,53 @@ show the mantle flow. On the right there is a significant clockwise rotation to 
 solution which is making the more interesting flow features difficult to see. }
   \label{fig:rigid_rotation}
 \end{figure}
+
+
+\subsection{Particles}
+\label{sec:particles}
+
+\aspect{} can, optionally, also deal with particles (sometimes called
+``tracers''). Particles can be thought of as point-like objects that are simply
+advected along with the flow. In other words, if $\mathbf u(\mathbf x,t)$ is the
+flow field that results from solving equations
+\eqref{eq:stokes-1}--\eqref{eq:stokes-2}, then the $k$th particle's position
+satisfies the equations
+\begin{align}
+  \frac{\partial}{\partial t} \mathbf x_k(t)
+  = \mathbf u(\mathbf x_k(t),t).
+\end{align}
+The initial positions of all particles also need to be given and are usually
+either chosen randomly, based on a fixed pattern, or are read from a file.
+
+Particles are typically used to track visually where material that starts
+somewhere ends up after some time of a simulation. It can also be used to track
+the \textit{history} of the volume of the fluid that surrounds a particle, for
+example by tracking how much strain has accumulated, or what the minimal or maximal
+temperature may have been in the medium along the trajectory of a particle. To
+this end, particles can carry \textit{properties}. These are scalar-
+or vector-valued quantities that are attached to each particle, that are
+initialized at the beginning of a simulation, and that are then updated at each time step. In other words, if we
+denote by $\mathbf p_{k,m}(t)$ the value of the $m$th property attached to
+the $k$th particle, then $\mathbf p_{k,m}(t)$ will satisfy a differential
+equation of the form
+\begin{align*}
+  \frac{\partial}{\partial t} \mathbf p_{k,m}(t)
+  = \mathbf g_m\left(\mathbf p_{k,m}, 
+  p(\mathbf x_k(t),t)), T(\mathbf x_k(t),t)), 
+  \varepsilon(\mathbf u(\mathbf x_k(t),t)),
+  \mathfrak c(\mathbf x_k(t),t)\right).
+\end{align*}
+The exact form of $\mathbf g_m$ of course depends on what exactly a particular
+property represents. Like with compositional fields (see
+Section~\ref{sec:compositional}), it is possible to describe the right hand side
+$\mathbf g_m$ in ways that also allows for impulse (delta) functions in time.
+
+How particles are used in practice is probably best explained using examples. To
+this end, see in particular Section~\ref{sec:cookbooks-particles}. All
+particle-related input parameters are listed in
+Section~\ref{parameters:Postprocess/Tracers}. The implementation of particles is
+discussed in great detail in \cite{GHPB17}.
+
 
 \section{Installation}
 \label{sec:installation}
@@ -4673,6 +4726,7 @@ of the domain ascends, reaches the reaction depth and gets converted to the seco
 
 
 \subsubsection{Using tracer particles}
+\label{sec:cookbooks-particles}
 
 Using compositional fields to trace where material has come from or is going to
 has many advantages from a computational point of view. For example, the
