@@ -117,9 +117,11 @@ namespace aspect
           std::vector<std::pair<double,std::string> > times_and_pvtu_file_names;
 
           /**
-           * Like the previous variable, but for the .visit file.
+           * A corresponding variable that we use for the .visit files created
+           * by DataOutInterface::write_visit_record. The second part of a
+           * pair contains all files that together form a time step.
            */
-          std::vector<std::string>                    vtu_file_names;
+          std::vector<std::pair<double,std::vector<std::string> > > times_and_vtu_file_names;
       };
     }
   }

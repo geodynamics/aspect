@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015, 2016 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -222,22 +222,27 @@ namespace aspect
             pvtu_output << "</VTKFile>\n";
             pvtu_output.close();
 
+            // update the .pvd record for the entire simulation
             times_and_pvtu_file_names.push_back(std::make_pair(current_time,
                                                                "particles/"+pvtu_filename));
-            vtu_file_names.push_back (full_filename);
-
-            // write .pvd and .visit records
             const std::string pvd_master_filename = (this->get_output_directory() + "particles.pvd");
             std::ofstream pvd_master (pvd_master_filename.c_str());
             DataOut<dim>().write_pvd_record (pvd_master, times_and_pvtu_file_names);
 
-//TODO: write a global .visit record. this needs a variant of the write_visit_record
-// function
-            /*
-                          const std::string visit_master_filename = (this->get_output_directory() + "particles.visit");
-                          std::ofstream visit_master (visit_master_filename.c_str());
-                          DataOut<dim>().write_visit_record (visit_master, vtu_file_names);
-            */
+            // same for the .visit record for the entire simulation. for this, we first
+            // have to collect all files that together form this one time step
+#if DEAL_II_VERSION_GTE(8,5,0)
+            std::vector<std::string> this_timestep_output_files;
+            for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++i)
+              this_timestep_output_files.push_back ("particles/" + output_file_prefix +
+                                                    "." + Utilities::int_to_string(i, 4) + ".vtu");
+            times_and_vtu_file_names.push_back (std::make_pair (current_time,
+                                                                this_timestep_output_files));
+
+            const std::string visit_master_filename = (this->get_output_directory() + "particles.visit");
+            std::ofstream visit_master (visit_master_filename.c_str());
+            DataOut<dim>().write_visit_record (visit_master, times_and_vtu_file_names);
+#endif
           }
         file_index++;
 
@@ -251,7 +256,7 @@ namespace aspect
         // invoke serialization of the base class
         ar &file_index
         & times_and_pvtu_file_names
-        & vtu_file_names
+        & times_and_vtu_file_names
         ;
       }
 
