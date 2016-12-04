@@ -4726,13 +4726,26 @@ Fig.~\ref{fig:composition-passive-tracers}.
 \end{figure}
 
 The particles shown here are not too impressive in still pictures since they are
-colorized by their particle number, which -- since particles were initially
-randomly distributed -- is essentially a random number. The purpose of using the
-particle id to colorize becomes more apparent if you use it when viewing an
-animation of time steps. There, the different colors of adjacent particles come
-in handy because they allow the eye to follow the motion of a single particle.
-This makes it rather intuitive to understand a flow field, but it can of course
-not be reproduced in a static medium such as this manual.
+colorized by their particle number, which does not carry any particular meaning
+other than the fact that it enumerates the particles.%
+\footnote{Particles are enumerated in a way so that first the first processor
+in a parallel computations numbers all of the particles on its first cell, then
+its second cell, and so on; then the second processor does the same with
+particles in the order of the cells it owns; etc. Thus, the ``id'' shown in the
+picture is not just a random number, but rather shows the order of cells and
+how they belonged to the processors that participated in the computation at the
+time when particles were created. After some time, particles may of course have
+become well mixed. In any case, this ordering is of no real practical use.} 
+The particle ``id'' can, however, be useful when viewing an animation of time steps.
+There, the different colors of particles allows the eye to follow the motion of
+a single particle. This is especially true if, after some time, particles have
+become well mixed by the flow field and adjacent particles no longer have
+similar colors. In any case, viewing such animations makes it rather intuitive
+to understand a flow field, but it can of course not be reproduced in a static medium such as this manual.
+
+In any case, we will see in the next section how to attach more interesting
+information to particles, and how to visualize these.
+
 
 \paragraph{Using tracer properties.}
 
