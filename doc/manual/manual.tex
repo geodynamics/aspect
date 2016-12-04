@@ -611,6 +611,12 @@ temperature and compositional boundary conditions is due to the fact
 that the temperature equation contains a (possibly small) diffusion
 component, whereas the compositional equations do not.
 
+There are other equations that \aspect{} can optionally solve. For example, it
+can deal with free surfaces (see Section~\ref{sec:freesurface}), melt generation and
+transport (see Section~\ref{sec:melt_transport}), and it can advect along
+particles or tracers (see Section~\ref{sec:particles}). These optional models
+are discussed in more detail in the indicated sections.
+
 
 \subsubsection{Comments on the final set of equations}
 \aspect{} solves these equations in essentially the form stated. In
@@ -1857,6 +1863,53 @@ show the mantle flow. On the right there is a significant clockwise rotation to 
 solution which is making the more interesting flow features difficult to see. }
   \label{fig:rigid_rotation}
 \end{figure}
+
+
+\subsection{Particles}
+\label{sec:particles}
+
+\aspect{} can, optionally, also deal with particles (sometimes called
+``tracers''). Particles can be thought of as point-like objects that are simply
+advected along with the flow. In other words, if $\mathbf u(\mathbf x,t)$ is the
+flow field that results from solving equations
+\eqref{eq:stokes-1}--\eqref{eq:stokes-2}, then the $k$th particle's position
+satisfies the equations
+\begin{align}
+  \frac{\partial}{\partial t} \mathbf x_k(t)
+  = \mathbf u(\mathbf x_k(t),t).
+\end{align}
+The initial positions of all particles also need to be given and are usually
+either chosen randomly, based on a fixed pattern, or are read from a file.
+
+Particles are typically used to track visually where material that starts
+somewhere ends up after some time of a simulation. It can also be used to track
+the \textit{history} of the volume of the fluid that surrounds a particle, for
+example by tracking how much strain has accumulated, or what the minimal or maximal
+temperature may have been in the medium along the trajectory of a particle. To
+this end, particles can carry \textit{properties}. These are scalar-
+or vector-valued quantities that are attached to each particle, that are
+initialized at the beginning of a simulation, and that are then updated at each time step. In other words, if we
+denote by $\mathbf p_{k,m}(t)$ the value of the $m$th property attached to
+the $k$th particle, then $\mathbf p_{k,m}(t)$ will satisfy a differential
+equation of the form
+\begin{align*}
+  \frac{\partial}{\partial t} \mathbf p_{k,m}(t)
+  = \mathbf g_m\left(\mathbf p_{k,m}, 
+  p(\mathbf x_k(t),t)), T(\mathbf x_k(t),t)), 
+  \varepsilon(\mathbf u(\mathbf x_k(t),t)),
+  \mathfrak c(\mathbf x_k(t),t)\right).
+\end{align*}
+The exact form of $\mathbf g_m$ of course depends on what exactly a particular
+property represents. Like with compositional fields (see
+Section~\ref{sec:compositional}), it is possible to describe the right hand side
+$\mathbf g_m$ in ways that also allows for impulse (delta) functions in time.
+
+How particles are used in practice is probably best explained using examples. To
+this end, see in particular Section~\ref{sec:cookbooks-particles}. All
+particle-related input parameters are listed in
+Section~\ref{parameters:Postprocess/Tracers}. The implementation of particles is
+discussed in great detail in \cite{GHPB17}.
+
 
 \section{Installation}
 \label{sec:installation}
@@ -4673,6 +4726,7 @@ of the domain ascends, reaches the reaction depth and gets converted to the seco
 
 
 \subsubsection{Using tracer particles}
+\label{sec:cookbooks-particles}
 
 Using compositional fields to trace where material has come from or is going to
 has many advantages from a computational point of view. For example, the
@@ -10170,15 +10224,18 @@ resources listed at the beginning of this section as well as references
 We have a number of near-term plans for \aspect{} that we hope to implement
 soon:
 \begin{itemize}
-\item \textit{Iterating out the nonlinearity:} In the current version of
-  \aspect{}, we use the velocity, pressure and temperature of the previous
-  time step to evaluate the coefficients that appear in the flow equations
-  \eqref{eq:stokes-1}--\eqref{eq:stokes-2}; and the velocity and pressure of
-  the current time step as well as the previous time step's temperature to
-  evaluate the coefficients in the temperature equation
-  \eqref{eq:temperature}. This is an appropriate strategy if the model is not
-  too nonlinear; however, it introduces inaccuracies and limits the size of
-  the time step if coefficients strongly depend on the solution variables.
+\item \textit{Better ways to deal with the nonlinearity:} The simplest algorithm
+to deal with the nonlinearity of the equations is to use the velocity, pressure and temperature of the
+previous time step to evaluate the coefficients that appear in the flow
+equations \eqref{eq:stokes-1}--\eqref{eq:stokes-2}; and the velocity and
+pressure of the current time step as well as the previous time step's
+temperature to evaluate the coefficients in the temperature equation
+\eqref{eq:temperature}. A slight improvement of this scheme -- and the one that
+is the default in \aspect{} -- is to use velocities, pressures, and temperatures
+that are extrapolated from previous time steps to the current time.
+This is an appropriate strategy if the model is not too
+nonlinear; however, it introduces inaccuracies and limits the size of the
+time step if coefficients strongly depend on the solution variables.
 
   To avoid this, one can iterate out the equations using either a fixed point
   or Newton scheme. Both approaches ensure that at the end of a time step, the
@@ -10186,9 +10243,10 @@ soon:
   hand, one may have to solve the linear systems that describe a time step
   more than once, increasing the computational effort.
 
-  We have started implementing such methods using a testbase code, based on
-  earlier experiments by Jennifer Worthen \cite{Wor12}. We hope to implement
-  this feature in \aspect{} early in 2012.
+  \aspect{} currently already implements methods that iterate out the
+  nonlinearity based on various fixed point strategies. These are based on some
+  earlier experiments by Jennifer Worthen \cite{Wor12}. What is missing, though,
+  is a proper Newton method.
 
 \item \textit{Faster 3d computations:} Whichever way you look at it, 3d
   computations are expensive. In parallel computations, the Stokes solve
@@ -10197,27 +10255,13 @@ soon:
   profiling the code to find hot spots. In particular, playing with better
   solver and/or preconditioner options would seem to be a useful goal.
 
-\item \textit{Particle-based methods:} It is often useful to employ particle
-  tracers to visualize where material is being transported. While conceptually
-  simple, their implementation is made difficult in parallel computations
-  if particles cross the boundary between parts of the regions owned by
-  individual processors, as well as during re-partitioning the mesh between
-  processors following mesh refinement. Eric Heien is
-  working on an implementation of such passive tracers.
-
-\item \textit{More realistic material models:} The number of
-  material models available in \aspect{} is currently relatively
-  small. Obviously, how realistic a simulation is depends on how realistic a
-  material model is. We hope to obtain descriptions of more realistic material
-  descriptions over time, either given analytically or based on table-lookup
-  of material properties.
-
-\item \textit{Melting:} An important part of mantle behavior is
-  melting. Melting not only affects the properties of the material such as
-  density or viscosity, but it also leads to chemical segregation and, in
-  fact, to the flow of two different fluids (the melt and the rock matrix)
-  relative to each other. Modeling this additional process would yield
-  significant insight.
+\item \textit{More, and more realistic material models:} The number of
+  material models available in \aspect{} is sizable, but it does not include
+  all models that have in the past been used in the literature. On the other
+  hand, how realistic a simulation is depends on how realistic the used
+  material model is. We hope to obtain more descriptions of realistic
+  material descriptions over time, either given analytically or based on
+  table-lookup of material properties.
 
 \item \textit{Converting output into seismic velocities:} The predictions of
   mantle convection codes are often difficult to verify experimentally. On the
