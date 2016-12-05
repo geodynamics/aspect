@@ -63,7 +63,7 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm);
 
-      private:
+        private:
           /**
            * The cell average of each property is kept within these bounds.
            */
