@@ -682,12 +682,12 @@ c,\mathbf x)$:} Units $\textrm{Pa}\cdot \textrm{s} =
 
   The simplest parameterization for the density is to assume a linear
   dependence on temperature, yielding the form
-  $\rho(T)=\rho_{\text{ref}}[1-\beta (T-T_{\text{ref}})]$ where
+  $\rho(T)=\rho_{\text{ref}}[1-\alpha (T-T_{\text{ref}})]$ where
   $\rho_{\text{ref}}$ is the reference density at temperature $T_{\text{ref}}$
-  and $\beta$ is the linear thermal expansion coefficient. For the earth
+  and $\alpha$ is the linear thermal expansion coefficient. For the earth's
   mantle, typical values for this parameterization would be
   $\rho_{\text{ref}}=3300\frac{\textrm{kg}}{\textrm{m}^3}$,
-  $T_{\text{ref}}=293 \textrm{K}$, $\beta=2\cdot 10^{-5}
+  $T_{\text{ref}}=293 \textrm{K}$, $\alpha=2\cdot 10^{-5}
   \frac{1}{\mathrm{K}}$.
 
 \item \textit{The gravity vector $\mathbf g=\mathbf g(\mathbf x)$:} Units
@@ -1124,7 +1124,7 @@ a vector $\mathfrak c$.
 
 Compositional fields were originally intended to track what their name
 suggest, namely the chemical composition of the convecting medium. In this
-interpretation, the composition is a quantity that is simply advected along
+interpretation, the composition is a non-diffusive quantity that is simply advected along
 passively, i.e., it would satisfy the equation
 \begin{align*}
   \frac{\partial \mathfrak c}{\partial t} + \mathbf u \cdot \nabla \mathfrak c
@@ -1197,7 +1197,7 @@ form (assuming one uses only a single compositional field)
 \end{align*}
 where in the simplest case one could postulate
 \begin{align*}
-  q(T,c) = -\alpha c + \beta \max\{T-T_\text{healing},0\} c.
+  q(T,c) = -A c + B \max\{T-T_\text{healing},0\} c.
 \end{align*}
 One would then use this compositional field in the definition of the viscosity
 of the material: more damage means lower viscosity because the rocks are weaker.
@@ -1447,15 +1447,15 @@ sufficiently compressible to go with the fully compressible continuity equation.
 A further simplification can be obtained if one assumes that all coefficients
 with the exception of the density do not depend on the solution variables but
 are, in fact, constant. In such models, one typically assumes that the density
-satisfies a relationship of the form $\rho=\rho(T)=\rho_0(1-\beta(T-T_0))$
-with a small thermal expansion coefficient $\beta$ and a reference density
+satisfies a relationship of the form $\rho=\rho(T)=\rho_0(1-\alpha(T-T_0))$
+with a small thermal expansion coefficient $\alpha$ and a reference density
 $\rho_0$ that is attained at temperature $T_0$. Since the thermal expansion is
 considered small, this naturally leads to the following variant of the Boussinesq
 model discussed above:
 \begin{align*}
   -\nabla \cdot \left[2\eta \varepsilon(\mathbf u)
                 \right] + \nabla p &=
-  \rho_0 (1-\beta (T-T_0)) \mathbf g
+  \rho_0 (1-\alpha (T-T_0)) \mathbf g
   & \qquad
   & \textrm{in $\Omega$},
   \\
@@ -1485,13 +1485,13 @@ equations above in the following, commonly used form:%
   the density. That said, you can use the formulation
   \eqref{eq:stokes-1-boussinesq-linear}--\eqref{eq:temperature-boussinesq-linear}
   by implementing a material model (see Section~\ref{sec:material-models}) in
-  which the density in fact has the form $\rho(T)=\beta \rho_0 T$ even though
+  which the density in fact has the form $\rho(T)=\alpha \rho_0 T$ even though
   this is not physical.}
 \begin{align}
   \label{eq:stokes-1-boussinesq-linear}
   -\nabla \cdot \left[2\eta \varepsilon(\mathbf u)
                 \right] + \nabla p_d &=
-  -\beta\rho_0 T \mathbf g
+  -\alpha\rho_0 T \mathbf g
   & \qquad
   & \textrm{in $\Omega$},
   \\
@@ -1513,9 +1513,9 @@ equations above in the following, commonly used form:%
   & \quad
   & \textrm{in $\Omega$},
 \end{align}
-where $p_d=p+\rho_0(1+\beta T_0)\varphi$ is the dynamic pressure, as opposed
+where $p_d=p+\rho_0(1+\alpha T_0)\varphi$ is the dynamic pressure, as opposed
 to the total pressure $p=p_d+p_s$ that also includes the hydrostatic pressure
-$p_s=-\rho_0(1+\beta T_0)\varphi$. Note that the right hand side forcing term
+$p_s=-\rho_0(1+\alpha T_0)\varphi$. Note that the right hand side forcing term
 in \eqref{eq:stokes-1-boussinesq-linear} is now only the deviation of the
 gravitational force from the force that would act if the material were at
 temperature $T_0$.
@@ -5769,8 +5769,8 @@ In the following, let us pick apart this input file:
   the simplest material model \aspect{} has to offer where the viscosity is
   constant (here, we set it to $\eta=10^{22} \text{Pa}\;\text{s}$) and so are
   all other parameters except for the density which we choose to be
-  $\rho(T)=\rho_0(1-\beta (T-T_\text{ref}))$ with $\rho_0=3300
-  \text{kg}\;\text{m}^{-3}$, $\beta=4\cdot 10^{-5} \text{K}^{-1}$ and
+  $\rho(T)=\rho_0(1-\alpha (T-T_\text{ref}))$ with $\rho_0=3300
+  \text{kg}\;\text{m}^{-3}$, $\alpha=4\cdot 10^{-5} \text{K}^{-1}$ and
   $T_\text{ref}=293 \text{K}$. The remaining material parameters remain at their
   default values and you can find their values described in the documentation of
   the \texttt{simple} material model in
@@ -5859,9 +5859,9 @@ temperature field was a perturbation of a linear temperature profile.
 
 There are multiple implications of this. First, the temperature difference
 between outer and inner boundary of 3300 K we have chosen in the input file is
-much too large. The temperature difference is what drives the convection, but
-what really counts is of course the difference \textit{in addition} to the
-temperature increase a volume of material would experience if it were to be
+much too large. The temperature difference that drives the convection, 
+is the difference \textit{in addition} to the temperature increase a volume of 
+material would experience if it were to be
 transported adiabatically from the surface to the core-mantle boundary. This
 difference is much smaller than 3300 K in reality, and we can expect convection
 to be significantly less vigorous than in the simulation here. Indeed, using
@@ -5871,11 +5871,11 @@ the current case to be%
 \begin{equation*}
   \textrm{Ra}
   =
-  \frac{g\; \beta \; \Delta T \; \rho \; L^3}{\alpha\eta}
-  \approx
-  \frac{10 \text{m}\,\text{s}^{-2} \; 4\cdot 10^{-5}\text{K}^{-1} \; 3300
-  \text{K} \; 3300 \text{kg}\,\text{m}^{-2} \; (2.86 \cdot 10^6
-  \text{m})^3}{10^{22}
+  \frac{g\, \alpha  \Delta T  \rho  L^3}{\kappa\eta}
+=
+  \frac{10\, \text{m}\,\text{s}^{-2} \times 4\cdot 10^{-5}\text{K}^{-1} \times 3300\,
+  \text{K} \times 3300\, \text{kg}\,\text{m}^{-3} \times (2.86 \cdot 10^6
+  \text{m})^3}{10^{-6}\, \text{m}^2\,\text{s}^{-1}\times10^{22}\,
   \text{kg}\,\text{m}^{-1}\,\text{s}^{-1}}.
 \end{equation*}
 
