@@ -82,7 +82,7 @@ namespace aspect
             for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator particle = particle_range.first;
                  particle != particle_range.second; ++particle)
               {
-                const std::vector<double> &particle_properties = particle->second.get_properties();
+                const ArrayView<const double> &particle_properties = particle->second.get_properties();
 
                 for (unsigned int i = 0; i < n_properties; ++i)
                   cell_properties[i] += particle_properties[i];

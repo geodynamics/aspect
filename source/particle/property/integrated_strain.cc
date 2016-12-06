@@ -41,7 +41,7 @@ namespace aspect
                                                           const Point<dim> &,
                                                           const Vector<double> &,
                                                           const std::vector<Tensor<1,dim> > &gradients,
-                                                          std::vector<double> &data) const
+                                                          const ArrayView<double> &data) const
       {
         SymmetricTensor<2,dim> old_strain;
         for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)

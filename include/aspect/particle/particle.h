@@ -25,6 +25,7 @@
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/types.h>
+#include <deal.II/base/array_view.h>
 
 #include <boost/serialization/vector.hpp>
 
@@ -238,7 +239,8 @@ namespace aspect
         /**
          * Set the properties of this particle.
          *
-         * @param [in] new_properties The new properties for this particle.
+         * @param [in] new_properties A vector containing the
+         * new properties for this particle.
          */
         void
         set_properties (const std::vector<double> &new_properties);
@@ -246,17 +248,17 @@ namespace aspect
         /**
          * Get write-access to properties of this particle.
          *
-         * @return The properties of this particle.
+         * @return An ArrayView of the properties of this particle.
          */
-        std::vector<double> &
+        const ArrayView<double>
         get_properties ();
 
         /**
-         * Get the properties of this particle.
+         * Get read-access to properties of this particle.
          *
-         * @return The properties of this particle.
+         * @return An ArrayView of the properties of this particle.
          */
-        const std::vector<double> &
+        const ArrayView<const double>
         get_properties () const;
 
         /**

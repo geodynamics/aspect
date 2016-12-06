@@ -184,7 +184,7 @@ namespace aspect
                                                     const Point<dim> &,
                                                     const Vector<double> &,
                                                     const std::vector<Tensor<1,dim> > &,
-                                                    std::vector<double> &) const
+                                                    const ArrayView<double> &) const
       {}
 
       template <int dim>
