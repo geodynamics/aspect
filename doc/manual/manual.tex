@@ -4810,7 +4810,14 @@ one or more numbers (or vectors or tensors) that may either be set at
 the beginning of the model run and stay constant, or are updated
 during the model runtime. These properties can then be used for many
 applications, e.g., storing an initial property (like the position, or
-initial composition), evaluating a property at a defined particle path (like the pressure-temperature evolution of a certain piece of rock), or by integrating a quantity along a particle parth (like the integrated strain a certain domain has experienced).  We illustrate these properties in the cookbook \url{cookbooks/composition-passive-tracers-properties.prm}, in which we add the following lines to the \texttt{Tracers} subsection.
+initial composition), evaluating a property at a defined particle path (like the
+pressure-temperature evolution of a certain piece of rock), or by integrating a
+quantity along a particle parth (like the integrated strain a certain domain has
+experienced).  We illustrate these properties in the cookbook
+\url{cookbooks/composition-passive-tracers-properties.prm}, in which we add the
+following lines to the \texttt{Tracers} subsection (we also increase the number
+of particles compared to the previous section to make the visualizations below
+more obvious):
 
 \lstinputlisting[language=prmfile]{cookbooks/composition-passive-tracers/tracer-properties.part.prm.out}
 
@@ -4825,8 +4832,16 @@ Section~\ref{sec:write-plugin}.) The properties selected above do the following:
 
 \begin{itemize}
 \item \texttt{initial position:} This particle property simply stores
-  the initial position of the particle and then never changes it. This
-  can be useful to compare the final position of a particle with its initial position and therefore determine how far certain domains traveled during the model runtime.
+  the initial coordinates of the particle and then never changes them. This
+  can be useful to compare the final position of a particle with its 
+  initial position and therefore determine how far certain domains traveled 
+  during the model runtime. Alternatively, one may want to simply visualize
+  the norm of this vector property (i.e., the norm of the initial position,
+  which is of course equal to the distance from the origin at which a particle
+  started): in mantle simulations in spherical coordinates, the radius is
+  indicative of which part of the mantle a particle comes from, and can
+  therefore be used to visualize where material gets transported over the course
+  of a simulation.
 \item \texttt{initial composition:} This property uses the same
   method to initialize particle properties as is used to initialize
   the corresponding compositional fields. Using this, it stores the
@@ -4870,6 +4885,44 @@ Section~\ref{sec:write-plugin}.) The properties selected above do the following:
   (including pressure and temperature based on the \texttt{pT path}
   property) at all time steps. This allows for the creation of a pressure-temperature curve of a certain piece of rock. This property is interesting in many lithosphere and crustal scale models, because it is determining the metamorphic reactions that happen during deformation processes (e.g., in a subduction zone).
 \end{itemize}
+
+\begin{figure}
+  \centering
+  \phantom{.}
+  \hfill
+  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-tracers-properties/composition-C1.png}
+  \hfill
+  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-tracers-properties/particles-C1.png}
+  \phantom{.}
+  \\
+  \phantom{.}
+  \hfill
+  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-tracers-properties/initial-position-00000.png}
+  \hfill
+  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-tracers-properties/initial-position-00199.png}
+  \phantom{.}
+  \caption{\it Passively advected particle properties visualized. Top row:
+  Composition $C_1$ and particle property ``initial $C_1$''. The blue line in both
+  figures is the 0.5-isocontour for the $C_1$ field. Bottom row: Norm of the
+  ``initial position'' of particles at $t=0$ and $t=20$.}
+  \label{fig:composition-passive-tracers-properties}
+\end{figure}
+
+The results of all of these properties can of course be visualized.
+Fig.~\ref{fig:composition-passive-tracers-properties} shows some of the pictures
+one can create with particles.
+The top row shows both the composition field $C_1$ (along with the mesh on
+which it is defined) and the corresponding ``initial $C_1$'' particle property,
+at $t=7.2$. Because the compositional field does not undergo any reactions, it should of
+course simply be the initial composition advected along with the flow field,
+and therefore equal the values of the corresponding particle property. However,
+field-based compositions suffer from diffusion. On the other hand, the amount
+of diffusion can easily be decreased by mesh refinement.  
+
+The bottom of the figure shows the norm of the ``initial position'' property at
+the initial time and at time $t=20$. These images therefore show how far from
+the origin each of the particles shown was at the initial time.
+
 
 \paragraph{Using active tracers.}
 In the examples above, tracer properties passively track distinct
