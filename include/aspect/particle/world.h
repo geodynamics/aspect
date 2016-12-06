@@ -34,6 +34,7 @@
 #include <aspect/simulator_signals.h>
 
 #include <deal.II/base/timer.h>
+#include <deal.II/base/array_view.h>
 
 namespace aspect
 {

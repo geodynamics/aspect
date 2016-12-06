@@ -86,7 +86,7 @@ namespace aspect
                                         const Point<dim> &position,
                                         const Vector<double> &solution,
                                         const std::vector<Tensor<1,dim> > &gradients,
-                                        std::vector<double> &particle_properties) const;
+                                        const ArrayView<double> &particle_properties) const;
 
           /**
            * This implementation tells the particle manager that

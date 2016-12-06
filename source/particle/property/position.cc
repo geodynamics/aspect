@@ -41,7 +41,7 @@ namespace aspect
                                                   const Point<dim> &position,
                                                   const Vector<double> &,
                                                   const std::vector<Tensor<1,dim> > &,
-                                                  std::vector<double> &data) const
+                                                  const ArrayView<double> &data) const
       {
         for (unsigned int i = 0; i < dim; ++i)
           data[data_position+i] = position[i];

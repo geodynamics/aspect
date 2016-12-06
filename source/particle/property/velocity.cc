@@ -41,7 +41,7 @@ namespace aspect
                                                   const Point<dim> &,
                                                   const Vector<double> &solution,
                                                   const std::vector<Tensor<1,dim> > &,
-                                                  std::vector<double> &data) const
+                                                  const ArrayView<double> &data) const
       {
         for (unsigned int i = 0; i < dim; ++i)
           data[data_position+i] = solution[this->introspection().component_indices.velocities[i]];

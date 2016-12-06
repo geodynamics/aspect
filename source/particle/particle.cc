@@ -199,17 +199,17 @@ namespace aspect
     }
 
     template <int dim>
-    const std::vector<double> &
+    const ArrayView<const double>
     Particle<dim>::get_properties () const
     {
-      return properties;
+      return ArrayView<const double>(&properties[0],properties.size());
     }
 
     template <int dim>
-    std::vector<double> &
+    const ArrayView<double>
     Particle<dim>::get_properties ()
     {
-      return properties;
+      return ArrayView<double>(&properties[0],properties.size());
     }
   }
 }

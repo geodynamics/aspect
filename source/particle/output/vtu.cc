@@ -135,7 +135,7 @@ namespace aspect
                 for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator
                      it=particles.begin(); it!=particles.end(); ++it)
                   {
-                    const std::vector<double> particle_data = it->second.get_properties();
+                    const ArrayView<const double> particle_data = it->second.get_properties();
 
                     output << "         ";
                     for (unsigned int d=0; d < n_components; ++d)
@@ -160,7 +160,7 @@ namespace aspect
                     for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator
                          it=particles.begin(); it!=particles.end(); ++it)
                       {
-                        const std::vector<double> particle_data = it->second.get_properties();
+                        const ArrayView<const double> particle_data = it->second.get_properties();
 
                         output << particle_data[data_offset+d] << "\n";
                       }

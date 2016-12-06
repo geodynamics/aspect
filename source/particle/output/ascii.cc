@@ -91,7 +91,7 @@ namespace aspect
         // And print the data for each particle
         for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator it=particles.begin(); it!=particles.end(); ++it)
           {
-            const std::vector<double> properties = it->second.get_properties();
+            const ArrayView<const double> properties = it->second.get_properties();
 
             output << it->second.get_location();
             output << ' ' << it->second.get_id();
