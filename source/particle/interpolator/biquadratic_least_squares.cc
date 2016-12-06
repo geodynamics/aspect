@@ -42,7 +42,32 @@ namespace aspect
                                                          const std::vector<Point<dim> > &positions,
                                                          const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
-        const types::LevelInd cell_index = std::make_pair<unsigned int, unsigned int> (cell->level(),cell->index());
+        typename parallel::distributed::Triangulation<dim>::active_cell_iterator found_cell;
+
+        if (cell == typename parallel::distributed::Triangulation<dim>::active_cell_iterator())
+          {
+            // We can not simply use one of the points as input for find_active_cell_around_point
+            // because for vertices of mesh cells we might end up getting ghost_cells as return value
+            // instead of the local active cell. So make sure we are well in the inside of a cell.
+            Point<dim> approximated_cell_midpoint = positions[0];
+            if (positions.size() > 1)
+              {
+                Tensor<1,dim> direction_to_center;
+                for (unsigned int i = 1; i<positions.size()-1; ++i)
+                  direction_to_center += positions[i] - positions[0];
+                direction_to_center /= positions.size() - 1;
+                approximated_cell_midpoint += direction_to_center;
+              }
+
+            found_cell =
+              (GridTools::find_active_cell_around_point<> (this->get_mapping(),
+                                                           this->get_triangulation(),
+                                                           approximated_cell_midpoint)).first;
+          }
+        else
+          found_cell = cell;
+
+        const types::LevelInd cell_index = std::make_pair<unsigned int, unsigned int> (found_cell->level(),found_cell->index());
         const std::pair<typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator,
               typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator> particle_range = particles.equal_range(cell_index);
 
@@ -65,7 +90,7 @@ namespace aspect
                                 update_quadrature_points |
                                 update_JxW_values);
 
-        fe_values.reinit(cell);
+        fe_values.reinit(found_cell);
 
         std::vector<std::vector<double> > properties(positions.size());
         const std::vector<Point<dim> > quadrature_points = fe_values.get_quadrature_points();
