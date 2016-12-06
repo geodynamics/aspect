@@ -371,18 +371,17 @@ namespace aspect
         create_additional_material_model_outputs(scratch.material_model_outputs);
 
         material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
+
+        if (parameters.formulation_temperature_equation ==
+            Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+          for (unsigned int q=0; q<n_q_points; ++q)
+            scratch.material_model_outputs.densities[q] = adiabatic_conditions->density(scratch.material_model_inputs.position[q]);
+
         MaterialModel::MaterialAveraging::average (parameters.material_averaging,
                                                    cell,
                                                    scratch.finite_element_values.get_quadrature(),
                                                    scratch.finite_element_values.get_mapping(),
                                                    scratch.material_model_outputs);
-
-        if (parameters.formulation_temperature_equation ==
-            Parameters<dim>::FormulationTemperatureEquation::reference_density_profile)
-          for (unsigned int q=0; q<n_q_points; ++q)
-            scratch.material_model_outputs.densities[q] = adiabatic_conditions->density(scratch.material_model_inputs.position[q]);
-
-
 
         viscosity_per_cell[cell->active_cell_index()] = compute_viscosity(scratch,
                                                                           global_max_velocity,

@@ -25,7 +25,6 @@
 #include <aspect/simulator_access.h>
 #include <aspect/melt.h>
 #include <aspect/free_surface.h>
-#include <aspect/assemblers.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/work_stream.h>
@@ -131,8 +130,8 @@ namespace aspect
           velocity_values (quadrature.size(), numbers::signaling_nan<Tensor<1,dim> >()),
           face_material_model_inputs(face_quadrature.size(), n_compositional_fields),
           face_material_model_outputs(face_quadrature.size(), n_compositional_fields),
-          mass_densities(use_reference_density_profile ? quadrature.size() : 0),
-          adiabatic_density_gradients(use_reference_density_profile ? quadrature.size() : 0)
+          reference_densities(use_reference_density_profile ? quadrature.size() : 0, numbers::signaling_nan<double>()),
+          reference_densities_depth_derivative(use_reference_density_profile ? quadrature.size() : 0, numbers::signaling_nan<double>())
         {}
 
 
@@ -154,8 +153,8 @@ namespace aspect
           velocity_values (scratch.velocity_values),
           face_material_model_inputs(scratch.face_material_model_inputs),
           face_material_model_outputs(scratch.face_material_model_outputs),
-          mass_densities(scratch.mass_densities),
-          adiabatic_density_gradients(scratch.adiabatic_density_gradients)
+          reference_densities(scratch.reference_densities),
+          reference_densities_depth_derivative(scratch.reference_densities_depth_derivative)
         {}
 
 
@@ -608,10 +607,10 @@ namespace aspect
     // create an object for the complete equations assembly; add its
     // member functions to the signals and add the object the list
     // of assembler objects
-    aspect::StokesAssembler<dim> *stokes_assembler
-      = new aspect::StokesAssembler<dim>();
-    aspect::AdvectionAssembler<dim> *adv_assembler
-      = new aspect::AdvectionAssembler<dim>();
+    aspect::Assemblers::StokesAssembler<dim> *stokes_assembler
+      = new aspect::Assemblers::StokesAssembler<dim>();
+    aspect::Assemblers::AdvectionAssembler<dim> *adv_assembler
+      = new aspect::Assemblers::AdvectionAssembler<dim>();
 
     aspect::Assemblers::MeltEquations<dim> *melt_equation_assembler = NULL;
     if (parameters.include_melt_transport)
@@ -624,7 +623,7 @@ namespace aspect
                                 std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
     else
       assemblers->local_assemble_stokes_preconditioner
-      .connect (std_cxx11::bind(&aspect::StokesAssembler<dim>::local_assemble_stokes_preconditioner,
+      .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::preconditioner,
                                 std_cxx11::cref (*stokes_assembler),
                                 std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
 
@@ -640,7 +639,7 @@ namespace aspect
     else
       {
         assemblers->local_assemble_stokes_system
-        .connect (std_cxx11::bind(&aspect::StokesAssembler<dim>::local_assemble_stokes_incompressible,
+        .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::incompressible_terms,
                                   std_cxx11::cref (*stokes_assembler),
                                   // discard cell,
                                   std_cxx11::_2,
@@ -650,7 +649,7 @@ namespace aspect
 
         if (material_model->is_compressible())
           assemblers->local_assemble_stokes_system
-          .connect (std_cxx11::bind(&aspect::StokesAssembler<dim>::local_assemble_stokes_compressible_diffusion,
+          .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::compressible_strain_rate_viscosity_term,
                                     std_cxx11::cref (*stokes_assembler),
                                     // discard cell,
                                     std_cxx11::_2,
@@ -659,9 +658,9 @@ namespace aspect
                                     std_cxx11::_5));
 
         if (parameters.formulation_mass_conservation ==
-            Parameters<dim>::FormulationMassConservation::implicit_reference_density_profile)
+            Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
           assemblers->local_assemble_stokes_system
-          .connect (std_cxx11::bind(&aspect::StokesAssembler<dim>::local_assemble_stokes_mass_implicit_reference_density,
+          .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::implicit_reference_density_compressibility_term,
                                     std_cxx11::cref (*stokes_assembler),
                                     // discard cell,
                                     std_cxx11::_2,
@@ -670,10 +669,10 @@ namespace aspect
                                     std_cxx11::_5,
                                     std_cxx11::cref (this->parameters)));
         else if (parameters.formulation_mass_conservation ==
-                 Parameters<dim>::FormulationMassConservation::reference_density_profile)
+                 Parameters<dim>::Formulation::MassConservation::reference_density_profile)
           {
             assemblers->local_assemble_stokes_system
-            .connect (std_cxx11::bind(&aspect::StokesAssembler<dim>::local_assemble_stokes_mass_reference_density,
+            .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::reference_density_compressibility_term,
                                       std_cxx11::cref (*stokes_assembler),
                                       // discard cell,
                                       std_cxx11::_2,
@@ -683,16 +682,13 @@ namespace aspect
                                       std_cxx11::cref (this->parameters)));
           }
         else if (parameters.formulation_mass_conservation ==
-                 Parameters<dim>::FormulationMassConservation::incompressible
-                 || (parameters.formulation_mass_conservation ==
-                     Parameters<dim>::FormulationMassConservation::ask_material_model
-                     && !material_model->is_compressible()))
+                 Parameters<dim>::Formulation::MassConservation::incompressible)
           {
             // do nothing, because we assembled div u =0 above already
           }
         else
           assemblers->local_assemble_stokes_system
-          .connect (std_cxx11::bind(&aspect::StokesAssembler<dim>::local_assemble_stokes_mass_isothermal_compression,
+          .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::isothermal_compression_term,
                                     std_cxx11::cref (*stokes_assembler),
                                     // discard cell,
                                     std_cxx11::_2,
@@ -788,7 +784,7 @@ namespace aspect
     else
       {
         assemblers->local_assemble_advection_system
-        .connect (std_cxx11::bind(&aspect::AdvectionAssembler<dim>::local_assemble_advection_system,
+        .connect (std_cxx11::bind(&aspect::Assemblers::AdvectionAssembler<dim>::local_assemble_advection_system,
                                   std_cxx11::cref (*adv_assembler),
                                   // discard cell,
                                   std_cxx11::_2,
@@ -797,7 +793,7 @@ namespace aspect
                                   std_cxx11::_5));
 
         assemblers->compute_advection_system_residual
-        .connect (std_cxx11::bind(&aspect::AdvectionAssembler<dim>::compute_advection_system_residual,
+        .connect (std_cxx11::bind(&aspect::Assemblers::AdvectionAssembler<dim>::compute_advection_system_residual,
                                   std_cxx11::cref (*adv_assembler),
                                   // discard cell,
                                   std_cxx11::_2,
@@ -809,7 +805,7 @@ namespace aspect
         parameters.use_discontinuous_composition_discretization)
       {
         assemblers->local_assemble_advection_system_on_interior_face
-        .connect(std_cxx11::bind(&aspect::AdvectionAssembler<dim>::local_assemble_discontinuous_advection_interior_face_terms,
+        .connect(std_cxx11::bind(&aspect::Assemblers::AdvectionAssembler<dim>::local_assemble_discontinuous_advection_interior_face_terms,
                                  std_cxx11::cref (*adv_assembler),
                                  std_cxx11::_1,
                                  std_cxx11::_2,
@@ -818,7 +814,7 @@ namespace aspect
                                  std_cxx11::_5));
 
         assemblers->local_assemble_advection_system_on_boundary_face
-        .connect(std_cxx11::bind(&aspect::AdvectionAssembler<dim>::local_assemble_discontinuous_advection_boundary_face_terms,
+        .connect(std_cxx11::bind(&aspect::Assemblers::AdvectionAssembler<dim>::local_assemble_discontinuous_advection_boundary_face_terms,
                                  std_cxx11::cref (*adv_assembler),
                                  std_cxx11::_1,
                                  std_cxx11::_2,
@@ -1089,14 +1085,14 @@ namespace aspect
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.velocity_values);
 
-    const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::FormulationMassConservation::reference_density_profile)
-                                               || (parameters.formulation_mass_conservation == Parameters<dim>::FormulationMassConservation::implicit_reference_density_profile);
+    const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile)
+                                               || (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile);
     if (use_reference_density_profile)
       {
         for (unsigned int q=0; q<scratch.finite_element_values.n_quadrature_points; ++q)
           {
-            scratch.mass_densities[q] = adiabatic_conditions->density(scratch.material_model_inputs.position[q]);
-            scratch.adiabatic_density_gradients[q] = adiabatic_conditions->density_derivative(scratch.material_model_inputs.position[q]);
+            scratch.reference_densities[q] = adiabatic_conditions->density(scratch.material_model_inputs.position[q]);
+            scratch.reference_densities_depth_derivative[q] = adiabatic_conditions->density_derivative(scratch.material_model_inputs.position[q]);
           }
       }
 
@@ -1124,12 +1120,17 @@ namespace aspect
               material_model->evaluate(scratch.face_material_model_inputs,
                                        scratch.face_material_model_outputs);
 
-              // TODO: formulations?
+              // TODO: Currently we do not supply reference density values to Stokes face assemblers.
+              // This seems acceptable for now, since the only face assemblers are the ones for the melt
+              // assembly where one would not want to use the reference density anyway. In case the reference
+              // density is ever needed, those assemblers can also query the adiabatic conditions for the
+              // reference density.
 
-//  a dim-1 dimensional quadrature
+              // TODO: the following doesn't currently compile because the get_quadrature() call returns
+              //  a dim-1 dimensional quadrature
               // MaterialModel::MaterialAveraging::average (parameters.material_averaging,
               //                                            cell,
-//                                     compressibility * density *
+              //                                            compressibility * density *
               //                                            scratch.face_finite_element_values.get_mapping(),
               //                                            scratch.face_material_model_outputs);
             }
@@ -1222,8 +1223,8 @@ namespace aspect
     if (parameters.include_melt_transport)
       stokes_dofs_per_cell += finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
 
-    const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::FormulationMassConservation::reference_density_profile)
-                                               || (parameters.formulation_mass_conservation == Parameters<dim>::FormulationMassConservation::implicit_reference_density_profile);
+    const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile)
+                                               || (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile);
 
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
@@ -1368,7 +1369,8 @@ namespace aspect
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
-    if (parameters.formulation_temperature_equation == Parameters<dim>::FormulationTemperatureEquation::reference_density_profile)
+    if (parameters.formulation_temperature_equation ==
+        Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
       {
         const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
         for (unsigned int q=0; q<n_q_points; ++q)

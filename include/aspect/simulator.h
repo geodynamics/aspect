@@ -1144,7 +1144,7 @@ namespace aspect
        * selection is detected it throws an exception. It for example assures that
        * correct heating terms are selected, and the material model supports
        * the selection of the mass conservation formulation (e.g. incompressible)).
-       * If 'parameters.formulation' is set to 'custom'
+       * If the parameter 'parameters.formulation' is set to 'custom'
        * it only ensures very basic consistency.
        */
       void
