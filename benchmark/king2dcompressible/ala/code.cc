@@ -20,14 +20,23 @@ namespace aspect
 {
   using namespace dealii;
 
-
-
   /**
    * This benchmark is from the article
    * @code
+   * @article{KLKLZTTK10,
+   *   title={A community benchmark for 2-{D} {C}artesian compressible
+   *          convection in the {E}arth's mantle},
+   *   author={King, Scott D and Lee, Changyeol and Van Keken, Peter E
+   *           and Leng, Wei and Zhong, Shijie and Tan, Eh and Tosi, Nicola
+   *           and Kameyama, Masanori C},
+   *   journal={Geophysical Journal International},
+   *   volume={180},
+   *   number={1},
+   *   pages={73--87},
+   *   year={2010},
+   *   publisher={Oxford University Press}
+   * }
    * @endcode
-   *
-   * @ingroup Postprocessing
    */
 
 
@@ -38,8 +47,6 @@ namespace aspect
     class Material : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-
-
 
         /**
         * Evaluate material properties.
@@ -86,7 +93,6 @@ namespace aspect
         }
 
 
-
         virtual double reference_viscosity () const
         {
           return (Di==0.0?1.0:Di)/Ra;
@@ -95,27 +101,7 @@ namespace aspect
 
         virtual double reference_density () const
         {
-
           return 1.0;
-        }
-
-
-        virtual double reference_thermal_expansion_coefficient () const
-        {
-          return 1.0;
-        }
-
-
-        double reference_thermal_diffusivity () const
-        {
-          return 1/(reference_rho*reference_specific_heat);
-        }
-
-
-        double reference_cp () const
-        {
-
-          return 1;
         }
 
         /**
@@ -132,9 +118,6 @@ namespace aspect
         static
         void
         declare_parameters (ParameterHandler &prm);
-
-
-
 
         /**
          * Read the parameters this class declares from the parameter file.
@@ -154,18 +137,19 @@ namespace aspect
         bool tala;
 
         /**
-         * blankenbach parameters
+         * Parameters describing temperature and depth-dependence
+         * of viscosity.
          */
         double b, c;
 
-
         /**
-         * The reference surface temperature
+         * The surface density.
          */
         double reference_rho;
 
         /**
-         * The constant viscosity
+         * The nondimensional numbers (Dissipation number,
+         * Rayleigh number, grueneisen parameter).
          */
         double Di, Ra, gamma;
 
@@ -173,13 +157,6 @@ namespace aspect
          * The constant specific heat
          */
         double reference_specific_heat;
-
-        /**
-         * The constant compressibility.
-         */
-        double reference_compressibility;
-
-
     };
 
 
@@ -190,14 +167,11 @@ namespace aspect
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("Tan Gurnis model");
+        prm.enter_subsection("King model");
         {
           prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0),
                              "Reference density $\\rho_0$. Units: $kg/m^3$.");
-          prm.declare_entry ("Reference temperature", "293",
-                             Patterns::Double (0),
-                             "The reference temperature $T_0$. Units: $K$.");
           prm.declare_entry ("Ra", "1e4",
                              Patterns::Double (0),
                              "");
@@ -236,11 +210,9 @@ namespace aspect
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("Tan Gurnis model");
+        prm.enter_subsection("King model");
         {
           reference_rho   = prm.get_double ("Reference density");
-          //          reference_T = prm.get_double ("Reference temperature");
-          //eta                   = prm.get_double ("Viscosity");
           b               = prm.get_double ("b");
           c               = prm.get_double ("c");
           Di              = prm.get_double ("Di");
@@ -274,10 +246,11 @@ namespace aspect
   namespace MaterialModel
   {
     ASPECT_REGISTER_MATERIAL_MODEL(Material,
-                                   "Material",
-                                   "A simple compressible material model based on a benchmark"
-                                   " from the paper of Tan/Gurnis (2007). This does not use the"
-                                   " temperature equation, but has a hardcoded temperature.")
+                                   "king material",
+                                   "A simple compressible material model based on a benchmark "
+                                   "from the paper of King et al. (2010). It uses the "
+                                   "nondimensional numbers Di, Ra and gamma to define material "
+                                   "properties.")
   }
 
 }

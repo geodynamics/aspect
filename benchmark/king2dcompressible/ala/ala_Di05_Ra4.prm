@@ -10,7 +10,7 @@ subsection Adiabatic conditions model
 end
 
 subsection Material model
-  subsection Tan Gurnis model
+  subsection King model
     set Ra    = 1e4
     set Di    = 0.5
     set gamma = 1.0
