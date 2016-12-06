@@ -198,6 +198,20 @@ namespace aspect
         virtual ~Manager ();
 
         /**
+         * Returns true if the adiabatic heating plugin is found in the
+         * list of active heating models.
+         */
+        bool
+        adiabatic_heating_enabled() const;
+
+        /**
+         * Returns true if the shear heating plugin is found in the
+         * list of active heating models.
+         */
+        bool
+        shear_heating_enabled() const;
+
+        /**
          * Declare the parameters of all known heating plugins, as
          * well as of ones this class has itself.
          */
@@ -274,6 +288,16 @@ namespace aspect
         const std::list<std_cxx11::shared_ptr<Interface<dim> > > &
         get_active_heating_models () const;
 
+        /**
+         * Go through the list of all heating models that have been selected in
+         * the input file (and are consequently currently active) and see if one
+         * of them has the desired type specified by the template argument. If so,
+         * return a pointer to it. If no heating model is active that matches the
+         * given type, return a NULL pointer.
+         */
+        template <typename HeatingModelType>
+        HeatingModelType *
+        find_heating_model () const;
 
         /**
          * Exception.
@@ -296,6 +320,23 @@ namespace aspect
          */
         std::vector<std::string> model_names;
     };
+
+
+
+    template <int dim>
+    template <typename HeatingModelType>
+    inline
+    HeatingModelType *
+    Manager<dim>::find_heating_model () const
+    {
+      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+           p = heating_model_objects.begin();
+           p != heating_model_objects.end(); ++p)
+        if (HeatingModelType *x = dynamic_cast<HeatingModelType *> ( (*p).get()) )
+          return x;
+      return NULL;
+    }
+
 
 
     /**

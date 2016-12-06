@@ -22,6 +22,8 @@
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 #include <aspect/heating_model/interface.h>
+#include <aspect/heating_model/adiabatic_heating.h>
+#include <aspect/heating_model/shear_heating.h>
 
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
@@ -113,6 +115,25 @@ namespace aspect
     template <int dim>
     Manager<dim>::~Manager()
     {}
+
+
+
+    template <int dim>
+    bool
+    Manager<dim>::adiabatic_heating_enabled() const
+    {
+      return find_heating_model<HeatingModel::AdiabaticHeating<dim> >() != NULL;
+    }
+
+
+
+    template <int dim>
+    bool
+    Manager<dim>::shear_heating_enabled() const
+    {
+      return find_heating_model<HeatingModel::ShearHeating<dim> >() != NULL;
+    }
+
 
 
     namespace
