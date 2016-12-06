@@ -1,0 +1,5 @@
+New: Allow additional RHS force terms in the Stokes system by enabling the
+parameter "Enable additional Stokes RHS" and filling
+AdditionalMaterialOutputsStokesRHS in the material model.
+<br>
+(Timo Heister, 2017/05/09)

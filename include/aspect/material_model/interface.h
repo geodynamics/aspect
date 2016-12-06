@@ -589,6 +589,53 @@ namespace aspect
         std::vector<double> vp;
     };
 
+
+    /**
+     * A class for additional output fields to be added to the RHS of the
+     * Stokes system, which can be attached to the
+     * MaterialModel::MaterialModelOutputs structure and filled in the
+     * MaterialModel::Interface::evaluate() function.
+     */
+    template<int dim>
+    class AdditionalMaterialOutputsStokesRHS: public AdditionalMaterialOutputs<dim>
+    {
+      public:
+        AdditionalMaterialOutputsStokesRHS(const unsigned int n_points)
+          : rhs_u(n_points), rhs_p(n_points), rhs_melt_pc(n_points)
+        {}
+
+        virtual ~AdditionalMaterialOutputsStokesRHS()
+        {}
+
+        virtual void average (const MaterialAveraging::AveragingOperation /*operation*/,
+                              const FullMatrix<double>  &/*projection_matrix*/,
+                              const FullMatrix<double>  &/*expansion_matrix*/)
+        {
+          // TODO: not implemented
+        }
+
+        /**
+         * Force tensor on the right-hand side for the conservation of
+         * momentum equation (first part of the Stokes equation) in each
+         * quadrature point.
+         */
+        std::vector<Tensor<1,dim> > rhs_u;
+
+        /**
+         * Force value for the conservation of mass equation (second Stokes
+        * equation) in each quadrature point.
+        */
+        std::vector<double> rhs_p;
+
+        /**
+        * Force for the compaction pressure equation (when using melt
+        * transport) in each quadrature point.
+        */
+        std::vector<double> rhs_melt_pc;
+    };
+
+
+
     /**
      * A base class for parameterizations of material models. Classes derived
      * from this class will need to implement functions that provide material
