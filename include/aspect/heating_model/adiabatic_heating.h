@@ -54,6 +54,17 @@ namespace aspect
     {
       public:
         /**
+         * Returns whether we compute a simplified adiabatic heating term by
+         * neglecting dynamic pressure effects. I.e. we use
+         *     $ \alpha T (\mathbf u \cdot \nabla p) $
+         * as adiabatic heating term if this function returns false, and
+         *    $ - \alpha \rho T (\mathbf u \cdot \mathbf g) $
+         * if it returns true.
+         */
+        bool
+        use_simplified_adiabatic_heating() const;
+
+        /**
          * Compute the heating model outputs for this class.
          */
         virtual

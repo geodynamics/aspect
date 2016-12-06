@@ -199,8 +199,7 @@ namespace aspect
   bool
   SimulatorAccess<dim>::include_adiabatic_heating () const
   {
-    const std::vector<std::string> &heating_models = simulator->heating_model_manager.get_active_heating_model_names();
-    return (std::find(heating_models.begin(), heating_models.end(), "adiabatic heating") != heating_models.end());
+    return simulator->heating_model_manager.adiabatic_heating_enabled();
   }
 
   template <int dim>
