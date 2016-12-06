@@ -120,19 +120,14 @@ namespace aspect
         for (unsigned int i = 0; i < n_properties; ++i)
           {
             std::vector<double> properties_tmp(quadrature_formula.size());
+            properties_tmp.clear();
 
             dealii::FullMatrix<double> r(6,1);
             r = 0;
-//            double max_value_for_particle_property=(particle_range.first)->second.get_properties()[i];
-//            double min_value_for_particle_property=(particle_range.first)->second.get_properties()[i];
             for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator particle = particle_range.first;
                  particle != particle_range.second; ++particle, ++index)
               {
                 const double particle_property = particle->second.get_properties()[i];
-//                if (max_value_for_particle_property<particle_property)
-//                  max_value_for_particle_property=particle_property;
-//                if (min_value_for_particle_property>particle_property)
-//                  min_value_for_particle_property=particle_property;
                 const Point<dim> position = particle->second.get_location();
                 r(0,0) += particle_property;
                 r(1,0) += particle_property * position[0];
@@ -151,10 +146,6 @@ namespace aspect
               {
                 Point<dim> quadrature_point = *itr;
                 double interpolated_value = c(0,0) + c(1,0)*(quadrature_point[0]) + c(2,0)*(quadrature_point[1]) + c(3,0)*(quadrature_point[0] * quadrature_point[1]) +  c(4,0)*(quadrature_point[0] * quadrature_point[0]) + c(5,0)*(quadrature_point[1] * quadrature_point[1]);
-//                if ( interpolated_value > max_value_for_particle_property)
-//                  interpolated_value  = max_value_for_particle_property;
-//                else if ( interpolated_value < min_value_for_particle_property)
-//                  interpolated_value  = min_value_for_particle_property;
                 properties_tmp.push_back(interpolated_value);
               }
 
@@ -182,6 +173,7 @@ namespace aspect
                 double interpolated_value = c(0,0) + c(1,0)*(support_point[0]) + c(2,0)*(support_point[1]) + c(3,0)*(support_point[0] * support_point[1]) +  c(4,0)*(support_point[0] * support_point[0]) + c(5,0)*(support_point[1] * support_point[1]) + offset;
                 properties[index_positions].push_back(interpolated_value);
               }
+            properties_tmp.clear();
           }
         return properties;
       }
