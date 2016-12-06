@@ -95,11 +95,6 @@ namespace aspect
           phi_p (stokes_dofs_per_cell, numbers::signaling_nan<double>()),
           phi_p_c (add_compaction_pressure ? stokes_dofs_per_cell : 0, numbers::signaling_nan<double>()),
           grad_phi_p (add_compaction_pressure ? stokes_dofs_per_cell : 0, numbers::signaling_nan<Tensor<1,dim> >()),
-          temperature_values (quadrature.size(), numbers::signaling_nan<double>()),
-          pressure_values (quadrature.size(), numbers::signaling_nan<double>()),
-          strain_rates (quadrature.size(), numbers::signaling_nan<SymmetricTensor<2,dim> >()),
-          composition_values(n_compositional_fields,
-                             std::vector<double>(quadrature.size(), numbers::signaling_nan<double>())),
           material_model_inputs(quadrature.size(), n_compositional_fields),
           material_model_outputs(quadrature.size(), n_compositional_fields)
         {}
@@ -120,10 +115,6 @@ namespace aspect
           phi_p (scratch.phi_p),
           phi_p_c (scratch.phi_p_c),
           grad_phi_p(scratch.grad_phi_p),
-          temperature_values (scratch.temperature_values),
-          pressure_values (scratch.pressure_values),
-          strain_rates (scratch.strain_rates),
-          composition_values(scratch.composition_values),
           material_model_inputs(scratch.material_model_inputs),
           material_model_outputs(scratch.material_model_outputs)
         {}

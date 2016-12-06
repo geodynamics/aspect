@@ -66,11 +66,6 @@ namespace aspect
           std::vector<double>                  phi_p_c;
           std::vector<Tensor<1,dim> >          grad_phi_p;
 
-          std::vector<double>                  temperature_values;
-          std::vector<double>                  pressure_values;
-          std::vector<SymmetricTensor<2,dim> > strain_rates;
-          std::vector<std::vector<double> >    composition_values;
-
           /**
            * Material model inputs and outputs computed at the current
            * linearization point.
