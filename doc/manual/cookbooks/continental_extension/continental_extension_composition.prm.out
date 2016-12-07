@@ -13,4 +13,3 @@ subsection %%\hyperref[parameters:Compositional_20initial_20conditions]{Composit
                               if(y<68.e3 && y>60.e3 && x>=198.e3 && x<=202.e3 , 1, 0);
   end
 end
-

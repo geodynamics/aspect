@@ -36,7 +36,8 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications (no mesh refinement)
+# Mesh refinement specifications (no mesh refinement, 
+# but the coarse mesh is already 200x50, see above)
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
@@ -69,13 +70,13 @@ end
 subsection Boundary velocity model
   subsection Function
     set Variable names      = x,y
-    set Function constants  = m=0.0025, year=1
-    set Function expression =  if (x<200e3 , -1*m/year, 1*m/year) ; 0.00125
+    set Function constants  = cm=0.01, year=1
+    set Function expression = if (x<200e3 , -0.25*cm/year, 0.25*cm/year) ; 0.125*cm/year
   end
 end
 
 
-# Number and name of compositional fields
+# Number and names of compositional fields
 # The four compositional fields represent the upper crust, lower crust, mantle
 # and a 'seed' placed in the mantle to help localize deformation.
 subsection Compositional fields
@@ -101,20 +102,21 @@ end
 
 # Temperature boundary conditions
 # Top and bottom (fixed) temperatures are consistent with the initial temperature field
+# Note that while temperatures are specified for the model sides, these values are
+# not used as the sides are not specified "Fixed temperature boundaries".  Rather,
+# these boundaries are insulating (zero net heat flux).
 subsection Boundary temperature model
   set Model name = box
-
   subsection Box
     set Bottom temperature = 1573
     set Left temperature   =  273
     set Right temperature  =  273
     set Top temperature    =  273
-
   end
 end
 
 # Initial temperature field
-# Typical continental geotherm based equations 4-6 from:
+# Typical continental geotherm based on equations 4-6 from:
 #   D.S. Chapman (1986), "Thermal gradients in the continental crust",
 #   Geological Society of London Special Publications, v.24, p.63-70.
 # The initial constraints are:
@@ -148,12 +150,12 @@ end
 # Assuming a very large decay time, the heat production (W/m^3) is effectively:
 #   radioactive_heating_rate (W/kg) * density (kg/m^3)
 # For a reference crustal density of 2800 kg/m^3 and 1.5e-6 W/m^3 heating production,
-# the heating rate (assuming a single element) is 1.5e-6/2800. = 5.357142857e-10.
+# the heating rate (assuming a single element) is 1.5e-6/2800. = 5.357142857e-10 ~= 5.357e-10
 subsection Heating model
   set Model name = radioactive decay
   subsection Radioactive decay
     set Number of elements    = 1
-    set Heating rates                 = 5.357142857e-10
+    set Heating rates                 = 5.357e-10
     set Half decay times              = 1.e20
     set Initial concentrations mantle = 0.0
     set Initial concentrations crust  = 1.0
@@ -177,11 +179,7 @@ subsection Material model
     # Reference temperature and viscosity
     set Reference temperature = 293
     set Reference viscosity = 1e22
-
-    # As the boundaries are all free-slip, so iUse the reference strain-rate
-    # (used on first nonlinear iteration) to specify the strain-rate used
-    # in the viscous flow law.  Set the minimum strain-rate to the same value.
-
+    
     # The minimum strain-rate helps limit large viscosities values that arise
     # as the strain-rate approaches zero.
     # The reference strain-rate is used on the first non-linear iteration
@@ -195,10 +193,10 @@ subsection Material model
 
     # Thermal diffusivity is adjusted to match thermal conductivities
     # assumed in the assigning the initial geotherm
-    set Thermal diffusivities = 1.333333e-6,1.190476e-6,1.149425e-6,1.333333e-6,1.333333e-6
-    set Heat capacities = 750.,750.,750.,750.,750.
-    set Densities = 3300,2800,2900,3300,3300
-    set Thermal expansivities = 2e-5,2e-5,2e-5,2e-5,2e-5
+    set Thermal diffusivities = 1.333333e-6, 1.190476e-6, 1.149425e-6, 1.333333e-6, 1.333333e-6
+    set Heat capacities       =        750.,        750.,        750.,        750.,         750.
+    set Densities             =        3300,        2800,        2900,        3300,         3300
+    set Thermal expansivities =        2e-5,        2e-5,        2e-5,        2e-5,         2e-5
 
     # Harmonic viscosity averaging
     set Viscosity averaging scheme = harmonic
@@ -221,14 +219,14 @@ subsection Material model
     #    "Influence of water fugacity and activation volume on the flow properties of fine-grained    
     #    anorthite aggregates"
     # Note that the viscous pre-factors below are scaled to plane strain from unixial strain experiments.
-    set Prefactors for dislocation creep = 6.52e-16,8.57e-28,7.13e-18,6.52e-16,7.13e-18
-    set Stress exponents for dislocation creep = 3.5,4.0,3.0,3.5,3.0
-    set Activation energies for dislocation creep = 530.e3,223.e3,345.e3,530.e3,345.e3
-    set Activation volumes for dislocation creep = 18.e-6,0.,0.,18.e-6,0.
+    set Prefactors for dislocation creep          = 6.52e-16, 8.57e-28, 7.13e-18, 6.52e-16, 7.13e-18
+    set Stress exponents for dislocation creep    =      3.5,      4.0,      3.0,      3.5, 3.0
+    set Activation energies for dislocation creep =   530.e3,   223.e3,   345.e3,   530.e3, 345.e3
+    set Activation volumes for dislocation creep  =   18.e-6,       0.,       0.,   18.e-6, 0.
 
     # Plasticity parameters
-    set Angles of internal friction = 20.,20.,20.,20.,20.
-    set Cohesions = 20.e6,20.e6,20.e6,20.e6,20.e6
+    set Angles of internal friction =   20.,   20.,  20.,    20., 20.
+    set Cohesions                   = 20.e6, 20.e6, 20.e6, 20.e6, 20.e6
 
   end
 end
