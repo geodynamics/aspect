@@ -13,6 +13,7 @@
 #include <deal.II/base/function_lib.h>
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/vector_tools.h>
+#include <deal.II/base/signaling_nan.h>
 
 
 
@@ -117,13 +118,6 @@ namespace aspect
 
         virtual double reference_density () const;
 
-        virtual double reference_thermal_expansion_coefficient () const;
-
-//TODO: should we make this a virtual function as well? where is it used?
-        double reference_thermal_diffusivity () const;
-
-        double reference_cp () const;
-
         double parameter_a() const;
         double parameter_wavenumber() const;
         double parameter_Di() const;
@@ -162,27 +156,17 @@ namespace aspect
         double Di;
         double gamma;
 
-        double reference_rho;
-        double reference_T;
-        double eta;
-        double reference_specific_heat;
-
-        /**
-         * The thermal conductivity.
-         */
-        double k_value;
     };
 
     template <int dim>
     TanGurnis<dim>::TanGurnis()
     {
-      a=0; // 0 or 2
+      // a=0 for a constant viscosity or
+      // a=2 for a depth-dependent viscosity (case tala_c)
+      a=0;
 
-      //BA:
-      //Di=0;gamma=10000; //=inf
-
-      //EBA:
-      //Di=0.5;gamma=inf;
+      // for BA: Di=0; gamma=inf
+      // however, we do not use gamma if Di=0, so the actual value does not matter
 
       //TALA:
       Di=0.5;
@@ -225,17 +209,6 @@ namespace aspect
     }
 
 
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    reference_thermal_expansion_coefficient () const
-    {
-      return 1.0;
-    }
-
-
-
     template <int dim>
     double
     TanGurnis<dim>::
@@ -244,19 +217,8 @@ namespace aspect
                    const std::vector<double> &, /*composition*/
                    const Point<dim> &) const
     {
-      return 1250;
+      return 1.0;
     }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    reference_cp () const
-    {
-      return 1250;
-    }
-
 
 
     template <int dim>
@@ -267,19 +229,8 @@ namespace aspect
                           const std::vector<double> &, /*composition*/
                           const Point<dim> &) const
     {
-      return 2e-5;
+      return 1.0;
     }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    reference_thermal_diffusivity () const
-    {
-      return k_value/(reference_rho*reference_specific_heat);
-    }
-
 
 
     template <int dim>
@@ -316,14 +267,11 @@ namespace aspect
     compressibility (const double /*temperature*/,
                      const double /*pressure*/,
                      const std::vector<double> &/*compositional_fields*/,
-                     const Point<dim> &pos) const
+                     const Point<dim> &/*position*/) const
     {
-      const double depth = 1.0-pos(dim-1);
-      double d = 1.0*exp(Di/gamma*(depth));
-
       // this is no longer used because we use the new adiabatic mass formulation
       // based on AdiabaticConditions
-      return (d==0) ? 1.0 : (Di/gamma / d);
+      return numbers::signaling_nan<double>();
     }
 
 
@@ -386,23 +334,6 @@ namespace aspect
       {
         prm.enter_subsection("Tan Gurnis model");
         {
-          prm.declare_entry ("Reference density", "3300",
-                             Patterns::Double (0),
-                             "Reference density $\\rho_0$. Units: $kg/m^3$.");
-          prm.declare_entry ("Reference temperature", "293",
-                             Patterns::Double (0),
-                             "The reference temperature $T_0$. Units: $K$.");
-          prm.declare_entry ("Viscosity", "5e24",
-                             Patterns::Double (0),
-                             "The value of the constant viscosity. Units: $kg/m/s$.");
-          prm.declare_entry ("Thermal conductivity", "4.7",
-                             Patterns::Double (0),
-                             "The value of the thermal conductivity $k$. "
-                             "Units: $W/m/K$.");
-          prm.declare_entry ("Reference specific heat", "1250",
-                             Patterns::Double (0),
-                             "The value of the specific heat $cp$. "
-                             "Units: $J/kg/K$.");
           prm.declare_entry ("a", "0",
                              Patterns::Double (0),
                              "");
@@ -432,15 +363,10 @@ namespace aspect
       {
         prm.enter_subsection("Tan Gurnis model");
         {
-          reference_rho     = prm.get_double ("Reference density");
-          reference_T = prm.get_double ("Reference temperature");
-          eta                   = prm.get_double ("Viscosity");
-          k_value               = prm.get_double ("Thermal conductivity");
-          reference_specific_heat = prm.get_double ("Reference specific heat");
-          a = prm.get_double("a");
-          Di = prm.get_double("Di");
-          gamma = prm.get_double("gamma");
-          wavenumber = prm.get_double("wavenumber");
+          a                       = prm.get_double("a");
+          Di                      = prm.get_double("Di");
+          gamma                   = prm.get_double("gamma");
+          wavenumber              = prm.get_double("wavenumber");
         }
         prm.leave_subsection();
       }
