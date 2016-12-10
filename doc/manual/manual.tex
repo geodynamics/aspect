@@ -1427,8 +1427,8 @@ where the right-hand side includes radiogenic heat production, shear heating and
   
 Starting from these equations, the approximations discussed in the next few
 subsections make use of the fact that for the flows for which these approximations are valid, the
-perturbations $p',T'$ are much smaller than typical values of the reference
-quantities $\bar p, \bar T$. 
+perturbations $p'$, $T'$ are much smaller than typical values of the reference
+quantities $\bar p$, $\bar T$. 
 The terms influenced by these approximations are $\nabla \cdot (\rho u) =0$ in the 
 continuity equation, and all occurrences of $\rho(p,T)$ in the temperature equation, 
 and we will discuss them separately below. The equations for these approximations are
@@ -1747,7 +1747,8 @@ Stokes equations if we can treat the right hand side of
 $\mathbf u$ using the solution from the last time step (or values extrapolated
 from previous time steps), or using a nonlinear solver scheme.
 
-\note{This is the default approximation \aspect{} uses to model compressible convection.}
+\note{This is the default approximation \aspect{} uses to model compressible convection,
+see Section~\ref{sec:combind_formulations}.}
 
 
 \newpage
@@ -1755,19 +1756,19 @@ from previous time steps), or using a nonlinear solver scheme.
 
 After discussing different reasonable approximations for modelling compressible or 
 incompressible mantle convection, we will now describe the different steps one has 
-to do when using one of these approximations in model.  
+to take to use one of these approximations in a computation.  
 This includes 
 \begin{enumerate}
 \item Choosing an approximation for the mass conservation equation, 
 \item Choosing an approximation for the density in the energy balance, and deciding which heating terms should be included, 
 \item Formulating the buoyancy term in the material model to be used on the right-hand side of the momentum equation, 
-\item Prescribing a suitable reference state for the temperature, the adiabatic profile.
+\item Prescribing a suitable reference state for the temperature, pressure, and density, the adiabatic profile.
 \end{enumerate}
 
 \subsubsection{Mass conservation approximation}
 
-First, we have to choose how to approximate Equation~\eqref{eq:stokes-2}, $\nabla \cdot (\rho \mathbf u) = 0$. 
-We provide the following simplifications:
+First, we have to choose how to approximate the conservation of mass: $\nabla \cdot (\rho \mathbf u) = 0$ (see Equation~\eqref{eq:stokes-2}). 
+We provide the following options:
 
 \begin{itemize}
 
@@ -1788,10 +1789,12 @@ is defined in the material model.
 \item
 ``reference density profile'':
 \[
- \nabla \cdot \textbf{u} = -\frac{1}{\bar{\rho}} \frac{\partial \bar{\rho}}{\partial z} \frac{\textbf{g}}{g} \cdot \textbf{u},
+ \nabla \cdot \textbf{u} = -\frac{1}{\bar{\rho}} \frac{\partial \bar{\rho}}{\partial z} \frac{\textbf{g}}{\|\textbf{g}\|} \cdot \textbf{u},
 \]
 where reference profiles for the density $\bar{\rho}$ and the density gradient $\frac{\partial \bar{\rho}}{\partial z}$
-are used, which have to be provided in the adiabatic conditions model, 
+provided by \text{AdiabaticConditions}
+are used. Note that the
+gravity is assumed to point downwards in depth direction
 
 \item
 ``implicit reference density profile'':
@@ -1800,7 +1803,8 @@ are used, which have to be provided in the adiabatic conditions model,
 \]
 which uses the same approximation for the density as ``reference density profile'', 
 but implements this term on the left-hand side instead of the right-hand side of the mass
-conservation equation,
+conservation equation. This effectively uses the current velocity $\textbf{u}$ instead
+of an extrapolated velocity from the last timesteps.
 
  \item 
 ``ask material model'', which uses ``isothermal compression'' if the material model is compressible 
@@ -1848,7 +1852,7 @@ decide to use density deviations from a reference state instead of a full densit
 
 The reference temperature profile $\bar{T}$, reference density profile $\bar{\rho}$
 and the reference pressure $\bar{p}$ are computed in the adiabatic conditions model 
-(see Section~\ref{sec:adiabatic}). 
+(provided by the class \textit{AdiabaticConditionds}, see Section~\ref{sec:adiabatic}). 
 By default, these fields satisfy adiabatic conditions (if adiabatic heating is included 
 in the model):
 \begin{align}
@@ -1876,15 +1880,16 @@ which allows the user to define arbitrary functions for
 $\bar{T}(z)$, $\bar{p}(z)$ and $\bar{\rho}(z)$.
 
 \subsubsection{Combined Formulations}
+\label{sec:combind_formulations}
 Not all combinations of the different approximations discussed above 
 are physically reasonable, and to help users to choose between these options, 
 we provide a number of combined ``Formulations'' that are equivalent to the 
-approximate equations discussed above (Section~\ref{sec:approximate-equations}:
+approximate equations discussed above (Section~\ref{sec:approximate-equations}):
 
 \begin{itemize}
  \item 
-``ALA'': This formulation sets the Mass conservation approximation to ``reference density profile'', 
-the Temperature equation approximation to ``reference density profile'' and checks that both
+``ALA'': This formulation sets the mass conservation approximation to ``reference density profile'', 
+the temperature equation approximation to ``reference density profile'' and checks that both
 adiabatic and shear heating are included in the list of heating plugins used in the model, using the 
 simplified version of the adiabatic heating term 
 (see Section~\ref{parameters:Heating_20model/Adiabatic_20heating}).
@@ -1897,8 +1902,8 @@ or with a material model that defines a density that depends on temperature and 
 (Section~\ref{sec:tala}).
 
 \item
-``BA'': This formulation sets the Mass conservation approximation to ``incompressible'', 
-the Temperature equation approximation to ``reference density profile'' and checks that neither
+``BA'': This formulation sets the mass conservation approximation to ``incompressible'', 
+the temperature equation approximation to ``reference density profile'' and checks that neither
 adiabatic nor shear heating are included in the list of heating plugins used in the model. 
 The default setting for the adiabatic conditions is a constant temperature, and hydrostatic
 pressure and density profiles. This option should be chosen together with a material model 
@@ -1906,8 +1911,8 @@ that defines a density that only depends on temperature and depth (and not on th
 This is equivalent to the Boussinesq approximation (Section~\ref{sec:boussinesq}).
 
 \item
-``isothermal compression'': This formulation sets the Mass conservation approximation to 
-``isothermal compression'', the Temperature equation approximation to ``real density''
+``isothermal compression'': This formulation sets the mass conservation approximation to 
+``isothermal compression'', the temperature equation approximation to ``real density''
 and checks that both
 adiabatic and shear heating are included in the list of heating plugins used in the model.
 The default setting for the adiabatic conditions is an adiabatic temperature profile, and hydrostatic
@@ -1915,8 +1920,8 @@ pressure and density profiles. The density can depend on any of the solution var
 This is equivalent to the isothermal compression approximation (Section~\ref{sec:ica}).
 
 \item
-``custom'': By default, this formulation sets the Mass conservation approximation 
-to ``ask material model'' and the Temperature equation approximation to ``real density''.
+``custom'': By default, this formulation sets the mass conservation approximation 
+to ``ask material model'' and the temperature equation approximation to ``real density''.
 The adiabatic conditions model uses an adiabatic temperature profile if adiabatic heating
 is included in the model, and a constant temperature if adiabatic heating is not included.
 Pressure and density profiles are hydrostatic. The density can depend on any of the solution variables.
