@@ -29,12 +29,6 @@ namespace aspect
     namespace Generator
     {
       template <int dim>
-      QuadraturePoints<dim>::QuadraturePoints()
-        :
-        starting_particle_index(0)
-      {}
-
-      template <int dim>
       void
       QuadraturePoints<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
       {
@@ -42,6 +36,7 @@ namespace aspect
 
         types::particle_index n_particles_to_generate = quadrature_formula.size() * this->get_triangulation().n_locally_owned_active_cells();
         types::particle_index prefix_sum = 0;
+        types::particle_index particle_index = 0;
 
         FEValues<dim> fe_values(this->get_mapping(),
                                 this->get_fe(),
@@ -51,8 +46,7 @@ namespace aspect
 
         MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, ASPECT_TRACER_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
 
-        starting_particle_index += prefix_sum - n_particles_to_generate;
-        types::particle_index particle_index = starting_particle_index;
+        particle_index = prefix_sum - n_particles_to_generate;
 
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator
         cell = this->get_triangulation().begin_active(), endc = this->get_triangulation().end();
@@ -71,8 +65,6 @@ namespace aspect
                   }
               }
           }
-
-        starting_particle_index = Utilities::MPI::max(particle_index, this->get_mpi_communicator());
       }
 
 

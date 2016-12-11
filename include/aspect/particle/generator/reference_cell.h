@@ -42,11 +42,6 @@ namespace aspect
       {
         public:
           /**
-          * Constructor.
-          */
-          ReferenceCell();
-
-          /**
            * Generate a uniform distribution of particles in the unit cell and transforms
            * each of the particles back to real region in the model domain.
            * Uniform here means the particles will be generated with
@@ -86,13 +81,6 @@ namespace aspect
            * specified within the parameter file.
            */
           std::vector<unsigned int> number_of_particles;
-
-          /**
-           * To obtain unique particle indices across multiple MPI processes,
-           * this variable stores the starting index. This value is updated for each
-           * call to generate_particles().
-           */
-          types::particle_index starting_particle_index;
       };
 
     }
