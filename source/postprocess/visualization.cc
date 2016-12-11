@@ -256,7 +256,11 @@ namespace aspect
       const std::string
       pvd_master_filename = (this->get_output_directory() + "solution.pvd");
       std::ofstream pvd_master (pvd_master_filename.c_str());
+#if DEAL_II_VERSION_GTE(8,5,0)
+      DataOutBase::write_pvd_record (pvd_master, times_and_pvtu_names);
+#else
       data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
+#endif
 
       // finally, do the same for Visit via the .visit file for this
       // time step, as well as for all time steps together
@@ -266,7 +270,11 @@ namespace aspect
                                + solution_file_prefix
                                + ".visit");
       std::ofstream visit_master (visit_master_filename.c_str());
+#if DEAL_II_VERSION_GTE(8,5,0)
+      DataOutBase::write_visit_record (visit_master, filenames);
+#else
       data_out.write_visit_record (visit_master, filenames);
+#endif
 
       {
         // the global .visit file needs the relative path because it sits a
@@ -289,7 +297,7 @@ namespace aspect
       for (unsigned int timestep=0; timestep<times_and_pvtu_names.size(); ++timestep)
         times_and_output_file_names.push_back(std::make_pair(times_and_pvtu_names[timestep].first,
                                                              output_file_names_by_timestep[timestep]));
-      data_out.write_visit_record (global_visit_master, times_and_output_file_names);
+      DataOutBase::write_visit_record (global_visit_master, times_and_output_file_names);
 #else
       data_out.write_visit_record (global_visit_master, output_file_names_by_timestep);
 #endif
