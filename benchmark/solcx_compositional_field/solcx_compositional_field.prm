@@ -1,7 +1,7 @@
 # A description of the SolCX benchmark for which a known solution
 # is available. See the manual for more information.
 
-set Additional shared libraries            = /home/cig/workspace/egpuckett/Computations/SolCx/Benchmarks/Composition/SolCx_Composition_Library/libsolcx_compositional_field.so
+set Additional shared libraries            = ./libsolcx_compositional_field.so
 
 ############### Global parameters
 
@@ -61,10 +61,6 @@ subsection Initial conditions
   set Model name = perturbed box
 end
 
-############### Parameters describing the compositional field
-# Note: The compositional field is what drives the flow
-# in this example
-
 subsection Compositional fields
   set Number of fields = 1
 end
@@ -88,7 +84,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement              = 0
-  set Initial global refinement                = 5
+  set Initial global refinement                = 4
 end
 
 

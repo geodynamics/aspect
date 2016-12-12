@@ -29,8 +29,7 @@ namespace aspect
     namespace Interpolator
     {
       /**
-       * Return the cell-wise averaged properties of all tracers of the cell containing the
-       * given positions.
+       * Return the cell-wise evaluated properties of the bilinear least squares function at the positions.
        */
       template <int dim>
       std::vector<std::vector<double> >
@@ -71,19 +70,18 @@ namespace aspect
         const unsigned int n_properties = particles.begin()->second.get_properties().size();
 
         std::vector<std::vector<double> > properties;
-        std::vector<double> cell_properties (n_properties,0.0);
-        AssertThrow(n_particles != 0,
-                    ExcMessage("At least one cell contained no particles. The 'constant "
-                               "average' interpolation scheme does not support this case. "));
 
-//        const std::vector<double> particle_properties = particle->second.get_properties();
+        AssertThrow(n_particles != 0,
+                    ExcMessage("At least one cell contained no particles. The 'bilinear'"
+                               "interpolation scheme does not support this case. "));
+
         for (typename std::vector<Point<dim>>::const_iterator itr = positions.begin(); itr != positions.end(); itr++)
           {
-            std::vector<double> cell_properties2 (n_properties,0.0);
+            std::vector<double> properties_at_point (n_properties,0.0);
             for (unsigned int i = 0; i < n_properties; ++i)
               {
-                dealii::FullMatrix<double> A(3,3); // = dealii::FullMatrix<double>(3,3);
-                dealii::FullMatrix<double> r(3,1); // = dealii::FullMatrix<double>(3,3);
+                dealii::FullMatrix<double> A(3,3);
+                dealii::FullMatrix<double> r(3,1);
                 A = 0;
                 r = 0;
                 double max_value_for_particle_property=(particle_range.first)->second.get_properties()[i];
@@ -101,7 +99,6 @@ namespace aspect
                 for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator particle = particle_range.first;
                      particle != particle_range.second; ++particle)
                   {
-
                     const double particle_property = particle->second.get_properties()[i];
                     const Point<dim> position = particle->second.get_location();
                     A(0,0) += position[0] * position[0];
@@ -127,17 +124,13 @@ namespace aspect
                 A_inverse.mmult(c, r);
 
                 Point<dim> support_point = *itr;
-                cell_properties2[i] = c(2,0) + c(0,0)*(support_point[0]) + c(1,0)*(support_point[1]);
-                if (cell_properties2[i]>max_value_for_particle_property)
-                  {
-                    cell_properties2[i]=max_value_for_particle_property;
-                  }
-                if (cell_properties2[i]<min_value_for_particle_property)
-                  {
-                    cell_properties2[i]=min_value_for_particle_property;
-                  }
+                properties_at_point[i] = c(2,0) + c(0,0)*(support_point[0]) + c(1,0)*(support_point[1]);
+                if (properties_at_point[i]>max_value_for_particle_property)
+                  properties_at_point[i]=max_value_for_particle_property;
+                else if (properties_at_point[i]<min_value_for_particle_property)
+                  properties_at_point[i]=min_value_for_particle_property;
               }
-            properties.push_back(cell_properties2);
+            properties.push_back(properties_at_point);
           }
         return properties;
       }
@@ -156,7 +149,7 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(BilinearLeastSquares,
                                             "bilinear",
-                                            "Return the average of all tracer properties in the given cell.")
+                                            "Interpolates particle properties onto support points using a bilinear least squares in the given cell.")
     }
   }
 }

@@ -2363,8 +2363,6 @@ namespace aspect
           virtual void vector_value (const Point< dim >   &p,
                                      Vector< double >   &values) const
           {
-            // AssertDimension(values.size(), 4);
-
             double pos[2]= {p(0),p(1)};
             double total_stress[3], strain_rate[3];
             double eta_A=1.0;
@@ -2545,8 +2543,6 @@ namespace aspect
                const SymmetricTensor<2,dim> &,
                const Point<dim> &p) const
     {
-      // defined as given in the Duretz et al. paper
-      // return (p[0] < 0.5 ? 1 : eta_B);
       return composition[1];
     }
 
@@ -2621,9 +2617,6 @@ namespace aspect
              const std::vector<double> &composition, /*composition*/
              const Point<dim> &p) const
     {
-      // defined as given in the paper, plus the constant
-      // background density
-      // return background_density-std::sin(numbers::PI*p[1])*std::cos(numbers::PI*p[0]);
       return composition[0];
     }
 
@@ -2772,8 +2765,10 @@ namespace aspect
       Vector<float> cellwise_errors_ul2 (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_pl2 (this->get_triangulation().n_active_cells());
 
-      ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim), this->get_fe().n_components());
-      ComponentSelectFunction<dim> comp_p(dim, this->get_fe().n_components());
+      ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
+                                          this->get_fe().n_components());
+      ComponentSelectFunction<dim> comp_p(dim,
+                                          this->get_fe().n_components());
 
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                          this->get_solution(),

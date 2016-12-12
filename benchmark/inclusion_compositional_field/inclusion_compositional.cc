@@ -271,16 +271,7 @@ namespace aspect
                const SymmetricTensor<2,dim> &,
                const Point<dim> &p) const
     {
-//      const double r2 = (p(0)-1.0)*(p(0)-1.0) + (p(1)-1.0)*(p(1)-1.0);
-      //return (r2<0.2*0.2)? eta_B : 1.0;
-//      double value = (r2<0.2*0.2)? eta_B : 1.0;
-//      if (abs(value - composition[0]) > 1e-12){
-//    std::cout << p << " " << value << " " << composition[0] << " " << r2 << std::endl;
-//std::cout << "Position:" << p << "value: " << value << "Comp: " << composition[0] << "  r2:" << r2 << std::endl;
-      //return value;
-//      }
       return composition[0];
-
     }
 
 
@@ -313,7 +304,7 @@ namespace aspect
     InclusionMaterial<dim>::
     specific_heat (const double,
                    const double,
-                   const std::vector<double> &composition, /*composition*/
+                   const std::vector<double> &, /*composition*/
                    const Point<dim> &) const
     {
       return 0;
@@ -332,7 +323,7 @@ namespace aspect
     InclusionMaterial<dim>::
     thermal_conductivity (const double,
                           const double,
-                          const std::vector<double> &composition, /*composition*/
+                          const std::vector<double> &, /*composition*/
                           const Point<dim> &) const
     {
       return 0;
@@ -351,7 +342,7 @@ namespace aspect
     InclusionMaterial<dim>::
     density (const double,
              const double,
-             const std::vector<double> &composition, /*composition*/
+             const std::vector<double> &, /*composition*/
              const Point<dim> &p) const
     {
       return 0;
@@ -363,7 +354,7 @@ namespace aspect
     InclusionMaterial<dim>::
     thermal_expansion_coefficient (const double temperature,
                                    const double,
-                                   const std::vector<double> &composition, /*composition*/
+                                   const std::vector<double> &, /*composition*/
                                    const Point<dim> &) const
     {
       return 0;
@@ -375,7 +366,7 @@ namespace aspect
     InclusionMaterial<dim>::
     compressibility (const double,
                      const double,
-                     const std::vector<double> &composition, /*composition*/
+                     const std::vector<double> &, /*composition*/
                      const Point<dim> &) const
     {
       return 0.0;
@@ -485,8 +476,10 @@ namespace aspect
       Vector<float> cellwise_errors_ul2 (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_pl2 (this->get_triangulation().n_active_cells());
 
-      ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),this->get_fe().n_components());
-      ComponentSelectFunction<dim> comp_p(dim, this->get_fe().n_components());
+      ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
+                                          this->get_fe().n_components());
+      ComponentSelectFunction<dim> comp_p(dim,
+                                          this->get_fe().n_components());
 
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                          this->get_solution(),

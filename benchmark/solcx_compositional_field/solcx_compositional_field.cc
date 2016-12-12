@@ -2363,8 +2363,6 @@ namespace aspect
           virtual void vector_value (const Point< dim >   &p,
                                      Vector< double >   &values) const
           {
-//            AssertDimension(values.size(), 4);
-
             double pos[2]= {p(0),p(1)};
             double total_stress[3], strain_rate[3];
             double eta_A=1.0;
@@ -2772,7 +2770,8 @@ namespace aspect
 
       ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
                                           this->get_fe().n_components());
-      ComponentSelectFunction<dim> comp_p(dim, this->get_fe().n_components());
+      ComponentSelectFunction<dim> comp_p(dim,
+                                          this->get_fe().n_components());
 
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                          this->get_solution(),

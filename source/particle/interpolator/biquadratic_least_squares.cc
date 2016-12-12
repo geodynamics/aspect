@@ -33,8 +33,8 @@ namespace aspect
     namespace Interpolator
     {
       /**
-       * Return the cell-wise averaged properties of all tracers of the cell containing the
-       * given positions.
+       * Return the cell-wise evaluated properties of the biquadratic least squares function
+       * at the positions.
        */
       template <int dim>
       std::vector<std::vector<double> >
@@ -79,8 +79,6 @@ namespace aspect
 
         const unsigned int n_coefficients = 6;
 
-        // Always matching against the 0th compositional field.
-//          const typename aspect::Simulator::AdvectionField adv_field (aspect::Simulator::AdvectionField::composition(0));
         const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.compositional_fields+1);
 
         FEValues<dim> fe_values(this->get_mapping(),
@@ -254,7 +252,7 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(BiquadraticLeastSquares,
                                             "biquadratic",
-                                            "Return the average of all tracer properties in the given cell.")
+                                            "Interpolates particle properties onto support points using a bilinear least squares in the given cell.")
     }
   }
 }

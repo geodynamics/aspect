@@ -16,9 +16,7 @@ subsection Geometry model
 
   subsection Box
     set X extent = 2
-    set X repetitions = 32
     set Y extent = 2
-    set Y repetitions = 32
   end
 end
 
@@ -71,31 +69,25 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement              = 0
-  set Initial global refinement                = 0
+  set Initial global refinement                = 4
 end
-
-############### Parameters describing the compositional field
-# Note: The compositional field is what drives the flow
-# in this example
 
 subsection Compositional fields
   set Number of fields = 1
-  set Names of fields = viscosity_comp #, density_comp
-  set Compositional field methods = particles #, particles
-  set Mapped particle properties = viscosity_comp:function1
-  #set Mapped particle properties = viscosity_comp:function1
+  set Names of fields = viscosity_comp
+  set Compositional field methods = particles
+  set Mapped particle properties = viscosity_comp:function
 end
-############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = InclusionPostprocessor, visualization, tracers
+  set List of postprocessors = tracers, visualization, InclusionPostprocessor
   subsection Visualization
     set Output format                 = vtu
     set Number of grouped files       = 1
     set Time between graphical output = 0
-    set List of output variables = density, viscosity, partition
-    #set List of output variables = density, viscosity
+    set List of output variables = density, viscosity
   end
+
   subsection Tracers
     set Number of tracers = 16384
     set Time between data output = 0
@@ -111,27 +103,16 @@ subsection Postprocess
        set Function expression =  if((x-1.0)*(x-1.0)+(z-1.0)*(z-1.0)<=0.04,eta_b,1.0)
     end
 
-    set Particle generator name = uniform box
+    set Particle generator name = reference cell
 
     subsection Generator
-      subsection Probability density function
-        set Variable names      = x,y
-        set Function expression = x*x*y
-      end
-
-      subsection Uniform box
-       set Minimum x = .00781250000000000000
-       set Maximum x = 1.99218750000000000000
-       set Minimum y = .00781250000000000000
-       set Maximum y = 1.99218750000000000000
-       set Number of particles in x = 128
-       set Number of particles in y = 128
-       set Delta x = .01562500000000000000
-       set Delta y = .01562500000000000000
+      subsection Reference cell
+        set Number of tracers per cell per direction = 4
       end
     end
   end
 end
+
 subsection Termination criteria
   set End step = 0
   set Termination criteria = end step
