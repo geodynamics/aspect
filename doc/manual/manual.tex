@@ -2331,7 +2331,7 @@ Number of degrees of freedom: 33,859 (20,786+2,680+10,393)
    Solving temperature system... 8 iterations.
 
    Postprocessing:
-     Writing graphical output: output/solution-00000
+     Writing graphical output: output/solution/solution-00000
      RMS, max velocity:        0.0946 cm/year, 0.183 cm/year
      Temperature min/avg/max:  300 K, 3007 K, 6300 K
      Inner/outer heat fluxes:  1.076e+05 W, 1.967e+05 W
@@ -2342,7 +2342,7 @@ Number of degrees of freedom: 33,859 (20,786+2,680+10,393)
    Solving temperature system... 8 iterations.
 
    Postprocessing:
-     Writing graphical output: output/solution-00001
+     Writing graphical output: output/solution/solution-00001
      RMS, max velocity:        0.104 cm/year, 0.217 cm/year
      Temperature min/avg/max:  300 K, 3008 K, 6300 K
      Inner/outer heat fluxes:  1.079e+05 W, 1.988e+05 W
@@ -2401,37 +2401,44 @@ directory in which \aspect{} runs). In a simple case, this will look as
 follows:
 \begin{lstlisting}[frame=single,language=ksh]
 aspect> ls -l output/
-total 780
--rw------- 1 b   9863 Dec  1 15:13 parameters.prm
--rw------- 1 b 306562 Dec  1 15:13 solution-00000.0000.vtu
--rw------- 1 b  97057 Nov 30 05:58 solution-00000.0001.vtu
-...
--rw------- 1 b   1061 Dec  1 15:13 solution-00000.pvtu
--rw------- 1 b     35 Dec  1 15:13 solution-00000.visit
--rw------- 1 b 306530 Dec  1 15:13 solution-00001.0000.vtu
--rw------- 1 b   1061 Dec  1 15:13 solution-00001.pvtu
--rw------- 1 b     35 Dec  1 15:13 solution-00001.visit
-...
--rw-r--r-- 1 b    997 Dec  1 15:13 solution.pvd
--rw-r--r-- 1 b    997 Dec  1 15:13 solution.visit
--rw------- 1 b    924 Dec  1 15:13 statistics
+total 932
+-rw-rw-r-- 1 bangerth bangerth  11134 Dec 11 10:08 depth_average.gnuplot
+-rw-rw-r-- 1 bangerth bangerth  11294 Dec 11 10:08 log.txt
+-rw-rw-r-- 1 bangerth bangerth 326074 Dec 11 10:07 parameters.prm
+-rw-rw-r-- 1 bangerth bangerth 577138 Dec 11 10:07 parameters.tex
+drwxr-xr-x 2 bangerth bangerth   4096 Dec 11 10:08 solution
+-rw-rw-r-- 1 bangerth bangerth    484 Dec 11 10:08 solution.pvd
+-rw-rw-r-- 1 bangerth bangerth    451 Dec 11 10:08 solution.visit
+-rw-rw-r-- 1 bangerth bangerth   8267 Dec 11 10:08 statistics
 \end{lstlisting}
 The purpose of these files is as follows:
 \begin{itemize}
 \item \textit{A listing of all run-time parameters:} The
   \texttt{output/parameters.prm} file contains a complete listing of all
-  run-time parameters. In particular, this includes the one that have been
+  run-time parameters. In particular, this includes the ones that have been
   specified in the input parameter file passed on the command line, but it
   also includes those parameters for which defaults have been used. It is
   often useful to save this file together with simulation data to allow for
   the easy reproduction of computations later on.
+  
+  There is a second file, \texttt{output/parameters.prm}, that lists these
+  parameters in \LaTeX{} format.
 
-\item \textit{Graphical output files:} One of the postprocessors you select
-  when you say ``all'' in the parameter files is the one that generates output
-  files that represent the solution at certain time steps. The screen output
-  indicates that it has run at time step 0, producing output files of the form
-  \texttt{output/solution-00000}. At the current time, the default is that \aspect{} generates
-  this output in VTK format%
+\item \textit{Graphical output files:} One of the postprocessors chosen
+  in the parameter file used for this computation is the one that generates
+  output files that represent the solution at certain time steps. The screen output
+  indicates that it has run at time step 0, producing output files that start
+  with \texttt{output/solution/solution-00000}. Depending on the settings in the
+  parameter file, output will be generated every so many seconds or years of
+  simulation time, and subsequent output files will then start with
+  \texttt{output/solution/solution-00001}, all placed in the
+  \texttt{output/solution} subdirectory. This is because there are often
+  \textit{a lot} of output files: For many time steps, times the number of
+  processors, so they are placed in a subdirectory so as not to make it more
+  difficult than necessary to find the other files.
+  
+  At the current time, the
+  default is that \aspect{} generates this output in VTK format%
   \footnote{The output is in fact in the VTU version of the VTK file
     format. This is the XML-based version of this file format in which
     contents are compressed. Given that typical file sizes for 3d simulation
@@ -2444,9 +2451,9 @@ The purpose of these files is as follows:
     VTK, you can select this using the run-time parameters discussed in
     Section~\ref{parameters:Postprocess/Visualization}.}  If
   the program has been run with multiple MPI processes, then the list of
-  output files will look as shown above, with the base \texttt{solution-x.y}
-  denoting that this the \texttt{x}th time we create output files and that the
-  file was generated by the \texttt{y}th processor.
+  output files will be \texttt{output/solution/solution-XXXXX.YYYY}
+  denoting that this the \texttt{XXXXX}th time we create output files and that
+  the file was generated by the \texttt{YYYY}th processor.
 
   VTK files can be visualized by many of the large visualization packages. In
   particular, the
@@ -2456,18 +2463,21 @@ The purpose of these files is as follows:
   de-facto standard for data visualization in scientific computing, there
   doesn't appear to be an agreed upon way to describe which files jointly make
   up for the simulation data of a single time step (i.e., all files with the
-  same \texttt{x} but different \texttt{y} in the example above). Visit and
-  Paraview both have their method of doing things, through \texttt{.pvtu} and
+  same \texttt{XXXXX} but different \texttt{YYYY} in the example above). Visit
+  and Paraview both have their method of doing things, through \texttt{.pvtu} and
   \texttt{.visit} files. To make it easy for you to view data, \aspect{}
   simply creates both kinds of files in each time step in which graphical data
-  is produced.
+  is produced, and these are then also placed into the subdirectories as
+  \texttt{output/solution/solution-XXXXX.pvtu} and
+  \texttt{output/solution/solution-XXXXX.visit}.
 
-  The final two files of this kind, \texttt{solution.pvd} and
-  \texttt{solution.visit}, are files that
+  The final two files of this kind, \texttt{output/solution.pvd} and
+  \texttt{output/solution.visit}, are files that
   describes to Paraview and Visit, respectively, which
-  \texttt{solution-xxxx.pvtu} and \texttt{solution-xxxx.yyyy.vtu} jointly form
-  a complete simulation. In the former case, the file lists the \texttt{.pvtu}
-  files of all
+  \texttt{output/solution/solution-XXXXX.pvtu} and
+  \texttt{output/solution/solution-XXXXX.YYYY.vtu} jointly form a complete
+  simulation.
+  In the former case, the file lists the \texttt{.pvtu} files of all
   timesteps together with the simulation time to which they correspond. In the
   latter case, it actually lists all \texttt{.vtu} that belong to one
   simulation, grouped by the timestep they correspond to.
@@ -2476,11 +2486,15 @@ The purpose of these files is as follows:
   use Paraview or Visit.%
   \footnote{At the time of writing this, current versions of Visit (starting
     with version 2.5.1) actually have a bug that prevents them from
-    successfully reading the \texttt{solution.visit} or
-    \texttt{solution-xxxx.visit} files -- Visit believes that each of these
-    files corresponds to an individual time step, rather than that a whole
+    successfully reading the \texttt{output/solution.visit} or
+    \texttt{output/solution/solution-XXXXX.visit} files -- Visit believes that
+    each of these files corresponds to an individual time step, rather than that a whole
     group of files together form one time step. This bug is not fixed in Visit
     2.6.3, but may be fixed in later versions.}
+  Because loading an \textit{entire} simulation is the most common use case,
+  these are the two files you will most often load, and so they are placed in
+  the \texttt{output} directory, not the subdirectory where the actual
+  \texttt{.vtu} data files are located.
 
   For more on visualization, see also Section~\ref{sec:viz}.
 
@@ -2489,7 +2503,8 @@ The purpose of these files is as follows:
   (e.g., the current time for a time step, the time step length, etc.) as well
   as from the postprocessors that run at the end of each time step. The file
   is essentially a table that allows for the simple production of time
-  trends. In the example above, it looks like this:
+  trends. In the example above, and at the time when we are writing this
+  section, it looks like this:
   \begin{lstlisting}[frame=single,language=ksh]
 # 1: Time step number
 # 2: Time (years)
@@ -2505,10 +2520,10 @@ The purpose of these files is as follows:
 # 12: Average nondimensional temperature (K)
 # 13: Core-mantle heat flux (W)
 # 14: Surface heat flux (W)
-0 0.0000e+00 33 2.9543e+07 8                    "" 0.0000 0.0000   0.0000    0.0000 ...
-0 0.0000e+00 34 1.9914e+07 8 output/solution-00000 0.0946 0.1829 300.0000 3007.2519 ...
-1 1.9914e+07 33 1.9914e+07 8 output/solution-00001 0.1040 0.2172 300.0000 3007.8406 ...
-2 3.9827e+07 33 1.9914e+07 8                    "" 0.1114 0.2306 300.0000 3008.3939 ...
+0 0.000e+00 33 2.9543e+07 8                             "" 0.0000 0.0000 0.0000 0.0000    ...
+0 0.000e+00 34 1.9914e+07 8 output/solution/solution-00000 0.0946 0.1829 300.00 3007.2519 ...
+1 1.991e+07 33 1.9914e+07 8 output/solution/solution-00001 0.1040 0.2172 300.00 3007.8406 ...
+2 3.982e+07 33 1.9914e+07 8                             "" 0.1114 0.2306 300.00 3008.3939 ...
   \end{lstlisting}
   The actual columns you have in your statistics file may differ from the ones above,
   but the format of this file should be obvious. Since the hash mark is a comment
@@ -2525,14 +2540,15 @@ The purpose of these files is as follows:
 \item \textit{Output files generated by other postprocessors:} Similar to the
   \texttt{output/statistics} file, several of the existing
   postprocessors one can select from the parameter file generate their
-  data in their own files in the output directory. For example, \aspect{} can
-  write depth-average statistics into \texttt{output/depth\_average.gnuplot}.
-  This is done by the ``depth average'' postprocessor and the user can control
-  how often this file is updated, as well as what graphical file format to use
-  (if anything other than \texttt{gnuplot} is desired).
+  data in their own files in the output directory. For example, \aspect{}'s
+  ``depth average'' postprocessor will write depth-average statistics into
+  the file \texttt{output/depth\_average.gnuplot}.
+  Input parameters chosen in the input file control how often this file is
+  updated by the postprocessor, as well as what graphical file format to use (if
+  anything other than \texttt{gnuplot} is desired).
 
-  By default, the data is written in text format that can be easily displayed
-  by e.g. gnuplot. For an example, see Figure~\ref{fig:depthaverage}. The plot
+  By default, the data is written in text format that can be easily visualized,
+  see for example Figure~\ref{fig:depthaverage}. The plot
   shows how an initially linear temperature profile forms upper and lower
   boundary layers.
 
@@ -2754,14 +2770,18 @@ In order to visualize one time step, follow these steps:%
   computations we usually generate one output file per processor in each time
   step for which visualization data is produced (see, however,
   Section~\ref{sec:viz-data}). To tell Visit which files together make up one
-  time step, \aspect{} creates a \texttt{solution-NNNNN.visit} file in the
-  output directory. To open it, start Visit, click on the ``Open'' button in
+  time step, \aspect{} creates a \texttt{output/solution/solution-XXXXX.visit}
+  file in the output directory. To open it, start Visit, click on the ``Open'' button in
   the ``Sources'' area of
   its main window (see Fig.~\ref{fig:visit-1:a}) and select the file you
   want. Alternatively, you can also select files using the ``File $>$ Open''
   menu item, or hit the corresponding keyboard short-cut. After adding an
   input source, the ``Sources'' area of the main window should list the
-  selected file name.
+  selected file name. More easily, you can also just open
+  \texttt{output/solution.visit} which references \textit{all} output files for
+  all time steps. If you open this, Visit will display a slider that allows you
+  to select which time step you want to visualize, along with forward, backward,
+  and play buttons that allow you to move between time steps.
 
 \item \textit{Selecting what to plot:} \aspect{} outputs all sorts of
   quantities that characterize the solution, such as temperature, pressure,
@@ -4781,9 +4801,9 @@ the velocity field just computed. (There are a number of options to decide which
 method to use for advecting particles, see
 Section~\ref{parameters:Postprocess/Tracers}.) We can visualize them by opening
 both the field-based output files and the ones that correspond to particles
-(for example, \texttt{output/solution-00072.visit} and
-\texttt{output/particles-00072.visit}) and using a pseudo-color plot for the
-particles, selecting the ``id'' of particles to color each particle. This
+(for example, \texttt{output/solution/solution-00072.visit} and
+\texttt{output/particles/particles-00072.visit}) and using a pseudo-color plot
+for the particles, selecting the ``id'' of particles to color each particle. This
 results in a plot like the one shown in
 Fig.~\ref{fig:composition-passive-tracers}.
 
@@ -7374,7 +7394,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      Errors u_L1, p_L1, u_L2, p_L2: 1.125997e-06, 2.994143e-03, 1.670009e-06, 9.778441e-03
-     Writing graphical output:      output/solution-00000
+     Writing graphical output:      output/solution/solution-00000
 
 
 
