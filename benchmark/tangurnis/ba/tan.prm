@@ -6,7 +6,7 @@ set Additional shared libraries            = ./code/libtangurnis.so
 set Dimension                              = 2
 set CFL number                             = 1.0
 
-# We oly need a single time step.
+# We only need a single time step.
 set Start time                             = 0
 set End time                               = 0.0001
 
