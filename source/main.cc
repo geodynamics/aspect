@@ -404,7 +404,7 @@ int main (int argc, char *argv[])
       //
       // as stated above, treat "--" as special: as is common
       // on unix, treat it as a way to read input from stdin
-      std::string parameter_filename = argv[1];
+      const std::string parameter_filename = argv[1];
       std::string input_as_string;
 
       if (parameter_filename != "--")
