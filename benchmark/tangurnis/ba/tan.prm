@@ -37,7 +37,7 @@ end
 
 # This case of the benchmark uses the Boussinesq approximation.
 subsection Formulation
-  set Formulation              = custom # equivalent to BA
+  set Formulation              = custom # equivalent to boussinesq approximation
   set Mass conservation        = incompressible
   set Temperature equation     = reference density profile
 end

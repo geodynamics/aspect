@@ -211,7 +211,7 @@ subsection Heating model
 end
 
 subsection Formulation
-  set Formulation = ALA
+  set Formulation = anelastic liquid approximation
   #set Mass conservation        = reference density profile
   #set Temperature equation     = reference density profile
 end

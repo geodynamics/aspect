@@ -139,9 +139,9 @@ namespace aspect
       {
         if (input == "isothermal compression")
           return Formulation::isothermal_compression;
-        else if (input == "ALA")
+        else if (input == "anelastic liquid approximation")
           return Formulation::anelastic_liquid_approximation;
-        else if (input == "BA")
+        else if (input == "boussinesq approximation")
           return Formulation::boussinesq_approximation;
         else if (input == "custom")
           return Formulation::custom;

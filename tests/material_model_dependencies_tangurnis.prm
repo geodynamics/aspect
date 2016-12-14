@@ -16,7 +16,7 @@ subsection Postprocess
 end
 
 subsection Formulation
-  set Formulation = ALA
+  set Formulation = anelastic liquid approximation
 end
 
 #############################

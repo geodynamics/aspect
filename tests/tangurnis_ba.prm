@@ -65,7 +65,7 @@ subsection Adiabatic conditions model
 end
 
 subsection Formulation
-  set Formulation = BA
+  set Formulation = boussinesq approximation
   #set Mass conservation        = incompressible
   #set Temperature equation     = reference density profile
 end

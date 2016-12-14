@@ -306,7 +306,7 @@ namespace aspect
     prm.enter_subsection("Formulation");
     {
       prm.declare_entry ("Formulation", "custom",
-                         Patterns::Selection ("isothermal compression|custom|ALA|BA"),
+                         Patterns::Selection ("isothermal compression|custom|anelastic liquid approximation|boussinesq approximation"),
                          "Select a formulation for the basic equations. Different "
                          "published formulations are available in ASPECT (see the list of "
                          "possible values for this parameter in the manual for available options). "

@@ -78,7 +78,7 @@ end
 
 # The King benchmark uses the anelastic liquid approximation.
 subsection Formulation
-  set Formulation = ALA 
+  set Formulation = anelastic liquid approximation
 end
 
 
