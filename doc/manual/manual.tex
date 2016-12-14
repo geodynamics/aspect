@@ -1568,7 +1568,7 @@ equations that also uses the incompressibility in the definition of the strain r
   & \textrm{in $\Omega$}.
 \end{align}
 In addition, as the reference temperature is constant, one needs to neglect the
-adiabatic heating and shear in the energy balance
+adiabatic and shear heating in the energy equation
 \begin{equation}
   \label{eq:temperature-BA}
   \bar\rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla
@@ -1685,7 +1685,7 @@ Under the assumption that all other coefficients are constant, one then
 arrives at equations in which the only nonlinear term is the advection term,
 $\mathbf u \cdot \nabla T$ in the temperature equation
 \eqref{eq:temperature-boussinesq-linear}. This facilitates the use of a
-particular class of time stepping scheme in which one does not solve the whole
+particular class of time stepping schemes in which one does not solve the whole
 set of equations at once, iterating out nonlinearities as necessary, but
 instead in each time step solves first the Stokes system with the previous
 time step's temperature, and then uses the so-computed velocity to solve the
@@ -1696,8 +1696,8 @@ to as \textit{operator splitting} methods.
 however, a particular operator splitting method was used in
 earlier \aspect{} versions. It first solves the Stokes equations and then
 uses a semi-explicit time stepping method for the temperature equation
-where diffusion is handled implicitly and advection explicitly;
-this algorithm is often called \textit{IMPES} (it originated in the
+where diffusion is handled implicitly and advection explicitly.
+This algorithm is often called \textit{IMPES} (it originated in the
 porous media flow 
 community, where the acronym stands for \textit{Im}plicit \textit{P}ressure,
 \textit{E}xplicit \textit{S}aturation) and is explained in more detail
@@ -1725,10 +1725,10 @@ $\rho(p,T,\mathbf x, \mathfrak c)$ is dominated by the dependence on the
   p}\nabla p$. This assumption is primarily justified by the fact that, in the
 Earth's mantle, the density increases by at least 50\% between Earth's crust and
 the core-mantle boundary due to larger pressure there. Secondly, we assume
-that the pressure is dominated by the static pressure, which can be written as
-$\nabla p \approx \nabla p_s \approx \rho \textbf{g}$. This is essentially
-motivated by the slowness of the movement in the Earth or, alternatively,
-based on the fact that the viscosity is so large.
+that the pressure is dominated by the static pressure, which implies that
+$\nabla p \approx \nabla p_s \approx \rho \textbf{g}$. This is justified, 
+because the viscosity in the Earth is large and velocities are small, 
+hence $\nabla p' \ll \nabla p_s$.
 This finally allows us to write
 \begin{equation*}
 \frac{1}{\rho} \nabla \rho \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \nabla p \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \nabla p_s \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u} 
@@ -1741,8 +1741,8 @@ so we get
 where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is often referred to
 as the compressibility.
 
-For this approximation, this equation replaces
-\eqref{eq:stokes-2}. It has the advantage that it retains the symmetry of the
+For this approximation, Equation \eqref{eq:stokes-2-compressible} replaces
+Equation \eqref{eq:stokes-2}. It has the advantage that it retains the symmetry of the
 Stokes equations if we can treat the right hand side of
 \eqref{eq:stokes-2-compressible} as known. We do so by evaluating $\rho$ and
 $\mathbf u$ using the solution from the last time step (or values extrapolated
@@ -1752,19 +1752,23 @@ from previous time steps), or using a nonlinear solver scheme.
 see Section~\ref{sec:combind_formulations}.}
 
 
-\newpage
 \subsection{Choosing a formulation in \aspect{}}
 
-After discussing different reasonable approximations for modelling compressible or 
+After discussing different reasonable approximations for modeling compressible or 
 incompressible mantle convection, we will now describe the different steps one has 
 to take to use one of these approximations in a computation.  
 This includes 
 \begin{enumerate}
-\item Choosing an approximation for the mass conservation equation, 
-\item Choosing an approximation for the density in the energy balance, and deciding which heating terms should be included, 
-\item Formulating the buoyancy term in the material model to be used on the right-hand side of the momentum equation, 
-\item Prescribing a suitable reference state for the temperature, pressure, and density, the adiabatic profile.
+\item Choosing an approximation for the mass conservation equation; 
+\item Choosing an approximation for the density in the energy balance, and deciding which heating terms should be included; 
+\item Formulating the buoyancy term in the material model to be used on the right-hand side of the momentum equation; 
+\item Prescribing a suitable reference state for the temperature, pressure, and density; i.e. the adiabatic profile,
+if necessary for the approximations chosen in the first three steps.
 \end{enumerate}
+
+All of these choices can be made in the input file by selecting the corresponding parameters (see Section~\ref{parameters:Formulation}, and Section~\ref{parameters:Adiabatic_20conditions_20model}).
+A description of how to run \aspect{} and the basic structure of the input file can be found in
+Section~\ref{sec:running}.
 
 \subsubsection{Mass conservation approximation}
 
@@ -1784,7 +1788,7 @@ We provide the following options:
 \[
  \nabla \cdot \textbf{u} = -\frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u},
 \]
-where the compressibility $\kappa = \frac{1}{\rho} \frac{\partial \rho}{\partial p}$ 
+where $\frac{1}{\rho} \frac{\partial \rho}{\partial p} = \kappa$ is the compressibility, and 
 is defined in the material model. 
 
 \item
@@ -1792,8 +1796,8 @@ is defined in the material model.
 \[
  \nabla \cdot \textbf{u} = -\frac{1}{\bar{\rho}} \frac{\partial \bar{\rho}}{\partial z} \frac{\textbf{g}}{\|\textbf{g}\|} \cdot \textbf{u},
 \]
-where reference profiles for the density $\bar{\rho}$ and the density gradient $\frac{\partial \bar{\rho}}{\partial z}$
-provided by \text{AdiabaticConditions}
+where the reference profiles for the density $\bar{\rho}$ and the density gradient $\frac{\partial \bar{\rho}}{\partial z}$
+provided by the adiabatic conditions model (\ref{sec:adiabatic})
 are used. Note that the
 gravity is assumed to point downwards in depth direction
 
