@@ -1406,7 +1406,7 @@ With these definitions, equations \eqref{eq:stokes-1}--\eqref{eq:stokes-2} can e
   & \qquad
   & \textrm{in $\Omega$}.
 \end{align}
-Likewise, when omitting entropic effects, the temperature equation reads as
+The temperature equation, when omitting entropic effects, still reads as
 \begin{multline}
   \label{eq:temperature-decomposed}
   \rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right)
@@ -1450,8 +1450,9 @@ particular can be accurately described by a Taylor expansion:
   + \frac{\partial \rho(\bar p,\bar T)}{\partial T} T'.
 \end{align*}
 Here, $\frac{\partial \rho(\bar p,\bar T)}{\partial T}$ is related to the
-thermal expansion coefficient, and $\frac{\partial \rho(\bar p,\bar T)}{\partial p}$ to the
-compressibility.
+thermal expansion coefficient $\alpha = -\frac{1}{\rho}\frac{\partial \rho}{\partial T}$, 
+and $\frac{\partial \rho(\bar p,\bar T)}{\partial p}$ to the compressibility
+$\kappa = \frac{1}{\rho}\frac{\partial \rho}{\partial p}$.
 
 The second assumption is that the variation of the density
 from the reference density can be neglected in the mass balance and
@@ -1513,7 +1514,7 @@ This does not mean that the density is not pressure dependent -- it will, for
 example, continue to be depth dependent because the hydrostatic pressure grows
 with depth. It simply means that the deviations from the reference pressure are
 assumed to be so small that they do not matter in describing the density.
-Because the pressure variation is induced by the flow field (the static
+Because the pressure variation $p'$ is induced by the flow field (the static
 component pressure is already taken care of by the hydrostatic pressure), this
 assumption in essence means that we assume the flow to be very slow, even beyond
 the earlier assumption that we can neglect inertial terms when
