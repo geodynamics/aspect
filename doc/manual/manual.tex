@@ -1766,14 +1766,15 @@ This includes
 if necessary for the approximations chosen in the first three steps.
 \end{enumerate}
 
-All of these choices can be made in the input file by selecting the corresponding parameters (see Section~\ref{parameters:Formulation}, and Section~\ref{parameters:Adiabatic_20conditions_20model}).
+All of these choices can be made in the input file by selecting the corresponding parameters (see Sections~\ref{parameters:Formulation} and \ref{parameters:Adiabatic_20conditions_20model}).
 A description of how to run \aspect{} and the basic structure of the input file can be found in
 Section~\ref{sec:running}.
 
 \subsubsection{Mass conservation approximation}
 
 First, we have to choose how to approximate the conservation of mass: $\nabla \cdot (\rho \mathbf u) = 0$ (see Equation~\eqref{eq:stokes-2}). 
-We provide the following options:
+We provide the following options, which can be selected in the parameter file in the subsection 
+\texttt{Formulation/Mass conservation} (see also \ref{parameters:Formulation/Mass conservation}):
 
 \begin{itemize}
 
@@ -1799,7 +1800,7 @@ is defined in the material model.
 where the reference profiles for the density $\bar{\rho}$ and the density gradient $\frac{\partial \bar{\rho}}{\partial z}$
 provided by the adiabatic conditions model (\ref{sec:adiabatic})
 are used. Note that the
-gravity is assumed to point downwards in depth direction
+gravity is assumed to point downwards in depth direction.
 
 \item
 ``implicit reference density profile'':
@@ -1812,12 +1813,12 @@ conservation equation. This effectively uses the current velocity $\textbf{u}$ i
 of an extrapolated velocity from the last timesteps.
 
  \item 
-``ask material model'', which uses ``isothermal compression'' if the material model is compressible 
-(as reported by the \texttt{is\_compressible()} function) and ``incompressible'' otherwise.
+``ask material model'', which uses ``isothermal compression'' if the material model reports 
+that it is compressible and ``incompressible'' otherwise.
 \end{itemize}
 
 
-\paragraph*{On the stress tensor approximation.}
+\note{\textbf{The stress tensor approximation.}
 
 Incompressibility in the mass conservation equation automatically simplifies the shear strain rate in the momentum and temperature equation from
 \[
@@ -1830,8 +1831,10 @@ Incompressibility in the mass conservation equation automatically simplifies the
 to
 \[
   \nabla \cdot \tau =  \nabla \cdot \left[
- 2\eta \varepsilon(\mathbf u) \right].
+ 2\eta \varepsilon(\mathbf u) \right], 
 \]
+as $\nabla \cdot \mathbf u = 0$.
+}
 
 \subsubsection{Temperature equation approximation}
 
