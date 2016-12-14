@@ -1749,7 +1749,7 @@ $\mathbf u$ using the solution from the last time step (or values extrapolated
 from previous time steps), or using a nonlinear solver scheme.
 
 \note{This is the default approximation \aspect{} uses to model compressible convection,
-see Section~\ref{sec:combind_formulations}.}
+see Section~\ref{sec:combined_formulations}.}
 
 
 \subsection{Choosing a formulation in \aspect{}}
@@ -1857,7 +1857,7 @@ decide to use density deviations from a reference state instead of a full densit
 
 The reference temperature profile $\bar{T}$, reference density profile $\bar{\rho}$
 and the reference pressure $\bar{p}$ are computed in the adiabatic conditions model 
-(provided by the class \textit{AdiabaticConditionds}, see Section~\ref{sec:adiabatic}). 
+(provided by the class \texttt{AdiabaticConditions}, see Section~\ref{sec:adiabatic}). 
 By default, these fields satisfy adiabatic conditions (if adiabatic heating is included 
 in the model):
 \begin{align}
@@ -1885,7 +1885,7 @@ which allows the user to define arbitrary functions for
 $\bar{T}(z)$, $\bar{p}(z)$ and $\bar{\rho}(z)$.
 
 \subsubsection{Combined Formulations}
-\label{sec:combind_formulations}
+\label{sec:combined_formulations}
 Not all combinations of the different approximations discussed above 
 are physically reasonable, and to help users to choose between these options, 
 we provide a number of combined ``Formulations'' that are equivalent to the 
@@ -1893,7 +1893,7 @@ approximate equations discussed above (Section~\ref{sec:approximate-equations}):
 
 \begin{itemize}
  \item 
-``ALA'': This formulation sets the mass conservation approximation to ``reference density profile'', 
+``anelastic liquid approximation'': This formulation sets the mass conservation approximation to ``reference density profile'', 
 the temperature equation approximation to ``reference density profile'' and checks that both
 adiabatic and shear heating are included in the list of heating plugins used in the model, using the 
 simplified version of the adiabatic heating term 
@@ -1907,7 +1907,7 @@ or with a material model that defines a density that depends on temperature and 
 (Section~\ref{sec:tala}).
 
 \item
-``BA'': This formulation sets the mass conservation approximation to ``incompressible'', 
+``boussinesq approximation'': This formulation sets the mass conservation approximation to ``incompressible'', 
 the temperature equation approximation to ``reference density profile'' and checks that neither
 adiabatic nor shear heating are included in the list of heating plugins used in the model. 
 The default setting for the adiabatic conditions is a constant temperature, and hydrostatic
@@ -1935,8 +1935,6 @@ described in this section. Users should be careful when using this option, as so
 may lead to unphysical model behaviour. 
 \end{itemize}
 
-
-\newpage
 
 \subsection{Free surface calculations}
 \label{sec:freesurface}
