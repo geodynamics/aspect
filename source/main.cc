@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -385,7 +385,22 @@ int main (int argc, char *argv[])
       if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
         print_aspect_header(std::cout);
 
-      if (argc < 2)
+      // check whether ASPECT was called with exactly one argument. if not,
+      // print an error message
+      //
+      // however, this does not work with PETSc because for PETSc, one
+      // may pass any number of flags on the command line; unfortunately,
+      // the PETSc initialization code (run through the call to
+      // MPI_InitFinalize above) does not filter these out, so all we
+      // can test is that there is *at least* one argument on the command
+      // line
+      if (
+#ifdef ASPECT_USE_PETSC
+        argc < 2
+#else
+        argc != 2
+#endif
+      )
         {
           // print usage info only on processor 0
           if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
