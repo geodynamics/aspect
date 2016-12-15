@@ -6,6 +6,13 @@
  *
  * <ol>
  *
+ * <li> New: ASPECT now supports the choice between different formulations for
+ * the governing equations including boussinesq and anelastic liquid
+ * approximation. For this, the adiabatic conditions have been extended to
+ * provide values and gradients of the reference density. Several benchmarks
+ * for these formulations have been added.
+ * <br> (Juliane Dannberg, Rene Gassmoeller, Timo Heister, 2016/12/14)
+ *
  * <li> New: ASPECT now also generates a <code>output/particles.visit</code>
  * file that allows Visit to read in all files from all processors and
  * all time steps that contain particle data.
