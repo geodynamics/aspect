@@ -2587,7 +2587,13 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} custom
 
 
-{\it Description:} Select a formulation for the basic equations. Different published formulations are available in ASPECT (see the list of possible values for this parameter in the manual for available options). Two ASPECT specific options are 1. `isothermal compression': ASPECT's original formulation, using the explicit compressible mass equation, and the full density for the temperature equation. 2. 'custom': A custom selection of `Mass conservation' and `Temperature equation'. Warning: The `custom' option is implemented for advanced users that want full control over the equations solved. It is possible to choose inconsistent formulations and no error checking is performed on the consistency of the resulting equations.
+{\it Description:} Select a formulation for the basic equations. Different published formulations are available in ASPECT (see the list of possible values for this parameter in the manual for available options). Two ASPECT specific options are
+\begin{enumerate}
+  \item `isothermal compression': ASPECT's original formulation, using the explicit compressible mass equation, and the full density for the temperature equation.
+  \item `custom': A custom selection of `Mass conservation' and `Temperature equation'.
+\end{enumerate}
+
+\note{Warning: The `custom' option is implemented for advanced users that want full control over the equations solved. It is possible to choose inconsistent formulations and no error checking is performed on the consistency of the resulting equations.}
 
 
 {\it Possible values:} Any one of isothermal compression, custom, anelastic liquid approximation, boussinesq approximation
@@ -2619,7 +2625,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} real density
 
 
-{\it Description:} Possible approximations for the density in the temperature equation. Possible approximations are: `real density', `reference profile'. Note that this parameter is only evaluated if `Formulation' is set to `custom'. Other formulations ignore the value of this parameter.
+{\it Description:} Possible approximations for the density in the temperature equation. Possible approximations are `real density' and `reference density profile'. Note that this parameter is only evaluated if `Formulation' is set to `custom'. Other formulations ignore the value of this parameter.
 
 
 {\it Possible values:} Any one of real density, reference density profile
