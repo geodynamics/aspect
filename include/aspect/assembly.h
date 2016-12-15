@@ -732,7 +732,7 @@ namespace aspect
          * This function assembles the right-hand-side term of the Stokes equation
          * that is caused by the compressibility in the mass conservation equation.
          * This function approximates this term as
-         * $ - \nabla \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u}
+         * $- \nabla \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u}$
          */
         void
         reference_density_compressibility_term (const double                                     pressure_scaling,
@@ -747,7 +747,7 @@ namespace aspect
          * It includes this term implicitly in the matrix,
          * which is therefore not longer symmetric.
          * This function approximates this term as
-         * $ - \nabla \mathbf{u} - \frac{1}{\rho} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u} = 0
+         * $ - \nabla \mathbf{u} - \frac{1}{\rho} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u} = 0$
          */
         void
         implicit_reference_density_compressibility_term (const double                                     pressure_scaling,
@@ -760,7 +760,7 @@ namespace aspect
          * This function assembles the right-hand-side term of the Stokes equation
          * that is caused by the compressibility in the mass conservation equation.
          * This function approximates this term as
-         * $ - \nabla \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial p} \rho \mathbf{g} \cdot \mathbf{u}
+         * $ - \nabla \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial p} \rho \mathbf{g} \cdot \mathbf{u}$
          */
         void
         isothermal_compression_term (const double                                     pressure_scaling,
