@@ -372,10 +372,21 @@ namespace aspect
 
         material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
 
-        if (parameters.formulation_temperature_equation ==
-            Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
-          for (unsigned int q=0; q<n_q_points; ++q)
-            scratch.material_model_outputs.densities[q] = adiabatic_conditions->density(scratch.material_model_inputs.position[q]);
+        if (parameters.formulation_temperature_equation
+            == Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+          {
+            // Overwrite the density by the reference density coming from the
+            // adiabatic conditions as required by the formulation
+            for (unsigned int q=0; q<n_q_points; ++q)
+              scratch.material_model_outputs.densities[q] = adiabatic_conditions->density(scratch.material_model_inputs.position[q]);
+          }
+        else if (parameters.formulation_temperature_equation
+                 == Parameters<dim>::Formulation::TemperatureEquation::real_density)
+          {
+            // use real density
+          }
+        else
+          AssertThrow(false, ExcNotImplemented());
 
         MaterialModel::MaterialAveraging::average (parameters.material_averaging,
                                                    cell,
