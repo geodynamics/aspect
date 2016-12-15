@@ -249,14 +249,21 @@ namespace aspect
 
         // Initialize our property information
         property_information = ParticlePropertyInformation(info);
+
+        // Create the memory pool that will store all particle properties
+        property_pool.reset(new PropertyPool(property_information.n_components()));
       }
 
       template <int dim>
       void
       Manager<dim>::initialize_one_particle (Particle<dim> &particle) const
       {
-        std::vector<double> particle_properties (0);
-        particle.set_n_property_components(property_information.n_components());
+        if (property_information.n_components() == 0)
+          return;
+
+        std::vector<double> particle_properties;
+        particle_properties.reserve(property_information.n_components());
+
         for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
@@ -264,7 +271,7 @@ namespace aspect
                                                    particle_properties);
           }
 
-        Assert(particle_properties.size() == get_n_property_components(),
+        Assert(particle_properties.size() == property_information.n_components(),
                ExcMessage("The reported numbers of particle property components do not sum up "
                           "to the number of particle properties that were initialized by "
                           "the property plugins. Check the selected property plugins for "
@@ -280,7 +287,13 @@ namespace aspect
                                               const Interpolator::Interface<dim> &interpolator,
                                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
-        std::vector<double> particle_properties (0);
+        particle.set_property_pool(*property_pool);
+
+        if (property_information.n_components() == 0)
+          return;
+
+        std::vector<double> particle_properties;
+        particle_properties.reserve(property_information.n_components());
 
         unsigned int property_index = 0;
         for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
@@ -397,6 +410,13 @@ namespace aspect
       Manager<dim>::get_data_info () const
       {
         return property_information;
+      }
+
+      template <int dim>
+      PropertyPool &
+      Manager<dim>::get_property_pool () const
+      {
+        return *property_pool;
       }
 
       template <int dim>

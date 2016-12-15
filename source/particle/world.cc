@@ -584,11 +584,11 @@ namespace aspect
 #ifdef DEAL_II_WITH_CXX14
               position_hint = particles.emplace_hint(position_hint,
                                                      std::make_pair(cell->level(),cell->index()),
-                                                     Particle<dim>(pdata,property_manager->get_particle_size()));
+                                                     Particle<dim>(pdata,property_manager->get_property_pool()));
 #else
               position_hint = particles.insert(position_hint,
                                                std::make_pair(std::make_pair(cell->level(),cell->index()),
-                                                              Particle<dim>(pdata,property_manager->get_particle_size())));
+                                                              Particle<dim>(pdata,property_manager->get_property_pool())));
 #endif
               ++position_hint;
             }
@@ -606,11 +606,11 @@ namespace aspect
 #ifdef DEAL_II_WITH_CXX14
               position_hint = particles.emplace_hint(position_hint,
                                                      std::make_pair(cell->level(),cell->index()),
-                                                     Particle<dim>(pdata,property_manager->get_particle_size()));
+                                                     Particle<dim>(pdata,property_manager->get_property_pool()));
 #else
               position_hint = particles.insert(position_hint,
                                                std::make_pair(std::make_pair(cell->level(),cell->index()),
-                                                              Particle<dim>(pdata,property_manager->get_particle_size())));
+                                                              Particle<dim>(pdata,property_manager->get_property_pool())));
 #endif
               const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(cell, position_hint->second.get_location());
               position_hint->second.set_reference_location(p_unit);
@@ -628,7 +628,7 @@ namespace aspect
 
           for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
             {
-              Particle<dim> p (pdata,property_manager->get_particle_size());
+              Particle<dim> p (pdata,property_manager->get_property_pool());
 
               for (unsigned int child_index = 0; child_index < GeometryInfo<dim>::max_children_per_cell; ++child_index)
                 {
@@ -1132,10 +1132,10 @@ namespace aspect
           recv_data_it = static_cast<const char *> (recv_data_it) + cellid_size;
 
           const typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell = id.to_cell(this->get_triangulation());
-          const Particle<dim> recv_particle(recv_data_it,property_manager->get_particle_size());
+          const Particle<dim> recv_particle(recv_data_it,property_manager->get_property_pool());
           recv_data_it = integrator->read_data(recv_data_it, recv_particle.get_id());
 #else
-          Particle<dim> recv_particle(recv_data_it,property_manager->get_particle_size());
+          Particle<dim> recv_particle(recv_data_it,property_manager->get_property_pool());
           recv_data_it = integrator->read_data(recv_data_it, recv_particle.get_id());
           const std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
                 Point<dim> > current_cell_and_position =
@@ -1371,6 +1371,7 @@ namespace aspect
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Generate");
 
       generator->generate_particles(particles);
+
       update_n_global_particles();
       update_next_free_particle_index();
     }
@@ -1379,10 +1380,21 @@ namespace aspect
     void
     World<dim>::initialize_particles()
     {
+      // Initialize the particle's access to the property_pool. This is necessary
+      // even if the Particle do not carry properties, because they need a
+      // way to determine the number of properties they carry.
+      typename std::multimap<types::LevelInd,Particle <dim> >::iterator particle = particles.begin(),
+                                                                        end_particle = particles.end();
+      for (; particle!=end_particle; ++particle)
+        particle->second.set_property_pool(property_manager->get_property_pool());
+
+
       // TODO: Change this loop over all cells to use the WorkStream interface
       if (property_manager->get_n_property_components() > 0)
         {
           TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Initialize properties");
+
+          property_manager->get_property_pool().reserve(2 * particles.size());
 
           // Loop over all cells and initialize the particles cell-wise
           typename DoFHandler<dim>::active_cell_iterator

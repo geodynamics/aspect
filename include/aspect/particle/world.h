@@ -28,6 +28,7 @@
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/property/interface.h>
+#include <aspect/particle/property_pool.h>
 #include <aspect/particle/output/interface.h>
 
 #include <aspect/simulator_access.h>
