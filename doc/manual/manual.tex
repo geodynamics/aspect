@@ -1838,11 +1838,12 @@ as $\nabla \cdot \mathbf u = 0$.
 
 \subsubsection{Temperature equation approximation}
 
-The density occurs multiple times in the temperature equation. Depending on the selected approximation it is computed in two different ways:
+The density occurs multiple times in the temperature equation. Depending on the selected approximation it is computed in one of two different ways. Which of these options is used can be chosen in the parameter file in the subsection 
+\texttt{Formulation/Temperature equation} (see also \ref{parameters:Formulation/Temperature equation}):
 
 \begin{itemize}
  \item 
-``real density'': Use the full density as computed for the buoyancy term of the momentum equation (i.e. the return value of the material model for ``density``),
+``real density'': Use the full density $\rho(p,T)$ that equals the one also used in the buoyancy term of the force balance equation; this is also the value that is computed by the material models when asked for the density,
 
 \item
 ``reference density profile'': Use the density as computed for the reference profile (which can be constant, an adiabatic profile, or an entirely different function, and is determined by the adiabatic conditions model).
@@ -1851,10 +1852,15 @@ The density occurs multiple times in the temperature equation. Depending on the 
 \subsubsection{Approximation of the buoyancy term}
 The buoyancy term (right-hand side of the momentum equation) always uses the 
 density that is provided by the material model (see Section~\ref{sec:material-models}). 
-There, one can decide to use a density that for example depends on temperature 
-and pressure, or one that depends on temperature and depth; and one can also 
-decide to use density deviations from a reference state instead of a full density 
+Depending on the material model, this density could for example depend on temperature 
+and pressure (such as in ALA), or on temperature and depth (as in TALA); and the model can also be set up in a way 
+that it uses density deviations from a reference state instead of a full density 
 (see Section~\ref{sec:pressure-static-dyn}).
+
+\note{In the current version of \aspect{}, it is the responsibility of the user to select a 
+material model that is consistent with the formulation they want to use in their model. 
+In the future, we plan to make it more obvious which approximations are supported by a 
+particular material model.}
 
 \subsubsection{Reference state: The adiabatic profile}
 
@@ -1862,37 +1868,39 @@ The reference temperature profile $\bar{T}$, reference density profile $\bar{\rh
 and the reference pressure $\bar{p}$ are computed in the adiabatic conditions model 
 (provided by the class \texttt{AdiabaticConditions}, see Section~\ref{sec:adiabatic}). 
 By default, these fields satisfy adiabatic conditions (if adiabatic heating is included 
-in the model):
+in the model, see Section~\ref{parameters:Heating_20model/Adiabatic_20heating}):
 \begin{align}
-  \rho C_p \frac{\textrm{d} \bar{T}(z)}{\textrm{d}z} 
+  \frac{\textrm{d} \bar{T}(z)}{\textrm{d}z} 
   &=
-  \frac{\partial\bar\rho}{\partial \bar{T}} \bar{T}(z) g_z,
+  \frac{\alpha \bar{T}(z) g_z}{C_p},
 \\
   \frac{\textrm{d} \bar{p}(z)}{\textrm{d}z} 
   &=
   \bar\rho g_z,
 \\
-  \frac{\textrm{d} \bar{p}}{\textrm{d}z} &= \bar\rho g_z,
+  \bar{\rho} &= \bar\rho (\bar{p}, \bar{T}, z) \qquad \text{(as defined by the material model)},
 \end{align}
 where strictly speaking $g_z$ is the magnitude of the vertical
 component of the gravity vector field, but in practice we take the
 magnitude of the entire gravity vector.
 If there is no adiabatic heating in the model, $\bar{T}$ is constant 
 by default and set to the adiabatic surface temperature.
-The density gradient is then computed by a simple finite difference approximation 
+The density gradient is always computed by a simple finite difference approximation 
 of the depth derivative of $\bar{\rho}$.
 
 However, users can also supply their own adiabatic conditions models or 
 define an arbitrary profile using the ``function'' plugin, 
 which allows the user to define arbitrary functions for 
-$\bar{T}(z)$, $\bar{p}(z)$ and $\bar{\rho}(z)$.
+$\bar{T}(z)$, $\bar{p}(z)$ and $\bar{\rho}(z)$, see Section~\ref{parameters:Adiabatic_20conditions_20model}.
 
 \subsubsection{Combined formulations}
 \label{sec:combined_formulations}
 Not all combinations of the different approximations discussed above 
-are physically reasonable, and to help users to choose between these options, 
+are physically reasonable, and to help users choose between these options, 
 we provide a number of combined ``Formulations'' that are equivalent to the 
-approximate equations discussed above (Section~\ref{sec:approximate-equations}):
+approximate equations discussed above (Section~\ref{sec:approximate-equations}).
+They can be selected in the subsection \texttt{Formulation/Formulation} 
+(see also \ref{parameters:Formulation/Formulation}):
 
 \begin{itemize}
  \item 
