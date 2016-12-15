@@ -310,15 +310,19 @@ namespace aspect
                          "Select a formulation for the basic equations. Different "
                          "published formulations are available in ASPECT (see the list of "
                          "possible values for this parameter in the manual for available options). "
-                         "Two ASPECT specific options are 1. `isothermal compression': ASPECT's original "
+                         "Two ASPECT specific options are\n"
+                         "\\begin{enumerate}\n"
+                         "  \\item `isothermal compression': ASPECT's original "
                          "formulation, using the explicit compressible mass equation, "
-                         "and the full density for the temperature equation. 2. 'custom': "
-                         "A custom selection of `Mass conservation' and "
-                         "`Temperature equation'. Warning: The `custom' option is "
+                         "and the full density for the temperature equation.\n"
+                         "  \\item `custom': A custom selection of `Mass conservation' and "
+                         "`Temperature equation'.\n"
+                         "\\end{enumerate}\n\n"
+                         "\\note{Warning: The `custom' option is "
                          "implemented for advanced users that want full control over the "
                          "equations solved. It is possible to choose inconsistent formulations "
                          "and no error checking is performed on the consistency of the resulting "
-                         "equations.");
+                         "equations.}");
 
       prm.declare_entry ("Mass conservation", "ask material model",
                          Patterns::Selection ("incompressible|isothermal compression|"
@@ -331,7 +335,7 @@ namespace aspect
       prm.declare_entry ("Temperature equation", "real density",
                          Patterns::Selection ("real density|reference density profile"),
                          "Possible approximations for the density in the temperature equation. "
-                         "Possible approximations are: `real density', `reference profile'. "
+                         "Possible approximations are `real density' and `reference density profile'. "
                          "Note that this parameter is only evaluated "
                          "if `Formulation' is set to `custom'. Other formulations ignore "
                          "the value of this parameter.");
