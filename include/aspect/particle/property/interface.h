@@ -23,6 +23,7 @@
 
 #include <aspect/particle/particle.h>
 #include <aspect/particle/interpolator/interface.h>
+#include <aspect/particle/property_pool.h>
 
 #include <aspect/simulator_access.h>
 #include <aspect/plugins.h>
@@ -561,6 +562,15 @@ namespace aspect
           get_data_info() const;
 
           /**
+           * Get a reference to the property pool that own all particle
+           * properties, and organizes them physically.
+           *
+           * @return A reference to the property_pool object.
+           */
+          PropertyPool &
+          get_property_pool() const;
+
+          /**
            * Get the position of the property specified by name in the property
            * vector of the particles.
            *
@@ -623,6 +633,11 @@ namespace aspect
            */
           ParticlePropertyInformation property_information;
 
+          /**
+           * This object owns and organizes the memory for all particle
+           * properties.
+           */
+          std_cxx11::unique_ptr<PropertyPool> property_pool;
       };
 
 

@@ -22,6 +22,7 @@
 #define __aspect__particle_particle_h
 
 #include <aspect/global.h>
+#include <aspect/particle/property_pool.h>
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/types.h>
@@ -34,6 +35,7 @@ namespace aspect
   namespace Particle
   {
     using namespace dealii;
+
     /**
      * A namespace for all type definitions related to particles.
      */
@@ -125,6 +127,15 @@ namespace aspect
                   const types::particle_index new_id);
 
         /**
+         * Copy-Constructor for Particle, creates a particle with exactly the
+         * state of the input argument. Note that since each particle has a
+         * handle for a certain piece of the property memory, and is responsible
+         * for registering and freeing this memory in the property pool this
+         * constructor registers a new chunk, and copies the properties.
+         */
+        Particle (const Particle<dim> &particle);
+
+        /**
          * Constructor for Particle, creates a particle from a data vector.
          * This constructor is usually called after sending a particle to a
          * different process.
@@ -140,18 +151,12 @@ namespace aspect
          * that will be read in by this particle.
          */
         Particle (const void *&begin_data,
-                  const unsigned int data_size);
+                  PropertyPool &new_property_pool);
 
 #ifdef DEAL_II_WITH_CXX11
         /**
-         * Copy constructor for Particle, creates a particle from an existing
-         * one.
-         */
-        Particle (const Particle<dim> &particle);
-
-        /**
          * Move constructor for Particle, creates a particle from an existing
-         * one.
+         * one by stealing its state.
          */
         Particle (Particle<dim> &&particle);
 
@@ -167,16 +172,13 @@ namespace aspect
 #endif
 
         /**
-          * Resize the properties member variable to hold the number of doubles
-          * required to represent this particle's properties. This function
-          * is called by the PropertyManager class to prepare this particle
-          * for the initialization of its properties.
-          *
-          * @param [in] n_components Number of additional property components
-          * that this particle holds.
-          */
-        void
-        set_n_property_components (const unsigned int n_components);
+         * Destructor. Releases the property handle if it is valid, and
+         * therefore frees that memory space for other particles. (Note:
+         * the memory is managed by the property_pool, and the memory is not
+         * deallocated by this function, it is kept in reserve for other
+         * particles).
+         */
+        ~Particle ();
 
         /**
          * Write particle data into a data array. The array is expected
@@ -237,6 +239,16 @@ namespace aspect
         get_id () const;
 
         /**
+         * Tell the particle where to store its properties (even if it does not
+         * own properties). Usually this is only done once per particle, but
+         * since the particle generator does not know about the properties
+         * we want to do it not at construction time. Another use for this
+         * function is after particle transfer to a new process.
+         */
+        void
+        set_property_pool(PropertyPool &property_pool);
+
+        /**
          * Set the properties of this particle.
          *
          * @param [in] new_properties A vector containing the
@@ -286,9 +298,15 @@ namespace aspect
         types::particle_index  id;
 
         /**
-         * The vector of all tracer properties
+         * A pointer to the property pool. Necessary to translate from the
+         * handle to the actual memory locations.
          */
-        std::vector<double>    properties;
+        PropertyPool *property_pool;
+
+        /**
+         * A handle to all tracer properties
+         */
+        PropertyPool::Handle properties;
     };
 
     /* -------------------------- inline and template functions ---------------------- */

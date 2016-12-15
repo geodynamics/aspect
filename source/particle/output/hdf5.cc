@@ -132,6 +132,7 @@ namespace aspect
             index_data[i] = it->second.get_id();
 
             const ArrayView<const double> properties = it->second.get_properties();
+
             unsigned int particle_property_index = 0;
 
             unsigned int output_field_index = 0;
