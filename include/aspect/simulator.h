@@ -112,7 +112,6 @@ namespace aspect
   class Simulator
   {
     public:
-
       /**
        * Constructor.
        *
@@ -1138,6 +1137,18 @@ namespace aspect
        */
       bool
       stokes_matrix_depends_on_solution () const;
+
+      /**
+       * This function checks that the user-selected formulations of the
+       * equations are consistent with the other inputs. If an incorrect
+       * selection is detected it throws an exception. It for example assures that
+       * correct heating terms are selected, and the material model supports
+       * the selection of the mass conservation formulation (e.g. incompressible)).
+       * If the parameter 'parameters.formulation' is set to 'custom'
+       * it only ensures very basic consistency.
+       */
+      void
+      check_consistency_of_formulation ();
 
       /**
        * This function is called at the end of each time step and writes the

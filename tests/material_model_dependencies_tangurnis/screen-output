@@ -9,17 +9,23 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 12+0 iterations.
       Relative Stokes residual after nonlinear iteration 1: 1
    Solving Stokes system... 10+0 iterations.
-      Relative Stokes residual after nonlinear iteration 2: 1.86156
+      Relative Stokes residual after nonlinear iteration 2: 20.4416
+   Solving Stokes system... 10+0 iterations.
+      Relative Stokes residual after nonlinear iteration 3: 10.31
+   Solving Stokes system... 10+0 iterations.
+      Relative Stokes residual after nonlinear iteration 4: 5.34104
+   Solving Stokes system... 10+0 iterations.
+      Relative Stokes residual after nonlinear iteration 5: 2.84277
+   Solving Stokes system... 9+0 iterations.
+      Relative Stokes residual after nonlinear iteration 6: 1.55029
+   Solving Stokes system... 9+0 iterations.
+      Relative Stokes residual after nonlinear iteration 7: 0.862482
+   Solving Stokes system... 9+0 iterations.
+      Relative Stokes residual after nonlinear iteration 8: 0.487243
    Solving Stokes system... 7+0 iterations.
-      Relative Stokes residual after nonlinear iteration 3: 0.0448174
-   Solving Stokes system... 6+0 iterations.
-      Relative Stokes residual after nonlinear iteration 4: 0.00360101
-   Solving Stokes system... 4+0 iterations.
-      Relative Stokes residual after nonlinear iteration 5: 0.000129011
-   Solving Stokes system... 3+0 iterations.
-      Relative Stokes residual after nonlinear iteration 6: 1.00213e-05
-   Solving Stokes system... 2+0 iterations.
-      Relative Stokes residual after nonlinear iteration 7: 3.52271e-07
+      Relative Stokes residual after nonlinear iteration 9: 0.278384
+   Solving Stokes system... 7+0 iterations.
+      Relative Stokes residual after nonlinear iteration 10: 0.160352
 
    Postprocessing:
 viscosity depends on

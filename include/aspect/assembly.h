@@ -93,7 +93,8 @@ namespace aspect
                         const UpdateFlags         face_update_flags,
                         const unsigned int        n_compositional_fields,
                         const unsigned int        stokes_dofs_per_cell,
-                        const bool                add_compaction_pressure);
+                        const bool                add_compaction_pressure,
+                        const bool                use_reference_profile);
 
           StokesSystem (const StokesSystem<dim> &data);
 
@@ -114,6 +115,18 @@ namespace aspect
            */
           MaterialModel::MaterialModelInputs<dim> face_material_model_inputs;
           MaterialModel::MaterialModelOutputs<dim> face_material_model_outputs;
+
+          /**
+           * In some approximations of the Stokes equations the density used
+           * for the mass conservation (/continuity) equation is some form
+           * of reference density, while the density used for calculating
+           * the buoyancy force is the full density. In case such a formulation
+           * is used the reference density (and its derivative in depth
+           * direction) is queried from the adiabatic conditions plugin
+           * and is stored in these variables.
+           */
+          std::vector<double> reference_densities;
+          std::vector<double> reference_densities_depth_derivative;
         };
 
 
@@ -625,8 +638,137 @@ namespace aspect
         Properties advection_system_assembler_on_face_properties;
 
       };
-
     }
+  }
+
+  namespace Assemblers
+  {
+    /**
+     * A class containing the functions to assemble the different terms of the advection equation.
+     */
+    template <int dim>
+    class AdvectionAssembler : public aspect::internal::Assembly::Assemblers::AssemblerBase<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        /**
+         * This function assembles the terms for the matrix and right-hand-side of the advection
+         * equation for the current cell.
+         */
+        void
+        local_assemble_advection_system (const typename Simulator<dim>::AdvectionField &advection_field,
+                                         const double artificial_viscosity,
+                                         internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
+                                         internal::Assembly::CopyData::AdvectionSystem<dim> &data) const;
+
+        /**
+         * This function computes the residual for the advection equation at every quadrature
+         * point of the current cell and returns the residual in a vector of doubles.
+         */
+        std::vector<double>
+        compute_advection_system_residual(const typename Simulator<dim>::AdvectionField     &advection_field,
+                                          internal::Assembly::Scratch::AdvectionSystem<dim> &scratch) const;
+
+        /**
+         * This function assembles the face terms for the matrix and right-hand-side of the advection
+         * equation for a face at the boundary of the domain.
+         */
+        void
+        local_assemble_discontinuous_advection_boundary_face_terms(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                                                   const unsigned int face_no,
+                                                                   const typename Simulator<dim>::AdvectionField &advection_field,
+                                                                   internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
+                                                                   internal::Assembly::CopyData::AdvectionSystem<dim> &data) const;
+
+        /**
+         * This function assembles the face terms for the matrix and right-hand-side of the advection
+         * equation for a face in the interior of the domain.
+         */
+        void
+        local_assemble_discontinuous_advection_interior_face_terms(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                                                   const unsigned int face_no,
+                                                                   const typename Simulator<dim>::AdvectionField &advection_field,
+                                                                   internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
+                                                                   internal::Assembly::CopyData::AdvectionSystem<dim> &data) const;
+    };
+
+    /**
+     * A class containing the functions to assemble the different terms of the Stokes equations.
+     */
+    template <int dim>
+    class StokesAssembler : public aspect::internal::Assembly::Assemblers::AssemblerBase<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        /**
+         * This function assembles the terms of the Stokes preconditioner matrix for the current cell.
+         */
+        void
+        preconditioner (const double                                             pressure_scaling,
+                        internal::Assembly::Scratch::StokesPreconditioner<dim>  &scratch,
+                        internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const;
+
+        /**
+         * This function assembles the terms for the matrix and right-hand-side of the incompressible
+         * Stokes equation for the current cell.
+         */
+        void
+        incompressible_terms (const double                                     pressure_scaling,
+                              const bool                                       rebuild_stokes_matrix,
+                              internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                              internal::Assembly::CopyData::StokesSystem<dim> &data) const;
+
+        /**
+         * This function assembles the term that arises in the viscosity term of Stokes matrix for
+         * compressible models, because the divergence of the velocity is not longer zero.
+         */
+        void
+        compressible_strain_rate_viscosity_term (const double                                     pressure_scaling,
+                                                 const bool                                       rebuild_stokes_matrix,
+                                                 internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                                 internal::Assembly::CopyData::StokesSystem<dim> &data) const;
+
+        /**
+         * This function assembles the right-hand-side term of the Stokes equation
+         * that is caused by the compressibility in the mass conservation equation.
+         * This function approximates this term as
+         * $ - \nabla \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u}
+         */
+        void
+        reference_density_compressibility_term (const double                                     pressure_scaling,
+                                                const bool                                       rebuild_stokes_matrix,
+                                                internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                                internal::Assembly::CopyData::StokesSystem<dim> &data,
+                                                const Parameters<dim> &parameters) const;
+
+        /**
+         * This function assembles the compressibility term of the Stokes equation
+         * that is caused by the compressibility in the mass conservation equation.
+         * It includes this term implicitly in the matrix,
+         * which is therefore not longer symmetric.
+         * This function approximates this term as
+         * $ - \nabla \mathbf{u} - \frac{1}{\rho} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u} = 0
+         */
+        void
+        implicit_reference_density_compressibility_term (const double                                     pressure_scaling,
+                                                         const bool                                       rebuild_stokes_matrix,
+                                                         internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                                         internal::Assembly::CopyData::StokesSystem<dim> &data,
+                                                         const Parameters<dim> &parameters) const;
+
+        /**
+         * This function assembles the right-hand-side term of the Stokes equation
+         * that is caused by the compressibility in the mass conservation equation.
+         * This function approximates this term as
+         * $ - \nabla \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial p} \rho \mathbf{g} \cdot \mathbf{u}
+         */
+        void
+        isothermal_compression_term (const double                                     pressure_scaling,
+                                     const bool                                       rebuild_stokes_matrix,
+                                     internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                     internal::Assembly::CopyData::StokesSystem<dim> &data,
+                                     const Parameters<dim> &parameters) const;
+    };
   }
 }
 

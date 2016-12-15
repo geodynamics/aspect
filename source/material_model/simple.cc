@@ -27,7 +27,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-
     template <int dim>
     void
     Simple<dim>::

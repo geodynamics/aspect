@@ -937,7 +937,7 @@ One typically chooses $p_s$ as the pressure one would get if the whole medium
 were at rest -- i.e., as the hydrostatic pressure. This pressure can be
 computed noting that \eqref{eq:stokes-1} reduces to
 \begin{gather*}
-  \nabla p_s = \rho(p_s,T_s,\mathbf x)\mathbf g
+  \nabla p_s = \rho(p_s,T_s,\mathbf x)\mathbf g = \bar\rho \mathbf g
 \end{gather*}
 in the absence of any motion where $T_s$ is some static temperature field (see
 also Section~\ref{sec:adiabatic}). This, our rewritten version of
@@ -1034,6 +1034,15 @@ it with the same accuracy one would get if one were to solve for only the
 dynamic component. The methods that ensure this are described in detail in
 \cite{KHB12} and in particular in the appendix of that paper.
 
+\note{By default, \aspect{} uses the full pressure in the equations, and only prescribing 
+density deviations from a reference state on the right-hand side of \eqref{eq:stokes-1} 
+would lead to negative densities in the energy equation \eqref{eq:temperature}.  
+However, when using one of the approximations described in Section \ref{sec:approximate-equations}, 
+the energy balance uses the reference density $\bar\rho$ instead of the full density, 
+which makes it possible to formulate the Stokes system in terms of the dynamic instead of
+the full pressure. In order to do this, one would have to use a material model 
+(see Section~\ref{sec:material-models}) in which the density is in fact a density variation, 
+and then the pressure solution variable would only be the dynamic pressure.}
 
 \subsection{Pressure normalization}
 \label{sec:pressure}
@@ -1086,9 +1095,11 @@ derivatives on these variables in the model).
 Nevertheless, a nonlinear solver will have difficulty converging to
 the correct solution if we start with a completely unphysical pressure
 for models in which coefficients such as density $\rho$ and viscosity
-$\eta$ depend on the pressure and temperature. To this end, \aspect{} computes
-pressure and temperature fields $p_{\textrm{ad}}(z),
-T_{\textrm{ad}}(z)$ that satisfy adiabatic conditions:
+$\eta$ depend on the pressure and temperature. To this end, \aspect{} 
+uses pressure and temperature fields $p_{\textrm{ad}}(z),
+T_{\textrm{ad}}(z)$ computed in the adiabatic conditions model 
+(see Section~\ref{parameters:Adiabatic_20conditions_20model}).
+By default, these fields satisfy adiabatic conditions:
 \begin{align}
   \rho C_p \frac{\textrm{d}}{\textrm{d}z} T_{\textrm{ad}}(z)
   &=
@@ -1112,10 +1123,13 @@ and an adiabatic surface temperature $T_{\textrm{ad}}(0)$ that is
 \index[prmindexfull]{Adiabatic surface temperature}
 also selected in the input parameter file.
 
+However, users can also supply their own adiabatic conditions models or 
+define an arbitrary profile using the ``function'' plugin.
+
 \note{The adiabatic surface temperature is often chosen significantly
   higher than the actual surface temperature. For example, on earth,
   the actual surface temperature is on the order of 290 K, whereas a
-  reasonable adiabatic surface temperature is maybe 1200 K. The reason
+  reasonable adiabatic surface temperature is maybe 1600 K. The reason
   is that the bulk of the mantle is more or less in thermal equilibrium
   with a thermal profile that corresponds to the latter temperature,
   whereas the very low actual surface temperature and the very high
@@ -1291,9 +1305,9 @@ algorithms:
   the flow field without the need to refine the mesh globally. Since the
   location of plumes that require high resolution change and move with time,
   meshes also need to be adapted every few time steps.
-\item \textit{Accurate discretizations:} The Boussinesq problem upon which
+\item \textit{Accurate discretizations:} The equations upon which
   most models for the earth mantle are based
-  has a number of intricacies that make the choice of discretization
+  have a number of intricacies that make the choice of discretization
   non-trivial. In particular, the finite elements chosen for velocity and
   pressure need to satisfy the usual compatibility condition for saddle point
   problems. This can be worked around using pressure stabilization schemes for
@@ -1302,8 +1316,9 @@ algorithms:
   a stabilization method for the highly advection-dominated temperature
   equation. \aspect{} uses a nonlinear artificial diffusion method for the latter.
 \item \textit{Efficient linear solvers:} The major obstacle in solving the
-  Boussinesq system is the saddle-point nature of the Stokes equations. Simple
-  linear solvers and preconditioners can not efficiently solve this system in
+  system of linear equations that results from discretization is the
+  saddle-point nature of the Stokes equations.
+  Simple linear solvers and preconditioners can not efficiently solve this system in
   the presence of strong heterogeneities or when the size of the system
   becomes very large. \aspect{} uses an efficient solution strategy based on a
   block triangular preconditioner utilizing an algebraic multigrid that
@@ -1339,21 +1354,235 @@ refer to the paper by Kronbichler, Heister and Bangerth \cite{KHB12} that
 gives a detailed description and rationale for the various building blocks.
 
 
-\subsection{Simplifications of the basic equations}
+\subsection{Approximate equations}
+\label{sec:approximate-equations}
 
-There are two common variations to equations
-\eqref{eq:stokes-1}--\eqref{eq:temperature} that are frequently used and that
-make the system much simpler to solve and analyze: assuming that the fluid is
-incompressible (the Boussinesq approximation) and a linear dependence of the
-density on the temperature with constants that are otherwise independent of
-the solution variables. These are
-discussed in the following; \aspect{} has
-run-time parameters that allow both of these simpler models to be used.
+There are a number of common variations to equations
+\eqref{eq:stokes-1}--\eqref{eq:temperature} that are frequently used in the
+geosciences. For example, one frequently finds references to the anelastic liquid
+approximation (ALA), truncated anelastic liquid approximation (TALA), and the
+Boussinesq approximation (BA). These can all be derived from the basic
+equations~\eqref{eq:stokes-1}--\eqref{eq:temperature} via various approximations, 
+and we will discuss them in the following. Since they are typically only provided
+considering velocity, pressure and temperature, we will in the following omit
+the dependence on the compositional fields used in previous sections, though
+this dependence can easily be added back into the equations stated below. A
+detailed discussion of the approximations introduced below can also be found in
+\cite{KLKLZTTK10}.
 
-\subsubsection{The Boussinesq approximation: Incompressibility}
+The three approximations mentioned all start by writing the pressure and
+temperature as the sum of a (possibly depth dependent)
+reference state plus a perturbation, i.e., we will write
+\begin{align*}
+  p(\mathbf x,t) &= \bar p(z) + p'(\mathbf x,t),
+  \\
+  T(\mathbf x,t) &= \bar T(z) + T'(\mathbf x,t).
+\end{align*}
+Here, barred quantities are reference states and may depend on the depth $z$
+(not necessarily the third component of $\mathbf x$) whereas primed quantities
+are the spatially and temporally variable deviations of the temperature and
+pressure fields from this reference state. In particular, the reference pressure
+is given by solving the hydrostatic equation,
+\begin{align}
+\label{eq:hydrostatic-pressure}
+  \nabla \bar p = \bar\rho \mathbf g,
+\end{align}
+where $\bar\rho=\rho(\bar p,\bar T)$ is a \textit{reference density} that
+depends on depth and represents a typical change of material parameters and solution 
+variables with depth. $\bar T(z)$ is chosen as an adiabatic profile accounting for the
+fact that the temperature increases as the pressure increases.
+With these definitions, equations \eqref{eq:stokes-1}--\eqref{eq:stokes-2} can equivalently be written as follows:
+\begin{align}
+  \label{eq:stokes-decomposed-1}
+  -\nabla \cdot \left[2\eta \left(\varepsilon(\mathbf u)
+                                  - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+                \right] + \nabla p' &=
+  (\rho-\bar\rho) \mathbf g
+  & \qquad
+  & \textrm{in $\Omega$},
+  \\
+  \label{eq:stokes-decomposed-2}
+  \nabla \cdot (\rho \mathbf u) &= 0
+  & \qquad
+  & \textrm{in $\Omega$}.
+\end{align}
+The temperature equation, when omitting entropic effects, still reads as
+\begin{multline}
+  \label{eq:temperature-decomposed}
+  \rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right)
+  - \nabla\cdot k\nabla T
+  \\
+  =
+  \rho H
+  +
+  2\eta
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+  :
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+  +\alpha T \left( \mathbf u \cdot \nabla p \right)
+  \quad
+  \textrm{in $\Omega$},
+\end{multline}
+where the right-hand side includes radiogenic heat production, shear heating and adiabatic heating (in that order).
+  
+Starting from these equations, the approximations discussed in the next few
+subsections make use of the fact that for the flows for which these approximations are valid, the
+perturbations $p'$, $T'$ are much smaller than typical values of the reference
+quantities $\bar p$, $\bar T$. 
+The terms influenced by these approximations are $\nabla \cdot (\rho u) =0$ in the 
+continuity equation, and all occurrences of $\rho(p,T)$ in the temperature equation, 
+and we will discuss them separately below. The equations for these approximations are
+almost always given in terms of non-dimensionalized quantities. We will for
+now stick with the dimensional form because it expresses in a clearer way the
+approximations that are made. The non-dimensionalization can then be done on
+each of the forms below separately.
+
+\subsubsection{The anelastic liquid approximation (ALA)}
+\label{sec:ala}
+
+The \textit{anelastic liquid approximation (ALA)} is based on two assumptions.
+First, that the density variations $\rho(p,T)-\bar\rho$ are small and in
+particular can be accurately described by a Taylor expansion:
+\begin{align*}
+  \rho(p,T) \approx 
+  \bar\rho 
+  + \frac{\partial \rho(\bar p,\bar T)}{\partial p} p'
+  + \frac{\partial \rho(\bar p,\bar T)}{\partial T} T'.
+\end{align*}
+Here, $\frac{\partial \rho(\bar p,\bar T)}{\partial T}$ is related to the
+thermal expansion coefficient $\alpha = -\frac{1}{\rho}\frac{\partial \rho}{\partial T}$, 
+and $\frac{\partial \rho(\bar p,\bar T)}{\partial p}$ to the compressibility
+$\kappa = \frac{1}{\rho}\frac{\partial \rho}{\partial p}$.
+
+The second assumption is that the variation of the density
+from the reference density can be neglected in the mass balance and
+temperature equations.
+This yields the following system of equations for the velocity and pressure
+equations:
+\begin{align}
+  \label{eq:stokes-ALA-1}
+  -\nabla \cdot \left[2\eta \left(\varepsilon(\mathbf u)
+                                  - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+                \right] + \nabla p' &=
+  \left(\frac{\partial \rho(\bar p,\bar T)}{\partial p} p'
+  + \frac{\partial \rho(\bar p,\bar T)}{\partial T} T' \right) \mathbf g
+  & \qquad
+  & \textrm{in $\Omega$},
+  \\
+  \label{eq:stokes-ALA-2}
+  \nabla \cdot (\bar\rho \mathbf u) &= 0
+  & \qquad
+  & \textrm{in $\Omega$}.
+\end{align}
+
+For the temperature equation, using the definition of the hydrostatic pressure gradient \eqref{eq:hydrostatic-pressure}, we arrive at the following:
+
+\begin{multline}
+  \label{eq:temperature-decomposed}
+  \bar\rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla
+  T\right) - \nabla\cdot k\nabla T
+  \\
+  =
+  \bar\rho H
+  +
+  2\eta
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+  :
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+  +\alpha \bar\rho T (\mathbf u \cdot \mathbf g)
+  \quad
+  \textrm{in $\Omega$}.
+\end{multline}
+
+\note{Our energy equation is formulated in terms of $T$, while in the literature, the equation
+has sometimes been formulated in terms of $T'$, which yields additional terms
+containing $\bar T$ on the right-hand side.
+Both ways of writing the equation are equivalent.}
+
+\subsubsection{The truncated anelastic liquid approximation (TALA)}
+\label{sec:tala}
+
+The \textit{truncated anelastic liquid approximation (TALA)} further simplifies
+the ALA by assuming that the variation of the density due to pressure variations
+is small, i.e., that
+\begin{align*}
+  \rho(p,T) \approx 
+  \bar\rho 
+  + \frac{\partial \rho(\bar p,\bar T)}{\partial T} T'.
+\end{align*}
+This does not mean that the density is not pressure dependent -- it will, for
+example, continue to be depth dependent because the hydrostatic pressure grows
+with depth. It simply means that the deviations from the reference pressure are
+assumed to be so small that they do not matter in describing the density.
+Because the pressure variation $p'$ is induced by the flow field (the static
+component pressure is already taken care of by the hydrostatic pressure), this
+assumption in essence means that we assume the flow to be very slow, even beyond
+the earlier assumption that we can neglect inertial terms when
+deriving~\eqref{eq:stokes-1}--\eqref{eq:stokes-2}.
+
+This further assumption then
+transforms~\eqref{eq:stokes-ALA-1}--\eqref{eq:stokes-ALA-2} into the following
+equations:
+\begin{align}
+  \label{eq:stokes-TALA-1}
+  -\nabla \cdot \left[2\eta \left(\varepsilon(\mathbf u)
+                                  - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+                \right] + \nabla p' &=
+  \frac{\partial \rho(\bar p,\bar T)}{\partial T} T' \mathbf g
+  & \qquad
+  & \textrm{in $\Omega$},
+  \\
+  \label{eq:stokes-TALA-2}
+  \nabla \cdot (\bar\rho \mathbf u) &= 0
+  & \qquad
+  & \textrm{in $\Omega$}.
+\end{align}
+The energy equation is the same as in the ALA case. 
+
+\subsubsection{The Boussinesq approximation (BA)}
 \label{sec:boussinesq}
 
-The original Boussinesq approximation assumes that the density can be
+If we further assume that the reference temperature and the reference density are constant, 
+$\bar T(z)=T_0$, $\bar\rho(\bar p,\bar T)=\rho_0$, 
+-- in other words, density variations are so small that 
+they are negligible everywhere except for in the right-hand side of the velocity 
+equation (the buoyancy term), which describes the driving force of the flow, 
+then we can further simplify the mass conservation equations of the
+TALA to $\nabla \cdot \mathbf u=0$. 
+This means that the density in all other parts of the equations is not only independent of
+the pressure variations $p'$ as assumed in the TALA, but also does not depend on
+the much larger hydrostatic pressure $\bar p$ nor on the reference temperature
+$\bar T$. We then obtain the following set of
+equations that also uses the incompressibility in the definition of the strain rate:
+\begin{align}
+  \label{eq:stokes-BA-1}
+  -\nabla \cdot \left[2\eta \varepsilon(\mathbf u)
+                \right] + \nabla p' &=
+  \frac{\partial \rho(\bar p,\bar T)}{\partial T} T' \mathbf g
+  & \qquad
+  & \textrm{in $\Omega$},
+  \\
+  \label{eq:stokes-BA-2}
+  \nabla \cdot \mathbf u &= 0
+  & \qquad
+  & \textrm{in $\Omega$}.
+\end{align}
+In addition, as the reference temperature is constant, one needs to neglect the
+adiabatic and shear heating in the energy equation
+\begin{equation}
+  \label{eq:temperature-BA}
+  \bar\rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla
+  T\right) - \nabla\cdot k\nabla T
+  =
+  \bar\rho H
+  \quad
+  \textrm{in $\Omega$}.
+\end{equation}
+
+\paragraph*{On incompressibility.}
+\label{sec:boussinesq}
+
+The Boussinesq approximation assumes that the density can be
 considered constant in all occurrences in the equations with the exception of
 the buoyancy term on the right hand side of \eqref{eq:stokes-1}. The primary
 result of this assumption is that the continuity equation \eqref{eq:stokes-2}
@@ -1368,29 +1597,26 @@ these two equations symmetric. And secondly, because the two equations are now
 linear in pressure and velocity (assuming that the viscosity $\eta$ and the
 density $\rho$ are considered fixed). In addition, one can drop all terms
 involving $\nabla \cdot \mathbf u$ from the left hand side of the momentum
-equation \eqref{eq:stokes-1} as well as from the shear heating term on the
-right hand side of \eqref{eq:temperature}; while dropping these terms does not
+equation \eqref{eq:stokes-1}; while dropping these terms does not
 affect the solution of the equations, it makes assembly of linear systems
-faster. In addition, in the incompressible case, one needs to neglect the
-adiabatic heating term $\frac{\partial \rho}{\partial T} T \mathbf u \cdot
-\mathbf g$ on the right hand side of \eqref{eq:temperature}.
+faster. 
 
 From a physical perspective, the assumption that the density is constant in
 the continuity equation but variable in the momentum equation is of course
 inconsistent. However, it is justified if the variation is small since the
 momentum equation can be rewritten to read
 \begin{gather*}
-  -\nabla \cdot 2\eta \varepsilon(\mathbf u) + \nabla p_d =
+  -\nabla \cdot 2\eta \varepsilon(\mathbf u) + \nabla p' =
   (\rho-\rho_0) \mathbf g,
 \end{gather*}
-where $p_d$ is the \textit{dynamic} pressure and $\rho_0$ is the constant
+where $p'$ is the \textit{dynamic} pressure and $\rho_0$ is the constant
 reference density. This makes it clear that the true driver of motion is in
 fact the \textit{deviation} of the density from its background value, however
 small this value is: the resulting velocities are simply proportional to the
 density variation, not to the absolute magnitude of the density.
 
 As such, the Boussinesq approximation can be justified. On the other hand,
-given the real pressures and temperatures at the bottom of the earth mantle,
+given the real pressures and temperatures at the bottom of the Earth's mantle,
 it is arguable whether the density can be considered to be almost
 constant. Most realistic models predict that the density of mantle rocks
 increases from somewhere around 3300 at the surface to over 5000 kilogram per
@@ -1419,46 +1645,7 @@ the compressibility to the continuity equation is very small. This may be
 different, however, for models in which the density changes rather abruptly,
 for example due to phase changes at mantle discontinuities.
 
-In summary, models that use the approximation of incompressibility solve the
-following set of equations instead of \eqref{eq:stokes-1}--\eqref{eq:temperature}:
-\begin{align}
-  \label{eq:stokes-1-boussinesq}
-  -\nabla \cdot \left[2\eta \varepsilon(\mathbf u)
-                \right] + \nabla p &=
-  \rho \mathbf g
-  & \qquad
-  & \textrm{in $\Omega$},
-  \\
-  \label{eq:stokes-2-boussinesq}
-  \nabla \cdot \mathbf u &= 0
-  & \qquad
-  & \textrm{in $\Omega$},
-  \\
-  \label{eq:temperature-boussinesq}
-  \rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right)
-  - \nabla\cdot k\nabla T
-  &=
-  \rho H
-  +
-  2\eta
-  \varepsilon(\mathbf u)
-  :
-  \varepsilon(\mathbf u)
-  & \quad
-  & \textrm{in $\Omega$},
-\end{align}
-where the coefficients $\eta,\rho,\mathbf g,C_p$ may possible depend on the
-solution variables.
-
-\note{As we will see in Section~\ref{sec:extending}, it is easy to add new material
-models to \aspect. Each model can decide whether it wants to use the
-Boussinesq approximation or not. The description of the models in
-Section~\ref{parameters:Material_20model} also gives an answer which of the
-models already implemented uses the approximation or considers the material
-sufficiently compressible to go with the fully compressible continuity equation.}
-
-
-\subsubsection{Almost linear models}
+\paragraph{On almost linear models.}
 
 A further simplification can be obtained if one assumes that all coefficients
 with the exception of the density do not depend on the solution variables but
@@ -1466,47 +1653,12 @@ are, in fact, constant. In such models, one typically assumes that the density
 satisfies a relationship of the form $\rho=\rho(T)=\rho_0(1-\alpha(T-T_0))$
 with a small thermal expansion coefficient $\alpha$ and a reference density
 $\rho_0$ that is attained at temperature $T_0$. Since the thermal expansion is
-considered small, this naturally leads to the following variant of the Boussinesq
+considered small, this naturally leads to the following variant of the the Boussinesq
 model discussed above:
-\begin{align*}
-  -\nabla \cdot \left[2\eta \varepsilon(\mathbf u)
-                \right] + \nabla p &=
-  \rho_0 (1-\alpha (T-T_0)) \mathbf g
-  & \qquad
-  & \textrm{in $\Omega$},
-  \\
-  \nabla \cdot \mathbf u &= 0
-  & \qquad
-  & \textrm{in $\Omega$},
-  \\
-  \rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right)
-  - \nabla\cdot k\nabla T
-  &=
-  \rho H
-  +
-  2\eta
-  \varepsilon(\mathbf u)
-  :
-  \varepsilon(\mathbf u)
-  & \quad
-  & \textrm{in $\Omega$},
-\end{align*}
-If the gravitational acceleration $\mathbf g$ results from a gravity potential
-$\varphi$ via $\mathbf g = -\nabla \varphi$, then one can rewrite the
-equations above in the following, commonly used form:%
-\footnote{Note, however, that \aspect{} does not solve the equations in the
-  form given in
-  \eqref{eq:stokes-1-boussinesq-linear}--\eqref{eq:temperature-boussinesq-linear}. Rather,
-  it takes the original form with the real density, not the variation of
-  the density. That said, you can use the formulation
-  \eqref{eq:stokes-1-boussinesq-linear}--\eqref{eq:temperature-boussinesq-linear}
-  by implementing a material model (see Section~\ref{sec:material-models}) in
-  which the density in fact has the form $\rho(T)=\alpha \rho_0 T$ even though
-  this is not physical.}
 \begin{align}
   \label{eq:stokes-1-boussinesq-linear}
   -\nabla \cdot \left[2\eta \varepsilon(\mathbf u)
-                \right] + \nabla p_d &=
+                \right] + \nabla p' &=
   -\alpha\rho_0 T \mathbf g
   & \qquad
   & \textrm{in $\Omega$},
@@ -1517,55 +1669,49 @@ equations above in the following, commonly used form:%
   & \textrm{in $\Omega$},
   \\
   \label{eq:temperature-boussinesq-linear}
-  \rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right)
+  \rho_0 C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right)
   - \nabla\cdot k\nabla T
   &=
   \rho H
-  +
-  2\eta
-  \varepsilon(\mathbf u)
-  :
-  \varepsilon(\mathbf u)
   & \quad
-  & \textrm{in $\Omega$},
+  & \textrm{in $\Omega$}.
 \end{align}
-where $p_d=p+\rho_0(1+\alpha T_0)\varphi$ is the dynamic pressure, as opposed
-to the total pressure $p=p_d+p_s$ that also includes the hydrostatic pressure
-$p_s=-\rho_0(1+\alpha T_0)\varphi$. Note that the right hand side forcing term
+Note that the right hand side forcing term
 in \eqref{eq:stokes-1-boussinesq-linear} is now only the deviation of the
 gravitational force from the force that would act if the material were at
 temperature $T_0$.
 
 Under the assumption that all other coefficients are constant, one then
-arrives at equations in which the only nonlinear terms are the advection term,
-$\mathbf u \cdot \nabla T$, and the shear friction, $2\eta\varepsilon(\mathbf
-u):\varepsilon(\mathbf u)$, in the temperature equation
+arrives at equations in which the only nonlinear term is the advection term,
+$\mathbf u \cdot \nabla T$ in the temperature equation
 \eqref{eq:temperature-boussinesq-linear}. This facilitates the use of a
-particular class of time stepping scheme in which one does not solve the whole
+particular class of time stepping schemes in which one does not solve the whole
 set of equations at once, iterating out nonlinearities as necessary, but
 instead in each time step solves first the Stokes system with the previous
 time step's temperature, and then uses the so-computed velocity to solve the
 temperature equation. These kind of time stepping schemes are often referred
-to as \textit{operator splitting} methods. A particular operator
-splitting method, used in
-earlier \aspect{} versions, solves first the Stokes equations and then
+to as \textit{operator splitting} methods. 
+
+\note{\aspect{} does not solve the equations in the way described in this paragraph, 
+however, a particular operator splitting method was used in
+earlier \aspect{} versions. It first solves the Stokes equations and then
 uses a semi-explicit time stepping method for the temperature equation
-where diffusion is handled implicitly and advection explicitly;
-this algorithm is often called \textit{IMPES} (it originated in the
+where diffusion is handled implicitly and advection explicitly.
+This algorithm is often called \textit{IMPES} (it originated in the
 porous media flow 
 community, where the acronym stands for \textit{Im}plicit \textit{P}ressure,
 \textit{E}xplicit \textit{S}aturation) and is explained in more detail
-in \cite{KHB12}. However, since then the algorithm in \aspect{} has
+in \cite{KHB12}. Since then the algorithm in \aspect{} has
 been rewritten to use an implicit time stepping algorithm also for the
-temperature equation because this allows to use larger time steps.
+temperature equation because this allows to use larger time steps.}
 
 
+\subsubsection{The isothermal compression approximation (ICA)}
+\label{sec:ica}
 
-\subsubsection{Compressible models}
-In the compressible case, the conservation of mass equation in
-equation~\eqref{eq:stokes-2} becomes $\nabla 
-\cdot \left( \rho \textbf{u} \right)= 0$ instead of $\nabla \cdot \textbf{u} =
-0$, which is nonlinear and no longer symmetric to the $\nabla p$ term in the
+In the compressible case and without the assumption of a reference state, 
+the conservation of mass equation in equation~\eqref{eq:stokes-2} is $\nabla 
+\cdot \left( \rho \textbf{u} \right)= 0$, which is nonlinear and not symmetric to the $\nabla p$ term in the
 force balance equation \eqref{eq:stokes-1}, making solving and preconditioning
 the resulting linear and nonlinear systems difficult. To make this work in
 \aspect{}, we consequently reformulate this equation. Dividing by $\rho$ and
@@ -1577,12 +1723,12 @@ We will now make two basic assumptions: First, the variation of the density
 $\rho(p,T,\mathbf x, \mathfrak c)$ is dominated by the dependence on the
 (total) pressure; in other words, $\nabla \rho \approx \frac{\partial \rho}{\partial
   p}\nabla p$. This assumption is primarily justified by the fact that, in the
-Earth mantle, the density increases by at least 50\% between Earth crust and
+Earth's mantle, the density increases by at least 50\% between Earth's crust and
 the core-mantle boundary due to larger pressure there. Secondly, we assume
-that the pressure is dominated by the static pressure, which can be written as
-$\nabla p \approx \nabla p_s \approx \rho \textbf{g}$. This is essentially
-motivated by the slowness of the movement in the Earth or, alternatively,
-based on the fact that the viscosity is so large.
+that the pressure is dominated by the static pressure, which implies that
+$\nabla p \approx \nabla p_s \approx \rho \textbf{g}$. This is justified, 
+because the viscosity in the Earth is large and velocities are small, 
+hence $\nabla p' \ll \nabla p_s$.
 This finally allows us to write
 \begin{equation*}
 \frac{1}{\rho} \nabla \rho \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \nabla p \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \nabla p_s \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u} 
@@ -1595,13 +1741,210 @@ so we get
 where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is often referred to
 as the compressibility.
 
-In the implementation used in \aspect{}, this equation replaces
-\eqref{eq:stokes-2}. It has the advantage that it retains the symmetry of the
+For this approximation, Equation \eqref{eq:stokes-2-compressible} replaces
+Equation \eqref{eq:stokes-2}. It has the advantage that it retains the symmetry of the
 Stokes equations if we can treat the right hand side of
 \eqref{eq:stokes-2-compressible} as known. We do so by evaluating $\rho$ and
 $\mathbf u$ using the solution from the last time step (or values extrapolated
-from previous time steps).
+from previous time steps), or using a nonlinear solver scheme.
 
+\note{This is the default approximation \aspect{} uses to model compressible convection,
+see Section~\ref{sec:combined_formulations}.}
+
+
+\subsection{Choosing a formulation in \aspect{}}
+
+After discussing different reasonable approximations for modeling compressible or 
+incompressible mantle convection, we will now describe the different steps one has 
+to take to use one of these approximations in a computation.  
+This includes 
+\begin{enumerate}
+\item Choosing an approximation for the mass conservation equation; 
+\item Choosing an approximation for the density in the energy balance, and deciding which heating terms should be included; 
+\item Formulating the buoyancy term in the material model to be used on the right-hand side of the momentum equation; 
+\item Prescribing a suitable reference state for the temperature, pressure, and density; i.e. the adiabatic profile,
+if necessary for the approximations chosen in the first three steps.
+\end{enumerate}
+
+All of these choices can be made in the input file by selecting the corresponding parameters (see Sections~\ref{parameters:Formulation} and \ref{parameters:Adiabatic_20conditions_20model}).
+A description of how to run \aspect{} and the basic structure of the input file can be found in
+Section~\ref{sec:running}.
+
+\subsubsection{Mass conservation approximation}
+
+First, we have to choose how to approximate the conservation of mass: $\nabla \cdot (\rho \mathbf u) = 0$ (see Equation~\eqref{eq:stokes-2}). 
+We provide the following options, which can be selected in the parameter file in the subsection 
+\texttt{Formulation/Mass conservation} (see also \ref{parameters:Formulation/Mass conservation}):
+
+\begin{itemize}
+
+\item
+``incompressible'':
+\[
+ \nabla \cdot \textbf{u} = 0,
+\]
+
+\item
+``isothermal compression'':
+\[
+ \nabla \cdot \textbf{u} = -\frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u},
+\]
+where $\frac{1}{\rho} \frac{\partial \rho}{\partial p} = \kappa$ is the compressibility, and 
+is defined in the material model. 
+
+\item
+``reference density profile'':
+\[
+ \nabla \cdot \textbf{u} = -\frac{1}{\bar{\rho}} \frac{\partial \bar{\rho}}{\partial z} \frac{\textbf{g}}{\|\textbf{g}\|} \cdot \textbf{u},
+\]
+where the reference profiles for the density $\bar{\rho}$ and the density gradient $\frac{\partial \bar{\rho}}{\partial z}$
+provided by the adiabatic conditions model (\ref{sec:adiabatic})
+are used. Note that the
+gravity is assumed to point downwards in depth direction.
+
+\item
+``implicit reference density profile'':
+\[
+ \nabla \cdot \textbf{u} + \frac{1}{\bar{\rho}} \frac{\partial \bar{\rho}}{\partial z} \frac{\textbf{g}}{g} \cdot \textbf{u} = 0,
+\]
+which uses the same approximation for the density as ``reference density profile'', 
+but implements this term on the left-hand side instead of the right-hand side of the mass
+conservation equation. This effectively uses the current velocity $\textbf{u}$ instead
+of an extrapolated velocity from the last timesteps.
+
+ \item 
+``ask material model'', which uses ``isothermal compression'' if the material model reports 
+that it is compressible and ``incompressible'' otherwise.
+\end{itemize}
+
+
+\note{\textbf{The stress tensor approximation.}
+
+Incompressibility in the mass conservation equation automatically simplifies the shear strain rate in the momentum and temperature equation from
+\[
+ \nabla \cdot \tau = 
+ \nabla \cdot \left[
+ 2\eta \left(\varepsilon(\mathbf u)
+                                  - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+                                  \right]
+\]
+to
+\[
+  \nabla \cdot \tau =  \nabla \cdot \left[
+ 2\eta \varepsilon(\mathbf u) \right], 
+\]
+as $\nabla \cdot \mathbf u = 0$.
+}
+
+\subsubsection{Temperature equation approximation}
+
+The density occurs multiple times in the temperature equation. Depending on the selected approximation it is computed in one of two different ways. Which of these options is used can be chosen in the parameter file in the subsection 
+\texttt{Formulation/Temperature equation} (see also \ref{parameters:Formulation/Temperature equation}):
+
+\begin{itemize}
+ \item 
+``real density'': Use the full density $\rho(p,T)$ that equals the one also used in the buoyancy term of the force balance equation; this is also the value that is computed by the material models when asked for the density,
+
+\item
+``reference density profile'': Use the density as computed for the reference profile (which can be constant, an adiabatic profile, or an entirely different function, and is determined by the adiabatic conditions model).
+\end{itemize}
+
+\subsubsection{Approximation of the buoyancy term}
+The buoyancy term (right-hand side of the momentum equation) always uses the 
+density that is provided by the material model (see Section~\ref{sec:material-models}). 
+Depending on the material model, this density could for example depend on temperature 
+and pressure (such as in ALA), or on temperature and depth (as in TALA); and the model can also be set up in a way 
+that it uses density deviations from a reference state instead of a full density 
+(see Section~\ref{sec:pressure-static-dyn}).
+
+\note{In the current version of \aspect{}, it is the responsibility of the user to select a 
+material model that is consistent with the formulation they want to use in their model. 
+In the future, we plan to make it more obvious which approximations are supported by a 
+particular material model.}
+
+\subsubsection{Reference state: The adiabatic profile}
+
+The reference temperature profile $\bar{T}$, reference density profile $\bar{\rho}$
+and the reference pressure $\bar{p}$ are computed in the adiabatic conditions model 
+(provided by the class \texttt{AdiabaticConditions}, see Section~\ref{sec:adiabatic}). 
+By default, these fields satisfy adiabatic conditions (if adiabatic heating is included 
+in the model, see Section~\ref{parameters:Heating_20model/Adiabatic_20heating}):
+\begin{align}
+  \frac{\textrm{d} \bar{T}(z)}{\textrm{d}z} 
+  &=
+  \frac{\alpha \bar{T}(z) g_z}{C_p},
+\\
+  \frac{\textrm{d} \bar{p}(z)}{\textrm{d}z} 
+  &=
+  \bar\rho g_z,
+\\
+  \bar{\rho} &= \bar\rho (\bar{p}, \bar{T}, z) \qquad \text{(as defined by the material model)},
+\end{align}
+where strictly speaking $g_z$ is the magnitude of the vertical
+component of the gravity vector field, but in practice we take the
+magnitude of the entire gravity vector.
+If there is no adiabatic heating in the model, $\bar{T}$ is constant 
+by default and set to the adiabatic surface temperature.
+The density gradient is always computed by a simple finite difference approximation 
+of the depth derivative of $\bar{\rho}$.
+
+However, users can also supply their own adiabatic conditions models or 
+define an arbitrary profile using the ``function'' plugin, 
+which allows the user to define arbitrary functions for 
+$\bar{T}(z)$, $\bar{p}(z)$ and $\bar{\rho}(z)$, see Section~\ref{parameters:Adiabatic_20conditions_20model}.
+
+\subsubsection{Combined formulations}
+\label{sec:combined_formulations}
+Not all combinations of the different approximations discussed above 
+are physically reasonable, and to help users choose between these options, 
+we provide a number of combined ``Formulations'' that are equivalent to the 
+approximate equations discussed above (Section~\ref{sec:approximate-equations}).
+They can be selected in the subsection \texttt{Formulation/Formulation} 
+(see also \ref{parameters:Formulation/Formulation}):
+
+\begin{itemize}
+ \item 
+``anelastic liquid approximation'': This formulation sets the mass conservation approximation to ``reference density profile'', 
+the temperature equation approximation to ``reference density profile'' and checks that both
+adiabatic and shear heating are included in the list of heating plugins used in the model, using the 
+simplified version of the adiabatic heating term 
+(see Section~\ref{parameters:Heating_20model/Adiabatic_20heating}).
+The default setting for the adiabatic conditions is an adiabatic temperature profile, and hydrostatic
+pressure and density profiles. This option should be chosen together with a material model 
+that defines a density that depends on temperature and pressure (and potentially depth), 
+which would be equivalent to the anelastic liquid approximation (Section~\ref{sec:ala}), 
+or with a material model that defines a density that depends on temperature and depth 
+(and not on the pressure), which would be equivalent to the truncated anelastic liquid approximation 
+(Section~\ref{sec:tala}).
+
+\item
+``boussinesq approximation'': This formulation sets the mass conservation approximation to ``incompressible'', 
+the temperature equation approximation to ``reference density profile'' and checks that neither
+adiabatic nor shear heating are included in the list of heating plugins used in the model. 
+The default setting for the adiabatic conditions is a constant temperature, and hydrostatic
+pressure and density profiles. This option should be chosen together with a material model 
+that defines a density that only depends on temperature and depth (and not on the pressure).
+This is equivalent to the Boussinesq approximation (Section~\ref{sec:boussinesq}).
+
+\item
+``isothermal compression'': This formulation sets the mass conservation approximation to 
+``isothermal compression'', the temperature equation approximation to ``real density''
+and checks that both
+adiabatic and shear heating are included in the list of heating plugins used in the model.
+The default setting for the adiabatic conditions is an adiabatic temperature profile, and hydrostatic
+pressure and density profiles. The density can depend on any of the solution variables. 
+This is equivalent to the isothermal compression approximation (Section~\ref{sec:ica}).
+
+\item
+``custom'': By default, this formulation sets the mass conservation approximation 
+to ``ask material model'' and the temperature equation approximation to ``real density''.
+The adiabatic conditions model uses an adiabatic temperature profile if adiabatic heating
+is included in the model, and a constant temperature if adiabatic heating is not included.
+Pressure and density profiles are hydrostatic. The density can depend on any of the solution variables.
+However, this option can also be used to arbitrarily combine the different approximations 
+described in this section. Users should be careful when using this option, as some combinations
+may lead to unphysical model behaviour. 
+\end{itemize}
 
 
 \subsection{Free surface calculations}

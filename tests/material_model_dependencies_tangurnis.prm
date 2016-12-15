@@ -4,19 +4,20 @@ subsection Material model
   set Model name = Tan Gurnis
 
   subsection Tan Gurnis model
-    set Thermal expansion coefficient = 1
     set Di                            = 0.5
     set gamma                         = 1
-
     set a                             = 0
-
     set wavenumber                    = 1
   end
 end
+
 subsection Postprocess
   set List of postprocessors = material model dependencies
 end
 
+subsection Formulation
+  set Formulation = anelastic liquid approximation
+end
 
 #############################
 # Otherwise use the setup of SolCX
@@ -87,9 +88,15 @@ subsection Mesh refinement
 end
 
 
+subsection Heating model
+  set List of model names = shear heating, adiabatic heating
+  subsection Adiabatic heating
+    set Use simplified adiabatic heating = true
+  end
+end
+
+
 subsection Model settings
-
-
   set Fixed temperature boundary indicators   = 0, 1
 
   set Prescribed velocity boundary indicators =

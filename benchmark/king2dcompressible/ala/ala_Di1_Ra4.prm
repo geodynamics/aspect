@@ -1,0 +1,23 @@
+set End time                               = 1.5
+set Output directory                       = Di1_Ra4
+
+subsection Adiabatic conditions model
+  subsection Function
+    set Function constants  = Di=1.0, gamma=1.0
+    set Function expression = 0.091*exp(depth*Di); gamma/Di*(exp(depth*Di/gamma)-1); exp(depth*Di/gamma)  # T,p,rho
+    set Variable names      = depth
+  end
+end
+
+subsection Material model
+  subsection King model
+    set Ra    = 1e4
+    set Di    = 1.0
+    set gamma = 1.0
+  end
+end
+
+subsection Mesh refinement
+  set Additional refinement times              = 0.5, 0.8
+end
+

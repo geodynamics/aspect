@@ -108,6 +108,132 @@ namespace aspect
     };
 
     /**
+     * A struct that contains information about which
+     * formulation of the basic equations should be solved,
+     * i.e. which terms to consider, which terms to neglect, and
+     * which to simplify in different ways.
+     */
+    struct Formulation
+    {
+      /**
+       * This enum lists available formulations that
+       * determine the combined approximations made in
+       * all solved equations. 'Custom' allows to set
+       * approximations individually for single equations.
+       */
+      enum Kind
+      {
+        boussinesq_approximation,
+        anelastic_liquid_approximation,
+        isothermal_compression,
+        custom
+      };
+
+      /**
+       * This function translates an input string into the
+       * available enum options.
+       */
+      static
+      Kind
+      parse(const std::string &input)
+      {
+        if (input == "isothermal compression")
+          return Formulation::isothermal_compression;
+        else if (input == "anelastic liquid approximation")
+          return Formulation::anelastic_liquid_approximation;
+        else if (input == "boussinesq approximation")
+          return Formulation::boussinesq_approximation;
+        else if (input == "custom")
+          return Formulation::custom;
+        else
+          AssertThrow(false, ExcNotImplemented());
+
+        return Formulation::Kind();
+      }
+
+      /**
+       * This struct contains information about the approximation
+       * made to the term containing the gradient of the density
+       * in the mass conservation equation. The different possible
+       * ways to approximate this term are described in the manual.
+       */
+      struct MassConservation
+      {
+        /**
+         * This enum lists available approximations to the
+         * density gradient term of the mass conservation equation.
+         */
+        enum Kind
+        {
+          isothermal_compression,
+          reference_density_profile,
+          implicit_reference_density_profile,
+          incompressible,
+          ask_material_model
+        };
+
+        /**
+         * This function translates an input string into the
+         * available enum options.
+         */
+        static Kind
+        parse(const std::string &input)
+        {
+          if (input == "isothermal compression")
+            return Formulation::MassConservation::isothermal_compression;
+          else if (input == "reference density profile")
+            return Formulation::MassConservation::reference_density_profile;
+          else if (input == "implicit reference density profile")
+            return Formulation::MassConservation::implicit_reference_density_profile;
+          else if (input == "incompressible")
+            return Formulation::MassConservation::incompressible;
+          else if (input == "ask material model")
+            return Formulation::MassConservation::ask_material_model;
+          else
+            AssertThrow(false, ExcNotImplemented());
+
+          return Formulation::MassConservation::Kind();
+        };
+      };
+
+      /**
+       * This struct contains information about the approximation
+       * made to temperature equation. The different possible
+       * ways to approximate this term are described in the manual.
+       */
+      struct TemperatureEquation
+      {
+        /**
+         * This enum lists available approximations to the
+         * density in the temperature equation.
+         */
+        enum Kind
+        {
+          real_density,
+          reference_density_profile
+        };
+
+        /**
+         * This function translates an input string into the
+         * available enum options.
+         */
+        static
+        Kind
+        parse(const std::string &input)
+        {
+          if (input == "real density")
+            return Formulation::TemperatureEquation::real_density;
+          else if (input == "reference density profile")
+            return Formulation::TemperatureEquation::reference_density_profile;
+          else
+            AssertThrow(false, ExcNotImplemented());
+
+          return Formulation::TemperatureEquation::Kind();
+        };
+      };
+    };
+
+    /**
      * Constructor. Fills the values of member functions from the given
      * parameter object.
      *
@@ -196,6 +322,40 @@ namespace aspect
     unsigned int                   n_cheap_stokes_solver_steps;
     double                         temperature_solver_tolerance;
     double                         composition_solver_tolerance;
+
+    /**
+     * @}
+     */
+
+    /**
+     * @name Formulation settings
+     * @{
+     */
+
+    /**
+     * This variable determines which of the several ways to formulate the
+     * equations ASPECT will solve.
+     * Common formulations are the Boussinesq or Anelastic Liquid
+     * Approximations (BA, ALA). ASPECT's original formulation is termed
+     * 'isothermal compression'. 'Custom' allows
+     * to set the approximations individually per equation.
+     */
+    typename Formulation::Kind formulation;
+
+    /**
+     * Determines how to formulate the mass conservation equation in ASPECT.
+     * Common approximations are 'incompressible' or 'reference density profile'.
+     * ASPECT's original formulation is termed 'isothermal compression'. See the
+     * manual for more details about the individual terms.
+     */
+    typename Formulation::MassConservation::Kind formulation_mass_conservation;
+
+    /**
+     * Determines how to formulate the density in the temperature equation
+     * in ASPECT. Possible approximations are 'reference density profile' or
+     * 'real density'.
+     */
+    typename Formulation::TemperatureEquation::Kind formulation_temperature_equation;
 
     /**
      * @}

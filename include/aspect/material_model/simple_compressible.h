@@ -44,7 +44,6 @@ namespace aspect
     class SimpleCompressible : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-
         /**
         * Evaluate material properties.
         */

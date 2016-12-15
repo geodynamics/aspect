@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Instructions for how to use this scipt are provided in the README.
+
+path=$*
+
+echo "# Nu           Vrms           <T>      phi            W" | tee king_statistics.txt
+
+for i in $path; do
+  nusselt=`grep "Outward heat flux through boundary with indicator 3" $i/statistics | gawk '{ print $2}' | sed s/.$//`
+  vrms=`grep "RMS velocity" $i/statistics | gawk '{ print $2}' | sed s/.$//`
+  averageT=`grep "Average temperature" $i/statistics | gawk '{ print $2}' | sed s/.$//`
+  phi=`grep "Total shear heating rate" $i/statistics | gawk '{ print $2}' | sed s/.$//`
+  W=`grep "Total adiabatic heating rate" $i/statistics | gawk '{ print $2}' | sed s/.$//`
+  tail -1 $i/statistics | gawk "{ print \$${nusselt} \" \" \$${vrms} \" \" \$${averageT}-0.091 \" \" \$${phi} \" \" \$${W}}" | tee -a king_statistics.txt
+done

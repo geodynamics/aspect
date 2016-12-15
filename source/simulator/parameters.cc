@@ -302,6 +302,46 @@ namespace aspect
                        "the composition system gets solved. See 'linear solver "
                        "tolerance' for more details.");
 
+
+    prm.enter_subsection("Formulation");
+    {
+      prm.declare_entry ("Formulation", "custom",
+                         Patterns::Selection ("isothermal compression|custom|anelastic liquid approximation|boussinesq approximation"),
+                         "Select a formulation for the basic equations. Different "
+                         "published formulations are available in ASPECT (see the list of "
+                         "possible values for this parameter in the manual for available options). "
+                         "Two ASPECT specific options are\n"
+                         "\\begin{enumerate}\n"
+                         "  \\item `isothermal compression': ASPECT's original "
+                         "formulation, using the explicit compressible mass equation, "
+                         "and the full density for the temperature equation.\n"
+                         "  \\item `custom': A custom selection of `Mass conservation' and "
+                         "`Temperature equation'.\n"
+                         "\\end{enumerate}\n\n"
+                         "\\note{Warning: The `custom' option is "
+                         "implemented for advanced users that want full control over the "
+                         "equations solved. It is possible to choose inconsistent formulations "
+                         "and no error checking is performed on the consistency of the resulting "
+                         "equations.}");
+
+      prm.declare_entry ("Mass conservation", "ask material model",
+                         Patterns::Selection ("incompressible|isothermal compression|"
+                                              "reference density profile|implicit reference density profile|"
+                                              "ask material model"),
+                         "Possible approximations for the density derivatives in the mass "
+                         "conservation equation. Note that this parameter is only evaluated "
+                         "if `Formulation' is set to `custom'. Other formulations ignore "
+                         "the value of this parameter.");
+      prm.declare_entry ("Temperature equation", "real density",
+                         Patterns::Selection ("real density|reference density profile"),
+                         "Possible approximations for the density in the temperature equation. "
+                         "Possible approximations are `real density' and `reference density profile'. "
+                         "Note that this parameter is only evaluated "
+                         "if `Formulation' is set to `custom'. Other formulations ignore "
+                         "the value of this parameter.");
+    }
+    prm.leave_subsection();
+
     // next declare parameters that pertain to the equations to be
     // solved, along with boundary conditions etc. note that at this
     // point we do not know yet which geometry model we will use, so
@@ -948,6 +988,41 @@ namespace aspect
       run_postprocessors_on_initial_refinement = prm.get_bool("Run postprocessors on initial refinement");
     }
     prm.leave_subsection ();
+
+
+    prm.enter_subsection ("Formulation");
+    {
+      // The following options each have a set of conditions to be met in order
+      // for the formulation to be consistent, however, most of
+      // the information is not available at this point. Therefore, the error checking is done
+      // in Simulator<dim>::check_consistency_of_formulation() after the initialization of
+      // material models, heating plugins, and adiabatic conditions.
+      formulation = Formulation::parse(prm.get("Formulation"));
+      if (formulation == Formulation::isothermal_compression)
+        {
+          formulation_mass_conservation = Formulation::MassConservation::isothermal_compression;
+          formulation_temperature_equation = Formulation::TemperatureEquation::real_density;
+        }
+      else if (formulation == Formulation::boussinesq_approximation)
+        {
+          formulation_mass_conservation = Formulation::MassConservation::incompressible;
+          formulation_temperature_equation = Formulation::TemperatureEquation::reference_density_profile;
+        }
+      else if (formulation == Formulation::anelastic_liquid_approximation)
+        {
+          // equally possible: implicit_reference_profile
+          formulation_mass_conservation = Formulation::MassConservation::reference_density_profile;
+          formulation_temperature_equation = Formulation::TemperatureEquation::reference_density_profile;
+        }
+      else if (formulation == Formulation::custom)
+        {
+          formulation_mass_conservation = Formulation::MassConservation::parse(prm.get("Mass conservation"));
+          formulation_temperature_equation = Formulation::TemperatureEquation::parse(prm.get("Temperature equation"));
+        }
+      else AssertThrow(false, ExcNotImplemented());
+    }
+    prm.leave_subsection ();
+
 
     prm.enter_subsection ("Model settings");
     {

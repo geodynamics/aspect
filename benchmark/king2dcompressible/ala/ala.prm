@@ -1,0 +1,208 @@
+# King2010 ALA
+# This setup is very similar to the Blankenbach benchmark case 1, 
+# except that material is assumed to be compressible. 
+
+# reference values (from King et al., 2010): 
+# Di	Ra	Code	Nu	Vrms	<T>	phi	W
+# 0.25	1E+4	UM	4.406	39.952	0.515	0.847	0.849
+# 0.25	1E+4	VT	4.4144	40.0951	0.5146	0.849	0.849
+# 0.25	1E+4	CU	4.41	40	0.5148	0.8494	0.8501
+# 0.5	1E+4	UM	3.812	35.936	0.522	1.381	1.381
+# 0.5	1E+4	VT	3.8218	36.0425	0.5214	1.3812	1.3812
+# 0.5	1E+4	CU	3.82	35.9	0.5217	1.3818	1.383
+# 1	1E+4	UM	2.438	24.663	0.512	1.343	1.349
+# 1	1E+4	VT	2.4716	25.0157	0.51	1.3622	1.3621
+# 1	1E+4	CU	2.47	24.9	0.5103	1.3627	1.3638
+# 0.25	1E+5	UM	9.196	178.229	0.532	2.041	2.051
+# 0.25	1E+5	VT	9.2428	179.752	0.5318	2.0518	2.0519
+# 0.25	1E+5	CU	9.21	178.2	0.5319	2.0503	2.054
+# 0.5	1E+5	UM	7.532	155.304	0.548	3.221	3.233
+# 0.5	1E+5	VT	7.5719	156.558	0.5472	3.2344	3.2346
+# 0.5	1E+5	CU	7.55	155.1	0.5472	3.233	3.2392
+# 1	1E+5	UM	3.857	84.587	0.53	2.742	2.765
+# 1	1E+5	VT	3.878	85.5803	0.5294	2.761	2.7614
+# 1	1E+5	CU	3.88	84.6	0.5294	2.7652	2.7742
+
+
+# At the top, we define the number of space dimensions we would like to
+# work in:
+set Dimension                              = 2
+
+# We can use a large CFL number because we are only interested in the 
+# steady state solution.
+set CFL number = 5.0
+set Additional shared libraries            = ./libking.so
+set Use direct solver for Stokes system    = false
+
+# This is the non-dimensionalized surface temperature, which is the 
+# ratio of the dimensional surface temperature T_surf = 273 K and
+# the temperature change across the domain DeltaT = 3000 K.
+set Adiabatic surface temperature          = 0.091
+
+set Use years in output instead of seconds = false
+set End time                               = 1e20
+set Output directory                       = output
+
+subsection Discretization
+  subsection Stabilization parameters
+    set alpha                                              = 2
+    set beta                                               = 0.005 # default: 0.078
+    set cR                                                 = 0.033 # default: 0.33
+  end
+end
+
+
+set Linear solver tolerance                = 1e-7
+set Temperature solver tolerance           = 1e-10
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+# In this section we define the adiabatic profiles of temperature, 
+# pressure and density. The temperature and density profiles are 
+# equivalent to the reference profiles bar(T) and bar(rho) defined
+# in the King 2010 benchmark. 
+# gamma is the grueneisen parameter, which defines the compressibility
+# of the material, and we have to choose the same value for gamma as
+# in the material model below. 
+subsection Adiabatic conditions model
+  set Model name = function
+
+  subsection Function
+    set Function constants  = Di=1.0, gamma=1.0
+    set Function expression = 0.091*exp(depth*Di); gamma/Di*(exp(depth*Di/gamma)-1); exp(depth*Di/gamma)  # T,p,rho
+    set Variable names      = depth
+  end
+end
+
+
+# The King benchmark uses the anelastic liquid approximation.
+subsection Formulation
+  set Formulation = anelastic liquid approximation
+end
+
+
+# The benchmark is defined in terms of the nondimensional numbers
+# Di (dissipation number) and Ra (Rayleigh number). 
+# As Aspect uses physical properties instead of these dimensionless 
+# numbers in its equations, we replicate the benchmark formulation 
+# by using a new material model that fixes all of the material 
+# constants to 1, except for the thermal expansivity, which is set 
+# to Di, and the viscosity, which is set to Di/Ra.
+subsection Material model
+  set Model name = king material
+  subsection King model
+    set Reference density             = 1
+
+    # The value of the specific heat $cp$. Units: $J/kg/K$. 
+    set Reference specific heat       = 1
+
+    # The value of the Rayleigh number Ra.
+    set Ra                            = 1e4
+
+    # The dissipation number Di determines the slope of the 
+    # adiabatic/reference temperature profile. 
+    # For the Boussinesq approximation, Di would be zero. 
+    set Di                            = 1.0
+    set b                             = 0
+    set c                             = 0
+    set gamma                         = 1.0
+  end
+end
+
+
+# The model domain is the unit square.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+
+# We choose a linear initial temperature profile that
+# matches the boundary conditions defined below plus
+# a small perturbation:
+subsection Initial conditions
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
+    set Function expression =  1* ((1.0-z/L) + p*cos(k*pi*x/L/1.0)*sin(pi*z/L)) +0.091
+  end
+end
+
+# We prescibe the adiabatic surface temperature as top temperature
+# and the (nondimensional) temperature change across the boundary 
+# is set to 1.
+subsection Boundary temperature model
+  set Model name = box
+
+  subsection Box
+    set Top temperature    = 0.091
+    set Bottom temperature = 1.091
+    set Left temperature   = 0
+    set Right temperature  = 0
+  end
+end
+
+# The temperature is prescribed at top and bottom (with no flux
+# conditions at the sides), and the velocity boundary conditions
+# are free slip on all bounadries. 
+subsection Model settings
+  set Fixed temperature boundary indicators   = top, bottom
+  set Tangential velocity boundary indicators = left, right, top, bottom
+end
+
+# This subsection describes which heating models we want to use. 
+# This benchmark includes adiabatic heating and shear heating. 
+subsection Heating model
+  set List of model names = adiabatic heating, shear heating
+
+  subsection Adiabatic heating
+    # A flag indicating whether the adiabatic heating should be simplified
+    # from $\alpha T (\mathbf u \cdot \nabla p)$ 
+    # to $ \alpha \rho T (\mathbf u \cdot \mathbf g) $. 
+    set Use simplified adiabatic heating = true
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1
+  end
+end
+
+
+# As we are only interested in the steady state, we start on a 
+# coarse mesh and refine once the solution is close to steady state.
+subsection Mesh refinement
+  set Initial global refinement                = 4
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 1.0
+  set Additional refinement times              = 0.5, 1.0, 1.5, 2.0
+end
+
+
+# In addition to some general postprocessing, we output
+# velocity statistics (needed for the root mean square velocity), 
+# temperature statistics (needed for the average temperature),
+# heat flux statistics (needed for the Nusselt number) and
+# heating statistics (needed for shear and adiabatic heating).
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, depth average, heating statistics
+
+  subsection Visualization
+    set Time between graphical output = 1e-3
+    set List of output variables      = material properties, adiabat, thermal conductivity, heating, artificial viscosity
+  end
+end
+

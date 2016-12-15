@@ -76,7 +76,7 @@ namespace aspect
     {
       // TODO: better eps or make it a user input
       const double z = this->get_geometry_model().depth(p);
-      const double z2 = z + (1.e3 * std::numeric_limits<double>::epsilon())
+      const double z2 = z + (1.e6 * std::numeric_limits<double>::epsilon())
                         * this->get_geometry_model().maximal_depth();
       return (function.value(Point<1>(z), 2)
               - function.value(Point<1>(z2), 2))/(z-z2);

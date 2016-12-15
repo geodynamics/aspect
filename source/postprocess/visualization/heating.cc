@@ -144,6 +144,22 @@ namespace aspect
 
         this->get_material_model().evaluate(in, out);
 
+        if (this->get_parameters().formulation_temperature_equation
+            == Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+          {
+            // Overwrite the density by the reference density coming from the
+            // adiabatic conditions as required by the formulation
+            for (unsigned int q=0; q<n_quadrature_points; ++q)
+              out.densities[q] = this->get_adiabatic_conditions().density(in.position[q]);
+          }
+        else if (this->get_parameters().formulation_temperature_equation
+                 == Parameters<dim>::Formulation::TemperatureEquation::real_density)
+          {
+            // use real density
+          }
+        else
+          AssertThrow(false, ExcNotImplemented());
+
         unsigned int index = 0;
         for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
              heating_model = heating_model_objects.begin();

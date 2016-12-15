@@ -23,6 +23,7 @@
 #include <aspect/melt.h>
 #include <aspect/global.h>
 
+#include <aspect/heating_model/adiabatic_heating.h>
 
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
@@ -1090,6 +1091,8 @@ namespace aspect
            || parameters.include_melt_transport;
   }
 
+
+
   template <int dim>
   void Simulator<dim>::apply_limiter_to_dg_solutions (const AdvectionField &advection_field)
   {
@@ -1320,6 +1323,100 @@ namespace aspect
     // now get back to the original vector
     solution.block(block_idx) = distributed_solution.block(block_idx);
   }
+
+
+
+  template <int dim>
+  void
+  Simulator<dim>::check_consistency_of_formulation()
+  {
+    // Replace Formulation::MassConservation::ask_material_model by the respective terms to avoid
+    // complicated checks later on
+    if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::ask_material_model)
+      {
+        if (material_model->is_compressible() == true)
+          parameters.formulation_mass_conservation = Parameters<dim>::Formulation::MassConservation::isothermal_compression;
+        else
+          parameters.formulation_mass_conservation = Parameters<dim>::Formulation::MassConservation::incompressible;
+      }
+
+    // Ensure the material model supports the selected formulation of the mass conservation equation
+    if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::incompressible)
+      {
+        AssertThrow(material_model->is_compressible() == false,
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The mass conservation equation was selected to be incompressible, "
+                               "but the provided material model reports that it is compressible. "
+                               "Please check the consistency of your material model and selected formulation."));
+      }
+    else if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::isothermal_compression
+             || parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile
+             || parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
+      {
+        AssertThrow(material_model->is_compressible() == true,
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The mass conservation equation was selected to be compressible, "
+                               "but the provided material model reports that it is incompressible. "
+                               "Please check the consistency of your material model and selected formulation."));
+      }
+
+    // Ensure that the correct heating terms have been selected for the chosen combined formulation
+    // Note that if the combined formulation is 'custom' there is no check
+    // (useful e.g. for smaller scale lithospheric models with shear heating but without adiabatic heating)
+    if (parameters.formulation == Parameters<dim>::Formulation::isothermal_compression)
+      {
+        AssertThrow(heating_model_manager.adiabatic_heating_enabled(),
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The 'isothermal compression' formulation expects adiabatic heating to be enabled, "
+                               "but the 'adiabatic heating' plugin has not been selected in the input file. "
+                               "Please check the consistency of your input file."));
+
+        AssertThrow(heating_model_manager.shear_heating_enabled(),
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The 'isothermal compression' formulation expects shear heating to be enabled, "
+                               "but the 'shear heating' plugin has not been selected in the input file. "
+                               "Please check the consistency of your input file."));
+      }
+    else if (parameters.formulation == Parameters<dim>::Formulation::boussinesq_approximation)
+      {
+        AssertThrow(!heating_model_manager.adiabatic_heating_enabled(),
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The 'boussinesq approximation' formulation expects adiabatic heating to be disabled, "
+                               "but the 'adiabatic heating' plugin has been selected in the input file. "
+                               "Please check the consistency of your input file."));
+
+        AssertThrow(!heating_model_manager.shear_heating_enabled(),
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The 'boussinesq approximation' formulation expects shear heating to be disabled, "
+                               "but the 'shear heating' plugin has been selected in the input file. "
+                               "Please check the consistency of your input file."));
+      }
+    else if (parameters.formulation == Parameters<dim>::Formulation::anelastic_liquid_approximation)
+      {
+        AssertThrow(heating_model_manager.adiabatic_heating_enabled(),
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The 'anelastic liquid approximation' formulation expects adiabatic heating to be enabled, "
+                               "but the 'adiabatic heating' plugin has not been selected in the input file. "
+                               "Please check the consistency of your input file."));
+
+        AssertThrow(heating_model_manager.shear_heating_enabled(),
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The 'anelastic liquid approximation' formulation expects shear heating to be enabled, "
+                               "but the 'shear heating' plugin has not been selected in the input file. "
+                               "Please check the consistency of your input file."));
+
+        const bool use_simplified_adiabatic_heating =
+          heating_model_manager.template find_heating_model<HeatingModel::AdiabaticHeating<dim> >()
+          ->use_simplified_adiabatic_heating();
+
+        AssertThrow(use_simplified_adiabatic_heating == true,
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The 'anelastic liquid approximation' formulation expects adiabatic heating to use "
+                               "a simplified heating term that neglects dynamic pressure influences, "
+                               "but the adiabatic heating plugin does not report to simplify this term. "
+                               "Please check the consistency of your input file."));
+      }
+  }
 }
 // explicit instantiation of the functions we implement in this file
 namespace aspect
@@ -1340,7 +1437,8 @@ namespace aspect
   template double Simulator<dim>::compute_initial_stokes_residual(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
-  template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field);
+  template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
+  template void Simulator<dim>::check_consistency_of_formulation();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

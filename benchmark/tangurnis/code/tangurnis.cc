@@ -13,6 +13,7 @@
 #include <deal.II/base/function_lib.h>
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/vector_tools.h>
+#include <deal.II/base/signaling_nan.h>
 
 
 
@@ -61,6 +62,7 @@ namespace aspect
                                   const std::vector<double>    &compositional_fields,
                                   const SymmetricTensor<2,dim> &strain_rate,
                                   const Point<dim>             &position) const;
+
 
         virtual double density (const double temperature,
                                 const double pressure,
@@ -116,13 +118,6 @@ namespace aspect
 
         virtual double reference_density () const;
 
-        virtual double reference_thermal_expansion_coefficient () const;
-
-//TODO: should we make this a virtual function as well? where is it used?
-        double reference_thermal_diffusivity () const;
-
-        double reference_cp () const;
-
         double parameter_a() const;
         double parameter_wavenumber() const;
         double parameter_Di() const;
@@ -161,27 +156,18 @@ namespace aspect
         double Di;
         double gamma;
 
-        double reference_rho;
-        double reference_T;
-        double eta;
-        double thermal_alpha;
-        double reference_specific_heat;
-
-        /**
-         * The thermal conductivity.
-         */
-        double k_value;
     };
 
     template <int dim>
     TanGurnis<dim>::TanGurnis()
     {
-      a=0; // 0 or 2
+      // a=0 for a constant viscosity or
+      // a=2 for a depth-dependent viscosity (case tala_c)
+      a=0;
 
-      //BA:
-      //Di=0;gamma=10000; //=inf
-      //EBA:
-      //Di=0.5;gamma=inf;
+      // for BA: Di=0; gamma=inf
+      // however, we do not use gamma if Di=0, so the actual value does not matter
+
       //TALA:
       Di=0.5;
       gamma=1.0;
@@ -200,7 +186,7 @@ namespace aspect
                const Point<dim> &pos) const
     {
       const double depth = 1.0-pos(dim-1);
-      return exp(a*depth);
+      return (Di==0.0?1.0:Di)*exp(a*depth);
     }
 
 
@@ -223,17 +209,6 @@ namespace aspect
     }
 
 
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    reference_thermal_expansion_coefficient () const
-    {
-      return 1.0;
-    }
-
-
-
     template <int dim>
     double
     TanGurnis<dim>::
@@ -242,19 +217,8 @@ namespace aspect
                    const std::vector<double> &, /*composition*/
                    const Point<dim> &) const
     {
-      return 1250;
+      return 1.0;
     }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    reference_cp () const
-    {
-      return 1250;
-    }
-
 
 
     template <int dim>
@@ -265,19 +229,8 @@ namespace aspect
                           const std::vector<double> &, /*composition*/
                           const Point<dim> &) const
     {
-      return 2e-5;
+      return 1.0;
     }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    reference_thermal_diffusivity () const
-    {
-      return k_value/(reference_rho*reference_specific_heat);
-    }
-
 
 
     template <int dim>
@@ -290,7 +243,7 @@ namespace aspect
     {
       const double depth = 1.0-pos(dim-1);
       const double temperature = sin(numbers::PI*pos(dim-1))*cos(numbers::PI*wavenumber*pos(0));
-      return -1.0*temperature*exp(Di/gamma*(depth));
+      return (Di==0.0?1.0:Di)*(-1.0*temperature)*exp(Di/gamma*(depth));
     }
 
 
@@ -303,7 +256,7 @@ namespace aspect
                                    const std::vector<double> &, /*composition*/
                                    const Point<dim> &) const
     {
-      return thermal_alpha;
+      return (Di==0.0)?1.0:Di;
     }
 
 
@@ -311,13 +264,14 @@ namespace aspect
     template <int dim>
     double
     TanGurnis<dim>::
-    compressibility (const double temperature,
-                     const double pressure,
-                     const std::vector<double> &compositional_fields,
-                     const Point<dim> &pos) const
+    compressibility (const double /*temperature*/,
+                     const double /*pressure*/,
+                     const std::vector<double> &/*compositional_fields*/,
+                     const Point<dim> &/*position*/) const
     {
-      double d = density(temperature, pressure, compositional_fields, pos);
-      return (d==0) ? 1.0 : (Di/gamma / d);
+      // this is no longer used because we use the new adiabatic mass formulation
+      // based on AdiabaticConditions
+      return numbers::signaling_nan<double>();
     }
 
 
@@ -327,7 +281,7 @@ namespace aspect
     TanGurnis<dim>::
     is_compressible () const
     {
-      return true;
+      return Di != 0.0;
     }
 
 
@@ -380,27 +334,6 @@ namespace aspect
       {
         prm.enter_subsection("Tan Gurnis model");
         {
-          prm.declare_entry ("Reference density", "3300",
-                             Patterns::Double (0),
-                             "Reference density $\\rho_0$. Units: $kg/m^3$.");
-          prm.declare_entry ("Reference temperature", "293",
-                             Patterns::Double (0),
-                             "The reference temperature $T_0$. Units: $K$.");
-          prm.declare_entry ("Viscosity", "5e24",
-                             Patterns::Double (0),
-                             "The value of the constant viscosity. Units: $kg/m/s$.");
-          prm.declare_entry ("Thermal conductivity", "4.7",
-                             Patterns::Double (0),
-                             "The value of the thermal conductivity $k$. "
-                             "Units: $W/m/K$.");
-          prm.declare_entry ("Reference specific heat", "1250",
-                             Patterns::Double (0),
-                             "The value of the specific heat $cp$. "
-                             "Units: $J/kg/K$.");
-          prm.declare_entry ("Thermal expansion coefficient", "2e-5",
-                             Patterns::Double (0),
-                             "The value of the thermal expansion coefficient $\\beta$. "
-                             "Units: $1/K$.");
           prm.declare_entry ("a", "0",
                              Patterns::Double (0),
                              "");
@@ -430,16 +363,10 @@ namespace aspect
       {
         prm.enter_subsection("Tan Gurnis model");
         {
-          reference_rho     = prm.get_double ("Reference density");
-          reference_T = prm.get_double ("Reference temperature");
-          eta                   = prm.get_double ("Viscosity");
-          k_value               = prm.get_double ("Thermal conductivity");
-          reference_specific_heat = prm.get_double ("Reference specific heat");
-          thermal_alpha = prm.get_double ("Thermal expansion coefficient");
-          a = prm.get_double("a");
-          Di = prm.get_double("Di");
-          gamma = prm.get_double("gamma");
-          wavenumber = prm.get_double("wavenumber");
+          a                       = prm.get_double("a");
+          Di                      = prm.get_double("Di");
+          gamma                   = prm.get_double("gamma");
+          wavenumber              = prm.get_double("wavenumber");
         }
         prm.leave_subsection();
       }
@@ -465,42 +392,17 @@ namespace aspect
   class TanGurnisBoundary : public BoundaryTemperature::Interface<dim>
   {
     public:
-      /**
-       * Return the temperature that is to hold at a particular location on
-       * the boundary of the domain. This function returns constant
-       * temperatures at the left and right boundaries.
-       *
-       * @param geometry_model The geometry model that describes the domain.
-       * This may be used to determine whether the boundary temperature
-       * model is implemented for this geometry.
-       * @param boundary_indicator The boundary indicator of the part of the
-       * boundary of the domain on which the point is located at which we
-       * are requesting the temperature.
-       * @param location The location of the point at which we ask for the
-       * temperature.
-       */
       virtual
-      double temperature (const GeometryModel::Interface<dim> &geometry_model,
-                          const types::boundary_id                   boundary_indicator,
-                          const Point<dim>                    &location) const;
+      double boundary_temperature (const types::boundary_id /*boundary_indicator*/,
+                                   const Point<dim> &position) const
+      {
+        double wavenumber=1;
+        return sin(numbers::PI*position(dim-1))*cos(numbers::PI*wavenumber*position(0));
+      }
 
-      /**
-       * Return the minimal the temperature on that part of the boundary on
-       * which Dirichlet conditions are posed.
-       *
-       * This value is used in computing dimensionless numbers such as the
-       * Nusselt number indicating heat flux.
-       */
       virtual
       double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
-      /**
-       * Return the maximal the temperature on that part of the boundary on
-       * which Dirichlet conditions are posed.
-       *
-       * This value is used in computing dimensionless numbers such as the
-       * Nusselt number indicating heat flux.
-       */
       virtual
       double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
   };
@@ -508,27 +410,7 @@ namespace aspect
   template <int dim>
   double
   TanGurnisBoundary<dim>::
-  temperature (const GeometryModel::Interface<dim> &geometry_model,
-               const types::boundary_id                   boundary_indicator,
-               const Point<dim>                    &location) const
-  {
-    // verify that the geometry is in fact a box since only
-    // for this geometry do we know for sure what boundary indicators it
-    // uses and what they mean
-    Assert (dynamic_cast<const GeometryModel::Box<dim>*>(&geometry_model)
-            != 0,
-            ExcMessage ("This boundary model is only implemented if the geometry is "
-                        "in fact a box."));
-
-    double wavenumber=1;
-    return sin(numbers::PI*location(dim-1))*cos(numbers::PI*wavenumber*location(0));
-  }
-
-
-  template <int dim>
-  double
-  TanGurnisBoundary<dim>::
-  minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
+  minimal_temperature (const std::set<types::boundary_id> &/*fixed_boundary_ids*/) const
   {
     return 0;
   }
@@ -538,7 +420,7 @@ namespace aspect
   template <int dim>
   double
   TanGurnisBoundary<dim>::
-  maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
+  maximal_temperature (const std::set<types::boundary_id> &/*fixed_boundary_ids*/) const
   {
     return 1;
   }
@@ -563,7 +445,7 @@ namespace aspect
 
   template <int dim>
   std::pair<std::string,std::string>
-  TanGurnisPostprocessor<dim>::execute (TableHandler &statistics)
+  TanGurnisPostprocessor<dim>::execute (TableHandler &/*statistics*/)
   {
     AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
                 ExcNotImplemented());
@@ -581,9 +463,13 @@ namespace aspect
     f << material_model->parameter_Di() << ' '
       << material_model->parameter_gamma() << ' '
       << material_model->parameter_wavenumber() << ' '
-      << material_model->parameter_a() << ' '
-      << " -1 -1 -1" << std::endl; //pad to 7 values, so matlab is happy
+      << material_model->parameter_a();
 
+    // pad the first line to the same number of columns as the data below to make MATLAB happy
+    for (unsigned int i=4; i<7+this->get_heating_model_manager().get_active_heating_models().size(); ++i)
+      f << " -1";
+
+    f << std::endl;
     f << std::scientific;
 
 
@@ -591,11 +477,18 @@ namespace aspect
 
     const unsigned int n_q_points =  quadrature_formula.size();
     FEValues<dim> fe_values (this->get_mapping(), this->get_fe(),  quadrature_formula,
-                             update_JxW_values | update_values | update_quadrature_points);
+                             update_JxW_values | update_values    |
+                             update_gradients  | update_quadrature_points);
 
-    std::vector<Tensor<1, dim> > velocity_values (quadrature_formula.size());
-    std::vector<double>         temperature_values (quadrature_formula.size());
-    std::vector<double>         pressure_values (quadrature_formula.size());
+    MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
+    MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
+
+    std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_q_points));
+
+    const std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > > &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
+
+    std::vector<HeatingModel::HeatingModelOutputs> heating_model_outputs (heating_model_objects.size(),
+                                                                          HeatingModel::HeatingModelOutputs (n_q_points, this->n_compositional_fields()));
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = this->get_dof_handler().begin_active(),
@@ -603,21 +496,59 @@ namespace aspect
     for (; cell != endc; ++cell)
       {
         fe_values.reinit (cell);
-        fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(), velocity_values);
-        fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), pressure_values);
-        fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(), temperature_values);
+        fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(), in.temperature);
+        fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), in.pressure);
+        fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(), in.velocity);
+        fe_values[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(), in.pressure_gradient);
+
+        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+          fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
+              composition_values[c]);
+        for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
+          {
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              in.composition[i][c] = composition_values[c][i];
+          }
+
+        fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
+            in.strain_rate);
+        in.position = fe_values.get_quadrature_points();
+
+        this->get_material_model().evaluate(in, out);
+
+        if (this->get_parameters().formulation_temperature_equation ==
+            Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+          {
+            for (unsigned int q=0; q<n_q_points; ++q)
+              {
+                out.densities[q] = this->get_adiabatic_conditions().density(in.position[q]);
+              }
+          }
+
+        unsigned int index = 0;
+        for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
+             heating_model = heating_model_objects.begin();
+             heating_model != heating_model_objects.end(); ++heating_model, ++index)
+          {
+            (*heating_model)->evaluate(in, out, heating_model_outputs[index]);
+          }
+
 
         for (unsigned int q = 0; q < n_q_points; ++q)
           {
             f
                 <<  fe_values.quadrature_point (q) (0)
                 << ' ' << fe_values.quadrature_point (q) (1)
-                << ' ' << velocity_values[q][0]
-                << ' ' << velocity_values[q][1]
+                << ' ' << in.velocity[q][0]
+                << ' ' << in.velocity[q][1]
                 << ' ' << fe_values.JxW (q)
-                << ' ' << pressure_values[q]
-                << ' ' << temperature_values[q]
-                << std::endl;
+                << ' ' << in.pressure[q]
+                << ' ' << in.temperature[q];
+
+            for (unsigned int i = 0; i < heating_model_objects.size(); ++i)
+              f << ' ' << heating_model_outputs[i].heating_source_terms[q];
+
+            f  << std::endl;
           }
       }
 
