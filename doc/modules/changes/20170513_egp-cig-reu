@@ -1,0 +1,7 @@
+New particle interpolation scheme bilinear least squares
+using singular value decomposition algorithm. Currently
+only 2D models are supported. We chose a simple overshoot
+and undershoot correction scheme, mainly to truncate based
+on local cell maximum and minimum property value.
+<br>
+(Elbridge Gerry Puckett, Ying He, Harsha Lokavarapu 2017/05/13)
