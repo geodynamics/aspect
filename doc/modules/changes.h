@@ -11,6 +11,12 @@
  * <code>--version</code> or <code>-v</code> command line flags.
  * <br> (Wolfgang Bangerth, 2016/12/19)
  *
+ * <li> New: A material model for incompressible (using the Boussinesq
+ * approximation) and compressible computations (with ALA or TALA) for a
+ * nondimensionalized problem. This can be used for several benchmark problems
+ * like Blankenbach, King, etc..
+ * <br> (Timo Heister, Juliane Dannberg, Rene Gassmoeller, 2016/12/18)
+ *
  * <li> New: ASPECT now supports the choice between different formulations for
  * the governing equations including boussinesq and anelastic liquid
  * approximation. For this, the adiabatic conditions have been extended to

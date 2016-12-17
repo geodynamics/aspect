@@ -1,0 +1,115 @@
+# blankenbach case 2b using the nondimensional material model
+
+set End time                               = 0.006
+set Use years in output instead of seconds = false
+set CFL number = 5.0
+
+subsection Adiabatic conditions model
+  set Model name = function
+
+  subsection Function
+    set Function constants  = 
+    set Function expression = 0; 0; 1
+    set Variable names      = depth
+  end
+
+end
+
+subsection Boundary temperature model
+  set Model name = box
+  subsection Box
+    set Bottom temperature = 1
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+subsection Geometry model
+  set Model name = box 
+
+
+  subsection Box
+    set X extent = 2.5
+    set Y extent = 1
+    set X repetitions = 5
+    set Y repetitions = 2
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 1
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1, ratio=2.5
+    set Function expression = 1* ((1.0-z/L) + p*cos(k*pi*x/L/ratio)*sin(pi*z/L))
+  end
+end
+
+
+subsection Material model
+  set Model name = nondimensional
+  subsection Nondimensional model
+    set Di                      = 0.0
+    set Ra                      = 1e4
+    # Reference density $\rho_0$. Units: $kg/m^3$.
+    set Reference density       = 1
+
+    # The value of the specific heat $cp$. Units: $J/kg/K$.
+    set Reference specific heat = 1
+
+    # Whether to use the TALA instead of the ALA approximation.
+    set Use TALA                = false
+    set Viscosity temperature prefactor = 9.70406052783923433184
+    set Viscosity depth prefactor = 4.1588830833596718565
+    set gamma                   = 1.0
+  end 
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 0
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 1.0
+end
+
+subsection Heating model
+  set List of model names =#  adiabatic heating, shear heating#, constant heating
+end
+
+subsection Model settings
+  set Prescribed velocity boundary indicators = 
+  set Tangential velocity boundary indicators = left, right, bottom, top
+  set Zero velocity boundary indicators       = 
+  set Fixed temperature boundary indicators   = bottom, top
+end
+
+subsection Formulation
+  set Formulation          = custom # with this selection equivalent to BA
+  set Mass conservation    = incompressible
+  set Temperature equation = reference density profile
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, heating statistics
+subsection Visualization
+    set Time between graphical output = 0.002
+    set List of output variables      = material properties, adiabat, thermal conductivity, heating, artificial viscosity
+  end
+
+end
+
+subsection Mesh refinement
+  set Additional refinement times              = 0.1, 0.2, 0.3
+end
