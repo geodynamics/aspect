@@ -1559,6 +1559,43 @@ namespace aspect
       return lookup->get_data(internal_position,component);
     }
 
+
+    template <int dim>
+    AsciiDataProfile<dim>::AsciiDataProfile ()
+    {}
+
+
+    template <int dim>
+    void
+    AsciiDataProfile<dim>::initialize (const unsigned int components,
+                                       const MPI_Comm &communicator)
+    {
+      lookup.reset(new Utilities::AsciiDataLookup<1> (components,
+                                                      Utilities::AsciiDataBase<dim>::scale_factor));
+
+      const std::string filename = Utilities::AsciiDataBase<dim>::data_directory
+                                   + Utilities::AsciiDataBase<dim>::data_file_name;
+
+      if (fexists(filename))
+        lookup->load_file(filename,communicator);
+      else
+        AssertThrow(false,
+                    ExcMessage (std::string("Ascii data file <")
+                                +
+                                filename
+                                +
+                                "> not found!"));
+    }
+
+    template <int dim>
+    double
+    AsciiDataProfile<dim>::
+    get_data_component (const Point<1>                      &position,
+                        const unsigned int                   component) const
+    {
+      return lookup->get_data(position,component);
+    }
+
     // Explicit instantiations
     template class AsciiDataLookup<1>;
     template class AsciiDataLookup<2>;
@@ -1569,6 +1606,9 @@ namespace aspect
     template class AsciiDataBoundary<3>;
     template class AsciiDataInitial<2>;
     template class AsciiDataInitial<3>;
+    template class AsciiDataProfile<1>;
+    template class AsciiDataProfile<2>;
+    template class AsciiDataProfile<3>;
 
     template Point<2> Coordinates::spherical_to_cartesian_coordinates<2>(const std_cxx11::array<double,2> &scoord);
     template Point<3> Coordinates::spherical_to_cartesian_coordinates<3>(const std_cxx11::array<double,3> &scoord);

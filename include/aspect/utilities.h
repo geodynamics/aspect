@@ -697,6 +697,43 @@ namespace aspect
          */
         std_cxx11::shared_ptr<aspect::Utilities::AsciiDataLookup<dim> > lookup;
     };
+
+    /**
+     * A base class that reads in a data profile and provides its values.
+     */
+    template <int dim>
+    class AsciiDataProfile : public Utilities::AsciiDataBase<dim>
+    {
+      public:
+        /**
+         * Constructor
+         */
+        AsciiDataProfile();
+
+        /**
+         * Initialization function. This function is called once at the
+         * beginning of the program. Checks preconditions.
+         */
+        virtual
+        void
+        initialize (const unsigned int components,
+                    const MPI_Comm &communicator);
+
+
+        /**
+         * Returns the data component at the given position.
+         */
+        double
+        get_data_component (const Point<1>                      &position,
+                            const unsigned int                   component) const;
+
+      protected:
+        /**
+         * Pointer to an object that reads and processes data we get from text
+         * files.
+         */
+        std_cxx11::shared_ptr<aspect::Utilities::AsciiDataLookup<1> > lookup;
+    };
   }
 }
 
