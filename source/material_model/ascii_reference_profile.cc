@@ -31,7 +31,7 @@ namespace aspect
     void
     AsciiReferenceProfile<dim>::initialize ()
     {
-      profile.initialize(6,this->get_mpi_communicator());
+      profile.initialize(7,this->get_mpi_communicator());
     }
 
     template <int dim>
@@ -44,7 +44,7 @@ namespace aspect
         {
           const Point<dim> position = in.position[i];
           const double temperature_deviation = in.temperature[i] - this->get_adiabatic_conditions().temperature(position);
-          //const double pressure_deviation = in.pressure[i] - this->get_adiabatic_conditions().pressure(position);
+          const double pressure_deviation = in.pressure[i] - this->get_adiabatic_conditions().pressure(position);
 
           const double depth = this->get_geometry_model().depth(position);
           const Point<1> profile_position(depth);
@@ -64,12 +64,14 @@ namespace aspect
 
           out.thermal_conductivities[i] = thermal_conductivity;
 
-          out.specific_heat[i] = profile.get_data_component(profile_position,5);
           out.thermal_expansion_coefficients[i] = profile.get_data_component(profile_position,4);
-          out.densities[i] = profile.get_data_component(profile_position,2)
-                             * (1.0 - out.thermal_expansion_coefficients[i] * temperature_deviation);
+          out.specific_heat[i] = profile.get_data_component(profile_position,5);
+          out.compressibilities[i] = profile.get_data_component(profile_position,6);
 
-          out.compressibilities[i] = 0.0;
+          out.densities[i] = profile.get_data_component(profile_position,2)
+                             * (1.0 - out.thermal_expansion_coefficients[i] * temperature_deviation)
+                             * (1.0 + out.compressibilities[i] * pressure_deviation);
+
           out.entropy_derivative_pressure[i] = 0.0;
           out.entropy_derivative_temperature[i] = 0.0;
 

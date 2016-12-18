@@ -39,7 +39,7 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      this->initialize(6,this->get_mpi_communicator());
+      this->initialize(7,this->get_mpi_communicator());
     }
 
 
