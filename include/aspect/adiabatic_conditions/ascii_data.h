@@ -116,23 +116,6 @@ namespace aspect
          * differently in initialization and model run.
          */
         bool initialized;
-
-        /**
-         * Directory in which the data files are present.
-         */
-        std::string data_directory;
-
-        /**
-         * Filename of data file. The file names can contain the specifiers %s
-         * and/or %c (in this order), meaning the name of the boundary and the
-         * number of the data file time step.
-         */
-        std::string data_file_name;
-
-        /**
-         * Object containing the data profile.
-         */
-        std_cxx11::shared_ptr<aspect::Utilities::AsciiDataLookup<1> > profile;
     };
   }
 }

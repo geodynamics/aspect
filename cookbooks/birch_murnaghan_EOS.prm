@@ -10,19 +10,10 @@ set End time                               = 2.63e8
 
 
 subsection Material model
-  set Model name = latent heat
+  set Model name = ascii reference profile
 
-  subsection Latent heat
-    set Viscosity                     = 1e21
-    set Thermal viscosity exponent    = 15.0
-    set Reference temperature         = 1600
-    set Phase transition depths       = 410000, 660000
-    set Phase transition widths       = 10000, 20000
-    set Phase transition temperatures = 1600, 1600
-    set Phase transition Clapeyron slopes = 3e6, -2e6
-    set Phase transition density jumps = 150, 200
-    set Corresponding phase for density jump = 0, 0
-    set Viscosity prefactors          = 1, 10, 100
+  subsection Ascii reference profile
+    set Data file name = isentrope_properties.txt
   end
 end
 
