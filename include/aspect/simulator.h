@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__simulator_h
-#define __aspect__simulator_h
+#ifndef _aspect_simulator_h
+#define _aspect_simulator_h
 
 #include <deal.II/base/timer.h>
 #include <deal.II/base/parameter_handler.h>

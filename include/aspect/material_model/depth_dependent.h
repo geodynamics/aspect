@@ -18,10 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
-
-#ifndef __aspect__model_depth_dependent_h
-#define __aspect__model_depth_dependent_h
+#ifndef _aspect_material_model_depth_dependent_h
+#define _aspect_material_model_depth_dependent_h
 
 #include <deal.II/base/function_lib.h>
 #include <aspect/material_model/interface.h>

@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__mesh_refinement_strain_rate_h
-#define __aspect__mesh_refinement_strain_rate_h
+#ifndef _aspect_mesh_refinement_strain_rate_h
+#define _aspect_mesh_refinement_strain_rate_h
 
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/simulator_access.h>

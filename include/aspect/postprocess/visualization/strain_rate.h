@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__postprocess_visualization_strain_rate_h
-#define __aspect__postprocess_visualization_strain_rate_h
+#ifndef _aspect_postprocess_visualization_strain_rate_h
+#define _aspect_postprocess_visualization_strain_rate_h
 
 #include <aspect/postprocess/visualization.h>
 #include <aspect/simulator_access.h>

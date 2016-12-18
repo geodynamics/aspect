@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__postprocess_tracer_h
-#define __aspect__postprocess_tracer_h
+#ifndef _aspect_postprocess_tracer_h
+#define _aspect_postprocess_tracer_h
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/particle/world.h>

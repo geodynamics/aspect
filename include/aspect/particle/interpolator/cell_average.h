@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_interpolator_cell_average_h
-#define __aspect__particle_interpolator_cell_average_h
+#ifndef _aspect_particle_interpolator_cell_average_h
+#define _aspect_particle_interpolator_cell_average_h
 
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/simulator_access.h>

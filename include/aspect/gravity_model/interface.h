@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__gravity_model_interface_h
-#define __aspect__gravity_model_interface_h
+#ifndef _aspect_gravity_model_interface_h
+#define _aspect_gravity_model_interface_h
 
 #include <aspect/plugins.h>
 #include <deal.II/base/point.h>

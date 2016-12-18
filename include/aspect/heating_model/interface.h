@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__heating_model_interface_h
-#define __aspect__heating_model_interface_h
+#ifndef _aspect_heating_model_interface_h
+#define _aspect_heating_model_interface_h
 
 #include <aspect/plugins.h>
 #include <aspect/material_model/interface.h>

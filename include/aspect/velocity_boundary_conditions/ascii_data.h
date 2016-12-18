@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__velocity_boundary_conditions_ascii_data_h
-#define __aspect__velocity_boundary_conditions_ascii_data_h
+#ifndef _aspect_velocity_boundary_conditions_ascii_data_h
+#define _aspect_velocity_boundary_conditions_ascii_data_h
 
 #include <aspect/velocity_boundary_conditions/interface.h>
 

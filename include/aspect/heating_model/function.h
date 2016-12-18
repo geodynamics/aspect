@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__heating_model_function_h
-#define __aspect__heating_model_function_h
+#ifndef _aspect_heating_model_function_h
+#define _aspect_heating_model_function_h
 
 #include <aspect/simulator_access.h>
 #include <aspect/heating_model/interface.h>

@@ -20,8 +20,8 @@
 
 
 
-#ifndef __aspect__prescribed_stokes_solution_interface_h
-#define __aspect__prescribed_stokes_solution_interface_h
+#ifndef _aspect_prescribed_stokes_solution_interface_h
+#define _aspect_prescribed_stokes_solution_interface_h
 
 #include <aspect/plugins.h>
 

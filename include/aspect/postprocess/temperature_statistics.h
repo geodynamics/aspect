@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__postprocess_temperature_statistics_h
-#define __aspect__postprocess_temperature_statistics_h
+#ifndef _aspect_postprocess_temperature_statistics_h
+#define _aspect_postprocess_temperature_statistics_h
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>

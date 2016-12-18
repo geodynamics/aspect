@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_generator_uniform_radial_h
-#define __aspect__particle_generator_uniform_radial_h
+#ifndef _aspect_particle_generator_uniform_radial_h
+#define _aspect_particle_generator_uniform_radial_h
 
 #include <aspect/particle/generator/interface.h>
 

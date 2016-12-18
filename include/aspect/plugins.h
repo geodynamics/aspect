@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__plugins_h
-#define __aspect__plugins_h
+#ifndef _aspect_plugins_h
+#define _aspect_plugins_h
 
 
 #include <deal.II/base/parameter_handler.h>

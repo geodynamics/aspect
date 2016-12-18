@@ -19,8 +19,8 @@
  */
 
 
-#ifndef __aspect__melt_h
-#define __aspect__melt_h
+#ifndef _aspect_melt_h
+#define _aspect_melt_h
 
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>

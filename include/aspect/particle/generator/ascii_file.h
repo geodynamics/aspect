@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_generator_ascii_file_h
-#define __aspect__particle_generator_ascii_file_h
+#ifndef _aspect_particle_generator_ascii_file_h
+#define _aspect_particle_generator_ascii_file_h
 
 #include <aspect/particle/generator/interface.h>
 

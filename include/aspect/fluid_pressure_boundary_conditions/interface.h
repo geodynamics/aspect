@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__fluid_pressure_boundary_conditions_interface_h
-#define __aspect__fluid_pressure_boundary_conditions_interface_h
+#ifndef _aspect_fluid_pressure_boundary_conditions_interface_h
+#define _aspect_fluid_pressure_boundary_conditions_interface_h
 
 #include <aspect/plugins.h>
 #include <aspect/material_model/interface.h>

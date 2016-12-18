@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__simulator_signals_h
-#define __aspect__simulator_signals_h
+#ifndef _aspect_simulator_signals_h
+#define _aspect_simulator_signals_h
 
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>

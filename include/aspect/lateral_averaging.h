@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__lateral_averaging_h
-#define __aspect__lateral_averaging_h
+#ifndef _aspect_lateral_averaging_h
+#define _aspect_lateral_averaging_h
 
 #include <aspect/simulator_access.h>
 

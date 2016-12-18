@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_world_h
-#define __aspect__particle_world_h
+#ifndef _aspect_particle_world_h
+#define _aspect_particle_world_h
 
 #include <aspect/global.h>
 #include <aspect/particle/particle.h>

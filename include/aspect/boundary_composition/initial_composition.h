@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__boundary_composition_initial_composition_h
-#define __aspect__boundary_composition_initial_composition_h
+#ifndef _aspect_boundary_composition_initial_composition_h
+#define _aspect_boundary_composition_initial_composition_h
 
 #include <aspect/boundary_composition/interface.h>
 #include <aspect/simulator_access.h>

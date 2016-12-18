@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__heating_model_latent_heat_melt_h
-#define __aspect__heating_model_latent_heat_melt_h
+#ifndef _aspect_heating_model_latent_heat_melt_h
+#define _aspect_heating_model_latent_heat_melt_h
 
 #include <aspect/heating_model/interface.h>
 #include <aspect/simulator_access.h>

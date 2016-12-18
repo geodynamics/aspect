@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__introspection_h
-#define __aspect__introspection_h
+#ifndef _aspect_introspection_h
+#define _aspect_introspection_h
 
 #include <deal.II/base/index_set.h>
 #include <deal.II/fe/component_mask.h>

@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __aspect__termination_criteria_end_step_h
-#define __aspect__termination_criteria_end_step_h
+#ifndef _aspect_termination_criteria_end_step_h
+#define _aspect_termination_criteria_end_step_h
 
 #include <aspect/termination_criteria/interface.h>
 #include <aspect/simulator_access.h>

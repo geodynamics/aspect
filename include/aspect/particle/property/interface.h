@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_property_interface_h
-#define __aspect__particle_property_interface_h
+#ifndef _aspect_particle_property_interface_h
+#define _aspect_particle_property_interface_h
 
 #include <aspect/particle/particle.h>
 #include <aspect/particle/interpolator/interface.h>

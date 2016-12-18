@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__initial_conditions_interface_h
-#define __aspect__initial_conditions_interface_h
+#ifndef _aspect_initial_conditions_interface_h
+#define _aspect_initial_conditions_interface_h
 
 #include <aspect/plugins.h>
 

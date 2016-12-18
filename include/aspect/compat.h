@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __aspect__compat_h
-#define __aspect__compat_h
+#ifndef _aspect_compat_h
+#define _aspect_compat_h
 
 #include <aspect/global.h>
 

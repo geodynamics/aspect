@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__geometry_model_spherical_shell_h
-#define __aspect__geometry_model_spherical_shell_h
+#ifndef _aspect_geometry_model_spherical_shell_h
+#define _aspect_geometry_model_spherical_shell_h
 
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>

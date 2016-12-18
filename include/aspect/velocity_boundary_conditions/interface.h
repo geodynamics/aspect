@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__velocity_boundary_conditions_interface_h
-#define __aspect__velocity_boundary_conditions_interface_h
+#ifndef _aspect_velocity_boundary_conditions_interface_h
+#define _aspect_velocity_boundary_conditions_interface_h
 
 #include <aspect/plugins.h>
 #include <aspect/geometry_model/interface.h>

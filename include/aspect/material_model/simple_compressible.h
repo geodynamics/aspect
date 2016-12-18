@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __aspect__model_simple_compressible_h
-#define __aspect__model_simple_compressible_h
+#ifndef _aspect_material_model_simple_compressible_h
+#define _aspect_material_model_simple_compressible_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>

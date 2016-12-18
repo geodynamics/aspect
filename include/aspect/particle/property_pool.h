@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_property_pool_h
-#define __aspect__particle_property_pool_h
+#ifndef _aspect_particle_property_pool_h
+#define _aspect_particle_property_pool_h
 
 #include <aspect/global.h>
 

@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__initial_conditions_box_h
-#define __aspect__initial_conditions_box_h
+#ifndef _aspect_initial_conditions_box_h
+#define _aspect_initial_conditions_box_h
 
 #include <aspect/initial_conditions/interface.h>
 #include <aspect/simulator_access.h>

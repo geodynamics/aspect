@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__prescribed_stokes_solution_function_h
-#define __aspect__prescribed_stokes_solution_function_h
+#ifndef _aspect_prescribed_stokes_solution_function_h
+#define _aspect_prescribed_stokes_solution_function_h
 
 #include <aspect/prescribed_stokes_solution/interface.h>
 #include <aspect/simulator_access.h>

@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_output_ascii_h
-#define __aspect__particle_output_ascii_h
+#ifndef _aspect_particle_output_ascii_h
+#define _aspect_particle_output_ascii_h
 
 #include <aspect/particle/output/interface.h>
 #include <aspect/simulator_access.h>

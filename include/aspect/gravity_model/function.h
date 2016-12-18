@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__gravity_model_function_h
-#define __aspect__gravity_model_function_h
+#ifndef _aspect_gravity_model_function_h
+#define _aspect_gravity_model_function_h
 
 #include <aspect/gravity_model/interface.h>
 

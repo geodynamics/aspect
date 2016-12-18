@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__simulator_access_h
-#define __aspect__simulator_access_h
+#ifndef _aspect_simulator_access_h
+#define _aspect_simulator_access_h
 
 #include <deal.II/base/timer.h>
 #include <deal.II/base/conditional_ostream.h>

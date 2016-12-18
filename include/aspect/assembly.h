@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__assembly_h
-#define __aspect__assembly_h
+#ifndef _aspect_assembly_h
+#define _aspect_assembly_h
 
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>

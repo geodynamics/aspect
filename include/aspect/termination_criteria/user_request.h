@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__termination_criteria_user_request_h
-#define __aspect__termination_criteria_user_request_h
+#ifndef _aspect_termination_criteria_user_request_h
+#define _aspect_termination_criteria_user_request_h
 
 #include <aspect/termination_criteria/interface.h>
 #include <aspect/simulator_access.h>
