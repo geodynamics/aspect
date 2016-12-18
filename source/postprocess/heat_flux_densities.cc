@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,7 +19,7 @@
 */
 
 
-#include <aspect/postprocess/heat_flux_statistics.h>
+#include <aspect/postprocess/heat_flux_densities.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -46,8 +46,10 @@ namespace aspect
 
     template <int dim>
     std::pair<std::string,std::string>
-    HeatFluxStatistics<dim>::execute (TableHandler &statistics)
+    HeatFluxDensities<dim>::execute (TableHandler &statistics)
     {
+      const char *unit = (dim==2)? "W/m" : "W/m^2";
+
       // create a quadrature formula based on the temperature element alone.
       const QGauss<dim-1> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
 
@@ -62,6 +64,7 @@ namespace aspect
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
       std::map<types::boundary_id, double> local_boundary_fluxes;
+      std::map<types::boundary_id, double> local_areas;
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
@@ -70,15 +73,12 @@ namespace aspect
       MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
 
-      // for every surface face on which it makes sense to compute a
+      // For every surface face on which it makes sense to compute a
       // heat flux and that is owned by this processor,
       // integrate the normal heat flux given by the formula
       //   j =  - k * n . grad T
-      //
-      // for the spherical shell geometry, note that for the inner boundary,
-      // the normal vector points *into* the core, i.e. we compute the flux
-      // *out* of the mantle, not into it. we fix this when we add the local
-      // contribution to the global flux
+      // Then compute the area of each boundary that lives on this processor.
+      // Finally, sum over the processors and compute the ratio between the
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
@@ -119,6 +119,7 @@ namespace aspect
 
 
                 double local_normal_flux = 0;
+                double local_area = 0;
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                   {
                     const double thermal_conductivity
@@ -130,37 +131,46 @@ namespace aspect
                       (temperature_gradients[q] *
                        fe_face_values.normal_vector(q)) *
                       fe_face_values.JxW(q);
+
+                    local_area += fe_face_values.JxW(q);
                   }
 
                 const types::boundary_id boundary_indicator
                   = cell->face(f)->boundary_id();
                 local_boundary_fluxes[boundary_indicator] += local_normal_flux;
+                local_areas[boundary_indicator] += local_area;
               }
 
       // now communicate to get the global values
-      std::map<types::boundary_id, double> global_boundary_fluxes;
+      std::map<types::boundary_id, double> global_boundary_flux_densities;
       {
         // first collect local values in the same order in which they are listed
         // in the set of boundary indicators
         const std::set<types::boundary_id>
         boundary_indicators
           = this->get_geometry_model().get_used_boundary_indicators ();
-        std::vector<double> local_values;
+        std::vector<double> local_boundary_fluxes_vector;
+        std::vector<double> local_areas_vector;
         for (std::set<types::boundary_id>::const_iterator
              p = boundary_indicators.begin();
              p != boundary_indicators.end(); ++p)
-          local_values.push_back (local_boundary_fluxes[*p]);
+          {
+            local_boundary_fluxes_vector.push_back (local_boundary_fluxes[*p]);
+            local_areas_vector.push_back (local_areas[*p]);
+          }
 
         // then collect contributions from all processors
-        std::vector<double> global_values (local_values.size());
-        Utilities::MPI::sum (local_values, this->get_mpi_communicator(), global_values);
+        std::vector<double> global_values (local_boundary_fluxes_vector.size());
+        std::vector<double> global_areas (local_areas_vector.size());
+        Utilities::MPI::sum (local_boundary_fluxes_vector, this->get_mpi_communicator(), global_values);
+        Utilities::MPI::sum (local_areas_vector, this->get_mpi_communicator(), global_areas);
 
-        // and now take them apart into the global map again
+        // and now take them apart into the global map again and compute ratios
         unsigned int index = 0;
         for (std::set<types::boundary_id>::const_iterator
              p = boundary_indicators.begin();
              p != boundary_indicators.end(); ++p, ++index)
-          global_boundary_fluxes[*p] = global_values[index];
+          global_boundary_flux_densities[*p] = global_values[index]/global_areas[index];
       }
 
       // now add all of the computed heat fluxes to the statistics object
@@ -168,14 +178,14 @@ namespace aspect
       std::ostringstream screen_text;
       unsigned int index = 0;
       for (std::map<types::boundary_id, double>::const_iterator
-           p = global_boundary_fluxes.begin();
-           p != global_boundary_fluxes.end(); ++p, ++index)
+           p = global_boundary_flux_densities.begin();
+           p != global_boundary_flux_densities.end(); ++p, ++index)
         {
-          const std::string name = "Outward heat flux through boundary with indicator "
+          const std::string name = "Outward heat flux density for boundary with id "
                                    + Utilities::int_to_string(p->first)
                                    + parenthesize_if_nonempty(this->get_geometry_model()
                                                               .translate_id_to_symbol_name (p->first))
-                                   + " (W)";
+                                   + " (" + unit +")";
           statistics.add_value (name, p->second);
 
           // also make sure that the other columns filled by the this object
@@ -185,11 +195,11 @@ namespace aspect
 
           // finally have something for the screen
           screen_text.precision(4);
-          screen_text << p->second << " W"
-                      << (index == global_boundary_fluxes.size()-1 ? "" : ", ");
+          screen_text << p->second << " " << unit
+                      << (index == global_boundary_flux_densities.size()-1 ? "" : ", ");
         }
 
-      return std::pair<std::string, std::string> ("Heat fluxes through boundary parts:",
+      return std::pair<std::string, std::string> ("Heat flux densities for boundaries:",
                                                   screen_text.str());
     }
   }
@@ -201,40 +211,24 @@ namespace aspect
 {
   namespace Postprocess
   {
-    ASPECT_REGISTER_POSTPROCESSOR(HeatFluxStatistics,
-                                  "heat flux statistics",
+    ASPECT_REGISTER_POSTPROCESSOR(HeatFluxDensities,
+                                  "heat flux densities",
                                   "A postprocessor that computes some statistics about "
-                                  "the (conductive) heat flux across boundaries. For each boundary "
-                                  "indicator (see your geometry description for which boundary "
-                                  "indicators are used), the heat flux is computed in outward "
+                                  "the (conductive) heat flux density for each boundary "
+                                  "id. The heat flux density is computed in outward "
                                   "direction, i.e., from the domain to the outside, using the "
-                                  "formula $\\int_{\\Gamma_i} -k \\nabla T \\cdot \\mathbf n$ "
+                                  "formula $\frac{1}{|\\Gamma_i|} \\int_{\\Gamma_i} -k \\nabla T \\cdot \\mathbf n$ "
                                   "where $\\Gamma_i$ is the part of the boundary with indicator $i$, "
                                   "$k$ is the thermal conductivity as reported by the material model, "
                                   "$T$ is the temperature, and $\\mathbf n$ is the outward normal. "
                                   "Note that the quantity so computed does not include any energy "
                                   "transported across the boundary by material transport in cases "
-                                  "where $\\mathbf u \\cdot \\mathbf n \\neq 0$. The pointwise "
-                                  "heatflux can be obtained from the heat flux map postprocessor, "
-                                  "which outputs the heatflux to a file, or the heat flux map "
-                                  "visualization postprocessor, which outputs the heat flux for "
-                                  "visualization. "
+                                  "where $\\mathbf u \\cdot \\mathbf n \\neq 0$."
                                   "\n\n"
-                                  "As stated, this postprocessor computes the \\textit{outbound} heat "
-                                  "flux. If you "
-                                  "are interested in the opposite direction, for example from "
-                                  "the core into the mantle when the domain describes the "
-                                  "mantle, then you need to multiply the result by -1."
-                                  "\n\n"
-                                  "\\note{In geodynamics, the term ``heat flux'' is often understood "
-                                  "to be the quantity $- k \\nabla T$, which is really a heat "
-                                  "flux \\textit{density}, i.e., a vector-valued field. In contrast "
-                                  "to this, the current postprocessor only computes the integrated "
-                                  "flux over each part of the boundary. Consequently, the units of "
-                                  "the quantity computed here are $W=\\frac{J}{s}$.}"
-                                  "\n\n"
-                                  "The ``heat flux densities'' postprocessor computes the same "
-                                  "quantity as the one here, but divided by the area of "
-                                  "the surface.")
+                                  "Note that the ``heat flux'' postprocessor computes the same "
+                                  "quantity as the one here, but not divided by the area of "
+                                  "the surface. In other words, it computes the "
+                                  "\\textit{total} heat flux through each boundary."
+                                 )
   }
 }
