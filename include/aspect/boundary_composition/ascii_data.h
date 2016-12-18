@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__boundary_composition_ascii_data_h
-#define __aspect__boundary_composition_ascii_data_h
+#ifndef _aspect_boundary_composition_ascii_data_h
+#define _aspect_boundary_composition_ascii_data_h
 
 #include <aspect/boundary_composition/interface.h>
 

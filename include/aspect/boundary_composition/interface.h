@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__boundary_composition_interface_h
-#define __aspect__boundary_composition_interface_h
+#ifndef _aspect_boundary_composition_interface_h
+#define _aspect_boundary_composition_interface_h
 
 #include <aspect/plugins.h>
 #include <aspect/geometry_model/interface.h>

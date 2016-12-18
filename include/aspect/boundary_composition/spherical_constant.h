@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__boundary_composition_spherical_constant_h
-#define __aspect__boundary_composition_spherical_constant_h
+#ifndef _aspect_boundary_composition_spherical_constant_h
+#define _aspect_boundary_composition_spherical_constant_h
 
 #include <aspect/boundary_composition/interface.h>
 

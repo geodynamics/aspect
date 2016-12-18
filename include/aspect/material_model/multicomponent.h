@@ -18,9 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
-#ifndef __aspect__model_multicomponent_h
-#define __aspect__model_multicomponent_h
+#ifndef _aspect_material_model_multicomponent_h
+#define _aspect_material_model_multicomponent_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>

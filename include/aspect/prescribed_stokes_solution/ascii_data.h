@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__perscribed_stokes_solution_ascii_data_h
-#define __aspect__perscribed_stokes_solution_ascii_data_h
+#ifndef _aspect_prescribed_stokes_solution_ascii_data_h
+#define _aspect_prescribed_stokes_solution_ascii_data_h
 
 #include <aspect/prescribed_stokes_solution/interface.h>
 #include <aspect/simulator_access.h>

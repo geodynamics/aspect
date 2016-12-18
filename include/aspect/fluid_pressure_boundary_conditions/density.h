@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__fluid_pressure_boundary_conditions_density_h
-#define __aspect__fluid_pressure_boundary_conditions_density_h
+#ifndef _aspect_fluid_pressure_boundary_conditions_density_h
+#define _aspect_fluid_pressure_boundary_conditions_density_h
 
 #include <aspect/fluid_pressure_boundary_conditions/interface.h>
 #include <aspect/simulator_access.h>

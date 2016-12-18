@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_quadrature_points_h
-#define __aspect__particle_quadrature_points_h
+#ifndef _aspect_particle_generator_quadrature_points_h
+#define _aspect_particle_generator_quadrature_points_h
 
 #include <aspect/particle/generator/interface.h>
 

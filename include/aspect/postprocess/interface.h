@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__postprocess_interface_h
-#define __aspect__postprocess_interface_h
+#ifndef _aspect_postprocess_interface_h
+#define _aspect_postprocess_interface_h
 
 #include <aspect/global.h>
 #include <aspect/plugins.h>

@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__boundary_temperature_two_merged_boxes_h
-#define __aspect__boundary_temperature_two_merged_boxes_h
+#ifndef _aspect_boundary_temperature_two_merged_boxes_h
+#define _aspect_boundary_temperature_two_merged_boxes_h
 
 #include <aspect/boundary_temperature/interface.h>
 

@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__geometry_model_chunk_h
-#define __aspect__geometry_model_chunk_h
+#ifndef _aspect_geometry_model_chunk_h
+#define _aspect_geometry_model_chunk_h
 
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>

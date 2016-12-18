@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__boundary_composition_two_merged_boxes_h
-#define __aspect__boundary_composition_two_merged_boxes_h
+#ifndef _aspect_boundary_composition_two_merged_boxes_h
+#define _aspect_boundary_composition_two_merged_boxes_h
 
 #include <aspect/boundary_composition/interface.h>
 #include <aspect/simulator_access.h>

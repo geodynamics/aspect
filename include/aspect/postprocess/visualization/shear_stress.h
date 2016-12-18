@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__postprocess_visualization_shear_stress_h
-#define __aspect__postprocess_visualization_shear_stress_h
+#ifndef _aspect_postprocess_visualization_shear_stress_h
+#define _aspect_postprocess_visualization_shear_stress_h
 
 #include <aspect/postprocess/visualization.h>
 #include <aspect/simulator_access.h>

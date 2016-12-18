@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_integrator_rk_2_h
-#define __aspect__particle_integrator_rk_2_h
+#ifndef _aspect_particle_integrator_rk_2_h
+#define _aspect_particle_integrator_rk_2_h
 
 #include <aspect/particle/integrator/interface.h>
 

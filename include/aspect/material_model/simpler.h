@@ -16,11 +16,10 @@
   You should have received a copy of the GNU General Public License
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
- */
+*/
 
-
-#ifndef __aspect__model_simpler_h
-#define __aspect__model_simpler_h
+#ifndef _aspect_material_model_simpler_h
+#define _aspect_material_model_simpler_h
 
 #include <aspect/material_model/interface.h>
 

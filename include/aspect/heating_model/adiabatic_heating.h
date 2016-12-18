@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__heating_model_adiabatic_heating_h
-#define __aspect__heating_model_adiabatic_heating_h
+#ifndef _aspect_heating_model_adiabatic_heating_h
+#define _aspect_heating_model_adiabatic_heating_h
 
 #include <aspect/heating_model/interface.h>
 #include <aspect/simulator_access.h>

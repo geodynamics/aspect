@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__initial_conditions_S40RTS_perturbation_h
-#define __aspect__initial_conditions_S40RTS_perturbation_h
+#ifndef _aspect_initial_conditions_S40RTS_perturbation_h
+#define _aspect_initial_conditions_S40RTS_perturbation_h
 
 #include <aspect/simulator_access.h>
 #include <deal.II/base/std_cxx11/array.h>

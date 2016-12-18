@@ -17,8 +17,8 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-#ifndef __aspect__geometry_model_sphere_h
-#define __aspect__geometry_model_sphere_h
+#ifndef _aspect_geometry_model_sphere_h
+#define _aspect_geometry_model_sphere_h
 
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>

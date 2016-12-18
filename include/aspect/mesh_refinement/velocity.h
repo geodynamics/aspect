@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__mesh_refinement_velocity_h
-#define __aspect__mesh_refinement_velocity_h
+#ifndef _aspect_mesh_refinement_velocity_h
+#define _aspect_mesh_refinement_velocity_h
 
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/simulator_access.h>

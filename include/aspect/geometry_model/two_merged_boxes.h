@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__geometry_model_two_merged_boxes_h
-#define __aspect__geometry_model_two_merged_boxes_h
+#ifndef _aspect_geometry_model_two_merged_boxes_h
+#define _aspect_geometry_model_two_merged_boxes_h
 
 #include <aspect/geometry_model/box.h>
 

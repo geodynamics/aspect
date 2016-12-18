@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__mesh_refinement_interface_h
-#define __aspect__mesh_refinement_interface_h
+#ifndef _aspect_mesh_refinement_interface_h
+#define _aspect_mesh_refinement_interface_h
 
 #include <aspect/global.h>
 #include <aspect/plugins.h>

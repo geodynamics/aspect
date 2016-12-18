@@ -18,9 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
-#ifndef __aspect__model_melt_simple_h
-#define __aspect__model_melt_simple_h
+#ifndef _aspect_material_model_melt_simple_h
+#define _aspect_material_model_melt_simple_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>

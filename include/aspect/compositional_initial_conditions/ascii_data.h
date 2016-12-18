@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__compositional_initial_conditions_ascii_data_h
-#define __aspect__compositional_initial_conditions_ascii_data_h
+#ifndef _aspect_compositional_initial_conditions_ascii_data_h
+#define _aspect_compositional_initial_conditions_ascii_data_h
 
 #include <aspect/compositional_initial_conditions/interface.h>
 

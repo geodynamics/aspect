@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__traction_boundary_conditions_ascii_data_h
-#define __aspect__traction_boundary_conditions_ascii_data_h
+#ifndef _aspect_traction_boundary_conditions_ascii_data_h
+#define _aspect_traction_boundary_conditions_ascii_data_h
 
 #include <aspect/traction_boundary_conditions/interface.h>
 #include <aspect/simulator_access.h>

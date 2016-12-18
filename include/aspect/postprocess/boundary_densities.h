@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__postprocess_boundary_densities_h
-#define __aspect__postprocess_boundary_densities_h
+#ifndef _aspect_postprocess_boundary_densities_h
+#define _aspect_postprocess_boundary_densities_h
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>

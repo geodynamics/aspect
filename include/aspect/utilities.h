@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__utilities_h
-#define __aspect__utilities_h
+#ifndef _aspect_utilities_h
+#define _aspect_utilities_h
 
 #include <aspect/global.h>
 

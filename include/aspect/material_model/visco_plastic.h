@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __aspect__model_visco_plastic_h
-#define __aspect__model_visco_plastic_h
+#ifndef _aspect_material_model_visco_plastic_h
+#define _aspect_material_model_visco_plastic_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>

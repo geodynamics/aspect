@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__global_h
-#define __aspect__global_h
+#ifndef _aspect_global_h
+#define _aspect_global_h
 
 #ifdef ASPECT_USE_PETSC
 #  include <deal.II/lac/petsc_parallel_block_vector.h>

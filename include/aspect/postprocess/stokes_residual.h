@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__postprocess_stokes_residual_h
-#define __aspect__postprocess_stokes_residual_h
+#ifndef _aspect_postprocess_stokes_residual_h
+#define _aspect_postprocess_stokes_residual_h
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>

@@ -20,8 +20,8 @@
 
 
 
-#ifndef __aspect__mesh_refinement_maximum_refinement_function_h
-#define __aspect__mesh_refinement_maximum_refinement_function_h
+#ifndef _aspect_mesh_refinement_maximum_refinement_function_h
+#define _aspect_mesh_refinement_maximum_refinement_function_h
 
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/simulator_access.h>

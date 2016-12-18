@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__gravity_model_radial_h
-#define __aspect__gravity_model_radial_h
+#ifndef _aspect_gravity_model_radial_h
+#define _aspect_gravity_model_radial_h
 
 #include <aspect/simulator_access.h>
 #include <aspect/gravity_model/interface.h>
