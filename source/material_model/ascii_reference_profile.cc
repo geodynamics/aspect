@@ -32,7 +32,7 @@ namespace aspect
     AsciiReferenceProfile<dim>::initialize ()
     {
       profile.reset(new aspect::Utilities::AsciiDataProfile<dim>);
-      profile->initialize(4,this->get_mpi_communicator());
+      profile->initialize(6,this->get_mpi_communicator());
     }
 
     template <int dim>
@@ -120,12 +120,12 @@ namespace aspect
                              Patterns::Bool (),
                              "Whether to use the TALA instead of the ALA "
                              "approximation.");
-
-          aspect::Utilities::AsciiDataProfile<dim>::declare_parameters(prm,
-              "$ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/",
-              "simple_test.txt");
         }
         prm.leave_subsection();
+
+        aspect::Utilities::AsciiDataProfile<dim>::declare_parameters(prm,
+            "$ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/",
+            "simple_test.txt");
       }
       prm.leave_subsection();
     }
@@ -143,10 +143,10 @@ namespace aspect
           tala                 = prm.get_bool ("Use TALA");
           thermal_conductivity = prm.get_double ("Thermal conductivity");
           viscosity            = prm.get_double ("Viscosity");
-
-          profile->parse_parameters(prm);
         }
         prm.leave_subsection();
+
+        profile->parse_parameters(prm);
       }
       prm.leave_subsection();
 
