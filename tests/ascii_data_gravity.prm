@@ -1,4 +1,4 @@
-##### simple test for ascii data adiabatic conditions
+##### simple test for ascii data gravity profile
 
 set Dimension                              = 2
 
@@ -49,11 +49,7 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical
-
-  subsection Vertical
-    set Magnitude = 10
-  end
+  set Model name = ascii data
 end
 
 
@@ -66,7 +62,7 @@ end
 
 
 subsection Mesh refinement
-  set Initial global refinement                = 2
+  set Initial global refinement                = 5
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
   set Strategy                                 = temperature
@@ -74,10 +70,10 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, depth average
+  set List of postprocessors = visualization, depth average
 
   subsection Visualization
-    set List of output variables = adiabat
+    set List of output variables = gravity
     set Output format = gnuplot
   end
 end
