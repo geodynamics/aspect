@@ -176,7 +176,6 @@ namespace aspect
                                  (Utilities::split_string_list(prm.get ("Transition depths")));
           viscosity_prefactors = Utilities::string_to_double
                                  (Utilities::split_string_list(prm.get ("Viscosity prefactors")));
-
           // make sure to check against the depth lists for size errors, since using depth
           if (viscosity_prefactors.size() != transition_depths.size()+1)
             AssertThrow(false, ExcMessage("Error: The list of Viscosity prefactors needs to have exactly "

@@ -12,8 +12,9 @@ set End time                               = 2.63e8
 subsection Material model
   set Model name = ascii reference profile
 
-  subsection Ascii reference profile
+  subsection Ascii data model
     set Data file name = isentrope_properties.txt
+    set Data directory = /home/dannberg/software/aspect/data/adiabatic-conditions/ascii-data/
   end
 end
 
