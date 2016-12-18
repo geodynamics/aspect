@@ -107,8 +107,9 @@ namespace aspect
         bool tala;
 
         double viscosity;
-        //double thermal_viscosity_exponent;
-        //double viscosity_jump;
+        double thermal_viscosity_exponent;
+        std::vector<double> viscosity_prefactors;
+        std::vector<double> transition_depths;
 
         double thermal_conductivity;
 

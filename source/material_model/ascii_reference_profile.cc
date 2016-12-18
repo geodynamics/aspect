@@ -49,7 +49,19 @@ namespace aspect
           const double depth = this->get_geometry_model().depth(position);
           const Point<1> profile_position(depth);
 
-          out.viscosities[i] = viscosity;
+          double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*temperature_deviation/this->get_adiabatic_conditions().temperature(position)),1e3),1e-3);
+          if (std::isnan(visc_temperature_dependence))
+            visc_temperature_dependence = 1.0;
+
+          double visc_depth_dependence = viscosity_prefactors[0];
+          for (unsigned int j=0; j < transition_depths.size(); ++j)
+            {
+              if(depth>transition_depths[j])
+                visc_depth_dependence = viscosity_prefactors[j+1];
+            }
+
+          out.viscosities[i] = viscosity * visc_temperature_dependence * visc_depth_dependence;
+
           out.thermal_conductivities[i] = thermal_conductivity;
 
           out.specific_heat[i] = profile.get_data_component(profile_position,5);
@@ -119,6 +131,21 @@ namespace aspect
                              Patterns::Bool (),
                              "Whether to use the TALA instead of the ALA "
                              "approximation.");
+          prm.declare_entry ("Thermal viscosity exponent", "0.0",
+                             Patterns::Double (0),
+                             "The temperature dependence of viscosity. Dimensionless exponent.");
+          prm.declare_entry ("Transition depths", "1.5e5, 4.1e5, 6.6e5",
+                             Patterns::List (Patterns::Double(0)),
+                             "A list of depths where the viscosity changes. Values must "
+                             "monotonically increase. "
+                             "Units: $m$.");
+          prm.declare_entry ("Viscosity prefactors", "10, 0.1, 1, 10",
+                             Patterns::List (Patterns::Double(0)),
+                             "A list of prefactors for the viscosity for each phase. The reference "
+                             "viscosity will be multiplied by this factor to get the corresponding "
+                             "viscosity for each phase. "
+                             "List must have one more entry than Phase transition depths. "
+                             "Units: non-dimensional.");
         }
         prm.leave_subsection();
 
@@ -142,6 +169,16 @@ namespace aspect
           tala                 = prm.get_bool ("Use TALA");
           thermal_conductivity = prm.get_double ("Thermal conductivity");
           viscosity            = prm.get_double ("Viscosity");
+          thermal_viscosity_exponent = prm.get_double ("Thermal viscosity exponent");
+          transition_depths    = Utilities::string_to_double
+                                 (Utilities::split_string_list(prm.get ("Transition depths")));
+          viscosity_prefactors = Utilities::string_to_double
+                                 (Utilities::split_string_list(prm.get ("Viscosity prefactors")));
+
+          // make sure to check against the depth lists for size errors, since using depth
+          if (viscosity_prefactors.size() != transition_depths.size()+1)
+            AssertThrow(false, ExcMessage("Error: The list of Viscosity prefactors needs to have exactly "
+                                          "one more entry than the list of Transition depths. "));
         }
         prm.leave_subsection();
 
