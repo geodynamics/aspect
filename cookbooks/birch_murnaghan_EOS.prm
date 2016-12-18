@@ -12,10 +12,17 @@ set End time                               = 2.63e8
 subsection Material model
   set Model name = ascii reference profile
 
+  subsection Ascii reference profile
+    set Thermal viscosity exponent = 10.0
+    set Viscosity prefactors = 1.0, 0.1, 1.0, 10.0
+  end
+
   subsection Ascii data model
     set Data file name = isentrope_properties.txt
     set Data directory = $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
   end
+
+  set Material averaging = harmonic average
 end
 
 # The geometry is a spherical shell with the inner and 
@@ -92,10 +99,10 @@ end
 
 
 subsection Mesh refinement
-  set Refinement fraction                = 0.2
+  set Refinement fraction                = 0.4
   set Coarsening fraction                = 0.05
   set Initial adaptive refinement        = 1
-  set Initial global refinement          = 4
+  set Initial global refinement          = 5
   set Strategy                           = temperature, maximum refinement function
   set Time steps between mesh refinement = 5
 
