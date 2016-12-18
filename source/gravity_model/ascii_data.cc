@@ -71,6 +71,7 @@ namespace aspect
         AssertThrow (false,
                      ExcMessage ("Not a valid geometry model for the gravity model"
                                  "ascii data."));
+      return Tensor<1,dim>();
     }
 
     template <int dim>
