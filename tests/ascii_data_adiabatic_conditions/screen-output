@@ -1,0 +1,34 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1.25e-12 m/year, 3.22e-12 m/year
+     Temperature min/avg/max:            3 K, 3.5 K, 4 K
+     Heat fluxes through boundary parts: 4.794e-15 W, 7.99e-15 W, -4.7 W, 4.7 W
+     Writing graphical output:           output-ascii_data_adiabatic_conditions/solution/solution-00000
+     Writing depth average:              output-ascii_data_adiabatic_conditions/depth_average.gnuplot
+
+*** Timestep 1:  t=1e+06 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  8.28e-15 m/year, 1.5e-14 m/year
+     Temperature min/avg/max:            3 K, 3.5 K, 4 K
+     Heat fluxes through boundary parts: 4.794e-15 W, 7.99e-15 W, -4.7 W, 4.7 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
