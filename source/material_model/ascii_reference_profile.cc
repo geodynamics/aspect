@@ -31,8 +31,7 @@ namespace aspect
     void
     AsciiReferenceProfile<dim>::initialize ()
     {
-      profile.reset(new aspect::Utilities::AsciiDataProfile<dim>);
-      profile->initialize(6,this->get_mpi_communicator());
+      profile.initialize(6,this->get_mpi_communicator());
     }
 
     template <int dim>
@@ -53,9 +52,9 @@ namespace aspect
           out.viscosities[i] = viscosity;
           out.thermal_conductivities[i] = thermal_conductivity;
 
-          out.specific_heat[i] = profile->get_data_component(profile_position,5);
-          out.thermal_expansion_coefficients[i] = profile->get_data_component(profile_position,4);
-          out.densities[i] = profile->get_data_component(profile_position,2)
+          out.specific_heat[i] = profile.get_data_component(profile_position,5);
+          out.thermal_expansion_coefficients[i] = profile.get_data_component(profile_position,4);
+          out.densities[i] = profile.get_data_component(profile_position,2)
                              * (1.0 - out.thermal_expansion_coefficients[i] * temperature_deviation);
 
           out.compressibilities[i] = 0.0;
@@ -146,7 +145,7 @@ namespace aspect
         }
         prm.leave_subsection();
 
-        profile->parse_parameters(prm);
+        profile.parse_parameters(prm);
       }
       prm.leave_subsection();
 

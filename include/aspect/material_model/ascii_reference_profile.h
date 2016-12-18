@@ -115,7 +115,7 @@ namespace aspect
         /**
          * Object containing the data profile.
          */
-        std_cxx11::shared_ptr<aspect::Utilities::AsciiDataProfile<dim> > profile;
+        aspect::Utilities::AsciiDataProfile<dim> profile;
     };
 
   }
