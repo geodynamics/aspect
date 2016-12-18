@@ -14,7 +14,7 @@ subsection Material model
 
   subsection Ascii data model
     set Data file name = isentrope_properties.txt
-    set Data directory = /home/dannberg/software/aspect/data/adiabatic-conditions/ascii-data/
+    set Data directory = $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
   end
 end
 
