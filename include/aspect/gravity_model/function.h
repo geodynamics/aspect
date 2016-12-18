@@ -48,7 +48,7 @@ namespace aspect
         Function ();
 
         /**
-         * Return the initial temperature as a function of position.
+         * Return the gravity vector as a function of position.
          */
         virtual
         Tensor<1,dim> gravity_vector (const Point<dim> &position) const;
@@ -75,7 +75,7 @@ namespace aspect
 
       private:
         /**
-         * A function object representing the temperature.
+         * A function object representing the gravity.
          */
         Functions::ParsedFunction<dim> function;
     };
