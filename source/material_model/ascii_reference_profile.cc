@@ -180,6 +180,7 @@ namespace aspect
           if (viscosity_prefactors.size() != transition_depths.size()+1)
             AssertThrow(false, ExcMessage("Error: The list of Viscosity prefactors needs to have exactly "
                                           "one more entry than the list of Transition depths. "));
+                                          "one more entry than the list of Transition depths. "));
         }
         prm.leave_subsection();
 
