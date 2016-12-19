@@ -162,8 +162,9 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(BiquadraticLeastSquares,
                                             "biquadratic",
-                                            "Interpolates particle properties onto a vector of points using a biquadratic least squares method."
-                                            "Currently, only 2D models are supported.")
+                                            "Interpolates particle properties onto a vector of points using a "
+                                            "biquadratic least squares method. Currently, only 2D models are "
+                                            "supported. ")
     }
   }
 }

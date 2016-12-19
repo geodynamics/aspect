@@ -154,8 +154,9 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(BilinearLeastSquares,
                                             "bilinear",
-                                            "Interpolates particle properties onto a vector of points using a bilinear least squares method."
-                                            "Currently only 2D models are supported.")
+                                            "Interpolates particle properties onto a vector of points using a "
+                                            "bilinear least squares method. Currently only 2D models are "
+                                            "supported. ")
     }
   }
 }

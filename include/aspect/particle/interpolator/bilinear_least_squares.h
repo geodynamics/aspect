@@ -23,7 +23,6 @@
 
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/simulator_access.h>
-#include <deal.II/lac/full_matrix.h>
 
 namespace aspect
 {

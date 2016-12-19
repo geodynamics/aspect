@@ -7,6 +7,13 @@
  *
  * <ol>
  *
+ * <li> New: Support for two particle interpolation schemes (bilinear, and
+ * biquadratic) has been added. Using the least squares method, a bilinear
+ * or biquadratic function is approximated and evaluated onto compositional
+ * fields with a simple overshoot and undershoot correction.
+ * <br>
+ * (Harsha Lokavarapu, Ying He, Gerry Puckett, 2016/12/28)
+ *
  * <li> New: Blankenbach benchmarks were added.
  * <br>
  * (Timo Heister, 2017/02/16)
