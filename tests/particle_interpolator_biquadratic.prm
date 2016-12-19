@@ -1,4 +1,4 @@
-# A test that performs bilinear least square interpolation from
+# A test that performs biquadratic least square interpolation from
 # particle properties to compositional fields that are flagged
 # as 'particle' advected fields.
 
