@@ -32,7 +32,7 @@ namespace aspect
     namespace Interpolator
     {
       /**
-       * Return the averaged properties of all tracers of the given cell.
+       * Returns the interpolated properties of all tracers of the given cell using biquadratic least squares method.
        *
        * @ingroup ParticleInterpolators
        */

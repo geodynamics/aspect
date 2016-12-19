@@ -37,6 +37,9 @@ namespace aspect
                                                       const std::vector<Point<dim> > &positions,
                                                       const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
+        AssertThrow(dim == 2,
+                    ExcMessage("Currently, the particle interpolator 'bilinear' is only supported for 2D models."));
+
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator found_cell;
 
         if (cell == typename parallel::distributed::Triangulation<dim>::active_cell_iterator())
@@ -151,7 +154,8 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(BilinearLeastSquares,
                                             "bilinear",
-                                            "Interpolates particle properties onto support points using a bilinear least squares in the given cell.")
+                                            "Interpolates particle properties onto a vector of points using a bilinear least squares method."
+                                            "Currently only 2D models are supported.")
     }
   }
 }
