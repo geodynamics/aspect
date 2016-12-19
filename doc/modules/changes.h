@@ -6,6 +6,11 @@
  *
  * <ol>
  *
+ * <li> New: ASPECT now allows querying its own version number as well as
+ * the version of all of the underlying libraries using the
+ * <code>--version</code> or <code>-v</code> command line flags.
+ * <br> (Wolfgang Bangerth, 2016/12/19)
+ *
  * <li> New: ASPECT now supports the choice between different formulations for
  * the governing equations including boussinesq and anelastic liquid
  * approximation. For this, the adiabatic conditions have been extended to
