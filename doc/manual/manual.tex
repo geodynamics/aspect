@@ -2901,6 +2901,11 @@ The purpose of these files is as follows:
 
 \end{itemize}
 
+There are other parts of \aspect{} that may also create files in the output
+directory. For example, if your simulation includes advecting along particles
+(see Section~\ref{sec:particles}), then visualization information for these
+particles will also appear in this file. See
+Section~\ref{sec:cookbooks-particles} for an example of how this looks like.
 
 
 \subsection{Selecting between 2d and 3d runs}
@@ -5134,12 +5139,44 @@ The 1000 particles we are asking here are initially uniformly distributed
 throughout the domain and are, at the end of each time step, advected along with
 the velocity field just computed. (There are a number of options to decide which
 method to use for advecting particles, see
-Section~\ref{parameters:Postprocess/Tracers}.) We can visualize them by opening
-both the field-based output files and the ones that correspond to particles
-(for example, \texttt{output/solution/solution-00072.visit} and
-\texttt{output/particles/particles-00072.visit}) and using a pseudo-color plot
-for the particles, selecting the ``id'' of particles to color each particle. This
-results in a plot like the one shown in
+Section~\ref{parameters:Postprocess/Tracers}.) 
+
+If you run this cookbook, information about all particles will be written into
+the output directory selected in the input file (as discussed in
+\index[prmindex]{Output directory}
+\index[prmindexfull]{Output directory}
+Section~\ref{sec:running-overview}). In the current case, in addition to the
+files already discussed there, a directory listing at the end of a run will show
+several particle related files:
+\begin{lstlisting}[frame=single,language=ksh]
+aspect> ls -l output/
+total 932
+-rw-rw-r-- 1 bangerth bangerth  11134 Dec 11 10:08 depth_average.gnuplot
+-rw-rw-r-- 1 bangerth bangerth  11294 Dec 11 10:08 log.txt
+-rw-rw-r-- 1 bangerth bangerth 326074 Dec 11 10:07 parameters.prm
+-rw-rw-r-- 1 bangerth bangerth 577138 Dec 11 10:07 parameters.tex
+drwxrwxr-x 2 bangerth bangerth   4096 Dec 11 18:40 particles
+-rw-rw-r-- 1 bangerth bangerth    335 Dec 11 18:40 particles.pvd
+-rw-rw-r-- 1 bangerth bangerth    168 Dec 11 18:40 particles.visit
+drwxr-xr-x 2 bangerth bangerth   4096 Dec 11 10:08 solution
+-rw-rw-r-- 1 bangerth bangerth    484 Dec 11 10:08 solution.pvd
+-rw-rw-r-- 1 bangerth bangerth    451 Dec 11 10:08 solution.visit
+-rw-rw-r-- 1 bangerth bangerth   8267 Dec 11 10:08 statistics
+\end{lstlisting}
+Here, the \texttt{particles.pvd} and \texttt{particles.visit} files contain
+a list of all visualization files from all processors and time steps. These
+files can be loaded in much the same way as the \texttt{solution.pvd} and
+\texttt{solution.visit} files that were discussed in Section~\ref{sec:viz}. The
+actual data files -- possibly a large number, but not of much immediate interest
+to users -- are located in the \texttt{particles} subdirectory.
+
+Coming back to the example at hand, we can visualize the particles that
+were advected along by opening both the field-based output files and the ones
+that correspond to particles (for example, \texttt{output/solution.visit} and
+\texttt{output/particles.visit}) and using a pseudo-color plot
+for the particles, selecting the ``id'' of particles to color each particle.
+By going to, for example, the output from the 72nd visualization output, this
+then results in a plot like the one shown in
 Fig.~\ref{fig:composition-passive-tracers}.
 
 \begin{figure}
