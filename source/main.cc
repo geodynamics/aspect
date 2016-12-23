@@ -363,6 +363,35 @@ parse_parameters (const std::string &input_as_string,
 }
 
 
+
+/**
+ * Print information about the versions of underlying libraries.
+ */
+template <class Stream>
+void print_version_information(Stream &stream)
+{
+  stream << "Version information of underlying libraries:\n"
+         << "   . deal.II:    "
+         << DEAL_II_PACKAGE_VERSION << '\n'
+#ifndef ASPECT_USE_PETSC
+         << "   . Trilinos:   "
+         << DEAL_II_TRILINOS_VERSION_MAJOR    << '.'
+         << DEAL_II_TRILINOS_VERSION_MINOR    << '.'
+         << DEAL_II_TRILINOS_VERSION_SUBMINOR << '\n'
+#else
+         << "   . PETSc:      "
+         << PETSC_VERSION_MAJOR    << '.'
+         << PETSC_VERSION_MINOR    << '.'
+         << PETSC_VERSION_SUBMINOR << '\n'
+#endif
+         << "   . p4est:      "
+         << DEAL_II_P4EST_VERSION_MAJOR << '.'
+         << DEAL_II_P4EST_VERSION_MINOR << '.'
+         << DEAL_II_P4EST_VERSION_SUBMINOR << '\n'
+         << std::endl;
+}
+
+
 int main (int argc, char *argv[])
 {
   using namespace dealii;
@@ -382,8 +411,11 @@ int main (int argc, char *argv[])
   try
     {
       deallog.depth_console(0);
+
+      // print the basic header from processor 0
       if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
         print_aspect_header(std::cout);
+
 
       // check whether ASPECT was called with exactly one argument. if not,
       // print an error message
@@ -413,6 +445,30 @@ int main (int argc, char *argv[])
             }
           return 2;
         }
+
+      // check whether ASPECT was called with --version or -v.
+      //
+      // for the same reason as above, ignore further arguments if we
+      // are using PETSc
+      if ((
+#ifdef ASPECT_USE_PETSC
+            argc >= 2
+#else
+            argc == 2
+#endif
+          )
+          &&
+          ((std::string (argv[1]) == "--version")
+           ||
+           (std::string (argv[1]) == "-v"))
+         )
+        {
+          if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+            print_version_information(std::cout);
+
+          return 0;
+        }
+
 
       // see where to read input from, then do the reading and
       // put the contents of the input into a string
