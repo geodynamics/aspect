@@ -252,7 +252,7 @@ namespace aspect
               std::ofstream f(filename.c_str(), std::ofstream::out);
 
               //Write the header
-              f << "#       time" << "       depth";
+              f << "#       time" << "        depth";
               for ( unsigned int i = 0; i < variables.size(); ++i)
                 f << " " << variables[i];
               f << std::endl;
@@ -266,9 +266,9 @@ namespace aspect
                     {
                       f << std::setw(12)
                         << (this->convert_output_to_years() ? point->time/year_in_seconds : point->time)
-                        << std::setw(12) << depth;
+                        << ' ' << std::setw(12) << depth;
                       for ( unsigned int i = 0; i < variables.size(); ++i )
-                        f << std::setw(12) << point->values[i][d];
+                        f << ' ' << std::setw(12) << point->values[i][d];
                       f << std::endl;
                       depth+= max_depth/static_cast<double>(point->values[0].size() );
                     }
