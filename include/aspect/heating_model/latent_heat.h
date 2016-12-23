@@ -38,7 +38,7 @@ namespace aspect
      *   $ -\rho T frac{\partial S}{\partial T} \frac{D T}{D t}$
      * so that we can add
      *   $ -\rho T frac{\partial S}{\partial T} $
-     * to the $\rho c_p$ term.
+     * to the $\rho C_p$ term.
      *
      * The right-hand side term from latent heating is
      *   $\frac{\partial S}{\partial p} T \rho (u \dot \nabla p)$.

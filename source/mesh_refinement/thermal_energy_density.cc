@@ -38,7 +38,7 @@ namespace aspect
 
       // create a vector in which we set the temperature block to
       // be a finite element interpolation of the thermal energy density
-      // rho*c_p*T. we do so by setting up a quadrature formula with the
+      // rho*C_p*T. we do so by setting up a quadrature formula with the
       // temperature unit support points, then looping over these
       // points, compute the output quantity at them, and writing
       // the result into the output vector in the same order

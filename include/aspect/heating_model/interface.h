@@ -73,7 +73,7 @@ namespace aspect
 
       /**
        * Left hand side contribution of latent heat; this is added to the
-       * $\\rho c_p$ term on the left hand side of the energy equation.
+       * $\\rho C_p$ term on the left hand side of the energy equation.
        */
       std::vector<double> lhs_latent_heat_terms;
     };

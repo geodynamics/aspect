@@ -91,7 +91,7 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(ThermalDiffusivity,
                                                   "thermal diffusivity",
                                                   "A visualization output object that generates output "
-                                                  "for the thermal diffusivity $\\kappa$=$\\frac{k}{\\rho c_p}$, "
+                                                  "for the thermal diffusivity $\\kappa$=$\\frac{k}{\\rho C_p}$, "
                                                   "with $k$ the thermal conductivity.")
     }
   }
