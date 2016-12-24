@@ -34,8 +34,10 @@
 
 #include <deal.II/lac/generic_linear_algebra.h>
 
+DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
+DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/multithread_info.h>
