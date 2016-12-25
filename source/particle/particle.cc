@@ -120,7 +120,7 @@ namespace aspect
           location = particle.location;
           reference_location = particle.reference_location;
           id = particle.id;
-          property_pool = property_pool;
+          property_pool = particle.property_pool;
 
           if (property_pool != NULL)
             {
