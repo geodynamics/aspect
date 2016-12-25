@@ -75,7 +75,7 @@ namespace aspect
       // now integrate downward using the explicit Euler method for simplicity
       //
       // note: p'(z) = rho(p,T) * |g|
-      //       T'(z) = alpha |g| T / c_p
+      //       T'(z) = alpha |g| T / C_p
       for (unsigned int i=0; i<n_points; ++i)
         {
           if (i==0)
