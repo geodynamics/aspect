@@ -21,6 +21,7 @@
 
 
 #include <aspect/postprocess/velocity_boundary_statistics.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -30,22 +31,6 @@ namespace aspect
 {
   namespace Postprocess
   {
-    namespace
-    {
-      /**
-       * Given a string #s, return it in the form ' ("s")' if nonempty.
-       * Otherwise just return the empty string itself.
-       */
-      std::string parenthesize_if_nonempty (const std::string &s)
-      {
-        if (s.size() > 0)
-          return " (\"" + s + "\")";
-        else
-          return "";
-      }
-    }
-
-
     template <int dim>
     std::pair<std::string,std::string>
     VelocityBoundaryStatistics<dim>::execute (TableHandler &statistics)
@@ -156,14 +141,14 @@ namespace aspect
             {
               const std::string name_max = "Maximum velocity magnitude on boundary with indicator "
                                            + Utilities::int_to_string(p->first)
-                                           + parenthesize_if_nonempty(this->get_geometry_model()
-                                                                      .translate_id_to_symbol_name (p->first))
+                                           + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
+                                                                                         .translate_id_to_symbol_name (p->first))
                                            + " (m/yr)";
               statistics.add_value (name_max, p->second*year_in_seconds);
               const std::string name_min = "Minimum velocity magnitude on boundary with indicator "
                                            + Utilities::int_to_string(a->first)
-                                           + parenthesize_if_nonempty(this->get_geometry_model()
-                                                                      .translate_id_to_symbol_name (p->first))
+                                           + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
+                                                                                         .translate_id_to_symbol_name (p->first))
                                            + " (m/yr)";
               statistics.add_value (name_min, a->second*year_in_seconds);
               // also make sure that the other columns filled by the this object
@@ -177,14 +162,14 @@ namespace aspect
             {
               const std::string name_max = "Maximum velocity magnitude on boundary with indicator "
                                            + Utilities::int_to_string(p->first)
-                                           + parenthesize_if_nonempty(this->get_geometry_model()
-                                                                      .translate_id_to_symbol_name (p->first))
+                                           + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
+                                                                                         .translate_id_to_symbol_name (p->first))
                                            + " (m/s)";
               statistics.add_value (name_max, p->second);
               const std::string name_min = "Minimum velocity magnitude on boundary with indicator "
                                            + Utilities::int_to_string(a->first)
-                                           + parenthesize_if_nonempty(this->get_geometry_model()
-                                                                      .translate_id_to_symbol_name (p->first))
+                                           + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
+                                                                                         .translate_id_to_symbol_name (p->first))
                                            + " (m/s)";
               statistics.add_value (name_min, a->second);
               // also make sure that the other columns filled by the this object

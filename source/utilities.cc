@@ -850,6 +850,13 @@ namespace aspect
                                           ASPECT_SOURCE_DIR);
     }
 
+    std::string parenthesize_if_nonempty (const std::string &s)
+    {
+      if (s.size() > 0)
+        return " (\"" + s + "\")";
+      else
+        return "";
+    }
 
     template <int dim>
     AsciiDataLookup<dim>::AsciiDataLookup(const unsigned int components,
