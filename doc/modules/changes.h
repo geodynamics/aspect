@@ -6,6 +6,9 @@
  *
  * <ol>
  *
+ * <li> New: Added a "heat flux densities" postprocessor.
+ * <br> (Timo Heister, 2016/12/26)
+ *
  * <li> New: ASPECT now allows querying its own version number as well as
  * the version of all of the underlying libraries using the
  * <code>--version</code> or <code>-v</code> command line flags.
