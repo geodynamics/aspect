@@ -29,10 +29,6 @@ namespace aspect
   {
     namespace Interpolator
     {
-      /**
-       * Return the cell-wise evaluated properties of the biquadratic least squares function
-       * at the positions.
-       */
       template <int dim>
       std::vector<std::vector<double> >
       BiquadraticLeastSquares<dim>::properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
@@ -49,15 +45,12 @@ namespace aspect
             // We can not simply use one of the points as input for find_active_cell_around_point
             // because for vertices of mesh cells we might end up getting ghost_cells as return value
             // instead of the local active cell. So make sure we are well in the inside of a cell.
-            Point<dim> approximated_cell_midpoint = positions[0];
-            if (positions.size() > 1)
-              {
-                Tensor<1,dim> direction_to_center;
-                for (unsigned int i = 1; i<positions.size()-1; ++i)
-                  direction_to_center += positions[i] - positions[0];
-                direction_to_center /= positions.size() - 1;
-                approximated_cell_midpoint += direction_to_center;
-              }
+            Assert(positions.size() > 0,
+                   ExcMessage("The particle property interpolator was not given any "
+                              "positions to evaluate the particle properties at."));
+
+            const Point<dim> approximated_cell_midpoint = std::accumulate (positions.begin(), positions.end(), Point<dim>())
+                                                          / static_cast<double> (positions.size());
 
             found_cell =
               (GridTools::find_active_cell_around_point<> (this->get_mapping(),
