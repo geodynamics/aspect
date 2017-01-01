@@ -427,11 +427,31 @@ int main (int argc, char *argv[])
       // can test is that there is *at least* one argument on the command
       // line
       if (
+        (
 #ifdef ASPECT_USE_PETSC
-        argc < 2
+          argc < 2
 #else
-        argc != 2
+          argc != 2
 #endif
+        )
+        // or if the user called aspect with either --help or -h as
+        // the sole arguments
+        ||
+        (
+          (
+#ifdef ASPECT_USE_PETSC
+            argc >= 2
+#else
+            argc == 2
+#endif
+          )
+          &&
+          (
+            (std::string(argv[1]) == "--help")
+            ||
+            (std::string(argv[1]) == "-h")
+          )
+        )
       )
         {
           // print usage info only on processor 0
@@ -442,8 +462,19 @@ int main (int argc, char *argv[])
                         << "    or ./aspect --                     (to read from stdin)"
                         << std::endl
                         << std::endl;
+              if (argc >= 2)
+                std::cout << "       ./aspect --version              (for information about library versions)"
+                          << std::endl
+                          << "       ./aspect --help                 (for this usage help)"
+                          << std::endl
+                          << std::endl;
+
             }
-          return 2;
+
+          if (argc >= 2)
+            return 0;    // return without error if called with --help
+          else
+            return 2;    // return error if no argument is given at all
         }
 
       // check whether ASPECT was called with --version or -v.
