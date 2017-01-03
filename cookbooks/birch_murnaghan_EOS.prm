@@ -6,7 +6,6 @@
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 2.63e8
-# set Resume computation                     = true
 
 
 subsection Material model
