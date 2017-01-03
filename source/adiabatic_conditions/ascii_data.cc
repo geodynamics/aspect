@@ -94,10 +94,10 @@ namespace aspect
       const double depth = this->get_geometry_model().depth(p);
       const double eps = 1.e3 * std::numeric_limits<double>::epsilon() * this->get_geometry_model().maximal_depth();
       return (this->get_data_component(Point<1>(depth+eps),2)
-          -
-          this->get_data_component(Point<1>(depth),2))
-          /
-          eps;
+              -
+              this->get_data_component(Point<1>(depth),2))
+             /
+             eps;
     }
 
 

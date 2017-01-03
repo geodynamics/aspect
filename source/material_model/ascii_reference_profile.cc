@@ -56,7 +56,7 @@ namespace aspect
           double visc_depth_dependence = viscosity_prefactors[0];
           for (unsigned int j=0; j < transition_depths.size(); ++j)
             {
-              if(depth>transition_depths[j])
+              if (depth>transition_depths[j])
                 visc_depth_dependence = viscosity_prefactors[j+1];
             }
 
@@ -152,8 +152,8 @@ namespace aspect
         prm.leave_subsection();
 
         aspect::Utilities::AsciiDataProfile<dim>::declare_parameters(prm,
-            "$ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/",
-            "simple_test.txt");
+                                                                     "$ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/",
+                                                                     "simple_test.txt");
       }
       prm.leave_subsection();
     }
