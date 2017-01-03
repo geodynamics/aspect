@@ -12,7 +12,10 @@
  * <li> New: ASPECT now allows querying its own version number as well as
  * the version of all of the underlying libraries using the
  * <code>--version</code> or <code>-v</code> command line flags.
- * <br> (Wolfgang Bangerth, 2016/12/19)
+ * <br>
+ * Similarly, using <code>--help</code> or <code>-h</code> allows
+ * querying command line usage of ASPECT.
+ * <br> (Wolfgang Bangerth, 2016/12/19-31)
  *
  * <li> New: A material model for incompressible (using the Boussinesq
  * approximation) and compressible computations (with ALA or TALA) for a
