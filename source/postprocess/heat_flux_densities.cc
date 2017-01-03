@@ -217,7 +217,7 @@ namespace aspect
                                   "the (conductive) heat flux density for each boundary "
                                   "id. The heat flux density is computed in outward "
                                   "direction, i.e., from the domain to the outside, using the "
-                                  "formula $\frac{1}{|\\Gamma_i|} \\int_{\\Gamma_i} -k \\nabla T \\cdot \\mathbf n$ "
+                                  "formula $\\frac{1}{|\\Gamma_i|} \\int_{\\Gamma_i} -k \\nabla T \\cdot \\mathbf n$ "
                                   "where $\\Gamma_i$ is the part of the boundary with indicator $i$, "
                                   "$k$ is the thermal conductivity as reported by the material model, "
                                   "$T$ is the temperature, and $\\mathbf n$ is the outward normal. "

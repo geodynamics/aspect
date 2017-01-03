@@ -141,14 +141,12 @@ namespace aspect
          * different process.
          *
          * @param[in,out] begin_data A pointer to a memory location from which
-         * to read the information that completely describes a particle.
-         * This class then de-serializes its data from this memory location,
-         * using @p data_size as the length of the memory block from which to
-         * read the data. @p begin_data is advanced by @p data_size bytes in
-         * this constructor.
-
-         * @param[in] data_size Size in bytes of the begin_data array
-         * that will be read in by this particle.
+         * to read the information that completely describes a particle. This
+         * class then de-serializes its data from this memory location and
+         * advance the pointer accordingly.
+         *
+         * @param[in,out] new_property_pool A property pool that is used to
+         * allocate the property data used by this particle.
          */
         Particle (const void *&begin_data,
                   PropertyPool &new_property_pool);
