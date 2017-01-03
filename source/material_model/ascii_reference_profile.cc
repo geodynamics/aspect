@@ -206,7 +206,7 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(AsciiReferenceProfile,
                                    "ascii reference profile",
-                                   "A material model for that reads in a reference "
+                                   "A material model that reads in a reference "
                                    "state from a text file.")
   }
 }

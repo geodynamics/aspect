@@ -53,6 +53,11 @@ subsection Gravity model
   set Model name = ascii data
 end
 
+# The model uses the anelastic liquid approximation.
+subsection Formulation
+  set Formulation = anelastic liquid approximation
+end
+
 # The present-day plate velocities are imposed on the upper model
 # boundary.
 subsection Model settings
