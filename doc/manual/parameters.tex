@@ -5629,6 +5629,12 @@ The model is compressible only if this is specified in the input file, and conta
 
 `multicomponent': This model is for use with an arbitrary number of compositional fields, where each field represents a rock type which can have completely different properties from the others. However, each rock type itself has constant material properties.  The value of the  compositional field is interpreed as a volume fraction. If the sum of the fields is greater than one, they are renormalized.  If it is less than one, material properties  for ``background mantle'' make up the rest. When more than one field is present, the material properties are averaged arithmetically.  An exception is the viscosity, where the averaging should make more of a difference.  For this, the user selects between arithmetic, harmonic, geometric, or maximum composition averaging.
 
+`nondimensional': A material model for nondimensionalized computations for compressible or incompressible computations defined through Rayleigh number 	ext{Ra} and Dissipation number Di. This model is made to be used with the Boussinesq, ALA, or TALA formulation.
+
+The viscosity is defined as \[\eta = \text{Di} / \text{Ra} \cdot \exp(-b T' + c z)\] where $T'$ is the temperature variation from the adiabatic temperature, $z$ is the depth, $b$ is given by ``Viscosity temperature prefactor'', and $c$ by ``Viscosity depth prefactor''. If $\text{Di}$ is zero, it will be replaced by 1.0 in $\eta$.
+
+The density is defined as \[\rho = \exp(\text{Di}/\gamma \cdot z)  (1.0 - \alpha T' + \text{Di} \gamma p'),\] where $\alpha=	ext{Di}$ is the thermal expansion coefficient, $\gamma$ is the Grueneisen parameter, and $p'$ is the pressure variation from the adiabatic pressure. The pressure dependent term is not present if ``TALA'' is enabled.
+
 `simple': A material model that has constant values for all coefficients but the density and viscosity. The defaults for all coefficients are chosen to be similar to what is believed to be correct for Earth's mantle. All of the values that define this model are read from a section ``Material model/Simple model'' in the input file, see Section~\ref{parameters:Material_20model/Simple_20model}.
 
 This model uses the following set of equations for the two coefficients that are non-constant: \begin{align}  \eta(p,T,\mathfrak c) &= \tau(T) \zeta(\mathfrak c) \eta_0, \\  \rho(p,T,\mathfrak c) &= \left(1-\alpha (T-T_0)\right)\rho_0 + \Delta\rho \; c_0,\end{align}where $c_0$ is the first component of the compositional vector $\mathfrak c$ if the model uses compositional fields, or zero otherwise. 
@@ -5672,7 +5678,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
  The value for the components of this formula and additional parameters are read from the parameter file in subsection  'Material model/Visco Plastic'.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, averaging, composition reaction, depth dependent, diffusion dislocation, drucker prager, latent heat, latent heat melt, melt global, melt simple, multicomponent, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Morency and Doin, Steinberger, averaging, composition reaction, depth dependent, diffusion dislocation, drucker prager, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \end{itemize}
 
 
@@ -5712,7 +5718,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} The name of a material model that will be modified by anaveraging operation. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, averaging, composition reaction, depth dependent, diffusion dislocation, drucker prager, latent heat, latent heat melt, melt global, melt simple, multicomponent, simple, simple compressible, simpler, visco plastic
+{\it Possible values:} Any one of Morency and Doin, Steinberger, averaging, composition reaction, depth dependent, diffusion dislocation, drucker prager, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic
 \item {\it Parameter name:} {\tt Bell shape limit}
 \phantomsection\label{parameters:Material model/Averaging/Bell shape limit}
 
@@ -5948,7 +5954,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} The name of a material model that will be modified by a depth dependent viscosity. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, averaging, composition reaction, depth dependent, diffusion dislocation, drucker prager, latent heat, latent heat melt, melt global, melt simple, multicomponent, simple, simple compressible, simpler, visco plastic
+{\it Possible values:} Any one of Morency and Doin, Steinberger, averaging, composition reaction, depth dependent, diffusion dislocation, drucker prager, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic
 \item {\it Parameter name:} {\tt Data directory}
 \phantomsection\label{parameters:Material model/Depth dependent model/Data directory}
 
@@ -8814,6 +8820,140 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Possible values:} Any one of arithmetic, harmonic, geometric, maximum composition
 \end{itemize}
 
+\subsection{Parameters in section \tt Material model/Nondimensional model}
+\label{parameters:Material_20model/Nondimensional_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Di}
+\phantomsection\label{parameters:Material model/Nondimensional model/Di}
+
+
+\index[prmindex]{Di}
+\index[prmindexfull]{Material model!Nondimensional model!Di}
+{\it Value:} 0.0
+
+
+{\it Default:} 0.0
+
+
+{\it Description:} Dissipation number. Pick 0.0 for incompressible computations.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Ra}
+\phantomsection\label{parameters:Material model/Nondimensional model/Ra}
+
+
+\index[prmindex]{Ra}
+\index[prmindexfull]{Material model!Nondimensional model!Ra}
+{\it Value:} 1e4
+
+
+{\it Default:} 1e4
+
+
+{\it Description:} Rayleigh number Ra
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Reference density}
+\phantomsection\label{parameters:Material model/Nondimensional model/Reference density}
+
+
+\index[prmindex]{Reference density}
+\index[prmindexfull]{Material model!Nondimensional model!Reference density}
+{\it Value:} 1.0
+
+
+{\it Default:} 1.0
+
+
+{\it Description:} Reference density $\rho_0$. Units: $kg/m^3$.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Reference specific heat}
+\phantomsection\label{parameters:Material model/Nondimensional model/Reference specific heat}
+
+
+\index[prmindex]{Reference specific heat}
+\index[prmindexfull]{Material model!Nondimensional model!Reference specific heat}
+{\it Value:} 1.0
+
+
+{\it Default:} 1.0
+
+
+{\it Description:} The value of the specific heat $C_p$. Units: $J/kg/K$.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Use TALA}
+\phantomsection\label{parameters:Material model/Nondimensional model/Use TALA}
+
+
+\index[prmindex]{Use TALA}
+\index[prmindexfull]{Material model!Nondimensional model!Use TALA}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to use the TALA instead of the ALA approximation.
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Viscosity depth prefactor}
+\phantomsection\label{parameters:Material model/Nondimensional model/Viscosity depth prefactor}
+
+
+\index[prmindex]{Viscosity depth prefactor}
+\index[prmindexfull]{Material model!Nondimensional model!Viscosity depth prefactor}
+{\it Value:} 0.0
+
+
+{\it Default:} 0.0
+
+
+{\it Description:} Exponential depth prefactor for viscosity.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Viscosity temperature prefactor}
+\phantomsection\label{parameters:Material model/Nondimensional model/Viscosity temperature prefactor}
+
+
+\index[prmindex]{Viscosity temperature prefactor}
+\index[prmindexfull]{Material model!Nondimensional model!Viscosity temperature prefactor}
+{\it Value:} 0.0
+
+
+{\it Default:} 0.0
+
+
+{\it Description:} Exponential temperature prefactor for viscosity.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt gamma}
+\phantomsection\label{parameters:Material model/Nondimensional model/gamma}
+
+
+\index[prmindex]{gamma}
+\index[prmindexfull]{Material model!Nondimensional model!gamma}
+{\it Value:} 1.0
+
+
+{\it Default:} 1.0
+
+
+{\it Description:} Grueneisen parameter
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\end{itemize}
+
 \subsection{Parameters in section \tt Material model/Simple compressible model}
 \label{parameters:Material_20model/Simple_20compressible_20model}
 
@@ -10787,13 +10927,19 @@ The file format then consists of lines with Euclidiean coordinates followed by t
 
 (As a side note, the postprocessor chooses the cell center instead of the center of the cell face at the surface, where we really are interested in the quantity, since this often gives better accuracy. The results should in essence be the same, though.)
 
+`heat flux densities': A postprocessor that computes some statistics about the (conductive) heat flux density for each boundary id. The heat flux density is computed in outward direction, i.e., from the domain to the outside, using the formula $\frac{1}{|\Gamma_i|} \int_{\Gamma_i} -k \nabla T \cdot \mathbf n$ where $\Gamma_i$ is the part of the boundary with indicator $i$, $k$ is the thermal conductivity as reported by the material model, $T$ is the temperature, and $\mathbf n$ is the outward normal. Note that the quantity so computed does not include any energy transported across the boundary by material transport in cases where $\mathbf u \cdot \mathbf n \neq 0$.
+
+Note that the ``heat flux'' postprocessor computes the same quantity as the one here, but not divided by the area of the surface. In other words, it computes the \textit{total} heat flux through each boundary.
+
 `heat flux map': A postprocessor that computes the (conductive) heat flux density across each boundary. The heat density flux is computed in outward direction, i.e., from the domain to the outside, using the formula $-k \nabla T \cdot \mathbf n$, where $k$ is the thermal conductivity as reported by the material model, $T$ is the temperature, and $\mathbf n$ is the outward normal. Note that the quantity so computed does not include any energy transported across the boundary by material transport in cases where $\mathbf u \cdot \mathbf n \neq 0$. The integrated heatflux for each boundary can be obtained from the heat flux statistics postprocessor.
 
 `heat flux statistics': A postprocessor that computes some statistics about the (conductive) heat flux across boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the heat flux is computed in outward direction, i.e., from the domain to the outside, using the formula $\int_{\Gamma_i} -k \nabla T \cdot \mathbf n$ where $\Gamma_i$ is the part of the boundary with indicator $i$, $k$ is the thermal conductivity as reported by the material model, $T$ is the temperature, and $\mathbf n$ is the outward normal. Note that the quantity so computed does not include any energy transported across the boundary by material transport in cases where $\mathbf u \cdot \mathbf n \neq 0$. The pointwise heatflux can be obtained from the heat flux map postprocessor, which outputs the heatflux to a file, or the heat flux map visualization postprocessor, which outputs the heat flux for visualization. 
 
 As stated, this postprocessor computes the \textit{outbound} heat flux. If you are interested in the opposite direction, for example from the core into the mantle when the domain describes the mantle, then you need to multiply the result by -1.
 
-\note{In geodynamics, the term ``heat flux'' is often understand to be the quantity $- k \nabla T$, which is really a heat flux \textit{density}, i.e., a vector-valued field. In contrast to this, the current postprocessor only computes the integrated flux over each part of the boundary. Consequently, the units of the quantity computed here are $W=\frac{J}{s}$.}
+\note{In geodynamics, the term ``heat flux'' is often understood to be the quantity $- k \nabla T$, which is really a heat flux \textit{density}, i.e., a vector-valued field. In contrast to this, the current postprocessor only computes the integrated flux over each part of the boundary. Consequently, the units of the quantity computed here are $W=\frac{J}{s}$.}
+
+The ``heat flux densities'' postprocessor computes the same quantity as the one here, but divided by the area of the surface.
 
 `heating statistics': A postprocessor that computes some statistics about heating, averaged by volume. 
 
@@ -10838,7 +10984,7 @@ The information produced by this postprocessor is a subset of what is generated 
 `visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
 
 
-{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, command, composition statistics, depth average, dynamic topography, heat flux map, heat flux statistics, heating statistics, mass flux statistics, matrix statistics, melt statistics, memory statistics, particle count statistics, point values, pressure statistics, spherical velocity statistics, temperature statistics, topography, tracers, velocity boundary statistics, velocity statistics, viscous dissipation statistics, visualization
+{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, command, composition statistics, depth average, dynamic topography, heat flux densities, heat flux map, heat flux statistics, heating statistics, mass flux statistics, matrix statistics, melt statistics, memory statistics, particle count statistics, point values, pressure statistics, spherical velocity statistics, temperature statistics, topography, tracers, velocity boundary statistics, velocity statistics, viscous dissipation statistics, visualization
 \end{itemize}
 
 
@@ -11866,7 +12012,7 @@ Fig.~\ref{fig:max-horizontal-compressive-stress} shows a simple example for this
 
 `thermal conductivity': A visualization output object that generates output for the thermal conductivity $k$.
 
-`thermal diffusivity': A visualization output object that generates output for the thermal diffusivity $\kappa$=$\frac{k}{\rho c_p}$, with $k$ the thermal conductivity.
+`thermal diffusivity': A visualization output object that generates output for the thermal diffusivity $\kappa$=$\frac{k}{\rho C_p}$, with $k$ the thermal conductivity.
 
 `thermal expansivity': A visualization output object that generates output for the thermal expansivity.
 
