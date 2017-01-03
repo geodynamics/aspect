@@ -7056,7 +7056,7 @@ imported from GPlates as explained in Section~\ref{sec:cookbooks-gplates}.
 To use the burnman data in the material model, we have to specify that we want to use the 
 \texttt{ascii reference profile} model. This material model makes use of the functionality provided by
 the \texttt{AsciiData} classes in \aspect{}, which allow plugins such as material models, 
-boundary or initial conditions models to read in ascii data files (see for example Section~\ref{sec:geomio}. 
+boundary or initial conditions models to read in ascii data files (see for example Section~\ref{sec:geomio}). 
 Hence, we have to provide the directory and file name of the data to be used in the separate subsection 
 \texttt{Ascii data model}, and the same functionality and syntax will also be used for the 
 adiabatic conditions and gravity model.
@@ -7066,17 +7066,36 @@ viscosity prefactors and a list of of depths where the viscosity changes (which 
 by default set to viscosity jumps in 150\,km depth, between upper mantle and transition zone, 
 and between transition zone and lower mantle). The prefactors used here lead to a low-viscosity 
 asthenosphere, and high viscosities in the lower mantle. To make sure that these viscosity jumps 
-do not lead to numerical problems in our computation (see Section~\ref{sec:sec:sinker-with-averaging}), 
+do not lead to numerical problems in our computation (see Section~\ref{sec:sinker-with-averaging}), 
 we also use harmonic averaging of the material properties.
 \lstinputlisting[language=prmfile]{cookbooks/burnman/material_model.part.prm}
-As the reference profile also contains data for the compressibility, this model is compressible
-(unless the compressibility is zero everywhere) without the need to specify this explicitly. 
+As the reference profile has a depth dependent density and also contains data for the compressibility, 
+this material model supports compressible convection models. 
 
 For the adiabatic conditions and the gravity model, we also specify that we want to use the respective
 \texttt{ascii data} plugin, and provide the data directory in the same way as for the material 
 model. The gravity model automatically uses the same file as the adiabatic conditions model.
 \lstinputlisting[language=prmfile]{cookbooks/burnman/adiabatic_conditions.part.prm}
 \lstinputlisting[language=prmfile]{cookbooks/burnman/gravity_model.part.prm}
+
+To make use of the reference state we just imported from BurnMan, we choose a formulation of the 
+equations that employs a reference state and compressible convection, in this case the anelastic 
+liquid approximation. 
+\lstinputlisting[language=prmfile]{cookbooks/burnman/formulation.part.prm}
+This means that the reference profiles are used for all material properties in the model, except for
+the density in the buoyancy term (on the right-hand side of the momentum conservation equation). 
+In addition, the density derivative in the mass conservation equation is taken from the adiabatic 
+conditions, where it is computed as depth derivative of the provided reference density profile
+(see also Section~\ref{sec:combined_formulations}).
+Without these lines in the parameter file, \aspect{} will use its default implementation for 
+compressible models, ``isothermal compression'' (see Section~\ref{sec:combined_formulations}), 
+which uses the full density everywhere in the equations, and uses the compressibility 
+to compute the density derivative term on the right-hand side of the mass conservation equation.
+In principle, the \texttt{ascii reference profile} material model also supports the truncated 
+anelastic liquid approximation (see Section~\ref{sec:tala}), which can be used by setting 
+the formulation of the equations to \texttt{anelastic liquid approximation} and specifying
+\lstinputlisting[language=prmfile]{cookbooks/burnman/tala.part.prm}
+This formulation will neglect any density changes due to dynamic pressure. 
 
 \paragraph{Visualizing the model output.}
 If we look at the output of our model (for example in \texttt{paraview}), we can see how cold, highly 
