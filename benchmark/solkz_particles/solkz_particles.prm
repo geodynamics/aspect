@@ -14,7 +14,6 @@ set Output directory                       = output
 
 set Pressure normalization                 = volume
 
-
 ############### Parameters describing the model
 
 subsection Geometry model
@@ -26,23 +25,19 @@ subsection Geometry model
   end
 end
 
-
 subsection Model settings
   set Prescribed velocity boundary indicators =
   set Tangential velocity boundary indicators = left, right, bottom, top
   set Zero velocity boundary indicators       =
 end
 
-
 subsection Material model
   set Model name = SolKzMaterial
 end
 
-
 subsection Gravity model
   set Model name = vertical
 end
-
 
 ############### Parameters describing the temperature field
 
@@ -50,11 +45,9 @@ subsection Boundary temperature model
   set Model name = box
 end
 
-
 subsection Initial conditions
   set Model name = perturbed box
 end
-
 
 ############### Parameters describing the discretization
 
@@ -84,21 +77,21 @@ subsection Compositional initial conditions
   set Model name = function
   subsection Function
     set Variable names      = x,z
-    set Function constants  = pi=3.1415926, eta_b=1e3, background_density=0.0
-    set Function expression =  -1 * sin(2*z) * cos(3*pi*x); 1
+    set Function constants  = pi=3.1415926, eta_b=1e6
+    set Function expression = -1 * sin(2*z) * cos(3*pi*x); exp(log(eta_b)*z)
   end
 end
 
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = SolKzPostprocessor, visualization, tracers
+  set List of postprocessors = tracers, visualization, SolKzPostprocessor
 
   subsection Visualization
     set Output format                 = vtu
     set Number of grouped files       = 1
     set Time between graphical output = 0
-    set List of output variables = density, viscosity, partition
+    set List of output variables = density, viscosity
   end
 
   subsection Tracers
@@ -108,32 +101,21 @@ subsection Postprocess
     set List of tracer properties = function
     set Integration scheme = rk2
     set Interpolation scheme = cell average
-    set Maximum tracers per cell = 1048576
+    set Maximum tracers per cell = 16384
+    set Update ghost particles = true
 
     subsection Function
-     set Number of functions = 2
+      set Number of components = 2
       set Variable names      = x, z
-      set Function constants  = pi=3.1415926, eta_b=1e3, background_density=1.0
-      set Function expression =  -1 * sin(2*z) * cos(3*pi*x); exp(2*0.5*log(1e6)*z)
+      set Function constants  = pi=3.1415926, eta_b=1e6
+      set Function expression =  -1 * sin(2*z) * cos(3*pi*x); exp(log(eta_b)*z)
     end
 
-    set Particle generator name = uniform box
+    set Particle generator name = reference cell
 
     subsection Generator
-      subsection Probability density function
-        set Variable names      = x,y
-        set Function expression = x*x*y
-      end
-
-      subsection Uniform box
-       set Minimum x = .00390625000000000000
-       set Maximum x = .99609375000000000000
-       set Minimum y = .00390625000000000000
-       set Maximum y = .99609375000000000000
-       set Number of particles in x = 128
-       set Number of particles in y = 128
-       set Delta x = .00781250000000000000
-       set Delta y = .00781250000000000000
+      subsection Reference cell
+        set Number of tracers per cell per direction = 4
       end
     end
   end

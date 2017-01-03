@@ -20,7 +20,6 @@ subsection Geometry model
   end
 end
 
-
 subsection Model settings
   set Prescribed velocity boundary indicators = left  : InclusionBoundary, \
                                                 right : InclusionBoundary, \
@@ -30,7 +29,6 @@ subsection Model settings
   set Zero velocity boundary indicators       =
 end
 
-
 subsection Material model
   set Model name = InclusionMaterial
   subsection Inclusion
@@ -38,11 +36,9 @@ subsection Material model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
 end
-
 
 ############### Parameters describing the temperature field
 
@@ -55,8 +51,6 @@ subsection Initial conditions
   set Model name = perturbed box
 end
 
-
-
 ############### Parameters describing the discretization
 
 subsection Discretization
@@ -65,10 +59,9 @@ subsection Discretization
   set Use discontinuous composition discretization = true
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement              = 0
-  set Initial global refinement                = 4
+  set Initial global refinement                = 5
 end
 
 subsection Compositional fields
@@ -76,6 +69,15 @@ subsection Compositional fields
   set Names of fields = viscosity_comp
   set Compositional field methods = particles
   set Mapped particle properties = viscosity_comp:function
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+     set Variable names      = x,z
+     set Function constants  = eta_b=1e3, rmax=0.2
+     set Function expression = if((x-1.0)*(x-1.0)+(z-1.0)*(z-1.0)<=0.04,eta_b,1.0)
+  end
 end
 
 subsection Postprocess
@@ -95,11 +97,12 @@ subsection Postprocess
     set Integration scheme = rk2
     set Interpolation scheme = cell average
     set Maximum tracers per cell = 16384
+    set Update ghost particles = true
 
     subsection Function
        set Variable names      = x,z
        set Function constants  = eta_b=1e3, rmax=0.2
-       set Function expression =  if((x-1.0)*(x-1.0)+(z-1.0)*(z-1.0)<=0.04,eta_b,1.0)
+       set Function expression = if((x-1.0)*(x-1.0)+(z-1.0)*(z-1.0)<=0.04,eta_b,1.0)
     end
 
     set Particle generator name = reference cell
