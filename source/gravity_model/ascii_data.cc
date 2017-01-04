@@ -50,18 +50,14 @@ namespace aspect
     {
       const double depth = this->get_geometry_model().depth(position);
       const double magnitude = this->get_data_component(Point<1>(depth),3);
-      Point<dim> vertical_direction;
 
       // in dependence of what the geometry model is, gravity points in a different direction
-      if (const GeometryModel::SphericalShell<dim> *geometry = dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
+      if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model())
+          || dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())
+          || dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*> (&this->get_geometry_model())
+          || dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()))
         return - magnitude * position/position.norm();
-      else if (const GeometryModel::Chunk<dim> *gm = dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()))
-        return - magnitude * position/position.norm();
-      else if (const GeometryModel::EllipsoidalChunk<dim> *gm = dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*> (&this->get_geometry_model()))
-        return - magnitude * position/position.norm();
-      else if (const GeometryModel::Sphere<dim> *gm = dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()))
-        return - magnitude * position/position.norm();
-      else if (const GeometryModel::Box<dim> *gm = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()))
+      else if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()))
         {
           Tensor<1,dim> g;
           g[dim-1] = -magnitude;
