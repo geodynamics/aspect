@@ -362,6 +362,11 @@ namespace aspect
     std::string
     expand_ASPECT_SOURCE_DIR (const std::string &location);
 
+    /**
+     * Given a string @p s, return it in the form ' ("s")' if nonempty.
+     * Otherwise just return the empty string itself.
+     */
+    std::string parenthesize_if_nonempty (const std::string &s);
 
     /**
      * AsciiDataLookup reads in files containing input data in ascii format.
