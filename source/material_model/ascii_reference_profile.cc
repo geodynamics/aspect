@@ -70,7 +70,7 @@ namespace aspect
 
           out.densities[i] = profile.get_data_component(profile_position,2)
                              * (1.0 - out.thermal_expansion_coefficients[i] * temperature_deviation)
-                             * (1.0 + out.compressibilities[i] * pressure_deviation);
+                             * (tala ? 1.0 : (1.0 + out.compressibilities[i] * pressure_deviation));
 
           out.entropy_derivative_pressure[i] = 0.0;
           out.entropy_derivative_temperature[i] = 0.0;
