@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014, 2015, 2016 by the authors of the ASPECT code.
+  Copyright (C) 2014, 2015, 2016, 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -209,7 +209,7 @@ namespace aspect
     };
 
     /**
-     * Checks whether a file named filename exists.
+     * Checks whether a file named @p filename exists and is readable.
      *
      * @param filename File to check existence
      */

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -348,7 +348,10 @@ namespace aspect
     fexists(const std::string &filename)
     {
       std::ifstream ifile(filename.c_str());
-      return static_cast<bool>(ifile); // only in c++11 you can convert to bool directly
+
+      // return whether construction of the input file has succeeded;
+      // success requires the file to exist and to be readable
+      return static_cast<bool>(ifile);
     }
 
 
