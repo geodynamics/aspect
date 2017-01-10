@@ -32,7 +32,7 @@ subsection Model settings
 end
 
 subsection Material model
-  set Model name = SolKzMaterial
+  set Model name = SolKzCompositionalMaterial
 end
 
 subsection Gravity model
@@ -65,7 +65,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement              = 0
-  set Initial global refinement                = 6
+  set Initial global refinement                = 5
 end
 
 ############### Parameters describing the compositional field
