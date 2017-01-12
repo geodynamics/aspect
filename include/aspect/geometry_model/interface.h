@@ -273,7 +273,6 @@ namespace aspect
         /**
          * If true, the queried point (in Cartesian coordinates)
          * lies in the domain specified by the geometry.
-         * The default implementation of this function will return @p false.
          */
         virtual
         bool
