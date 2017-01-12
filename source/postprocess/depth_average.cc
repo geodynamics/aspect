@@ -22,6 +22,7 @@
 #include <aspect/postprocess/depth_average.h>
 #include <aspect/lateral_averaging.h>
 #include <aspect/global.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/tria.h>
@@ -355,6 +356,11 @@ namespace aspect
           n_depth_zones = prm.get_integer ("Number of zones");
 
           output_variables = Utilities::split_string_list(prm.get("List of output variables"));
+          AssertThrow(Utilities::list_is_unique(output_variables),
+                      ExcMessage("The list of strings for the parameter "
+                                 "'Postprocess/Depth average/List of output variables' is not unique. "
+                                 "Please check your parameter file."));
+
           if ( std::find( output_variables.begin(), output_variables.end(), "all") != output_variables.end())
             output_all_variables = true;
           else

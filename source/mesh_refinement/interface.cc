@@ -20,6 +20,7 @@
 
 
 #include <aspect/mesh_refinement/interface.h>
+#include <aspect/utilities.h>
 
 #include <typeinfo>
 
@@ -450,6 +451,11 @@ namespace aspect
       {
         plugin_names
           = Utilities::split_string_list(prm.get("Strategy"));
+
+        AssertThrow(Utilities::list_is_unique(plugin_names),
+                    ExcMessage("The list of strings for the parameter "
+                               "'Mesh refinement/Strategy' is not unique. "
+                               "Please check your parameter file."));
 
         normalize_criteria = prm.get_bool ("Normalize individual refinement criteria");
 

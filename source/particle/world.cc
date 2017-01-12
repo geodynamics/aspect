@@ -1634,6 +1634,11 @@ namespace aspect
           update_ghost_particles = prm.get_bool("Update ghost particles");
 
           const std::vector<std::string> strategies = Utilities::split_string_list(prm.get ("Load balancing strategy"));
+          AssertThrow(Utilities::list_is_unique(strategies),
+                      ExcMessage("The list of strings for the parameter "
+                                 "'Postprocess/Tracers/Load balancing strategy' is not unique. "
+                                 "Please check your parameter file."));
+
           particle_load_balancing = ParticleLoadBalancing::no_balancing;
 
           for (std::vector<std::string>::const_iterator strategy = strategies.begin(); strategy != strategies.end(); ++strategy)
