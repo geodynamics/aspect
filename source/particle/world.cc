@@ -21,7 +21,6 @@
 #include <aspect/particle/world.h>
 #include <aspect/global.h>
 #include <aspect/utilities.h>
-#include <aspect/compat.h>
 #include <aspect/geometry_model/box.h>
 
 #include <deal.II/base/quadrature_lib.h>

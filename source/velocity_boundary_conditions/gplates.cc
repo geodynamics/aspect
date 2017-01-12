@@ -19,7 +19,6 @@
 */
 
 
-#include <aspect/global.h>
 #include <aspect/velocity_boundary_conditions/gplates.h>
 #include <aspect/utilities.h>
 
