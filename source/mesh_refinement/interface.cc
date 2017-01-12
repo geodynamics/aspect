@@ -452,10 +452,10 @@ namespace aspect
         plugin_names
           = Utilities::split_string_list(prm.get("Strategy"));
 
-        AssertThrow(Utilities::list_is_unique(plugin_names),
+        AssertThrow(Utilities::has_unique_entries(plugin_names),
                     ExcMessage("The list of strings for the parameter "
-                               "'Mesh refinement/Strategy' is not unique. "
-                               "Please check your parameter file."));
+                               "'Mesh refinement/Strategy' contains entries more than once. "
+                               "This is not allowed. Please check your parameter file."));
 
         normalize_criteria = prm.get_bool ("Normalize individual refinement criteria");
 

@@ -862,10 +862,10 @@ namespace aspect
     }
 
     bool
-    list_is_unique (const std::vector<std::string> &list_of_strings)
+    has_unique_entries (const std::vector<std::string> &strings)
     {
-      const std::set<std::string> set_of_strings(list_of_strings.begin(),list_of_strings.end());
-      return (set_of_strings.size() == list_of_strings.size());
+      const std::set<std::string> set_of_strings(strings.begin(),strings.end());
+      return (set_of_strings.size() == strings.size());
     }
 
     template <int dim>

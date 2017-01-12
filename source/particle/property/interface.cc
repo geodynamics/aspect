@@ -483,10 +483,10 @@ namespace aspect
           {
             // now also see which derived quantities we are to compute
             prop_names = Utilities::split_string_list(prm.get("List of tracer properties"));
-            AssertThrow(Utilities::list_is_unique(prop_names),
+            AssertThrow(Utilities::has_unique_entries(prop_names),
                         ExcMessage("The list of strings for the parameter "
-                                   "'Postprocess/Tracers/List of tracer properties' is not unique. "
-                                   "Please check your parameter file."));
+                                   "'Postprocess/Tracers/List of tracer properties' contains entries more than once. "
+                                   "This is not allowed. Please check your parameter file."));
 
             // see if 'all' was selected (or is part of the list). if so
             // simply replace the list with one that contains all names

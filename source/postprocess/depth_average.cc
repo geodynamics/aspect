@@ -356,10 +356,10 @@ namespace aspect
           n_depth_zones = prm.get_integer ("Number of zones");
 
           output_variables = Utilities::split_string_list(prm.get("List of output variables"));
-          AssertThrow(Utilities::list_is_unique(output_variables),
+          AssertThrow(Utilities::has_unique_entries(output_variables),
                       ExcMessage("The list of strings for the parameter "
-                                 "'Postprocess/Depth average/List of output variables' is not unique. "
-                                 "Please check your parameter file."));
+                                 "'Postprocess/Depth average/List of output variables' contains entries more than once. "
+                                 "This is not allowed. Please check your parameter file."));
 
           if ( std::find( output_variables.begin(), output_variables.end(), "all") != output_variables.end())
             output_all_variables = true;

@@ -171,10 +171,10 @@ namespace aspect
         model_names
           = Utilities::split_string_list(prm.get("List of model names"));
 
-        AssertThrow(Utilities::list_is_unique(model_names),
+        AssertThrow(Utilities::has_unique_entries(model_names),
                     ExcMessage("The list of strings for the parameter "
-                               "'Heating model/List of model names' is not unique. "
-                               "Please check your parameter file."));
+                               "'Heating model/List of model names' contains entries more than once. "
+                               "This is not allowed. Please check your parameter file."));
 
         const std::string model_name = prm.get ("Model name");
 

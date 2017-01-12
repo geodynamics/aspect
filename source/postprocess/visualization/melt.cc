@@ -197,10 +197,10 @@ namespace aspect
             prm.enter_subsection("Melt material properties");
             {
               property_names = Utilities::split_string_list(prm.get ("List of properties"));
-              AssertThrow(Utilities::list_is_unique(property_names),
+              AssertThrow(Utilities::has_unique_entries(property_names),
                           ExcMessage("The list of strings for the parameter "
-                                     "'Postprocess/Visualization/Melt material properties/List of properties' is not unique. "
-                                     "Please check your parameter file."));
+                                     "'Postprocess/Visualization/Melt material properties/List of properties' contains entries more than once. "
+                                     "This is not allowed. Please check your parameter file."));
             }
             prm.leave_subsection();
           }

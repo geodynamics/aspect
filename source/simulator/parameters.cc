@@ -1032,10 +1032,10 @@ namespace aspect
         nullspace_removal = NullspaceRemoval::none;
         std::vector<std::string> nullspace_names =
           Utilities::split_string_list(prm.get("Remove nullspace"));
-        AssertThrow(Utilities::list_is_unique(nullspace_names),
+        AssertThrow(Utilities::has_unique_entries(nullspace_names),
                     ExcMessage("The list of strings for the parameter "
-                               "'Model settings/Remove nullspace' is not unique. "
-                               "Please check your parameter file."));
+                               "'Model settings/Remove nullspace' contains entries more than once. "
+                               "This is not allowed. Please check your parameter file."));
 
         for (unsigned int i=0; i<nullspace_names.size(); ++i)
           {
