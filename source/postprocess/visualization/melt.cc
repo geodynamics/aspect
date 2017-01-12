@@ -21,6 +21,7 @@
 
 #include <aspect/postprocess/visualization/melt.h>
 #include <aspect/melt.h>
+#include <aspect/utilities.h>
 #include <aspect/simulator.h>
 #include <aspect/material_model/interface.h>
 
@@ -196,6 +197,10 @@ namespace aspect
             prm.enter_subsection("Melt material properties");
             {
               property_names = Utilities::split_string_list(prm.get ("List of properties"));
+              AssertThrow(Utilities::has_unique_entries(property_names),
+                          ExcMessage("The list of strings for the parameter "
+                                     "'Postprocess/Visualization/Melt material properties/List of properties' contains entries more than once. "
+                                     "This is not allowed. Please check your parameter file."));
             }
             prm.leave_subsection();
           }

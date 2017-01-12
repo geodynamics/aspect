@@ -20,6 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/material_properties.h>
+#include <aspect/utilities.h>
 
 #include <algorithm>
 
@@ -225,6 +226,12 @@ namespace aspect
             {
               // Get property names and compare against variable names
               property_names = Utilities::split_string_list(prm.get ("List of material properties"));
+              AssertThrow(Utilities::has_unique_entries(property_names),
+                          ExcMessage("The list of strings for the parameter "
+                                     "'Postprocess/Visualization/Material properties/List of material properties' "
+                                     "contains entries more than once. This is not allowed. "
+                                     "Please check your parameter file."));
+
               for (std::vector<std::string>::const_iterator p = variable_names.begin();
                    p != variable_names.end(); ++p)
                 AssertThrow((std::find(property_names.begin(),property_names.end(),*p)) == property_names.end(),

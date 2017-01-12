@@ -369,6 +369,12 @@ namespace aspect
     std::string parenthesize_if_nonempty (const std::string &s);
 
     /**
+     * Returns if a vector of strings @p strings only contains unique
+     * entries.
+     */
+    bool has_unique_entries (const std::vector<std::string> &strings);
+
+    /**
      * AsciiDataLookup reads in files containing input data in ascii format.
      * Note the required format of the input data: The first lines may contain
      * any number of comments if they begin with '#', but one of these lines

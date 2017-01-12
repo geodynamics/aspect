@@ -851,6 +851,10 @@ namespace aspect
 
           // now also see which derived quantities we are to compute
           viz_names = Utilities::split_string_list(prm.get("List of output variables"));
+          AssertThrow(Utilities::has_unique_entries(viz_names),
+                      ExcMessage("The list of strings for the parameter "
+                                 "'Postprocess/Visualization/List of output variables' contains entries more than once. "
+                                 "This is not allowed. Please check your parameter file."));
 
           // see if 'all' was selected (or is part of the list). if so
           // simply replace the list with one that contains all names

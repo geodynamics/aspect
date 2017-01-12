@@ -861,6 +861,13 @@ namespace aspect
         return "";
     }
 
+    bool
+    has_unique_entries (const std::vector<std::string> &strings)
+    {
+      const std::set<std::string> set_of_strings(strings.begin(),strings.end());
+      return (set_of_strings.size() == strings.size());
+    }
+
     template <int dim>
     AsciiDataLookup<dim>::AsciiDataLookup(const unsigned int components,
                                           const double scale_factor)
