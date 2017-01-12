@@ -1411,6 +1411,7 @@ namespace aspect
     // addition, we may be computing constraints from boundary values for the
     // velocity that are different between time steps. these are then put
     // into current_constraints in start_timestep().
+    signals.pre_compute_no_normal_flux_constraints(triangulation);
     {
       // do the interpolation for zero velocity
       for (std::set<types::boundary_id>::const_iterator
@@ -1432,6 +1433,7 @@ namespace aspect
                                                        *mapping);
     }
     constraints.close();
+    signals.post_compute_no_normal_flux_constraints(triangulation);
 
     // finally initialize vectors, matrices, etc.
 
