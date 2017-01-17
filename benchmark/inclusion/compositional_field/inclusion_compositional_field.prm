@@ -28,7 +28,7 @@ subsection Model settings
 end
 
 subsection Material model
-  set Model name = InclusionMaterial
+  set Model name = InclusionCompositionalMaterial
   subsection Inclusion
     set Viscosity jump = 1e3
   end
@@ -55,6 +55,7 @@ subsection Discretization
   set Stokes velocity polynomial degree            = 2
   set Use discontinuous composition discretization = true
   set Use locally conservative discretization      = true
+
   subsection Stabilization parameters
     set Use limiter for discontinuous composition solution = true # apply the limiter to the DG solutions
     set Global composition maximum = 1e3
@@ -78,7 +79,7 @@ subsection Compositional initial conditions
   subsection Function
     set Variable names      = x,z
     set Function constants  = eta_b=1e3, rmax=0.2
-    set Function expression =  if((x-1.0)*(x-1.0)+(z-1.0)*(z-1.0)<=0.04,eta_b,1.0)
+    set Function expression = if((x-1.0)*(x-1.0)+(z-1.0)*(z-1.0)<=0.04,eta_b,1.0)
   end
 end
 

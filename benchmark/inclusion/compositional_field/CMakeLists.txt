@@ -30,10 +30,22 @@ IF (NOT Aspect_FOUND)
         "manual for more information.")
 ENDIF ()
 
+IF (NOT ASPECT_SOURCE_DIR)
+  MESSAGE(FATAL_ERROR "\n"
+    "Please specify the path to the source directory of ASPECT by passing\n"
+	"-DASPECT_SOURCE_DIR=<path to ASPECT source>\n"
+	"to cmake. This is required since solcx_compositional_field is dependent"
+	"on solcx benchmark.")
+ENDIF ()
+
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
 SET(TARGET "inclusion_compositional_field")
+
 PROJECT(${TARGET})
 
+INCLUDE_DIRECTORIES(${ASPECT_SOURCE_DIR}/benchmark/inclusion)
+
 ADD_LIBRARY(${TARGET} SHARED inclusion_compositional_field.cc)
+
 ASPECT_SETUP_PLUGIN(${TARGET})
