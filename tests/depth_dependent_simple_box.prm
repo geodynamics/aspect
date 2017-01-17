@@ -1,0 +1,107 @@
+# This is a very simple model setup with depth-dependent viscosity.
+# The mantle depth is 3000 km and other parameters have nominally
+# Earth-like values. There is a 30-fold increase in visosity at a 
+# depth of 670 km. 
+#
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 1e5
+set Resume computation                     = false
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Pressure normalization = no
+set Linear solver tolerance = 1.e-7
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = IMPES
+
+subsection Boundary temperature model
+  set Model name = box
+  subsection Box
+    set Top temperature = 0.0
+    set Bottom temperature = 1000.0
+  end
+end
+
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+  set Temperature polynomial degree           = 2
+  set Use locally conservative discretization = false
+  subsection Stabilization parameters
+    set alpha = 2
+    set beta  = 0.078
+    set cR    = 0.5   # default: 0.11
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X periodic = true
+    set X extent = 4.2e6 
+    set Y extent = 3.0e6
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function 
+    set Variable names      = x,y
+    set Function constants = Ttop=0.0, Tbottom=1000.0, p=0.01, H=3.0E6, W=4.2e6, pi=3.1415926
+    set Function expression = Tbottom - (Tbottom-Ttop)*y/H + p*sin(pi*y/H)*cos(2.0*pi*x/W)
+
+  end
+end
+
+
+subsection Material model
+  set Model name = depth dependent simple
+  subsection Depth dependent simple model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 0.0
+    set Thermal conductivity          = 4.7
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1.e20
+    subsection Viscosity depth prefactor
+      set Variable names = d
+      set Function expression = if(d>6.70e5,30.0,1.0);
+    end  
+  end
+end
+
+subsection Mesh refinement
+  set Additional refinement times        =
+  set Initial adaptive refinement        = 4                       # default: 2
+  set Initial global refinement          = 3                       # default: 2
+  set Refinement fraction                = 0.3
+  set Coarsening fraction                = 0.03
+  set Strategy                           = thermal energy density
+  set Time steps between mesh refinement = 5                       # default: 10
+end
+
+
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+  set Fixed temperature boundary indicators   = bottom, top
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = bottom, top
+  set Zero velocity boundary indicators       = 
+  set Remove nullspace                        = net x translation
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, basic statistics
+end

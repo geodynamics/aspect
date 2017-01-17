@@ -1,0 +1,83 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11 iterations.
+
+Number of active cells: 124 (on 5 levels)
+Number of degrees of freedom: 1,842 (1,126+153+563)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 21 iterations.
+
+Number of active cells: 190 (on 5 levels)
+Number of degrees of freedom: 2,714 (1,662+221+831)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15 iterations.
+
+Number of active cells: 286 (on 6 levels)
+Number of degrees of freedom: 4,066 (2,490+331+1,245)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+6 iterations.
+
+Number of active cells: 520 (on 6 levels)
+Number of degrees of freedom: 7,203 (4,418+576+2,209)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+5 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  3.53e-05 m/year, 0.00011 m/year
+     Temperature min/avg/max:            0 K, 500 K, 1000 K
+     Heat fluxes through boundary parts: -0.000186 W, -0.000186 W, -6580 W, 6580 W
+
+*** Timestep 1:  t=100000 years
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 28 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  4.12e-05 m/year, 0.00012 m/year
+     Temperature min/avg/max:            0 K, 500 K, 1000 K
+     Heat fluxes through boundary parts: -7.02e-05 W, -0.0001043 W, -6580 W, 6580 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      5.32s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         6 |       1.2s |        22% |
+| Assemble temperature system     |         6 |     0.565s |        11% |
+| Build Stokes preconditioner     |         5 |     0.979s |        18% |
+| Build temperature preconditioner|         6 |    0.0131s |      0.25% |
+| Solve Stokes system             |         6 |      0.47s |       8.8% |
+| Solve temperature system        |         6 |   0.00799s |      0.15% |
+| Initialization                  |         6 |     0.262s |       4.9% |
+| Postprocessing                  |         2 |    0.0469s |      0.88% |
+| Refine mesh structure, part 1   |         4 |     0.896s |        17% |
+| Refine mesh structure, part 2   |         4 |    0.0225s |      0.42% |
+| Setup dof systems               |         5 |      0.56s |        11% |
++---------------------------------+-----------+------------+------------+
+
