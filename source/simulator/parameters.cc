@@ -185,7 +185,8 @@ namespace aspect
                        "or for comparing solutions. If the given value is `surface', then "
                        "normalization at the end of each time steps adds a constant value "
                        "to the pressure in such a way that the average pressure at the surface "
-                       "of the domain is zero; the surface of the domain is determined by asking "
+                       "of the domain is what is set in the `Surface pressure' parameter; "
+                       "the surface of the domain is determined by asking "
                        "the geometry model whether a particular face of the geometry has a zero "
                        "or small `depth'. If the value of this parameter is `volume' then the "
                        "pressure is normalized so that the domain average is zero. If `no' is "
@@ -193,6 +194,10 @@ namespace aspect
 
     prm.declare_entry ("Surface pressure", "0",
                        Patterns::Double(),
+                       "The value the pressure is normalized to in each time step when "
+                       "`Pressure normalization' is set to `surface' with default value 0. "
+                       "This setting is ignored in all other cases."
+                       "\n\n"
                        "The mathematical equations that describe thermal convection "
                        "only determine the pressure up to an arbitrary constant. On "
                        "the other hand, for comparison and for looking up material "
