@@ -7234,9 +7234,9 @@ For a layer thickness $\Delta z$, the basal temperature ($T_B$) and heat flux ($
 
 In this example, specifying the top (273 K) and bottom temperature (1573 K), thermal conducitvity of each layer and radiogenic heat production in each layer provides enough constraints to successively solve for the temperature and heat flux at the top of the lower crust and mantle.
 
-As noted above, the mechanically weak seed placed within the mantle localizes the majority of deformation onto two conjugate shear bands that propogate from the surface of the seed to the free surface.  After 5 million years of extension background `stretching' is clearly visible in the strain-rate field, but deformation is still largely focused within the set of conjugate shear bands originating at the weak seed  (Fig.~\ref{fig:continental_extension_cookbook_strainrate_5e6yr}).  As expected, crustal thickness and surface topography patterns reveal a relatively symmetric horst and graben structure, which arises from displacements along the shear bands (Fig.~\ref{fig:continental_extension_cookbook_upper_5e6yr}).  
+As noted above, the mechanically weak seed placed within the mantle localizes the majority of deformation onto two conjugate shear bands that propogate from the surface of the seed to the free surface.  After 5 million years of extension background `stretching' is clearly visible in the strain-rate field, but deformation is still largely focused within the set of conjugate shear bands originating at the weak seed  (Fig.~\ref{fig:continental_extension_cookbook_strainrate_5e6yr}).  As expected, crustal thickness and surface topography patterns reveal a relatively symmetric horst and graben structure, which arises from displacements along the shear bands (Fig.~\ref{fig:continental_extension_cookbook_composition_5e6yr}).  While deformation along the two major shear bands dominates at this early stage of extension, additional shear bands often develop within the horst-grabben system leading to small inter-grabben topographic variations.  This pattern is illustrated in a model with double the numerical resolution (initial 1 km grid spacing) after 10 million years of extension  (Fig.~\ref{fig:continental_extension_cookbook_strainrate_highres_10e6yr}).
 
-With continued extension, further crustal thinning and surface topography development would likely occur in response to displacement along the conjugate shear bands. However, given that the model only extends to 100 km depth, the simulation will not produce a realistic representation of continental breakup due to the lack of an upwelling asthenospheric layer.  Indeed, numerical studies that examine continental breakup, rather than just the initial stages of continental extension, inlcude an asthenospheric layer or modified basal boundary conditions (e.g. Winkler boundary condition \cite[for example]{Bru14})
+With further extension for millions of years, significant crustal thinning and surface topography development should occur in response to displacement along the conjugate shear bands. However, given that the model only extends to 100 km depth, the simulation will not produce a realistic representation of continental breakup due to the lack of an upwelling asthenospheric layer.  Indeed, numerical studies that examine continental breakup, rather than just the initial stages of continental extension, inlcude an asthenospheric layer or modified basal boundary conditions (e.g. Winkler boundary condition \cite[for example]{Bru14})
 as temperature variations associated with lithospheric thinning exert a first-order influence on the deformation patterns.  As noted below, numerous additional parameters may also affect the temporal evolution of deformation patterns.
 
 \note{It is important to consider that the non-linearity of visco-plastic rheologies and mesh-dependence of brittle shear bands make lithospheric deformation models highly sensitive to a large number of parameters.  In order to ensure the conclusions drawn from a series of numerical experiments are robust, one should complete a sensitivity test for a large range of parameters including grid resolution, model geometry, boundary condtions, initial composition and temperature conditions, material properties, composition discretization, CFL number and solver settings.  If you are new to modeling lithospheric processes, a reasonable starting point is to try and reproduce results from a relevant previous study and then perform a sensitivity test for the parameters listed above.  While highly time consuming, completing this procedure will prove invaluable when you design and assess the results of your own numerical study.}
@@ -7244,15 +7244,19 @@ as temperature variations associated with lithospheric thinning exert a first-or
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{cookbooks/continental_extension/continental_extension_cookbook_strainrate_5e6yr.png}
-\caption{\it Strain rate ($s^{-1}$) after 5e6 years of extension.} 
+\caption{\it Strain rate ($s^{-1}$) after 5e6 years of extension. The black line marks the 500 $^{o}C$ isotherm.} 
 \label{fig:continental_extension_cookbook_strainrate_5e6yr}
 \end{figure}
 \begin{figure}
-\includegraphics[width=\textwidth]{cookbooks/continental_extension/continental_extension_cookbook_upper_5e6yr.png}
-\caption{\it Value of upper crust compositional field after 5e6 years of extension.} 
-\label{fig:continental_extension_cookbook_upper_5e6yr}
+\includegraphics[width=\textwidth]{cookbooks/continental_extension/continental_extension_cookbook_composition_5e6yr.png}
+\caption{\it Compositional field after 5e6 years of extension. The black line marks the 500 $^{o}C$ isotherm.} 
+\label{fig:continental_extension_cookbook_composition_5e6yr}
 \end{figure}
-
+\begin{figure}
+\includegraphics[width=\textwidth]{cookbooks/continental_extension/continental_extension_cookbook_strainrate_highres_10e6yr.png}
+\caption{\it Strain rate($s^{-1}$) after 10e6 years of extension. The black line marks the 500 $^{o}C$ isotherm. The numerical resolution (1 km) is double that of the previous model.} 
+\label{fig:continental_extension_cookbook_strainrate_highres_10e6yr}
+\end{figure}
  
 \subsubsection{Inner core convection}
 \label{sec:cookbooks-inner-core-convection}
