@@ -48,8 +48,6 @@ end
 # Velocity: free surface on top, outflow on sides, inflow at base
 # Temperature: fixed at top and bottom, insulating sides
 subsection Model settings
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
   set Fixed temperature boundary indicators   = bottom, top
   set Prescribed velocity boundary indicators = left x: function, right x:function, bottom y:function
   set Free surface boundary indicators        = top
@@ -109,8 +107,6 @@ subsection Boundary temperature model
   set Model name = box
   subsection Box
     set Bottom temperature = 1573
-    set Left temperature   =  273
-    set Right temperature  =  273
     set Top temperature    =  273
   end
 end
@@ -192,7 +188,7 @@ subsection Material model
     set Maximum viscosity = 1e26
 
     # Thermal diffusivity is adjusted to match thermal conductivities
-    # assumed in the assigning the initial geotherm
+    # assumed in assigning the initial geotherm
     set Thermal diffusivities = 1.333333e-6, 1.190476e-6, 1.149425e-6, 1.333333e-6, 1.333333e-6
     set Heat capacities       =        750.,        750.,        750.,        750.,         750.
     set Densities             =        3300,        2800,        2900,        3300,         3300

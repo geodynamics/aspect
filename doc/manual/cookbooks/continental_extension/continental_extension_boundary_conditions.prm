@@ -1,6 +1,4 @@
 subsection Model settings
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
   set Fixed temperature boundary indicators   = bottom, top
   set Prescribed velocity boundary indicators = left x: function, right x:function, bottom y:function
   set Free surface boundary indicators        = top
@@ -18,8 +16,6 @@ subsection Boundary temperature model
   set Model name = box
   subsection Box
     set Bottom temperature = 1573
-    set Left temperature   =  273
-    set Right temperature  =  273
     set Top temperature    =  273
   end
 end
