@@ -1,7 +1,7 @@
 #ifndef _aspect_solkz_compositional_field_h
 #define _aspect_solkz_compositional_field_h
 
-#include "solkz.h"
+#include <../benchmark/solkz/solkz.h>
 
 namespace aspect
 {

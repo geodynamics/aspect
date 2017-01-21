@@ -1,5 +1,5 @@
 #include "inclusion_compositional_field.h"
-#include <inclusion.cc>
+#include <../benchmark/inclusion/inclusion.cc>
 
 namespace aspect
 {

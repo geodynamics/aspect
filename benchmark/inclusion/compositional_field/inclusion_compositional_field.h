@@ -1,7 +1,7 @@
 #ifndef _aspect_inclusion_compositional_h
 #define _aspect_inclusion_compositional_h
 
-#include <inclusion.h>
+#include <../benchmark/inclusion/inclusion.h>
 
 namespace aspect
 {

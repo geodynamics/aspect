@@ -1,7 +1,7 @@
 #ifndef _aspect_solcx_compositional_field_h
 #define _aspect_solcx_compositional_field_h
 
-#include <solcx.h>
+#include <../benchmark/solcx/solcx.h>
 
 namespace aspect
 {

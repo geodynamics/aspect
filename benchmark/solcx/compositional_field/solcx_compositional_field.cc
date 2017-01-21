@@ -1,5 +1,5 @@
 #include "solcx_compositional_field.h"
-#include <solcx.cc>
+#include <../benchmark/solcx/solcx.cc>
 
 namespace aspect
 {
