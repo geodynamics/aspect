@@ -32,6 +32,7 @@
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/chunk.h>
+#include <aspect/geometry_model/chunk_3.h>
 
 #include <fstream>
 #include <string>
@@ -1129,6 +1130,7 @@ namespace aspect
     {
       AssertThrow ((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
                    || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0
+                   || (dynamic_cast<const GeometryModel::Chunk3<dim>*> (&this->get_geometry_model())) != 0
                    || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != 0,
                    ExcMessage ("This ascii data plugin can only be used when using "
                                "a spherical shell, chunk or box geometry."));
@@ -1394,7 +1396,8 @@ namespace aspect
           Point<dim> internal_position = position;
 
           if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0
-              || dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != 0)
+              || dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != 0
+              || dynamic_cast<const GeometryModel::Chunk3<dim>*> (&this->get_geometry_model()) != 0)
             {
               const std_cxx11::array<double,dim> spherical_position =
                 ::aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
@@ -1498,6 +1501,7 @@ namespace aspect
     {
       AssertThrow ((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
                    || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0
+                   || (dynamic_cast<const GeometryModel::Chunk3<dim>*> (&this->get_geometry_model())) != 0
                    || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != 0,
                    ExcMessage ("This ascii data plugin can only be used when using "
                                "a spherical shell, chunk or box geometry."));
@@ -1531,7 +1535,8 @@ namespace aspect
       Point<dim> internal_position = position;
 
       if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0
-          || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0)
+          || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0
+          || (dynamic_cast<const GeometryModel::Chunk3<dim>*> (&this->get_geometry_model())) != 0)
         {
           const std_cxx11::array<double,dim> spherical_position =
             ::aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
