@@ -31,8 +31,9 @@ namespace aspect
       IntegratedStrain<dim>::initialize_one_particle_property(const Point<dim> &,
                                                               std::vector<double> &data) const
       {
-        for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
-          data.push_back(0.0);
+        const static Tensor<2,dim> identity = unit_symmetric_tensor<dim>();
+        for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
+          data.push_back(identity[Tensor<2,dim>::unrolled_to_component_indices(i)]);
       }
 
       template <int dim>
@@ -43,9 +44,9 @@ namespace aspect
                                                           const std::vector<Tensor<1,dim> > &gradients,
                                                           const ArrayView<double> &data) const
       {
-        SymmetricTensor<2,dim> old_strain;
-        for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
-          old_strain[SymmetricTensor<2,dim>::unrolled_to_component_indices(i)] = data[data_position + i];
+        Tensor<2,dim> old_strain;
+        for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
+          old_strain[Tensor<2,dim>::unrolled_to_component_indices(i)] = data[data_position + i];
 
         Tensor<2,dim> grad_u;
         for (unsigned int d=0; d<dim; ++d)
@@ -53,23 +54,28 @@ namespace aspect
 
         const double dt = this->get_timestep();
 
-        // Here we update the integrated strain by rotating the already existing
-        // strain with the rotational (asymmetric) part of the velocity gradient
-        // tensor, and afterwards add the additionally experienced deformation.
-        const SymmetricTensor<2,dim> deformation_rate (symmetrize(grad_u));
+        Tensor<2,dim> new_strain;
 
-        // rotation tensor =
-        //     asymmetric part of the displacement in this time step
-        //                (= time step * (velocity gradient tensor - symmetric_part))
-        //   + unit tensor
-        const Tensor<2,dim> rotation (dt * (grad_u - deformation_rate) + unit_symmetric_tensor<dim>());
+        // here we integrate the equation
+        // new_deformation_gradient = velocity_gradient * old_deformation_gradient
+        // using a RK4 integration scheme.
+        const Tensor<2,dim> k1 = grad_u * old_strain * dt;
+        new_strain = old_strain + 0.5*k1;
+
+        const Tensor<2,dim> k2 = grad_u * new_strain * dt;
+        new_strain = old_strain + 0.5*k2;
+
+        const Tensor<2,dim> k3 = grad_u * new_strain * dt;
+        new_strain = old_strain + k3;
+
+        const Tensor<2,dim> k4 = grad_u * new_strain * dt;
 
         // the new strain is the rotated old strain plus the
         // strain of the current time step
-        const SymmetricTensor<2,dim> new_strain = symmetrize(rotation * Tensor<2,dim>(old_strain) * transpose(rotation)) + dt * deformation_rate;
+        new_strain = old_strain + (k1 + 2.0*k2 + 2.0*k3 + k4)/6.0;
 
-        for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
-          data[data_position + i] = new_strain[SymmetricTensor<2,dim>::unrolled_to_component_indices(i)];
+        for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
+          data[data_position + i] = new_strain[Tensor<2,dim>::unrolled_to_component_indices(i)];
       }
 
       template <int dim>
@@ -90,7 +96,7 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int> >
       IntegratedStrain<dim>::get_property_information() const
       {
-        const unsigned int n_components = SymmetricTensor<2,dim>::n_independent_components;
+        const unsigned int n_components = Tensor<2,dim>::n_independent_components;
         const std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("integrated strain",n_components));
         return property_information;
       }
@@ -108,8 +114,12 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_PROPERTY(IntegratedStrain,
                                         "integrated strain",
                                         "A plugin in which the tracer property tensor is "
-                                        "defined as the integrated strain this "
-                                        "particle has experienced.")
+                                        "defined as the deformation gradient tensor "
+                                        "$\\mathbf F$ this particle has experienced. "
+                                        "$\\mathbf F$ can be polar-decomposed into the left stretching tensor "
+                                        "$\\mathbf L$ (the finite strain we are interested in), and the "
+                                        "rotation tensor $\\mathbf Q$. See the corresponding cookbook in "
+                                        "the manual for more detailed information.")
     }
   }
 }

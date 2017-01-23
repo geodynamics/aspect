@@ -1,0 +1,4 @@
+# This is input data for the ascii file tracer generator.
+# It generates a single particle at the center of the domain.
+# Columns: x_coordinate y_coordinate
+0.5 0.5
