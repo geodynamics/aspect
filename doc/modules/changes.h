@@ -6,37 +6,19 @@
  *
  * <ol>
  *
-<<<<<<< f4832e99c372dc0fa0bfd632800ee33fdb805358
- * <li> New: Added a "heat flux densities" postprocessor.
- * <br> (Timo Heister, 2016/12/26)
- *
- * <li> New: ASPECT now allows querying its own version number as well as
- * the version of all of the underlying libraries using the
- * <code>--version</code> or <code>-v</code> command line flags.
- * <br>
- * Similarly, using <code>--help</code> or <code>-h</code> allows
- * querying command line usage of ASPECT.
- * <br> (Wolfgang Bangerth, 2016/12/19-31)
- *
- * <li> New: A material model for incompressible (using the Boussinesq
- * approximation) and compressible computations (with ALA or TALA) for a
- * nondimensionalized problem. This can be used for several benchmark problems
- * like Blankenbach, King, etc..
- * <br> (Timo Heister, Juliane Dannberg, Rene Gassmoeller, 2016/12/18)
- *
- * <li> New: ASPECT now supports the choice between different formulations for
- * the governing equations including boussinesq and anelastic liquid
- * approximation. For this, the adiabatic conditions have been extended to
- * provide values and gradients of the reference density. Several benchmarks
- * for these formulations have been added.
- * <br> (Juliane Dannberg, Rene Gassmoeller, Timo Heister, 2016/12/14)
-=======
  * <li> New: A cookbook for continental extension was added, which uses
  * uses the visco plastic material to simulate the thermal-mechanical
  * evolution of a continental plate extending at a constant velocity.
  * <br>
  * (John Naliboff, 2017/01/20)
->>>>>>> Address additional comments, minor corrections in text and add entry to changes.h
+ *
+ * <li> Changed: The finite strain cookbook used a way to compute 
+ * the finite strain that was only appropriate for a small amount of
+ * strain. This was fixed to a proper finite strain computation.
+ * Added tests and benchmarks for the new formulation, and updated
+ * the according particle property in the same way. Also updated
+ * and extended the cookbook description in the manual.
+ * <br> (Rene Gassmoeller, 2017/01/19)
  *
  * <li> New: Added a "heat flux densities" postprocessor.
  * <br> (Timo Heister, 2016/12/26)
