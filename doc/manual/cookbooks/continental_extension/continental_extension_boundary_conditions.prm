@@ -1,0 +1,22 @@
+subsection Model settings
+  set Fixed temperature boundary indicators   = bottom, top
+  set Prescribed velocity boundary indicators = left x: function, right x:function, bottom y:function
+  set Free surface boundary indicators        = top
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = cm=0.01, year=1
+    set Function expression = if (x<200e3 , -0.25*cm/year, 0.25*cm/year) ; 0.125*cm/year;
+  end
+end
+
+subsection Boundary temperature model
+  set Model name = box
+  subsection Box
+    set Bottom temperature = 1573
+    set Top temperature    =  273
+  end
+end
+

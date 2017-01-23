@@ -6,20 +6,7 @@
  *
  * <ol>
  *
- * <li> New: A cookbook for continental extension was added, which uses
- * uses the visco plastic material to simulate the thermal-mechanical
- * evolution of a continental plate extending at a constant velocity.
- * <br>
- * (John Naliboff, 2017/01/20)
- *
- * <li> Changed: The finite strain cookbook used a way to compute 
- * the finite strain that was only appropriate for a small amount of
- * strain. This was fixed to a proper finite strain computation.
- * Added tests and benchmarks for the new formulation, and updated
- * the according particle property in the same way. Also updated
- * and extended the cookbook description in the manual.
- * <br> (Rene Gassmoeller, 2017/01/19)
- *
+<<<<<<< f4832e99c372dc0fa0bfd632800ee33fdb805358
  * <li> New: Added a "heat flux densities" postprocessor.
  * <br> (Timo Heister, 2016/12/26)
  *
@@ -43,6 +30,13 @@
  * provide values and gradients of the reference density. Several benchmarks
  * for these formulations have been added.
  * <br> (Juliane Dannberg, Rene Gassmoeller, Timo Heister, 2016/12/14)
+=======
+ * <li> New: A cookbook for continental extension was added, which uses
+ * uses the visco plastic material to simulate the thermal-mechanical
+ * evolution of a continental plate extending at a constant velocity.
+ * <br>
+ * (John Naliboff, 2017/01/20)
+>>>>>>> Address additional comments, minor corrections in text and add entry to changes.h
  *
  * <li> New: ASPECT now also generates a <code>output/particles.visit</code>
  * file that allows Visit to read in all files from all processors and
