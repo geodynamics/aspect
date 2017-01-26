@@ -325,8 +325,8 @@ namespace aspect
 
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-              data.local_matrix(i,j) += (pressure_scaling *
-                                         one_over_rho * drho_dz * scratch.phi_u[j] * scratch.phi_p[i])
+              data.local_matrix(i,j) += -(pressure_scaling *
+                                          one_over_rho * drho_dz * scratch.phi_u[j] * scratch.phi_p[i])
                                         * JxW;
         }
     }
