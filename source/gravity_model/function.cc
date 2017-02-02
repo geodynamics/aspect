@@ -21,6 +21,8 @@
 
 #include <aspect/gravity_model/function.h>
 
+#include <iostream>
+
 namespace aspect
 {
   namespace GravityModel
