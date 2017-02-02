@@ -21,6 +21,8 @@
 
 #include <aspect/initial_conditions/function.h>
 
+#include <iostream>
+
 namespace aspect
 {
   namespace InitialConditions
