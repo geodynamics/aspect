@@ -706,20 +706,15 @@ namespace aspect
 
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-          const double temperature = in.temperature[i];
-          const double pressure    = in.pressure[i];
-
-          /* We are only asked to give viscosities if strain_rate.size() > 0
-           * and we can only calculate it if adiabatic_conditions are available.
-           */
-          if (in.strain_rate.size())
+          //We are only asked to give viscosities if strain_rate.size() > 0.
+          if (in.strain_rate.size() > 0)
             out.viscosities[i]                  = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
 
-          out.densities[i]                      = density                       (temperature, pressure, in.composition[i], in.position[i]);
-          out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (temperature, pressure, in.composition[i], in.position[i]);
-          out.specific_heat[i]                  = specific_heat                 (temperature, pressure, in.composition[i], in.position[i]);
-          out.thermal_conductivities[i]         = thermal_conductivity          (temperature, pressure, in.composition[i], in.position[i]);
-          out.compressibilities[i]              = compressibility               (temperature, pressure, in.composition[i], in.position[i]);
+          out.densities[i]                      = density                       (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+          out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+          out.specific_heat[i]                  = specific_heat                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+          out.thermal_conductivities[i]         = thermal_conductivity          (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+          out.compressibilities[i]              = compressibility               (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
           out.entropy_derivative_pressure[i]    = 0;
           out.entropy_derivative_temperature[i] = 0;
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
@@ -758,8 +753,8 @@ namespace aspect
           prm.declare_entry ("Use lateral average temperature for viscosity", "true",
                              Patterns::Bool (),
                              "Whether to use to use the laterally averaged temperature "
-                             "instead of the adiabatic temperature for the viscosity "
-                             "calculation. This ensures that the laterally averaged "
+                             "instead of the adiabatic temperature as reference for the "
+                             "viscosity calculation. This ensures that the laterally averaged "
                              "viscosities remain more or less constant over the model "
                              "runtime. This behaviour might or might not be desired.");
           prm.declare_entry ("Number lateral average bands", "10",
