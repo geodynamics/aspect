@@ -411,7 +411,9 @@ namespace aspect
       };
     }
 
-
+    template <int dim>
+    Steinberger<dim>::~Steinberger ()
+    {}
 
     template <int dim>
     void
@@ -479,68 +481,6 @@ namespace aspect
       const double vis_radial = radial_viscosity_lookup->radial_viscosity(depth);
 
       return std::max(std::min(vis_lateral * vis_radial,max_eta),min_eta);
-    }
-
-
-
-    template <int dim>
-    double
-    Steinberger<dim>::
-    get_corrected_temperature (const double temperature,
-                               const double,
-                               const Point<dim> &position) const
-    {
-      if (this->include_adiabatic_heating()
-          || compressible)
-        return temperature;
-
-      return temperature
-             + this->get_adiabatic_conditions().temperature(position)
-             - this->get_adiabatic_surface_temperature();
-    }
-
-
-
-    template <int dim>
-    double
-    Steinberger<dim>::
-    get_corrected_pressure (const double,
-                            const double pressure,
-                            const Point<dim> &position) const
-    {
-      if (compressible)
-        return pressure;
-
-      return this->get_adiabatic_conditions().pressure(position);
-    }
-
-    template <int dim>
-    double
-    Steinberger<dim>::
-    get_corrected_density (const double temperature,
-                           const double pressure,
-                           const std::vector<double> &compositional_fields,
-                           const Point<dim> &position) const
-    {
-      const double rho = get_compressible_density(temperature,pressure,compositional_fields,position);
-
-      const double adiabatic_temperature = this->get_adiabatic_conditions().temperature(position);
-      const double adiabatic_rho = get_compressible_density(adiabatic_temperature,
-                                                            pressure,
-                                                            compositional_fields,
-                                                            position);
-
-      const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
-      const double surface_temperature = this->get_adiabatic_surface_temperature();
-      const double surface_pressure = this->get_surface_pressure();
-      const double surface_rho = get_compressible_density(surface_temperature,
-                                                          surface_pressure,
-                                                          compositional_fields,
-                                                          surface_point);
-
-      //Return the density scaled to an incompressible profile
-      const double scaled_density = (rho / adiabatic_rho) * surface_rho;
-      return scaled_density;
     }
 
 
@@ -626,10 +566,10 @@ namespace aspect
     template <int dim>
     double
     Steinberger<dim>::
-    get_compressible_density (const double temperature,
-                              const double pressure,
-                              const std::vector<double> &compositional_fields,
-                              const Point<dim> &) const
+    density (const double temperature,
+             const double pressure,
+             const std::vector<double> &compositional_fields,
+             const Point<dim> &) const
     {
       double rho = 0.0;
       if (n_material_data == 1)
@@ -643,20 +583,6 @@ namespace aspect
         }
 
       return rho;
-    }
-
-    template <int dim>
-    double
-    Steinberger<dim>::
-    density (const double temperature,
-             const double pressure,
-             const std::vector<double> &compositional_fields,
-             const Point<dim> &position) const
-    {
-      if (compressible)
-        return get_compressible_density(temperature,pressure,compositional_fields,position);
-      else
-        return get_corrected_density(temperature,pressure,compositional_fields,position);
     }
 
 
@@ -704,20 +630,15 @@ namespace aspect
     seismic_Vp (const double      temperature,
                 const double      pressure,
                 const std::vector<double> &compositional_fields,
-                const Point<dim> &position) const
+                const Point<dim> &) const
     {
-      //this function is not called from evaluate() so we need to care about
-      //corrections for temperature and pressure
-      const double corrected_temperature = get_corrected_temperature(temperature,pressure,position);
-      const double corrected_pressure = get_corrected_pressure(temperature,pressure,position);
-
       double vp = 0.0;
       if (n_material_data == 1)
-        vp += material_lookup[0]->seismic_Vp(corrected_temperature,corrected_pressure);
+        vp += material_lookup[0]->seismic_Vp(temperature,pressure);
       else
         {
           for (unsigned i = 0; i < n_material_data; i++)
-            vp += compositional_fields[i] * material_lookup[i]->seismic_Vp(corrected_temperature,corrected_pressure);
+            vp += compositional_fields[i] * material_lookup[i]->seismic_Vp(temperature,pressure);
         }
       return vp;
     }
@@ -730,21 +651,15 @@ namespace aspect
     seismic_Vs (const double      temperature,
                 const double      pressure,
                 const std::vector<double> &compositional_fields,
-                const Point<dim> &position) const
+                const Point<dim> &) const
     {
-      //this function is not called from evaluate() so we need to care about
-      //corrections for temperature and pressure
-      const double corrected_temperature = get_corrected_temperature(temperature,pressure,position);
-      const double corrected_pressure = get_corrected_pressure(temperature,pressure,position);
-
-
       double vs = 0.0;
       if (n_material_data == 1)
-        vs += material_lookup[0]->seismic_Vs(corrected_temperature,corrected_pressure);
+        vs += material_lookup[0]->seismic_Vs(temperature,pressure);
       else
         {
           for (unsigned i = 0; i < n_material_data; i++)
-            vs += compositional_fields[i] * material_lookup[i]->seismic_Vs(corrected_temperature,corrected_pressure);
+            vs += compositional_fields[i] * material_lookup[i]->seismic_Vs(temperature,pressure);
         }
       return vs;
     }
@@ -759,9 +674,6 @@ namespace aspect
                      const std::vector<double> &compositional_fields,
                      const Point<dim> &position) const
     {
-      if (!compressible)
-        return 0.0;
-
       double dRhodp = 0.0;
       if (n_material_data == 1)
         dRhodp += material_lookup[0]->dRhodp(temperature,pressure);
@@ -779,7 +691,7 @@ namespace aspect
     Steinberger<dim>::
     is_compressible () const
     {
-      return compressible;
+      return true;
     }
 
     template <int dim>
@@ -794,30 +706,15 @@ namespace aspect
 
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-          const double temperature = get_corrected_temperature(in.temperature[i],
-                                                               in.pressure[i],
-                                                               in.position[i]);
-          const double pressure    = get_corrected_pressure(in.temperature[i],
-                                                            in.pressure[i],
-                                                            in.position[i]);
+          const double temperature = in.temperature[i];
+          const double pressure    = in.pressure[i];
 
           /* We are only asked to give viscosities if strain_rate.size() > 0
            * and we can only calculate it if adiabatic_conditions are available.
-           * Note that the used viscosity formulation needs the not
-           * corrected temperatures in case we compare it to the lateral
-           * temperature average.
            */
           if (in.strain_rate.size())
-            {
-              if (use_lateral_average_temperature)
-                {
-                  out.viscosities[i]            = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
-                }
-              else
-                {
-                  out.viscosities[i]            = viscosity                     (temperature, pressure, in.composition[i], in.strain_rate[i], in.position[i]);
-                }
-            }
+            out.viscosities[i]                  = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
+
           out.densities[i]                      = density                       (temperature, pressure, in.composition[i], in.position[i]);
           out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (temperature, pressure, in.composition[i], in.position[i]);
           out.specific_heat[i]                  = specific_heat                 (temperature, pressure, in.composition[i], in.position[i]);
@@ -877,10 +774,6 @@ namespace aspect
                              "Whether to include latent heat effects in the "
                              "calculation of thermal expansivity and specific heat. "
                              "Following the approach of Nakagawa et al. 2009. ");
-          prm.declare_entry ("Compressible", "false",
-                             Patterns::Bool (),
-                             "Whether to include a compressible material description."
-                             "For a description see the manual section. ");
           prm.declare_entry ("Reference viscosity", "1e23",
                              Patterns::Double(0),
                              "The reference viscosity that is used for pressure scaling. ");
@@ -922,7 +815,6 @@ namespace aspect
           n_lateral_slices = prm.get_integer("Number lateral average bands");
           interpolation        = prm.get_bool ("Bilinear interpolation");
           latent_heat          = prm.get_bool ("Latent heat");
-          compressible         = prm.get_bool ("Compressible");
           reference_eta        = prm.get_double ("Reference viscosity");
           min_eta              = prm.get_double ("Minimum viscosity");
           max_eta              = prm.get_double ("Maximum viscosity");
