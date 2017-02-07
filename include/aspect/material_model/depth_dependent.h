@@ -78,13 +78,6 @@ namespace aspect
          */
         virtual double reference_viscosity () const;
 
-        /**
-         * Method to calculate reference density for the depth-dependent model. Because the depth-
-         * dependent model deos not modify density, the reference density is equivalent to the
-         * base model's reference density.
-         */
-        virtual double reference_density () const;
-
       private:
 
         /**

@@ -426,14 +426,6 @@ namespace aspect
     {
       return base_model->reference_viscosity();
     }
-
-    template <int dim>
-    double
-    Averaging<dim>::
-    reference_density() const
-    {
-      return base_model->reference_density();
-    }
   }
 }
 

@@ -579,25 +579,6 @@ namespace aspect
         virtual void update ();
 
         /**
-         * @name Physical parameters used in the basic equations
-         * @{
-         */
-        /**
-         * Return the viscosity ratio between disclocation creep and diffusion
-         * creep in the case of composite rheology
-         */
-        virtual double viscosity_ratio (const double      temperature,
-                                        const double      pressure,
-                                        const std::vector<double>    &compositional_fields,
-                                        const SymmetricTensor<2,dim> &strainrate,
-                                        const Point<dim> &position) const;
-
-
-        /**
-         * @}
-         */
-
-        /**
          * @name Qualitative properties one can ask a material model
          * @{
          */
@@ -646,27 +627,12 @@ namespace aspect
          * constitutive tensor is not normalized.
          */
         virtual double reference_viscosity () const = 0;
-
-        /**
-         * Return the reference density $\rho$. Like the value returned by
-         * reference_viscosity(), this value is not actually used in
-         * computations but only in postprocessing such as when computing
-         * dimension-less quantities.
-         */
-        virtual double reference_density () const = 0;
-
-        /**
-         * Return a reference value for the thermal expansion coefficient
-         * $\alpha$. See the thermal_expansion_coefficient() function for a
-         * definition of $\alpha$.
-         */
-        virtual double reference_thermal_expansion_coefficient () const;
         /**
          * @}
          */
 
         /**
-         * @name Auxiliary material properties used for postprocessing
+         * @name Common auxiliary material properties used for postprocessing
          * @{
          */
         /**
@@ -704,21 +670,6 @@ namespace aspect
                     const double      pressure,
                     const std::vector<double> &compositional_fields,
                     const Point<dim> &position) const;
-        /**
-         * Return the Phase number of the model as a function of temperature
-         * and pressure.
-         *
-         * This function is only called in postprocessing. Derived classes do
-         * not need to implement it if no useful information is known to
-         * compute this quantity, in which case graphical output will simply
-         * show an uninformative field of constant value. By default this
-         * function returns 0 to indicate everything is part of the same phase
-         */
-        virtual
-        unsigned int
-        thermodynamic_phase (const double      temperature,
-                             const double      pressure,
-                             const std::vector<double> &compositional_fields) const;
         /**
          * @}
          */
