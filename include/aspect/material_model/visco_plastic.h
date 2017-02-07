@@ -106,8 +106,6 @@ namespace aspect
 
         virtual double reference_viscosity () const;
 
-        virtual double reference_density () const;
-
         static
         void
         declare_parameters (ParameterHandler &prm);

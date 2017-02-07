@@ -86,37 +86,7 @@ namespace aspect
       return eta;
     }
 
-    template <int dim>
-    double
-    Simple<dim>::
-    reference_density () const
-    {
-      return reference_rho;
-    }
 
-    template <int dim>
-    double
-    Simple<dim>::
-    reference_thermal_expansion_coefficient () const
-    {
-      return thermal_alpha;
-    }
-
-    template <int dim>
-    double
-    Simple<dim>::
-    reference_cp () const
-    {
-      return reference_specific_heat;
-    }
-
-    template <int dim>
-    double
-    Simple<dim>::
-    reference_thermal_diffusivity () const
-    {
-      return k_value/(reference_rho*reference_specific_heat);
-    }
 
     template <int dim>
     bool

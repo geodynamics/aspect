@@ -38,13 +38,6 @@ namespace aspect
       return eta_0;
     }
 
-    template <int dim>
-    double
-    MeltGlobal<dim>::
-    reference_density () const
-    {
-      return reference_rho_s;
-    }
 
     template <int dim>
     bool

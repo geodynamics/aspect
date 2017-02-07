@@ -33,8 +33,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-
-
     namespace internal
     {
 
@@ -490,26 +488,6 @@ namespace aspect
       return reference_eta;
     }
 
-
-
-    template <int dim>
-    double
-    Steinberger<dim>::
-    reference_density () const
-    {
-      const double reference_density    = 3300e0;
-      return reference_density;
-    }
-
-
-
-    template <int dim>
-    double
-    Steinberger<dim>::
-    reference_thermal_expansion_coefficient () const
-    {
-      return 0;
-    }
 
 
     template <int dim>

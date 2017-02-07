@@ -44,14 +44,6 @@ namespace aspect
     }
 
     template <int dim>
-    double
-    Simpler<dim>::
-    reference_density () const
-    {
-      return reference_rho;
-    }
-
-    template <int dim>
     void
     Simpler<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,

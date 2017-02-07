@@ -364,14 +364,6 @@ namespace aspect
     }
 
     template <int dim>
-    double
-    ViscoPlastic<dim>::
-    reference_density () const
-    {
-      return densities[0];
-    }
-
-    template <int dim>
     bool
     ViscoPlastic<dim>::
     is_compressible () const
