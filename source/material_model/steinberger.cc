@@ -424,7 +424,7 @@ namespace aspect
                                   (new internal::MaterialLookup(data_directory+material_file_names[i],interpolation,this->get_mpi_communicator())));
       lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(data_directory+lateral_viscosity_file_name,this->get_mpi_communicator()));
       radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(data_directory+radial_viscosity_file_name,this->get_mpi_communicator()));
-      avg_temp.resize(lateral_viscosity_lookup->get_nslices());
+      avg_temp.resize(n_lateral_slices);
     }
 
 
@@ -443,8 +443,8 @@ namespace aspect
                                    " least one depth band that does not have"
                                    " any quadrature points in it."
                                    " Consider reducing number of depth layers"
-                                   " for averaging by reducing the number of"
-                                   " slices in the viscosity prefactor file."));
+                                   " for averaging specified in the parameter"
+                                   " file.(Number lateral average bands)"));
         }
     }
 
@@ -865,6 +865,9 @@ namespace aspect
                              "calculation. This ensures that the laterally averaged "
                              "viscosities remain more or less constant over the model "
                              "runtime. This behaviour might or might not be desired.");
+          prm.declare_entry ("Number lateral average bands", "10",
+                             Patterns::Integer (1),
+                             "Number of bands to compute laterally averaged temperature within.");
           prm.declare_entry ("Bilinear interpolation", "true",
                              Patterns::Bool (),
                              "Whether to use bilinear interpolation to compute "
@@ -916,6 +919,7 @@ namespace aspect
           radial_viscosity_file_name   = prm.get ("Radial viscosity file name");
           lateral_viscosity_file_name  = prm.get ("Lateral viscosity file name");
           use_lateral_average_temperature = prm.get_bool ("Use lateral average temperature for viscosity");
+          n_lateral_slices = prm.get_integer("Number lateral average bands");
           interpolation        = prm.get_bool ("Bilinear interpolation");
           latent_heat          = prm.get_bool ("Latent heat");
           compressible         = prm.get_bool ("Compressible");

@@ -183,6 +183,7 @@ namespace aspect
         bool use_lateral_average_temperature;
         double reference_eta;
         std::vector<double> avg_temp;
+        unsigned int n_lateral_slices;
         double min_eta;
         double max_eta;
         double max_lateral_eta_variation;

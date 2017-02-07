@@ -1,13 +1,7 @@
-# EXPECT FAILURE
-
-# This is a copy of the simple compressible test.
-# However it uses the Steinberger material model, which
-# reads in lookup tables. The testdata used in this test
-# was prepared with the same equations as in the simple
-# compressible material model. However, the lookup table is much too large for
-# lateral averaging for the implementation currently, so an error should be
-# produced under the current conditions.
-
+# This is a copy of the steinberger compressible test.
+# However it uses the actual Steinberger viscosity model, 
+# instead of the constant viscosity testdata.
+ 
 set CFL number                             = 1.0
 set End time                               = 1e5
 set Adiabatic surface temperature          = 1600.0
@@ -53,15 +47,13 @@ subsection Material model
   subsection Steinberger model
     set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/test-steinberger-compressible/
     set Material file names              = testdata.txt
-    # Use overresolved viscosity prefactor file
     set Lateral viscosity file name      = test-viscosity-prefactor.txt 
     set Radial viscosity file name       = test-radial-visc.txt
     set Bilinear interpolation           = true
     set Latent heat                      = false
     set Compressible                     = true
     set Reference viscosity              = 1e21
-    set Use lateral average temperature for viscosity = true
-    set Number lateral average bands = 100
+    set Number lateral average bands = 40
   end
 end
 
@@ -83,6 +75,8 @@ end
 subsection Model settings
   set Fixed temperature boundary indicators   = 0,1
 
+  set Include adiabatic heating               = true
+  set Include shear heating                   = false
 
   set Tangential velocity boundary indicators = 0,2,3
   set Zero velocity boundary indicators       = 1
@@ -95,17 +89,13 @@ subsection Postprocess
 
   subsection Visualization
     set Output format                 = vtu
-    set List of output variables      = density
+    set List of output variables      = viscosity
     set Time between graphical output = 0
   end
 
   subsection Depth average
     set Time between graphical output = 0
     set Number of zones = 10
- end
+  end
 
-end
-
-subsection Heating model
-  set List of model names = adiabatic heating
 end
