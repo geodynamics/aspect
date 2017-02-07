@@ -53,11 +53,6 @@ namespace aspect
     {
       public:
         /**
-         * Virtual destructor.
-         */
-        virtual ~Steinberger();
-
-        /**
          * Initialization function. Loads the material data and sets up
          * pointers.
          */

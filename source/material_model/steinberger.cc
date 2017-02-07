@@ -411,15 +411,12 @@ namespace aspect
       };
     }
 
-    template <int dim>
-    Steinberger<dim>::~Steinberger ()
-    {}
+
 
     template <int dim>
     void
     Steinberger<dim>::initialize()
     {
-
       n_material_data = material_file_names.size();
       for (unsigned i = 0; i < n_material_data; i++)
         material_lookup.push_back(std_cxx11::shared_ptr<internal::MaterialLookup>
