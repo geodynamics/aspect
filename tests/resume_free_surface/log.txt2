@@ -11,17 +11,19 @@ Number of free surface degrees of freedom: 5346
 
    Postprocessing:
 
-     Reference density (kg/m^3):                    3300
-     Reference gravity (m/s^2):                     10
-     Reference thermal expansion (1/K):             4e-05
-     Temperature contrast across model domain (K):  0
      Model domain depth (m):                        200000
+     Temperature contrast across model domain (K):  0
+     Reference depth (m):                           0
+     Reference temperature (K):                     0
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     10
+     Reference density (kg/m^3):                    3300
+     Reference thermal expansion coefficient (1/K): 4e-05
+     Reference specific heat capacity (J/(K*kg)):   1250
+     Reference thermal conductivity (W/(m*K)):      4.7
+     Reference viscosity (Pa*s):                    1e+19
      Reference thermal diffusivity (m^2/s):         1.13939e-06
-     Reference viscosity (Pas):                     1e+19
-     Ra number:                                     0
-     k_value:                                       4.7
-     reference_cp:                                  1250
-     reference_thermal_diffusivity:                 1.13939e-06
+     Rayleigh number:                               0
 
      Topography min/max:       0 m, 0 m, 
      RMS, max velocity:        0.11 m/year, 0.399 m/year

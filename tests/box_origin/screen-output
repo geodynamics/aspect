@@ -5,21 +5,23 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+9 iterations.
+   Solving Stokes system... 30+8 iterations.
 
    Postprocessing:
 
-     Reference density (kg/m^3):                    1
-     Reference gravity (m/s^2):                     1
-     Reference thermal expansion (1/K):             2e-05
-     Temperature contrast across model domain (K):  1
      Model domain depth (m):                        2.2
+     Temperature contrast across model domain (K):  1
+     Reference depth (m):                           0
+     Reference temperature (K):                     1
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     1
+     Reference density (kg/m^3):                    1
+     Reference thermal expansion coefficient (1/K): 2e-05
+     Reference specific heat capacity (J/(K*kg)):   1250
+     Reference thermal conductivity (W/(m*K)):      1e-06
+     Reference viscosity (Pa*s):                    1
      Reference thermal diffusivity (m^2/s):         8e-10
-     Reference viscosity (Pas):                     1
-     Ra number:                                     266200
-     k_value:                                       1e-06
-     reference_cp:                                  1250
-     reference_thermal_diffusivity:                 8e-10
+     Rayleigh number:                               266200
 
      Writing graphical output:           output-box_origin/solution/solution-00000
      RMS, max velocity:                  4.74e-08 m/s, 1.78e-07 m/s

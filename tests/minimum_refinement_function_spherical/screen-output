@@ -8,19 +8,6 @@ Number of degrees of freedom: 740 (450+65+225)
    Solving Stokes system... 25+0 iterations.
 
    Postprocessing:
-
-     Reference density (kg/m^3):                    3300
-     Reference gravity (m/s^2):                     10
-     Reference thermal expansion (1/K):             2e-05
-     Temperature contrast across model domain (K):  3500
-     Model domain depth (m):                        250000
-     Reference thermal diffusivity (m^2/s):         1.13939e-06
-     Reference viscosity (Pas):                     5e+24
-     Ra number:                                     6.33561
-     k_value:                                       4.7
-     reference_cp:                                  1250
-     reference_thermal_diffusivity:                 1.13939e-06
-
      Writing graphical output:           output-minimum_refinement_function_spherical/solution/solution-00000
      RMS, max velocity:                  8.27e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
@@ -36,19 +23,6 @@ Number of degrees of freedom: 2,124 (1,298+177+649)
    Solving Stokes system... 30+18 iterations.
 
    Postprocessing:
-
-     Reference density (kg/m^3):                    3300
-     Reference gravity (m/s^2):                     10
-     Reference thermal expansion (1/K):             2e-05
-     Temperature contrast across model domain (K):  3500
-     Model domain depth (m):                        250000
-     Reference thermal diffusivity (m^2/s):         1.13939e-06
-     Reference viscosity (Pas):                     5e+24
-     Ra number:                                     6.33561
-     k_value:                                       4.7
-     reference_cp:                                  1250
-     reference_thermal_diffusivity:                 1.13939e-06
-
      Writing graphical output:           output-minimum_refinement_function_spherical/solution/solution-00001
      RMS, max velocity:                  6.23e-07 m/year, 1.16e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
@@ -64,19 +38,6 @@ Number of degrees of freedom: 5,205 (3,194+414+1,597)
    Solving Stokes system... 30+19 iterations.
 
    Postprocessing:
-
-     Reference density (kg/m^3):                    3300
-     Reference gravity (m/s^2):                     10
-     Reference thermal expansion (1/K):             2e-05
-     Temperature contrast across model domain (K):  3500
-     Model domain depth (m):                        250000
-     Reference thermal diffusivity (m^2/s):         1.13939e-06
-     Reference viscosity (Pas):                     5e+24
-     Ra number:                                     6.33561
-     k_value:                                       4.7
-     reference_cp:                                  1250
-     reference_thermal_diffusivity:                 1.13939e-06
-
      Writing graphical output:           output-minimum_refinement_function_spherical/solution/solution-00002
      RMS, max velocity:                  6.23e-07 m/year, 1.16e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
@@ -93,17 +54,19 @@ Number of degrees of freedom: 8,325 (5,114+654+2,557)
 
    Postprocessing:
 
-     Reference density (kg/m^3):                    3300
-     Reference gravity (m/s^2):                     10
-     Reference thermal expansion (1/K):             2e-05
-     Temperature contrast across model domain (K):  3500
      Model domain depth (m):                        250000
-     Reference thermal diffusivity (m^2/s):         1.13939e-06
-     Reference viscosity (Pas):                     5e+24
-     Ra number:                                     6.33561
-     k_value:                                       4.7
-     reference_cp:                                  1250
-     reference_thermal_diffusivity:                 1.13939e-06
+     Temperature contrast across model domain (K):  3500
+     Reference depth (m):                           0
+     Reference temperature (K):                     1623
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     10
+     Reference density (kg/m^3):                    3212.22
+     Reference thermal expansion coefficient (1/K): 2e-05
+     Reference specific heat capacity (J/(K*kg)):   1250
+     Reference thermal conductivity (W/(m*K)):      4.7
+     Reference viscosity (Pa*s):                    5e+24
+     Reference thermal diffusivity (m^2/s):         1.17053e-06
+     Rayleigh number:                               6.00303
 
      Writing graphical output:           output-minimum_refinement_function_spherical/solution/solution-00003
      RMS, max velocity:                  6.23e-07 m/year, 1.16e-06 m/year

@@ -9,19 +9,6 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
 
-     Reference density (kg/m^3):                    3300
-     Reference gravity (m/s^2):                     10
-     Reference thermal expansion (1/K):             2e-05
-     Temperature contrast across model domain (K):  3500
-     Model domain depth (m):                        500000
-     Reference thermal diffusivity (m^2/s):         1.13939e-06
-     Reference viscosity (Pas):                     5e+24
-     Ra number:                                     50.6848
-     k_value:                                       4.7
-     reference_cp:                                  1250
-     reference_thermal_diffusivity:                 1.13939e-06
-
-
 Number of active cells: 214 (on 5 levels)
 Number of degrees of freedom: 3,113 (1,906+254+953)
 
@@ -31,19 +18,6 @@ Number of degrees of freedom: 3,113 (1,906+254+953)
    Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
-
-     Reference density (kg/m^3):                    3300
-     Reference gravity (m/s^2):                     10
-     Reference thermal expansion (1/K):             2e-05
-     Temperature contrast across model domain (K):  3500
-     Model domain depth (m):                        500000
-     Reference thermal diffusivity (m^2/s):         1.13939e-06
-     Reference viscosity (Pas):                     5e+24
-     Ra number:                                     50.6848
-     k_value:                                       4.7
-     reference_cp:                                  1250
-     reference_thermal_diffusivity:                 1.13939e-06
-
 
 Number of active cells: 628 (on 6 levels)
 Number of degrees of freedom: 8,799 (5,400+699+2,700)
@@ -55,19 +29,6 @@ Number of degrees of freedom: 8,799 (5,400+699+2,700)
 
    Postprocessing:
 
-     Reference density (kg/m^3):                    3300
-     Reference gravity (m/s^2):                     10
-     Reference thermal expansion (1/K):             2e-05
-     Temperature contrast across model domain (K):  3500
-     Model domain depth (m):                        500000
-     Reference thermal diffusivity (m^2/s):         1.13939e-06
-     Reference viscosity (Pas):                     5e+24
-     Ra number:                                     50.6848
-     k_value:                                       4.7
-     reference_cp:                                  1250
-     reference_thermal_diffusivity:                 1.13939e-06
-
-
 Number of active cells: 1,492 (on 7 levels)
 Number of degrees of freedom: 20,806 (12,786+1,627+6,393)
 
@@ -78,17 +39,19 @@ Number of degrees of freedom: 20,806 (12,786+1,627+6,393)
 
    Postprocessing:
 
-     Reference density (kg/m^3):                    3300
-     Reference gravity (m/s^2):                     10
-     Reference thermal expansion (1/K):             2e-05
-     Temperature contrast across model domain (K):  3500
      Model domain depth (m):                        500000
-     Reference thermal diffusivity (m^2/s):         1.13939e-06
-     Reference viscosity (Pas):                     5e+24
-     Ra number:                                     50.6848
-     k_value:                                       4.7
-     reference_cp:                                  1250
-     reference_thermal_diffusivity:                 1.13939e-06
+     Temperature contrast across model domain (K):  3500
+     Reference depth (m):                           0
+     Reference temperature (K):                     1623
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     10
+     Reference density (kg/m^3):                    3212.22
+     Reference thermal expansion coefficient (1/K): 2e-05
+     Reference specific heat capacity (J/(K*kg)):   1250
+     Reference thermal conductivity (W/(m*K)):      4.7
+     Reference viscosity (Pa*s):                    5e+24
+     Reference thermal diffusivity (m^2/s):         1.17053e-06
+     Rayleigh number:                               48.0243
 
 
 Number of active cells: 1,564 (on 7 levels)
