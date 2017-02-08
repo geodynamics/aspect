@@ -38,7 +38,6 @@ set Start time                             = 0
 # such conversion happens.
 set Use years in output instead of seconds = false
 
-
 subsection Boundary temperature model
   # Select one of the following models:
   #
