@@ -1,31 +1,13 @@
-# A simple model to test if the visco_plastic material
-# model returns the correct viscosity for the specified
-# viscous flaws, brittle parameters and geotherm. The 
-# model (100x100 km) contains two distinct materials
-# (crust & mantle), with the crust (upper 30 km) specified
-# by a compositional field. The specified geotherm is typical
-# of the continental lithosphere. The top and bottom boundaries  
-# have fixed temepratures (sides are insulating), while all the
-# boundaries are free-slip (tangential velocity b.c.). The strain-rate 
-# used in the viscous flow laws is specified in the material model
-# As we only want to check the viscosity profile, no need to do more
-# than 1 nonlinear iteration. See additional comments below for more details.
-
 # Global parameters
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = true
-set Linear solver tolerance                = 1e-7
 set Nonlinear solver scheme                = iterated Stokes
-set Nonlinear solver tolerance             = 1e-8
 set Max nonlinear iterations               = 1
 set Number of cheap Stokes solver steps    = 0
-set CFL number                             = 0.5
 set Output directory                       = visco_plastic_yield_strain_weakening
 set Timing output frequency                = 1
-set Pressure normalization                 = surface
-set Surface pressure                       = 0
 
 # Model geometry (100x100 km, 10 km spacing)
 subsection Geometry model
@@ -38,46 +20,60 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications (no global or adaptive refinement)
+# Mesh refinement specifications 
 subsection Mesh refinement
-  set Initial global refinement                 = 0
-  set Initial adaptive refinement               = 0
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
 end
 
-# Boundary classifications (free-slip, fixed T at top & bottom, insulating side) 
+
+# Boundary classifications (fixed T boundaries, prescribed velocity) 
 subsection Model settings
-  set Fixed temperature boundary indicators   = bottom, top
-  set Tangential velocity boundary indicators = bottom, top, left, right
+  set Fixed temperature boundary indicators   = bottom, top, left, right
+  set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
 end
 
-# Number and name of compositional fields.
-# Below, we specify four compositional fields.  The first three fields are
-# for each component of the 2D symmetric finite strain tensor and the fourth
-# is for the crust.  The name of each field associated with finite strain 
-# refers to the index of the strain tensor (i.e. s11 = index [1,1]).  As 
-# opposed to using advect compositional fields, we will track the integrated
-# strain and crust via particles that carry information (see Traceris subsection
-# under Postprocesses subsection).  In addition to specifying that we are 
-# particles to track properties, we also must specify what particle properties
-# are "mapped" at each time step to a separate compositional field accessed
-# by the material model.  Here, we are specifying a specific component of
-# integrated strain is mapped to s11/s22/s12 and the field "crust" tracks
-# initial composition. 
+# Velocity on boundaries characterized by functions
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = m=0.0005, year=1
+    set Function expression = if (x<50e3 , -1*m/year, 1*m/year); if (y<50e3 , 1*m/year, -1*m/year);
+  end
+end
+
+# Temperature boundary and initial conditions
+subsection Boundary temperature model
+  set Model name = box
+  subsection Box
+    set Bottom temperature = 273
+    set Left temperature   = 273
+    set Right temperature  = 273
+    set Top temperature    = 273
+  end
+end
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+# Compositional fields used to track finite strain
 subsection Compositional fields
-  set Number of fields = 4
-  set Names of fields = s11, s22, s12, crust
-  set Compositional field methods = particles, particles, particles, particles
-  set Mapped particle properties = s11:integrated strain [1], s22:integrated strain [2], s12:integrated strain [3], crust:initial crust
+  set Number of fields = 3
+  set Names of fields = s11, s22, s12
+  set Compositional field methods = particles, particles, particles
+  set Mapped particle properties = s11:integrated strain [1], s22:integrated strain [2], s12:integrated strain [3]
 end
 
-# Spatial domain of different compositional fields (crust is present in upper 30 km)
-# The integrated finite strain composition fields initially have a value of 0 
-# throughout the entire domain.
+# All compositional fields have an initial value of 0
 subsection Compositional initial conditions
   set Model name = function
   subsection Function
     set Variable names      = x,y
-    set Function expression = 0; 0; 0; if(y>=70.e3, 1, 0);
+    set Function expression = 0; 0; 0;
   end
 end
 
@@ -86,153 +82,48 @@ subsection Boundary composition model
   set Model name = initial composition
 end
 
-
-# Temperature boundary conditions (fixed: top = 273 K, bottom = 1573 K)
-subsection Boundary temperature model
-  set Model name = box
-  subsection Box
-    set Bottom temperature = 1573
-    set Left temperature   =  273
-    set Right temperature  =  273
-    set Top temperature    =  273
-  end
-end
-
-# Initial temperature field
-# Typical continental geotherm based equations 4-6 from Chapman 1986 (Geol. Soc. Lon.)
-# The initial constraints are:
-#   surface temperature (ts) = 273 K; basal temperature (tb) = 1573 K; Moho
-#   temperature (tm) = 873 K; crust heat production (A) = 9.e-7 W/m^3; crust
-#   thermal conductivity (kc) = 2.5 (W/(m K)); 
-# To satisfy these constraints, the following values are required:
-#   surface heat flow (qs) = 0.0635 W/m^2; basal heat flow = 0.365 W/m^2;
-#   mantle thermal conducitivty (km) = 3.65 (W/(m K)); 
-subsection Initial conditions
-  set Model name = function
-  subsection Function
-    set Variable names = x,y
-    set Function constants = h=100e3,ts=273,tm=873.,qs=0.0635,qb=0.0365,kc=2.5,km=3.65,A=9.e-7
-    set Function expression = if( (h-y)<=30.e3, \
-                                  ts + (qs/kc)*(h-y) - (A*(h-y)*(h-y))/(2.0*kc), \
-                                  tm + (qb/km)*(h-y-30.e3))                             
-  end
-end
-
-# Internal heating (only internal heating for crust)
-# Assuming a very large decay time, the heat production (W/m^3) is effectively:
-#   radioactive_heating_rate (W/kg) * density (kg/m^3)
-# For a reference crustal density of 2800 kg/m^3 and 9.e-7 W/m^3 heating production,
-# the heating rate (assuming a single element) is 9.e-7/2800. = 3.214287e-10.
-subsection Heating model
-  set Model name = radioactive decay
-  subsection Radioactive decay
-    set Number of elements    = 1
-    set Heating rates                 = 3.2142857e-10
-    set Half decay times              = 1.e20
-    set Initial concentrations mantle = 0.0
-    set Initial concentrations crust  = 1.0 
-    set Crust defined by composition  = true
-    set Crust composition number      = 0
-  end
-end
-
-
-# Material model (values for background material & compositional fields)
-# Note that since we now are tracking finite strain compositional fields,
-# (3 components in 2D), properties must be specified for each of these
-# fields.  However, the material model does not use these values in 
-# determining the element properties given the finite strain compositional
-# fields are listed first.  
+# Material model (values for background material and strain fields)
 subsection Material model
   set Model name = visco plastic
-
   subsection Visco Plastic
-
-    set Reference temperature = 293
-
-    # As the boundaries are all free-slip, so use the reference strain-rate
-    # (used on first nonlinear iteration) to specify the strain-rate used
-    # in the viscous flow law.  Set the minimum strain-rate to the same value.
-    set Minimum strain rate = 1.e-20
-    set Reference strain rate = 1.e-20
-
-    # Minimum, maximum and reference viscosity 
-    set Minimum viscosity = 1e18
-    set Maximum viscosity = 1e28
-    set Reference viscosity = 1e22
-
-    # Thermal diffusivity is adjusted to match thermal conductivities
-    # assumed in the assigning the initial geotherm
-    set Thermal diffusivities = 1.474747e-6,1.190476e-6,1.190476e-6,1.190476e-6,1.190476e-6
-    set Heat capacities = 750.,750.,750.,750.,750.
-    set Densities = 3300,2800,2800,2800,2800
-    set Thermal expansivities = 0.,0.,0.,0.,0.
-
-    # Harmonic viscosity averaging
-    set Viscosity averaging scheme = harmonic
-    
-    # Choose to have the viscosity (pre-yield) follow a dislocation
-    # diffusion or composite flow law.  Here, dislocation is selected
-    # so no need to specify diffusion creep parameters below, which are
-    # only used if "diffusion" or "composite" option is selected.
+    set Reference strain rate = 1.e-16
     set Viscous flow law = dislocation
-
-    # Dislocation creep parameters for background material (dry olivine;
-    # Hirth & Kohlstedt, 2004) and crust compositional field (wet quarzite;
-    # (Rutter & Brodie, 2004).
-    set Prefactors for dislocation creep = 6.52e-16,8.57e-28,8.57e-28,8.57e-28,8.57e-28,
-    set Stress exponents for dislocation creep = 3.5,4.0,4.0,4.0,4.0
-    set Activation energies for dislocation creep = 530.e3,223.e3,223.e3,223.e3,223.e3
-    set Activation volumes for dislocation creep = 18.e-6,0.,0.,0.,0.
-
-    # Specify that we will use Drucker Prager yield criterion rather than
-    # stress limiter criterion.
+    set Prefactors for dislocation creep = 5.e-23,5.e-23,5.e-23,5.e-23
+    set Stress exponents for dislocation creep = 1.0,1.0,1.0,1.0
+    set Activation energies for dislocation creep = 0.,0.,0.,0.
+    set Activation volumes for dislocation creep = 0.,0.,0.,0.
     set Yield mechanism = drucker
-
-    # Parameters for Drucker Prager yield criterion.  To avoid any convergence
-    # issues with pressure-dependent yielding, we set the friction angle to
-    # zero.  The Drucker Prager yield criterion thus becomes a fixed value equal
-    # to the cohesion (i.e. Von Mises yield criterion).  Note that in the test
-    # visco_plastic.prm the cohesion was set to sufficiently high values so
-    # that yielding never occured.
-    set Angles of internal friction = 0.,0.,0.,0.,0.
-    set Cohesions = 250.e6,250.e6,250.e6,250.e6,250.e6
-
-    # Parameters for strain weakening
+    set Angles of internal friction = 0.,0.,0.,0.
+    set Cohesions = 1.e6,1.e6,1.e6,1.e6
     set Use strain weakening = true
-    set Start strain weakening intervals = 0.,0.,0.,0.,0.
-    set End strain weakening intervals = 1.0,1.0,1.0,1.0,1.0
-    set Cohesion strain weakening factors = 0.5,0.5,0.5,0.5,0.5
-    set Friction strain weakening factors = 0.5,0.5,0.5,0.5,0.5
-
+    set Start strain weakening intervals = 0.,0.,0.,0.
+    set End strain weakening intervals = 1.0,1.0,1.0,1.0
+    set Cohesion strain weakening factors = 0.5,0.5,0.5,0.5
+    set Friction strain weakening factors = 0.5,0.5,0.5,0.5
   end
 end
 
 # Gravity model
 subsection Gravity model
   set Model name = vertical
-
   subsection Vertical
-    set Magnitude = 9.81
+    set Magnitude = 10.0
   end
 end
 
-# Post processing (use output data to compare to predicted viscosities)
-# We also specify tracer properties in this section.  In this case, the
-# tracers will track the initial composition and integrated strain.  
-# On average, each element will contain roouhgly 10 tracers. See the 
-# particle & tracer section of manual for additional information.
+# Post processing
 subsection Postprocess
   set List of postprocessors = velocity statistics, mass flux statistics, tracers
   subsection Tracers
     set Number of tracers = 1000
-    set Time between data output = 1e9 
-    set Data output format = none 
-    set List of tracer properties = initial composition, integrated strain
+    set Time between data output = 1e9
+    set Data output format = none
+    set List of tracer properties = integrated strain
     set Interpolation scheme = cell average
     set Update ghost particles = true
     set Particle generator name = random uniform
+    set Load balancing strategy = remove and add particles
     set Minimum tracers per cell = 9
     set Maximum tracers per cell = 11
-  end 
+  end  
 end
