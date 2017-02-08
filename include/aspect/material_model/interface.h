@@ -522,7 +522,7 @@ namespace aspect
      * parameters such as the viscosity, density, etc, typically as a function
      * of position, temperature and pressure at that location.
      *
-     * There is two ways to implement a material model and they can not be
+     * There are two ways to implement a material model and they can not be
      * mixed: Option one is to override all the virtual functions like
      * viscosity(), density(), etc. but not change evaluate().
      *
@@ -533,8 +533,8 @@ namespace aspect
      * The second option is more efficient in general, but it is okay to use
      * option one for simple material models.
      *
-     * In all cases, model_dependence values, is_compressible(), reference_viscosity(),
-     * reference_density() need to be implemented.
+     * In all cases, model_dependence values, is_compressible(), reference_viscosity()
+     * need to be implemented.
      *
      * @ingroup MaterialModels
      */

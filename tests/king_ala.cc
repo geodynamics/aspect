@@ -92,32 +92,6 @@ namespace aspect
           return (Di==0.0?1.0:Di)/Ra;
         }
 
-
-        virtual double reference_density () const
-        {
-
-          return 1.0;
-        }
-
-
-        virtual double reference_thermal_expansion_coefficient () const
-        {
-          return 1.0;
-        }
-
-
-        double reference_thermal_diffusivity () const
-        {
-          return 1/(reference_rho*reference_specific_heat);
-        }
-
-
-        double reference_cp () const
-        {
-
-          return 1;
-        }
-
         /**
          * @}
          */

@@ -63,12 +63,6 @@ namespace aspect
           return eta_0;
         }
 
-        virtual double reference_density () const
-        {
-          return reference_rho_s;
-        }
-
-
         double
         get_background_porosity () const;
 

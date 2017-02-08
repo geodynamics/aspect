@@ -115,15 +115,6 @@ namespace aspect
          */
         virtual double reference_viscosity () const;
 
-        virtual double reference_density () const;
-
-        virtual double reference_thermal_expansion_coefficient () const;
-
-//TODO: should we make this a virtual function as well? where is it used?
-        double reference_thermal_diffusivity () const;
-
-        double reference_cp () const;
-
         double parameter_a() const;
         double parameter_wavenumber() const;
         double parameter_Di() const;
@@ -219,40 +210,10 @@ namespace aspect
     template <int dim>
     double
     TanGurnis<dim>::
-    reference_density () const
-    {
-      return 1.0;
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    reference_thermal_expansion_coefficient () const
-    {
-      return 1.0;
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
     specific_heat (const double,
                    const double,
                    const std::vector<double> &, /*composition*/
                    const Point<dim> &) const
-    {
-      return 1250;
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    reference_cp () const
     {
       return 1250;
     }
@@ -268,16 +229,6 @@ namespace aspect
                           const Point<dim> &) const
     {
       return 2e-5;
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    reference_thermal_diffusivity () const
-    {
-      return k_value/(reference_rho*reference_specific_heat);
     }
 
 

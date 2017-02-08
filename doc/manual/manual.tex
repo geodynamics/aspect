@@ -9410,10 +9410,6 @@ Specifically, your new class needs to implement the following interface:
         // Reference quantities
         virtual double reference_viscosity () const = 0;
 
-        virtual double reference_density () const = 0;
-
-        virtual double reference_thermal_expansion_coefficient () const = 0;
-
 
         // Auxiliary material properties used for postprocessing
         virtual double
@@ -9427,11 +9423,6 @@ Specifically, your new class needs to implement the following interface:
                     const double      pressure,
                     const std::vector<double> &compositional_fields,
                     const Point<dim> &position) const;
-
-        virtual unsigned int
-        thermodynamic_phase (const double      temperature,
-                             const double      pressure,
-                             const std::vector<double> &compositional_fields) const;
 
 
         // Functions used in dealing with run-time parameters

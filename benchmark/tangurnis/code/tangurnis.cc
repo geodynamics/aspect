@@ -116,8 +116,6 @@ namespace aspect
          */
         virtual double reference_viscosity () const;
 
-        virtual double reference_density () const;
-
         double parameter_a() const;
         double parameter_wavenumber() const;
         double parameter_Di() const;
@@ -194,16 +192,6 @@ namespace aspect
     double
     TanGurnis<dim>::
     reference_viscosity () const
-    {
-      return 1.0;
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    reference_density () const
     {
       return 1.0;
     }
