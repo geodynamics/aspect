@@ -81,47 +81,48 @@ namespace aspect
                             :
                             std::numeric_limits<double>::infinity();
 
-          this->get_pcout()<<  std::endl;
-          this->get_pcout()<< "     Model domain depth (m):                        "
-                           << model_depth
-                           << std::endl;
-          this->get_pcout()<< "     Temperature contrast across model domain (K):  "
-                           << temperature_contrast
-                           << std::endl;
-          this->get_pcout()<< "     Reference depth (m):                           "
-                           << reference_depth
-                           << std::endl;
-          this->get_pcout()<< "     Reference temperature (K):                     "
-                           << temperature
-                           << std::endl;
-          this->get_pcout()<< "     Reference pressure (Pa):                       "
-                           << pressure
-                           << std::endl;
-          this->get_pcout()<< "     Reference gravity (m/s^2):                     "
-                           << gravity
-                           << std::endl;
-          this->get_pcout()<< "     Reference density (kg/m^3):                    "
-                           << out.densities[0]
-                           << std::endl;
-          this->get_pcout()<< "     Reference thermal expansion coefficient (1/K): "
-                           << out.thermal_expansion_coefficients[0]
-                           << std::endl;
-          this->get_pcout()<< "     Reference specific heat capacity (J/(K*kg)):   "
-                           << out.specific_heat[0]
-                           << std::endl;
-          this->get_pcout()<< "     Reference thermal conductivity (W/(m*K)):      "
-                           << out.thermal_conductivities[0]
-                           << std::endl;
-          this->get_pcout()<< "     Reference viscosity (Pa*s):                    "
-                           << out.viscosities[0]
-                           << std::endl;
-          this->get_pcout()<< "     Reference thermal diffusivity (m^2/s):         "
-                           << thermal_diffusivity
-                           << std::endl;
-          this->get_pcout()<< "     Rayleigh number:                               "
-                           << Ra
-                           << std::endl;
-          this->get_pcout()<<  std::endl;
+          this->get_pcout() <<  std::endl;
+          this->get_pcout() << "     Model domain depth (m):                        "
+                            << model_depth
+                            << std::endl;
+          this->get_pcout() << "     Temperature contrast across model domain (K):  "
+                            << temperature_contrast
+                            << std::endl;
+          this->get_pcout() << "     Reference depth (m):                           "
+                            << reference_depth
+                            << std::endl;
+          this->get_pcout() << "     Reference temperature (K):                     "
+                            << temperature
+                            << std::endl;
+          this->get_pcout() << "     Reference pressure (Pa):                       "
+                            << pressure
+                            << std::endl;
+          this->get_pcout() << "     Reference gravity (m/s^2):                     "
+                            << gravity
+                            << std::endl;
+          this->get_pcout() << "     Reference density (kg/m^3):                    "
+                            << out.densities[0]
+                            << std::endl;
+          this->get_pcout() << "     Reference thermal expansion coefficient (1/K): "
+                            << out.thermal_expansion_coefficients[0]
+                            << std::endl;
+          this->get_pcout() << "     Reference specific heat capacity (J/(K*kg)):   "
+                            << out.specific_heat[0]
+                            << std::endl;
+          this->get_pcout() << "     Reference thermal conductivity (W/(m*K)):      "
+                            << out.thermal_conductivities[0]
+                            << std::endl;
+          this->get_pcout() << "     Reference viscosity (Pa*s):                    "
+                            << out.viscosities[0]
+                            << std::endl;
+          this->get_pcout() << "     Reference thermal diffusivity (m^2/s):         "
+                            << thermal_diffusivity
+                            << std::endl;
+          this->get_pcout() << "     Rayleigh number:                               "
+                            << Ra
+                            << std::endl;
+
+          this->get_pcout() << std::endl;
         }
       return std::make_pair (std::string(),std::string());
     }
