@@ -6,6 +6,19 @@
  *
  * <ol>
  *
+ * <li> Changed: The 'basic statistics' postprocessor now uses a better
+ * defined reference state to compute properties like the Rayleigh number.
+ * In particular, it computes material properties for the prescribed 
+ * adiabatic temperature and pressure conditions at the surface, instead 
+ * of using the deprecated reference_property() functions of the material 
+ * model interface. This way it can also be used for other material models
+ * than the 'simple' model, and also highlights possible inconsistencies
+ * between the reference profile and reference temperatures assumed in the
+ * matherial model. During the rework the multiplicative output while doing
+ * initial adaptive refinement steps was also removed.
+ * <br>
+ * (Rene Gassmoeller, 2017/02/08)
+ *
  * <li> Removed: The 'steinberger' material model contained an option to
  * use it for incompressible models. This option included a somewhat
  * complicated density scaling, and relied on the availability of a
