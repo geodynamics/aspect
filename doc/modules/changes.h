@@ -6,6 +6,17 @@
  *
  * <ol>
  *
+ * <li> Removed: The 'steinberger' material model contained an option to
+ * use it for incompressible models. This option included a somewhat
+ * complicated density scaling, and relied on the availability of a
+ * compressible adiabatic profile in incompressible models. This profile
+ * is not longer available with the recent changes to the adiabatic
+ * reference profile, and the feature is too obscure to justify a fix.
+ * Therefore, it was removed and the 'steinberger' material model now
+ * only works for compressible formulations.
+ * <br>
+ * (Rene Gassmoeller, 2017/02/07)
+ *
  * <li> New: A cookbook for continental extension was added, which uses
  * uses the visco plastic material to simulate the thermal-mechanical
  * evolution of a continental plate extending at a constant velocity.

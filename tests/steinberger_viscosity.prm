@@ -51,7 +51,6 @@ subsection Material model
     set Radial viscosity file name       = test-radial-visc.txt
     set Bilinear interpolation           = true
     set Latent heat                      = false
-    set Compressible                     = true
     set Reference viscosity              = 1e21
     set Number lateral average bands = 40
   end
