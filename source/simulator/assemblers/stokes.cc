@@ -239,10 +239,11 @@ namespace aspect
                                             const bool                                       /*rebuild_stokes_matrix*/,
                                             internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                             internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                            const Parameters<dim> &parameters) const
+                                            const Parameters<dim>                           &parameters) const
     {
       // assemble RHS of:
       //  - div u = 1/rho * drho/dz g/||g||* u
+      (void)parameters;
       Assert(parameters.formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::reference_density_profile,
              ExcInternalError());
@@ -287,10 +288,11 @@ namespace aspect
                                                      const bool                                       rebuild_stokes_matrix,
                                                      internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                                      internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                                     const Parameters<dim> &parameters) const
+                                                     const Parameters<dim>                           &parameters) const
     {
       // assemble compressibility term of:
       //  - div u - 1/rho * drho/dz g/||g||* u = 0
+      (void)parameters;
       Assert(parameters.formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile,
              ExcInternalError());
@@ -340,10 +342,11 @@ namespace aspect
                                  const bool                                       /*rebuild_stokes_matrix*/,
                                  internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                  internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                 const Parameters<dim> &parameters) const
+                                 const Parameters<dim>                           &parameters) const
     {
       // assemble RHS of:
       //  - div u = 1/rho * drho/dp rho * g * u
+      (void)parameters;
       Assert(parameters.formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::isothermal_compression,
              ExcInternalError());
