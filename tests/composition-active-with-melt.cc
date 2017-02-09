@@ -26,11 +26,6 @@ namespace aspect
         return 0.2;
       }
 
-      virtual double reference_density () const
-      {
-        return 1.0;
-      }
-
       /**
        * Declare the parameters this class takes through input files.
        */

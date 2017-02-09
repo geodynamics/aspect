@@ -246,14 +246,6 @@ namespace aspect
          * @{
          */
         virtual double reference_viscosity () const;
-
-        virtual double reference_density () const;
-
-        virtual double reference_thermal_expansion_coefficient () const;
-
-        double reference_thermal_diffusivity () const;
-
-        double reference_cp () const;
         /**
          * @}
          */
@@ -290,21 +282,6 @@ namespace aspect
       return 1.;
     }
 
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    reference_density () const
-    {
-      return 1.;
-    }
-
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    reference_thermal_expansion_coefficient () const
-    {
-      return 0;
-    }
 
     template <int dim>
     double
@@ -317,13 +294,6 @@ namespace aspect
       return 0;
     }
 
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    reference_cp () const
-    {
-      return 0;
-    }
 
     template <int dim>
     double
@@ -336,13 +306,6 @@ namespace aspect
       return 0;
     }
 
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    reference_thermal_diffusivity () const
-    {
-      return 0;
-    }
 
     template <int dim>
     double

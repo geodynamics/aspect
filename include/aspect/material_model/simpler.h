@@ -48,8 +48,6 @@ namespace aspect
 
         virtual double reference_viscosity () const;
 
-        virtual double reference_density () const;
-
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const;
 

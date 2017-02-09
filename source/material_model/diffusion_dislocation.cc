@@ -263,14 +263,6 @@ namespace aspect
     }
 
     template <int dim>
-    double
-    DiffusionDislocation<dim>::
-    reference_density () const
-    {
-      return densities[0];
-    }
-
-    template <int dim>
     bool
     DiffusionDislocation<dim>::
     is_compressible () const

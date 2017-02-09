@@ -90,14 +90,6 @@ namespace aspect
          * @{
          */
         virtual double reference_viscosity () const;
-
-        virtual double reference_density () const;
-
-        virtual double reference_thermal_expansion_coefficient () const;
-
-        double reference_thermal_diffusivity () const;
-
-        double reference_cp () const;
         /**
          * @}
          */

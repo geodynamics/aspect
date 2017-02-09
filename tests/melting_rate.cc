@@ -31,10 +31,6 @@ namespace aspect
         return 5e20;
       }
 
-      virtual double reference_density () const
-      {
-        return 3000;
-      }
       virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
                             typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {

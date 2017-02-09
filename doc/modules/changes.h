@@ -6,6 +6,30 @@
  *
  * <ol>
  *
+ * <li> Removed: The material model interface contained the functions
+ * 'reference_density', 'reference_thermal_expansion_coefficient',
+ * 'viscosity_ratio', and 'thermodynamic_phase'. Additionally many
+ * material models implemented functions like 'reference_cp', and
+ * 'reference_thermal_diffusivity'. These functions were not used in
+ * any place and could be inconsistent with the model properties,
+ * because they had no input to figure out the real model conditions.
+ * Therefore they were removed. Additionally, the postprocessors
+ * visualizing the 'viscosity_ratio' and 'thermodynamic_phase' functions
+ * were removed, because there is no material model in the current version
+ * that actually implements these functions, and they are not tested.
+ * The new recommended way to determine a reference
+ * material property for a given model is to evaluate the material model
+ * at reference conditions (given by the adiabatic profile) as implemented
+ * in the 'basic statistics' postprocessor. Existing user plugins that
+ * implement these funtions will continue to work, as long as the
+ * functions are only used within that plugin. User plugins that called these
+ * interface functions from outside can either cast the material model 
+ * reference to a particular material model that implements these functions, 
+ * or use the recommended approach to determine reference properties described
+ * above.
+ * <br>
+ * (Rene Gassmoeller, 2017/02/09)
+ *
  * <li> Changed: The 'basic statistics' postprocessor now uses a better
  * defined reference state to compute properties like the Rayleigh number.
  * In particular, it computes material properties for the prescribed 

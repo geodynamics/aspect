@@ -67,21 +67,6 @@ namespace aspect
       return eta;
     }
 
-    template <int dim>
-    double
-    LatentHeatMelt<dim>::
-    reference_density () const
-    {
-      return reference_rho;
-    }
-
-    template <int dim>
-    double
-    LatentHeatMelt<dim>::
-    reference_thermal_expansion_coefficient () const
-    {
-      return thermal_alpha;
-    }
 
     template <int dim>
     double
@@ -94,13 +79,6 @@ namespace aspect
       return reference_specific_heat;
     }
 
-    template <int dim>
-    double
-    LatentHeatMelt<dim>::
-    reference_cp () const
-    {
-      return reference_specific_heat;
-    }
 
     template <int dim>
     double
@@ -113,13 +91,6 @@ namespace aspect
       return k_value;
     }
 
-    template <int dim>
-    double
-    LatentHeatMelt<dim>::
-    reference_thermal_diffusivity () const
-    {
-      return k_value/(reference_rho*reference_specific_heat);
-    }
 
     template <int dim>
     double

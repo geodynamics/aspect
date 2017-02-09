@@ -97,13 +97,6 @@ namespace aspect
         {
           return (Di==0.0?1.0:Di)/Ra;
         }
-
-
-        virtual double reference_density () const
-        {
-          return 1.0;
-        }
-
         /**
          * @}
          */

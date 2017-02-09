@@ -101,21 +101,7 @@ namespace aspect
       return compressible ? (Di/Ra) : (1.0/Ra);
     }
 
-    template <int dim>
-    double
-    Nondimensional<dim>::
-    reference_density () const
-    {
-      return 1;
-    }
 
-    template <int dim>
-    double
-    Nondimensional<dim>::
-    reference_cp () const
-    {
-      return reference_specific_heat;
-    }
 
     template <int dim>
     bool

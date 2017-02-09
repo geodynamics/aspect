@@ -49,8 +49,6 @@ namespace aspect
 
         virtual double reference_viscosity () const;
 
-        virtual double reference_density () const;
-
         virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                               typename Interface<dim>::MaterialModelOutputs &out) const;
 
@@ -104,13 +102,6 @@ namespace aspect
       return eta_L;
     }
 
-    template <int dim>
-    double
-    SimplerWithCrust<dim>::
-    reference_density () const
-    {
-      return reference_rho;
-    }
 
     template <int dim>
     void

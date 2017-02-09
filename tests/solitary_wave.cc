@@ -318,11 +318,6 @@ namespace aspect
           return eta_0;
         }
 
-        virtual double reference_density () const
-        {
-          return reference_rho_s;
-        }
-
         double length_scaling (const double porosity) const
         {
           return std::sqrt(reference_permeability * std::pow(porosity,3) * (xi_0 + 4.0/3.0 * eta_0) / eta_f);
