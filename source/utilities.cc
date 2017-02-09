@@ -1404,6 +1404,11 @@ namespace aspect
 
               for (unsigned int i = 0; i < dim; i++)
                 internal_position[i] = spherical_position[i];
+
+              // Rescale phi to -angle if on western hemisphere
+              // TODO only of domain crosses 0 meridian
+              if (internal_position[1] > numbers::PI)
+                internal_position[1] -= 2*numbers::PI;
             }
 
           const std_cxx11::array<unsigned int,dim-1> boundary_dimensions =
@@ -1543,6 +1548,11 @@ namespace aspect
 
           for (unsigned int i = 0; i < dim; i++)
             internal_position[i] = spherical_position[i];
+
+              // Rescale phi to -angle if on western hemisphere
+              // TODO only of domain crosses 0 meridian
+              if (internal_position[1] > numbers::PI)
+                internal_position[1] -= 2*numbers::PI;
         }
       return lookup->get_data(internal_position,component);
     }
