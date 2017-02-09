@@ -1,6 +1,6 @@
 
 
-   Loading Ascii data initial file ASPECT_DIR/data/compositional-initial-conditions/ascii-data/test/shell_3d.txt.
+   Loading Ascii data initial file ASPECT_DIR/tests/data/compositional-initial-conditions/ascii-data/test/shell_3d.txt.
 
 Number of active cells: 8 (on 2 levels)
 Number of degrees of freedom: 652 (375+27+125+125)
