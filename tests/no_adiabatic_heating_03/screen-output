@@ -28,17 +28,19 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
 
-     Reference density (kg/m^3):                    1
-     Reference gravity (m/s^2):                     10
-     Reference thermal expansion (1/K):             0
-     Temperature contrast across model domain (K):  0
      Model domain depth (m):                        1
-     Reference thermal diffusivity (m^2/s):         1e-06
-     Reference viscosity (Pas):                     10
-     Ra number:                                     0
-     k_value:                                       1e-06
-     reference_cp:                                  1
-     reference_thermal_diffusivity:                 1e-06
+     Temperature contrast across model domain (K):  0
+     Reference depth (m):                           0
+     Reference temperature (K):                     0
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     10
+     Reference density (kg/m^3):                    0.909091
+     Reference thermal expansion coefficient (1/K): 0
+     Reference specific heat capacity (J/(K*kg)):   1
+     Reference thermal conductivity (W/(m*K)):      1e-06
+     Reference viscosity (Pa*s):                    10
+     Reference thermal diffusivity (m^2/s):         1.1e-06
+     Rayleigh number:                               0
 
      Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s

@@ -17,17 +17,19 @@ Number of degrees of freedom: 268 (162+25+81)
 
    Postprocessing:
 
-     Reference density (kg/m^3):                    3300
-     Reference gravity (m/s^2):                     10
-     Reference thermal expansion (1/K):             4e-05
-     Temperature contrast across model domain (K):  0
      Model domain depth (m):                        500000
+     Temperature contrast across model domain (K):  0
+     Reference depth (m):                           0
+     Reference temperature (K):                     0
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     10
+     Reference density (kg/m^3):                    3300
+     Reference thermal expansion coefficient (1/K): 4e-05
+     Reference specific heat capacity (J/(K*kg)):   1250
+     Reference thermal conductivity (W/(m*K)):      4.7
+     Reference viscosity (Pa*s):                    1e+20
      Reference thermal diffusivity (m^2/s):         1.13939e-06
-     Reference viscosity (Pas):                     1e+20
-     Ra number:                                     0
-     k_value:                                       4.7
-     reference_cp:                                  1250
-     reference_thermal_diffusivity:                 1.13939e-06
+     Rayleigh number:                               0
 
      RMS, max velocity:        401 m/year, 1.2e+03 m/year
      Writing graphical output: output-periodic_box_mpi10/solution/solution-00000
