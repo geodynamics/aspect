@@ -109,7 +109,7 @@ namespace aspect
       prm.enter_subsection("Adiabatic conditions model");
       {
         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                          "$ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/test/",
+                                                          "$ASPECT_SOURCE_DIR/tests/adiabatic-conditions/ascii-data/test/",
                                                           "box_2d.txt");
       }
       prm.leave_subsection();

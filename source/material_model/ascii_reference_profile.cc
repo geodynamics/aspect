@@ -89,21 +89,6 @@ namespace aspect
       return viscosity;
     }
 
-    template <int dim>
-    double
-    AsciiReferenceProfile<dim>::
-    reference_density () const
-    {
-      return 3340;
-    }
-
-    template <int dim>
-    double
-    AsciiReferenceProfile<dim>::
-    reference_cp () const
-    {
-      return 1200;
-    }
 
     template <int dim>
     bool
@@ -143,10 +128,14 @@ namespace aspect
                              "Units: $m$.");
           prm.declare_entry ("Viscosity prefactors", "10, 0.1, 1, 10",
                              Patterns::List (Patterns::Double(0)),
-                             "A list of prefactors for the viscosity for each phase. The reference "
-                             "viscosity will be multiplied by this factor to get the corresponding "
-                             "viscosity for each phase. "
-                             "List must have one more entry than Phase transition depths. "
+                             "A list of prefactors for the viscosity that determine the viscosity"
+                             "profile. Each prefactor is applied in a depth range specified by the "
+                             "list of `Transition depths', i.e. the first prefactor is applied above "
+                             "the first transition depth, the second one between the first and second "
+                             "transition depth, and so on. "
+                             "To compute the viscosity profile, this prefactor is multiplied by the "
+                             "reference viscosity specified through the parameter `Viscosity'. "
+                             "List must have one more entry than Transition depths. "
                              "Units: non-dimensional.");
         }
         prm.leave_subsection();
@@ -176,10 +165,10 @@ namespace aspect
                                  (Utilities::split_string_list(prm.get ("Transition depths")));
           viscosity_prefactors = Utilities::string_to_double
                                  (Utilities::split_string_list(prm.get ("Viscosity prefactors")));
+
           // make sure to check against the depth lists for size errors, since using depth
           if (viscosity_prefactors.size() != transition_depths.size()+1)
             AssertThrow(false, ExcMessage("Error: The list of Viscosity prefactors needs to have exactly "
-                                          "one more entry than the list of Transition depths. "));
                                           "one more entry than the list of Transition depths. "));
         }
         prm.leave_subsection();
@@ -207,6 +196,21 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(AsciiReferenceProfile,
                                    "ascii reference profile",
                                    "A material model that reads in a reference "
-                                   "state from a text file.")
+                                   "state for density, thermal expansivity, compressibility"
+                                   "and specific heat from a text file. "
+                                   "\n"
+                                   "File structure : ... TBD"
+                                   "\n"
+                                   "\n"
+                                   "The viscosity $\\eta$ is computed as "
+                                   "\\begin{equation}"
+                                   "\\eta(z,T) = \\eta_r(z) \\eta_0 \\exp\\left(-A \\frac{T - T_\\text{adi}}{T_\\text{adi}}\\right),"
+                                   "\\end{equation}"
+                                   "where $\\eta_r(z)$ is the the depth-dependence, which is a "
+                                   "piecewise constant function computed according to the the "
+                                   "list of ``Viscosity prefactors'' and ``Transition depths'', "
+                                   "$\\eta_0$ is the reference viscosity specified by the parameter ``Viscosity''"
+                                   "and $A$ describes the dependence on temperature and corresponds to "
+                                   "the parameter ``Thermal viscosity exponent''. ")
   }
 }

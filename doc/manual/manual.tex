@@ -6066,7 +6066,7 @@ change, such as the path to the input file, or the resolution:
 \lstinputlisting[language=matlab]{cookbooks/geomio/run_geomio.part1.m}
 You can view all of the options available by typing \texttt{opt} in MATLAB. 
 
-In the next step we create the grid that is used for the coordinates in the ascii data initial conditions file 
+In the next step we create the grid that is used for the coordinates in the \texttt{ascii data} initial conditions file 
 and assign a phase to each grid point: 
 \lstinputlisting[language=matlab]{cookbooks/geomio/run_geomio.part2.m}
 You can plot the \texttt{Phase} variable in MATLAB to see if the drawing was read in and all phases are assigned correctly 
@@ -6083,7 +6083,7 @@ initial conditions plugin. We write the data into the file \texttt{jelly.txt}:
 
 To read in the file we just created (a copy is located in \aspect{}'s data directory), 
 we set up a model with a box geometry with the same extents we specified for the drawing in px 
-and one compositional field. We choose the ascii data compositional initial conditions and specify that we 
+and one compositional field. We choose the \texttt{ascii data} compositional initial conditions and specify that we 
 want to read in our jellyfish. The relevant parts of the input file are listed below:
 \lstinputlisting[language=prmfile]{cookbooks/geomio/geomIO.prm}
 
@@ -6097,7 +6097,7 @@ boundaries between the different phases (Figure~\ref{fig:jelly-paraview}).
 \end{figure}
 
 For a geophysical setup, the MATLAB code could be extended to write out the phases into several different columns 
-of the ascii data file (corresponding to different compositional fields). This initial conditions file could then be 
+of the ASCII data file (corresponding to different compositional fields). This initial conditions file could then be 
 used in \aspect{} with a material model such as the \texttt{multicomponent} model, assigning each phase different 
 material properties. 
 
@@ -6808,9 +6808,6 @@ and pattern shown here.
 \end{figure}
 
 
-%\marginpar{Use cookbooks/periodic-box.prm}
-%\marginpar{Finish the GPlates section}
-
 \subsubsection{Using reconstructed surface velocities by GPlates}
 \label{sec:cookbooks-gplates}
 \textit{This section was contributed by Ren{\'e} Ga{\ss}m{\"o}ller}
@@ -7027,17 +7024,17 @@ possibility described in section~\ref{sec:checkpoint-restart}.
 
 In this cookbook we will set up a compressible mantle convection model that uses 
 the (truncated) anelastic liquid approximation (see Sections~\ref{sec:ala} and 
-\ref{sec:tala}), together with a reference profile read in from an ascii data file.
+\ref{sec:tala}), together with a reference profile read in from an ASCII data file.
 The data we use here is generated with the open source mineral physics toolkit BurnMan 
 (\url{www.burnman.org}) using the python example program \texttt{simple\_adiabat.py}. 
 This file is available as a part of BurnMan, and provides a tutorial for how to generate 
-ascii data files that can be used together with \aspect{}. 
+ASCII data files that can be used together with \aspect{}. 
 The computation is based on the Birch-Murnaghan equation of state, and uses a harzburgitic 
 composition. However, in principle, other compositions or equations of state can be used, 
 as long as the reference profile contains data for the reference temperature, pressure, density, 
 gravity, thermal expansivity, specific heat capacity and compressibility. Using BurnMan 
 to generate the reference profile has the advantage that all the material property data 
-is consistent, for example, the gravity profile is computed using the reference density.
+are consistent, for example, the gravity profile is computed using the reference density.
 \begin{figure}
   \includegraphics[width=\textwidth]{cookbooks/burnman/reference_profile.pdf}
   \caption{\it Reference profile generated using BurnMan.}
@@ -7056,14 +7053,22 @@ imported from GPlates as explained in Section~\ref{sec:cookbooks-gplates}.
 To use the burnman data in the material model, we have to specify that we want to use the 
 \texttt{ascii reference profile} model. This material model makes use of the functionality provided by
 the \texttt{AsciiData} classes in \aspect{}, which allow plugins such as material models, 
-boundary or initial conditions models to read in ascii data files (see for example Section~\ref{sec:geomio}). 
+boundary or initial conditions models to read in ASCII data files (see for example Section~\ref{sec:geomio}). 
 Hence, we have to provide the directory and file name of the data to be used in the separate subsection 
 \texttt{Ascii data model}, and the same functionality and syntax will also be used for the 
 adiabatic conditions and gravity model.
 
-In addition, we can assign the viscosity profile in our model by providing a list of 
-viscosity prefactors and a list of of depths where the viscosity changes (which is 
-by default set to viscosity jumps in 150\,km depth, between upper mantle and transition zone, 
+The viscosity in this model is computed as the product of a radial profile $\eta_r(z)$ and a 
+term that describes the dependence on temperature:
+\begin{align*}
+\eta(z,T) = \eta_r(z) \eta_0 \exp\left(-A \frac{T - T_\text{adi}}{T_\text{adi}}\right),
+\end{align*}
+where $A$ and $\eta_0$ are constants determined in the input file via the parameters 
+\texttt{Viscosity} and \texttt{Thermal viscosity exponent}, and $\eta_r(z)$ is a stepwise constant 
+function that determines the viscosity profile. This function can be specified by providing a list of 
+\texttt{Viscosity prefactors} and a list of of depths that describe in which depth range each prefactor 
+should be applied, in other words, in which depth the viscosity changes. By default, it is set
+to viscosity jumps in 150\,km depth, between upper mantle and transition zone, 
 and between transition zone and lower mantle). The prefactors used here lead to a low-viscosity 
 asthenosphere, and high viscosities in the lower mantle. To make sure that these viscosity jumps 
 do not lead to numerical problems in our computation (see Section~\ref{sec:sinker-with-averaging}), 
