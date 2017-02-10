@@ -1178,7 +1178,7 @@ namespace aspect
                             << create_filename (current_file_number,*boundary_id) << "." << std::endl << std::endl;
 
           const std::string filename (create_filename (current_file_number,*boundary_id));
-          if (fexists(filename))
+          if (Utilities::fexists(filename))
             lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
           else
             AssertThrow(false,
@@ -1201,7 +1201,7 @@ namespace aspect
               const std::string filename (create_filename (next_file_number,*boundary_id));
               this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                                 << filename << "." << std::endl << std::endl;
-              if (fexists(filename))
+              if (Utilities::fexists(filename))
                 {
                   lookups.find(*boundary_id)->second.swap(old_lookups.find(*boundary_id)->second);
                   lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
@@ -1353,7 +1353,7 @@ namespace aspect
           const std::string filename (create_filename (current_file_number,boundary_id));
           this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                             << filename << "." << std::endl << std::endl;
-          if (fexists(filename))
+          if (Utilities::fexists(filename))
             {
               lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
               lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
@@ -1374,7 +1374,7 @@ namespace aspect
       const std::string filename (create_filename (next_file_number,boundary_id));
       this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                         << filename << "." << std::endl << std::endl;
-      if (fexists(filename))
+      if (Utilities::fexists(filename))
         {
           lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
           lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
@@ -1528,7 +1528,7 @@ namespace aspect
       this->get_pcout() << std::endl << "   Loading Ascii data initial file "
                         << filename << "." << std::endl << std::endl;
 
-      if (fexists(filename))
+      if (Utilities::fexists(filename))
         lookup->load_file(filename,this->get_mpi_communicator());
       else
         AssertThrow(false,
@@ -1576,7 +1576,7 @@ namespace aspect
       const std::string filename = Utilities::AsciiDataBase<dim>::data_directory
                                    + Utilities::AsciiDataBase<dim>::data_file_name;
 
-      if (fexists(filename))
+      if (Utilities::fexists(filename))
         lookup->load_file(filename,communicator);
       else
         AssertThrow(false,

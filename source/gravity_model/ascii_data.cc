@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -109,6 +109,23 @@ namespace aspect
                                   "ascii data",
                                   "Gravity is read from an ascii data file "
                                   "that contains a vertical or radial profile. "
-                                  "File structure : ... TBD")
+                                  "Note the required format of the "
+                                  "input data: The first lines may contain any number of comments "
+                                  "if they begin with '#', but one of these lines needs to "
+                                  "contain the number of points in the reference state as "
+                                  "for example '# POINTS: 3'. "
+                                  "The order of the data columns has to be 'depth (m)', "
+                                  "'pressure (Pa)', 'temperature (K)', 'density (kg/m^3)', "
+                                  "'gravity (m/s^2)', 'thermal expansivity (1/K)', "
+                                  "'specific heat (J/K/kg)', and 'compressibility (1/Pa)'. "
+                                  "For incompressible models the 'compressibility' column will "
+                                  "not be used, but needs to be present in the file."
+                                  "Note that the data in the file need to be sorted in order "
+                                  "of increasing depth from 0 to the maximal depth in the model "
+                                  "domain. Points in the model that are outside of the provided "
+                                  "depth range will be assigned the maximum or minimum depth values, "
+                                  "respectively. Points to do not need to be equidistant, "
+                                  "but the computation of properties is optimized in speed, "
+                                  "if they are.")
   }
 }
