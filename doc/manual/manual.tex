@@ -7023,7 +7023,7 @@ possibility described in section~\ref{sec:checkpoint-restart}.
 
 \subsubsection{2D compressible convection with a reference profile and material properties from BurnMan}
 \label{sec:cookbooks-burnman}
-\textit{This section was contributed by Juliane Dannberg and Ren{\'e} Ga{\ss}m{\"o}ller}
+\textit{This section was contributed by Juliane Dannberg and Ren{\'e} Gassm{\"o}ller}
 
 In this cookbook we will set up a compressible mantle convection model that uses 
 the (truncated) anelastic liquid approximation (see Sections~\ref{sec:ala} and 
@@ -7053,7 +7053,7 @@ ASCII data plugins. The input file is provided in \url{cookbooks/burnman.prm}, a
 2d shell geometry previously discussed in Section~\ref{sec:shell-simple-2d} and surface velocities
 imported from GPlates as explained in Section~\ref{sec:cookbooks-gplates}.
 
-To use the burnman data in the material model, we have to specify that we want to use the 
+To use the BurnMan data in the material model, we have to specify that we want to use the 
 \texttt{ascii reference profile} model. This material model makes use of the functionality provided by
 the \texttt{AsciiData} classes in \aspect{}, which allow plugins such as material models, 
 boundary or initial conditions models to read in ASCII data files (see for example Section~\ref{sec:geomio}). 
@@ -7069,7 +7069,7 @@ term that describes the dependence on temperature:
 where $A$ and $\eta_0$ are constants determined in the input file via the parameters 
 \texttt{Viscosity} and \texttt{Thermal viscosity exponent}, and $\eta_r(z)$ is a stepwise constant 
 function that determines the viscosity profile. This function can be specified by providing a list of 
-\texttt{Viscosity prefactors} and a list of of depths that describe in which depth range each prefactor 
+\texttt{Viscosity prefactors} and a list of depths that describe in which depth range each prefactor 
 should be applied, in other words, in which depth the viscosity changes. By default, it is set
 to viscosity jumps in 150\,km depth, between upper mantle and transition zone, 
 and between transition zone and lower mantle). The prefactors used here lead to a low-viscosity 
@@ -7099,15 +7099,15 @@ conditions, where it is computed as depth derivative of the provided reference d
 (see also Section~\ref{sec:combined_formulations}).
 
 \paragraph{Visualizing the model output.}
-If we look at the output of our model (for example in \texttt{paraview}), we can see how cold, highly 
+If we look at the output of our model (for example in \texttt{ParaView}), we can see how cold, highly 
 viscous slabs are subducted and hot plumes rise from the core-mantle boundary. The final time step of 
 the model is shown in Figure~\ref{fig:burnman-convection}, and the full model evolution can be found 
 at \url{https://youtu.be/FS-ru4N0p-c}.
-Visualizing material properties such as density, thermal expansivity or specific heat shows how they 
+Visualizing material properties such as density, thermal expansivity or specific heat shows how they
 change with depth, and reveals abrupt jumps at the phase transitions, where properties change from one
-mineral phase to the next. We can also visualize the gravity and the adiabatic profile, to see how 
+mineral phase to the next. We can also visualize the gravity and the adiabatic profile, to ensure that
 the data we provided in the \url{data/adiabatic-conditions/ascii-data/isentrope_properties.txt} file
-looks like in our model. 
+is used in our model. 
 
 \begin{figure}
   \includegraphics[width=0.48\textwidth]{cookbooks/burnman/temperature}
