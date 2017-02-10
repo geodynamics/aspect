@@ -7,8 +7,8 @@ set yrange [2800:0.0]
 set datafile missing "nan"
 set xtics (1600, 2000, 2400)
 
-set terminal postscript color portrait dashed enhanced 'Arial' size 40cm,15cm
-set output 'reference_profile.eps'
+set terminal pdf color dashed enhanced font 'Arial,11' size 20cm,7.5cm
+set output 'reference_profile.pdf'
 
 set multiplot layout 1,6
 
