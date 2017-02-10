@@ -732,7 +732,7 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from text
          * files.
          */
-        std_cxx11::shared_ptr<aspect::Utilities::AsciiDataLookup<1> > lookup;
+        std_cxx11::unique_ptr<aspect::Utilities::AsciiDataLookup<1> > lookup;
     };
   }
 }
