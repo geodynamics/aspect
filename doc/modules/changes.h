@@ -6,6 +6,10 @@
  *
  * <ol>
  *
+ * <li> New: Blankenbach benchmarks were added.
+ * <br>
+ * (Timo Heister, 2017/02/16)
+ *
  * <li> Removed: The material model interface contained the functions
  * 'reference_density', 'reference_thermal_expansion_coefficient',
  * 'viscosity_ratio', and 'thermodynamic_phase'. Additionally many
