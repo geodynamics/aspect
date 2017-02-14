@@ -105,6 +105,7 @@ subsection Postprocess
     set Data output format = vtu 
     set List of tracer properties = velocity, initial composition
     set Interpolation scheme = cell average
+    set Update ghost particles = true
     set Particle generator name = random uniform
   end 
 
