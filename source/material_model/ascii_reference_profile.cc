@@ -223,7 +223,7 @@ namespace aspect
                                    "many spaces. Column names are not allowed to contain spaces. "
                                    "The file can contain unnecessary columns, but for this plugin it "
                                    "needs to at least provide the columns named 'density', "
-                                   "'thermal\_expansivity', 'specific\_heat', and 'compressibility'. "
+                                   "'thermal\\_expansivity', 'specific\\_heat', and 'compressibility'. "
                                    "Note that the data lines in the file need to be sorted in order "
                                    "of increasing depth from 0 to the maximal depth in the model "
                                    "domain. Points in the model that are outside of the provided "
