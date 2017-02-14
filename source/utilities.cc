@@ -883,7 +883,7 @@ namespace aspect
     AsciiDataLookup<dim>::AsciiDataLookup(const double scale_factor)
       :
       components(numbers::invalid_unsigned_int),
-      data(components),
+      data(),
       scale_factor(scale_factor)
     {}
 
@@ -1027,6 +1027,7 @@ namespace aspect
        * there is no constructor for Table, which takes TableIndices as
        * argument.
        */
+      data.resize(components);
       Table<dim,double> data_table;
       data_table.TableBase<dim,double>::reinit(table_points);
       std::vector<Table<dim,double> > data_tables(components+dim,data_table);

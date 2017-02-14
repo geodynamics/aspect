@@ -47,6 +47,11 @@ namespace aspect
     {
       public:
         /**
+         * Constructor. Initialize variables.
+         */
+        AsciiReferenceProfile ();
+
+        /**
          * Initialization function. This function is called once at the
          * beginning of the program after parse_parameters is run and after
          * the SimulatorAccess (if applicable) is initialized.
@@ -140,6 +145,15 @@ namespace aspect
          * Object containing the data profile.
          */
         aspect::Utilities::AsciiDataProfile<dim> profile;
+
+        /**
+         * The column indices of the temperature, pressure, and density column
+         * in the data file.
+         */
+        unsigned int density_index;
+        unsigned int thermal_expansivity_index;
+        unsigned int specific_heat_index;
+        unsigned int compressibility_index;
     };
 
   }

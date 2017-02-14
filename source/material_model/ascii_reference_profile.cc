@@ -28,10 +28,24 @@ namespace aspect
   namespace MaterialModel
   {
     template <int dim>
+    AsciiReferenceProfile<dim>::AsciiReferenceProfile()
+      :
+      density_index(numbers::invalid_unsigned_int),
+      thermal_expansivity_index(numbers::invalid_unsigned_int),
+      specific_heat_index(numbers::invalid_unsigned_int),
+      compressibility_index(numbers::invalid_unsigned_int)
+    {}
+
+    template <int dim>
     void
     AsciiReferenceProfile<dim>::initialize ()
     {
       profile.initialize(this->get_mpi_communicator());
+
+      density_index = profile.get_column_index_from_name("density");
+      thermal_expansivity_index = profile.get_column_index_from_name("thermal_expansivity");
+      specific_heat_index = profile.get_column_index_from_name("specific_heat");
+      compressibility_index = profile.get_column_index_from_name("compressibility");
     }
 
     template <int dim>
@@ -64,11 +78,11 @@ namespace aspect
 
           out.thermal_conductivities[i] = thermal_conductivity;
 
-          out.thermal_expansion_coefficients[i] = profile.get_data_component(profile_position,4);
-          out.specific_heat[i] = profile.get_data_component(profile_position,5);
-          out.compressibilities[i] = profile.get_data_component(profile_position,6);
+          out.thermal_expansion_coefficients[i] = profile.get_data_component(profile_position,thermal_expansivity_index);
+          out.specific_heat[i] = profile.get_data_component(profile_position,specific_heat_index);
+          out.compressibilities[i] = profile.get_data_component(profile_position,compressibility_index);
 
-          out.densities[i] = profile.get_data_component(profile_position,2)
+          out.densities[i] = profile.get_data_component(profile_position,density_index)
                              * (1.0 - out.thermal_expansion_coefficients[i] * temperature_deviation)
                              * (tala ? 1.0 : (1.0 + out.compressibilities[i] * pressure_deviation));
 
@@ -137,12 +151,12 @@ namespace aspect
                              "reference viscosity specified through the parameter `Viscosity'. "
                              "List must have one more entry than Transition depths. "
                              "Units: non-dimensional.");
+
+          aspect::Utilities::AsciiDataProfile<dim>::declare_parameters(prm,
+                                                                       "$ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/",
+                                                                       "");
         }
         prm.leave_subsection();
-
-        aspect::Utilities::AsciiDataProfile<dim>::declare_parameters(prm,
-                                                                     "$ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/",
-                                                                     "simple_test.txt");
       }
       prm.leave_subsection();
     }
@@ -170,10 +184,10 @@ namespace aspect
           if (viscosity_prefactors.size() != transition_depths.size()+1)
             AssertThrow(false, ExcMessage("Error: The list of Viscosity prefactors needs to have exactly "
                                           "one more entry than the list of Transition depths. "));
+
+          profile.parse_parameters(prm);
         }
         prm.leave_subsection();
-
-        profile.parse_parameters(prm);
       }
       prm.leave_subsection();
 
@@ -204,19 +218,18 @@ namespace aspect
                                    "if they begin with '#', but one of these lines needs to "
                                    "contain the number of points in the reference state as "
                                    "for example '# POINTS: 3'. "
-                                   "The order of the data columns has to be 'depth (m)', "
-                                   "'pressure (Pa)', 'temperature (K)', 'density (kg/m^3)', "
-                                   "'gravity (m/s^2)', 'thermal expansivity (1/K)', "
-                                   "'specific heat (J/K/kg)', and 'compressibility (1/Pa)'. "
-                                   "For incompressible models the 'compressibility' column needs to "
-                                   "contain 0.0, and the density needs to be constant for the whole "
-                                   "profiles, otherwise the model will compute inconsistent results."
-                                   "Note that the data in the file need to be sorted in order "
+                                   "Following the comment lines there has to be a single line "
+                                   "containing the names of all data columns, separated by arbitrarily "
+                                   "many spaces. Column names are not allowed to contain spaces. "
+                                   "The file can contain unnecessary columns, but for this plugin it "
+                                   "needs to at least provide the columns named 'density', "
+                                   "'thermal\_expansivity', 'specific\_heat', and 'compressibility'. "
+                                   "Note that the data lines in the file need to be sorted in order "
                                    "of increasing depth from 0 to the maximal depth in the model "
                                    "domain. Points in the model that are outside of the provided "
                                    "depth range will be assigned the maximum or minimum depth values, "
-                                   "respectively. Points to do not need to be equidistant, "
-                                   "but the computation of properties is optimized in speed, "
+                                   "respectively. Points do not need to be equidistant, "
+                                   "but the computation of properties is optimized in speed "
                                    "if they are."
                                    "\n"
                                    "\n"
