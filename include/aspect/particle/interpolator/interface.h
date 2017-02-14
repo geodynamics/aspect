@@ -28,6 +28,7 @@
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/distributed/tria.h>
+#include <deal.II/fe/component_mask.h>
 
 namespace aspect
 {
@@ -74,11 +75,11 @@ namespace aspect
           std::vector<std::vector<double> >
           properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
                                const std::vector<Point<dim> > &positions,
-                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const = 0;
+                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
 
           /**
-           * Perform an interpolation of one of the properties of the particles
-           * in this cell onto a vector of positions in this cell.
+           * Perform an interpolation of the properties of the particles in
+           * this cell onto a vector of positions in this cell.
            * Implementations of this function must return a vector of a vector
            * of doubles which contains a somehow computed
            * value of all particle properties at all given positions.
@@ -95,11 +96,10 @@ namespace aspect
            */
           virtual
           std::vector<std::vector<double> >
-          property_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
+          properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
                                const std::vector<Point<dim> > &positions,
-                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator(),
-                               const unsigned int n_component = 0) const = 0;
-
+                               const ComponentMask &selected_properties,
+                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
 
           /**
            * Declare the parameters this class takes through input files. The

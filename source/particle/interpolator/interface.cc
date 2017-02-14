@@ -30,23 +30,43 @@ namespace aspect
       Interface<dim>::~Interface ()
       {}
 
+
+
+      template <int dim>
+      std::vector<std::vector<double> >
+      Interface<dim>::properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &,
+                                           const std::vector<Point<dim> > &,
+                                           const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &) const
+      {
+        AssertThrow (false,
+                     ExcMessage("The particle interpolator needs to implement one of the functions called "
+                                "'properties_at_points'. This does not seem to be the case. Alternatively a "
+                                "plugin has called the deprecated version of the two functions. Please check "
+                                "your particle interpolation plugin."));
+
+        return std::vector<std::vector<double> > ();
+      }
+
+
+
       template <int dim>
       std::vector<std::vector<double> >
       Interface<dim>::properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
-                           const std::vector<Point<dim> > &positions,
-                           const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
-                           {
-        for (unsigned int i = 0; i < n_components; ++i)
-          {
-            property_at_points
-          }
-                           }
+                                           const std::vector<Point<dim> > &positions,
+                                           const ComponentMask &/*selected_components*/,
+                                           const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
+      {
+        return properties_at_points(particles,positions,cell);
+      }
+
 
 
       template <int dim>
       void
       Interface<dim>::declare_parameters (ParameterHandler &)
       {}
+
+
 
       template <int dim>
       void
