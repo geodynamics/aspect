@@ -31,7 +31,7 @@ namespace aspect
     void
     AsciiReferenceProfile<dim>::initialize ()
     {
-      profile.initialize(7,this->get_mpi_communicator());
+      profile.initialize(this->get_mpi_communicator());
     }
 
     template <int dim>

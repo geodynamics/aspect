@@ -379,19 +379,39 @@ namespace aspect
      * Note the required format of the input data: The first lines may contain
      * any number of comments if they begin with '#', but one of these lines
      * needs to contain the number of grid points in each dimension as for
-     * example '# POINTS: 3 3'. The order of the columns has to be
+     * example '# POINTS: 3 3'. The comments can optionally be followed by a
+     * single uncommented line containing the names of the data columns.
+     * The order of the following data columns has to be
      * 'coordinates data' with @p dim coordinate columns and @p components
      * data columns. Note that the data in the input files need to be sorted
      * in a specific order: the first coordinate needs to ascend first,
      * followed by the second and so on in order to assign the correct data to
-     * the prescribed coordinates.
+     * the prescribed coordinates. The coordinates do not need to be
+     * equidistant.
      */
     template <int dim>
     class AsciiDataLookup
     {
       public:
+        /**
+         * Constructor that explicitly prescribes the number of data columns
+         * in the data file. If a list of data components is provided in the
+         * data file it is checked that the length of this list is consistent
+         * with this number of components. This constructor is mostly provided
+         * for backwards compatilibity. Not prescribing the number of components
+         * and instead reading them from the input file allows for more
+         * flexible files.
+         */
         AsciiDataLookup(const unsigned int components,
                         const double scale_factor);
+
+        /**
+         * This constructor relies on the list of column names at the beginning
+         * of the model file to determine the number of data components,
+         * therefore when using this constructor it is necessary to provide
+         * this list in the first uncommented line of the data file.
+         */
+        AsciiDataLookup(const double scale_factor);
 
         /**
          * Loads a data text file. Throws an exception if the file does not
@@ -414,11 +434,43 @@ namespace aspect
         get_data(const Point<dim> &position,
                  const unsigned int component) const;
 
+        /**
+         * Returns a vector that contains the names of all data columns in the
+         * order of their appearance in the data file (and their order in the
+         * memory data table). Returns an empty vector if no names are provided
+         * or the file is not read in yet.
+         */
+        std::vector<std::string>
+        get_column_names() const;
+
+        /**
+         * Returns the column index of a column with the given name
+         * @p column_name. Returns numbers::invalid_unsigned_int if no such
+         * column exists or no names were provided in the file.
+         */
+        unsigned int
+        get_column_index_from_name(const std::string &column_name) const;
+
+        /**
+         * Returns a string that contains the name of the column with index
+         * @p column_index. Returns an empty string if no such
+         * column exists or no name was provided in the file.
+         */
+        std::string
+        get_column_name_from_index(const unsigned int column_index) const;
+
       private:
         /**
          * The number of data components read in (=columns in the data file).
          */
-        const unsigned int components;
+        unsigned int components;
+
+        /**
+         * The names of the data components in the columns of the read file.
+         * Does not contain any strings if none are provided in the first
+         * uncommented line of the file.
+         */
+        std::vector<std::string> data_component_names;
 
         /**
          * Interpolation functions to access the data.
@@ -716,8 +768,7 @@ namespace aspect
          */
         virtual
         void
-        initialize (const unsigned int components,
-                    const MPI_Comm &communicator);
+        initialize (const MPI_Comm &communicator);
 
 
         /**
@@ -727,6 +778,30 @@ namespace aspect
         get_data_component (const Point<1>                      &position,
                             const unsigned int                   component) const;
 
+        /**
+         * Returns a vector that contains the names of all data columns in the
+         * order of their appearance in the data file (and their order in the
+         * memory data table). Returns an empty vector if no names are provided
+         * or the file is not read in yet.
+         */
+        std::vector<std::string>
+        get_column_names() const;
+
+        /**
+         * Returns the column index of a column with the given name
+         * @p column_name. Returns numbers::invalid_unsigned_int if no such
+         * column exists or no names were provided in the file.
+         */
+        unsigned int
+        get_column_index_from_name(const std::string &column_name) const;
+
+        /**
+         * Returns a string that contains the name of the column with index
+         * @p column_index. Returns an empty string if no such
+         * column exists or no name was provided in the file.
+         */
+        std::string
+        get_column_name_from_index(const unsigned int column_index) const;
       protected:
         /**
          * Pointer to an object that reads and processes data we get from text

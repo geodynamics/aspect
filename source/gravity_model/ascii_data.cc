@@ -39,7 +39,8 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      this->initialize(7,this->get_mpi_communicator());
+      this->initialize(this->get_mpi_communicator());
+      gravity_index = this->get_column_index_from_name("gravity");
     }
 
 
@@ -49,7 +50,7 @@ namespace aspect
     gravity_vector (const Point<dim> &position) const
     {
       const double depth = this->get_geometry_model().depth(position);
-      const double magnitude = this->get_data_component(Point<1>(depth),3);
+      const double magnitude = this->get_data_component(Point<1>(depth),gravity_index);
 
       // in dependence of what the geometry model is, gravity points in a different direction
       if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model())

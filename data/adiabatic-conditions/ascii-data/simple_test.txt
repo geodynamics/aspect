@@ -2,6 +2,6 @@
 # Only next line is parsed in format: [nx] because of keyword "POINTS:"
 # POINTS: 2
 # Columns: depth (m), pressure (Pa), temperature (K), density (kg/m^3), gravity (m/s^2), thermal expansivity (/K), Cp (J/K/kg), compressibility (/Pa)
-# Columns: depth pressure temperature density gravity
+depth pressure temperature density gravity
 0.       1. 3. 5. 7. 9. 11. 13.
 2890000. 2. 4. 6. 8. 10. 12. 14.

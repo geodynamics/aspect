@@ -1,5 +1,6 @@
 # POINTS: 501 
 # depth (m), pressure (Pa), temperature (K), density (kg/m^3), gravity (m/s^2), thermal expansivity (1/K), specific heat (J/K/kg), compressibility (1/Pa)
+depth                   pressure                temperature             density                 gravity                 thermal_expansivity     specific_heat           compressibility
 0.0000000000E+00	1.4465307034E+03	1.6000000243E+03	3.2055371969E+03	9.8100004375E+00	4.2555362572E-05	1.2634520171E+03	1.0181850339E-11
 5.6045000000E+03	1.7639902860E+08	1.6029572050E+03	3.2110265498E+03	9.8121812661E+00	4.2109092826E-05	1.2623274497E+03	1.0098608498E-11
 1.1209250000E+04	3.5313966759E+08	1.6058921778E+03	3.2187514165E+03	9.8143625735E+00	4.1662799535E-05	1.2612028320E+03	1.0015362944E-11

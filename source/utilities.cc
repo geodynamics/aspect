@@ -35,11 +35,13 @@
 
 #include <fstream>
 #include <string>
+#include <locale>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <errno.h>
 
 #include <boost/math/special_functions/spherical_harmonic.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace aspect
 {
@@ -878,6 +880,44 @@ namespace aspect
     {}
 
     template <int dim>
+    AsciiDataLookup<dim>::AsciiDataLookup(const double scale_factor)
+      :
+      components(numbers::invalid_unsigned_int),
+      data(components),
+      scale_factor(scale_factor)
+    {}
+
+    template <int dim>
+    std::vector<std::string>
+    AsciiDataLookup<dim>::get_column_names() const
+    {
+      return data_component_names;
+    }
+
+    template <int dim>
+    unsigned int
+    AsciiDataLookup<dim>::get_column_index_from_name(const std::string &column_name) const
+    {
+      if (data_component_names.size() == 0)
+        return numbers::invalid_unsigned_int;
+
+      const std::vector<std::string>::const_iterator column_position =
+          std::find(data_component_names.begin(),data_component_names.end(),column_name);
+
+      return std::distance(data_component_names.begin(),column_position);
+    }
+
+    template <int dim>
+    std::string
+    AsciiDataLookup<dim>::get_column_name_from_index(const unsigned int column_index) const
+    {
+      if (data_component_names.size() == 0)
+        return std::string();
+
+      return data_component_names[column_index];
+    }
+
+    template <int dim>
     void
     AsciiDataLookup<dim>::load_file(const std::string &filename,
                                     const MPI_Comm &comm)
@@ -930,24 +970,72 @@ namespace aspect
       data_table.TableBase<dim,double>::reinit(table_points);
       std::vector<Table<dim,double> > data_tables(components+dim,data_table);
 
-      // Read data lines
-      unsigned int i = 0;
-      double temp_data;
 
+      // Read column lines if present
+      unsigned int field_index = 0;
+      unsigned int name_column_index = 0;
+
+      while (field_index == 0)
+        {
+          std::string column_name_or_data;
+          in >> column_name_or_data;
+          try
+          {
+              // If the data field contains a name this will throw an exception
+              const double temp_data = boost::lexical_cast<double>(column_name_or_data);
+
+              // If there was no exception we have left the line containing names
+              // and have read the first data field. Prepare indices and save
+              // the field before continuing reading data.
+              if (components == numbers::invalid_unsigned_int)
+                components = name_column_index;
+              else if (name_column_index != 0)
+                AssertThrow (components == name_column_index,
+                    ExcMessage("The number of expected data columns and the "
+                        "list of column names at the beginning of the data file "
+                        + filename + " does not match. The file should contain "
+                            "one column name per column (one for each dimension "
+                            "and one per data column."));
+
+              data_tables[0](compute_table_indices(field_index)) = temp_data;
+              ++field_index;
+          }
+          catch (const boost::bad_lexical_cast &e)
+          {
+              // The first dim columns are coordinates and contain no data
+              if (name_column_index >= dim)
+                {
+                  // Transform name to lower case to prevent confusion with capital letters
+                  // Note: only ASCII characters allowed
+                  std::transform(column_name_or_data.begin(), column_name_or_data.end(), column_name_or_data.begin(), ::tolower);
+
+                  AssertThrow(std::find(data_component_names.begin(),data_component_names.end(),column_name_or_data)
+                  == data_component_names.end(),
+                              ExcMessage("There are multiple fields named " + column_name_or_data +
+                                  " in the data file " + filename + ". Please remove duplication to "
+                                      "allow for unique association between column and name."));
+
+                  data_component_names.push_back(column_name_or_data);
+                }
+              ++name_column_index;
+          }
+        }
+
+      // Read data lines
+      double temp_data;
       while (in >> temp_data)
         {
-          const unsigned int column_num = i%(components+dim);
+          const unsigned int column_num = field_index%(components+dim);
 
           if (column_num >= dim)
             temp_data *= scale_factor;
 
-          data_tables[column_num](compute_table_indices(i)) = temp_data;
+          data_tables[column_num](compute_table_indices(field_index)) = temp_data;
 
-          i++;
-
+          ++field_index;
         }
 
-      AssertThrow(i == (components + dim) * data_table.n_elements(),
+      AssertThrow(field_index == (components + dim) * data_table.n_elements(),
                   ExcMessage (std::string("Number of read in points does not match number of expected points. File corrupted?")));
 
       // In case the data is specified on a grid that is equidistant
@@ -1567,11 +1655,9 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiDataProfile<dim>::initialize (const unsigned int components,
-                                       const MPI_Comm &communicator)
+    AsciiDataProfile<dim>::initialize (const MPI_Comm &communicator)
     {
-      lookup.reset(new Utilities::AsciiDataLookup<1> (components,
-                                                      Utilities::AsciiDataBase<dim>::scale_factor));
+      lookup.reset(new Utilities::AsciiDataLookup<1> (Utilities::AsciiDataBase<dim>::scale_factor));
 
       const std::string filename = Utilities::AsciiDataBase<dim>::data_directory
                                    + Utilities::AsciiDataBase<dim>::data_file_name;
@@ -1586,6 +1672,29 @@ namespace aspect
                                 +
                                 "> not found!"));
     }
+
+
+    template <int dim>
+    std::vector<std::string>
+    AsciiDataProfile<dim>::get_column_names() const
+    {
+      return lookup->get_column_names();
+    }
+
+    template <int dim>
+    unsigned int
+    AsciiDataProfile<dim>::get_column_index_from_name(const std::string &column_name) const
+    {
+      return lookup->get_column_index_from_name(column_name);
+    }
+
+    template <int dim>
+    std::string
+    AsciiDataProfile<dim>::get_column_name_from_index(const unsigned int column_index) const
+    {
+      return lookup->get_column_name_from_index(column_index);
+    }
+
 
     template <int dim>
     double
