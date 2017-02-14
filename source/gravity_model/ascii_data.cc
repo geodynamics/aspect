@@ -32,8 +32,8 @@ namespace aspect
   {
     template <int dim>
     AsciiData<dim>::AsciiData ()
-    :
-    gravity_index(numbers::invalid_unsigned_int)
+      :
+      gravity_index(numbers::invalid_unsigned_int)
     {}
 
 
@@ -83,7 +83,7 @@ namespace aspect
       {
         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
                                                           "$ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/test/",
-                                                          "box_2d.txt");
+                                                          "");
       }
       prm.leave_subsection();
     }
@@ -110,25 +110,23 @@ namespace aspect
   {
     ASPECT_REGISTER_GRAVITY_MODEL(AsciiData,
                                   "ascii data",
-                                  "Gravity is read from an ascii data file "
-                                  "that contains a vertical or radial profile. "
-                                  "Note the required format of the "
+                                  "Gravity is read from a file that describes the reference "
+                                  "state. Note the required format of the "
                                   "input data: The first lines may contain any number of comments "
                                   "if they begin with '#', but one of these lines needs to "
                                   "contain the number of points in the reference state as "
                                   "for example '# POINTS: 3'. "
-                                  "The order of the data columns has to be 'depth (m)', "
-                                  "'pressure (Pa)', 'temperature (K)', 'density (kg/m^3)', "
-                                  "'gravity (m/s^2)', 'thermal expansivity (1/K)', "
-                                  "'specific heat (J/K/kg)', and 'compressibility (1/Pa)'. "
-                                  "For incompressible models the 'compressibility' column will "
-                                  "not be used, but needs to be present in the file."
-                                  "Note that the data in the file need to be sorted in order "
+                                  "Following the comment lines there has to be a single line "
+                                  "containing the names of all data columns, separated by arbitrarily "
+                                  "many spaces. Column names are not allowed to contain spaces. "
+                                  "The file can contain unnecessary columns, but for this plugin it "
+                                  "needs to at least provide a column named 'gravity'. "
+                                  "Note that the data lines in the file need to be sorted in order "
                                   "of increasing depth from 0 to the maximal depth in the model "
                                   "domain. Points in the model that are outside of the provided "
                                   "depth range will be assigned the maximum or minimum depth values, "
-                                  "respectively. Points to do not need to be equidistant, "
-                                  "but the computation of properties is optimized in speed, "
+                                  "respectively. Points do not need to be equidistant, "
+                                  "but the computation of properties is optimized in speed "
                                   "if they are.")
   }
 }

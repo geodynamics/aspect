@@ -445,7 +445,7 @@ namespace aspect
 
         /**
          * Returns the column index of a column with the given name
-         * @p column_name. Returns numbers::invalid_unsigned_int if no such
+         * @p column_name. Throws an exception if no such
          * column exists or no names were provided in the file.
          */
         unsigned int
@@ -453,7 +453,7 @@ namespace aspect
 
         /**
          * Returns a string that contains the name of the column with index
-         * @p column_index. Returns an empty string if no such
+         * @p column_index. Throws an exception if no such
          * column exists or no name was provided in the file.
          */
         std::string

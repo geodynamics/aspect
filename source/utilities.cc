@@ -898,11 +898,13 @@ namespace aspect
     unsigned int
     AsciiDataLookup<dim>::get_column_index_from_name(const std::string &column_name) const
     {
-      if (data_component_names.size() == 0)
-        return numbers::invalid_unsigned_int;
-
       const std::vector<std::string>::const_iterator column_position =
-          std::find(data_component_names.begin(),data_component_names.end(),column_name);
+        std::find(data_component_names.begin(),data_component_names.end(),column_name);
+
+      AssertThrow(column_position != data_component_names.end(),
+                  ExcMessage("There is no data column named " + column_name
+                             + " in the current data file. Please check the name and the "
+                             "first uncommented line of your data file."));
 
       return std::distance(data_component_names.begin(),column_position);
     }
@@ -911,8 +913,10 @@ namespace aspect
     std::string
     AsciiDataLookup<dim>::get_column_name_from_index(const unsigned int column_index) const
     {
-      if (data_component_names.size() == 0)
-        return std::string();
+      AssertThrow(data_component_names.size() > column_index,
+                  ExcMessage("There is no data column number " + Utilities::to_string(column_index)
+                             + " in the current data file. The data file only contains "
+                             + Utilities::to_string(data_component_names.size()) + " named columns."));
 
       return data_component_names[column_index];
     }
@@ -969,15 +973,15 @@ namespace aspect
       while (true)
         {
           AssertThrow (name_column_index < 100,
-              ExcMessage("The program found more than 100 columns in the first line of the data file. "
-                  "This is unlikely intentional. Check your data file and make sure the data can be "
-                  "interpreted as floating point numbers. If you do want to read a data file with more "
-                  "than 100 columns, please remove this assertion."));
+                       ExcMessage("The program found more than 100 columns in the first line of the data file. "
+                                  "This is unlikely intentional. Check your data file and make sure the data can be "
+                                  "interpreted as floating point numbers. If you do want to read a data file with more "
+                                  "than 100 columns, please remove this assertion."));
 
           std::string column_name_or_data;
           in >> column_name_or_data;
           try
-          {
+            {
               // If the data field contains a name this will throw an exception
               temp_data = boost::lexical_cast<double>(column_name_or_data);
 
@@ -989,16 +993,16 @@ namespace aspect
                 components = name_column_index - dim;
               else if (name_column_index != 0)
                 AssertThrow (components == name_column_index,
-                    ExcMessage("The number of expected data columns and the "
-                        "list of column names at the beginning of the data file "
-                        + filename + " does not match. The file should contain "
-                            "one column name per column (one for each dimension "
-                            "and one per data column."));
+                             ExcMessage("The number of expected data columns and the "
+                                        "list of column names at the beginning of the data file "
+                                        + filename + " does not match. The file should contain "
+                                        "one column name per column (one for each dimension "
+                                        "and one per data column."));
 
               break;
-          }
+            }
           catch (const boost::bad_lexical_cast &e)
-          {
+            {
               // The first dim columns are coordinates and contain no data
               if (name_column_index >= dim)
                 {
@@ -1007,15 +1011,15 @@ namespace aspect
                   std::transform(column_name_or_data.begin(), column_name_or_data.end(), column_name_or_data.begin(), ::tolower);
 
                   AssertThrow(std::find(data_component_names.begin(),data_component_names.end(),column_name_or_data)
-                  == data_component_names.end(),
+                              == data_component_names.end(),
                               ExcMessage("There are multiple fields named " + column_name_or_data +
-                                  " in the data file " + filename + ". Please remove duplication to "
-                                      "allow for unique association between column and name."));
+                                         " in the data file " + filename + ". Please remove duplication to "
+                                         "allow for unique association between column and name."));
 
                   data_component_names.push_back(column_name_or_data);
                 }
               ++name_column_index;
-          }
+            }
         }
 
       /**
@@ -1039,7 +1043,8 @@ namespace aspect
           data_tables[column_num](compute_table_indices(field_index)) = temp_data;
 
           ++field_index;
-        } while (in >> temp_data);
+        }
+      while (in >> temp_data);
 
 
       AssertThrow(field_index == (components + dim) * data_table.n_elements(),

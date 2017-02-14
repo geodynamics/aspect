@@ -33,7 +33,10 @@ namespace aspect
     template <int dim>
     AsciiData<dim>::AsciiData()
       :
-      initialized(false)
+      initialized(false),
+      temperature_index(numbers::invalid_unsigned_int),
+      pressure_index(numbers::invalid_unsigned_int),
+      density_index(numbers::invalid_unsigned_int)
     {}
 
 
@@ -46,6 +49,9 @@ namespace aspect
         return;
 
       this->initialize(this->get_mpi_communicator());
+      temperature_index = this->get_column_index_from_name("temperature");
+      pressure_index = this->get_column_index_from_name("pressure");
+      density_index = this->get_column_index_from_name("density");
 
       initialized = true;
     }
@@ -65,7 +71,7 @@ namespace aspect
     double AsciiData<dim>::pressure (const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
-      return this->get_data_component(Point<1>(depth),0);
+      return this->get_data_component(Point<1>(depth),pressure_index);
     }
 
 
@@ -74,7 +80,7 @@ namespace aspect
     double AsciiData<dim>::temperature (const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
-      return this->get_data_component(Point<1>(depth),1);
+      return this->get_data_component(Point<1>(depth),temperature_index);
     }
 
 
@@ -83,7 +89,7 @@ namespace aspect
     double AsciiData<dim>::density (const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
-      return this->get_data_component(Point<1>(depth),2);
+      return this->get_data_component(Point<1>(depth),density_index);
     }
 
 
@@ -93,9 +99,9 @@ namespace aspect
     {
       const double depth = this->get_geometry_model().depth(p);
       const double eps = std::sqrt(std::numeric_limits<double>::epsilon()) * this->get_geometry_model().maximal_depth();
-      return (this->get_data_component(Point<1>(depth+eps),2)
+      return (this->get_data_component(Point<1>(depth+eps),density_index)
               -
-              this->get_data_component(Point<1>(depth),2))
+              this->get_data_component(Point<1>(depth),density_index))
              /
              eps;
     }
@@ -110,7 +116,7 @@ namespace aspect
       {
         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
                                                           "$ASPECT_SOURCE_DIR/tests/adiabatic-conditions/ascii-data/test/",
-                                                          "box_2d.txt");
+                                                          "");
       }
       prm.leave_subsection();
     }
@@ -145,18 +151,18 @@ namespace aspect
                                                "if they begin with '#', but one of these lines needs to "
                                                "contain the number of points in the reference state as "
                                                "for example '# POINTS: 3'. "
-                                               "The order of the data columns has to be 'depth (m)', "
-                                               "'pressure (Pa)', 'temperature (K)', 'density (kg/m^3)', "
-                                               "'gravity (m/s^2)', 'thermal expansivity (1/K)', "
-                                               "'specific heat (J/K/kg)', and 'compressibility (1/Pa)'. "
-                                               "For incompressible models the 'compressibility' column will "
-                                               "not be used, but needs to be present in the file."
-                                               "Note that the data in the file need to be sorted in order "
+                                               "Following the comment lines there has to be a single line "
+                                               "containing the names of all data columns, separated by arbitrarily "
+                                               "many spaces. Column names are not allowed to contain spaces. "
+                                               "The file can contain unnecessary columns, but for this plugin it "
+                                               "needs to at least provide columns named 'temperature', 'pressure', "
+                                               "and 'density'."
+                                               "Note that the data lines in the file need to be sorted in order "
                                                "of increasing depth from 0 to the maximal depth in the model "
                                                "domain. Points in the model that are outside of the provided "
                                                "depth range will be assigned the maximum or minimum depth values, "
-                                               "respectively. Points to do not need to be equidistant, "
-                                               "but the computation of properties is optimized in speed, "
+                                               "respectively. Points do not need to be equidistant, "
+                                               "but the computation of properties is optimized in speed "
                                                "if they are.")
   }
 }

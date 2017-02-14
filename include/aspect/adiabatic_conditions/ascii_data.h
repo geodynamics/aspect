@@ -116,6 +116,14 @@ namespace aspect
          * differently in initialization and model run.
          */
         bool initialized;
+
+        /**
+         * The column indices of the temperature, pressure, and density column
+         * in the data file.
+         */
+        unsigned int temperature_index;
+        unsigned int pressure_index;
+        unsigned int density_index;
     };
   }
 }
