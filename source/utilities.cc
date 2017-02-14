@@ -961,34 +961,32 @@ namespace aspect
                                  "(e.g. a missing space character)."));
         }
 
-      /**
-       * Table for the new data. This peculiar reinit is necessary, because
-       * there is no constructor for Table, which takes TableIndices as
-       * argument.
-       */
-      Table<dim,double> data_table;
-      data_table.TableBase<dim,double>::reinit(table_points);
-      std::vector<Table<dim,double> > data_tables(components+dim,data_table);
-
-
       // Read column lines if present
       unsigned int field_index = 0;
       unsigned int name_column_index = 0;
+      double temp_data;
 
-      while (field_index == 0)
+      while (true)
         {
+          AssertThrow (name_column_index < 100,
+              ExcMessage("The program found more than 100 columns in the first line of the data file. "
+                  "This is unlikely intentional. Check your data file and make sure the data can be "
+                  "interpreted as floating point numbers. If you do want to read a data file with more "
+                  "than 100 columns, please remove this assertion."));
+
           std::string column_name_or_data;
           in >> column_name_or_data;
           try
           {
               // If the data field contains a name this will throw an exception
-              const double temp_data = boost::lexical_cast<double>(column_name_or_data);
+              temp_data = boost::lexical_cast<double>(column_name_or_data);
 
               // If there was no exception we have left the line containing names
-              // and have read the first data field. Prepare indices and save
-              // the field before continuing reading data.
+              // and have read the first data field. Save number of components, and
+              // make sure there is no contradiction if the components were already given to
+              // the constructor of this class.
               if (components == numbers::invalid_unsigned_int)
-                components = name_column_index;
+                components = name_column_index - dim;
               else if (name_column_index != 0)
                 AssertThrow (components == name_column_index,
                     ExcMessage("The number of expected data columns and the "
@@ -997,8 +995,7 @@ namespace aspect
                             "one column name per column (one for each dimension "
                             "and one per data column."));
 
-              data_tables[0](compute_table_indices(field_index)) = temp_data;
-              ++field_index;
+              break;
           }
           catch (const boost::bad_lexical_cast &e)
           {
@@ -1021,9 +1018,18 @@ namespace aspect
           }
         }
 
+      /**
+       * Create table for the data. This peculiar reinit is necessary, because
+       * there is no constructor for Table, which takes TableIndices as
+       * argument.
+       */
+      Table<dim,double> data_table;
+      data_table.TableBase<dim,double>::reinit(table_points);
+      std::vector<Table<dim,double> > data_tables(components+dim,data_table);
+
+
       // Read data lines
-      double temp_data;
-      while (in >> temp_data)
+      do
         {
           const unsigned int column_num = field_index%(components+dim);
 
@@ -1033,7 +1039,8 @@ namespace aspect
           data_tables[column_num](compute_table_indices(field_index)) = temp_data;
 
           ++field_index;
-        }
+        } while (in >> temp_data);
+
 
       AssertThrow(field_index == (components + dim) * data_table.n_elements(),
                   ExcMessage (std::string("Number of read in points does not match number of expected points. File corrupted?")));

@@ -32,6 +32,8 @@ namespace aspect
   {
     template <int dim>
     AsciiData<dim>::AsciiData ()
+    :
+    gravity_index(numbers::invalid_unsigned_int)
     {}
 
 
@@ -77,7 +79,7 @@ namespace aspect
     {
       // we use the same file that is used for the adiabatic conditions model,
       // as it also contains gravity
-      prm.enter_subsection("Adiabatic conditions model");
+      prm.enter_subsection("Gravity model");
       {
         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
                                                           "$ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/test/",
@@ -91,7 +93,7 @@ namespace aspect
     void
     AsciiData<dim>::parse_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Adiabatic conditions model");
+      prm.enter_subsection("Gravity model");
       {
         Utilities::AsciiDataBase<dim>::parse_parameters(prm);
       }

@@ -35,6 +35,11 @@ namespace aspect
      * A material model that reads in a reference profile from an ascii file
      * and computes properties based on this profile.
      *
+     * The viscosity is computed as
+     * \begin{equation}
+     * \eta(z,T) = \eta_r(z) \eta_0 \exp\left(-A \frac{T - T_\text{adi}}{T_\text{adi}}\right)."
+     * \end{equation}
+     *
      * @ingroup MaterialModels
      */
     template <int dim>
@@ -103,9 +108,30 @@ namespace aspect
          */
         bool tala;
 
+        /**
+         * The reference viscosity
+         */
         double viscosity;
+
+        /**
+         * The constant $A$ in the temperature dependence of viscosity
+         * $\exp\left(-A \frac{T - T_\text{adi}}{T_\text{adi}}\right).$
+         */
         double thermal_viscosity_exponent;
+
+        /**
+         * A list of constants that make up the piecewise constant function
+         * $\eta_r(z)$, which determines the depth dependence of viscosity,
+         * and is multiplied with the reference viscosity and the
+         * temperature dependence to compute the viscosity $\eta(z,T)$.
+         */
         std::vector<double> viscosity_prefactors;
+
+        /**
+         * A list of depths that determine the locations of the jumps in
+         * the piecewise constant function $\eta_r(z)$, which describes the
+         * depth dependence of viscosity.
+         */
         std::vector<double> transition_depths;
 
         double thermal_conductivity;

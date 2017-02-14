@@ -7,14 +7,6 @@ set End time                               = 1e6
 
 set Adiabatic surface temperature          = 1613.0
 
-subsection Adiabatic conditions model
-  set Model name = ascii data
-  subsection Ascii data model
-    set Data directory       = $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
-    set Data file name       = simple_test.txt
-  end
-end
-
 subsection Boundary temperature model
   set Model name = constant
   subsection Constant
@@ -50,6 +42,10 @@ end
 
 subsection Gravity model
   set Model name = ascii data
+  subsection Ascii data model
+    set Data directory       = $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
+    set Data file name       = simple_test.txt
+  end
 end
 
 
