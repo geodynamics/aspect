@@ -308,8 +308,11 @@ namespace aspect
           fe_values.reinit (cell);
           const std::vector<Point<dim> > quadrature_points = fe_values.get_quadrature_points();
 
+          ComponentMask property_mask  (particle_property_manager->get_data_info().n_components(),false);
+          property_mask.set(particle_property,true);
+
           const std::vector<std::vector<double> > tracer_properties =
-            particle_interpolator->properties_at_points(*particles,quadrature_points,cell);
+            particle_interpolator->properties_at_points(*particles,quadrature_points,property_mask,cell);
 
           // go through the temperature/composition dofs and set their global values
           // to the particle field interpolated at these points
