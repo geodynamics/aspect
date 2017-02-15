@@ -118,9 +118,9 @@ namespace aspect
                   continue;
 
                 const std::vector<double> neighbor_properties = properties_at_points(particles,
-                                                                               std::vector<Point<dim> > (1,neighbors[i]->center(true,false)),
-                                                                               selected_properties,
-                                                                               neighbors[i])[0];
+                                                                                     std::vector<Point<dim> > (1,neighbors[i]->center(true,false)),
+                                                                                     selected_properties,
+                                                                                     neighbors[i])[0];
 
                 for (unsigned int i = 0; i < n_selected_properties; ++i)
                   cell_properties[i] += neighbor_properties[i];
