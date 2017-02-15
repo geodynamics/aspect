@@ -69,7 +69,7 @@ namespace aspect
                 ++k;
               }
 
-        return properties_at_points(particles,positions,cell);
+        return selected_properties_at_all_points;
       }
 
 
