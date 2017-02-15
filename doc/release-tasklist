@@ -71,6 +71,52 @@
        dealii@googlegroups.com
 
 
+Announcement for 1.5.0 (February 18, 2017)
+-----------------------------------------
+We are pleased to announce the release of ASPECT 1.5.0. ASPECT is the Advanced
+Solver for Problems in Earth's ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid, and a modular software design to
+provide a fast, flexible, and extensible mantle convection solver. ASPECT is
+available from
+
+                   https://aspect.dealii.org/
+
+and the release is available from
+
+        https://github.com/geodynamics/aspect/releases/tag/v1.5.0
+
+This release includes the following changes:
+
+- New: Choice between different formulations for the governing equations
+  including Boussinesq and anelastic liquid approximation.
+- New: Melt transport (two-phase flow).
+- Particles: new generators, ghost exchange, performance improvements,
+  interpolation to fields.
+- New: Nondimensional material model for incompressible (using the Boussinesq
+  approximation) and compressible computations (with ALA or TALA) for
+  nondimensionalized problems. This can be used for benchmark problems like
+  Blankenbach, King, etc..
+- New: Optional DG method for temperature/composition.
+- Adiabatic conditions: rework, now includes a reference density profile
+- Free surface: overhaul.
+- New cookbooks: continental extension, finite strain.
+- New benchmarks: TanGurnis, Blankenbach, King.
+- New: viscoplastic material model.
+- Material model interface cleanup.
+- Assembly performance improvements.
+- New: memory statistics postprocessor.
+- New: initial topography plugins.
+- Many other fixes and small improvements.
+
+A complete list of changes can be found at
+  https://aspect.dealii.org/doc/doxygen/changes_between_1_84_and_1_85_80.html
+and the release is also available from
+  https://github.com/geodynamics/aspect/releases/tag/v1.5.0
+
+Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister, and many
+other contributors.
+
+
 Announcement for 1.4.0 (May 15, 2016)
 -----------------------------------------
 We are pleased to announce the release of ASPECT 1.4.0. ASPECT is the Advanced
