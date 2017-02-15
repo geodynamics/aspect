@@ -62,7 +62,7 @@ namespace aspect
         std::vector<std::vector<double> > selected_properties_at_all_points(positions.size(),selected_properties);
 
         for (unsigned int i = 0; i < positions.size(); ++i)
-          for (unsigned int j = 0, k = 0; j < positions[0].size(); ++j)
+          for (unsigned int j = 0, k = 0; j < positions.size(); ++j)
             if (selected_components[j])
               {
                 selected_properties_at_all_points[i][k] = all_particle_properties[i][j];
