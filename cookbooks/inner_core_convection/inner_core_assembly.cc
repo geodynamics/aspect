@@ -54,30 +54,44 @@ namespace aspect
                                         internal::Assembly::CopyData::StokesSystem<dim>      &data) const
       {
         const Introspection<dim> &introspection = this->introspection();
+        const FiniteElement<dim> &fe            = this->get_fe();
+        const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
+        const unsigned int n_q_points           = scratch.face_finite_element_values.n_quadrature_points;
 
         //assemble force terms for the matrix for all boundary faces
-        const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
         if (cell->face(face_no)->at_boundary())
           {
             scratch.face_finite_element_values.reinit (cell, face_no);
 
-            for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
+            for (unsigned int q=0; q<n_q_points; ++q)
               {
                 const double P = dynamic_cast<const MaterialModel::InnerCore<dim>&>
                                  (this->get_material_model()).resistance_to_phase_change
                                  .value(scratch.material_model_inputs.position[q]);
 
+                for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
+                  {
+                    if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                      {
+                        scratch.phi_u[i_stokes] = scratch.face_finite_element_values[introspection
+                                                                                     .extractors.velocities].value(i, q);
+                        ++i_stokes;
+                      }
+                    ++i;
+                  }
+
+                const Tensor<1,dim> normal_vector = scratch.face_finite_element_values.normal_vector(q);
+                const double JxW = scratch.face_finite_element_values.JxW(q);
+
                 // boundary term: P*u*n*v*n*JxW(q)
-                for (unsigned int i=0; i<dofs_per_cell; ++i)
-                  for (unsigned int j=0; j<dofs_per_cell; ++j)
+                for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                  for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                     data.local_matrix(i,j) += P *
-                                              scratch.face_finite_element_values
-                                              [introspection.extractors.velocities].value(i,q) *
-                                              scratch.face_finite_element_values.normal_vector(q) *
-                                              scratch.face_finite_element_values
-                                              [introspection.extractors.velocities].value(j,q) *
-                                              scratch.face_finite_element_values.normal_vector(q) *
-                                              scratch.face_finite_element_values.JxW(q);
+                                              scratch.phi_u[i] *
+                                              normal_vector *
+                                              scratch.phi_u[j] *
+                                              normal_vector *
+                                              JxW;
               }
           }
       }
