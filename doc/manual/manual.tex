@@ -819,7 +819,7 @@ expressed in the same system. In other words, it is entirely legitimate to
 implement geometry and material models in which the dimension of the domain is
 one, density and viscosity are one, and the density variation as a function of
 temperature is scaled by the Rayleigh number -- i.e., to use the usual
-non-dimensionalization of the Boussinesq equations. Some of the cookbooks in
+non-dimensionalization of the equations~\eqref{eq:stokes-1}--\eqref{eq:temperature}. Some of the cookbooks in
 Section~\ref{sec:cookbooks} use this non-dimensional form; for example,
 the simplest cookbook in Section~\ref{sec:cookbooks-simple-box} as well as
 the SolCx, SolKz and inclusion benchmarks in Sections~\ref{sec:benchmark-solcx},
@@ -6322,8 +6322,8 @@ this in the next section.
 \paragraph{Incompressibility, adiabaticity and the initial conditions.} This one
 requires a bit more discussion. In the model selected above, we have chosen a
 model that is incompressible in the sense that the density does not depend on
-the pressure and only very slightly depends on the temperature (the Boussinesq
-approximation). In such models, material that rises up does not cool down due to
+the pressure and only very slightly depends on the temperature. 
+In such models, material that rises up does not cool down due to
 expansion resulting from the pressure dropping, and material that is transported
 down does not adiabatically heat up. Consequently, the adiabatic temperature
 profile would be constant with depth, and a well-mixed model with hot inner and
