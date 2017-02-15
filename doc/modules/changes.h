@@ -6,6 +6,15 @@
  *
  * <ol>
  *
+ * <li> New: The particle property interpolation interface can now be
+ * queried for only a part (or only one) of the particle properties.
+ * This makes interpolation more efficient, because the compositional
+ * fields are solved one-by-one and therefore oftentimes only one
+ * of the properties is actually needed. Interpolating all needed
+ * properties in one call is still more efficient in the general case. 
+ * <br>
+ * (Rene Gassmoeller, 2017/02/15)
+ *
  * <li> Removed: The material model interface contained the functions
  * 'reference_density', 'reference_thermal_expansion_coefficient',
  * 'viscosity_ratio', and 'thermodynamic_phase'. Additionally many
