@@ -49,6 +49,7 @@ namespace aspect
 
 
 
+      DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
       template <int dim>
       std::vector<std::vector<double> >
       Interface<dim>::properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
@@ -58,6 +59,7 @@ namespace aspect
       {
         return properties_at_points(particles,positions,cell);
       }
+      DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 
 
