@@ -33,6 +33,8 @@
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/chunk_3.h>
+#include "/home/glerum/aspect/01092016/aspect/lib_chunk/chunk_3_layered.h"
+#include "/home/glerum/aspect/01092016/aspect/lib_aegean_ascii/two_merged_chunks.h"
 
 #include <fstream>
 #include <string>
@@ -1130,7 +1132,9 @@ namespace aspect
     {
       AssertThrow ((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
                    || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0
+                   || (dynamic_cast<const GeometryModel::TwoMergedChunks<dim>*> (&this->get_geometry_model())) != 0
                    || (dynamic_cast<const GeometryModel::Chunk3<dim>*> (&this->get_geometry_model())) != 0
+                   || (dynamic_cast<const GeometryModel::Chunk3Layered<dim>*> (&this->get_geometry_model())) != 0
                    || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != 0,
                    ExcMessage ("This ascii data plugin can only be used when using "
                                "a spherical shell, chunk or box geometry."));
@@ -1207,7 +1211,7 @@ namespace aspect
       switch (dim)
         {
           case 2:
-            if ((boundary_id == 2) || (boundary_id == 3))
+            if ((boundary_id == 2) || (boundary_id == 3)|| (boundary_id == 4) || (boundary_id == 5) )
               {
                 boundary_dimensions[0] = 0;
               }
@@ -1224,7 +1228,7 @@ namespace aspect
             break;
 
           case 3:
-            if ((boundary_id == 4) || (boundary_id == 5))
+            if ((boundary_id == 4) || (boundary_id == 5) || (boundary_id == 8) || (boundary_id == 9))
               {
                 boundary_dimensions[0] = 0;
                 boundary_dimensions[1] = 1;
@@ -1234,7 +1238,7 @@ namespace aspect
                 boundary_dimensions[0] = 1;
                 boundary_dimensions[1] = 2;
               }
-            else if ((boundary_id == 2) || (boundary_id == 3))
+            else if ((boundary_id == 2) || (boundary_id == 3) || (boundary_id == 6) || (boundary_id == 7))
               {
                 boundary_dimensions[0] = 0;
                 boundary_dimensions[1] = 2;
@@ -1397,7 +1401,9 @@ namespace aspect
 
           if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0
               || dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != 0
-              || dynamic_cast<const GeometryModel::Chunk3<dim>*> (&this->get_geometry_model()) != 0)
+              || dynamic_cast<const GeometryModel::TwoMergedChunks<dim>*> (&this->get_geometry_model()) != 0
+              || dynamic_cast<const GeometryModel::Chunk3<dim>*> (&this->get_geometry_model()) != 0
+              || dynamic_cast<const GeometryModel::Chunk3Layered<dim>*> (&this->get_geometry_model()) != 0)
             {
               const std_cxx11::array<double,dim> spherical_position =
                 ::aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
@@ -1506,7 +1512,9 @@ namespace aspect
     {
       AssertThrow ((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
                    || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0
+                   || (dynamic_cast<const GeometryModel::TwoMergedChunks<dim>*> (&this->get_geometry_model())) != 0
                    || (dynamic_cast<const GeometryModel::Chunk3<dim>*> (&this->get_geometry_model())) != 0
+                   || (dynamic_cast<const GeometryModel::Chunk3Layered<dim>*> (&this->get_geometry_model())) != 0
                    || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != 0,
                    ExcMessage ("This ascii data plugin can only be used when using "
                                "a spherical shell, chunk or box geometry."));
@@ -1541,7 +1549,9 @@ namespace aspect
 
       if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0
           || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0
-          || (dynamic_cast<const GeometryModel::Chunk3<dim>*> (&this->get_geometry_model())) != 0)
+          || (dynamic_cast<const GeometryModel::TwoMergedChunks<dim>*> (&this->get_geometry_model())) != 0
+          || (dynamic_cast<const GeometryModel::Chunk3<dim>*> (&this->get_geometry_model())) != 0
+          || (dynamic_cast<const GeometryModel::Chunk3Layered<dim>*> (&this->get_geometry_model())) != 0)
         {
           const std_cxx11::array<double,dim> spherical_position =
             ::aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
