@@ -81,9 +81,12 @@ namespace aspect
            * Perform an interpolation of the properties of the particles in
            * this cell onto a vector of positions in this cell.
            * Implementations of this function must return a vector of a vector
-           * of doubles which contains a somehow computed
-           * value for all in @p selected_properties selected particle
-           * properties at all given positions in @p positions.
+           * of doubles with as many entries as positions in @p positions.
+           * Each entry is a vector with as many entries as there are  particle
+           * properties in this computation.
+           * All in @p selected_properties selected components
+           * will be filled with computed properties, all other components
+           * are not filled (or filled with signalling_nan's).
            *
            * @param [in] particles Reference to the particle map.
            * @param [in] positions The vector of positions where the properties

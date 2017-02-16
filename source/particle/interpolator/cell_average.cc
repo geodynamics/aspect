@@ -23,6 +23,7 @@
 #include <aspect/simulator.h>
 
 #include <deal.II/grid/grid_tools.h>
+#include <deal.II/base/signaling_nan.h>
 
 namespace aspect
 {
@@ -76,9 +77,12 @@ namespace aspect
 
         const unsigned int n_particles = std::distance(particle_range.first,particle_range.second);
         const unsigned int n_particle_properties = particles.begin()->second.get_properties().size();
-        const unsigned int n_selected_properties = selected_properties.n_selected_components(n_particle_properties);
 
-        std::vector<double> cell_properties (n_selected_properties,0.0);
+        std::vector<double> cell_properties (n_particle_properties,numbers::signaling_nan<double>());
+
+        for (unsigned int i = 0; i < n_particle_properties; ++i)
+          if (selected_properties[i])
+            cell_properties[i] = 0.0;
 
         if (n_particles > 0)
           {
@@ -87,16 +91,14 @@ namespace aspect
               {
                 const ArrayView<const double> &particle_properties = particle->second.get_properties();
 
-                for (unsigned int i = 0, j = 0; i < n_particle_properties; ++i)
+                for (unsigned int i = 0; i < n_particle_properties; ++i)
                   if (selected_properties[i])
-                    {
-                      cell_properties[j] += particle_properties[i];
-                      ++j;
-                    }
+                    cell_properties[i] += particle_properties[i];
               }
 
-            for (unsigned int i = 0; i < n_selected_properties; ++i)
-              cell_properties[i] /= n_particles;
+            for (unsigned int i = 0; i < n_particle_properties; ++i)
+              if (selected_properties[i])
+                cell_properties[i] /= n_particles;
           }
         // If there are no particles in this cell use the average of the
         // neighboring cells.
@@ -122,8 +124,9 @@ namespace aspect
                                                                                      selected_properties,
                                                                                      neighbors[i])[0];
 
-                for (unsigned int i = 0; i < n_selected_properties; ++i)
-                  cell_properties[i] += neighbor_properties[i];
+                for (unsigned int i = 0; i < n_particle_properties; ++i)
+                  if (selected_properties[i])
+                    cell_properties[i] += neighbor_properties[i];
 
                 ++non_empty_neighbors;
               }
@@ -132,8 +135,9 @@ namespace aspect
                         ExcMessage("A cell and all of its neighbors do not contain any particles. "
                                    "The 'cell average' interpolation scheme does not support this case."));
 
-            for (unsigned int i = 0; i < n_selected_properties; ++i)
-              cell_properties[i] /= non_empty_neighbors;
+            for (unsigned int i = 0; i < n_particle_properties; ++i)
+              if (selected_properties[i])
+                cell_properties[i] /= non_empty_neighbors;
           }
 
         return std::vector<std::vector<double> > (positions.size(),cell_properties);

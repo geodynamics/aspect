@@ -323,7 +323,7 @@ namespace aspect
                 = finite_element.component_to_system_index(advection_field.component_index(introspection),
                                                            /*dof index within component=*/i);
 
-              particle_solution(local_dof_indices[system_local_dof]) = tracer_properties[i][0];
+              particle_solution(local_dof_indices[system_local_dof]) = tracer_properties[i][particle_property];
             }
         }
 

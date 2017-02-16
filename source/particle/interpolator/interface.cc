@@ -53,23 +53,10 @@ namespace aspect
       std::vector<std::vector<double> >
       Interface<dim>::properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
                                            const std::vector<Point<dim> > &positions,
-                                           const ComponentMask &selected_components,
+                                           const ComponentMask &/*selected_components*/,
                                            const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
-        const std::vector<std::vector<double> > all_particle_properties = properties_at_points(particles,positions,cell);
-
-        std::vector<double> selected_properties(selected_components.n_selected_components(),0.0);
-        std::vector<std::vector<double> > selected_properties_at_all_points(positions.size(),selected_properties);
-
-        for (unsigned int i = 0; i < positions.size(); ++i)
-          for (unsigned int j = 0, k = 0; j < positions.size(); ++j)
-            if (selected_components[j])
-              {
-                selected_properties_at_all_points[i][k] = all_particle_properties[i][j];
-                ++k;
-              }
-
-        return selected_properties_at_all_points;
+        return properties_at_points(particles,positions,cell);
       }
 
 
