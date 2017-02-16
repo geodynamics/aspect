@@ -105,7 +105,7 @@ namespace aspect
           properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
                                const std::vector<Point<dim> > &positions,
                                const ComponentMask &selected_properties,
-                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
+                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const = 0;
 
           /**
            * Declare the parameters this class takes through input files. The
