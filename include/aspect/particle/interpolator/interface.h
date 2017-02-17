@@ -86,7 +86,7 @@ namespace aspect
            * properties in this computation.
            * All in @p selected_properties selected components
            * will be filled with computed properties, all other components
-           * are not filled (or filled with signalling_nan's).
+           * are not filled (or filled with invalid values).
            *
            * @param [in] particles Reference to the particle map.
            * @param [in] positions The vector of positions where the properties
