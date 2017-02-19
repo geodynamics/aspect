@@ -60,6 +60,8 @@ make_lib ()
 echo "Checking benchmarks using $BUILD/aspect"
 echo "Please be patient..."
 
+( (cd blankenbach/plugin; make_lib && cd .. && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
 ( (cd burstedde; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd crameri_et_al/case_1 && make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
