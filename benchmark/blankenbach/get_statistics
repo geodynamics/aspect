@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Instructions for how to use this scipt are provided in the README.
+
+path=$*
+
+echo "# Nu           Vrms           name:" | tee statistics.txt
+
+for i in $path; do
+  nusselt=`grep "Outward heat flux density for boundary with id 3" $i | gawk '{ print $2}' | sed s/.$//`
+  vrms=`grep "RMS velocity" $i | gawk '{ print $2}' | sed s/.$//`
+  tail -1 $i | gawk "{ print \$${nusselt} \" \" \$${vrms} \" $i\" }" | tee -a statistics.txt
+done
