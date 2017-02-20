@@ -282,9 +282,9 @@ namespace aspect
                                "more fields that are marked as particle advected than particle properties"));
       }
 
-    LinearAlgebra::BlockVector tracer_solution;
+    LinearAlgebra::BlockVector particle_solution;
 
-    tracer_solution.reinit(system_rhs, false);
+    particle_solution.reinit(system_rhs, false);
 
     const unsigned int base_element = advection_field.base_element(introspection);
 
@@ -308,10 +308,13 @@ namespace aspect
           fe_values.reinit (cell);
           const std::vector<Point<dim> > quadrature_points = fe_values.get_quadrature_points();
 
-          const std::vector<std::vector<double> > tracer_properties =
-            particle_interpolator->properties_at_points(*particles,quadrature_points,cell);
+          ComponentMask property_mask  (particle_property_manager->get_data_info().n_components(),false);
+          property_mask.set(particle_property,true);
 
-          // go through the temperature/composition dofs and set their global values
+          const std::vector<std::vector<double> > tracer_properties =
+            particle_interpolator->properties_at_points(*particles,quadrature_points,property_mask,cell);
+
+          // go through the composition dofs and set their global values
           // to the particle field interpolated at these points
           cell->get_dof_indices (local_dof_indices);
           for (unsigned int i=0; i<finite_element.base_element(base_element).dofs_per_cell; ++i)
@@ -320,26 +323,24 @@ namespace aspect
                 = finite_element.component_to_system_index(advection_field.component_index(introspection),
                                                            /*dof index within component=*/i);
 
-
-              const double value = tracer_properties[i][particle_property];
-              tracer_solution(local_dof_indices[system_local_dof]) = value;
+              particle_solution(local_dof_indices[system_local_dof]) = tracer_properties[i][particle_property];
             }
         }
 
-    tracer_solution.compress(VectorOperation::insert);
+    particle_solution.compress(VectorOperation::insert);
 
     // we should not have written at all into any of the blocks with
-    // the exception of the current temperature or composition block
-    for (unsigned int b=0; b<tracer_solution.n_blocks(); ++b)
+    // the exception of the current composition block
+    for (unsigned int b=0; b<particle_solution.n_blocks(); ++b)
       if (b != advection_field.block_index(introspection))
-        Assert (tracer_solution.block(b).l2_norm() == 0,
+        Assert (particle_solution.block(b).l2_norm() == 0,
                 ExcInternalError());
 
-    // copy temperature/composition block only
+    // overwrite the relevant composition block only
     const unsigned int blockidx = advection_field.block_index(introspection);
-    solution.block(blockidx) = tracer_solution.block(blockidx);
-    old_solution.block(blockidx) = tracer_solution.block(blockidx);
-    old_old_solution.block(blockidx) = tracer_solution.block(blockidx);
+    solution.block(blockidx) = particle_solution.block(blockidx);
+    old_solution.block(blockidx) = particle_solution.block(blockidx);
+    old_old_solution.block(blockidx) = particle_solution.block(blockidx);
   }
 
 
