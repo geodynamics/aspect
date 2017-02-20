@@ -16,6 +16,16 @@ then
     exit 1
 fi
 
+#
+run_prm ()
+{
+prm=$1
+    echo "Running '$prm' at `pwd` with '$BUILD' ..."
+    cp $prm $prm.tmp
+    echo "set End time=0" >> $prm.tmp
+    $BUILD/aspect $prm.tmp >/dev/null || { rm -f $prm.tmp; return 2; }
+    rm -f $prm.tmp
+}
 
 # run aspect on all .prm files in the current folder or any subdirectory
 run_all_prms ()
@@ -50,6 +60,8 @@ make_lib ()
 echo "Checking benchmarks using $BUILD/aspect"
 echo "Please be patient..."
 
+( (cd blankenbach/plugin; make_lib && cd .. && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
 ( (cd burstedde; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd crameri_et_al/case_1 && make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
@@ -58,9 +70,17 @@ echo "Please be patient..."
 
 ( (cd davies_et_al; cd case-2.3-plugin; make_lib && cd .. && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
+( (cd finite_strain && make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
 ( (cd inclusion; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
+( (cd king2dcompressible/ala && make_lib && run_prm "ala.prm" && cat ala.prm tala.prm >mytala.prm && run_prm "mytala.prm" && rm mytala.prm ) || { echo "FAILED"; exit 1; } ) &
+
+( (cd shear_bands; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
 ( (cd solcx; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+( (cd solitary_wave; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd solkz; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 

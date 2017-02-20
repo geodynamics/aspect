@@ -1,366 +1,106 @@
-# Listing of Parameters
-# ---------------------
-# In computations, the time step $k$ is chosen according to $k = c \min_K
-# \frac{h_K}{\|u\|_{\infty,K} p_T}$ where $h_K$ is the diameter of cell $K$,
-# and the denominator is the maximal magnitude of the velocity on cell $K$
-# times the polynomial degree $p_T$ of the temperature discretization. The
-# dimensionless constant $c$ is called the CFL number in this program. For
-# time discretizations that have explicit components, $c$ must be less than a
-# constant that depends on the details of the time discretization and that is
-# no larger than one. On the other hand, for implicit discretizations such as
-# the one chosen here, one can choose the time step as large as one wants (in
-# particular, one can choose $c>1$) though a CFL number significantly larger
-# than one will yield rather diffusive solutions. Units: None.
+set Dimension                              = 2
 set CFL number                             = 1.0
-
-# The end time of the simulation. Units: years if the 'Use years in output
-# instead of seconds' parameter is set; seconds otherwise.
-set End time                               = 1e17
-
+set End time                               = 1e8
 set Linear solver tolerance                = 1e-7
-
-# In order to make the problem in the first time step easier to solve, we need
-# a reasonable guess for the temperature and pressure. To obtain it, we use an
-# adiabatic pressure and temperature field. This parameter describes what the
-# `adiabatic' temperature would be at the surface of the domain (i.e. at depth
-# zero). Note that this value need not coincide with the boundary condition
-# posed at this point. Rather, the boundary condition may differ significantly
-# from the adiabatic value, and then typically induce a thermal boundary
-# layer.
-# For more information, see the section in the manual that discusses the
-# general mathematical model.
 set Adiabatic surface temperature          = 1613.0
-
-
-# The name of the directory into which all output files should be placed. This
-# may be an absolute or a relative path.
 set Output directory                       = output
-
-# A flag indicating whether the computation should be resumed from a
-# previously saved state (if true) or start from scratch (if false).
-set Resume computation                     = false
-
-# The start time of the simulation. Units: years if the 'Use years in output
-# instead of seconds' parameter is set; seconds otherwise.
-set Start time                             = 0
-
-# When computing results for mantle convection simulations, it is often
-# difficult to judge the order of magnitude of results when they are stated in
-# MKS units involving seconds. Rather, some kinds of results such as
-# velocities are often stated in terms of meters per year (or, sometimes,
-# centimeters per year). On the other hand, for non-dimensional computations,
-# one wants results in their natural unit system as used inside the code. If
-# this flag is set to 'true' conversion to years happens; if it is 'false', no
-# such conversion happens.
-set Use years in output instead of seconds = false
+set Use years in output instead of seconds = true
 
 
 subsection Boundary temperature model
-  # Select one of the following models:
-  # 
-  # `spherical constant': A model in
-  # which the temperature is chosen constant on the inner and outer boundaries
-  # of a spherical shell. Parameters are read from subsection 'Sherical
-  # constant'.
-  # 
-  # `box': A model in which the temperature is chosen constant on
-  # the left and right sides of a box.
   set Model name = spherical constant
 
-
   subsection Spherical constant
-    # Temperature at the inner boundary (core mantle boundary). Units: K.
     set Inner temperature = 4273
-
-    # Temperature at the outer boundary (lithosphere water/air). Units: K.
     set Outer temperature = 273
   end
 
 end
 
 
-subsection Discretization
-  # The polynomial degree to use for the velocity variables in the Stokes
-  # system. Units: None.
-  set Stokes velocity polynomial degree       = 2
-
-  # The polynomial degree to use for the temperature variable. Units: None.
-  set Temperature polynomial degree           = 2
-
-  # Whether to use a Stokes discretization that is locally conservative at the
-  # expense of a larger number of degrees of freedom (true), or to go with a
-  # cheaper discretization that does not locally conserve mass, although it is
-  # globally conservative (false).
-  set Use locally conservative discretization = false
-
-
-  subsection Stabilization parameters
-    # The exponent $\alpha$ in the entropy viscosity stabilization. Units:
-    # None.
-    set alpha = 2
-
-    # The $\beta$ factor in the artificial viscosity stabilization. An
-    # appropriate value for 2d is 0.052 and 0.078 for 3d. Units: None.
-    set beta  = 0.052
-
-    # The $c_R$ factor in the entropy viscosity stabilization. Units: None.
-    set cR    = 0.11
-  end
-
+subsection Heating model
+  set List of model names = adiabatic heating, shear heating
 end
 
-
 subsection Geometry model
-  # Select one of the following models:
-  # 
-  # `spherical shell': A geometry
-  # representing a spherical shell or a pice of it. Inner and outer radii are
-  # read from the parameter file in subsection 'Spherical shell'.
-  # 
-  # `box': A
-  # box geometry parallel to the coordinate directions. The extent of the box
-  # in each coordinate direction is set in the parameter file.
   set Model name = spherical shell
 
-
-
   subsection Spherical shell
-    # Inner radius of the spherical shell. Units: m.
     set Inner radius  = 3481000
-
-    # Opening angle in degrees of the section of the shell that we want to
-    # build. Units: degrees.
     set Opening angle = 90
-
-    # Outer radius of the spherical shell. Units: m.
     set Outer radius  = 6371000
   end
-
 end
 
 
 subsection Gravity model
-  # Select one of the following models:
-  # 
-  # `vertical': A gravity model in which
-  # the gravity direction is vertically downward and at constant
-  # magnitude.
-  # 
-  # `radial constant': A gravity model in which the gravity
-  # direction is radially inward and at constant magnitude. The magnitude is
-  # read from the parameter file in subsection 'Radial constant'.
-  # 
-  # `radial earth-like': A gravity model in which the gravity direction is radially
-  # inward and with a magnitude that matches that of the earth at the
-  # core-mantle boundary as well as at the surface and in between is
-  # physically correct under the assumption of a constant density.
   set Model name = radial constant
 
-
   subsection Radial constant
-    # Magnitude of the gravity vector in $m/s^2$. The direction is always
-    # radially outward from the center of the earth.
     set Magnitude = 9.81
   end
-
 end
 
 
 subsection Initial conditions
-  # Select one of the following models:
-  # 
-  # `spherical hexagonal perturbation':
-  # An initial temperature field in which the temperature is perturbed
-  # following a six-fold pattern in angular direction from an otherwise
-  # spherically symmetric state.
-  # 
-  # `spherical gaussian perturbation': An
-  # initial temperature field in which the temperature is perturbed by a
-  # single Gaussian added to an otherwise spherically symmetric state.
-  # Additional parameters are read from the parameter file in subsection
-  # 'Spherical gaussian perturbation'.
-  # 
-  # `perturbed box': An initial
-  # temperature field in which the temperature is perturbed slightly from an
-  # otherwise constant value equal to one. The perturbation is chosen in such
-  # a way that the initial temperature is constant to one along the entire
-  # boundary.
-  set Model name = function
-  
-  subsection Function
-  
-       set Function expression = 1613.0
-       set Variable names      = x,y,t
-  
+  set Model name = harmonic perturbation
+  subsection Harmonic perturbation
+    set Magnitude = 200.0
   end
-
-
-  subsection Spherical gaussian perturbation
-    # The amplitude of the perturbation.
-    set Amplitude             = 0.01
-
-    # The angle where the center of the perturbation is placed.
-    set Angle                 = 0e0
-
-    # The non-dimensional radial distance where the center of the perturbation
-    # is placed.
-    set Non-dimensional depth = 0.7
-
-    # The standard deviation of the Gaussian perturbation.
-    set Sigma                 = 0.2
-
-    # The sign of the perturbation.
-    set Sign                  = 1
-  end
-
 end
 
 
 subsection Material model
-  # Select one of the following models:
-  # 
-  # `table': A material model that reads
-  # tables of pressure and temperature dependent material coefficients from
-  # files.
-  # 
-  # `Steinberger': lookup from the paper of
-  # Steinberger/Calderwood
-  # 
-  # `simple': A simple material model that has
-  # constant values for all coefficients but the density. This model uses the
-  # formulation that assumes an incompressible medium despite the fact that
-  # the density follows the law $\rho(T)=\rho_0(1-\beta(T-T_{\text{ref}})$.
-  # The value for the components of this formula and additional parameters are
-  # read from the parameter file in subsection 'Simple model'.
   set Model name = Steinberger
-
   subsection Steinberger model
-    set Bilinear interpolation = true
-    set Latent heat            = false
-  end
+    set Data directory                                = $ASPECT_SOURCE_DIR/data/material-model/steinberger/
+    set Lateral viscosity file name                   = temp-viscosity-prefactor.txt
+    set Material file names                           = pyr-ringwood88.txt
+    set Radial viscosity file name                    = radial-visc.txt
 
+    set Maximum lateral viscosity variation           = 1e2
+    set Maximum viscosity                             = 1e23
+    set Minimum viscosity                             = 1e19
+
+    set Use lateral average temperature for viscosity = true
+    set Number lateral average bands                  = 10
+
+    set Reference viscosity                           = 1e21
+    set Bilinear interpolation                        = true
+    set Latent heat                                   = false
+  end
 end
 
 
 subsection Mesh refinement
-  # A list of times so that if the end time of a time step is beyond this
-  # time, an additional round of mesh refinement is triggered. This is mostly
-  # useful to make sure we can get through the initial transient phase of a
-  # simulation on a relatively coarse mesh, and then refine again when we are
-  # in a time range that we are interested in and where we would like to use a
-  # finer mesh. Units: each element of the list has units years if the 'Use
-  # years in output instead of seconds' parameter is set; seconds otherwise.
-  set Additional refinement times        = 
-
-
-  # The number of adaptive refinement steps performed after initial global
-  # refinement but while still within the first time step.
   set Initial adaptive refinement        = 0
-
-  # The number of global refinement steps performed on the initial coarse
-  # mesh, before the problem is first solved there.
   set Initial global refinement          = 5
-
-  # The fraction of cells with the largest error that should be flagged for
-  # refinement.
   set Refinement fraction                = 0.0
-
-  # The fraction of cells with the smallest error that should be flagged for
-  # coarsening.
   set Coarsening fraction                = 0.0
-
-  # The method used to determine which cells to refine and which to coarsen.
   set Strategy                           = velocity
-
-  # The number of time steps after which the mesh is to be adapted again based
-  # on computed error indicators.
   set Time steps between mesh refinement = 0
 end
 
 
 subsection Model settings
-  # A comma separated list of integers denoting those boundaries on which the
-  # temperature is fixed and described by the boundary temperature object
-  # selected in its own section of this input file. All boundary indicators
-  # used by the geometry but not explicitly listed here will end up with
-  # no-flux (insulating) boundary conditions.
   set Fixed temperature boundary indicators   = inner, outer
-
-  # A comma separated list of integers denoting those boundaries on which the
-  # velocity is tangential but prescribed, i.e., where external forces act to
-  # prescribe a particular velocity. This is often used to prescribe a
-  # velocity that equals that of overlying plates.
-  set Prescribed velocity boundary indicators = 
-
-  # H0
-
-  # A comma separated list of integers denoting those boundaries on which the
-  # velocity is tangential and unrestrained, i.e., where no external forces
-  # act to prescribe a particular tangential velocity (although there is a
-  # force that requires the flow to be tangential).
-  set Tangential velocity boundary indicators = inner, left, right
-
-  # A comma separated list of integers denoting those boundaries on which the
-  # velocity is zero.
-  set Zero velocity boundary indicators       = outer
+  set Tangential velocity boundary indicators = inner, left, right, outer
 end
 
 
 subsection Postprocess
-  # A comma separated list of postprocessor objects that should be run at the
-  # end of each time step. Some of these postprocessors will declare their own
-  # parameters which may, for example, include that they will actually do
-  # something only every so many time steps or years. Alternatively, the text
-  # 'all' indicates that all available postprocessors should be run after each
-  # time step.
-  # 
-  # The following postprocessors are available:
-  # 
-  # `visualization':
-  # A postprocessor that takes the solution and writes it into files that can
-  # be read by a graphical visualization program. Additional run time
-  # parameters are read from the parameter subsection
-  # 'Visualization'.
-  # 
-  # `velocity statistics': A postprocessor that computes
-  # some statistics about the velocity field.
-  # 
-  # `temperature statistics': A
-  # postprocessor that computes some statistics about the temperature
-  # field.
-  # 
-  # `velocity statistics for the table model': A postprocessor that
-  # computes some statistics about the velocity field.
-  # 
-  # `heat flux statistics
-  # for the table model': A postprocessor that computes some statistics about
-  # the heat flux across boundaries.
-  # 
-  # `heat flux statistics': A postprocessor
-  # that computes some statistics about the heat flux across boundaries.
   set List of postprocessors = visualization,velocity statistics,temperature statistics,heat flux statistics, depth average
 
 
   subsection Visualization
-
-    set Number of grouped files       = 0
-
-    # The file format to be used for graphical output.
     set Output format                 = vtu
-    
     set List of output variables      = viscosity, density, thermal expansivity, specific heat, seismic vp, seismic vs
-
-    # The time interval between each generation of graphical output files. A
-    # value of zero indicates that output should be generated in each time
-    # step. Units: years if the 'Use years in output instead of seconds'
-    # parameter is set; seconds otherwise.
-    set Time between graphical output = 3e13
+    set Time between graphical output = 1e6
   end
 
   subsection Depth average
-    set Time between graphical output = 3e13
+    set Time between graphical output = 1e6
   end
-
 end
 
 

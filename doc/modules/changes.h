@@ -6,6 +6,10 @@
  *
  * <ol>
  *
+ * <li> New: Blankenbach benchmarks were added.
+ * <br>
+ * (Timo Heister, 2017/02/16)
+ *
  * <li> New: The particle property interpolation interface can now be
  * queried for only a part (or only one) of the particle properties.
  * This makes interpolation more efficient, because the compositional

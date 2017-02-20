@@ -40,9 +40,6 @@ namespace aspect
       {
         const Postprocess::Tracers<dim> *tracer_postprocessor = this->template find_postprocessor<Postprocess::Tracers<dim> >();
 
-        const std::multimap<aspect::Particle::types::LevelInd, aspect::Particle::Particle<dim> > &ghost_particles =
-          tracer_postprocessor->get_particle_world().get_ghost_particles();
-
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator found_cell;
 
         if (cell == typename parallel::distributed::Triangulation<dim>::active_cell_iterator())
@@ -73,7 +70,7 @@ namespace aspect
                 ?
                 particles.equal_range(cell_index)
                 :
-                ghost_particles.equal_range(cell_index);
+                tracer_postprocessor->get_particle_world().get_ghost_particles().equal_range(cell_index);
 
         const unsigned int n_particles = std::distance(particle_range.first,particle_range.second);
         const unsigned int n_particle_properties = particles.begin()->second.get_properties().size();
@@ -116,7 +113,8 @@ namespace aspect
                     && (particles.count(std::make_pair(neighbors[i]->level(),neighbors[i]->index())) == 0))
                   continue;
                 else if ((!neighbors[i]->is_locally_owned())
-                         && (ghost_particles.count(std::make_pair(neighbors[i]->level(),neighbors[i]->index())) == 0))
+                         && (tracer_postprocessor->get_particle_world().get_ghost_particles().count(
+                               std::make_pair(neighbors[i]->level(),neighbors[i]->index())) == 0))
                   continue;
 
                 const std::vector<double> neighbor_properties = properties_at_points(particles,

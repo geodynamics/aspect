@@ -99,11 +99,6 @@ subsection Model settings
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
 
-subsection Formulation
-  set Formulation = custom
-  set Temperature density approximation = adiabatic
-end
-
 # The following two sections describe first the
 # direction (vertical) and magnitude of gravity and the
 # material model (i.e., density, viscosity, etc). We have
