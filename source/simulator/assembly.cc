@@ -612,6 +612,9 @@ namespace aspect
     aspect::Assemblers::AdvectionAssembler<dim> *adv_assembler
       = new aspect::Assemblers::AdvectionAssembler<dim>();
 
+    assemblers->advection_system_assembler_properties.resize(1+parameters.n_compositional_fields);
+    assemblers->advection_system_assembler_on_face_properties.resize(1+parameters.n_compositional_fields);
+
     aspect::Assemblers::MeltEquations<dim> *melt_equation_assembler = NULL;
     if (parameters.include_melt_transport)
       melt_equation_assembler = new aspect::Assemblers::MeltEquations<dim>();
@@ -822,7 +825,20 @@ namespace aspect
                                  std_cxx11::_4,
                                  std_cxx11::_5));
 
-        assemblers->advection_system_assembler_on_face_properties.need_face_material_model_data = true;
+        if (parameters.use_discontinuous_temperature_discretization)
+          {
+            assemblers->advection_system_assembler_on_face_properties[0].need_face_material_model_data = true;
+            assemblers->advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
+          }
+
+        if (parameters.use_discontinuous_composition_discretization)
+          {
+            for (unsigned int i = 1; i<=parameters.n_compositional_fields; ++i)
+              {
+                assemblers->advection_system_assembler_on_face_properties[i].need_face_material_model_data = true;
+                assemblers->advection_system_assembler_on_face_properties[i].need_face_finite_element_evaluation = true;
+              }
+          }
       }
 
     // allow other assemblers to add themselves or modify the existing ones by firing the signal
@@ -1110,10 +1126,13 @@ namespace aspect
 
           if (assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data)
             {
+              const bool need_viscosity = rebuild_stokes_matrix |
+                                          assemblers->stokes_system_assembler_on_boundary_face_properties.need_viscosity;
+
               compute_material_model_input_values (current_linearization_point,
                                                    scratch.face_finite_element_values,
                                                    cell,
-                                                   rebuild_stokes_matrix,
+                                                   need_viscosity,
                                                    scratch.face_material_model_inputs);
               create_additional_material_model_outputs(scratch.face_material_model_outputs);
 
@@ -1322,6 +1341,10 @@ namespace aspect
     const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
     const unsigned int solution_component = advection_field.component_index(introspection);
+    const unsigned int advection_field_index = (advection_field.is_temperature()) ?
+                                               0
+                                               :
+                                               advection_field.compositional_variable + 1;
 
     scratch.finite_element_values.reinit (cell);
 
@@ -1401,8 +1424,10 @@ namespace aspect
 
     // then also work on possible face terms. if necessary, initialize
     // the material model data on faces
-    const bool has_boundary_face_assemblers = !assemblers->local_assemble_advection_system_on_boundary_face.empty() && advection_field.is_discontinuous(introspection);
-    const bool has_interior_face_assemblers = !assemblers->local_assemble_advection_system_on_interior_face.empty() && advection_field.is_discontinuous(introspection);
+    const bool has_boundary_face_assemblers = !assemblers->local_assemble_advection_system_on_boundary_face.empty()
+                                              && assemblers->advection_system_assembler_on_face_properties[advection_field_index].need_face_finite_element_evaluation;
+    const bool has_interior_face_assemblers = !assemblers->local_assemble_advection_system_on_interior_face.empty()
+                                              && assemblers->advection_system_assembler_on_face_properties[advection_field_index].need_face_finite_element_evaluation;
 
     // skip the remainder if no work needs to be done on faces
     if (!has_boundary_face_assemblers && !has_interior_face_assemblers)
@@ -1438,7 +1463,7 @@ namespace aspect
               (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(free_surface->mesh_velocity,
                   scratch.face_mesh_velocity_values);
 
-            if (assemblers->advection_system_assembler_on_face_properties.need_face_material_model_data)
+            if (assemblers->advection_system_assembler_on_face_properties[advection_field_index].need_face_material_model_data)
               {
                 compute_material_model_input_values (current_linearization_point,
                                                      *scratch.face_finite_element_values,
