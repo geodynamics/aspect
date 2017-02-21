@@ -1,7 +1,22 @@
-.PHONY: all
+# Makefile to run all Blankenbach benchmarks
+#
+# This Makefile first generates caseXX_refY.prm files based on the existing
+# base_caseXX.prm files for the specified global refinement levels Y (see
+# "refinements" variable below).
+#
+# In a second step, all simulations for caseXX_refY.prm files are run and the
+# statistics (that include RMS and Nusselt numbers) are saved as
+# caseXX_refY.stat.
+#
+# Finally, using the helper script "get_statistics", the relevant columns are
+# extracted and printed to the screen.
+#
+# Note: you can use something like "make -j 4" to run more than one
+# computation at once or you can run a specific computation via "make
+# case1a_ref5.stat".
 
-nproc=1
 
+# specify all refinements to run here:
 refinements:=4 5 6 7
 
 # bases_without is "case1a case1b ..."
@@ -13,10 +28,17 @@ files:=$(subst base_,,$(bases))
 prmfiles:=$(foreach ref,$(refinements),$(subst .prm,_ref$(ref).prm,$(files)))
 statfiles:=$(addsuffix .stat, $(basename $(prmfiles)))
 
+# number of processors to run with
+nproc=1
+
+# main target to show the statistics
 all: $(statfiles)
 	./get_statistics *.stat
 
+# keep the prm files around (otherwise make will delete intermediate files)
+.PRECIOUS: $(foreach ref,$(refinements),%_ref$(ref).prm)
 
+# The rule to generate caseXX_refY.prm
 $(foreach ref,$(refinements),%_ref$(ref).prm): base_%.prm
 	@for ref in $(refinements) ; do \
 		f="$*_ref$$ref.prm";\
@@ -29,10 +51,12 @@ $(foreach ref,$(refinements),%_ref$(ref).prm): base_%.prm
 		echo "set Output directory=output-$*_ref$${ref}" >> $$f; \
 	done 
 
-
+# The rule to run ASPECT to generate caseXX_refY.stat
 %.stat: %.prm
 	@echo "** $*.prm -> output-$*/statistics -> $@"
-	mpirun -n $(nproc) ./aspect $*.prm >/dev/null
+	mpirun -n $(nproc) ./plugin/aspect $*.prm >/dev/null
 	@cp output-$*/statistics $@
 	#@rm -rf output-$*
 	@echo created $@.
+
+.PHONY: all

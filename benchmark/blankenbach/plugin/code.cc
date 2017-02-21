@@ -21,66 +21,15 @@ namespace aspect
     /**
      * A postprocessor that generates ascii data output of the temperature
      * field to be used as initial condition.
-     *
-     * @ingroup Postprocessing
      */
     template <int dim>
     class TemperatureAsciiOut : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        /**
-         * Constructor.
-         */
-        TemperatureAsciiOut ();
-
-        /**
-         * Evaluate the solution and compute the requested depth averages.
-         */
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
-
-        /**
-         * Declare the parameters this class takes through input files.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter file.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-
-      private:
-        /**
-         * Interval between the generation of output in seconds. This parameter is read
-         * from the input file and consequently is not part of the state that
-         * needs to be saved and restored.
-         */
-        double output_interval;
-
-        /**
-         * A time (in seconds) the last output has been produced.
-         */
-        double last_output_time;
-
-        /**
-         * Set the time output was supposed to be written. In the simplest
-         * case, this is the previous last output time plus the interval, but
-         * in general we'd like to ensure that it is the largest supposed
-         * output time, which is smaller than the current time, to avoid
-         * falling behind with last_output_time and having to catch up once
-         * the time step becomes larger. This is done after every output.
-         */
-        void set_last_output_time (const double current_time);
     };
-
-    template <int dim>
-    TemperatureAsciiOut<dim>::TemperatureAsciiOut()
-    {}
 
     template <int dim>
     std::pair<std::string,std::string>
@@ -184,19 +133,6 @@ namespace aspect
                              filename);
     }
 
-
-    template <int dim>
-    void
-    TemperatureAsciiOut<dim>::declare_parameters (ParameterHandler &/*prm*/)
-    {
-    }
-
-
-    template <int dim>
-    void
-    TemperatureAsciiOut<dim>::parse_parameters (ParameterHandler &/*prm*/)
-    {
-    }
   }
 }
 
@@ -209,7 +145,7 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(TemperatureAsciiOut,
                                   "temperature ascii out",
                                   "A postprocessor that generates ascii data "
-                                  "output of the temperature field to be "
-                                  "used as initial condition.")
+                                  "output of the temperature field that can "
+                                  "be read in in a subsequent computation.")
   }
 }
