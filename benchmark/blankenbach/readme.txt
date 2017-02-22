@@ -1,4 +1,18 @@
-Blankenback benchmark, see table 9 for reference values
+Blankenback benchmark
+
+This folder allows running Blankenbach case 1a, 2b, 2a, and 2b from the paper
+
+Blankenbach, B., et al. "A benchmark comparison for mantle convection codes."
+Geophysical Journal International 98.1 (1989): 23-38.
+
+The reference values (given in caseXX_reference.stat) are from that paper (see
+Table 9). When you run the benchmarks by typing in "make" after building the
+plugin in the plugin/ subfolder, you will be eventually presented with the
+output below. Pleas note that these computations take a long time to reach
+steady state, especially on finer meshes.
+
+See the comment in the "Makefile" in this folder for more options for running
+the computations.
 
 Output:
 # Nu           Vrms           name:
