@@ -1343,10 +1343,6 @@ namespace aspect
     const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
     const unsigned int solution_component = advection_field.component_index(introspection);
-    const unsigned int advection_field_index = (advection_field.is_temperature()) ?
-                                               0
-                                               :
-                                               advection_field.compositional_variable + 1;
 
     scratch.finite_element_values.reinit (cell);
 
@@ -1427,9 +1423,9 @@ namespace aspect
     // then also work on possible face terms. if necessary, initialize
     // the material model data on faces
     const bool has_boundary_face_assemblers = !assemblers->local_assemble_advection_system_on_boundary_face.empty()
-                                              && assemblers->advection_system_assembler_on_face_properties[advection_field_index].need_face_finite_element_evaluation;
+                                              && assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_finite_element_evaluation;
     const bool has_interior_face_assemblers = !assemblers->local_assemble_advection_system_on_interior_face.empty()
-                                              && assemblers->advection_system_assembler_on_face_properties[advection_field_index].need_face_finite_element_evaluation;
+                                              && assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_finite_element_evaluation;
 
     // skip the remainder if no work needs to be done on faces
     if (!has_boundary_face_assemblers && !has_interior_face_assemblers)
@@ -1465,7 +1461,7 @@ namespace aspect
               (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(free_surface->mesh_velocity,
                   scratch.face_mesh_velocity_values);
 
-            if (assemblers->advection_system_assembler_on_face_properties[advection_field_index].need_face_material_model_data)
+            if (assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_material_model_data)
               {
                 compute_material_model_input_values (current_linearization_point,
                                                      *scratch.face_finite_element_values,
@@ -1505,7 +1501,7 @@ namespace aspect
   template <int dim>
   void
   Simulator<dim>::
-  copy_local_to_global_advection_system (const AdvectionField &/*advection_field*/,
+  copy_local_to_global_advection_system (const AdvectionField &advection_field,
                                          const internal::Assembly::CopyData::AdvectionSystem<dim> &data)
   {
     // copy entries into the global matrix. note that these local contributions
@@ -1519,7 +1515,8 @@ namespace aspect
     /* In the following, we copy DG contributions element by element. This
      * is allowed since there are no constraints imposed on discontinuous fields.
      */
-    if (!assemblers->local_assemble_advection_system_on_interior_face.empty())
+    if (!assemblers->local_assemble_advection_system_on_interior_face.empty() &&
+        assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_finite_element_evaluation)
       {
         for (unsigned int f=0; f<GeometryInfo<dim>::max_children_per_face
              * GeometryInfo<dim>::faces_per_cell; ++f)
@@ -1585,9 +1582,11 @@ namespace aspect
                                                      +
                                                      (parameters.stokes_velocity_degree+1)/2;
 
-    const bool allocate_face_quadrature = !assemblers->local_assemble_advection_system_on_boundary_face.empty() ||
-                                          !assemblers->local_assemble_advection_system_on_interior_face.empty();
-    const bool allocate_neighbor_contributions = !assemblers->local_assemble_advection_system_on_interior_face.empty();
+    const bool allocate_face_quadrature = (!assemblers->local_assemble_advection_system_on_boundary_face.empty() ||
+                                           !assemblers->local_assemble_advection_system_on_interior_face.empty()) &&
+                                          assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_finite_element_evaluation;
+    const bool allocate_neighbor_contributions = !assemblers->local_assemble_advection_system_on_interior_face.empty() &&
+                                                 assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_finite_element_evaluation;;
 
     const UpdateFlags update_flags = update_values |
                                      update_gradients |

@@ -140,6 +140,16 @@ namespace aspect
 
   template <int dim>
   unsigned int
+  Simulator<dim>::AdvectionField::field_index() const
+  {
+    if (this->is_temperature())
+      return 0;
+    else
+      return compositional_variable + 1;
+  }
+
+  template <int dim>
+  unsigned int
   Simulator<dim>::AdvectionField::base_element(const Introspection<dim> &introspection) const
   {
     if (this->is_temperature())
