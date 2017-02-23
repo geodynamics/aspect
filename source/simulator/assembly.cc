@@ -435,6 +435,8 @@ namespace aspect
       AssemblerLists<dim>::Properties::Properties ()
         :
         need_face_material_model_data (false),
+        need_face_finite_element_evaluation(false),
+        need_viscosity(false),
         needed_update_flags ()
       {}
 
