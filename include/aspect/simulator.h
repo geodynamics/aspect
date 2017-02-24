@@ -264,6 +264,14 @@ namespace aspect
         unsigned int block_index(const Introspection<dim> &introspection) const;
 
         /**
+         * Returns an index that runs from 0 (temperature field) to n (nth
+         * compositional field), and uniquely identifies the current advection
+         * field among the list of all advection fields. Can be used to index
+         * vectors that contain entries for all advection fields.
+         */
+        unsigned int field_index() const;
+
+        /**
          * Look up the base element within the larger composite finite element
          * we used for everything, for this temperature or compositional field
          * See Introspection::base_elements for more information.

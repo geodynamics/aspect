@@ -610,12 +610,24 @@ namespace aspect
 
           /**
            * Whether or not at least one of the the assembler slots in
-           * a signal require the initialization and re-computation of
+           * a signal requires the initialization and re-computation of
            * a MaterialModelOutputs object for each face. This
            * property is only relevant to assemblers that operate on
            * boundary faces.
            */
           bool need_face_material_model_data;
+
+          /**
+           * Whether or not at least one of the assembler slots in a
+           * signal requires the evaluation of the FEFaceValues object.
+           */
+          bool need_face_finite_element_evaluation;
+
+          /**
+           * Whether or not at least one of the assembler slots in a
+           * signal requires the computation of the viscosity.
+           */
+          bool need_viscosity;
 
           /**
            * A list of FEValues UpdateFlags that are necessary for
@@ -634,9 +646,8 @@ namespace aspect
         Properties stokes_preconditioner_assembler_properties;
         Properties stokes_system_assembler_properties;
         Properties stokes_system_assembler_on_boundary_face_properties;
-        Properties advection_system_assembler_properties;
-        Properties advection_system_assembler_on_face_properties;
-
+        std::vector<Properties> advection_system_assembler_properties;
+        std::vector<Properties> advection_system_assembler_on_face_properties;
       };
     }
   }
