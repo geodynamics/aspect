@@ -1940,8 +1940,7 @@ described in this section. Users should be careful when using this option, as so
 may lead to unphysical model behaviour. 
 \end{itemize}
 
-An example model that shows a comparison between different approximations is shown in the 
-cookbook~\ref{sec:cookbooks-burnman}.
+An example cookbook that shows a comparison between different approximations is discussed in Section~\ref{sec:cookbooks-burnman}.
 
 \subsection{Free surface calculations}
 \label{sec:freesurface}
@@ -7029,7 +7028,7 @@ In this cookbook we will set up a compressible mantle convection model that uses
 the (truncated) anelastic liquid approximation (see Sections~\ref{sec:ala} and 
 \ref{sec:tala}), together with a reference profile read in from an ASCII data file.
 The data we use here is generated with the open source mineral physics toolkit BurnMan 
-(\url{www.burnman.org}) using the python example program \texttt{simple\_adiabat.py}. 
+(\url{http://www.burnman.org}) using the python example program \texttt{simple\_adiabat.py}. 
 This file is available as a part of BurnMan, and provides a tutorial for how to generate 
 ASCII data files that can be used together with \aspect{}. 
 The computation is based on the Birch-Murnaghan equation of state, and uses a harzburgitic 
@@ -7061,7 +7060,7 @@ Hence, we have to provide the directory and file name of the data to be used in 
 \texttt{Ascii data model}, and the same functionality and syntax will also be used for the 
 adiabatic conditions and gravity model.
 
-The viscosity in this model is computed as the product of a radial profile $\eta_r(z)$ and a 
+The viscosity in this model is computed as the product of a profile $\eta_r(z)$, where $z$ corresponds to the depth direction of the chosen geometry model, and a 
 term that describes the dependence on temperature:
 \begin{align*}
 \eta(z,T) = \eta_r(z) \eta_0 \exp\left(-A \frac{T - T_\text{adi}}{T_\text{adi}}\right),
@@ -7070,8 +7069,8 @@ where $A$ and $\eta_0$ are constants determined in the input file via the parame
 \texttt{Viscosity} and \texttt{Thermal viscosity exponent}, and $\eta_r(z)$ is a stepwise constant 
 function that determines the viscosity profile. This function can be specified by providing a list of 
 \texttt{Viscosity prefactors} and a list of depths that describe in which depth range each prefactor 
-should be applied, in other words, in which depth the viscosity changes. By default, it is set
-to viscosity jumps in 150\,km depth, between upper mantle and transition zone, 
+should be applied, in other words, at which depth the viscosity changes. By default, it is set
+to viscosity jumps at 150\,km depth, between upper mantle and transition zone, 
 and between transition zone and lower mantle). The prefactors used here lead to a low-viscosity 
 asthenosphere, and high viscosities in the lower mantle. To make sure that these viscosity jumps 
 do not lead to numerical problems in our computation (see Section~\ref{sec:sinker-with-averaging}), 
@@ -7095,7 +7094,7 @@ the density in the buoyancy term (on the right-hand side of the force balance eq
 which in the limit of the anelastic liquid approximation becomes Equation~\eqref{eq:stokes-ALA-1}). 
 In addition, the density derivative in the mass conservation equation 
 (see Section~\ref{sec:mass-conservation-approximation}) is taken from the adiabatic 
-conditions, where it is computed as depth derivative of the provided reference density profile
+conditions, where it is computed as the depth derivative of the provided reference density profile
 (see also Section~\ref{sec:combined_formulations}).
 
 \paragraph{Visualizing the model output.}
@@ -7114,7 +7113,7 @@ is used in our model.
   \hfill
   \includegraphics[width=0.48\textwidth]{cookbooks/burnman/viscosity}
   \caption{\it Compressible convection in a 2d spherical shell, using a reference profile exported 
-               form BurnMan, which is based on the Birch-Murnaghan equation of state. Shown is the
+               form BurnMan, which is based on the Birch-Murnaghan equation of state. The figure shows the
                state at the end of the model evolution over 260\,Ma.}
   \label{fig:burnman-convection}
 \end{figure}

@@ -904,7 +904,7 @@ namespace aspect
       AssertThrow(column_position != data_component_names.end(),
                   ExcMessage("There is no data column named " + column_name
                              + " in the current data file. Please check the name and the "
-                             "first uncommented line of your data file."));
+                             "first line not starting with '#' of your data file."));
 
       return std::distance(data_component_names.begin(),column_position);
     }

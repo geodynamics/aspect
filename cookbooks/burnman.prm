@@ -6,7 +6,7 @@
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 2.63e8
-
+set Linear solver tolerance                = 1e-6
 
 subsection Material model
   set Model name = ascii reference profile
@@ -14,11 +14,11 @@ subsection Material model
   subsection Ascii reference profile
     set Thermal viscosity exponent = 10.0
     set Viscosity prefactors = 1.0, 0.1, 1.0, 10.0
-  end
 
-  subsection Ascii data model
-    set Data file name = isentrope_properties.txt
-    set Data directory = $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
+    subsection Ascii data model
+      set Data directory = $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
+      set Data file name = example_isentrope.txt
+    end
   end
 
   set Material averaging = harmonic average
@@ -40,7 +40,7 @@ subsection Adiabatic conditions model
 
   subsection Ascii data model
     set Data directory = $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
-    set Data file name = isentrope_properties.txt
+    set Data file name = example_isentrope.txt
   end
 end
 
@@ -51,6 +51,10 @@ end
 # specified in the adiabatic conditions model.
 subsection Gravity model
   set Model name = ascii data
+  subsection Ascii data model
+    set Data directory = $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
+    set Data file name = example_isentrope.txt
+  end
 end
 
 # The model uses the anelastic liquid approximation.

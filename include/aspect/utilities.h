@@ -380,7 +380,8 @@ namespace aspect
      * any number of comments if they begin with '#', but one of these lines
      * needs to contain the number of grid points in each dimension as for
      * example '# POINTS: 3 3'. The comments can optionally be followed by a
-     * single uncommented line containing the names of the data columns.
+     * single line, which does not start with '#', containing the names of
+     * the data columns.
      * The order of the following data columns has to be
      * 'coordinates data' with @p dim coordinate columns and @p components
      * data columns. Note that the data in the input files need to be sorted

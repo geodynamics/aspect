@@ -1,3 +1,8 @@
+# This is an exemplary isentrope for a harzburgitic mantle composition, using the
+# Birch-Murnaghan equation of state, and computed by the BurnMan software. Other compositions, equations of
+# state, and software packages are supported as well, as long as the their results are in the format
+# below.
+#
 # POINTS: 501 
 # depth (m), pressure (Pa), temperature (K), density (kg/m^3), gravity (m/s^2), thermal expansivity (1/K), specific heat (J/K/kg), compressibility (1/Pa)
 depth                   pressure                temperature             density                 gravity                 thermal_expansivity     specific_heat           compressibility

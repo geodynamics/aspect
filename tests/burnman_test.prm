@@ -15,7 +15,7 @@ subsection Material model
     set Thermal viscosity exponent = 0
     set Viscosity prefactors = 1.0, 1.0, 1.0, 1.0
     subsection Ascii data model
-      set Data file name = isentrope_properties.txt
+      set Data file name = example_isentrope.txt
       set Data directory = $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
     end
   end
@@ -39,7 +39,7 @@ subsection Adiabatic conditions model
 
   subsection Ascii data model
     set Data directory = $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
-    set Data file name = isentrope_properties.txt
+    set Data file name = example_isentrope.txt
   end
 end
 
@@ -52,7 +52,7 @@ subsection Gravity model
   set Model name = ascii data
   subsection Ascii data model
     set Data directory = $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
-    set Data file name = isentrope_properties.txt
+    set Data file name = example_isentrope.txt
   end
 end
 
