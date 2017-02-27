@@ -28,6 +28,7 @@
 #include <deal.II/base/table_indices.h>
 #include <deal.II/base/function_lib.h>
 #include <deal.II/base/exceptions.h>
+#include <deal.II/base/signaling_nan.h>
 
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
@@ -1083,8 +1084,7 @@ namespace aspect
           coordinate_values[i].push_back(temp_coord);
 
           // The grid spacing
-          double first_grid_spacing;
-          double grid_spacing;
+          double grid_spacing = numbers::signaling_nan<double>();
 
           // Loop over the rest of the coordinate points
           for (unsigned int n = 1; n < table_points[i]; n++)
@@ -1098,13 +1098,13 @@ namespace aspect
 
               // Test whether grid is equidistant
               if (n == 1)
-                first_grid_spacing = new_temp_coord - temp_coord;
+                grid_spacing = new_temp_coord - temp_coord;
               else
                 {
-                  grid_spacing = new_temp_coord - temp_coord;
+                  const double current_grid_spacing = new_temp_coord - temp_coord;
                   // Compare current grid spacing with first grid spacing,
                   // taking into account roundoff of the read-in coordinates
-                  if (std::abs(grid_spacing - first_grid_spacing) > 0.005*(grid_spacing+first_grid_spacing))
+                  if (std::abs(current_grid_spacing - grid_spacing) > 0.005*(current_grid_spacing+grid_spacing))
                     equidistant_grid = false;
                 }
 
