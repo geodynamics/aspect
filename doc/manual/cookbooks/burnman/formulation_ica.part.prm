@@ -1,0 +1,3 @@
+subsection Formulation
+  set Formulation = isothermal compression
+end

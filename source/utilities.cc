@@ -35,11 +35,13 @@
 
 #include <fstream>
 #include <string>
+#include <locale>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <errno.h>
 
 #include <boost/math/special_functions/spherical_harmonic.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace aspect
 {
@@ -878,6 +880,48 @@ namespace aspect
     {}
 
     template <int dim>
+    AsciiDataLookup<dim>::AsciiDataLookup(const double scale_factor)
+      :
+      components(numbers::invalid_unsigned_int),
+      data(),
+      scale_factor(scale_factor)
+    {}
+
+    template <int dim>
+    std::vector<std::string>
+    AsciiDataLookup<dim>::get_column_names() const
+    {
+      return data_component_names;
+    }
+
+    template <int dim>
+    unsigned int
+    AsciiDataLookup<dim>::get_column_index_from_name(const std::string &column_name) const
+    {
+      const std::vector<std::string>::const_iterator column_position =
+        std::find(data_component_names.begin(),data_component_names.end(),column_name);
+
+      AssertThrow(column_position != data_component_names.end(),
+                  ExcMessage("There is no data column named " + column_name
+                             + " in the current data file. Please check the name and the "
+                             "first line not starting with '#' of your data file."));
+
+      return std::distance(data_component_names.begin(),column_position);
+    }
+
+    template <int dim>
+    std::string
+    AsciiDataLookup<dim>::get_column_name_from_index(const unsigned int column_index) const
+    {
+      AssertThrow(data_component_names.size() > column_index,
+                  ExcMessage("There is no data column number " + Utilities::to_string(column_index)
+                             + " in the current data file. The data file only contains "
+                             + Utilities::to_string(data_component_names.size()) + " named columns."));
+
+      return data_component_names[column_index];
+    }
+
+    template <int dim>
     void
     AsciiDataLookup<dim>::load_file(const std::string &filename,
                                     const MPI_Comm &comm)
@@ -921,33 +965,90 @@ namespace aspect
                                  "(e.g. a missing space character)."));
         }
 
+      // Read column lines if present
+      unsigned int field_index = 0;
+      unsigned int name_column_index = 0;
+      double temp_data;
+
+      while (true)
+        {
+          AssertThrow (name_column_index < 100,
+                       ExcMessage("The program found more than 100 columns in the first line of the data file. "
+                                  "This is unlikely intentional. Check your data file and make sure the data can be "
+                                  "interpreted as floating point numbers. If you do want to read a data file with more "
+                                  "than 100 columns, please remove this assertion."));
+
+          std::string column_name_or_data;
+          in >> column_name_or_data;
+          try
+            {
+              // If the data field contains a name this will throw an exception
+              temp_data = boost::lexical_cast<double>(column_name_or_data);
+
+              // If there was no exception we have left the line containing names
+              // and have read the first data field. Save number of components, and
+              // make sure there is no contradiction if the components were already given to
+              // the constructor of this class.
+              if (components == numbers::invalid_unsigned_int)
+                components = name_column_index - dim;
+              else if (name_column_index != 0)
+                AssertThrow (components == name_column_index,
+                             ExcMessage("The number of expected data columns and the "
+                                        "list of column names at the beginning of the data file "
+                                        + filename + " does not match. The file should contain "
+                                        "one column name per column (one for each dimension "
+                                        "and one per data column."));
+
+              break;
+            }
+          catch (const boost::bad_lexical_cast &e)
+            {
+              // The first dim columns are coordinates and contain no data
+              if (name_column_index >= dim)
+                {
+                  // Transform name to lower case to prevent confusion with capital letters
+                  // Note: only ASCII characters allowed
+                  std::transform(column_name_or_data.begin(), column_name_or_data.end(), column_name_or_data.begin(), ::tolower);
+
+                  AssertThrow(std::find(data_component_names.begin(),data_component_names.end(),column_name_or_data)
+                              == data_component_names.end(),
+                              ExcMessage("There are multiple fields named " + column_name_or_data +
+                                         " in the data file " + filename + ". Please remove duplication to "
+                                         "allow for unique association between column and name."));
+
+                  data_component_names.push_back(column_name_or_data);
+                }
+              ++name_column_index;
+            }
+        }
+
       /**
-       * Table for the new data. This peculiar reinit is necessary, because
+       * Create table for the data. This peculiar reinit is necessary, because
        * there is no constructor for Table, which takes TableIndices as
        * argument.
        */
+      data.resize(components);
       Table<dim,double> data_table;
       data_table.TableBase<dim,double>::reinit(table_points);
       std::vector<Table<dim,double> > data_tables(components+dim,data_table);
 
-      // Read data lines
-      unsigned int i = 0;
-      double temp_data;
 
-      while (in >> temp_data)
+      // Read data lines
+      do
         {
-          const unsigned int column_num = i%(components+dim);
+          const unsigned int column_num = field_index%(components+dim);
 
           if (column_num >= dim)
             temp_data *= scale_factor;
 
-          data_tables[column_num](compute_table_indices(i)) = temp_data;
+          data_tables[column_num](compute_table_indices(field_index)) = temp_data;
 
-          i++;
-
+          ++field_index;
         }
+      while (in >> temp_data);
 
-      AssertThrow(i == (components + dim) * data_table.n_elements(),
+
+      AssertThrow(field_index == (components + dim) * data_table.n_elements(),
                   ExcMessage (std::string("Number of read in points does not match number of expected points. File corrupted?")));
 
       // In case the data is specified on a grid that is equidistant
@@ -1178,7 +1279,7 @@ namespace aspect
                             << create_filename (current_file_number,*boundary_id) << "." << std::endl << std::endl;
 
           const std::string filename (create_filename (current_file_number,*boundary_id));
-          if (fexists(filename))
+          if (Utilities::fexists(filename))
             lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
           else
             AssertThrow(false,
@@ -1201,7 +1302,7 @@ namespace aspect
               const std::string filename (create_filename (next_file_number,*boundary_id));
               this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                                 << filename << "." << std::endl << std::endl;
-              if (fexists(filename))
+              if (Utilities::fexists(filename))
                 {
                   lookups.find(*boundary_id)->second.swap(old_lookups.find(*boundary_id)->second);
                   lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
@@ -1353,7 +1454,7 @@ namespace aspect
           const std::string filename (create_filename (current_file_number,boundary_id));
           this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                             << filename << "." << std::endl << std::endl;
-          if (fexists(filename))
+          if (Utilities::fexists(filename))
             {
               lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
               lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
@@ -1374,7 +1475,7 @@ namespace aspect
       const std::string filename (create_filename (next_file_number,boundary_id));
       this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                         << filename << "." << std::endl << std::endl;
-      if (fexists(filename))
+      if (Utilities::fexists(filename))
         {
           lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
           lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
@@ -1528,7 +1629,7 @@ namespace aspect
       this->get_pcout() << std::endl << "   Loading Ascii data initial file "
                         << filename << "." << std::endl << std::endl;
 
-      if (fexists(filename))
+      if (Utilities::fexists(filename))
         lookup->load_file(filename,this->get_mpi_communicator());
       else
         AssertThrow(false,
@@ -1559,6 +1660,64 @@ namespace aspect
       return lookup->get_data(internal_position,component);
     }
 
+
+    template <int dim>
+    AsciiDataProfile<dim>::AsciiDataProfile ()
+    {}
+
+
+    template <int dim>
+    void
+    AsciiDataProfile<dim>::initialize (const MPI_Comm &communicator)
+    {
+      lookup.reset(new Utilities::AsciiDataLookup<1> (Utilities::AsciiDataBase<dim>::scale_factor));
+
+      const std::string filename = Utilities::AsciiDataBase<dim>::data_directory
+                                   + Utilities::AsciiDataBase<dim>::data_file_name;
+
+      if (Utilities::fexists(filename))
+        lookup->load_file(filename,communicator);
+      else
+        AssertThrow(false,
+                    ExcMessage (std::string("Ascii data file <")
+                                +
+                                filename
+                                +
+                                "> not found!"));
+    }
+
+
+    template <int dim>
+    std::vector<std::string>
+    AsciiDataProfile<dim>::get_column_names() const
+    {
+      return lookup->get_column_names();
+    }
+
+    template <int dim>
+    unsigned int
+    AsciiDataProfile<dim>::get_column_index_from_name(const std::string &column_name) const
+    {
+      return lookup->get_column_index_from_name(column_name);
+    }
+
+    template <int dim>
+    std::string
+    AsciiDataProfile<dim>::get_column_name_from_index(const unsigned int column_index) const
+    {
+      return lookup->get_column_name_from_index(column_index);
+    }
+
+
+    template <int dim>
+    double
+    AsciiDataProfile<dim>::
+    get_data_component (const Point<1>                      &position,
+                        const unsigned int                   component) const
+    {
+      return lookup->get_data(position,component);
+    }
+
     // Explicit instantiations
     template class AsciiDataLookup<1>;
     template class AsciiDataLookup<2>;
@@ -1569,6 +1728,9 @@ namespace aspect
     template class AsciiDataBoundary<3>;
     template class AsciiDataInitial<2>;
     template class AsciiDataInitial<3>;
+    template class AsciiDataProfile<1>;
+    template class AsciiDataProfile<2>;
+    template class AsciiDataProfile<3>;
 
     template Point<2> Coordinates::spherical_to_cartesian_coordinates<2>(const std_cxx11::array<double,2> &scoord);
     template Point<3> Coordinates::spherical_to_cartesian_coordinates<3>(const std_cxx11::array<double,3> &scoord);

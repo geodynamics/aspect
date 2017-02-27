@@ -1,0 +1,8 @@
+subsection Adiabatic conditions model
+  set Model name = ascii data
+
+  subsection Ascii data model
+    set Data directory = $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
+    set Data file name = isentrope_properties.txt
+  end
+end
