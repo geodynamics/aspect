@@ -57,6 +57,9 @@ namespace aspect
     {}
 
     template <int dim>
+    const InitialTopographyModel::Interface<dim> *EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::topography = 0;
+
+    template <int dim>
     void
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::set_manifold_parameters(const double para_semi_major_axis_a,
                                                                              const double para_eccentricity,
@@ -110,6 +113,40 @@ namespace aspect
       return phi_theta_d;
     }
 
+    template <int dim>
+    Point<3>
+    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward_topography(const Point<3> &phi_theta_d_hat) const
+    {
+      const double d_hat = phi_theta_d_hat[2]; // long, lat, depth
+      Point<dim-1> phi_theta;
+      const double rad_to_degree = 180/numbers::PI;
+      if (dim == 3)
+        phi_theta = Point<dim-1>(phi_theta_d_hat[0] * rad_to_degree,phi_theta_d_hat[1] * rad_to_degree);
+      const double h     = topography->value(phi_theta);
+      const double d = d_hat + (d_hat + bottom_depth)/bottom_depth*h;
+      const Point<3> phi_theta_d (phi_theta_d_hat[0],
+                                  phi_theta_d_hat[1],
+                                  d);
+      return phi_theta_d;
+    }
+
+    template <int dim>
+    Point<3>
+    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back_topography(const Point<3> &phi_theta_d) const
+    {
+      const double d = phi_theta_d[2];
+      const double rad_to_degree = 180/numbers::PI;
+      Point<dim-1> phi_theta;
+      if (dim == 3)
+        phi_theta = Point<dim-1>(phi_theta_d[0] * rad_to_degree,phi_theta_d[1] * rad_to_degree);
+      const double h = topography->value(phi_theta);
+      const double d_hat = bottom_depth * (d-h)/(bottom_depth+h);
+      const Point<3> phi_theta_d_hat (phi_theta_d[0],
+                                      phi_theta_d[1],
+                                      d_hat);
+      return phi_theta_d_hat;
+    }
+
     /**
      * TODO: These functions (pull back and push forward) should be changed that they always
      * take an return 3D points, because 2D points make no sense for an ellipsoid, even with
@@ -123,7 +160,7 @@ namespace aspect
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back(const Point<3> &space_point) const
     {
       AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points."));
-      return pull_back_ellipsoid (space_point, semi_major_axis_a, eccentricity);
+      return pull_back_topography(pull_back_ellipsoid (space_point, semi_major_axis_a, eccentricity));
 
     }
 
@@ -141,7 +178,14 @@ namespace aspect
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward(const Point<3> &chart_point) const
     {
       AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points."));
-      return push_forward_ellipsoid (chart_point, semi_major_axis_a, eccentricity);
+      return push_forward_ellipsoid (push_forward_topography(chart_point), semi_major_axis_a, eccentricity);
+    }
+
+    template <int dim>
+    void
+    EllipsoidalChunk<dim>::initialize()
+    {
+      EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::topography = &(this->get_initial_topography_model());
     }
 
     template <>

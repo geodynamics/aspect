@@ -23,6 +23,7 @@
 #define _aspect_geometry_model_ellipsoidal_chunk_h
 
 #include <aspect/geometry_model/interface.h>
+#include <aspect/geometry_model/initial_topography_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <deal.II/grid/manifold.h>
 
@@ -72,6 +73,8 @@ namespace aspect
             Point<3>
             push_forward(const Point<3> &chart_point) const;
 
+            const static InitialTopographyModel::Interface<dim> *topography;
+
           private:
             double semi_major_axis_a;
             double eccentricity;
@@ -81,7 +84,16 @@ namespace aspect
 
             Point<3> push_forward_ellipsoid (const Point<3> &phi_theta_d, const double semi_major_axis_a, const double eccentricity) const;
             Point<3> pull_back_ellipsoid (const Point<3> &x, const double semi_major_axis_a, const double eccentricity) const;
+            Point<3> push_forward_topography (const Point<3> &phi_theta_d_hat) const;
+            Point<3> pull_back_topography (const Point<3> &phi_theta_d) const;
         };
+
+        /**
+        * Initialize function
+        */
+        virtual
+        void
+        initialize ();
 
 
         /**
