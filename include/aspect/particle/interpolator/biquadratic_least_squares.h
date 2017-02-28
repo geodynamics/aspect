@@ -50,7 +50,11 @@ namespace aspect
           std::vector<std::vector<double> >
           properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
                                const std::vector<Point<dim> > &positions,
+                               const ComponentMask &selected_properties,
                                const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const;
+
+          // avoid -Woverloaded-virtual:
+          using Interface<dim>::properties_at_points;
       };
     }
   }
