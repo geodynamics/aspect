@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -59,7 +59,8 @@ namespace aspect
         using Utilities::AsciiDataInitial<dim>::initialize;
 
         /**
-         For the current class, this function returns value from the text files.
+         * For the current class, this function returns value from the text
+         * files.
          */
         virtual
         void

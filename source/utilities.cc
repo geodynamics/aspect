@@ -496,7 +496,7 @@ namespace aspect
     // tk does the cubic spline interpolation that can be used between different spherical layers in the mantle.
     // This interpolation is based on the script spline.h, which was downloaded from
     // http://kluge.in-chemnitz.de/opensource/spline/spline.h   //
-    // Copyright (C) 2011, 2014 Tino Kluge (ttk448 at gmail.com)
+    // copyright (C) 2011, 2014 Tino Kluge (ttk448 at gmail.com)
     namespace tk
     {
       /**

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -31,48 +31,49 @@ namespace aspect
     using namespace dealii;
 
     /**
-    * An enum to define what kind of averaging operations are implemented.
-    * These are:
-    *
-    * - No averaging, i.e., leave the values as they were provided by the
-    * material model.
-    *
-    * - Arithmetic averaging: Set the values of each output quantity at
-    * every quadrature point to \f[ \bar x = \frac 1Q \sum_{q=1}^Q x_q \f]
-    * where $x_q$ are the values at the $Q$ quadrature points.
-    *
-    * - Harmonic averaging: Set the values of each output quantity at every
-    * quadrature point to \f[ \bar x = \left(\frac 1Q \sum_{q=1}^Q
-    * \frac{1}{x_q}\right)^{-1} \f] where $x_q$ are the values at the $Q$
-    * quadrature points.
-    *
-    * - Geometric averaging: Set the values of each output quantity at
-    * every quadrature point to \f[ \bar x = \left(\prod_{q=1}^Q
-    * x_q\right)^{1/Q} \f] where $x_q$ are the values at the $Q$ quadrature
-    * points.
-    *
-    * - Pick largest: Set the values of each output quantity at every
-    * quadrature point to \f[ \bar x = \max_{1\le q\le Q} x_q \f] where
-    * $x_q$ are the values at the $Q$ quadrature points.
-    *
-    * - Log average: Set the values of each output quantity at every
-    * quadrature point to \f[ \bar x = {10}^{\frac 1Q \sum_{q=1}^Q \log_{10} x_q} \f]
-    * where $x_q$ are the values at the $Q$ quadrature points.
-    *
-    * - NWD Arithmetic averaging: Set the values of each output quantity at
-    * every quadrature point to \f[ \bar x = \frac {\sum_{q=1}^Q W_q * x_q} {\sum_{q=1}^Q W_q} \f]
-    * where $x_q$ are the values and $w$ the weights at the $Q$ quadrature points.
-    *
-    * - NWD Harmonic averaging: Set the values of each output quantity at every
-    * quadrature point to \f[ \bar x = \frac{\sum_{q=1}^Q w_q }{ \sum_{q=1}^Q \frac{w_q}{x_q}} \f]
-    *  where $x_q$ are the values and $w$ the weights
-    * at the $Q$ quadrature points.
-    *
-    * - NWD Geometric averaging: Set the values of each output quantity at
-    * every quadrature point to \f[ \bar x = \frac{ \sum_{q=1}^Q w_q x_q}
-    * {\sum_{q=1}^Q w_q} \f] where $x_q$ are the values and $w$ the weights
-    *  at the $Q$ quadrature points.
-    */
+     * An enum to define what kind of averaging operations are implemented.
+     * These are:
+     *
+     * - No averaging, i.e., leave the values as they were provided by the
+     * material model.
+     *
+     * - Arithmetic averaging: Set the values of each output quantity at
+     * every quadrature point to \f[ \bar x = \frac 1Q \sum_{q=1}^Q x_q \f]
+     * where $x_q$ are the values at the $Q$ quadrature points.
+     *
+     * - Harmonic averaging: Set the values of each output quantity at every
+     * quadrature point to \f[ \bar x = \left(\frac 1Q \sum_{q=1}^Q
+     * \frac{1}{x_q}\right)^{-1} \f] where $x_q$ are the values at the $Q$
+     * quadrature points.
+     *
+     * - Geometric averaging: Set the values of each output quantity at
+     * every quadrature point to \f[ \bar x = \left(\prod_{q=1}^Q
+     * x_q\right)^{1/Q} \f] where $x_q$ are the values at the $Q$ quadrature
+     * points.
+     *
+     * - Pick largest: Set the values of each output quantity at every
+     * quadrature point to \f[ \bar x = \max_{1\le q\le Q} x_q \f] where $x_q$
+     * are the values at the $Q$ quadrature points.
+     *
+     * - Log average: Set the values of each output quantity at every
+     * quadrature point to \f[ \bar x = {10}^{\frac 1Q \sum_{q=1}^Q \log_{10}
+     * x_q} \f] where $x_q$ are the values at the $Q$ quadrature points.
+     *
+     * - NWD Arithmetic averaging: Set the values of each output quantity at
+     * every quadrature point to \f[ \bar x = \frac {\sum_{q=1}^Q W_q * x_q}
+     * {\sum_{q=1}^Q W_q} \f] where $x_q$ are the values and $w$ the weights
+     * at the $Q$ quadrature points.
+     *
+     * - NWD Harmonic averaging: Set the values of each output quantity at every
+     * quadrature point to \f[ \bar x = \frac{\sum_{q=1}^Q w_q }{ \sum_{q=1}^Q
+     * \frac{w_q}{x_q}} \f] where $x_q$ are the values and $w$ the weights at
+     * the $Q$ quadrature points.
+     *
+     * - NWD Geometric averaging: Set the values of each output quantity at
+     * every quadrature point to \f[ \bar x = \frac{ \sum_{q=1}^Q w_q x_q}
+     * {\sum_{q=1}^Q w_q} \f] where $x_q$ are the values and $w$ the weights
+     * at the $Q$ quadrature points.
+     */
     enum AveragingOperation
     {
       none,
@@ -134,30 +135,31 @@ namespace aspect
       private:
 
         /**
-        * Parse a string representing one of the options returned by
-        * get_averaging_operation_names(), and return the corresponding
-        * AveragingOperation value.
-        */
+         * Parse a string representing one of the options returned by
+         * get_averaging_operation_names(), and return the corresponding
+         * AveragingOperation value.
+         */
         AveragingOperation
         parse_averaging_operation_name (const std::string &s);
 
         /**
-        * Given the averaging @p operation, a description of where the
-        * quadrature points are located on the given cell, and a mapping,
-        * perform this operation on all elements of the @p values structure.
-        */
+         * Given the averaging @p operation, a description of where the
+         * quadrature points are located on the given cell, and a mapping,
+         * perform this operation on all elements of the @p values structure.
+         */
         void
         average (const AveragingOperation averaging_operation,
                  const std::vector<Point<dim> >    &position,
                  std::vector<double>           &values_out) const;
         /**
-        * The bell shape limit variable stores the maximum extend of the bell shape for the Normalized
-        * Weighed Distance (NWD) averages.
-        */
+         * The bell shape limit variable stores the maximum extend of the bell
+         * shape for the Normalized Weighed Distance (NWD) averages.
+         */
         double bell_shape_limit;
         /**
-        * The averaging operation variable stores the chosen averaging operation.
-        */
+         * The averaging operation variable stores the chosen averaging
+         * operation.
+         */
         AveragingOperation averaging_operation;
         /**
          * Pointer to the material model used as the base model

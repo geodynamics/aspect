@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -76,10 +76,10 @@ namespace aspect
           virtual ~Interface ();
 
           /**
-          * Initialization function. This function is called once at the
-          * beginning of the program after parse_parameters is run and after the
-          * SimulatorAccess (if applicable) is initialized.
-          */
+           * Initialization function. This function is called once at the
+           * beginning of the program after parse_parameters is run and after
+           * the SimulatorAccess (if applicable) is initialized.
+           */
           virtual
           void
           initialize ();

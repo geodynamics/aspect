@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -136,11 +136,11 @@ namespace aspect
         double reference_T;
 
         /**
-        * Enumeration for selecting which averaging scheme to use.
-        * Select between harmonic, arithmetic, geometric, and
-        * maximum_composition.  The max composition scheme simply uses the
-        * parameter of whichever field has the highest volume fraction.
-        */
+         * Enumeration for selecting which averaging scheme to use. Select
+         * between harmonic, arithmetic, geometric, and maximum_composition.
+         * The max composition scheme simply uses the parameter of whichever
+         * field has the highest volume fraction.
+         */
         enum AveragingScheme
         {
           harmonic,

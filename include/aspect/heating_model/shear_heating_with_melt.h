@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -66,10 +66,6 @@ namespace aspect
         virtual
         void
         create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
-
-        /**
-         * @}
-         */
     };
   }
 }

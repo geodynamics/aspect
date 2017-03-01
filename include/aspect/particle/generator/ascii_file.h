@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -30,8 +30,8 @@ namespace aspect
     namespace Generator
     {
       /**
-       *  Generate a distribution of particles that is determined by the
-       *  coordinates given in an ascii data file.
+       * Generate a distribution of particles that is determined by the
+       * coordinates given in an ascii data file.
        *
        * @ingroup ParticleGenerators
        */

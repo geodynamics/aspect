@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -87,11 +87,12 @@ namespace aspect
          * Return whether the model is compressible or not.  Incompressibility
          * does not necessarily imply that the density is constant; rather, it
          * may still depend on temperature or pressure. In the current
-         * context, compressibility means whether we should solve the continuity
-         * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
-         * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
-        *
-        * This material model is incompressible.
+         * context, compressibility means whether we should solve the
+         * continuity equation as $\nabla \cdot (\rho \mathbf u)=0$
+         * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
+         * (incompressible Stokes).
+         *
+         * This material model is incompressible.
          */
         virtual bool is_compressible () const;
 
@@ -145,9 +146,9 @@ namespace aspect
          * Enumeration for selecting which viscosity averaging scheme to use.
          * Select between harmonic, arithmetic, geometric, and
          * maximum_composition. The max composition scheme simply uses the
-         * viscosity of whichever field has the highes volume fraction.
-        * For each quadrature point, averaging is conducted over the
-        * N compositional fields plus the background field.
+         * viscosity of whichever field has the highes volume fraction. For
+         * each quadrature point, averaging is conducted over the N
+         * compositional fields plus the background field.
          */
         enum averaging_scheme
         {
