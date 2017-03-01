@@ -2268,7 +2268,7 @@ discussed in great detail in \cite{GHPB17}.
 \section{Installation}
 \label{sec:installation}
 
-Currently, there are three distinct ways to install ASPECT -- compilation
+Currently, we offer three distinct ways to install ASPECT -- compilation
 from source, installing a virtual machine, and using a Docker container --
 each providing distinct advantages and disadvantages. In this section we
 describe all three options and start with a summary of their properties to
@@ -2289,8 +2289,8 @@ guide users to an informed decision about the best option for their purpose.
     Windows support          & No   & Yes     & Yes    \\
     Local parallelization & Yes & Yes & Yes            \\ 
     Massively parallel computations & Yes & No & No \\ 
-    Modification to ASPECT & possible & possible & possible \\
-    Configuration of dependencies & possible & No & No \\ \hline
+    Modifying ASPECT & possible & possible & possible \\
+    Configuring dependencies & possible & No & No \\ \hline
   \end{tabular}
   \caption{Features of the different installation options of \aspect{}.}
   \label{tab:install-options}
@@ -2299,28 +2299,44 @@ guide users to an informed decision about the best option for their purpose.
 The available options can be best presented in form of typical use cases:
 
 \begin{enumerate}
-\item Virtual Machine (\aspect{} beginner and tutorial participant): The virtual machine image provides a fully prepared user environment that contains installations of \aspect{}, all required libraries, and visualization software on top of a full Linux environment. This way tutorial participants can work in a unified  environment (minimizing installation time). Due to the overhead of virtualizing a full operating system this installation typically needs more space, and is approximately 30~\% slower than a native installation.
-\item Docker Container (advanced user with no need to configure / change the underlying libraries, possibly changing \aspect): Docker containers are lightweight packages that only encapsulate the minimal dependencies to run an application like \aspect{}. 
+\item Virtual Machine (\aspect{} beginner and tutorial participant): The virtual machine image provides a fully prepared user environment that contains installations of \aspect{}, all required libraries, and visualization software on top of a full Linux environment. This way beginning users and tutorial participants can work in a unified  environment, thus minimizing installation time and technical problems. Due to the overhead of virtualizing a full operating system this installation typically needs more space, and is approximately 30~\% slower than a native installation. Additionally working in a virtual machine 'feels' differently from working in your usual desktop environment.
 
-\item Compile \& Install (advanced user and developer with need to reconfigure underlying libraries): The most complicated option is to install the required 
+\item Docker Container (advanced user with no need to configure / change the underlying libraries, possibly changing parts of \aspect): Docker containers are lightweight packages that only encapsulate the minimal dependencies to run an application like \aspect{} on top of the host operating system. They allow easy installation and usage of \aspect{} in a unified environment, while relying on the user's operating system to provide visualization software and model input data. When compared to the virtual machine it is simple to exchange files between the host operating system and the docker container, and it provides the benefit to work in the desktop environment you are used to. They have very little overhead in terms of memory and speed compared to virtual machines, and allow for reproducible computations. The container is set up with a standard \aspect{} installation, but this can be modified by advanced users (source code development within the container is possible).
+
+\item Compile \& Install (advanced users and developers with the need to reconfigure underlying libraries or running massively parallel models): The most advanced option is to compile and install \aspect{} from source. This allows maximal control over the underlying libraries like Trilinos and deal.II, as well as easy modifications to \aspect{} by recompiling a modified source directory. Our installation instructions cover most Linux and MacOS operating systems, but incompatibilities on individual systems can always occur and make the installation more cumbersome. If you are planning to run massively parallel computations on a compute cluster this is likely your only option. Since clusters usually have a very individual setup, it is always a good advice to ask IT support staff for help when installing \aspect{}, to avoid hard to reproduce setup problems, and performance penalties.
 \end{enumerate}
 
 \subsection{Docker Container}
 
 \subsubsection{Installing Docker and pulling the \aspect{} container}
 
-\subsubsection{Running \aspect{} models}
-A typical workflow could look like: 
+Docker is a lightweight virtualization software that allows to ship applications with all their dependencies in a simple way. It is outside of the scope of this manual to explain all possible applications of Docker, and we refer to the https://www.docker.com/what-docker and https://www.docker.com/products/docker# for more detailed descriptions.
 
+\subsubsection{Running \aspect{} models}
+Although it is possible to use the \aspect{} docker container in a number of different ways, we recommend the following workflow:
+
+\begin{enumerate}
+\item Create your \aspect{} input file in a folder of your choice (possibly also containing any input model data that is required by your model)
+\item Run the docker container and mount the current directory as read-only into the docker container. When you have started the container start the aspect model inside the container.
 \begin{verbatim}
-docker run -it --rm -v "$(pwd):/source:ro" gassmoeller/aspect:latest /bin/bash
-docker cp CONTAINER:/home/bob/log/changes-BUILD.diff . # from outside
+docker run -it -v "$(pwd):/home/aspect_user/aspect/model_input:ro" \
+  gassmoeller/aspect:latest bash
+./aspect model_input/your_input_file.prm
 \end{verbatim}
 
-Remember to add the $-it$ flag, otherwise you have no way of interactively cancelling the job inside the container, except using $docker kill CONTAINER$. 
+\item After the model has finished (or during the model run if you want to check intermediate results) copy the output out of the container into your current directory. For this you need to find out the name or ID of the docker container by running $docker ps$ in a separate terminal first.
 
-\subsubsection{Modifying \aspect{} inside the container}
+\begin{verbatim}
+docker ps # Find out the name of the running container
+docker cp CONTAINER_NAME:/home/aspect_user/aspect/output .
+\end{verbatim}
 
+\item The output data is saved inside your container. After you have copied the data out of the container you should delete the container, to avoid duplication of output data (you will always be able to start a new container following step 2)
+
+\begin{verbatim}
+docker container prune
+\end{verbatim}
+\end{enumerate}
 
 \subsection{Virtual Machine}
 
