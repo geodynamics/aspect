@@ -2268,10 +2268,75 @@ discussed in great detail in \cite{GHPB17}.
 \section{Installation}
 \label{sec:installation}
 
+Currently, there are three distinct ways to install ASPECT -- compilation
+from source, installing a virtual machine, and using a Docker container --
+each providing distinct advantages and disadvantages. In this section we
+describe all three options and start with a summary of their properties to
+guide users to an informed decision about the best option for their purpose.
+
+\begin{table}[htb]
+  \center
+  \begin{tabular}{|c|ccc|}
+    \hline
+    Feature & Compile \& Install & Virtual Machine & Docker Container \\
+    \hline
+    Speed overhead          & 0\%   & 30\%        & 0--5\%    \\
+    Disk space (debug+release, incl. libs) & 3.2~GB & 4~GB & 3.5~GB       \\
+    Knowledge required      & Much  & Very Little & Little    \\
+    Root privileges required & No & No (installed VM software) & Partially  \\
+    Embedded in native environment     & Yes  & No & Partially    \\
+    MacOS support            & Yes  & Yes     & Yes    \\
+    Windows support          & No   & Yes     & Yes    \\
+    Local parallelization & Yes & Yes & Yes            \\ 
+    Massively parallel computations & Yes & No & No \\ 
+    Modification to ASPECT & possible & possible & possible \\
+    Configuration of dependencies & possible & No & No \\ \hline
+  \end{tabular}
+  \caption{Features of the different installation options of \aspect{}.}
+  \label{tab:install-options}
+\end{table}
+
+The available options can be best presented in form of typical use cases:
+
+\begin{enumerate}
+\item Virtual Machine (\aspect{} beginner and tutorial participant): The virtual machine image provides a fully prepared user environment that contains installations of \aspect{}, all required libraries, and visualization software on top of a full Linux environment. This way tutorial participants can work in a unified  environment (minimizing installation time). Due to the overhead of virtualizing a full operating system this installation typically needs more space, and is approximately 30~\% slower than a native installation.
+\item Docker Container (advanced user with no need to configure / change the underlying libraries, possibly changing \aspect): Docker containers are lightweight packages that only encapsulate the minimal dependencies to run an application like \aspect{}. 
+
+\item Compile \& Install (advanced user and developer with need to reconfigure underlying libraries): The most complicated option is to install the required 
+\end{enumerate}
+
+\subsection{Docker Container}
+
+\subsubsection{Installing Docker and pulling the \aspect{} container}
+
+\subsubsection{Running \aspect{} models}
+A typical workflow could look like: 
+
+\begin{verbatim}
+docker run -it --rm -v "$(pwd):/source:ro" gassmoeller/aspect:latest /bin/bash
+docker cp CONTAINER:/home/bob/log/changes-BUILD.diff . # from outside
+\end{verbatim}
+
+Remember to add the $-it$ flag, otherwise you have no way of interactively cancelling the job inside the container, except using $docker kill CONTAINER$. 
+
+\subsubsection{Modifying \aspect{} inside the container}
+
+
+\subsection{Virtual Machine}
+
+\subsubsection{Installing VM software and setting up the virtual machine}
+
+\subsubsection{Running \aspect{} models}
+
+\subsubsection{Modifying \aspect{} inside the virtual machine}
+
+
+\subsection{Local installation}
+
 This is a brief explanation of how to install all the required software and
 \aspect{} itself.
 
-\subsection{System prerequisites}
+\subsubsection{System prerequisites}
 
 In order to install \aspect{} and its dependencies, you should
 have your system set up to be able to compile and link programs. Additionally,
@@ -2306,7 +2371,7 @@ sudo apt-get install build-essential \
                      zlib1g-dev
 \end{verbatim}
 
-\subsection{Software prerequisites}
+\subsubsection{Software prerequisites}
 
 \aspect{} builds on a few other libraries that are widely used in the
 computational science area and that provide most of the lower-level
@@ -2393,7 +2458,7 @@ cmake -DDEAL_II_WITH_MPI=ON \
 \end{enumerate}
 
 
-\subsection{Obtaining \aspect{} and initial configuration}
+\subsubsection{Obtaining \aspect{} and initial configuration}
 
 The development version of \aspect{} can be downloaded by executing the command
 \begin{verbatim}
@@ -2416,7 +2481,7 @@ specify an install directory using -DCMAKE\_INSTALL\_PREFIX. The
 instructions in the following sections assume an in-source build, so you need
 to adapt the location of the \aspect{} binary.
 
-\subsection{Compiling \aspect{} and generating documentation}
+\subsubsection{Compiling \aspect{} and generating documentation}
 \label{sec:compiling}
 
 After downloading \aspect{} and having built the libraries it builds on, you
@@ -2438,7 +2503,7 @@ installed. Most Linux distributions have packages for \texttt{doxygen}. The
 result will be the file \url{doc/doxygen/index.html} that is the starting
 point for exploring the documentation.
 
-\subsection{Compiling a static \aspect{} executable}
+\subsubsection{Compiling a static \aspect{} executable}
 \aspect{} defaults to a dynamically linked executable, which saves disk space and build time. In some circumstances however, it is preferred to generate a statically linked executable that incorporates all used libraries. This need may arise on large clusters on which libraries and loaded modules/variables on login nodes may be different from the ones available on compute nodes. The general build procedure in such a case equals the above explained instructions with the following differences:
 \begin{enumerate}
 \item \textit{Trilinos}: Add the following lines to your cmake call:
@@ -2460,7 +2525,7 @@ point for exploring the documentation.
 
 The here mentioned build was tested on a Cray XC30 cluster, which was set up for default static compiling and linking. On machines that default to dynamic linking additional compiler and/or linker flags may be required (e.g. "-fPIC" / "--static"). In case of questions send an email to the mailing list.
 
-\subsection{Installing and running \aspect{} on Mac OS X}
+\subsubsection{Installing and running \aspect{} on Mac OS X}
 OS X has some eccentricities which can complicate installation of \aspect{}. Currently the easiest and most reliable way to run \aspect{} under Mac OS X Mavericks (10.9), Yosemite (10.10) and El Capitan (10.11) is to install and run the binary package for \dealii{}. The step-by-step process is described in detail, with screenshots, here: \url{https://wiki.geodynamics.org/_media/software:aspect:aspect_yosemite_20150529.pdf}
 
 \begin{enumerate}
