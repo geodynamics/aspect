@@ -71,7 +71,7 @@
        dealii@googlegroups.com
 
 
-Announcement for 1.5.0 (February 18, 2017)
+Announcement for 1.5.0 (February 28, 2017)
 -----------------------------------------
 We are pleased to announce the release of ASPECT 1.5.0. ASPECT is the Advanced
 Solver for Problems in Earth's ConvecTion. It uses modern numerical methods such
@@ -110,7 +110,7 @@ This release includes the following changes:
 - Many other fixes and small improvements.
 
 A complete list of changes can be found at
-  https://aspect.dealii.org/doc/doxygen/changes_between_1_84_and_1_85_80.html
+  https://aspect.dealii.org/doc/doxygen/changes_between_1_84_80_and_1_85_80.html
 and the release is also available from
   https://github.com/geodynamics/aspect/releases/tag/v1.5.0
 
