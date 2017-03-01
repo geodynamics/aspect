@@ -106,48 +106,49 @@ namespace aspect
       namespace iasp91_radii
       {
         /**
-        * Inner core radius [m], equivalent of 5150 km depth
-        */
+         * Inner core radius [m], equivalent of 5150 km depth
+         */
         extern const double inner_core;
         /**
-        * Inner core radius [m], equivalent of 2889 km depth
-        */
+         * Inner core radius [m], equivalent of 2889 km depth
+         */
         extern const double core;
         /**
-        * Lower mantle radius [m], equivalent of 660 km depth
-        */
+         * Lower mantle radius [m], equivalent of 660 km depth
+         */
         extern const double lower_mantle;
         /**
-        * Radius [m], equivalent of 5150 km depth
-        */
+         * Radius [m], equivalent of 5150 km depth
+         */
         extern const double planet;
       }
 
       /**
-       *  Gravity values taken from the PREM (Dziewonski and Anderson, 1981):
+       * Gravity values taken from the PREM (Dziewonski and Anderson, 1981):
        */
       namespace prem_gravity
       {
         /**
-        * Inner core boundary gravity [ms^-2]
-        */
+         * Inner core boundary gravity [ms^-2]
+         */
         extern const double icb;
         /**
-        * Core-mantle boundary gravity [ms^-2]
-        */
+         * Core-mantle boundary gravity [ms^-2]
+         */
         extern const double cmb;
         /**
-        * Upper-lower mantle boundary gravity [ms^-2]
-        */
+         * Upper-lower mantle boundary gravity [ms^-2]
+         */
         extern const double ulmb;
         /**
-        * Surface gravity [ms^-2]
-        */
+         * Surface gravity [ms^-2]
+         */
         extern const double surface;
       }
 
       /**
-       * "Standard gravity" (average gravitational acceleration at surface [ms^-2]
+       * "Standard gravity" (average gravitational acceleration at surface
+       * [ms^-2]
        */
       extern const double surface_gravity;
     }

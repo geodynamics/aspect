@@ -45,8 +45,8 @@ namespace aspect
     {
       public:
         /**
-        * Evaluate material properties.
-        */
+         * Evaluate material properties.
+         */
         virtual void evaluate(const MaterialModelInputs<dim> &in,
                               MaterialModelOutputs<dim> &out) const;
 

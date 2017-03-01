@@ -30,8 +30,8 @@ namespace aspect
     namespace Generator
     {
       /**
-       *  Generate a distribution of particles that is determined by the
-       *  coordinates given in an ascii data file.
+       * Generate a distribution of particles that is determined by the
+       * coordinates given in an ascii data file.
        *
        * @ingroup ParticleGenerators
        */

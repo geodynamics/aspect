@@ -59,7 +59,8 @@ namespace aspect
         using Utilities::AsciiDataInitial<dim>::initialize;
 
         /**
-         For the current class, this function returns value from the text files.
+         * For the current class, this function returns value from the text
+         * files.
          */
         virtual
         void
