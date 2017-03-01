@@ -36,9 +36,9 @@ namespace aspect
      * and computes properties based on this profile.
      *
      * The viscosity is computed as
-     * \begin{equation}
+     * \f[
      * \eta(z,T) = \eta_r(z) \eta_0 \exp\left(-A \frac{T - T_\text{adi}}{T_\text{adi}}\right)."
-     * \end{equation}
+     * \f]
      *
      * @ingroup MaterialModels
      */
