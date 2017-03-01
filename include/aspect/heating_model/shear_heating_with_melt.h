@@ -66,10 +66,6 @@ namespace aspect
         virtual
         void
         create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
-
-        /**
-         * @}
-         */
     };
   }
 }

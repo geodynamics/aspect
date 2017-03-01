@@ -64,9 +64,6 @@ namespace aspect
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
         virtual bool is_compressible () const;
-        /**
-         * @}
-         */
 
         /**
          * @name Reference quantities
@@ -79,6 +76,9 @@ namespace aspect
 
         virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                                      std::vector<double> &melt_fractions) const;
+        /**
+         * @}
+         */
 
         /**
          * @name Functions used in dealing with run-time parameters
