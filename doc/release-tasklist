@@ -42,14 +42,16 @@
       git add doc/manual/parameters.tex && \
       git commit -m "release task: update manual"
   . create a RC tar file:
-      export PREFIX=aspect-$VER-rc1 && rm -rf $PREFIX.tar.gz && \
+      export TAG=$VER-rc1
+      git tag -s v$TAG -m "version $TAG"
+      export PREFIX=aspect-$TAG && rm -rf $PREFIX.tar.gz && \
       git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz && \
       rm -rf $PREFIX && tar xf $PREFIX.tar.gz && \
       rm $PREFIX.tar.gz &&  cp doc/manual.pdf $PREFIX/doc && \
       tar czf $PREFIX.tar.gz $PREFIX && rm -rf $PREFIX
   . Tag the release:
-      git tag -s v$VER -m "tag version $VER"
-  . create a tar file:
+      git tag -s v$VER -m "version $VER"
+  . create the tar file:
       export PREFIX=aspect-$VER && rm -rf $PREFIX.tar.gz && \
       git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz && \
       rm -rf $PREFIX && tar xf $PREFIX.tar.gz && \
@@ -95,9 +97,10 @@ This release includes the following changes:
   nondimensionalized problems. This can be used for benchmark problems like
   Blankenbach, King, etc..
 - New: Optional DG method for temperature/composition.
-- Adiabatic conditions: rework, now includes a reference density profile
+- Adiabatic conditions: rework, now includes a reference density profile.
 - Free surface: overhaul.
-- New cookbooks: continental extension, finite strain.
+- New cookbooks: continental extension, finite strain, BurnMan interface,
+  active tracers.
 - New benchmarks: TanGurnis, Blankenbach, King.
 - New: viscoplastic material model.
 - Material model interface cleanup.
