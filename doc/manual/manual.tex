@@ -2323,7 +2323,7 @@ Although it is possible to use the downloaded \aspect{} docker image in a number
 \item Create your \aspect{} input file in a folder of your choice (possibly also containing any input model data that is required by your model)
 \item Run the docker image and mount the current directory as a read-only volume into the docker container. When you have started the container run the aspect model inside the container.
 \begin{verbatim}
-docker run -it -v "$(pwd):/home/aspect_user/aspect/model_input:ro" \
+docker run -it -v "$(pwd):/home/dealii/aspect/model_input:ro" \
   gassmoeller/aspect:latest bash
 ./aspect model_input/your_input_file.prm
 \end{verbatim}
@@ -2332,7 +2332,7 @@ docker run -it -v "$(pwd):/home/aspect_user/aspect/model_input:ro" \
 
 \begin{verbatim}
 docker ps # Find the name of the running container in the output
-docker cp CONTAINER_NAME:/home/aspect_user/aspect/output .
+docker cp CONTAINER_NAME:/home/dealii/aspect/output .
 \end{verbatim}
 
 \item The output data is saved inside your container even after the computation finishes and even when you stop the container. After you have copied out the data of the container you should therefore delete the container to avoid duplication of output data. Even after deleting you will always be able to start a new container from the downloaded image following step 2. Deleting the finished container can be achieved by the $prune$ command that removes any container that is not longer running (\textbf{Warning:} If you use other containers that you would like to keep only use \texttt{docker container rm CONTAINER\_NAME} to keep all other containers).
