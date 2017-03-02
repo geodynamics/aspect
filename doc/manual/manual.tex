@@ -2280,17 +2280,17 @@ guide users to an informed decision about the best option for their purpose.
     \hline
     Feature & Compile \& Install & Virtual Machine & Docker Container \\
     \hline
-    Speed overhead          & 0\%   & 30\%        & 0--5\%    \\
-    Disk space (debug+release, incl. libs) & 3.2~GB & 4~GB & 3.5~GB       \\
+    Speed overhead          & 0\%   & 30\%     & 0--5\%    \\
+    Disk overhead           & 0~GB  & 1~GB     & 200~MB       \\
     Knowledge required      & Much  & Very Little & Little    \\
-    Root privileges required & No & No (installed VM software) & Partially  \\
-    Embedded in native environment     & Yes  & No & Partially    \\
-    MacOS support            & Yes  & Yes     & Yes    \\
-    Windows support          & No   & Yes     & Yes    \\
-    Local parallelization & Yes & Yes & Yes            \\ 
+    Root privileges required & No   & No (installed VM software) & Partially  \\
+    Embedded in native environment & Yes & No  & Partially    \\
+    MacOS support           & Yes   & Yes      & Yes    \\
+    Windows support         & No    & Yes      & Yes    \\
+    Local parallelization   & Yes   & Yes      & Yes            \\ 
     Massively parallel computations & Yes & No & No \\ 
-    Modifying ASPECT & possible & possible & possible \\
-    Configuring dependencies & possible & No & No \\ \hline
+    Modifying ASPECT        & possible & possible & possible \\
+    Configuring dependencies & possible & No   & No \\ \hline
   \end{tabular}
   \caption{Features of the different installation options of \aspect{}.}
   \label{tab:install-options}
