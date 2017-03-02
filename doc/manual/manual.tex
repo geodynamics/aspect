@@ -2308,30 +2308,34 @@ The available options can be best presented in form of typical use cases:
 
 \subsection{Docker Container}
 
-\subsubsection{Installing Docker and pulling the \aspect{} container}
+\subsubsection{Installing Docker and downloading the \aspect{} image}
 
-Docker is a lightweight virtualization software that allows to ship applications with all their dependencies in a simple way. It is outside of the scope of this manual to explain all possible applications of Docker, and we refer to the https://www.docker.com/what-docker and https://www.docker.com/products/docker# for more detailed descriptions.
+Docker is a lightweight virtualization software that allows to ship applications with all their dependencies in a simple way. It is outside of the scope of this manual to explain all possible applications of Docker, and we refer to the introduction (\url{https://www.docker.com/what-docker}) and installation and quickstart guides (\url{https://www.docker.com/products/docker}) on the Docker website for more detailed descriptions of how to set up and use the docker engine. More importantly Docker provides a marketplace for exchanging prepared docker images (called Docker Hub). After setting up the docker engine downloading a precompiled \aspect{} image from Docker Hub is as simple as typing in a terminal:
+
+\begin{verbatim}
+docker pull gassmoeller/aspect
+\end{verbatim}
 
 \subsubsection{Running \aspect{} models}
-Although it is possible to use the \aspect{} docker container in a number of different ways, we recommend the following workflow:
+Although it is possible to use the downloaded \aspect{} docker image in a number of different ways, we recommend the following workflow:
 
 \begin{enumerate}
 \item Create your \aspect{} input file in a folder of your choice (possibly also containing any input model data that is required by your model)
-\item Run the docker container and mount the current directory as read-only into the docker container. When you have started the container start the aspect model inside the container.
+\item Run the docker image and mount the current directory as a read-only volume into the docker container. When you have started the container run the aspect model inside the container.
 \begin{verbatim}
 docker run -it -v "$(pwd):/home/aspect_user/aspect/model_input:ro" \
   gassmoeller/aspect:latest bash
 ./aspect model_input/your_input_file.prm
 \end{verbatim}
 
-\item After the model has finished (or during the model run if you want to check intermediate results) copy the output out of the container into your current directory. For this you need to find out the name or ID of the docker container by running $docker ps$ in a separate terminal first.
+\item After the model has finished (or during the model run if you want to check intermediate results) copy the output out of the container into your current directory. For this you need to find the name or ID of the docker container by running \texttt{docker ps} in a separate terminal first.
 
 \begin{verbatim}
-docker ps # Find out the name of the running container
+docker ps # Find the name of the running container in the output
 docker cp CONTAINER_NAME:/home/aspect_user/aspect/output .
 \end{verbatim}
 
-\item The output data is saved inside your container. After you have copied the data out of the container you should delete the container, to avoid duplication of output data (you will always be able to start a new container following step 2)
+\item The output data is saved inside your container even after the computation finishes and even when you stop the container. After you have copied out the data of the container you should therefore delete the container to avoid duplication of output data. Even after deleting you will always be able to start a new container from the downloaded image following step 2. Deleting the finished container can be achieved by the $prune$ command that removes any container that is not longer running (\textbf{Warning:} If you use other containers that you would like to keep only use \texttt{docker container rm CONTAINER\_NAME} to keep all other containers).
 
 \begin{verbatim}
 docker container prune
@@ -2343,8 +2347,6 @@ docker container prune
 \subsubsection{Installing VM software and setting up the virtual machine}
 
 \subsubsection{Running \aspect{} models}
-
-\subsubsection{Modifying \aspect{} inside the virtual machine}
 
 
 \subsection{Local installation}
