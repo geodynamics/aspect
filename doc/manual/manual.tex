@@ -2320,27 +2320,30 @@ docker pull gassmoeller/aspect
 Although it is possible to use the downloaded \aspect{} docker image in a number of different ways, we recommend the following workflow:
 
 \begin{enumerate}
-\item Create your \aspect{} input file in a folder of your choice (possibly also containing any input model data that is required by your model)
-\item Run the docker image and mount the current directory as a read-only volume into the docker container. When you have started the container run the aspect model inside the container.
+\item Create your \aspect{} input file in a folder of your choice (possibly also containing any input model data that is required by your model) and navigate in a terminal into that directory.
+\item Run the docker image and mount the current directory as a read-only volume into the docker container\footnote{Note that it is possible to mount a directory as writeable into the container. However it is often associated with file permission conflicts between the host system and the container. Therefore, we recommend this more cumbersome, but also more reliable workflow.}. 
+Make sure your parameter file specifies a model output directory \textbf{other} than the input directory, e.g. \texttt{/home/dealii/aspect/model\_output}. When you have started the container run the aspect model inside the container.
 \begin{verbatim}
 docker run -it -v "$(pwd):/home/dealii/aspect/model_input:ro" \
   gassmoeller/aspect:latest bash
 ./aspect model_input/your_input_file.prm
 \end{verbatim}
 
-\item After the model has finished (or during the model run if you want to check intermediate results) copy the output out of the container into your current directory. For this you need to find the name or ID of the docker container by running \texttt{docker ps} in a separate terminal first.
+\item After the model has finished (or during the model run if you want to check intermediate results) copy the model output out of the container into your current directory. For this you need to find the name or ID of the docker container by running \texttt{docker ps -a} in a separate terminal first.
 
 \begin{verbatim}
-docker ps # Find the name of the running container in the output
-docker cp CONTAINER_NAME:/home/dealii/aspect/output .
+docker ps -a # Find the name of the running container in the output
+docker cp CONTAINER_NAME:/home/dealii/aspect/model_output .
 \end{verbatim}
 
-\item The output data is saved inside your container even after the computation finishes and even when you stop the container. After you have copied out the data of the container you should therefore delete the container to avoid duplication of output data. Even after deleting you will always be able to start a new container from the downloaded image following step 2. Deleting the finished container can be achieved by the $prune$ command that removes any container that is not longer running (\textbf{Warning:} If you use other containers that you would like to keep only use \texttt{docker container rm CONTAINER\_NAME} to keep all other containers).
+\item The output data is saved inside your container even after the computation finishes and even when you stop the container. After you have copied out the data of the container you should therefore delete the container to avoid duplication of output data. Even after deleting you will always be able to start a new container from the downloaded image following step 2. Deleting the finished container can be achieved by the \texttt{docker container prune} command that removes any container that is not longer running (\textbf{Warning:} If you use other containers that you would like to keep only use \texttt{docker container rm CONTAINER\_NAME} to keep all other containers).
 
 \begin{verbatim}
 docker container prune
 \end{verbatim}
 \end{enumerate}
+
+You are all set. Repeat steps 1-4 of this process as necessary when updating your model parameters. 
 
 \subsection{Virtual Machine}
 
