@@ -10,7 +10,12 @@ RUN git clone https://github.com/geodynamics/aspect.git ./aspect && \
           -DDEAL_II_DIR=$HOME/deal.II-install \
           .. && \
     make -j4 >log 2>&1 && \
-    mv aspect $HOME/aspect/ && \
+    mv aspect $HOME/aspect/aspect-release && \
+    cmake -DCMAKE_BUILD_TYPE=Debug \
+          -DDEAL_II_DIR=$HOME/deal.II-install \
+          .. && \
+    make -j4 >log 2>&1 && \
+    mv aspect $HOME/aspect/aspect-debug && \
     cd .. && \
     rm -rf build
 
