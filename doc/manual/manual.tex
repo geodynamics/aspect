@@ -2320,30 +2320,64 @@ docker pull gassmoeller/aspect
 Although it is possible to use the downloaded \aspect{} docker image in a number of different ways, we recommend the following workflow:
 
 \begin{enumerate}
-\item Create your \aspect{} input file in a folder of your choice (possibly also containing any input model data that is required by your model) and navigate in a terminal into that directory.
-\item Run the docker image and mount the current directory as a read-only volume into the docker container\footnote{Note that it is possible to mount a directory as writeable into the container. However it is often associated with file permission conflicts between the host system and the container. Therefore, we recommend this more cumbersome, but also more reliable workflow.}. 
-Make sure your parameter file specifies a model output directory \textbf{other} than the input directory, e.g. \texttt{/home/dealii/aspect/model\_output}. When you have started the container run the aspect model inside the container.
+\item Create your \aspect{} input file in a folder of your choice (possibly also containing any input data that is required by your model) and navigate in a terminal into that directory.
+\item Run the docker image and mount the current directory as a read-only volume into the docker container\footnote{Note that it is possible to mount a directory as writeable into the container. However it is often associated with file permission conflicts between the host system and the container. Therefore, we recommend this slightly more cumbersome, but also more reliable workflow.}. 
+Make sure your parameter file specifies a model output directory \textbf{other} than the input directory, e.g. \texttt{/home/dealii/aspect/model\_output}. When you have started the container run the aspect model inside the container. Note that there are two \aspect{} executables in the work directory of the container: texttt{aspect-debug} and \texttt{aspect-release}. For a discussion of the different version see Section~\ref{sec:debug-mode}, in essence: You should run texttt{aspect-debug} first to check your model for errors, then run \texttt{aspect-release} for a faster model run.
+
 \begin{verbatim}
 docker run -it -v "$(pwd):/home/dealii/aspect/model_input:ro" \
   gassmoeller/aspect:latest bash
-./aspect model_input/your_input_file.prm
+./aspect-debug model_input/your_input_file.prm
 \end{verbatim}
 
-\item After the model has finished (or during the model run if you want to check intermediate results) copy the model output out of the container into your current directory. For this you need to find the name or ID of the docker container by running \texttt{docker ps -a} in a separate terminal first.
+\item After the model has finished (or during the model run if you want to check intermediate results) copy the model output out of the container into your current directory. For this you need to find the name or ID of the docker container by running \texttt{docker ps -a} in a separate terminal first. Look for the most recently started container to identify your current \aspect{} container.
 
 \begin{verbatim}
-docker ps -a # Find the name of the running container in the output
+docker ps -a # Find the name of the running / recently closed container in the output
 docker cp CONTAINER_NAME:/home/dealii/aspect/model_output .
 \end{verbatim}
 
-\item The output data is saved inside your container even after the computation finishes and even when you stop the container. After you have copied out the data of the container you should therefore delete the container to avoid duplication of output data. Even after deleting you will always be able to start a new container from the downloaded image following step 2. Deleting the finished container can be achieved by the \texttt{docker container prune} command that removes any container that is not longer running (\textbf{Warning:} If you use other containers that you would like to keep only use \texttt{docker container rm CONTAINER\_NAME} to keep all other containers).
+\item The output data is saved inside your container even after the computation finishes and even when you stop the container. After you have copied out the data of the container you should therefore delete the container to avoid duplication of output data. Even after deleting you will always be able to start a new container from the downloaded image following step 2. Deleting the finished container can be achieved by the \texttt{docker container prune} command that removes any container that is not longer running (\textbf{Warning:} If you own other finished containers that you would like to keep only use \texttt{docker container rm CONTAINER\_NAME} to keep all other containers).
 
 \begin{verbatim}
 docker container prune
 \end{verbatim}
+or
+\begin{verbatim}
+docker container rm CONTAINER_NAME
+\end{verbatim}
 \end{enumerate}
 
 You are all set. Repeat steps 1-4 of this process as necessary when updating your model parameters. 
+
+\subsubsection{Developing \aspect{} within a container}
+
+The above given workflow does not include advice on how to modify \aspect{} inside the container. We recommend a slightly different workflow for advanced users that want to modify parts of \aspect{}. The \aspect{} docker container itself is build on top of a deal.II container that contains all dependencies for compiling \aspect{}. Therefore it is possible to run the deal.II container, mount an \aspect{} source directory from your host system and compile it inside of the container. An example workflow could look as following (assuming you navigated in a terminal into the modified \aspect{} source folder):
+
+\begin{verbatim}
+docker pull dealii/dealii:v8.5.pre.4-gcc-mpi-fulldepsmanual-debugrelease
+docker run -it -v "$(pwd):/home/dealii/aspect:ro" \
+  dealii/dealii:v8.5.pre.4-gcc-mpi-fulldepsmanual-debugrelease bash
+\end{verbatim}
+
+Inside of the container you now find a read-only \aspect{} directory that contains your modified source code. You can compile and run a model inside the container, e.g. in the following way:
+
+\begin{verbatim}
+mkdir aspect-build
+cd aspect-build
+cmake -DCMAKE_BUILD_TYPE=Debug -DDEAL_II_DIR=$HOME/deal.II-install $HOME/aspect
+./aspect $HOME/aspect/cookbooks/shell_simple_2d.prm
+\end{verbatim}
+
+To avoid repeated recompilations of the \aspect{} source folder we recommend to reuse the so prepared container instead of starting new containers based on the deal.II image. This can be achieved by the following commands outside of the container:
+
+\begin{verbatim}
+docker ps -a # Find the name of the running / recently closed container in the output
+docker restart CONTAINER_NAME
+docker attach CONTAINER_NAME
+\end{verbatim}
+
+For more information on the differences between using images and containers, and how to attach additional terminals to a running container, we refer to the docker documentation (e.g. \url{https://docs.docker.com/engine/getstarted/step_two/}).
 
 \subsection{Virtual Machine}
 
