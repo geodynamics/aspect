@@ -751,49 +751,106 @@ namespace aspect
 
       void spline::set_points(const std::vector<double> &x,
                               const std::vector<double> &y,
-                              bool cubic_spline)
+                              bool cubic_spline,
+                              bool monotone_spline)
       {
         assert(x.size()==y.size());
         m_x=x;
         m_y=y;
-        int   n=x.size();
-        for (int i=0; i<n-1; i++)
+        unsigned int   n=x.size();
+        for (unsigned int i=0; i<n-1; i++)
           {
             assert(m_x[i]<m_x[i+1]);
           }
 
         if (cubic_spline==true)  // cubic spline interpolation
           {
-            // setting up the matrix and right hand side of the equation system
-            // for the parameters b[]
-            band_matrix A(n,1,1);
-            std::vector<double>  rhs(n);
-            for (int i=1; i<n-1; i++)
+            if (monotone_spline == true)
               {
-                A(i,i-1)=1.0/3.0*(x[i]-x[i-1]);
-                A(i,i)=2.0/3.0*(x[i+1]-x[i-1]);
-                A(i,i+1)=1.0/3.0*(x[i+1]-x[i]);
-                rhs[i]=(y[i+1]-y[i])/(x[i+1]-x[i]) - (y[i]-y[i-1])/(x[i]-x[i-1]);
+                /**
+                 * This monotone spline algorithm is based on the javascript version
+                 * at https://en.wikipedia.org/wiki/Monotone_cubic_interpolation. The
+                 * parameters from this algorithm prevents overshooting in the
+                 * interpolation spline.
+                 */
+                std::vector<double> dys, dxs, ms;
+                for (unsigned int i=0; i<n-1; i++)
+                  {
+                    const double dx=x[i+1]-x[i];
+                    const double dy=y[i+1]-y[i];
+                    dxs.push_back(dx);
+                    dys.push_back(dy);
+                    const double dydx = double(dy)/double(dx);
+                    ms.push_back(dydx);
+                  }
+
+                // get m_a parameter
+                m_c.resize(1);
+                m_c[0]=0;
+
+                for (unsigned int i = 0; i < dxs.size()-1; i++)
+                  {
+                    const double m0 = ms[i];
+                    const double m1 = ms[i+1];
+
+                    if (m0 * m1 <= 0)
+                      {
+                        m_c.push_back(0);
+                      }
+                    else
+                      {
+                        const double dx0 = dxs[i];
+                        const double dx1 = dxs[i+1];
+                        const double common = dx0 + dx1;
+                        m_c.push_back(3*common/((common + dx0)/m0 + (common + dx1)/m1));
+                      }
+                  }
+                m_c.push_back(ms[ms.size()-1]);
+                // Get b and c coefficients
+                for (unsigned int i = 0; i < m_c.size()-1; i++)
+                  {
+                    const double c1=m_c[i];
+                    const double m0 = ms[i];
+
+                    const double invDx = 1/dxs[i];
+                    const double common0 = c1 + m_c[i+1] - m0 - m0;
+                    m_b.push_back((m0 - c1 - common0) * invDx);
+                    m_a.push_back(common0 * invDx * invDx);
+                  }
               }
-            // boundary conditions, zero curvature b[0]=b[n-1]=0
-            A(0,0)=2.0;
-            A(0,1)=0.0;
-            rhs[0]=0.0;
-            A(n-1,n-1)=2.0;
-            A(n-1,n-2)=0.0;
-            rhs[n-1]=0.0;
-
-            // solve the equation system to obtain the parameters b[]
-            m_b=A.lu_solve(rhs);
-
-            // calculate parameters a[] and c[] based on b[]
-            m_a.resize(n);
-            m_c.resize(n);
-            for (int i=0; i<n-1; i++)
+            else
               {
-                m_a[i]=1.0/3.0*(m_b[i+1]-m_b[i])/(x[i+1]-x[i]);
-                m_c[i]=(y[i+1]-y[i])/(x[i+1]-x[i])
-                       - 1.0/3.0*(2.0*m_b[i]+m_b[i+1])*(x[i+1]-x[i]);
+                // setting up the matrix and right hand side of the equation system
+                // for the parameters b[]
+                band_matrix A(n,1,1);
+                std::vector<double>  rhs(n);
+                for (unsigned int i=1; i<n-1; i++)
+                  {
+                    A(i,i-1)=1.0/3.0*(x[i]-x[i-1]);
+                    A(i,i)=2.0/3.0*(x[i+1]-x[i-1]);
+                    A(i,i+1)=1.0/3.0*(x[i+1]-x[i]);
+                    rhs[i]=(y[i+1]-y[i])/(x[i+1]-x[i]) - (y[i]-y[i-1])/(x[i]-x[i-1]);
+                  }
+                // boundary conditions, zero curvature b[0]=b[n-1]=0
+                A(0,0)=2.0;
+                A(0,1)=0.0;
+                rhs[0]=0.0;
+                A(n-1,n-1)=2.0;
+                A(n-1,n-2)=0.0;
+                rhs[n-1]=0.0;
+
+                // solve the equation system to obtain the parameters b[]
+                m_b=A.lu_solve(rhs);
+
+                // calculate parameters a[] and c[] based on b[]
+                m_a.resize(n);
+                m_c.resize(n);
+                for (unsigned int i=0; i<n-1; i++)
+                  {
+                    m_a[i]=1.0/3.0*(m_b[i+1]-m_b[i])/(x[i+1]-x[i]);
+                    m_c[i]=(y[i+1]-y[i])/(x[i+1]-x[i])
+                           - 1.0/3.0*(2.0*m_b[i]+m_b[i+1])*(x[i+1]-x[i]);
+                  }
               }
           }
         else     // linear interpolation
@@ -801,7 +858,7 @@ namespace aspect
             m_a.resize(n);
             m_b.resize(n);
             m_c.resize(n);
-            for (int i=0; i<n-1; i++)
+            for (unsigned int i=0; i<n-1; i++)
               {
                 m_a[i]=0.0;
                 m_b[i]=0.0;
@@ -813,8 +870,11 @@ namespace aspect
         // f_{n-1}(x) = b*(x-x_{n-1})^2 + c*(x-x_{n-1}) + y_{n-1}
         double h=x[n-1]-x[n-2];
         // m_b[n-1] is determined by the boundary condition
-        m_a[n-1]=0.0;
-        m_c[n-1]=3.0*m_a[n-2]*h*h+2.0*m_b[n-2]*h+m_c[n-2];   // = f'_{n-2}(x_{n-1})
+        if (!monotone_spline)
+          {
+            m_a[n-1]=0.0;
+            m_c[n-1]=3.0*m_a[n-2]*h*h+2.0*m_b[n-2]*h+m_c[n-2];   // = f'_{n-2}(x_{n-1})
+          }
       }
 
       double spline::operator() (double x) const

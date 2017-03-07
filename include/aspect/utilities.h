@@ -280,7 +280,8 @@ namespace aspect
            */
           void set_points(const std::vector<double> &x,
                           const std::vector<double> &y,
-                          bool cubic_spline = true);
+                          bool cubic_spline = true,
+                          bool monotome_spline = false);
           /**
            * Evaluate spline at point @p x.
            */
