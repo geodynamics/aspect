@@ -56,8 +56,6 @@ namespace aspect
       bottom_depth (-1)
     {}
 
-    template <int dim>
-    const InitialTopographyModel::Interface<dim> *EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::topography = 0;
 
     template <int dim>
     void
@@ -78,6 +76,8 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward_ellipsoid(const Point<3> &phi_theta_d, const double semi_major_axis_a, const double eccentricity) const
     {
+      AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
+
       const double phi   = phi_theta_d[0]; // Longitude in radians
       const double theta = phi_theta_d[1]; // Latitude in radians
       const double d     = phi_theta_d[2]; // The negative depth (a depth of 10 meters is -10)
@@ -94,6 +94,8 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back_ellipsoid(const Point<3> &x, const double semi_major_axis_a, const double eccentricity) const
     {
+      AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
+
       const double R    = semi_major_axis_a;
       const double b      = std::sqrt(R * R * (1 - eccentricity * eccentricity));
       const double ep     = std::sqrt((R * R - b * b) / (b * b));
@@ -117,12 +119,14 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward_topography(const Point<3> &phi_theta_d_hat) const
     {
+      AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
+
       const double d_hat = phi_theta_d_hat[2]; // long, lat, depth
       Point<dim-1> phi_theta;
       const double rad_to_degree = 180/numbers::PI;
       if (dim == 3)
         phi_theta = Point<dim-1>(phi_theta_d_hat[0] * rad_to_degree,phi_theta_d_hat[1] * rad_to_degree);
-      const double h     = topography->value(phi_theta);
+      const double h = topography->value(phi_theta);
       const double d = d_hat + (d_hat + bottom_depth)/bottom_depth*h;
       const Point<3> phi_theta_d (phi_theta_d_hat[0],
                                   phi_theta_d_hat[1],
@@ -134,6 +138,8 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back_topography(const Point<3> &phi_theta_d) const
     {
+      AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
+
       const double d = phi_theta_d[2];
       const double rad_to_degree = 180/numbers::PI;
       Point<dim-1> phi_theta;
@@ -185,7 +191,14 @@ namespace aspect
     void
     EllipsoidalChunk<dim>::initialize()
     {
-      EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::topography = &(this->get_initial_topography_model());
+      manifold.initialize(&(this->get_initial_topography_model()));
+    }
+
+    template <int dim>
+    void
+    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::initialize(const InitialTopographyModel::Interface<dim> *topography_)
+    {
+      topography = topography_;
     }
 
     template <>
