@@ -500,11 +500,11 @@ namespace aspect
       double cp = 0.0;
       if (!latent_heat)
         {
-          if (material_file_names.size() == 1)
+          if (material_lookup.size() == 1)
             {
               cp = material_lookup[0]->specific_heat(temperature,pressure);
             }
-          else if (material_file_names.size() == compositional_fields.size() + 1)
+          else if (material_lookup.size() == compositional_fields.size() + 1)
             {
               const double background_cp = material_lookup[0]->specific_heat(temperature,pressure);
               cp = background_cp;
@@ -514,17 +514,17 @@ namespace aspect
             }
           else
             {
-              for (unsigned i = 0; i < material_file_names.size(); i++)
+              for (unsigned i = 0; i < material_lookup.size(); ++i)
                 cp += compositional_fields[i] * material_lookup[i]->specific_heat(temperature,pressure);
             }
         }
       else
         {
-          if (material_file_names.size() == 1)
+          if (material_lookup.size() == 1)
             {
               cp = material_lookup[0]->dHdT(temperature,pressure);
             }
-          else if (material_file_names.size() == compositional_fields.size() + 1)
+          else if (material_lookup.size() == compositional_fields.size() + 1)
             {
               const double background_cp = material_lookup[0]->dHdT(temperature,pressure);
               cp = background_cp;
@@ -534,7 +534,7 @@ namespace aspect
             }
           else
             {
-              for (unsigned i = 0; i < material_file_names.size(); i++)
+              for (unsigned i = 0; i < material_lookup.size(); ++i)
                 cp += compositional_fields[i] * material_lookup[i]->dHdT(temperature,pressure);
               cp = std::max(std::min(cp,6000.0),500.0);
             }
@@ -566,11 +566,11 @@ namespace aspect
              const Point<dim> &) const
     {
       double rho = 0.0;
-      if (material_file_names.size() == 1)
+      if (material_lookup.size() == 1)
         {
           rho = material_lookup[0]->density(temperature,pressure);
         }
-      else if (material_file_names.size() == compositional_fields.size() + 1)
+      else if (material_lookup.size() == compositional_fields.size() + 1)
         {
           const double background_density = material_lookup[0]->density(temperature,pressure);
           rho = background_density;
@@ -580,7 +580,7 @@ namespace aspect
         }
       else
         {
-          for (unsigned i = 0; i < material_file_names.size(); i++)
+          for (unsigned i = 0; i < material_lookup.size(); ++i)
             rho += compositional_fields[i] * material_lookup[i]->density(temperature,pressure);
         }
 
@@ -600,32 +600,32 @@ namespace aspect
       double alpha = 0.0;
       if (!latent_heat)
         {
-          if (material_file_names.size() == 1)
+          if (material_lookup.size() == 1)
             {
               alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
             }
-          else if (material_file_names.size() == compositional_fields.size() + 1)
+          else if (material_lookup.size() == compositional_fields.size() + 1)
             {
               const double background_alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
               alpha = background_alpha;
-              for (unsigned int composition_index = 0; composition_index<compositional_fields.size(); ++composition_index)
-                alpha += compositional_fields[composition_index] *
-                         (material_lookup[composition_index+1]->thermal_expansivity(temperature,pressure) - background_alpha);
+              for (unsigned int i = 0; i<compositional_fields.size(); ++i)
+                alpha += compositional_fields[i] *
+                         (material_lookup[i+1]->thermal_expansivity(temperature,pressure) - background_alpha);
             }
           else
             {
-              for (unsigned i = 0; i < material_file_names.size(); i++)
+              for (unsigned i = 0; i < material_lookup.size(); ++i)
                 alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature,pressure);
             }
         }
       else
         {
           double dHdp = 0.0;
-          if (material_file_names.size() == 1)
+          if (material_lookup.size() == 1)
             {
               dHdp = material_lookup[0]->dHdp(temperature,pressure);
             }
-          else if (material_file_names.size() == compositional_fields.size() + 1)
+          else if (material_lookup.size() == compositional_fields.size() + 1)
             {
               const double background_dHdp = material_lookup[0]->dHdp(temperature,pressure);
               dHdp = background_dHdp;
@@ -635,7 +635,7 @@ namespace aspect
             }
           else
             {
-              for (unsigned i = 0; i < material_file_names.size(); i++)
+              for (unsigned i = 0; i < material_lookup.size(); ++i)
                 dHdp += compositional_fields[i] * material_lookup[i]->dHdp(temperature,pressure);
             }
           alpha = (1 - density(temperature,pressure,compositional_fields,position) * dHdp) / temperature;
@@ -656,21 +656,21 @@ namespace aspect
     {
       double vp = 0.0;
 
-      if (material_file_names.size() == 1)
+      if (material_lookup.size() == 1)
         {
           vp = material_lookup[0]->seismic_Vp(temperature,pressure);
         }
-      else if (material_file_names.size() == compositional_fields.size() + 1)
+      else if (material_lookup.size() == compositional_fields.size() + 1)
         {
           const double background_vp = material_lookup[0]->seismic_Vp(temperature,pressure);
           vp = background_vp;
-          for (unsigned int composition_index = 0; composition_index<compositional_fields.size(); ++composition_index)
-            vp += compositional_fields[composition_index] *
-                  (material_lookup[composition_index+1]->seismic_Vp(temperature,pressure) - background_vp);
+          for (unsigned int i = 0; i < compositional_fields.size(); ++i)
+            vp += compositional_fields[i] *
+                  (material_lookup[i+1]->seismic_Vp(temperature,pressure) - background_vp);
         }
       else
         {
-          for (unsigned i = 0; i < material_file_names.size(); i++)
+          for (unsigned i = 0; i < material_lookup.size(); i++)
             vp += compositional_fields[i] * material_lookup[i]->seismic_Vp(temperature,pressure);
         }
       return vp;
@@ -688,21 +688,21 @@ namespace aspect
     {
       double vs = 0.0;
 
-      if (material_file_names.size() == 1)
+      if (material_lookup.size() == 1)
         {
           vs = material_lookup[0]->seismic_Vs(temperature,pressure);
         }
-      else if (material_file_names.size() == compositional_fields.size() + 1)
+      else if (material_lookup.size() == compositional_fields.size() + 1)
         {
           const double background_vs = material_lookup[0]->seismic_Vs(temperature,pressure);
           vs = background_vs;
-          for (unsigned int composition_index = 0; composition_index<compositional_fields.size(); ++composition_index)
-            vs += compositional_fields[composition_index] *
-                  (material_lookup[composition_index+1]->seismic_Vs(temperature,pressure) - background_vs);
+          for (unsigned int i = 0; i < compositional_fields.size(); ++i)
+            vs += compositional_fields[i] *
+                  (material_lookup[i+1]->seismic_Vs(temperature,pressure) - background_vs);
         }
       else
         {
-          for (unsigned i = 0; i < material_file_names.size(); i++)
+          for (unsigned i = 0; i < material_lookup.size(); i++)
             vs += compositional_fields[i] * material_lookup[i]->seismic_Vs(temperature,pressure);
         }
       return vs;
@@ -719,21 +719,21 @@ namespace aspect
                      const Point<dim> &position) const
     {
       double dRhodp = 0.0;
-      if (material_file_names.size() == 1)
+      if (material_lookup.size() == 1)
         {
           dRhodp = material_lookup[0]->dRhodp(temperature,pressure);
         }
-      if (material_file_names.size() == compositional_fields.size() + 1)
+      if (material_lookup.size() == compositional_fields.size() + 1)
         {
           const double background_dRhodp = material_lookup[0]->dRhodp(temperature,pressure);
           dRhodp = background_dRhodp;
-          for (unsigned int composition_index = 0; composition_index<compositional_fields.size(); ++composition_index)
-            dRhodp += compositional_fields[composition_index] *
-                      (material_lookup[composition_index+1]->dRhodp(temperature,pressure) - background_dRhodp);
+          for (unsigned int i = 0; i < compositional_fields.size(); ++i)
+            dRhodp += compositional_fields[i] *
+                      (material_lookup[i+1]->dRhodp(temperature,pressure) - background_dRhodp);
         }
       else
         {
-          for (unsigned i = 0; i < material_file_names.size(); i++)
+          for (unsigned i = 0; i < material_lookup.size(); i++)
             dRhodp += compositional_fields[i] * material_lookup[i]->dRhodp(temperature,pressure);
         }
 
@@ -803,7 +803,7 @@ namespace aspect
                              "exactly as many files as compositional fields, the fields are "
                              "assumed to represent the fractions of different materials "
                              "and the average property is computed as a sum of "
-                             "the value of the compositional field times the"
+                             "the value of the compositional field times the "
                              "material property of that field.");
           prm.declare_entry ("Radial viscosity file name", "radial-visc.txt",
                              Patterns::Anything (),
@@ -886,13 +886,14 @@ namespace aspect
         prm.leave_subsection();
 
         // Do some error checking
-        AssertThrow ((material_file_names.size() == this->n_compositional_fields()) ||
-            (material_file_names.size() == this->n_compositional_fields() + 1),
-                ExcMessage("This material model expects either as many material data files as compositional fields, "
-                    "or as many material data files as compositional fields plus one (in which case the first file "
-                    "is assumed to contain a background composition. This condition is not fulfilled. You "
-                    "prescribed " + Utilities::int_to_string(material_file_names.size()) + " material data files, but there are " +
-                    Utilities::int_to_string(this->n_compositional_fields()) + " compositional fields."));
+        AssertThrow ((material_file_names.size() == 1) ||
+                     (material_file_names.size() == this->n_compositional_fields()) ||
+                     (material_file_names.size() == this->n_compositional_fields() + 1),
+                     ExcMessage("This material model expects either one material data file, or as many files as compositional fields, "
+                                "or as many files as compositional fields plus one (in which case the first file "
+                                "is assumed to contain a background composition). This condition is not fulfilled. You "
+                                "prescribed " + Utilities::int_to_string(material_file_names.size()) + " material data files, but there are " +
+                                Utilities::int_to_string(this->n_compositional_fields()) + " compositional fields."));
 
         // Declare dependencies on solution variables
         this->model_dependence.viscosity = NonlinearDependence::temperature;
