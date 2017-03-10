@@ -4,19 +4,22 @@ LABEL maintainer <rene.gassmoeller@mailbox.org>
 
 # Build aspect
 RUN git clone https://github.com/geodynamics/aspect.git ./aspect && \ 
-    mkdir aspect/build && \
-    cd aspect/build && \
+    mkdir aspect/build-release && \
+    cd aspect/build-release && \
     cmake -DCMAKE_BUILD_TYPE=Release \
           -DDEAL_II_DIR=$HOME/deal.II-install \
           .. && \
     make -j4 >log 2>&1 && \
-    mv aspect $HOME/aspect/aspect-release && \
+    mv aspect ../aspect-release && \
+    make clean && \
+    cd .. && \
+    mkdir build-debug && \
+    cd build-debug && \
     cmake -DCMAKE_BUILD_TYPE=Debug \
           -DDEAL_II_DIR=$HOME/deal.II-install \
           .. && \
     make -j4 >log 2>&1 && \
     mv aspect $HOME/aspect/aspect-debug && \
-    cd .. && \
-    rm -rf build
+    make clean
 
 WORKDIR /home/dealii/aspect
