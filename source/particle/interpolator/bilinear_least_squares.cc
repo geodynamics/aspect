@@ -22,6 +22,9 @@
 
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>
+#include <deal.II/lac/full_matrix.templates.h>
+
+#include <fstream>
 
 namespace aspect
 {
@@ -41,6 +44,8 @@ namespace aspect
 
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator found_cell;
 
+        Point<dim> approximated_cell_midpoint;
+
         if (cell == typename parallel::distributed::Triangulation<dim>::active_cell_iterator())
           {
             // We can not simply use one of the points as input for find_active_cell_around_point
@@ -50,8 +55,8 @@ namespace aspect
                    ExcMessage("The particle property interpolator was not given any "
                               "positions to evaluate the particle cell_properties at."));
 
-            const Point<dim> approximated_cell_midpoint = std::accumulate (positions.begin(), positions.end(), Point<dim>())
-                                                          / static_cast<double> (positions.size());
+            approximated_cell_midpoint = std::accumulate (positions.begin(), positions.end(), Point<dim>())
+                                         / static_cast<double> (positions.size());
 
             found_cell =
               (GridTools::find_active_cell_around_point<> (this->get_mapping(),
@@ -80,7 +85,7 @@ namespace aspect
                     ExcMessage("At least one cell contained no particles. The 'bilinear'"
                                "interpolation scheme does not support this case. "));
 
-        const unsigned int matrix_dimension = 3;
+        const unsigned int matrix_dimension = 4;
         dealii::FullMatrix<double> A(n_particles, matrix_dimension);
         A = 0;
 
@@ -89,17 +94,25 @@ namespace aspect
              particle != particle_range.second; ++particle, ++index)
           {
             const Point<dim> position = particle->second.get_location();
-            A(index,0) = position[0];
-            A(index,1) = position[1];
-            A(index,2) = 1;
+            A(index,0) = 1;
+            A(index,1) = (position[0] - approximated_cell_midpoint[0])/found_cell->diameter();
+            A(index,2) = (position[1] - approximated_cell_midpoint[1])/found_cell->diameter();
+            A(index,3) = (position[0] - approximated_cell_midpoint[0]) * (position[1] - approximated_cell_midpoint[1])/std::pow(found_cell->diameter(),2);
           }
 
         dealii::FullMatrix<double> B(matrix_dimension, matrix_dimension);
         A.Tmmult(B, A, false);
         dealii::FullMatrix<double> B_inverse(B);
-        B_inverse.gauss_jordan();
 
-        dealii::FullMatrix<double> r(3,1);
+          std::ofstream debug;
+          debug.open("singular_matrix.out", std::ofstream::app);
+
+          debug << "===========Matrix A============" << std::endl;
+          B.print_formatted(debug, 16, true, 0, "0", 1, 0);
+
+
+
+        dealii::FullMatrix<double> r(matrix_dimension,1);
         r = 0;
 
         double max_value_for_particle_property = (particle_range.first)->second.get_properties()[property_index];
@@ -111,9 +124,10 @@ namespace aspect
             const double particle_property_value = particle->second.get_properties()[property_index];
             const Point<dim> position = particle->second.get_location();
 
-            r(0,0) += particle_property_value * position[0];
-            r(1,0) += particle_property_value * position[1];
-            r(2,0) += particle_property_value;
+            r(0,0) += particle_property_value;
+            r(1,0) += particle_property_value * (position[0] - approximated_cell_midpoint[0])/found_cell->diameter();
+            r(2,0) += particle_property_value * (position[1] - approximated_cell_midpoint[1])/found_cell->diameter();
+            r(3,0) += particle_property_value * (position[0] - approximated_cell_midpoint[0]) * (position[1] - approximated_cell_midpoint[1])/std::pow(found_cell->diameter(),2);
 
             if (max_value_for_particle_property < particle_property_value)
               max_value_for_particle_property = particle_property_value;
@@ -121,15 +135,33 @@ namespace aspect
               min_value_for_particle_property = particle_property_value;
           }
 
+
+          debug << "===========Matrix f============" << std::endl;
+          r.print_formatted(debug, 16, true, 0, "0", 1, 0);
+
+          debug.close();
+
         dealii::FullMatrix<double> c(matrix_dimension,1);
         c = 0;
+          try
+          {
+              B_inverse.gauss_jordan();
+          }
+          catch (...)
+          {
+              std::cout << "Level:" << found_cell->level() << "index:" << found_cell->index() << std::endl;
+          }
         B_inverse.mmult(c, r);
 
         unsigned int index_positions = 0;
         for (typename std::vector<Point<dim> >::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
           {
             Point<dim> support_point = *itr;
-            double interpolated_value = c(2,0) + c(0,0)*(support_point[0]) + c(1,0)*(support_point[1]);
+            double interpolated_value = c(0,0) +
+                                        c(1,0)*(support_point[0] - approximated_cell_midpoint[0])/found_cell->diameter() +
+                                        c(2,0)*(support_point[1] - approximated_cell_midpoint[1])/found_cell->diameter() +
+                                        c(3,0)*(support_point[0] - approximated_cell_midpoint[0])*(support_point[1] - approximated_cell_midpoint[1])/std::pow(found_cell->diameter(),2);
+
             if (interpolated_value > max_value_for_particle_property)
               interpolated_value = max_value_for_particle_property;
             else if (interpolated_value < min_value_for_particle_property)
