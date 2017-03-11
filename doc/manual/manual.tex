@@ -2383,13 +2383,35 @@ For more information on the differences between using images and containers, and
 
 \subsubsection{Installing VM software and setting up the virtual machine}
 
+We are providing an experimental virtual image for a fully configured version of \aspect{}. For this, you will need to install VirtualBox(\url{http://www.virtualbox.org/}) on your machine, and then import a virtual machine image that can be downloaded from \url{http://www.math.clemson.edu/~heister/dealvm/}. Note, however, that the machine image is several gigabytes in size and downloading will take a while. After downloading and installing the virtual image it is convenient to set up a shared folder between your host system and the virtual machine to exchange model files and outputs.
+
 \subsubsection{Running \aspect{} models}
 
+The internal setup of the virtual machine is similar to the Docker container discussed above, except that it contains a full-featured desktop environment. Also note that the user name is \texttt{ubuntu}, not \texttt{dealii} as in the Docker container. Again there are multiple ways to use the virtual machine, but we recommend the following workflow:
+
+\begin{enumerate}
+\item Create your \aspect{} input file in the shared folder and start the virtual machine.
+\item Navigate in a terminal to your model directory.
+\item Run your model using the provided \aspect{} executable:
+
+\begin{verbatim}
+~/aspect/aspect your_input_file.prm
+\end{verbatim}
+
+\item The model output should automatically appear on your host machine in the shared directory.
+
+\item After you have verified that your model setup is correct, you might want to consider recompiling \aspect{} in release mode to increase the speed of the computation. See Section~\ref{sec:debug-mode} for a discussion of debug and release mode.
+
+\item Visualize your model output either inside of the virtual machine (ParaView and VisIt are pre-installed), or outside on your host system.
+\end{enumerate}
+
+You are all set. Repeat steps 1-6 of this process as necessary when updating your model parameters. 
 
 \subsection{Local installation}
 
-This is a brief explanation of how to install all the required software and
-\aspect{} itself.
+This is a brief explanation of how to compile and install all the required software and
+\aspect{} itself. This installation procedure guarantees fastest runtimes, and largest flexibility,
+but might reveal incompatibilities with existing system libraries.
 
 \subsubsection{System prerequisites}
 
@@ -2458,16 +2480,6 @@ prerequisites:
     p4est installation instructions}. This is done using the
   {\tt{p4est-setup.sh}}; do not use the \pfrst{} stand-alone installation
   instructions.
-
-%\item  \textit{\dealii{}:}
-%  The current version of \aspect{} requires features of \dealii{} that have
-%  been developed after the 7.1 release. Since at the time of writing,
-%  \dealii{} 7.2 has not yet appears, we currently require the development
-%  version of \dealii{}, which can be obtained by running
-%\begin{verbatim}
-% svn checkout https://svn.dealii.org/trunk/deal.II
-%\end{verbatim}
-%  Once \dealii{} 7.2 is available, this will suffice as well.
 
 \item \textit{\dealii{}:}
   The current version of \aspect{} requires \dealii{} version 8.4.0 or later.
