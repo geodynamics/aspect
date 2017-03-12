@@ -415,8 +415,7 @@ namespace aspect
     void
     Steinberger<dim>::initialize()
     {
-      n_material_data = material_file_names.size();
-      for (unsigned i = 0; i < n_material_data; i++)
+      for (unsigned i = 0; i < material_file_names.size(); i++)
         material_lookup.push_back(std_cxx11::shared_ptr<internal::MaterialLookup>
                                   (new internal::MaterialLookup(data_directory+material_file_names[i],interpolation,this->get_mpi_communicator())));
       lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(data_directory+lateral_viscosity_file_name,this->get_mpi_communicator()));
@@ -501,21 +500,41 @@ namespace aspect
       double cp = 0.0;
       if (!latent_heat)
         {
-          if (n_material_data == 1)
-            cp = material_lookup[0]->specific_heat(temperature,pressure);
+          if (material_lookup.size() == 1)
+            {
+              cp = material_lookup[0]->specific_heat(temperature,pressure);
+            }
+          else if (material_lookup.size() == compositional_fields.size() + 1)
+            {
+              const double background_cp = material_lookup[0]->specific_heat(temperature,pressure);
+              cp = background_cp;
+              for (unsigned int i = 0; i < compositional_fields.size(); ++i)
+                cp += compositional_fields[i] *
+                      (material_lookup[i+1]->specific_heat(temperature,pressure) - background_cp);
+            }
           else
             {
-              for (unsigned i = 0; i < n_material_data; i++)
+              for (unsigned i = 0; i < material_lookup.size(); ++i)
                 cp += compositional_fields[i] * material_lookup[i]->specific_heat(temperature,pressure);
             }
         }
       else
         {
-          if (n_material_data == 1)
-            cp = material_lookup[0]->dHdT(temperature,pressure);
+          if (material_lookup.size() == 1)
+            {
+              cp = material_lookup[0]->dHdT(temperature,pressure);
+            }
+          else if (material_lookup.size() == compositional_fields.size() + 1)
+            {
+              const double background_cp = material_lookup[0]->dHdT(temperature,pressure);
+              cp = background_cp;
+              for (unsigned int i = 0; i < compositional_fields.size(); ++i)
+                cp += compositional_fields[i] *
+                      (material_lookup[i+1]->dHdT(temperature,pressure) - background_cp);
+            }
           else
             {
-              for (unsigned i = 0; i < n_material_data; i++)
+              for (unsigned i = 0; i < material_lookup.size(); ++i)
                 cp += compositional_fields[i] * material_lookup[i]->dHdT(temperature,pressure);
               cp = std::max(std::min(cp,6000.0),500.0);
             }
@@ -533,7 +552,7 @@ namespace aspect
                           const std::vector<double> &,
                           const Point<dim> &) const
     {
-      return 4.7;
+      return thermal_conductivity_value;
     }
 
 
@@ -547,13 +566,21 @@ namespace aspect
              const Point<dim> &) const
     {
       double rho = 0.0;
-      if (n_material_data == 1)
+      if (material_lookup.size() == 1)
         {
           rho = material_lookup[0]->density(temperature,pressure);
         }
+      else if (material_lookup.size() == compositional_fields.size() + 1)
+        {
+          const double background_density = material_lookup[0]->density(temperature,pressure);
+          rho = background_density;
+          for (unsigned int i = 0; i < compositional_fields.size(); ++i)
+            rho += compositional_fields[i] *
+                   (material_lookup[i+1]->density(temperature,pressure) - background_density);
+        }
       else
         {
-          for (unsigned i = 0; i < n_material_data; i++)
+          for (unsigned i = 0; i < material_lookup.size(); ++i)
             rho += compositional_fields[i] * material_lookup[i]->density(temperature,pressure);
         }
 
@@ -573,22 +600,42 @@ namespace aspect
       double alpha = 0.0;
       if (!latent_heat)
         {
-          if (n_material_data == 1)
-            alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
+          if (material_lookup.size() == 1)
+            {
+              alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
+            }
+          else if (material_lookup.size() == compositional_fields.size() + 1)
+            {
+              const double background_alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
+              alpha = background_alpha;
+              for (unsigned int i = 0; i<compositional_fields.size(); ++i)
+                alpha += compositional_fields[i] *
+                         (material_lookup[i+1]->thermal_expansivity(temperature,pressure) - background_alpha);
+            }
           else
             {
-              for (unsigned i = 0; i < n_material_data; i++)
+              for (unsigned i = 0; i < material_lookup.size(); ++i)
                 alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature,pressure);
             }
         }
       else
         {
           double dHdp = 0.0;
-          if (n_material_data == 1)
-            dHdp += material_lookup[0]->dHdp(temperature,pressure);
+          if (material_lookup.size() == 1)
+            {
+              dHdp = material_lookup[0]->dHdp(temperature,pressure);
+            }
+          else if (material_lookup.size() == compositional_fields.size() + 1)
+            {
+              const double background_dHdp = material_lookup[0]->dHdp(temperature,pressure);
+              dHdp = background_dHdp;
+              for (unsigned int i = 0; i < compositional_fields.size(); ++i)
+                dHdp += compositional_fields[i] *
+                        (material_lookup[i+1]->dHdp(temperature,pressure) - background_dHdp);
+            }
           else
             {
-              for (unsigned i = 0; i < n_material_data; i++)
+              for (unsigned i = 0; i < material_lookup.size(); ++i)
                 dHdp += compositional_fields[i] * material_lookup[i]->dHdp(temperature,pressure);
             }
           alpha = (1 - density(temperature,pressure,compositional_fields,position) * dHdp) / temperature;
@@ -608,11 +655,22 @@ namespace aspect
                 const Point<dim> &) const
     {
       double vp = 0.0;
-      if (n_material_data == 1)
-        vp += material_lookup[0]->seismic_Vp(temperature,pressure);
+
+      if (material_lookup.size() == 1)
+        {
+          vp = material_lookup[0]->seismic_Vp(temperature,pressure);
+        }
+      else if (material_lookup.size() == compositional_fields.size() + 1)
+        {
+          const double background_vp = material_lookup[0]->seismic_Vp(temperature,pressure);
+          vp = background_vp;
+          for (unsigned int i = 0; i < compositional_fields.size(); ++i)
+            vp += compositional_fields[i] *
+                  (material_lookup[i+1]->seismic_Vp(temperature,pressure) - background_vp);
+        }
       else
         {
-          for (unsigned i = 0; i < n_material_data; i++)
+          for (unsigned i = 0; i < material_lookup.size(); i++)
             vp += compositional_fields[i] * material_lookup[i]->seismic_Vp(temperature,pressure);
         }
       return vp;
@@ -629,11 +687,22 @@ namespace aspect
                 const Point<dim> &) const
     {
       double vs = 0.0;
-      if (n_material_data == 1)
-        vs += material_lookup[0]->seismic_Vs(temperature,pressure);
+
+      if (material_lookup.size() == 1)
+        {
+          vs = material_lookup[0]->seismic_Vs(temperature,pressure);
+        }
+      else if (material_lookup.size() == compositional_fields.size() + 1)
+        {
+          const double background_vs = material_lookup[0]->seismic_Vs(temperature,pressure);
+          vs = background_vs;
+          for (unsigned int i = 0; i < compositional_fields.size(); ++i)
+            vs += compositional_fields[i] *
+                  (material_lookup[i+1]->seismic_Vs(temperature,pressure) - background_vs);
+        }
       else
         {
-          for (unsigned i = 0; i < n_material_data; i++)
+          for (unsigned i = 0; i < material_lookup.size(); i++)
             vs += compositional_fields[i] * material_lookup[i]->seismic_Vs(temperature,pressure);
         }
       return vs;
@@ -650,13 +719,24 @@ namespace aspect
                      const Point<dim> &position) const
     {
       double dRhodp = 0.0;
-      if (n_material_data == 1)
-        dRhodp += material_lookup[0]->dRhodp(temperature,pressure);
+      if (material_lookup.size() == 1)
+        {
+          dRhodp = material_lookup[0]->dRhodp(temperature,pressure);
+        }
+      if (material_lookup.size() == compositional_fields.size() + 1)
+        {
+          const double background_dRhodp = material_lookup[0]->dRhodp(temperature,pressure);
+          dRhodp = background_dRhodp;
+          for (unsigned int i = 0; i < compositional_fields.size(); ++i)
+            dRhodp += compositional_fields[i] *
+                      (material_lookup[i+1]->dRhodp(temperature,pressure) - background_dRhodp);
+        }
       else
         {
-          for (unsigned i = 0; i < n_material_data; i++)
+          for (unsigned i = 0; i < material_lookup.size(); i++)
             dRhodp += compositional_fields[i] * material_lookup[i]->dRhodp(temperature,pressure);
         }
+
       const double rho = density(temperature,pressure,compositional_fields,position);
       return (1/rho)*dRhodp;
     }
@@ -674,11 +754,6 @@ namespace aspect
     Steinberger<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-
-      Assert ((n_material_data <= in.composition[0].size()) || (n_material_data == 1),
-              ExcMessage("There are more material files provided than compositional"
-                         " Fields. This can not be intended."));
-
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
           //We are only asked to give viscosities if strain_rate.size() > 0.
@@ -715,10 +790,21 @@ namespace aspect
                              "files located in the 'data/' subdirectory of ASPECT. ");
           prm.declare_entry ("Material file names", "pyr-ringwood88.txt",
                              Patterns::List (Patterns::Anything()),
-                             "The file names of the material data. "
-                             "List with as many components as active "
-                             "compositional fields (material data is assumed to "
-                             "be in order with the ordering of the fields). ");
+                             "The file names of the material data (material "
+                             "data is assumed to be in order with the ordering "
+                             "of the compositional fields). Note that there are "
+                             "three options on how many files need to be listed "
+                             "here: 1. If only one file is provided, it is used "
+                             "for the whole model domain, and compositional fields "
+                             "are ignored. 2. If there is one more file name than the "
+                             "number of compositional fields, then the first file is "
+                             "assumed to define a 'background composition' that is "
+                             "modified by the compositional fields. If there are "
+                             "exactly as many files as compositional fields, the fields are "
+                             "assumed to represent the fractions of different materials "
+                             "and the average property is computed as a sum of "
+                             "the value of the compositional field times the "
+                             "material property of that field.");
           prm.declare_entry ("Radial viscosity file name", "radial-visc.txt",
                              Patterns::Anything (),
                              "The file name of the radial viscosity data. ");
@@ -760,6 +846,10 @@ namespace aspect
                              "The relative cutoff value for lateral viscosity variations "
                              "caused by temperature deviations. The viscosity may vary "
                              "laterally by this factor squared.");
+          prm.declare_entry ("Thermal conductivity", "4.7",
+                             Patterns::Double (0),
+                             "The value of the thermal conductivity $k$. "
+                             "Units: $W/m/K$.");
           prm.leave_subsection();
         }
         prm.leave_subsection();
@@ -789,10 +879,21 @@ namespace aspect
           min_eta              = prm.get_double ("Minimum viscosity");
           max_eta              = prm.get_double ("Maximum viscosity");
           max_lateral_eta_variation    = prm.get_double ("Maximum lateral viscosity variation");
+          thermal_conductivity_value = prm.get_double ("Thermal conductivity");
 
           prm.leave_subsection();
         }
         prm.leave_subsection();
+
+        // Do some error checking
+        AssertThrow ((material_file_names.size() == 1) ||
+                     (material_file_names.size() == this->n_compositional_fields()) ||
+                     (material_file_names.size() == this->n_compositional_fields() + 1),
+                     ExcMessage("This material model expects either one material data file, or as many files as compositional fields, "
+                                "or as many files as compositional fields plus one (in which case the first file "
+                                "is assumed to contain a background composition). This condition is not fulfilled. You "
+                                "prescribed " + Utilities::int_to_string(material_file_names.size()) + " material data files, but there are " +
+                                Utilities::int_to_string(this->n_compositional_fields()) + " compositional fields."));
 
         // Declare dependencies on solution variables
         this->model_dependence.viscosity = NonlinearDependence::temperature;
