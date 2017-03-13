@@ -106,11 +106,11 @@ namespace aspect
         A.Tmmult(B, A, false);
         dealii::LAPACKFullMatrix<double> B_inverse(B);
 
-          std::ofstream debug;
-          debug.open("singular_matrix.out", std::ofstream::app);
+        std::ofstream debug;
+        debug.open("singular_matrix.out", std::ofstream::app);
 
-          debug << "===========Matrix A============" << std::endl;
-          B.print_formatted(debug, 16, true, 0, "0", 1, 0);
+        debug << "===========Matrix A============" << std::endl;
+        B.print_formatted(debug, 16, true, 0, "0", 1, 0);
 
 
 
@@ -131,10 +131,10 @@ namespace aspect
           }
 
 
-          debug << "===========Matrix f============" << std::endl;
-     //     r.print_formatted(debug, 16, true, 0, "0", 1, 0);
+        debug << "===========Matrix f============" << std::endl;
+        //     r.print_formatted(debug, 16, true, 0, "0", 1, 0);
 
-          debug.close();
+        debug.close();
 
         Vector<double> c_ATr(matrix_dimension);
         Vector<double> c(matrix_dimension);
@@ -142,7 +142,7 @@ namespace aspect
 
         B_inverse.compute_svd();
         const double threshold = 1e-15;
-        B_inverse.compute_inverse_svd(threshold); 
+        B_inverse.compute_inverse_svd(threshold);
         B_inverse.vmult(c, c_ATr);
         unsigned int index_positions = 0;
         for (typename std::vector<Point<dim> >::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
