@@ -23,6 +23,7 @@
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/full_matrix.templates.h>
+#include <deal.II/lac/lapack_full_matrix.h>
 
 #include <fstream>
 
@@ -86,23 +87,24 @@ namespace aspect
                                "interpolation scheme does not support this case. "));
 
         const unsigned int matrix_dimension = 4;
-        dealii::FullMatrix<double> A(n_particles, matrix_dimension);
+        dealii::LAPACKFullMatrix<double> A(n_particles, matrix_dimension);
         A = 0;
 
         unsigned int index = 0;
+        double cell_diameter = found_cell->diameter();
         for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator particle = particle_range.first;
              particle != particle_range.second; ++particle, ++index)
           {
             const Point<dim> position = particle->second.get_location();
             A(index,0) = 1;
-            A(index,1) = (position[0] - approximated_cell_midpoint[0])/found_cell->diameter();
-            A(index,2) = (position[1] - approximated_cell_midpoint[1])/found_cell->diameter();
-            A(index,3) = (position[0] - approximated_cell_midpoint[0]) * (position[1] - approximated_cell_midpoint[1])/std::pow(found_cell->diameter(),2);
+            A(index,1) = (position[0] - approximated_cell_midpoint[0])/cell_diameter;
+            A(index,2) = (position[1] - approximated_cell_midpoint[1])/cell_diameter;
+            A(index,3) = (position[0] - approximated_cell_midpoint[0]) * (position[1] - approximated_cell_midpoint[1])/std::pow(cell_diameter,2);
           }
 
-        dealii::FullMatrix<double> B(matrix_dimension, matrix_dimension);
+        dealii::LAPACKFullMatrix<double> B(matrix_dimension, matrix_dimension);
         A.Tmmult(B, A, false);
-        dealii::FullMatrix<double> B_inverse(B);
+        dealii::LAPACKFullMatrix<double> B_inverse(B);
 
           std::ofstream debug;
           debug.open("singular_matrix.out", std::ofstream::app);
@@ -112,23 +114,16 @@ namespace aspect
 
 
 
-        dealii::FullMatrix<double> r(matrix_dimension,1);
+        Vector<double> r(n_particles);
         r = 0;
-
+        index = 0;
         double max_value_for_particle_property = (particle_range.first)->second.get_properties()[property_index];
         double min_value_for_particle_property = (particle_range.first)->second.get_properties()[property_index];
-
         for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator particle = particle_range.first;
-             particle != particle_range.second; ++particle)
+             particle != particle_range.second; ++particle, ++index)
           {
             const double particle_property_value = particle->second.get_properties()[property_index];
-            const Point<dim> position = particle->second.get_location();
-
-            r(0,0) += particle_property_value;
-            r(1,0) += particle_property_value * (position[0] - approximated_cell_midpoint[0])/found_cell->diameter();
-            r(2,0) += particle_property_value * (position[1] - approximated_cell_midpoint[1])/found_cell->diameter();
-            r(3,0) += particle_property_value * (position[0] - approximated_cell_midpoint[0]) * (position[1] - approximated_cell_midpoint[1])/std::pow(found_cell->diameter(),2);
-
+            r[index] = particle_property_value;
             if (max_value_for_particle_property < particle_property_value)
               max_value_for_particle_property = particle_property_value;
             if (min_value_for_particle_property > particle_property_value)
@@ -137,30 +132,26 @@ namespace aspect
 
 
           debug << "===========Matrix f============" << std::endl;
-          r.print_formatted(debug, 16, true, 0, "0", 1, 0);
+     //     r.print_formatted(debug, 16, true, 0, "0", 1, 0);
 
           debug.close();
 
-        dealii::FullMatrix<double> c(matrix_dimension,1);
-        c = 0;
-          try
-          {
-              B_inverse.gauss_jordan();
-          }
-          catch (...)
-          {
-              std::cout << "Level:" << found_cell->level() << "index:" << found_cell->index() << std::endl;
-          }
-        B_inverse.mmult(c, r);
+        Vector<double> c_ATr(matrix_dimension);
+        Vector<double> c(matrix_dimension);
+        A.Tvmult(c_ATr,r);
 
+        B_inverse.compute_svd();
+        const double threshold = 1e-15;
+        B_inverse.compute_inverse_svd(threshold); 
+        B_inverse.vmult(c, c_ATr);
         unsigned int index_positions = 0;
         for (typename std::vector<Point<dim> >::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
           {
             Point<dim> support_point = *itr;
-            double interpolated_value = c(0,0) +
-                                        c(1,0)*(support_point[0] - approximated_cell_midpoint[0])/found_cell->diameter() +
-                                        c(2,0)*(support_point[1] - approximated_cell_midpoint[1])/found_cell->diameter() +
-                                        c(3,0)*(support_point[0] - approximated_cell_midpoint[0])*(support_point[1] - approximated_cell_midpoint[1])/std::pow(found_cell->diameter(),2);
+            double interpolated_value = c[0] +
+                                        c[1]*(support_point[0] - approximated_cell_midpoint[0])/cell_diameter +
+                                        c[2]*(support_point[1] - approximated_cell_midpoint[1])/cell_diameter +
+                                        c[3]*(support_point[0] - approximated_cell_midpoint[0])*(support_point[1] - approximated_cell_midpoint[1])/std::pow(cell_diameter,2);
 
             if (interpolated_value > max_value_for_particle_property)
               interpolated_value = max_value_for_particle_property;
