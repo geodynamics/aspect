@@ -71,8 +71,8 @@ namespace aspect
         const unsigned int n_particles = std::distance(particle_range.first,particle_range.second);
         const unsigned int n_particle_properties = particles.begin()->second.get_properties().size();
 
-        std::vector<std::vector<double> > cell_properties(positions.size(), std::vector<double>(n_particle_properties,
-                                                          numbers::signaling_nan<double>()));
+        std::vector<std::vector<double> > cell_properties(positions.size(),
+                                                          std::vector<double>(n_particle_properties, numbers::signaling_nan<double>()));
 
         unsigned int property_index = 0;
         for (unsigned int i=0; i < n_particle_properties; i++)
