@@ -127,6 +127,16 @@ namespace aspect
                 double dynamic_topography_x_volume = 0;
                 double volume = 0;
 
+                // check which way gravity points:
+                // gravity_direction_binary is 1 if gravity is pointing in (down) and -1 if it is pointing up (out)
+                // This is needed to calculate whether g * n is ||g|| or -||g|| and has been introduced for backward advection
+                const Tensor <1,dim> g = this->get_gravity_model().gravity_vector(this->get_geometry_model().representative_point(0));
+                const Point<dim> point_surf = this->get_geometry_model().representative_point(0);
+                const Point<dim> point_bot = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
+                const int gravity_direction_binary =  (g * (point_bot - point_surf) >= 0) ?
+                                                      1 :
+                                                      -1;
+
                 // Compute the integral of the dynamic topography function
                 // over the entire cell, by looping over all quadrature points
                 for (unsigned int q=0; q<quadrature_formula.size(); ++q)
@@ -144,7 +154,7 @@ namespace aspect
                     // Subtract the dynamic pressure
                     const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(location);
                     const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
-                    const double dynamic_topography = - sigma_rr / gravity.norm() / (density - density_above);
+                    const double dynamic_topography = - sigma_rr / (gravity_direction_binary*gravity.norm()) / (density - density_above);
 
                     // JxW provides the volume quadrature weights. This is a general formulation
                     // necessary for when a quadrature formula is used that has more than one point.
@@ -271,8 +281,11 @@ namespace aspect
                                                   "from the total pressure $p$ computed as part of the Stokes "
                                                   "solve. From this, the dynamic "
                                                   "topography is computed using the formula "
-                                                  "$h=\\frac{\\sigma_{rr}}{\\|\\mathbf g\\| \\rho}$ where $\\rho$ "
-                                                  "is the density at the cell center."
+                                                  "$h=\\frac{\\sigma_{rr}}{(\\mathbf g \\cdot \\mathbf n)  \\rho}$ where $\\rho$ "
+                                                  "is the density at the cell center. Note that this implementation takes "
+                                                  "the direction of gravity into account, which means that reversing the flow "
+                                                  "in backward advection calculations will not reverse the intantaneous topography "
+                                                  "because the reverse flow will be divided by the reverse surface gravity."
                                                   "\n\n"
                                                   "Strictly speaking, the dynamic topography is of course a "
                                                   "quantity that is only of interest at the surface. However, "
