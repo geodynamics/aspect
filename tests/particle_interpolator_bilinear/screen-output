@@ -20,7 +20,7 @@ Number of degrees of freedom: 10,468 (2,178+289+1,089+2,304+2,304+2,304)
 
    Postprocessing:
      RMS, max velocity:            0.000328 m/s, 0.000732 m/s
-     Compositions min/max/mass:    -0.007595/1.023/0.1825 // 0/1/0.1832 // -0.0002475/0.0003207/6.101e-09
+     Compositions min/max/mass:    -0.007595/1.023/0.1825 // 0/1/0.1832 // -0.0002475/0.0003207/4.44e-09
      Number of advected particles: 100000
 
 Termination requested by criterion: end time
