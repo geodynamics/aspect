@@ -23,9 +23,6 @@
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/full_matrix.templates.h>
-#include <deal.II/lac/lapack_full_matrix.h>
-
-#include <fstream>
 
 namespace aspect
 {
@@ -86,55 +83,39 @@ namespace aspect
                     ExcMessage("At least one cell contained no particles. The 'bilinear'"
                                "interpolation scheme does not support this case. "));
 
+
         const unsigned int matrix_dimension = 4;
         dealii::LAPACKFullMatrix<double> A(n_particles, matrix_dimension);
+        Vector<double> r(n_particles);
         A = 0;
+        r = 0;
+
+        double max_value_for_particle_property = (particle_range.first)->second.get_properties()[property_index];
+        double min_value_for_particle_property = (particle_range.first)->second.get_properties()[property_index];
 
         unsigned int index = 0;
         double cell_diameter = found_cell->diameter();
         for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator particle = particle_range.first;
              particle != particle_range.second; ++particle, ++index)
           {
+            const double particle_property_value = particle->second.get_properties()[property_index];
+            r[index] = particle_property_value;
+
             const Point<dim> position = particle->second.get_location();
             A(index,0) = 1;
             A(index,1) = (position[0] - approximated_cell_midpoint[0])/cell_diameter;
             A(index,2) = (position[1] - approximated_cell_midpoint[1])/cell_diameter;
             A(index,3) = (position[0] - approximated_cell_midpoint[0]) * (position[1] - approximated_cell_midpoint[1])/std::pow(cell_diameter,2);
-          }
 
-        dealii::LAPACKFullMatrix<double> B(matrix_dimension, matrix_dimension);
-        A.Tmmult(B, A, false);
-        dealii::LAPACKFullMatrix<double> B_inverse(B);
-
-        std::ofstream debug;
-        debug.open("singular_matrix.out", std::ofstream::app);
-
-        debug << "===========Matrix A============" << std::endl;
-        B.print_formatted(debug, 16, true, 0, "0", 1, 0);
-
-
-
-        Vector<double> r(n_particles);
-        r = 0;
-        index = 0;
-        double max_value_for_particle_property = (particle_range.first)->second.get_properties()[property_index];
-        double min_value_for_particle_property = (particle_range.first)->second.get_properties()[property_index];
-        for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator particle = particle_range.first;
-             particle != particle_range.second; ++particle, ++index)
-          {
-            const double particle_property_value = particle->second.get_properties()[property_index];
-            r[index] = particle_property_value;
             if (max_value_for_particle_property < particle_property_value)
               max_value_for_particle_property = particle_property_value;
             if (min_value_for_particle_property > particle_property_value)
               min_value_for_particle_property = particle_property_value;
           }
 
-
-        debug << "===========Matrix f============" << std::endl;
-        //     r.print_formatted(debug, 16, true, 0, "0", 1, 0);
-
-        debug.close();
+        dealii::LAPACKFullMatrix<double> B(matrix_dimension, matrix_dimension);
+        A.Tmmult(B, A, false);
+        dealii::LAPACKFullMatrix<double> B_inverse(B);
 
         Vector<double> c_ATr(matrix_dimension);
         Vector<double> c(matrix_dimension);
