@@ -100,7 +100,7 @@ namespace aspect
      * includes this term explicitly in the right-hand side vector to preserve
      * the symmetry of the matrix.
      * This class approximates this term as
-     * $- \nabla \mathbf{u} = \frac{1}{\rho^{\ast}} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u}$
+     * $- \nabla \cdot \mathbf{u} = \frac{1}{\rho^{\ast}} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u}$
      */
     template <int dim>
     class StokesReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>,
@@ -120,7 +120,7 @@ namespace aspect
      * includes this term implicitly in the matrix,
      * which is therefore not longer symmetric.
      * This class approximates this term as
-     * $ - \nabla \mathbf{u} - \frac{1}{\rho^{\ast}} * \frac{\partial rho{^\ast}}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u} = 0$
+     * $ - \nabla \cdot \mathbf{u} - \frac{1}{\rho^{\ast}} * \frac{\partial rho{^\ast}}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u} = 0$
      */
     template <int dim>
     class StokesImplicitReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>,
@@ -137,13 +137,37 @@ namespace aspect
      * This class assembles the right-hand-side term of the Stokes equation
      * that is caused by the compressibility in the mass conservation equation.
      * This class approximates this term as
-     * $ - \nabla \mathbf{u} = \kappa \rho \mathbf{g} \cdot \mathbf{u}$
+     * $ - \nabla \cdot \mathbf{u} = \kappa \rho \mathbf{g} \cdot \mathbf{u}$
      * where $\kappa$ is the compressibility provided by the material model,
      * which is frequently computed as
      * $\kappa = \frac{1}{\rho} * \frac{\partial rho}{\partial p}$.
      */
     template <int dim>
     class StokesIsothermalCompressionTerm : public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        virtual
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+    };
+
+
+    /**
+     * This class assembles the right-hand-side term of the Stokes equation
+     * that is caused by the compression based on the changes in (hydrostatic)
+     * pressure and temperature in the mass conservation equation.
+     *
+     * This class approximates this term as
+     * $ -\nabla \cdot \mathbf{u} = \left( \kappa \rho \textbf{g} - \alpha \nabla T \right) \cdot \textbf{u}$
+     *
+     * where $\frac{1}{\rho} \frac{\partial \rho}{\partial p} = \kappa$ is the compressibility,
+     * $- \frac{1}{\rho}\frac{\partial \rho}{\partial T} = \alpha$ is the thermal expansion coefficient,
+     * and both are defined in the material model.
+     */
+    template <int dim>
+    class StokesHydrostaticCompressionTerm : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
       public:

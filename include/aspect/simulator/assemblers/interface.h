@@ -163,6 +163,7 @@ namespace aspect
           std::vector<Tensor<1,dim> >          phi_u;
           std::vector<Tensor<1,dim> >          velocity_values;
           std::vector<double>                  velocity_divergence;
+          std::vector<Tensor<1,dim> >          temperature_gradients;
 
           /**
            * Material model inputs and outputs computed at the current

@@ -1883,6 +1883,17 @@ is defined in the material model. This is the explicit compressible mass equatio
 the velocity $\textbf{u}$ on the right-hand side is an extrapolated velocity from the last timesteps.
 
 \item
+``hydrostatic compression'':
+\[
+ \nabla \cdot \textbf{u}
+= - \left( \frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} + \frac{1}{\rho} \frac{\partial \rho}{\partial T} \nabla T \right) \cdot \textbf{u}
+= - \left( \kappa \rho \textbf{g} - \alpha \nabla T \right) \cdot \textbf{u}
+\]
+where $\frac{1}{\rho} \frac{\partial \rho}{\partial p} = \kappa$ is the compressibility,
+$- \frac{1}{\rho}\frac{\partial \rho}{\partial T} = \alpha$ is the thermal expansion coefficient, 
+and both are defined in the material model. 
+
+\item
 ``reference density profile'':
 \[
  \nabla \cdot \textbf{u} = -\frac{1}{\bar{\rho}} \frac{\partial \bar{\rho}}{\partial z} \frac{\textbf{g}}{\|\textbf{g}\|} \cdot \textbf{u},

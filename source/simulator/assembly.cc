@@ -248,7 +248,8 @@ namespace aspect
           {
             // do nothing, because we assembled div u =0 above already
           }
-        else
+        else if (parameters.formulation_mass_conservation ==
+                 Parameters<dim>::Formulation::MassConservation::isothermal_compression)
           {
             aspect::Assemblers::StokesIsothermalCompressionTerm<dim> *compressible_terms
               = new aspect::Assemblers::StokesIsothermalCompressionTerm<dim>();
@@ -256,7 +257,16 @@ namespace aspect
             assemblers->stokes_system.push_back(
               std_cxx11::unique_ptr<aspect::Assemblers::StokesIsothermalCompressionTerm<dim> > (compressible_terms));
           }
-
+        else if (parameters.formulation_mass_conservation ==
+                 Parameters<dim>::Formulation::MassConservation::hydrostatic_compression)
+          {
+            aspect::Assemblers::StokesHydrostaticCompressionTerm<dim> *compressible_terms
+              = new aspect::Assemblers::StokesHydrostaticCompressionTerm<dim>();
+            assemblers->stokes_system.push_back(
+              std_cxx11::unique_ptr<aspect::Assemblers::StokesHydrostaticCompressionTerm<dim> > (compressible_terms));
+          }
+        else
+          Assert(false, ExcNotImplemented());
       }
 
     // add the boundary integral for melt migration
@@ -617,6 +627,10 @@ namespace aspect
         scratch.velocity_values);
     if (assemble_newton_stokes_system)
       scratch.finite_element_values[introspection.extractors.velocities].get_function_divergences(current_linearization_point,scratch.velocity_divergence);
+    if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::hydrostatic_compression)
+      scratch.finite_element_values[introspection.extractors.temperature].get_function_gradients(current_linearization_point,
+          scratch.temperature_gradients);
+
 
     const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile)
                                                || (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile);
