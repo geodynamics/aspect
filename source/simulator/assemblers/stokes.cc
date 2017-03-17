@@ -345,7 +345,13 @@ namespace aspect
                                  const Parameters<dim>                           &parameters) const
     {
       // assemble RHS of:
-      //  - div u = 1/rho * drho/dp rho * g * u
+      //  - div \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial p} \rho \mathbf{g} \cdot \mathbf{u}
+
+      // Compared
+      // to the manual, this term seems to have the wrong sign, but this
+      // is because we negate the entire equation to make sure we get
+      // -div(u) as the adjoint operator of grad(p)
+
       (void)parameters;
       Assert(parameters.formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::isothermal_compression,
@@ -379,16 +385,83 @@ namespace aspect
 
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             data.local_rhs(i) += (
-                                   // add the term that results from the compressibility. compared
-                                   // to the manual, this term seems to have the wrong sign, but this
-                                   // is because we negate the entire equation to make sure we get
-                                   // -div(u) as the adjoint operator of grad(p)
                                    (pressure_scaling *
                                     compressibility * density *
                                     (scratch.velocity_values[q] * gravity) *
                                     scratch.phi_p[i])
                                  )
                                  * JxW;
+        }
+    }
+
+
+
+    template <int dim>
+    void
+    StokesAssembler<dim>::
+    thermal_compression_term (const double                                     pressure_scaling,
+                              const bool                                       /*rebuild_stokes_matrix*/,
+                              internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                              internal::Assembly::CopyData::StokesSystem<dim> &data,
+                              const Parameters<dim>                           &parameters) const
+    {
+      // assemble RHS of:
+      //  - div \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial p} \rho \mathbf{g} \cdot \mathbf{u}
+      // + \frac{1}{\rho} * \frac{\partial rho}{\partial T} \nabla T \cdot \mathbf{u}
+
+      // Compared
+      // to the manual, this term seems to have the wrong sign, but this
+      // is because we negate the entire equation to make sure we get
+      // -div(u) as the adjoint operator of grad(p)
+
+      (void)parameters;
+      Assert(parameters.formulation_mass_conservation ==
+             Parameters<dim>::Formulation::MassConservation::thermal_compression,
+             ExcInternalError());
+
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
+      const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
+      const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+
+      for (unsigned int q=0; q<n_q_points; ++q)
+        {
+          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+            {
+              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                {
+                  scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection.extractors.pressure].value (i, q);
+                  ++i_stokes;
+                }
+              ++i;
+            }
+
+          const Tensor<1,dim>
+          gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
+
+          const double compressibility
+            = scratch.material_model_outputs.compressibilities[q];
+
+          const double thermal_alpha
+            = scratch.material_model_outputs.thermal_expansion_coefficients[q];
+
+          const double density = scratch.material_model_outputs.densities[q];
+          const double JxW = scratch.finite_element_values.JxW(q);
+
+          for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+            data.local_rhs(i) += (
+                                   (pressure_scaling *
+                                    (
+                                      // pressure part:
+                                      compressibility * density *
+                                      (scratch.velocity_values[q] * gravity)
+                                      // temperature part:
+                                      - thermal_alpha *
+                                      (scratch.velocity_values[q] * scratch.temperature_gradients[q])
+                                    ) * scratch.phi_p[i])
+                                 )
+                                 * JxW;
+
         }
     }
   }

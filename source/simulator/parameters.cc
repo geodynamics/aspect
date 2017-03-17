@@ -330,7 +330,7 @@ namespace aspect
                          "equations.}");
 
       prm.declare_entry ("Mass conservation", "ask material model",
-                         Patterns::Selection ("incompressible|isothermal compression|"
+                         Patterns::Selection ("incompressible|isothermal compression|thermal compression|"
                                               "reference density profile|implicit reference density profile|"
                                               "ask material model"),
                          "Possible approximations for the density derivatives in the mass "

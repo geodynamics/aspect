@@ -166,6 +166,7 @@ namespace aspect
         enum Kind
         {
           isothermal_compression,
+          thermal_compression,
           reference_density_profile,
           implicit_reference_density_profile,
           incompressible,
@@ -181,6 +182,8 @@ namespace aspect
         {
           if (input == "isothermal compression")
             return Formulation::MassConservation::isothermal_compression;
+          else if (input == "thermal compression")
+            return Formulation::MassConservation::thermal_compression;
           else if (input == "reference density profile")
             return Formulation::MassConservation::reference_density_profile;
           else if (input == "implicit reference density profile")

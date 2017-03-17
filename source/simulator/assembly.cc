@@ -128,6 +128,7 @@ namespace aspect
           grads_phi_u (stokes_dofs_per_cell, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
           div_phi_u (stokes_dofs_per_cell, numbers::signaling_nan<double>()),
           velocity_values (quadrature.size(), numbers::signaling_nan<Tensor<1,dim> >()),
+          temperature_gradients (quadrature.size(), numbers::signaling_nan<Tensor<1,dim> >()),
           face_material_model_inputs(face_quadrature.size(), n_compositional_fields),
           face_material_model_outputs(face_quadrature.size(), n_compositional_fields),
           reference_densities(use_reference_density_profile ? quadrature.size() : 0, numbers::signaling_nan<double>()),
@@ -151,6 +152,7 @@ namespace aspect
           grads_phi_u (scratch.grads_phi_u),
           div_phi_u (scratch.div_phi_u),
           velocity_values (scratch.velocity_values),
+          temperature_gradients (scratch.temperature_gradients),
           face_material_model_inputs(scratch.face_material_model_inputs),
           face_material_model_outputs(scratch.face_material_model_outputs),
           reference_densities(scratch.reference_densities),
@@ -691,16 +693,34 @@ namespace aspect
           {
             // do nothing, because we assembled div u =0 above already
           }
+        else if (parameters.formulation_mass_conservation ==
+                 Parameters<dim>::Formulation::MassConservation::isothermal_compression)
+          {
+            assemblers->local_assemble_stokes_system
+            .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::isothermal_compression_term,
+                                      std_cxx11::cref (*stokes_assembler),
+                                      // discard cell,
+                                      std_cxx11::_2,
+                                      std_cxx11::_3,
+                                      std_cxx11::_4,
+                                      std_cxx11::_5,
+                                      std_cxx11::cref (this->parameters)));
+          }
+        else if (parameters.formulation_mass_conservation ==
+                 Parameters<dim>::Formulation::MassConservation::thermal_compression)
+          {
+            assemblers->local_assemble_stokes_system
+            .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::thermal_compression_term,
+                                      std_cxx11::cref (*stokes_assembler),
+                                      // discard cell,
+                                      std_cxx11::_2,
+                                      std_cxx11::_3,
+                                      std_cxx11::_4,
+                                      std_cxx11::_5,
+                                      std_cxx11::cref (this->parameters)));
+          }
         else
-          assemblers->local_assemble_stokes_system
-          .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::isothermal_compression_term,
-                                    std_cxx11::cref (*stokes_assembler),
-                                    // discard cell,
-                                    std_cxx11::_2,
-                                    std_cxx11::_3,
-                                    std_cxx11::_4,
-                                    std_cxx11::_5,
-                                    std_cxx11::cref (this->parameters)));
+          Assert(false, ExcNotImplemented());
 
       }
 
@@ -1102,6 +1122,9 @@ namespace aspect
 
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.velocity_values);
+    if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::thermal_compression)
+      scratch.finite_element_values[introspection.extractors.temperature].get_function_gradients(current_linearization_point,
+          scratch.temperature_gradients);
 
     const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile)
                                                || (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile);
