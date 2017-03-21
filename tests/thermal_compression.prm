@@ -1,0 +1,119 @@
+# A testcase that demonstrates compressible mantle convection, in particular
+# the correct implementation of the temperature effect on density changes. 
+# We compute these material properties in a new material model, which
+# is implemented in the .cc file, together with a postprocessor to calculate 
+# the error and a new gravity model.     
+# 
+set Nonlinear solver scheme                = Stokes only
+set Max nonlinear iterations               = 50
+set Nonlinear solver tolerance             = 1e-10
+set Linear solver tolerance                = 1e-12
+
+subsection Mesh refinement
+  set Initial global refinement                = 4
+  set Refinement fraction                      = 0.0
+  set Coarsening fraction                      = 0.0
+  set Time steps between mesh refinement       = 0
+  set Initial adaptive refinement              = 0
+end
+
+
+set Adiabatic surface temperature          = 100.0               # default: 0
+set CFL number                             = 1.0
+
+# The number of space dimensions you want to run this program in.
+set Dimension                              = 2
+
+# The end time of the simulation. Units: years if the 'Use years in output
+# instead of seconds' parameter is set; seconds otherwise.
+set End time                               = 0
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0.01
+set Resume computation                     = false
+set Start time                             = 0
+
+set Use years in output instead of seconds = false
+set Use direct solver for Stokes system    = false
+
+subsection Formulation
+  set Formulation = custom
+  set Mass conservation    = thermal compression
+  set Temperature equation = real density
+end
+
+subsection Boundary temperature model
+  set Model name = initial temperature
+
+  subsection Initial temperature
+    # Temperature at the inner boundary (core mantle boundary). Units: K.
+    set Maximal temperature = 101.0
+
+    # Temperature at the outer boundary (lithosphere water/air). Units: K.
+    set Minimal temperature = 99.0
+  end
+
+end
+
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+
+subsection Geometry model
+  set Model name = box # default: 
+
+  subsection Box
+    set X extent  = 1
+    set Y extent  = 0.99
+#    set Box origin X coordinate = -1
+    set Box origin Y coordinate = -0.5
+  end
+
+end
+
+subsection Gravity model
+  set Model name = MyGravity
+
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Function constants = u1=1,w1=0.5
+    set Function expression = -2*u1*pi*sin(2*pi*x)+u1*cos(2*pi*x)-w1*(pi*pi+1)*cos(pi*z);-w1*pi*sin(pi*z)+w1*cos(pi*z)-u1*(4*pi*pi+1)*cos(2*pi*x)
+    set Variable names      = x,z
+  end
+end  
+
+
+subsection Initial conditions
+  set Model name = function # default: 
+  subsection Function
+    set Function expression = 100.0 + sin(2*pi*x) * cos(pi*z)
+    set Variable names      = x,z
+  end
+end
+
+
+subsection Material model
+  set Model name = test material
+end
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0,1,2,3        # default:  
+  set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function
+  set Tangential velocity boundary indicators = 
+
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, pressure statistics, velocity boundary statistics, error calculation
+
+  subsection Visualization
+    set List of output variables      = material properties, gravity
+  end
+end
+
+
+
