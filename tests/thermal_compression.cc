@@ -205,14 +205,14 @@ namespace aspect
             const double force_p = 0.0;
 
             force_u[0]= -0.32e2 / 0.3e1 * u1 * pow(pi, 0.3e1) * sin(0.2e1 * pi * x)
-                       + 0.16e2 / 0.3e1 * u1 * pi * pi * cos(0.2e1 * pi * x)
-                       - w1 * (pi * pi + 0.1e1) * pi * pi * cos(pi * z)
-                       + (0.5e0 - z) * (0.1e1 + 0.2e1 * alpha * pi * cos(0.2e1 * pi * x) * cos(pi * z));
+                        + 0.16e2 / 0.3e1 * u1 * pi * pi * cos(0.2e1 * pi * x)
+                        - w1 * (pi * pi + 0.1e1) * pi * pi * cos(pi * z)
+                        + (0.5e0 - z) * (0.1e1 + 0.2e1 * alpha * pi * cos(0.2e1 * pi * x) * cos(pi * z));
 
             force_u[1]= -0.4e1 / 0.3e1 * w1 * pow(pi, 0.3e1) * sin(pi * z)
-                       + 0.4e1 / 0.3e1 * w1 * pi * pi * cos(pi * z)
-                       - 0.4e1 * u1 * (0.4e1 * pi * pi + 0.1e1) * pi * pi * cos(0.2e1 * pi * x)
-                       - 0.1e1 + (0.5e0 - z) * (0.1e1 - alpha * sin(0.2e1 * pi * x) * pi * sin(pi * z));
+                        + 0.4e1 / 0.3e1 * w1 * pi * pi * cos(pi * z)
+                        - 0.4e1 * u1 * (0.4e1 * pi * pi + 0.1e1) * pi * pi * cos(0.2e1 * pi * x)
+                        - 0.1e1 + (0.5e0 - z) * (0.1e1 - alpha * sin(0.2e1 * pi * x) * pi * sin(pi * z));
 
 
             for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
