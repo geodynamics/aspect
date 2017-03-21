@@ -1,0 +1,23 @@
+
+Loading shared library <./libmass_error.so>
+
+Number of active cells: 4 (on 2 levels)
+Number of degrees of freedom: 84 (50+9+25)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 1
+
+   Postprocessing:
+     Top/bottom flux:                      2/1
+     Writing graphical output:             output-mass_error/solution/solution-00000
+     Integral mass error, Norm mass error: 1 kg/s, 1 kg/s
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
