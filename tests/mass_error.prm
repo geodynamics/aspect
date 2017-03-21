@@ -129,7 +129,7 @@ subsection Postprocess
 
   subsection Visualization
 
-    set List of output variables      = density, mass error, rho div u, u grad rho
+    set List of output variables      = density, mass error
     set Number of grouped files       = 0
     set Output format                 = vtu
     set Time between graphical output = 0                                                                                # default: 1e8
