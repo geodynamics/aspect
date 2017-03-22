@@ -435,14 +435,15 @@ int main (int argc, char *argv[])
       deallog.depth_console(0);
 
       int current_idx = 1;
-      bool i_am_proc_0 = (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0);
+      const bool i_am_proc_0 = (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0);
 
       std::string prm_name = "";
       bool print_xml = false;
 
       while (current_idx<argc)
         {
-          std::string arg = std::string(argv[current_idx++]);
+          const std::string arg = argv[current_idx];
+          ++current_idx;
           if (arg == "--print-xml-schema")
             {
               print_xml = true;
@@ -467,6 +468,8 @@ int main (int argc, char *argv[])
             }
           else
             {
+              // Not a special argument, so we assume that this is the .prm
+              // filename (or "--")
               prm_name = arg;
               break;
             }
@@ -511,7 +514,7 @@ int main (int argc, char *argv[])
           std::ifstream parameter_file(prm_name.c_str());
           if (!parameter_file)
             {
-              if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+              if (i_am_proc_0)
                 AssertThrow(false, ExcMessage (std::string("Input parameter file <")
                                                + prm_name + "> not found."));
               return 3;
@@ -525,7 +528,7 @@ int main (int argc, char *argv[])
           //    echo "abc" | mpirun -np 4 ./aspect
           // then only MPI process 0 gets the data. so we have to
           // read it there, then broadcast it to the other processors
-          if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+          if (i_am_proc_0)
             {
               input_as_string = read_until_end (std::cin);
               int size = input_as_string.size()+1;
