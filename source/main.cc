@@ -440,6 +440,11 @@ int main (int argc, char *argv[])
       std::string prm_name = "";
       bool print_xml = false;
 
+      // Loop over all command line arguments. Handle a number of special ones
+      // starting with a dash, and then take the first non-special one as the
+      // name of the input file. We will later check that there are no further
+      // arguments left after that (though there may be with PETSc, see
+      // below).
       while (current_idx<argc)
         {
           const std::string arg = argv[current_idx];
@@ -469,7 +474,8 @@ int main (int argc, char *argv[])
           else
             {
               // Not a special argument, so we assume that this is the .prm
-              // filename (or "--")
+              // filename (or "--"). We can now break out of this loop because
+              // we are not going to pass arguments passed after the filename
               prm_name = arg;
               break;
             }
@@ -478,7 +484,7 @@ int main (int argc, char *argv[])
 
       // if no parameter given or somebody gave additional parameters,
       // show help and exit.
-      // however, this does not work with PETSc because for PETSc, one
+      // However, this does not work with PETSc because for PETSc, one
       // may pass any number of flags on the command line; unfortunately,
       // the PETSc initialization code (run through the call to
       // MPI_InitFinalize above) does not filter these out.
@@ -496,17 +502,18 @@ int main (int argc, char *argv[])
           return 2;
         }
 
+      // Print header
       if (i_am_proc_0 && !print_xml)
         {
           print_aspect_header(std::cout);
         }
 
 
-      // see where to read input from, then do the reading and
-      // put the contents of the input into a string
+      // See where to read input from, then do the reading and
+      // put the contents of the input into a string.
       //
-      // as stated above, treat "--" as special: as is common
-      // on unix, treat it as a way to read input from stdin
+      // As stated above, treat "--" as special: as is common
+      // on unix, treat it as a way to read input from stdin.
       std::string input_as_string;
 
       if (prm_name != "--")
@@ -595,9 +602,7 @@ int main (int argc, char *argv[])
             if (print_xml)
               {
                 if (i_am_proc_0)
-                  {
-                    prm.print_parameters(std::cout, ParameterHandler::XML);
-                  }
+                  prm.print_parameters(std::cout, ParameterHandler::XML);
               }
             else
               {
@@ -615,9 +620,7 @@ int main (int argc, char *argv[])
             if (print_xml)
               {
                 if (i_am_proc_0)
-                  {
-                    prm.print_parameters(std::cout, ParameterHandler::XML);
-                  }
+                  prm.print_parameters(std::cout, ParameterHandler::XML);
               }
             else
               {
