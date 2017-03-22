@@ -1,9 +1,9 @@
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-traction/ascii-data/test/box_2d_left.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/tests/data/boundary-traction/ascii-data/test/box_2d_left.0.txt.
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-traction/ascii-data/test/box_2d_left.1.txt.
+   Loading Ascii data boundary file ASPECT_DIR/tests/data/boundary-traction/ascii-data/test/box_2d_left.1.txt.
 
 
    Loading new data file did not succeed.

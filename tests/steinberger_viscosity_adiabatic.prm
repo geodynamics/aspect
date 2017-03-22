@@ -48,7 +48,7 @@ subsection Material model
   set Model name = Steinberger
 
   subsection Steinberger model
-    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/
+    set Data directory                   = $ASPECT_SOURCE_DIR/tests/data/material-model/steinberger/
     set Material file names              = test-steinberger-compressible/testdata.txt
     set Use lateral average temperature for viscosity = false
     set Bilinear interpolation           = true

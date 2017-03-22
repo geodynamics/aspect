@@ -105,7 +105,7 @@ end
 
 subsection Boundary traction model
   subsection Ascii data model
-    set Data directory = $ASPECT_SOURCE_DIR/data/boundary-traction/ascii-data/test/
+    set Data directory = $ASPECT_SOURCE_DIR/tests/data/boundary-traction/ascii-data/test/
   end
 end
 
