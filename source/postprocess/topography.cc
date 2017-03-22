@@ -129,7 +129,7 @@ namespace aspect
       std::ostringstream output;
       output.precision(4);
       output << min_topography << " m, "
-             << max_topography << " m, ";
+             << max_topography << " m";
 
       return std::pair<std::string, std::string> ("Topography min/max:",
                                                   output.str());
