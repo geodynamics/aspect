@@ -371,7 +371,7 @@ void print_help()
 {
   std::cout << "Usage: ./aspect [args] <parameter_file.prm>   (to read from an input file)"
             << std::endl
-            << "    or ./aspect [args] --                     (to read from stdin)"
+            << "    or ./aspect [args] --                     (to read parameters from stdin)"
             << std::endl
             << std::endl;
   std::cout << "    optional arguments [args]:"
@@ -380,7 +380,7 @@ void print_help()
             << std::endl
             << "       --help                 (for this usage help)"
             << std::endl
-            << "       --print-xml-schema     (print xml parameters to standard output and exit)"
+            << "       --output-xml           (print parameters in xml format to standard output and exit)"
             << std::endl
             << std::endl;
 }
@@ -438,7 +438,7 @@ int main (int argc, char *argv[])
       const bool i_am_proc_0 = (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0);
 
       std::string prm_name = "";
-      bool print_xml = false;
+      bool output_xml = false;
 
       // Loop over all command line arguments. Handle a number of special ones
       // starting with a dash, and then take the first non-special one as the
@@ -449,9 +449,9 @@ int main (int argc, char *argv[])
         {
           const std::string arg = argv[current_idx];
           ++current_idx;
-          if (arg == "--print-xml-schema")
+          if (arg == "--output-xml")
             {
-              print_xml = true;
+              output_xml = true;
             }
           else if (arg=="-h" || arg =="--help")
             {
@@ -503,7 +503,7 @@ int main (int argc, char *argv[])
         }
 
       // Print header
-      if (i_am_proc_0 && !print_xml)
+      if (i_am_proc_0 && !output_xml)
         {
           print_aspect_header(std::cout);
         }
@@ -599,7 +599,7 @@ int main (int argc, char *argv[])
             aspect::Simulator<2>::declare_parameters(prm);
             parse_parameters (input_as_string, prm);
 
-            if (print_xml)
+            if (output_xml)
               {
                 if (i_am_proc_0)
                   prm.print_parameters(std::cout, ParameterHandler::XML);
@@ -617,7 +617,7 @@ int main (int argc, char *argv[])
             aspect::Simulator<3>::declare_parameters(prm);
             parse_parameters (input_as_string, prm);
 
-            if (print_xml)
+            if (output_xml)
               {
                 if (i_am_proc_0)
                   prm.print_parameters(std::cout, ParameterHandler::XML);
