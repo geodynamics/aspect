@@ -128,6 +128,7 @@ namespace aspect
 
               double rho_div_u = 0.0;
               double u_grad_rho = 0.0;
+              double cell_volume = 0.0;
 
               for (unsigned int q = 0; q < n_q_points; ++q)
                 {
@@ -141,11 +142,10 @@ namespace aspect
 
                   rho_div_u  += density * velocity_divergence[q] * fe_values.JxW(q);
                   u_grad_rho += velocity[q] * density_gradient * fe_values.JxW(q);
+                  cell_volume += fe_values.JxW(q);
                 }
 
-              const double cell_mass_error = rho_div_u + u_grad_rho;
-
-              (*return_value.second)(cell_index) = cell_mass_error;
+              (*return_value.second)(cell_index) = (rho_div_u + u_grad_rho) / cell_volume;
             }
 
         return return_value;
