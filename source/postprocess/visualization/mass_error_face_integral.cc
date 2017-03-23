@@ -55,13 +55,13 @@ namespace aspect
          */
 
         FEFaceValues<dim> fe_face_values (this->get_mapping(),
-                                 this->get_fe(),
-                                 quadrature_formula_face,
-                                 update_values |
-                                 update_gradients |
-                                 update_JxW_values |
-                                 update_normal_vectors |
-                                 update_q_points);
+                                          this->get_fe(),
+                                          quadrature_formula_face,
+                                          update_values |
+                                          update_gradients |
+                                          update_JxW_values |
+                                          update_normal_vectors |
+                                          update_q_points);
 
         FEValues<dim> fe_values (this->get_mapping(),
                                  this->get_fe(),
@@ -85,43 +85,43 @@ namespace aspect
               double cell_volume = 0.0;
 
               for (unsigned int q = 0; q < n_q_points; ++q)
-                  cell_volume += fe_values.JxW(q);
+                cell_volume += fe_values.JxW(q);
 
               double div_rho_u = 0.0;
 
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-              {
-                fe_face_values.reinit(cell,f);
+              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                {
+                  fe_face_values.reinit(cell,f);
 
-                fe_face_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                    in.velocity);
-                fe_face_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                    in.temperature);
-                fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                    in.pressure);
-                fe_face_values[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(),
-                    in.pressure_gradient);
-                for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                  fe_face_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
-                      composition_values[c]);
+                  fe_face_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                      in.velocity);
+                  fe_face_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
+                      in.temperature);
+                  fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
+                                                                                                 in.pressure);
+                  fe_face_values[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(),
+                      in.pressure_gradient);
+                  for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                    fe_face_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
+                        composition_values[c]);
 
-                in.position = fe_face_values.get_quadrature_points();
+                  in.position = fe_face_values.get_quadrature_points();
 
-                in.strain_rate.resize(0);
+                  in.strain_rate.resize(0);
 
-                for (unsigned int i=0; i<n_q_points_face; ++i)
-                  {
-                    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                      in.composition[i][c] = composition_values[c][i];
-                  }
-                in.cell = &cell;
+                  for (unsigned int i=0; i<n_q_points_face; ++i)
+                    {
+                      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                        in.composition[i][c] = composition_values[c][i];
+                    }
+                  in.cell = &cell;
 
-                this->get_material_model().evaluate(in, out);
+                  this->get_material_model().evaluate(in, out);
 
-                for (unsigned int q = 0; q < n_q_points_face; ++q)
-                  div_rho_u  += out.densities[q] * (in.velocity[q] * fe_face_values.normal_vector(q))
-                  * fe_face_values.JxW(q);
-              }
+                  for (unsigned int q = 0; q < n_q_points_face; ++q)
+                    div_rho_u  += out.densities[q] * (in.velocity[q] * fe_face_values.normal_vector(q))
+                                  * fe_face_values.JxW(q);
+                }
 
               (*return_value.second)(cell_index) = div_rho_u / cell_volume;
             }
