@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ "$1" == "" ]; then
+  echo " " |  aspect --output-xml -- > temp.xml
+else
+  aspect --output-xml $1 > temp.xml
+fi
+
+parameter_gui temp.xml
+rm temp.xml
