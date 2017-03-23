@@ -1,0 +1,38 @@
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,059 (770+289)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 2.506e-23 W, -6.746e-23 W, -2e-06 W, 2e-06 W
+     RMS, max velocity:                  0.352 m/s, 1.01 m/s
+
+*** Timestep 1:  t=0.0625 seconds
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.4995 K, 1 K
+     Heat fluxes through boundary parts: 1.569e-08 W, 1.571e-08 W, -1.997e-06 W, 2.165e-06 W
+     RMS, max velocity:                  0.352 m/s, 1.01 m/s
+
+*** Timestep 2:  t=0.1 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.4994 K, 1 K
+     Heat fluxes through boundary parts: 2.6e-08 W, 2.595e-08 W, -1.999e-06 W, 2.247e-06 W
+     RMS, max velocity:                  0.352 m/s, 1.01 m/s
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

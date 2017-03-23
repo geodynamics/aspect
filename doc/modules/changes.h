@@ -12,5 +12,10 @@
  * <br>
  * (Timo Heister, 2017/03/24)
  *
+ * <li> New: Compressible computations now work with discontinuous pressure
+ * elements.
+ * <br>
+ * (Timo Heister, 2017/03/23)
+ *
  * </ol>
  */

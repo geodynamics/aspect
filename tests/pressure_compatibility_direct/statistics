@@ -1,0 +1,20 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Minimal temperature (K)
+# 9: Average temperature (K)
+# 10: Maximal temperature (K)
+# 11: Average nondimensional temperature (K)
+# 12: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 13: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 14: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 15: Outward heat flux through boundary with indicator 3 ("top") (W)
+# 16: RMS velocity (m/s)
+# 17: Max. velocity (m/s)
+0 0.000000000000e+00 0.000000000000e+00 64 659 289  0 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 2.50571169e-23 -6.74614685e-23 -2.00000000e-06 2.00000000e-06 3.52685341e-01 1.02187233e+00 
+1 6.250000000000e-02 6.250000000000e-02 64 659 289 13 0.00000000e+00 4.99525356e-01 1.00000000e+00 4.99525356e-01 1.74551452e-08  1.80066089e-08 -1.99882611e-06 2.16996117e-06 3.52353361e-01 1.02484046e+00 
+2 1.000000000000e-01 3.750000000000e-02 64 659 289 12 0.00000000e+00 4.99387196e-01 1.00000000e+00 4.99387196e-01 2.86714655e-08  2.95649259e-08 -2.00163357e-06 2.26450018e-06 3.52495632e-01 1.02339474e+00 
