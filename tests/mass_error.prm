@@ -129,7 +129,7 @@ subsection Postprocess
 
   subsection Visualization
 
-    set List of output variables      = density, mass error
+    set List of output variables      = density, mass error, mass error face integral
     set Number of grouped files       = 0
     set Output format                 = gnuplot
     set Time between graphical output = 0                                                                                # default: 1e8
