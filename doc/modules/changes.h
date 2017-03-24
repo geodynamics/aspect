@@ -7,5 +7,10 @@
  *
  * <ol>
  *
+ * <li> New: aspect now supports the --output-xml flag to generate .xml parameter
+ * files that can be edited using the deal.II parameter GUI.
+ * <br>
+ * (Timo Heister, 2017/03/24)
+ *
  * </ol>
  */
