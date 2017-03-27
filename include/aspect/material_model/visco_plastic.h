@@ -114,7 +114,9 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
-      private:
+        double get_min_strain_rate() const;
+
+      protected:
 
         double reference_T;
 

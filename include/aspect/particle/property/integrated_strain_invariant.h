@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _aspect_particle_property_integrated_strain_h
-#define _aspect_particle_property_integrated_strain_h
+#ifndef _aspect_particle_property_integrated_strain_invariant_h
+#define _aspect_particle_property_integrated_strain_invariant_h
 
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
@@ -31,15 +31,17 @@ namespace aspect
     namespace Property
     {
       /**
-       * A class that calculated the finite strain invariant a particle has
-       * experienced. The implementation of this property is equivalent to the
-       * implementation for compositional fields that is located in the plugin
-       * <code>benchmarks/buiter_et_al_2008_jgr/plugin/finite_strain_invariant.cc</code>.
+       * A class that calculates the cumulative finite strain magnitude
+       * a particle has experienced through the second invariant of the
+       * deviatoric strain rate tensor.
+       * The implementation of this property is equivalent to the implementation
+       * for compositional fields that is described in integrated_strain_invariant plugin
+       * in <code>benchmarks/kaus_shear_bands/integrated_strain_invariant.cc</code>.
        *
        * @ingroup ParticleProperties
        */
       template <int dim>
-      class IntegratedStrain : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+      class IntegratedStrainInvariant : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
       {
         public:
           /**

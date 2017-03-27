@@ -41,8 +41,7 @@ namespace aspect
 
       // assign compositional fields associated with strain a value of 0
       if (use_strain_weakening == true)
-        for ( unsigned int i=0; i < SymmetricTensor<2,dim>::n_independent_components; ++i)
-          x_comp[i] = 0.0;
+          x_comp[0] = 0.0;
 
       //sum the compositional fields for normalization purposes
       double sum_composition = 0.0;
@@ -204,13 +203,8 @@ namespace aspect
           if (use_strain_weakening == true)
             {
 
-              // Assign strain values for compositional field to a symmetric tensor
-              SymmetricTensor<2,dim> strain;
-              for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
-                strain[SymmetricTensor<2,dim>::unrolled_to_component_indices(i)] = composition[i];
-
               // Calculate second strain invariant
-              const double strain_ii = std::fabs(second_invariant(strain));
+              const double strain_ii = composition[0];
 
               // Linear strain weakening of cohesion and internal friction angle between specified strain values
               const double strain_fraction = ( strain_ii - start_strain_weakening_intervals[j] ) /
@@ -269,7 +263,6 @@ namespace aspect
 
           // Limit the viscosity with specified minimum and maximum bounds
           composition_viscosities[j] = std::min(std::max(viscosity_yield, min_visc), max_visc);
-
 
         }
       return composition_viscosities;
@@ -371,6 +364,13 @@ namespace aspect
       return false;
     }
 
+    template <int dim> 
+    double ViscoPlastic<dim>::
+    get_min_strain_rate () const
+    {
+      return min_strain_rate;
+    } 
+    
     template <int dim>
     void
     ViscoPlastic<dim>::declare_parameters (ParameterHandler &prm)
@@ -745,18 +745,12 @@ namespace aspect
                                    "See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. "
                                    "\n\n"
                                    "The user has the option to linearly reduce the cohesion and "
-                                   "internal friction angle as a function of accumulated finite strain. "
-                                   "Finite strain may be calculated through tracers (implemented by Rene Gassmoeller) "
-                                   "or the compositional field finite strain plugin (implemented by Juliane Dannberg). "
-                                   "In either case, the user specifies compositional fields for each of "
-                                   "the symmetric strain tensor components, which must be listed before "
-                                   "any additional compositional fields and will reflect the following order "
-                                   "2D: fs[0][0], fs[1][1], fs[0][1] "
-                                   "3D: fs[0][0], fs[1][1], fs[2][2], fs[0][1], fs[0][2], fs[1][2] "
-                                   "Above, fs refers to the 'finite strain' tensor and the numbers "
-                                   "represent tensor indices.  While the user may define any names "
-                                   "for each of the finite strain components, the above ordering is "
-                                   "assumed in the strain weakening section. "
+                                   "internal friction angle as a function of the finite strain invariant. "
+                                   "The finite strain invariant may be calculated through tracers or the compositional "
+                                   "field finite strain invariant plugin (see buiter_et_al_2008_jgr benchmark). "
+                                   "In either case, the user specifies a compositional field for the finite "
+                                   "strain invariant, which must be the first listed compositional field "
+                                   "in the parameter file."
                                    ""
                                    "\n\n"
                                    "Viscous stress may also be limited by a non-linear stress limiter "
