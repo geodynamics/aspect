@@ -19,7 +19,9 @@ RUN git clone https://github.com/geodynamics/aspect.git ./aspect && \
           -DDEAL_II_DIR=$HOME/deal.II-install \
           .. && \
     make -j4 >log 2>&1 && \
-    mv aspect $HOME/aspect/aspect-debug && \
+    mv aspect $HOME/aspect/aspect && \
     make clean
+
+ENV ASPECT_DIR /home/dealii/aspect/build-debug
 
 WORKDIR /home/dealii/aspect
