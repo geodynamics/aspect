@@ -1,0 +1,1 @@
+set Additional shared libraries = tests/libsplines.so
