@@ -23,6 +23,7 @@
 #define _aspect_geometry_model_ellipsoidal_chunk_h
 
 #include <aspect/geometry_model/interface.h>
+#include <aspect/geometry_model/initial_topography_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <deal.II/grid/manifold.h>
 
@@ -51,8 +52,21 @@ namespace aspect
         class EllipsoidalChunkGeometry : public ChartManifold<dim,3,3>
         {
           public:
+            /**
+             * Constructor
+             */
             EllipsoidalChunkGeometry();
 
+            /**
+             * An initialization function necessary for to make sure that the
+             * manifold has access to the topography plugins.
+             */
+            void
+            initialize(const InitialTopographyModel::Interface<dim> *topography);
+
+            /**
+             * Sets several parameters for the ellipsoidal manifold object.
+             */
             void
             set_manifold_parameters(const double para_semi_major_axis_a,
                                     const double para_eccentricity,
@@ -60,28 +74,75 @@ namespace aspect
                                     const double para_bottom_depth,
                                     const std::vector<Point<2> > &para_corners);
 
+            /**
+             * The deal.ii pull back function in 3d. This function receives
+             * cartesian points x,y and z and return spherical/ellipsoidal
+             * coordinates phi, theta and depth, also accounting for the
+             * topography.
+             */
             virtual
             Point<3>
             pull_back(const Point<3> &space_point) const;
 
+            /**
+             * The deal.ii pull back function in 2d. This function should
+             * not be used, until the todo in the cc file has been fixed.
+             */
             virtual
             Point<2>
             pull_back(const Point<2> &space_point) const;
 
+            /**
+             * The deal.ii pull back function in 3d. This function receives
+             * spherical/ellipsoidal coordinates phi, theta and depth and
+             * returns cartesian points x,y and z, also accounting for the
+             * topography.
+             */
             virtual
             Point<3>
             push_forward(const Point<3> &chart_point) const;
 
+
           private:
+            /**
+             * This function does the actual push forward to the ellipsoid.
+             * For the equation details, please see deal.iii step 53.
+             */
+            Point<3> push_forward_ellipsoid (const Point<3> &phi_theta_d, const double semi_major_axis_a, const double eccentricity) const;
+
+            /**
+             * This function does the actual pull back from the ellipsoid.
+             * For the equation details, please see deal.iii step 53.
+             */
+            Point<3> pull_back_ellipsoid (const Point<3> &x, const double semi_major_axis_a, const double eccentricity) const;
+
+            /**
+             * This function add topography to the cartesian coordinates.
+             * For the equation details, please see deal.iii step 53.
+             */
+            Point<3> push_forward_topography (const Point<3> &phi_theta_d_hat) const;
+
+            /**
+             * This function removes topography from the cartesian coordinates.
+             * For the equation details, please see deal.iii step 53.
+             */
+            Point<3> pull_back_topography (const Point<3> &phi_theta_d) const;
+
+
             double semi_major_axis_a;
             double eccentricity;
             double semi_minor_axis_b;
             double bottom_depth;
             std::vector<Point<2> > corners;
-
-            Point<3> push_forward_ellipsoid (const Point<3> &phi_theta_d, const double semi_major_axis_a, const double eccentricity) const;
-            Point<3> pull_back_ellipsoid (const Point<3> &x, const double semi_major_axis_a, const double eccentricity) const;
+            const InitialTopographyModel::Interface<dim> *topography;
         };
+
+        /**
+        * Initialize function
+        */
+        virtual
+        void
+        initialize ();
 
 
         /**
