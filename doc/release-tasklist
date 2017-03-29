@@ -4,6 +4,8 @@
     . go through the list of TODOs in the source code and see what can be done
     . make sure the description of the interfaces that need to be updated
       are up to date in the manual
+    . update the used deal.II version for the Docker container in docker/Dockerfile
+      and in the manual
     . check that readme.html is okay and the links to the mailinglists are
       working (also in manual.pdf)
     . run (and be patient):
