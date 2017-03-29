@@ -3913,27 +3913,27 @@ the syntax understood, reference the documentation of the muparser library
 linked to above.
 
   
-\subsection{A graphical user interface for \aspect{}}
+\subsection{A graphical user interface for editing \aspect{} parameter files}
 Preparing a parameter file in a text editor can be a tedious task, not
 only because the number of input parameters has grown considerably during the
 development of \aspect{}, but also because remembering the names of commonly
 used options is a waste of (human) memory. Therefore, we provide a graphical
-user interface that builds upon an available program for deal.II. This GUI
+user interface that builds upon an available program for \dealii{}. This GUI
 allows to investigate existing input parameters, including their default values, modify
 these values in a spreadsheet like environment and then save a formatted 
 parameter file that can be used to start an ASPECT model. In the following
 subsections we describe installing and using this user interface. 
 
 \subsubsection{Installing parameter-GUI}
-The deal.II parameter-GUI program can be downloaded at \url{https://github.com/dealii/parameter_gui},
+The \dealii{} parameter-GUI program can be downloaded at \url{https://github.com/dealii/parameter_gui},
 and is compiled using the \texttt{cmake} program just like \aspect{} itself. The program has no
 dependencies except for the Qt development libraries that should be available as packages for 
 most Linux distributions and can also be obtained for all major operating systems at
 \url{https://www.qt.io/download-open-source/}.
 
-Example steps for installing the parameter-gui:
+Example steps for installing the parameter-gui could look as follows:
 \begin{enumerate}
-\item Download from \url{https://github.com/dealii/parameter_gui}.
+\item Download the program from \url{https://github.com/dealii/parameter_gui}.
 \item Prepare a Makefile by running \texttt{cmake .} in the source folder.
 \item Compile the program by running \texttt{make}.
 \item Make sure to set the environment variable \texttt{PARAMETER\_GUI\_DIR} 
@@ -3941,7 +3941,7 @@ to the directory that contains the parameter-GUI executable (optional).
 This will allow \aspect{} to automatically enable the GUI during configuration.
 \end{enumerate}
 
-\subsubsection{Using ASPECT-GUI}
+\subsubsection{Using \aspect{}-GUI}
 
 When configuring \aspect{} after executing the above steps, it should automatically pick up the
 location of the parameter-GUI, and will create a new script named \texttt{aspect-gui} within the build folder.
@@ -3952,17 +3952,17 @@ The aspect-gui script can be executed from any folder either with no argument or
 an existing parameter file. The script will run \aspect{} with the given (or an empty) parameter file, generate a database
 of existing input parameters, and open the parameter-GUI program with this database. The resulting window looks similar to Fig.~\ref{fig:aspect-gui}. If an existing parameter file was
 given, all parameter fields are pre-filled with the values set in the file instead of the default values.
-In the appearing window you can change parameters as necessary, and then save the file as a new parameter file. This parameter file can then be used
+In the program's main window you can change parameters as necessary, and then save the file as a new parameter file. This parameter file can then be used
 to start an \aspect{} model as usual. Note that it is possible to prepare and execute the parameter file with different versions of \aspect{}, e.g. if you prepare parameter files on a local machine, and execute the model on a remote compute cluster.
-Note however that if the two \aspect{} versions contain different default values or parameter names have changed this can lead
-to unexpected model behaviour or even unusable parameter files.
+Note however that if the two \aspect{} versions contain different default values or parameter names have changed, this can lead
+to unexpected model behavior or even unusable parameter files.
 
 \begin{figure}
 \hfill
 \includegraphics[width=0.4\textwidth]{aspect-gui.png}
 \hfill
 \phantom.
-\caption{\it The parameter GUI lists all available parameter options, and allows to change and save them into a new parameter file. Input fields know about the type of the variable and will display useful input fields to change them (e.g. drop-down menus, file dialogs, text fields).}
+\caption{\it The parameter GUI lists all available parameter options, and allows to change and save them into a new parameter file. Input fields know about the type of the variable and will display useful options to change them (e.g. drop-down menus, file dialogs, text fields).}
 \label{fig:aspect-gui}
 \end{figure}
 
