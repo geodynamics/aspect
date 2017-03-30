@@ -1,0 +1,8 @@
+# like pressure_compatibility.prm but with DG pressure
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/tests/pressure_compatibility.prm
+
+subsection Discretization
+  set Use locally conservative discretization = true
+end

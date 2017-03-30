@@ -960,8 +960,6 @@ namespace aspect
               // and that it is in fact a pressure dof
               Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[first_pressure_dof]),
                       ExcInternalError());
-              Assert (local_dof_indices[first_pressure_dof] >= vector.block(0).size(),
-                      ExcInternalError());
 
               // then adjust its value
               vector (local_dof_indices[first_pressure_dof]) -= pressure_adjustment;
@@ -977,39 +975,75 @@ namespace aspect
   void
   Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector)
   {
-    if (parameters.use_locally_conservative_discretization)
-      AssertThrow(false, ExcNotImplemented());
+    // If the mass conservation is written as
+    //   div u = f
+    // make sure this is solvable by modifying f to ensure that
+    // int_\Omega f = int_\Omega div u = 0
+    //
+    // We have to deal with several complications:
+    // - we can have an FE_Q or an FE_DGP for the pressure
+    // - we might use a direct solver, so pressure and velocity is in the same block
+    // - we might have melt transport, where we need to operate only on p_f
+    //
+    // We ensure int_\Omega f = 0 by computing a correction factor
+    //   c = \int f
+    // and adjust pressure RHS to be
+    //  fnew = f - c/|\Omega|
+    // such that
+    //   \int fnew = \int f - c/|\Omega| = -c + \int f = 0.
+    //
+    // We can compute
+    //   c = \int f = (f, 1) = (f, \sum_i \phi_i) = \sum_i (f, \phi_i) = \sum_i F_i
+    // which is just the sum over the RHS vector for FE_Q. For FE_DGP we need
+    // to restrict to 0th shape functions on each cell because this is how we
+    // represent the function 1.
+    //
+    // To make the adjustment fnew = f - c/|\Omega|
+    // note that
+    // fnew_i = f_i - c/|\Omega| * (1, \phi_i)
+    // and the same logic for FE_DGP applies
 
-    // In the following we integrate the right hand side. This integral is the
-    // correction term that needs to be added to the pressure right hand side.
-    // (so that the integral of right hand side is set to zero).
-    if (!parameters.include_melt_transport && introspection.block_indices.velocities != introspection.block_indices.pressure)
+
+    if ((!parameters.use_locally_conservative_discretization)
+        &&
+        (!parameters.include_melt_transport)
+        &&
+        (introspection.block_indices.velocities != introspection.block_indices.pressure))
       {
-        const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
-        const double correction = (- mean * vector.block(introspection.block_indices.pressure).size()) / global_volume;
+        // Easy Case. We have an FE_Q in a separate block, so we can use
+        // mean_value() and vector.block(p) += correction:
+        const double mean = vector.block(introspection.block_indices.pressure).mean_value();
+        const double int_rhs = mean * vector.block(introspection.block_indices.pressure).size();
+        const double correction = -int_rhs / global_volume;
+
         vector.block(introspection.block_indices.pressure).add(correction, pressure_shape_function_integrals.block(introspection.block_indices.pressure));
       }
-    else
+    else if (!parameters.use_locally_conservative_discretization)
       {
+        // FE_Q but we can not access the pressure block separately (either
+        // a direct solver or we have melt with p_f and p_c in the same block).
+        // Luckily we don't need to go over DoFs on each cell, because we
+        // have IndexSets to help us:
+
         // we need to operate only on p_f not on p_c
         const IndexSet &idxset = parameters.include_melt_transport ?
                                  introspection.index_sets.locally_owned_fluid_pressure_dofs
                                  :
                                  introspection.index_sets.locally_owned_pressure_dofs;
-        double pressure_sum = 0.0;
+        double int_rhs = 0.0;
 
         for (unsigned int i=0; i < idxset.n_elements(); ++i)
           {
             types::global_dof_index idx = idxset.nth_index_in_set(i);
-            pressure_sum += vector(idx);
+            int_rhs += vector(idx);
           }
 
         // We do not have to integrate over the normal velocity at the
         // boundaries with a prescribed velocity because the constraints
         // are already distributed to the right hand side in
         // current_constraints.distribute.
-        const double global_pressure_sum = Utilities::MPI::sum(pressure_sum, mpi_communicator);
-        const double correction = (- global_pressure_sum) / global_volume;
+        const double global_int_rhs = Utilities::MPI::sum(int_rhs, mpi_communicator);
+        const double correction = - global_int_rhs / global_volume;
 
         for (unsigned int i=0; i < idxset.n_elements(); ++i)
           {
@@ -1019,6 +1053,64 @@ namespace aspect
 
         vector.compress(VectorOperation::add);
       }
+    else
+      {
+        // Locally conservative with or without direct solver and with or
+        // without melt: grab a pickaxe and do everything by hand!
+        AssertThrow(parameters.use_locally_conservative_discretization,
+                    ExcInternalError());
+
+        double int_rhs = 0.0;
+        const unsigned int pressure_component = (parameters.include_melt_transport ?
+                                                 introspection.variable("fluid pressure").first_component_index
+                                                 : introspection.component_indices.pressure);
+        std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = dof_handler.begin_active(),
+        endc = dof_handler.end();
+        for (; cell != endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              // identify the first pressure dof
+              cell->get_dof_indices (local_dof_indices);
+              const unsigned int first_pressure_dof
+                = finite_element.component_to_system_index (pressure_component, 0);
+
+              // make sure that this DoF is really owned by the current processor
+              // and that it is in fact a pressure dof
+              Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[first_pressure_dof]),
+                      ExcInternalError());
+
+              // compute integral:
+              int_rhs += vector(local_dof_indices[first_pressure_dof]);
+            }
+
+        const double global_int_rhs = Utilities::MPI::sum(int_rhs, mpi_communicator);
+        const double correction = - global_int_rhs / global_volume;
+
+        // Now modify our RHS with the correction factor:
+        for (cell = dof_handler.begin_active(); cell != endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              // identify the first pressure dof
+              cell->get_dof_indices (local_dof_indices);
+              const unsigned int first_pressure_dof
+                = finite_element.component_to_system_index (pressure_component, 0);
+
+              // make sure that this DoF is really owned by the current processor
+              // and that it is in fact a pressure dof
+              Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[first_pressure_dof]),
+                      ExcInternalError());
+
+              // correct:
+              types::global_dof_index idx = local_dof_indices[first_pressure_dof];
+              vector(idx) += correction * pressure_shape_function_integrals(idx);
+            }
+
+        vector.compress(VectorOperation::add);
+      }
+
+
   }
 
 
