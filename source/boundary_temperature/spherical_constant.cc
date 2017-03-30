@@ -23,6 +23,7 @@
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/chunk.h>
+#include <aspect/geometry_model/chunk_3.h>
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 
 #include <utility>
@@ -48,6 +49,7 @@ namespace aspect
       Assert ((dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0
                || dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0
                || dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0
+               || dynamic_cast<const GeometryModel::Chunk3<dim>*>(geometry_model) != 0
                || dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>(geometry_model) != 0),
               ExcMessage ("This boundary model is only implemented if the geometry "
                           "is a spherical shell, sphere, ellipsoidal chunk or chunk."));
