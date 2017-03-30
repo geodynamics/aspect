@@ -24,7 +24,7 @@
 
 #include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/compat.h>
+//#include <aspect/compat.h>
 
 #include <deal.II/base/std_cxx11/array.h>
 #include <deal.II/base/function_lib.h>
