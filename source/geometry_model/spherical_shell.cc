@@ -24,13 +24,41 @@
 
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/tria_boundary_lib.h>
-#include <deal.II/grid/manifold_lib.h>
 #include <aspect/utilities.h>
 
 namespace aspect
 {
   namespace GeometryModel
   {
+    template <int dim>
+    SphericalShell<dim>::SphericalShellGeometry::SphericalShellGeometry()
+    {}
+
+    template <int dim>
+    Point<dim>
+    SphericalShell<dim>::SphericalShellGeometry::
+    push_forward(const Point<dim> &space_point) const
+    {
+      return spherical_manifold.push_forward(space_point);
+    }
+
+
+    template <int dim>
+    Point<dim>
+    SphericalShell<dim>::SphericalShellGeometry::
+    pull_back(const Point<dim> &chart_point) const
+    {
+      return spherical_manifold.pull_back(chart_point);
+    }
+
+
+    template<int dim>
+    const typename Interface<dim>::Manifold *
+    SphericalShell<dim>::get_manifold() const
+    {
+      return &manifold;
+    }
+
     template <int dim>
     void
     SphericalShell<dim>::

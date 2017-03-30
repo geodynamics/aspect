@@ -49,7 +49,7 @@ namespace aspect
         /**
          * A class which describes the manifold.
          */
-        class EllipsoidalChunkGeometry : public ChartManifold<dim,3,3>
+        class EllipsoidalChunkGeometry : public Interface<dim>::Manifold
         {
           public:
             /**
@@ -80,18 +80,48 @@ namespace aspect
              * coordinates phi, theta and depth, also accounting for the
              * topography.
              */
+            //virtual
+            //Point<dim>
+            //pull_back(const Point<dim> &space_point) const;
+
+            /**
+             * The deal.ii pull back function in 2d. This function receives
+             * spherical/ellipsoidal coordinates phi, theta and depth and
+             * returns cartesian points x,y and z, also accounting for the
+             * topography.
+             */
+            //virtual
+            //Point<dim>
+            //push_forward(const Point<dim> &chart_point) const;
+
+            /**
+             * The deal.ii pull back function in 3d. This function receives
+             * cartesian points x,y and z and return spherical/ellipsoidal
+             * coordinates phi, theta and depth, also accounting for the
+             * topography.
+             */
             virtual
-            Point<3>
-            pull_back(const Point<3> &space_point) const;
+            Point<dim>
+            pull_back(const Point<dim> &space_point) const;
 
             /**
              * The deal.ii pull back function in 2d. This function should
              * not be used, until the todo in the cc file has been fixed.
              */
-            virtual
+            /*virtual
             Point<2>
             pull_back(const Point<2> &space_point) const;
 
+            / **
+             * The deal.ii pull back function in 2d. This function receives
+             * spherical/ellipsoidal coordinates phi, theta and depth and
+             * returns cartesian points x,y and z, also accounting for the
+             * topography.
+             * /
+            virtual
+            Point<2>
+            push_forward(const Point<2> &chart_point) const;
+*/
             /**
              * The deal.ii pull back function in 3d. This function receives
              * spherical/ellipsoidal coordinates phi, theta and depth and
@@ -99,8 +129,8 @@ namespace aspect
              * topography.
              */
             virtual
-            Point<3>
-            push_forward(const Point<3> &chart_point) const;
+            Point<dim>
+            push_forward(const Point<dim> &chart_point) const;
 
 
           private:
@@ -275,7 +305,7 @@ namespace aspect
         /**
          * Retrieve the manifold object.
          */
-        EllipsoidalChunkGeometry
+        const typename Interface<dim>::Manifold*
         get_manifold() const;
 
       private:

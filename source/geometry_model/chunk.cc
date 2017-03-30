@@ -369,6 +369,13 @@ namespace aspect
         cell->set_all_manifold_ids (numbers::invalid_manifold_id);
     }
 
+    template<int dim>
+    const typename Interface<dim>::Manifold*
+    aspect::GeometryModel::Chunk<dim>::get_manifold() const
+    {
+      return &manifold;
+    }
+
     template <int dim>
     void
     Chunk<dim>::

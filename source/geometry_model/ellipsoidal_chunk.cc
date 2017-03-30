@@ -162,15 +162,26 @@ namespace aspect
      * it is used by a bind statement.
      */
     template <int dim>
-    Point<3>
-    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back(const Point<3> &space_point) const
+    Point<dim>
+    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back(const Point<dim> &space_point) const
     {
       AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points."));
-      return pull_back_topography(pull_back_ellipsoid (space_point, semi_major_axis_a, eccentricity));
+      if(dim == 3)
+      {
+    	  const Point<3> space_point_local(space_point(0),space_point(1),space_point(2));
+    	  const Point<3> result_point(pull_back_topography(pull_back_ellipsoid (space_point_local, semi_major_axis_a, eccentricity)));
+    	  Point<dim> return_point;
+    	  return_point[0] = result_point[0];
+    	  return_point[1] = result_point[1];
+    	  return_point[2] = result_point[2];
+    	  return return_point;
 
+      }
+      else
+    	  return Point<dim>();
     }
 
-    template <int dim>
+    /*template <int dim>
     Point<2>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back(const Point<2> &space_point) const
     {
@@ -180,11 +191,30 @@ namespace aspect
     }
 
     template <int dim>
-    Point<3>
-    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward(const Point<3> &chart_point) const
+    Point<2>
+    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward(const Point<2> &chart_point) const
     {
       AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points."));
       return push_forward_ellipsoid (push_forward_topography(chart_point), semi_major_axis_a, eccentricity);
+    }*/
+
+    template <int dim>
+    Point<dim>
+    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward(const Point<dim> &chart_point) const
+    {
+      AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points."));
+      if(dim == 3)
+      {
+    	  const Point<3> chart_point_local(chart_point(0),chart_point(1),chart_point(2));
+    	  const Point<3> result_point(push_forward_ellipsoid (push_forward_topography(chart_point_local), semi_major_axis_a, eccentricity));
+    	  Point<dim> return_point;
+    	  return_point[0] = result_point[0];
+    	  return_point[1] = result_point[1];
+    	  return_point[2] = result_point[2];
+    	  return return_point;
+      }
+      else
+    	  return Point<dim>();
     }
 
     template <int dim>
@@ -708,14 +738,14 @@ namespace aspect
 
       return true;
     }
-  }
-}
 
-template <int dim>
-typename aspect::GeometryModel::EllipsoidalChunk<dim>::EllipsoidalChunkGeometry
-aspect::GeometryModel::EllipsoidalChunk<dim>::get_manifold() const
-{
-  return manifold;
+    template<int dim>
+    const typename Interface<dim>::Manifold*
+    aspect::GeometryModel::EllipsoidalChunk<dim>::get_manifold() const
+    {
+      return &manifold;
+    }
+  }
 }
 
 // explicit instantiations

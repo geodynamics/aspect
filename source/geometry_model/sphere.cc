@@ -30,6 +30,34 @@ namespace aspect
 {
   namespace GeometryModel
   {
+  template <int dim>
+  Sphere<dim>::SphereGeometry::SphereGeometry()
+  {}
+
+  template <int dim>
+  Point<dim>
+  Sphere<dim>::SphereGeometry::
+  push_forward(const Point<dim> &space_point) const
+  {
+    return spherical_manifold.push_forward(space_point);
+  }
+
+
+  template <int dim>
+  Point<dim>
+  Sphere<dim>::SphereGeometry::
+  pull_back(const Point<dim> &chart_point) const
+  {
+    return spherical_manifold.pull_back(chart_point);
+  }
+
+
+  template<int dim>
+  const typename Interface<dim>::Manifold *
+  Sphere<dim>::get_manifold() const
+  {
+    return &manifold;
+  }
     template <int dim>
     void
     Sphere<dim>::
