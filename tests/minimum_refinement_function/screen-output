@@ -35,7 +35,7 @@ Number of degrees of freedom: 8,799 (5,400+699+2,700)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+2 iterations.
+   Solving Stokes system... 34+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-minimum_refinement_function/solution/solution-00002
@@ -50,7 +50,7 @@ Number of degrees of freedom: 20,806 (12,786+1,627+6,393)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+2 iterations.
+   Solving Stokes system... 35+0 iterations.
 
    Postprocessing:
 

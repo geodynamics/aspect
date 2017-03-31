@@ -8,6 +8,6 @@
 # 8: Velocity iterations in Stokes preconditioner
 # 9: Schur complement iterations in Stokes preconditioner
 # 10: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 32 18 3                                                 "" 
-1 1.000000000000e-04 1.000000000000e-04 256 2467 1089  0  0 0 output-tangurnis_ba_custom/solution/solution-00000 
-0 0.000000000000e+00 0.000000000000e+00   0    0    0  0  0 0 output-tangurnis_ba_custom/solution/solution-00001 
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 31 32 31                                                 "" 
+1 1.000000000000e-04 1.000000000000e-04 256 2467 1089  0  0  0 output-tangurnis_ba_custom/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00   0    0    0  0  0  0 output-tangurnis_ba_custom/solution/solution-00001 
