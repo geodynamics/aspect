@@ -21,16 +21,13 @@
 
 
 #include <aspect/initial_conditions/polygon_depth.h>
-//#include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
 #include <aspect/geometry_model/interface.h>
+#include <boost/lexical_cast.hpp>
 #include <aspect/utilities.h>
-//#include <cmath>
-//#include <limits.h>
+
 
 namespace aspect
 {
-// start model
 namespace InitialConditions
 {
 
@@ -42,20 +39,16 @@ initial_temperature (const Point<dim> &position) const
 	const GeometryModel::Interface<dim>* geometry_model= &this->get_geometry_model();
 	const typename GeometryModel::Interface<dim>::Manifold* manifold = geometry_model->get_manifold();
 
-	const dealii::Point<dim> internal_position = manifold->pull_back(position); // radius, longitude, lattitude;
+	const dealii::Point<dim> internal_position = manifold != NULL ? manifold->pull_back(position) : position; // radius, longitude, lattitude or x,y and z;
 
 	const Point<2> internal_position_surface(internal_position(1), dim == 3 ? internal_position(2) : 0);
 
-	const double gravity_norm=dynamic_cast<const GravityModel::Interface<dim>&>(this->get_gravity_model()).gravity_vector(position).norm();
 	double temperature;
 	const double depth = geometry_model->depth(position);
 
-	//double new_temperature;
-	if(Utilities::polygon_contains_point<dim>(coordinate_list, internal_position_surface)/*internal_position,coordinate_list,number_of_coordinates[i_object])*/ && depth <= bottom_depth)
+	if(Utilities::polygon_contains_point<dim>(coordinate_list, internal_position_surface) && depth <= bottom_depth)
 	{
-		// inside a continental plate
 		temperature = reference_temperature;
-
 	}
 	else
 	{
@@ -73,9 +66,12 @@ PolygonDepth<dim>::declare_parameters (ParameterHandler &prm)
 	{
 		prm.enter_subsection ("Polygon depth");
 		{
-			prm.declare_entry("Reference temperature","273", Patterns::Double(), "Set the minimum parts per degree, which determines how many extra coordinate points will be generated.");
-			prm.declare_entry("Bottom depth","600e3", Patterns::Double(), "Set the minimum parts per degree, which determines how many extra coordinate points will be generated.");
-			prm.declare_entry("List of polygon coordinates","", Patterns::Anything (), "Set the minimum parts per degree, which determines how many extra coordinate points will be generated.");
+			prm.declare_entry("Reference temperature","273", Patterns::Double(),
+					          "Set the minimum parts per degree, which determines how many extra coordinate points will be generated.");
+			prm.declare_entry("Bottom depth","600e3", Patterns::Double(),
+					          "Set the minimum parts per degree, which determines how many extra coordinate points will be generated.");
+			prm.declare_entry("List of polygon coordinates","", Patterns::Anything (),
+					          "Set the minimum parts per degree, which determines how many extra coordinate points will be generated.");
 		}
 		prm.leave_subsection ();
 	}
@@ -88,7 +84,6 @@ template <int dim>
 void
 PolygonDepth<dim>::parse_parameters (ParameterHandler &prm)
 {
-	///// Start getting the information for the surface objects ////
 	prm.enter_subsection ("Initial conditions");
 	{
 		prm.enter_subsection ("Polygon depth");
@@ -96,6 +91,14 @@ PolygonDepth<dim>::parse_parameters (ParameterHandler &prm)
 			reference_temperature = prm.get_double ("Reference temperature");
 			bottom_depth = prm.get_double ("Bottom depth");
 
+			const GeometryModel::Interface<dim>* geometry_model= &this->get_geometry_model();
+			const typename GeometryModel::Interface<dim>::Manifold* manifold = geometry_model->get_manifold();
+
+			/**
+			 * If there is no manifold, we assume we don't have to transform the coordinates to radians,
+			 * otherwise it is some kind of ellipsoid/sphere and we do convert it from degree to radians.
+			 */
+			const bool use_degree_to_rad = (manifold != NULL ? true : false);
 
 			/**
 			 * Retrieve the coordinates
@@ -113,8 +116,8 @@ PolygonDepth<dim>::parse_parameters (ParameterHandler &prm)
 						ExcMessage("Surface objects are defined at the surface in a 3d world, and should always 2 values in 2d and 3d. Coordinate " +
 								boost::lexical_cast<std::string>(i+1) + " does not meet this requirement."));
 
-				coordinate_list[i](0) =  coordinate_list_temp[0] * degree_to_rad;
-				coordinate_list[i](1) =  coordinate_list_temp[1] * degree_to_rad;
+				coordinate_list[i](0) =  coordinate_list_temp[0] * (use_degree_to_rad ? degree_to_rad : 1);
+				coordinate_list[i](1) =  coordinate_list_temp[1] * (use_degree_to_rad ? degree_to_rad : 1);
 			}
 
 		}
