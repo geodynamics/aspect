@@ -47,15 +47,29 @@ namespace aspect
     {
       public:
         /**
-         * A class which describes the manifold.
+         * A class which describes an ellipsoidal manifold where
+         * the coordinates are defined as longitude,latitude,height/-depth.
+         * This class is used to transform the gridgenerator parallelapiped
+         * into an ellipsoidal chunk. It is very inconvenient to work with
+         * radius here, like for example the chunk manifold does, because
+         * with the parallellepiped, we can only define one point in each
+         * dimention. In an ellipsoid the radius is not constant along the
+         * surface, where our chunk will be placed, but it has a constant
+         * depth/height, which is zero. To be consistent in the grid we use
+         * this manifold for everything related to making the grid, and
+         * define an other manifold which can convert from cartasian to
+         * ellipsoidal coordinates with radius and back for purposes like
+         * initial conditions.
+         *
+         * This class works with the order longitude,latitude, height.
          */
-        class EllipsoidalChunkGeometry : public Interface<dim>::Manifold
+        class EllipsoidalChunkGeometryHeight : public Interface<dim>::Manifold
         {
           public:
             /**
              * Constructor
              */
-            EllipsoidalChunkGeometry();
+        	EllipsoidalChunkGeometryHeight();
 
             /**
              * An initialization function necessary for to make sure that the
@@ -80,48 +94,10 @@ namespace aspect
              * coordinates phi, theta and depth, also accounting for the
              * topography.
              */
-            //virtual
-            //Point<dim>
-            //pull_back(const Point<dim> &space_point) const;
-
-            /**
-             * The deal.ii pull back function in 2d. This function receives
-             * spherical/ellipsoidal coordinates phi, theta and depth and
-             * returns cartesian points x,y and z, also accounting for the
-             * topography.
-             */
-            //virtual
-            //Point<dim>
-            //push_forward(const Point<dim> &chart_point) const;
-
-            /**
-             * The deal.ii pull back function in 3d. This function receives
-             * cartesian points x,y and z and return spherical/ellipsoidal
-             * coordinates phi, theta and depth, also accounting for the
-             * topography.
-             */
             virtual
             Point<dim>
             pull_back(const Point<dim> &space_point) const;
 
-            /**
-             * The deal.ii pull back function in 2d. This function should
-             * not be used, until the todo in the cc file has been fixed.
-             */
-            /*virtual
-            Point<2>
-            pull_back(const Point<2> &space_point) const;
-
-            / **
-             * The deal.ii pull back function in 2d. This function receives
-             * spherical/ellipsoidal coordinates phi, theta and depth and
-             * returns cartesian points x,y and z, also accounting for the
-             * topography.
-             * /
-            virtual
-            Point<2>
-            push_forward(const Point<2> &chart_point) const;
-*/
             /**
              * The deal.ii pull back function in 3d. This function receives
              * spherical/ellipsoidal coordinates phi, theta and depth and
@@ -157,6 +133,95 @@ namespace aspect
              * For the equation details, please see deal.iii step 53.
              */
             Point<3> pull_back_topography (const Point<3> &phi_theta_d) const;
+
+
+            double semi_major_axis_a;
+            double eccentricity;
+            double semi_minor_axis_b;
+            double bottom_depth;
+            std::vector<Point<2> > corners;
+            const InitialTopographyModel::Interface<dim> *topography;
+        };
+
+        /**
+         * A class which describes an ellipsoidal manifold where
+         * the coordinates are defined as longitude,latitude,radius.
+         * This manifold is given through get_manifold, because the
+         * other manifold work with radius in stead of height.
+         *
+         * To conform to the other manifolds, this class works with
+         * the order Radius, longitude, latitude.
+         */
+        class EllipsoidalChunkGeometryRadius : public Interface<dim>::Manifold
+        {
+          public:
+            /**
+             * Constructor
+             */
+        	EllipsoidalChunkGeometryRadius();
+
+            /**
+             * An initialization function necessary for to make sure that the
+             * manifold has access to the topography plugins.
+             */
+            void
+            initialize(const InitialTopographyModel::Interface<dim> *topography);
+
+            /**
+             * Sets several parameters for the ellipsoidal manifold object.
+             */
+            void
+            set_manifold_parameters(const double para_semi_major_axis_a,
+                                    const double para_eccentricity,
+                                    const double para_semi_minor_axis_b,
+                                    const double para_bottom_depth,
+                                    const std::vector<Point<2> > &para_corners);
+
+            /**
+             * The deal.ii pull back function in 3d. This function receives
+             * cartesian points x,y and z and return spherical/ellipsoidal
+             * coordinates phi, theta and depth, also accounting for the
+             * topography.
+             */
+            virtual
+            Point<dim>
+            pull_back(const Point<dim> &space_point) const;
+
+            /**
+             * The deal.ii pull back function in 3d. This function receives
+             * spherical/ellipsoidal coordinates phi, theta and depth and
+             * returns cartesian points x,y and z, also accounting for the
+             * topography.
+             */
+            virtual
+            Point<dim>
+            push_forward(const Point<dim> &chart_point) const;
+
+
+          private:
+            /**
+             * This function does the actual push forward to the ellipsoid.
+             * For the equation details, please see deal.iii step 53.
+             */
+            Point<3> push_forward_ellipsoid (const Point<3> &R_phi_theta, const double semi_major_axis_a, const double eccentricity) const;
+
+            /**
+             * This function does the actual pull back from the ellipsoid.
+             * For the equation details, please see deal.iii step 53.
+             */
+            Point<3> pull_back_ellipsoid (const Point<3> &x, const double semi_major_axis_a, const double eccentricity) const;
+
+            /**
+             * This function add topography to the cartesian coordinates.
+             * For the equation details, please see deal.iii step 53.
+             */
+            Point<3> push_forward_topography (const Point<3> &R_hat_phi_theta) const;
+
+            /**
+             * This function removes topography from the cartesian coordinates.
+             * For the equation details, please see deal.iii step 53.
+             */
+            Point<3> pull_back_topography (const Point<3> &R_phi_theta) const;
 
 
             double semi_major_axis_a;
@@ -333,7 +398,8 @@ namespace aspect
         /**
          * Construct manifold object Pointer to an object that describes the geometry.
          */
-        EllipsoidalChunkGeometry   manifold;
+        EllipsoidalChunkGeometryHeight   manifold_height;
+        EllipsoidalChunkGeometryRadius   manifold_radius;
 
         static void set_manifold_ids (Triangulation<dim> &triangulation)
         {
