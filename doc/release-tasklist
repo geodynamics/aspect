@@ -20,6 +20,8 @@
   . fix doxygen errors:
       find include -name "*h" -print | xargs -n 1 $DEALSRCDIR/contrib/utilities/checkdoxygen.py
     and commit.
+  . update the release for people to cite in the manual by updating
+      the release number and the release year
   . fix formatting, copyright years:
       old:
       find . -name "*.h" -print | while read file;do $DEALSRCDIR/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
