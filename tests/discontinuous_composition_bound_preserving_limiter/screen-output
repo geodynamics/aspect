@@ -7,7 +7,7 @@ Number of degrees of freedom: 8,164 (2,178+289+1,089+2,304+2,304)
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+1 iterations.
+   Solving Stokes system... 30+0 iterations.
 
 Number of active cells: 157 (on 6 levels)
 Number of degrees of freedom: 5,244 (1,482+195+741+1,413+1,413)

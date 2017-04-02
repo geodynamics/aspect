@@ -25,7 +25,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Temperature min/avg/max:  1.005 K, 1.041 K, 1.091 K
      RMS, max velocity:        4.84e-09 m/s, 1.16e-08 m/s
 
-*** Timestep 7:  t=8.24179e+06 seconds
+*** Timestep 7:  t=8.2418e+06 seconds
    Solving temperature system... 19 iterations.
    Solving Stokes system... 26+0 iterations.
 
