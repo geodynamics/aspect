@@ -57,46 +57,6 @@ namespace aspect
     class Interface
     {
       public:
-        /**
-         * A class which describes the manifold.
-         * /
-        class Manifold : public ChartManifold<dim,dim>
-        {
-          public:
-            / **
-             * Constructor
-             * /
-            Manifold();
-
-            / **
-             * An initialization function necessary for to make sure that the
-             * manifold has access to the topography plugins.
-             * /
-            //virtual
-            //void
-            //initialize(const InitialTopographyModel::Interface<dim> *topography);
-
-            / **
-             * The deal.ii pull back function in 3d. This function receives
-             * cartesian points x,y and z and return spherical/ellipsoidal
-             * coordinates phi, theta and depth, also accounting for the
-             * topography.
-             * /
-            virtual
-            Point<dim>
-            pull_back(const Point<dim> &space_point) const = 0;
-
-            / **
-             * The deal.ii pull back function in 3d. This function receives
-             * spherical/ellipsoidal coordinates phi, theta and depth and
-             * returns cartesian points x,y and z, also accounting for the
-             * topography.
-             * /
-            virtual
-            Point<dim>
-            push_forward(const Point<dim> &chart_point) const = 0;
-
-        };*/
 
         /**
          * Destructor. Made virtual to enforce that derived classes also have
@@ -325,7 +285,7 @@ namespace aspect
          * Todo
          */
         virtual
-        const ChartManifold<dim,dim>*
+        const ChartManifold<dim,dim> *
         get_manifold() const;
 
 

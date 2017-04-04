@@ -29,10 +29,6 @@ namespace aspect
   namespace GeometryModel
   {
 
-    /*template <int dim>
-    Interface<dim>::Manifold::Manifold ()
-    {}*/
-
     template <int dim>
     Interface<dim>::~Interface ()
     {}
@@ -71,8 +67,8 @@ namespace aspect
 
 
     template<int dim>
-    const ChartManifold<dim,dim>*
-	Interface<dim>::get_manifold() const
+    const ChartManifold<dim,dim> *
+    Interface<dim>::get_manifold() const
     {
       return NULL;
     }
