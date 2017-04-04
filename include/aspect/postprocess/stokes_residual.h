@@ -95,9 +95,8 @@ namespace aspect
         /**
          * Callback function to collect the data.
          */
-        void stokes_solver_callback (const SimulatorAccess<dim> &sim,
-                                     const bool success,
-                                     const std::vector<double> &history);
+        void stokes_solver_callback (const SolverControl &solver_control_cheap,
+                                     const SolverControl &solver_control_expensive);
 
         /**
          * An array of all the past values
