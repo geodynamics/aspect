@@ -69,7 +69,7 @@ namespace aspect
             /**
              * Constructor
              */
-        	EllipsoidalChunkGeometryHeight();
+            EllipsoidalChunkGeometryHeight();
 
             /**
              * An initialization function necessary for to make sure that the
@@ -158,7 +158,7 @@ namespace aspect
             /**
              * Constructor
              */
-        	EllipsoidalChunkGeometryRadius();
+            EllipsoidalChunkGeometryRadius();
 
             /**
              * An initialization function necessary for to make sure that the
@@ -370,7 +370,7 @@ namespace aspect
         /**
          * Retrieve the manifold object.
          */
-        const ChartManifold<dim,dim>*
+        const ChartManifold<dim,dim> *
         get_manifold() const;
 
       private:

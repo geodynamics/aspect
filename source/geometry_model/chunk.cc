@@ -370,7 +370,7 @@ namespace aspect
     }
 
     template<int dim>
-    const ChartManifold<dim,dim>*
+    const ChartManifold<dim,dim> *
     aspect::GeometryModel::Chunk<dim>::get_manifold() const
     {
       return &manifold;

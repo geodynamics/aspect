@@ -302,8 +302,8 @@ namespace aspect
       const double h = topography->value(phi_theta);
       const double R = R_hat + (R_hat + bottom_depth)/bottom_depth*h;
       const Point<3> R_phi_theta (R,
-    		                      R_hat_phi_theta[1],
-								  R_hat_phi_theta[2]);
+                                  R_hat_phi_theta[1],
+                                  R_hat_phi_theta[2]);
       return R_phi_theta;
     }
 
@@ -321,8 +321,8 @@ namespace aspect
       const double h = topography->value(phi_theta);
       const double R_hat = bottom_depth * (R-h)/(bottom_depth+h);
       const Point<3> R_hat_phi_theta (R_hat,
-    		                          R_phi_theta[1],
-									  R_phi_theta[2]);
+                                      R_phi_theta[1],
+                                      R_phi_theta[2]);
       return R_hat_phi_theta;
     }
 
