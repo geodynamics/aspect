@@ -251,6 +251,68 @@ namespace aspect
   }
 
 
+  template <int dim>
+  void Simulator<dim>::generate_global_statistics()
+  {
+    // set global statistics about this time step
+    statistics.add_value("Time step number", timestep_number);
+    if (parameters.convert_to_years == true)
+      statistics.add_value("Time (years)", time / year_in_seconds);
+    else
+      statistics.add_value("Time (seconds)", time);
+
+    if (parameters.convert_to_years == true)
+      statistics.add_value("Time step size (years)", time_step / year_in_seconds);
+    else
+      statistics.add_value("Time step size (seconds)", time_step);
+
+    statistics.add_value("Number of mesh cells",
+                         triangulation.n_global_active_cells());
+
+    unsigned int n_stokes_dofs = introspection.system_dofs_per_block[0];
+    if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+      n_stokes_dofs += introspection.system_dofs_per_block[introspection.block_indices.pressure];
+
+    statistics.add_value("Number of Stokes degrees of freedom", n_stokes_dofs);
+    statistics.add_value("Number of temperature degrees of freedom",
+                         introspection.system_dofs_per_block[introspection.block_indices.temperature]);
+    if (parameters.n_compositional_fields > 0)
+      statistics.add_value("Number of degrees of freedom for all compositions",
+                           parameters.n_compositional_fields
+                           * introspection.system_dofs_per_block[introspection.block_indices.compositional_fields[0]]);
+  }
+
+
+  template <int dim>
+  void Simulator<dim>::initialize_statistics()
+  {
+    // if we do not do more than one nonlinear iteration, we fill
+    // the columns with their correct value
+    if(parameters.nonlinear_solver == NonlinearSolver::IMPES || parameters.nonlinear_solver == NonlinearSolver::Advection_only)
+      generate_global_statistics();
+    // otherwise, we initialize them with zeroes
+    else
+      {
+        // set global statistics about this time step
+        statistics.add_value("Time step number", 0);
+        if (parameters.convert_to_years == true)
+          statistics.add_value("Time (years)", 0.0);
+        else
+          statistics.add_value("Time (seconds)", 0.0);
+
+        if (parameters.convert_to_years == true)
+          statistics.add_value("Time step size (years)", 0.0);
+        else
+          statistics.add_value("Time step size (seconds)", 0.0);
+
+        statistics.add_value("Number of mesh cells", 0);
+        statistics.add_value("Number of Stokes degrees of freedom", 0);
+        statistics.add_value("Number of temperature degrees of freedom", 0);
+        if (parameters.n_compositional_fields > 0)
+          statistics.add_value("Number of degrees of freedom for all compositions", 0);
+      }
+  }
+
 
   template <int dim>
   double
@@ -1536,6 +1598,8 @@ namespace aspect
   template double Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::output_statistics(); \
+  template void Simulator<dim>::generate_global_statistics(); \
+  template void Simulator<dim>::initialize_statistics(); \
   template double Simulator<dim>::compute_initial_stokes_residual(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
