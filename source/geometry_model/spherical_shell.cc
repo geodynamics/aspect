@@ -100,7 +100,7 @@ namespace aspect
 
 
     template<int dim>
-    const typename Interface<dim>::Manifold *
+    const ChartManifold<dim,dim> *
     SphericalShell<dim>::get_manifold() const
     {
       return &manifold;

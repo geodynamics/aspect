@@ -909,7 +909,7 @@ namespace aspect
     }
 
     template<int dim>
-    const typename Interface<dim>::Manifold *
+    const ChartManifold<dim,dim> *
     aspect::GeometryModel::EllipsoidalChunk<dim>::get_manifold() const
     {
       return &manifold_radius;

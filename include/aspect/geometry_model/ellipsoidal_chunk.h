@@ -63,7 +63,7 @@ namespace aspect
          *
          * This class works with the order longitude,latitude, height.
          */
-        class EllipsoidalChunkGeometryHeight : public Interface<dim>::Manifold
+        class EllipsoidalChunkGeometryHeight : public ChartManifold<dim,dim>
         {
           public:
             /**
@@ -152,7 +152,7 @@ namespace aspect
          * To conform to the other manifolds, this class works with
          * the order Radius, longitude, latitude.
          */
-        class EllipsoidalChunkGeometryRadius : public Interface<dim>::Manifold
+        class EllipsoidalChunkGeometryRadius : public ChartManifold<dim,dim>
         {
           public:
             /**
@@ -370,7 +370,7 @@ namespace aspect
         /**
          * Retrieve the manifold object.
          */
-        const typename Interface<dim>::Manifold*
+        const ChartManifold<dim,dim>*
         get_manifold() const;
 
       private:

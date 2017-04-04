@@ -37,7 +37,7 @@ PolygonDepth<dim>::
 initial_temperature (const Point<dim> &position) const
 {
 	const GeometryModel::Interface<dim>* geometry_model= &this->get_geometry_model();
-	const typename GeometryModel::Interface<dim>::Manifold* manifold = geometry_model->get_manifold();
+	const ChartManifold<dim,dim>* manifold = geometry_model->get_manifold();
 
 	const dealii::Point<dim> internal_position = manifold != NULL ? manifold->pull_back(position) : position; // radius, longitude, lattitude or x,y and z;
 
@@ -92,7 +92,7 @@ PolygonDepth<dim>::parse_parameters (ParameterHandler &prm)
 			bottom_depth = prm.get_double ("Bottom depth");
 
 			const GeometryModel::Interface<dim>* geometry_model= &this->get_geometry_model();
-			const typename GeometryModel::Interface<dim>::Manifold* manifold = geometry_model->get_manifold();
+			const ChartManifold<dim,dim>* manifold = geometry_model->get_manifold();
 
 			/**
 			 * If there is no manifold, we assume we don't have to transform the coordinates to radians,

@@ -102,11 +102,12 @@ namespace aspect
 
 
   template<int dim>
-  const typename Interface<dim>::Manifold *
+  const ChartManifold<dim,dim> *
   Sphere<dim>::get_manifold() const
   {
     return &manifold;
   }
+
     template <int dim>
     void
     Sphere<dim>::

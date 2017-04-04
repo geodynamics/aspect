@@ -245,7 +245,7 @@ namespace aspect
          * pull_back reverses this operation.
          */
 
-        class ChunkGeometry : public Interface<dim>::Manifold
+        class ChunkGeometry : public ChartManifold<dim,dim>
         {
           public:
             ChunkGeometry();
@@ -278,7 +278,7 @@ namespace aspect
         /**
          * Retrieve the manifold object.
          */
-        const typename Interface<dim>::Manifold*
+        const ChartManifold<dim,dim> *
         get_manifold() const;
 
         static void set_manifold_ids (Triangulation<dim> &triangulation);

@@ -55,7 +55,7 @@ namespace aspect
          * pull_back reverses this operation.
          */
 
-        class SphericalShellGeometry : public Interface<dim>::Manifold
+        class SphericalShellGeometry : public ChartManifold<dim,dim>
         {
           public:
             SphericalShellGeometry();
@@ -76,7 +76,7 @@ namespace aspect
         /**
          * Retrieve the manifold object.
          */
-        const typename Interface<dim>::Manifold *
+        const ChartManifold<dim,dim> *
         get_manifold() const;
 
         /**
