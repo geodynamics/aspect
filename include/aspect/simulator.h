@@ -1170,6 +1170,25 @@ namespace aspect
       void output_statistics();
 
       /**
+       * This function is called at the end of each time step and generates
+       * global statistics about this time step like the current time, the
+       * number of mesh cells, and the number of degrees of freedom.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void generate_global_statistics();
+
+      /**
+       * This function is called at the beginning of the model run to add the
+       * columns to the statistics file in the correct order.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void initialize_statistics();
+
+      /**
        * This routine computes the initial Stokes residual that is needed as a
        * convergence criterion in models with the iterated IMPES solver. We
        * calculate it in the same way as the tolerance for the linear solver,

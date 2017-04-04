@@ -788,32 +788,6 @@ namespace aspect
             << " seconds"
             << std::endl;
 
-    // set global statistics about this time step
-    statistics.add_value("Time step number", timestep_number);
-    if (parameters.convert_to_years == true)
-      statistics.add_value("Time (years)", time / year_in_seconds);
-    else
-      statistics.add_value("Time (seconds)", time);
-
-    if (parameters.convert_to_years == true)
-      statistics.add_value("Time step size (years)", time_step / year_in_seconds);
-    else
-      statistics.add_value("Time step size (seconds)", time_step);
-
-    statistics.add_value("Number of mesh cells",
-                         triangulation.n_global_active_cells());
-
-    unsigned int n_stokes_dofs = introspection.system_dofs_per_block[0];
-    if (introspection.block_indices.velocities != introspection.block_indices.pressure)
-      n_stokes_dofs += introspection.system_dofs_per_block[introspection.block_indices.pressure];
-
-    statistics.add_value("Number of Stokes degrees of freedom", n_stokes_dofs);
-    statistics.add_value("Number of temperature degrees of freedom",
-                         introspection.system_dofs_per_block[introspection.block_indices.temperature]);
-    if (parameters.n_compositional_fields > 0)
-      statistics.add_value("Number of degrees of freedom for all compositions",
-                           parameters.n_compositional_fields
-                           * introspection.system_dofs_per_block[introspection.block_indices.compositional_fields[0]]);
 
     // then interpolate the current boundary velocities. copy constraints
     // into current_constraints and then add to current_constraints
@@ -2393,6 +2367,10 @@ namespace aspect
         setup_dofs();
 
         global_volume = GridTools::volume (triangulation, *mapping);
+
+        // initialize global statistics once in the beginning to get the order
+        // of the columns right
+        initialize_statistics();
       }
 
     // start the timer for periodic checkpoints after the setup above
@@ -2420,6 +2398,11 @@ namespace aspect
 
         // then do the core work: assemble systems and solve
         solve_timestep ();
+
+        const bool statistics_already_generated = (timestep_number == 0) && (pre_refinement_step == 0)
+            && (parameters.nonlinear_solver == NonlinearSolver::IMPES || parameters.nonlinear_solver == NonlinearSolver::Advection_only);
+        if (!statistics_already_generated)
+          generate_global_statistics();
 
         // see if we have to start over with a new adaptive refinement cycle
         // at the beginning of the simulation
