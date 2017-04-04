@@ -778,7 +778,7 @@ namespace aspect
                   {
                     dxs[i] = x[i+1]-x[i];
                     dys[i] = y[i+1]-y[i];
-                    ms[i] = double(dys[i])/double(dxs[i]);
+                    ms[i] = dys[i]/dxs[i];
                   }
 
                 // get m_a parameter
