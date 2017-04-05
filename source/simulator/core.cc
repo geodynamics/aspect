@@ -2405,6 +2405,7 @@ namespace aspect
         // function
         if (!statistics_already_generated)
           generate_global_statistics();
+        statistics_already_generated = false;
 
         // see if we have to start over with a new adaptive refinement cycle
         // at the beginning of the simulation
