@@ -2324,6 +2324,7 @@ namespace aspect
     unsigned int max_refinement_level = parameters.initial_global_refinement +
                                         parameters.initial_adaptive_refinement;
     pre_refinement_step = 0;
+    bool statistics_already_generated = false;
 
     // if we want to resume a computation from an earlier point
     // then reload it from a snapshot. otherwise do the basic
@@ -2370,7 +2371,7 @@ namespace aspect
 
         // initialize global statistics once in the beginning to get the order
         // of the columns right
-        initialize_statistics();
+        statistics_already_generated = maybe_generate_statistics();
       }
 
     // start the timer for periodic checkpoints after the setup above
@@ -2402,10 +2403,6 @@ namespace aspect
         // if we are in time step zero and do not use a nonlinear solver scheme,
         // statistics has already been generated above in the initialize_statistics()
         // function
-        const bool statistics_already_generated = (timestep_number == 0) && (pre_refinement_step == 0)
-                                                  && (parameters.nonlinear_solver == NonlinearSolver::IMPES
-                                                      || parameters.nonlinear_solver == NonlinearSolver::Advection_only);
-
         if (!statistics_already_generated)
           generate_global_statistics();
 
