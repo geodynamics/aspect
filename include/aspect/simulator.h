@@ -1181,12 +1181,16 @@ namespace aspect
 
       /**
        * This function is called at the beginning of the model run to add the
-       * columns to the statistics file in the correct order.
+       * columns to the statistics file in the correct order. In case that
+       * only one nonlinear iteration will be made, it generates output for
+       * the first row of the staistics file and returns true. If the first
+       * time step has more than one nonlinear iteration, it fills the
+       * respective entries with zeroes and returns false.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void initialize_statistics();
+      bool maybe_generate_statistics();
 
       /**
        * This routine computes the initial Stokes residual that is needed as a

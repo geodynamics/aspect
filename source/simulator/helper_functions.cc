@@ -284,13 +284,18 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::initialize_statistics()
+  bool Simulator<dim>::maybe_generate_statistics()
   {
     // if we do not do more than one nonlinear iteration, we fill
     // the columns with their correct value
     if (parameters.nonlinear_solver == NonlinearSolver::IMPES
-        || parameters.nonlinear_solver == NonlinearSolver::Advection_only)
-      generate_global_statistics();
+        || parameters.nonlinear_solver == NonlinearSolver::Advection_only
+        || parameters.max_nonlinear_iterations == 1
+        || parameters.max_nonlinear_iterations_in_prerefinement == 1)
+      {
+        generate_global_statistics();
+        return true;
+      }
     // otherwise, we initialize them with zeroes
     else
       {
@@ -311,6 +316,7 @@ namespace aspect
         statistics.add_value("Number of temperature degrees of freedom", 0);
         if (parameters.n_compositional_fields > 0)
           statistics.add_value("Number of degrees of freedom for all compositions", 0);
+        return false;
       }
   }
 
@@ -1600,7 +1606,7 @@ namespace aspect
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::output_statistics(); \
   template void Simulator<dim>::generate_global_statistics(); \
-  template void Simulator<dim>::initialize_statistics(); \
+  template bool Simulator<dim>::maybe_generate_statistics(); \
   template double Simulator<dim>::compute_initial_stokes_residual(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
