@@ -1,5 +1,5 @@
 /**
- * This tests the Utilities::tk::spine class for the linear case,
+ * This tests the Utilities::tk::spline class for the linear case,
  * the spline case and the monotone spline case.
  */
 #include <aspect/utilities.h>
