@@ -770,7 +770,7 @@ namespace aspect
                 /**
                  * This monotone spline algorithm is based on the javascript version
                  * at https://en.wikipedia.org/wiki/Monotone_cubic_interpolation. The
-                 * parameters from this algorithm prevents overshooting in the
+                 * parameters from this algorithm prevent overshooting in the
                  * interpolation spline.
                  */
                 std::vector<double> dys(n-1), dxs(n-1), ms(n-1);
