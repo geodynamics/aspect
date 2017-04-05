@@ -288,7 +288,8 @@ namespace aspect
   {
     // if we do not do more than one nonlinear iteration, we fill
     // the columns with their correct value
-    if(parameters.nonlinear_solver == NonlinearSolver::IMPES || parameters.nonlinear_solver == NonlinearSolver::Advection_only)
+    if (parameters.nonlinear_solver == NonlinearSolver::IMPES
+        || parameters.nonlinear_solver == NonlinearSolver::Advection_only)
       generate_global_statistics();
     // otherwise, we initialize them with zeroes
     else
