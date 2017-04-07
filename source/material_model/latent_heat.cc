@@ -208,6 +208,7 @@ namespace aspect
             // this means, that there are no actual density "jumps", but gradual
             // transition between the materials
             double phase_dependence = 0.0;
+            double viscosity_phase_dependence = 1.0;
 
             // transitions defined by depth
             unsigned int number_of_phase_transitions;
@@ -228,6 +229,7 @@ namespace aspect
                                                                  i);
 
                     phase_dependence += phaseFunction * density_jumps[i];
+                    viscosity_phase_dependence *= 1 + phaseFunction * (phase_prefactors[i+1]-1);
                   }
               }
             else if (composition.size()>0)
@@ -242,6 +244,7 @@ namespace aspect
                       phase_dependence += phaseFunction * density_jumps[i] * (1.0 - composition[0]);
                     else if (transition_phases[i] == 1) // 2nd compositional field
                       phase_dependence += phaseFunction * density_jumps[i] * composition[0];
+                    viscosity_phase_dependence *= 1 + phaseFunction * (phase_prefactors[i]-1);
                   }
               }
             // fourth, pressure dependence of density
@@ -251,6 +254,7 @@ namespace aspect
             // in the end, all the influences are added up
             out.densities[i] = (reference_rho + density_composition_dependence + pressure_dependence + phase_dependence)
                                * density_temperature_dependence;
+            out.viscosities[i] = std::max(min_viscosity, std::min(max_viscosity, out.viscosities[i] * viscosity_phase_dependence));
           }
 
           // Calculate entropy derivative
@@ -449,6 +453,14 @@ namespace aspect
                              "viscosity for each phase. "
                              "List must have one more entry than Phase transition depths. "
                              "Units: non-dimensional.");
+          prm.declare_entry ("Minimum viscosity", "1e19",
+                             Patterns::List (Patterns::Double(0)),
+                             "Limit for the minimum viscosity in the model. "
+                             "Units: Pa s.");
+          prm.declare_entry ("Maximum viscosity", "1e24",
+                             Patterns::List (Patterns::Double(0)),
+                             "Limit for the maximum viscosity in the model. "
+                             "Units: Pa s.");
         }
         prm.leave_subsection();
       }
@@ -475,6 +487,9 @@ namespace aspect
           thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
           reference_compressibility  = prm.get_double ("Compressibility");
           compositional_delta_rho    = prm.get_double ("Density differential for compositional field 1");
+          min_viscosity              = prm.get_double ("Minimum viscosity");
+          max_viscosity              = prm.get_double ("Maximum viscosity");
+
 
           transition_depths = Utilities::string_to_double
                               (Utilities::split_string_list(prm.get ("Phase transition depths")));
@@ -505,7 +520,10 @@ namespace aspect
                   density_jumps.size() != transition_depths.size() ||
                   transition_phases.size() != transition_depths.size() ||
                   phase_prefactors.size() != transition_depths.size()+1)
-                AssertThrow(false, ExcMessage("Error: At least one list that gives input parameters for the phase transitions has the wrong size. Currently checking against transition depths. If phase transitions in terms of pressure inputs are desired,check to make sure Define transition by depth instead of pressure = false. "));
+                AssertThrow(false, ExcMessage("Error: At least one list that gives input parameters for the phase "
+                                              "transitions has the wrong size. Currently checking against transition depths. "
+                                              "If phase transitions in terms of pressure inputs are desired, check to make sure "
+                                              "'Define transition by depth instead of pressure = false'."));
             }
           // make sure to check against the pressure lists for size errors,
           // since pressure is being used instead of depth.
@@ -517,8 +535,19 @@ namespace aspect
                   density_jumps.size() != transition_pressures.size() ||
                   transition_phases.size() != transition_pressures.size() ||
                   phase_prefactors.size() != transition_pressures.size()+1)
-                AssertThrow(false, ExcMessage("Error: At least one list that gives input parameters for the phase transitions has the wrong size. Currently checking against transition pressures. If phase transitions in terms of depth are desired, check to make sure Define transition by depth instead of pressure = true."));
+                AssertThrow(false, ExcMessage("Error: At least one list that gives input parameters for the phase "
+                                              "transitions has the wrong size. Currently checking against transition pressures. "
+                                              "If phase transitions in terms of depth inputs are desired, check to make sure "
+                                              "'Define transition by depth instead of pressure = true'."));
             }
+
+          // as the phase viscosity prefactors are all applied on top of each other, we have
+          // to scale them here so that they are relative gactors in comparison to the phase above
+          for (unsigned int phase=1; phase<phase_prefactors.size(); ++phase)
+            {
+              phase_prefactors[phase] /= phase_prefactors[phase-1];
+            }
+
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model latent heat with Thermal viscosity exponent can not have reference_T=0."));
         }
