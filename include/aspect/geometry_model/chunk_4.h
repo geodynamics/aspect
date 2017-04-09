@@ -271,18 +271,10 @@ namespace aspect
             double point1_lon;
         };
 
-        // Remove?
-        Point<dim> pull_back(const Point<dim>) const;
-        Point<dim> push_forward(const Point<dim>) const;
-
         /**
          * An object that describes the geometry.
          */
         ChunkGeometry manifold;
-
-        // Remove?
-        static void set_manifold_ids (Triangulation<dim> &triangulation);
-        static void clear_manifold_ids (Triangulation<dim> &triangulation);
 
     };
   }

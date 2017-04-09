@@ -45,48 +45,48 @@ namespace aspect
     Chunk4<dim>::ChunkGeometry::
     push_forward_gradient(const Point<dim> &chart_point) const
     {
-     const double R = chart_point[0]; // Radius
-     const double phi = chart_point[1]; // Longitude
-  
-     Assert (R > 0.0, ExcMessage("Negative radius for given point."));
+      const double R = chart_point[0]; // Radius
+      const double phi = chart_point[1]; // Longitude
 
-     DerivativeForm<1, dim, dim> DX;
+      Assert (R > 0.0, ExcMessage("Negative radius for given point."));
 
-     switch (dim)
-       {
-         case 2:
-         {
-         DX[0][0] =      std::cos(phi); 
-         DX[0][1] = -R * std::sin(phi);
-         DX[1][0] =      std::sin(phi);
-         DX[1][1] =  R * std::cos(phi);
-         break;
-         }
-         case 3:
-         {
-         const double theta = chart_point[2]; // Latitude (not colatitude)
+      DerivativeForm<1, dim, dim> DX;
 
-         DX[0][0] =      std::cos(theta) * std::cos(phi);
-         DX[0][1] = -R * std::cos(theta) * std::sin(phi);
-         DX[0][2] = -R * std::sin(theta) * std::cos(phi);
-         DX[1][0] =      std::cos(theta) * std::sin(phi);
-         DX[1][1] =  R * std::cos(theta) * std::cos(phi);
-         DX[1][2] = -R * std::sin(theta) * std::sin(phi);
-         DX[2][0] =      std::sin(theta);
-         DX[2][1] = 0;
-         DX[2][2] =  R * std::cos(theta);
-         break;
-         }
-         default:
-           Assert (false, ExcNotImplemented ());
+      switch (dim)
+        {
+          case 2:
+          {
+            DX[0][0] =      std::cos(phi);
+            DX[0][1] = -R * std::sin(phi);
+            DX[1][0] =      std::sin(phi);
+            DX[1][1] =  R * std::cos(phi);
+            break;
+          }
+          case 3:
+          {
+            const double theta = chart_point[2]; // Latitude (not colatitude)
+
+            DX[0][0] =      std::cos(theta) * std::cos(phi);
+            DX[0][1] = -R * std::cos(theta) * std::sin(phi);
+            DX[0][2] = -R * std::sin(theta) * std::cos(phi);
+            DX[1][0] =      std::cos(theta) * std::sin(phi);
+            DX[1][1] =  R * std::cos(theta) * std::cos(phi);
+            DX[1][2] = -R * std::sin(theta) * std::sin(phi);
+            DX[2][0] =      std::sin(theta);
+            DX[2][1] = 0;
+            DX[2][2] =  R * std::cos(theta);
+            break;
+          }
+          default:
+            Assert (false, ExcNotImplemented ());
 
 
-       }
-    
-     return DX;
+        }
+
+      return DX;
     }
 
- 
+
     template <int dim>
     Point<dim>
     Chunk4<dim>::ChunkGeometry::
@@ -186,19 +186,11 @@ namespace aspect
                             coarse_grid);
 
       // Deal with a curved mesh
-      // Attach the real manifold to slot 15. we won't use it
-      // during regular operation, but we set manifold_ids for all
-      // cells, faces and edges immediately before refinement and
-      // clear it again afterwards
+      // Attach the real manifold to slot 15.
       coarse_grid.set_manifold (15, manifold);
       for (typename Triangulation<dim>::active_cell_iterator cell =
              coarse_grid.begin_active(); cell != coarse_grid.end(); ++cell)
         cell->set_all_manifold_ids (15);
-
-//      coarse_grid.signals.pre_refinement.connect (std_cxx11::bind (&set_manifold_ids,
-//                                                                   std_cxx11::ref(coarse_grid)));
-//      coarse_grid.signals.post_refinement.connect (std_cxx11::bind (&clear_manifold_ids,
-//                                                                    std_cxx11::ref(coarse_grid)));
 
     }
 
@@ -401,23 +393,6 @@ namespace aspect
       return true;
     }
 
-    template <int dim>
-    void
-    Chunk4<dim>::set_manifold_ids (Triangulation<dim> &triangulation)
-    {
-      for (typename Triangulation<dim>::active_cell_iterator cell =
-             triangulation.begin_active(); cell != triangulation.end(); ++cell)
-        cell->set_all_manifold_ids (15);
-    }
-
-    template <int dim>
-    void
-    Chunk4<dim>::clear_manifold_ids (Triangulation<dim> &triangulation)
-    {
-      for (typename Triangulation<dim>::active_cell_iterator cell =
-             triangulation.begin_active(); cell != triangulation.end(); ++cell)
-        cell->set_all_manifold_ids (numbers::invalid_manifold_id);
-    }
 
     template <int dim>
     void
