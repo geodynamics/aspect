@@ -179,6 +179,7 @@ namespace aspect
           }
 
           // Calculate density
+          // and phase dependence of viscosity
           {
             // first, calculate temperature dependence of density
             double density_temperature_dependence = 1.0;
@@ -199,14 +200,14 @@ namespace aspect
                                                           :
                                                           0.0;
 
-            // third, calculate the density differences due to phase transitions (temperature-
-            // and pressure dependence included)
+            // third, calculate the density (and viscosity) differences due to phase
+            // transitions (temperature- and pressure dependence included).
             // the phase function gives the percentage of material that has
             // already undergone the phase transition to the higher-pressure material
             // (this is done individual for each transitions and summed up
             // in the end)
-            // this means, that there are no actual density "jumps", but gradual
-            // transition between the materials
+            // this means, that there are no actual density or viscosity "jumps", but
+            // gradual transitions between the materials
             double phase_dependence = 0.0;
             double viscosity_phase_dependence = 1.0;
 
@@ -218,7 +219,10 @@ namespace aspect
             else
               number_of_phase_transitions = transition_pressures.size();
 
-
+            // note that for the densities, we have a list of jumps, so the index used
+            // in the loop corresponds to the index of the phase transition, whereas
+            // for the viscosities we have a list of prefactors (which has one more
+            // entry for the first layer), so we have to use i+1 as index
             if (composition.size()==0)      //only one field
               {
                 for (unsigned int i=0; i<number_of_phase_transitions; ++i)
@@ -229,7 +233,7 @@ namespace aspect
                                                                  i);
 
                     phase_dependence += phaseFunction * density_jumps[i];
-                    viscosity_phase_dependence *= 1 + phaseFunction * (phase_prefactors[i+1]-1);
+                    viscosity_phase_dependence *= 1. + phaseFunction * (phase_prefactors[i+1]-1.);
                   }
               }
             else if (composition.size()>0)
@@ -244,7 +248,7 @@ namespace aspect
                       phase_dependence += phaseFunction * density_jumps[i] * (1.0 - composition[0]);
                     else if (transition_phases[i] == 1) // 2nd compositional field
                       phase_dependence += phaseFunction * density_jumps[i] * composition[0];
-                    viscosity_phase_dependence *= 1 + phaseFunction * (phase_prefactors[i]-1);
+                    viscosity_phase_dependence *= 1. + phaseFunction * (phase_prefactors[i]-1.);
                   }
               }
             // fourth, pressure dependence of density
@@ -454,11 +458,11 @@ namespace aspect
                              "List must have one more entry than Phase transition depths. "
                              "Units: non-dimensional.");
           prm.declare_entry ("Minimum viscosity", "1e19",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::Double (0),
                              "Limit for the minimum viscosity in the model. "
                              "Units: Pa s.");
           prm.declare_entry ("Maximum viscosity", "1e24",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::Double (0),
                              "Limit for the maximum viscosity in the model. "
                              "Units: Pa s.");
         }
@@ -541,8 +545,9 @@ namespace aspect
                                               "'Define transition by depth instead of pressure = true'."));
             }
 
-          // as the phase viscosity prefactors are all applied on top of each other, we have
-          // to scale them here so that they are relative gactors in comparison to the phase above
+          // as the phase viscosity prefactors are all applied multiplicatively on top of each other,
+          // we have to scale them here so that they are relative factors in comparison to the product
+          // of the prefactors of all phase above the current one
           for (unsigned int phase=1; phase<phase_prefactors.size(); ++phase)
             {
               phase_prefactors[phase] /= phase_prefactors[phase-1];
