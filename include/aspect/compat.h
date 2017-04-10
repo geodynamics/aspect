@@ -23,4 +23,12 @@
 
 #include <aspect/global.h>
 
+// C++11 related includes. Can be removed when we require C++11.
+#include <deal.II/base/std_cxx11/array.h>
+#include <deal.II/base/std_cxx11/bind.h>
+#include <deal.II/base/std_cxx11/function.h>
+#include <deal.II/base/std_cxx11/shared_ptr.h>
+#include <deal.II/base/std_cxx11/unique_ptr.h>
+
+
 #endif
