@@ -88,6 +88,9 @@ namespace aspect
            cell != coarse_grid.end(); ++cell)
         cell->set_all_manifold_ids (99);
 
+      // Boundary objects are no longer necessary for deal.II 9.0,
+      // because everything is handled by the manifold.
+#if !DEAL_II_VERSION_GTE(9,0,0)
       // clear the manifold id from objects for which we have boundary
       // objects (and need boundary objects because at the time of
       // writing, only boundary objects provide normal vectors)
@@ -111,6 +114,7 @@ namespace aspect
       static const HyperShellBoundary<dim> boundary_shell;
       coarse_grid.set_boundary (0, boundary_shell);
       coarse_grid.set_boundary (1, boundary_shell);
+#endif
     }
 
 
