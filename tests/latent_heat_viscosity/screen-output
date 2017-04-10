@@ -1,0 +1,65 @@
+
+
+   Setting up GPlates boundary velocity plugin.
+
+   Input point 1 spherical coordinates: 1.571 4.870
+   Input point 1 normalized cartesian coordinates: 0.157 -0.988 0.000
+   Input point 1 rotated model coordinates: 0.157 -0.988 0.000
+   Input point 2 spherical coordinates: 1.571 5.240
+   Input point 2 normalized cartesian coordinates: 0.503 -0.864 0.000
+   Input point 2 rotated model coordinates: 0.503 -0.864 0.000
+
+   Model will be rotated by 0.00 degrees around axis 0.00 0.00 1.00
+   The ParaView rotation angles are: 0.00 0.00 0.00
+   The inverse ParaView rotation angles are: 0.00 0.00 0.00
+
+   Loading GPlates data boundary file ASPECT_DIR/data/velocity-boundary-conditions/gplates/current_day.gpml.
+
+
+   Loading new velocity file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 170+0 iterations.
+
+Number of active cells: 2,754 (on 5 levels)
+Number of degrees of freedom: 38,446 (23,600+3,046+11,800)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 138+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-latent_heat_viscosity/solution/solution-00000
+     RMS, max velocity:                  0.0168 m/year, 0.078 m/year
+     Temperature min/avg/max:            273 K, 1586 K, 2600 K
+     Heat fluxes through boundary parts: -8.798e+05 W, 1.98e+06 W
+     Writing depth average:              output-latent_heat_viscosity/depth_average.gnuplot
+
+*** Timestep 1:  t=1.15653e+06 years
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 109+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-latent_heat_viscosity/solution/solution-00001
+     RMS, max velocity:                  0.0192 m/year, 0.0775 m/year
+     Temperature min/avg/max:            273 K, 1583 K, 2600 K
+     Heat fluxes through boundary parts: -8.603e+05 W, 1.796e+06 W
+     Writing depth average:              output-latent_heat_viscosity/depth_average.gnuplot
+
+Termination requested by criterion: end step
+*** Snapshot created!
+
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
