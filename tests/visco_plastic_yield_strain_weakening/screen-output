@@ -6,7 +6,7 @@ Number of degrees of freedom: 2,767 (882+121+441+441+441+441)
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+2 iterations.
-   Residual after nonlinear iteration 1: 1
+      Relative Stokes residual after nonlinear iteration 1: 1
 
 
    Postprocessing:

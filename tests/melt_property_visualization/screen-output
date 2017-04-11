@@ -10,7 +10,8 @@ Number of degrees of freedom: 112,521 (41,732+33,282+4,225+16,641+16,641)
    Solving Stokes system... done.
    Solving for u_f in 11 iterations.
       Nonlinear residuals: 0, 8.70027e-19, 21.6796
-      Total relative nonlinear residual: 1
+      Relative nonlinear residuals: 0, 0.0043675, 1
+      Total relative residual after nonlinear iteration 1: 1
 
 
    Skipping temperature solve because RHS is zero.
@@ -18,7 +19,8 @@ Number of degrees of freedom: 112,521 (41,732+33,282+4,225+16,641+16,641)
    Solving Stokes system... done.
    Solving for u_f in 10 iterations.
       Nonlinear residuals: 0, 8.70027e-19, 1.28186
-      Total relative nonlinear residual: 0.0591275
+      Relative nonlinear residuals: 0, 0.0043675, 0.0591275
+      Total relative residual after nonlinear iteration 2: 0.0591275
 
 
    Skipping temperature solve because RHS is zero.
@@ -26,7 +28,8 @@ Number of degrees of freedom: 112,521 (41,732+33,282+4,225+16,641+16,641)
    Solving Stokes system... done.
    Solving for u_f in 10 iterations.
       Nonlinear residuals: 0, 8.70027e-19, 8.13878e-05
-      Total relative nonlinear residual: 3.75412e-06
+      Relative nonlinear residuals: 0, 0.0043675, 3.75412e-06
+      Total relative residual after nonlinear iteration 3: 3.75412e-06
 
 
 
