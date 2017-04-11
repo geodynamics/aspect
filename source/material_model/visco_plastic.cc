@@ -41,7 +41,7 @@ namespace aspect
 
       // assign compositional fields associated with strain a value of 0
       if (use_strain_weakening == true)
-          x_comp[0] = 0.0;
+        x_comp[0] = 0.0;
 
       //sum the compositional fields for normalization purposes
       double sum_composition = 0.0;
@@ -204,7 +204,7 @@ namespace aspect
             {
 
               // Calculate second strain invariant
-              const double strain_ii = composition[0];
+              const double strain_ii = std::max(std::min(composition[0],end_strain_weakening_intervals[j]),start_strain_weakening_intervals[j]);
 
               // Linear strain weakening of cohesion and internal friction angle between specified strain values
               const double strain_fraction = ( strain_ii - start_strain_weakening_intervals[j] ) /
@@ -364,13 +364,13 @@ namespace aspect
       return false;
     }
 
-    template <int dim> 
+    template <int dim>
     double ViscoPlastic<dim>::
     get_min_strain_rate () const
     {
       return min_strain_rate;
-    } 
-    
+    }
+
     template <int dim>
     void
     ViscoPlastic<dim>::declare_parameters (ParameterHandler &prm)

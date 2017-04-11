@@ -1,4 +1,4 @@
-set Additional shared libraries = plugin/./libfinite_strain_invariant.so
+set Additional shared libraries = plugin/libfinite_strain_invariant.so
 
 # Global parameters
 set Dimension                              = 2

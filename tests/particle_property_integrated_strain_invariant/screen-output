@@ -22,27 +22,27 @@ Number of degrees of freedom: 1,444 (882+121+441)
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |    0.0804s |            |
+| Total wallclock time elapsed since start    |    0.0793s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |   0.00991s |        12% |
-| Assemble temperature system     |         1 |   0.00892s |        11% |
-| Build Stokes preconditioner     |         1 |   0.00911s |        11% |
-| Build temperature preconditioner|         1 |  0.000618s |      0.77% |
-| Solve Stokes system             |         1 |   0.00219s |       2.7% |
-| Solve temperature system        |         1 |  0.000283s |      0.35% |
-| Initialization                  |         1 |    0.0219s |        27% |
-| Particles: Advect               |         2 |  0.000388s |      0.48% |
-| Particles: Generate             |         1 |  7.41e-05s |         0% |
-| Particles: Initialization       |         1 |  0.000107s |      0.13% |
-| Particles: Initialize properties|         1 |  2.88e-05s |         0% |
-| Particles: Output               |         1 |  0.000178s |      0.22% |
-| Particles: Sort                 |         2 |  0.000404s |       0.5% |
-| Particles: Update properties    |         1 |   0.00234s |       2.9% |
-| Postprocessing                  |         1 |   0.00345s |       4.3% |
-| Setup dof systems               |         1 |   0.00865s |        11% |
-| Setup initial conditions        |         1 |   0.00788s |       9.8% |
+| Assemble Stokes system          |         1 |   0.00978s |        12% |
+| Assemble temperature system     |         1 |   0.00879s |        11% |
+| Build Stokes preconditioner     |         1 |   0.00921s |        12% |
+| Build temperature preconditioner|         1 |  0.000603s |      0.76% |
+| Solve Stokes system             |         1 |   0.00206s |       2.6% |
+| Solve temperature system        |         1 |  0.000279s |      0.35% |
+| Initialization                  |         1 |    0.0215s |        27% |
+| Particles: Advect               |         2 |  0.000389s |      0.49% |
+| Particles: Generate             |         1 |  7.08e-05s |         0% |
+| Particles: Initialization       |         1 |  0.000105s |      0.13% |
+| Particles: Initialize properties|         1 |  2.69e-05s |         0% |
+| Particles: Output               |         1 |  0.000176s |      0.22% |
+| Particles: Sort                 |         2 |  0.000399s |       0.5% |
+| Particles: Update properties    |         1 |   0.00228s |       2.9% |
+| Postprocessing                  |         1 |   0.00337s |       4.3% |
+| Setup dof systems               |         1 |   0.00845s |        11% |
+| Setup initial conditions        |         1 |   0.00788s |       9.9% |
 +---------------------------------+-----------+------------+------------+
 
 *** Timestep 1:  t=10 years
@@ -57,53 +57,54 @@ Number of degrees of freedom: 1,444 (882+121+441)
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.121s |            |
+| Total wallclock time elapsed since start    |      0.12s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |    0.0202s |        17% |
-| Assemble temperature system     |         2 |    0.0184s |        15% |
-| Build Stokes preconditioner     |         2 |    0.0181s |        15% |
-| Build temperature preconditioner|         2 |   0.00111s |      0.92% |
-| Solve Stokes system             |         2 |   0.00271s |       2.2% |
-| Solve temperature system        |         2 |  0.000473s |      0.39% |
-| Initialization                  |         1 |    0.0219s |        18% |
-| Particles: Advect               |         4 |  0.000777s |      0.64% |
-| Particles: Generate             |         1 |  7.41e-05s |         0% |
-| Particles: Initialization       |         1 |  0.000107s |         0% |
-| Particles: Initialize properties|         1 |  2.88e-05s |         0% |
-| Particles: Output               |         2 |  0.000356s |      0.29% |
-| Particles: Sort                 |         4 |  0.000797s |      0.66% |
-| Particles: Update properties    |         2 |   0.00464s |       3.8% |
-| Postprocessing                  |         2 |    0.0068s |       5.6% |
-| Setup dof systems               |         1 |   0.00865s |       7.2% |
-| Setup initial conditions        |         1 |   0.00788s |       6.5% |
+| Assemble Stokes system          |         2 |    0.0201s |        17% |
+| Assemble temperature system     |         2 |    0.0182s |        15% |
+| Build Stokes preconditioner     |         2 |    0.0183s |        15% |
+| Build temperature preconditioner|         2 |   0.00109s |      0.91% |
+| Solve Stokes system             |         2 |   0.00255s |       2.1% |
+| Solve temperature system        |         2 |  0.000464s |      0.39% |
+| Initialization                  |         1 |    0.0215s |        18% |
+| Particles: Advect               |         4 |  0.000778s |      0.65% |
+| Particles: Generate             |         1 |  7.08e-05s |         0% |
+| Particles: Initialization       |         1 |  0.000105s |         0% |
+| Particles: Initialize properties|         1 |  2.69e-05s |         0% |
+| Particles: Output               |         2 |   0.00035s |      0.29% |
+| Particles: Sort                 |         4 |  0.000785s |      0.66% |
+| Particles: Update properties    |         2 |   0.00455s |       3.8% |
+| Postprocessing                  |         2 |   0.00667s |       5.6% |
+| Setup dof systems               |         1 |   0.00845s |       7.1% |
+| Setup initial conditions        |         1 |   0.00788s |       6.6% |
 +---------------------------------+-----------+------------+------------+
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.121s |            |
+| Total wallclock time elapsed since start    |      0.12s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |    0.0202s |        17% |
-| Assemble temperature system     |         2 |    0.0184s |        15% |
-| Build Stokes preconditioner     |         2 |    0.0181s |        15% |
-| Build temperature preconditioner|         2 |   0.00111s |      0.92% |
-| Solve Stokes system             |         2 |   0.00271s |       2.2% |
-| Solve temperature system        |         2 |  0.000473s |      0.39% |
-| Initialization                  |         1 |    0.0219s |        18% |
-| Particles: Advect               |         4 |  0.000777s |      0.64% |
-| Particles: Generate             |         1 |  7.41e-05s |         0% |
-| Particles: Initialization       |         1 |  0.000107s |         0% |
-| Particles: Initialize properties|         1 |  2.88e-05s |         0% |
-| Particles: Output               |         2 |  0.000356s |      0.29% |
-| Particles: Sort                 |         4 |  0.000797s |      0.66% |
-| Particles: Update properties    |         2 |   0.00464s |       3.8% |
-| Postprocessing                  |         2 |    0.0068s |       5.6% |
-| Setup dof systems               |         1 |   0.00865s |       7.2% |
-| Setup initial conditions        |         1 |   0.00788s |       6.5% |
+| Assemble Stokes system          |         2 |    0.0201s |        17% |
+| Assemble temperature system     |         2 |    0.0182s |        15% |
+| Build Stokes preconditioner     |         2 |    0.0183s |        15% |
+| Build temperature preconditioner|         2 |   0.00109s |      0.91% |
+| Solve Stokes system             |         2 |   0.00255s |       2.1% |
+| Solve temperature system        |         2 |  0.000464s |      0.39% |
+| Initialization                  |         1 |    0.0215s |        18% |
+| Particles: Advect               |         4 |  0.000778s |      0.65% |
+| Particles: Generate             |         1 |  7.08e-05s |         0% |
+| Particles: Initialization       |         1 |  0.000105s |         0% |
+| Particles: Initialize properties|         1 |  2.69e-05s |         0% |
+| Particles: Output               |         2 |   0.00035s |      0.29% |
+| Particles: Sort                 |         4 |  0.000785s |      0.66% |
+| Particles: Update properties    |         2 |   0.00455s |       3.8% |
+| Postprocessing                  |         2 |   0.00667s |       5.6% |
+| Setup dof systems               |         1 |   0.00845s |       7.1% |
+| Setup initial conditions        |         1 |   0.00788s |       6.6% |
 +---------------------------------+-----------+------------+------------+
+
 

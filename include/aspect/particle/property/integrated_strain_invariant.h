@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -31,12 +31,10 @@ namespace aspect
     namespace Property
     {
       /**
-       * A class that calculates the cumulative finite strain magnitude
-       * a particle has experienced through the second invariant of the
-       * deviatoric strain rate tensor.
-       * The implementation of this property is equivalent to the implementation
-       * for compositional fields that is described in integrated_strain_invariant plugin
-       * in <code>benchmarks/kaus_shear_bands/integrated_strain_invariant.cc</code>.
+       * A class that calculates the finite strain invariant a particle has
+       * experienced. The implementation of this property is equivalent to the
+       * implementation for compositional fields that is located in the plugin
+       * <code>benchmarks/buiter_et_al_2008_jgr/plugin/finite_strain_invariant.cc</code>.
        *
        * @ingroup ParticleProperties
        */
@@ -65,7 +63,7 @@ namespace aspect
            * request by need_update() for every particle for every property.
            *
            * @param [in] data_position An unsigned integer that denotes which
-           * component of the particle property vector is associated with the
+
            * current property. For properties that own several components it
            * denotes the first component of this property, all other components
            * fill consecutive entries in the @p particle_properties vector.

@@ -29,7 +29,7 @@ namespace aspect
       template <int dim>
       void
       IntegratedStrainInvariant<dim>::initialize_one_particle_property(const Point<dim> &,
-                                                              std::vector<double> &data) const
+                                                                       std::vector<double> &data) const
       {
         data.push_back(0.0);
       }
@@ -37,10 +37,10 @@ namespace aspect
       template <int dim>
       void
       IntegratedStrainInvariant<dim>::update_one_particle_property(const unsigned int data_position,
-                                                          const Point<dim> &,
-                                                          const Vector<double> &,
-                                                          const std::vector<Tensor<1,dim> > &gradients,
-                                                          const ArrayView<double> &data) const
+                                                                   const Point<dim> &,
+                                                                   const Vector<double> &,
+                                                                   const std::vector<Tensor<1,dim> > &gradients,
+                                                                   const ArrayView<double> &data) const
       {
 
 
@@ -59,11 +59,10 @@ namespace aspect
         const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
 
         // Calculate strain rate second invaraint
-        const double edot_ii = std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))); 
+        const double edot_ii = std::sqrt(std::fabs(second_invariant(deviator(strain_rate))));
 
         // New strain is the old strain plus dt*edot_ii
-        double new_strain;
-        new_strain = old_strain + dt*edot_ii; 
+        const double new_strain = old_strain + dt*edot_ii;
         data[data_position] = new_strain;
 
       }

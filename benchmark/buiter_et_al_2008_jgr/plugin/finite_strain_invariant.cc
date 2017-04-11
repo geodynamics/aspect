@@ -46,11 +46,11 @@ namespace aspect
             {
               const double edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[q])))),this->min_strain_rate);
 
-             // New strain invariant is old strain invariant plut the strain invariant of the current time step
-             const double e_ii = in.composition[q][0] + edot_ii*this->get_timestep();
+              // New strain invariant is old strain invariant plut the strain invariant of the current time step
+              const double e_ii = in.composition[q][0] + edot_ii*this->get_timestep();
 
-             // Update reaction term
-             out.reaction_terms[q][0] = - in.composition[q][0] + e_ii;
+              // Update reaction term
+              out.reaction_terms[q][0] = - in.composition[q][0] + e_ii;
 
             }
         }

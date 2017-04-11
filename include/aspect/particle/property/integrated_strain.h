@@ -31,10 +31,11 @@ namespace aspect
     namespace Property
     {
       /**
-       * A class that calculated the finite strain invariant a particle has
-       * experienced. The implementation of this property is equivalent to the
-       * implementation for compositional fields that is located in the plugin
-       * <code>benchmarks/buiter_et_al_2008_jgr/plugin/finite_strain_invariant.cc</code>.
+       * A class that integrates the finite strain that a particle has
+       * experienced.
+       * The implementation of this property is equivalent to the implementation
+       * for compositional fields that is described in the cookbook
+       * finite_strain <code>cookbooks/finite_strain/finite_strain.cc</code>.
        *
        * @ingroup ParticleProperties
        */
