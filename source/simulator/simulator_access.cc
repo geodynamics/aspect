@@ -133,6 +133,12 @@ namespace aspect
   }
 
 
+  template <int dim>
+  unsigned int SimulatorAccess<dim>::get_nonlinear_iteration () const
+  {
+    return simulator->nonlinear_iteration;
+  }
+
 
   template <int dim>
   const parallel::distributed::Triangulation<dim> &

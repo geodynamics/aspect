@@ -1,0 +1,77 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Visualization file name
+ 0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 2145  0  0 49 50 49 output-postprocess_iterations_iterated_IMPES/solution/solution-00000.0000 
+ 1 1.325098399530e+04 1.325098399530e+04 512 4851 2145 2145  0  0  2  3  3 output-postprocess_iterations_iterated_IMPES/solution/solution-00000.0001 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 10  9 47 48 48 output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0000 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 10  9 45 46 46 output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0001 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  9  8 42 43 43 output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0002 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  9  8 40 41 41 output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0003 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  8  7 37 38 38 output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0004 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  8  7 35 36 36 output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0005 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  7  6 32 33 33 output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0006 
+ 2 2.535716731529e+04 1.210618331999e+04 512 4851 2145 2145  6  6 29 30 30 output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0007 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 11 12 46 47 47 output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0000 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 10 10 43 44 44 output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0001 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  9  9 41 42 42 output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0002 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  8  8 38 39 39 output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0003 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  7  7 35 36 36 output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0004 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  6  7 32 33 33 output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0005 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  6  6 30 31 31 output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0006 
+ 3 3.619208533367e+04 1.083491801838e+04 512 4851 2145 2145  5  5 26 27 27 output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0007 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 11 12 46 47 47 output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0000 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  9 10 42 43 43 output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0001 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  8  9 38 39 39 output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0002 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  7  7 35 36 36 output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0003 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  6  6 31 32 32 output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0004 
+ 4 4.612504713053e+04 9.932961796854e+03 512 4851 2145 2145  5  5 28 29 29 output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0005 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 11 12 47 48 48 output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0000 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  9 11 42 43 43 output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0001 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  8  9 38 39 39 output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0002 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  7  8 34 35 35 output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0003 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  6  7 30 31 31 output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0004 
+ 5 5.585544450673e+04 9.730397376202e+03 512 4851 2145 2145  5  5 26 27 27 output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0005 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 11 12 47 48 48 output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0000 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  9 11 42 43 43 output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0001 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  8  9 38 39 39 output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0002 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  7  8 34 35 35 output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0003 
+ 6 6.516718392073e+04 9.311739414002e+03 512 4851 2145 2145  6  7 30 31 31 output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0004 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 11 12 46 47 47 output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0000 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  9 11 41 42 42 output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0001 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  8 10 37 38 38 output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0002 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  7  8 33 34 34 output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0003 
+ 7 7.377171307631e+04 8.604529155577e+03 512 4851 2145 2145  6  7 29 30 30 output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0004 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 11 12 46 47 47 output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0000 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 10 11 41 42 42 output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0001 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  9 10 37 38 38 output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0002 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  8  8 32 33 33 output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0003 
+ 8 8.163036557927e+04 7.858652502965e+03 512 4851 2145 2145  7  7 29 30 30 output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0004 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 12 12 46 47 47 output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0000 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 11 11 41 42 42 output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0001 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  9  9 36 37 37 output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0002 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  8  8 32 33 33 output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0003 
+ 9 8.874030957319e+04 7.109943993915e+03 512 4851 2145 2145  7  7 28 29 29 output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0004 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 12 12 45 46 46 output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0000 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 11 11 40 41 41 output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0001 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  9  9 36 37 37 output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0002 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  8  8 31 32 32 output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0003 
+10 9.520234943858e+04 6.462039865393e+03 512 4851 2145 2145  7  7 27 28 28 output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0004 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 12 12 44 45 45 output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0000 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 11 10 39 40 40 output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0001 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  9  9 35 36 36 output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0002 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  8  8 31 32 32 output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0003 
+11 1.000000000000e+05 4.797650561420e+03 512 4851 2145 2145  7  6 26 27 27 output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0004 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 11 11 43 44 44 output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0000 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 10 10 38 39 39 output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0001 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  8  8 33 34 34 output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0002 
+ 0 0.000000000000e+00 0.000000000000e+00   0    0    0    0  7  7 28 29 29 output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0003 

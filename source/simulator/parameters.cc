@@ -594,6 +594,18 @@ namespace aspect
     }
     prm.leave_subsection();
 
+    prm.enter_subsection ("Postprocess");
+    {
+      prm.declare_entry ("Run postprocessors on nonlinear iterations", "false",
+                         Patterns::Bool (),
+                         "Whether or not the postproccessors should be executed after "
+                         "each of the nonlinear iterations done within one time step. "
+                         "As this is mainly an option for the purposes of debugging, "
+                         "it is not supported when the 'Time between graphical output' "
+                         "is larger than zero.");
+    }
+    prm.leave_subsection();
+
     prm.enter_subsection ("Checkpointing");
     {
       prm.declare_entry ("Time between checkpoint", "0",
@@ -994,6 +1006,11 @@ namespace aspect
     }
     prm.leave_subsection ();
 
+    prm.enter_subsection ("Postprocess");
+    {
+      run_postprocessors_on_nonlinear_iterations = prm.get_bool("Run postprocessors on nonlinear iterations");
+    }
+    prm.leave_subsection ();
 
     prm.enter_subsection ("Formulation");
     {

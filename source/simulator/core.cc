@@ -2057,6 +2057,9 @@ namespace aspect
                     << ": " << relative_tolerance
                     << std::endl;
 
+              if (parameters.run_postprocessors_on_nonlinear_iterations)
+                postprocess ();
+
               if (relative_tolerance < parameters.nonlinear_tolerance)
                 break;
 
@@ -2185,6 +2188,10 @@ namespace aspect
               pcout << "      Total relative residual after nonlinear iteration " << nonlinear_iteration+1 << ": " << max << std::endl;
               pcout << std::endl
                     << std::endl;
+
+              if (parameters.run_postprocessors_on_nonlinear_iterations)
+                postprocess ();
+
               if (max < parameters.nonlinear_tolerance)
                 break;
 
@@ -2267,6 +2274,9 @@ namespace aspect
               pcout << "      Relative Stokes residual after nonlinear iteration " << nonlinear_iteration+1
                     << ": " << relative_stokes_residual
                     << std::endl;
+
+              if (parameters.run_postprocessors_on_nonlinear_iterations)
+                postprocess ();
 
               if (stokes_residual/initial_stokes_residual < parameters.nonlinear_tolerance)
                 {
@@ -2443,7 +2453,11 @@ namespace aspect
               goto start_time_iteration;
           }
 
-        postprocess ();
+        // if we use a nonlinear solver scheme and postprocess nonlinear iterations, this function is called within
+        // solve_timestep () in the individual solver schemes
+        if ((!parameters.run_postprocessors_on_nonlinear_iterations) || parameters.nonlinear_solver == NonlinearSolver::IMPES
+            || parameters.nonlinear_solver == NonlinearSolver::Advection_only)
+          postprocess ();
 
         // get new time step size
         const double new_time_step = compute_time_step();

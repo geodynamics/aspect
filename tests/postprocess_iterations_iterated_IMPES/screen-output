@@ -1,0 +1,868 @@
+
+Number of active cells: 512 (on 5 levels)
+Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 49+0 iterations.
+      Nonlinear residuals: 1.00594e-09, 9.00346e-10, 8.98822e+07
+      Relative nonlinear residuals: 2.00269e-16, 5.76437e+06, 1
+      Total relative residual after nonlinear iteration 1: 1
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00000.0000
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00000.0000
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00000.0000
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system... 2+0 iterations.
+      Nonlinear residuals: 1.00594e-09, 9.00346e-10, 7.83583e-05
+      Relative nonlinear residuals: 2.00269e-16, 5.76437e+06, 8.71789e-13
+      Total relative residual after nonlinear iteration 2: 8.71789e-13
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00000.0001
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00000.0001
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00000.0001
+
+
+*** Timestep 1:  t=13251 years
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 47+0 iterations.
+      Nonlinear residuals: 1.30257e+07, 362042, 7.76212e+07
+      Relative nonlinear residuals: 0.821377, 6.33542e+06, 0.75783
+      Total relative residual after nonlinear iteration 1: 0.821377
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0000
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00001.0000
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0000
+
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 45+0 iterations.
+      Nonlinear residuals: 1.54989e+06, 23807.8, 1.16379e+07
+      Relative nonlinear residuals: 0.0977331, 6.33542e+06, 0.113623
+      Total relative residual after nonlinear iteration 2: 0.113623
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0001
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00001.0001
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0001
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 42+0 iterations.
+      Nonlinear residuals: 267787, 3251.24, 2.1001e+06
+      Relative nonlinear residuals: 0.0168861, 6.33542e+06, 0.0205037
+      Total relative residual after nonlinear iteration 3: 0.0205037
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0002
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00001.0002
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0002
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 40+0 iterations.
+      Nonlinear residuals: 50859, 654.641, 402412
+      Relative nonlinear residuals: 0.00320707, 6.33542e+06, 0.00392882
+      Total relative residual after nonlinear iteration 4: 0.00392882
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0003
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00001.0003
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0003
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 37+0 iterations.
+      Nonlinear residuals: 10042.3, 148.515, 79675.5
+      Relative nonlinear residuals: 0.000633249, 6.33542e+06, 0.000777886
+      Total relative residual after nonlinear iteration 5: 0.000777886
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0004
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00001.0004
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0004
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 35+0 iterations.
+      Nonlinear residuals: 2028.44, 34.3545, 16133
+      Relative nonlinear residuals: 0.000127909, 6.33542e+06, 0.000157509
+      Total relative residual after nonlinear iteration 6: 0.000157509
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0005
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00001.0005
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0005
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 6 iterations.
+   Solving Stokes system... 32+0 iterations.
+      Nonlinear residuals: 416.177, 7.88745, 3319.9
+      Relative nonlinear residuals: 2.62433e-05, 6.33542e+06, 3.24128e-05
+      Total relative residual after nonlinear iteration 7: 3.24128e-05
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0006
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00001.0006
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0006
+
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 6 iterations.
+   Solving Stokes system... 29+0 iterations.
+      Nonlinear residuals: 86.3598, 1.78676, 691.174
+      Relative nonlinear residuals: 5.44567e-06, 6.33542e+06, 6.74805e-06
+      Total relative residual after nonlinear iteration 8: 6.74805e-06
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0007
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00001.0007
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0007
+
+
+*** Timestep 2:  t=25357.2 years
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 46+0 iterations.
+      Nonlinear residuals: 8.74328e+06, 68345.8, 2.77541e+07
+      Relative nonlinear residuals: 0.247282, 8.65875e+06, 0.455259
+      Total relative residual after nonlinear iteration 1: 0.455259
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0000
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00002.0000
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0000
+
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 10 iterations.
+   Solving Stokes system... 43+0 iterations.
+      Nonlinear residuals: 534360, 3864.78, 3.36554e+06
+      Relative nonlinear residuals: 0.015113, 8.65875e+06, 0.055206
+      Total relative residual after nonlinear iteration 2: 0.055206
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0001
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00002.0001
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0001
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 41+0 iterations.
+      Nonlinear residuals: 73992, 679.828, 562190
+      Relative nonlinear residuals: 0.00209268, 8.65875e+06, 0.00922176
+      Total relative residual after nonlinear iteration 3: 0.00922176
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0002
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00002.0002
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0002
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 38+0 iterations.
+      Nonlinear residuals: 13458.8, 185.172, 102450
+      Relative nonlinear residuals: 0.000380649, 8.65875e+06, 0.00168053
+      Total relative residual after nonlinear iteration 4: 0.00168053
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0003
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00002.0003
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0003
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 35+0 iterations.
+      Nonlinear residuals: 2554.88, 48.2406, 19327.3
+      Relative nonlinear residuals: 7.22582e-05, 8.65875e+06, 0.000317032
+      Total relative residual after nonlinear iteration 5: 0.000317032
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0004
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00002.0004
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0004
+
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 32+0 iterations.
+      Nonlinear residuals: 494.904, 11.6979, 3733.66
+      Relative nonlinear residuals: 1.39971e-05, 8.65875e+06, 6.12444e-05
+      Total relative residual after nonlinear iteration 6: 6.12444e-05
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0005
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00002.0005
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0005
+
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 6 iterations.
+   Solving Stokes system... 30+0 iterations.
+      Nonlinear residuals: 97.4349, 2.7041, 734.428
+      Relative nonlinear residuals: 2.7557e-06, 8.65875e+06, 1.2047e-05
+      Total relative residual after nonlinear iteration 7: 1.2047e-05
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0006
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00002.0006
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0006
+
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system... 26+0 iterations.
+      Nonlinear residuals: 19.4318, 0.605517, 146.478
+      Relative nonlinear residuals: 5.4958e-07, 8.65875e+06, 2.40272e-06
+      Total relative residual after nonlinear iteration 8: 2.40272e-06
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0007
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00002.0007
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0007
+
+
+*** Timestep 3:  t=36192.1 years
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 46+0 iterations.
+      Nonlinear residuals: 8.78636e+06, 52145.3, 3.96054e+07
+      Relative nonlinear residuals: 0.254258, 8.57204e+06, 0.647102
+      Total relative residual after nonlinear iteration 1: 0.647102
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0000
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00003.0000
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0000
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 10 iterations.
+   Solving Stokes system... 42+0 iterations.
+      Nonlinear residuals: 298794, 3943.3, 1.66045e+06
+      Relative nonlinear residuals: 0.00864642, 8.57204e+06, 0.0271297
+      Total relative residual after nonlinear iteration 2: 0.0271297
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0001
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00003.0001
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0001
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 38+0 iterations.
+      Nonlinear residuals: 13880.1, 184.183, 90098
+      Relative nonlinear residuals: 0.000401659, 8.57204e+06, 0.00147209
+      Total relative residual after nonlinear iteration 3: 0.00147209
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0002
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00003.0002
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0002
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 35+0 iterations.
+      Nonlinear residuals: 1194.47, 24.9373, 8793.38
+      Relative nonlinear residuals: 3.45653e-05, 8.57204e+06, 0.000143673
+      Total relative residual after nonlinear iteration 4: 0.000143673
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0003
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00003.0003
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0003
+
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 6 iterations.
+   Solving Stokes system... 31+0 iterations.
+      Nonlinear residuals: 150.623, 2.9169, 1120.11
+      Relative nonlinear residuals: 4.35868e-06, 8.57204e+06, 1.83012e-05
+      Total relative residual after nonlinear iteration 5: 1.83012e-05
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0004
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00003.0004
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0004
+
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system... 28+0 iterations.
+      Nonlinear residuals: 20.2838, 0.314073, 150.152
+      Relative nonlinear residuals: 5.86969e-07, 8.57204e+06, 2.45329e-06
+      Total relative residual after nonlinear iteration 6: 2.45329e-06
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0005
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00003.0005
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0005
+
+
+*** Timestep 4:  t=46125 years
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 47+0 iterations.
+      Nonlinear residuals: 3.47276e+06, 55955.2, 3.10297e+07
+      Relative nonlinear residuals: 0.120332, 8.61043e+06, 0.594093
+      Total relative residual after nonlinear iteration 1: 0.594093
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0000
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00004.0000
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0000
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving Stokes system... 42+0 iterations.
+      Nonlinear residuals: 121429, 7098.88, 787205
+      Relative nonlinear residuals: 0.00420756, 8.61043e+06, 0.0150718
+      Total relative residual after nonlinear iteration 2: 0.0150718
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0001
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00004.0001
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0001
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 38+0 iterations.
+      Nonlinear residuals: 7066.23, 552.304, 54337
+      Relative nonlinear residuals: 0.000244847, 8.61043e+06, 0.00104033
+      Total relative residual after nonlinear iteration 3: 0.00104033
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0002
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00004.0002
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0002
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 34+0 iterations.
+      Nonlinear residuals: 662.283, 56.8192, 5212.76
+      Relative nonlinear residuals: 2.29483e-05, 8.61043e+06, 9.98032e-05
+      Total relative residual after nonlinear iteration 4: 9.98032e-05
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0003
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00004.0003
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0003
+
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 30+0 iterations.
+      Nonlinear residuals: 68.9605, 6.20146, 551.256
+      Relative nonlinear residuals: 2.3895e-06, 8.61043e+06, 1.05543e-05
+      Total relative residual after nonlinear iteration 5: 1.05543e-05
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0004
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00004.0004
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0004
+
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system... 26+0 iterations.
+      Nonlinear residuals: 7.34032, 0.636452, 58.7242
+      Relative nonlinear residuals: 2.54344e-07, 8.61043e+06, 1.12433e-06
+      Total relative residual after nonlinear iteration 6: 1.12433e-06
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0005
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00004.0005
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0005
+
+
+*** Timestep 5:  t=55855.4 years
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 47+0 iterations.
+      Nonlinear residuals: 2.20444e+06, 56884.3, 1.81351e+07
+      Relative nonlinear residuals: 0.0801971, 8.74052e+06, 0.383226
+      Total relative residual after nonlinear iteration 1: 0.383226
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0000
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00005.0000
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0000
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving Stokes system... 42+0 iterations.
+      Nonlinear residuals: 71532.3, 8058.52, 568086
+      Relative nonlinear residuals: 0.00260234, 8.74052e+06, 0.0120047
+      Total relative residual after nonlinear iteration 2: 0.0120047
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0001
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00005.0001
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0001
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 38+0 iterations.
+      Nonlinear residuals: 5106.63, 1031.27, 43981.5
+      Relative nonlinear residuals: 0.000185779, 8.74052e+06, 0.000929408
+      Total relative residual after nonlinear iteration 3: 0.000929408
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0002
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00005.0002
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0002
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 34+0 iterations.
+      Nonlinear residuals: 482.134, 107.856, 4266.08
+      Relative nonlinear residuals: 1.754e-05, 8.74052e+06, 9.01498e-05
+      Total relative residual after nonlinear iteration 4: 9.01498e-05
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0003
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00005.0003
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0003
+
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 30+0 iterations.
+      Nonlinear residuals: 47.948, 10.9268, 427.409
+      Relative nonlinear residuals: 1.74434e-06, 8.74052e+06, 9.03192e-06
+      Total relative residual after nonlinear iteration 5: 9.03192e-06
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0004
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00005.0004
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0004
+
+
+*** Timestep 6:  t=65167.2 years
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 46+0 iterations.
+      Nonlinear residuals: 1.47905e+06, 60360.2, 1.27436e+07
+      Relative nonlinear residuals: 0.0572412, 8.7487e+06, 0.258279
+      Total relative residual after nonlinear iteration 1: 0.258279
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0000
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00006.0000
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0000
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving Stokes system... 41+0 iterations.
+      Nonlinear residuals: 45392.6, 9396.6, 397634
+      Relative nonlinear residuals: 0.00175675, 8.7487e+06, 0.00805902
+      Total relative residual after nonlinear iteration 2: 0.00805902
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0001
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00006.0001
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0001
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 10 iterations.
+   Solving Stokes system... 37+0 iterations.
+      Nonlinear residuals: 3292.31, 987.536, 31095.5
+      Relative nonlinear residuals: 0.000127417, 8.7487e+06, 0.000630225
+      Total relative residual after nonlinear iteration 3: 0.000630225
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0002
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00006.0002
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0002
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 33+0 iterations.
+      Nonlinear residuals: 305.892, 98.0603, 2975.96
+      Relative nonlinear residuals: 1.18384e-05, 8.7487e+06, 6.03151e-05
+      Total relative residual after nonlinear iteration 4: 6.03151e-05
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0003
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00006.0003
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0003
+
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 29+0 iterations.
+      Nonlinear residuals: 29.6602, 9.63026, 293.926
+      Relative nonlinear residuals: 1.14789e-06, 8.7487e+06, 5.95712e-06
+      Total relative residual after nonlinear iteration 5: 5.95712e-06
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0004
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00006.0004
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0004
+
+
+*** Timestep 7:  t=73771.7 years
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 46+0 iterations.
+      Nonlinear residuals: 940943, 64026.9, 8.43616e+06
+      Relative nonlinear residuals: 0.038188, 8.7408e+06, 0.159808
+      Total relative residual after nonlinear iteration 1: 0.159808
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0000
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00007.0000
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0000
+
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving Stokes system... 41+0 iterations.
+      Nonlinear residuals: 29828.2, 8702.28, 290743
+      Relative nonlinear residuals: 0.00121057, 8.7408e+06, 0.00550759
+      Total relative residual after nonlinear iteration 2: 0.00550759
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0001
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00007.0001
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0001
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 10 iterations.
+   Solving Stokes system... 37+0 iterations.
+      Nonlinear residuals: 2227.05, 826.532, 23200.1
+      Relative nonlinear residuals: 9.03844e-05, 8.7408e+06, 0.000439483
+      Total relative residual after nonlinear iteration 3: 0.000439483
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0002
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00007.0002
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0002
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 32+0 iterations.
+      Nonlinear residuals: 202.163, 77.3229, 2177.95
+      Relative nonlinear residuals: 8.20473e-06, 8.7408e+06, 4.12574e-05
+      Total relative residual after nonlinear iteration 4: 4.12574e-05
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0003
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00007.0003
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0003
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 29+0 iterations.
+      Nonlinear residuals: 19.0298, 7.26265, 209.279
+      Relative nonlinear residuals: 7.72319e-07, 8.7408e+06, 3.96441e-06
+      Total relative residual after nonlinear iteration 5: 3.96441e-06
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0004
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00007.0004
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0004
+
+
+*** Timestep 8:  t=81630.4 years
+   Solving temperature system... 12 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 46+0 iterations.
+      Nonlinear residuals: 595028, 66651.8, 5.46878e+06
+      Relative nonlinear residuals: 0.0247562, 8.76738e+06, 0.0961601
+      Total relative residual after nonlinear iteration 1: 0.0961601
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0000
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00008.0000
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0000
+
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving Stokes system... 41+0 iterations.
+      Nonlinear residuals: 21593.2, 7503.24, 227820
+      Relative nonlinear residuals: 0.000898388, 8.76738e+06, 0.00400586
+      Total relative residual after nonlinear iteration 2: 0.00400586
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0001
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00008.0001
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0001
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 36+0 iterations.
+      Nonlinear residuals: 1686.01, 666.476, 18497.6
+      Relative nonlinear residuals: 7.01468e-05, 8.76738e+06, 0.000325253
+      Total relative residual after nonlinear iteration 3: 0.000325253
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0002
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00008.0002
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0002
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 32+0 iterations.
+      Nonlinear residuals: 148.22, 58.9211, 1669.59
+      Relative nonlinear residuals: 6.16673e-06, 8.76738e+06, 2.93572e-05
+      Total relative residual after nonlinear iteration 4: 2.93572e-05
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0003
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00008.0003
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0003
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 28+0 iterations.
+      Nonlinear residuals: 13.3331, 5.25046, 152.216
+      Relative nonlinear residuals: 5.54728e-07, 8.76738e+06, 2.67649e-06
+      Total relative residual after nonlinear iteration 5: 2.67649e-06
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0004
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00008.0004
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0004
+
+
+*** Timestep 9:  t=88740.3 years
+   Solving temperature system... 12 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 45+0 iterations.
+      Nonlinear residuals: 391929, 67395.2, 3.62238e+06
+      Relative nonlinear residuals: 0.0164665, 8.79627e+06, 0.0590716
+      Total relative residual after nonlinear iteration 1: 0.0590716
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0000
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00009.0000
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0000
+
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving Stokes system... 40+0 iterations.
+      Nonlinear residuals: 16341.4, 6246.86, 180512
+      Relative nonlinear residuals: 0.00068657, 8.79627e+06, 0.00294368
+      Total relative residual after nonlinear iteration 2: 0.00294368
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0001
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00009.0001
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0001
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 36+0 iterations.
+      Nonlinear residuals: 1276.77, 509.508, 14484.8
+      Relative nonlinear residuals: 5.36425e-05, 8.79627e+06, 0.000236209
+      Total relative residual after nonlinear iteration 3: 0.000236209
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0002
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00009.0002
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0002
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 31+0 iterations.
+      Nonlinear residuals: 106.113, 41.9686, 1230.69
+      Relative nonlinear residuals: 4.45823e-06, 8.79627e+06, 2.00694e-05
+      Total relative residual after nonlinear iteration 4: 2.00694e-05
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0003
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00009.0003
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0003
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 27+0 iterations.
+      Nonlinear residuals: 8.96327, 3.50569, 104.715
+      Relative nonlinear residuals: 3.76583e-07, 8.79627e+06, 1.70762e-06
+      Total relative residual after nonlinear iteration 5: 1.70762e-06
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0004
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00009.0004
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0004
+
+
+*** Timestep 10:  t=95202.3 years
+   Solving temperature system... 12 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 44+0 iterations.
+      Nonlinear residuals: 292800, 67420, 2.74823e+06
+      Relative nonlinear residuals: 0.0123146, 8.8457e+06, 0.0416316
+      Total relative residual after nonlinear iteration 1: 0.0416316
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0000
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00010.0000
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0000
+
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 10 iterations.
+   Solving Stokes system... 39+0 iterations.
+      Nonlinear residuals: 13530.5, 5354.27, 148179
+      Relative nonlinear residuals: 0.00056907, 8.8457e+06, 0.00224469
+      Total relative residual after nonlinear iteration 2: 0.00224469
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0001
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00010.0001
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0001
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 35+0 iterations.
+      Nonlinear residuals: 984.765, 390.394, 11239.9
+      Relative nonlinear residuals: 4.14175e-05, 8.8457e+06, 0.000170268
+      Total relative residual after nonlinear iteration 3: 0.000170268
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0002
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00010.0002
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0002
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 31+0 iterations.
+      Nonlinear residuals: 75.5848, 29.5864, 878.747
+      Relative nonlinear residuals: 3.17896e-06, 8.8457e+06, 1.33117e-05
+      Total relative residual after nonlinear iteration 4: 1.33117e-05
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0003
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00010.0003
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0003
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 6 iterations.
+   Solving Stokes system... 26+0 iterations.
+      Nonlinear residuals: 5.89606, 2.28764, 68.8876
+      Relative nonlinear residuals: 2.47978e-07, 8.8457e+06, 1.04354e-06
+      Total relative residual after nonlinear iteration 5: 1.04354e-06
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0004
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00010.0004
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0004
+
+
+*** Timestep 11:  t=100000 years
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving Stokes system... 43+0 iterations.
+      Nonlinear residuals: 180228, 47625.4, 1.78002e+06
+      Relative nonlinear residuals: 0.00785454, 8.56175e+06, 0.0254169
+      Total relative residual after nonlinear iteration 1: 0.0254169
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0000
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00011.0000
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00011.0000
+
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 10 iterations.
+   Solving Stokes system... 38+0 iterations.
+      Nonlinear residuals: 6885.83, 2763.18, 78122
+      Relative nonlinear residuals: 0.000300093, 8.56175e+06, 0.00111551
+      Total relative residual after nonlinear iteration 2: 0.00111551
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0001
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00011.0001
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00011.0001
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 33+0 iterations.
+      Nonlinear residuals: 382.885, 150.943, 4559.4
+      Relative nonlinear residuals: 1.66866e-05, 8.56175e+06, 6.51037e-05
+      Total relative residual after nonlinear iteration 3: 6.51037e-05
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0002
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00011.0002
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00011.0002
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 28+0 iterations.
+      Nonlinear residuals: 22.6766, 8.80043, 274.304
+      Relative nonlinear residuals: 9.88274e-07, 8.56175e+06, 3.9168e-06
+      Total relative residual after nonlinear iteration 4: 3.9168e-06
+
+
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0003
+     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00011.0003
+     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00011.0003
+
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
