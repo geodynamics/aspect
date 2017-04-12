@@ -230,12 +230,14 @@ namespace aspect
        *
        * The main functional difference between the original code and this
        * code is that all the boundaries are condidered to be inside the
-       * polygon.
+       * polygon. One should of course realize that with floating point
+       * arithmetic no guarantees can be made for the borders, but for
+       * exact arithmetic this algorithm would work (also see polygon
+       * in point test).
        */
       int pointNo = point_list.size();
       int    wn = 0;    // the  winding number counter
       int   j=pointNo-1;
-
 
       // loop through all edges of the polygon
       for (int i=0; i<pointNo; i++)
@@ -244,27 +246,69 @@ namespace aspect
           if (point_list[j][1] <= point[1])
             {
               // start y <= P.y
-              if (point_list[i][1]  >= point[1])      // an upward crossing
-                if (( (point_list[i][0] - point_list[j][0]) * (point[1] - point_list[j][1])
-                      - (point[0] -  point_list[j][0]) * (point_list[i][1] - point_list[j][1]) ) >= 0)
-                  {
-                    // P left of  edge
-                    ++wn;            // have  a valid up intersect
-                  }
+              if (point_list[i][1] >= point[1])      // an upward crossing
+                {
+                  const double is_left = (point_list[i][0] - point_list[j][0]) * (point[1] - point_list[j][1])
+                                         - (point[0] -  point_list[j][0]) * (point_list[i][1] - point_list[j][1]);
+
+                  if ( is_left > 0 && point_list[i][1] > point[1])
+                    {
+                      // P left of  edge
+                      ++wn;            // have  a valid up intersect
+                    }
+                  else if ( is_left == 0)
+                    {
+                      // The point is exactly on the infinite line.
+                      // determine if it is on the segment
+                      const double dot_product = (point - point_list[j])*(point_list[i] - point_list[j]);
+
+                      if (dot_product >= 0)
+                        {
+                          const double squaredlength = (point_list[i] - point_list[j]).norm_square();
+
+                          if (dot_product <= squaredlength)
+                            {
+                              return true;
+                            }
+                        }
+                    }
+                }
             }
           else
             {
               // start y > P.y (no test needed)
               if (point_list[i][1]  <= point[1])     // a downward crossing
-                if (( (point_list[i][0] - point_list[j][0]) * (point[1] - point_list[j][1])
-                      - (point[0] -  point_list[j][0]) * (point_list[i][1] - point_list[j][1]) ) <= 0)
-                  {
-                    // P right of  edge
-                    --wn;            // have  a valid down intersect
-                  }
+                {
+                  const double is_left = (point_list[i][0] - point_list[j][0]) * (point[1] - point_list[j][1])
+                                         - (point[0] -  point_list[j][0]) * (point_list[i][1] - point_list[j][1]);
+
+                  if ( is_left < 0)
+                    {
+                      // P right of  edge
+                      --wn;            // have  a valid down intersect
+                    }
+                  else if ( is_left == 0)
+                    {
+                      // This code is to make sure that the boundaries are included in the polygon.
+                      // The point is exactly on the infinite line.
+                      // determine if it is on the segment
+                      const double dot_product = (point - point_list[j])*(point_list[i] - point_list[j]);
+
+                      if (dot_product >= 0)
+                        {
+                          const double squaredlength = (point_list[i] - point_list[j]).norm_square();
+
+                          if (dot_product <= squaredlength)
+                            {
+                              return true;
+                            }
+                        }
+                    }
+                }
             }
           j=i;
         }
+
       return (wn != 0);
     }
 
@@ -329,10 +373,10 @@ namespace aspect
     }
 
 
-    //Evaluate the cosine and sine terms of a real spherical harmonic.
-    //This is a fully normalized harmonic, that is to say, inner products
-    //of these functions should integrate to a kronecker delta over
-    //the surface of a sphere.
+//Evaluate the cosine and sine terms of a real spherical harmonic.
+//This is a fully normalized harmonic, that is to say, inner products
+//of these functions should integrate to a kronecker delta over
+//the surface of a sphere.
     std::pair<double,double> real_spherical_harmonic( const unsigned int l, //degree
                                                       const unsigned int m, //order
                                                       const double theta,   //colatitude (radians)
@@ -493,10 +537,10 @@ namespace aspect
         }
     }
 
-    // tk does the cubic spline interpolation that can be used between different spherical layers in the mantle.
-    // This interpolation is based on the script spline.h, which was downloaded from
-    // http://kluge.in-chemnitz.de/opensource/spline/spline.h   //
-    // copyright (C) 2011, 2014 Tino Kluge (ttk448 at gmail.com)
+// tk does the cubic spline interpolation that can be used between different spherical layers in the mantle.
+// This interpolation is based on the script spline.h, which was downloaded from
+// http://kluge.in-chemnitz.de/opensource/spline/spline.h   //
+// copyright (C) 2011, 2014 Tino Kluge (ttk448 at gmail.com)
     namespace tk
     {
       /**
@@ -1718,7 +1762,7 @@ namespace aspect
       return lookup->get_data(position,component);
     }
 
-    // Explicit instantiations
+// Explicit instantiations
     template class AsciiDataLookup<1>;
     template class AsciiDataLookup<2>;
     template class AsciiDataLookup<3>;
