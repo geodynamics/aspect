@@ -229,6 +229,24 @@ namespace aspect
             postprocessor_names.push_back (std_cxx11::get<0>(*p));
         }
 
+      // We want the 'global statistics' postprocessor to be always active, and always as
+      // first postprocessor (to get the columns in the statistics object right). Reorder
+      // and if necessary insert this postprocessor into the list.
+      if (std::find (postprocessor_names.begin(),
+                     postprocessor_names.end(),
+                     "global statistics") != postprocessor_names.end())
+        {
+          std::vector<std::string>::iterator position =
+            std::find (postprocessor_names.begin(),
+                       postprocessor_names.end(),
+                       "global statistics");
+          const std::string first_element = postprocessor_names[0];
+          postprocessor_names[0] = "global statistics";
+          *position = first_element;
+        }
+      else
+        postprocessor_names.insert(postprocessor_names.begin(),"global statistics");
+
       // then go through the list, create objects and let them parse
       // their own parameters
       for (unsigned int name=0; name<postprocessor_names.size(); ++name)
