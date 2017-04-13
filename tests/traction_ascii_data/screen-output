@@ -16,7 +16,6 @@ Number of degrees of freedom: 61,140 (37,570+4,785+18,785)
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 200+49 iterations.
-      Nonlinear residuals: 14928.8, 1.24366e+14
       Relative nonlinear residuals: 1.5591e-16, 1
       Total relative residual after nonlinear iteration 1: 1
 
@@ -24,7 +23,6 @@ Number of degrees of freedom: 61,140 (37,570+4,785+18,785)
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 200+32 iterations.
-      Nonlinear residuals: 14928.8, 2.14388e+13
       Relative nonlinear residuals: 1.5591e-16, 0.172385
       Total relative residual after nonlinear iteration 2: 0.172385
 
@@ -32,7 +30,6 @@ Number of degrees of freedom: 61,140 (37,570+4,785+18,785)
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 200+34 iterations.
-      Nonlinear residuals: 14928.8, 2.9141e+12
       Relative nonlinear residuals: 1.5591e-16, 0.0234317
       Total relative residual after nonlinear iteration 3: 0.0234317
 

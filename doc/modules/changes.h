@@ -7,6 +7,12 @@
  *
  * <ol>
  *
+ * <li> Changed: aspect now outputs only relative nonlinear residuals of
+ * nonlinear iterations in the screen output. In addition, the number of
+ * the nonlinear iteration is included in the screen output.
+ * <br>
+ * (Juliane Dannberg, 2017/04/13)
+ *
  * <li> New: aspect now provides as script that -- when used together with
  * the deal.II parameter GUI program -- allows for a graphical creation and 
  * modification of input parameter files. All available parameters are listed,

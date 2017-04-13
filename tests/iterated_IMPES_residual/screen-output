@@ -7,7 +7,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 49+0 iterations.
-      Nonlinear residuals: 1.00594e-09, 0, 8.98822e+07
       Relative nonlinear residuals: 2.00269e-16, 0, 1
       Total relative residual after nonlinear iteration 1: 1
 
@@ -15,7 +14,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 2+0 iterations.
-      Nonlinear residuals: 1.00594e-09, 0, 7.83583e-05
       Relative nonlinear residuals: 2.00269e-16, 0, 8.71789e-13
       Total relative residual after nonlinear iteration 2: 8.71789e-13
 
@@ -27,7 +25,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 10 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 47+0 iterations.
-      Nonlinear residuals: 1.30257e+07, 0, 7.76212e+07
       Relative nonlinear residuals: 0.821377, 0, 0.75783
       Total relative residual after nonlinear iteration 1: 0.821377
 
@@ -35,7 +32,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 10 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 45+0 iterations.
-      Nonlinear residuals: 1.54989e+06, 0, 1.16379e+07
       Relative nonlinear residuals: 0.0977331, 0, 0.113623
       Total relative residual after nonlinear iteration 2: 0.113623
 
@@ -43,7 +39,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 9 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 42+0 iterations.
-      Nonlinear residuals: 267787, 0, 2.1001e+06
       Relative nonlinear residuals: 0.0168861, 0, 0.0205037
       Total relative residual after nonlinear iteration 3: 0.0205037
 
@@ -51,7 +46,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 9 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 40+0 iterations.
-      Nonlinear residuals: 50859, 0, 402412
       Relative nonlinear residuals: 0.00320707, 0, 0.00392882
       Total relative residual after nonlinear iteration 4: 0.00392882
 
@@ -59,7 +53,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 8 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 37+0 iterations.
-      Nonlinear residuals: 10042.3, 0, 79675.5
       Relative nonlinear residuals: 0.000633249, 0, 0.000777886
       Total relative residual after nonlinear iteration 5: 0.000777886
 
@@ -67,7 +60,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 8 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 35+0 iterations.
-      Nonlinear residuals: 2028.44, 0, 16133
       Relative nonlinear residuals: 0.000127909, 0, 0.000157509
       Total relative residual after nonlinear iteration 6: 0.000157509
 
@@ -75,7 +67,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 7 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 32+0 iterations.
-      Nonlinear residuals: 416.177, 0, 3319.9
       Relative nonlinear residuals: 2.62433e-05, 0, 3.24128e-05
       Total relative residual after nonlinear iteration 7: 3.24128e-05
 
@@ -83,7 +74,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 6 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 29+0 iterations.
-      Nonlinear residuals: 86.3598, 0, 691.174
       Relative nonlinear residuals: 5.44567e-06, 0, 6.74805e-06
       Total relative residual after nonlinear iteration 8: 6.74805e-06
 
@@ -95,7 +85,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 11 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 46+0 iterations.
-      Nonlinear residuals: 8.74328e+06, 0, 2.77541e+07
       Relative nonlinear residuals: 0.247282, 0, 0.455259
       Total relative residual after nonlinear iteration 1: 0.455259
 
@@ -103,7 +92,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 10 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 43+0 iterations.
-      Nonlinear residuals: 534360, 0, 3.36554e+06
       Relative nonlinear residuals: 0.015113, 0, 0.055206
       Total relative residual after nonlinear iteration 2: 0.055206
 
@@ -111,7 +99,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 9 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 41+0 iterations.
-      Nonlinear residuals: 73992, 0, 562190
       Relative nonlinear residuals: 0.00209268, 0, 0.00922176
       Total relative residual after nonlinear iteration 3: 0.00922176
 
@@ -119,7 +106,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 8 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 38+0 iterations.
-      Nonlinear residuals: 13458.8, 0, 102450
       Relative nonlinear residuals: 0.000380649, 0, 0.00168053
       Total relative residual after nonlinear iteration 4: 0.00168053
 
@@ -127,7 +113,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 7 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 35+0 iterations.
-      Nonlinear residuals: 2554.88, 0, 19327.3
       Relative nonlinear residuals: 7.22582e-05, 0, 0.000317032
       Total relative residual after nonlinear iteration 5: 0.000317032
 
@@ -135,7 +120,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 6 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 32+0 iterations.
-      Nonlinear residuals: 494.904, 0, 3733.66
       Relative nonlinear residuals: 1.39971e-05, 0, 6.12444e-05
       Total relative residual after nonlinear iteration 6: 6.12444e-05
 
@@ -143,7 +127,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 6 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 30+0 iterations.
-      Nonlinear residuals: 97.4349, 0, 734.428
       Relative nonlinear residuals: 2.7557e-06, 0, 1.2047e-05
       Total relative residual after nonlinear iteration 7: 1.2047e-05
 
@@ -151,7 +134,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 5 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 26+0 iterations.
-      Nonlinear residuals: 19.4318, 0, 146.478
       Relative nonlinear residuals: 5.4958e-07, 0, 2.40272e-06
       Total relative residual after nonlinear iteration 8: 2.40272e-06
 
@@ -163,7 +145,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 11 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 46+0 iterations.
-      Nonlinear residuals: 8.78636e+06, 0, 3.96054e+07
       Relative nonlinear residuals: 0.254258, 0, 0.647102
       Total relative residual after nonlinear iteration 1: 0.647102
 
@@ -171,7 +152,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 9 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 42+0 iterations.
-      Nonlinear residuals: 298794, 0, 1.66045e+06
       Relative nonlinear residuals: 0.00864642, 0, 0.0271297
       Total relative residual after nonlinear iteration 2: 0.0271297
 
@@ -179,7 +159,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 8 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 38+0 iterations.
-      Nonlinear residuals: 13880.1, 0, 90098
       Relative nonlinear residuals: 0.000401659, 0, 0.00147209
       Total relative residual after nonlinear iteration 3: 0.00147209
 
@@ -187,7 +166,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 7 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 35+0 iterations.
-      Nonlinear residuals: 1194.47, 0, 8793.38
       Relative nonlinear residuals: 3.45653e-05, 0, 0.000143673
       Total relative residual after nonlinear iteration 4: 0.000143673
 
@@ -195,7 +173,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 6 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 31+0 iterations.
-      Nonlinear residuals: 150.623, 0, 1120.11
       Relative nonlinear residuals: 4.35868e-06, 0, 1.83012e-05
       Total relative residual after nonlinear iteration 5: 1.83012e-05
 
@@ -203,7 +180,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 5 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 28+0 iterations.
-      Nonlinear residuals: 20.2838, 0, 150.152
       Relative nonlinear residuals: 5.86969e-07, 0, 2.45329e-06
       Total relative residual after nonlinear iteration 6: 2.45329e-06
 
@@ -215,7 +191,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 11 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 47+0 iterations.
-      Nonlinear residuals: 3.47276e+06, 0, 3.10297e+07
       Relative nonlinear residuals: 0.120332, 0, 0.594093
       Total relative residual after nonlinear iteration 1: 0.594093
 
@@ -223,7 +198,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 9 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 42+0 iterations.
-      Nonlinear residuals: 121429, 0, 787205
       Relative nonlinear residuals: 0.00420756, 0, 0.0150718
       Total relative residual after nonlinear iteration 2: 0.0150718
 
@@ -231,7 +205,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 8 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 38+0 iterations.
-      Nonlinear residuals: 7066.23, 0, 54337
       Relative nonlinear residuals: 0.000244847, 0, 0.00104033
       Total relative residual after nonlinear iteration 3: 0.00104033
 
@@ -239,7 +212,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 7 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 34+0 iterations.
-      Nonlinear residuals: 662.283, 0, 5212.76
       Relative nonlinear residuals: 2.29483e-05, 0, 9.98032e-05
       Total relative residual after nonlinear iteration 4: 9.98032e-05
 
@@ -247,7 +219,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 6 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 30+0 iterations.
-      Nonlinear residuals: 68.9605, 0, 551.256
       Relative nonlinear residuals: 2.3895e-06, 0, 1.05543e-05
       Total relative residual after nonlinear iteration 5: 1.05543e-05
 
@@ -255,7 +226,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 5 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 26+0 iterations.
-      Nonlinear residuals: 7.34032, 0, 58.7242
       Relative nonlinear residuals: 2.54344e-07, 0, 1.12433e-06
       Total relative residual after nonlinear iteration 6: 1.12433e-06
 
@@ -267,7 +237,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 11 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 47+0 iterations.
-      Nonlinear residuals: 2.20444e+06, 0, 1.81351e+07
       Relative nonlinear residuals: 0.0801971, 0, 0.383226
       Total relative residual after nonlinear iteration 1: 0.383226
 
@@ -275,7 +244,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 9 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 42+0 iterations.
-      Nonlinear residuals: 71532.3, 0, 568086
       Relative nonlinear residuals: 0.00260234, 0, 0.0120047
       Total relative residual after nonlinear iteration 2: 0.0120047
 
@@ -283,7 +251,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 8 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 38+0 iterations.
-      Nonlinear residuals: 5106.63, 0, 43981.5
       Relative nonlinear residuals: 0.000185779, 0, 0.000929408
       Total relative residual after nonlinear iteration 3: 0.000929408
 
@@ -291,7 +258,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 7 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 34+0 iterations.
-      Nonlinear residuals: 482.134, 0, 4266.08
       Relative nonlinear residuals: 1.754e-05, 0, 9.01498e-05
       Total relative residual after nonlinear iteration 4: 9.01498e-05
 
@@ -299,7 +265,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 6 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 30+0 iterations.
-      Nonlinear residuals: 47.948, 0, 427.409
       Relative nonlinear residuals: 1.74434e-06, 0, 9.03192e-06
       Total relative residual after nonlinear iteration 5: 9.03192e-06
 
@@ -311,7 +276,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 11 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 46+0 iterations.
-      Nonlinear residuals: 1.47905e+06, 0, 1.27436e+07
       Relative nonlinear residuals: 0.0572412, 0, 0.258279
       Total relative residual after nonlinear iteration 1: 0.258279
 
@@ -319,7 +283,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 9 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 41+0 iterations.
-      Nonlinear residuals: 45392.6, 0, 397634
       Relative nonlinear residuals: 0.00175675, 0, 0.00805902
       Total relative residual after nonlinear iteration 2: 0.00805902
 
@@ -327,7 +290,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 8 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 37+0 iterations.
-      Nonlinear residuals: 3292.31, 0, 31095.5
       Relative nonlinear residuals: 0.000127417, 0, 0.000630225
       Total relative residual after nonlinear iteration 3: 0.000630225
 
@@ -335,7 +297,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 7 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 33+0 iterations.
-      Nonlinear residuals: 305.892, 0, 2975.96
       Relative nonlinear residuals: 1.18384e-05, 0, 6.03151e-05
       Total relative residual after nonlinear iteration 4: 6.03151e-05
 
@@ -343,7 +304,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 6 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 29+0 iterations.
-      Nonlinear residuals: 29.6602, 0, 293.926
       Relative nonlinear residuals: 1.14789e-06, 0, 5.95712e-06
       Total relative residual after nonlinear iteration 5: 5.95712e-06
 
@@ -355,7 +315,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 11 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 46+0 iterations.
-      Nonlinear residuals: 940943, 0, 8.43616e+06
       Relative nonlinear residuals: 0.038188, 0, 0.159808
       Total relative residual after nonlinear iteration 1: 0.159808
 
@@ -363,7 +322,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 10 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 41+0 iterations.
-      Nonlinear residuals: 29828.2, 0, 290743
       Relative nonlinear residuals: 0.00121057, 0, 0.00550759
       Total relative residual after nonlinear iteration 2: 0.00550759
 
@@ -371,7 +329,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 9 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 37+0 iterations.
-      Nonlinear residuals: 2227.05, 0, 23200.1
       Relative nonlinear residuals: 9.03844e-05, 0, 0.000439483
       Total relative residual after nonlinear iteration 3: 0.000439483
 
@@ -379,7 +336,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 8 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 32+0 iterations.
-      Nonlinear residuals: 202.163, 0, 2177.95
       Relative nonlinear residuals: 8.20473e-06, 0, 4.12574e-05
       Total relative residual after nonlinear iteration 4: 4.12574e-05
 
@@ -387,7 +343,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 7 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 29+0 iterations.
-      Nonlinear residuals: 19.0298, 0, 209.279
       Relative nonlinear residuals: 7.72319e-07, 0, 3.96441e-06
       Total relative residual after nonlinear iteration 5: 3.96441e-06
 
@@ -399,7 +354,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 12 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 46+0 iterations.
-      Nonlinear residuals: 595028, 0, 5.46878e+06
       Relative nonlinear residuals: 0.0247562, 0, 0.0961601
       Total relative residual after nonlinear iteration 1: 0.0961601
 
@@ -407,7 +361,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 11 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 41+0 iterations.
-      Nonlinear residuals: 21593.2, 0, 227820
       Relative nonlinear residuals: 0.000898388, 0, 0.00400586
       Total relative residual after nonlinear iteration 2: 0.00400586
 
@@ -415,7 +368,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 9 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 36+0 iterations.
-      Nonlinear residuals: 1686.01, 0, 18497.6
       Relative nonlinear residuals: 7.01468e-05, 0, 0.000325253
       Total relative residual after nonlinear iteration 3: 0.000325253
 
@@ -423,7 +375,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 8 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 32+0 iterations.
-      Nonlinear residuals: 148.22, 0, 1669.59
       Relative nonlinear residuals: 6.16673e-06, 0, 2.93572e-05
       Total relative residual after nonlinear iteration 4: 2.93572e-05
 
@@ -431,7 +382,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 7 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 28+0 iterations.
-      Nonlinear residuals: 13.3331, 0, 152.216
       Relative nonlinear residuals: 5.54728e-07, 0, 2.67649e-06
       Total relative residual after nonlinear iteration 5: 2.67649e-06
 
@@ -443,7 +393,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 12 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 45+0 iterations.
-      Nonlinear residuals: 391929, 0, 3.62238e+06
       Relative nonlinear residuals: 0.0164665, 0, 0.0590716
       Total relative residual after nonlinear iteration 1: 0.0590716
 
@@ -451,7 +400,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 11 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 40+0 iterations.
-      Nonlinear residuals: 16341.4, 0, 180512
       Relative nonlinear residuals: 0.00068657, 0, 0.00294368
       Total relative residual after nonlinear iteration 2: 0.00294368
 
@@ -459,7 +407,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 9 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 36+0 iterations.
-      Nonlinear residuals: 1276.77, 0, 14484.8
       Relative nonlinear residuals: 5.36425e-05, 0, 0.000236209
       Total relative residual after nonlinear iteration 3: 0.000236209
 
@@ -467,7 +414,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 8 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 31+0 iterations.
-      Nonlinear residuals: 106.113, 0, 1230.69
       Relative nonlinear residuals: 4.45823e-06, 0, 2.00694e-05
       Total relative residual after nonlinear iteration 4: 2.00694e-05
 
@@ -475,7 +421,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 7 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 27+0 iterations.
-      Nonlinear residuals: 8.96327, 0, 104.715
       Relative nonlinear residuals: 3.76583e-07, 0, 1.70762e-06
       Total relative residual after nonlinear iteration 5: 1.70762e-06
 
@@ -487,7 +432,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 12 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 44+0 iterations.
-      Nonlinear residuals: 292800, 0, 2.74823e+06
       Relative nonlinear residuals: 0.0123146, 0, 0.0416316
       Total relative residual after nonlinear iteration 1: 0.0416316
 
@@ -495,7 +439,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 11 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 39+0 iterations.
-      Nonlinear residuals: 13530.5, 0, 148179
       Relative nonlinear residuals: 0.00056907, 0, 0.00224469
       Total relative residual after nonlinear iteration 2: 0.00224469
 
@@ -503,7 +446,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 9 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 35+0 iterations.
-      Nonlinear residuals: 984.765, 0, 11239.9
       Relative nonlinear residuals: 4.14175e-05, 0, 0.000170268
       Total relative residual after nonlinear iteration 3: 0.000170268
 
@@ -511,7 +453,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 8 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 31+0 iterations.
-      Nonlinear residuals: 75.5848, 0, 878.747
       Relative nonlinear residuals: 3.17896e-06, 0, 1.33117e-05
       Total relative residual after nonlinear iteration 4: 1.33117e-05
 
@@ -519,7 +460,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 7 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 26+0 iterations.
-      Nonlinear residuals: 5.89606, 0, 68.8876
       Relative nonlinear residuals: 2.47978e-07, 0, 1.04354e-06
       Total relative residual after nonlinear iteration 5: 1.04354e-06
 
@@ -531,7 +471,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 11 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 43+0 iterations.
-      Nonlinear residuals: 180228, 0, 1.78002e+06
       Relative nonlinear residuals: 0.00785454, 0, 0.0254169
       Total relative residual after nonlinear iteration 1: 0.0254169
 
@@ -539,7 +478,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 10 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 38+0 iterations.
-      Nonlinear residuals: 6885.83, 0, 78122
       Relative nonlinear residuals: 0.000300093, 0, 0.00111551
       Total relative residual after nonlinear iteration 2: 0.00111551
 
@@ -547,7 +485,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 8 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 33+0 iterations.
-      Nonlinear residuals: 382.885, 0, 4559.4
       Relative nonlinear residuals: 1.66866e-05, 0, 6.51037e-05
       Total relative residual after nonlinear iteration 3: 6.51037e-05
 
@@ -555,7 +492,6 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 7 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 28+0 iterations.
-      Nonlinear residuals: 22.6766, 0, 274.304
       Relative nonlinear residuals: 9.88274e-07, 0, 3.9168e-06
       Total relative residual after nonlinear iteration 4: 3.9168e-06
 

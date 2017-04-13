@@ -2096,7 +2096,6 @@ namespace aspect
               current_linearization_point.block(introspection.block_indices.temperature)
                 = solution.block(introspection.block_indices.temperature);
               rebuild_stokes_matrix = true;
-              std::vector<double> composition_residual (parameters.n_compositional_fields,0);
               std::vector<double> relative_composition_residual (parameters.n_compositional_fields,0);
 
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
@@ -2106,21 +2105,22 @@ namespace aspect
                   switch (method)
                     {
                       case Parameters<dim>::AdvectionFieldMethod::fem_field:
+                      {
                         assemble_advection_system (adv_field);
 
                         if (nonlinear_iteration == 0)
                           initial_composition_residual[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
 
-                        composition_residual[c]
+                        const double composition_residual
                           = solve_advection(adv_field);
 
                         relative_composition_residual[c] = (initial_composition_residual[c] > 0)
                                                            ?
-                                                           composition_residual[c]/initial_composition_residual[c]
+                                                           composition_residual/initial_composition_residual[c]
                                                            :
                                                            0.0;
-
-                        break;
+                      }
+                      break;
 
                       case Parameters<dim>::AdvectionFieldMethod::particles:
                         interpolate_particle_properties(adv_field);
@@ -2157,20 +2157,10 @@ namespace aspect
               current_linearization_point = solution;
 
               // write the residual output in the same order as the output when
-              // solving the equations
-              pcout << "      Nonlinear residuals: " << temperature_residual;
-
-              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                pcout << ", " << composition_residual[c];
-
-              pcout << ", " << stokes_residual;
-
-              pcout << std::endl;
-
-              // output relative residuals
+              // solving the equations, output only relative residuals
               pcout << "      Relative nonlinear residuals: " << relative_temperature_residual;
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                pcout << ", " << initial_composition_residual[c];
+                pcout << ", " << relative_composition_residual[c];
               pcout << ", " << relative_stokes_residual;
               pcout << std::endl;
 
@@ -2187,13 +2177,11 @@ namespace aspect
                                             :
                                             0.0);
                   if (initial_composition_residual[c]>threshold)
-                    max = std::max(composition_residual[c]/initial_composition_residual[c],max);
+                    max = std::max(relative_composition_residual[c],max);
                 }
 
-              if (initial_stokes_residual>0)
-                max = std::max(stokes_residual/initial_stokes_residual, max);
-              if (initial_temperature_residual>0)
-                max = std::max(temperature_residual/initial_temperature_residual, max);
+              max = std::max(relative_stokes_residual, max);
+              max = std::max(relative_temperature_residual, max);
               pcout << "      Total relative residual after nonlinear iteration " << nonlinear_iteration+1 << ": " << max << std::endl;
               pcout << std::endl
                     << std::endl;
