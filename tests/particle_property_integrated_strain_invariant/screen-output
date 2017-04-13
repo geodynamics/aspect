@@ -1,9 +1,4 @@
 -----------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.0.0-pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
 -----------------------------------------------------------------------------
 
 Number of active cells: 100 (on 1 levels)
@@ -17,94 +12,33 @@ Number of degrees of freedom: 1,444 (882+121+441)
 
 
    Postprocessing:
-     Writing particle output: particle_property_integrated_strain_invariant/particles/particle-00000
+     Writing particle output: output-particle_property_integrated_strain_invariant/particles/particle-00000
 
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |    0.0793s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |   0.00978s |        12% |
-| Assemble temperature system     |         1 |   0.00879s |        11% |
-| Build Stokes preconditioner     |         1 |   0.00921s |        12% |
-| Build temperature preconditioner|         1 |  0.000603s |      0.76% |
-| Solve Stokes system             |         1 |   0.00206s |       2.6% |
-| Solve temperature system        |         1 |  0.000279s |      0.35% |
-| Initialization                  |         1 |    0.0215s |        27% |
-| Particles: Advect               |         2 |  0.000389s |      0.49% |
-| Particles: Generate             |         1 |  7.08e-05s |         0% |
-| Particles: Initialization       |         1 |  0.000105s |      0.13% |
-| Particles: Initialize properties|         1 |  2.69e-05s |         0% |
-| Particles: Output               |         1 |  0.000176s |      0.22% |
-| Particles: Sort                 |         2 |  0.000399s |       0.5% |
-| Particles: Update properties    |         1 |   0.00228s |       2.9% |
-| Postprocessing                  |         1 |   0.00337s |       4.3% |
-| Setup dof systems               |         1 |   0.00845s |        11% |
-| Setup initial conditions        |         1 |   0.00788s |       9.9% |
 +---------------------------------+-----------+------------+------------+
 
 *** Timestep 1:  t=10 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-   Residual after nonlinear iteration 1: 4.7096e-15
+   Residual after nonlinear iteration 1: 5.22529e-15
 
    Postprocessing:
-     Writing particle output: particle_property_integrated_strain_invariant/particles/particle-00001
+     Writing particle output: output-particle_property_integrated_strain_invariant/particles/particle-00001
 
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      0.12s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |    0.0201s |        17% |
-| Assemble temperature system     |         2 |    0.0182s |        15% |
-| Build Stokes preconditioner     |         2 |    0.0183s |        15% |
-| Build temperature preconditioner|         2 |   0.00109s |      0.91% |
-| Solve Stokes system             |         2 |   0.00255s |       2.1% |
-| Solve temperature system        |         2 |  0.000464s |      0.39% |
-| Initialization                  |         1 |    0.0215s |        18% |
-| Particles: Advect               |         4 |  0.000778s |      0.65% |
-| Particles: Generate             |         1 |  7.08e-05s |         0% |
-| Particles: Initialization       |         1 |  0.000105s |         0% |
-| Particles: Initialize properties|         1 |  2.69e-05s |         0% |
-| Particles: Output               |         2 |   0.00035s |      0.29% |
-| Particles: Sort                 |         4 |  0.000785s |      0.66% |
-| Particles: Update properties    |         2 |   0.00455s |       3.8% |
-| Postprocessing                  |         2 |   0.00667s |       5.6% |
-| Setup dof systems               |         1 |   0.00845s |       7.1% |
-| Setup initial conditions        |         1 |   0.00788s |       6.6% |
 +---------------------------------+-----------+------------+------------+
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      0.12s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |    0.0201s |        17% |
-| Assemble temperature system     |         2 |    0.0182s |        15% |
-| Build Stokes preconditioner     |         2 |    0.0183s |        15% |
-| Build temperature preconditioner|         2 |   0.00109s |      0.91% |
-| Solve Stokes system             |         2 |   0.00255s |       2.1% |
-| Solve temperature system        |         2 |  0.000464s |      0.39% |
-| Initialization                  |         1 |    0.0215s |        18% |
-| Particles: Advect               |         4 |  0.000778s |      0.65% |
-| Particles: Generate             |         1 |  7.08e-05s |         0% |
-| Particles: Initialization       |         1 |  0.000105s |         0% |
-| Particles: Initialize properties|         1 |  2.69e-05s |         0% |
-| Particles: Output               |         2 |   0.00035s |      0.29% |
-| Particles: Sort                 |         4 |  0.000785s |      0.66% |
-| Particles: Update properties    |         2 |   0.00455s |       3.8% |
-| Postprocessing                  |         2 |   0.00667s |       5.6% |
-| Setup dof systems               |         1 |   0.00845s |       7.1% |
-| Setup initial conditions        |         1 |   0.00788s |       6.6% |
 +---------------------------------+-----------+------------+------------+
-
 
