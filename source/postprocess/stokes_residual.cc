@@ -100,8 +100,8 @@ namespace aspect
         {
           data_point.values.push_back(-1.0);
           data_point.values.insert(data_point.values.end(),
-              solver_control_expensive.get_history_data().begin(),
-              solver_control_expensive.get_history_data().end());
+                                   solver_control_expensive.get_history_data().begin(),
+                                   solver_control_expensive.get_history_data().end());
         }
 #else
       const ExtendedSolverControl &cheap = dynamic_cast<const ExtendedSolverControl &> (solver_control_cheap);
@@ -120,17 +120,17 @@ namespace aspect
       // Pre deal.II 9.0 history_data contained 0 for all iterations
       // up to max steps (e.g. because the solver converged earlier).
       // Remove those entries.
-//      std::vector<double>::iterator zero_value = std::find(data_point.values.begin(),
-//                                                           data_point.values.end(),
-//                                                           0);
-//      while (zero_value != data_point.values.end())
-//        {
-//          data_point.values.erase(zero_value);
-//
-//          zero_value = std::find(data_point.values.begin(),
-//                                 data_point.values.end(),
-//                                 0);
-//        }
+      std::vector<double>::iterator zero_value = std::find(data_point.values.begin(),
+                                                           data_point.values.end(),
+                                                           0);
+      while (zero_value != data_point.values.end())
+        {
+          data_point.values.erase(zero_value);
+
+          zero_value = std::find(data_point.values.begin(),
+                                 data_point.values.end(),
+                                 0);
+        }
 #endif
 
       entries.push_back(data_point);

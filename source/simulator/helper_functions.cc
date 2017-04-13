@@ -252,81 +252,6 @@ namespace aspect
 
 
   template <int dim>
-  bool Simulator<dim>::maybe_generate_statistics(const bool statistics_already_generated)
-  {
-    // if we do not do more than one nonlinear iteration, or the
-    // cooresponding columns have already been generated in a previous call
-    // to this function, we fill the columns with their correct value
-    const bool generate_statistics_in_first_call =
-      (parameters.nonlinear_solver == NonlinearSolver::IMPES
-       || parameters.nonlinear_solver == NonlinearSolver::Advection_only
-       || parameters.max_nonlinear_iterations == 1
-       || parameters.max_nonlinear_iterations_in_prerefinement == 1);
-
-    // in this special case, we have initialized these lines already and do not
-    // want to write any more statistics for the first time step
-    if (statistics_already_generated && timestep_number == 0
-        && pre_refinement_step == 0
-        && generate_statistics_in_first_call)
-      {
-        return true;
-      }
-    // if not, generate statistics
-    else if (generate_statistics_in_first_call || statistics_already_generated)
-      {
-        // set global statistics about this time step
-        statistics.add_value("Time step number", timestep_number);
-        if (parameters.convert_to_years == true)
-          statistics.add_value("Time (years)", time / year_in_seconds);
-        else
-          statistics.add_value("Time (seconds)", time);
-
-        if (parameters.convert_to_years == true)
-          statistics.add_value("Time step size (years)", time_step / year_in_seconds);
-        else
-          statistics.add_value("Time step size (seconds)", time_step);
-
-        statistics.add_value("Number of mesh cells",
-                             triangulation.n_global_active_cells());
-
-        unsigned int n_stokes_dofs = introspection.system_dofs_per_block[0];
-        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
-          n_stokes_dofs += introspection.system_dofs_per_block[introspection.block_indices.pressure];
-
-        statistics.add_value("Number of Stokes degrees of freedom", n_stokes_dofs);
-        statistics.add_value("Number of temperature degrees of freedom",
-                             introspection.system_dofs_per_block[introspection.block_indices.temperature]);
-        if (parameters.n_compositional_fields > 0)
-          statistics.add_value("Number of degrees of freedom for all compositions",
-                               parameters.n_compositional_fields
-                               * introspection.system_dofs_per_block[introspection.block_indices.compositional_fields[0]]);
-        return true;
-      }
-    // otherwise, we initialize the columns with zeroes
-    else
-      {
-        statistics.add_value("Time step number", 0);
-        if (parameters.convert_to_years == true)
-          statistics.add_value("Time (years)", 0.0);
-        else
-          statistics.add_value("Time (seconds)", 0.0);
-
-        if (parameters.convert_to_years == true)
-          statistics.add_value("Time step size (years)", 0.0);
-        else
-          statistics.add_value("Time step size (seconds)", 0.0);
-
-        statistics.add_value("Number of mesh cells", 0);
-        statistics.add_value("Number of Stokes degrees of freedom", 0);
-        statistics.add_value("Number of temperature degrees of freedom", 0);
-        if (parameters.n_compositional_fields > 0)
-          statistics.add_value("Number of degrees of freedom for all compositions", 0);
-        return true;
-      }
-  }
-
-
-  template <int dim>
   double
   Simulator<dim>::
   get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const
@@ -1610,7 +1535,6 @@ namespace aspect
   template double Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::output_statistics(); \
-  template bool Simulator<dim>::maybe_generate_statistics(const bool statistics_already_generated); \
   template double Simulator<dim>::compute_initial_stokes_residual(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\

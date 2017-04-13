@@ -2368,10 +2368,6 @@ namespace aspect
         setup_dofs();
 
         global_volume = GridTools::volume (triangulation, *mapping);
-
-        // initialize global statistics once in the beginning to get the order
-        // of the columns right
-        statistics_already_generated = maybe_generate_statistics(statistics_already_generated);
       }
 
     // start the timer for periodic checkpoints after the setup above
@@ -2399,9 +2395,6 @@ namespace aspect
 
         // then do the core work: assemble systems and solve
         solve_timestep ();
-
-        // generate global statistics if they have not been generated above
-        statistics_already_generated = maybe_generate_statistics(statistics_already_generated);
 
         // see if we have to start over with a new adaptive refinement cycle
         // at the beginning of the simulation

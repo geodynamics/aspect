@@ -384,46 +384,10 @@ namespace aspect
                               :
                               introspection.name_for_compositional_index(advection_field.compositional_variable) + " composition");
 
-    // check if matrix and/or RHS are zero
-    // note: to avoid a warning, we compare against numeric_limits<double>::min() instead of 0 here
-    if (system_rhs.block(block_idx).l2_norm() <= std::numeric_limits<double>::min())
-      {
-        pcout << "   Skipping " + field_name + " solve because RHS is zero." << std::endl;
-        solution.block(block_idx) = 0;
-        std::string statistics_output = (advection_field.is_temperature()
-                                         ?
-                                         "Iterations for temperature solver"
-                                         :
-                                         "Iterations for composition solver " +
-                                         Utilities::int_to_string(advection_field.compositional_variable+1));
-        statistics.add_value(statistics_output, 0);
-        return 0;
-      }
-
-    AssertThrow(system_matrix.block(block_idx,
-                                    block_idx).linfty_norm() > std::numeric_limits<double>::min(),
-                ExcMessage ("The " + field_name + " equation can not be solved, because the matrix is zero, "
-                            "but the right-hand side is nonzero."));
-
     if (advection_field.is_temperature())
-      {
-        build_advection_preconditioner(advection_field,
-                                       T_preconditioner);
-        computing_timer.enter_section ("   Solve temperature system");
-        pcout << "   Solving temperature system... " << std::flush;
-        advection_solver_tolerance = parameters.temperature_solver_tolerance;
-      }
+      advection_solver_tolerance = parameters.temperature_solver_tolerance;
     else
-      {
-        build_advection_preconditioner(advection_field,
-                                       C_preconditioner);
-        computing_timer.enter_section ("   Solve composition system");
-        pcout << "   Solving "
-              << introspection.name_for_compositional_index(advection_field.compositional_variable)
-              << " system "
-              << "... " << std::flush;
-        advection_solver_tolerance = parameters.composition_solver_tolerance;
-      }
+      advection_solver_tolerance = parameters.composition_solver_tolerance;
 
     const double tolerance = std::max(1e-50,
                                       advection_solver_tolerance*system_rhs.block(block_idx).l2_norm());
@@ -438,6 +402,46 @@ namespace aspect
 
     SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
                                                  SolverGMRES<LinearAlgebra::Vector>::AdditionalData(30,true));
+
+    // check if matrix and/or RHS are zero
+    // note: to avoid a warning, we compare against numeric_limits<double>::min() instead of 0 here
+    if (system_rhs.block(block_idx).l2_norm() <= std::numeric_limits<double>::min())
+      {
+        pcout << "   Skipping " + field_name + " solve because RHS is zero." << std::endl;
+        solution.block(block_idx) = 0;
+
+        // signal successful solver and signal residual of zero
+        solver_control.check(0, 0.0);
+        signals.post_advection_solver(*this,
+                                      advection_field.is_temperature(),
+                                      advection_field.compositional_variable,
+                                      solver_control);
+
+        return 0;
+      }
+
+    AssertThrow(system_matrix.block(block_idx,
+                                    block_idx).linfty_norm() > std::numeric_limits<double>::min(),
+                ExcMessage ("The " + field_name + " equation can not be solved, because the matrix is zero, "
+                            "but the right-hand side is nonzero."));
+
+    if (advection_field.is_temperature())
+      {
+        build_advection_preconditioner(advection_field,
+                                       T_preconditioner);
+        computing_timer.enter_section ("   Solve temperature system");
+        pcout << "   Solving temperature system... " << std::flush;
+      }
+    else
+      {
+        build_advection_preconditioner(advection_field,
+                                       C_preconditioner);
+        computing_timer.enter_section ("   Solve composition system");
+        pcout << "   Solving "
+              << introspection.name_for_compositional_index(advection_field.compositional_variable)
+              << " system "
+              << "... " << std::flush;
+      }
 
     // Create distributed vector (we need all blocks here even though we only
     // solve for the current block) because only have a ConstraintMatrix

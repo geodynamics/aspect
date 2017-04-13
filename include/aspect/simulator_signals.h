@@ -212,9 +212,9 @@ namespace aspect
     /**
      * A signal that is fired when the iterative advection solver is done.
      * Parameters are a reference to the SimulatorAccess, a bool indicating
-     * whether the temperature field or an compositional field was solved,
-     * a composition index that describes, which compositional field
-     * was solved, and a Information object that contains informations
+     * whether the temperature field or a compositional field was solved,
+     * a composition index that describes which compositional field
+     * was solved, and an information object that contains information
      * about the number of iterations and history of residuals.
      */
     boost::signals2::signal<void (const SimulatorAccess<dim> &,

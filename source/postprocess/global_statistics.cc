@@ -86,8 +86,6 @@ namespace aspect
     std::pair<std::string,std::string>
     GlobalStatistics<dim>::execute (TableHandler &statistics)
     {
-      const bool one_line_per_iteration = false;
-
       unsigned int nonlinear_iterations = solver_controls_cheap.size();
 
       for (unsigned int column=0; column<advection_solver_controls.size(); ++column)
@@ -97,6 +95,9 @@ namespace aspect
         for (unsigned int iteration = 0; iteration < nonlinear_iterations; ++iteration)
           {
             generate_global_statistics(statistics);
+
+            statistics.add_value("Nonlinear iteration number",
+                                 iteration);
 
             for (unsigned int column=0; column<advection_solver_controls.size(); ++column)
               if (iteration < advection_solver_controls[column].second.size())
@@ -138,8 +139,14 @@ namespace aspect
                 }
             }
 
-          statistics.add_value("Number of nonlinear iterations",
-                               nonlinear_iterations);
+          // only output the number of nonlinear iterations if we actually
+          // use a nonlinear solver scheme
+          const bool output_iteration_number =
+                  (!(this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::IMPES
+                   || this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::Advection_only));
+          if (output_iteration_number)
+            statistics.add_value("Number of nonlinear iterations",
+                                 nonlinear_iterations);
 
           for (unsigned int column=0; column<advection_solver_controls.size(); ++column)
             statistics.add_value(advection_solver_controls[column].first,
@@ -194,6 +201,43 @@ namespace aspect
         statistics.add_value("Number of degrees of freedom for all compositions",
                              this->get_parameters().n_compositional_fields
                              * this->introspection().system_dofs_per_block[this->introspection().block_indices.compositional_fields[0]]);
+    }
+
+
+    template <int dim>
+    void
+    GlobalStatistics<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Postprocess");
+      {
+        prm.enter_subsection("Global statistics");
+        {
+          prm.declare_entry ("Write statistics for all nonlinear iterations", "false",
+                             Patterns::Bool (),
+                             "Whether to put every nonlinear iteration into a separate "
+                             "line in the statistics file (if true), or to output only "
+                             "one line per time step that contains the total number of "
+                             "linear iterations summed up over all nonlinear iterations.");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+    }
+
+
+    template <int dim>
+    void
+    GlobalStatistics<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Postprocess");
+      {
+        prm.enter_subsection("Global statistics");
+        {
+          one_line_per_iteration = prm.get_bool("Write statistics for all nonlinear iterations");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
     }
   }
 }

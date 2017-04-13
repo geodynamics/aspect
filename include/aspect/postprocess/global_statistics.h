@@ -45,7 +45,6 @@ namespace aspect
       public:
         void initialize();
 
-
         /**
          * Evaluate the solution for some general statistics.
          */
@@ -53,6 +52,26 @@ namespace aspect
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
 
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+
+
+      private:
+        /**
+         * Write global statistics such as the time step number and the
+         * number of degrees of freedom into the statistics object.
+         */
         void
         generate_global_statistics(TableHandler &statistics);
 
@@ -67,13 +86,19 @@ namespace aspect
                                        const unsigned int compositional_index,
                                        const SolverControl &solver_control);
 
-      private:
         std::vector<unsigned int> list_of_S_iterations;
         std::vector<unsigned int> list_of_A_iterations;
         std::vector<SolverControl> solver_controls_cheap;
         std::vector<SolverControl> solver_controls_expensive;
 
         std::vector<std::pair<std::string, std::vector<SolverControl> > > advection_solver_controls;
+
+        /**
+         * Whether to put every nonlinear iteration into a separate
+         * line in the statistics file or to only output one line
+         * per time step.
+         */
+        double one_line_per_iteration;
     };
   }
 }
