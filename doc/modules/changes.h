@@ -18,6 +18,11 @@
  * <br>
  * (Juliane Dannberg, 2017/04/13)
  *
+ * <li> New: Aspect now supports postprocessing of nonlinear iterations,
+ * in particular generating graphical output for each iteration.
+ * <br>
+ * (Juliane Dannberg, 2017/04/12)
+ *
  * <li> New: aspect now provides as script that -- when used together with
  * the deal.II parameter GUI program -- allows for a graphical creation and 
  * modification of input parameter files. All available parameters are listed,

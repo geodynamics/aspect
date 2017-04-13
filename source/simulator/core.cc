@@ -2013,6 +2013,9 @@ namespace aspect
           build_stokes_preconditioner();
           solve_stokes();
 
+          if (parameters.run_postprocessors_on_nonlinear_iterations)
+            postprocess ();
+
           break;
         }
 
@@ -2353,6 +2356,9 @@ namespace aspect
             current_linearization_point.block(introspection.block_indices.compositional_fields[c])
               = solution.block(introspection.block_indices.compositional_fields[c]);
 
+          if (parameters.run_postprocessors_on_nonlinear_iterations)
+            postprocess ();
+
           break;
         }
 
@@ -2453,10 +2459,9 @@ namespace aspect
               goto start_time_iteration;
           }
 
-        // if we use a nonlinear solver scheme and postprocess nonlinear iterations, this function is called within
+        // if we postprocess nonlinear iterations, this function is called within
         // solve_timestep () in the individual solver schemes
-        if ((!parameters.run_postprocessors_on_nonlinear_iterations) || parameters.nonlinear_solver == NonlinearSolver::IMPES
-            || parameters.nonlinear_solver == NonlinearSolver::Advection_only)
+        if (!parameters.run_postprocessors_on_nonlinear_iterations)
           postprocess ();
 
         // get new time step size

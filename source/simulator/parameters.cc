@@ -602,7 +602,8 @@ namespace aspect
                          "each of the nonlinear iterations done within one time step. "
                          "As this is mainly an option for the purposes of debugging, "
                          "it is not supported when the 'Time between graphical output' "
-                         "is larger than zero.");
+                         "is larger than zero, or when the postprocessor is not intended "
+                         "to be run more than once per timestep.");
     }
     prm.leave_subsection();
 

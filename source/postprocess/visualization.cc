@@ -210,7 +210,7 @@ namespace aspect
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
       last_output_time (std::numeric_limits<double>::quiet_NaN()),
-      output_file_number (0),
+      output_file_number (numbers::invalid_unsigned_int),
       mesh_changed (true)
     {}
 
@@ -251,14 +251,21 @@ namespace aspect
 
       // now also generate a .pvd file that matches simulation
       // time and corresponding .pvtu record
-      // in case we output all nonlinear iterations, we only want one
-      // entry per time step, so replace the last line with the current iteration
-      if (this->get_nonlinear_iteration() == 0 || !this->get_parameters().run_postprocessors_on_nonlinear_iterations)
+      if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
+        {
+          // in case we output all nonlinear iterations, we only want one
+          // entry per time step, so replace the last line with the current iteration
+          if (this->get_nonlinear_iteration() == 0)
+            times_and_pvtu_names.push_back(std::make_pair
+                                           (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
+          else
+            times_and_pvtu_names.back() = (std::make_pair
+                                           (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
+        }
+      else
         times_and_pvtu_names.push_back(std::make_pair
                                        (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
-      else
-        times_and_pvtu_names.back() = (std::make_pair
-                                       (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
+
       const std::string
       pvd_master_filename = (this->get_output_directory() + "solution.pvd");
       std::ofstream pvd_master (pvd_master_filename.c_str());
@@ -292,10 +299,18 @@ namespace aspect
           {
             filenames_with_path.push_back("solution/" + (*it));
           }
-        if (this->get_nonlinear_iteration() == 0 || !this->get_parameters().run_postprocessors_on_nonlinear_iterations)
-          output_file_names_by_timestep.push_back (filenames_with_path);
+
+        if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
+          {
+            // in case we output all nonlinear iterations, we only want one
+            // entry per time step, so replace the last line with the current iteration
+            if (this->get_nonlinear_iteration() == 0)
+              output_file_names_by_timestep.push_back (filenames_with_path);
+            else
+              output_file_names_by_timestep.back() = filenames_with_path;
+          }
         else
-          output_file_names_by_timestep.back() = filenames_with_path;
+          output_file_names_by_timestep.push_back (filenames_with_path);
       }
 
       std::ofstream global_visit_master ((this->get_output_directory() +
@@ -332,12 +347,10 @@ namespace aspect
       // up the counter of the number of the file by one, but not in
       // the very first output step. if we run postprocessors on all
       // iterations, only increase file number in the first nonlinear iteration
-      const bool first_output = (this->get_timestep_number() == 0)
-                                && ((this->get_parameters().initial_adaptive_refinement == 0)
-                                    || (this->get_pre_refinement_step() == 0)
-                                    || (this->get_parameters().run_postprocessors_on_initial_refinement == false));
       const bool increase_file_number = (this->get_nonlinear_iteration() == 0) || (!this->get_parameters().run_postprocessors_on_nonlinear_iterations);
-      if (!first_output && increase_file_number)
+      if (output_file_number == numbers::invalid_unsigned_int)
+        output_file_number = 0;
+      else if (increase_file_number)
         ++output_file_number;
 
       internal::BaseVariablePostprocessor<dim> base_variables;
