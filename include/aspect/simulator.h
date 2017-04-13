@@ -1170,26 +1170,6 @@ namespace aspect
       void output_statistics();
 
       /**
-       * This function is called at the end of each time step and generates
-       * global statistics about this time step like the current time, the
-       * number of mesh cells, and the number of degrees of freedom.
-       *
-       * In addition, it is called at the beginning of the model run to add the
-       * columns to the statistics file in the correct order. In case that
-       * only one nonlinear iteration will be made, it generates output for
-       * the first row of the statistics file and returns true. If the first
-       * time step has more than one nonlinear iteration, it fills the
-       * respective entries with zeroes and returns false.
-       *
-       * The input argument 'statistics_already_generated' determines which
-       * of the two cases applies.
-       *
-       * This function is implemented in
-       * <code>source/simulator/helper_functions.cc</code>.
-       */
-      bool maybe_generate_statistics(const bool statistics_already_generated);
-
-      /**
        * This routine computes the initial Stokes residual that is needed as a
        * convergence criterion in models with the iterated IMPES solver. We
        * calculate it in the same way as the tolerance for the linear solver,

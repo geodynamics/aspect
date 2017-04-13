@@ -81,18 +81,34 @@ namespace aspect
     }
 
     template <int dim>
-    void StokesResidual<dim>::stokes_solver_callback (const SimulatorAccess<dim> &sim,
-                                                      const bool /*success*/,
-                                                      const std::vector<double> &history)
+    void StokesResidual<dim>::stokes_solver_callback (const SolverControl &solver_control_cheap,
+                                                      const SolverControl &solver_control_expensive)
     {
+
       unsigned int current_solve_index = 0;
-      if (entries.size()>0 && entries.back().time == sim.get_time())
+      if (entries.size()>0 && entries.back().time == this->get_time())
         current_solve_index = entries.back().solve_index+1;
 
       DataPoint data_point;
-      data_point.time = sim.get_time();
+      data_point.time = this->get_time();
       data_point.solve_index = current_solve_index;
-      data_point.values = history;
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+      data_point.values = solver_control_cheap.get_history_data();
+      data_point.values.push_back(-1.0);
+      data_point.values.insert(data_point.values.end(),
+                               solver_control_expensive.get_history_data().begin(),
+                               solver_control_expensive.get_history_data().end());
+#else
+      const ExtendedSolverControl &cheap = dynamic_cast<const ExtendedSolverControl &> (solver_control_cheap);
+      const ExtendedSolverControl &expensive = dynamic_cast<const ExtendedSolverControl &> (solver_control_expensive);
+      data_point.values = cheap.get_history_data();
+      data_point.values.push_back(-1.0);
+      data_point.values.insert(data_point.values.end(),
+                               expensive.get_history_data().begin(),
+                               expensive.get_history_data().end());
+#endif
+
       entries.push_back(data_point);
     }
 
@@ -101,7 +117,15 @@ namespace aspect
     StokesResidual<dim>::initialize ()
     {
       this->get_signals().post_stokes_solver.connect(
-        std_cxx11::bind(&StokesResidual<dim>::stokes_solver_callback, this, std_cxx11::_1, std_cxx11::_2, std_cxx11::_3)
+        std_cxx11::bind(&StokesResidual<dim>::stokes_solver_callback,
+                        this,
+                        /* do not need the first arguments
+                         * std_cxx11::_1,
+                         * std_cxx11::_2,
+                         * std_cxx11::_3,
+                         */
+                        std_cxx11::_4,
+                        std_cxx11::_5)
       );
     }
 
