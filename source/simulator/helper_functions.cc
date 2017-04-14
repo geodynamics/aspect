@@ -251,6 +251,7 @@ namespace aspect
   }
 
 
+
   template <int dim>
   double
   Simulator<dim>::

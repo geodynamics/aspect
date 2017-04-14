@@ -2324,7 +2324,6 @@ namespace aspect
     unsigned int max_refinement_level = parameters.initial_global_refinement +
                                         parameters.initial_adaptive_refinement;
     pre_refinement_step = 0;
-    bool statistics_already_generated = false;
 
     // if we want to resume a computation from an earlier point
     // then reload it from a snapshot. otherwise do the basic
