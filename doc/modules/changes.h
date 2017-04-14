@@ -7,6 +7,11 @@
  *
  * <ol>
  *
+ * <li> Changed: The folder benchmark/ was renamed into benchmarks/
+ * to be consistent with our directory tests/.
+ * <br>
+ * (Rene Gassmoeller, 2017/04/14)
+ * 
  * <li> Changed: aspect now outputs only relative nonlinear residuals of
  * nonlinear iterations in the screen output. In addition, the number of
  * the nonlinear iteration is included in the screen output.
