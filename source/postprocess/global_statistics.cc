@@ -142,8 +142,8 @@ namespace aspect
           // only output the number of nonlinear iterations if we actually
           // use a nonlinear solver scheme
           const bool output_iteration_number =
-                  (!(this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::IMPES
-                   || this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::Advection_only));
+            (!(this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::IMPES
+               || this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::Advection_only));
           if (output_iteration_number)
             statistics.add_value("Number of nonlinear iterations",
                                  nonlinear_iterations);
