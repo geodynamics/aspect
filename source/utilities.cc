@@ -589,7 +589,7 @@ namespace aspect
           /**
            * Read-only access
            */
-          double   operator () (int i, int j) const;
+          double operator () (int i, int j) const;
 
           /**
            * second diagonal (used in LU decomposition), saved in m_lower[0]
@@ -599,7 +599,7 @@ namespace aspect
           /**
            * second diagonal (used in LU decomposition), saved in m_lower[0]
            */
-          double  saved_diag(int i) const;
+          double saved_diag(int i) const;
 
           /**
            * LU-Decomposition of a band matrix
@@ -640,9 +640,9 @@ namespace aspect
 
       void band_matrix::resize(int dim, int n_u, int n_l)
       {
-        assert(dim>0);
-        assert(n_u>=0);
-        assert(n_l>=0);
+        assert(dim > 0);
+        assert(n_u >= 0);
+        assert(n_l >= 0);
         m_upper.resize(n_u+1);
         m_lower.resize(n_l+1);
         for (size_t i=0; i<m_upper.size(); i++)
@@ -669,11 +669,11 @@ namespace aspect
 
       double &band_matrix::operator () (int i, int j)
       {
-        int k=j-i;       // what band is the entry
-        assert( (i>=0) && (i<dim()) && (j>=0) && (j<dim()) );
-        assert( (-num_lower()<=k) && (k<=num_upper()) );
+        int k = j - i;       // what band is the entry
+        assert( (i >= 0) && (i<dim()) && (j >= 0) && (j < dim()) );
+        assert( (-num_lower() <= k) && (k <= num_upper()) );
         // k=0 -> diagonal, k<0 lower left part, k>0 upper right part
-        if (k>=0)
+        if (k >= 0)
           return m_upper[k][i];
         else
           return m_lower[-k][i];
@@ -682,10 +682,10 @@ namespace aspect
       double band_matrix::operator () (int i, int j) const
       {
         int k=j-i;       // what band is the entry
-        assert( (i>=0) && (i<dim()) && (j>=0) && (j<dim()) );
-        assert( (-num_lower()<=k) && (k<=num_upper()) );
+        assert( (i >= 0) && (i < dim()) && (j >= 0) && (j < dim()) );
+        assert( (-num_lower() <= k) && (k <= num_upper()) );
         // k=0 -> diagonal, k<0 lower left part, k>0 upper right part
-        if (k>=0)
+        if (k >= 0)
           return m_upper[k][i];
         else
           return m_lower[-k][i];
@@ -693,51 +693,51 @@ namespace aspect
 
       double band_matrix::saved_diag(int i) const
       {
-        assert( (i>=0) && (i<dim()) );
+        assert( (i >= 0) && (i < dim()) );
         return m_lower[0][i];
       }
 
       double &band_matrix::saved_diag(int i)
       {
-        assert( (i>=0) && (i<dim()) );
+        assert( (i >= 0) && (i < dim()) );
         return m_lower[0][i];
       }
 
       void band_matrix::lu_decompose()
       {
-        int  i_max,j_max;
-        int  j_min;
+        int i_max,j_max;
+        int j_min;
         double x;
 
         // preconditioning
-        //             // normalize column i so that a_ii=1
-        for (int i=0; i<this->dim(); i++)
+        // normalize column i so that a_ii=1
+        for (int i = 0; i < this->dim(); i++)
           {
-            assert(this->operator()(i,i)!=0.0);
-            this->saved_diag(i)=1.0/this->operator()(i,i);
-            j_min=std::max(0,i-this->num_lower());
-            j_max=std::min(this->dim()-1,i+this->num_upper());
-            for (int j=j_min; j<=j_max; j++)
+            assert(this->operator()(i,i) != 0.0);
+            this->saved_diag(i) = 1.0/this->operator()(i,i);
+            j_min = std::max(0,i-this->num_lower());
+            j_max = std::min(this->dim()-1,i+this->num_upper());
+            for (int j = j_min; j <= j_max; j++)
               {
                 this->operator()(i,j) *= this->saved_diag(i);
               }
-            this->operator()(i,i)=1.0;          // prevents rounding errors
+            this->operator()(i,i) = 1.0;          // prevents rounding errors
           }
 
         // Gauss LR-Decomposition
-        for (int k=0; k<this->dim(); k++)
+        for (int k = 0; k < this->dim(); k++)
           {
-            i_max=std::min(this->dim()-1,k+this->num_lower());  // num_lower not a mistake!
-            for (int i=k+1; i<=i_max; i++)
+            i_max = std::min(this->dim()-1,k+this->num_lower());  // num_lower not a mistake!
+            for (int i = k+1; i <= i_max; i++)
               {
-                assert(this->operator()(k,k)!=0.0);
-                x=-this->operator()(i,k)/this->operator()(k,k);
-                this->operator()(i,k)=-x;                         // assembly part of L
-                j_max=std::min(this->dim()-1,k+this->num_upper());
-                for (int j=k+1; j<=j_max; j++)
+                assert(this->operator()(k,k) != 0.0);
+                x = -this->operator()(i,k)/this->operator()(k,k);
+                this->operator()(i,k) = -x;                         // assembly part of L
+                j_max = std::min(this->dim()-1, k + this->num_upper());
+                for (int j = k+1; j <= j_max; j++)
                   {
                     // assembly part of R
-                    this->operator()(i,j)=this->operator()(i,j)+x*this->operator()(k,j);
+                    this->operator()(i,j) = this->operator()(i,j)+x*this->operator()(k,j);
                   }
               }
           }
@@ -745,16 +745,16 @@ namespace aspect
 
       std::vector<double> band_matrix::l_solve(const std::vector<double> &b) const
       {
-        assert( this->dim()==(int)b.size() );
+        assert( this->dim() == (int)b.size() );
         std::vector<double> x(this->dim());
         int j_start;
         double sum;
-        for (int i=0; i<this->dim(); i++)
+        for (int i = 0; i < this->dim(); i++)
           {
-            sum=0;
-            j_start=std::max(0,i-this->num_lower());
-            for (int j=j_start; j<i; j++) sum += this->operator()(i,j)*x[j];
-            x[i]=(b[i]*this->saved_diag(i)) - sum;
+            sum = 0;
+            j_start = std::max(0,i-this->num_lower());
+            for (int j = j_start; j < i; j++) sum += this->operator()(i,j)*x[j];
+            x[i] = (b[i]*this->saved_diag(i)) - sum;
           }
         return x;
       }
@@ -762,16 +762,16 @@ namespace aspect
 
       std::vector<double> band_matrix::r_solve(const std::vector<double> &b) const
       {
-        assert( this->dim()==(int)b.size() );
+        assert( this->dim() == (int)b.size() );
         std::vector<double> x(this->dim());
         int j_stop;
         double sum;
-        for (int i=this->dim()-1; i>=0; i--)
+        for (int i = this->dim()-1; i >= 0; i--)
           {
-            sum=0;
-            j_stop=std::min(this->dim()-1,i+this->num_upper());
-            for (int j=i+1; j<=j_stop; j++) sum += this->operator()(i,j)*x[j];
-            x[i]=( b[i] - sum ) / this->operator()(i,i);
+            sum = 0;
+            j_stop = std::min(this->dim()-1, i + this->num_upper());
+            for (int j = i+1; j <= j_stop; j++) sum += this->operator()(i,j)*x[j];
+            x[i] = (b[i] - sum) / this->operator()(i,i);
           }
         return x;
       }
@@ -779,65 +779,122 @@ namespace aspect
       std::vector<double> band_matrix::lu_solve(const std::vector<double> &b,
                                                 bool is_lu_decomposed)
       {
-        assert( this->dim()==(int)b.size() );
+        assert(this->dim() == (int)b.size());
         std::vector<double>  x,y;
         // TODO: this is completely unsafe because you rely on the user
         // if the function is called more than once.
-        if (is_lu_decomposed==false)
+        if (is_lu_decomposed == false)
           {
             this->lu_decompose();
           }
-        y=this->l_solve(b);
-        x=this->r_solve(y);
+        y = this->l_solve(b);
+        x = this->r_solve(y);
         return x;
       }
 
 
       void spline::set_points(const std::vector<double> &x,
                               const std::vector<double> &y,
-                              bool cubic_spline)
+                              bool cubic_spline,
+                              bool monotone_spline)
       {
-        assert(x.size()==y.size());
-        m_x=x;
-        m_y=y;
-        int   n=x.size();
-        for (int i=0; i<n-1; i++)
+        assert(x.size() == y.size());
+        m_x = x;
+        m_y = y;
+        const unsigned int n = x.size();
+        for (unsigned int i = 0; i < n-1; i++)
           {
-            assert(m_x[i]<m_x[i+1]);
+            assert(m_x[i] < m_x[i+1]);
           }
 
-        if (cubic_spline==true)  // cubic spline interpolation
+        if (cubic_spline == true)  // cubic spline interpolation
           {
-            // setting up the matrix and right hand side of the equation system
-            // for the parameters b[]
-            band_matrix A(n,1,1);
-            std::vector<double>  rhs(n);
-            for (int i=1; i<n-1; i++)
+            if (monotone_spline == true)
               {
-                A(i,i-1)=1.0/3.0*(x[i]-x[i-1]);
-                A(i,i)=2.0/3.0*(x[i+1]-x[i-1]);
-                A(i,i+1)=1.0/3.0*(x[i+1]-x[i]);
-                rhs[i]=(y[i+1]-y[i])/(x[i+1]-x[i]) - (y[i]-y[i-1])/(x[i]-x[i-1]);
+                /**
+                 * This monotone spline algorithm is based on the javascript version
+                 * at https://en.wikipedia.org/wiki/Monotone_cubic_interpolation. The
+                 * parameters from this algorithm prevent overshooting in the
+                 * interpolation spline.
+                 */
+                std::vector<double> dys(n-1), dxs(n-1), ms(n-1);
+                for (unsigned int i=0; i < n-1; i++)
+                  {
+                    dxs[i] = x[i+1]-x[i];
+                    dys[i] = y[i+1]-y[i];
+                    ms[i] = dys[i]/dxs[i];
+                  }
+
+                // get m_a parameter
+                m_c.resize(n);
+                m_c[0] = 0;
+
+                for (unsigned int i = 0; i < n-2; i++)
+                  {
+                    const double m0 = ms[i];
+                    const double m1 = ms[i+1];
+
+                    if (m0 * m1 <= 0)
+                      {
+                        m_c[i+1] = 0;
+                      }
+                    else
+                      {
+                        const double dx0 = dxs[i];
+                        const double dx1 = dxs[i+1];
+                        const double common = dx0 + dx1;
+                        m_c[i+1] = 3*common/((common + dx0)/m0 + (common + dx1)/m1);
+                      }
+                  }
+                m_c[n-1] = ms[n-2];
+
+                // Get b and c coefficients
+                m_a.resize(n);
+                m_b.resize(n);
+                for (unsigned int i = 0; i < m_c.size()-1; i++)
+                  {
+                    const double c1 = m_c[i];
+                    const double m0 = ms[i];
+
+                    const double invDx = 1/dxs[i];
+                    const double common0 = c1 + m_c[i+1] - m0 - m0;
+                    m_b[i] = (m0 - c1 - common0) * invDx;
+                    m_a[i] = common0 * invDx * invDx;
+                  }
               }
-            // boundary conditions, zero curvature b[0]=b[n-1]=0
-            A(0,0)=2.0;
-            A(0,1)=0.0;
-            rhs[0]=0.0;
-            A(n-1,n-1)=2.0;
-            A(n-1,n-2)=0.0;
-            rhs[n-1]=0.0;
-
-            // solve the equation system to obtain the parameters b[]
-            m_b=A.lu_solve(rhs);
-
-            // calculate parameters a[] and c[] based on b[]
-            m_a.resize(n);
-            m_c.resize(n);
-            for (int i=0; i<n-1; i++)
+            else
               {
-                m_a[i]=1.0/3.0*(m_b[i+1]-m_b[i])/(x[i+1]-x[i]);
-                m_c[i]=(y[i+1]-y[i])/(x[i+1]-x[i])
-                       - 1.0/3.0*(2.0*m_b[i]+m_b[i+1])*(x[i+1]-x[i]);
+                // setting up the matrix and right hand side of the equation system
+                // for the parameters b[]
+                band_matrix A(n,1,1);
+                std::vector<double>  rhs(n);
+                for (unsigned int i = 1; i<n-1; i++)
+                  {
+                    A(i,i-1) = 1.0/3.0*(x[i]-x[i-1]);
+                    A(i,i) = 2.0/3.0*(x[i+1]-x[i-1]);
+                    A(i,i+1) = 1.0/3.0*(x[i+1]-x[i]);
+                    rhs[i] = (y[i+1]-y[i])/(x[i+1]-x[i]) - (y[i]-y[i-1])/(x[i]-x[i-1]);
+                  }
+                // boundary conditions, zero curvature b[0]=b[n-1]=0
+                A(0,0) = 2.0;
+                A(0,1) = 0.0;
+                rhs[0] = 0.0;
+                A(n-1,n-1) = 2.0;
+                A(n-1,n-2) = 0.0;
+                rhs[n-1] = 0.0;
+
+                // solve the equation system to obtain the parameters b[]
+                m_b = A.lu_solve(rhs);
+
+                // calculate parameters a[] and c[] based on b[]
+                m_a.resize(n);
+                m_c.resize(n);
+                for (unsigned int i = 0; i<n-1; i++)
+                  {
+                    m_a[i] = 1.0/3.0*(m_b[i+1]-m_b[i])/(x[i+1]-x[i]);
+                    m_c[i] = (y[i+1]-y[i])/(x[i+1]-x[i])
+                             - 1.0/3.0*(2.0*m_b[i]+m_b[i+1])*(x[i+1]-x[i]);
+                  }
               }
           }
         else     // linear interpolation
@@ -845,46 +902,49 @@ namespace aspect
             m_a.resize(n);
             m_b.resize(n);
             m_c.resize(n);
-            for (int i=0; i<n-1; i++)
+            for (unsigned int i = 0; i<n-1; i++)
               {
-                m_a[i]=0.0;
-                m_b[i]=0.0;
-                m_c[i]=(m_y[i+1]-m_y[i])/(m_x[i+1]-m_x[i]);
+                m_a[i] = 0.0;
+                m_b[i] = 0.0;
+                m_c[i] = (m_y[i+1]-m_y[i])/(m_x[i+1]-m_x[i]);
               }
           }
 
         // for the right boundary we define
         // f_{n-1}(x) = b*(x-x_{n-1})^2 + c*(x-x_{n-1}) + y_{n-1}
-        double h=x[n-1]-x[n-2];
+        double h = x[n-1]-x[n-2];
         // m_b[n-1] is determined by the boundary condition
-        m_a[n-1]=0.0;
-        m_c[n-1]=3.0*m_a[n-2]*h*h+2.0*m_b[n-2]*h+m_c[n-2];   // = f'_{n-2}(x_{n-1})
+        if (!monotone_spline)
+          {
+            m_a[n-1] = 0.0;
+            m_c[n-1] = 3.0*m_a[n-2]*h*h+2.0*m_b[n-2]*h+m_c[n-2];   // = f'_{n-2}(x_{n-1})
+          }
       }
 
       double spline::operator() (double x) const
       {
-        size_t n=m_x.size();
+        size_t n = m_x.size();
         // find the closest point m_x[idx] < x, idx=0 even if x<m_x[0]
         std::vector<double>::const_iterator it;
-        it=std::lower_bound(m_x.begin(),m_x.end(),x);
-        int idx=std::max( int(it-m_x.begin())-1, 0);
+        it = std::lower_bound(m_x.begin(),m_x.end(),x);
+        int idx = std::max( int(it-m_x.begin())-1, 0);
 
-        double h=x-m_x[idx];
+        double h = x-m_x[idx];
         double interpol;
         if (x<m_x[0])
           {
             // extrapolation to the left
-            interpol=((m_b[0])*h + m_c[0])*h + m_y[0];
+            interpol = ((m_b[0])*h + m_c[0])*h + m_y[0];
           }
         else if (x>m_x[n-1])
           {
             // extrapolation to the right
-            interpol=((m_b[n-1])*h + m_c[n-1])*h + m_y[n-1];
+            interpol = ((m_b[n-1])*h + m_c[n-1])*h + m_y[n-1];
           }
         else
           {
             // interpolation
-            interpol=((m_a[idx]*h + m_b[idx])*h + m_c[idx])*h + m_y[idx];
+            interpol = ((m_a[idx]*h + m_b[idx])*h + m_c[idx])*h + m_y[idx];
           }
         return interpol;
       }
