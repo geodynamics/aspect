@@ -133,7 +133,7 @@ namespace aspect
               if (iteration < solver_controls_cheap.size())
                 {
                   A_iterations += list_of_A_iterations[iteration];
-                  S_iterations += list_of_A_iterations[iteration];
+                  S_iterations += list_of_S_iterations[iteration];
                   Stokes_outer_iterations += solver_controls_cheap[iteration].last_step() +
                                              solver_controls_expensive[iteration].last_step();
                 }
