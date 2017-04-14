@@ -32,10 +32,18 @@ namespace aspect
 
   namespace Postprocess
   {
-
-
     /**
-     *
+     * A postprocessor that outputs all the global statistics
+     * information, e.g. the time of the simulation, the timestep
+     * number, number of degrees of freedom and solver iterations
+     * for each timestep. The postprocessor can output different
+     * formats, the first printing one line in the statistics file
+     * per nonlinear solver iteration (if a nonlinear solver scheme
+     * is selected). The second prints one line per timestep,
+     * summing the information about all nonlinear iterations in
+     * this line. Note that this postprocessor is always active
+     * independent on whether or not it is selected in the
+     * parameter file.
      *
      * @ingroup Postprocessing
      */
@@ -43,10 +51,13 @@ namespace aspect
     class GlobalStatistics : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
+        /**
+         * Connect the callback functions to the respective signals.
+         */
         void initialize();
 
         /**
-         * Evaluate the solution for some general statistics.
+         * Write all global statistics columns into the statistics object.
          */
         virtual
         std::pair<std::string,std::string>
@@ -75,22 +86,49 @@ namespace aspect
         void
         generate_global_statistics(TableHandler &statistics);
 
+        /**
+         * Callback function that is connected to the post_stokes_solver
+         * signal to store the solver history.
+         */
         void
         store_stokes_solver_history(const unsigned int number_S_iterations,
                                     const unsigned int number_A_iterations,
                                     const SolverControl &solver_control_cheap,
                                     const SolverControl &solver_control_expensive);
 
+        /**
+         * Callback function that is connected to the post_advection_solver
+         * signal to store the solver history.
+         */
         void
         store_advection_solver_history(const bool solved_temperature_field,
                                        const unsigned int compositional_index,
                                        const SolverControl &solver_control);
 
+        /**
+         * Variables that store the Stokes solver history of the current
+         * timestep, until they are written into the statistics object
+         * upon the call to execute(). They are cleared after writing
+         * the content.
+         */
         std::vector<unsigned int> list_of_S_iterations;
         std::vector<unsigned int> list_of_A_iterations;
         std::vector<SolverControl> solver_controls_cheap;
         std::vector<SolverControl> solver_controls_expensive;
 
+        /**
+         * A container that stores the advection solver history of the current
+         * timestep, until it is written into the statistics object
+         * upon the call to execute(). It is cleared after writing
+         * the content. The vector contains pairs, which consist
+         * of a column name (for the temperature or one of the
+         * compositional fields), and a vector of SolverControl
+         * objects (one per nonlinear iteration for this particular
+         * field). This layout allows storing varying numbers of
+         * nonlinear iterations for temperature and compositional fields
+         * (if any nonlinear solver scheme would implement that at
+         * some point).
+         */
         std::vector<std::pair<std::string, std::vector<SolverControl> > > advection_solver_controls;
 
         /**
@@ -98,7 +136,7 @@ namespace aspect
          * line in the statistics file or to only output one line
          * per time step.
          */
-        double one_line_per_iteration;
+        bool one_line_per_iteration;
     };
   }
 }

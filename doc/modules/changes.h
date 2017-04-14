@@ -7,6 +7,21 @@
  *
  * <ol>
  *
+ * <li> Changed: The global statistics information (time, timestep, degrees of
+ * freedom, solver iterations), is now written at one point in a new
+ * postprocessor 'global_statistics' instead of wherever they happened
+ * to be available. This allows to control the order and format of the
+ * columns in the statistics file, and fixes a bug in the statistics file,
+ * in which data from later timesteps was written into lines
+ * of previous timesteps in case of nonlinear solver schemes. Additionally,
+ * the postprocessor by default now outputs only a single line per 
+ * timestep also for nonlinear solver schemes. To restore the previous
+ * behavior (one line per nonlinear iteration) there is a new input
+ * parameter "Postprocess/Global statistics/Write statistics for all nonlinear
+ * iterations".
+ * <br>
+ * (Juliane Dannberg, Rene Gassmoeller, 2017/04/14)
+ *
  * <li> New: aspect now provides as script that -- when used together with
  * the deal.II parameter GUI program -- allows for a graphical creation and 
  * modification of input parameter files. All available parameters are listed,
