@@ -6378,7 +6378,7 @@ properties are read in from the subsection \texttt{Simple model}.
     \label{fig:finite_strain}
 \end{figure}
 
-The plugin was tested against analytical solutions for the deformation gradient tensor in simple and pure shear as described in \url{benchmark/finite_strain/pure_shear.prm} and \url{benchmark/finite_strain/simple_shear.prm}.
+The plugin was tested against analytical solutions for the deformation gradient tensor in simple and pure shear as described in \url{benchmarks/finite_strain/pure_shear.prm} and \url{benchmarks/finite_strain/simple_shear.prm}.
 
 We will demonstrate its use at the example of a 2D Cartesian convection model (Figure~\ref{fig:finite_strain}):
 Heating from the bottom leads to the the ascent of plumes from the boundary layer (top panel), and the
@@ -7990,7 +7990,7 @@ amounts to the following:
 \begin{enumerate}
  \item Move into the directory of that particular benchmark:
 \begin{verbatim}
- $ cd benchmark/solcx
+ $ cd benchmarks/solcx
 \end{verbatim} 
  \item Set up the project:
 \begin{verbatim}
@@ -8304,7 +8304,7 @@ in sign between the implementation and the description in \cite{DMGT11}).
   \end{center}
 \end{figure}
 
-To run this benchmark, the following input file will do (see the files in \url{benchmark/solcx/} to rerun the benchmark):
+To run this benchmark, the following input file will do (see the files in \url{benchmarks/solcx/} to rerun the benchmark):
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/solcx.prm.out}
 
 Since this is the first cookbook in the benchmarking section, let us go
@@ -8420,7 +8420,7 @@ variation is again $10^6$. The forcing is again chosen by imposing a spatially
 variable density variation. For details, refer again to \cite{DMGT11}.
 
 The following input file, only a small variation of the one in the previous
-section, solves the benchmark (see \url{benchmark/solkz/}):
+section, solves the benchmark (see \url{benchmarks/solkz/}):
 
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/solkz.prm.out}
 
@@ -8474,7 +8474,7 @@ Fig.~\ref{fig:inclusion}. As before, for details we refer to
   \end{center}
 \end{figure}
 
-The benchmark can be run using the parameter files in \url{benchmark/inclusion/}. The material model, boundary condition, and postprocessor are defined in \url{benchmark/inclusion/inclusion.cc}. Consequently, this code needs to be compiled into a shared lib before you can run the tests.
+The benchmark can be run using the parameter files in \url{benchmarks/inclusion/}. The material model, boundary condition, and postprocessor are defined in \url{benchmarks/inclusion/inclusion.cc}. Consequently, this code needs to be compiled into a shared lib before you can run the tests.
 
 \marginpar{Link to a general section on how you can compile libs for the benchmarks.}
 
@@ -8584,9 +8584,9 @@ completely unphysical), has consequently been incorporated into the
 \texttt{BursteddeGravity} gravity model that is described in the
 \texttt{benchmarks/burstedde/burstedde.cc} file that accompanies this benchmark.
 
-We will use the input file \texttt{benchmark/burstedde/burstedde.prm} as
+We will use the input file \texttt{benchmarks/burstedde/burstedde.prm} as
 input, which is very similar to the input file
-\texttt{benchmark/inclusion/adaptive.prm} discussed above in
+\texttt{benchmarks/inclusion/adaptive.prm} discussed above in
 Section~\ref{sec:benchmark-inclusion}. The major changes for the 3D polynomial
 Stokes benchmark are listed below: 
 
@@ -9025,7 +9025,7 @@ only interested in the long term, steady state behavior.
 
 The model is relatively straightforward to set up, basing the input file on
 that discussed in Section~\ref{sec:shell-simple-2d}. The full input file can
-be found at \url{benchmark/davies_et_al/case-1.1.prm}, with the interesting
+be found at \url{benchmarks/davies_et_al/case-1.1.prm}, with the interesting
 parts excerpted as follows:
 
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/case-1.1.prm.out}
@@ -9059,7 +9059,7 @@ solution, adding a solid body rotation yields another solution. We select
 arbitrarily the one that has no net rotation (see
 Section~\ref{parameters:Model_20settings}). The section in the input file 
 that is relevant is then as follows (the full input file resides at
-\url{benchmark/davies_et_al/case-2.1.prm}):
+\url{benchmarks/davies_et_al/case-2.1.prm}):
 \index[prmindex]{Remove nullspace}
 \index[prmindexfull]{Model settings!Remove nullspace}
 
@@ -9081,7 +9081,7 @@ Case 2.2 is described as follows:
 \end{itemize}
 In other words, we have an increased Rayleigh number and begin with the final
 steady state of case 2.1. To start the model where case 2.1 left off, the
-input file of case 2.1, \url{benchmark/davies_et_al/case-2.1.prm}, instructs
+input file of case 2.1, \url{benchmarks/davies_et_al/case-2.1.prm}, instructs
 \aspect{} to checkpoint itself every few time steps (see
 Section~\ref{sec:checkpoint-restart}). If case 2.2 uses the same
 output directory, we can then resume the computations from this checkpoint with
@@ -9091,7 +9091,7 @@ an input file that prescribes a different Rayleigh number and a later input time
 
 We increase the Rayleigh number to $10^5$ by increasing the magnitude of
 gravity in the input file.  The full script for case 2.2 is located in
-\url{benchmark/davies_et_al/case-2.2.prm}
+\url{benchmarks/davies_et_al/case-2.2.prm}
 
 
 \paragraph{Case 2.3: BA\_Ra103\_vv\_FS.}
@@ -9141,7 +9141,7 @@ Using the method described in Sections~\ref{sec:benchmark-run} and
 the \texttt{benchmarks/davies\_et\_al/case-2.3-plugin}, we can compile our new
 material model into a shared library that we can then reference from the input file.
 The complete input file for case 2.3 is located in
-\url{benchmark/davies_et_al/case-2.3.prm} and contains among others the
+\url{benchmarks/davies_et_al/case-2.3.prm} and contains among others the
 following parts:
 
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/case-2.3.prm.out}
@@ -9199,7 +9199,7 @@ These runs also produce quantitative data that will be published along with
 the concise descriptions of the benchmarks and a comparison with other
 codes. In particular, some of the criteria listed above to judge the accuracy
 of results are listed in Table~\ref{tab:davies-et-al-results}.%
-\footnote{The input files available in the \texttt{benchmark/davies\_et\_al}
+\footnote{The input files available in the \texttt{benchmarks/davies\_et\_al}
   directory use 5 global refinements in order to provide cases that can be run
   without excessive trouble on a normal computer. However, this is not enough
   to achieve reasonable accuracy and both the data shown below and the data
@@ -9416,7 +9416,7 @@ This is only valid in the limit of small porosity $\phi_0 \ll 1$. Figure~\ref{fi
   \label{fig:setup-solitary-wave}
 \end{figure}
 
-The parameter file and material model for this setup can be found in \url{benchmark/solitary_wave/solitary_wave.prm} and \url{benchmark/solitary_wave/solitary_wave.cc}. The most relevant sections are shown in the following paragraph. 
+The parameter file and material model for this setup can be found in \url{benchmarks/solitary_wave/solitary_wave.prm} and \url{benchmarks/solitary_wave/solitary_wave.cc}. The most relevant sections are shown in the following paragraph. 
 
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/solitary_wave/solitary_wave.prm}
 
