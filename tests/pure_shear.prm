@@ -134,7 +134,7 @@ subsection Postprocess
     set Particle generator name = ascii file
     subsection Generator
       subsection Ascii file
-        set Data directory = $ASPECT_SOURCE_DIR/benchmark/finite_strain/
+        set Data directory = $ASPECT_SOURCE_DIR/benchmarks/finite_strain/
         set Data file name = pure_shear_tracer.dat
       end
     end
