@@ -31,4 +31,36 @@
 #include <deal.II/base/std_cxx11/unique_ptr.h>
 
 
+// We would like to use a function from SolverControl that was introduced after
+// deal.II 8.5. For older versions use this derived class instead that implements
+// the function.
+#if !DEAL_II_VERSION_GTE(9,0,0)
+namespace dealii
+{
+  class ExtendedSolverControl : public SolverControl
+  {
+    public:
+      ExtendedSolverControl(const unsigned int n           = 100,
+                            const double       tol         = 1.e-10,
+                            const bool         log_history = false,
+                            const bool         log_result  = true)
+        :
+        SolverControl (n, tol, log_history, log_result)
+      {}
+
+      const std::vector<double> &get_history_data() const
+      {
+        Assert (history_data_enabled, ExcHistoryDataRequired());
+        Assert (history_data.size() > 0,
+                ExcMessage("The SolverControl object was asked for the solver history "
+                           "data, but there is no data. Possibly you requested the data before the "
+                           "solver was run."));
+
+        return history_data;
+      }
+  };
+}
+#endif
+
+
 #endif

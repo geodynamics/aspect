@@ -788,32 +788,6 @@ namespace aspect
             << " seconds"
             << std::endl;
 
-    // set global statistics about this time step
-    statistics.add_value("Time step number", timestep_number);
-    if (parameters.convert_to_years == true)
-      statistics.add_value("Time (years)", time / year_in_seconds);
-    else
-      statistics.add_value("Time (seconds)", time);
-
-    if (parameters.convert_to_years == true)
-      statistics.add_value("Time step size (years)", time_step / year_in_seconds);
-    else
-      statistics.add_value("Time step size (seconds)", time_step);
-
-    statistics.add_value("Number of mesh cells",
-                         triangulation.n_global_active_cells());
-
-    unsigned int n_stokes_dofs = introspection.system_dofs_per_block[0];
-    if (introspection.block_indices.velocities != introspection.block_indices.pressure)
-      n_stokes_dofs += introspection.system_dofs_per_block[introspection.block_indices.pressure];
-
-    statistics.add_value("Number of Stokes degrees of freedom", n_stokes_dofs);
-    statistics.add_value("Number of temperature degrees of freedom",
-                         introspection.system_dofs_per_block[introspection.block_indices.temperature]);
-    if (parameters.n_compositional_fields > 0)
-      statistics.add_value("Number of degrees of freedom for all compositions",
-                           parameters.n_compositional_fields
-                           * introspection.system_dofs_per_block[introspection.block_indices.compositional_fields[0]]);
 
     // then interpolate the current boundary velocities. copy constraints
     // into current_constraints and then add to current_constraints
@@ -2350,6 +2324,7 @@ namespace aspect
     unsigned int max_refinement_level = parameters.initial_global_refinement +
                                         parameters.initial_adaptive_refinement;
     pre_refinement_step = 0;
+    bool statistics_already_generated = false;
 
     // if we want to resume a computation from an earlier point
     // then reload it from a snapshot. otherwise do the basic
