@@ -124,7 +124,7 @@ namespace aspect
       std::ostringstream output;
       output.precision(4);
       output << top_pressure << " Pa, "
-             << bottom_pressure << " Pa, ";
+             << bottom_pressure << " Pa";
 
       return std::pair<std::string, std::string> ("Pressure at top/bottom of domain:",
                                                   output.str());

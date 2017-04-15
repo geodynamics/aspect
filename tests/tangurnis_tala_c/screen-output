@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libtangurnis_tala_c.so>
 
@@ -8,7 +6,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 32+0 iterations.
       Relative Stokes residual after nonlinear iteration 1: 1
    Solving Stokes system... 26+0 iterations.
       Relative Stokes residual after nonlinear iteration 2: 1.41808

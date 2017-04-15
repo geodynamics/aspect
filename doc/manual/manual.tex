@@ -306,13 +306,14 @@ this software:
 \end{lstlisting}
 Please also cite the User's Manual:
 \begin{lstlisting}[frame=single,language=tex]
-@Manual{aspectmanual,
-  title =        {\textsc{ASPECT}: {Advanced Solver for Problems in Earth's
-                  ConvecTion} v1.4.0}, 
-  author =       {W. Bangerth and J. Dannberg and
-                  R. Gassm{\"o}ller and T. Heister and others},
-  organization = {Computational Infrastructure for Geodynamics},
-  year =         2016
+@Article{aspectmanual,
+  Title         = {{\textsc{ASPECT}: Advanced Solver for Problems in Earth's ConvecTion, User Manual}},
+  Author        = {W. Bangerth and J. Dannberg and R. Gassm{\"o}ller and T. Heister and others},
+  Year          = {2017},
+  Month         = {4},
+  DOI           = {10.6084/m9.figshare.4865333},
+  Note          = {doi:10.6084/m9.figshare.4865333},
+  URL           = {https://doi.org/10.6084/m9.figshare.4865333}
 }
 \end{lstlisting}
 
@@ -327,11 +328,12 @@ website at \url{https://aspect.dealii.org/}.
 
 The development of \aspect{} has been funded
 through a variety of grants to the authors. Most immediately, it has been
-supported through the Computational Infrastructure in Geodynamics (CIG-II)
-grant (National Science Foundation Award No. EAR-0949446, via The University
-of California -- Davis) but the initial portions have also been supported
-by the original CIG grant (National Science Foundation Award No. EAR-0426271,
-via The California Institute of Technology). In addition, the libraries upon
+supported through the Computational Infrastructure in Geodynamics
+grant, initially by the CIG-I grant (National Science Foundation Award No. EAR-0426271,
+via The California Institute of Technology) and later by the CIG-II
+and CIG-III grants
+(National Science Foundation Awards No. EAR-0949446 and EAR-1550901, via The University
+of California -- Davis). In addition, the libraries upon
 which \aspect{} builds heavily have been supported through many other grants
 that are equally gratefully acknowledged.
 
@@ -1556,7 +1558,7 @@ equations:
 For the temperature equation, using the definition of the hydrostatic pressure gradient \eqref{eq:hydrostatic-pressure}, we arrive at the following:
 
 \begin{multline}
-  \label{eq:temperature-decomposed}
+  \label{eq:temperature-ala}
   \bar\rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla
   T\right) - \nabla\cdot k\nabla T
   \\
@@ -1658,7 +1660,6 @@ adiabatic and shear heating in the energy equation
 \end{equation}
 
 \paragraph*{On incompressibility.}
-\label{sec:boussinesq}
 
 The Boussinesq approximation assumes that the density can be
 considered constant in all occurrences in the equations with the exception of
@@ -2353,10 +2354,267 @@ discussed in great detail in \cite{GHPB17}.
 \section{Installation}
 \label{sec:installation}
 
-This is a brief explanation of how to install all the required software and
-\aspect{} itself.
+There are three distinct ways to install ASPECT -- compilation
+from source, installing a virtual machine, and using a Docker container --
+each providing distinct advantages and disadvantages. In this section we
+describe all three options and start with a summary of their properties to
+guide users to an informed decision about the best option for their purpose.
 
-\subsection{System prerequisites}
+\begin{table}[htb]
+  \center
+  \begin{tabular}{|c|ccc|}
+    \hline
+    Feature & Compile \& Install & Virtual Machine & Docker Container \\
+    \hline
+    Speed overhead          & 0\%   & 30\%     & 0--5\%    \\
+    Disk overhead           & 0~GB  & 1~GB     & 200~MB       \\
+    Knowledge required      & Much  & Very Little & Little    \\
+    Root privileges required & No   & No (installed VM software) & Partially  \\
+    Embedded in native environment & Yes & No  & Partially    \\
+    MacOS support           & Yes   & Yes      & Yes    \\
+    Windows support         & No    & Yes      & Yes    \\
+    Local parallelization   & Yes   & Yes      & Yes            \\ 
+    Massively parallel computations & Yes & No & No \\ 
+    Modifying ASPECT        & Possible & Possible & Possible \\
+    Configuring dependencies & Possible & No   & No \\ \hline
+  \end{tabular}
+  \caption{Features of the different installation options of \aspect{}.}
+  \label{tab:install-options}
+\end{table}
+
+The available options can be best presented in form of typical use cases:
+
+\begin{enumerate}
+\item Virtual Machine (\aspect{} beginner and tutorial participant): The
+virtual machine image provides a fully prepared user environment that contains
+installations of \aspect{}, all required libraries, and visualization software
+on top of a full Linux environment. This way beginning users and tutorial
+participants can work in a unified  environment, thus minimizing installation
+time and technical problems. Due to the overhead of virtualizing a full
+operating system this installation typically needs more space, and is
+approximately 30~\% slower than a native installation. Additionally working in a
+virtual machine `feels' differently from working in your usual desktop
+environment. The virtual machine can be run on all host operating systems that
+can run a virtualization software like VirtualBox (e.g. Linux, Apple MacOS,
+Microsoft Windows).
+
+\item Docker Container (advanced user with no need to configure/change the
+underlying libraries, possibly changing parts of \aspect): Docker containers are
+lightweight packages that only encapsulate the minimal dependencies to run an
+application like \aspect{} on top of the host operating system. They allow easy
+installation and usage of \aspect{} in a unified environment, while relying on
+the user's operating system to provide visualization software and model input
+data. When compared to the virtual machine it is simple to exchange files
+between the host operating system and the docker container, and it provides the
+benefit to work in the desktop environment you are used to. They have very
+little overhead in terms of memory and speed compared to virtual machines, and
+allow for reproducible computations. The container is set up with a standard
+\aspect{} installation, but this can be modified by advanced users (source code
+development within the container is possible).
+
+\item Compile \& Install (advanced users and developers with the need to
+reconfigure underlying libraries or running massively parallel models): The most
+advanced option is to compile and install \aspect{} from source. This allows
+maximal control over the underlying libraries like \trilinos{} and \dealii{}, as
+well as easy modifications to \aspect{} by recompiling a modified source
+directory. Our installation instructions cover most Linux and MacOS operating
+systems, but incompatibilities on individual systems can always occur and make
+the installation more cumbersome. If you are planning to run massively parallel
+computations on a compute cluster this is likely your only option. Since
+clusters usually have a very individual setup, it is always a good idea to ask
+IT support staff for help when installing \aspect{}, to avoid hard to reproduce
+setup problems, and performance penalties.
+\end{enumerate}
+
+\subsection{Docker Container}
+
+\subsubsection{Installing Docker and downloading the \aspect{} image}
+
+Docker is a lightweight virtualization software that allows to ship
+applications with all their dependencies in a simple way. It is outside of the
+scope of this manual to explain all possible applications of Docker, and we
+refer to the introduction (\url{https://www.docker.com/what-docker}) and
+installation and quickstart guides
+(\url{https://www.docker.com/products/docker}) on the Docker website for more
+detailed descriptions of how to set up and use the docker engine. More
+importantly Docker provides a marketplace for exchanging prepared docker images
+(called Docker Hub). After setting up the docker engine downloading a
+precompiled \aspect{} image from Docker Hub is as simple as typing in a
+terminal:
+
+\begin{lstlisting}[frame=single,language=ksh]
+docker pull gassmoeller/aspect
+\end{lstlisting}
+
+Note that the transfer size of the compressed image containing \aspect{} and
+all its dependencies is about 900~MB. When extracted the image requires about
+3.2~GB of disk space.
+
+\subsubsection{Running \aspect{} models}
+Although it is possible to use the downloaded \aspect{} docker image in a
+number of different ways, we recommend the following workflow:
+
+\begin{enumerate}
+\item Create your \aspect{} input file in a folder of your choice (possibly
+also containing any input data that is required by your model) and navigate in a
+terminal into that directory.
+\item Run the docker image and mount the current directory as a read-only
+volume into the docker container\footnote{Note that it is possible to mount a
+directory as writeable into the container. However, this is often associated
+with file permission conflicts between the host system and the container.
+Therefore, we recommend this slightly more cumbersome, but also more reliable
+workflow.}. 
+Make sure your parameter file specifies a model output directory \textit{other}
+than the input directory, e.g. \texttt{/home/dealii/aspect/model\_output}. When
+you have started the container run the aspect model inside the container. Note
+that there are two \aspect{} executables in the work directory of the container:
+\texttt{aspect} and \texttt{aspect-release}. For a discussion of the
+different versions see Section~\ref{sec:debug-mode}, in essence: You should run
+texttt{aspect} first to check your model for errors, then run
+\texttt{aspect-release} for a faster model run.
+
+To sum up, the steps you will want to execute are:
+\begin{lstlisting}[frame=single,language=ksh]
+docker run -it -v "$(pwd):/home/dealii/aspect/model_input:ro" \
+  gassmoeller/aspect:latest bash
+./aspect model_input/your_input_file.prm
+\end{lstlisting}
+
+\item After the model has finished (or during the model run if you want to check
+intermediate results) copy the model output out of the container into your
+current directory. For this you need to find the name or ID of the docker
+container by running \texttt{docker ps -a} in a separate terminal first. Look
+for the most recently started container to identify your current \aspect{}
+container.
+
+Commands that copy the model output to the current directory could be:
+\begin{lstlisting}[frame=single,language=ksh]
+docker ps -a # Find the name of the running / recently closed container in the output
+docker cp CONTAINER_NAME:/home/dealii/aspect/model_output .
+\end{lstlisting}
+
+\item The output data is saved inside your container even after the computation
+finishes and even when you stop the container. After you have copied the data
+out of the container you should therefore delete the container to avoid
+duplication of output data. Even after deleting you will always be able to start
+a new container from the downloaded image following step 2. Deleting the
+finished container can be achieved by the \texttt{docker container prune}
+command that removes any container that is not longer running.
+\note{If you own other finished containers that you want to keep use
+\texttt{docker container rm CONTAINER\_NAME} to only remove the container named
+\texttt{CONTAINER\_NAME}.}
+
+To remove all finished containers use the following command:
+\begin{lstlisting}[frame=single,language=ksh]
+docker container prune
+\end{lstlisting}
+Alternatively only remove a particular container:
+\begin{lstlisting}[frame=single,language=ksh]
+docker container rm CONTAINER_NAME
+\end{lstlisting}
+\end{enumerate}
+
+You are all set. Repeat steps 1-4 of this process as necessary when updating
+your model parameters. 
+
+\subsubsection{Developing \aspect{} within a container}
+
+The above given workflow does not include advice on how to modify \aspect{}
+inside the container. We recommend a slightly different workflow for advanced
+users that want to modify parts of \aspect{}. The \aspect{} docker container
+itself is build on top of a \dealii{} container that contains all dependencies
+for compiling \aspect{}. Therefore it is possible to run the deal.II container,
+mount an \aspect{} source directory from your host system and compile it inside
+of the container. An example workflow could look as following (assuming you
+navigated in a terminal into the modified \aspect{} source folder):
+
+\begin{lstlisting}[frame=single,language=ksh]
+docker pull dealii/dealii:v8.5.pre.4-gcc-mpi-fulldepsmanual-debugrelease
+docker run -it -v "$(pwd):/home/dealii/aspect:ro" \
+  dealii/dealii:v8.5.pre.4-gcc-mpi-fulldepsmanual-debugrelease bash
+\end{lstlisting}
+
+Inside of the container you now find a read-only \aspect{} directory that
+contains your modified source code. You can compile and run a model inside the
+container, e.g. in the following way:
+
+\begin{lstlisting}[frame=single,language=ksh]
+mkdir aspect-build
+cd aspect-build
+cmake -DCMAKE_BUILD_TYPE=Debug -DDEAL_II_DIR=$HOME/deal.II-install $HOME/aspect
+./aspect $HOME/aspect/cookbooks/shell_simple_2d.prm
+\end{lstlisting}
+
+To avoid repeated recompilations of the \aspect{} source folder we recommend to
+reuse the so prepared container instead of starting new containers based on the
+\dealii{} image. This can be achieved by the following commands outside of the
+container:
+
+\begin{lstlisting}[frame=single,language=ksh]
+docker ps -a # Find the name of the running / recently closed container in the output
+docker restart CONTAINER_NAME
+docker attach CONTAINER_NAME
+\end{lstlisting}
+
+For more information on the differences between using images and containers,
+and how to attach additional terminals to a running container, we refer to the
+docker documentation (e.g.
+\url{https://docs.docker.com/engine/getstarted/step_two/}).
+
+\subsection{Virtual Machine}
+
+\subsubsection{Installing VM software and setting up the virtual machine}
+
+The \aspect{} project provides an experimental virtual machine containing a
+fully configured version of \aspect{}. To use this machine, you will need to
+install VirtualBox (\url{http://www.virtualbox.org/}) on your machine, and then
+import a virtual machine image that can be downloaded from
+\url{http://www.math.clemson.edu/~heister/dealvm/}. Note, however, that the
+machine image is several gigabytes in size and downloading will take a while.
+After downloading and installing the virtual image it is convenient to set up a
+shared folder between your host system and the virtual machine to exchange model
+files and outputs.
+
+\subsubsection{Running \aspect{} models}
+
+The internal setup of the virtual machine is similar to the Docker container
+discussed above, except that it contains a full-featured desktop environment.
+Also note that the user name is \texttt{ubuntu}, not \texttt{dealii} as in the
+Docker container. Again there are multiple ways to use the virtual machine, but
+we recommend the following workflow:
+
+\begin{enumerate}
+\item Create your \aspect{} input file in the shared folder and start the
+virtual machine.
+\item Navigate in a terminal to your model directory.
+\item Run your model using the provided \aspect{} executable:
+
+\begin{lstlisting}[frame=single,language=ksh]
+~/aspect/aspect your_input_file.prm
+\end{lstlisting}
+
+\item The model output should automatically appear on your host machine in the
+shared directory.
+
+\item After you have verified that your model setup is correct, you might want
+to consider recompiling \aspect{} in release mode to increase the speed of the
+computation. See Section~\ref{sec:debug-mode} for a discussion of debug and
+release mode.
+
+\item Visualize your model output either inside of the virtual machine
+(ParaView and VisIt are pre-installed), or outside on your host system.
+\end{enumerate}
+
+You are all set. Repeat steps 1-6 of this process as necessary when updating
+your model parameters. 
+
+\subsection{Local installation}
+
+This is a brief explanation of how to compile and install all the required software and
+\aspect{} itself. This installation procedure guarantees fastest runtimes, and largest flexibility,
+but might reveal incompatibilities with existing system libraries.
+
+\subsubsection{System prerequisites}
 
 In order to install \aspect{} and its dependencies, you should
 have your system set up to be able to compile and link programs. Additionally,
@@ -2391,7 +2649,7 @@ sudo apt-get install build-essential \
                      zlib1g-dev
 \end{verbatim}
 
-\subsection{Software prerequisites}
+\subsubsection{Software prerequisites}
 
 \aspect{} builds on a few other libraries that are widely used in the
 computational science area and that provide most of the lower-level
@@ -2423,16 +2681,6 @@ prerequisites:
     p4est installation instructions}. This is done using the
   {\tt{p4est-setup.sh}}; do not use the \pfrst{} stand-alone installation
   instructions.
-
-%\item  \textit{\dealii{}:}
-%  The current version of \aspect{} requires features of \dealii{} that have
-%  been developed after the 7.1 release. Since at the time of writing,
-%  \dealii{} 7.2 has not yet appears, we currently require the development
-%  version of \dealii{}, which can be obtained by running
-%\begin{verbatim}
-% svn checkout https://svn.dealii.org/trunk/deal.II
-%\end{verbatim}
-%  Once \dealii{} 7.2 is available, this will suffice as well.
 
 \item \textit{\dealii{}:}
   The current version of \aspect{} requires \dealii{} version 8.4.0 or later.
@@ -2478,7 +2726,7 @@ cmake -DDEAL_II_WITH_MPI=ON \
 \end{enumerate}
 
 
-\subsection{Obtaining \aspect{} and initial configuration}
+\subsubsection{Obtaining \aspect{} and initial configuration}
 
 The development version of \aspect{} can be downloaded by executing the command
 \begin{verbatim}
@@ -2501,7 +2749,7 @@ specify an install directory using -DCMAKE\_INSTALL\_PREFIX. The
 instructions in the following sections assume an in-source build, so you need
 to adapt the location of the \aspect{} binary.
 
-\subsection{Compiling \aspect{} and generating documentation}
+\subsubsection{Compiling \aspect{} and generating documentation}
 \label{sec:compiling}
 
 After downloading \aspect{} and having built the libraries it builds on, you
@@ -2523,7 +2771,7 @@ installed. Most Linux distributions have packages for \texttt{doxygen}. The
 result will be the file \url{doc/doxygen/index.html} that is the starting
 point for exploring the documentation.
 
-\subsection{Compiling a static \aspect{} executable}
+\subsubsection{Compiling a static \aspect{} executable}
 \aspect{} defaults to a dynamically linked executable, which saves disk space and build time. In some circumstances however, it is preferred to generate a statically linked executable that incorporates all used libraries. This need may arise on large clusters on which libraries and loaded modules/variables on login nodes may be different from the ones available on compute nodes. The general build procedure in such a case equals the above explained instructions with the following differences:
 \begin{enumerate}
 \item \textit{Trilinos}: Add the following lines to your cmake call:
@@ -2545,7 +2793,7 @@ point for exploring the documentation.
 
 The here mentioned build was tested on a Cray XC30 cluster, which was set up for default static compiling and linking. On machines that default to dynamic linking additional compiler and/or linker flags may be required (e.g. "-fPIC" / "--static"). In case of questions send an email to the mailing list.
 
-\subsection{Installing and running \aspect{} on Mac OS X}
+\subsubsection{Installing and running \aspect{} on Mac OS X}
 OS X has some eccentricities which can complicate installation of \aspect{}. Currently the easiest and most reliable way to run \aspect{} under Mac OS X Mavericks (10.9), Yosemite (10.10) and El Capitan (10.11) is to install and run the binary package for \dealii{}. The step-by-step process is described in detail, with screenshots, here: \url{https://wiki.geodynamics.org/_media/software:aspect:aspect_yosemite_20150529.pdf}
 
 \begin{enumerate}
@@ -3912,7 +4160,59 @@ an if-statement that has the general form
 the syntax understood, reference the documentation of the muparser library
 linked to above.
 
+  
+\subsection{A graphical user interface for editing \aspect{} parameter files}
+Preparing a parameter file in a text editor can be a tedious task, not
+only because the number of input parameters has grown considerably during the
+development of \aspect{}, but also because remembering the names of commonly
+used options is a waste of (human) memory. Therefore, we provide a graphical
+user interface that builds upon an available program for \dealii{}. This GUI
+allows to investigate existing input parameters, including their default values, modify
+these values in a spreadsheet like environment and then save a formatted 
+parameter file that can be used to start an ASPECT model. In the following
+subsections we describe installing and using this user interface. 
 
+\subsubsection{Installing parameter-GUI}
+The \dealii{} parameter-GUI program can be downloaded at \url{https://github.com/dealii/parameter_gui},
+and is compiled using the \texttt{cmake} program just like \aspect{} itself. The program has no
+dependencies except for the Qt development libraries that should be available as packages for 
+most Linux distributions and can also be obtained for all major operating systems at
+\url{https://www.qt.io/download-open-source/}.
+
+Example steps for installing the parameter-gui could look as follows:
+\begin{enumerate}
+\item Download the program from \url{https://github.com/dealii/parameter_gui}.
+\item Prepare a Makefile by running \texttt{cmake .} in the source folder.
+\item Compile the program by running \texttt{make}.
+\item Make sure to set the environment variable \texttt{PARAMETER\_GUI\_DIR} 
+to the directory that contains the parameter-GUI executable (optional). 
+This will allow \aspect{} to automatically enable the GUI during configuration.
+\end{enumerate}
+
+\subsubsection{Using \aspect{}-GUI}
+
+When configuring \aspect{} after executing the above steps, it should automatically pick up the
+location of the parameter-GUI, and will create a new script named \texttt{aspect-gui} within the build folder.
+If this does not happen, it is possible to hand over the location of the parameter-GUI as a cmake
+variable during configuration (e.g. \texttt{cmake -D PARAMETER\_GUI\_EXECUTABLE=path\_to\_your\_executable}).
+
+The aspect-gui script can be executed from any folder either with no argument or with one argument that contains the path to
+an existing parameter file. The script will run \aspect{} with the given (or an empty) parameter file, generate a database
+of existing input parameters, and open the parameter-GUI program with this database. The resulting window looks similar to Fig.~\ref{fig:aspect-gui}. If an existing parameter file was
+given, all parameter fields are pre-filled with the values set in the file instead of the default values.
+In the program's main window you can change parameters as necessary, and then save the file as a new parameter file. This parameter file can then be used
+to start an \aspect{} model as usual. Note that it is possible to prepare and execute the parameter file with different versions of \aspect{}, e.g. if you prepare parameter files on a local machine, and execute the model on a remote compute cluster.
+Note however that if the two \aspect{} versions contain different default values or parameter names have changed, this can lead
+to unexpected model behavior or even unusable parameter files.
+
+\begin{figure}
+\hfill
+\includegraphics[width=0.4\textwidth]{aspect-gui.png}
+\hfill
+\phantom.
+\caption{\it The parameter GUI lists all available parameter options, and allows to change and save them into a new parameter file. Input fields know about the type of the variable and will display useful options to change them (e.g. drop-down menus, file dialogs, text fields).}
+\label{fig:aspect-gui}
+\end{figure}
 
 \section{Cookbooks}
 \label{sec:cookbooks}

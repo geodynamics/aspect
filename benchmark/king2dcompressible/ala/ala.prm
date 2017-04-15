@@ -23,6 +23,28 @@
 # 1	1E+5	VT	3.878	85.5803	0.5294	2.761	2.7614
 # 1	1E+5	CU	3.88	84.6	0.5294	2.7652	2.7742
 
+# King2010 TALA
+#
+# same as above, but for TALA: 
+# Di	Ra	Code	Nu	Vrms	<T>	phi	W
+# 0.25	1E+4	UM	4.416	40.043	0.513	0.85	0.85
+# 0.25	1E+4	VT	4.43	40.2	0.5127	0.8535	0.851
+# 0.25	1E+4	CU	4.42	40.1	0.5129	0.8539	0.8521
+# 0.5	1E+4	UM	3.851	36.307	0.519	1.404	1.391
+# 0.5	1E+4	VT	3.86	36.4	0.5188	1.41	1.393
+# 0.5	1E+4	CU	3.86	36.3	0.5191	1.4103	1.3948
+# 1	1E+4	UM	2.556	26.007	0.509	1.459	1.396
+# 1	1E+4	VT	2.57	26.1	0.5088	1.465	1.4
+# 1	1E+4	CU	2.57	26	0.5092	1.4651	1.4019
+# 0.25	1E+5	UM	9.211	178.56	0.53	2.046	2.053
+# 0.25	1E+5	VT	9.26	180.2	0.5303	2.06	2.055
+# 0.25	1E+5	CU	9.23	178.6	0.5303	2.0597	2.0573
+# 0.5	1E+5	UM	7.588	156.503	0.545	3.258	3.245
+# 0.5	1E+5	VT	7.63	157.93	0.5454	3.279	3.25
+# 0.5	1E+5	CU	7.61	156.5	0.5455	3.2779	3.2552
+# 1	1E+5	UM	3.907	85.105	0.529	2.802	2.75
+# 1	1E+5	VT	3.92	86.08	0.5297	2.821	2.757
+# 1	1E+5	CU	3.92	85.1	0.5297	2.8278	2.7725
 
 # At the top, we define the number of space dimensions we would like to
 # work in:
@@ -40,7 +62,7 @@ set Use direct solver for Stokes system    = false
 set Adiabatic surface temperature          = 0.091
 
 set Use years in output instead of seconds = false
-set End time                               = 1e20
+set End time                               = 10
 set Output directory                       = output
 
 subsection Discretization
@@ -51,12 +73,21 @@ subsection Discretization
   end
 end
 
-
-set Linear solver tolerance                = 1e-7
+set Linear solver tolerance                = 1e-9
 set Temperature solver tolerance           = 1e-10
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
+
+subsection Termination criteria
+  set Checkpoint on termination = true
+  set Termination criteria = end time, steady state velocity
+
+  subsection Steady state velocity
+    set Maximum relative deviation = 1e-7
+    set Time in steady state       = 1
+  end
+end
 
 # In this section we define the adiabatic profiles of temperature, 
 # pressure and density. The temperature and density profiles are 
@@ -183,12 +214,11 @@ end
 # As we are only interested in the steady state, we start on a 
 # coarse mesh and refine once the solution is close to steady state.
 subsection Mesh refinement
-  set Initial global refinement                = 4
+  set Initial global refinement                = 7
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 1.0
-  set Additional refinement times              = 0.5, 1.0, 1.5, 2.0
 end
 
 
@@ -201,7 +231,7 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, depth average, heating statistics
 
   subsection Visualization
-    set Time between graphical output = 1e-3
+    set Time between graphical output = 1e-2
     set List of output variables      = material properties, adiabat, thermal conductivity, heating, artificial viscosity
   end
 end

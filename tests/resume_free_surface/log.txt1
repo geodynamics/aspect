@@ -9,10 +9,10 @@ Number of free surface degrees of freedom: 5346
    Solving mesh velocity system... 7 iterations.
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+6 iterations.
+   Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -193.3 m, 27.46 m, 
+     Topography min/max:       -193.3 m, 27.46 m
      RMS, max velocity:        0.0375 m/year, 0.153 m/year
      Writing graphical output: output1.tmp/solution/solution-00005
 
@@ -20,10 +20,10 @@ Number of free surface degrees of freedom: 5346
    Solving mesh velocity system... 7 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+7 iterations.
+   Solving Stokes system... 42+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -193.5 m, 28.27 m, 
+     Topography min/max:       -193.5 m, 28.27 m
      RMS, max velocity:        0.038 m/year, 0.155 m/year
      Writing graphical output: output1.tmp/solution/solution-00006
 
@@ -31,10 +31,10 @@ Number of free surface degrees of freedom: 5346
    Solving mesh velocity system... 7 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+8 iterations.
+   Solving Stokes system... 39+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -189.4 m, 28.11 m, 
+     Topography min/max:       -189.4 m, 28.11 m
      RMS, max velocity:        0.0386 m/year, 0.157 m/year
      Writing graphical output: output1.tmp/solution/solution-00007
 
@@ -42,10 +42,10 @@ Number of free surface degrees of freedom: 5346
    Solving mesh velocity system... 7 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+6 iterations.
+   Solving Stokes system... 35+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -184.9 m, 27.9 m, 
+     Topography min/max:       -184.9 m, 27.9 m
      RMS, max velocity:        0.0391 m/year, 0.159 m/year
      Writing graphical output: output1.tmp/solution/solution-00008
 
@@ -53,10 +53,10 @@ Number of free surface degrees of freedom: 5346
    Solving mesh velocity system... 7 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+2 iterations.
+   Solving Stokes system... 32+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -180.4 m, 27.69 m, 
+     Topography min/max:       -180.4 m, 27.68 m
      RMS, max velocity:        0.0396 m/year, 0.161 m/year
      Writing graphical output: output1.tmp/solution/solution-00009
 

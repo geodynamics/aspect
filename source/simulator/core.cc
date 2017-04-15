@@ -788,6 +788,8 @@ namespace aspect
             << " seconds"
             << std::endl;
 
+    nonlinear_iteration = 0;
+
     // set global statistics about this time step
     statistics.add_value("Time step number", timestep_number);
     if (parameters.convert_to_years == true)
@@ -1943,6 +1945,7 @@ namespace aspect
     // start any scheme with an extrapolated value from the previous
     // two time steps if those are available
     current_linearization_point = old_solution;
+
     if (timestep_number > 1)
       {
         //TODO: Trilinos sadd does not like ghost vectors even as input. Copy
@@ -2016,7 +2019,6 @@ namespace aspect
         case NonlinearSolver::Stokes_only:
         {
           double initial_stokes_residual = 0.0;
-          unsigned int iteration = 0;
 
           do
             {
@@ -2044,14 +2046,14 @@ namespace aspect
               assemble_stokes_system();
               build_stokes_preconditioner();
 
-              if (iteration == 0)
+              if (nonlinear_iteration==0)
                 initial_stokes_residual = compute_initial_stokes_residual();
 
               const double stokes_residual = solve_stokes();
 
               const double relative_tolerance = (initial_stokes_residual > 0) ? stokes_residual/initial_stokes_residual : 0.0;
 
-              pcout << "      Relative Stokes residual after nonlinear iteration " << iteration+1
+              pcout << "      Relative Stokes residual after nonlinear iteration " << nonlinear_iteration+1
                     << ": " << relative_tolerance
                     << std::endl;
 
@@ -2060,13 +2062,13 @@ namespace aspect
 
               current_linearization_point = solution;
 
-              ++iteration;
+              ++nonlinear_iteration;
             }
-          while (! ((iteration >= parameters.max_nonlinear_iterations) // regular timestep
+          while (! ((nonlinear_iteration >= parameters.max_nonlinear_iterations) // regular timestep
                     ||
                     ((pre_refinement_step < parameters.initial_adaptive_refinement) // pre-refinement
                      &&
-                     (iteration >= parameters.max_nonlinear_iterations_in_prerefinement))));
+                     (nonlinear_iteration >= parameters.max_nonlinear_iterations_in_prerefinement))));
           break;
         }
 
@@ -2077,21 +2079,24 @@ namespace aspect
           double initial_stokes_residual      = 0;
           std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
 
-          unsigned int iteration = 0;
-
           do
             {
               assemble_advection_system(AdvectionField::temperature());
 
-              if (iteration == 0)
+              if (nonlinear_iteration == 0)
                 initial_temperature_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
 
               const double temperature_residual = solve_advection(AdvectionField::temperature());
+              const double relative_temperature_residual = (initial_temperature_residual > 0)
+                                                           ?
+                                                           temperature_residual/initial_temperature_residual
+                                                           :
+                                                           0.0;
 
               current_linearization_point.block(introspection.block_indices.temperature)
                 = solution.block(introspection.block_indices.temperature);
               rebuild_stokes_matrix = true;
-              std::vector<double> composition_residual (parameters.n_compositional_fields,0);
+              std::vector<double> relative_composition_residual (parameters.n_compositional_fields,0);
 
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 {
@@ -2100,14 +2105,22 @@ namespace aspect
                   switch (method)
                     {
                       case Parameters<dim>::AdvectionFieldMethod::fem_field:
+                      {
                         assemble_advection_system (adv_field);
 
-                        if (iteration == 0)
+                        if (nonlinear_iteration == 0)
                           initial_composition_residual[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
 
-                        composition_residual[c]
+                        const double composition_residual
                           = solve_advection(adv_field);
-                        break;
+
+                        relative_composition_residual[c] = (initial_composition_residual[c] > 0)
+                                                           ?
+                                                           composition_residual/initial_composition_residual[c]
+                                                           :
+                                                           0.0;
+                      }
+                      break;
 
                       case Parameters<dim>::AdvectionFieldMethod::particles:
                         interpolate_particle_properties(adv_field);
@@ -2135,22 +2148,20 @@ namespace aspect
               assemble_stokes_system();
               build_stokes_preconditioner();
 
-              if (iteration == 0)
+              if (nonlinear_iteration == 0)
                 initial_stokes_residual = compute_initial_stokes_residual();
 
               const double stokes_residual = solve_stokes();
+              const double relative_stokes_residual = (initial_stokes_residual > 0) ? stokes_residual/initial_stokes_residual : 0.0;
 
               current_linearization_point = solution;
 
               // write the residual output in the same order as the output when
-              // solving the equations
-              pcout << "      Nonlinear residuals: " << temperature_residual;
-
+              // solving the equations, output only relative residuals
+              pcout << "      Relative nonlinear residuals: " << relative_temperature_residual;
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                pcout << ", " << composition_residual[c];
-
-              pcout << ", " << stokes_residual;
-
+                pcout << ", " << relative_composition_residual[c];
+              pcout << ", " << relative_stokes_residual;
               pcout << std::endl;
 
               double max = 0.0;
@@ -2166,27 +2177,26 @@ namespace aspect
                                             :
                                             0.0);
                   if (initial_composition_residual[c]>threshold)
-                    max = std::max(composition_residual[c]/initial_composition_residual[c],max);
+                    max = std::max(relative_composition_residual[c],max);
                 }
 
-              if (initial_stokes_residual>0)
-                max = std::max(stokes_residual/initial_stokes_residual, max);
-              if (initial_temperature_residual>0)
-                max = std::max(temperature_residual/initial_temperature_residual, max);
-              pcout << "      Total relative nonlinear residual: " << max << std::endl;
+              max = std::max(relative_stokes_residual, max);
+              max = std::max(relative_temperature_residual, max);
+              pcout << "      Total relative residual after nonlinear iteration " << nonlinear_iteration+1 << ": " << max << std::endl;
               pcout << std::endl
                     << std::endl;
               if (max < parameters.nonlinear_tolerance)
                 break;
 
-              ++iteration;
+              ++nonlinear_iteration;
+
 //TODO: terminate here if the number of iterations is too large and we see no convergence
             }
-          while (! ((iteration >= parameters.max_nonlinear_iterations) // regular timestep
+          while (! ((nonlinear_iteration >= parameters.max_nonlinear_iterations) // regular timestep
                     ||
                     ((pre_refinement_step < parameters.initial_adaptive_refinement) // pre-refinement
                      &&
-                     (iteration >= parameters.max_nonlinear_iterations_in_prerefinement))));
+                     (nonlinear_iteration >= parameters.max_nonlinear_iterations_in_prerefinement))));
 
           break;
         }
@@ -2232,11 +2242,11 @@ namespace aspect
 
           // ...and then iterate the solution of the Stokes system
           double initial_stokes_residual = 0;
-          for (unsigned int i=0; (! ((i >= parameters.max_nonlinear_iterations) // regular timestep
-                                     ||
-                                     ((pre_refinement_step < parameters.initial_adaptive_refinement) // pre-refinement
-                                      &&
-                                      (i >= parameters.max_nonlinear_iterations_in_prerefinement)))); ++i)
+          for (nonlinear_iteration=0; (! ((nonlinear_iteration >= parameters.max_nonlinear_iterations) // regular timestep
+                                          ||
+                                          ((pre_refinement_step < parameters.initial_adaptive_refinement) // pre-refinement
+                                           &&
+                                           (nonlinear_iteration >= parameters.max_nonlinear_iterations_in_prerefinement)))); ++nonlinear_iteration)
             {
               // rebuild the matrix if it actually depends on the solution
               // of the previous iteration.
@@ -2248,12 +2258,16 @@ namespace aspect
               assemble_stokes_system();
               build_stokes_preconditioner();
 
-              if (i==0)
+              if (nonlinear_iteration==0)
                 initial_stokes_residual = compute_initial_stokes_residual();
 
               const double stokes_residual = solve_stokes();
+              const double relative_stokes_residual = (initial_stokes_residual > 0) ? stokes_residual/initial_stokes_residual : 0.0;
 
-              pcout << "   Residual after nonlinear iteration " << i+1 << ": " << stokes_residual/initial_stokes_residual << std::endl;
+              pcout << "      Relative Stokes residual after nonlinear iteration " << nonlinear_iteration+1
+                    << ": " << relative_stokes_residual
+                    << std::endl;
+
               if (stokes_residual/initial_stokes_residual < parameters.nonlinear_tolerance)
                 {
                   break; // convergence reached, exit nonlinear iterations.
@@ -2397,7 +2411,6 @@ namespace aspect
 
     // start the timer for periodic checkpoints after the setup above
     time_t last_checkpoint_time = std::time(NULL);
-
 
   start_time_iteration:
 

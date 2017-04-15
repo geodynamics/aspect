@@ -1,0 +1,7 @@
+# like pressure_compatibility.prm but with a direct solver
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/tests/pressure_compatibility.prm
+
+set Use direct solver for Stokes system    = true
+

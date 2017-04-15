@@ -90,7 +90,11 @@ namespace aspect
       {
         prm.enter_subsection("Function");
         Functions::ParsedFunction<1>::declare_parameters (prm, 3);
-        prm.declare_entry("Function expression","0.0; 0.0; 1.0");
+        prm.declare_entry("Function expression","0.0; 0.0; 1.0",
+                          Patterns::Anything(),
+                          "Expression for the adiabatic pressure, "
+                          "temperature, and density separated by "
+                          "semicolons as a function of 'depth'.");
         prm.declare_entry("Variable names","depth");
         prm.leave_subsection();
       }
@@ -137,8 +141,8 @@ namespace aspect
                                                "function",
                                                "A model in which the adiabatic profile is "
                                                "specified by a user defined function. The "
-                                               "supplied function has to contain the"
-                                               "temperature and the pressure as a function "
-                                               "of depth.")
+                                               "supplied function has to contain "
+                                               "temperature, pressure, and density as a function "
+                                               "of depth in this order.")
   }
 }

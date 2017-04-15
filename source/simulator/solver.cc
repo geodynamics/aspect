@@ -718,15 +718,32 @@ namespace aspect
 
     PrimitiveVectorMemory< LinearAlgebra::BlockVector > mem;
 
-    // step 1a: try if the simple and fast solver
-    // succeeds in 30 steps or less (or whatever the chosen value for the
-    // corresponding parameter is).
+    // create Solver controls for the cheap and expensive solver phase
     SolverControl solver_control_cheap (parameters.n_cheap_stokes_solver_steps,
                                         solver_tolerance);
     SolverControl solver_control_expensive (system_matrix.block(block_vel,block_p).m() +
                                             system_matrix.block(block_p,block_vel).m(), solver_tolerance);
 
-    unsigned int its_A = 0, its_S = 0;
+    // create a cheap preconditioner that consists of only a single V-cycle
+    const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
+          LinearAlgebra::PreconditionILU>
+          preconditioner_cheap (system_matrix, system_preconditioner_matrix,
+                                *Mp_preconditioner, *Amg_preconditioner,
+                                false,
+                                parameters.linear_solver_A_block_tolerance,
+                                parameters.linear_solver_S_block_tolerance);
+
+    // create an expensive preconditioner that solves for the A block with CG
+    const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
+          LinearAlgebra::PreconditionILU>
+          preconditioner_expensive (system_matrix, system_preconditioner_matrix,
+                                    *Mp_preconditioner, *Amg_preconditioner,
+                                    true,
+                                    parameters.linear_solver_A_block_tolerance,
+                                    parameters.linear_solver_S_block_tolerance);
+
+    // step 1a: try if the simple and fast solver
+    // succeeds in n_cheap_stokes_solver_steps steps or less.
     try
       {
         // if this cheaper solver is not desired, then simply short-cut
@@ -734,20 +751,10 @@ namespace aspect
         if (parameters.n_cheap_stokes_solver_steps == 0)
           throw SolverControl::NoConvergence(0,0);
 
-        // otherwise give it a try with a preconditioner that consists
-        // of only a single V-cycle
-        const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
-              LinearAlgebra::PreconditionILU>
-              preconditioner (system_matrix, system_preconditioner_matrix,
-                              *Mp_preconditioner, *Amg_preconditioner,
-                              false,
-                              parameters.linear_solver_A_block_tolerance,
-                              parameters.linear_solver_S_block_tolerance);
-
         SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_cheap, mem,
                SolverFGMRES<LinearAlgebra::BlockVector>::
-               AdditionalData(30, true));
+               AdditionalData(50, true));
 
         solver.connect(
           std_cxx11::bind (&solver_callback,
@@ -759,10 +766,7 @@ namespace aspect
         solver.solve (stokes_block,
                       distributed_stokes_solution,
                       distributed_stokes_rhs,
-                      preconditioner);
-
-        its_A += preconditioner.n_iterations_A();
-        its_S += preconditioner.n_iterations_S();
+                      preconditioner_cheap);
       }
 
     // step 1b: take the stronger solver in case
@@ -771,14 +775,6 @@ namespace aspect
       {
         // this additional entry serves as a marker between cheap and expensive Stokes solver
         solver_history.push_back(-1.0);
-
-        const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
-              LinearAlgebra::PreconditionILU>
-              preconditioner (system_matrix, system_preconditioner_matrix,
-                              *Mp_preconditioner, *Amg_preconditioner,
-                              true,
-                              parameters.linear_solver_A_block_tolerance,
-                              parameters.linear_solver_S_block_tolerance);
 
         SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_expensive, mem,
@@ -796,7 +792,7 @@ namespace aspect
             solver.solve(stokes_block,
                          distributed_stokes_solution,
                          distributed_stokes_rhs,
-                         preconditioner);
+                         preconditioner_expensive);
           }
         // if the solver fails, report the error from processor 0 with some additional
         // information about its location, and throw a quiet exception on all other
@@ -829,10 +825,6 @@ namespace aspect
             else
               throw QuietException();
           }
-
-
-        its_A += preconditioner.n_iterations_A();
-        its_S += preconditioner.n_iterations_S();
       }
 
     // signal successful solver
@@ -867,9 +859,9 @@ namespace aspect
     statistics.add_value("Iterations for Stokes solver",
                          solver_control_cheap.last_step() + solver_control_expensive.last_step());
     statistics.add_value("Velocity iterations in Stokes preconditioner",
-                         its_A);
+                         preconditioner_cheap.n_iterations_A() + preconditioner_expensive.n_iterations_A());
     statistics.add_value("Schur complement iterations in Stokes preconditioner",
-                         its_S);
+                         preconditioner_cheap.n_iterations_S() + preconditioner_expensive.n_iterations_S());
 
     computing_timer.exit_section();
 

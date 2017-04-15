@@ -29,7 +29,7 @@ Number of degrees of freedom: 5,132 (3,138+425+1,569)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+2 iterations.
+   Solving Stokes system... 34+0 iterations.
 
    Postprocessing:
 

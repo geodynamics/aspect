@@ -9,32 +9,32 @@ Number of degrees of freedom: 28,617 (10,628+8,450+1,089+4,225+4,225)
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 13 iterations.
-      Nonlinear residuals: 0, 3.21779e-18, 29.6476
-      Total relative nonlinear residual: 1
+      Relative nonlinear residuals: 0, 2.1825e-16, 1
+      Total relative residual after nonlinear iteration 1: 1
 
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 13 iterations.
-      Nonlinear residuals: 0, 3.21779e-18, 4.06546
-      Total relative nonlinear residual: 0.137126
+      Relative nonlinear residuals: 0, 2.1825e-16, 0.137126
+      Total relative residual after nonlinear iteration 2: 0.137126
 
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 13 iterations.
-      Nonlinear residuals: 0, 3.21779e-18, 0.0219483
-      Total relative nonlinear residual: 0.000740306
+      Relative nonlinear residuals: 0, 2.1825e-16, 0.000740306
+      Total relative residual after nonlinear iteration 3: 0.000740306
 
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 13 iterations.
-      Nonlinear residuals: 0, 3.21779e-18, 0.000611804
-      Total relative nonlinear residual: 2.06359e-05
+      Relative nonlinear residuals: 0, 2.1825e-16, 2.06359e-05
+      Total relative residual after nonlinear iteration 4: 2.06359e-05
 
 
 
@@ -49,8 +49,8 @@ Number of degrees of freedom: 28,617 (10,628+8,450+1,089+4,225+4,225)
    Solving porosity system ... 11 iterations.
    Solving Stokes system... done.
    Solving for u_f in 13 iterations.
-      Nonlinear residuals: 0, 3.65774e-07, 0.00060432
-      Total relative nonlinear residual: 2.4356e-05
+      Relative nonlinear residuals: 0, 2.4356e-05, 1.59784e-05
+      Total relative residual after nonlinear iteration 1: 2.4356e-05
 
 
 
@@ -65,8 +65,8 @@ Number of degrees of freedom: 28,617 (10,628+8,450+1,089+4,225+4,225)
    Solving porosity system ... 7 iterations.
    Solving Stokes system... done.
    Solving for u_f in 13 iterations.
-      Nonlinear residuals: 0, 2.70241e-08, 0.00062782
-      Total relative nonlinear residual: 1.65997e-05
+      Relative nonlinear residuals: 0, 1.26889e-06, 1.65997e-05
+      Total relative residual after nonlinear iteration 1: 1.65997e-05
 
 
 

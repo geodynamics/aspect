@@ -40,19 +40,22 @@ post_stokes_solver:
 1.06127e-10
 7.63826e-11
 4.97925e-11
-4.97925e-11
-3.69443e-11
--1
-3.69443e-11
-2.40324e-11
-9.13505e-12
-4.31326e-12
-2.56122e-12
-9.97441e-13
-2.43948e-13
-9.55434e-14
-3.69097e-14
-30+8 iterations.
+2.91624e-11
+1.71008e-11
+1.0565e-11
+6.55437e-12
+3.99108e-12
+2.60126e-12
+1.78473e-12
+1.12307e-12
+6.44888e-13
+3.92678e-13
+2.39873e-13
+1.45623e-13
+8.6907e-14
+5.08339e-14
+3.53587e-14
+44+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-solver_history/solution/solution-00000
@@ -64,17 +67,19 @@ post_stokes_solver:
    Solving temperature system... 4 iterations.
    Solving Stokes system... 
 post_stokes_solver:
-4.02487e-14
-4.02417e-14
-3.9633e-14
-2.95676e-14
-1.79505e-14
-1.23573e-14
-8.16265e-15
-4.66368e-15
-2.5529e-15
-1.83007e-15
-9+0 iterations.
+3.89895e-14
+3.71989e-14
+3.68398e-14
+3.06723e-14
+2.00225e-14
+1.38605e-14
+9.53844e-15
+5.89244e-15
+3.69957e-15
+2.96079e-15
+2.37334e-15
+1.64025e-15
+11+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  9e-09 m/s, 3.23e-08 m/s

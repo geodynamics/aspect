@@ -11,8 +11,8 @@ Number of degrees of freedom: 6,890 (2,178+578+2,178+289+1,089+289+289)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 28+0 iterations.
    Solving for u_f in 1 iterations.
-      Nonlinear residuals: 1.78665e-17, 1.45347e-18, 0, 0.386669
-      Total relative nonlinear residual: 0.0526341
+      Relative nonlinear residuals: 1.78845e-16, 2.44479e-16, 0, 0.0526341
+      Total relative residual after nonlinear iteration 1: 0.0526341
 
 
    Solving temperature system... 0 iterations.
@@ -21,8 +21,8 @@ Number of degrees of freedom: 6,890 (2,178+578+2,178+289+1,089+289+289)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 1 iterations.
-      Nonlinear residuals: 1.78665e-17, 1.45347e-18, 0, 5.19241e-12
-      Total relative nonlinear residual: 7.06801e-13
+      Relative nonlinear residuals: 1.78845e-16, 2.44479e-16, 0, 7.06801e-13
+      Total relative residual after nonlinear iteration 2: 7.06801e-13
 
 
 
@@ -38,8 +38,8 @@ Number of degrees of freedom: 6,890 (2,178+578+2,178+289+1,089+289+289)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 1 iterations.
-      Nonlinear residuals: 5.96978e-15, 5.48889e-16, 0, 5.19239e-12
-      Total relative nonlinear residual: 7.06798e-13
+      Relative nonlinear residuals: 5.96675e-14, 9.23249e-14, 0, 7.06798e-13
+      Total relative residual after nonlinear iteration 1: 7.06798e-13
 
 
 
@@ -55,8 +55,8 @@ Number of degrees of freedom: 6,890 (2,178+578+2,178+289+1,089+289+289)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 1 iterations.
-      Nonlinear residuals: 5.97122e-15, 5.48821e-16, 0, 5.19239e-12
-      Total relative nonlinear residual: 7.06798e-13
+      Relative nonlinear residuals: 3.9808e-14, 6.15423e-14, 0, 7.06798e-13
+      Total relative residual after nonlinear iteration 1: 7.06798e-13
 
 
 
@@ -72,8 +72,8 @@ Number of degrees of freedom: 6,890 (2,178+578+2,178+289+1,089+289+289)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 1 iterations.
-      Nonlinear residuals: 5.97122e-15, 5.48821e-16, 0, 5.19239e-12
-      Total relative nonlinear residual: 7.06798e-13
+      Relative nonlinear residuals: 3.9808e-14, 6.15423e-14, 0, 7.06798e-13
+      Total relative residual after nonlinear iteration 1: 7.06798e-13
 
 
 
@@ -89,8 +89,8 @@ Number of degrees of freedom: 6,890 (2,178+578+2,178+289+1,089+289+289)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 1 iterations.
-      Nonlinear residuals: 1.19326e-15, 1.09777e-16, 0, 5.19497e-12
-      Total relative nonlinear residual: 7.07149e-13
+      Relative nonlinear residuals: 1.02356e-14, 1.5827e-14, 0, 7.07149e-13
+      Total relative residual after nonlinear iteration 1: 7.07149e-13
 
 
 

@@ -145,7 +145,7 @@ namespace aspect
       std::ostringstream output;
       output.precision(4);
       output << top_density << " kg/m^3, "
-             << bottom_density << " kg/m^3, ";
+             << bottom_density << " kg/m^3";
 
       return std::pair<std::string, std::string> ("Density at top/bottom of domain:",
                                                   output.str());

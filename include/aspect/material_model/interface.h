@@ -21,6 +21,7 @@
 #ifndef _aspect_material_model_interface_h
 #define _aspect_material_model_interface_h
 
+#include <aspect/global.h>
 #include <aspect/plugins.h>
 #include <deal.II/base/point.h>
 #include <deal.II/base/quadrature.h>

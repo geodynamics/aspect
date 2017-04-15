@@ -5,7 +5,7 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+15 iterations.
+   Solving Stokes system... 146+0 iterations.
 
    Postprocessing:
      Writing dynamic topography: output-dynamic_topography3/dynamic_topography.00000
