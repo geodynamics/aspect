@@ -87,6 +87,16 @@ namespace aspect
         generate_global_statistics(TableHandler &statistics);
 
         /**
+         * This function clears all the saved solver information that is
+         * stored in this class. It is executed every time the output is
+         * written into the statistics object, but also after each initial
+         * refinement step, in case it is not written (to avoid summing
+         * information across different refinement steps).
+         */
+        void
+        clear_data();
+
+        /**
          * Callback function that is connected to the post_stokes_solver
          * signal to store the solver history.
          */
