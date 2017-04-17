@@ -43,6 +43,24 @@ namespace aspect
                                                                         std_cxx11::_2,
                                                                         std_cxx11::_3,
                                                                         std_cxx11::_4));
+
+      // delete the data after the initial refinement steps, to not mix it up
+      // with the first time step
+      if (!this->get_parameters().run_postprocessors_on_initial_refinement)
+        this->get_signals().post_set_initial_state.connect(std_cxx11::bind(&aspect::Postprocess::GlobalStatistics<dim>::clear_data,
+                                                                           std_cxx11::ref(*this)));
+    }
+
+
+    template <int dim>
+    void
+    GlobalStatistics<dim>::clear_data()
+    {
+      list_of_S_iterations.clear();
+      list_of_A_iterations.clear();
+      solver_controls_cheap.clear();
+      solver_controls_expensive.clear();
+      advection_solver_controls.clear();
     }
 
 
@@ -165,11 +183,7 @@ namespace aspect
             }
         }
 
-      list_of_S_iterations.clear();
-      list_of_A_iterations.clear();
-      solver_controls_cheap.clear();
-      solver_controls_expensive.clear();
-      advection_solver_controls.clear();
+      clear_data();
 
       return std::make_pair (std::string(),std::string());
     }
