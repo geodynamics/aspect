@@ -63,7 +63,7 @@ subsection Model settings
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, basic statistics,  temperature statistics, heat flux statistics
+  set List of postprocessors = visualization, velocity statistics, basic statistics,  temperature statistics, heat flux statistics, Stokes residual
 
    
   subsection Visualization
