@@ -221,21 +221,6 @@ namespace aspect
     if (Utilities::MPI::this_mpi_process(mpi_communicator)!=0)
       return;
 
-    if (parameters.convert_to_years == true)
-      {
-        statistics.set_precision("Time (years)", 12);
-        statistics.set_scientific("Time (years)", true);
-        statistics.set_precision("Time step size (years)", 12);
-        statistics.set_scientific("Time step size (years)", true);
-      }
-    else
-      {
-        statistics.set_precision("Time (seconds)", 12);
-        statistics.set_scientific("Time (seconds)", true);
-        statistics.set_precision("Time step size (seconds)", 12);
-        statistics.set_scientific("Time step size (seconds)", true);
-      }
-
     // formatting the table we're about to output and writing the
     // actual file may take some time, so do it on a separate
     // thread. we pass a pointer to a copy of the statistics
