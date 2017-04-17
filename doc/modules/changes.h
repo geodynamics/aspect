@@ -18,7 +18,9 @@
  * timestep also for nonlinear solver schemes. To restore the previous
  * behavior (one line per nonlinear iteration) there is a new input
  * parameter "Postprocess/Global statistics/Write statistics for all nonlinear
- * iterations".
+ * iterations". A consequence of this change is that statistics about
+ * the initial refinement steps is only written if the "Mesh refinement/
+ * Run postprocessors on initial refinement" parameter is set to true.
  * <br>
  * (Juliane Dannberg, Rene Gassmoeller, 2017/04/14)
  *

@@ -148,17 +148,21 @@ namespace aspect
             statistics.add_value("Number of nonlinear iterations",
                                  nonlinear_iterations);
 
+          // Only output statistics columns if the solver actually signaled at least one
+          // successful solve. Some solver schemes might need no advection or Stokes solver
           for (unsigned int column=0; column<advection_solver_controls.size(); ++column)
             statistics.add_value(advection_solver_controls[column].first,
                                  advection_outer_iterations[column]);
 
-          statistics.add_value("Iterations for Stokes solver",
-                               Stokes_outer_iterations);
-          statistics.add_value("Velocity iterations in Stokes preconditioner",
-                               A_iterations);
-          statistics.add_value("Schur complement iterations in Stokes preconditioner",
-                               S_iterations);
-
+          if (solver_controls_cheap.size() > 0)
+            {
+              statistics.add_value("Iterations for Stokes solver",
+                                   Stokes_outer_iterations);
+              statistics.add_value("Velocity iterations in Stokes preconditioner",
+                                   A_iterations);
+              statistics.add_value("Schur complement iterations in Stokes preconditioner",
+                                   S_iterations);
+            }
         }
 
       list_of_S_iterations.clear();
@@ -177,16 +181,29 @@ namespace aspect
     {
       // set global statistics about this time step
       statistics.add_value("Time step number", this->get_timestep_number());
-      if (this->get_parameters().convert_to_years == true)
-        statistics.add_value("Time (years)", this->get_time() / year_in_seconds);
-      else
-        statistics.add_value("Time (seconds)", this->get_time());
 
       if (this->get_parameters().convert_to_years == true)
-        statistics.add_value("Time step size (years)", this->get_timestep() / year_in_seconds);
-      else
-        statistics.add_value("Time step size (seconds)", this->get_timestep());
+        {
+          statistics.add_value("Time (years)", this->get_time() / year_in_seconds);
+          statistics.set_precision("Time (years)", 12);
+          statistics.set_scientific("Time (years)", true);
 
+          statistics.add_value("Time step size (years)", this->get_timestep() / year_in_seconds);
+          statistics.set_precision("Time step size (years)", 12);
+          statistics.set_scientific("Time step size (years)", true);
+        }
+      else
+        {
+          statistics.add_value("Time (seconds)", this->get_time());
+          statistics.set_precision("Time (seconds)", 12);
+          statistics.set_scientific("Time (seconds)", true);
+
+          statistics.add_value("Time step size (seconds)", this->get_timestep());
+          statistics.set_precision("Time step size (seconds)", 12);
+          statistics.set_scientific("Time step size (seconds)", true);
+        }
+
+      // set global statistics about the mesh and problem size
       statistics.add_value("Number of mesh cells",
                            this->get_triangulation().n_global_active_cells());
 
