@@ -7,6 +7,14 @@
  *
  * <ol>
  *
+ * <li> Changed: The visco_plastic material model now uses a single 
+ * compositional field for strain weakening, which can be calculated
+ * with the integrated strain invariant particle property or an 
+ * equivalent compositional field plugin located in the benchmark 
+ * buiter_et_al_2008_jgr.
+ * <br>
+ * (John Naliboff, 2017/04/14)
+ *
  * <li> Changed: The folder benchmark/ was renamed into benchmarks/
  * to be consistent with our directory tests/.
  * <br>
