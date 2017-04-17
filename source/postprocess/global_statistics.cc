@@ -148,17 +148,21 @@ namespace aspect
             statistics.add_value("Number of nonlinear iterations",
                                  nonlinear_iterations);
 
+          // Only output statistics columns if the solver actually signaled at least one
+          // successful solve. Some solver schemes might need no advection or Stokes solver
           for (unsigned int column=0; column<advection_solver_controls.size(); ++column)
             statistics.add_value(advection_solver_controls[column].first,
                                  advection_outer_iterations[column]);
 
-          statistics.add_value("Iterations for Stokes solver",
-                               Stokes_outer_iterations);
-          statistics.add_value("Velocity iterations in Stokes preconditioner",
-                               A_iterations);
-          statistics.add_value("Schur complement iterations in Stokes preconditioner",
-                               S_iterations);
-
+          if (solver_controls_cheap.size() > 0)
+            {
+              statistics.add_value("Iterations for Stokes solver",
+                                   Stokes_outer_iterations);
+              statistics.add_value("Velocity iterations in Stokes preconditioner",
+                                   A_iterations);
+              statistics.add_value("Schur complement iterations in Stokes preconditioner",
+                                   S_iterations);
+            }
         }
 
       list_of_S_iterations.clear();
