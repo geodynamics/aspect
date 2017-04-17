@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # This script compiles all plugins and runs all prm files in the subdirectories
-# of the benchmark folder
+# of the benchmarks folder
 
 if [ "$#" -ne 1 ]; then
     echo "usage: $0 aspect-build-directory"
