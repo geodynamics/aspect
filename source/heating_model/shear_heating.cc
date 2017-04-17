@@ -69,36 +69,6 @@ namespace aspect
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
     }
-
-    template <int dim>
-    void
-    ShearHeating<dim>::declare_parameters (ParameterHandler &prm)
-    {
-      prm.enter_subsection("Heating model");
-      {
-        prm.enter_subsection("Shear heating");
-        {
-        }
-        prm.leave_subsection();
-      }
-      prm.leave_subsection();
-    }
-
-
-
-    template <int dim>
-    void
-    ShearHeating<dim>::parse_parameters (ParameterHandler &prm)
-    {
-      prm.enter_subsection("Heating model");
-      {
-        prm.enter_subsection("Shear heating");
-        {
-        }
-        prm.leave_subsection();
-      }
-      prm.leave_subsection();
-    }
   }
 }
 

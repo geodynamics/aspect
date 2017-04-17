@@ -48,36 +48,6 @@ namespace aspect
                                                            * material_model_outputs.entropy_derivative_temperature[q];
         }
     }
-
-    template <int dim>
-    void
-    LatentHeat<dim>::declare_parameters (ParameterHandler &prm)
-    {
-      prm.enter_subsection("Heating model");
-      {
-        prm.enter_subsection("Latent heat");
-        {
-        }
-        prm.leave_subsection();
-      }
-      prm.leave_subsection();
-    }
-
-
-
-    template <int dim>
-    void
-    LatentHeat<dim>::parse_parameters (ParameterHandler &prm)
-    {
-      prm.enter_subsection("Heating model");
-      {
-        prm.enter_subsection("Latent heat");
-        {
-        }
-        prm.leave_subsection();
-      }
-      prm.leave_subsection();
-    }
   }
 }
 
