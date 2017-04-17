@@ -1,0 +1,4 @@
+New: Aspect now supports postprocessing of nonlinear iterations,
+in particular generating graphical output for each iteration.
+<br>
+(Juliane Dannberg, 2017/04/12)
