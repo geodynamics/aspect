@@ -13,8 +13,8 @@ A typical file could look like this:
     <br>
     (John Doe, YYYY/MM/DD)
 
-and is named "YYYYMMDD\_JohnDoe". File names for multiple contributions from the 
-same author on one day have a number appended, e.g. "YYYMMDD\_JohnDoe\_1".
+and is named ``YYYYMMDD_JohnDoe``. File names for multiple contributions from the
+same author on one day have a number appended, e.g. ``YYYMMDD_JohnDoe_1``.
 Only the file name is used to have a proper order in "changes.h". This
 means that the file can in principle have an arbitrary name as long as the date
 in the file and in the file name match.

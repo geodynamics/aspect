@@ -10,19 +10,6 @@ fi
 
 output=changes.h
 
-if [ -e $output ]
-then
-  echo "ERROR: File '$output' already exists."
-  exit
-fi
-
-if [ -z "$(ls changes)" ]
-then
-  echo "ERROR: No changefiles in changes/."
-  exit
-fi
-
-
 echo "Creating changes.h"
 
 # copy header and information for every bit into changes.h
