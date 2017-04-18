@@ -119,7 +119,7 @@ namespace aspect
         std::vector<std::string> output_variables;
 
         /**
-         * Whether to calculate all available quantites when averaging.
+         * Whether to calculate all available quantities when averaging.
          */
         bool output_all_variables;
 

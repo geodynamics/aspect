@@ -2013,6 +2013,9 @@ namespace aspect
           build_stokes_preconditioner();
           solve_stokes();
 
+          if (parameters.run_postprocessors_on_nonlinear_iterations)
+            postprocess ();
+
           break;
         }
 
@@ -2056,6 +2059,9 @@ namespace aspect
               pcout << "      Relative Stokes residual after nonlinear iteration " << nonlinear_iteration+1
                     << ": " << relative_tolerance
                     << std::endl;
+
+              if (parameters.run_postprocessors_on_nonlinear_iterations)
+                postprocess ();
 
               if (relative_tolerance < parameters.nonlinear_tolerance)
                 break;
@@ -2185,6 +2191,10 @@ namespace aspect
               pcout << "      Total relative residual after nonlinear iteration " << nonlinear_iteration+1 << ": " << max << std::endl;
               pcout << std::endl
                     << std::endl;
+
+              if (parameters.run_postprocessors_on_nonlinear_iterations)
+                postprocess ();
+
               if (max < parameters.nonlinear_tolerance)
                 break;
 
@@ -2268,6 +2278,9 @@ namespace aspect
                     << ": " << relative_stokes_residual
                     << std::endl;
 
+              if (parameters.run_postprocessors_on_nonlinear_iterations)
+                postprocess ();
+
               if (stokes_residual/initial_stokes_residual < parameters.nonlinear_tolerance)
                 {
                   break; // convergence reached, exit nonlinear iterations.
@@ -2342,6 +2355,9 @@ namespace aspect
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             current_linearization_point.block(introspection.block_indices.compositional_fields[c])
               = solution.block(introspection.block_indices.compositional_fields[c]);
+
+          if (parameters.run_postprocessors_on_nonlinear_iterations)
+            postprocess ();
 
           break;
         }
@@ -2448,7 +2464,10 @@ namespace aspect
               goto start_time_iteration;
           }
 
-        postprocess ();
+        // if we postprocess nonlinear iterations, this function is called within
+        // solve_timestep () in the individual solver schemes
+        if (!parameters.run_postprocessors_on_nonlinear_iterations)
+          postprocess ();
 
         // get new time step size
         const double new_time_step = compute_time_step();

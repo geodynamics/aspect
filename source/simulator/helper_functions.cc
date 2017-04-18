@@ -304,7 +304,10 @@ namespace aspect
 
         output_statistics();
 
-        if (parameters.run_postprocessors_on_initial_refinement)
+        // we only want to do the postprocessing here if it is not already done in
+        // the nonlinear iteration scheme, which is the case if we run postprocessors
+        // on all nonlinear iterations
+        if (parameters.run_postprocessors_on_initial_refinement && (!parameters.run_postprocessors_on_nonlinear_iterations))
           postprocess ();
 
         refine_mesh (max_refinement_level);

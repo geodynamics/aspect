@@ -221,6 +221,11 @@ namespace aspect
           output_interval = prm.get_double ("Time between data output");
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;
+
+          AssertThrow(this->get_parameters().run_postprocessors_on_nonlinear_iterations == false,
+                      ExcMessage("Postprocessing nonlinear iterations in models with "
+                                 "tracer particles is currently not supported."));
+
         }
         prm.leave_subsection ();
       }

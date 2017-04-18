@@ -210,7 +210,7 @@ namespace aspect
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
       last_output_time (std::numeric_limits<double>::quiet_NaN()),
-      output_file_number (0),
+      output_file_number (numbers::invalid_unsigned_int),
       mesh_changed (true)
     {}
 
@@ -251,8 +251,21 @@ namespace aspect
 
       // now also generate a .pvd file that matches simulation
       // time and corresponding .pvtu record
-      times_and_pvtu_names.push_back(std::make_pair
-                                     (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
+      if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
+        {
+          // in case we output all nonlinear iterations, we only want one
+          // entry per time step, so replace the last line with the current iteration
+          if (this->get_nonlinear_iteration() == 0)
+            times_and_pvtu_names.push_back(std::make_pair
+                                           (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
+          else
+            times_and_pvtu_names.back() = (std::make_pair
+                                           (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
+        }
+      else
+        times_and_pvtu_names.push_back(std::make_pair
+                                       (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
+
       const std::string
       pvd_master_filename = (this->get_output_directory() + "solution.pvd");
       std::ofstream pvd_master (pvd_master_filename.c_str());
@@ -286,7 +299,18 @@ namespace aspect
           {
             filenames_with_path.push_back("solution/" + (*it));
           }
-        output_file_names_by_timestep.push_back (filenames_with_path);
+
+        if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
+          {
+            // in case we output all nonlinear iterations, we only want one
+            // entry per time step, so replace the last line with the current iteration
+            if (this->get_nonlinear_iteration() == 0)
+              output_file_names_by_timestep.push_back (filenames_with_path);
+            else
+              output_file_names_by_timestep.back() = filenames_with_path;
+          }
+        else
+          output_file_names_by_timestep.push_back (filenames_with_path);
       }
 
       std::ofstream global_visit_master ((this->get_output_directory() +
@@ -320,6 +344,14 @@ namespace aspect
           && (this->get_timestep_number() != 0))
         return std::pair<std::string,std::string>();
 
+      // up the counter of the number of the file by one, but not in
+      // the very first output step. if we run postprocessors on all
+      // iterations, only increase file number in the first nonlinear iteration
+      const bool increase_file_number = (this->get_nonlinear_iteration() == 0) || (!this->get_parameters().run_postprocessors_on_nonlinear_iterations);
+      if (output_file_number == numbers::invalid_unsigned_int)
+        output_file_number = 0;
+      else if (increase_file_number)
+        ++output_file_number;
 
       internal::BaseVariablePostprocessor<dim> base_variables;
       base_variables.initialize_simulator (this->get_simulator());
@@ -448,6 +480,9 @@ namespace aspect
 
       // Now prepare everything for writing the output and choose output format
       std::string solution_file_prefix = "solution-" + Utilities::int_to_string (output_file_number, 5);
+      if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
+        solution_file_prefix.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
+
       const double time_in_years_or_seconds = (this->convert_output_to_years() ?
                                                this->get_time() / year_in_seconds :
                                                this->get_time());
@@ -591,9 +626,7 @@ namespace aspect
                             + "solution/"
                             + solution_file_prefix);
 
-      // up the counter of the number of the file by one; also
       // up the next time we need output
-      ++output_file_number;
       set_last_output_time (this->get_time());
 
       // return what should be printed to the screen.
@@ -828,6 +861,18 @@ namespace aspect
           output_interval = prm.get_double ("Time between graphical output");
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;
+
+          if (output_interval > 0.0)
+            {
+              // as we increase the the time indicating when to write the next graphical output
+              // every time we execute the visualization postprocessor, there is no good way to
+              // figure out when to write graphical output for the nonlinear iterations if we do
+              // not want to output every time step
+              AssertThrow(this->get_parameters().run_postprocessors_on_nonlinear_iterations == false,
+                          ExcMessage("Postprocessing nonlinear iterations is only supported if every time "
+                                     "step is visualized, or in other words, if the 'Time between graphical "
+                                     "output' in the Visualization postprocessor is set to zero."));
+            }
 
           output_format   = prm.get ("Output format");
           group_files     = prm.get_integer("Number of grouped files");
