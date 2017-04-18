@@ -7,13 +7,13 @@ using namespace aspect;
 
 
 template <int dim>
-void post_stokes_solver (const SimulatorAccess<dim> &sim,
-                         const bool success,
-                         const std::vector<double> &history)
+void post_stokes_solver (const SimulatorAccess<dim> &,
+                         const unsigned int number_S_iterations,
+                         const unsigned int number_A_iterations,
+                         const SolverControl &solver_control_cheap,
+                         const SolverControl &solver_control_expensive)
 {
   std::cout << "\npost_stokes_solver:\n";
-  for (unsigned int i=0; i<history.size(); ++i)
-    std::cout << history[i] << std::endl;
 }
 
 

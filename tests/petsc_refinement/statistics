@@ -11,4 +11,4 @@
 # 11: Velocity iterations in Stokes preconditioner
 # 12: Schur complement iterations in Stokes preconditioner
 # 13: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 430 4338 1916 1916 0 0 36 38 327 output-petsc_refinement/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 430 4338 1916 1916 0 0 18 19 161 output-petsc_refinement/solution/solution-00000 
