@@ -2418,6 +2418,11 @@ namespace aspect
       {
         computing_timer.enter_section ("Setup initial conditions");
 
+        // Add topography to box models after all initial refinement
+        // is completed.
+        if (pre_refinement_step == parameters.initial_adaptive_refinement)
+          signals.pre_set_initial_state (triangulation);
+
         set_initial_temperature_and_compositional_fields ();
         compute_initial_pressure_field ();
 

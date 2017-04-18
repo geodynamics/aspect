@@ -84,6 +84,14 @@ namespace aspect
     edit_finite_element_variables;
 
     /**
+     * A signal that is called before setting up the initial conditions.
+     *
+     * The functions (slots) that can attach to this signal need to take one
+     * argument: A SimulatorAccess object that descibes the simulator.
+     */
+    boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  pre_set_initial_state;
+
+    /**
      * A signal that is called after setting up the initial conditions.
      *
      * The functions (slots) that can attach to this signal need to take one
