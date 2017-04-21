@@ -496,9 +496,17 @@ namespace aspect
   const InitialConditions::Interface<dim> &
   SimulatorAccess<dim>::get_initial_conditions () const
   {
-    Assert (simulator->initial_conditions.get() != 0,
-            ExcMessage("You can not call this function if no such model is actually available."));
-    return *simulator->initial_conditions.get();
+    Assert (get_initial_temperature_manager().get_active_initial_temperature_conditions().size() == 1,
+            ExcMessage("You can only this function if only one initial temperature plugin is active."));
+    return *(get_initial_temperature_manager().get_active_initial_temperature_conditions().front());
+  }
+
+
+  template <int dim>
+  const InitialConditions::Manager<dim> &
+  SimulatorAccess<dim>::get_initial_temperature_manager () const
+  {
+    return simulator->initial_temperature_manager;
   }
 
 
@@ -508,7 +516,7 @@ namespace aspect
   {
     Assert (simulator->compositional_initial_conditions.get() != 0,
             ExcMessage("You can not call this function if no such model is actually available."));
-    return *simulator->compositional_initial_conditions.get();
+    return *simulator->compositional_initial_conditions;
   }
 
   template <int dim>
