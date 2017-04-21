@@ -567,7 +567,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
 Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 10,656 (6,528+864+3,264)
 
-*** Timestep 50:  t=4.07249e+06 years
+*** Timestep 50:  t=4.0725e+06 years
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 31+0 iterations.

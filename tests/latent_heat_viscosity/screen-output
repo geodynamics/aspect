@@ -25,15 +25,15 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 170+0 iterations.
+   Solving Stokes system... 169+0 iterations.
 
-Number of active cells: 2,754 (on 5 levels)
-Number of degrees of freedom: 38,446 (23,600+3,046+11,800)
+Number of active cells: 2,760 (on 5 levels)
+Number of degrees of freedom: 38,511 (23,640+3,051+11,820)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 138+0 iterations.
+   Solving Stokes system... 133+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-latent_heat_viscosity/solution/solution-00000
