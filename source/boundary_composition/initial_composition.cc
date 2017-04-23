@@ -34,7 +34,7 @@ namespace aspect
                           const Point<dim> &position,
                           const unsigned int compositional_field) const
     {
-      return this->get_compositional_initial_conditions().initial_composition(position, compositional_field);
+      return this->get_initial_composition_manager().initial_composition(position, compositional_field);
     }
 
 

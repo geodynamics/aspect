@@ -32,7 +32,7 @@ namespace aspect
                                                                 std::vector<double> &data) const
       {
         for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
-          data.push_back(this->get_compositional_initial_conditions().initial_composition(position,i));
+          data.push_back(this->get_initial_composition_manager().initial_composition(position,i));
       }
 
       template <int dim>

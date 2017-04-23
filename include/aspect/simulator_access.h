@@ -555,7 +555,7 @@ namespace aspect
        * values.
        */
       const CompositionalInitialConditions::Interface<dim> &
-      get_compositional_initial_conditions () const;
+      get_compositional_initial_conditions () const DEAL_II_DEPRECATED;
 
       /**
        * Return a pointer to the manager of the initial composition model.
