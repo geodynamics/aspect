@@ -192,7 +192,6 @@ namespace aspect
                           :
                           BoundaryComposition::create_boundary_composition<dim>(prm)),
     prescribed_stokes_solution (PrescribedStokesSolution::create_prescribed_stokes_solution<dim>(prm)),
-    compositional_initial_conditions (CompositionalInitialConditions::create_initial_conditions<dim>(prm)),
     adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
 
     time (std::numeric_limits<double>::quiet_NaN()),
@@ -456,6 +455,10 @@ namespace aspect
     initial_temperature_manager.initialize_simulator(*this);
     initial_temperature_manager.parse_parameters (prm);
 
+    // Create the initial composition plugins
+    initial_composition_manager.initialize_simulator(*this);
+    initial_composition_manager.parse_parameters (prm);
+
     if (boundary_temperature.get())
       {
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_temperature.get()))
@@ -470,14 +473,6 @@ namespace aspect
           sim->initialize_simulator (*this);
         boundary_composition->parse_parameters (prm);
         boundary_composition->initialize ();
-      }
-
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(compositional_initial_conditions.get()))
-      sim->initialize_simulator (*this);
-    if (compositional_initial_conditions.get())
-      {
-        compositional_initial_conditions->parse_parameters (prm);
-        compositional_initial_conditions->initialize ();
       }
 
     // Make sure we only have a prescribed Stokes plugin if needed

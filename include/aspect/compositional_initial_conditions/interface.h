@@ -23,18 +23,20 @@
 #define _aspect_compositional_initial_conditions_interface_h
 
 #include <aspect/plugins.h>
-#include <aspect/geometry_model/interface.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
 
 namespace aspect
 {
+  template <int dim> class SimulatorAccess;
+
   /**
    * A namespace in which we define everything that has to do with defining
-   * the initial conditions.
+   * the initial composition.
    *
-   * @ingroup InitialConditionsModels
+   * @ingroup InitialCompositionModels
    */
   namespace CompositionalInitialConditions
   {
@@ -95,73 +97,168 @@ namespace aspect
 
 
 
-
     /**
-     * Register an initial conditions model so that it can be selected from
-     * the parameter file.
+     * A class that manages all initial composition objects.
      *
-     * @param name A string that identifies the initial conditions model
-     * @param description A text description of what this model does and that
-     * will be listed in the documentation of the parameter file.
-     * @param declare_parameters_function A pointer to a function that can be
-     * used to declare the parameters that this initial conditions model wants
-     * to read from input files.
-     * @param factory_function A pointer to a function that can create an
-     * object of this initial conditions model.
-     *
-     * @ingroup InitialConditionsModels
+     * @ingroup InitialCompositionModels
      */
     template <int dim>
-    void
-    register_initial_conditions_model (const std::string &name,
-                                       const std::string &description,
-                                       void (*declare_parameters_function) (ParameterHandler &),
-                                       Interface<dim> *(*factory_function) ());
+    class Manager : public ::aspect::SimulatorAccess<dim>
+    {
+      public:
+        /**
+         * Destructor. Made virtual since this class has virtual member
+         * functions.
+         */
+        virtual ~Manager ();
+
+        /**
+         * Declare the parameters of all known initial composition plugins, as
+         * well as of ones this class has itself.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         * This determines which initial composition objects will be created;
+         * then let these objects read their parameters as well.
+         */
+        void
+        parse_parameters (ParameterHandler &prm);
+
+        /**
+         * A function that calls the initial_composition functions of all
+         * individual initial composition objects for the composition given
+         * by @p n_comp, and adds up the values of the
+         * individual calls.
+         */
+        double
+        initial_composition (const Point<dim> &position,
+                             const unsigned int n_comp) const;
+
+        /**
+         * A function that is used to register initial composition objects in
+         * such a way that the Manager can deal with all of them without having
+         * to know them by name. This allows the files in which individual
+         * plugins are implemented to register these plugins, rather than also
+         * having to modify the Manager class by adding the new initial
+         * composition plugin class.
+         *
+         * @param name A string that identifies the initial composition model
+         * @param description A text description of what this model does and that
+         * will be listed in the documentation of the parameter file.
+         * @param declare_parameters_function A pointer to a function that can be
+         * used to declare the parameters that this initial composition model
+         * wants to read from input files.
+         * @param factory_function A pointer to a function that can create an
+         * object of this initial composition model.
+         *
+         * @ingroup InitialCompositionModels
+         */
+        static
+        void
+        register_initial_composition_model (const std::string &name,
+                                            const std::string &description,
+                                            void (*declare_parameters_function) (ParameterHandler &),
+                                            Interface<dim> *(*factory_function) ());
+
+
+        /**
+         * Return a list of names of all initial composition models currently
+         * used in the computation, as specified in the input file.
+         */
+        const std::vector<std::string> &
+        get_active_initial_composition_names () const;
+
+        /**
+         * Return a list of pointers to all initial composition models
+         * currently used in the computation, as specified in the input file.
+         */
+        const std::list<std_cxx11::shared_ptr<Interface<dim> > > &
+        get_active_initial_composition_conditions () const;
+
+        /**
+         * Go through the list of all initial composition models that have been selected in
+         * the input file (and are consequently currently active) and see if one
+         * of them has the desired type specified by the template argument. If so,
+         * return a pointer to it. If no initial composition model is active that matches the
+         * given type, return a NULL pointer.
+         */
+        template <typename InitialCompositionType>
+        InitialCompositionType *
+        find_initial_composition_model () const;
+
+        /**
+         * Exception.
+         */
+        DeclException1 (ExcInitialCompositionNameNotFound,
+                        std::string,
+                        << "Could not find entry <"
+                        << arg1
+                        << "> among the names of registered initial composition objects.");
+      private:
+        /**
+         * A list of initial composition objects that have been requested in the
+         * parameter file.
+         */
+        std::list<std_cxx11::shared_ptr<Interface<dim> > > initial_composition_objects;
+
+        /**
+         * A list of names of initial composition objects that have been requested
+         * in the parameter file.
+         */
+        std::vector<std::string> model_names;
+    };
+
+
+
+    template <int dim>
+    template <typename InitialCompositionType>
+    inline
+    InitialCompositionType *
+    Manager<dim>::find_initial_composition_model () const
+    {
+      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+           p = initial_composition_objects.begin();
+           p != initial_composition_objects.end(); ++p)
+        if (InitialCompositionType *x = dynamic_cast<InitialCompositionType *> ( (*p).get()) )
+          return x;
+      return NULL;
+    }
+
+
 
     /**
-     * A function that given the name of a model returns a pointer to an
-     * object that describes it. Ownership of the pointer is transferred to
-     * the caller.
-     *
-     * The model object returned is not yet initialized and has not read its
-     * runtime parameters yet.
-     *
-     * @ingroup InitialConditionsModels
+     * Return a string that consists of the names of initial composition models that can
+     * be selected. These names are separated by a vertical line '|' so
+     * that the string can be an input to the deal.II classes
+     * Patterns::Selection or Patterns::MultipleSelection.
      */
     template <int dim>
-    Interface<dim> *
-    create_initial_conditions (ParameterHandler &prm);
-
-
-    /**
-     * Declare the runtime parameters of the registered initial conditions
-     * models.
-     *
-     * @ingroup InitialConditionsModels
-     */
-    template <int dim>
-    void
-    declare_parameters (ParameterHandler &prm);
+    std::string
+    get_valid_model_names_pattern ();
 
 
 
     /**
      * Given a class name, a name, and a description for the parameter file
-     * for a initial conditions model, register it with the functions that can
+     * for a initial composition model, register it with the functions that can
      * declare their parameters and create these objects.
      *
-     * @ingroup InitialConditionsModels
+     * @ingroup InitialCompositionModels
      */
 #define ASPECT_REGISTER_COMPOSITIONAL_INITIAL_CONDITIONS(classname,name,description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_COMPOSITIONAL_INITIAL_CONDITIONS_ ## classname \
+  namespace ASPECT_REGISTER_COMPOSITIONAL_INITIAL_CONDITIONS ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::CompositionalInitialConditions::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::CompositionalInitialConditions::register_initial_conditions_model<2>, \
+    dummy_ ## classname ## _2d (&aspect::CompositionalInitialConditions::Manager<2>::register_initial_composition_model, \
                                 name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::CompositionalInitialConditions::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::CompositionalInitialConditions::register_initial_conditions_model<3>, \
+    dummy_ ## classname ## _3d (&aspect::CompositionalInitialConditions::Manager<3>::register_initial_composition_model, \
                                 name, description); \
   }
   }

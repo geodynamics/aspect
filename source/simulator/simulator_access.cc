@@ -514,10 +514,19 @@ namespace aspect
   const CompositionalInitialConditions::Interface<dim> &
   SimulatorAccess<dim>::get_compositional_initial_conditions () const
   {
-    Assert (simulator->compositional_initial_conditions.get() != 0,
-            ExcMessage("You can not call this function if no such model is actually available."));
-    return *simulator->compositional_initial_conditions;
+    Assert (get_initial_composition_manager().get_active_initial_composition_conditions().size() == 1,
+            ExcMessage("You can only call this function if only one initial composition plugin is active."));
+    return *(get_initial_composition_manager().get_active_initial_composition_conditions().front());
   }
+
+
+  template <int dim>
+  const CompositionalInitialConditions::Manager<dim> &
+  SimulatorAccess<dim>::get_initial_composition_manager () const
+  {
+    return simulator->initial_composition_manager;
+  }
+
 
   template <int dim>
   const HeatingModel::Manager<dim> &

@@ -37,7 +37,7 @@ namespace aspect
      * A class that implements initial conditions for the compositional fields
      * based on a functional description provided in the input file.
      *
-     * @ingroup CompositionalInitialConditionsModels
+     * @ingroup InitialCompositionModels
      */
     template <int dim>
     class Function : public Interface<dim>,

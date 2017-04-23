@@ -122,7 +122,7 @@ namespace aspect
             in.pressure_gradient[0] = Tensor <1,dim> ();
 
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-            in.composition[0][c] = this->get_compositional_initial_conditions().initial_composition(representative_point, c);
+            in.composition[0][c] = this->get_initial_composition_manager().initial_composition(representative_point, c);
 
           this->get_material_model().evaluate(in, out);
 

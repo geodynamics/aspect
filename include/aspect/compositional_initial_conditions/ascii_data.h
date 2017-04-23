@@ -38,7 +38,7 @@ namespace aspect
      * A class that implements the prescribed compositional fields determined
      * from a AsciiData input file.
      *
-     * @ingroup CompositionalInitialConditionsModels
+     * @ingroup InitialCompositionModels
      */
     template <int dim>
     class AsciiData : public Interface<dim>, public Utilities::AsciiDataInitial<dim>

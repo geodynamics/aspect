@@ -68,6 +68,12 @@ namespace aspect
     template <int dim> class Interface;
   }
 
+  namespace CompositionalInitialConditions
+  {
+    template <int dim> class Manager;
+    template <int dim> class Interface;
+  }
+
   namespace AdiabaticConditions
   {
     template <int dim> class Interface;
@@ -550,6 +556,14 @@ namespace aspect
        */
       const CompositionalInitialConditions::Interface<dim> &
       get_compositional_initial_conditions () const;
+
+      /**
+       * Return a pointer to the manager of the initial composition model.
+       * This can then i.e. be used to get the names of the initial composition
+       * models used in a computation.
+       */
+      const CompositionalInitialConditions::Manager<dim> &
+      get_initial_composition_manager () const;
 
       /**
        * Return a set of boundary indicators that describes which of the
