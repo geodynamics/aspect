@@ -96,7 +96,7 @@ namespace aspect
           (advf.is_temperature()
            ?
            VectorFunctionFromScalarFunctionObject<dim, double>(std_cxx11::bind(&InitialConditions::Manager<dim>::initial_temperature,
-                                                                               std_cxx11::ref(*initial_temperature_manager),
+                                                                               std_cxx11::ref(initial_temperature_manager),
                                                                                std_cxx11::_1),
                                                                introspection.component_indices.temperature,
                                                                introspection.n_components)
