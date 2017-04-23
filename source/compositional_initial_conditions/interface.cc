@@ -195,7 +195,7 @@ namespace aspect
                           +
                           std_cxx11::get<dim>(registered_plugins).get_description_string());
 
-        prm.declare_entry ("Model name", "unspecified",
+        prm.declare_entry ("Model name", "function",
                            Patterns::Selection (pattern_of_names+"|unspecified"),
                            "Select one of the following models:\n\n"
                            "Warning: This is the old formulation of specifying "
