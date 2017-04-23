@@ -136,21 +136,21 @@ namespace aspect
         initial_temperature (const Point<dim> &position) const;
 
         /**
-         * A function that is used to register heating model objects in such
+         * A function that is used to register initial temperature objects in such
          * a way that the Manager can deal with all of them without having to
          * know them by name. This allows the files in which individual
          * plugins are implemented to register these plugins, rather than also
-         * having to modify the Manager class by adding the new heating plugin
-         * class.
+         * having to modify the Manager class by adding the new initial
+         * temperature plugin class.
          *
-         * @param name A string that identifies the heating model
+         * @param name A string that identifies the initial temperature model
          * @param description A text description of what this model does and that
          * will be listed in the documentation of the parameter file.
          * @param declare_parameters_function A pointer to a function that can be
-         * used to declare the parameters that this heating model wants to read
-         * from input files.
+         * used to declare the parameters that this initial temperature model
+         * wants to read from input files.
          * @param factory_function A pointer to a function that can create an
-         * object of this heating model.
+         * object of this initial temperature model.
          *
          * @ingroup InitialConditionsModels
          */
@@ -163,15 +163,15 @@ namespace aspect
 
 
         /**
-         * Return a list of names of all heating models currently used in the
-         * computation, as specified in the input file.
+         * Return a list of names of all initial temperature models currently
+         * used in the computation, as specified in the input file.
          */
         const std::vector<std::string> &
         get_active_initial_temperature_names () const;
 
         /**
-         * Return a list of pointers to all heating models currently used in the
-         * computation, as specified in the input file.
+         * Return a list of pointers to all initial temperature models
+         * currently used in the computation, as specified in the input file.
          */
         const std::list<std_cxx11::shared_ptr<Interface<dim> > > &
         get_active_initial_temperature_conditions () const;
@@ -180,8 +180,8 @@ namespace aspect
          * Go through the list of all initial temperature models that have been selected in
          * the input file (and are consequently currently active) and see if one
          * of them has the desired type specified by the template argument. If so,
-         * return a pointer to it. If no heating model is active that matches the
-         * given type, return a NULL pointer.
+         * return a pointer to it. If no initial temperature model is active
+         * that matches the given type, return a NULL pointer.
          */
         template <typename InitialTemperatureType>
         InitialTemperatureType *

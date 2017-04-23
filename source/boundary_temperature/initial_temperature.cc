@@ -34,7 +34,7 @@ namespace aspect
     boundary_temperature (const types::boundary_id,
                           const Point<dim> &position) const
     {
-      return this->get_initial_conditions().initial_temperature(position);
+      return this->get_initial_temperature_manager().initial_temperature(position);
     }
 
 

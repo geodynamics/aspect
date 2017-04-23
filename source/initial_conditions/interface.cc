@@ -184,12 +184,10 @@ namespace aspect
         prm.declare_entry("List of model names",
                           "",
                           Patterns::MultipleSelection(pattern_of_names),
-                          "A comma separated list of heating models that "
-                          "will be used to calculate the heating terms in the energy "
-                          "equation. The results of each of these criteria , i.e., "
-                          "the heating source terms and the latent heat terms for the "
-                          "left hand side will be added.\n\n"
-                          "The following heating models are available:\n\n"
+                          "A comma separated list of initial temperature models that "
+                          "will be used to initialize the temperature. "
+                          "The results of each of these models will be added.\n\n"
+                          "The following initial tempeature models are available:\n\n"
                           +
                           std_cxx11::get<dim>(registered_plugins).get_description_string());
 
@@ -197,8 +195,8 @@ namespace aspect
                            Patterns::Selection (pattern_of_names+"|unspecified"),
                            "Select one of the following models:\n\n"
                            "Warning: This is the old formulation of specifying "
-                           "heating models and shouldn't be used. Please use 'List of "
-                           "model names' instead."
+                           "initial temperature models and shouldn't be used. "
+                           "Please use 'List of model names' instead."
                            +
                            std_cxx11::get<dim>(registered_plugins).get_description_string());
       }
