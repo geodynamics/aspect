@@ -275,6 +275,12 @@ namespace aspect
          */
         ChunkGeometry manifold;
 
+        /**
+         * Retrieve the manifold object.
+         */
+        const ChartManifold<dim,dim> *
+        get_manifold() const;
+
         static void set_manifold_ids (Triangulation<dim> &triangulation);
         static void clear_manifold_ids (Triangulation<dim> &triangulation);
 

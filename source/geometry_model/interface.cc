@@ -28,6 +28,7 @@ namespace aspect
 {
   namespace GeometryModel
   {
+
     template <int dim>
     Interface<dim>::~Interface ()
     {}
@@ -62,6 +63,14 @@ namespace aspect
     Interface<dim>::has_curved_elements() const
     {
       return true;
+    }
+
+
+    template<int dim>
+    const ChartManifold<dim,dim> *
+    Interface<dim>::get_manifold() const
+    {
+      return NULL;
     }
 
 

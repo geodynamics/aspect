@@ -25,6 +25,7 @@
 #include <aspect/plugins.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/distributed/tria.h>
+#include <deal.II/grid/manifold.h>
 
 #include <set>
 
@@ -56,6 +57,7 @@ namespace aspect
     class Interface
     {
       public:
+
         /**
          * Destructor. Made virtual to enforce that derived classes also have
          * virtual destructors.
@@ -277,6 +279,15 @@ namespace aspect
         virtual
         bool
         point_is_in_domain(const Point<dim> &p) const = 0;
+
+
+        /**
+         * Todo
+         */
+        virtual
+        const ChartManifold<dim,dim> *
+        get_manifold() const;
+
 
         /**
          * Declare the parameters this class takes through input files. The

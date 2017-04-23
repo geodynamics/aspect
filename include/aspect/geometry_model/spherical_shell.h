@@ -24,6 +24,7 @@
 
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <deal.II/grid/manifold_lib.h>
 
 
 namespace aspect
@@ -46,6 +47,38 @@ namespace aspect
     class SphericalShell : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
+        /**
+         * SphericalGeometry is a class that implements the interface of
+         * ChartManifold. The function push_forward takes a point
+         * in the reference (lat,long,radius) domain and transforms
+         * it into real space (cartesian). The inverse function
+         * pull_back reverses this operation.
+         */
+
+        class SphericalShellGeometry : public ChartManifold<dim,dim>
+        {
+          public:
+            SphericalShellGeometry();
+
+            virtual
+            Point<dim>
+            pull_back(const Point<dim> &space_point) const;
+
+            virtual
+            Point<dim>
+            push_forward(const Point<dim> &chart_point) const;
+
+          private:
+            // The minimum longitude of the domain
+            const SphericalManifold<dim> spherical_manifold;
+        };
+
+        /**
+         * Retrieve the manifold object.
+         */
+        const ChartManifold<dim,dim> *
+        get_manifold() const;
+
         /**
          * Generate a coarse mesh for the geometry described by this class.
          */
@@ -179,6 +212,11 @@ namespace aspect
          * Number of tangential mesh cells in the initial, coarse mesh.
          */
         int n_cells_along_circumference;
+
+        /**
+         * Stores the manifold object
+         */
+        SphericalShellGeometry manifold;
     };
   }
 }

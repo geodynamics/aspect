@@ -1,0 +1,73 @@
+# test
+set Dimension = 2
+set Max nonlinear iterations = 0
+set Nonlinear solver scheme = iterated Stokes
+set End time = 0
+
+subsection Geometry model
+  set Model name = box # box #spherical shell #chunk #ellipsoidal chunk 
+  subsection Ellipsoidal chunk
+    set NE corner = -58:26 #-62:24
+    set SW corner = -82:14 #-75:18
+    set Depth = 700000
+    set Semi-major axis = 6378137
+    set Eccentricity = 0 #8.1819190842622e-2 #0
+    set East-West subdivisions = 4
+    set North-South subdivisions = 2
+    set Depth subdivisions = 1
+  end 
+  subsection Chunk
+    set Chunk inner radius = 5678137
+    set Chunk outer radius = 6378137
+    set Chunk minimum latitude = 14
+    set Chunk maximum latitude = 26
+    set Chunk minimum longitude = -82
+    set Chunk maximum longitude = -58
+    set Latitude repetitions = 2
+    set Longitude repetitions = 4
+    set Radius repetitions = 1
+  end
+  subsection Sphere
+   set Radius = 6378137
+  end
+  subsection Spherical shell
+    set Outer radius = 6378137
+  end
+  subsection Box
+    set Box origin Y coordinate = -82
+    set Box origin Z coordinate = 14
+    set Box origin X coordinate = 0
+    set Y extent = 22
+    set Z extent = 11
+    set X extent = 200
+    set Y repetitions = 4
+    set Z repetitions = 2
+    set X repetitions = 1
+  end 
+end
+subsection Material model
+  set Model name = simple 
+end
+subsection Gravity model
+  set Model name = radial earth-like
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 4
+end
+
+subsection Initial conditions
+  set Model name = polygon depth 
+  subsection Polygon depth
+    set Reference temperature= 273
+    set Bottom depth = 100
+    set List of polygon coordinates = -120,-20;-70,-20;-70,25;-120,20;
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+  subsection Visualization
+    set Output format                     = gnuplot
+  end
+end

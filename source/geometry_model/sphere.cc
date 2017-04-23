@@ -31,6 +31,84 @@ namespace aspect
   namespace GeometryModel
   {
     template <int dim>
+    Sphere<dim>::SphereGeometry::SphereGeometry()
+    {}
+
+    template <int dim>
+    Point<dim>
+    Sphere<dim>::SphereGeometry::
+    push_forward(const Point<dim> &space_point) const
+    {
+      /**
+       * The spherical_manifold push_forward function requires R_theta_co_phi,
+       * but the common interface is R_phi_theta. So we change it before
+       * we return it.
+       */
+      if (dim == 3)
+        {
+          const Point<dim> R_theta_co_phi (space_point(0),
+                                           space_point(2),
+                                           space_point(1)+(90*(numbers::PI/180)));
+
+          return spherical_manifold.push_forward(R_theta_co_phi);
+        }
+      else
+        {
+          /**
+           * Following the deal.ii spherical_manifold convention,
+           * latitude is removed in 2d. TODO: It might be interesting
+           * to implement spacedim here.
+           */
+          const Point<dim> R_theta_co_phi (space_point(0),
+                                           space_point(1));
+
+          return spherical_manifold.push_forward(R_theta_co_phi);
+        }
+
+    }
+
+
+    template <int dim>
+    Point<dim>
+    Sphere<dim>::SphereGeometry::
+    pull_back(const Point<dim> &chart_point) const
+    {
+      /**
+       * The spherical_manifold pull_back function returns R_theta_co_phi,
+       * but the common interface is R_phi_theta. So we change it before
+       * we return it.
+       * R, co_lat, long (0 to 2*pi) -> R, long (-pi to pi), lat
+       */
+      if (dim == 3)
+        {
+          const Point<dim> R_theta_co_phi = spherical_manifold.pull_back(chart_point);
+          return Point<dim>(R_theta_co_phi(0),
+                            (R_theta_co_phi(2) > numbers::PI ? R_theta_co_phi(2) - 2 * numbers::PI :  R_theta_co_phi(2)),
+                            (90*(numbers::PI/180))-R_theta_co_phi(1));
+        }
+      else
+        {
+          /**
+           * Following the deal.ii spherical_manifold convention,
+           * latitude is removed in 2d. TODO: It might be interesting
+           * to implement spacedim here.
+           */
+          const Point<dim> R_theta_co_phi = spherical_manifold.pull_back(chart_point);
+          return Point<dim>(R_theta_co_phi(0),
+                            (R_theta_co_phi(1) > numbers::PI ? R_theta_co_phi(1) - 2 * numbers::PI :  R_theta_co_phi(1)));
+        }
+
+    }
+
+
+    template<int dim>
+    const ChartManifold<dim,dim> *
+    Sphere<dim>::get_manifold() const
+    {
+      return &manifold;
+    }
+
+    template <int dim>
     void
     Sphere<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
