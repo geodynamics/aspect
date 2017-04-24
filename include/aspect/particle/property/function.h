@@ -87,7 +87,7 @@ namespace aspect
 
         private:
           /**
-           * A function object representing the tracer property.
+           * A function object representing the tracer properties.
            */
           std_cxx11::unique_ptr<Functions::ParsedFunction<dim> > function;
 
