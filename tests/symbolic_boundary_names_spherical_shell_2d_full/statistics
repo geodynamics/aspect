@@ -17,4 +17,4 @@
 # 17: Average nondimensional temperature (K)
 # 18: Outward heat flux through boundary with indicator 0 ("inner") (W)
 # 19: Outward heat flux through boundary with indicator 1 ("outer") (W)
-0 0.000000000000e+00 0.000000000000e+00 48 552 240 0 32 33 160 output-symbolic_boundary_names_spherical_shell_2d_full/solution/solution-00000 5.81051513e+09 1.05551773e+10 0.00000000e+00 2.70740584e+03 6.00000000e+03 4.51234307e-01 -4.62493427e-02 8.23175217e-02 
+0 0.000000000000e+00 0.000000000000e+00 48 552 240 0 25 26 125 output-symbolic_boundary_names_spherical_shell_2d_full/solution/solution-00000 5.81051483e+09 1.05551764e+10 0.00000000e+00 2.70740584e+03 6.00000000e+03 4.51234307e-01 -4.62493427e-02 8.23175217e-02 

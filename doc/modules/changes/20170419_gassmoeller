@@ -1,0 +1,9 @@
+Changed: With a sufficiently new deal.II (9.0.0.pre),
+the spherical shell geometry no longer uses boundary objects,
+but lets the SphericalManifold class handle all geometry tasks.
+Using older version of deal.II the manifold is used for mesh refinement, 
+and boundary objects are used otherwise.
+This results in improved meshes for the side boundaries of octants
+of 3D spheres in both cases.
+<br>
+(Anne Glerum, Rene Gassmoeller, 2017/04/19)
