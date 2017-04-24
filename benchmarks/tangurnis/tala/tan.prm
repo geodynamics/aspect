@@ -84,7 +84,7 @@ subsection Gravity model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function expression = sin(pi*y)*cos(pi*1*x)

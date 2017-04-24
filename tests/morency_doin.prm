@@ -19,7 +19,7 @@ subsection Compositional fields
   set Names of fields  = upper_crust, lower_crust
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
 
   subsection Function
@@ -28,7 +28,7 @@ subsection Compositional initial conditions
   end
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
 
   subsection Function

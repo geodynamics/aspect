@@ -28,7 +28,7 @@ subsection Material model
   set Material averaging = arithmetic average
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names = x,z,t
@@ -36,7 +36,7 @@ subsection Compositional initial conditions
   end
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
 
   subsection Function

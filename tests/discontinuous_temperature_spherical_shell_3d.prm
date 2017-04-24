@@ -48,7 +48,7 @@ end
 # wave velocity model (Ritsema et al., 2000). S20RTS is defined
 # by spherical harmonics up to degree 20 that are radially interpolated
 # with a cubic spline. 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
 
   subsection Function

@@ -33,7 +33,7 @@ subsection Compositional fields
   set Number of fields          = 2
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
 
   subsection Function
@@ -43,7 +43,7 @@ subsection Compositional initial conditions
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = perturbed box
 end
 

@@ -21,7 +21,7 @@ subsection Geometry model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
 
   subsection Function
@@ -93,7 +93,7 @@ subsection Compositional fields
   set Names of fields           = heat
   set Number of fields          = 1                                                          
 end
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
 		set Function expression = if (y > 0.5, 1, 0)

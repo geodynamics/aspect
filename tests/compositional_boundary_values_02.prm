@@ -36,7 +36,7 @@ end
 
 
 # temperature field doesn't matter. set it to zero
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function expression = x
@@ -96,7 +96,7 @@ subsection Compositional fields
   set Number of fields = 2
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
 
   subsection Function

@@ -35,7 +35,7 @@ subsection Heating model
   set List of model names = adiabatic heating, shear heating
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = adiabatic
 end
 

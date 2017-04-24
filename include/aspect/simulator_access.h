@@ -38,8 +38,8 @@
 #include <aspect/gravity_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/boundary_composition/interface.h>
-#include <aspect/initial_conditions/interface.h>
-#include <aspect/compositional_initial_conditions/interface.h>
+#include <aspect/initial_temperature/interface.h>
+#include <aspect/initial_composition/interface.h>
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/boundary_traction/interface.h>
 #include <aspect/mesh_refinement/interface.h>
@@ -62,13 +62,13 @@ namespace aspect
     template <int dim> class Manager;
   }
 
-  namespace InitialConditions
+  namespace InitialTemperature
   {
     template <int dim> class Manager;
     template <int dim> class Interface;
   }
 
-  namespace CompositionalInitialConditions
+  namespace InitialComposition
   {
     template <int dim> class Manager;
     template <int dim> class Interface;
@@ -538,8 +538,8 @@ namespace aspect
        *
        * @deprecated Use <code> get_initial_temperature_manager </code> instead.
        */
-      const InitialConditions::Interface<dim> &
-      get_initial_conditions () const DEAL_II_DEPRECATED;
+      const InitialTemperature::Interface<dim> &
+      get_initial_temperature () const DEAL_II_DEPRECATED;
 
       /**
        * Return a pointer to the manager of the initial temperature models.
@@ -547,22 +547,22 @@ namespace aspect
        * models used in a computation, or to compute the initial temperature
        * for a given position.
        */
-      const InitialConditions::Manager<dim> &
+      const InitialTemperature::Manager<dim> &
       get_initial_temperature_manager () const;
 
       /**
        * Return a pointer to the object that describes the composition initial
        * values.
        */
-      const CompositionalInitialConditions::Interface<dim> &
-      get_compositional_initial_conditions () const DEAL_II_DEPRECATED;
+      const InitialComposition::Interface<dim> &
+      get_initial_composition () const DEAL_II_DEPRECATED;
 
       /**
        * Return a pointer to the manager of the initial composition model.
        * This can then i.e. be used to get the names of the initial composition
        * models used in a computation.
        */
-      const CompositionalInitialConditions::Manager<dim> &
+      const InitialComposition::Manager<dim> &
       get_initial_composition_manager () const;
 
       /**

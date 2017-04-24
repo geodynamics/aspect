@@ -47,7 +47,7 @@ subsection Geometry model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = spherical hexagonal perturbation
   subsection Spherical hexagonal perturbation
     set Angular mode = 8

@@ -493,8 +493,8 @@ namespace aspect
 
 
   template <int dim>
-  const InitialConditions::Interface<dim> &
-  SimulatorAccess<dim>::get_initial_conditions () const
+  const InitialTemperature::Interface<dim> &
+  SimulatorAccess<dim>::get_initial_temperature () const
   {
     Assert (get_initial_temperature_manager().get_active_initial_temperature_conditions().size() == 1,
             ExcMessage("You can only call this function if exactly one initial temperature plugin is active."));
@@ -503,7 +503,7 @@ namespace aspect
 
 
   template <int dim>
-  const InitialConditions::Manager<dim> &
+  const InitialTemperature::Manager<dim> &
   SimulatorAccess<dim>::get_initial_temperature_manager () const
   {
     return simulator->initial_temperature_manager;
@@ -511,8 +511,8 @@ namespace aspect
 
 
   template <int dim>
-  const CompositionalInitialConditions::Interface<dim> &
-  SimulatorAccess<dim>::get_compositional_initial_conditions () const
+  const InitialComposition::Interface<dim> &
+  SimulatorAccess<dim>::get_initial_composition () const
   {
     Assert (get_initial_composition_manager().get_active_initial_composition_conditions().size() == 1,
             ExcMessage("You can only call this function if only one initial composition plugin is active."));
@@ -521,7 +521,7 @@ namespace aspect
 
 
   template <int dim>
-  const CompositionalInitialConditions::Manager<dim> &
+  const InitialComposition::Manager<dim> &
   SimulatorAccess<dim>::get_initial_composition_manager () const
   {
     return simulator->initial_composition_manager;

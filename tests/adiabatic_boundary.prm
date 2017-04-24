@@ -31,7 +31,7 @@ end
 # The latitudinal and longitudinal bounds of the ascii input data file needs to be at least 1 degree
 # wider than the bounds you use to define the ellipsoid chunk geometry model. 
    
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = adiabatic boundary
   subsection Adiabatic boundary
     set Isotherm depth filename = adiabatic_boundary.txt

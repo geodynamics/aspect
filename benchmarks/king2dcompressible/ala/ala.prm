@@ -156,7 +156,7 @@ end
 # We choose a linear initial temperature profile that
 # matches the boundary conditions defined below plus
 # a small perturbation:
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
 
   subsection Function

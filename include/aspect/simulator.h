@@ -50,8 +50,8 @@
 #include <aspect/gravity_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/boundary_composition/interface.h>
-#include <aspect/initial_conditions/interface.h>
-#include <aspect/compositional_initial_conditions/interface.h>
+#include <aspect/initial_temperature/interface.h>
+#include <aspect/initial_composition/interface.h>
 #include <aspect/prescribed_stokes_solution/interface.h>
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/boundary_fluid_pressure/interface.h>
@@ -1264,8 +1264,8 @@ namespace aspect
       const std_cxx11::unique_ptr<BoundaryTemperature::Interface<dim> >       boundary_temperature;
       const std_cxx11::unique_ptr<BoundaryComposition::Interface<dim> >       boundary_composition;
       const std_cxx11::unique_ptr<PrescribedStokesSolution::Interface<dim> >  prescribed_stokes_solution;
-      CompositionalInitialConditions::Manager<dim>                            initial_composition_manager;
-      InitialConditions::Manager<dim>                                              initial_temperature_manager;
+      InitialComposition::Manager<dim>                                        initial_composition_manager;
+      InitialTemperature::Manager<dim>                                        initial_temperature_manager;
       const std_cxx11::unique_ptr<AdiabaticConditions::Interface<dim> >       adiabatic_conditions;
       std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > > boundary_velocity;
       std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryTraction::Interface<dim> > > boundary_traction;

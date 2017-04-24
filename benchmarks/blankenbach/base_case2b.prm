@@ -48,7 +48,7 @@ subsection Gravity model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Variable names      = x,z

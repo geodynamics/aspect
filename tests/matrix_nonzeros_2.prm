@@ -35,7 +35,7 @@ subsection Geometry model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = perturbed box
 end
 
@@ -47,7 +47,7 @@ subsection Compositional fields
   set Compositional field methods = field, particles
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names = x,y

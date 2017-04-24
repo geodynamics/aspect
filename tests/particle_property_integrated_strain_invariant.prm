@@ -53,7 +53,7 @@ subsection Boundary temperature model
     set Top temperature    = 273
   end
 end
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function expression = 273

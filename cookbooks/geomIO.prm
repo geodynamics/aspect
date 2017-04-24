@@ -22,7 +22,7 @@ subsection Geometry model
   end
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = adiabatic
   subsection Adiabatic
     set Amplitude = 300
@@ -37,7 +37,7 @@ subsection Compositional fields
 end
 
 # We use the ascii data plugin to read in the file created with geomIO.
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = ascii data
 
   subsection Ascii data model

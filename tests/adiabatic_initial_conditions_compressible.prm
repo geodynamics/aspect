@@ -23,7 +23,7 @@ end
 
 
 set Adiabatic surface temperature = 1200
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = adiabatic
 
   subsection Adiabatic

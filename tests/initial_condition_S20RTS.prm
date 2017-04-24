@@ -43,7 +43,7 @@ subsection Boundary temperature model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = S40RTS perturbation
   subsection S40RTS perturbation
     set Initial condition file name           = S20RTS.sph

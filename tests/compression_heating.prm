@@ -48,14 +48,14 @@ subsection Compositional fields
   set Names of fields = porosity, peridotite
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
     subsection Function
       set Function expression       = 1600
   end
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Function expression = 0.5; 0.0

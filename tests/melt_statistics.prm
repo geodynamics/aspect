@@ -21,7 +21,7 @@ subsection Compositional fields
   set Names of fields = porosity
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Function expression = 0.0
@@ -63,7 +63,7 @@ end
 # constants. We choose a linear temperature profile that
 # matches the boundary conditions defined below plus
 # a small perturbation:
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
 
   subsection Function

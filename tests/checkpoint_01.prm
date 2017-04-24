@@ -44,7 +44,7 @@ subsection Geometry model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = perturbed box
 end
 

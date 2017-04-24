@@ -20,7 +20,7 @@ subsection Boundary temperature model
   set Model name = box
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = adiabatic
 end
 set Use direct solver for Stokes system        = true

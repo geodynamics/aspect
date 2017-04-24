@@ -21,8 +21,8 @@
 
 #include <aspect/simulator.h>
 #include <aspect/adiabatic_conditions/interface.h>
-#include <aspect/initial_conditions/interface.h>
-#include <aspect/compositional_initial_conditions/interface.h>
+#include <aspect/initial_temperature/interface.h>
+#include <aspect/initial_composition/interface.h>
 #include <aspect/postprocess/tracers.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -95,13 +95,13 @@ namespace aspect
         const VectorFunctionFromScalarFunctionObject<dim, double> &advf_init_function =
           (advf.is_temperature()
            ?
-           VectorFunctionFromScalarFunctionObject<dim, double>(std_cxx11::bind(&InitialConditions::Manager<dim>::initial_temperature,
+           VectorFunctionFromScalarFunctionObject<dim, double>(std_cxx11::bind(&InitialTemperature::Manager<dim>::initial_temperature,
                                                                                std_cxx11::ref(initial_temperature_manager),
                                                                                std_cxx11::_1),
                                                                introspection.component_indices.temperature,
                                                                introspection.n_components)
            :
-           VectorFunctionFromScalarFunctionObject<dim, double>(std_cxx11::bind(&CompositionalInitialConditions::Manager<dim>::initial_composition,
+           VectorFunctionFromScalarFunctionObject<dim, double>(std_cxx11::bind(&InitialComposition::Manager<dim>::initial_composition,
                                                                                std_cxx11::ref(initial_composition_manager),
                                                                                std_cxx11::_1,
                                                                                n-1),
@@ -137,6 +137,7 @@ namespace aspect
                     for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
                       sum += initial_composition_manager.initial_composition(fe_values.quadrature_point(i),
                                                                              parameters.normalized_fields[m]);
+
                     if (std::abs(sum) > 1.0+std::numeric_limits<double>::epsilon())
                       {
                         max_sum_comp = std::max(sum, max_sum_comp);
@@ -177,6 +178,7 @@ namespace aspect
                       for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
                         sum += initial_composition_manager.initial_composition(fe_values.quadrature_point(i),
                                                                                parameters.normalized_fields[m]);
+
                       if (std::abs(sum) > 1.0+std::numeric_limits<double>::epsilon())
                         {
                           max_sum_comp = std::max(sum, max_sum_comp);
