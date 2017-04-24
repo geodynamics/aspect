@@ -19,21 +19,21 @@
 */
 
 
-#ifndef _aspect_velocity_boundary_conditions_zero_velocity_h
-#define _aspect_velocity_boundary_conditions_zero_velocity_h
+#ifndef _aspect_boundary_velocity_zero_velocity_h
+#define _aspect_boundary_velocity_zero_velocity_h
 
-#include <aspect/velocity_boundary_conditions/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 
 namespace aspect
 {
-  namespace VelocityBoundaryConditions
+  namespace BoundaryVelocity
   {
     using namespace dealii;
 
     /**
      * A class that implements zero velocity (stick) boundary conditions.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup BoundaryVelocities
      */
     template <int dim>
     class ZeroVelocity : public Interface<dim>

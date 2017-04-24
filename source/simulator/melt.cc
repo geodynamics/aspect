@@ -382,7 +382,7 @@ namespace aspect
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.face_material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 
       std::vector<double> grad_p_f(n_face_q_points);
-      this->get_melt_handler().fluid_pressure_boundary_conditions->fluid_pressure_gradient(
+      this->get_melt_handler().boundary_fluid_pressure->fluid_pressure_gradient(
         cell->face(face_no)->boundary_id(),
         scratch.face_material_model_inputs,
         scratch.face_material_model_outputs,
@@ -1129,7 +1129,7 @@ namespace aspect
     }
     prm.leave_subsection();
 
-    FluidPressureBoundaryConditions::declare_parameters<dim> (prm);
+    BoundaryFluidPressure::declare_parameters<dim> (prm);
   }
 
   template <int dim>
@@ -1143,9 +1143,9 @@ namespace aspect
   MeltHandler<dim>::initialize_simulator (const Simulator<dim> &simulator_object)
   {
     this->SimulatorAccess<dim>::initialize_simulator(simulator_object);
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(fluid_pressure_boundary_conditions.get()))
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_fluid_pressure.get()))
       sim->initialize_simulator (simulator_object);
-    fluid_pressure_boundary_conditions->initialize ();
+    boundary_fluid_pressure->initialize ();
   }
 
   template <int dim>
@@ -1160,8 +1160,8 @@ namespace aspect
     }
     prm.leave_subsection();
 
-    fluid_pressure_boundary_conditions.reset(FluidPressureBoundaryConditions::create_fluid_pressure_boundary<dim>(prm));
-    fluid_pressure_boundary_conditions->parse_parameters (prm);
+    boundary_fluid_pressure.reset(BoundaryFluidPressure::create_boundary_fluid_pressure<dim>(prm));
+    boundary_fluid_pressure->parse_parameters (prm);
   }
 
 

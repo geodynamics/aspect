@@ -20,7 +20,7 @@
 
 
 #include <aspect/global.h>
-#include <aspect/velocity_boundary_conditions/gplates.h>
+#include <aspect/boundary_velocity/gplates.h>
 #include <aspect/utilities.h>
 
 #include <deal.II/base/utilities.h>
@@ -37,7 +37,7 @@
 
 namespace aspect
 {
-  namespace VelocityBoundaryConditions
+  namespace BoundaryVelocity
   {
     namespace internal
     {
@@ -881,12 +881,12 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace VelocityBoundaryConditions
+  namespace BoundaryVelocity
   {
-    ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS(GPlates,
-                                                 "gplates",
-                                                 "Implementation of a model in which the boundary "
-                                                 "velocity is derived from files that are generated "
-                                                 "by the GPlates program.")
+    ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL(GPlates,
+                                            "gplates",
+                                            "Implementation of a model in which the boundary "
+                                            "velocity is derived from files that are generated "
+                                            "by the GPlates program.")
   }
 }

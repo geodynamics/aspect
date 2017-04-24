@@ -1,5 +1,5 @@
 #include <aspect/material_model/simple.h>
-#include <aspect/velocity_boundary_conditions/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <aspect/gravity_model/interface.h>
@@ -106,7 +106,7 @@ namespace aspect
 
 
     template <int dim>
-    class BursteddeBoundary : public VelocityBoundaryConditions::Interface<dim>
+    class BursteddeBoundary : public BoundaryVelocity::Interface<dim>
     {
       public:
         /**
@@ -577,11 +577,11 @@ namespace aspect
                                    "A material model that corresponds to the `Burstedde' benchmark. "
                                    "See the manual for more information.")
 
-    ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS(BursteddeBoundary,
-                                                 "BursteddeBoundary",
-                                                 "Implementation of the velocity boundary conditions for the "
-                                                 "`Burstedde' benchmark. See the manual for more information about this "
-                                                 "benchmark.")
+    ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL(BursteddeBoundary,
+                                            "BursteddeBoundary",
+                                            "Implementation of the velocity boundary conditions for the "
+                                            "`Burstedde' benchmark. See the manual for more information about this "
+                                            "benchmark.")
 
     ASPECT_REGISTER_POSTPROCESSOR(BursteddePostprocessor,
                                   "BursteddePostprocessor",

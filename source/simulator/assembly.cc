@@ -535,11 +535,11 @@ namespace aspect
 
       template <int dim>
       void
-      traction_boundary_conditions (const SimulatorAccess<dim>                           &simulator_access,
-                                    const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                    const unsigned int                                    face_no,
-                                    internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
-                                    internal::Assembly::CopyData::StokesSystem<dim>      &data)
+      boundary_traction (const SimulatorAccess<dim>                           &simulator_access,
+                         const typename DoFHandler<dim>::active_cell_iterator &cell,
+                         const unsigned int                                    face_no,
+                         internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
+                         internal::Assembly::CopyData::StokesSystem<dim>      &data)
       {
         const Introspection<dim> &introspection = simulator_access.introspection();
         const FiniteElement<dim> &fe = scratch.finite_element_values.get_fe();
@@ -548,17 +548,17 @@ namespace aspect
         // we need to assemble force terms for the right hand side
         const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
 
-        if (simulator_access.get_traction_boundary_conditions()
+        if (simulator_access.get_boundary_traction()
             .find (cell->face(face_no)->boundary_id())
             !=
-            simulator_access.get_traction_boundary_conditions().end())
+            simulator_access.get_boundary_traction().end())
           {
             scratch.face_finite_element_values.reinit (cell, face_no);
 
             for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
               {
                 const Tensor<1,dim> traction
-                  = simulator_access.get_traction_boundary_conditions().find(
+                  = simulator_access.get_boundary_traction().find(
                       cell->face(face_no)->boundary_id()
                     )->second
                     ->boundary_traction (cell->face(face_no)->boundary_id(),
@@ -736,7 +736,7 @@ namespace aspect
 
     // add the terms for traction boundary conditions
     assemblers->local_assemble_stokes_system_on_boundary_face
-    .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::traction_boundary_conditions<dim>,
+    .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::boundary_traction<dim>,
                               SimulatorAccess<dim>(*this),
                               std_cxx11::_1,
                               std_cxx11::_2,
@@ -1219,7 +1219,7 @@ namespace aspect
       = (
           // see if we need to assemble traction boundary conditions.
           // only if so do we actually need to have an FEFaceValues object
-          parameters.prescribed_traction_boundary_indicators.size() > 0
+          parameters.prescribed_boundary_traction_indicators.size() > 0
           ?
           update_values |
           update_quadrature_points |

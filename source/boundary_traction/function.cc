@@ -19,12 +19,12 @@
 */
 
 
-#include <aspect/traction_boundary_conditions/function.h>
+#include <aspect/boundary_traction/function.h>
 #include <aspect/global.h>
 
 namespace aspect
 {
-  namespace TractionBoundaryConditions
+  namespace BoundaryTraction
   {
     template <int dim>
     Function<dim>::Function ()
@@ -110,19 +110,19 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace TractionBoundaryConditions
+  namespace BoundaryTraction
   {
-    ASPECT_REGISTER_TRACTION_BOUNDARY_CONDITIONS(Function,
-                                                 "function",
-                                                 "Implementation of a model in which the boundary "
-                                                 "traction is given in terms of an explicit formula "
-                                                 "that is elaborated in the parameters in section "
-                                                 "``Boundary traction model|Function''. "
-                                                 "\n\n"
-                                                 "The formula you describe in the mentioned "
-                                                 "section is a semicolon separated list of traction components "
-                                                 "for each of the $d$ components of the traction vector. "
-                                                 "These $d$ formulas are interpreted as having units "
-                                                 "Pa.")
+    ASPECT_REGISTER_BOUNDARY_TRACTION_MODEL(Function,
+                                            "function",
+                                            "Implementation of a model in which the boundary "
+                                            "traction is given in terms of an explicit formula "
+                                            "that is elaborated in the parameters in section "
+                                            "``Boundary traction model|Function''. "
+                                            "\n\n"
+                                            "The formula you describe in the mentioned "
+                                            "section is a semicolon separated list of traction components "
+                                            "for each of the $d$ components of the traction vector. "
+                                            "These $d$ formulas are interpreted as having units "
+                                            "Pa.")
   }
 }

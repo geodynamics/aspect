@@ -250,8 +250,8 @@ namespace aspect
         velocity_bi.insert(p->first);
 
       for (std::map<types::boundary_id,std::pair<std::string, std::string> >::const_iterator
-           r = parameters.prescribed_traction_boundary_indicators.begin();
-           r != parameters.prescribed_traction_boundary_indicators.end();
+           r = parameters.prescribed_boundary_traction_indicators.begin();
+           r != parameters.prescribed_boundary_traction_indicators.end();
            ++r)
         traction_bi.insert(r->first);
 
@@ -281,8 +281,8 @@ namespace aspect
                 velocity_selector.insert(*it_selector);
 
               for (std::string::const_iterator
-                   it_selector  = parameters.prescribed_traction_boundary_indicators[*it].first.begin();
-                   it_selector != parameters.prescribed_traction_boundary_indicators[*it].first.end();
+                   it_selector  = parameters.prescribed_boundary_traction_indicators[*it].first.begin();
+                   it_selector != parameters.prescribed_boundary_traction_indicators[*it].first.end();
                    ++it_selector)
                 traction_selector.insert(*it_selector);
 
@@ -553,10 +553,10 @@ namespace aspect
          p != parameters.prescribed_velocity_boundary_indicators.end();
          ++p)
       {
-        VelocityBoundaryConditions::Interface<dim> *bv
-          = VelocityBoundaryConditions::create_velocity_boundary_conditions<dim>
+        BoundaryVelocity::Interface<dim> *bv
+          = BoundaryVelocity::create_boundary_velocity<dim>
             (p->second.second);
-        velocity_boundary_conditions[p->first].reset (bv);
+        boundary_velocity[p->first].reset (bv);
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(bv))
           sim->initialize_simulator(*this);
         bv->parse_parameters (prm);
@@ -564,14 +564,14 @@ namespace aspect
       }
 
     for (std::map<types::boundary_id,std::pair<std::string,std::string> >::const_iterator
-         p = parameters.prescribed_traction_boundary_indicators.begin();
-         p != parameters.prescribed_traction_boundary_indicators.end();
+         p = parameters.prescribed_boundary_traction_indicators.begin();
+         p != parameters.prescribed_boundary_traction_indicators.end();
          ++p)
       {
-        TractionBoundaryConditions::Interface<dim> *bv
-          = TractionBoundaryConditions::create_traction_boundary_conditions<dim>
+        BoundaryTraction::Interface<dim> *bv
+          = BoundaryTraction::create_boundary_traction<dim>
             (p->second.second);
-        traction_boundary_conditions[p->first].reset (bv);
+        boundary_traction[p->first].reset (bv);
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(bv))
           sim->initialize_simulator(*this);
         bv->parse_parameters (prm);
@@ -819,7 +819,7 @@ namespace aspect
     // to make sure that the time dependent velocity boundary conditions
     // end up in the right hand side in the right way; we currently do
     // that by re-assembling the entire system
-    if (!velocity_boundary_conditions.empty())
+    if (!boundary_velocity.empty())
       rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
 
@@ -840,9 +840,9 @@ namespace aspect
     // that end up in the bilinear form. we update those that end up in
     // the constraints object when calling compute_current_constraints()
     // above
-    for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<TractionBoundaryConditions::Interface<dim> > >::iterator
-         p = traction_boundary_conditions.begin();
-         p != traction_boundary_conditions.end(); ++p)
+    for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryTraction::Interface<dim> > >::iterator
+         p = boundary_traction.begin();
+         p != boundary_traction.end(); ++p)
       p->second->update ();
   }
 
@@ -858,16 +858,16 @@ namespace aspect
     {
       // set the current time and do the interpolation
       // for the prescribed velocity fields
-      for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >::iterator
-           p = velocity_boundary_conditions.begin();
-           p != velocity_boundary_conditions.end(); ++p)
+      for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >::iterator
+           p = boundary_velocity.begin();
+           p != boundary_velocity.end(); ++p)
         {
           p->second->update ();
           VectorFunctionFromVelocityFunctionObject<dim> vel
           (introspection.n_components,
-           std_cxx11::bind (static_cast<Tensor<1,dim> (VelocityBoundaryConditions::Interface<dim>::*)(
+           std_cxx11::bind (static_cast<Tensor<1,dim> (BoundaryVelocity::Interface<dim>::*)(
                               const types::boundary_id,
-                              const Point<dim> &) const> (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity),
+                              const Point<dim> &) const> (&BoundaryVelocity::Interface<dim>::boundary_velocity),
                             p->second,
                             p->first,
                             std_cxx11::_1));

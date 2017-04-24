@@ -1,5 +1,5 @@
 #include <aspect/material_model/simple.h>
-#include <aspect/velocity_boundary_conditions/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 

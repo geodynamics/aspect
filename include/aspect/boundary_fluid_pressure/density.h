@@ -19,16 +19,16 @@
 */
 
 
-#ifndef _aspect_fluid_pressure_boundary_conditions_density_h
-#define _aspect_fluid_pressure_boundary_conditions_density_h
+#ifndef _aspect_boundary_fluid_pressure_density_h
+#define _aspect_boundary_fluid_pressure_density_h
 
-#include <aspect/fluid_pressure_boundary_conditions/interface.h>
+#include <aspect/boundary_fluid_pressure/interface.h>
 #include <aspect/simulator_access.h>
 
 
 namespace aspect
 {
-  namespace FluidPressureBoundaryConditions
+  namespace BoundaryFluidPressure
   {
     /**
      * A class that implements simple fluid pressure boundary conditions
@@ -38,7 +38,7 @@ namespace aspect
      * $\rho_s \textbf{g}$ (solid density times gravity) or to
      * $\rho_f \textbf{g}$ (fluid density times gravity).
      *
-     * @ingroup FluidPressureBoundaryConditions
+     * @ingroup BoundaryFluidPressures
      */
     template <int dim>
     class Density : public Interface<dim>, public SimulatorAccess<dim>

@@ -26,7 +26,7 @@
 #include <aspect/global.h>
 #include <aspect/assembly.h>
 #include <aspect/material_model/interface.h>
-#include <aspect/fluid_pressure_boundary_conditions/interface.h>
+#include <aspect/boundary_fluid_pressure/interface.h>
 
 namespace aspect
 {
@@ -325,7 +325,7 @@ namespace aspect
        * initialization can be done together with the other objects related to melt
        * transport.
        */
-      std_cxx11::unique_ptr<FluidPressureBoundaryConditions::Interface<dim> > fluid_pressure_boundary_conditions;
+      std_cxx11::unique_ptr<BoundaryFluidPressure::Interface<dim> > boundary_fluid_pressure;
   };
 
 }

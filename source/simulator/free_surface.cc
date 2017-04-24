@@ -240,8 +240,8 @@ namespace aspect
 
     // Zero out the displacement for the traction boundaries
     // if the boundary is not in the set of tangential mesh boundaries
-    for (std::map<types::boundary_id, std::pair<std::string, std::string> >::const_iterator p = sim.parameters.prescribed_traction_boundary_indicators.begin();
-         p != sim.parameters.prescribed_traction_boundary_indicators.end(); ++p)
+    for (std::map<types::boundary_id, std::pair<std::string, std::string> >::const_iterator p = sim.parameters.prescribed_boundary_traction_indicators.begin();
+         p != sim.parameters.prescribed_boundary_traction_indicators.end(); ++p)
       {
         if (tangential_mesh_boundary_indicators.find(p->first) == tangential_mesh_boundary_indicators.end())
           {

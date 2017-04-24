@@ -386,7 +386,7 @@ namespace aspect
      * mapped to one of the plugins of traction boundary conditions (e.g.
      * "function")
      */
-    std::map<types::boundary_id, std::pair<std::string,std::string> > prescribed_traction_boundary_indicators;
+    std::map<types::boundary_id, std::pair<std::string,std::string> > prescribed_boundary_traction_indicators;
 
     /**
      * Selection of operations to perform to remove nullspace from velocity

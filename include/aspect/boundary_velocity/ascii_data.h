@@ -19,10 +19,10 @@
 */
 
 
-#ifndef _aspect_velocity_boundary_conditions_ascii_data_h
-#define _aspect_velocity_boundary_conditions_ascii_data_h
+#ifndef _aspect_boundary_velocity_ascii_data_h
+#define _aspect_boundary_velocity_ascii_data_h
 
-#include <aspect/velocity_boundary_conditions/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
@@ -30,7 +30,7 @@
 
 namespace aspect
 {
-  namespace VelocityBoundaryConditions
+  namespace BoundaryVelocity
   {
     using namespace dealii;
 
@@ -38,7 +38,7 @@ namespace aspect
      * A class that implements prescribed velocity boundary conditions
      * determined from a AsciiData input file.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup BoundaryVelocities
      */
     template <int dim>
     class AsciiData : public Utilities::AsciiDataBoundary<dim>, public Interface<dim>

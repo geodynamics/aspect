@@ -19,12 +19,12 @@
 */
 
 
-#include <aspect/velocity_boundary_conditions/function.h>
+#include <aspect/boundary_velocity/function.h>
 #include <aspect/global.h>
 
 namespace aspect
 {
-  namespace VelocityBoundaryConditions
+  namespace BoundaryVelocity
   {
     template <int dim>
     Function<dim>::Function ()
@@ -120,30 +120,30 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace VelocityBoundaryConditions
+  namespace BoundaryVelocity
   {
-    ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS(Function,
-                                                 "function",
-                                                 "Implementation of a model in which the boundary "
-                                                 "velocity is given in terms of an explicit formula "
-                                                 "that is elaborated in the parameters in section "
-                                                 "``Boundary velocity model|Function''. The format of these "
-                                                 "functions follows the syntax understood by the "
-                                                 "muparser library, see Section~\\ref{sec:muparser-format}."
-                                                 "\n\n"
-                                                 "The formula you describe in the mentioned "
-                                                 "section is a semicolon separated list of velocities "
-                                                 "for each of the $d$ components of the velocity vector. "
-                                                 "These $d$ formulas are interpreted as having units "
-                                                 "m/s, unless the global input parameter ``Use "
-                                                 "years in output instead of seconds'' is set, in "
-                                                 "which case we interpret the formula expressions "
-                                                 "as having units m/year."
-                                                 "\n\n"
-                                                 "Likewise, since the symbol $t$ indicating time "
-                                                 "may appear in the formulas for the prescribed "
-                                                 "velocities, it is interpreted as having units "
-                                                 "seconds unless the global parameter above has "
-                                                 "been set.")
+    ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL(Function,
+                                            "function",
+                                            "Implementation of a model in which the boundary "
+                                            "velocity is given in terms of an explicit formula "
+                                            "that is elaborated in the parameters in section "
+                                            "``Boundary velocity model|Function''. The format of these "
+                                            "functions follows the syntax understood by the "
+                                            "muparser library, see Section~\\ref{sec:muparser-format}."
+                                            "\n\n"
+                                            "The formula you describe in the mentioned "
+                                            "section is a semicolon separated list of velocities "
+                                            "for each of the $d$ components of the velocity vector. "
+                                            "These $d$ formulas are interpreted as having units "
+                                            "m/s, unless the global input parameter ``Use "
+                                            "years in output instead of seconds'' is set, in "
+                                            "which case we interpret the formula expressions "
+                                            "as having units m/year."
+                                            "\n\n"
+                                            "Likewise, since the symbol $t$ indicating time "
+                                            "may appear in the formulas for the prescribed "
+                                            "velocities, it is interpreted as having units "
+                                            "seconds unless the global parameter above has "
+                                            "been set.")
   }
 }

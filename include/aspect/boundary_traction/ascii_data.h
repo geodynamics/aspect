@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 -  2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 -  2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,34 +19,43 @@
 */
 
 
-#ifndef _aspect_traction_boundary_conditions_function_h
-#define _aspect_traction_boundary_conditions_function_h
+#ifndef _aspect_boundary_traction_ascii_data_h
+#define _aspect_boundary_traction_ascii_data_h
 
-#include <aspect/traction_boundary_conditions/interface.h>
+#include <aspect/boundary_traction/interface.h>
 #include <aspect/simulator_access.h>
-
-#include <deal.II/base/parsed_function.h>
+#include <aspect/utilities.h>
 
 namespace aspect
 {
-  namespace TractionBoundaryConditions
+  namespace BoundaryTraction
   {
     using namespace dealii;
 
     /**
-     * A class that implements traction boundary conditions based on a
-     * functional description provided in the input file.
+     * A class that implements prescribed traction boundary conditions determined
+     * from pressures given in an AsciiData input file.
      *
-     * @ingroup TractionBoundaryConditionsModels
+     * @ingroup BoundaryTractions
      */
     template <int dim>
-    class Function : public Interface<dim>, public SimulatorAccess<dim>
+    class AsciiData : public Utilities::AsciiDataBoundary<dim>, public Interface<dim>
     {
       public:
         /**
          * Constructor.
          */
-        Function ();
+        AsciiData ();
+
+        /**
+         * Initialization function. This function is called once at the
+         * beginning of the program. Checks preconditions.
+         */
+        void
+        initialize ();
+
+        // avoid -Woverloaded-virtual:
+        using Utilities::AsciiDataBoundary<dim>::initialize;
 
         /**
          * Return the boundary traction as a function of position. The
@@ -90,10 +99,7 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
       private:
-        /**
-         * A function object representing the components of the traction.
-         */
-        Functions::ParsedFunction<dim> boundary_traction_function;
+        std::set<types::boundary_id> boundary_ids;
     };
   }
 }

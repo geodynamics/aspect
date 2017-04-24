@@ -1,9 +1,9 @@
 #include <aspect/material_model/interface.h>
-#include <aspect/velocity_boundary_conditions/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <aspect/melt.h>
-#include <aspect/fluid_pressure_boundary_conditions/interface.h>
+#include <aspect/boundary_fluid_pressure/interface.h>
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
@@ -66,7 +66,7 @@ namespace aspect
   template <int dim>
   class PressureBdry:
 
-    public FluidPressureBoundaryConditions::Interface<dim>
+    public BoundaryFluidPressure::Interface<dim>
   {
     public:
       virtual
@@ -100,9 +100,9 @@ namespace aspect
                                  "MeltMaterial2",
                                  "")
 
-  ASPECT_REGISTER_FLUID_PRESSURE_BOUNDARY_CONDITIONS(PressureBdry,
-                                                     "PressureBdry",
-                                                     "A fluid pressure boundary condition that prescribes the "
-                                                     "gradient of the fluid pressure at the boundaries as "
-                                                     "calculated in the analytical solution. ")
+  ASPECT_REGISTER_BOUNDARY_FLUID_PRESSURE_MODEL(PressureBdry,
+                                                "PressureBdry",
+                                                "A fluid pressure boundary condition that prescribes the "
+                                                "gradient of the fluid pressure at the boundaries as "
+                                                "calculated in the analytical solution. ")
 }

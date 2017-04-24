@@ -377,10 +377,10 @@ namespace aspect
 
 
   template <int dim>
-  const std::map<types::boundary_id,std_cxx11::shared_ptr<TractionBoundaryConditions::Interface<dim> > > &
-  SimulatorAccess<dim>::get_traction_boundary_conditions () const
+  const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryTraction::Interface<dim> > > &
+  SimulatorAccess<dim>::get_boundary_traction () const
   {
-    return simulator->traction_boundary_conditions;
+    return simulator->boundary_traction;
   }
 
 
@@ -446,10 +446,10 @@ namespace aspect
 
 
   template <int dim>
-  const std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
-  SimulatorAccess<dim>::get_prescribed_velocity_boundary_conditions () const
+  const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >
+  SimulatorAccess<dim>::get_prescribed_boundary_velocity () const
   {
-    return simulator->velocity_boundary_conditions;
+    return simulator->boundary_velocity;
   }
 
 
