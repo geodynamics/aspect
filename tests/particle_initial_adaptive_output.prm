@@ -1,6 +1,6 @@
-# This tests the behaviour of the tracers postprocessor, when the
+# This tests the behaviour of the particles postprocessor, when the
 # 'Run postprocessors on initial refinement option is set. We do not
-# want to advect the tracers in this case, because we are solving the
+# want to advect the particles in this case, because we are solving the
 # first timestep multiple times.
 
 set Dimension                              = 2
@@ -94,10 +94,10 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, composition statistics,tracers
+  set List of postprocessors = velocity statistics, composition statistics,particles
 
-  subsection Tracers
-    set Number of tracers = 10
+  subsection Particles
+    set Number of particles = 10
     set Time between data output = 70
     set Data output format = ascii
 

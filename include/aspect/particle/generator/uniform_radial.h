@@ -42,7 +42,7 @@ namespace aspect
        * spacing in radius, colatitude and longitude around a
        * certain center point. Note that in order
        * to produce a regular distribution the number of generated
-       * tracers might not exactly match the one specified in the
+       * particles might not exactly match the one specified in the
        * input file.
        *
        * @ingroup ParticleGenerators
@@ -79,21 +79,21 @@ namespace aspect
         private:
 
           /**
-           * The minimum spherical coordinates of the tracer region, i.e.
+           * The minimum spherical coordinates of the particle region, i.e.
            * the first radius, colatitude and longitude from the given
-           * center position P_center where tracers are generated.
+           * center position P_center where particles are generated.
            */
           std_cxx11::array<double,dim> P_min;
 
           /**
-           * The maximum spherical coordinates of the tracer region, i.e.
+           * The maximum spherical coordinates of the particle region, i.e.
            * the last radius, colatitude and longitude from the given
-           * center position P_center where tracers are generated.
+           * center position P_center where particles are generated.
            */
           std_cxx11::array<double,dim> P_max;
 
           /**
-           * The center of the tracer region. Defaults to the origin.
+           * The center of the particle region. Defaults to the origin.
            */
           Point<dim> P_center;
 
@@ -110,7 +110,7 @@ namespace aspect
            * of actually generated
            * particles can differ slightly from this number.
            */
-          types::particle_index n_tracers;
+          types::particle_index n_particles;
       };
 
     }

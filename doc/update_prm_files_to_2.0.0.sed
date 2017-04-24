@@ -15,3 +15,6 @@ s/Compositional initial conditions/Initial composition model/g
 # Rename initial (temperature) conditions
 s/Initial conditions/Initial temperature model/g
 
+# Rename tracers to particles
+s/tracer/particle/g
+s/Tracer/Particle/g

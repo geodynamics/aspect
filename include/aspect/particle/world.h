@@ -45,7 +45,7 @@ namespace aspect
 
     /**
      * This class manages the storage and handling of particles. It provides
-     * interfaces to generate and store tracers, functions to initialize,
+     * interfaces to generate and store particles, functions to initialize,
      * update and advect them, and ways to retrieve information about the
      * particles. The implementation of most of these methods is outsourced
      * to different plugin systems, this class is mostly concerned with
@@ -125,7 +125,7 @@ namespace aspect
 
         /**
          * Advance particles by the old timestep using the current
-         * integration scheme. This accounts for the fact that the tracers
+         * integration scheme. This accounts for the fact that the particles
          * are actually still at their old positions and the current timestep
          * length is already updated for the next step at the time this
          * function is called.
@@ -161,7 +161,7 @@ namespace aspect
         /**
          * Callback function that is called from Simulator before every
          * refinement and when writing checkpoints.
-         * Allows registering store_tracers() in the triangulation.
+         * Allows registering store_particles() in the triangulation.
          */
         void
         register_store_callback_function(const bool serialization,
@@ -170,7 +170,7 @@ namespace aspect
         /**
          * Callback function that is called from Simulator after every
          * refinement and after resuming from a checkpoint.
-         * Allows registering load_tracers() in the triangulation.
+         * Allows registering load_particles() in the triangulation.
          */
         void
         register_load_callback_function(const bool serialization,
@@ -179,7 +179,7 @@ namespace aspect
         /**
          * Called by listener functions from Triangulation for every cell
          * before a refinement step. A weight is attached to every cell
-         * depending on the number of contained tracers.
+         * depending on the number of contained particles.
          */
         unsigned int
         cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
@@ -187,22 +187,22 @@ namespace aspect
 
         /**
          * Called by listener functions from Triangulation for every cell
-         * before a refinement step. All tracers have to be attached to their
+         * before a refinement step. All particles have to be attached to their
          * element to be sent around to the new cell/processes.
          */
         void
-        store_tracers(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                      const typename parallel::distributed::Triangulation<dim>::CellStatus status,
-                      void *data);
+        store_particles(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+                        const typename parallel::distributed::Triangulation<dim>::CellStatus status,
+                        void *data);
 
         /**
          * Called by listener functions after a refinement step. The local map
          * of particles has to be read from the triangulation user_pointer.
          */
         void
-        load_tracers(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                     const typename parallel::distributed::Triangulation<dim>::CellStatus status,
-                     const void *data);
+        load_particles(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+                       const typename parallel::distributed::Triangulation<dim>::CellStatus status,
+                       const void *data);
 
         /**
          * Update the particle properties if necessary.
@@ -327,12 +327,12 @@ namespace aspect
         /**
          * This variable is set by the register_store_callback_function()
          * function and used by the register_load_callback_function() function
-         * to check where the tracer data was stored.
+         * to check where the particle data was stored.
          */
         unsigned int data_offset;
 
         /**
-         * Strategy for tracer load balancing.
+         * Strategy for particle load balancing.
          */
         typename ParticleLoadBalancing::Kind particle_load_balancing;
 
@@ -367,11 +367,11 @@ namespace aspect
          * The computational cost of a single particle. This is an input
          * parameter that is set during initialization and is only used if the
          * particle load balancing strategy 'repartition' is used. This value
-         * determines how costly the computation of a single tracer is compared
+         * determines how costly the computation of a single particle is compared
          * to the computation of a whole cell, which is arbitrarily defined
          * to represent a cost of 1000.
          */
-        unsigned int tracer_weight;
+        unsigned int particle_weight;
 
         /**
          * Some particle interpolation algorithms require knowledge
@@ -390,7 +390,7 @@ namespace aspect
 
         /**
          * Calculates and stores the number of particles in the cell that
-         * contains the most tracers in the global model (stored in the
+         * contains the most particles in the global model (stored in the
          * member variable global_max_particles_per_cell). This variable is a
          * state variable, because it is needed to serialize and deserialize
          * the particle data correctly in parallel (it determines the size of

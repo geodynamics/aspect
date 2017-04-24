@@ -139,14 +139,14 @@ namespace aspect
           /**
            * The particle location before the first integration step. This is
            * used in the following steps and transferred to another process if
-           * the tracer leaves the domain during one of the steps.
+           * the particle leaves the domain during one of the steps.
            */
           std::map<types::particle_index, Point<dim> > loc0;
 
           /**
            * The intermediate values of the RK4 scheme. These are
            * used in the following steps and transferred to another process if
-           * the tracer leaves the domain during one of the steps.
+           * the particle leaves the domain during one of the steps.
            */
           std::map<types::particle_index, Tensor<1,dim> > k1, k2, k3;
 

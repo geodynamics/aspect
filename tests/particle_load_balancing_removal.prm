@@ -1,5 +1,5 @@
-# A test for the tracer load balacing strategy 'remove tracers'.
-# As soon as too many tracers live in a cell, a fraction of them
+# A test for the particle load balacing strategy 'remove particles'.
+# As soon as too many particles live in a cell, a fraction of them
 # is discarded.
 
 set Dimension                              = 2
@@ -92,13 +92,13 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = tracers
+  set List of postprocessors = particles
 
-  subsection Tracers
-    set Number of tracers = 100
+  subsection Particles
+    set Number of particles = 100
     set Time between data output = 100
     set Load balancing strategy = remove particles
-    set Maximum tracers per cell = 10
+    set Maximum particles per cell = 10
     set Data output format = ascii
     set Integration scheme = euler
   end

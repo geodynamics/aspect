@@ -74,7 +74,7 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_PROPERTY(Position,
                                         "position",
-                                        "Implementation of a plugin in which the tracer "
+                                        "Implementation of a plugin in which the particle "
                                         "property is defined as the current position.")
     }
   }

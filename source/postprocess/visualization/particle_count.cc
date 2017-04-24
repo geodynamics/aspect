@@ -21,7 +21,7 @@
 
 #include <aspect/postprocess/visualization/particle_count.h>
 
-#include <aspect/postprocess/tracers.h>
+#include <aspect/postprocess/particles.h>
 #include <aspect/particle/world.h>
 #include <aspect/simulator.h>
 
@@ -36,15 +36,15 @@ namespace aspect
       std::pair<std::string, Vector<float> *>
       ParticleCount<dim>::execute() const
       {
-        const Postprocess::Tracers<dim> *tracer_postprocessor = this->template find_postprocessor<Postprocess::Tracers<dim> >();
+        const Postprocess::Particles<dim> *particle_postprocessor = this->template find_postprocessor<Postprocess::Particles<dim> >();
 
-        AssertThrow(tracer_postprocessor != 0,
-                    ExcMessage("The <tracers> postprocessor was not found in the list of "
+        AssertThrow(particle_postprocessor != 0,
+                    ExcMessage("The <particles> postprocessor was not found in the list of "
                                "active postprocessors. You need to select this postprocessor to "
                                "be able to select the <particle count> visualization plugin."));
 
         const std::multimap<aspect::Particle::types::LevelInd, aspect::Particle::Particle<dim> > &particles =
-          tracer_postprocessor->get_particle_world().get_particles();
+          particle_postprocessor->get_particle_world().get_particles();
 
         std::pair<std::string, Vector<float> *>
         return_value ("particles_per_cell",

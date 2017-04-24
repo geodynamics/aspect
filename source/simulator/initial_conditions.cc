@@ -23,7 +23,7 @@
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/initial_temperature/interface.h>
 #include <aspect/initial_composition/interface.h>
-#include <aspect/postprocess/tracers.h>
+#include <aspect/postprocess/particles.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/function.h>
@@ -257,14 +257,14 @@ namespace aspect
     // need to write into it and we can not
     // write into vectors with ghost elements
 
-    const Postprocess::Tracers<dim> *tracer_postprocessor = postprocess_manager.template find_postprocessor<Postprocess::Tracers<dim> >();
+    const Postprocess::Particles<dim> *particle_postprocessor = postprocess_manager.template find_postprocessor<Postprocess::Particles<dim> >();
 
-    AssertThrow(tracer_postprocessor != 0,
-                ExcMessage("Did not find the <tracers> postprocessor when trying to interpolate particle properties."));
+    AssertThrow(particle_postprocessor != 0,
+                ExcMessage("Did not find the <particles> postprocessor when trying to interpolate particle properties."));
 
-    const std::multimap<aspect::Particle::types::LevelInd, Particle::Particle<dim> > *particles = &tracer_postprocessor->get_particle_world().get_particles();
-    const Particle::Interpolator::Interface<dim> *particle_interpolator = &tracer_postprocessor->get_particle_world().get_interpolator();
-    const Particle::Property::Manager<dim> *particle_property_manager = &tracer_postprocessor->get_particle_world().get_property_manager();
+    const std::multimap<aspect::Particle::types::LevelInd, Particle::Particle<dim> > *particles = &particle_postprocessor->get_particle_world().get_particles();
+    const Particle::Interpolator::Interface<dim> *particle_interpolator = &particle_postprocessor->get_particle_world().get_interpolator();
+    const Particle::Property::Manager<dim> *particle_property_manager = &particle_postprocessor->get_particle_world().get_property_manager();
 
     unsigned int particle_property;
 
@@ -314,7 +314,7 @@ namespace aspect
           ComponentMask property_mask  (particle_property_manager->get_data_info().n_components(),false);
           property_mask.set(particle_property,true);
 
-          const std::vector<std::vector<double> > tracer_properties =
+          const std::vector<std::vector<double> > particle_properties =
             particle_interpolator->properties_at_points(*particles,quadrature_points,property_mask,cell);
 
           // go through the composition dofs and set their global values
@@ -326,7 +326,7 @@ namespace aspect
                 = finite_element.component_to_system_index(advection_field.component_index(introspection),
                                                            /*dof index within component=*/i);
 
-              particle_solution(local_dof_indices[system_local_dof]) = tracer_properties[i][particle_property];
+              particle_solution(local_dof_indices[system_local_dof]) = particle_properties[i][particle_property];
             }
         }
 

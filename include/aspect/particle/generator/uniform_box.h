@@ -34,7 +34,7 @@ namespace aspect
        * model domain. Uniform here means the particles will be generated with
        * an equal spacing in each spatial dimension. Note that in order
        * to produce a regular distribution the number of generated
-       * tracers might not exactly match the one specified in the
+       * particles might not exactly match the one specified in the
        * input file.
        *
        * @ingroup ParticleGenerators
@@ -72,17 +72,17 @@ namespace aspect
           /**
            * Number of initial particles to create.
            */
-          types::particle_index n_tracers;
+          types::particle_index n_particles;
 
           /**
-           * The minimum coordinates of the tracer region, i.e. one corner of
-           * the n-dimensional box region in which tracers are generated.
+           * The minimum coordinates of the particle region, i.e. one corner of
+           * the n-dimensional box region in which particles are generated.
            */
           Point<dim> P_min;
 
           /**
-           * The maximum coordinates of the tracer region, i.e. the opposite
-           * corner of the n-dimensional box region in which tracers are
+           * The maximum coordinates of the particle region, i.e. the opposite
+           * corner of the n-dimensional box region in which particles are
            * generated.
            */
           Point<dim> P_max;

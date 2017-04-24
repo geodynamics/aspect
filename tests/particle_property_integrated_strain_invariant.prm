@@ -83,12 +83,12 @@ end
 
 # Post processing
 subsection Postprocess
-  set List of postprocessors = tracers
-  subsection Tracers
-    set Number of tracers = 100
+  set List of postprocessors = particles
+  subsection Particles
+    set Number of particles = 100
     set Time between data output = 1
     set Data output format = ascii
-    set List of tracer properties = integrated strain invariant
+    set List of particle properties = integrated strain invariant
     set Particle generator name = random uniform
   end
 end

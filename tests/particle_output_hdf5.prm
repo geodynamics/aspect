@@ -1,4 +1,4 @@
-# A simple test that checks the hdf5 output option for tracers in parallel
+# A simple test that checks the hdf5 output option for particles in parallel
 
 # MPI: 2
 
@@ -89,13 +89,13 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = tracers
+  set List of postprocessors = particles
 
-  subsection Tracers
-    set Number of tracers = 10
+  subsection Particles
+    set Number of particles = 10
     set Time between data output = 70
     set Data output format = hdf5
-    set List of tracer properties = function, initial composition, initial position
+    set List of particle properties = function, initial composition, initial position
 
     subsection Function
       set Variable names      = x,z

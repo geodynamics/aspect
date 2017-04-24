@@ -44,7 +44,7 @@ namespace aspect
                                 update_quadrature_points);
 
 
-        MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, ASPECT_TRACER_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+        MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, ASPECT_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
 
         particle_index = prefix_sum - n_particles_to_generate;
 

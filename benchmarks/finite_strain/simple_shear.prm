@@ -18,7 +18,7 @@
 # 
 # This parameter file tracks the finite strain in two ways, once by using
 # compositional fields as illustrated in the finite strain cookbook, and
-# once by using a tracer particle that sits and remains in the center of the domain.
+# once by using a particle particle that sits and remains in the center of the domain.
 # The results should of course be the same.
 #
 # Numerical results for particle tracking and compositional fields
@@ -111,24 +111,24 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = tracers, visualization
+  set List of postprocessors = particles, visualization
 
   subsection Visualization
     set List of output variables = strain rate
     set Time between graphical output = 0.05
   end
 
-  subsection Tracers
-    set Number of tracers = 1
+  subsection Particles
+    set Number of particles = 1
     set Time between data output = 0.05
     set Data output format = vtu
-    set List of tracer properties = integrated strain
+    set List of particle properties = integrated strain
 
     set Particle generator name = ascii file
     subsection Generator
       subsection Ascii file
         set Data directory = ./
-        set Data file name = simple_shear_tracer.dat
+        set Data file name = simple_shear_particle.dat
       end
 
     end

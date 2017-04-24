@@ -137,7 +137,7 @@ namespace aspect
           /**
            * The particle location before the first integration step. This is
            * used in the second step and transferred to another process if
-           * the tracer leaves the domain during the first step.
+           * the particle leaves the domain during the first step.
            */
           std::map<types::particle_index, Point<dim> >   loc0;
 

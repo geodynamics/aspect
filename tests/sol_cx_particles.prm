@@ -98,14 +98,14 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = tracers
+  set List of postprocessors = particles
 
   subsection Depth average
     set Time between graphical output = 100
   end
 
-  subsection Tracers
-    set Number of tracers = 10
+  subsection Particles
+    set Number of particles = 10
     set Time between data output = 1
     set Data output format = vtu
   end

@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _aspect_postprocess_tracer_h
-#define _aspect_postprocess_tracer_h
+#ifndef _aspect_postprocess_particle_h
+#define _aspect_postprocess_particle_h
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/particle/world.h>
@@ -32,27 +32,27 @@ namespace aspect
   namespace Postprocess
   {
     /**
-     * A Postprocessor that creates tracer particles, which follow the
+     * A Postprocessor that creates particles, which follow the
      * velocity field of the simulation. The particles can be generated
      * and propagated in various ways and they can carry a number of
      * constant or time-varying properties. The postprocessor can write
-     * output positions and properties of all tracers at chosen intervals,
+     * output positions and properties of all particles at chosen intervals,
      * although this is not mandatory. It also allows other parts of the
-     * code to query the tracers for information.
+     * code to query the particles for information.
      */
     template <int dim>
-    class Tracers : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class Particles : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
          * Constructor.
          */
-        Tracers();
+        Particles();
 
         /**
          * Destructor.
          */
-        ~Tracers();
+        ~Particles();
 
         /**
          *
@@ -80,7 +80,7 @@ namespace aspect
 
         /**
          * Returns a const reference to the particle world, in case anyone
-         * wants to query something about tracers.
+         * wants to query something about particles.
          */
         const Particle::World<dim> &
         get_particle_world() const;

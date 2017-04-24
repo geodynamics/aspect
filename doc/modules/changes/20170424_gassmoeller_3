@@ -1,0 +1,11 @@
+Changed: ASPECT's 'particles' were initially introduced as 'tracers', 
+and the naming scheme was never unified. In order to
+use a more consistent and simpler to remember structure all remaining
+references to 'tracers' have been replaced by 'particles'.
+This change is unfortunately incompatible with existing user plugins,
+and existing parameter files. The provided scripts
+doc/update_source_files_to_2.0.0.sed and doc/update_prm_files_to_2.0.0.sed
+allow an easy conversion of existing user plugins and parameter files to the
+new naming scheme.
+<br>
+(Rene Gassmoeller, 2017/04/24)

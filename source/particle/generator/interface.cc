@@ -135,7 +135,7 @@ namespace aspect
           }
         AssertThrow (iteration < maximum_iterations,
                      ExcMessage ("Couldn't generate particle (unusual cell shape?). "
-                                 "The ratio between the bounding box volume in which the tracer is "
+                                 "The ratio between the bounding box volume in which the particle is "
                                  "generated and the actual cell volume is approximately: " +
                                  boost::lexical_cast<std::string>(cell->measure() / (max_bounds-min_bounds).norm_square())));
 
@@ -188,7 +188,7 @@ namespace aspect
         std::string name;
         prm.enter_subsection ("Postprocess");
         {
-          prm.enter_subsection ("Tracers");
+          prm.enter_subsection ("Particles");
           {
             name = prm.get ("Particle generator name");
           }
@@ -209,7 +209,7 @@ namespace aspect
         // declare the entry in the parameter file
         prm.enter_subsection ("Postprocess");
         {
-          prm.enter_subsection ("Tracers");
+          prm.enter_subsection ("Particles");
           {
             const std::string pattern_of_names
               = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();

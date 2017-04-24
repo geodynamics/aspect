@@ -444,18 +444,18 @@ namespace aspect
       {
         prm.enter_subsection("Postprocess");
         {
-          prm.enter_subsection("Tracers");
+          prm.enter_subsection("Particles");
           {
             // finally also construct a string for Patterns::MultipleSelection that
-            // contains the names of all registered tracer properties
+            // contains the names of all registered particle properties
             const std::string pattern_of_names
               = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
-            prm.declare_entry("List of tracer properties",
+            prm.declare_entry("List of particle properties",
                               "",
                               Patterns::MultipleSelection(pattern_of_names),
-                              "A comma separated list of tracer properties that should be tracked. "
+                              "A comma separated list of particle properties that should be tracked. "
                               "By default none is selected, which means only position, velocity "
-                              "and id of the tracers are output. \n\n"
+                              "and id of the particles are output. \n\n"
                               "The following properties are available:\n\n"
                               +
                               std_cxx11::get<dim>(registered_plugins).get_description_string());
@@ -465,7 +465,7 @@ namespace aspect
         prm.leave_subsection();
 
         // now declare the parameters of each of the registered
-        // tracer properties in turn
+        // particle properties in turn
         std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
       }
 
@@ -480,13 +480,13 @@ namespace aspect
 
         prm.enter_subsection("Postprocess");
         {
-          prm.enter_subsection("Tracers");
+          prm.enter_subsection("Particles");
           {
             // now also see which derived quantities we are to compute
-            prop_names = Utilities::split_string_list(prm.get("List of tracer properties"));
+            prop_names = Utilities::split_string_list(prm.get("List of particle properties"));
             AssertThrow(Utilities::has_unique_entries(prop_names),
                         ExcMessage("The list of strings for the parameter "
-                                   "'Postprocess/Tracers/List of tracer properties' contains entries more than once. "
+                                   "'Postprocess/Particles/List of particle properties' contains entries more than once. "
                                    "This is not allowed. Please check your parameter file."));
 
             // see if 'all' was selected (or is part of the list). if so

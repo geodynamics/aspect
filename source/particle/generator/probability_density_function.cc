@@ -61,8 +61,8 @@ namespace aspect
         local_start_weight -= local_weight_integral;
 
         // Calculate start id and number of local particles
-        const types::particle_index start_id = llround(static_cast<double> (n_tracers)  * local_start_weight / global_weight_integral);
-        const types::particle_index n_local_particles = llround(static_cast<double> (n_tracers) * local_weight_integral / global_weight_integral);
+        const types::particle_index start_id = llround(static_cast<double> (n_particles)  * local_start_weight / global_weight_integral);
+        const types::particle_index n_local_particles = llround(static_cast<double> (n_particles) * local_weight_integral / global_weight_integral);
 
         // Uniform distribution on the interval [0,local_weight_integral). This
         // will be used to select cells for all particles.
@@ -176,11 +176,11 @@ namespace aspect
       {
         prm.enter_subsection("Postprocess");
         {
-          prm.enter_subsection("Tracers");
+          prm.enter_subsection("Particles");
           {
-            prm.declare_entry ("Number of tracers", "1000",
+            prm.declare_entry ("Number of particles", "1000",
                                Patterns::Double (0),
-                               "Total number of tracers to create (not per processor or per element). "
+                               "Total number of particles to create (not per processor or per element). "
                                "The number is parsed as a floating point number (so that one can "
                                "specify, for example, '1e4' particles) but it is interpreted as "
                                "an integer, of course.");
@@ -207,9 +207,9 @@ namespace aspect
       {
         prm.enter_subsection("Postprocess");
         {
-          prm.enter_subsection("Tracers");
+          prm.enter_subsection("Particles");
           {
-            n_tracers    = static_cast<types::particle_index>(prm.get_double ("Number of tracers"));
+            n_particles    = static_cast<types::particle_index>(prm.get_double ("Number of particles"));
 
             prm.enter_subsection("Generator");
             {

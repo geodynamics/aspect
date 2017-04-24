@@ -19,7 +19,7 @@
  */
 
 #include <aspect/particle/interpolator/cell_average.h>
-#include <aspect/postprocess/tracers.h>
+#include <aspect/postprocess/particles.h>
 #include <aspect/simulator.h>
 
 #include <deal.II/grid/grid_tools.h>
@@ -38,7 +38,7 @@ namespace aspect
                                              const ComponentMask &selected_properties,
                                              const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
-        const Postprocess::Tracers<dim> *tracer_postprocessor = this->template find_postprocessor<Postprocess::Tracers<dim> >();
+        const Postprocess::Particles<dim> *particle_postprocessor = this->template find_postprocessor<Postprocess::Particles<dim> >();
 
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator found_cell;
 
@@ -70,7 +70,7 @@ namespace aspect
                 ?
                 particles.equal_range(cell_index)
                 :
-                tracer_postprocessor->get_particle_world().get_ghost_particles().equal_range(cell_index);
+                particle_postprocessor->get_particle_world().get_ghost_particles().equal_range(cell_index);
 
         const unsigned int n_particles = std::distance(particle_range.first,particle_range.second);
         const unsigned int n_particle_properties = particles.begin()->second.get_properties().size();
@@ -113,7 +113,7 @@ namespace aspect
                     && (particles.count(std::make_pair(neighbors[i]->level(),neighbors[i]->index())) == 0))
                   continue;
                 else if ((!neighbors[i]->is_locally_owned())
-                         && (tracer_postprocessor->get_particle_world().get_ghost_particles().count(
+                         && (particle_postprocessor->get_particle_world().get_ghost_particles().count(
                                std::make_pair(neighbors[i]->level(),neighbors[i]->index())) == 0))
                   continue;
 
@@ -154,7 +154,7 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(CellAverage,
                                             "cell average",
-                                            "Return the average of all tracer properties in the given cell.")
+                                            "Return the average of all particle properties in the given cell.")
     }
   }
 }

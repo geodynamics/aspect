@@ -252,25 +252,25 @@ namespace aspect
     {
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Refine mesh, store");
 
-      // Only save and load tracers if there are any, we might get here for
-      // example before the tracer generation in timestep 0, or if somebody
-      // selected the tracer postprocessor but generated 0 tracers
+      // Only save and load particles if there are any, we might get here for
+      // example before the particle generation in timestep 0, or if somebody
+      // selected the particle postprocessor but generated 0 particles
       update_global_max_particles_per_cell();
 
       if (global_max_particles_per_cell > 0)
         {
           const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
                                          const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
-            = std_cxx11::bind(&aspect::Particle::World<dim>::store_tracers,
+            = std_cxx11::bind(&aspect::Particle::World<dim>::store_particles,
                               std_cxx11::ref(*this),
                               std_cxx11::_1,
                               std_cxx11::_2,
                               std_cxx11::_3);
 
-          // We need to transfer the number of tracers for this cell and
-          // the tracer data itself. If we are in the process of refinement
+          // We need to transfer the number of particles for this cell and
+          // the particle data itself. If we are in the process of refinement
           // (i.e. not in serialization) we need to provide 2^dim times the
-          // space for the data in case a cell is coarsened and all tracers
+          // space for the data in case a cell is coarsened and all particles
           // of the children have to be stored in the parent cell.
           const std::size_t transfer_size_per_cell = sizeof (unsigned int) +
                                                      (property_manager->get_particle_size() * global_max_particles_per_cell) *
@@ -302,14 +302,14 @@ namespace aspect
         {
           const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
                                          const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
-            = std_cxx11::bind(&aspect::Particle::World<dim>::store_tracers,
+            = std_cxx11::bind(&aspect::Particle::World<dim>::store_particles,
                               std_cxx11::ref(*this),
                               std_cxx11::_1,
                               std_cxx11::_2,
                               std_cxx11::_3);
 
-          // We need to transfer the number of tracers for this cell and
-          // the tracer data itself and we need to provide 2^dim times the
+          // We need to transfer the number of particles for this cell and
+          // the particle data itself and we need to provide 2^dim times the
           // space for the data in case a cell is coarsened
           const std::size_t transfer_size_per_cell = sizeof (unsigned int) +
                                                      (property_manager->get_particle_size() * global_max_particles_per_cell);
@@ -322,7 +322,7 @@ namespace aspect
           const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
                                          const typename parallel::distributed::Triangulation<dim>::CellStatus,
                                          const void *) > callback_function
-            = std_cxx11::bind(&aspect::Particle::World<dim>::load_tracers,
+            = std_cxx11::bind(&aspect::Particle::World<dim>::load_particles,
                               std_cxx11::ref(*this),
                               std_cxx11::_1,
                               std_cxx11::_2,
@@ -380,7 +380,7 @@ namespace aspect
               // processes with a lower rank.
 
               types::particle_index local_start_index = 0.0;
-              MPI_Scan(&particles_to_add_locally, &local_start_index, 1, ASPECT_TRACER_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+              MPI_Scan(&particles_to_add_locally, &local_start_index, 1, ASPECT_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
               local_start_index -= particles_to_add_locally;
               local_next_particle_index += local_start_index;
 
@@ -472,7 +472,7 @@ namespace aspect
         {
           const types::LevelInd found_cell = std::make_pair<int, int> (cell->level(),cell->index());
           const unsigned int n_particles_in_cell = particles.count(found_cell);
-          return n_particles_in_cell * tracer_weight;
+          return n_particles_in_cell * particle_weight;
         }
       else if (status == parallel::distributed::Triangulation<dim>::CELL_COARSEN)
         {
@@ -484,7 +484,7 @@ namespace aspect
               const types::LevelInd found_cell = std::make_pair<int, int> (child->level(),child->index());
               n_particles_in_cell += particles.count(found_cell);
             }
-          return n_particles_in_cell * tracer_weight;
+          return n_particles_in_cell * particle_weight;
         }
 
       Assert (false, ExcInternalError());
@@ -493,13 +493,13 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::store_tracers(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                              const typename parallel::distributed::Triangulation<dim>::CellStatus status,
-                              void *data)
+    World<dim>::store_particles(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+                                const typename parallel::distributed::Triangulation<dim>::CellStatus status,
+                                void *data)
     {
       unsigned int n_particles_in_cell(0);
 
-      // If the cell persist or is refined store all tracers of the current cell.
+      // If the cell persist or is refined store all particles of the current cell.
       if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST
           || status == parallel::distributed::Triangulation<dim>::CELL_REFINE)
         {
@@ -519,7 +519,7 @@ namespace aspect
             }
         }
       // If this cell is the parent of children that will be coarsened, collect
-      // the tracers of all children.
+      // the particles of all children.
       // First check if the maximum number of particles per cell is exceeded for
       // the new cell, and if that is the case, only store every 2^dim 'th
       // particle.
@@ -560,9 +560,9 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::load_tracers(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                             const typename parallel::distributed::Triangulation<dim>::CellStatus status,
-                             const void *data)
+    World<dim>::load_particles(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+                               const typename parallel::distributed::Triangulation<dim>::CellStatus status,
+                               const void *data)
     {
       const unsigned int *n_particles_in_cell_ptr = static_cast<const unsigned int *> (data);
       const void *pdata = reinterpret_cast<const void *> (n_particles_in_cell_ptr + 1);
@@ -1359,7 +1359,7 @@ namespace aspect
       if (this->get_pre_refinement_step() == 0)
         generate_particles();
 
-      // And initialize the tracer properties according to the initial
+      // And initialize the particle properties according to the initial
       // conditions on the current mesh
       initialize_particles();
     }
@@ -1535,14 +1535,14 @@ namespace aspect
     {
       prm.enter_subsection("Postprocess");
       {
-        prm.enter_subsection("Tracers");
+        prm.enter_subsection("Particles");
         {
           prm.declare_entry ("Load balancing strategy", "repartition",
                              Patterns::MultipleSelection ("none|remove particles|add particles|"
                                                           "remove and add particles|repartition"),
                              "Strategy that is used to balance the computational"
                              "load across processors for adaptive meshes.");
-          prm.declare_entry ("Minimum tracers per cell", "0",
+          prm.declare_entry ("Minimum particles per cell", "0",
                              Patterns::Integer (0),
                              "Lower limit for particle number per cell. This limit is "
                              "useful for adaptive meshes to prevent fine cells from being empty "
@@ -1556,7 +1556,7 @@ namespace aspect
                              "this cell. If the particles carry properties the "
                              "individual property plugins control how the "
                              "properties of the new particles are initialized.");
-          prm.declare_entry ("Maximum tracers per cell", "100",
+          prm.declare_entry ("Maximum particles per cell", "100",
                              Patterns::Integer (0),
                              "Upper limit for particle number per cell. This limit is "
                              "useful for adaptive meshes to prevent coarse cells from slowing down "
@@ -1567,7 +1567,7 @@ namespace aspect
                              "particles in one cell then "
                              "\\texttt{n\\_number\\_of\\_particles} - \\texttt{max\\_particles\\_per\\_cell} "
                              "particles in this cell are randomly chosen and destroyed.");
-          prm.declare_entry ("Tracer weight", "10",
+          prm.declare_entry ("Particle weight", "10",
                              Patterns::Integer (0),
                              "Weight that is associated with the computational load of "
                              "a single particle. The sum of particle weights will be added "
@@ -1612,31 +1612,31 @@ namespace aspect
       const unsigned int n_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
 
       AssertThrow((n_processes == 1) || (CFL_number <= 1.0),
-                  ExcMessage("The current tracer algorithm does not work in "
+                  ExcMessage("The current particle algorithm does not work in "
                              "parallel if the CFL number is larger than 1.0, because "
-                             "in this case tracers can move more than one cell's "
+                             "in this case particles can move more than one cell's "
                              "diameter in one time step and therefore skip the layer "
                              "of ghost cells around the local subdomain."));
 
       prm.enter_subsection("Postprocess");
       {
-        prm.enter_subsection("Tracers");
+        prm.enter_subsection("Particles");
         {
-          min_particles_per_cell = prm.get_integer("Minimum tracers per cell");
-          max_particles_per_cell = prm.get_integer("Maximum tracers per cell");
+          min_particles_per_cell = prm.get_integer("Minimum particles per cell");
+          max_particles_per_cell = prm.get_integer("Maximum particles per cell");
 
           AssertThrow(min_particles_per_cell <= max_particles_per_cell,
-                      ExcMessage("Please select a 'Minimum tracers per cell' parameter "
-                                 "that is smaller than or equal to the 'Maximum tracers per cell' parameter."));
+                      ExcMessage("Please select a 'Minimum particles per cell' parameter "
+                                 "that is smaller than or equal to the 'Maximum particles per cell' parameter."));
 
-          tracer_weight = prm.get_integer("Tracer weight");
+          particle_weight = prm.get_integer("Particle weight");
 
           update_ghost_particles = prm.get_bool("Update ghost particles");
 
           const std::vector<std::string> strategies = Utilities::split_string_list(prm.get ("Load balancing strategy"));
           AssertThrow(Utilities::has_unique_entries(strategies),
                       ExcMessage("The list of strings for the parameter "
-                                 "'Postprocess/Tracers/Load balancing strategy' contains entries more than once. "
+                                 "'Postprocess/Particles/Load balancing strategy' contains entries more than once. "
                                  "This is not allowed. Please check your parameter file."));
 
           particle_load_balancing = ParticleLoadBalancing::no_balancing;

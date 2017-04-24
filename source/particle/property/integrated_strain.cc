@@ -113,7 +113,7 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_PROPERTY(IntegratedStrain,
                                         "integrated strain",
-                                        "A plugin in which the tracer property tensor is "
+                                        "A plugin in which the particle property tensor is "
                                         "defined as the deformation gradient tensor "
                                         "$\\mathbf F$ this particle has experienced. "
                                         "$\\mathbf F$ can be polar-decomposed into the left stretching tensor "

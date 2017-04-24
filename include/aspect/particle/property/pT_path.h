@@ -31,7 +31,7 @@ namespace aspect
     namespace Property
     {
       /**
-       * Implementation of a plugin in which the tracer
+       * Implementation of a plugin in which the particle
        * property is defined as the current pressure and
        * temperature at this position. This can be used
        * to generate pressure-temperature paths of
@@ -90,7 +90,7 @@ namespace aspect
 
           /**
            * This implementation tells the particle manager that
-           * we need to update tracer properties over time.
+           * we need to update particle properties over time.
            */
           UpdateTimeFlags
           need_update () const;

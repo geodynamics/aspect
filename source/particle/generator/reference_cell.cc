@@ -37,7 +37,7 @@ namespace aspect
         types::particle_index n_particles_to_generate = this->get_triangulation().n_locally_owned_active_cells() * particles_in_unit_cell.size();
         types::particle_index prefix_sum = 0;
 
-        MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, ASPECT_TRACER_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+        MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, ASPECT_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
 
         types::particle_index particle_index = prefix_sum - n_particles_to_generate;
 
@@ -110,15 +110,15 @@ namespace aspect
       {
         prm.enter_subsection("Postprocess");
         {
-          prm.enter_subsection("Tracers");
+          prm.enter_subsection("Particles");
           {
             prm.enter_subsection("Generator");
             {
               prm.enter_subsection("Reference cell");
               {
-                prm.declare_entry ("Number of tracers per cell per direction", "2",
+                prm.declare_entry ("Number of particles per cell per direction", "2",
                                    Patterns::List(Patterns::Double(0)),
-                                   "List of number of tracers to create per cell and spatial dimension. "
+                                   "List of number of particles to create per cell and spatial dimension. "
                                    "The size of the list is the number of spatial dimensions. If only "
                                    "one value is given, then each spatial dimension is set to the same value. "
                                    "The list of numbers are parsed as a floating point number (so that one can "
@@ -141,15 +141,15 @@ namespace aspect
       {
         prm.enter_subsection("Postprocess");
         {
-          prm.enter_subsection("Tracers");
+          prm.enter_subsection("Particles");
           {
             prm.enter_subsection("Generator");
             {
               prm.enter_subsection("Reference cell");
               {
-                std::vector<double> n_particles_tmp = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Number of tracers per cell per direction"))),
+                std::vector<double> n_particles_tmp = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Number of particles per cell per direction"))),
                                                                                               dim,
-                                                                                              "Number of tracers per cell per direction");
+                                                                                              "Number of particles per cell per direction");
                 for (std::vector<double>::const_iterator itr = n_particles_tmp.begin(); itr != n_particles_tmp.end(); itr++)
                   number_of_particles.push_back((unsigned int) *itr);
               }

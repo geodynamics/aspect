@@ -113,17 +113,17 @@ end
 
 # Post processing
 subsection Postprocess
-  set List of postprocessors = velocity statistics, mass flux statistics, tracers
-  subsection Tracers
-    set Number of tracers = 1000
+  set List of postprocessors = velocity statistics, mass flux statistics, particles
+  subsection Particles
+    set Number of particles = 1000
     set Time between data output = 1e9
     set Data output format = none
-    set List of tracer properties = integrated strain
+    set List of particle properties = integrated strain
     set Interpolation scheme = cell average
     set Update ghost particles = true
     set Particle generator name = random uniform
     set Load balancing strategy = remove and add particles
-    set Minimum tracers per cell = 9
-    set Maximum tracers per cell = 11
+    set Minimum particles per cell = 9
+    set Maximum particles per cell = 11
   end  
 end
