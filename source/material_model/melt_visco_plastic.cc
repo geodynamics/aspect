@@ -195,7 +195,7 @@ namespace aspect
               if (this->get_timestep_number() > 0)
                 {
                   // batch melting
-                  melting = melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]))
+                  melting = melt_fraction(in.temperature[i], in.pressure[i])
                             - std::max(maximum_melt_fractions[i], 0.0);
                 }
               // freezing of melt below the solidus
