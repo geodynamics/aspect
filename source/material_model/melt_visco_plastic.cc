@@ -129,7 +129,7 @@ namespace aspect
       ViscoPlastic<dim>::evaluate(in, out);
 
       // overwrite the reaction terms, which is needed to track the finite strain invariant.
-      if (in.cell && this->get_timestep_number() > 0)
+      if (in.cell && this->get_timestep_number() > 0 && in.strain_rate.size())
         {
 
           // Loop through quadrature points
