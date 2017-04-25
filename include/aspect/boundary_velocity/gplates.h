@@ -19,10 +19,10 @@
 */
 
 
-#ifndef _aspect_velocity_boundary_conditions_gplates_h
-#define _aspect_velocity_boundary_conditions_gplates_h
+#ifndef _aspect_boundary_velocity_gplates_h
+#define _aspect_boundary_velocity_gplates_h
 
-#include <aspect/velocity_boundary_conditions/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/compat.h>
 
@@ -32,7 +32,7 @@
 
 namespace aspect
 {
-  namespace VelocityBoundaryConditions
+  namespace BoundaryVelocity
   {
     using namespace dealii;
 
@@ -172,7 +172,7 @@ namespace aspect
      * determined from GPlates input files. The interpolation in time is
      * performed between two objects of the GPlatesLookup class.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup BoundaryVelocities
      */
     template <int dim>
     class GPlates : public Interface<dim>, public SimulatorAccess<dim>

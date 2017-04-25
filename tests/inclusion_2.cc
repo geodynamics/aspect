@@ -1,5 +1,5 @@
 #include <aspect/material_model/simple.h>
-#include <aspect/velocity_boundary_conditions/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
@@ -84,7 +84,7 @@ namespace aspect
 
 
     template <int dim>
-    class InclusionBoundary : public VelocityBoundaryConditions::Interface<dim>
+    class InclusionBoundary : public BoundaryVelocity::Interface<dim>
     {
       public:
         /**
@@ -508,12 +508,12 @@ namespace aspect
                                    "A material model that corresponds to the 'Inclusion' benchmark "
                                    "defined in Duretz et al., G-Cubed, 2011.")
 
-    ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS(InclusionBoundary,
-                                                 "InclusionBoundary",
-                                                 "Implementation of the velocity boundary conditions for the "
-                                                 "``inclusion'' benchmark. See the manual and the Kronbichler, Heister "
-                                                 "and Bangerth paper on ASPECT for more information about this "
-                                                 "benchmark.")
+    ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL(InclusionBoundary,
+                                            "InclusionBoundary",
+                                            "Implementation of the velocity boundary conditions for the "
+                                            "``inclusion'' benchmark. See the manual and the Kronbichler, Heister "
+                                            "and Bangerth paper on ASPECT for more information about this "
+                                            "benchmark.")
 
     ASPECT_REGISTER_POSTPROCESSOR(InclusionPostprocessor,
                                   "InclusionPostprocessor",

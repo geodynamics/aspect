@@ -19,12 +19,12 @@
 */
 
 
-#include <aspect/velocity_boundary_conditions/zero_velocity.h>
+#include <aspect/boundary_velocity/zero_velocity.h>
 
 
 namespace aspect
 {
-  namespace VelocityBoundaryConditions
+  namespace BoundaryVelocity
   {
     template <int dim>
     Tensor<1,dim>
@@ -41,14 +41,14 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace VelocityBoundaryConditions
+  namespace BoundaryVelocity
   {
-    ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS(ZeroVelocity,
-                                                 "zero velocity",
-                                                 "Implementation of a model in which the boundary "
-                                                 "velocity is zero. This is commonly referred to as "
-                                                 "a ``stick boundary condition'', indicating that "
-                                                 "the material ``sticks'' to the material on the "
-                                                 "other side of the boundary.")
+    ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL(ZeroVelocity,
+                                            "zero velocity",
+                                            "Implementation of a model in which the boundary "
+                                            "velocity is zero. This is commonly referred to as "
+                                            "a ``stick boundary condition'', indicating that "
+                                            "the material ``sticks'' to the material on the "
+                                            "other side of the boundary.")
   }
 }

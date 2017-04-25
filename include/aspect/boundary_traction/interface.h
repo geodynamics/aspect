@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_traction_boundary_conditions_interface_h
-#define _aspect_traction_boundary_conditions_interface_h
+#ifndef _aspect_boundary_traction_interface_h
+#define _aspect_boundary_traction_interface_h
 
 #include <aspect/plugins.h>
 #include <aspect/geometry_model/interface.h>
@@ -34,16 +34,16 @@ namespace aspect
    * A namespace in which we define everything that has to do with defining
    * traction boundary conditions for the Stokes equations.
    *
-   * @ingroup TractionBoundaryConditionsModels
+   * @ingroup BoundaryTractions
    */
-  namespace TractionBoundaryConditions
+  namespace BoundaryTraction
   {
     using namespace dealii;
 
     /**
      * A base class for parameterizations of traction boundary conditions.
      *
-     * @ingroup TractionBoundaryConditionsModels
+     * @ingroup BoundaryTractions
      */
     template <int dim>
     class Interface
@@ -145,14 +145,14 @@ namespace aspect
      * @param factory_function A pointer to a function that can create an
      * object of this traction boundary conditions model.
      *
-     * @ingroup TractionBoundaryConditionsModels
+     * @ingroup BoundaryTractions
      */
     template <int dim>
     void
-    register_traction_boundary_conditions_model (const std::string &name,
-                                                 const std::string &description,
-                                                 void (*declare_parameters_function) (ParameterHandler &),
-                                                 Interface<dim> *(*factory_function) ());
+    register_boundary_traction (const std::string &name,
+                                const std::string &description,
+                                void (*declare_parameters_function) (ParameterHandler &),
+                                Interface<dim> *(*factory_function) ());
 
     /**
      * A function that given the name of a model returns a pointer to an
@@ -162,11 +162,11 @@ namespace aspect
      * The model object returned is not yet initialized and has not
      * read its runtime parameters yet.
      *
-     * @ingroup TractionBoundaryConditionsModels
+     * @ingroup BoundaryTractions
      */
     template <int dim>
     Interface<dim> *
-    create_traction_boundary_conditions (const std::string &name);
+    create_boundary_traction (const std::string &name);
 
     /**
      * Return a list of names of all implemented boundary traction models,
@@ -181,7 +181,7 @@ namespace aspect
      * Declare the runtime parameters of the registered traction boundary
      * conditions models.
      *
-     * @ingroup TractionBoundaryConditionsModels
+     * @ingroup BoundaryTractions
      */
     template <int dim>
     void
@@ -194,18 +194,18 @@ namespace aspect
      * for a traction boundary conditions model, register it with the
      * functions that can declare their parameters and create these objects.
      *
-     * @ingroup TractionBoundaryConditionsModels
+     * @ingroup BoundaryTractions
      */
-#define ASPECT_REGISTER_TRACTION_BOUNDARY_CONDITIONS(classname,name,description) \
+#define ASPECT_REGISTER_BOUNDARY_TRACTION_MODEL(classname,name,description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_TRACTION_BOUNDARY_CONDITIONS_ ## classname \
+  namespace ASPECT_REGISTER_BOUNDARY_TRACTION_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::TractionBoundaryConditions::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::TractionBoundaryConditions::register_traction_boundary_conditions_model<2>, \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTraction::Interface<2>,classname<2> > \
+    dummy_ ## classname ## _2d (&aspect::BoundaryTraction::register_boundary_traction<2>, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::TractionBoundaryConditions::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::TractionBoundaryConditions::register_traction_boundary_conditions_model<3>, \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTraction::Interface<3>,classname<3> > \
+    dummy_ ## classname ## _3d (&aspect::BoundaryTraction::register_boundary_traction<3>, \
                                 name, description); \
   }
   }

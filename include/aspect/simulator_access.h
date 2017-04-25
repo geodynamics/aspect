@@ -40,8 +40,8 @@
 #include <aspect/boundary_composition/interface.h>
 #include <aspect/initial_conditions/interface.h>
 #include <aspect/compositional_initial_conditions/interface.h>
-#include <aspect/velocity_boundary_conditions/interface.h>
-#include <aspect/traction_boundary_conditions/interface.h>
+#include <aspect/boundary_velocity/interface.h>
+#include <aspect/boundary_traction/interface.h>
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/heating_model/interface.h>
@@ -529,8 +529,8 @@ namespace aspect
        * Return a reference to the object that describes traction
        * boundary conditions.
        */
-      const std::map<types::boundary_id,std_cxx11::shared_ptr<TractionBoundaryConditions::Interface<dim> > > &
-      get_traction_boundary_conditions () const;
+      const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryTraction::Interface<dim> > > &
+      get_boundary_traction () const;
 
       /**
        * Return a pointer to the object that describes the temperature initial
@@ -587,10 +587,10 @@ namespace aspect
       get_free_surface_boundary_indicators () const;
 
       /**
-       * Return the map of prescribed_velocity_boundary_conditions
+       * Return the map of prescribed_boundary_velocity
        */
-      const std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
-      get_prescribed_velocity_boundary_conditions () const;
+      const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >
+      get_prescribed_boundary_velocity () const;
 
       /**
        * Return a pointer to the manager of the heating model.

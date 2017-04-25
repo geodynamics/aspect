@@ -19,14 +19,14 @@
 */
 
 
-#ifndef _aspect_traction_boundary_conditions_zero_traction_h
-#define _aspect_traction_boundary_conditions_zero_traction_h
+#ifndef _aspect_boundary_traction_zero_traction_h
+#define _aspect_boundary_traction_zero_traction_h
 
-#include <aspect/traction_boundary_conditions/interface.h>
+#include <aspect/boundary_traction/interface.h>
 
 namespace aspect
 {
-  namespace TractionBoundaryConditions
+  namespace BoundaryTraction
   {
     using namespace dealii;
 
@@ -35,7 +35,7 @@ namespace aspect
      * is equivalent to an open boundary condition in domains where
      * hydrostatic pressure is irrelevant.
      *
-     * @ingroup TractionBoundaryConditionsModels
+     * @ingroup BoundaryTractions
      */
     template <int dim>
     class ZeroTraction : public Interface<dim>

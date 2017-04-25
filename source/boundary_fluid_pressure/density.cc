@@ -19,7 +19,7 @@
 */
 
 
-#include <aspect/fluid_pressure_boundary_conditions/density.h>
+#include <aspect/boundary_fluid_pressure/density.h>
 #include <aspect/melt.h>
 #include <utility>
 #include <limits>
@@ -27,7 +27,7 @@
 
 namespace aspect
 {
-  namespace FluidPressureBoundaryConditions
+  namespace BoundaryFluidPressure
   {
 
     template <int dim>
@@ -123,12 +123,12 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace FluidPressureBoundaryConditions
+  namespace BoundaryFluidPressure
   {
-    ASPECT_REGISTER_FLUID_PRESSURE_BOUNDARY_CONDITIONS(Density,
-                                                       "density",
-                                                       "A plugin that prescribes the fluid pressure gradient at "
-                                                       "the boundary based on fluid/solid density from the material "
-                                                       "model.")
+    ASPECT_REGISTER_BOUNDARY_FLUID_PRESSURE_MODEL(Density,
+                                                  "density",
+                                                  "A plugin that prescribes the fluid pressure gradient at "
+                                                  "the boundary based on fluid/solid density from the material "
+                                                  "model.")
   }
 }

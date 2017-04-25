@@ -1,4 +1,4 @@
-#include <aspect/velocity_boundary_conditions/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 #include <aspect/utilities.h>
 #include <aspect/global.h>
 
@@ -18,7 +18,7 @@ namespace aspect
    * A boundary velocity plugin that uses an AsciiDataBoundary object as member
    */
   template <int dim>
-  class AsciiBoundaryMember : public VelocityBoundaryConditions::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+  class AsciiBoundaryMember : public BoundaryVelocity::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
       /**
@@ -77,9 +77,9 @@ namespace aspect
   void
   AsciiBoundaryMember<dim>::initialize ()
   {
-    const std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
-    bvs = this->get_prescribed_velocity_boundary_conditions();
-    for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >::const_iterator
+    const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >
+    bvs = this->get_prescribed_boundary_velocity();
+    for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
          p = bvs.begin();
          p != bvs.end(); ++p)
       {
@@ -157,36 +157,36 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS(AsciiBoundaryMember,
-                                               "ascii boundary member",
-                                               "Implementation of a model in which the boundary "
-                                               "velocity is derived from files containing data "
-                                               "in ascii format. Note the required format of the "
-                                               "input data: The first lines may contain any number of comments "
-                                               "if they begin with '#', but one of these lines needs to "
-                                               "contain the number of grid points in each dimension as "
-                                               "for example '# POINTS: 3 3'. "
-                                               "The order of the data columns "
-                                               "has to be 'x', 'velocity_x', 'velocity_y' in a 2d model "
-                                               "or 'x', 'y', 'velocity_x', 'velocity_y', "
-                                               "'velocity_z' in a 3d model. "
-                                               "Note that the data in the input "
-                                               "files need to be sorted in a specific order: "
-                                               "the first coordinate needs to ascend first, "
-                                               "followed by the second in order to "
-                                               "assign the correct data to the prescribed coordinates."
-                                               "If you use a spherical model, "
-                                               "then the velocities will still be handled as Cartesian, "
-                                               "however the assumed grid changes. 'x' will be replaced by "
-                                               "the radial distance of the point to the bottom of the model, "
-                                               "'y' by the azimuth angle and 'z' by the polar angle measured "
-                                               "positive from the north pole. The grid will be assumed to be "
-                                               "a latitude-longitude grid. Note that the order "
-                                               "of spherical coordinates is 'r', 'phi', 'theta' "
-                                               "and not 'r', 'theta', 'phi', since this allows "
-                                               "for dimension independent expressions. "
-                                               "No matter which geometry model is chosen, "
-                                               "the unit of the velocities is assumed to be "
-                                               "m/s or m/yr depending on the 'Use years in output "
-                                               "instead of seconds' flag.")
+  ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL(AsciiBoundaryMember,
+                                          "ascii boundary member",
+                                          "Implementation of a model in which the boundary "
+                                          "velocity is derived from files containing data "
+                                          "in ascii format. Note the required format of the "
+                                          "input data: The first lines may contain any number of comments "
+                                          "if they begin with '#', but one of these lines needs to "
+                                          "contain the number of grid points in each dimension as "
+                                          "for example '# POINTS: 3 3'. "
+                                          "The order of the data columns "
+                                          "has to be 'x', 'velocity_x', 'velocity_y' in a 2d model "
+                                          "or 'x', 'y', 'velocity_x', 'velocity_y', "
+                                          "'velocity_z' in a 3d model. "
+                                          "Note that the data in the input "
+                                          "files need to be sorted in a specific order: "
+                                          "the first coordinate needs to ascend first, "
+                                          "followed by the second in order to "
+                                          "assign the correct data to the prescribed coordinates."
+                                          "If you use a spherical model, "
+                                          "then the velocities will still be handled as Cartesian, "
+                                          "however the assumed grid changes. 'x' will be replaced by "
+                                          "the radial distance of the point to the bottom of the model, "
+                                          "'y' by the azimuth angle and 'z' by the polar angle measured "
+                                          "positive from the north pole. The grid will be assumed to be "
+                                          "a latitude-longitude grid. Note that the order "
+                                          "of spherical coordinates is 'r', 'phi', 'theta' "
+                                          "and not 'r', 'theta', 'phi', since this allows "
+                                          "for dimension independent expressions. "
+                                          "No matter which geometry model is chosen, "
+                                          "the unit of the velocities is assumed to be "
+                                          "m/s or m/yr depending on the 'Use years in output "
+                                          "instead of seconds' flag.")
 }

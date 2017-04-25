@@ -457,7 +457,7 @@ namespace aspect
                          "use in your model.");
       prm.declare_entry ("Prescribed velocity boundary indicators", "",
                          Patterns::Map (Patterns::Anything(),
-                                        Patterns::Selection(VelocityBoundaryConditions::get_names<dim>())),
+                                        Patterns::Selection(BoundaryVelocity::get_names<dim>())),
                          "A comma separated list denoting those boundaries "
                          "on which the velocity is prescribed, i.e., where unknown "
                          "external forces act to prescribe a particular velocity. This is "
@@ -490,7 +490,7 @@ namespace aspect
                          "to true, velocity should be given in m/yr. ");
       prm.declare_entry ("Prescribed traction boundary indicators", "",
                          Patterns::Map (Patterns::Anything(),
-                                        Patterns::Selection(TractionBoundaryConditions::get_names<dim>())),
+                                        Patterns::Selection(BoundaryTraction::get_names<dim>())),
                          "A comma separated list denoting those boundaries "
                          "on which a traction force is prescribed, i.e., where "
                          "known external forces act, resulting in an unknown velocity. This is "
@@ -1588,11 +1588,11 @@ namespace aspect
             std::pair<std::string,std::string>(comp,value);
         }
 
-      const std::vector<std::string> x_prescribed_traction_boundary_indicators
+      const std::vector<std::string> x_prescribed_boundary_traction_indicators
         = Utilities::split_string_list
           (prm.get ("Prescribed traction boundary indicators"));
-      for (std::vector<std::string>::const_iterator p = x_prescribed_traction_boundary_indicators.begin();
-           p != x_prescribed_traction_boundary_indicators.end(); ++p)
+      for (std::vector<std::string>::const_iterator p = x_prescribed_boundary_traction_indicators.begin();
+           p != x_prescribed_boundary_traction_indicators.end(); ++p)
         {
           // each entry has the format (white space is optional):
           // <id> [x][y][z] : <value (might have spaces)>
@@ -1666,14 +1666,14 @@ namespace aspect
                                               + error));
             }
 
-          AssertThrow (prescribed_traction_boundary_indicators.find(boundary_id)
-                       == prescribed_traction_boundary_indicators.end(),
+          AssertThrow (prescribed_boundary_traction_indicators.find(boundary_id)
+                       == prescribed_boundary_traction_indicators.end(),
                        ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
                                    "> appears more than once in the list of indicators "
                                    "for nonzero traction boundaries."));
 
           // finally, put it into the list
-          prescribed_traction_boundary_indicators[boundary_id] =
+          prescribed_boundary_traction_indicators[boundary_id] =
             std::pair<std::string,std::string>(comp,value);
         }
 
@@ -1702,8 +1702,8 @@ namespace aspect
     BoundaryTemperature::declare_parameters<dim> (prm);
     BoundaryComposition::declare_parameters<dim> (prm);
     AdiabaticConditions::declare_parameters<dim> (prm);
-    VelocityBoundaryConditions::declare_parameters<dim> (prm);
-    TractionBoundaryConditions::declare_parameters<dim> (prm);
+    BoundaryVelocity::declare_parameters<dim> (prm);
+    BoundaryTraction::declare_parameters<dim> (prm);
   }
 }
 

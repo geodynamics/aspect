@@ -20,17 +20,17 @@
 
 
 #include <aspect/global.h>
-#include <aspect/traction_boundary_conditions/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 
 #include <deal.II/base/exceptions.h>
-#include <deal.II/base/std_cxx1x/tuple.h>
+#include <deal.II/base/std_cxx11/tuple.h>
 
 #include <list>
 
 
 namespace aspect
 {
-  namespace TractionBoundaryConditions
+  namespace BoundaryVelocity
   {
     template <int dim>
     Interface<dim>::~Interface ()
@@ -50,21 +50,21 @@ namespace aspect
     {}
 
 
+
     template <int dim>
     Tensor<1,dim>
-    Interface<dim>::traction (const Point<dim> &,
-                              const Tensor<1,dim> &) const
+    Interface<dim>::boundary_velocity (const Point<dim> &) const
     {
       /**
-       * We can only get here if the new-style boundary_traction function (with
+       * We can only get here if the new-style boundary_velocity function (with
        * two arguments) calls it. This means that the derived class did not override
        * the new-style boundary_velocity function, and because we are here, it also
        * did not override this old-style boundary_velocity function (with one argument).
        */
       Assert (false, ExcMessage ("A derived class needs to override either the "
-                                 "boundary_traction(position, normal_vector) "
-                                 "(deprecated) or boundary_traction(types::boundary_id, "
-                                 "position, normal_vector) function."));
+                                 "boundary_velocity(position) (deprecated) or "
+                                 "boundary_velocity(types::boundary_id,position) "
+                                 "function."));
 
       return Tensor<1,dim>();
     }
@@ -73,13 +73,12 @@ namespace aspect
     DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
     template <int dim>
     Tensor<1,dim>
-    Interface<dim>::boundary_traction (const types::boundary_id boundary_indicator,
-                                       const Point<dim> &position,
-                                       const Tensor<1,dim> &normal_vector) const
+    Interface<dim>::boundary_velocity (const types::boundary_id ,
+                                       const Point<dim> &position) const
     {
       // Call the old-style function without the boundary id to maintain backwards
       // compatibility. Normally the derived class should override this function.
-      return this->traction(position, normal_vector);
+      return this->boundary_velocity(position);
     }
     DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
@@ -97,12 +96,12 @@ namespace aspect
     {}
 
 
-// -------------------------------- Deal with registering traction_boundary_conditions models and automating
+// -------------------------------- Deal with registering boundary_velocity models and automating
 // -------------------------------- their setup and selection at run time
 
     namespace
     {
-      std_cxx1x::tuple
+      std_cxx11::tuple
       <void *,
       void *,
       internal::Plugins::PluginList<Interface<2> >,
@@ -113,12 +112,12 @@ namespace aspect
 
     template <int dim>
     void
-    register_traction_boundary_conditions_model (const std::string &name,
-                                                 const std::string &description,
-                                                 void (*declare_parameters_function) (ParameterHandler &),
-                                                 Interface<dim> *(*factory_function) ())
+    register_boundary_velocity (const std::string &name,
+                                const std::string &description,
+                                void (*declare_parameters_function) (ParameterHandler &),
+                                Interface<dim> *(*factory_function) ())
     {
-      std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
+      std_cxx11::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
                                                                declare_parameters_function,
                                                                factory_function);
@@ -127,10 +126,10 @@ namespace aspect
 
     template <int dim>
     Interface<dim> *
-    create_traction_boundary_conditions (const std::string &name)
+    create_boundary_velocity (const std::string &name)
     {
-      Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
-                                                                                      "Traction boundary conditions");
+      Interface<dim> *plugin = std_cxx11::get<dim>(registered_plugins).create_plugin (name,
+                                                                                      "Boundary velocity model::Plugin name");
       return plugin;
     }
 
@@ -140,7 +139,7 @@ namespace aspect
     std::string
     get_names ()
     {
-      return std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
+      return std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
     }
 
 
@@ -148,7 +147,7 @@ namespace aspect
     void
     declare_parameters (ParameterHandler &prm)
     {
-      std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
+      std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
     }
   }
 }
@@ -161,25 +160,25 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<TractionBoundaryConditions::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<TractionBoundaryConditions::Interface<2> >::plugins = 0;
+      std::list<internal::Plugins::PluginList<BoundaryVelocity::Interface<2> >::PluginInfo> *
+      internal::Plugins::PluginList<BoundaryVelocity::Interface<2> >::plugins = 0;
       template <>
-      std::list<internal::Plugins::PluginList<TractionBoundaryConditions::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<TractionBoundaryConditions::Interface<3> >::plugins = 0;
+      std::list<internal::Plugins::PluginList<BoundaryVelocity::Interface<3> >::PluginInfo> *
+      internal::Plugins::PluginList<BoundaryVelocity::Interface<3> >::plugins = 0;
     }
   }
 
-  namespace TractionBoundaryConditions
+  namespace BoundaryVelocity
   {
 #define INSTANTIATE(dim) \
   template class Interface<dim>; \
   \
   template \
   void \
-  register_traction_boundary_conditions_model<dim> (const std::string &, \
-                                                    const std::string &, \
-                                                    void ( *) (ParameterHandler &), \
-                                                    Interface<dim> *( *) ()); \
+  register_boundary_velocity<dim> (const std::string &, \
+                                   const std::string &, \
+                                   void ( *) (ParameterHandler &), \
+                                   Interface<dim> *( *) ()); \
   \
   template  \
   void \
@@ -191,7 +190,7 @@ namespace aspect
   \
   template \
   Interface<dim> * \
-  create_traction_boundary_conditions<dim> (const std::string &);
+  create_boundary_velocity<dim> (const std::string &);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

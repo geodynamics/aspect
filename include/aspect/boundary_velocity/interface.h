@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_velocity_boundary_conditions_interface_h
-#define _aspect_velocity_boundary_conditions_interface_h
+#ifndef _aspect_boundary_velocity_interface_h
+#define _aspect_boundary_velocity_interface_h
 
 #include <aspect/plugins.h>
 #include <aspect/geometry_model/interface.h>
@@ -34,16 +34,16 @@ namespace aspect
    * A namespace in which we define everything that has to do with defining
    * the velocity boundary conditions.
    *
-   * @ingroup VelocityBoundaryConditionsModels
+   * @ingroup BoundaryVelocities
    */
-  namespace VelocityBoundaryConditions
+  namespace BoundaryVelocity
   {
     using namespace dealii;
 
     /**
      * A base class for parameterizations of velocity boundary conditions.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup BoundaryVelocities
      */
     template <int dim>
     class Interface
@@ -136,14 +136,14 @@ namespace aspect
      * @param factory_function A pointer to a function that can create an
      * object of this velocity boundary conditions model.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup BoundaryVelocities
      */
     template <int dim>
     void
-    register_velocity_boundary_conditions_model (const std::string &name,
-                                                 const std::string &description,
-                                                 void (*declare_parameters_function) (ParameterHandler &),
-                                                 Interface<dim> *(*factory_function) ());
+    register_boundary_velocity (const std::string &name,
+                                const std::string &description,
+                                void (*declare_parameters_function) (ParameterHandler &),
+                                Interface<dim> *(*factory_function) ());
 
     /**
      * A function that given the name of a model returns a pointer to an
@@ -153,11 +153,11 @@ namespace aspect
      * The model object returned is not yet initialized and has not read its
      * runtime parameters yet.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup BoundaryVelocities
      */
     template <int dim>
     Interface<dim> *
-    create_velocity_boundary_conditions (const std::string &name);
+    create_boundary_velocity (const std::string &name);
 
     /**
      * Return a list of names of all implemented boundary velocity models,
@@ -172,7 +172,7 @@ namespace aspect
      * Declare the runtime parameters of the registered velocity boundary
      * conditions models.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup BoundaryVelocities
      */
     template <int dim>
     void
@@ -185,18 +185,18 @@ namespace aspect
      * for a velocity boundary conditions model, register it with the
      * functions that can declare their parameters and create these objects.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup BoundaryVelocities
      */
-#define ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS(classname,name,description) \
+#define ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL(classname,name,description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS_ ## classname \
+  namespace ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::VelocityBoundaryConditions::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::VelocityBoundaryConditions::register_velocity_boundary_conditions_model<2>, \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryVelocity::Interface<2>,classname<2> > \
+    dummy_ ## classname ## _2d (&aspect::BoundaryVelocity::register_boundary_velocity<2>, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::VelocityBoundaryConditions::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::VelocityBoundaryConditions::register_velocity_boundary_conditions_model<3>, \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryVelocity::Interface<3>,classname<3> > \
+    dummy_ ## classname ## _3d (&aspect::BoundaryVelocity::register_boundary_velocity<3>, \
                                 name, description); \
   }
   }

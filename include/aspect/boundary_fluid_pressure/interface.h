@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_fluid_pressure_boundary_conditions_interface_h
-#define _aspect_fluid_pressure_boundary_conditions_interface_h
+#ifndef _aspect_boundary_fluid_pressure_interface_h
+#define _aspect_boundary_fluid_pressure_interface_h
 
 #include <aspect/plugins.h>
 #include <aspect/material_model/interface.h>
@@ -32,16 +32,16 @@ namespace aspect
    * the boundary values for fluid pressure for computations with melt
    * transport.
    *
-   * @ingroup FluidPressureBoundaryConditions
+   * @ingroup BoundaryFluidPressures
    */
-  namespace FluidPressureBoundaryConditions
+  namespace BoundaryFluidPressure
   {
     using namespace dealii;
 
     /**
      * Base class
      *
-     * @ingroup FluidPressureBoundaryConditions
+     * @ingroup BoundaryFluidPressures
      */
     template <int dim>
     class Interface
@@ -125,11 +125,11 @@ namespace aspect
      * @param factory_function A pointer to a function that can create an
      * object of this fluid pressure boundary model.
      *
-     * @ingroup FluidPressureBoundaryConditions
+     * @ingroup BoundaryFluidPressures
      */
     template <int dim>
     void
-    register_fluid_pressure_boundary (const std::string &name,
+    register_boundary_fluid_pressure (const std::string &name,
                                       const std::string &description,
                                       void (*declare_parameters_function) (ParameterHandler &),
                                       Interface<dim> *(*factory_function) ());
@@ -142,18 +142,18 @@ namespace aspect
      * The model object returned is not yet initialized and has not
      * read its runtime parameters yet.
      *
-     * @ingroup FluidPressureBoundaryConditions
+     * @ingroup BoundaryFluidPressures
      */
     template <int dim>
     Interface<dim> *
-    create_fluid_pressure_boundary (ParameterHandler &prm);
+    create_boundary_fluid_pressure (ParameterHandler &prm);
 
 
     /**
      * Declare the runtime parameters of the registered fluid pressure boundary
      * models.
      *
-     * @ingroup FluidPressureBoundaryConditions
+     * @ingroup BoundaryFluidPressures
      */
     template <int dim>
     void
@@ -165,18 +165,18 @@ namespace aspect
      * for a fluid pressure boundary model, register it with the functions that
      * can declare their parameters and create these objects.
      *
-     * @ingroup FluidPressureBoundaryConditions
+     * @ingroup BoundaryFluidPressures
      */
-#define ASPECT_REGISTER_FLUID_PRESSURE_BOUNDARY_CONDITIONS(classname, name, description) \
+#define ASPECT_REGISTER_BOUNDARY_FLUID_PRESSURE_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_FLUID_PRESSURE_BOUNDARY_CONDITIONS_ ## classname \
+  namespace ASPECT_REGISTER_BOUNDARY_FLUID_PRESSURE_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::FluidPressureBoundaryConditions::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::FluidPressureBoundaryConditions::register_fluid_pressure_boundary<2>, \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryFluidPressure::Interface<2>,classname<2> > \
+    dummy_ ## classname ## _2d (&aspect::BoundaryFluidPressure::register_boundary_fluid_pressure<2>, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::FluidPressureBoundaryConditions::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::FluidPressureBoundaryConditions::register_fluid_pressure_boundary<3>, \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryFluidPressure::Interface<3>,classname<3> > \
+    dummy_ ## classname ## _3d (&aspect::BoundaryFluidPressure::register_boundary_fluid_pressure<3>, \
                                 name, description); \
   }
   }

@@ -20,7 +20,7 @@
 
 
 #include <aspect/global.h>
-#include <aspect/fluid_pressure_boundary_conditions/interface.h>
+#include <aspect/boundary_fluid_pressure/interface.h>
 
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/std_cxx11/tuple.h>
@@ -30,7 +30,7 @@
 
 namespace aspect
 {
-  namespace FluidPressureBoundaryConditions
+  namespace BoundaryFluidPressure
   {
     template <int dim>
     Interface<dim>::~Interface ()
@@ -70,7 +70,7 @@ namespace aspect
 
     template <int dim>
     void
-    register_fluid_pressure_boundary (const std::string &name,
+    register_boundary_fluid_pressure (const std::string &name,
                                       const std::string &description,
                                       void (*declare_parameters_function) (ParameterHandler &),
                                       Interface<dim> *(*factory_function) ())
@@ -84,7 +84,7 @@ namespace aspect
 
     template <int dim>
     Interface<dim> *
-    create_fluid_pressure_boundary (ParameterHandler &prm)
+    create_boundary_fluid_pressure (ParameterHandler &prm)
     {
       std::string model_name;
       prm.enter_subsection ("Boundary fluid pressure model");
@@ -127,22 +127,22 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<FluidPressureBoundaryConditions::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<FluidPressureBoundaryConditions::Interface<2> >::plugins = 0;
+      std::list<internal::Plugins::PluginList<BoundaryFluidPressure::Interface<2> >::PluginInfo> *
+      internal::Plugins::PluginList<BoundaryFluidPressure::Interface<2> >::plugins = 0;
       template <>
-      std::list<internal::Plugins::PluginList<FluidPressureBoundaryConditions::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<FluidPressureBoundaryConditions::Interface<3> >::plugins = 0;
+      std::list<internal::Plugins::PluginList<BoundaryFluidPressure::Interface<3> >::PluginInfo> *
+      internal::Plugins::PluginList<BoundaryFluidPressure::Interface<3> >::plugins = 0;
     }
   }
 
-  namespace FluidPressureBoundaryConditions
+  namespace BoundaryFluidPressure
   {
 #define INSTANTIATE(dim) \
   template class Interface<dim>; \
   \
   template \
   void \
-  register_fluid_pressure_boundary<dim> (const std::string &, \
+  register_boundary_fluid_pressure<dim> (const std::string &, \
                                          const std::string &, \
                                          void ( *) (ParameterHandler &), \
                                          Interface<dim> *( *) ()); \
@@ -153,7 +153,7 @@ namespace aspect
   \
   template \
   Interface<dim> * \
-  create_fluid_pressure_boundary<dim> (ParameterHandler &prm);
+  create_boundary_fluid_pressure<dim> (ParameterHandler &prm);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

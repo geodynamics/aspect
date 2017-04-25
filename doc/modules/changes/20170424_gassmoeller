@@ -1,0 +1,10 @@
+Changed: The names for all boundary condition
+plugins are now unified to the universal scheme 'boundary_property' that
+is planned for ASPECT 2.0.
+This change is unfortunately incompatible with existing user plugins, 
+but the provided script doc/update_source_files_to_2.0.0.sed allows
+an easy conversion of existing plugins to the new naming scheme.
+Parameter files are not affected, because the naming of
+subsections already follows the new structure.
+<br>
+(Rene Gassmoeller, 2017/04/24)

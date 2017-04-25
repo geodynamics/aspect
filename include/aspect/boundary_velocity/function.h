@@ -19,17 +19,17 @@
 */
 
 
-#ifndef _aspect_velocity_boundary_conditions_function_h
-#define _aspect_velocity_boundary_conditions_function_h
+#ifndef _aspect_boundary_velocity_function_h
+#define _aspect_boundary_velocity_function_h
 
-#include <aspect/velocity_boundary_conditions/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 #include <aspect/simulator_access.h>
 
 #include <deal.II/base/parsed_function.h>
 
 namespace aspect
 {
-  namespace VelocityBoundaryConditions
+  namespace BoundaryVelocity
   {
     using namespace dealii;
 
@@ -37,7 +37,7 @@ namespace aspect
      * A class that implements velocity boundary conditions based on a
      * functional description provided in the input file.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup BoundaryVelocities
      */
     template <int dim>
     class Function : public Interface<dim>, public SimulatorAccess<dim>
