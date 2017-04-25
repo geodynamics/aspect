@@ -268,22 +268,26 @@ namespace aspect
 
     prm.declare_entry ("Linear solver A block tolerance", "1e-2",
                        Patterns::Double(0,1),
-                       "A relative tolerance up to which the approximate inverse of the A block "
-                       "of the Stokes system is computed. This approximate A is used in the "
-                       "preconditioning used in the GMRES solver.");
+                       "A relative tolerance up to which the approximate inverse of the $A$ block "
+                       "of the Stokes system is computed. This approximate $A$ is used in the "
+                       "preconditioning used in the GMRES solver. The exact definition of this "
+                       "block preconditioner for the Stokes equation can be found in "
+                       "\\cite{KHB12}.");
 
     prm.declare_entry ("Linear solver S block tolerance", "1e-6",
                        Patterns::Double(0,1),
-                       "A relative tolerance up to which the approximate inverse of the S block "
-                       "(Schur complement matrix, $S = BA^{-1}B^{T}$) of the Stokes system is computed. "
-                       "This approximate inverse of the S block is used in the preconditioning "
-                       "used in the GMRES solver.");
+                       "A relative tolerance up to which the approximate inverse of the $S$ block "
+                       "(i.e., the Schur complement matrix $S = BA^{-1}B^{T}$) of the Stokes "
+                       "system is computed. This approximate inverse of the $S$ block is used "
+                       "in the preconditioning used in the GMRES solver. The exact definition of "
+                       "this block preconditioner for the Stokes equation can be found in "
+                       "\\cite{KHB12}.");
 
     prm.declare_entry ("Number of cheap Stokes solver steps", "200",
                        Patterns::Integer(0),
                        "As explained in the ASPECT paper (Kronbichler, Heister, and Bangerth, "
-                       "GJI 2012) we first try to solve the Stokes system in every time "
-                       "step using a GMRES iteration with a poor but cheap "
+                       "GJI 2012, \\cite{KHB12}) we first try to solve the Stokes system in every "
+                       "time step using a GMRES iteration with a poor but cheap "
                        "preconditioner. By default, we try whether we can converge the GMRES "
                        "solver in 200 such iterations before deciding that we need a better "
                        "preconditioner. This is sufficient for simple problems with variable "
