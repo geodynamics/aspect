@@ -5,7 +5,7 @@ Number of degrees of freedom: 84 (50+9+25)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 37+0 iterations.
+   Solving Stokes system... 20+0 iterations.
 
    Postprocessing:
 In computing depth averages, there is at least one depth band that does not have any quadrature points in it.
