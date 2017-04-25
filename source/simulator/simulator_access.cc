@@ -497,7 +497,7 @@ namespace aspect
   SimulatorAccess<dim>::get_initial_conditions () const
   {
     Assert (get_initial_temperature_manager().get_active_initial_temperature_conditions().size() == 1,
-            ExcMessage("You can only this function if only one initial temperature plugin is active."));
+            ExcMessage("You can only call this function if exactly one initial temperature plugin is active."));
     return *(get_initial_temperature_manager().get_active_initial_temperature_conditions().front());
   }
 

@@ -194,11 +194,13 @@ namespace aspect
         prm.declare_entry ("Model name", "unspecified",
                            Patterns::Selection (pattern_of_names+"|unspecified"),
                            "Select one of the following models:\n\n"
-                           "Warning: This is the old formulation of specifying "
-                           "initial temperature models and shouldn't be used. "
-                           "Please use 'List of model names' instead."
                            +
-                           std_cxx11::get<dim>(registered_plugins).get_description_string());
+                           std_cxx11::get<dim>(registered_plugins).get_description_string()
+                           + "\n\n" +
+                           "\\textbf{Warning}: This parameter provides and old and"
+                           "deprecated way of specifying "
+                           "initial temperature models and shouldn't be used. "
+                           "Please use 'List of model names' instead.");
       }
       prm.leave_subsection ();
 
