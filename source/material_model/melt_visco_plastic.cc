@@ -200,7 +200,7 @@ namespace aspect
                 }
               // freezing of melt below the solidus
               {
-                const double freezing_potential = melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i])) - old_porosity[i];
+                const double freezing_potential = melt_fraction(in.temperature[i], in.pressure[i]) - old_porosity[i];
                 const double freezing = freezing_rate * this->get_timestep() / year_in_seconds * 0.5 * (freezing_potential - std::abs(freezing_potential));
                 melting += freezing;
               }
