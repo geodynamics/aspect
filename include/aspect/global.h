@@ -22,6 +22,11 @@
 #ifndef _aspect_global_h
 #define _aspect_global_h
 
+#include <deal.II/base/mpi.h>
+#include <deal.II/base/multithread_info.h>
+
+DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
+
 #ifdef ASPECT_USE_PETSC
 #  include <deal.II/lac/petsc_parallel_block_vector.h>
 #  include <deal.II/lac/petsc_parallel_block_sparse_matrix.h>
@@ -34,13 +39,11 @@
 
 #include <deal.II/lac/generic_linear_algebra.h>
 
-DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
+
 DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
-#include <deal.II/base/mpi.h>
-#include <deal.II/base/multithread_info.h>
 
 #include <aspect/compat.h>
 
