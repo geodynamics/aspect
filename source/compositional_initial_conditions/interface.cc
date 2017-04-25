@@ -106,7 +106,7 @@ namespace aspect
 
         AssertThrow(Utilities::has_unique_entries(model_names),
                     ExcMessage("The list of strings for the parameter "
-                               "'Initial conditions/List of model names' contains entries more than once. "
+                               "'Compositional initial conditions/List of model names' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
 
         const std::string model_name = prm.get ("Model name");
@@ -123,6 +123,13 @@ namespace aspect
       }
       prm.leave_subsection ();
 
+      if (model_names.size() > 0)
+        AssertThrow(this->n_compositional_fields() > 0,
+                    ExcMessage("A plugin for the initial composition condition was specified, but there "
+                               "is no compositional field. This can lead to errors within the initialization of "
+                               "the initial composition plugin and is therefore not supported. Please remove "
+                               "the initial composition plugin or add a compositional field."));
+
       // go through the list, create objects and let them parse
       // their own parameters
       for (unsigned int name=0; name<model_names.size(); ++name)
@@ -130,7 +137,7 @@ namespace aspect
           initial_composition_objects.push_back (std_cxx11::shared_ptr<Interface<dim> >
                                                  (std_cxx11::get<dim>(registered_plugins)
                                                   .create_plugin (model_names[name],
-                                                                  "Initial conditions::Model names")));
+                                                                  "Compositional initial conditions::Model names")));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_composition_objects.back()))
             sim->initialize_simulator (this->get_simulator());
@@ -195,7 +202,7 @@ namespace aspect
                           +
                           std_cxx11::get<dim>(registered_plugins).get_description_string());
 
-        prm.declare_entry ("Model name", "function",
+        prm.declare_entry ("Model name", "unspecified",
                            Patterns::Selection (pattern_of_names+"|unspecified"),
                            "Select one of the following models:\n\n"
                            "Warning: This is the old formulation of specifying "

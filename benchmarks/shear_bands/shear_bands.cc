@@ -750,7 +750,10 @@ namespace aspect
 
       const PlaneWaveMeltBandsInitialCondition<dim> *
       initial_conditions
-      = this->get_initial_composition_manager().template find_initial_composition_model<PlaneWaveMeltBandsInitialCondition<dim> > ();
+        = this->get_initial_composition_manager().template find_initial_composition_model<PlaneWaveMeltBandsInitialCondition<dim> > ();
+
+      AssertThrow(initial_conditions != NULL,
+                  ExcMessage("Postprocessor shear bands growth rate only works with the plane wave melt bands initial condition."));
 
       amplitude           = initial_conditions->get_wave_amplitude();
       initial_band_angle  = initial_conditions->get_initial_band_angle();

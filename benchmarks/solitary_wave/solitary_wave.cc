@@ -664,7 +664,10 @@ namespace aspect
 
       const SolitaryWaveInitialCondition<dim> *
       initial_conditions
-      = this->get_initial_composition_manager().template find_initial_composition_model<SolitaryWaveInitialCondition<dim> > ();
+        = this->get_initial_composition_manager().template find_initial_composition_model<SolitaryWaveInitialCondition<dim> > ();
+
+      AssertThrow(initial_conditions != NULL,
+                  ExcMessage("Postprocessor solitary wave only works with the solitary wave initial condition."));
 
       amplitude           = initial_conditions->get_amplitude();
       background_porosity = initial_conditions->get_background_porosity();
