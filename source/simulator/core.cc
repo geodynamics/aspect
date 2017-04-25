@@ -1947,9 +1947,9 @@ namespace aspect
         distr_solution = old_solution;
         LinearAlgebra::BlockVector distr_old_solution (system_rhs);
         distr_old_solution = old_old_solution;
-        distr_solution .sadd ((1 + time_step/old_time_step),
-                              -time_step/old_time_step,
-                              distr_old_solution);
+        distr_solution.sadd ((1 + time_step/old_time_step),
+                             -time_step/old_time_step,
+                             distr_old_solution);
         current_linearization_point = distr_solution;
       }
 
