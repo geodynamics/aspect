@@ -19,8 +19,8 @@ set Dimension                              = 2
 # The end time of the simulation. Units: years if the 'Use years in output
 # instead of seconds' parameter is set; seconds otherwise.
 # This end time is chosen in such a way that the solitary wave travels
-# approximately 5 times its wavelength during the model time.
-set End time                               = 1e4
+# approximately 1 times its wavelength during the model time.
+set End time                               = 2e3
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
@@ -128,7 +128,7 @@ subsection Mesh refinement
   set Refinement fraction                      = 0.0
 
   set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 3                    # default: 2
+  set Initial global refinement                = 2                    # default: 2
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end

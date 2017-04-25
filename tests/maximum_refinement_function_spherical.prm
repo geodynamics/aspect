@@ -136,7 +136,7 @@ subsection Mesh refinement
   set Coarsening fraction                      = 0.2
   set Refinement fraction                      = 0.5
 
-  set Initial adaptive refinement              = 5                    # default: 2
+  set Initial adaptive refinement              = 4                    # default: 2
   set Initial global refinement                = 3                    # default: 2
 
   set Normalize individual refinement criteria = true
@@ -150,7 +150,7 @@ subsection Mesh refinement
   subsection Maximum refinement function
     set Coordinate system      = spherical
     set Function constants     = 
-    set Function expression    = 6 + 2*sin((r+250000)*2*pi/250000)*sin(12*phi)
+    set Function expression    = 5 + 2*sin((r+250000)*2*pi/250000)*sin(12*phi)
     set Variable names         = r,phi
   end
 end

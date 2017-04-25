@@ -17,7 +17,7 @@ subsection Boundary temperature model
 end
 
 subsection Checkpointing
-  set Steps between checkpoint = 5
+  set Steps between checkpoint = 2
 end
 
 subsection Discretization
@@ -98,7 +98,7 @@ end
 
 subsection Termination criteria
   set Termination criteria = end step
-  set End step = 9
+  set End step = 4
   set Checkpoint on termination = false
 end
 
