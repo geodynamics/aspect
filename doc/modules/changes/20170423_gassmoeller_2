@@ -1,0 +1,10 @@
+New: Initial composition conditions can now be specified as a list
+of plugins. Their initial compositions are summed to generate the
+final initial condition. For this purpose there is a new input file
+parameter 'List of model names', and a new manager class that owns all
+of the initial composition plugins. Old input file parameters and the
+Simulator access function 'get_compositional_initial_condition' have been
+deprecated. Note that there is no longer a default initial composition
+(previously it was 'function'), but a plugin needs to be specified.
+<br>
+(Rene Gassmoeller, 2017/04/23)

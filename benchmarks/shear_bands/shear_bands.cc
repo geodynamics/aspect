@@ -369,7 +369,7 @@ namespace aspect
     template <int dim>
     double
     ShearBandsInitialCondition<dim>::
-    initial_composition (const Point<dim> &position, const unsigned int n_comp) const
+    initial_composition (const Point<dim> &position, const unsigned int /*n_comp*/) const
     {
       return background_porosity + interpolate_noise->value(position);
     }
@@ -525,7 +525,7 @@ namespace aspect
     template <int dim>
     double
     PlaneWaveMeltBandsInitialCondition<dim>::
-    initial_composition (const Point<dim> &position, const unsigned int n_comp) const
+    initial_composition (const Point<dim> &position, const unsigned int /*n_comp*/) const
     {
       return background_porosity * (1.0 + amplitude * cos(wave_number*position[0]*sin(initial_band_angle)
                                                           + wave_number*position[1]*cos(initial_band_angle)));
@@ -599,7 +599,7 @@ namespace aspect
 
     template <int dim>
     std::pair<std::string,std::string>
-    ShearBandsPostprocessor<dim>::execute (TableHandler &statistics)
+    ShearBandsPostprocessor<dim>::execute (TableHandler &/*statistics*/)
     {
       // write output that can be used to calculate the angle of the shear bands
       const unsigned int max_lvl = this->get_triangulation().n_global_levels();
@@ -748,27 +748,21 @@ namespace aspect
                       ExcMessage("Postprocessor shear bands growth rate only works with the material model shear bands."));
         }
 
-      if (dynamic_cast<const PlaneWaveMeltBandsInitialCondition<dim> *>(&this->get_compositional_initial_conditions()) != NULL)
-        {
-          const PlaneWaveMeltBandsInitialCondition<dim> *
-          initial_conditions
-            = dynamic_cast<const PlaneWaveMeltBandsInitialCondition<dim> *>(&this->get_compositional_initial_conditions());
+      const PlaneWaveMeltBandsInitialCondition<dim> *
+      initial_conditions
+        = this->get_initial_composition_manager().template find_initial_composition_model<PlaneWaveMeltBandsInitialCondition<dim> > ();
 
-          amplitude           = initial_conditions->get_wave_amplitude();
-          initial_band_angle  = initial_conditions->get_initial_band_angle();
-        }
-      else
-        {
-          AssertThrow(false,
-                      ExcMessage("Postprocessor shear bands growth rate only works with the initial conditions model "
-                                 "plane wave melt bands."));
-        }
+      AssertThrow(initial_conditions != NULL,
+                  ExcMessage("Postprocessor shear bands growth rate only works with the plane wave melt bands initial condition."));
+
+      amplitude           = initial_conditions->get_wave_amplitude();
+      initial_band_angle  = initial_conditions->get_initial_band_angle();
     }
 
 
     template <int dim>
     std::pair<std::string,std::string>
-    ShearBandsGrowthRate<dim>::execute (TableHandler &statistics)
+    ShearBandsGrowthRate<dim>::execute (TableHandler &/*statistics*/)
     {
       // compute analytical melt band growth rate
       const double time = this->get_time();

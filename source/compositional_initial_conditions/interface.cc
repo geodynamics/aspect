@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+#include <aspect/utilities.h>
 #include <aspect/compositional_initial_conditions/interface.h>
 
 #include <deal.II/base/exceptions.h>
@@ -56,8 +57,15 @@ namespace aspect
     {}
 
 
-// -------------------------------- Deal with registering initial_conditions models and automating
-// -------------------------------- their setup and selection at run time
+    // ------------------------------ Manager -----------------------------
+    // ------------------------------ Deal with registering initial composition models and automating
+    // ------------------------------ their setup and selection at run time
+
+    template <int dim>
+    Manager<dim>::~Manager()
+    {}
+
+
 
     namespace
     {
@@ -72,10 +80,10 @@ namespace aspect
 
     template <int dim>
     void
-    register_initial_conditions_model (const std::string &name,
-                                       const std::string &description,
-                                       void (*declare_parameters_function) (ParameterHandler &),
-                                       Interface<dim> *(*factory_function) ())
+    Manager<dim>::register_initial_composition_model (const std::string &name,
+                                                      const std::string &description,
+                                                      void (*declare_parameters_function) (ParameterHandler &),
+                                                      Interface<dim> *(*factory_function) ())
     {
       std_cxx11::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
@@ -84,53 +92,136 @@ namespace aspect
     }
 
 
+
     template <int dim>
-    Interface<dim> *
-    create_initial_conditions (ParameterHandler &prm)
+    void
+    Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
-      // we need to get at the number of compositional fields here to
-      // know whether we need to generate something at all.
-      prm.enter_subsection ("Compositional fields");
-      const unsigned int n_compositional_fields = prm.get_integer ("Number of fields");
+      // find out which plugins are requested and the various other
+      // parameters we declare here
+      prm.enter_subsection ("Compositional initial conditions");
+      {
+        model_names
+          = Utilities::split_string_list(prm.get("List of model names"));
+
+        AssertThrow(Utilities::has_unique_entries(model_names),
+                    ExcMessage("The list of strings for the parameter "
+                               "'Compositional initial conditions/List of model names' contains entries more than once. "
+                               "This is not allowed. Please check your parameter file."));
+
+        const std::string model_name = prm.get ("Model name");
+
+        AssertThrow (model_name == "unspecified" || model_names.size() == 0,
+                     ExcMessage ("The parameter 'Model name' is only used for reasons"
+                                 "of backwards compatibility and can not be used together with "
+                                 "the new functionality 'List of model names'. Please add your "
+                                 "initial composition model to the list instead."));
+
+        if (!(model_name == "unspecified"))
+          model_names.push_back(model_name);
+
+      }
       prm.leave_subsection ();
 
-      if (n_compositional_fields == 0)
-        return NULL;
-      else
-        {
-          std::string model_name;
-          prm.enter_subsection ("Compositional initial conditions");
-          {
-            model_name = prm.get ("Model name");
-          }
-          prm.leave_subsection ();
+      if (model_names.size() > 0)
+        AssertThrow(this->n_compositional_fields() > 0,
+                    ExcMessage("A plugin for the initial composition condition was specified, but there "
+                               "is no compositional field. This can lead to errors within the initialization of "
+                               "the initial composition plugin and is therefore not supported. Please remove "
+                               "the initial composition plugin or add a compositional field."));
 
-          Interface<dim> *plugin = std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                                          "Compositional initial conditions::Model name");
-          return plugin;
+      // go through the list, create objects and let them parse
+      // their own parameters
+      for (unsigned int name=0; name<model_names.size(); ++name)
+        {
+          initial_composition_objects.push_back (std_cxx11::shared_ptr<Interface<dim> >
+                                                 (std_cxx11::get<dim>(registered_plugins)
+                                                  .create_plugin (model_names[name],
+                                                                  "Compositional initial conditions::Model names")));
+
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_composition_objects.back()))
+            sim->initialize_simulator (this->get_simulator());
+
+          initial_composition_objects.back()->parse_parameters (prm);
+          initial_composition_objects.back()->initialize ();
         }
     }
 
 
 
     template <int dim>
-    void
-    declare_parameters (ParameterHandler &prm)
+    double
+    Manager<dim>::initial_composition (const Point<dim> &position,
+                                       const unsigned int n_comp) const
     {
-      // declare the entry in the parameter file
+      double composition = 0.0;
+      for (typename std::list<std_cxx11::shared_ptr<CompositionalInitialConditions::Interface<dim> > >::const_iterator
+           initial_composition_object = initial_composition_objects.begin();
+           initial_composition_object != initial_composition_objects.end();
+           ++initial_composition_object)
+        {
+          composition += (*initial_composition_object)->initial_composition(position,n_comp);
+        }
+      return composition;
+    }
+
+
+    template <int dim>
+    const std::vector<std::string> &
+    Manager<dim>::get_active_initial_composition_names () const
+    {
+      return model_names;
+    }
+
+
+    template <int dim>
+    const std::list<std_cxx11::shared_ptr<Interface<dim> > > &
+    Manager<dim>::get_active_initial_composition_conditions () const
+    {
+      return initial_composition_objects;
+    }
+
+
+    template <int dim>
+    void
+    Manager<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      // declare the actual entry in the parameter file
       prm.enter_subsection ("Compositional initial conditions");
       {
         const std::string pattern_of_names
           = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
-        prm.declare_entry ("Model name", "function",
-                           Patterns::Selection (pattern_of_names),
+
+        prm.declare_entry("List of model names",
+                          "",
+                          Patterns::MultipleSelection(pattern_of_names),
+                          "A comma separated list of initial composition models that "
+                          "describe the initial composition field. The results "
+                          "of each of these criteria will be added.\n\n"
+                          "The following heating models are available:\n\n"
+                          +
+                          std_cxx11::get<dim>(registered_plugins).get_description_string());
+
+        prm.declare_entry ("Model name", "unspecified",
+                           Patterns::Selection (pattern_of_names+"|unspecified"),
                            "Select one of the following models:\n\n"
+                           "Warning: This is the old formulation of specifying "
+                           "initial composition models and shouldn't be used. "
+                           "Please use 'List of model names' instead."
                            +
                            std_cxx11::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection ();
 
       std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+    }
+
+
+    template <int dim>
+    std::string
+    get_valid_model_names_pattern ()
+    {
+      return std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
     }
   }
 }
@@ -155,21 +246,11 @@ namespace aspect
   {
 #define INSTANTIATE(dim) \
   template class Interface<dim>; \
+  template class Manager<dim>; \
   \
   template \
-  void \
-  register_initial_conditions_model<dim> (const std::string &, \
-                                          const std::string &, \
-                                          void ( *) (ParameterHandler &), \
-                                          Interface<dim> *( *) ()); \
-  \
-  template  \
-  void \
-  declare_parameters<dim> (ParameterHandler &); \
-  \
-  template \
-  Interface<dim> * \
-  create_initial_conditions<dim> (ParameterHandler &prm);
+  std::string \
+  get_valid_model_names_pattern<dim> ();
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

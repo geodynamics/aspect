@@ -101,8 +101,8 @@ namespace aspect
                                                                introspection.component_indices.temperature,
                                                                introspection.n_components)
            :
-           VectorFunctionFromScalarFunctionObject<dim, double>(std_cxx11::bind(&CompositionalInitialConditions::Interface<dim>::initial_composition,
-                                                                               std_cxx11::ref(*compositional_initial_conditions),
+           VectorFunctionFromScalarFunctionObject<dim, double>(std_cxx11::bind(&CompositionalInitialConditions::Manager<dim>::initial_composition,
+                                                                               std_cxx11::ref(initial_composition_manager),
                                                                                std_cxx11::_1,
                                                                                n-1),
                                                                introspection.component_indices.compositional_fields[n-1],
@@ -135,8 +135,8 @@ namespace aspect
                     // must not exceed one, this should be checked
                     double sum = 0;
                     for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
-                      sum += compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),
-                                                                                   parameters.normalized_fields[m]);
+                      sum += initial_composition_manager.initial_composition(fe_values.quadrature_point(i),
+                                                                             parameters.normalized_fields[m]);
                     if (std::abs(sum) > 1.0+std::numeric_limits<double>::epsilon())
                       {
                         max_sum_comp = std::max(sum, max_sum_comp);
@@ -165,7 +165,7 @@ namespace aspect
                      ?
                      initial_temperature_manager.initial_temperature(fe_values.quadrature_point(i))
                      :
-                     compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n-1));
+                     initial_composition_manager.initial_composition(fe_values.quadrature_point(i),n-1));
 
                   initial_solution(local_dof_indices[system_local_dof]) = value;
 
@@ -175,8 +175,8 @@ namespace aspect
                     {
                       double sum = 0;
                       for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
-                        sum += compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),
-                                                                                     parameters.normalized_fields[m]);
+                        sum += initial_composition_manager.initial_composition(fe_values.quadrature_point(i),
+                                                                               parameters.normalized_fields[m]);
                       if (std::abs(sum) > 1.0+std::numeric_limits<double>::epsilon())
                         {
                           max_sum_comp = std::max(sum, max_sum_comp);
