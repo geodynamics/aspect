@@ -56,10 +56,18 @@ namespace aspect
   template <int dim> class Simulator;
   template <int dim> struct SimulatorSignals;
   template <int dim> class LateralAveraging;
+
   namespace HeatingModel
   {
     template <int dim> class Manager;
   }
+
+  namespace InitialConditions
+  {
+    template <int dim> class Manager;
+    template <int dim> class Interface;
+  }
+
   namespace AdiabaticConditions
   {
     template <int dim> class Interface;
@@ -521,10 +529,20 @@ namespace aspect
       /**
        * Return a pointer to the object that describes the temperature initial
        * values.
+       *
+       * @deprecated Use <code> get_initial_temperature_manager </code> instead.
        */
       const InitialConditions::Interface<dim> &
-      get_initial_conditions () const;
+      get_initial_conditions () const DEAL_II_DEPRECATED;
 
+      /**
+       * Return a pointer to the manager of the initial temperature models.
+       * This can then i.e. be used to get the names of the initial temperature
+       * models used in a computation, or to compute the initial temperature
+       * for a given position.
+       */
+      const InitialConditions::Manager<dim> &
+      get_initial_temperature_manager () const;
 
       /**
        * Return a pointer to the object that describes the composition initial

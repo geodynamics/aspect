@@ -1,0 +1,8 @@
+New: Initial temperature conditions can now be specified as a list
+of plugins. Their initial temperatures are summed to generate the
+final initial condition. For this purpose there is a new input file
+parameter 'List of model names', and a new manager class that owns all
+of the initial temperature plugins. Old input file parameters and the
+Simulator access function 'get_initial_condition' have been deprecated.
+<br>
+(Rene Gassmoeller, 2017/04/23)

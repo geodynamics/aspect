@@ -23,12 +23,15 @@
 #define _aspect_initial_conditions_interface_h
 
 #include <aspect/plugins.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
 
 namespace aspect
 {
+  template <int dim> class SimulatorAccess;
+
   /**
    * A namespace in which we define everything that has to do with defining
    * the initial conditions.
@@ -93,63 +96,139 @@ namespace aspect
     };
 
 
-
-
     /**
-     * Register an initial conditions model so that it can be selected from
-     * the parameter file.
-     *
-     * @param name A string that identifies the initial conditions model
-     * @param description A text description of what this model does and that
-     * will be listed in the documentation of the parameter file.
-     * @param declare_parameters_function A pointer to a function that can be
-     * used to declare the parameters that this initial conditions model wants
-     * to read from input files.
-     * @param factory_function A pointer to a function that can create an
-     * object of this initial conditions model.
+     * A class that manages all initial condition objects.
      *
      * @ingroup InitialConditionsModels
      */
     template <int dim>
-    void
-    register_initial_conditions_model (const std::string &name,
-                                       const std::string &description,
-                                       void (*declare_parameters_function) (ParameterHandler &),
-                                       Interface<dim> *(*factory_function) ());
+    class Manager : public ::aspect::SimulatorAccess<dim>
+    {
+      public:
+        /**
+         * Destructor. Made virtual since this class has virtual member
+         * functions.
+         */
+        virtual ~Manager ();
+
+        /**
+         * Declare the parameters of all known initial conditions plugins, as
+         * well as of ones this class has itself.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         * This determines which initial conditions objects will be created; then
+         * let these objects read their parameters as well.
+         */
+        void
+        parse_parameters (ParameterHandler &prm);
+
+        /**
+         * A function that calls the initial_temperature functions of all the
+         * individual initial condition objects and adds up the values of the
+         * individual calls.
+         */
+        double
+        initial_temperature (const Point<dim> &position) const;
+
+        /**
+         * A function that is used to register initial temperature objects in such
+         * a way that the Manager can deal with all of them without having to
+         * know them by name. This allows the files in which individual
+         * plugins are implemented to register these plugins, rather than also
+         * having to modify the Manager class by adding the new initial
+         * temperature plugin class.
+         *
+         * @param name A string that identifies the initial temperature model
+         * @param description A text description of what this model does and that
+         * will be listed in the documentation of the parameter file.
+         * @param declare_parameters_function A pointer to a function that can be
+         * used to declare the parameters that this initial temperature model
+         * wants to read from input files.
+         * @param factory_function A pointer to a function that can create an
+         * object of this initial temperature model.
+         *
+         * @ingroup InitialConditionsModels
+         */
+        static
+        void
+        register_initial_temperature_model (const std::string &name,
+                                            const std::string &description,
+                                            void (*declare_parameters_function) (ParameterHandler &),
+                                            Interface<dim> *(*factory_function) ());
 
 
-    /**
-     * A function that given the name of a model returns a pointer to an
-     * object that describes it. Ownership of the pointer is transferred to
-     * the caller.
-     *
-     * The model object returned is not yet initialized and has not read its
-     * runtime parameters yet.
-     *
-     * @ingroup InitialConditionsModels
-     */
+        /**
+         * Return a list of names of all initial temperature models currently
+         * used in the computation, as specified in the input file.
+         */
+        const std::vector<std::string> &
+        get_active_initial_temperature_names () const;
+
+        /**
+         * Return a list of pointers to all initial temperature models
+         * currently used in the computation, as specified in the input file.
+         */
+        const std::list<std_cxx11::shared_ptr<Interface<dim> > > &
+        get_active_initial_temperature_conditions () const;
+
+        /**
+         * Go through the list of all initial temperature models that have been selected in
+         * the input file (and are consequently currently active) and see if one
+         * of them has the desired type specified by the template argument. If so,
+         * return a pointer to it. If no initial temperature model is active
+         * that matches the given type, return a NULL pointer.
+         */
+        template <typename InitialTemperatureType>
+        InitialTemperatureType *
+        find_initial_temperature_model () const;
+
+        /**
+         * Exception.
+         */
+        DeclException1 (ExcInitialTemperatureNameNotFound,
+                        std::string,
+                        << "Could not find entry <"
+                        << arg1
+                        << "> among the names of registered initial temperature objects.");
+      private:
+        /**
+         * A list of initial temperature objects that have been requested in the
+         * parameter file.
+         */
+        std::list<std_cxx11::shared_ptr<Interface<dim> > > initial_temperature_objects;
+
+        /**
+         * A list of names of initial temperature objects that have been requested
+         * in the parameter file.
+         */
+        std::vector<std::string> model_names;
+    };
+
+
+
     template <int dim>
-    Interface<dim> *
-    create_initial_conditions (ParameterHandler &prm);
+    template <typename InitialTemperatureType>
+    inline
+    InitialTemperatureType *
+    Manager<dim>::find_initial_temperature_model () const
+    {
+      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+           p = initial_temperature_objects.begin();
+           p != initial_temperature_objects.end(); ++p)
+        if (InitialTemperatureType *x = dynamic_cast<InitialTemperatureType *> ( (*p).get()) )
+          return x;
+      return NULL;
+    }
 
-
-    /**
-     * A function that given the name of a model returns a pointer to an
-     * object that describes it. Ownership of the pointer is transferred to
-     * the caller.
-     *
-     * The initial conditions object returned is not yet initialized and has not
-     * read its runtime parameters yet.
-     *
-     * @ingroup InitialConditionsModels
-     */
-    template <int dim>
-    Interface<dim> *
-    create_initial_conditions (const std::string &model_name);
 
 
     /**
-     * Return a string that consists of the names of initial conditions that can
+     * Return a string that consists of the names of initial temperature models that can
      * be selected. These names are separated by a vertical line '|' so
      * that the string can be an input to the deal.II classes
      * Patterns::Selection or Patterns::MultipleSelection.
@@ -157,17 +236,6 @@ namespace aspect
     template <int dim>
     std::string
     get_valid_model_names_pattern ();
-
-
-    /**
-     * Declare the runtime parameters of the registered initial conditions
-     * models.
-     *
-     * @ingroup InitialConditionsModels
-     */
-    template <int dim>
-    void
-    declare_parameters (ParameterHandler &prm);
 
 
 
@@ -184,10 +252,10 @@ namespace aspect
   namespace ASPECT_REGISTER_INITIAL_CONDITIONS_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::InitialConditions::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::InitialConditions::register_initial_conditions_model<2>, \
+    dummy_ ## classname ## _2d (&aspect::InitialConditions::Manager<2>::register_initial_temperature_model, \
                                 name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::InitialConditions::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::InitialConditions::register_initial_conditions_model<3>, \
+    dummy_ ## classname ## _3d (&aspect::InitialConditions::Manager<3>::register_initial_temperature_model, \
                                 name, description); \
   }
   }

@@ -32,7 +32,7 @@ namespace aspect
                                                     std::vector<double> &data) const
       {
         data.push_back(this->get_adiabatic_conditions().pressure(position));
-        data.push_back(this->get_initial_conditions().initial_temperature(position));
+        data.push_back(this->get_initial_temperature_manager().initial_temperature(position));
       }
 
       template <int dim>

@@ -191,7 +191,6 @@ namespace aspect
                           0
                           :
                           BoundaryComposition::create_boundary_composition<dim>(prm)),
-    initial_conditions (InitialConditions::create_initial_conditions<dim>(prm)),
     prescribed_stokes_solution (PrescribedStokesSolution::create_prescribed_stokes_solution<dim>(prm)),
     compositional_initial_conditions (CompositionalInitialConditions::create_initial_conditions<dim>(prm)),
     adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
@@ -453,6 +452,10 @@ namespace aspect
     gravity_model->parse_parameters (prm);
     gravity_model->initialize ();
 
+    // Create the initial condition plugins
+    initial_temperature_manager.initialize_simulator(*this);
+    initial_temperature_manager.parse_parameters (prm);
+
     if (boundary_temperature.get())
       {
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_temperature.get()))
@@ -468,11 +471,6 @@ namespace aspect
         boundary_composition->parse_parameters (prm);
         boundary_composition->initialize ();
       }
-
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(initial_conditions.get()))
-      sim->initialize_simulator (*this);
-    initial_conditions->parse_parameters (prm);
-    initial_conditions->initialize ();
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(compositional_initial_conditions.get()))
       sim->initialize_simulator (*this);

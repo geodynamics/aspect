@@ -1696,7 +1696,7 @@ namespace aspect
     GeometryModel::declare_parameters <dim>(prm);
     InitialTopographyModel::declare_parameters <dim>(prm);
     GravityModel::declare_parameters<dim> (prm);
-    InitialConditions::declare_parameters<dim> (prm);
+    InitialConditions::Manager<dim>::declare_parameters (prm);
     CompositionalInitialConditions::declare_parameters<dim> (prm);
     PrescribedStokesSolution::declare_parameters<dim> (prm);
     BoundaryTemperature::declare_parameters<dim> (prm);

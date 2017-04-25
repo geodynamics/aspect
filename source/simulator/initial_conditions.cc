@@ -95,8 +95,8 @@ namespace aspect
         const VectorFunctionFromScalarFunctionObject<dim, double> &advf_init_function =
           (advf.is_temperature()
            ?
-           VectorFunctionFromScalarFunctionObject<dim, double>(std_cxx11::bind(&InitialConditions::Interface<dim>::initial_temperature,
-                                                                               std_cxx11::ref(*initial_conditions),
+           VectorFunctionFromScalarFunctionObject<dim, double>(std_cxx11::bind(&InitialConditions::Manager<dim>::initial_temperature,
+                                                                               std_cxx11::ref(initial_temperature_manager),
                                                                                std_cxx11::_1),
                                                                introspection.component_indices.temperature,
                                                                introspection.n_components)
@@ -163,9 +163,10 @@ namespace aspect
                   const double value =
                     (advf.is_temperature()
                      ?
-                     initial_conditions->initial_temperature(fe_values.quadrature_point(i))
+                     initial_temperature_manager.initial_temperature(fe_values.quadrature_point(i))
                      :
                      compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n-1));
+
                   initial_solution(local_dof_indices[system_local_dof]) = value;
 
                   // if it is specified in the parameter file that the sum of all compositional fields
