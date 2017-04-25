@@ -864,7 +864,7 @@ namespace aspect
 
           if (output_interval > 0.0)
             {
-              // as we increase the the time indicating when to write the next graphical output
+              // since we increase the time indicating when to write the next graphical output
               // every time we execute the visualization postprocessor, there is no good way to
               // figure out when to write graphical output for the nonlinear iterations if we do
               // not want to output every time step
