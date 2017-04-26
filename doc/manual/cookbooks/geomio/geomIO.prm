@@ -17,7 +17,7 @@ subsection Compositional fields
 end
 
 # We use the ascii data plugin to read in the file created with geomIO.
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = ascii data
 
   subsection Ascii data model

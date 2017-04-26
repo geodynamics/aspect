@@ -48,7 +48,7 @@ subsection Boundary temperature model
   set Model name = box
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function expression = 0
@@ -64,7 +64,7 @@ subsection Compositional fields
   set Number of fields = 2
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,z

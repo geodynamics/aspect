@@ -1,0 +1,10 @@
+Changed: The names for all initial condition
+plugins are now unified to the universal scheme 'initial_property' that
+is planned for ASPECT 2.0.
+This change is unfortunately incompatible with existing user plugins,
+and existing parameter files. The provided scripts
+doc/update_source_files_to_2.0.0.sed and doc/update_prm_files_to_2.0.0.sed
+allow an easy conversion of existing plugins and parameter files to the
+new naming scheme.
+<br>
+(Rene Gassmoeller, 2017/04/24)

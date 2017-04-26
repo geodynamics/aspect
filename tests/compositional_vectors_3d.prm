@@ -5,7 +5,7 @@ subsection Geometry model
   set Model name = box
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
 end
 
@@ -48,7 +48,7 @@ subsection Compositional fields
   set Names of fields = unrelated1, vec_x, vec_y, vec_z, unrelated2
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Function expression = 1;1;.5;1;0

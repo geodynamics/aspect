@@ -33,7 +33,7 @@ subsection Boundary velocity model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
 
   subsection Function

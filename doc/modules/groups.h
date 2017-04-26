@@ -100,7 +100,7 @@
  */
 
 /**
- * @defgroup InitialConditionsModels Describing initial conditions for the temperature
+ * @defgroup InitialTemperatures Describing initial conditions for the temperature
  *
  * A module for the definition of functions and classes that have to do with
  * initial conditions for the temperature.
@@ -109,7 +109,7 @@
  */
 
 /**
- * @defgroup InitialCompositionModels Describing initial conditions for compositional fields
+ * @defgroup InitialCompositions Describing initial conditions for compositional fields
  *
  * A module for the definition of functions and classes that have to do with
  * initial conditions for the composition.

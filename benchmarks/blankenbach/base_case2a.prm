@@ -46,7 +46,7 @@ subsection Gravity model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function constants  = z1=0.102367, z2=0.897633, pi=3.14159265359

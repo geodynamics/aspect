@@ -44,7 +44,7 @@ subsection Boundary temperature model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = SAVANI perturbation
   subsection SAVANI perturbation
     set Initial condition file name           = savani.dlnvs.60.m.ab

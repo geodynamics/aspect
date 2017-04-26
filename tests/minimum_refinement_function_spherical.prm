@@ -114,7 +114,7 @@ subsection Gravity model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = harmonic perturbation # default: 
   subsection Harmonic perturbation
     set Magnitude = 200

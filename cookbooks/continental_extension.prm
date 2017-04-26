@@ -87,7 +87,7 @@ end
 # The upper crust, lower crust and mantle are continuous horizontal layers
 # of varying thickness.  The top of the seed (4x8 km) is placed 2 km beneath
 # the base of the crust and straddles the horizontal midpoint.
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y
@@ -128,7 +128,7 @@ end
 #                             lower crust (qs2) = 0.035357 W/m^2; 
 #                             mantle      (qs3) = 0.035357 W/m^2;
 #   Temperature - base of upper crust (ts2) = 681.5714
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Variable names = x,y

@@ -85,7 +85,7 @@ subsection Gravity model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = adiabatic
   subsection Adiabatic
     set Age top boundary layer      = 1e7
@@ -95,7 +95,7 @@ subsection Initial conditions
   end
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Function constants  = pi=3.1415926,a = 1e-5, b = 35000, c = 2000, d=17500

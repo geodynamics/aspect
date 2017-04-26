@@ -1,5 +1,5 @@
 #include <aspect/melt.h>
-#include <aspect/compositional_initial_conditions/interface.h>
+#include <aspect/initial_composition/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
@@ -444,7 +444,7 @@ namespace aspect
      * An initial conditions model for the solitary waves benchmark.
      */
     template <int dim>
-    class SolitaryWaveInitialCondition : public CompositionalInitialConditions::Interface<dim>,
+    class SolitaryWaveInitialCondition : public InitialComposition::Interface<dim>,
       public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -555,7 +555,7 @@ namespace aspect
     void
     SolitaryWaveInitialCondition<dim>::declare_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Compositional initial conditions");
+      prm.enter_subsection("Initial composition model");
       {
         prm.enter_subsection("Solitary wave initial condition");
         {
@@ -589,7 +589,7 @@ namespace aspect
     void
     SolitaryWaveInitialCondition<dim>::parse_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Compositional initial conditions");
+      prm.enter_subsection("Initial composition model");
       {
         prm.enter_subsection("Solitary wave initial condition");
         {
@@ -663,15 +663,15 @@ namespace aspect
       // then get the parameters we need
 
       const SolitaryWaveInitialCondition<dim> *
-      initial_conditions
+      initial_composition
         = this->get_initial_composition_manager().template find_initial_composition_model<SolitaryWaveInitialCondition<dim> > ();
 
-      AssertThrow(initial_conditions != NULL,
-                  ExcMessage("Postprocessor solitary wave only works with the solitary wave initial condition."));
+      AssertThrow(initial_composition != NULL,
+                  ExcMessage("Postprocessor solitary wave only works with the solitary wave initial composition."));
 
-      amplitude           = initial_conditions->get_amplitude();
-      background_porosity = initial_conditions->get_background_porosity();
-      offset              = initial_conditions->get_offset();
+      amplitude           = initial_composition->get_amplitude();
+      background_porosity = initial_composition->get_background_porosity();
+      offset              = initial_composition->get_offset();
 
       if (dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model()) != NULL)
         {
@@ -999,8 +999,8 @@ namespace aspect
                                   "the Keller et al., JGI, 2013, paper with the one computed by ASPECT "
                                   "and reports the error.")
 
-    ASPECT_REGISTER_COMPOSITIONAL_INITIAL_CONDITIONS(SolitaryWaveInitialCondition,
-                                                     "Solitary wave initial condition",
-                                                     "Composition is set to a solitary wave function.")
+    ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL(SolitaryWaveInitialCondition,
+                                              "Solitary wave initial condition",
+                                              "Composition is set to a solitary wave function.")
   }
 }

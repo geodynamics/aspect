@@ -61,7 +61,7 @@ end
 # To satisfy these constraints, the following values are required:
 #   surface heat flow (qs) = 0.0635 W/m^2; basal heat flow = 0.365 W/m^2;
 #   mantle thermal conducitivty (km) = 3.65 (W/(m K)); 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Variable names = x,y
@@ -98,8 +98,8 @@ subsection Compositional fields
   set Mapped particle properties = s11:integrated strain [1], s22:integrated strain [2], s12:integrated strain [3], crust:initial crust
 end
 
-# Compositional initial conditions 
-subsection Compositional initial conditions
+# Initial composition model 
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y

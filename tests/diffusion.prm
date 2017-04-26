@@ -190,7 +190,7 @@ subsection Gravity model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   # Select one of the following models:
   #
   # `perturbed box': An initial temperature field in which the temperature is

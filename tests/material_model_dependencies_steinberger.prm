@@ -78,7 +78,7 @@ end
 
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = harmonic perturbation
   subsection Harmonic perturbation
     set Magnitude = 200.0

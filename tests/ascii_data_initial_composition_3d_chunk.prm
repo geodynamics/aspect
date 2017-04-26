@@ -21,7 +21,7 @@ subsection Geometry model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function expression = 1613
@@ -60,7 +60,7 @@ subsection Compositional fields
 end
 
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = ascii data
   subsection Ascii data model
     set Data directory       = $ASPECT_SOURCE_DIR/data/compositional-initial-conditions/ascii-data/test/

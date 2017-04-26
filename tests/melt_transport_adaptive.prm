@@ -101,7 +101,7 @@ subsection Boundary velocity model
 end  
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function # default: 
   subsection Function
     set Function expression = 0
@@ -109,7 +109,7 @@ subsection Initial conditions
   end
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function # default: 
   subsection Function
     set Function constants = pi=3.14159265359

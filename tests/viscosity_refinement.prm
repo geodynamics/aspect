@@ -36,7 +36,7 @@ subsection Gravity model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function # default: 
   subsection Function
     set Function constants  = l=250000

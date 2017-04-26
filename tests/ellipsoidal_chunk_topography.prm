@@ -63,7 +63,7 @@ subsection Material model
   end
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function expression = 1.473e3

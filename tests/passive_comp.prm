@@ -158,7 +158,7 @@ subsection Gravity model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   # Select one of the following models:
   #
   # `spherical hexagonal perturbation':
@@ -200,7 +200,7 @@ subsection Initial conditions
 
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   # Select one of the following models:
   #
   # `function':

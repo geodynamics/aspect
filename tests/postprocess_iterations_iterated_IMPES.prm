@@ -74,7 +74,7 @@ subsection Gravity model
 
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function constants  = pi=3.1415926,x0=150000,a = 0.2, b = 75000, c = 10000, d=0.0
@@ -83,7 +83,7 @@ subsection Initial conditions
   end
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Function constants  = pi=3.1415926,x0=150000,a = 0.2, b = 75000, c = 10000, d=0.0

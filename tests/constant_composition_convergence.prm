@@ -41,7 +41,7 @@ subsection Gravity model
   end
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
 
   subsection Function
@@ -51,7 +51,7 @@ subsection Initial conditions
   end
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   
   subsection Function

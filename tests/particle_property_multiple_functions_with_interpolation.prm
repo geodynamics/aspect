@@ -49,7 +49,7 @@ subsection Boundary temperature model
   set Model name = box
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function expression = 0
@@ -67,7 +67,7 @@ subsection Compositional fields
   set Mapped particle properties = advection_particle:function [0], advection_particle2:function [1]
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,z

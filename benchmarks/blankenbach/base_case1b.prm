@@ -2,7 +2,7 @@ include base_case1a.prm
 
 set Additional shared libraries            = ./plugin/libblankenbach.so
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = ascii data
   subsection Ascii data model
     set Data directory = 

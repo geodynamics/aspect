@@ -124,7 +124,7 @@ end
 # constants. We choose a linear temperature profile that
 # matches the boundary conditions defined below plus
 # a small perturbation:
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
 
   subsection Function
@@ -134,7 +134,7 @@ subsection Initial conditions
   end
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
 #    set Function constants  = z1=0.102367, z2=0.897633, pi=3.14159265359

@@ -28,7 +28,7 @@ end
 # Angular mode is set to 4 in order to match the number of
 # convective cells reported by Davies et al.
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = spherical hexagonal perturbation
   subsection Spherical hexagonal perturbation
     set Angular mode          = 4

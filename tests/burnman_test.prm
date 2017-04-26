@@ -96,7 +96,7 @@ end
 # corresponding to the Birch-Murnaghan equation of state.
 # In addition to the adiabatic profile, there are thermal boundary 
 # layers at the sirface and the core-mantle boundary.
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = adiabatic
 
   subsection Adiabatic

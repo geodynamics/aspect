@@ -68,7 +68,7 @@ end
 
 
 # temperature field doesn't matter. set it to zero
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function expression = 0

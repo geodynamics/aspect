@@ -89,8 +89,8 @@ ertical
 end
 
 
-subsection Initial c\
-onditions
+subsection Initial t\
+emperature model
   set Model name = p\
 erturbed box
 end

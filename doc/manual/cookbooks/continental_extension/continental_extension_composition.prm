@@ -3,7 +3,7 @@ subsection Compositional fields
   set Names of fields = upper, lower, mantle, seed
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y
