@@ -68,7 +68,7 @@ namespace aspect
       {
         prm.enter_subsection("Postprocess");
         {
-          prm.enter_subsection("Tracers");
+          prm.enter_subsection("Particles");
           {
             prm.enter_subsection("Generator");
             {
@@ -77,16 +77,16 @@ namespace aspect
                 prm.declare_entry ("Data directory",
                                    "$ASPECT_SOURCE_DIR/data/particle/generator/ascii/",
                                    Patterns::DirectoryName (),
-                                   "The name of a directory that contains the tracer data. This path "
+                                   "The name of a directory that contains the particle data. This path "
                                    "may either be absolute (if starting with a '/') or relative to "
                                    "the current directory. The path may also include the special "
                                    "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
                                    "in which the ASPECT source files were located when ASPECT was "
                                    "compiled. This interpretation allows, for example, to reference "
                                    "files located in the 'data/' subdirectory of ASPECT. ");
-                prm.declare_entry ("Data file name", "tracer.dat",
+                prm.declare_entry ("Data file name", "particle.dat",
                                    Patterns::Anything (),
-                                   "The name of the tracer file.");
+                                   "The name of the particle file.");
                 prm.leave_subsection();
               }
               prm.leave_subsection();
@@ -104,7 +104,7 @@ namespace aspect
       {
         prm.enter_subsection("Postprocess");
         {
-          prm.enter_subsection("Tracers");
+          prm.enter_subsection("Particles");
           {
             prm.enter_subsection("Generator");
             {
@@ -136,10 +136,10 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_GENERATOR(AsciiFile,
                                          "ascii file",
-                                         "Generates a distribution of tracers from coordinates "
+                                         "Generates a distribution of particles from coordinates "
                                          "specified in an Ascii data file. The file format is "
                                          "a simple text file, with as many columns as spatial "
-                                         "dimensions and as many lines as tracers to be generated. "
+                                         "dimensions and as many lines as particles to be generated. "
                                          "Initial comment lines starting with `#' will be discarded."
                                          "All of the values that define this generator are read "
                                          "from a section ``Particle generator/Ascii file'' in the "

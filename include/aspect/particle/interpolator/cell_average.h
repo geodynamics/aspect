@@ -31,7 +31,7 @@ namespace aspect
     namespace Interpolator
     {
       /**
-       * Return the averaged properties of all tracers on the given cell.
+       * Return the averaged properties of all particles on the given cell.
        *
        * @ingroup ParticleInterpolators
        */
@@ -40,7 +40,7 @@ namespace aspect
       {
         public:
           /**
-           * Return the cell-wise averaged properties of all tracers of the cell containing the
+           * Return the cell-wise averaged properties of all particles of the cell containing the
            * given positions.
            */
           virtual

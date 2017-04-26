@@ -610,7 +610,7 @@ component, whereas the compositional equations do not.
 There are other equations that \aspect{} can optionally solve. For example, it
 can deal with free surfaces (see Section~\ref{sec:freesurface}), melt generation and
 transport (see Section~\ref{sec:melt_transport}), and it can advect along
-particles or tracers (see Section~\ref{sec:particles}). These optional models
+particles (see Section~\ref{sec:particles}). These optional models
 are discussed in more detail in the indicated sections.
 
 
@@ -2347,7 +2347,7 @@ $\mathbf g_m$ in ways that also allows for impulse (delta) functions in time.
 How particles are used in practice is probably best explained using examples. To
 this end, see in particular Section~\ref{sec:cookbooks-particles}. All
 particle-related input parameters are listed in
-Section~\ref{parameters:Postprocess/Tracers}. The implementation of particles is
+Section~\ref{parameters:Postprocess/Particles}. The implementation of particles is
 discussed in great detail in \cite{GHPB17}.
 
 
@@ -5287,14 +5287,14 @@ the transition from red or blue to the edge of the shown region is no
 wider than 3 cells. This means that the computation is not overly
 diffusive but it is nevertheless true that this method has difficulty
 following long and thin filaments.%
-\footnote{We note that this is no different for tracers where the
-  position of tracers has to be integrated over time and is subject to
+\footnote{We note that this is no different for particles where the
+  position of particles has to be integrated over time and is subject to
   numerical error. In simulations, their location is therefore not the
   exact one but also subject to a diffusive process resulting from
   numerical inaccuracies. Furthermore, in long thin filaments, the
-  number of tracers per cell often becomes too small and new tracers
+  number of particles per cell often becomes too small and new particles
   have to be inserted; their properties are then interpolated from the
-  surrounding tracers, a process that also incurs a smoothing penalty.}
+  surrounding particles, a process that also incurs a smoothing penalty.}
 This is an area in which \aspect{} may see improvements in the future.
 
 
@@ -5307,7 +5307,7 @@ This is an area in which \aspect{} may see improvements in the future.
 \end{figure}
 
 A different way of looking at the quality of compositional fields as opposed to
-tracers is to ask whether they conserve mass. In the current context, the
+particles is to ask whether they conserve mass. In the current context, the
 mass contained in the $i$th compositional field is $m_i(t)=\int_\Omega c_i(\mathbf x,t)$.
 This can easily be achieve in the following way, by adding the \texttt{composition statistics}
 postprocessor:
@@ -5491,7 +5491,7 @@ of the domain ascends, reaches the reaction depth and gets converted to the seco
 
 
 
-\subsubsection{Using tracer particles}
+\subsubsection{Using particles}
 \label{sec:cookbooks-particles}
 
 Using compositional fields to trace where material has come from or is going to
@@ -5504,32 +5504,32 @@ is that the value of a compositional field is well defined at every point within
 the domain. On the other hand, compositional fields over time diffuse initially
 sharp interfaces, as we have seen in the images of the previous section.
 
-At the same time, the geodynamics community has a history of using tracers for
+At the same time, the geodynamics community has a history of using particles for
 this purpose. Historically, this may have been because it is conceptually
 simpler to advect along individual particles rather than whole fields, since it
 only requires an ODE integrator rather than the stabilization techniques
 necessary to advect fields. They also provide the appearance of no diffusion,
 though this is arguable. Leaving aside the debate whether fields or particles are the
-way to go, \aspect{} supports both: using fields and using tracers.
+way to go, \aspect{} supports both: using fields and using particles.
 
-In order to advect tracer particles along with the flow field, one just needs to
-add the \texttt{tracers} postprocessor to the list of postprocessors and specify
+In order to advect particles along with the flow field, one just needs to
+add the \texttt{particles} postprocessor to the list of postprocessors and specify
 a few parameters. We do so in the
-\url{cookbooks/composition-passive-tracers.prm} input file, which is otherwise
+\url{cookbooks/composition-passive-particles.prm} input file, which is otherwise
 just a minor variation of the \url{cookbooks/composition-passive.prm} case
 discussed in the previous Section~\ref{sec:cookbooks-composition}. In
 particular, the postprocess section now looks like this:
 
-\index[prmindex]{Number of tracers}
-\index[prmindexfull]{Postprocess!Tracers!Number of tracers}
+\index[prmindex]{Number of particles}
+\index[prmindexfull]{Postprocess!Particles!Number of particles}
 
-\lstinputlisting[language=prmfile]{cookbooks/composition-passive-tracers/tracer.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/composition-passive-particles/particle.part.prm.out}
 
 The 1000 particles we are asking here are initially uniformly distributed
 throughout the domain and are, at the end of each time step, advected along with
 the velocity field just computed. (There are a number of options to decide which
 method to use for advecting particles, see
-Section~\ref{parameters:Postprocess/Tracers}.) 
+Section~\ref{parameters:Postprocess/Particles}.) 
 
 If you run this cookbook, information about all particles will be written into
 the output directory selected in the input file (as discussed in
@@ -5567,14 +5567,14 @@ that correspond to particles (for example, \texttt{output/solution.visit} and
 for the particles, selecting the ``id'' of particles to color each particle.
 By going to, for example, the output from the 72nd visualization output, this
 then results in a plot like the one shown in
-Fig.~\ref{fig:composition-passive-tracers}.
+Fig.~\ref{fig:composition-passive-particles}.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.5\textwidth]{cookbooks/composition-passive-tracers/solution-00072.png}
+  \includegraphics[width=0.5\textwidth]{cookbooks/composition-passive-particles/solution-00072.png}
   \caption{\it Passively advected quantities visualized through both a
   compositional field and a set of 1,000 particles, at $t=7.2$.}
-  \label{fig:composition-passive-tracers}
+  \label{fig:composition-passive-particles}
 \end{figure}
 
 The particles shown here are not too impressive in still pictures since they are
@@ -5599,7 +5599,7 @@ In any case, we will see in the next section how to attach more interesting
 information to particles, and how to visualize these.
 
 
-\paragraph{Using tracer properties.}
+\paragraph{Using particle properties.}
 
 The particles in the above example only fulfill the purpose of
 visualizing the convection pattern. A more meaningful use for
@@ -5612,19 +5612,19 @@ initial composition), evaluating a property at a defined particle path (like the
 pressure-temperature evolution of a certain piece of rock), or by integrating a
 quantity along a particle parth (like the integrated strain a certain domain has
 experienced).  We illustrate these properties in the cookbook
-\url{cookbooks/composition-passive-tracers-properties.prm}, in which we add the
-following lines to the \texttt{Tracers} subsection (we also increase the number
+\url{cookbooks/composition-passive-particles-properties.prm}, in which we add the
+following lines to the \texttt{Particles} subsection (we also increase the number
 of particles compared to the previous section to make the visualizations below
 more obvious):
 
-\lstinputlisting[language=prmfile]{cookbooks/composition-passive-tracers/tracer-properties.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/composition-passive-particles/particle-properties.part.prm.out}
 
-These commands make sure that every tracer will carry four different
+These commands make sure that every particle will carry four different
 properties (\texttt{function}, \texttt{pT path}, \texttt{initial
   position} and \texttt{initial composition}), some of which may be
 scalars and others can have multiple components. (A full list of
 particle properties that can currently be selected can be found in
-Section~\ref{parameters:Postprocess/Tracers}, and new tracer
+Section~\ref{parameters:Postprocess/Particles}, and new particle
 properties can be added as plugins as described in
 Section~\ref{sec:write-plugin}.) The properties selected above do the following:
 
@@ -5672,14 +5672,14 @@ Section~\ref{sec:write-plugin}.) The properties selected above do the following:
   should behave identical to the compositional field (except that the
   compositional field may have a reaction term that this particle
   property does not), although the two are of course advected using
-  very different methods. This allows to compare the error in tracer
+  very different methods. This allows to compare the error in particle
   position to the numerical diffusion of the compositional field.
 \item \texttt{pT path:} This property is interesting in that the
   particle property's values always exactly mirror the pressure and
   temperature at the particle's current location. This does not seem
   to be very useful since the information is already
   avaiable. However, because each particle has a unique id, one can
-  select a particular tracer particle and output its properties
+  select a particular particle and output its properties
   (including pressure and temperature based on the \texttt{pT path}
   property) at all time steps. This allows for the creation of a pressure-temperature curve of a certain piece of rock. This property is interesting in many lithosphere and crustal scale models, because it is determining the metamorphic reactions that happen during deformation processes (e.g., in a subduction zone).
 \end{itemize}
@@ -5688,26 +5688,26 @@ Section~\ref{sec:write-plugin}.) The properties selected above do the following:
   \centering
   \phantom{.}
   \hfill
-  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-tracers-properties/composition-C1.png}
+  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-particles-properties/composition-C1.png}
   \hfill
-  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-tracers-properties/particles-C1.png}
+  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-particles-properties/particles-C1.png}
   \phantom{.}
   \\
   \phantom{.}
   \hfill
-  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-tracers-properties/initial-position-00000.png}
+  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-particles-properties/initial-position-00000.png}
   \hfill
-  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-tracers-properties/initial-position-00199.png}
+  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-particles-properties/initial-position-00199.png}
   \phantom{.}
   \caption{\it Passively advected particle properties visualized. Top row:
   Composition $C_1$ and particle property ``initial $C_1$''. The blue line in both
   figures is the 0.5-isocontour for the $C_1$ field. Bottom row: Norm of the
   ``initial position'' of particles at $t=0$ and $t=20$.}
-  \label{fig:composition-passive-tracers-properties}
+  \label{fig:composition-passive-particles-properties}
 \end{figure}
 
 The results of all of these properties can of course be visualized.
-Fig.~\ref{fig:composition-passive-tracers-properties} shows some of the pictures
+Fig.~\ref{fig:composition-passive-particles-properties} shows some of the pictures
 one can create with particles.
 The top row shows both the composition field $C_1$ (along with the mesh on
 which it is defined) and the corresponding ``initial $C_1$'' particle property,
@@ -5722,9 +5722,9 @@ the initial time and at time $t=20$. These images therefore show how far from
 the origin each of the particles shown was at the initial time.
 
 
-\paragraph{Using active tracers.}
-In the examples above, tracer properties passively track distinct
-model properties.  These tracer properties, however, may also be used
+\paragraph{Using active particles.}
+In the examples above, particle properties passively track distinct
+model properties.  These particle properties, however, may also be used
 to actively influence the model as it runs.  For instance, a
 composition-dependent material model may use particles' initial
 composition rather than an advected compositional field. To make this
@@ -5734,15 +5734,15 @@ points at which material models and other parts of the code need to
 evaluate these properties -- we need to somehow get the values from
 particles back to fields that can then be evaluated at any point where
 this is necessary.
-A slightly modified version of the active-composition cookbook (\url{cookbooks/composition-active.prm}) illustrates how to use `active tracers' in this manner.
+A slightly modified version of the active-composition cookbook (\url{cookbooks/composition-active.prm}) illustrates how to use `active particles' in this manner.
 
-This cookbook, \url{cookbooks/composition-active-tracers.prm}, modifies two sections of the input file.  First, tracers are added under the \texttt{Postprocess} section: 
+This cookbook, \url{cookbooks/composition-active-particles.prm}, modifies two sections of the input file.  First, particles are added under the \texttt{Postprocess} section: 
 
-\lstinputlisting[language=prmfile]{cookbooks/composition-active-tracers/tracers.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/composition-active-particles/particles.part.prm.out}
 Here, each particle will carry the \texttt{velocity} and
-\texttt{initial composition} properties.  In order to use the tracer initial composition value to modify the flow through the material model, we now modify the \texttt{Composition} section:
+\texttt{initial composition} properties.  In order to use the particle initial composition value to modify the flow through the material model, we now modify the \texttt{Composition} section:
 
-\lstinputlisting[language=prmfile]{cookbooks/composition-active-tracers/composition.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/composition-active-particles/composition.part.prm.out}
  
 What this does is the following: It says that there will be two
 compositional fields, called \texttt{lower} and \texttt{upper}
@@ -5775,7 +5775,7 @@ time step.
  
 In this model the given global refinement level (5), associated number of cells (1024) and 100,000 total particles produces an average particle-per-cell count slightly below 100.  While on the high end compared to most geodynamic studies using active particles, increasing the number of particles per cell further may alter the solution.  As with the numerical resolution, any study using active particles should systematically vary the number of particles per cell in order to determine this parameter's influence on the simulation.
 
-\note{\aspect{}'s tracer implementation is in a preliminary state. While the accuracy and scalability of the implementation is benchmarked, other limitations remain. This in particular means that it is not optimized for performance, and more than a few thousand tracers per process can slow down a model significantly. Moreover, models with a highly adaptive mesh and many tracers do encounter a significant slowdown, because \aspect{} only considers the number of degrees of freedom for load balancing across processes and not the number of tracers. Therefore processes that compute the solution for coarse-grid regions have to process many more tracers than other processes. Additionally, the checkpoint/restart functionality for tracers is only implemented in models with a constant number of processes before and after the checkpoint and when the selected tracer properties do not change. These limitations might be removed over time, but for current models the user should be aware of them.}
+\note{\aspect{}'s particle implementation is in a preliminary state. While the accuracy and scalability of the implementation is benchmarked, other limitations remain. This in particular means that it is not optimized for performance, and more than a few thousand particles per process can slow down a model significantly. Moreover, models with a highly adaptive mesh and many particles do encounter a significant slowdown, because \aspect{} only considers the number of degrees of freedom for load balancing across processes and not the number of particles. Therefore processes that compute the solution for coarse-grid regions have to process many more particles than other processes. Additionally, the checkpoint/restart functionality for particles is only implemented in models with a constant number of processes before and after the checkpoint and when the selected particle properties do not change. These limitations might be removed over time, but for current models the user should be aware of them.}
 
 
 \subsubsection{Using a free surface}
@@ -6398,13 +6398,13 @@ Because the values of the compositional fields are part of what the material mod
 they can easily be used for computing material model outputs such as the viscosity.  
 
 \note{In this model we present the use of multiple compositional fields for other purposes than chemical composition.
-It would have been feasible to run the same model with tracer particles that track the deformation gradient, as
+It would have been feasible to run the same model with particles that track the deformation gradient, as
 additionally implemented and tested in the simple shear and pure shear benchmarks mentioned in this section. 
 Both approaches have specific advantages, and for scientific computations one needs to evaluate the more suitable
 strategy. Compositional fields cover the whole domain, but are affected by numerical diffusion, effectively reducing the
-maximum accumulated strain. Tracers only provide finite strain values at discrete positions, but can, if this is desired, be used in 
+maximum accumulated strain. Particles only provide finite strain values at discrete positions, but can, if this is desired, be used in 
 fewer numbers and only a part of the model domain (and are much faster in this case). If however
-there needs to be a large number of tracers (possibly because they are used for other purposes as well), then they
+there needs to be a large number of particles (possibly because they are used for other purposes as well), then they
 can be much more expensive. Both approaches can be used to actively influence the rheology in the material model.}
 
 \subsubsection{Reading in compositional initial composition files generated with geomIO}
@@ -9367,7 +9367,7 @@ Accuracy also improves with increasing mesh resolution, though its convergence o
 to be excellent.  It is possible that other mesh refinement parameters than we tried in this benchmark 
 could improve the convergence. The primary challenge in accuracy is limiting numerical diffusion 
 of the rising blob. If the blob becomes too diffuse, its ability to lift topography is diminished.
-It would be instructive to compare the results of this benchmark using tracer particles with the 
+It would be instructive to compare the results of this benchmark using particles with the 
 results using compositional fields.
 
 \subsubsection{The solitary wave benchmark}
@@ -9682,7 +9682,7 @@ you would compute whatever you are interested in (e.g., heat fluxes)
 and return this information in the statistics object that then gets written
 to a file (see Sections~\ref{sec:running-overview} and \ref{sec:viz-stat}).
 A postprocessor may also generate other files if it so likes -- e.g., graphical
-output, a file that stores the locations of tracers, etc.
+output, a file that stores the locations of particles, etc.
 To do so, obviously you need access to the current solution. This is
 stored in a vector somewhere in the core of \aspect{}. However, this
 vector is, by itself, not sufficient: you also need to know the finite
@@ -10569,9 +10569,9 @@ information from one invocation at one timestep to the next invocation,%
 there is nothing that prohibits postprocessors from doing so. For example, the
 following ideas would fit nicely into the postprocessor framework:
 \begin{itemize}
-\item \textit{Passive tracers:} If one would like to follow the trajectory of
+\item \textit{Passive particles:} If one would like to follow the trajectory of
   material as it is advected along with the flow field, one technique is to
-  use tracer particles. To implement this, one would start with an initial
+  use particles. To implement this, one would start with an initial
   population of particles distributed in a certain way, for example close to
   the core-mantle boundary. At the end of each time step, one would then need
   to move them forward with the flow field by one time increment. As long as
@@ -10579,7 +10579,7 @@ following ideas would fit nicely into the postprocessor framework:
   information that feeds into material properties; in other words, they are
   \textit{passive}), their location could well
   be stored in a postprocessor object and then be output in periodic intervals
-  for visualization. In fact, such a passive tracer postprocessor is already
+  for visualization. In fact, such a passive particle postprocessor is already
   available.
 
 \item \textit{Surface or crustal processes:} Another possibility would be to keep track

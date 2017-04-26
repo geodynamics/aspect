@@ -69,9 +69,9 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_PROPERTY(InitialComposition,
                                         "initial composition",
-                                        "Implementation of a plugin in which the tracer "
+                                        "Implementation of a plugin in which the particle "
                                         "property is given as the initial composition "
-                                        "at the particle's initial position. The tracer "
+                                        "at the particle's initial position. The particle "
                                         "gets as many properties as there are "
                                         "compositional fields.")
     }

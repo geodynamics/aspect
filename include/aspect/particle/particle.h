@@ -53,12 +53,12 @@ namespace aspect
 
 #ifdef DEAL_II_WITH_64BIT_INDICES
       /**
-       * The type used for indices of tracers. While in
+       * The type used for indices of particles. While in
        * sequential computations the 4 billion indices of 32-bit unsigned integers
        * is plenty, parallel computations using hundreds of processes can overflow
        * this number and we need a bigger index space. We here utilize the same
        * build variable that controls the dof indices of deal.II because the number
-       * of degrees of freedom and the number of tracers are typically on the same
+       * of degrees of freedom and the number of particles are typically on the same
        * order of magnitude.
        *
        * The data type always indicates an unsigned integer type.
@@ -69,15 +69,15 @@ namespace aspect
        * An identifier that denotes the MPI type associated with
        * types::global_dof_index.
        */
-#  define ASPECT_TRACER_INDEX_MPI_TYPE MPI_UNSIGNED_LONG_LONG
+#  define ASPECT_PARTICLE_INDEX_MPI_TYPE MPI_UNSIGNED_LONG_LONG
 #else
       /**
-       * The type used for indices of tracers. While in
+       * The type used for indices of particles. While in
        * sequential computations the 4 billion indices of 32-bit unsigned integers
        * is plenty, parallel computations using hundreds of processes can overflow
        * this number and we need a bigger index space. We here utilize the same
        * build variable that controls the dof indices of deal.II because the number
-       * of degrees of freedom and the number of tracers are typically on the same
+       * of degrees of freedom and the number of particles are typically on the same
        * order of magnitude.
        *
        * The data type always indicates an unsigned integer type.
@@ -88,7 +88,7 @@ namespace aspect
        * An identifier that denotes the MPI type associated with
        * types::global_dof_index.
        */
-#  define ASPECT_TRACER_INDEX_MPI_TYPE MPI_UNSIGNED
+#  define ASPECT_PARTICLE_INDEX_MPI_TYPE MPI_UNSIGNED
 #endif
     }
 
@@ -302,7 +302,7 @@ namespace aspect
         PropertyPool *property_pool;
 
         /**
-         * A handle to all tracer properties
+         * A handle to all particle properties
          */
         PropertyPool::Handle properties;
     };

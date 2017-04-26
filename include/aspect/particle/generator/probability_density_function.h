@@ -57,7 +57,7 @@ namespace aspect
        * a random number between zero and the global integral of the
        * probability density function uniquely defines one particular cell.
        * Afterwards, every process generates n_global_particles random numbers,
-       * but only generates a tracer if it is the owner of the active cell
+       * but only generates a particle if it is the owner of the active cell
        * that is associated with this random number.
        *
        * @ingroup ParticleGenerators
@@ -109,7 +109,7 @@ namespace aspect
           /**
            * Number of particles to create
            */
-          types::particle_index n_tracers;
+          types::particle_index n_particles;
 
           /**
            * A function object representing the particle location probability

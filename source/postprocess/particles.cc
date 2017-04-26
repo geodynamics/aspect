@@ -19,7 +19,7 @@
  */
 
 #include <aspect/global.h>
-#include <aspect/postprocess/tracers.h>
+#include <aspect/postprocess/particles.h>
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -32,52 +32,52 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    Tracers<dim>::Tracers ()
+    Particles<dim>::Particles ()
       :
 
       last_output_time(std::numeric_limits<double>::quiet_NaN())
     {}
 
     template <int dim>
-    Tracers<dim>::~Tracers ()
+    Particles<dim>::~Particles ()
     {}
 
     template <int dim>
     void
-    Tracers<dim>::initialize ()
+    Particles<dim>::initialize ()
     {}
 
     template <int dim>
     void
-    Tracers<dim>::generate_particles()
+    Particles<dim>::generate_particles()
     {
       world.generate_particles();
     }
 
     template <int dim>
     void
-    Tracers<dim>::initialize_particles()
+    Particles<dim>::initialize_particles()
     {
       world.initialize_particles();
     }
 
     template <int dim>
     const Particle::World<dim> &
-    Tracers<dim>::get_particle_world() const
+    Particles<dim>::get_particle_world() const
     {
       return world;
     }
 
     template <int dim>
     Particle::World<dim> &
-    Tracers<dim>::get_particle_world()
+    Particles<dim>::get_particle_world()
     {
       return world;
     }
 
     template <int dim>
     std::pair<std::string,std::string>
-    Tracers<dim>::execute (TableHandler &statistics)
+    Particles<dim>::execute (TableHandler &statistics)
     {
       // if this is the first time we get here, set the last output time
       // to the current time - output_interval. this makes sure we
@@ -126,7 +126,7 @@ namespace aspect
 
     template <int dim>
     void
-    Tracers<dim>::set_last_output_time (const double current_time)
+    Particles<dim>::set_last_output_time (const double current_time)
     {
       // if output_interval is positive, then update the last supposed output
       // time
@@ -146,7 +146,7 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void Tracers<dim>::serialize (Archive &ar, const unsigned int)
+    void Particles<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &last_output_time
       ;
@@ -155,7 +155,7 @@ namespace aspect
 
     template <int dim>
     void
-    Tracers<dim>::save (std::map<std::string, std::string> &status_strings) const
+    Particles<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
       std::ostringstream os;
       aspect::oarchive oa (os);
@@ -163,18 +163,18 @@ namespace aspect
       world.save(os);
       oa << (*this);
 
-      status_strings["Tracers"] = os.str();
+      status_strings["Particles"] = os.str();
     }
 
 
     template <int dim>
     void
-    Tracers<dim>::load (const std::map<std::string, std::string> &status_strings)
+    Particles<dim>::load (const std::map<std::string, std::string> &status_strings)
     {
       // see if something was saved
-      if (status_strings.find("Tracers") != status_strings.end())
+      if (status_strings.find("Particles") != status_strings.end())
         {
-          std::istringstream is (status_strings.find("Tracers")->second);
+          std::istringstream is (status_strings.find("Particles")->second);
           aspect::iarchive ia (is);
 
           // Load the particle world
@@ -187,11 +187,11 @@ namespace aspect
 
     template <int dim>
     void
-    Tracers<dim>::declare_parameters (ParameterHandler &prm)
+    Particles<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
-        prm.enter_subsection("Tracers");
+        prm.enter_subsection("Particles");
         {
           prm.declare_entry ("Time between data output", "1e8",
                              Patterns::Double (0),
@@ -212,11 +212,11 @@ namespace aspect
 
     template <int dim>
     void
-    Tracers<dim>::parse_parameters (ParameterHandler &prm)
+    Particles<dim>::parse_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
-        prm.enter_subsection("Tracers");
+        prm.enter_subsection("Particles");
         {
           output_interval = prm.get_double ("Time between data output");
           if (this->convert_output_to_years())
@@ -224,7 +224,7 @@ namespace aspect
 
           AssertThrow(this->get_parameters().run_postprocessors_on_nonlinear_iterations == false,
                       ExcMessage("Postprocessing nonlinear iterations in models with "
-                                 "tracer particles is currently not supported."));
+                                 "particles is currently not supported."));
 
         }
         prm.leave_subsection ();
@@ -246,14 +246,14 @@ namespace aspect
 {
   namespace Postprocess
   {
-    ASPECT_REGISTER_POSTPROCESSOR(Tracers,
-                                  "tracers",
-                                  "A Postprocessor that creates tracer particles that follow the "
+    ASPECT_REGISTER_POSTPROCESSOR(Particles,
+                                  "particles",
+                                  "A Postprocessor that creates particles that follow the "
                                   "velocity field of the simulation. The particles can be generated "
                                   "and propagated in various ways and they can carry a number of "
                                   "constant or time-varying properties. The postprocessor can write "
-                                  "output positions and properties of all tracers at chosen intervals, "
+                                  "output positions and properties of all particles at chosen intervals, "
                                   "although this is not mandatory. It also allows other parts of the "
-                                  "code to query the tracers for information.")
+                                  "code to query the particles for information.")
   }
 }

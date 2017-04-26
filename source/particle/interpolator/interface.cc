@@ -92,7 +92,7 @@ namespace aspect
         std::string name;
         prm.enter_subsection ("Postprocess");
         {
-          prm.enter_subsection ("Tracers");
+          prm.enter_subsection ("Particles");
           {
             name = prm.get ("Interpolation scheme");
           }
@@ -111,7 +111,7 @@ namespace aspect
         // declare the entry in the parameter file
         prm.enter_subsection ("Postprocess");
         {
-          prm.enter_subsection ("Tracers");
+          prm.enter_subsection ("Particles");
           {
             const std::string pattern_of_names
               = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();

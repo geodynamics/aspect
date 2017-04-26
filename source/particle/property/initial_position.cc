@@ -56,9 +56,9 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_PROPERTY(InitialPosition,
                                         "initial position",
-                                        "Implementation of a plugin in which the tracer "
+                                        "Implementation of a plugin in which the particle "
                                         "property is given as the initial position "
-                                        "of the tracer. This property is vector-valued with "
+                                        "of the particle. This property is vector-valued with "
                                         "as many components as there are space dimensions. "
                                         "In practice, it is often most useful to only "
                                         "visualize one of the components of this vector, "

@@ -51,3 +51,9 @@ s/InitialConditions/InitialTemperature/g
 s/enter_subsection*("Initial conditions")/enter_subsection ("Initial temperature model")/g
 s/INITIAL_CONDITIONS/INITIAL_TEMPERATURE_MODEL/g
 s/\@ingroup InitialConditionsModels/\@ingroup InitialTemperatures/g
+
+# Rename tracers to particles
+s/tracer particle/particle/g
+s/tracer/particle/g
+s/Tracer/Particle/g
+s/TRACER/PARTICLE/g

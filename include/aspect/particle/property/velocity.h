@@ -31,7 +31,7 @@ namespace aspect
     namespace Property
     {
       /**
-       * A class that sets tracer properties to the current velocity.
+       * A class that sets particle properties to the current velocity.
        *
        * @ingroup ParticleProperties
        */
@@ -86,7 +86,7 @@ namespace aspect
 
           /**
            * This implementation tells the particle manager that
-           * we need to update tracer properties over time.
+           * we need to update particle properties over time.
            */
           UpdateTimeFlags
           need_update () const;

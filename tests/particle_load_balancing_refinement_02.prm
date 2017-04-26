@@ -1,4 +1,4 @@
-# A test for the 'tracer distribution' refinement plugin.
+# A test for the 'particle distribution' refinement plugin.
 # The cell are refined based on the numbers of particles they
 # contain.
 
@@ -92,10 +92,10 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = tracers
+  set List of postprocessors = particles
 
-  subsection Tracers
-    set Number of tracers = 10
+  subsection Particles
+    set Number of particles = 10
     set Time between data output = 100
     set Load balancing strategy = none
     set Data output format = ascii

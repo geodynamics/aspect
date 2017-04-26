@@ -38,7 +38,7 @@ namespace aspect
      * $\rho_s \textbf{g}$ (solid density times gravity) or to
      * $\rho_f \textbf{g}$ (fluid density times gravity).
      *
-     * @ingroup BoundaryFluidPressuressss
+     * @ingroup BoundaryFluidPressuresssss
      */
     template <int dim>
     class Density : public Interface<dim>, public SimulatorAccess<dim>

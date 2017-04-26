@@ -1,7 +1,7 @@
 # A description of the van Keken et al. benchmark using smooth initial
 # conditions instead of the discontinuous ones in
 # van-keken-discontinuous.prm. See the manual for more information.
-# This test adds active tracers to the cookbook parameter file, 
+# This test adds active particles to the cookbook parameter file, 
 # and interpolates two particle properties defined by two functions
 # onto two compositional fields.
 
@@ -99,13 +99,13 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, composition statistics, tracers
+  set List of postprocessors = velocity statistics, composition statistics, particles
 
-  subsection Tracers
-    set Number of tracers = 1024
+  subsection Particles
+    set Number of particles = 1024
     set Time between data output = 70
     set Data output format = none
-    set List of tracer properties = velocity, function, initial composition
+    set List of particle properties = velocity, function, initial composition
     set Update ghost particles = true
 
     subsection Function

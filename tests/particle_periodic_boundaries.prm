@@ -1,8 +1,8 @@
 # A description of the van Keken et al. benchmark using smooth initial
 # conditions instead of the discontinuous ones in
 # van-keken-discontinuous.prm. See the manual for more information.
-# This test adds tracers to the cookbook parameter file and makes the
-# x boundary periodic to test the tracer handling at these boundaries
+# This test adds particles to the cookbook parameter file and makes the
+# x boundary periodic to test the particle handling at these boundaries
 
 # MPI: 2
 
@@ -98,13 +98,13 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, composition statistics,tracers
+  set List of postprocessors = velocity statistics, composition statistics,particles
 
-  subsection Tracers
-    set Number of tracers = 10
+  subsection Particles
+    set Number of particles = 10
     set Time between data output = 70
     set Data output format = vtu
-    set List of tracer properties = function, initial composition, initial position
+    set List of particle properties = function, initial composition, initial position
 
     subsection Function
       set Variable names      = x,z

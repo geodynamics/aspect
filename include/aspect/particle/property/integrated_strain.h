@@ -90,7 +90,7 @@ namespace aspect
 
           /**
            * This implementation tells the particle manager that
-           * we need to update tracer properties every time step.
+           * we need to update particle properties every time step.
            */
           UpdateTimeFlags
           need_update () const;

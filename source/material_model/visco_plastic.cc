@@ -746,7 +746,7 @@ namespace aspect
                                    "\n\n"
                                    "The user has the option to linearly reduce the cohesion and "
                                    "internal friction angle as a function of the finite strain invariant. "
-                                   "The finite strain invariant may be calculated through tracers or the compositional "
+                                   "The finite strain invariant may be calculated through particles or the compositional "
                                    "field finite strain invariant plugin (see buiter_et_al_2008_jgr benchmark). "
                                    "In either case, the user specifies a compositional field for the finite "
                                    "strain invariant, which must be the first listed compositional field "

@@ -101,7 +101,7 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_PROPERTY(IntegratedStrainInvariant,
                                         "integrated strain invariant",
-                                        "A plugin in which the tracer property is defined as "
+                                        "A plugin in which the particle property is defined as "
                                         "the finite strain invariant ($\\varepsilon_{ii}$). "
                                         "This property is calculated with the timestep ($dt$) and "
                                         "the second invariant of the deviatoric strain rate tensor "

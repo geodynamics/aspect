@@ -81,7 +81,7 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_PROPERTY(Velocity,
                                         "velocity",
-                                        "Implementation of a plugin in which the tracer "
+                                        "Implementation of a plugin in which the particle "
                                         "property is defined as the recent velocity at "
                                         "this position.")
     }

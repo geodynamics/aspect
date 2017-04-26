@@ -31,7 +31,7 @@ namespace aspect
     namespace Property
     {
       /**
-       * A class that initializes tracer properties based on a
+       * A class that initializes particle properties based on a
        * functional description provided in the input file.
        *
        * @ingroup ParticleProperties

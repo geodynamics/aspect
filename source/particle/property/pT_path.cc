@@ -82,7 +82,7 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_PROPERTY(PTPath,
                                         "pT path",
-                                        "Implementation of a plugin in which the tracer "
+                                        "Implementation of a plugin in which the particle "
                                         "property is defined as the current pressure and "
                                         "temperature at this position. This can be used "
                                         "to generate pressure-temperature paths of "

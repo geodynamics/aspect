@@ -49,7 +49,7 @@ namespace aspect
         // Calculate separation of particles
         for (unsigned int i = 0; i < dim; ++i)
           {
-            n_particles_per_direction[i] = round(std::pow(n_tracers * std::pow(P_diff[i],dim) / volume, 1./dim));
+            n_particles_per_direction[i] = round(std::pow(n_particles * std::pow(P_diff[i],dim) / volume, 1./dim));
             spacing[i] = P_diff[i] / fmax(n_particles_per_direction[i] - 1,1);
           }
 
@@ -101,11 +101,11 @@ namespace aspect
       {
         prm.enter_subsection("Postprocess");
         {
-          prm.enter_subsection("Tracers");
+          prm.enter_subsection("Particles");
           {
-            prm.declare_entry ("Number of tracers", "1000",
+            prm.declare_entry ("Number of particles", "1000",
                                Patterns::Double (0),
-                               "Total number of tracers to create (not per processor or per element). "
+                               "Total number of particles to create (not per processor or per element). "
                                "The number is parsed as a floating point number (so that one can "
                                "specify, for example, '1e4' particles) but it is interpreted as "
                                "an integer, of course.");
@@ -116,22 +116,22 @@ namespace aspect
               {
                 prm.declare_entry ("Minimum x", "0",
                                    Patterns::Double (),
-                                   "Minimum x coordinate for the region of tracers.");
+                                   "Minimum x coordinate for the region of particles.");
                 prm.declare_entry ("Maximum x", "1",
                                    Patterns::Double (),
-                                   "Maximum x coordinate for the region of tracers.");
+                                   "Maximum x coordinate for the region of particles.");
                 prm.declare_entry ("Minimum y", "0",
                                    Patterns::Double (),
-                                   "Minimum y coordinate for the region of tracers.");
+                                   "Minimum y coordinate for the region of particles.");
                 prm.declare_entry ("Maximum y", "1",
                                    Patterns::Double (),
-                                   "Maximum y coordinate for the region of tracers.");
+                                   "Maximum y coordinate for the region of particles.");
                 prm.declare_entry ("Minimum z", "0",
                                    Patterns::Double (),
-                                   "Minimum z coordinate for the region of tracers.");
+                                   "Minimum z coordinate for the region of particles.");
                 prm.declare_entry ("Maximum z", "1",
                                    Patterns::Double (),
-                                   "Maximum z coordinate for the region of tracers.");
+                                   "Maximum z coordinate for the region of particles.");
               }
               prm.leave_subsection();
             }
@@ -149,9 +149,9 @@ namespace aspect
       {
         prm.enter_subsection("Postprocess");
         {
-          prm.enter_subsection("Tracers");
+          prm.enter_subsection("Particles");
           {
-            n_tracers    = static_cast<types::particle_index>(prm.get_double ("Number of tracers"));
+            n_particles    = static_cast<types::particle_index>(prm.get_double ("Number of particles"));
 
             prm.enter_subsection("Generator");
             {
@@ -195,7 +195,7 @@ namespace aspect
                                          "the particles will be generated with an equal spacing in "
                                          "each spatial dimension. Note that in order "
                                          "to produce a regular distribution the number of generated "
-                                         "tracers might not exactly match the one specified in the "
+                                         "particles might not exactly match the one specified in the "
                                          "input file.")
     }
   }

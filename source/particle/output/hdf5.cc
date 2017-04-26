@@ -57,7 +57,7 @@ namespace aspect
                      ExcMessage ("deal.ii was not compiled with HDF5 support, "
                                  "so HDF5 output is not possible. Please "
                                  "recompile deal.ii with HDF5 support turned on "
-                                 "or select a different tracer output format."));
+                                 "or select a different particle output format."));
 #endif
 
       }
@@ -99,7 +99,7 @@ namespace aspect
 
         // Get the offset of the local particles among all processes
         types::particle_index local_particle_index_offset;
-        MPI_Scan(&n_local_particles, &local_particle_index_offset, 1, ASPECT_TRACER_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+        MPI_Scan(&n_local_particles, &local_particle_index_offset, 1, ASPECT_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
 
         hsize_t offset[2];
         offset[0] = local_particle_index_offset - n_local_particles;

@@ -83,13 +83,13 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = tracers
+  set List of postprocessors = particles
 
-  subsection Tracers
-    set Number of tracers = 10
+  subsection Particles
+    set Number of particles = 10
     set Time between data output = 1
     set Data output format = ascii
-    set List of tracer properties = integrated strain
+    set List of particle properties = integrated strain
 
     set Particle generator name = random uniform
   end

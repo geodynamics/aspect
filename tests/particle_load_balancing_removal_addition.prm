@@ -1,6 +1,6 @@
-# A test for the tracer load balacing strategy 'remove and add tracers'.
-# As soon as too many tracers live in a cell, a fraction of them
-# is discarded. If too few tracers live in this cell a number of tracers
+# A test for the particle load balacing strategy 'remove and add particles'.
+# As soon as too many particles live in a cell, a fraction of them
+# is discarded. If too few particles live in this cell a number of particles
 # is generated at random positions in this cell to reach a user-set minimum
 # number.
 
@@ -94,14 +94,14 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = tracers
+  set List of postprocessors = particles
 
-  subsection Tracers
-    set Number of tracers = 100
+  subsection Particles
+    set Number of particles = 100
     set Time between data output = 100
     set Load balancing strategy = remove and add particles
-    set Maximum tracers per cell = 10
-    set Minimum tracers per cell = 5
+    set Maximum particles per cell = 10
+    set Minimum particles per cell = 5
     set Data output format = ascii
     set Integration scheme = euler
   end

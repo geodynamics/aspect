@@ -67,17 +67,17 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-  set List of postprocessors = tracers, particle count statistics
-  subsection Tracers
-    set Number of tracers = 2500
+  set List of postprocessors = particles, particle count statistics
+  subsection Particles
+    set Number of particles = 2500
     set Time between data output = 0
     set Data output format = none
-    set List of tracer properties = initial composition, initial position
+    set List of particle properties = initial composition, initial position
     set Interpolation scheme = cell average
     set Update ghost particles = true
     set Particle generator name = random uniform
-    set Minimum tracers per cell = 2
-    set Maximum tracers per cell = 100
+    set Minimum particles per cell = 2
+    set Maximum particles per cell = 100
     set Load balancing strategy = remove and add particles
   end
 end

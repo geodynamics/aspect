@@ -1,7 +1,7 @@
 #########################################################
 # This is a variation of the composition-passive.prm
 # parameter file, with the exception that we also
-# advect along a set of tracers that 
+# advect along a set of particles that 
 #
 # See the manual for more information about this setup.
 
@@ -91,13 +91,13 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = tracers, velocity statistics, composition statistics, temperature statistics
+  set List of postprocessors = particles, velocity statistics, composition statistics, temperature statistics
 
-  subsection Tracers
-    set Number of tracers        = 20000
+  subsection Particles
+    set Number of particles        = 20000
     set Time between data output = 0.03
     set Data output format       = none
-    set List of tracer properties = initial composition
+    set List of particle properties = initial composition
     set Update ghost particles   = true
   end
 end

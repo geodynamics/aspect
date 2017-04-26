@@ -69,7 +69,7 @@ namespace aspect
            * but providing the cell when known speeds up the interpolation
            * significantly.
            * @return A vector with as many entries as @p positions. Every entry
-           * is a vector of interpolated tracer properties at this position.
+           * is a vector of interpolated particle properties at this position.
            */
           virtual
           std::vector<std::vector<double> >
@@ -98,7 +98,7 @@ namespace aspect
            * but providing the cell when known speeds up the interpolation
            * significantly.
            * @return A vector with as many entries as @p positions. Every entry
-           * is a vector of interpolated tracer properties at this position.
+           * is a vector of interpolated particle properties at this position.
            */
           virtual
           std::vector<std::vector<double> >
