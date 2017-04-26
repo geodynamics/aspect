@@ -9,7 +9,7 @@ Number of degrees of freedom: 112,521 (41,732+33,282+4,225+16,641+16,641)
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 11 iterations.
-      Relative nonlinear residuals: 0, 1.99205e-16, 1
+      Relative nonlinear residuals: 0, 1.93561e-16, 1
       Total relative residual after nonlinear iteration 1: 1
 
 
@@ -17,16 +17,16 @@ Number of degrees of freedom: 112,521 (41,732+33,282+4,225+16,641+16,641)
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 10 iterations.
-      Relative nonlinear residuals: 0, 1.99205e-16, 0.0591275
-      Total relative residual after nonlinear iteration 2: 0.0591275
+      Relative nonlinear residuals: 0, 1.93561e-16, 0.0588369
+      Total relative residual after nonlinear iteration 2: 0.0588369
 
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 10 iterations.
-      Relative nonlinear residuals: 0, 1.99205e-16, 3.75412e-06
-      Total relative residual after nonlinear iteration 3: 3.75412e-06
+      Relative nonlinear residuals: 0, 1.93561e-16, 3.73379e-06
+      Total relative residual after nonlinear iteration 3: 3.73379e-06
 
 
 
@@ -34,7 +34,7 @@ Number of degrees of freedom: 112,521 (41,732+33,282+4,225+16,641+16,641)
      RMS, max velocity:                                      0.223 m/s, 0.339 m/s
      Pressure min/avg/max:                                   0.5086 Pa, 1.575 Pa, 2.963 Pa
      Max and min velocity along boundary parts:              0.3392 m/s, 0.1252 m/s, 0.3392 m/s, 0.1252 m/s, 0.125 m/s, 0.125 m/s, 0.3398 m/s, 0.3398 m/s
-     Errors u_L2, p_L2, p_f_L2, p_c_L2, porosity_L2, u_f_L2: 1.283162e-07, 2.787313e-05, 4.024950e-06, 1.265224e-05, 1.176215e-08, 3.128966e-03
+     Errors u_L2, p_L2, p_f_L2, p_c_L2, porosity_L2, u_f_L2: 1.283002e-07, 2.787422e-05, 4.026075e-06, 1.265222e-05, 1.176215e-08, 3.128964e-03
 
 Termination requested by criterion: end time
 

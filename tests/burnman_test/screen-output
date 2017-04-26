@@ -33,33 +33,33 @@ Number of degrees of freedom: 7,056 (4,320+576+2,160)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
+   Solving Stokes system... 106+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.0611 m/year, 0.159 m/year
+     Temperature min/avg/max:            273 K, 2048 K, 3500 K
+     Heat fluxes through boundary parts: -3.864e+05 W, 1.856e+06 W
+     Writing depth average:              output-burnman_test/depth_average.gnuplot
+
+*** Timestep 1:  t=892757 years
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 47+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.0933 m/year, 0.252 m/year
-     Temperature min/avg/max:            273 K, 2047 K, 3500 K
-     Heat fluxes through boundary parts: -3.945e+05 W, 1.823e+06 W
-     Writing depth average:              output-burnman_test/depth_average.gnuplot
-
-*** Timestep 1:  t=664683 years
-   Solving temperature system... 9 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 46+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                  0.0935 m/year, 0.254 m/year
-     Temperature min/avg/max:            273 K, 2031 K, 3500 K
-     Heat fluxes through boundary parts: -4.208e+05 W, 1.772e+06 W
+     RMS, max velocity:                  0.0613 m/year, 0.16 m/year
+     Temperature min/avg/max:            273 K, 2032 K, 3500 K
+     Heat fluxes through boundary parts: -4.129e+05 W, 1.789e+06 W
 
 *** Timestep 2:  t=1e+06 years
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 44+0 iterations.
+   Solving Stokes system... 89+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.0936 m/year, 0.256 m/year
-     Temperature min/avg/max:            273 K, 2024 K, 3500 K
-     Heat fluxes through boundary parts: -4.259e+05 W, 1.731e+06 W
+     RMS, max velocity:                  0.0614 m/year, 0.16 m/year
+     Temperature min/avg/max:            273 K, 2030 K, 3500 K
+     Heat fluxes through boundary parts: -4.138e+05 W, 1.775e+06 W
      Writing depth average:              output-burnman_test/depth_average.gnuplot
 
 Termination requested by criterion: end time

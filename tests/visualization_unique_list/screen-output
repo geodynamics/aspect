@@ -7,9 +7,7 @@ An error occurred in file <visualization.cc> in function
 (line in output replaced by default.sh script)
 The violated condition was: 
     Utilities::has_unique_entries(viz_names)
-The name and call sequence of the exception was:
-    ExcMessage("The list of strings for the parameter " "'Postprocess/Visualization/List of output variables' contains entries more than once. " "This is not allowed. Please check your parameter file.")
-Additional Information: 
-The list of strings for the parameter 'Postprocess/Visualization/List of output variables' contains entries more than once. This is not allowed. Please check your parameter file.
+Additional information: 
+    The list of strings for the parameter 'Postprocess/Visualization/List of output variables' contains entries more than once. This is not allowed. Please check your parameter file.
 
 Aborting!

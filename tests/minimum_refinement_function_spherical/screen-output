@@ -9,9 +9,9 @@ Number of degrees of freedom: 740 (450+65+225)
 
    Postprocessing:
      Writing graphical output:           output-minimum_refinement_function_spherical/solution/solution-00000
-     RMS, max velocity:                  8.27e-07 m/year, 1.47e-06 m/year
+     RMS, max velocity:                  8.26e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
-     Heat fluxes through boundary parts: 1037 W, 1978 W, 2572 W, 2572 W
+     Heat fluxes through boundary parts: 1032 W, 1996 W, 2574 W, 2574 W
      Writing depth average:              output-minimum_refinement_function_spherical/depth_average.gnuplot
 
 Number of active cells: 144 (on 4 levels)
@@ -20,13 +20,13 @@ Number of degrees of freedom: 2,124 (1,298+177+649)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 90+0 iterations.
+   Solving Stokes system... 91+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-minimum_refinement_function_spherical/solution/solution-00001
-     RMS, max velocity:                  6.23e-07 m/year, 1.16e-06 m/year
+     RMS, max velocity:                  6.2e-07 m/year, 1.16e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
-     Heat fluxes through boundary parts: 960.2 W, 1927 W, 2479 W, 2479 W
+     Heat fluxes through boundary parts: 961.3 W, 1924 W, 2479 W, 2479 W
      Writing depth average:              output-minimum_refinement_function_spherical/depth_average.gnuplot
 
 Number of active cells: 360 (on 5 levels)
@@ -35,13 +35,13 @@ Number of degrees of freedom: 5,244 (3,218+417+1,609)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+18 iterations.
+   Solving Stokes system... 105+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-minimum_refinement_function_spherical/solution/solution-00002
-     RMS, max velocity:                  6.23e-07 m/year, 1.16e-06 m/year
+     RMS, max velocity:                  8.26e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
-     Heat fluxes through boundary parts: 960.2 W, 1927 W, 2479 W, 2479 W
+     Heat fluxes through boundary parts: 961.3 W, 1924 W, 2479 W, 2479 W
      Writing depth average:              output-minimum_refinement_function_spherical/depth_average.gnuplot
 
 Number of active cells: 576 (on 6 levels)
@@ -50,7 +50,7 @@ Number of degrees of freedom: 8,364 (5,138+657+2,569)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+18 iterations.
+   Solving Stokes system... 105+0 iterations.
 
    Postprocessing:
 
@@ -69,9 +69,9 @@ Number of degrees of freedom: 8,364 (5,138+657+2,569)
      Rayleigh number:                               6.00303
 
      Writing graphical output:           output-minimum_refinement_function_spherical/solution/solution-00003
-     RMS, max velocity:                  6.23e-07 m/year, 1.16e-06 m/year
+     RMS, max velocity:                  8.26e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
-     Heat fluxes through boundary parts: 960.2 W, 1927 W, 2479 W, 2479 W
+     Heat fluxes through boundary parts: 961.3 W, 1924 W, 2479 W, 2479 W
      Writing depth average:              output-minimum_refinement_function_spherical/depth_average.gnuplot
 
 Number of active cells: 576 (on 6 levels)

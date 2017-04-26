@@ -35,9 +35,7 @@ An error occurred in file <solver.cc> in function
 (line in output replaced by default.sh script)
 The violated condition was: 
     system_matrix.block(block_idx, block_idx).linfty_norm() > std::numeric_limits<double>::min()
-The name and call sequence of the exception was:
-    ExcMessage ("The " + field_name + " equation can not be solved, because the matrix is zero, " "but the right-hand side is nonzero.")
-Additional Information: 
-The temperature equation can not be solved, because the matrix is zero, but the right-hand side is nonzero.
+Additional information: 
+    The temperature equation can not be solved, because the matrix is zero, but the right-hand side is nonzero.
 
 Aborting!

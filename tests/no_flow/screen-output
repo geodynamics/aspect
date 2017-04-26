@@ -54,14 +54,14 @@ Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 7:  t=0.4375 seconds
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00007
 
 *** Timestep 8:  t=0.5 seconds
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00008
@@ -107,21 +107,21 @@ Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 14:  t=0.875 seconds
    Solving temperature system... 10 iterations.
-   Solving Stokes system... 19+0 iterations.
+   Solving Stokes system... 20+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00014
 
 *** Timestep 15:  t=0.9375 seconds
    Solving temperature system... 10 iterations.
-   Solving Stokes system... 19+0 iterations.
+   Solving Stokes system... 20+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00015
 
 *** Timestep 16:  t=1 seconds
    Solving temperature system... 10 iterations.
-   Solving Stokes system... 18+0 iterations.
+   Solving Stokes system... 20+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00016
