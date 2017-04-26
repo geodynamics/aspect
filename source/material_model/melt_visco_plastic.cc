@@ -128,23 +128,6 @@ namespace aspect
       // get all material properties form the visco-plastic model
       ViscoPlastic<dim>::evaluate(in, out);
 
-      // overwrite the reaction terms, which is needed to track the finite strain invariant.
-      if (in.cell && this->get_timestep_number() > 0 && in.strain_rate.size())
-        {
-
-          // Loop through quadrature points
-          for (unsigned int q=0; q < in.position.size(); ++q)
-            {
-              const double edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[q])))),this->min_strain_rate);
-
-              // New strain invariant is old strain invariant plus the strain invariant of the current time step
-              const double e_ii = in.composition[q][0] + edot_ii*this->get_timestep();
-
-              // Update reaction term
-              out.reaction_terms[q][0] = - in.composition[q][0] + e_ii;
-            }
-        }
-
       std::vector<double> maximum_melt_fractions(in.position.size());
       std::vector<double> old_porosity(in.position.size());
 
@@ -232,6 +215,19 @@ namespace aspect
             }
         }
 
+      // overwrite the reaction terms, which is needed to track the finite strain invariant.
+      if (in.cell && this->get_timestep_number() > 0 && in.strain_rate.size())
+        {
+
+          // Loop through quadrature points
+          for (unsigned int q=0; q < in.position.size(); ++q)
+            {
+              const double edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[q])))),this->min_strain_rate);
+
+              // New strain invariant is old strain invariant plus the strain invariant of the current time step
+              out.reaction_terms[q][0] = edot_ii*this->get_timestep();
+            }
+        }
 
       // fill melt outputs if they exist
       MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
