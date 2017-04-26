@@ -131,7 +131,7 @@ subsection Postprocess
   end
 
   subsection Global statistics
-    set Write statistics for all nonlinear iterations = true
+    set Write statistics for each nonlinear iteration = true
   end
 end
 

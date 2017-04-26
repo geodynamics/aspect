@@ -32,14 +32,14 @@ namespace aspect
     {
       this->get_signals().post_stokes_solver.connect(std_cxx11::bind(&aspect::Postprocess::GlobalStatistics<dim>::store_stokes_solver_history,
                                                                      std_cxx11::ref(*this),
-                                                                     /*std_cxx11::_1,*/
+                                                                     /* Drop first argument of signal*/
                                                                      std_cxx11::_2,
                                                                      std_cxx11::_3,
                                                                      std_cxx11::_4,
                                                                      std_cxx11::_5));
       this->get_signals().post_advection_solver.connect(std_cxx11::bind(&aspect::Postprocess::GlobalStatistics<dim>::store_advection_solver_history,
                                                                         std_cxx11::ref(*this),
-                                                                        /*std_cxx11::_1,*/
+                                                                        /* Drop first argument of signal*/
                                                                         std_cxx11::_2,
                                                                         std_cxx11::_3,
                                                                         std_cxx11::_4));
@@ -52,16 +52,18 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     GlobalStatistics<dim>::clear_data()
     {
       list_of_S_iterations.clear();
       list_of_A_iterations.clear();
-      solver_controls_cheap.clear();
-      solver_controls_expensive.clear();
-      advection_solver_controls.clear();
+      stokes_iterations_cheap.clear();
+      stokes_iterations_expensive.clear();
+      advection_iterations.clear();
     }
+
 
 
     template <int dim>
@@ -73,9 +75,11 @@ namespace aspect
     {
       list_of_S_iterations.push_back(number_S_iterations);
       list_of_A_iterations.push_back(number_A_iterations);
-      solver_controls_cheap.push_back(solver_control_cheap);
-      solver_controls_expensive.push_back(solver_control_expensive);
+      stokes_iterations_cheap.push_back(solver_control_cheap.last_step());
+      stokes_iterations_expensive.push_back(solver_control_expensive.last_step());
     }
+
+
 
     template <int dim>
     void
@@ -90,24 +94,32 @@ namespace aspect
 
       unsigned int column_position = numbers::invalid_unsigned_int;
 
-      for (unsigned int i=0; i<advection_solver_controls.size(); ++i)
-        if (column_name == advection_solver_controls[i].first)
+      for (unsigned int i=0; i<advection_iterations.size(); ++i)
+        if (column_name == advection_iterations[i].first)
           column_position = i;
 
       if (column_position == numbers::invalid_unsigned_int)
-        advection_solver_controls.push_back(std::make_pair(column_name,std::vector<SolverControl>(1,solver_control)));
+        advection_iterations.push_back(std::make_pair(column_name,std::vector<unsigned int>(1,solver_control.last_step())));
       else
-        advection_solver_controls[column_position].second.push_back(solver_control);
+        advection_iterations[column_position].second.push_back(solver_control.last_step());
     }
+
+
 
     template <int dim>
     std::pair<std::string,std::string>
     GlobalStatistics<dim>::execute (TableHandler &statistics)
     {
-      unsigned int nonlinear_iterations = solver_controls_cheap.size();
+      // We would like to know how many nonlinear iterations were performed since
+      // the last call to execute(). Unfortunately some solver schemes iterate only the
+      // Stokes equation, some Stokes and advection, and some do not even call the
+      // Stokes or advection solver. Therefore, the best estimate for the number
+      // of nonlinear iterations since the last call is the maximum size of the
+      // vectors in which we store our data.
+      unsigned int nonlinear_iterations = stokes_iterations_cheap.size();
 
-      for (unsigned int column=0; column<advection_solver_controls.size(); ++column)
-        nonlinear_iterations = std::max(nonlinear_iterations, static_cast<unsigned int> (advection_solver_controls[column].second.size()));
+      for (unsigned int column=0; column<advection_iterations.size(); ++column)
+        nonlinear_iterations = std::max(nonlinear_iterations, static_cast<unsigned int> (advection_iterations[column].second.size()));
 
       if (one_line_per_iteration)
         for (unsigned int iteration = 0; iteration < nonlinear_iterations; ++iteration)
@@ -117,15 +129,15 @@ namespace aspect
             statistics.add_value("Nonlinear iteration number",
                                  iteration);
 
-            for (unsigned int column=0; column<advection_solver_controls.size(); ++column)
-              if (iteration < advection_solver_controls[column].second.size())
-                statistics.add_value(advection_solver_controls[column].first,
-                                     advection_solver_controls[column].second[iteration].last_step());
+            for (unsigned int column=0; column<advection_iterations.size(); ++column)
+              if (iteration < advection_iterations[column].second.size())
+                statistics.add_value(advection_iterations[column].first,
+                                     advection_iterations[column].second[iteration]);
 
-            if (iteration < solver_controls_cheap.size())
+            if (iteration < stokes_iterations_cheap.size())
               {
                 statistics.add_value("Iterations for Stokes solver",
-                                     solver_controls_cheap[iteration].last_step() + solver_controls_expensive[iteration].last_step());
+                                     stokes_iterations_cheap[iteration] + stokes_iterations_expensive[iteration]);
                 statistics.add_value("Velocity iterations in Stokes preconditioner",
                                      list_of_A_iterations[iteration]);
                 statistics.add_value("Schur complement iterations in Stokes preconditioner",
@@ -140,39 +152,39 @@ namespace aspect
           unsigned int A_iterations = 0;
           unsigned int S_iterations = 0;
           unsigned int Stokes_outer_iterations = 0;
-          std::vector<unsigned int> advection_outer_iterations(advection_solver_controls.size(),0);
+          std::vector<unsigned int> advection_outer_iterations(advection_iterations.size(),0);
 
           for (unsigned int iteration = 0; iteration < nonlinear_iterations; ++iteration)
             {
-              for (unsigned int column=0; column<advection_solver_controls.size(); ++column)
-                if (iteration < advection_solver_controls[column].second.size())
-                  advection_outer_iterations[column] += advection_solver_controls[column].second[iteration].last_step();
+              for (unsigned int column=0; column<advection_iterations.size(); ++column)
+                if (iteration < advection_iterations[column].second.size())
+                  advection_outer_iterations[column] += advection_iterations[column].second[iteration];
 
-              if (iteration < solver_controls_cheap.size())
+              if (iteration < stokes_iterations_cheap.size())
                 {
                   A_iterations += list_of_A_iterations[iteration];
                   S_iterations += list_of_S_iterations[iteration];
-                  Stokes_outer_iterations += solver_controls_cheap[iteration].last_step() +
-                                             solver_controls_expensive[iteration].last_step();
+                  Stokes_outer_iterations += stokes_iterations_cheap[iteration] +
+                                             stokes_iterations_expensive[iteration];
                 }
             }
 
           // only output the number of nonlinear iterations if we actually
           // use a nonlinear solver scheme
-          const bool output_iteration_number =
-            (!(this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::IMPES
-               || this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::Advection_only));
-          if (output_iteration_number)
+          if (!(this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::IMPES
+                || this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::Advection_only))
             statistics.add_value("Number of nonlinear iterations",
                                  nonlinear_iterations);
 
           // Only output statistics columns if the solver actually signaled at least one
           // successful solve. Some solver schemes might need no advection or Stokes solver
-          for (unsigned int column=0; column<advection_solver_controls.size(); ++column)
-            statistics.add_value(advection_solver_controls[column].first,
+          for (unsigned int column=0; column<advection_iterations.size(); ++column)
+            statistics.add_value(advection_iterations[column].first,
                                  advection_outer_iterations[column]);
 
-          if (solver_controls_cheap.size() > 0)
+          // Note that even if no cheap solver iterations were done, the solver control
+          // object is still stored, so this line works in that case as well.
+          if (stokes_iterations_cheap.size() > 0)
             {
               statistics.add_value("Iterations for Stokes solver",
                                    Stokes_outer_iterations);
@@ -187,6 +199,7 @@ namespace aspect
 
       return std::make_pair (std::string(),std::string());
     }
+
 
 
     template <int dim>
@@ -235,6 +248,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     GlobalStatistics<dim>::declare_parameters (ParameterHandler &prm)
@@ -243,17 +257,18 @@ namespace aspect
       {
         prm.enter_subsection("Global statistics");
         {
-          prm.declare_entry ("Write statistics for all nonlinear iterations", "false",
+          prm.declare_entry ("Write statistics for each nonlinear iteration", "false",
                              Patterns::Bool (),
                              "Whether to put every nonlinear iteration into a separate "
                              "line in the statistics file (if true), or to output only "
                              "one line per time step that contains the total number of "
-                             "linear iterations summed up over all nonlinear iterations.");
+                             "iterations of the Stokes and advection linear system solver.");
         }
         prm.leave_subsection();
       }
       prm.leave_subsection();
     }
+
 
 
     template <int dim>
@@ -264,7 +279,7 @@ namespace aspect
       {
         prm.enter_subsection("Global statistics");
         {
-          one_line_per_iteration = prm.get_bool("Write statistics for all nonlinear iterations");
+          one_line_per_iteration = prm.get_bool("Write statistics for each nonlinear iteration");
         }
         prm.leave_subsection();
       }
