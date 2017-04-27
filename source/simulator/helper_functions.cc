@@ -1526,8 +1526,15 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
+#ifndef aspect_simulator_defined
+#define MAYBE_ADVECTION_FIELD(dim) \
+  template struct Simulator<dim>::AdvectionField;
+#else
+#define MAYBE_ADVECTION_FIELD(dim)
+#endif
+
 #define INSTANTIATE(dim) \
-  template struct Simulator<dim>::AdvectionField; \
+  MAYBE_ADVECTION_FIELD(dim) \
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::denormalize_pressure(LinearAlgebra::BlockVector &vector, const LinearAlgebra::BlockVector &relevant_vector) const; \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \

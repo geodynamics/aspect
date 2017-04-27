@@ -282,4 +282,8 @@ LIST(APPEND CMAKE_MODULE_PATH
 
 INCLUDE(cmake/write_config)
 INCLUDE(cmake/cotire)
+
+set_source_files_properties (${TARGET_SRC} PROPERTIES
+    COTIRE_UNITY_SOURCE_POST_UNDEFS "INSTANTIATE")
+
 cotire(aspect)
