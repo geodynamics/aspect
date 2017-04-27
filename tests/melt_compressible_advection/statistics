@@ -5,24 +5,22 @@
 # 5: Number of Stokes degrees of freedom
 # 6: Number of temperature degrees of freedom
 # 7: Number of degrees of freedom for all compositions
-# 8: Iterations for temperature solver
-# 9: Iterations for composition solver 1
-# 10: RMS velocity (m/s)
-# 11: Max. velocity (m/s)
-# 12: Minimal pressure (Pa)
-# 13: Average pressure (Pa)
-# 14: Maximal pressure (Pa)
-# 15: Maximum velocity magnitude on boundary with indicator 0 ("left") (m/s)
-# 16: Minimum velocity magnitude on boundary with indicator 0 ("left") (m/s)
-# 17: Maximum velocity magnitude on boundary with indicator 1 ("right") (m/s)
-# 18: Minimum velocity magnitude on boundary with indicator 1 ("right") (m/s)
-# 19: Maximum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
-# 20: Minimum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
-# 21: Maximum velocity magnitude on boundary with indicator 3 ("top") (m/s)
-# 22: Minimum velocity magnitude on boundary with indicator 3 ("top") (m/s)
-0 0.000000000000e+00 0.000000000000e+00 1024 11717 4225 4225 0  0 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-0 0.000000000000e+00 0.000000000000e+00    0     0    0    0 0  0 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-0 0.000000000000e+00 0.000000000000e+00    0     0    0    0 0  0 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-1 1.420454545455e-02 1.420454545455e-02 1024 11717 4225 4225 0  0 6.65835279e-01 1.09647815e+00 -1.79899929e+01 -3.36763641e+00 4.75713160e-01 1.09647807e+00 1.03521927e-01 1.09647807e+00 1.03521927e-01 1.00000000e-01 1.00000000e-01 1.10000000e+00 1.10000000e+00 
-2 2.500000000000e-02 1.079545454545e-02 1024 11717 4225 4225 0 11 6.65835279e-01 1.09647815e+00 -1.79899928e+01 -3.36770512e+00 4.75699902e-01 1.09647807e+00 1.03521927e-01 1.09647807e+00 1.03521927e-01 1.00000000e-01 1.00000000e-01 1.10000000e+00 1.10000000e+00 
-0 0.000000000000e+00 0.000000000000e+00    0     0    0    0 0  7 6.65835279e-01 1.09647815e+00 -1.79899929e+01 -3.36774794e+00 4.75690894e-01 1.09647807e+00 1.03521927e-01 1.09647807e+00 1.03521927e-01 1.00000000e-01 1.00000000e-01 1.10000000e+00 1.10000000e+00 
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: RMS velocity (m/s)
+# 12: Max. velocity (m/s)
+# 13: Minimal pressure (Pa)
+# 14: Average pressure (Pa)
+# 15: Maximal pressure (Pa)
+# 16: Maximum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 17: Minimum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 18: Maximum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 19: Minimum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 20: Maximum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 21: Minimum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 22: Maximum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+# 23: Minimum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+0 0.000000000000e+00 0.000000000000e+00 1024 11717 4225 4225 4 0  0 6.65835280e-01 1.09647815e+00 -1.79899928e+01 -3.36763638e+00 4.75713159e-01 1.09647807e+00 1.03521927e-01 1.09647807e+00 1.03521927e-01 1.00000000e-01 1.00000000e-01 1.10000000e+00 1.10000000e+00 
+1 1.420454545455e-02 1.420454545455e-02 1024 11717 4225 4225 1 0 11 6.65835280e-01 1.09647815e+00 -1.79899927e+01 -3.36770510e+00 4.75699885e-01 1.09647807e+00 1.03521927e-01 1.09647807e+00 1.03521927e-01 1.00000000e-01 1.00000000e-01 1.10000000e+00 1.10000000e+00 
+2 2.500000000000e-02 1.079545454545e-02 1024 11717 4225 4225 1 0  7 6.65835280e-01 1.09647815e+00 -1.79899928e+01 -3.36774791e+00 4.75690907e-01 1.09647807e+00 1.03521927e-01 1.09647807e+00 1.03521927e-01 1.00000000e-01 1.00000000e-01 1.10000000e+00 1.10000000e+00 

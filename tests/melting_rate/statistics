@@ -5,21 +5,17 @@
 # 5: Number of Stokes degrees of freedom
 # 6: Number of temperature degrees of freedom
 # 7: Number of degrees of freedom for all compositions
-# 8: Iterations for temperature solver
-# 9: Iterations for composition solver 1
-# 10: Iterations for composition solver 2
-# 11: Minimal value for composition porosity
-# 12: Maximal value for composition porosity
-# 13: Global mass for composition porosity
-# 14: Minimal value for composition peridotite
-# 15: Maximal value for composition peridotite
-# 16: Global mass for composition peridotite
-# 17: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 512 5973 2145 4290 0 0 0  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00                                          "" 
-1 1.170578236643e+02 1.170578236643e+02 512 5973 2145 4290 0 0 0  1.43755635e-28 2.00000000e-01 1.25663632e+08  1.43755635e-28 2.00000000e-01 1.25663632e+08 output-melting_rate/solution/solution-00000 
-0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 6 9 8  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00                                          "" 
-0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 5 7 6  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00                                          "" 
-2 2.000000000000e+02 8.294217633573e+01 512 5973 2145 4290 2 5 3 -1.94807819e-11 2.00106710e-01 1.25737155e+08 -1.46309812e-13 2.00099330e-01 1.25727116e+08 output-melting_rate/solution/solution-00001 
-0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 5 8 7  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00                                          "" 
-0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 4 7 5  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00                                          "" 
-0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 1 4 2 -3.80403075e-11 2.00203943e-01 1.25804398e+08 -5.00226352e-13 2.00190917e-01 1.25785173e+08 output-melting_rate/solution/solution-00002 
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Minimal value for composition porosity
+# 13: Maximal value for composition porosity
+# 14: Global mass for composition porosity
+# 15: Minimal value for composition peridotite
+# 16: Maximal value for composition peridotite
+# 17: Global mass for composition peridotite
+# 18: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 512 5973 2145 4290 2  0  0  0  1.43755635e-28 2.00000000e-01 1.25663632e+08  1.43755635e-28 2.00000000e-01 1.25663632e+08 output-melting_rate/solution/solution-00000 
+1 1.170578236643e+02 1.170578236643e+02 512 5973 2145 4290 3 13 21 17 -1.94807819e-11 2.00106710e-01 1.25737155e+08 -1.46309812e-13 2.00099330e-01 1.25727116e+08 output-melting_rate/solution/solution-00001 
+2 2.000000000000e+02 8.294217633573e+01 512 5973 2145 4290 3 10 19 14 -3.80403075e-11 2.00203943e-01 1.25804398e+08 -5.00226352e-13 2.00190917e-01 1.25785173e+08 output-melting_rate/solution/solution-00002 

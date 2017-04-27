@@ -5,27 +5,23 @@
 # 5: Number of Stokes degrees of freedom
 # 6: Number of temperature degrees of freedom
 # 7: Number of degrees of freedom for all compositions
-# 8: Iterations for temperature solver
-# 9: Iterations for composition solver 1
-# 10: Iterations for Stokes solver
-# 11: Velocity iterations in Stokes preconditioner
-# 12: Schur complement iterations in Stokes preconditioner
-# 13: RMS velocity (m/s)
-# 14: Max. velocity (m/s)
-# 15: Minimal pressure (Pa)
-# 16: Average pressure (Pa)
-# 17: Maximal pressure (Pa)
-# 18: Maximum velocity magnitude on boundary with indicator 0 ("left") (m/s)
-# 19: Minimum velocity magnitude on boundary with indicator 0 ("left") (m/s)
-# 20: Maximum velocity magnitude on boundary with indicator 1 ("right") (m/s)
-# 21: Minimum velocity magnitude on boundary with indicator 1 ("right") (m/s)
-# 22: Maximum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
-# 23: Minimum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
-# 24: Maximum velocity magnitude on boundary with indicator 3 ("top") (m/s)
-# 25: Minimum velocity magnitude on boundary with indicator 3 ("top") (m/s)
-0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 1089 0 0 277 1390 5910 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 0 0 226 1153 4821 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 0 0  29  153  627 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 0 0  28  143  607 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 0 0  28  133  608 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-0 0.000000000000e+00 0.000000000000e+00   0    0    0    0 0 0  28  140  608 2.23414571e-01 3.37401036e-01 5.08502697e-01 1.57520196e+00 2.96286533e+00 3.37400763e-01 1.25883388e-01 3.37400763e-01 1.25883388e-01 1.25000000e-01 1.25000000e-01 3.39785229e-01 3.39785229e-01 
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for Stokes solver
+# 12: Velocity iterations in Stokes preconditioner
+# 13: Schur complement iterations in Stokes preconditioner
+# 14: RMS velocity (m/s)
+# 15: Max. velocity (m/s)
+# 16: Minimal pressure (Pa)
+# 17: Average pressure (Pa)
+# 18: Maximal pressure (Pa)
+# 19: Maximum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 20: Minimum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 21: Maximum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 22: Minimum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 23: Maximum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 24: Minimum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 25: Maximum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+# 26: Minimum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 1089 6 0 0 616 3112 13181 2.23414571e-01 3.37401036e-01 5.08502697e-01 1.57520196e+00 2.96286533e+00 3.37400763e-01 1.25883388e-01 3.37400763e-01 1.25883388e-01 1.25000000e-01 1.25000000e-01 3.39785229e-01 3.39785229e-01 
