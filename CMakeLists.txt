@@ -281,4 +281,5 @@ LIST(APPEND CMAKE_MODULE_PATH
   )
 
 INCLUDE(cmake/write_config)
-
+INCLUDE(cmake/cotire)
+cotire(aspect)
