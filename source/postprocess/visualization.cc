@@ -1036,9 +1036,9 @@ namespace aspect
                                           VisualizationPostprocessors::Interface<dim> *(*factory_function) ())
     {
       std_cxx11::get<dim>(registered_visualization_plugins).register_plugin (name,
-                                                               description,
-                                                               declare_parameters_function,
-                                                               factory_function);
+                                                                             description,
+                                                                             declare_parameters_function,
+                                                                             factory_function);
     }
 
 

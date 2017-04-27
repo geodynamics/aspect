@@ -283,6 +283,10 @@ LIST(APPEND CMAKE_MODULE_PATH
 INCLUDE(cmake/write_config)
 INCLUDE(cmake/cotire)
 
+set_target_properties (aspect PROPERTIES
+    COTIRE_PREFIX_HEADER_IGNORE_PATH
+    "/usr/include/;${CMAKE_SOURCE_DIR};${CMAKE_BINARY_DIR}")
+
 set_source_files_properties (${TARGET_SRC} PROPERTIES
     COTIRE_UNITY_SOURCE_POST_UNDEFS "INSTANTIATE")
 
