@@ -10,81 +10,26 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 
 post_stokes_solver:
-4.30549e-07
-4.29777e-07
-4.29207e-07
-4.26588e-07
-4.15948e-07
-3.95221e-07
-3.7013e-07
-3.13502e-07
-2.15859e-07
-1.53156e-07
-1.18936e-07
-8.33093e-08
-5.01955e-08
-3.1172e-08
-2.09542e-08
-1.53074e-08
-1.10199e-08
-6.96632e-09
-4.10842e-09
-2.65276e-09
-1.87224e-09
-1.34178e-09
-9.4782e-10
-6.03066e-10
-3.71778e-10
-2.33403e-10
-1.51829e-10
-1.06127e-10
-7.63826e-11
-4.97925e-11
-2.91624e-11
-1.71008e-11
-1.0565e-11
-6.55437e-12
-3.99108e-12
-2.60126e-12
-1.78473e-12
-1.12307e-12
-6.44888e-13
-3.92678e-13
-2.39873e-13
-1.45623e-13
-8.6907e-14
-5.08339e-14
-3.53587e-14
-44+0 iterations.
+30+8 iterations.
 
    Postprocessing:
      Writing graphical output:           output-solver_history/solution/solution-00000
      RMS, max velocity:                  9e-09 m/s, 3.23e-08 m/s
      Temperature min/avg/max:            0 K, 1.035 K, 1.1 K
      Heat fluxes through boundary parts: 1.668e-07 W, 8.017e-05 W, 2.402e-07 W, 2.402e-07 W
+     Writing stokes residuals            output-solver_history/stokes_residuals.txt
 
 *** Timestep 1:  t=0.1 seconds
    Solving temperature system... 4 iterations.
    Solving Stokes system... 
 post_stokes_solver:
-3.89895e-14
-3.71989e-14
-3.68398e-14
-3.06723e-14
-2.00225e-14
-1.38605e-14
-9.53844e-15
-5.89244e-15
-3.69957e-15
-2.96079e-15
-2.37334e-15
-1.64025e-15
-11+0 iterations.
+9+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  9e-09 m/s, 3.23e-08 m/s
      Temperature min/avg/max:            0 K, 1.035 K, 1.1 K
      Heat fluxes through boundary parts: 1.668e-07 W, 8.017e-05 W, 2.402e-07 W, 2.402e-07 W
+     Writing stokes residuals            output-solver_history/stokes_residuals.txt
 
 Termination requested by criterion: end time
 
