@@ -135,9 +135,31 @@ ADD_CUSTOM_TARGET(setup_tests
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   COMMENT "Enabling all tests ...")
 
+SET(ASPECT_TEST_GENERATOR "Unix Makefiles" CACHE STRING 
+  "Generator to use for the test cmake project. Using ninja instead of make is not recommended.")
+
 IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
-  ENABLE_TESTING()
-  ADD_SUBDIRECTORY(tests)
+  FILE(WRITE ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(tests)")
+
+  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests)
+
+  SET(aspect_binary ${CMAKE_BINARY_DIR}/aspect)
+
+  MESSAGE(STATUS "Setting up test project, see setup_tests.log for details.")
+  EXECUTE_PROCESS(
+    COMMAND ${CMAKE_COMMAND} -G ${ASPECT_TEST_GENERATOR}
+	-D ASPECT_RUN_ALL_TESTS=${ASPECT_RUN_ALL_TESTS}
+	-D ASPECT_DIR=${CMAKE_BINARY_DIR}
+	-D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+	-D ASPECT_BINARY=${aspect_binary}
+	${CMAKE_CURRENT_SOURCE_DIR}/tests
+    OUTPUT_FILE setup_tests.log
+    RESULT_VARIABLE test_cmake_result
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+   )
+  IF(NOT test_cmake_result EQUAL 0)
+    MESSAGE(FATAL_ERROR "ERROR: Test project could not be configured.")
+  ENDIF()
 ENDIF()
 
 

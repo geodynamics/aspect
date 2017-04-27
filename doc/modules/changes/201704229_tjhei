@@ -1,0 +1,6 @@
+Changed: The unit tests are now a separate cmake project that is
+configured automatically. To speed up scanning of dependencies,
+running ctest will no longer rebuild aspect if the binary is out of
+date. Issues with using "ninja" as the generator have been fixed.
+<br>
+(Timo Heister, 2017/04/29)
