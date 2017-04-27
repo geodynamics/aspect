@@ -32,7 +32,7 @@ namespace aspect
    * the boundary values for fluid pressure for computations with melt
    * transport.
    *
-   * @ingroup BoundaryFluidPressuresssss
+   * @ingroup BoundaryFluidPressures
    */
   namespace BoundaryFluidPressure
   {
@@ -41,7 +41,7 @@ namespace aspect
     /**
      * Base class
      *
-     * @ingroup BoundaryFluidPressuresssss
+     * @ingroup BoundaryFluidPressures
      */
     template <int dim>
     class Interface
@@ -125,7 +125,7 @@ namespace aspect
      * @param factory_function A pointer to a function that can create an
      * object of this fluid pressure boundary model.
      *
-     * @ingroup BoundaryFluidPressuresssss
+     * @ingroup BoundaryFluidPressures
      */
     template <int dim>
     void
@@ -142,7 +142,7 @@ namespace aspect
      * The model object returned is not yet initialized and has not
      * read its runtime parameters yet.
      *
-     * @ingroup BoundaryFluidPressuresssss
+     * @ingroup BoundaryFluidPressures
      */
     template <int dim>
     Interface<dim> *
@@ -153,7 +153,7 @@ namespace aspect
      * Declare the runtime parameters of the registered fluid pressure boundary
      * models.
      *
-     * @ingroup BoundaryFluidPressuresssss
+     * @ingroup BoundaryFluidPressures
      */
     template <int dim>
     void
@@ -165,7 +165,7 @@ namespace aspect
      * for a fluid pressure boundary model, register it with the functions that
      * can declare their parameters and create these objects.
      *
-     * @ingroup BoundaryFluidPressuresssss
+     * @ingroup BoundaryFluidPressures
      */
 #define ASPECT_REGISTER_BOUNDARY_FLUID_PRESSURE_MODEL(classname, name, description) \
   template class classname<2>; \
