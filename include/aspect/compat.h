@@ -33,8 +33,11 @@
 
 // We would like to use a function from SolverControl that was introduced after
 // deal.II 8.5. For older versions use this derived class instead that implements
-// the function.
+// the function and the typedef guarantees it is found before deal.II's class.
 #if !DEAL_II_VERSION_GTE(9,0,0)
+
+#include <deal.II/lac/solver_control.h>
+
 namespace dealii
 {
   class ExtendedSolverControl : public SolverControl
@@ -59,6 +62,11 @@ namespace dealii
         return history_data;
       }
   };
+}
+
+namespace aspect
+{
+  typedef dealii::ExtendedSolverControl SolverControl;
 }
 #endif
 

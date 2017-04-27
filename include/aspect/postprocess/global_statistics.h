@@ -123,8 +123,8 @@ namespace aspect
          */
         std::vector<unsigned int> list_of_S_iterations;
         std::vector<unsigned int> list_of_A_iterations;
-        std::vector<SolverControl> solver_controls_cheap;
-        std::vector<SolverControl> solver_controls_expensive;
+        std::vector<unsigned int> stokes_iterations_cheap;
+        std::vector<unsigned int> stokes_iterations_expensive;
 
         /**
          * A container that stores the advection solver history of the current
@@ -139,7 +139,7 @@ namespace aspect
          * (if any nonlinear solver scheme would implement that at
          * some point).
          */
-        std::vector<std::pair<std::string, std::vector<SolverControl> > > advection_solver_controls;
+        std::vector<std::pair<std::string, std::vector<unsigned int> > > advection_iterations;
 
         /**
          * Whether to put every nonlinear iteration into a separate

@@ -715,22 +715,11 @@ namespace aspect
     PrimitiveVectorMemory< LinearAlgebra::BlockVector > mem;
 
     // create Solver controls for the cheap and expensive solver phase
-    // we need a function that was only introduced in deal.II 9.0, but provide
-    // an alternative class that implements this function in case we run an
-    // older version.
-#if DEAL_II_VERSION_GTE(9,0,0)
     SolverControl solver_control_cheap (parameters.n_cheap_stokes_solver_steps,
                                         solver_tolerance);
 
     SolverControl solver_control_expensive (system_matrix.block(block_vel,block_p).m() +
                                             system_matrix.block(block_p,block_vel).m(), solver_tolerance);
-#else
-    ExtendedSolverControl solver_control_cheap (parameters.n_cheap_stokes_solver_steps,
-                                                solver_tolerance);
-
-    ExtendedSolverControl solver_control_expensive (system_matrix.block(block_vel,block_p).m() +
-                                                    system_matrix.block(block_p,block_vel).m(), solver_tolerance);
-#endif
 
     solver_control_cheap.enable_history_data();
     solver_control_expensive.enable_history_data();
