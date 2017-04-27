@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/melt_visco_plastic.h>
+#include <aspect/utilities.h>
 #include <aspect/simulator.h>
 
 #include <deal.II/base/parameter_handler.h>
@@ -381,6 +382,58 @@ namespace aspect
                              "Mass fraction of clinopyroxene in the "
                              "peridotite to be molten. "
                              "Units: non-dimensional.");
+
+          // Strain weakening parameters
+          prm.declare_entry ("Use strain weakening", "false",
+                             Patterns::Bool (),
+                             "Apply strain weakening to viscosity, cohesion and internal angle "
+                             "of friction based on accumulated finite strain.  Units: None");
+          prm.declare_entry ("Start strain weakening intervals", "0.",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of strain weakening interval initial strains "
+                             "for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one value is given, then all use the same value.  Units: None");
+          prm.declare_entry ("End strain weakening intervals", "1.",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of strain weakening interval final strains "
+                             "for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one value is given, then all use the same value.  Units: None");
+          prm.declare_entry ("Cohesion strain weakening factors", "1.",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of cohesion strain weakening factors "
+                             "for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one value is given, then all use the same value.  Units: None");
+          prm.declare_entry ("Friction strain weakening factors", "1.",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of friction strain weakening factors "
+                             "for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one value is given, then all use the same value.  Units: None");
+
+          // Plasticity parameters
+          prm.declare_entry ("Angles of internal friction", "0",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of angles of internal friction, $\\phi$, for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "For a value of zero, in 2D the von Mises criterion is retrieved. "
+                             "Angles higher than 30 degrees are harder to solve numerically. Units: degrees.");
+          prm.declare_entry ("Cohesions", "1e20",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of cohesions, $C$, for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from "
+                             "exceeding the yield stress. Units: $Pa$.");
+
+          // Elasticity parameters
+          prm.declare_entry ("Elastic shear moduli", "75.0e9",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of elastic shear moduli, $G$, "
+                             "for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "The default value of 75 GPa is representive of mantle rocks. Units: none.");
         }
         prm.leave_subsection();
       }
@@ -394,6 +447,9 @@ namespace aspect
     MeltViscoPlastic<dim>::parse_parameters (ParameterHandler &prm)
     {
       ViscoPlastic<dim>::parse_parameters(prm);
+
+      //increment by one for background:
+      const unsigned int n_fields = this->n_compositional_fields() + 1;
 
       prm.enter_subsection("Material model");
       {
@@ -420,6 +476,36 @@ namespace aspect
           r2              = prm.get_double ("r2");
           beta            = prm.get_double ("beta");
           M_cpx           = prm.get_double ("Mass fraction cpx");
+
+          // Plasticity parameters
+          angles_internal_friction = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Angles of internal friction"))),
+                                                                             n_fields,
+                                                                             "Angles of internal friction");
+          cohesions = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Cohesions"))),
+                                                              n_fields,
+                                                              "Cohesions");
+
+          // Strain weakening parameters
+          use_strain_weakening             = prm.get_bool ("Use strain weakening");
+          start_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Start strain weakening intervals"))),
+                                                                                     n_fields,
+                                                                                     "Start strain weakening intervals");
+          end_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("End strain weakening intervals"))),
+                                                                                   n_fields,
+                                                                                   "End strain weakening intervals");
+          cohesion_strain_weakening_factors = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Cohesion strain weakening factors"))),
+                                                                                      n_fields,
+                                                                                      "Cohesion strain weakening factors");
+          friction_strain_weakening_factors = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Friction strain weakening factors"))),
+                                                                                      n_fields,
+                                                                                      "Friction strain weakening factors");
+
+         // Elastic parameters
+         elastic_shear_moduli = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Elastic shear moduli"))),
+                                                                              n_fields,
+                                                                              "Elastic shear moduli");
+
+
         }
         prm.leave_subsection();
       }

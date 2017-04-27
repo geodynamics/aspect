@@ -146,6 +146,20 @@ namespace aspect
         // melt fraction exponent
         double beta;
 
+        // strain weakening parameters
+        bool use_strain_weakening;
+        std::vector<double> start_strain_weakening_intervals;
+        std::vector<double> end_strain_weakening_intervals;
+        std::vector<double> cohesion_strain_weakening_factors;
+        std::vector<double> friction_strain_weakening_factors;
+
+        // plasticity parameters
+        std::vector<double> angles_internal_friction;
+        std::vector<double> cohesions;
+
+        // elasticity parameters
+        std::vector<double> elastic_shear_moduli;
+
         /**
          * Percentage of material that is molten for a given @p temperature and
          * @p pressure (assuming equilibrium conditions). Melting model after Katz,
