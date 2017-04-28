@@ -392,11 +392,7 @@ namespace aspect
     const double tolerance = std::max(1e-50,
                                       advection_solver_tolerance*system_rhs.block(block_idx).l2_norm());
 
-#if DEAL_II_VERSION_GTE(9,0,0)
     SolverControl solver_control (1000, tolerance);
-#else
-    ExtendedSolverControl solver_control (1000, tolerance);
-#endif
 
     solver_control.enable_history_data();
 

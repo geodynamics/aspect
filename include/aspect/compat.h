@@ -38,15 +38,17 @@
 
 #include <deal.II/lac/solver_control.h>
 
-namespace dealii
+namespace aspect
 {
-  class ExtendedSolverControl : public SolverControl
+  using namespace dealii;
+
+  class SolverControl : public dealii::SolverControl
   {
     public:
-      ExtendedSolverControl(const unsigned int n           = 100,
-                            const double       tol         = 1.e-10,
-                            const bool         log_history = false,
-                            const bool         log_result  = true)
+      SolverControl(const unsigned int n           = 100,
+                    const double       tol         = 1.e-10,
+                    const bool         log_history = false,
+                    const bool         log_result  = true)
         :
         SolverControl (n, tol, log_history, log_result)
       {}
@@ -62,11 +64,6 @@ namespace dealii
         return history_data;
       }
   };
-}
-
-namespace aspect
-{
-  typedef dealii::ExtendedSolverControl SolverControl;
 }
 #endif
 
