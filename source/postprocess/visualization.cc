@@ -51,16 +51,12 @@ namespace aspect
         public:
           virtual
           void
-          compute_derived_quantities_vector (const std::vector<Vector<double> >              &solution_values,
-                                             const std::vector<std::vector<Tensor<1,dim> > > &,
-                                             const std::vector<std::vector<Tensor<2,dim> > > &,
-                                             const std::vector<Point<dim> > &,
-                                             const std::vector<Point<dim> > &,
-                                             std::vector<Vector<double> >                    &computed_quantities) const
+          evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                std::vector<Vector<double> > &computed_quantities) const
           {
             const double velocity_scaling_factor =
               this->convert_output_to_years() ? year_in_seconds : 1.0;
-            const unsigned int n_q_points = solution_values.size();
+            const unsigned int n_q_points = input_data.solution_values.size();
             for (unsigned int q=0; q<n_q_points; ++q)
               for (unsigned int i=0; i<computed_quantities[q].size(); ++i)
                 {
@@ -68,9 +64,9 @@ namespace aspect
                   if (this->introspection().component_masks.velocities[i] ||
                       (this->include_melt_transport()
                        && this->introspection().variable("fluid velocity").component_mask[i]))
-                    computed_quantities[q][i]=solution_values[q][i] * velocity_scaling_factor;
+                    computed_quantities[q][i] = input_data.solution_values[q][i] * velocity_scaling_factor;
                   else
-                    computed_quantities[q][i]=solution_values[q][i];
+                    computed_quantities[q][i] = input_data.solution_values[q][i];
                 }
           }
 
@@ -136,22 +132,18 @@ namespace aspect
 
           virtual
           void
-          compute_derived_quantities_vector (const std::vector<Vector<double> >              &solution_values,
-                                             const std::vector<std::vector<Tensor<1,dim> > > &,
-                                             const std::vector<std::vector<Tensor<2,dim> > > &,
-                                             const std::vector<Point<dim> > &,
-                                             const std::vector<Point<dim> > &,
-                                             std::vector<Vector<double> >                    &computed_quantities) const
+          evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                std::vector<Vector<double> > &computed_quantities) const
           {
             //check that the first quadrature point has dim components
             Assert( computed_quantities[0].size() == dim,
                     ExcMessage("Unexpected dimension in mesh velocity postprocessor"));
             const double velocity_scaling_factor =
               this->convert_output_to_years() ? year_in_seconds : 1.0;
-            const unsigned int n_q_points = solution_values.size();
+            const unsigned int n_q_points = input_data.solution_values.size();
             for (unsigned int q=0; q<n_q_points; ++q)
               for (unsigned int i=0; i<dim; ++i)
-                computed_quantities[q][i]= solution_values[q][i] * velocity_scaling_factor;
+                computed_quantities[q][i] = input_data.solution_values[q][i] * velocity_scaling_factor;
           }
       };
     }

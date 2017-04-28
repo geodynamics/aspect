@@ -42,25 +42,21 @@ namespace aspect
       template <int dim>
       void
       StrainRate<dim>::
-      compute_derived_quantities_vector (const std::vector<Vector<double> >              &solution_values,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &solution_gradients,
-                                         const std::vector<std::vector<Tensor<2,dim> > > &,
-                                         const std::vector<Point<dim> > &,
-                                         const std::vector<Point<dim> > &,
-                                         std::vector<Vector<double> >                    &computed_quantities) const
+      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                            std::vector<Vector<double> > &computed_quantities) const
       {
-        const unsigned int n_quadrature_points = solution_values.size();
+        const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
-        Assert (solution_values[0].size() == this->introspection().n_components,           ExcInternalError());
-        Assert (solution_gradients[0].size() == this->introspection().n_components,          ExcInternalError());
+        Assert (input_data.solution_values[0].size() == this->introspection().n_components,           ExcInternalError());
+        Assert (input_data.solution_gradients[0].size() == this->introspection().n_components,          ExcInternalError());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             // extract the primal variables
             Tensor<2,dim> grad_u;
             for (unsigned int d=0; d<dim; ++d)
-              grad_u[d] = solution_gradients[q][d];
+              grad_u[d] = input_data.solution_gradients[q][d];
 
             const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
             const SymmetricTensor<2,dim> compressible_strain_rate

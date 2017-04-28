@@ -74,14 +74,10 @@ namespace aspect
       template <int dim>
       void
       Heating<dim>::
-      compute_derived_quantities_vector (const std::vector<Vector<double> >              &solution_values,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &solution_gradients,
-                                         const std::vector<std::vector<Tensor<2,dim> > > &,
-                                         const std::vector<Point<dim> > &,
-                                         const std::vector<Point<dim> >                  &evaluation_points,
-                                         std::vector<Vector<double> >                    &computed_quantities) const
+      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                            std::vector<Vector<double> > &computed_quantities) const
       {
-        const unsigned int n_quadrature_points = solution_values.size();
+        const unsigned int n_quadrature_points = input_data.solution_values.size();
         const std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > > &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
 
         // we do not want to write any output if there are no heating models
@@ -94,7 +90,7 @@ namespace aspect
                            "postprocessor (" + dealii::Utilities::int_to_string(computed_quantities.size()) + ") has to match the "
                            "number of quadrature points (" + dealii::Utilities::int_to_string(n_quadrature_points) + ")!"));
         Assert (computed_quantities[0].size() == heating_model_objects.size(), ExcInternalError());
-        Assert (solution_values[0].size() == this->introspection().n_components, ExcInternalError());
+        Assert (input_data.solution_values[0].size() == this->introspection().n_components, ExcInternalError());
 
         MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points, this->n_compositional_fields());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
@@ -111,25 +107,25 @@ namespace aspect
           {
             Tensor<2,dim> grad_u;
             for (unsigned int d=0; d<dim; ++d)
-              grad_u[d] = solution_gradients[q][d];
+              grad_u[d] = input_data.solution_gradients[q][d];
             in.strain_rate[q] = symmetrize (grad_u);
 
-            in.temperature[q] = solution_values[q][this->introspection().component_indices.temperature];
-            in.pressure[q]    = solution_values[q][this->introspection().component_indices.pressure];
+            in.temperature[q] = input_data.solution_values[q][this->introspection().component_indices.temperature];
+            in.pressure[q]    = input_data.solution_values[q][this->introspection().component_indices.pressure];
 
             for (unsigned int d = 0; d < dim; ++d)
               {
-                in.velocity[q][d]=solution_values[q][this->introspection().component_indices.velocities[d]];
-                in.pressure_gradient[q][d] = solution_gradients[q][this->introspection().component_indices.pressure][d];
+                in.velocity[q][d] = input_data.solution_values[q][this->introspection().component_indices.velocities[d]];
+                in.pressure_gradient[q][d] = input_data.solution_gradients[q][this->introspection().component_indices.pressure][d];
               }
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              in.composition[q][c] = solution_values[q][this->introspection().component_indices.compositional_fields[c]];
+              in.composition[q][c] = input_data.solution_values[q][this->introspection().component_indices.compositional_fields[c]];
 
-            mid_point += evaluation_points[q]/n_quadrature_points;
+            mid_point += input_data.evaluation_points[q]/n_quadrature_points;
           }
 
-        in.position = evaluation_points;
+        in.position = input_data.evaluation_points;
 
         typename DoFHandler<dim>::active_cell_iterator cell;
         cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_dof_handler(), mid_point)).first;
