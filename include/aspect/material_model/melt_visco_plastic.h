@@ -22,7 +22,7 @@
 #define _aspect_material_model_melt_visco_plastic_h
 
 #include <aspect/material_model/interface.h>
-#include <aspect/material_model/visco_plastic.h>
+#include <aspect/material_model/diffusion_dislocation.h>
 #include <aspect/postprocess/melt_statistics.h>
 #include <aspect/melt.h>
 
@@ -52,7 +52,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class MeltViscoPlastic : public MaterialModel::ViscoPlastic<dim>, public MaterialModel::MeltFractionModel<dim>
+    class MeltViscoPlastic : public MaterialModel::DiffusionDislocation<dim>, public MaterialModel::MeltFractionModel<dim>
     {
       public:
         /**

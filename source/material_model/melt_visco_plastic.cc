@@ -36,7 +36,7 @@ namespace aspect
     void
     MeltViscoPlastic<dim>::initialize ()
     {
-      ViscoPlastic<dim>::initialize();
+      DiffusionDislocation<dim>::initialize();
 
       // check if the applicable compositional fields exist
       AssertThrow(this->introspection().compositional_name_exists("peridotite"),
@@ -57,7 +57,7 @@ namespace aspect
     MeltViscoPlastic<dim>::
     reference_viscosity () const
     {
-      return ViscoPlastic<dim>::reference_viscosity();
+      return DiffusionDislocation<dim>::reference_viscosity();
     }
 
 
@@ -66,7 +66,7 @@ namespace aspect
     MeltViscoPlastic<dim>::
     is_compressible () const
     {
-      return ViscoPlastic<dim>::is_compressible();
+      return DiffusionDislocation<dim>::is_compressible();
     }
 
     template <int dim>
@@ -164,7 +164,7 @@ namespace aspect
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
       // get all material properties form the visco-plastic model
-      ViscoPlastic<dim>::evaluate(in, out);
+      DiffusionDislocation<dim>::evaluate(in, out);
 
       std::vector<double> maximum_melt_fractions(in.position.size());
       std::vector<double> old_porosity(in.position.size());
@@ -214,6 +214,9 @@ namespace aspect
                 volumetric_strain_rates[i] += velocity_gradients[i][d];
             }
         }
+
+      // we compute the volumetric yield strength here, but need it later in the melt part
+      std::vector<double> volumetric_yield_strength(in.position.size());
 
       for (unsigned int i=0; i<in.position.size(); ++i)
         {
@@ -286,14 +289,15 @@ namespace aspect
                   const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i]);
 
                   double yield_strength = 0.0;
+                  double tensile_strength = 0.0;
 
                   for (unsigned int c=0; c< volume_fractions.size(); ++c)
                     {
-                      const double tensile_strength = cohesions[c]/strength_reductions[c];
+                      const double tensile_strength_c = cohesions[c]/strength_reductions[c];
 
                       // Convert friction angle from degrees to radians
                       double phi = angles_internal_friction[c] * numbers::PI/180.0;
-                      const double transition_pressure = (cohesions[c] * std::cos(phi) - tensile_strength) / (1.0 -  sin(phi));
+                      const double transition_pressure = (cohesions[c] * std::cos(phi) - tensile_strength_c) / (1.0 -  sin(phi));
 
                       double yield_strength_c = 0.0;
                       if (effective_pressure < transition_pressure)
@@ -304,19 +308,20 @@ namespace aspect
                                            :
                                            cohesions[c] * std::cos(phi) + effective_pressure * std::sin(phi) );
                       else
-                        yield_strength_c = tensile_strength - effective_pressure;
+                        yield_strength_c = tensile_strength_c - effective_pressure;
 
                       yield_strength += volume_fractions[c]*yield_strength_c;
+                      tensile_strength += volume_fractions[c]*tensile_strength_c;
                     }
 
                   // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface
-                  double viscosity_drucker_prager;
                   if (viscous_stress >= yield_strength)
                     out.viscosities[i] = yield_strength / (2.0 * edot_ii);
 
                   // Limit the viscosity with specified minimum and maximum bounds
                   out.viscosities[i] = std::min(std::max(out.viscosities[i], min_visc), max_visc);
 
+                  volumetric_yield_strength[i] = viscous_stress - tensile_strength;
                 }
             }
         }
@@ -356,9 +361,14 @@ namespace aspect
               melt_out->fluid_densities[i] = out.densities[i] + melt_density_change;
               melt_out->fluid_density_gradients[i] = 0.0;
 
+              const double compaction_pressure = (1.0 - porosity) * (in.pressure[i] - fluid_pressures[i]);
+
               const double phi_0 = 0.05;
               porosity = std::max(std::min(porosity,0.995),1.e-3);
               melt_out->compaction_viscosities[i] = xi_0 * phi_0 / porosity;
+
+              if (compaction_pressure >= volumetric_yield_strength[i])
+                melt_out->compaction_viscosities[i] = volumetric_yield_strength[i] / volumetric_strain_rates[i];
             }
         }
     }
@@ -368,7 +378,7 @@ namespace aspect
     void
     MeltViscoPlastic<dim>::declare_parameters (ParameterHandler &prm)
     {
-      ViscoPlastic<dim>::declare_parameters(prm);
+      DiffusionDislocation<dim>::declare_parameters(prm);
 
       prm.enter_subsection("Material model");
       {
@@ -567,7 +577,7 @@ namespace aspect
     void
     MeltViscoPlastic<dim>::parse_parameters (ParameterHandler &prm)
     {
-      ViscoPlastic<dim>::parse_parameters(prm);
+      DiffusionDislocation<dim>::parse_parameters(prm);
 
       //increment by one for background:
       const unsigned int n_fields = this->n_compositional_fields() + 1;
@@ -641,7 +651,7 @@ namespace aspect
       }
       prm.leave_subsection();
 
-      this->model_dependence = ViscoPlastic<dim>::get_model_dependence();
+      this->model_dependence = DiffusionDislocation<dim>::get_model_dependence();
     }
   }
 }
