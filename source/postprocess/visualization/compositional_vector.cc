@@ -70,23 +70,19 @@ namespace aspect
       template <int dim>
       void
       CompositionalVector<dim>::
-      compute_derived_quantities_vector (const std::vector<Vector<double> >              &solution_values,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &,
-                                         const std::vector<std::vector<Tensor<2,dim> > > &,
-                                         const std::vector<Point<dim> > &,
-                                         const std::vector<Point<dim> > &,
-                                         std::vector<Vector<double> >                    &computed_quantities) const
+      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                            std::vector<Vector<double> > &computed_quantities) const
       {
-        const unsigned int n_quadrature_points = solution_values.size();
+        const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points, ExcInternalError ());
-        Assert (solution_values[0].size() == this->introspection().n_components, ExcInternalError ());
+        Assert (input_data.solution_values[0].size() == this->introspection().n_components, ExcInternalError ());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             for (unsigned int i=0; i<vector_names.size(); ++i)
               for (unsigned int j=0; j<dim; ++j)
                 computed_quantities[q][i*dim+j] =
-                  solution_values[q][this->introspection().component_indices.compositional_fields[sets[i][j]]];
+                  input_data.solution_values[q][this->introspection().component_indices.compositional_fields[sets[i][j]]];
           }
       }
 

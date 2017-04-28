@@ -42,20 +42,16 @@ namespace aspect
       template <int dim>
       void
       Gravity<dim>::
-      compute_derived_quantities_vector (const std::vector<Vector<double> > &,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &,
-                                         const std::vector<std::vector<Tensor<2,dim> > > &,
-                                         const std::vector<Point<dim> > &,
-                                         const std::vector<Point<dim> >                  &evaluation_points,
-                                         std::vector<Vector<double> >                    &computed_quantities) const
+      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                            std::vector<Vector<double> > &computed_quantities) const
       {
-        const unsigned int n_quadrature_points = evaluation_points.size();
+        const unsigned int n_quadrature_points = input_data.evaluation_points.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
         Assert (computed_quantities[0].size() == dim,    ExcInternalError());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            const Tensor<1,dim> g = this->get_gravity_model().gravity_vector (evaluation_points[q]);
+            const Tensor<1,dim> g = this->get_gravity_model().gravity_vector (input_data.evaluation_points[q]);
             for (unsigned int k=0; k<dim; ++k)
               computed_quantities[q](k) = g[k];
           }

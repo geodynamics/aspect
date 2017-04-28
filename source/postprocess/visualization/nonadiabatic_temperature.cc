@@ -42,23 +42,19 @@ namespace aspect
       template <int dim>
       void
       NonadiabaticTemperature<dim>::
-      compute_derived_quantities_vector (const std::vector<Vector<double> >              &solution_values,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &,
-                                         const std::vector<std::vector<Tensor<2,dim> > > &,
-                                         const std::vector<Point<dim> > &,
-                                         const std::vector<Point<dim> >                  &evaluation_points,
-                                         std::vector<Vector<double> >                    &computed_quantities) const
+      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                            std::vector<Vector<double> > &computed_quantities) const
       {
-        const unsigned int n_quadrature_points = solution_values.size();
+        const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
-        Assert (solution_values[0].size() == this->introspection().n_components,           ExcInternalError());
+        Assert (input_data.solution_values[0].size() == this->introspection().n_components,           ExcInternalError());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            const double temperature = solution_values[q][this->introspection().component_indices.temperature];
+            const double temperature = input_data.solution_values[q][this->introspection().component_indices.temperature];
 
-            computed_quantities[q](0) = temperature - this->get_adiabatic_conditions().temperature(evaluation_points[q]);
+            computed_quantities[q](0) = temperature - this->get_adiabatic_conditions().temperature(input_data.evaluation_points[q]);
           }
       }
     }
