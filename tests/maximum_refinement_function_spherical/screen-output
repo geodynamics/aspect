@@ -14,13 +14,13 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
      Heat fluxes through boundary parts: 996.9 W, 1960 W, 2479 W, 2479 W
      Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
 
-Number of active cells: 414 (on 5 levels)
-Number of degrees of freedom: 6,174 (3,786+495+1,893)
+Number of active cells: 387 (on 5 levels)
+Number of degrees of freedom: 5,823 (3,570+468+1,785)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 101+0 iterations.
+   Solving Stokes system... 102+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00001
@@ -29,58 +29,43 @@ Number of degrees of freedom: 6,174 (3,786+495+1,893)
      Heat fluxes through boundary parts: 996.9 W, 1959 W, 2463 W, 2463 W
      Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
 
-Number of active cells: 894 (on 6 levels)
-Number of degrees of freedom: 12,744 (7,820+1,014+3,910)
+Number of active cells: 726 (on 6 levels)
+Number of degrees of freedom: 10,671 (6,546+852+3,273)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+14 iterations.
+   Solving Stokes system... 193+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00002
      RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
-     Heat fluxes through boundary parts: 987.1 W, 1959 W, 2452 W, 2452 W
+     Heat fluxes through boundary parts: 987.1 W, 1958 W, 2454 W, 2453 W
      Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
 
-Number of active cells: 1,563 (on 6 levels)
-Number of degrees of freedom: 22,583 (13,872+1,775+6,936)
+Number of active cells: 1,014 (on 6 levels)
+Number of degrees of freedom: 14,900 (9,148+1,178+4,574)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+15 iterations.
+   Solving Stokes system... 200+13 iterations.
 
    Postprocessing:
      Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00003
      RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
-     Heat fluxes through boundary parts: 987.1 W, 1960 W, 2453 W, 2453 W
+     Heat fluxes through boundary parts: 991.9 W, 1960 W, 2455 W, 2455 W
      Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
 
-Number of active cells: 2,649 (on 7 levels)
-Number of degrees of freedom: 37,370 (22,960+2,930+11,480)
+Number of active cells: 1,254 (on 6 levels)
+Number of degrees of freedom: 18,827 (11,560+1,487+5,780)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+15 iterations.
-
-   Postprocessing:
-     Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00004
-     RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
-     Temperature min/avg/max:            1400 K, 1627 K, 1800 K
-     Heat fluxes through boundary parts: 986.2 W, 1962 W, 2449 W, 2449 W
-     Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
-
-Number of active cells: 4,044 (on 7 levels)
-Number of degrees of freedom: 56,754 (34,882+4,431+17,441)
-
-*** Timestep 0:  t=0 years
-   Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+15 iterations.
+   Solving Stokes system... 200+14 iterations.
 
    Postprocessing:
 
@@ -98,14 +83,14 @@ Number of degrees of freedom: 56,754 (34,882+4,431+17,441)
      Reference thermal diffusivity (m^2/s):         1.17053e-06
      Rayleigh number:                               6.00303
 
-     Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00005
+     Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00004
      RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
-     Heat fluxes through boundary parts: 985.9 W, 1963 W, 2448 W, 2448 W
+     Heat fluxes through boundary parts: 986.7 W, 1960 W, 2452 W, 2452 W
      Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
 
-Number of active cells: 5,214 (on 7 levels)
-Number of degrees of freedom: 73,641 (45,264+5,745+22,632)
+Number of active cells: 1,389 (on 6 levels)
+Number of degrees of freedom: 20,256 (12,440+1,596+6,220)
 
 Termination requested by criterion: end time
 
