@@ -157,6 +157,18 @@ namespace aspect
       return;
     }
 
+    template <int dim>
+    void
+    MeltViscoPlastic<dim>::
+    melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                    std::vector<double> &melt_fractions) const
+    { 
+      for (unsigned int q=0; q<in.temperature.size(); ++q)
+        melt_fractions[q] = melt_fraction(in.temperature[q],
+                                          std::max(0.0, in.pressure[q]));
+      return;
+    }
+
 
     template <int dim>
     void
@@ -272,6 +284,19 @@ namespace aspect
               // reduce viscosity due to plastic yielding and the presence of melt
               if (in.strain_rate.size())
                 {
+
+                  const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i]);
+ 
+                  // Calculate viscoelastic viscosity
+                  const double initial_viscosity = out.viscosities[i];
+                  double viscoelastic = 0.0;
+                  for (unsigned int c=0; c< volume_fractions.size(); ++c)
+                    {
+                      double elastic_shear_modulus = elastic_shear_moduli[c];
+                      viscoelastic += volume_fractions[c] * ( ( 1. / initial_viscosity ) + ( 1. / ( elastic_shear_modulus * this->get_timestep() ) ) );
+                    }
+                  out.viscosities[i] = viscoelastic; 
+                  
                   const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
                   out.viscosities[i] *= exp(- alpha_phi * porosity);
 
