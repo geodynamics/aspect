@@ -64,9 +64,9 @@ namespace aspect
                   if (this->introspection().component_masks.velocities[i] ||
                       (this->include_melt_transport()
                        && this->introspection().variable("fluid velocity").component_mask[i]))
-                    computed_quantities[q][i]=input_data.solution_values[q][i] * velocity_scaling_factor;
+                    computed_quantities[q][i] = input_data.solution_values[q][i] * velocity_scaling_factor;
                   else
-                    computed_quantities[q][i]=input_data.solution_values[q][i];
+                    computed_quantities[q][i] = input_data.solution_values[q][i];
                 }
           }
 
@@ -143,7 +143,7 @@ namespace aspect
             const unsigned int n_q_points = input_data.solution_values.size();
             for (unsigned int q=0; q<n_q_points; ++q)
               for (unsigned int i=0; i<dim; ++i)
-                computed_quantities[q][i]= input_data.solution_values[q][i] * velocity_scaling_factor;
+                computed_quantities[q][i] = input_data.solution_values[q][i] * velocity_scaling_factor;
           }
       };
     }

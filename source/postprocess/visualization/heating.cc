@@ -115,7 +115,7 @@ namespace aspect
 
             for (unsigned int d = 0; d < dim; ++d)
               {
-                in.velocity[q][d]=input_data.solution_values[q][this->introspection().component_indices.velocities[d]];
+                in.velocity[q][d] = input_data.solution_values[q][this->introspection().component_indices.velocities[d]];
                 in.pressure_gradient[q][d] = input_data.solution_gradients[q][this->introspection().component_indices.pressure][d];
               }
 

@@ -60,11 +60,11 @@ namespace aspect
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             //in.strain_rate[q] =
-            in.pressure[q]=input_data.solution_values[q][this->introspection().component_indices.pressure];
-            in.temperature[q]=input_data.solution_values[q][this->introspection().component_indices.temperature];
+            in.pressure[q] = input_data.solution_values[q][this->introspection().component_indices.pressure];
+            in.temperature[q] = input_data.solution_values[q][this->introspection().component_indices.temperature];
             for (unsigned int d = 0; d < dim; ++d)
               {
-                in.velocity[q][d]=input_data.solution_values[q][this->introspection().component_indices.velocities[d]];
+                in.velocity[q][d] = input_data.solution_values[q][this->introspection().component_indices.velocities[d]];
                 in.pressure_gradient[q][d] = input_data.solution_gradients[q][this->introspection().component_indices.pressure][d];
               }
 

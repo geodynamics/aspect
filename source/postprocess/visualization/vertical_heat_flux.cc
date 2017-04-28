@@ -63,11 +63,11 @@ namespace aspect
         in.strain_rate.resize(0); // we do not need the viscosity
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            in.pressure[q]=input_data.solution_values[q][this->introspection().component_indices.pressure];
-            in.temperature[q]=input_data.solution_values[q][this->introspection().component_indices.temperature];
+            in.pressure[q] = input_data.solution_values[q][this->introspection().component_indices.pressure];
+            in.temperature[q] = input_data.solution_values[q][this->introspection().component_indices.temperature];
             for (unsigned int d = 0; d < dim; ++d)
               {
-                in.velocity[q][d]=input_data.solution_values[q][this->introspection().component_indices.velocities[d]];
+                in.velocity[q][d] = input_data.solution_values[q][this->introspection().component_indices.velocities[d]];
                 in.pressure_gradient[q][d] = input_data.solution_gradients[q][this->introspection().component_indices.pressure][d];
                 temperature_gradient[q][d] = input_data.solution_gradients[q][this->introspection().component_indices.temperature][d];
               }

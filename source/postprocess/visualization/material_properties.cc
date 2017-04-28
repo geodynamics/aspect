@@ -116,8 +116,8 @@ namespace aspect
 
             in.strain_rate[q] = symmetrize (grad_u);
 
-            in.pressure[q]=input_data.solution_values[q][this->introspection().component_indices.pressure];
-            in.temperature[q]=input_data.solution_values[q][this->introspection().component_indices.temperature];
+            in.pressure[q] = input_data.solution_values[q][this->introspection().component_indices.pressure];
+            in.temperature[q] = input_data.solution_values[q][this->introspection().component_indices.temperature];
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               in.composition[q][c] = input_data.solution_values[q][this->introspection().component_indices.compositional_fields[c]];
