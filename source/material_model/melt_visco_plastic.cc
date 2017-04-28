@@ -144,19 +144,6 @@ namespace aspect
       return peridotite_melt_fraction;
     }
 
-
-    template <int dim>
-    void
-    MeltViscoPlastic<dim>::
-    melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                    std::vector<double> &melt_fractions) const
-    {
-      for (unsigned int q=0; q<in.temperature.size(); ++q)
-        melt_fractions[q] = melt_fraction(in.temperature[q],
-                                          std::max(0.0, in.pressure[q]));
-      return;
-    }
-
     template <int dim>
     void
     MeltViscoPlastic<dim>::
@@ -183,6 +170,30 @@ namespace aspect
       std::vector<double> fluid_pressures(in.position.size());
       std::vector<double> volumetric_strain_rates(in.position.size());
 
+      // Fill elastic outputs
+      ElasticOutputs<dim> *elastic_out = out.template get_additional_output<ElasticOutputs<dim> >();
+      if (elastic_out != NULL)
+        {   
+          for (unsigned int i=0; i<in.position.size(); ++i)
+            {   
+
+              // Obtain viscosity output from diffusion dislocation
+              const double initial_viscosity = out.viscosities[i];
+    
+              // Compute volume fractions
+              const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i]);
+    
+              // Compute average elastic shear modulus
+              double elastic_shear_modulus = 0;
+              for (unsigned int c=0; c< volume_fractions.size(); ++c)
+                {   
+                  elastic_shear_modulus += volume_fractions[c] * elastic_shear_moduli[c];
+                }   
+                elastic_out->elastic_viscosities[i] = 1. / ( ( 1. / initial_viscosity ) + ( 1. / ( elastic_shear_modulus * this->get_timestep() ) ) );
+                elastic_out->elastic_evolutions[i] = 1. / ( 1. + ( ( elastic_shear_modulus * this->get_timestep() ) / initial_viscosity ) );
+            }
+        }
+ 
       // we want to get the porosity and the peridotite field (the depletion) from the old
       // solution here, so we can compute differences between the equilibrium in the current
       // time step and the melt generated up to the previous time step
@@ -293,7 +304,7 @@ namespace aspect
                   for (unsigned int c=0; c< volume_fractions.size(); ++c)
                     {
                       double elastic_shear_modulus = elastic_shear_moduli[c];
-                      viscoelastic += volume_fractions[c] * ( ( 1. / initial_viscosity ) + ( 1. / ( elastic_shear_modulus * this->get_timestep() ) ) );
+                      viscoelastic += volume_fractions[c] * 1. / ( ( 1. / initial_viscosity ) + ( 1. / ( elastic_shear_modulus * this->get_timestep() ) ) );
                     }
                   out.viscosities[i] = viscoelastic; 
                   
@@ -311,7 +322,6 @@ namespace aspect
                                         :
                                         0.0);
                   const double effective_pressure = (1.0 - porosity) * in.pressure[i] + (porosity - x_phi) * fluid_pressures[i];
-                  const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i]);
 
                   double yield_strength = 0.0;
                   double tensile_strength = 0.0;
@@ -396,6 +406,8 @@ namespace aspect
                 melt_out->compaction_viscosities[i] = volumetric_yield_strength[i] / volumetric_strain_rates[i];
             }
         }
+
+ 
     }
 
 

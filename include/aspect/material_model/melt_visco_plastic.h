@@ -25,6 +25,7 @@
 #include <aspect/material_model/diffusion_dislocation.h>
 #include <aspect/postprocess/melt_statistics.h>
 #include <aspect/melt.h>
+#include <aspect/elastic.h>
 
 namespace aspect
 {
@@ -85,6 +86,7 @@ namespace aspect
 
         virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                                      std::vector<double> &melt_fractions) const;
+
         /**
          * @}
          */
