@@ -1,0 +1,219 @@
+
+set Additional shared libraries = /home/dannberg/software/aspect-master/cookbooks/keller_2013/libkeller_2013.so
+
+#####  Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 10e6
+set Use years in output instead of seconds = true
+set Use direct solver for Stokes system    = true
+set Linear solver tolerance                = 1e-7
+set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver tolerance             = 1e-4
+set Max nonlinear iterations               = 10
+set Number of cheap Stokes solver steps    = 0
+set CFL number                             = 0.1
+set Maximum time step                      = 100
+set Output directory                       = output5
+set Timing output frequency                = 1
+set Pressure normalization                 = surface
+set Surface pressure                       = 50e6
+
+#### Parameters describing the model
+
+# Model geometry (100x20 km, 1 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 120
+    set Y repetitions = 90
+    set X extent      = 6e3
+    set Y extent      = 4e3
+  end
+end
+
+# Mesh refinement specifications 
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+# Boundary classifications
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+  set Fixed temperature boundary indicators   = bottom, top
+  set Fixed composition boundary indicators   = #bottom
+  set Prescribed velocity boundary indicators = left x: function, right x:function#, bottom y:function
+  set Free surface boundary indicators        = #top
+  set Tangential velocity boundary indicators = top, bottom
+  set Include melt transport                  = true
+end
+
+subsection Melt settings
+  set Melt transport threshold                = 0.0 #1e-3
+  set Heat advection by melt                  = false
+end
+
+
+subsection Boundary fluid pressure model
+  set Plugin name = density
+  subsection Density
+    set Density formulation = average density
+  end
+end
+
+# Advecting the free surface vertically rather than
+# in the surface normal direction can result in a
+# more stable mesh when the deformation is large
+subsection Free surface
+  set Surface velocity projection = vertical
+end
+
+# Velocity on boundaries characterized by functions
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = m=0.00012, year=1
+    set Function expression =  if (x<3e3 , -1*m/year, 1*m/year) ; 0.0
+  end
+end
+
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, peridotite
+end
+
+
+# Spatial domain of different compositional fields
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = x0=3e3, y0=0, sigma=3e2
+    set Function expression = 0.2 * exp(-((x-x0)*(x-x0)/(2*sigma*sigma)+(y-y0)*(y-y0)/(2*sigma*sigma))) ; \
+                              0
+  end
+end
+
+# Composition boundary conditions
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+# Temperature boundary and initial conditions
+subsection Boundary temperature model
+  set Model name = box
+  subsection Box
+    set Bottom temperature = 273
+    set Left temperature   = 273
+    set Right temperature  = 273
+    set Top temperature    = 273
+  end
+end
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+# Material model
+subsection Material model
+  set Model name = melting rate function
+
+  subsection Melting rate function
+    set Base model = melt visco plastic
+
+    subsection Function
+      set Variable names      = x,y
+      set Function constants  = rate=2e-6, year=1, x0=20e3, y0=0, sigma=1e3
+      set Function expression = 0.0 
+    end
+  end
+
+  subsection Melt visco plastic
+    set Depletion density change          = 0
+    set Reference permeability            = 1e-8
+    set Reference bulk viscosity          = 2e19
+    set Exponential melt weakening factor = 27
+    set Reference melt viscosity          = 10
+    set Melt density change               = -500
+
+    set Angles of internal friction = 30.
+    set Cohesions = 40.e6
+  end
+
+  subsection Diffusion dislocation
+    set Reference temperature = 273
+    set Minimum strain rate = 1.e-20
+    set Minimum viscosity = 1e18
+    set Maximum viscosity = 1e26
+    set Reference viscosity = 1e22
+
+    set Thermal diffusivity = 1.e-6
+    set Heat capacity = 750.
+    set Densities = 3000
+    set Thermal expansivities = 0.
+
+    set Viscosity averaging scheme = harmonic
+
+    set Prefactors for diffusion creep = 5.e-31
+    set Stress exponents for diffusion creep = 1.0
+    set Activation energies for diffusion creep = 0.
+    set Activation volumes for diffusion creep = 0.
+
+    set Prefactors for dislocation creep = 0.0
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+# Element types
+subsection Discretization
+  set Composition polynomial degree     = 1
+  set Stokes velocity polynomial degree = 2
+  set Temperature polynomial degree     = 1
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, basic statistics, temperature statistics, visualization
+  set Run postprocessors on nonlinear iterations = true
+  subsection Visualization
+    set List of output variables = material properties, strain rate, melt material properties 
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+
+    subsection Melt material properties
+      set List of properties = compaction viscosity,permeability,fluid density
+    end
+
+    set Time between graphical output = 0
+    set Interpolate output = false
+  end
+end
+
+# Termination criteria
+subsection Termination criteria
+ set End step = 1000
+ set Termination criteria = end step
+end
+
+
+subsection Checkpointing
+  set Time between checkpoint = 300
+end
