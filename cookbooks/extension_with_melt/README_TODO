@@ -1,2 +1,5 @@
-1. Add elasticity
-2. Modify finite strain to only track plastic strain
+1a. Add elasticity and perform bending beam benchmarks in Keller et al. paper
+1b. Modify finite strain to only track plastic strain
+2.  Design a suite of tests to understand the physics of the yielding model
+3.  Reproduce Keller et al., 2013 GJI experiments (this will be a cookbook)
+4.  Design 2-D and 3-D extension experiments 
