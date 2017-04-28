@@ -229,6 +229,17 @@ namespace aspect
             postprocessor_names.push_back (std_cxx11::get<0>(*p));
         }
 
+      // see if the user specified "global statistics" somewhere; if so, remove it from the list
+      std::vector<std::string>::iterator new_end
+        = std::remove (postprocessor_names.begin(),
+                       postprocessor_names.end(),
+                       "global statistics");
+      if (new_end != postprocessor_names.end())
+        postprocessor_names.erase (new_end, postprocessor_names.end());
+
+      // in any case, put the global statistics postprocessor at the front:
+      postprocessor_names.insert(postprocessor_names.begin(), "global statistics");
+
       // then go through the list, create objects and let them parse
       // their own parameters
       for (unsigned int name=0; name<postprocessor_names.size(); ++name)

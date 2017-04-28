@@ -4,8 +4,9 @@
 # 4: Number of mesh cells
 # 5: Number of Stokes degrees of freedom
 # 6: Number of temperature degrees of freedom
-# 7: Iterations for Stokes solver
-# 8: Velocity iterations in Stokes preconditioner
-# 9: Schur complement iterations in Stokes preconditioner
-# 10: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 79 81 320 output-inclusion_4/solution/solution-00000 
+# 7: Number of nonlinear iterations
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 1 79 81 320 output-inclusion_4/solution/solution-00000 
