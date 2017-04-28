@@ -156,9 +156,17 @@ namespace aspect
         // plasticity parameters
         std::vector<double> angles_internal_friction;
         std::vector<double> cohesions;
+        std::vector<double> strength_reductions;
+        std::vector<int> field_used_in_viscosity_averaging;
+        double min_strain_rate;
+        double min_visc;
+        double max_visc;
 
         // elasticity parameters
         std::vector<double> elastic_shear_moduli;
+
+        std::vector<double> compute_volume_fractions(
+          const std::vector<double> &compositional_fields) const;
 
         /**
          * Percentage of material that is molten for a given @p temperature and

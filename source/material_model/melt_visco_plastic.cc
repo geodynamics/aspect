@@ -70,6 +70,43 @@ namespace aspect
     }
 
     template <int dim>
+    std::vector<double>
+    MeltViscoPlastic<dim>::
+    compute_volume_fractions( const std::vector<double> &compositional_fields) const
+    {
+      std::vector<double> volume_fractions( compositional_fields.size()+1);
+      double sum_composition = 0.0;
+
+      std::vector<double> x_comp = compositional_fields;
+      for ( unsigned int i=0; i < x_comp.size(); ++i)
+        {
+          if (field_used_in_viscosity_averaging[i] == true)
+            {
+              // clip the compositional fields so they are between zero and one
+              // and sum them for normalization purposes
+              x_comp[i] = std::min(std::max(x_comp[i], 0.0), 1.0);
+              sum_composition += x_comp[i];
+            }
+          else
+            x_comp[i] = 0.0;
+        }
+
+      if (sum_composition >= 1.0)
+        {
+          volume_fractions[0] = 0.0;  //background material
+          for ( unsigned int i=1; i <= x_comp.size(); ++i)
+            volume_fractions[i] = x_comp[i-1]/sum_composition;
+        }
+      else
+        {
+          volume_fractions[0] = 1.0 - sum_composition; //background material
+          for ( unsigned int i=1; i <= x_comp.size(); ++i)
+            volume_fractions[i] = x_comp[i-1];
+        }
+      return volume_fractions;
+    }
+
+    template <int dim>
     double
     MeltViscoPlastic<dim>::
     melt_fraction (const double temperature,
@@ -131,6 +168,8 @@ namespace aspect
 
       std::vector<double> maximum_melt_fractions(in.position.size());
       std::vector<double> old_porosity(in.position.size());
+      std::vector<double> fluid_pressures(in.position.size());
+      std::vector<double> volumetric_strain_rates(in.position.size());
 
       // we want to get the porosity and the peridotite field (the depletion) from the old
       // solution here, so we can compute differences between the equilibrium in the current
@@ -154,6 +193,26 @@ namespace aspect
           fe_value.value_list(in.position,
                               old_porosity,
                               this->introspection().component_indices.compositional_fields[porosity_idx]);
+
+          // get fluid pressure from the current solution
+          Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
+          fe_value_current(this->get_dof_handler(), this->get_solution(), this->get_mapping());
+          fe_value_current.set_active_cell(*in.cell);
+
+          fe_value_current.value_list(in.position,
+                                      fluid_pressures,
+                                      this->introspection().variable("fluid pressure").first_component_index);
+
+          // get volumetric strain rate
+          std::vector<Tensor<1,dim> > velocity_gradients(in.position.size());
+          for (unsigned int d=0; d<dim; ++d)
+            {
+              fe_value_current.gradient_list(in.position,
+                                             velocity_gradients,
+                                             this->introspection().component_indices.velocities[d]);
+              for (unsigned int i=0; i<in.position.size(); ++i)
+                volumetric_strain_rates[i] += velocity_gradients[i][d];
+            }
         }
 
       for (unsigned int i=0; i<in.position.size(); ++i)
@@ -207,11 +266,57 @@ namespace aspect
                     out.reaction_terms[i][c] = 0.0;
                 }
 
-              // reduce viscosity if there is melt present
+              // reduce viscosity due to plastic yielding and the presence of melt
               if (in.strain_rate.size())
                 {
                   const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
                   out.viscosities[i] *= exp(- alpha_phi * porosity);
+
+                  // calculate deviatoric strain rate and viscous stress
+                  const double edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),
+                                                    min_strain_rate);
+                  double viscous_stress = 2. * out.viscosities[i] * edot_ii * (1.0 - porosity);
+
+                  const double x_phi = (porosity > this->get_melt_handler().melt_transport_threshold
+                                        ?
+                                        1.0
+                                        :
+                                        0.0);
+                  const double effective_pressure = (1.0 - porosity) * in.pressure[i] + (porosity - x_phi) * fluid_pressures[i];
+                  const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i]);
+
+                  double yield_strength = 0.0;
+
+                  for (unsigned int c=0; c< volume_fractions.size(); ++c)
+                    {
+                      const double tensile_strength = cohesions[c]/strength_reductions[c];
+
+                      // Convert friction angle from degrees to radians
+                      double phi = angles_internal_friction[c] * numbers::PI/180.0;
+                      const double transition_pressure = (cohesions[c] * std::cos(phi) - tensile_strength) / (1.0 -  sin(phi));
+
+                      double yield_strength_c = 0.0;
+                      if (effective_pressure < transition_pressure)
+                        yield_strength_c = ( (dim==3)
+                                           ?
+                                           ( 6.0 * cohesions[c] * std::cos(phi) + 2.0 * effective_pressure * std::sin(phi) )
+                                           / ( std::sqrt(3.0) * (3.0 + std::sin(phi) ) )
+                                           :
+                                           cohesions[c] * std::cos(phi) + effective_pressure * std::sin(phi) );
+                      else
+                        yield_strength_c = tensile_strength - effective_pressure;
+
+                      yield_strength += volume_fractions[c]*yield_strength_c;
+                    }
+
+                  // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface
+                  double viscosity_drucker_prager;
+                  if (viscous_stress >= yield_strength)
+                    out.viscosities[i] = yield_strength / (2.0 * edot_ii);
+
+                  // Limit the viscosity with specified minimum and maximum bounds
+                  out.viscosities[i] = std::min(std::max(out.viscosities[i], min_visc), max_visc);
+
                 }
             }
         }
@@ -426,6 +531,22 @@ namespace aspect
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from "
                              "exceeding the yield stress. Units: $Pa$.");
+          prm.declare_entry ("Host rock strength reductions", "4",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of reduction factors of strength of the host rock under tensile stress, $R$, "
+                             "for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "Units: none.");
+          prm.declare_entry ("Use compositional field for viscosity averaging", "1",
+                             Patterns::List(Patterns::Integer(0,1)),
+                             "List of integers, detailing for each compositional field if it should be included in the "
+                             "averaging scheme when the yield strength is computed (if 1) or not (if 0).");
+          prm.declare_entry ("Minimum strain rate", "1.0e-20", Patterns::Double(0),
+                             "Stabilizes strain dependent viscosity. Units: $1 / s$");
+          prm.declare_entry ("Minimum viscosity", "1e17", Patterns::Double(0),
+                             "Lower cutoff for effective viscosity. Units: $Pa s$");
+          prm.declare_entry ("Maximum viscosity", "1e28", Patterns::Double(0),
+                             "Upper cutoff for effective viscosity. Units: $Pa s$");
 
           // Elasticity parameters
           prm.declare_entry ("Elastic shear moduli", "75.0e9",
@@ -433,7 +554,7 @@ namespace aspect
                              "List of elastic shear moduli, $G$, "
                              "for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "The default value of 75 GPa is representive of mantle rocks. Units: none.");
+                             "The default value of 75 GPa is representative of mantle rocks. Units: none.");
         }
         prm.leave_subsection();
       }
@@ -484,6 +605,15 @@ namespace aspect
           cohesions = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Cohesions"))),
                                                               n_fields,
                                                               "Cohesions");
+          strength_reductions = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Host rock strength reductions"))),
+                                                                        n_fields,
+                                                                        "Host rock strength reductions");
+          field_used_in_viscosity_averaging = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_int(Utilities::split_string_list(prm.get("Use compositional field for viscosity averaging"))),
+                                                                        n_fields,
+                                                                        "Use compositional field for viscosity averaging");
+          min_strain_rate = prm.get_double("Minimum strain rate");
+          min_visc = prm.get_double ("Minimum viscosity");
+          max_visc = prm.get_double ("Maximum viscosity");
 
           // Strain weakening parameters
           use_strain_weakening             = prm.get_bool ("Use strain weakening");
