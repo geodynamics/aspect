@@ -50,7 +50,7 @@ namespace aspect
                     const bool         log_history = false,
                     const bool         log_result  = true)
         :
-        SolverControl (n, tol, log_history, log_result)
+        dealii::SolverControl (n, tol, log_history, log_result)
       {}
 
       const std::vector<double> &get_history_data() const
