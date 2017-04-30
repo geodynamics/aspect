@@ -240,6 +240,19 @@ IF (ASPECT_HAVE_LINK_H)
   ENDFOREACH()
 ENDIF()
 
+# Check if we want to use cotire to precompile header files and prepare a
+# unity build target. This speeds up compile time, but can fail on some
+# machines, therefore it is disabled by default.
+SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time.")
+
+IF (ASPECT_PRECOMPILE_HEADERS)
+# For the unity build we need to compile helper_functions.cc before core.cc
+# ensure this by reordering the files
+  FIND_FILE(HELPER_PATH helper_functions.cc HINTS "${CMAKE_SOURCE_DIR}/source/simulator")
+  LIST(REMOVE_ITEM TARGET_SRC ${HELPER_PATH})
+  LIST(INSERT TARGET_SRC 0 ${HELPER_PATH})
+ENDIF()
+
 
 DEAL_II_INVOKE_AUTOPILOT()
 
@@ -274,27 +287,22 @@ IF (ASPECT_USE_FP_EXCEPTIONS)
   ENDIF()
 ENDIF()
 
-# Check if we want to use cotire to precompile header files and prepare a
-# unity build target. This speeds up compile time, but can fail on some
-# machines, therefore it is disabled by default.
-SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time.")
-
 IF (ASPECT_PRECOMPILE_HEADERS)
   MESSAGE(STATUS "Enabling cotire to precompile external header files.")
   INCLUDE(cmake/cotire)
 
-# Set some properties that are necessary for the header precompilations 
-# and unity build to pass.
-# E.g. we need to exclude some headers that frequently cause problems, 
-# and undefine some macros between source files that would otherwise 
-# interfere with each other.
+  # Set some properties that are necessary for the header precompilations 
+  # and unity build to pass. We need to exclude some headers that
+  # frequently cause problems, and undefine some macros between source 
+  # files that would otherwise interfere with each other.
   set_target_properties (aspect PROPERTIES
       COTIRE_PREFIX_HEADER_IGNORE_PATH
       "/usr/include/;${CMAKE_SOURCE_DIR};${CMAKE_BINARY_DIR}")
   set_source_files_properties (${TARGET_SRC} PROPERTIES
       COTIRE_UNITY_SOURCE_POST_UNDEFS "INSTANTIATE")
-# This line activates the cotire module for the aspect target, 
-# and therefore the whole precompilation
+
+  # This line activates the cotire module for the aspect target, 
+  # and therefore the whole precompilation
   cotire(aspect)
 ELSE()
   MESSAGE(STATUS "Disabling cotire.")
