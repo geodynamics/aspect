@@ -2487,4 +2487,5 @@ namespace aspect
   template class Simulator<dim>;
 
   ASPECT_INSTANTIATE(INSTANTIATE)
+#define aspect_simulator_defined
 }
