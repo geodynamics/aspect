@@ -285,8 +285,8 @@ namespace aspect
 
     prm.declare_entry ("Number of cheap Stokes solver steps", "200",
                        Patterns::Integer(0),
-                       "As explained in the ASPECT paper (Kronbichler, Heister, and Bangerth, "
-                       "GJI 2012, \\cite{KHB12}) we first try to solve the Stokes system in every "
+                       "As explained in the paper that describes ASPECT (Kronbichler, Heister, and Bangerth, "
+                       "2012, see \\cite{KHB12}) we first try to solve the Stokes system in every "
                        "time step using a GMRES iteration with a poor but cheap "
                        "preconditioner. By default, we try whether we can converge the GMRES "
                        "solver in 200 such iterations before deciding that we need a better "
@@ -716,7 +716,7 @@ namespace aspect
                            Patterns::Integer (1, 2),
                            "The exponent $\\alpha$ in the entropy viscosity stabilization. Valid "
                            "options are 1 or 2. The recommended setting is 2. (This parameter does "
-                           "not correspond to any variable in the 2012 GJI paper by Kronbichler, "
+                           "not correspond to any variable in the 2012 paper by Kronbichler, "
                            "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
                            "Rather, the paper always uses 2 as the exponent in the definition "
                            "of the entropy, following equation (15) of the paper. The full "
@@ -727,8 +727,9 @@ namespace aspect
                            Patterns::Double (0),
                            "The $c_R$ factor in the entropy viscosity "
                            "stabilization. (For historical reasons, the name used here is different "
-                           "from the one used in the 2012 GJI paper by Kronbichler, "
-                           "Heister and Bangerth that describes ASPECT. This parameter corresponds "
+                           "from the one used in the 2012 paper by Kronbichler, "
+                           "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
+                           "This parameter corresponds "
                            "to the factor $\\alpha_E$ in the formulas following equation (15) of "
                            "the paper. After further experiments, we have also chosen to use a "
                            "different value than described there.) Units: None.");
@@ -737,8 +738,9 @@ namespace aspect
                            "The $\\beta$ factor in the artificial viscosity "
                            "stabilization. An appropriate value for 2d is 0.078 "
                            "and 0.117 for 3d. (For historical reasons, the name used here is different "
-                           "from the one used in the 2012 GJI paper by Kronbichler, "
-                           "Heister and Bangerth that describes ASPECT. This parameter corresponds "
+                           "from the one used in the 2012 paper by Kronbichler, "
+                           "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
+                           "This parameter corresponds "
                            "to the factor $\\alpha_\\text {max}$ in the formulas following equation (15) of "
                            "the paper. After further experiments, we have also chosen to use a "
                            "different value than described there: It can be chosen as stated there for "
@@ -749,8 +751,9 @@ namespace aspect
                            "The strain rate scaling factor in the artificial viscosity "
                            "stabilization. This parameter determines how much the strain rate (in addition "
                            "to the velocity) should influence the stabilization. (This parameter does "
-                           "not correspond to any variable in the 2012 GJI paper by Kronbichler, "
-                           "Heister and Bangerth that describes ASPECT. Rather, the paper always uses "
+                           "not correspond to any variable in the 2012 paper by Kronbichler, "
+                           "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
+                           "Rather, the paper always uses "
                            "0, i.e. they specify the maximum dissipation $\\nu_h^\\text{max}$ as "
                            "$\\nu_h^\\text{max}\\vert_K = \\alpha_\\text{max} h_K \\|\\mathbf u\\|_{\\infty,K}$. "
                            "Here, we use "
