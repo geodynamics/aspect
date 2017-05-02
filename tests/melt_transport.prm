@@ -81,7 +81,7 @@ subsection Gravity model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function # default: 
   subsection Function
     set Function constants  = l=250000
@@ -90,7 +90,7 @@ subsection Initial conditions
   end
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function # default: 
   subsection Function
     set Function expression = if(y>250000*(1+0.5*sin(x*pi/250000)),0.3,0);0.0

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,6 +20,7 @@
 
 
 #include <aspect/postprocess/mass_flux_statistics.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -29,21 +30,6 @@ namespace aspect
 {
   namespace Postprocess
   {
-    namespace
-    {
-      /**
-       * Given a string #s, return it in the form ' ("s")' if nonempty.
-       * Otherwise just return the empty string itself.
-       */
-      std::string parenthesize_if_nonempty (const std::string &s)
-      {
-        if (s.size() > 0)
-          return " (\"" + s + "\")";
-        else
-          return "";
-      }
-    }
-
     template <int dim>
     std::pair<std::string,std::string>
     MassFluxStatistics<dim>::execute (TableHandler &statistics)
@@ -178,8 +164,8 @@ namespace aspect
         {
           const std::string name = "Outward mass flux through boundary with indicator "
                                    + Utilities::int_to_string(p->first)
-                                   + parenthesize_if_nonempty(this->get_geometry_model()
-                                                              .translate_id_to_symbol_name (p->first))
+                                   + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
+                                                                                 .translate_id_to_symbol_name (p->first))
                                    + " (" + unit + ")";
           statistics.add_value (name, p->second);
 
@@ -222,6 +208,13 @@ namespace aspect
                                   "flux. If you "
                                   "are interested in the opposite direction, for example from "
                                   "the core into the mantle when the domain describes the "
-                                  "mantle, then you need to multiply the result by -1.")
+                                  "mantle, then you need to multiply the result by -1."
+                                  "\n\n"
+                                  "\\note{In geodynamics, the term ``mass flux'' is often understand "
+                                  "to be the quantity $\\rho \\mathbf v$, which is really a mass "
+                                  "flux \\textit{density}, i.e., a vector-valued field. In contrast "
+                                  "to this, the current postprocessor only computes the integrated "
+                                  "flux over each part of the boundary. Consequently, the units of "
+                                  "the quantity computed here are $\\frac{kg}{s}$.}")
   }
 }

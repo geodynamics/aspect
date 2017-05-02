@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_generator_probability_density_function_h
-#define __aspect__particle_generator_probability_density_function_h
+#ifndef _aspect_particle_generator_probability_density_function_h
+#define _aspect_particle_generator_probability_density_function_h
 
 #include <aspect/particle/generator/interface.h>
 
@@ -57,7 +57,7 @@ namespace aspect
        * a random number between zero and the global integral of the
        * probability density function uniquely defines one particular cell.
        * Afterwards, every process generates n_global_particles random numbers,
-       * but only generates a tracer if it is the owner of the active cell
+       * but only generates a particle if it is the owner of the active cell
        * that is associated with this random number.
        *
        * @ingroup ParticleGenerators
@@ -109,7 +109,7 @@ namespace aspect
           /**
            * Number of particles to create
            */
-          types::particle_index n_tracers;
+          types::particle_index n_particles;
 
           /**
            * A function object representing the particle location probability
@@ -121,15 +121,15 @@ namespace aspect
            * Generate a set of particles distributed within the local domain
            * according to the probability density function.
            *
-           * @param [in] local_weights_map Map between accumulated cell weight and cell index
-           * for all locally owned active cells.
+           * @param [in] particles_per_cell A vector with n_locally_owned_cells entries
+           * that determines how many particles are generated in each cell.
            * @param [in] local_start_id The starting ID to assign to generated particles of the local process.
-           * @param [in] n_local_particles The local number of particles to generate.
+           * @param [in] n_local_particles The total number of particles to generate locally.
            * @param [out] particles A map between cells and all generated particles.
            *
            */
           void
-          generate_particles_in_subdomain (const std::map<double,types::LevelInd> &local_weights_map,
+          generate_particles_in_subdomain (const std::vector<unsigned int> &particles_per_cell,
                                            const types::particle_index local_start_id,
                                            const types::particle_index n_local_particles,
                                            std::multimap<types::LevelInd, Particle<dim> > &particles);

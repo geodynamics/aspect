@@ -39,7 +39,7 @@ subsection Geometry model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
 
   subsection Function
@@ -69,8 +69,6 @@ subsection Model settings
   set Prescribed velocity boundary indicators =
   set Tangential velocity boundary indicators = 
 
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
 end
 
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -41,7 +41,8 @@ namespace aspect
                                quadrature_formula,
                                update_values |
                                update_gradients |
-                               update_q_points);
+                               update_q_points |
+                               update_JxW_values);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),
@@ -123,6 +124,16 @@ namespace aspect
               double dynamic_topography_x_volume = 0;
               double volume = 0;
 
+              // check which way gravity points:
+              // gravity_direction_binary is 1 if gravity is pointing in (down) and -1 if it is pointing up (out)
+              // This is needed to calculate whether g * n is ||g|| or -||g|| and has been introduced for backward advection
+              const Tensor <1,dim> g = this->get_gravity_model().gravity_vector(this->get_geometry_model().representative_point(0));
+              const Point<dim> point_surf = this->get_geometry_model().representative_point(0);
+              const Point<dim> point_bot = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
+              const int gravity_direction_binary =  (g * (point_bot - point_surf) >= 0) ?
+                                                    1 :
+                                                    -1;
+
               // Compute the integral of the dynamic topography function
               // over the entire cell, by looping over all quadrature points
               for (unsigned int q=0; q<quadrature_formula.size(); ++q)
@@ -140,7 +151,7 @@ namespace aspect
                   // Subtract the dynamic pressure
                   const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(location);
                   const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
-                  const double dynamic_topography = - sigma_rr / gravity.norm() / density;
+                  const double dynamic_topography = - sigma_rr / (gravity_direction_binary * gravity.norm()) / (density - density_above);
 
                   // JxW provides the volume quadrature weights. This is a general formulation
                   // necessary for when a quadrature formula is used that has more than one point.
@@ -186,9 +197,11 @@ namespace aspect
         }
 
 
-      const std::string filename = this->get_output_directory() +
-                                   "dynamic_topography." +
-                                   Utilities::int_to_string(this->get_timestep_number(), 5);
+      std::string filename = this->get_output_directory() +
+                             "dynamic_topography." +
+                             Utilities::int_to_string(this->get_timestep_number(), 5);
+      if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
+        filename.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
 
       const unsigned int max_data_length = Utilities::MPI::max (output.str().size()+1,
                                                                 this->get_mpi_communicator());
@@ -257,7 +270,15 @@ namespace aspect
                              "in the outputted data file (not visualization). "
                              "'true' subtracts the mean, 'false' leaves "
                              "the calculated dynamic topography as is. ");
-
+          prm.declare_entry ("Density above","0",
+                             Patterns::Double (0),
+                             "Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. "
+                             "This value depends on the density of material that is moved up or down, i.e. crustal rock, and the "
+                             "density of the material that is displaced (generally water or air). While the density of crustal rock "
+                             "is part of the material model, this parameter `Density above' allows the user to specify the density "
+                             "value of material that is displaced above the solid surface. By default this material is assumed to "
+                             "be air, with a density of 0. "
+                             "Units: $kg/m^3$.");
         }
         prm.leave_subsection();
       }
@@ -273,6 +294,7 @@ namespace aspect
         prm.enter_subsection("Dynamic Topography");
         {
           subtract_mean_dyn_topography = prm.get_bool("Subtract mean of dynamic topography");
+          density_above = prm.get_double ("Density above");
         }
         prm.leave_subsection();
       }
@@ -306,8 +328,11 @@ namespace aspect
                                   "from the total pressure $p$ computed as part of the Stokes "
                                   "solve. From this, the dynamic "
                                   "topography is computed using the formula "
-                                  "$h=\\frac{\\sigma_{rr}}{\\|\\mathbf g\\| \\rho}$ where $\\rho$ "
-                                  "is the density at the cell center."
+                                  "$h=\\frac{\\sigma_{rr}}{(\\mathbf g \\cdot \\mathbf n)  \\rho}$ where $\\rho$ "
+                                  "is the density at the cell center. Note that this implementation takes "
+                                  "the direction of gravity into account, which means that reversing the flow "
+                                  "in backward advection calculations will not reverse the intantaneous topography "
+                                  "because the reverse flow will be divided by the reverse surface gravity.  "
                                   "\n"
                                   "The file format then consists of lines with Euclidiean coordinates "
                                   "followed by the corresponding topography value."

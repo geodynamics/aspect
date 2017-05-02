@@ -1,0 +1,44 @@
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 52+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.352 m/s, 1.03 m/s
+     Compositions min/max/mass:    0/1/0.4006 // 0/1/0.3994
+     Temperature min/avg/max:      0 K, 0.5 K, 1 K
+
+*** Timestep 1:  t=0.015625 seconds
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.352 m/s, 1.03 m/s
+     Compositions min/max/mass:    0/1/0.4006 // 0/1/0.3994
+     Temperature min/avg/max:      0 K, 0.5 K, 1 K
+
+*** Timestep 2:  t=0.03 seconds
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 41+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.35 m/s, 1.03 m/s
+     Compositions min/max/mass:    0/1/0.4012 // 0/1/0.3987
+     Temperature min/avg/max:      0 K, 0.5 K, 1 K
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

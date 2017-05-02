@@ -133,6 +133,12 @@ namespace aspect
   }
 
 
+  template <int dim>
+  unsigned int SimulatorAccess<dim>::get_nonlinear_iteration () const
+  {
+    return simulator->nonlinear_iteration;
+  }
+
 
   template <int dim>
   const parallel::distributed::Triangulation<dim> &
@@ -199,8 +205,7 @@ namespace aspect
   bool
   SimulatorAccess<dim>::include_adiabatic_heating () const
   {
-    const std::vector<std::string> &heating_models = simulator->heating_model_manager.get_active_heating_model_names();
-    return (std::find(heating_models.begin(), heating_models.end(), "adiabatic heating") != heating_models.end());
+    return simulator->heating_model_manager.adiabatic_heating_enabled();
   }
 
   template <int dim>
@@ -323,6 +328,19 @@ namespace aspect
     return simulator->dof_handler.get_fe();
   }
 
+  template <int dim>
+  const LinearAlgebra::BlockSparseMatrix &
+  SimulatorAccess<dim>::get_system_matrix () const
+  {
+    return simulator->system_matrix;
+  }
+
+  template <int dim>
+  const LinearAlgebra::BlockSparseMatrix &
+  SimulatorAccess<dim>::get_system_preconditioner_matrix () const
+  {
+    return simulator->system_preconditioner_matrix;
+  }
 
   template <int dim>
   const MaterialModel::Interface<dim> &
@@ -359,10 +377,10 @@ namespace aspect
 
 
   template <int dim>
-  const std::map<types::boundary_id,std_cxx11::shared_ptr<TractionBoundaryConditions::Interface<dim> > > &
-  SimulatorAccess<dim>::get_traction_boundary_conditions () const
+  const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryTraction::Interface<dim> > > &
+  SimulatorAccess<dim>::get_boundary_traction () const
   {
-    return simulator->traction_boundary_conditions;
+    return simulator->boundary_traction;
   }
 
 
@@ -428,10 +446,10 @@ namespace aspect
 
 
   template <int dim>
-  const std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
-  SimulatorAccess<dim>::get_prescribed_velocity_boundary_conditions () const
+  const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >
+  SimulatorAccess<dim>::get_prescribed_boundary_velocity () const
   {
-    return simulator->velocity_boundary_conditions;
+    return simulator->boundary_velocity;
   }
 
 
@@ -475,23 +493,40 @@ namespace aspect
 
 
   template <int dim>
-  const InitialConditions::Interface<dim> &
-  SimulatorAccess<dim>::get_initial_conditions () const
+  const InitialTemperature::Interface<dim> &
+  SimulatorAccess<dim>::get_initial_temperature () const
   {
-    Assert (simulator->initial_conditions.get() != 0,
-            ExcMessage("You can not call this function if no such model is actually available."));
-    return *simulator->initial_conditions.get();
+    Assert (get_initial_temperature_manager().get_active_initial_temperature_conditions().size() == 1,
+            ExcMessage("You can only call this function if exactly one initial temperature plugin is active."));
+    return *(get_initial_temperature_manager().get_active_initial_temperature_conditions().front());
   }
 
 
   template <int dim>
-  const CompositionalInitialConditions::Interface<dim> &
-  SimulatorAccess<dim>::get_compositional_initial_conditions () const
+  const InitialTemperature::Manager<dim> &
+  SimulatorAccess<dim>::get_initial_temperature_manager () const
   {
-    Assert (simulator->compositional_initial_conditions.get() != 0,
-            ExcMessage("You can not call this function if no such model is actually available."));
-    return *simulator->compositional_initial_conditions.get();
+    return simulator->initial_temperature_manager;
   }
+
+
+  template <int dim>
+  const InitialComposition::Interface<dim> &
+  SimulatorAccess<dim>::get_initial_composition () const
+  {
+    Assert (get_initial_composition_manager().get_active_initial_composition_conditions().size() == 1,
+            ExcMessage("You can only call this function if only one initial composition plugin is active."));
+    return *(get_initial_composition_manager().get_active_initial_composition_conditions().front());
+  }
+
+
+  template <int dim>
+  const InitialComposition::Manager<dim> &
+  SimulatorAccess<dim>::get_initial_composition_manager () const
+  {
+    return simulator->initial_composition_manager;
+  }
+
 
   template <int dim>
   const HeatingModel::Manager<dim> &

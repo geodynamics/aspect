@@ -1,5 +1,5 @@
 #include <aspect/material_model/simple.h>
-#include <aspect/velocity_boundary_conditions/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <aspect/gravity_model/interface.h>
@@ -106,7 +106,7 @@ namespace aspect
 
 
     template <int dim>
-    class BursteddeBoundary : public VelocityBoundaryConditions::Interface<dim>
+    class BursteddeBoundary : public BoundaryVelocity::Interface<dim>
     {
       public:
         /**
@@ -217,7 +217,7 @@ namespace aspect
          * Incompressibility does not necessarily imply that the density is
          * constant; rather, it may still depend on temperature or pressure.
          * In the current context, compressibility means whether we should
-         * solve the contuity equation as $\nabla \cdot (\rho \mathbf u)=0$
+         * solve the continuity equation as $\nabla \cdot (\rho \mathbf u)=0$
          * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
          * (incompressible Stokes).
          */
@@ -246,14 +246,6 @@ namespace aspect
          * @{
          */
         virtual double reference_viscosity () const;
-
-        virtual double reference_density () const;
-
-        virtual double reference_thermal_expansion_coefficient () const;
-
-        double reference_thermal_diffusivity () const;
-
-        double reference_cp () const;
         /**
          * @}
          */
@@ -290,21 +282,6 @@ namespace aspect
       return 1.;
     }
 
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    reference_density () const
-    {
-      return 1.;
-    }
-
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    reference_thermal_expansion_coefficient () const
-    {
-      return 0;
-    }
 
     template <int dim>
     double
@@ -317,13 +294,6 @@ namespace aspect
       return 0;
     }
 
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    reference_cp () const
-    {
-      return 0;
-    }
 
     template <int dim>
     double
@@ -336,13 +306,6 @@ namespace aspect
       return 0;
     }
 
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    reference_thermal_diffusivity () const
-    {
-      return 0;
-    }
 
     template <int dim>
     double
@@ -614,11 +577,11 @@ namespace aspect
                                    "A material model that corresponds to the `Burstedde' benchmark. "
                                    "See the manual for more information.")
 
-    ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS(BursteddeBoundary,
-                                                 "BursteddeBoundary",
-                                                 "Implementation of the velocity boundary conditions for the "
-                                                 "`Burstedde' benchmark. See the manual for more information about this "
-                                                 "benchmark.")
+    ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL(BursteddeBoundary,
+                                            "BursteddeBoundary",
+                                            "Implementation of the velocity boundary conditions for the "
+                                            "`Burstedde' benchmark. See the manual for more information about this "
+                                            "benchmark.")
 
     ASPECT_REGISTER_POSTPROCESSOR(BursteddePostprocessor,
                                   "BursteddePostprocessor",

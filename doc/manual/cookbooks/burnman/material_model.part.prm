@@ -1,0 +1,15 @@
+subsection Material model
+  set Model name = ascii reference profile
+
+  subsection Ascii data model
+    set Data file name = isentrope_properties.txt
+    set Data directory = $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
+  end
+
+  subsection Ascii reference profile
+    set Thermal viscosity exponent = 10.0
+    set Viscosity prefactors = 1.0, 0.1, 1.0, 10.0
+  end
+
+  set Material averaging = harmonic average
+end

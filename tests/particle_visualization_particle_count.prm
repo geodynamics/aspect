@@ -15,8 +15,6 @@ subsection Geometry model
 end
 
 subsection Model settings
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
   set Tangential velocity boundary indicators = left, right
   set Zero velocity boundary indicators       = bottom, top
 end
@@ -46,7 +44,7 @@ subsection Boundary temperature model
   set Model name = box
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function expression = 0
@@ -62,7 +60,7 @@ subsection Compositional fields
   set Number of fields = 1
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,z
@@ -94,7 +92,7 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = tracers, visualization
+  set List of postprocessors = particles, visualization
 
   subsection Visualization
     set Time between graphical output = 70
@@ -102,8 +100,8 @@ subsection Postprocess
     set List of output variables = particle count
   end
 
-  subsection Tracers
-    set Number of tracers = 30
+  subsection Particles
+    set Number of particles = 30
     set Time between data output = 70
     set Data output format = none
 

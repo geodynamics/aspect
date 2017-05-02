@@ -1,1 +1,0 @@
-This directory contains benchmarks defined in Tan, Gurnis '07 to check compressible convection

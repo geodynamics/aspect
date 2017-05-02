@@ -86,6 +86,19 @@ namespace aspect
     }
 
     template <int dim>
+    typename Introspection<dim>::PolynomialDegree
+    setup_polynomial_degree (const Parameters<dim> &parameters)
+    {
+      typename Introspection<dim>::PolynomialDegree polynomial_degree;
+
+      polynomial_degree.velocities = parameters.stokes_velocity_degree;
+      polynomial_degree.temperature = parameters.temperature_degree;
+      polynomial_degree.compositional_fields = parameters.composition_degree;
+
+      return polynomial_degree;
+    }
+
+    template <int dim>
     std_cxx11::shared_ptr<FiniteElement<dim> >
     new_FE_Q_or_DGP(const bool discontinuous,
                     const unsigned int degree)
@@ -167,8 +180,10 @@ namespace aspect
     block_indices (internal::setup_blocks<dim>(*this)),
     extractors (component_indices),
     base_elements (internal::setup_base_elements<dim>(*this)),
+    polynomial_degree (internal::setup_polynomial_degree<dim>(parameters)),
     component_masks (*this),
     system_dofs_per_block (n_blocks),
+    compositional_field_methods(parameters.compositional_field_methods),
     composition_names(parameters.names_of_compositional_fields)
   {}
 
@@ -256,6 +271,20 @@ namespace aspect
             true
             :
             false);
+  }
+
+  template <int dim>
+  bool
+  Introspection<dim>::is_stokes_component (const unsigned int component_index) const
+  {
+    if (component_index == component_indices.pressure)
+      return true;
+
+    for (unsigned int i=0; i<dim; ++i)
+      if (component_index == component_indices.velocities[i])
+        return true;
+
+    return false;
   }
 
 

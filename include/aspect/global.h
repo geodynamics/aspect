@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2014, 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,13 @@
 */
 
 
-#ifndef __aspect__global_h
-#define __aspect__global_h
+#ifndef _aspect_global_h
+#define _aspect_global_h
+
+#include <deal.II/base/mpi.h>
+#include <deal.II/base/multithread_info.h>
+
+DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 
 #ifdef ASPECT_USE_PETSC
 #  include <deal.II/lac/petsc_parallel_block_vector.h>
@@ -37,8 +42,8 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 
-#include <deal.II/base/mpi.h>
-#include <deal.II/base/multithread_info.h>
+DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
+
 
 #include <aspect/compat.h>
 
@@ -104,48 +109,49 @@ namespace aspect
       namespace iasp91_radii
       {
         /**
-        * Inner core radius [m], equivalent of 5150 km depth
-        */
+         * Inner core radius [m], equivalent of 5150 km depth
+         */
         extern const double inner_core;
         /**
-        * Inner core radius [m], equivalent of 2889 km depth
-        */
+         * Inner core radius [m], equivalent of 2889 km depth
+         */
         extern const double core;
         /**
-        * Lower mantle radius [m], equivalent of 660 km depth
-        */
+         * Lower mantle radius [m], equivalent of 660 km depth
+         */
         extern const double lower_mantle;
         /**
-        * Radius [m], equivalent of 5150 km depth
-        */
+         * Radius [m], equivalent of 5150 km depth
+         */
         extern const double planet;
       }
 
       /**
-       *  Gravity values taken from the PREM (Dziewonski and Anderson, 1981):
+       * Gravity values taken from the PREM (Dziewonski and Anderson, 1981):
        */
       namespace prem_gravity
       {
         /**
-        * Inner core boundary gravity [ms^-2]
-        */
+         * Inner core boundary gravity [ms^-2]
+         */
         extern const double icb;
         /**
-        * Core-mantle boundary gravity [ms^-2]
-        */
+         * Core-mantle boundary gravity [ms^-2]
+         */
         extern const double cmb;
         /**
-        * Upper-lower mantle boundary gravity [ms^-2]
-        */
+         * Upper-lower mantle boundary gravity [ms^-2]
+         */
         extern const double ulmb;
         /**
-        * Surface gravity [ms^-2]
-        */
+         * Surface gravity [ms^-2]
+         */
         extern const double surface;
       }
 
       /**
-       * "Standard gravity" (average gravitational acceleration at surface [ms^-2]
+       * "Standard gravity" (average gravitational acceleration at surface
+       * [ms^-2]
        */
       extern const double surface_gravity;
     }
@@ -181,13 +187,6 @@ namespace aspect
    * Number of seconds in a year [s] (deprecated)
    */
   using constants::year_in_seconds;
-
-  /**
-   * A variable that denotes whether we should periodically output statistics
-   * about memory consumption, run times, etc via the
-   * Simulator::output_statistics() function or other means.
-   */
-  extern const bool output_parallel_statistics;
 
 
   /**
@@ -342,14 +341,19 @@ namespace aspect
 }
 
 
-template < class Stream>
+/**
+ * Print a header into the given stream that will be written both to screen
+ * and to the log file and that provides basic information about what is
+ * running, with how many processes, and using which linear algebra library.
+ */
+template <class Stream>
 void print_aspect_header(Stream &stream)
 {
   const int n_tasks = dealii::Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
 
   stream << "-----------------------------------------------------------------------------\n"
          << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
-         << "--     . version 1.5.0-pre\n" //VERSION-INFO. Do not edit by hand.
+         << "--     . version 2.0.0-pre\n" //VERSION-INFO. Do not edit by hand.
 #ifdef DEBUG
          << "--     . running in DEBUG mode\n"
 #else

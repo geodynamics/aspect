@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_integrator_rk_4_h
-#define __aspect__particle_integrator_rk_4_h
+#ifndef _aspect_particle_integrator_rk_4_h
+#define _aspect_particle_integrator_rk_4_h
 
 #include <aspect/particle/integrator/interface.h>
 
@@ -139,14 +139,14 @@ namespace aspect
           /**
            * The particle location before the first integration step. This is
            * used in the following steps and transferred to another process if
-           * the tracer leaves the domain during one of the steps.
+           * the particle leaves the domain during one of the steps.
            */
           std::map<types::particle_index, Point<dim> > loc0;
 
           /**
            * The intermediate values of the RK4 scheme. These are
            * used in the following steps and transferred to another process if
-           * the tracer leaves the domain during one of the steps.
+           * the particle leaves the domain during one of the steps.
            */
           std::map<types::particle_index, Tensor<1,dim> > k1, k2, k3;
 

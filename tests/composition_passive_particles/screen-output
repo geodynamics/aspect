@@ -1,0 +1,192 @@
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,526 (578+81+289+289+289)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition_passive_particles/solution/solution-00000
+     Writing particle output:  output-composition_passive_particles/particles/particles-00000
+
+*** Timestep 1:  t=0.0625 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 10 iterations.
+   Solving C_2 system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 10
+
+*** Timestep 2:  t=0.125 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 11 iterations.
+   Solving C_2 system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition_passive_particles/solution/solution-00001
+     Writing particle output:  output-composition_passive_particles/particles/particles-00001
+
+*** Timestep 3:  t=0.1875 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 12 iterations.
+   Solving C_2 system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 10
+
+*** Timestep 4:  t=0.25 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 11 iterations.
+   Solving C_2 system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition_passive_particles/solution/solution-00002
+     Writing particle output:  output-composition_passive_particles/particles/particles-00002
+
+*** Timestep 5:  t=0.3125 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 11 iterations.
+   Solving C_2 system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition_passive_particles/solution/solution-00003
+     Writing particle output:  output-composition_passive_particles/particles/particles-00003
+
+*** Timestep 6:  t=0.375 seconds
+   Solving temperature system... 9 iterations.
+   Solving C_1 system ... 11 iterations.
+   Solving C_2 system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 10
+
+*** Timestep 7:  t=0.4375 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 11 iterations.
+   Solving C_2 system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition_passive_particles/solution/solution-00004
+     Writing particle output:  output-composition_passive_particles/particles/particles-00004
+
+*** Timestep 8:  t=0.5 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 10 iterations.
+   Solving C_2 system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition_passive_particles/solution/solution-00005
+     Writing particle output:  output-composition_passive_particles/particles/particles-00005
+
+*** Timestep 9:  t=0.5625 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 10 iterations.
+   Solving C_2 system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 10
+
+*** Timestep 10:  t=0.625 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 10 iterations.
+   Solving C_2 system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition_passive_particles/solution/solution-00006
+     Writing particle output:  output-composition_passive_particles/particles/particles-00006
+
+*** Timestep 11:  t=0.6875 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 10 iterations.
+   Solving C_2 system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 10
+
+*** Timestep 12:  t=0.75 seconds
+   Solving temperature system... 11 iterations.
+   Solving C_1 system ... 11 iterations.
+   Solving C_2 system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition_passive_particles/solution/solution-00007
+     Writing particle output:  output-composition_passive_particles/particles/particles-00007
+
+*** Timestep 13:  t=0.8125 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 10 iterations.
+   Solving C_2 system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition_passive_particles/solution/solution-00008
+     Writing particle output:  output-composition_passive_particles/particles/particles-00008
+
+*** Timestep 14:  t=0.875 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 10 iterations.
+   Solving C_2 system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 10
+
+*** Timestep 15:  t=0.9375 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 10 iterations.
+   Solving C_2 system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition_passive_particles/solution/solution-00009
+     Writing particle output:  output-composition_passive_particles/particles/particles-00009
+
+*** Timestep 16:  t=1 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 10 iterations.
+   Solving C_2 system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition_passive_particles/solution/solution-00010
+     Writing particle output:  output-composition_passive_particles/particles/particles-00010
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

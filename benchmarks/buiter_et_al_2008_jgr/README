@@ -1,0 +1,35 @@
+This benchmark attempts to reproduce the results of Buiter et al. 2008:
+  Dissipation analysis as a guide to mode selection during crustal  
+  extension and implicatons for the styles of sedimentary basins, 
+  Journal of Geophysical Research, v. 113, B06406, 
+  doi:10.1029/2007JB005272.
+
+More specifically, the provided input files aim to reproduce two numerical
+simulations illustrated in Figure 6, which shows crustal structure after
+a 400x35 km box has undergone 10 km of extension at a constant rate of
+1 cm/yr. Deformation is localized with a weak brittle seed at the base
+and horizontal midpoint of the brittle upper crust. This seed leads to the
+formation of conjugate shear bands that form an initially symmetric Horst
+and Graben system. 
+
+The four panels in Figure 6 illustrate the effects of varying lower crustal
+viscosity, which varies from a value of 1e19 to 1e22 Pa s. Increasing the 
+lower crust viscosity produces stronger coupling with the brittle upper crust, 
+which produces more widely distributed deformation and less offset along the 
+Graben bounding shear bands. At the lowest lower crustal viscosity value 
+(1e19 Pa s) deformation largely focuses onto one leading to a highly 
+asymmetric crustal structure.
+
+In this benchmark, input files are provided for lower crustal viscosities
+of 1e20 and 1e22 Pa s.
+
+Localization of deformation is aided by strain weakening, with the cohesion
+and internal angle of friction reducing between finite strain invariant values
+of 0.5 and 1.5. The attached parameter files use a plugin to calculate the
+finite strain invariant, which is accessed through the material model class.
+Notably, finite strain in this case is determined by the magnitude of the
+deviatoric stress second invariant and time step size. This single measure
+of the finite strain magnitude differs from other measures of finite strain
+magnitude that use/calculate an invariant from the full finite strain tensor 
+(see finite strain cookbook and integrated strain particle property).   
+ 

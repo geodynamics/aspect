@@ -38,7 +38,7 @@ subsection Gravity model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = harmonic perturbation
   subsection Harmonic perturbation
     set Magnitude = 200.0
@@ -55,7 +55,6 @@ subsection Material model
     set Radial viscosity file name       = test-radial-visc.txt
     set Bilinear interpolation           = true
     set Latent heat                      = false
-    set Compressible                     = true
     set Reference viscosity              = 1e21
   end
 end
@@ -78,8 +77,6 @@ end
 subsection Model settings
   set Fixed temperature boundary indicators   = 0,1
 
-  set Include adiabatic heating               = true
-  set Include shear heating                   = false
 
   set Tangential velocity boundary indicators = 0,2,3
   set Zero velocity boundary indicators       = 1
@@ -101,4 +98,8 @@ subsection Postprocess
     set Number of zones = 10
  end
 
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating
 end

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -44,8 +44,8 @@ namespace aspect
           out.thermal_expansion_coefficients[i] = thermal_alpha;
 
           double rho = reference_rho * std::exp(reference_compressibility * (pressure - this->get_surface_pressure()));
-          if (this->get_adiabatic_conditions().is_initialized())
-            rho *= (1 - thermal_alpha * (temperature - this->get_adiabatic_conditions().temperature(position)));
+          rho *= (1 - thermal_alpha * (temperature - this->get_adiabatic_conditions().temperature(position)));
+
           out.densities[i] = rho;
           out.compressibilities[i] = reference_compressibility; // 1/rho drho/dp
           out.entropy_derivative_pressure[i] = 0.0;
@@ -66,37 +66,7 @@ namespace aspect
       return eta;
     }
 
-    template <int dim>
-    double
-    SimpleCompressible<dim>::
-    reference_density () const
-    {
-      return reference_rho;
-    }
 
-    template <int dim>
-    double
-    SimpleCompressible<dim>::
-    reference_thermal_expansion_coefficient () const
-    {
-      return thermal_alpha;
-    }
-
-    template <int dim>
-    double
-    SimpleCompressible<dim>::
-    reference_cp () const
-    {
-      return reference_specific_heat;
-    }
-
-    template <int dim>
-    double
-    SimpleCompressible<dim>::
-    reference_thermal_diffusivity () const
-    {
-      return k_value/(reference_rho*reference_specific_heat);
-    }
 
     template <int dim>
     bool
@@ -128,7 +98,7 @@ namespace aspect
                              "Units: $W/m/K$.");
           prm.declare_entry ("Reference specific heat", "1250",
                              Patterns::Double (0),
-                             "The value of the specific heat $cp$. "
+                             "The value of the specific heat $C_p$. "
                              "Units: $J/kg/K$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),

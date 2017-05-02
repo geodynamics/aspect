@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,6 +20,7 @@
 
 
 #include <aspect/geometry_model/chunk.h>
+#include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/tria_iterator.h>
@@ -33,6 +34,12 @@ namespace aspect
 {
   namespace GeometryModel
   {
+    template <int dim>
+    Chunk<dim>::ChunkGeometry::ChunkGeometry()
+      :
+      point1_lon(0.0)
+    {}
+
     template <int dim>
     Point<dim>
     Chunk<dim>::ChunkGeometry::
@@ -72,6 +79,17 @@ namespace aspect
           {
             output_vertex[1] = std::atan2(v[1], v[0]);
             output_vertex[0] = v.norm();
+            // We must garantee that all returned points have a longitude coordinate
+            // value that is larger than (or equal to) the longitude of point1.
+            // For example:
+            // If the domain runs from longitude -10 to 200 degrees,
+            // atan2 will also return a negative value (-180 to -160) for the points
+            // with longitude 180 to 200. These values must be corrected
+            // so that they are larger than the minimum longitude value of -10,
+            // by adding 360 degrees.
+            if (output_vertex[1] < 0.0)
+              if (output_vertex[1] < point1_lon - std::abs(point1_lon)*std::numeric_limits<double>::epsilon())
+                output_vertex[1] += 2.0 * numbers::PI;
             break;
           }
           case 3:
@@ -79,6 +97,10 @@ namespace aspect
             const double radius=v.norm();
             output_vertex[0] = radius;
             output_vertex[1] = std::atan2(v[1], v[0]);
+            // See 2D case
+            if (output_vertex[1] < 0.0)
+              if (output_vertex[1] < point1_lon - std::abs(point1_lon)*std::numeric_limits<double>::epsilon())
+                output_vertex[1] += 2.0 * numbers::PI;
             output_vertex[2] = std::asin(v[2]/radius);
             break;
           }
@@ -87,6 +109,15 @@ namespace aspect
         }
       return output_vertex;
     }
+
+    template <int dim>
+    void
+    Chunk<dim>::ChunkGeometry::
+    set_min_longitude(const double p1_lon)
+    {
+      point1_lon = p1_lon;
+    }
+
 
     template <int dim>
     void
@@ -300,6 +331,27 @@ namespace aspect
     }
 
     template <int dim>
+    bool
+    Chunk<dim>::point_is_in_domain(const Point<dim> &point) const
+    {
+      AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
+                  this->get_timestep_number() == 0,
+                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
+
+      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
+                  ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
+
+      const Point<dim> spherical_point = manifold.pull_back(point);
+
+      for (unsigned int d = 0; d < dim; d++)
+        if (spherical_point[d] > point2[d]+std::numeric_limits<double>::epsilon()*std::abs(point2[d]) ||
+            spherical_point[d] < point1[d]-std::numeric_limits<double>::epsilon()*std::abs(point2[d]))
+          return false;
+
+      return true;
+    }
+
+    template <int dim>
     void
     Chunk<dim>::set_manifold_ids (Triangulation<dim> &triangulation)
     {
@@ -398,6 +450,9 @@ namespace aspect
               AssertThrow (point2[1] - point1[1] < 2.*numbers::PI,
                            ExcMessage ("Maximum - minimum longitude should be less than 360 degrees."));
             }
+
+          // Inform the manifold about the minimum longitude
+          manifold.set_min_longitude(point1[1]);
 
           if (dim == 3)
             {

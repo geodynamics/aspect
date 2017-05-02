@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__boundary_temperature_ascii_data_h
-#define __aspect__boundary_temperature_ascii_data_h
+#ifndef _aspect_boundary_temperature_ascii_data_h
+#define _aspect_boundary_temperature_ascii_data_h
 
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/simulator_access.h>

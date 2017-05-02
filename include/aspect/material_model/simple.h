@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -18,9 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
-#ifndef __aspect__model_simple_h
-#define __aspect__model_simple_h
+#ifndef _aspect_material_model_simple_h
+#define _aspect_material_model_simple_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
@@ -45,7 +44,6 @@ namespace aspect
     class Simple : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const;
 
@@ -72,15 +70,6 @@ namespace aspect
          * @{
          */
         virtual double reference_viscosity () const;
-
-        virtual double reference_density () const;
-
-        virtual double reference_thermal_expansion_coefficient () const;
-
-//TODO: should we make this a virtual function as well? where is it used?
-        double reference_thermal_diffusivity () const;
-
-        double reference_cp () const;
         /**
          * @}
          */
@@ -112,6 +101,8 @@ namespace aspect
         double eta;
         double composition_viscosity_prefactor;
         double thermal_viscosity_exponent;
+        double maximum_thermal_prefactor;
+        double minimum_thermal_prefactor;
         double thermal_alpha;
         double reference_specific_heat;
 

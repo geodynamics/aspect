@@ -38,7 +38,6 @@ subsection Model settings
 
   set Fixed temperature boundary indicators   = inner, outer, east, west, north, south
 
-  set Include shear heating                   = false
 end
 
 
@@ -59,7 +58,7 @@ subsection Material model
   end
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function expression = 1.473e3
@@ -81,7 +80,7 @@ end
 
 ############### Parameters describing what to do with the solution
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, temperature statistics, velocity statistics, basic statistics
+  set List of postprocessors = visualization, temperature statistics, velocity statistics, basic statistics
 
   subsection Visualization
     set List of output variables          = density

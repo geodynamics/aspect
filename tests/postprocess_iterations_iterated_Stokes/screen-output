@@ -1,0 +1,133 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libpostprocess_iterations_iterated_Stokes.so>
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 3,556 (2,178+289+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 1
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_Stokes/solution/solution-00000.0000
+     Writing dynamic topography: output-postprocess_iterations_iterated_Stokes/dynamic_topography.00000.0000
+     Writing heat flux map:      output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0000
+     Temperature min/avg/max:    0 K, 0 K, 0 K
+     RMS, max velocity:          1 m/s, 1 m/s
+     Writing depth average:      output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 21+0 iterations.
+      Relative Stokes residual after nonlinear iteration 2: 0.0245986
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_Stokes/solution/solution-00000.0001
+     Writing dynamic topography: output-postprocess_iterations_iterated_Stokes/dynamic_topography.00000.0001
+     Writing heat flux map:      output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0001
+     Temperature min/avg/max:    0 K, 0 K, 0 K
+     RMS, max velocity:          1.05 m/s, 1.09 m/s
+     Writing depth average:      output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15+0 iterations.
+      Relative Stokes residual after nonlinear iteration 3: 0.00133812
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_Stokes/solution/solution-00000.0002
+     Writing dynamic topography: output-postprocess_iterations_iterated_Stokes/dynamic_topography.00000.0002
+     Writing heat flux map:      output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0002
+     Temperature min/avg/max:    0 K, 0 K, 0 K
+     RMS, max velocity:          1.05 m/s, 1.1 m/s
+     Writing depth average:      output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative Stokes residual after nonlinear iteration 4: 4.59626e-05
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_Stokes/solution/solution-00000.0003
+     Writing dynamic topography: output-postprocess_iterations_iterated_Stokes/dynamic_topography.00000.0003
+     Writing heat flux map:      output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0003
+     Temperature min/avg/max:    0 K, 0 K, 0 K
+     RMS, max velocity:          1.05 m/s, 1.1 m/s
+     Writing depth average:      output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+      Relative Stokes residual after nonlinear iteration 5: 2.11507e-06
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_Stokes/solution/solution-00000.0004
+     Writing dynamic topography: output-postprocess_iterations_iterated_Stokes/dynamic_topography.00000.0004
+     Writing heat flux map:      output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0004
+     Temperature min/avg/max:    0 K, 0 K, 0 K
+     RMS, max velocity:          1.05 m/s, 1.1 m/s
+     Writing depth average:      output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+
+
+*** Timestep 1:  t=0.0284091 seconds
+   Solving temperature system... 17 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 2.20615e-07
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_Stokes/solution/solution-00001.0000
+     Writing dynamic topography: output-postprocess_iterations_iterated_Stokes/dynamic_topography.00001.0000
+     Writing heat flux map:      output-postprocess_iterations_iterated_Stokes/heat_flux.00001.0000
+     Temperature min/avg/max:    0 K, 0.003202 K, 0.003462 K
+     RMS, max velocity:          1.05 m/s, 1.1 m/s
+     Writing depth average:      output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+
+
+*** Timestep 2:  t=0.0568181 seconds
+   Solving temperature system... 16 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 2.09917e-07
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_Stokes/solution/solution-00002.0000
+     Writing dynamic topography: output-postprocess_iterations_iterated_Stokes/dynamic_topography.00002.0000
+     Writing heat flux map:      output-postprocess_iterations_iterated_Stokes/heat_flux.00002.0000
+     Temperature min/avg/max:    0 K, 0.006333 K, 0.006918 K
+     RMS, max velocity:          1.05 m/s, 1.1 m/s
+     Writing depth average:      output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+
+
+*** Timestep 3:  t=0.0852272 seconds
+   Solving temperature system... 16 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 2.12537e-07
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_Stokes/solution/solution-00003.0000
+     Writing dynamic topography: output-postprocess_iterations_iterated_Stokes/dynamic_topography.00003.0000
+     Writing heat flux map:      output-postprocess_iterations_iterated_Stokes/heat_flux.00003.0000
+     Temperature min/avg/max:    0 K, 0.009376 K, 0.01037 K
+     RMS, max velocity:          1.05 m/s, 1.1 m/s
+     Writing depth average:      output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+
+
+*** Timestep 4:  t=0.1 seconds
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 1.12544e-07
+   Postprocessing:
+     Writing graphical output:   output-postprocess_iterations_iterated_Stokes/solution/solution-00004.0000
+     Writing dynamic topography: output-postprocess_iterations_iterated_Stokes/dynamic_topography.00004.0000
+     Writing heat flux map:      output-postprocess_iterations_iterated_Stokes/heat_flux.00004.0000
+     Temperature min/avg/max:    0 K, 0.01093 K, 0.01215 K
+     RMS, max velocity:          1.05 m/s, 1.1 m/s
+     Writing depth average:      output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

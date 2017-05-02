@@ -27,7 +27,7 @@ end
 
 
 set Adiabatic surface temperature = 1600
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = adiabatic
 
   subsection Adiabatic
@@ -86,7 +86,6 @@ subsection Model settings
   set Prescribed velocity boundary indicators =
   set Tangential velocity boundary indicators = 0, 2, 3
   set Zero velocity boundary indicators       = 1
-  set Include adiabatic heating               = false
 end
 
 subsection Postprocess

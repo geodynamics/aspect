@@ -24,7 +24,7 @@ Number of degrees of freedom: 1,354 (386+55+193+360+360)
      Compositions min/max/mass: 0/1/0.4167 // 0/1/0.4583
 
 *** Timestep 1:  t=0.0625 seconds
-   Solving temperature system... 5 iterations.
+   Solving temperature system... 9 iterations.
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
@@ -35,7 +35,7 @@ Number of degrees of freedom: 1,354 (386+55+193+360+360)
      Compositions min/max/mass: -0.1081/1.021/0.4167 // -0.1713/1.094/0.4583
 
 *** Timestep 2:  t=0.125 seconds
-   Solving temperature system... 4 iterations.
+   Solving temperature system... 10 iterations.
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 3 iterations.
    Rebuilding Stokes preconditioner...
@@ -49,7 +49,7 @@ Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 2,100 (578+81+289+576+576)
 
 *** Timestep 3:  t=0.1875 seconds
-   Solving temperature system... 4 iterations.
+   Solving temperature system... 11 iterations.
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
@@ -60,7 +60,7 @@ Number of degrees of freedom: 2,100 (578+81+289+576+576)
      Compositions min/max/mass: -0.1976/1.126/0.4167 // -0.2236/1.156/0.4582
 
 *** Timestep 4:  t=0.25 seconds
-   Solving temperature system... 4 iterations.
+   Solving temperature system... 10 iterations.
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
@@ -74,7 +74,7 @@ Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 2,100 (578+81+289+576+576)
 
 *** Timestep 5:  t=0.3125 seconds
-   Solving temperature system... 4 iterations.
+   Solving temperature system... 11 iterations.
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
@@ -85,7 +85,7 @@ Number of degrees of freedom: 2,100 (578+81+289+576+576)
      Compositions min/max/mass: -0.1702/1.125/0.4167 // -0.1546/1.225/0.4582
 
 *** Timestep 6:  t=0.375 seconds
-   Solving temperature system... 4 iterations.
+   Solving temperature system... 10 iterations.
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
@@ -99,7 +99,7 @@ Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 2,100 (578+81+289+576+576)
 
 *** Timestep 7:  t=0.4375 seconds
-   Solving temperature system... 4 iterations.
+   Solving temperature system... 10 iterations.
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
@@ -110,7 +110,7 @@ Number of degrees of freedom: 2,100 (578+81+289+576+576)
      Compositions min/max/mass: -0.1349/1.125/0.4167 // -0.133/1.387/0.4583
 
 *** Timestep 8:  t=0.5 seconds
-   Solving temperature system... 4 iterations.
+   Solving temperature system... 11 iterations.
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
@@ -124,7 +124,7 @@ Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 2,100 (578+81+289+576+576)
 
 *** Timestep 9:  t=0.5625 seconds
-   Solving temperature system... 4 iterations.
+   Solving temperature system... 10 iterations.
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
@@ -135,7 +135,7 @@ Number of degrees of freedom: 2,100 (578+81+289+576+576)
      Compositions min/max/mass: -0.1125/1.125/0.4167 // -0.1069/1.316/0.4584
 
 *** Timestep 10:  t=0.625 seconds
-   Solving temperature system... 4 iterations.
+   Solving temperature system... 10 iterations.
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
@@ -149,7 +149,7 @@ Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 2,100 (578+81+289+576+576)
 
 *** Timestep 11:  t=0.6875 seconds
-   Solving temperature system... 4 iterations.
+   Solving temperature system... 10 iterations.
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
@@ -160,7 +160,7 @@ Number of degrees of freedom: 2,100 (578+81+289+576+576)
      Compositions min/max/mass: -0.1302/1.125/0.4167 // -0.1094/1.377/0.4585
 
 *** Timestep 12:  t=0.75 seconds
-   Solving temperature system... 4 iterations.
+   Solving temperature system... 11 iterations.
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
@@ -174,7 +174,7 @@ Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 2,100 (578+81+289+576+576)
 
 *** Timestep 13:  t=0.8125 seconds
-   Solving temperature system... 4 iterations.
+   Solving temperature system... 10 iterations.
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
@@ -185,7 +185,7 @@ Number of degrees of freedom: 2,100 (578+81+289+576+576)
      Compositions min/max/mass: -0.09666/1.125/0.4167 // -0.1655/1.325/0.4584
 
 *** Timestep 14:  t=0.875 seconds
-   Solving temperature system... 4 iterations.
+   Solving temperature system... 10 iterations.
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
@@ -199,7 +199,7 @@ Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 2,100 (578+81+289+576+576)
 
 *** Timestep 15:  t=0.9375 seconds
-   Solving temperature system... 4 iterations.
+   Solving temperature system... 10 iterations.
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
@@ -210,7 +210,7 @@ Number of degrees of freedom: 2,100 (578+81+289+576+576)
      Compositions min/max/mass: -0.1627/1.125/0.4167 // -0.2078/1.378/0.4584
 
 *** Timestep 16:  t=1 seconds
-   Solving temperature system... 4 iterations.
+   Solving temperature system... 10 iterations.
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...

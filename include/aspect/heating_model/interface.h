@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__heating_model_interface_h
-#define __aspect__heating_model_interface_h
+#ifndef _aspect_heating_model_interface_h
+#define _aspect_heating_model_interface_h
 
 #include <aspect/plugins.h>
 #include <aspect/material_model/interface.h>
@@ -73,7 +73,7 @@ namespace aspect
 
       /**
        * Left hand side contribution of latent heat; this is added to the
-       * $\\rho c_p$ term on the left hand side of the energy equation.
+       * $\\rho C_p$ term on the left hand side of the energy equation.
        */
       std::vector<double> lhs_latent_heat_terms;
     };
@@ -167,6 +167,17 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
+
+
+        /**
+         * Allow the heating model to attach additional material model outputs.
+         * The default implementation of this function does not add any
+         * outputs. Consequently, derived classes do not have to overload
+         * this function if they do not need any additional outputs.
+         */
+        virtual
+        void
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
     };
 
 
@@ -185,6 +196,20 @@ namespace aspect
          * functions.
          */
         virtual ~Manager ();
+
+        /**
+         * Returns true if the adiabatic heating plugin is found in the
+         * list of active heating models.
+         */
+        bool
+        adiabatic_heating_enabled() const;
+
+        /**
+         * Returns true if the shear heating plugin is found in the
+         * list of active heating models.
+         */
+        bool
+        shear_heating_enabled() const;
 
         /**
          * Declare the parameters of all known heating plugins, as
@@ -263,6 +288,16 @@ namespace aspect
         const std::list<std_cxx11::shared_ptr<Interface<dim> > > &
         get_active_heating_models () const;
 
+        /**
+         * Go through the list of all heating models that have been selected in
+         * the input file (and are consequently currently active) and see if one
+         * of them has the desired type specified by the template argument. If so,
+         * return a pointer to it. If no heating model is active that matches the
+         * given type, return a NULL pointer.
+         */
+        template <typename HeatingModelType>
+        HeatingModelType *
+        find_heating_model () const;
 
         /**
          * Exception.
@@ -285,6 +320,23 @@ namespace aspect
          */
         std::vector<std::string> model_names;
     };
+
+
+
+    template <int dim>
+    template <typename HeatingModelType>
+    inline
+    HeatingModelType *
+    Manager<dim>::find_heating_model () const
+    {
+      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+           p = heating_model_objects.begin();
+           p != heating_model_objects.end(); ++p)
+        if (HeatingModelType *x = dynamic_cast<HeatingModelType *> ( (*p).get()) )
+          return x;
+      return NULL;
+    }
+
 
 
     /**

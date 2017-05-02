@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__gravity_model_function_h
-#define __aspect__gravity_model_function_h
+#ifndef _aspect_gravity_model_function_h
+#define _aspect_gravity_model_function_h
 
 #include <aspect/gravity_model/interface.h>
 
@@ -48,7 +48,7 @@ namespace aspect
         Function ();
 
         /**
-         * Return the initial temperature as a function of position.
+         * Return the gravity vector as a function of position.
          */
         virtual
         Tensor<1,dim> gravity_vector (const Point<dim> &position) const;
@@ -75,7 +75,7 @@ namespace aspect
 
       private:
         /**
-         * A function object representing the temperature.
+         * A function object representing the gravity.
          */
         Functions::ParsedFunction<dim> function;
     };

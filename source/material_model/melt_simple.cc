@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -38,13 +38,6 @@ namespace aspect
       return eta_0;
     }
 
-    template <int dim>
-    double
-    MeltSimple<dim>::
-    reference_density () const
-    {
-      return reference_rho_s;
-    }
 
     template <int dim>
     bool
@@ -230,9 +223,8 @@ namespace aspect
           if (this->include_adiabatic_heating ())
             {
               // temperature dependence is 1 - alpha * (T - T(adiabatic))
-              if (this->get_adiabatic_conditions().is_initialized())
-                temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]))
-                                          * thermal_expansivity;
+              temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]))
+                                        * thermal_expansivity;
             }
           else
             temperature_dependence -= (in.temperature[i] - reference_T) * thermal_expansivity;
@@ -321,7 +313,7 @@ namespace aspect
           out.compressibilities[i] = compressibility;
 
           double visc_temperature_dependence = 1.0;
-          if (this->include_adiabatic_heating () && this->get_adiabatic_conditions().is_initialized())
+          if (this->include_adiabatic_heating ())
             {
               const double delta_temp = in.temperature[i]-this->get_adiabatic_conditions().temperature(in.position[i]);
               visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])),1e4),1e-4);
@@ -358,9 +350,8 @@ namespace aspect
               if (this->include_adiabatic_heating ())
                 {
                   // temperature dependence is 1 - alpha * (T - T(adiabatic))
-                  if (this->get_adiabatic_conditions().is_initialized())
-                    temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]))
-                                              * thermal_expansivity;
+                  temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]))
+                                            * thermal_expansivity;
                 }
               else
                 temperature_dependence -= (in.temperature[i] - reference_T) * thermal_expansivity;
@@ -381,7 +372,7 @@ namespace aspect
               melt_out->compaction_viscosities[i] = xi_0 * phi_0 / porosity;
 
               double visc_temperature_dependence = 1.0;
-              if (this->include_adiabatic_heating () && this->get_adiabatic_conditions().is_initialized())
+              if (this->include_adiabatic_heating ())
                 {
                   const double delta_temp = in.temperature[i]-this->get_adiabatic_conditions().temperature(in.position[i]);
                   visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])),1e4),1e-4);
@@ -454,7 +445,7 @@ namespace aspect
                              "Units: $W/m/K$.");
           prm.declare_entry ("Reference specific heat", "1250",
                              Patterns::Double (0),
-                             "The value of the specific heat $cp$. "
+                             "The value of the specific heat $C_p$. "
                              "Units: $J/kg/K$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),
@@ -504,7 +495,7 @@ namespace aspect
                              "Freezing rate of melt when in subsolidus regions."
                              "Units: $1/yr$.");
           prm.declare_entry ("Depletion density change", "0.0",
-                             Patterns::Double (0),
+                             Patterns::Double (),
                              "The density contrast between material with a depletion of 1 and a "
                              "depletion of zero. Negative values indicate lower densities of"
                              "depleted material. Depletion is indicated by the compositional"
@@ -683,14 +674,14 @@ namespace aspect
                                    "model for dry peridotite of \\cite{KSL2003}. This also includes a "
                                    "computation of the latent heat of melting (if the 'latent heat' "
                                    "heating model is active)."
-                                   "\n"
+                                   "\n\n"
                                    "Most of the material properties are constant, except for the shear, "
                                    "viscosity $\\eta$, the compaction viscosity $\\xi$, and the "
                                    "permeability $k$, which depend on the porosity; and the solid and melt "
                                    "densities, which depend on temperature and pressure:\n "
-                                   "$\\eta(\phi,T) = \\eta_0 e^{\\alpha(\\phi-\\phi_0)} e^{-\\beta(T-T_0)/T_0}$,\n"
-                                   "$\\xi(\\phi,T) = \\xi_0 \frac{\\phi_0}{\\phi} e^{-\\beta(T-T_0)/T_0}$,\n"
-                                   "$k=k_0 \\phi^n (1-\\phi)^m$,\n"
+                                   "$\\eta(\\phi,T) = \\eta_0 e^{\\alpha(\\phi-\\phi_0)} e^{-\\beta(T-T_0)/T_0}$, "
+                                   "$\\xi(\\phi,T) = \\xi_0 \\frac{\\phi_0}{\\phi} e^{-\\beta(T-T_0)/T_0}$, "
+                                   "$k=k_0 \\phi^n (1-\\phi)^m$, "
                                    "$\\rho=\\rho_0 (1 - \\alpha (T - T_\\text{adi})) e^{\\kappa p}$."
                                    "\n\n"
                                    "The model is compressible only if this is specified in the input file, "

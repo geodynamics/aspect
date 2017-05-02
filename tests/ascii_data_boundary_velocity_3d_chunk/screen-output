@@ -19,7 +19,7 @@ Number of degrees of freedom: 527 (375+27+125)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+19 iterations.
+   Solving Stokes system... 46+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  13.5 m/year, 26.7 m/year
@@ -29,7 +29,7 @@ Number of degrees of freedom: 527 (375+27+125)
 *** Timestep 1:  t=1000 years
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+14 iterations.
+   Solving Stokes system... 35+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  13.5 m/year, 26.7 m/year

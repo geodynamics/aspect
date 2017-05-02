@@ -9,7 +9,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
    Postprocessing:
      Temperature min/avg/max:            -6.952e-17 K, 0.005208 K, 1 K
-     Heat fluxes through boundary parts: -3.394e-22 W, -3.684e-22 W, -3.653e-45 W, -9.6e-05 W
+     Heat fluxes through boundary parts: -3.394e-22 W, -3.53e-22 W, -3.653e-45 W, -9.6e-05 W
      Writing depth average:              output-diffusion/depth_average.gnuplot
 
 *** Timestep 1:  t=2.38851e+06 seconds
@@ -41,11 +41,11 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 4:  t=4e+07 seconds
    Solving temperature system... 78 iterations.
-   Solving Stokes system... 30+2 iterations.
+   Solving Stokes system... 32+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.2056 K, 1 K
-     Heat fluxes through boundary parts: 7.021e-17 W, -4.101e-16 W, 6.823e-09 W, -2.496e-06 W
+     Heat fluxes through boundary parts: 1.259e-16 W, -3.258e-16 W, 6.823e-09 W, -2.496e-06 W
      Writing depth average:              output-diffusion/depth_average.gnuplot
 
 Termination requested by criterion: end time

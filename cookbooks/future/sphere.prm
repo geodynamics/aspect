@@ -28,7 +28,6 @@ subsection Model settings
   set Tangential velocity boundary indicators = surface
   set Prescribed velocity boundary indicators =
   set Fixed temperature boundary indicators   = surface
-  set Include shear heating                   = false 
   set Remove nullspace = net rotation
 end
 
@@ -41,7 +40,7 @@ subsection Boundary temperature model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function expression = if( sqrt( (x-5.e5)^2 + (y-5.e5)^2) < 1.e5, 0, 100)

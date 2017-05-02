@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -38,6 +38,10 @@ namespace aspect
       std::vector<double> x_comp = compositional_fields;
       for ( unsigned int i=0; i < x_comp.size(); ++i)
         x_comp[i] = std::min(std::max(x_comp[i], 0.0), 1.0);
+
+      // assign compositional fields associated with strain a value of 0
+      if (use_strain_weakening == true)
+        x_comp[0] = 0.0;
 
       //sum the compositional fields for normalization purposes
       double sum_composition = 0.0;
@@ -115,6 +119,7 @@ namespace aspect
     calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
                                       const double &pressure,
                                       const double &temperature,
+                                      const std::vector<double> &composition,
                                       const SymmetricTensor<2,dim> &strain_rate,
                                       const ViscosityScheme &viscous_type,
                                       const YieldScheme &yield_type) const
@@ -138,7 +143,7 @@ namespace aspect
       for (unsigned int j=0; j < volume_fractions.size(); ++j)
         {
           // Power law creep equation
-          //    viscosity = 0.5 * A^(-1/n) * edot_ii^((1-n)/n) * d^(-m/n) * exp((E + P*V)/(nRT))
+          //    viscosity = 0.5 * A^(-1/n) * edot_ii^((1-n)/n) * d^(m/n) * exp((E + P*V)/(nRT))
           // A: prefactor, edot_ii: square root of second invariant of deviatoric strain rate tensor,
           // d: grain size, m: grain size exponent, E: activation energy, P: pressure,
           // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
@@ -148,7 +153,7 @@ namespace aspect
           double viscosity_diffusion = 0.5 * std::pow(prefactors_diffusion[j],-1/stress_exponents_diffusion[j]) *
                                        std::exp((activation_energies_diffusion[j] + pressure*activation_volumes_diffusion[j])/
                                                 (constants::gas_constant*temperature*stress_exponents_diffusion[j])) *
-                                       std::pow(grain_size, -grain_size_exponents_diffusion[j]);
+                                       std::pow(grain_size, grain_size_exponents_diffusion[j]);
 
           // For dislocation creep, viscosity is grain size independent (m=0) and strain-rate dependent (n>1)
           double viscosity_dislocation = 0.5 * std::pow(prefactors_dislocation[j],-1/stress_exponents_dislocation[j]) *
@@ -191,15 +196,31 @@ namespace aspect
           // Convert friction angle from degrees to radians
           double phi = angles_internal_friction[j] * numbers::PI/180.0;
 
+          // Assing cohesions to a new variable
+          double coh = cohesions[j];
+
+          // Strain weakening
+          if (use_strain_weakening == true)
+            {
+
+              // Calculate second strain invariant
+              const double strain_ii = std::max(std::min(composition[0],end_strain_weakening_intervals[j]),start_strain_weakening_intervals[j]);
+
+              // Linear strain weakening of cohesion and internal friction angle between specified strain values
+              const double strain_fraction = ( strain_ii - start_strain_weakening_intervals[j] ) /
+                                             ( start_strain_weakening_intervals[j] - end_strain_weakening_intervals[j] );
+              coh = coh + ( coh - coh * cohesion_strain_weakening_factors[j] ) * strain_fraction;
+              phi = phi + ( phi - phi * friction_strain_weakening_factors[j] ) * strain_fraction;
+
+            }
+
           // Calculate drucker prager yield strength (i.e. yield stress)
           double yield_strength = ( (dim==3)
                                     ?
-                                    ( 6.0 * cohesions[j] * std::cos(phi) + 2.0 * std::max(pressure,0.0) * std::sin(phi) )
+                                    ( 6.0 * coh * std::cos(phi) + 2.0 * std::max(pressure,0.0) * std::sin(phi) )
                                     / ( std::sqrt(3.0) * (3.0 + std::sin(phi) ) )
                                     :
-                                    cohesions[j] * std::cos(phi) + std::max(pressure,0.0) * std::sin(phi) );
-
-
+                                    coh * std::cos(phi) + std::max(pressure,0.0) * std::sin(phi) );
 
           // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface
           double viscosity_drucker_prager;
@@ -242,7 +263,6 @@ namespace aspect
 
           // Limit the viscosity with specified minimum and maximum bounds
           composition_viscosities[j] = std::min(std::max(viscosity_yield, min_visc), max_visc);
-
 
         }
       return composition_viscosities;
@@ -296,7 +316,7 @@ namespace aspect
               // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
               // scheme is chosen. It would be useful to have a function to calculate isostress viscosities.
               const std::vector<double> composition_viscosities =
-                calculate_isostrain_viscosities(volume_fractions, pressure, temperature, in.strain_rate[i],viscous_flow_law,yield_mechanism);
+                calculate_isostrain_viscosities(volume_fractions, pressure, temperature, composition, in.strain_rate[i],viscous_flow_law,yield_mechanism);
 
               // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
               // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
@@ -337,19 +357,18 @@ namespace aspect
     }
 
     template <int dim>
-    double
-    ViscoPlastic<dim>::
-    reference_density () const
-    {
-      return densities[0];
-    }
-
-    template <int dim>
     bool
     ViscoPlastic<dim>::
     is_compressible () const
     {
       return false;
+    }
+
+    template <int dim>
+    double ViscoPlastic<dim>::
+    get_min_strain_rate () const
+    {
+      return min_strain_rate;
     }
 
     template <int dim>
@@ -379,22 +398,58 @@ namespace aspect
                              Patterns::List(Patterns::Double(0)),
                              "List of thermal diffusivities, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: $m^2/s$");
+                             "If only one value is given, then all use the same value.  Units: $m^2/s$");
           prm.declare_entry ("Heat capacities", "1.25e3",
                              Patterns::List(Patterns::Double(0)),
-                             "List of heat capacities, for background material and compositional fields, "
+                             "List of heat capacities $C_p$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: $J / (K * kg)$");
+                             "If only one value is given, then all use the same value.  Units: $J/kg/K$");
           prm.declare_entry ("Densities", "3300.",
                              Patterns::List(Patterns::Double(0)),
                              "List of densities, $\\rho$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: $kg / m^3$");
+                             "If only one value is given, then all use the same value.  Units: $kg / m^3$");
           prm.declare_entry ("Thermal expansivities", "3.5e-5",
                              Patterns::List(Patterns::Double(0)),
                              "List of thermal expansivities for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: $1 / K$");
+                             "If only one value is given, then all use the same value.  Units: $1 / K$");
+
+          // Strain weakening parameters
+          prm.declare_entry ("Use strain weakening", "false",
+                             Patterns::Bool (),
+                             "Apply strain weakening to viscosity, cohesion and internal angle "
+                             "of friction based on accumulated finite strain.  Units: None");
+          prm.declare_entry ("Start strain weakening intervals", "0.",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of strain weakening interval initial strains "
+                             "for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one value is given, then all use the same value.  Units: None");
+          prm.declare_entry ("End strain weakening intervals", "1.",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of strain weakening interval final strains "
+                             "for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one value is given, then all use the same value.  Units: None");
+          prm.declare_entry ("Viscous strain weakening factors", "1.",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of viscous strain weakening factors "
+                             "for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one value is given, then all use the same value.  Units: None");
+          prm.declare_entry ("Cohesion strain weakening factors", "1.",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of cohesion strain weakening factors "
+                             "for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one value is given, then all use the same value.  Units: None");
+          prm.declare_entry ("Friction strain weakening factors", "1.",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of friction strain weakening factors "
+                             "for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one value is given, then all use the same value.  Units: None");
 
           // Rheological parameters
           prm.declare_entry ("Grain size", "1e-3", Patterns::Double(0), "Units: $m$");
@@ -419,23 +474,23 @@ namespace aspect
                              Patterns::List(Patterns::Double(0)),
                              "List of viscosity prefactors, $A$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value. "
+                             "If only one value is given, then all use the same value. "
                              "Units: $Pa^{-n_{diffusion}} m^{n_{diffusion}/m_{diffusion}} s^{-1}$");
           prm.declare_entry ("Stress exponents for diffusion creep", "1",
                              Patterns::List(Patterns::Double(0)),
                              "List of stress exponents, $n_diffusion$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: None");
+                             "If only one value is given, then all use the same value.  Units: None");
           prm.declare_entry ("Grain size exponents for diffusion creep", "3",
                              Patterns::List(Patterns::Double(0)),
                              "List of grain size exponents, $m_diffusion$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: None");
+                             "If only one value is given, then all use the same value.  Units: None");
           prm.declare_entry ("Activation energies for diffusion creep", "375e3",
                              Patterns::List(Patterns::Double(0)),
                              "List of activation energies, $E_a$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: $J / mol$");
+                             "If only one value is given, then all use the same value.  Units: $J / mol$");
           prm.declare_entry ("Activation volumes for diffusion creep", "6e-6",
                              Patterns::List(Patterns::Double(0)),
                              "List of activation volumes, $V_a$, for background material and compositional fields, "
@@ -447,18 +502,18 @@ namespace aspect
                              Patterns::List(Patterns::Double(0)),
                              "List of viscosity prefactors, $A$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value. "
+                             "If only one value is given, then all use the same value. "
                              "Units: $Pa^{-n_{dislocation}} m^{n_{dislocation}/m_{dislocation}} s^{-1}$");
           prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
                              Patterns::List(Patterns::Double(0)),
                              "List of stress exponents, $n_dislocation$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: None");
+                             "If only one value is given, then all use the same value.  Units: None");
           prm.declare_entry ("Activation energies for dislocation creep", "530e3",
                              Patterns::List(Patterns::Double(0)),
                              "List of activation energies, $E_a$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: $J / mol$");
+                             "If only one value is given, then all use the same value.  Units: $J / mol$");
           prm.declare_entry ("Activation volumes for dislocation creep", "1.4e-5",
                              Patterns::List(Patterns::Double(0)),
                              "List of activation volumes, $V_a$, for background material and compositional fields, "
@@ -533,6 +588,24 @@ namespace aspect
           thermal_expansivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal expansivities"))),
                                                                           n_fields,
                                                                           "Thermal expansivities");
+
+          // Strain weakening parameters
+          use_strain_weakening             = prm.get_bool ("Use strain weakening");
+          start_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Start strain weakening intervals"))),
+                                                                                     n_fields,
+                                                                                     "Start strain weakening intervals");
+          end_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("End strain weakening intervals"))),
+                                                                                   n_fields,
+                                                                                   "End strain weakening intervals");
+          viscous_strain_weakening_factors = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Viscous strain weakening factors"))),
+                                                                                     n_fields,
+                                                                                     "Viscous strain weakening factors");
+          cohesion_strain_weakening_factors = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Cohesion strain weakening factors"))),
+                                                                                      n_fields,
+                                                                                      "Cohesion strain weakening factors");
+          friction_strain_weakening_factors = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Friction strain weakening factors"))),
+                                                                                      n_fields,
+                                                                                      "Friction strain weakening factors");
 
           // Rheological parameters
           if (prm.get ("Viscosity averaging scheme") == "harmonic")
@@ -636,7 +709,7 @@ namespace aspect
                                    "(Anne Glerum) material models. "
                                    "\n\n "
                                    "The viscosity for dislocation or diffusion creep is defined as "
-                                   "\\[v = 0.5 * A^{-\\frac{1}{n}} * d^{-\\frac{m}{n}} * "
+                                   "\\[v = 0.5 * A^{-\\frac{1}{n}} * d^{\\frac{m}{n}} * "
                                    "\\dot{\\varepsilon}_{ii}^{\\frac{1-n}{n}} * "
                                    "\\exp\\left(\\frac{E + PV}{nRT}\\right)\\] "
                                    "where $A$ is the prefactor, $n$ is the stress exponent, "
@@ -653,8 +726,8 @@ namespace aspect
                                    "dislocation ($v_{disl}$, $n>1$, $m=0$) or composite "
                                    "$\\frac{v_{diff}*v_{disl}}{v_{diff}+v_{disl}}$ equation form. "
                                    "\n\n "
-                                   "Viscosity is limited through one of two different 'yielding' mechanism "
-                                   "\n"
+                                   "Viscosity is limited through one of two different 'yielding' mechanisms. "
+                                   "\n\n"
                                    "Plasticity limits viscous stress through a Drucker Prager "
                                    "yield criterion, where the yield stress in 3D is  "
                                    "$\\sigma_y = \\frac{6*C*\\cos(\\phi) + 2*P*\\sin(\\phi)} "
@@ -664,18 +737,27 @@ namespace aspect
                                    "in 2D. Above, $C$ is cohesion and $\\phi$  is the angle of "
                                    "internal friction.  Note that the 2D form is equivalent to the "
                                    "Mohr Coloumb yield surface.  If $\\phi$ is 0, the yield stress "
-                                   "is fixed and equal to the cohesion (Von Mises yield criterion) "
+                                   "is fixed and equal to the cohesion (Von Mises yield criterion). "
                                    "When the viscous stress ($2v{\\varepsilon}_{ii}$) "
                                    "the yield stress, the viscosity is rescaled back to the yield "
                                    "surface: $v_{y}=\\sigma_{y}/(2{\\varepsilon}_{ii})$. "
                                    "This form of plasticity is commonly used in geodynamic models "
                                    "See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. "
                                    "\n\n"
+                                   "The user has the option to linearly reduce the cohesion and "
+                                   "internal friction angle as a function of the finite strain invariant. "
+                                   "The finite strain invariant may be calculated through particles or the compositional "
+                                   "field finite strain invariant plugin (see buiter_et_al_2008_jgr benchmark). "
+                                   "In either case, the user specifies a compositional field for the finite "
+                                   "strain invariant, which must be the first listed compositional field "
+                                   "in the parameter file."
+                                   ""
+                                   "\n\n"
                                    "Viscous stress may also be limited by a non-linear stress limiter "
                                    "that has a form similar to the Peierls creep mechanism. "
                                    "This stress limiter assigns an effective viscosity "
                                    "$\\sigma_eff = \\frac{\\tau_y}{2*\\varepsilon_y} "
-                                   "{\\frac{\\varepsilon_ii}{\\varepislon_y}}^{\\frac{1}{n_y}-1}$ "
+                                   "{\\frac{\\varepsilon_ii}{\\varepsilon_y}}^{\\frac{1}{n_y}-1}$ "
                                    "Above $\\tau_y$ is a yield stress, $\\varepsilon_y$ is the "
                                    "reference strain rate, $\\varepsilon_{ii}$ is the strain rate "
                                    "and $n_y$ is the stress limiter exponent.  The yield stress, "
@@ -685,12 +767,12 @@ namespace aspect
                                    "Christensen (1992), JGR, 97(B2), pp. 2015-2036; "
                                    "Cizkova and Bina (2013), EPSL, 379, pp. 95-103; "
                                    "Cizkova and Bina (2015), EPSL, 430, pp. 408-415. "
-                                   "When $n_y$ is 1, it essentially becomes a linear viscosity model,"
-                                   "and in the limit $n_y\rightarrow \\infty$ it converges to the "
-                                   "standard viscosity rescaling method (concretely, values $n_y>20$"
+                                   "When $n_y$ is 1, it essentially becomes a linear viscosity model, "
+                                   "and in the limit $n_y\\rightarrow \\infty$ it converges to the "
+                                   "standard viscosity rescaling method (concretely, values $n_y>20$ "
                                    "are large enough)."
                                    "\n\n "
-                                   "Compositional fields can each be assigned individual values of"
+                                   "Compositional fields can each be assigned individual values of "
                                    "thermal diffusivity, heat capacity, density, thermal "
                                    "expansivity and rheological parameters. "
                                    "\n\n "

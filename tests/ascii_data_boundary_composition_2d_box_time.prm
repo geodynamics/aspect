@@ -19,7 +19,7 @@ subsection Geometry model
   end
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = adiabatic
   subsection Adiabatic
     set Amplitude = 300
@@ -33,7 +33,7 @@ subsection Boundary temperature model
 end
 
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
   set Function expression = 1e-8*x
@@ -62,8 +62,6 @@ subsection Model settings
 
   set Prescribed velocity boundary indicators = top: function, bottom: function, left:function, right:function
 
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
 end
 
 

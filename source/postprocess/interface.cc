@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,6 +20,7 @@
 
 
 #include <aspect/postprocess/interface.h>
+#include <aspect/utilities.h>
 
 #include <typeinfo>
 
@@ -76,7 +77,6 @@ namespace aspect
 
 
 // ------------------------------ Manager -----------------------------
-
 
 
     template <int dim>
@@ -156,8 +156,8 @@ namespace aspect
       std_cxx11::tuple
       <void *,
       void *,
-      internal::Plugins::PluginList<Interface<2> >,
-      internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      aspect::internal::Plugins::PluginList<Interface<2> >,
+      aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
     }
 
 
@@ -209,6 +209,10 @@ namespace aspect
       {
         postprocessor_names
           = Utilities::split_string_list(prm.get("List of postprocessors"));
+        AssertThrow(Utilities::has_unique_entries(postprocessor_names),
+                    ExcMessage("The list of strings for the parameter "
+                               "'Postprocess/List of postprocessors' contains entries more than once. "
+                               "This is not allowed. Please check your parameter file."));
       }
       prm.leave_subsection();
 
@@ -224,6 +228,17 @@ namespace aspect
                p != std_cxx11::get<dim>(registered_plugins).plugins->end(); ++p)
             postprocessor_names.push_back (std_cxx11::get<0>(*p));
         }
+
+      // see if the user specified "global statistics" somewhere; if so, remove it from the list
+      std::vector<std::string>::iterator new_end
+        = std::remove (postprocessor_names.begin(),
+                       postprocessor_names.end(),
+                       "global statistics");
+      if (new_end != postprocessor_names.end())
+        postprocessor_names.erase (new_end, postprocessor_names.end());
+
+      // in any case, put the global statistics postprocessor at the front:
+      postprocessor_names.insert(postprocessor_names.begin(), "global statistics");
 
       // then go through the list, create objects and let them parse
       // their own parameters

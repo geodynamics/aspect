@@ -100,7 +100,7 @@
  */
 
 /**
- * @defgroup InitialConditionsModels Describing initial conditions for the temperature
+ * @defgroup InitialTemperatures Describing initial conditions for the temperature
  *
  * A module for the definition of functions and classes that have to do with
  * initial conditions for the temperature.
@@ -109,10 +109,10 @@
  */
 
 /**
- * @defgroup CompositionalInitialConditionsModels Describing initial conditions for compositional fields
+ * @defgroup InitialCompositions Describing initial conditions for compositional fields
  *
  * A module for the definition of functions and classes that have to do with
- * initial conditions for the temperature.
+ * initial conditions for the composition.
  *
  * @ingroup InitialConditions
  */
@@ -165,7 +165,7 @@
  */
 
 /**
- * @defgroup VelocityBoundaryConditions Describing boundary conditions for the velocity field
+ * @defgroup BoundaryVelocities Describing boundary conditions for the velocity field
  *
  * A module for the definition of functions and classes that have to do with
  * describing boundary values for the velocity field.
@@ -174,10 +174,23 @@
  */
 
 /**
- * @defgroup TractionBoundaryConditionsModels Describing traction boundary conditions for the velocity field
+ * @defgroup BoundaryTractions Describing traction boundary conditions for the velocity field
  *
  * A module for the definition of functions and classes that have to do with
  * describing traction boundary values for the velocity field.
+ *
+ * @ingroup BoundaryConditions
+ */
+
+/**
+ * @defgroup BoundaryFluidPressures Describing fluid pressure boundary conditions 
+ * for the fluid velocity field
+ *
+ * A module for the definition of functions and classes that have to do with
+ * describing fluid pressure boundary values.
+ * These classes are currenlty only used for computations involving two-phase
+ * flow (e.g. melt), since the fluid pressure is only computed for
+ * coupled Stokes-darcy flow.
  *
  * @ingroup BoundaryConditions
  */

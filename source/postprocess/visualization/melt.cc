@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,6 +21,7 @@
 
 #include <aspect/postprocess/visualization/melt.h>
 #include <aspect/melt.h>
+#include <aspect/utilities.h>
 #include <aspect/simulator.h>
 #include <aspect/material_model/interface.h>
 
@@ -93,33 +94,29 @@ namespace aspect
       template <int dim>
       void
       MeltMaterialProperties<dim>::
-      compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &/*duh*/,
-                                         const std::vector<std::vector<Tensor<2,dim> > > &/*dduh*/,
-                                         const std::vector<Point<dim> >                  &/*normals*/,
-                                         const std::vector<Point<dim> >                  &evaluation_points,
-                                         std::vector<Vector<double> >                    &computed_quantities) const
+      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                            std::vector<Vector<double> > &computed_quantities) const
       {
         AssertThrow(this->include_melt_transport()==true,
                     ExcMessage("'Include melt transport' has to be on when using melt transport postprocessors."));
 
-        const unsigned int n_quadrature_points = uh.size();
+        const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-        Assert (uh[0].size() == this->introspection().n_components,   ExcInternalError());
+        Assert (input_data.solution_values[0].size() == this->introspection().n_components,   ExcInternalError());
 
         MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points, this->n_compositional_fields());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
         MeltHandler<dim>::create_material_model_outputs(out);
 
-        in.position = evaluation_points;
+        in.position = input_data.evaluation_points;
         in.strain_rate.resize(0); // we do not need the viscosity
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            in.pressure[q]=uh[q][this->introspection().component_indices.pressure];
-            in.temperature[q]=uh[q][this->introspection().component_indices.temperature];
+            in.pressure[q] = input_data.solution_values[q][this->introspection().component_indices.pressure];
+            in.temperature[q] = input_data.solution_values[q][this->introspection().component_indices.temperature];
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
+              in.composition[q][c] = input_data.solution_values[q][this->introspection().component_indices.compositional_fields[c]];
           }
 
         this->get_material_model().evaluate(in, out);
@@ -196,6 +193,10 @@ namespace aspect
             prm.enter_subsection("Melt material properties");
             {
               property_names = Utilities::split_string_list(prm.get ("List of properties"));
+              AssertThrow(Utilities::has_unique_entries(property_names),
+                          ExcMessage("The list of strings for the parameter "
+                                     "'Postprocess/Visualization/Melt material properties/List of properties' contains entries more than once. "
+                                     "This is not allowed. Please check your parameter file."));
             }
             prm.leave_subsection();
           }

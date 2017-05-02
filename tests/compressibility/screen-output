@@ -7,11 +7,11 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 27+0 iterations.
-      Nonlinear Stokes residual: 21.2064
+      Relative Stokes residual after nonlinear iteration 1: 1
 
    Postprocessing:
      Top/bottom flux:          1/2.718
-     Writing graphical output: output-compressibility/solution-00000
+     Writing graphical output: output-compressibility/solution/solution-00000
 
 Termination requested by criterion: end time
 

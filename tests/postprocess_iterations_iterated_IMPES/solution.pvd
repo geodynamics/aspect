@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+#This file was generated 
+<VTKFile type="Collection" version="0.1" ByteOrder="LittleEndian">
+  <Collection>
+    <DataSet timestep="0" group="" part="0" file="solution/solution-00000.0001.pvtu"/>
+    <DataSet timestep="13250.9839953" group="" part="0" file="solution/solution-00001.0007.pvtu"/>
+    <DataSet timestep="25357.1673153" group="" part="0" file="solution/solution-00002.0007.pvtu"/>
+    <DataSet timestep="36192.0853337" group="" part="0" file="solution/solution-00003.0005.pvtu"/>
+    <DataSet timestep="46125.0471305" group="" part="0" file="solution/solution-00004.0005.pvtu"/>
+    <DataSet timestep="55855.4445067" group="" part="0" file="solution/solution-00005.0004.pvtu"/>
+    <DataSet timestep="65167.1839207" group="" part="0" file="solution/solution-00006.0004.pvtu"/>
+    <DataSet timestep="73771.7130763" group="" part="0" file="solution/solution-00007.0004.pvtu"/>
+    <DataSet timestep="81630.3655793" group="" part="0" file="solution/solution-00008.0004.pvtu"/>
+    <DataSet timestep="88740.3095732" group="" part="0" file="solution/solution-00009.0004.pvtu"/>
+    <DataSet timestep="95202.3494386" group="" part="0" file="solution/solution-00010.0004.pvtu"/>
+    <DataSet timestep="100000" group="" part="0" file="solution/solution-00011.0003.pvtu"/>
+  </Collection>
+</VTKFile>

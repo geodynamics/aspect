@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,8 +20,8 @@
 
 
 
-#ifndef __aspect__postprocess_spherical_velocity_statistics_h
-#define __aspect__postprocess_spherical_velocity_statistics_h
+#ifndef _aspect_postprocess_spherical_velocity_statistics_h
+#define _aspect_postprocess_spherical_velocity_statistics_h
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>

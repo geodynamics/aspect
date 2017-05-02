@@ -46,7 +46,7 @@ subsection Gravity model
   end
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function 
     set Variable names      = x,y
@@ -78,8 +78,6 @@ subsection Mesh refinement
 end
 
 subsection Model settings
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
   set Fixed temperature boundary indicators   = left, right, bottom, top
   set Prescribed velocity boundary indicators =
   set Tangential velocity boundary indicators = left, right, bottom
@@ -101,7 +99,7 @@ subsection Termination criteria
   set End step = 20
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y

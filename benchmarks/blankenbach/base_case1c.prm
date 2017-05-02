@@ -1,0 +1,19 @@
+include base_case1a.prm
+
+set Additional shared libraries            = ./plugin/libblankenbach.so
+
+subsection Initial temperature model
+  set Model name = ascii data
+  subsection Ascii data model
+    set Data directory = 
+    set Data file name = initial_temperature_case1c.txt
+  end
+end
+
+
+subsection Material model
+  subsection Nondimensional model
+    set Ra                      = 1e6
+  end 
+end
+

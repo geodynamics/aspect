@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -103,8 +103,32 @@ namespace aspect
             fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
                 in.strain_rate);
             in.position = fe_values.get_quadrature_points();
+            in.cell = &cell;
+
+            for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
+                 heating_model = heating_model_objects.begin();
+                 heating_model != heating_model_objects.end(); ++heating_model)
+              {
+                (*heating_model)->create_additional_material_model_outputs(out);
+              }
 
             this->get_material_model().evaluate(in, out);
+
+            if (this->get_parameters().formulation_temperature_equation
+                == Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+              {
+                // Overwrite the density by the reference density coming from the
+                // adiabatic conditions as required by the formulation
+                for (unsigned int q=0; q<n_q_points; ++q)
+                  out.densities[q] = this->get_adiabatic_conditions().density(in.position[q]);
+              }
+            else if (this->get_parameters().formulation_temperature_equation
+                     == Parameters<dim>::Formulation::TemperatureEquation::real_density)
+              {
+                // use real density
+              }
+            else
+              AssertThrow(false, ExcNotImplemented());
 
             for (unsigned int q=0; q<n_q_points; ++q)
               local_mass += out.densities[q] * fe_values.JxW(q);

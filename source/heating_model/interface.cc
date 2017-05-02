@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,6 +22,8 @@
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 #include <aspect/heating_model/interface.h>
+#include <aspect/heating_model/adiabatic_heating.h>
+#include <aspect/heating_model/shear_heating.h>
 
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
@@ -101,11 +103,37 @@ namespace aspect
     {}
 
 
+    template <int dim>
+    void
+    Interface<dim>::
+    create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> & /*outputs*/) const
+    {}
+
+
     // ------------------------------ Manager -----------------------------
 
     template <int dim>
     Manager<dim>::~Manager()
     {}
+
+
+
+    template <int dim>
+    bool
+    Manager<dim>::adiabatic_heating_enabled() const
+    {
+      return find_heating_model<HeatingModel::AdiabaticHeating<dim> >() != NULL;
+    }
+
+
+
+    template <int dim>
+    bool
+    Manager<dim>::shear_heating_enabled() const
+    {
+      return find_heating_model<HeatingModel::ShearHeating<dim> >() != NULL;
+    }
+
 
 
     namespace
@@ -142,6 +170,11 @@ namespace aspect
       {
         model_names
           = Utilities::split_string_list(prm.get("List of model names"));
+
+        AssertThrow(Utilities::has_unique_entries(model_names),
+                    ExcMessage("The list of strings for the parameter "
+                               "'Heating model/List of model names' contains entries more than once. "
+                               "This is not allowed. Please check your parameter file."));
 
         const std::string model_name = prm.get ("Model name");
 

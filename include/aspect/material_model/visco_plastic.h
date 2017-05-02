@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __aspect__model_visco_plastic_h
-#define __aspect__model_visco_plastic_h
+#ifndef _aspect_material_model_visco_plastic_h
+#define _aspect_material_model_visco_plastic_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
@@ -35,7 +35,7 @@ namespace aspect
      *
      * Viscous deformation is defined by a viscous flow law describing
      * dislocation and diffusion creep:
-     *   $ v = 0.5 * A^{-\frac{1}{n}} * d^{-\frac{m}{n}} *
+     *   $ v = 0.5 * A^{-\frac{1}{n}} * d^{\frac{m}{n}} *
      *               \dot{\varepsilon}_{ii}^{\frac{1-n}{n}} *
      *               \exp\left(\frac{E + PV}{nRT}\right) $
      * where
@@ -46,13 +46,13 @@ namespace aspect
      *   $V$ is activation volume, $P$ is pressure, $R$ is the gas
      *   exponent and $T$ is temperature.
      *
-     * One may select to use the diffusion ($\v_{diff}$; $n=1$, $m!=0$),
-     * dislocation ($\v_{disl}$, $n>1$, $m=0$) or composite
+     * One may select to use the diffusion ($v_{diff}$; $n=1$, $m!=0$),
+     * dislocation ($v_{disl}$, $n>1$, $m=0$) or composite
      * $\frac{v_{diff}*v_{disl}}{v_{diff}+v_{disl}}$ equation form.
      *
      * Viscous stress is limited by plastic deformation, which follows
      * a Drucker Prager yield criterion:
-     *  $\simga_y = C*\cos(\phi) + P*\sin(\phi)$  (2D)
+     *  $\sigma_y = C*\cos(\phi) + P*\sin(\phi)$  (2D)
      * or in 3D
      *  $\sigma_y = \frac{6*C*\cos(\phi) + 2*P*\sin(\phi)}{\sqrt(3)*(3+\sin(\phi))}$
      * where
@@ -106,8 +106,6 @@ namespace aspect
 
         virtual double reference_viscosity () const;
 
-        virtual double reference_density () const;
-
         static
         void
         declare_parameters (ParameterHandler &prm);
@@ -116,7 +114,9 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
-      private:
+        double get_min_strain_rate() const;
+
+      protected:
 
         double reference_T;
 
@@ -180,10 +180,17 @@ namespace aspect
         calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
                                           const double &pressure,
                                           const double &temperature,
+                                          const std::vector<double> &composition,
                                           const SymmetricTensor<2,dim> &strain_rate,
                                           const ViscosityScheme &viscous_type,
                                           const YieldScheme &yield_type) const;
 
+        bool use_strain_weakening;
+        std::vector<double> start_strain_weakening_intervals;
+        std::vector<double> end_strain_weakening_intervals;
+        std::vector<double> viscous_strain_weakening_factors;
+        std::vector<double> cohesion_strain_weakening_factors;
+        std::vector<double> friction_strain_weakening_factors;
 
         std::vector<double> prefactors_diffusion;
         std::vector<double> stress_exponents_diffusion;

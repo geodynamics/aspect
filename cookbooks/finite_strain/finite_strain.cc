@@ -54,33 +54,22 @@ namespace aspect
           fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_solution(),
                                                                                          velocity_gradients);
 
-          // Assign the strain rate components to the compositional fields reaction terms.
-          // We also have to rotate the accumulated strain from all the previous time steps with
-          // the rotation part of the flow field of the current time step.
+          // Assign the strain components to the compositional fields reaction terms.
           // If there are too many fields, we simply fill only the first fields with the
           // existing strain rate tensor components.
           for (unsigned int q=0; q < in.position.size(); ++q)
             {
-              // rotation tensor =
-              //     asymmetric part of the displacement in this time step
-              //                (= velocity gradient tensor * time step)
-              //   + unit tensor
-              const Tensor<2,dim> rotation = (velocity_gradients[q] - symmetrize(velocity_gradients[q])) * this->get_timestep()
-                                             + unit_symmetric_tensor<dim>();
+              // Convert the compositional fields into the tensor quantity they represent.
+              Tensor<2,dim> strain;
+              for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
+                strain[Tensor<2,dim>::unrolled_to_component_indices(i)] = in.composition[q][i];
 
-              SymmetricTensor<2,dim> accumulated_strain;
-              for (unsigned int i=0; i<SymmetricTensor<2,dim>::n_independent_components; ++i)
-                accumulated_strain[SymmetricTensor<2,dim>::unrolled_to_component_indices(i)] = in.composition[q][i];
+              // Compute the strain accumulated in this timestep.
+              const Tensor<2,dim> strain_increment = this->get_timestep() * (velocity_gradients[q] * strain);
 
-              // the new strain is the rotated old strain plus the
-              // strain of the current time step
-              const SymmetricTensor<2,dim> rotated_strain = symmetrize(rotation * Tensor<2,dim>(accumulated_strain) * transpose(rotation)) + in.strain_rate[q] * this->get_timestep();
-
-              for (unsigned int c=0; c<SymmetricTensor<2,dim>::n_independent_components; ++c)
-                {
-                  out.reaction_terms[q][c] = - in.composition[q][c]
-                                             + rotated_strain[SymmetricTensor<2,dim>::unrolled_to_component_indices(c)];
-                }
+              // Output the strain increment component-wise to its respective compositional field's reaction terms.
+              for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
+                out.reaction_terms[q][i] = strain_increment[Tensor<2,dim>::unrolled_to_component_indices(i)];
             }
         }
     }
@@ -93,7 +82,7 @@ namespace aspect
     {
       Simple<dim>::parse_parameters (prm);
 
-      AssertThrow(this->n_compositional_fields() >= (SymmetricTensor<2,dim>::n_independent_components),
+      AssertThrow(this->n_compositional_fields() >= (Tensor<2,dim>::n_independent_components),
                   ExcMessage("There must be at least as many compositional fields as independent components in the full "
                              "strain rate tensor."));
     }
@@ -109,8 +98,12 @@ namespace aspect
                                    "finite strain",
                                    "A simple material model that is like the "
                                    "'Simple' model, but tracks the finite strain as compositional "
-                                   "fields. The model assumes that the first 4 (in 2D) "
-                                   " or 9 (in 3D) compositional fields contain the finite "
-                                   "strain components. ")
+                                   "fields. More precisely, the model assumes that the first 4 (in 2D) "
+                                   "or 9 (in 3D) compositional fields contain the components "
+                                   "of the deformation gradient tensor, $\\mathbf F$, which can "
+                                   "be polar-decomposed into the left stretching tensor "
+                                   "$\\mathbf L$ (the finite strain we are interested in), and the "
+                                   "rotation tensor $\\mathbf Q$. See the corresponding cookbook in "
+                                   "the manual for more detailed information.")
   }
 }

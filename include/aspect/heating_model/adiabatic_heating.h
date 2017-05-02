@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__heating_model_adiabatic_heating_h
-#define __aspect__heating_model_adiabatic_heating_h
+#ifndef _aspect_heating_model_adiabatic_heating_h
+#define _aspect_heating_model_adiabatic_heating_h
 
 #include <aspect/heating_model/interface.h>
 #include <aspect/simulator_access.h>
@@ -53,6 +53,17 @@ namespace aspect
     class AdiabaticHeating : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
+        /**
+         * Returns whether we compute a simplified adiabatic heating term by
+         * neglecting dynamic pressure effects. I.e. we use
+         *     $ \alpha T (\mathbf u \cdot \nabla p) $
+         * as adiabatic heating term if this function returns false, and
+         *    $ - \alpha \rho T (\mathbf u \cdot \mathbf g) $
+         * if it returns true.
+         */
+        bool
+        use_simplified_adiabatic_heating() const;
+
         /**
          * Compute the heating model outputs for this class.
          */

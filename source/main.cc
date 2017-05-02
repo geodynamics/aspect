@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -312,7 +312,21 @@ parse_parameters (const std::string &input_as_string,
   // try reading on processor 0
   bool success = true;
   if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
+#if DEAL_II_VERSION_GTE(8,5,0)
+    try
+      {
+        prm.parse_input_from_string(input_as_string.c_str());
+      }
+    catch (const dealii::ExceptionBase &e)
+      {
+        success = false;
+        e.print_info(std::cerr);
+        std::cerr << std::endl;
+      }
+#else
     success = prm.read_input_from_string(input_as_string.c_str());
+#endif
+
 
   // broadcast the result. we'd like to do this with a bool
   // data type but MPI_C_BOOL is not part of old MPI standards.
@@ -339,9 +353,64 @@ parse_parameters (const std::string &input_as_string,
   // other processors will be ok as well
   if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) != 0)
     {
+#if DEAL_II_VERSION_GTE(8,5,0)
+      prm.parse_input_from_string(input_as_string.c_str());
+#else
       success = prm.read_input_from_string(input_as_string.c_str());
       AssertThrow(success, dealii::ExcMessage ("Invalid input parameter file."));
+#endif
     }
+}
+
+
+
+/**
+ * Print help text
+ */
+void print_help()
+{
+  std::cout << "Usage: ./aspect [args] <parameter_file.prm>   (to read from an input file)"
+            << std::endl
+            << "    or ./aspect [args] --                     (to read parameters from stdin)"
+            << std::endl
+            << std::endl;
+  std::cout << "    optional arguments [args]:"
+            << std::endl
+            << "       --version              (for information about library versions)"
+            << std::endl
+            << "       --help                 (for this usage help)"
+            << std::endl
+            << "       --output-xml           (print parameters in xml format to standard output and exit)"
+            << std::endl
+            << std::endl;
+}
+
+
+/**
+ * Print information about the versions of underlying libraries.
+ */
+template <class Stream>
+void print_version_information(Stream &stream)
+{
+  stream << "Version information of underlying libraries:\n"
+         << "   . deal.II:    "
+         << DEAL_II_PACKAGE_VERSION << '\n'
+#ifndef ASPECT_USE_PETSC
+         << "   . Trilinos:   "
+         << DEAL_II_TRILINOS_VERSION_MAJOR    << '.'
+         << DEAL_II_TRILINOS_VERSION_MINOR    << '.'
+         << DEAL_II_TRILINOS_VERSION_SUBMINOR << '\n'
+#else
+         << "   . PETSc:      "
+         << PETSC_VERSION_MAJOR    << '.'
+         << PETSC_VERSION_MINOR    << '.'
+         << PETSC_VERSION_SUBMINOR << '\n'
+#endif
+         << "   . p4est:      "
+         << DEAL_II_P4EST_VERSION_MAJOR << '.'
+         << DEAL_II_P4EST_VERSION_MINOR << '.'
+         << DEAL_II_P4EST_VERSION_SUBMINOR << '\n'
+         << std::endl;
 }
 
 
@@ -364,39 +433,97 @@ int main (int argc, char *argv[])
   try
     {
       deallog.depth_console(0);
-      if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
-        print_aspect_header(std::cout);
 
-      if (argc < 2)
+      int current_idx = 1;
+      const bool i_am_proc_0 = (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0);
+
+      std::string prm_name = "";
+      bool output_xml = false;
+
+      // Loop over all command line arguments. Handle a number of special ones
+      // starting with a dash, and then take the first non-special one as the
+      // name of the input file. We will later check that there are no further
+      // arguments left after that (though there may be with PETSc, see
+      // below).
+      while (current_idx<argc)
         {
-          // print usage info only on processor 0
-          if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+          const std::string arg = argv[current_idx];
+          ++current_idx;
+          if (arg == "--output-xml")
             {
-              std::cout << "Usage: ./aspect <parameter_file.prm>   (to read from an input file)"
-                        << std::endl
-                        << "    or ./aspect --                     (to read from stdin)"
-                        << std::endl
-                        << std::endl;
+              output_xml = true;
+            }
+          else if (arg=="-h" || arg =="--help")
+            {
+              if (i_am_proc_0)
+                {
+                  print_aspect_header(std::cout);
+                  print_help();
+                }
+              return 0;
+            }
+          else if (arg=="-v" || arg =="--version")
+            {
+              if (i_am_proc_0)
+                {
+                  print_aspect_header(std::cout);
+                  print_version_information(std::cout);
+                }
+              return 0;
+            }
+          else
+            {
+              // Not a special argument, so we assume that this is the .prm
+              // filename (or "--"). We can now break out of this loop because
+              // we are not going to pass arguments passed after the filename
+              prm_name = arg;
+              break;
+            }
+        }
+
+
+      // if no parameter given or somebody gave additional parameters,
+      // show help and exit.
+      // However, this does not work with PETSc because for PETSc, one
+      // may pass any number of flags on the command line; unfortunately,
+      // the PETSc initialization code (run through the call to
+      // MPI_InitFinalize above) does not filter these out.
+      if ((prm_name == "")
+#ifndef ASPECT_USE_PETSC
+          || (current_idx < argc)
+#endif
+         )
+        {
+          if (i_am_proc_0)
+            {
+              print_aspect_header(std::cout);
+              print_help();
             }
           return 2;
         }
 
-      // see where to read input from, then do the reading and
-      // put the contents of the input into a string
+      // Print header
+      if (i_am_proc_0 && !output_xml)
+        {
+          print_aspect_header(std::cout);
+        }
+
+
+      // See where to read input from, then do the reading and
+      // put the contents of the input into a string.
       //
-      // as stated above, treat "--" as special: as is common
-      // on unix, treat it as a way to read input from stdin
-      std::string parameter_filename = argv[1];
+      // As stated above, treat "--" as special: as is common
+      // on unix, treat it as a way to read input from stdin.
       std::string input_as_string;
 
-      if (parameter_filename != "--")
+      if (prm_name != "--")
         {
-          std::ifstream parameter_file(parameter_filename.c_str());
+          std::ifstream parameter_file(prm_name.c_str());
           if (!parameter_file)
             {
-              if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+              if (i_am_proc_0)
                 AssertThrow(false, ExcMessage (std::string("Input parameter file <")
-                                               + parameter_filename + "> not found."));
+                                               + prm_name + "> not found."));
               return 3;
             }
 
@@ -408,7 +535,7 @@ int main (int argc, char *argv[])
           //    echo "abc" | mpirun -np 4 ./aspect
           // then only MPI process 0 gets the data. so we have to
           // read it there, then broadcast it to the other processors
-          if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+          if (i_am_proc_0)
             {
               input_as_string = read_until_end (std::cin);
               int size = input_as_string.size()+1;
@@ -472,9 +599,16 @@ int main (int argc, char *argv[])
             aspect::Simulator<2>::declare_parameters(prm);
             parse_parameters (input_as_string, prm);
 
-            aspect::Simulator<2> flow_problem(MPI_COMM_WORLD, prm);
-            flow_problem.run();
-
+            if (output_xml)
+              {
+                if (i_am_proc_0)
+                  prm.print_parameters(std::cout, ParameterHandler::XML);
+              }
+            else
+              {
+                aspect::Simulator<2> flow_problem(MPI_COMM_WORLD, prm);
+                flow_problem.run();
+              }
             break;
           }
 
@@ -483,8 +617,16 @@ int main (int argc, char *argv[])
             aspect::Simulator<3>::declare_parameters(prm);
             parse_parameters (input_as_string, prm);
 
-            aspect::Simulator<3> flow_problem(MPI_COMM_WORLD, prm);
-            flow_problem.run();
+            if (output_xml)
+              {
+                if (i_am_proc_0)
+                  prm.print_parameters(std::cout, ParameterHandler::XML);
+              }
+            else
+              {
+                aspect::Simulator<3> flow_problem(MPI_COMM_WORLD, prm);
+                flow_problem.run();
+              }
 
             break;
           }

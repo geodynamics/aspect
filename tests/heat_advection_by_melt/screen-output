@@ -1,0 +1,108 @@
+
+Loading shared library <./libheat_advection_by_melt.so>
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 6,890 (2,178+578+2,178+289+1,089+289+289)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 28+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 1.78845e-16, 2.44479e-16, 0, 0.0526341
+      Total relative residual after nonlinear iteration 1: 0.0526341
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 1.78845e-16, 2.44479e-16, 0, 7.06801e-13
+      Total relative residual after nonlinear iteration 2: 7.06801e-13
+
+
+
+   Postprocessing:
+     Temperature min/avg/max:       1 K, 1.5 K, 2 K
+     Heating rate (average/total):  1.334e-24 W/kg, 2.668e-24 W
+     Writing graphical output:      output-heat_advection_by_melt/solution/solution-00000
+
+*** Timestep 1:  t=0.03125 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 5.96675e-14, 9.23249e-14, 0, 7.06798e-13
+      Total relative residual after nonlinear iteration 1: 7.06798e-13
+
+
+
+   Postprocessing:
+     Temperature min/avg/max:       1 K, 1.5 K, 2 K
+     Heating rate (average/total):  0.05 W/kg, 0.1 W
+     Writing graphical output:      output-heat_advection_by_melt/solution/solution-00001
+
+*** Timestep 2:  t=0.0625 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 3.9808e-14, 6.15423e-14, 0, 7.06798e-13
+      Total relative residual after nonlinear iteration 1: 7.06798e-13
+
+
+
+   Postprocessing:
+     Temperature min/avg/max:       1 K, 1.5 K, 2 K
+     Heating rate (average/total):  0.05 W/kg, 0.1 W
+     Writing graphical output:      output-heat_advection_by_melt/solution/solution-00002
+
+*** Timestep 3:  t=0.09375 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 3.9808e-14, 6.15423e-14, 0, 7.06798e-13
+      Total relative residual after nonlinear iteration 1: 7.06798e-13
+
+
+
+   Postprocessing:
+     Temperature min/avg/max:       1 K, 1.5 K, 2 K
+     Heating rate (average/total):  0.05 W/kg, 0.1 W
+     Writing graphical output:      output-heat_advection_by_melt/solution/solution-00003
+
+*** Timestep 4:  t=0.1 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 1.02356e-14, 1.5827e-14, 0, 7.07149e-13
+      Total relative residual after nonlinear iteration 1: 7.07149e-13
+
+
+
+   Postprocessing:
+     Temperature min/avg/max:       1 K, 1.5 K, 2 K
+     Heating rate (average/total):  0.05 W/kg, 0.1 W
+     Writing graphical output:      output-heat_advection_by_melt/solution/solution-00004
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

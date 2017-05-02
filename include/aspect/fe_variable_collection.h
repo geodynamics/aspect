@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __aspect__fe_variable_system_h
-#define __aspect__fe_variable_system_h
+#ifndef _aspect_fe_variable_system_h
+#define _aspect_fe_variable_system_h
 
 #include <aspect/global.h>
 #include <deal.II/fe/component_mask.h>

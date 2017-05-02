@@ -6,7 +6,7 @@ set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
 set Nonlinear solver scheme                = IMPES
-
+set Number of cheap Stokes solver steps    = 30
 
 subsection Boundary temperature model
   set Model name = box
@@ -30,7 +30,7 @@ subsection Geometry model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = perturbed box
 end
 
@@ -63,7 +63,7 @@ subsection Model settings
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, basic statistics,  temperature statistics, heat flux statistics
+  set List of postprocessors = visualization, velocity statistics, basic statistics,  temperature statistics, heat flux statistics, Stokes residual
 
    
   subsection Visualization

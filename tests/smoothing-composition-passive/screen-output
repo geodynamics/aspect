@@ -10,7 +10,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-smoothing-composition-passive/solution-00000
+     Writing graphical output:  output-smoothing-composition-passive/solution/solution-00000
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
      Compositions min/max/mass: 0/1/0.4583 // 0/1/0.4583
 
@@ -33,7 +33,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-smoothing-composition-passive/solution-00001
+     Writing graphical output:  output-smoothing-composition-passive/solution/solution-00001
      Temperature min/avg/max:   0 K, 0.4991 K, 1 K
      Compositions min/max/mass: -0.005988/1.05/0.4583 // -0.009461/1.016/0.4583
 
@@ -56,7 +56,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-smoothing-composition-passive/solution-00002
+     Writing graphical output:  output-smoothing-composition-passive/solution/solution-00002
      Temperature min/avg/max:   0 K, 0.4978 K, 1 K
      Compositions min/max/mass: -0.004047/1.025/0.4583 // -0.003037/1.002/0.4583
 
@@ -68,7 +68,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-smoothing-composition-passive/solution-00003
+     Writing graphical output:  output-smoothing-composition-passive/solution/solution-00003
      Temperature min/avg/max:   0 K, 0.4969 K, 1 K
      Compositions min/max/mass: -0.002459/1.015/0.4583 // -0.0002141/1.001/0.4582
 
@@ -91,7 +91,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-smoothing-composition-passive/solution-00004
+     Writing graphical output:  output-smoothing-composition-passive/solution/solution-00004
      Temperature min/avg/max:   0 K, 0.4946 K, 1 K
      Compositions min/max/mass: -0.0003924/1.012/0.4583 // -6.714e-05/1/0.4581
 
@@ -103,7 +103,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-smoothing-composition-passive/solution-00005
+     Writing graphical output:  output-smoothing-composition-passive/solution/solution-00005
      Temperature min/avg/max:   0 K, 0.4937 K, 1 K
      Compositions min/max/mass: -0.0003086/1.007/0.4583 // -0.0003818/0.998/0.458
 
@@ -126,7 +126,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-smoothing-composition-passive/solution-00006
+     Writing graphical output:  output-smoothing-composition-passive/solution/solution-00006
      Temperature min/avg/max:   0 K, 0.4915 K, 1 K
      Compositions min/max/mass: -0.0003386/1.004/0.4583 // -0.0002711/0.991/0.458
 
@@ -149,7 +149,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-smoothing-composition-passive/solution-00007
+     Writing graphical output:  output-smoothing-composition-passive/solution/solution-00007
      Temperature min/avg/max:   0 K, 0.4897 K, 1 K
      Compositions min/max/mass: -0.0004275/1.002/0.4583 // -0.0001923/0.9822/0.4581
 
@@ -161,7 +161,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 10+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-smoothing-composition-passive/solution-00008
+     Writing graphical output:  output-smoothing-composition-passive/solution/solution-00008
      Temperature min/avg/max:   0 K, 0.489 K, 1 K
      Compositions min/max/mass: -0.0004274/0.9998/0.4583 // -0.000169/0.9769/0.4581
 
@@ -184,7 +184,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 8+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-smoothing-composition-passive/solution-00009
+     Writing graphical output:  output-smoothing-composition-passive/solution/solution-00009
      Temperature min/avg/max:   0 K, 0.488 K, 1 K
      Compositions min/max/mass: -0.0003387/0.9957/0.4583 // -0.0001414/0.9663/0.4581
 
@@ -196,7 +196,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 8+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-smoothing-composition-passive/solution-00010
+     Writing graphical output:  output-smoothing-composition-passive/solution/solution-00010
      Temperature min/avg/max:   0 K, 0.4877 K, 1 K
      Compositions min/max/mass: -0.0003263/0.9934/0.4583 // -0.0001538/0.959/0.4581
 

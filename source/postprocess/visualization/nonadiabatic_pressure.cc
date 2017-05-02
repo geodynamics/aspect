@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -42,23 +42,19 @@ namespace aspect
       template <int dim>
       void
       NonadiabaticPressure<dim>::
-      compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &,
-                                         const std::vector<std::vector<Tensor<2,dim> > > &,
-                                         const std::vector<Point<dim> > &,
-                                         const std::vector<Point<dim> >                  &evaluation_points,
-                                         std::vector<Vector<double> >                    &computed_quantities) const
+      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                            std::vector<Vector<double> > &computed_quantities) const
       {
-        const unsigned int n_quadrature_points = uh.size();
+        const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
-        Assert (uh[0].size() == this->introspection().n_components, ExcInternalError());
+        Assert (input_data.solution_values[0].size() == this->introspection().n_components, ExcInternalError());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            const double pressure    = uh[q][this->introspection().component_indices.pressure];
+            const double pressure    = input_data.solution_values[q][this->introspection().component_indices.pressure];
 
-            computed_quantities[q](0) = pressure - this->get_adiabatic_conditions().pressure(evaluation_points[q]);
+            computed_quantities[q](0) = pressure - this->get_adiabatic_conditions().pressure(input_data.evaluation_points[q]);
           }
       }
     }

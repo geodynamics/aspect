@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -306,14 +306,6 @@ namespace aspect
        * and the base model contribution to the total viscosity */
       const double mean_depth = 0.5*this->get_geometry_model().maximal_depth();
       return calculate_depth_dependent_prefactor( mean_depth )*base_model->reference_viscosity();
-    }
-
-    template <int dim>
-    double
-    DepthDependent<dim>::
-    reference_density() const
-    {
-      return base_model->reference_density();
     }
   }
 }

@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__postprocess_visualization_melt_h
-#define __aspect__postprocess_visualization_melt_h
+#ifndef _aspect_postprocess_visualization_melt_h
+#define _aspect_postprocess_visualization_melt_h
 
 #include <aspect/postprocess/visualization.h>
 #include <aspect/simulator_access.h>
@@ -61,12 +61,8 @@ namespace aspect
 
           virtual
           void
-          compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                             const std::vector<std::vector<Tensor<1,dim> > > &duh,
-                                             const std::vector<std::vector<Tensor<2,dim> > > &dduh,
-                                             const std::vector<Point<dim> >                  &normals,
-                                             const std::vector<Point<dim> >                  &evaluation_points,
-                                             std::vector<Vector<double> >                    &computed_quantities) const;
+          evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                std::vector<Vector<double> > &computed_quantities) const;
 
           /**
            * Declare the parameters this class takes through input files.

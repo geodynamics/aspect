@@ -8,7 +8,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 20+0 iterations.
 
    Postprocessing:
-     Writing particle output: output-particle_property_integrated_strain_pure_shear/particle-00000
+     Writing particle output: output-particle_property_integrated_strain_pure_shear/particles/particle-00000
 
 *** Timestep 1:  t=0.125 seconds
    Skipping temperature solve because RHS is zero.
@@ -16,7 +16,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 9
+     Number of advected particles: 10
 
 *** Timestep 2:  t=0.25 seconds
    Skipping temperature solve because RHS is zero.
@@ -24,7 +24,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 8
+     Number of advected particles: 10
 
 *** Timestep 3:  t=0.375 seconds
    Skipping temperature solve because RHS is zero.
@@ -32,7 +32,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 6
+     Number of advected particles: 9
 
 *** Timestep 4:  t=0.5 seconds
    Skipping temperature solve because RHS is zero.
@@ -40,7 +40,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 6
+     Number of advected particles: 8
 
 *** Timestep 5:  t=0.625 seconds
    Skipping temperature solve because RHS is zero.
@@ -48,7 +48,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 5
+     Number of advected particles: 7
 
 *** Timestep 6:  t=0.75 seconds
    Skipping temperature solve because RHS is zero.
@@ -56,7 +56,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 4
+     Number of advected particles: 6
 
 *** Timestep 7:  t=0.875 seconds
    Skipping temperature solve because RHS is zero.
@@ -64,7 +64,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 3
+     Number of advected particles: 5
 
 *** Timestep 8:  t=1 seconds
    Skipping temperature solve because RHS is zero.
@@ -72,7 +72,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Writing particle output: output-particle_property_integrated_strain_pure_shear/particle-00001
+     Writing particle output: output-particle_property_integrated_strain_pure_shear/particles/particle-00001
 
 Termination requested by criterion: end time
 

@@ -183,10 +183,10 @@ Boundary_velocity called with boundary_id =3
 Boundary_velocity called with boundary_id =3
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Nonlinear Stokes residual: 0
+      Relative Stokes residual after nonlinear iteration 1: 0
 
    Postprocessing:
-     Writing graphical output:      output-prescribed_velocity_boundary/solution-00000
+     Writing graphical output:      output-prescribed_velocity_boundary/solution/solution-00000
      Errors u_L1, p_L1, u_L2, p_L2: 3.788740e+00, 1.006800e+00, 1.557561e+00, 9.191893e-01
 
 Termination requested by criterion: end time

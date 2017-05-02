@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__heating_model_latent_heat_h
-#define __aspect__heating_model_latent_heat_h
+#ifndef _aspect_heating_model_latent_heat_h
+#define _aspect_heating_model_latent_heat_h
 
 #include <aspect/heating_model/interface.h>
 
@@ -38,7 +38,7 @@ namespace aspect
      *   $ -\rho T frac{\partial S}{\partial T} \frac{D T}{D t}$
      * so that we can add
      *   $ -\rho T frac{\partial S}{\partial T} $
-     * to the $\rho c_p$ term.
+     * to the $\rho C_p$ term.
      *
      * The right-hand side term from latent heating is
      *   $\frac{\partial S}{\partial p} T \rho (u \dot \nabla p)$.
@@ -67,27 +67,6 @@ namespace aspect
         evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
                   HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
-
-        /**
-         * @name Functions used in dealing with run-time parameters
-         * @{
-         */
-        /**
-         * Declare the parameters this class takes through input files.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter file.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-        /**
-         * @}
-         */
     };
   }
 }

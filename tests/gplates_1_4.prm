@@ -38,7 +38,6 @@ subsection Model settings
 
   set Fixed temperature boundary indicators   = 0,1
 
-  set Include shear heating                   = false
 end
 
 
@@ -63,7 +62,7 @@ subsection Boundary temperature model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = adiabatic
 
   subsection Adiabatic

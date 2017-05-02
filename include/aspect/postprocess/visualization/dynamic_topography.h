@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__postprocess_visualization_dynamic_topography_h
-#define __aspect__postprocess_visualization_dynamic_topography_h
+#ifndef _aspect_postprocess_visualization_dynamic_topography_h
+#define _aspect_postprocess_visualization_dynamic_topography_h
 
 #include <aspect/postprocess/visualization.h>
 #include <aspect/simulator_access.h>
@@ -89,6 +89,11 @@ namespace aspect
            * we should subtract the mean topography or not.
            */
           bool subtract_mean_dyn_topography;
+
+          /**
+           * A parameter allows users to set the density value outside the surface
+           */
+          double density_above;
       };
     }
   }

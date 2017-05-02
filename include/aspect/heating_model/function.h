@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__heating_model_function_h
-#define __aspect__heating_model_function_h
+#ifndef _aspect_heating_model_function_h
+#define _aspect_heating_model_function_h
 
 #include <aspect/simulator_access.h>
 #include <aspect/heating_model/interface.h>

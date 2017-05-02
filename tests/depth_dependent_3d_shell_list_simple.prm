@@ -44,7 +44,6 @@ subsection Model settings
 
   set Fixed temperature boundary indicators   = inner, outer
 
-  set Include shear heating                   = false
 end
 
 
@@ -57,7 +56,7 @@ subsection Boundary temperature model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function expression = 1473

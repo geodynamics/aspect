@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -333,12 +333,12 @@ namespace aspect
       base_model -> evaluate(in,out);
 
       /**
-       * Check if the size of the viscosities (and thereby all the other vectors) is larger
+       * Check if the size of the densities (and thereby all the other vectors) is larger
        * than one. Averaging over one or zero points does not make a difference anyway,
        * and the normalized weighted distance averaging schemes need the distance between
        * the points and can not handle a distance of zero.
        */
-      if (out.viscosities.size() > 1)
+      if (out.densities.size() > 1)
         {
           /* Average the base model values based on the chosen average */
           average (averaging_operation,in.position,out.viscosities);
@@ -425,14 +425,6 @@ namespace aspect
     reference_viscosity() const
     {
       return base_model->reference_viscosity();
-    }
-
-    template <int dim>
-    double
-    Averaging<dim>::
-    reference_density() const
-    {
-      return base_model->reference_density();
     }
   }
 }

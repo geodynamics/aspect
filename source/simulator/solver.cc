@@ -384,19 +384,35 @@ namespace aspect
                               :
                               introspection.name_for_compositional_index(advection_field.compositional_variable) + " composition");
 
+    if (advection_field.is_temperature())
+      advection_solver_tolerance = parameters.temperature_solver_tolerance;
+    else
+      advection_solver_tolerance = parameters.composition_solver_tolerance;
+
+    const double tolerance = std::max(1e-50,
+                                      advection_solver_tolerance*system_rhs.block(block_idx).l2_norm());
+
+    SolverControl solver_control (1000, tolerance);
+
+    solver_control.enable_history_data();
+
+    SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
+                                                 SolverGMRES<LinearAlgebra::Vector>::AdditionalData(30,true));
+
     // check if matrix and/or RHS are zero
     // note: to avoid a warning, we compare against numeric_limits<double>::min() instead of 0 here
     if (system_rhs.block(block_idx).l2_norm() <= std::numeric_limits<double>::min())
       {
         pcout << "   Skipping " + field_name + " solve because RHS is zero." << std::endl;
         solution.block(block_idx) = 0;
-        std::string statistics_output = (advection_field.is_temperature()
-                                         ?
-                                         "Iterations for temperature solver"
-                                         :
-                                         "Iterations for composition solver " +
-                                         Utilities::int_to_string(advection_field.compositional_variable+1));
-        statistics.add_value(statistics_output, 0);
+
+        // signal successful solver and signal residual of zero
+        solver_control.check(0, 0.0);
+        signals.post_advection_solver(*this,
+                                      advection_field.is_temperature(),
+                                      advection_field.compositional_variable,
+                                      solver_control);
+
         return 0;
       }
 
@@ -411,7 +427,6 @@ namespace aspect
                                        T_preconditioner);
         computing_timer.enter_section ("   Solve temperature system");
         pcout << "   Solving temperature system... " << std::flush;
-        advection_solver_tolerance = parameters.temperature_solver_tolerance;
       }
     else
       {
@@ -422,15 +437,7 @@ namespace aspect
               << introspection.name_for_compositional_index(advection_field.compositional_variable)
               << " system "
               << "... " << std::flush;
-        advection_solver_tolerance = parameters.composition_solver_tolerance;
       }
-
-    const double tolerance = std::max(1e-50,
-                                      advection_solver_tolerance*system_rhs.block(block_idx).l2_norm());
-    SolverControl solver_control (1000, tolerance);
-
-    SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
-                                                 SolverGMRES<LinearAlgebra::Vector>::AdditionalData(30,true));
 
     // Create distributed vector (we need all blocks here even though we only
     // solve for the current block) because only have a ConstraintMatrix
@@ -471,6 +478,12 @@ namespace aspect
     // processors
     catch (const std::exception &exc)
       {
+        // signal unsuccessful solver
+        signals.post_advection_solver(*this,
+                                      advection_field.is_temperature(),
+                                      advection_field.compositional_variable,
+                                      solver_control);
+
         if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
           AssertThrow (false,
                        ExcMessage (std::string("The iterative advection solver "
@@ -481,6 +494,12 @@ namespace aspect
             throw QuietException();
       }
 
+    // signal successful solver
+    signals.post_advection_solver(*this,
+                                  advection_field.is_temperature(),
+                                  advection_field.compositional_variable,
+                                  solver_control);
+
     current_constraints.distribute (distributed_solution);
     solution.block(block_idx) = distributed_solution.block(block_idx);
 
@@ -489,34 +508,18 @@ namespace aspect
     pcout << solver_control.last_step()
           << " iterations." << std::endl;
 
-    if (advection_field.is_temperature())
-      statistics.add_value("Iterations for temperature solver",
-                           solver_control.last_step());
-    else
-      statistics.add_value("Iterations for composition solver " +
-                           Utilities::int_to_string(advection_field.compositional_variable+1),
-                           solver_control.last_step());
+    if ((advection_field.is_temperature()
+         && parameters.use_discontinuous_temperature_discretization
+         && parameters.use_limiter_for_discontinuous_temperature_solution)
+        ||
+        (!advection_field.is_temperature()
+         && parameters.use_discontinuous_composition_discretization
+         && parameters.use_limiter_for_discontinuous_composition_solution))
+      apply_limiter_to_dg_solutions(advection_field);
 
     computing_timer.exit_section();
 
     return initial_residual;
-  }
-
-
-  namespace
-  {
-    /**
-     * Helper function used in solve_stokes().
-     */
-    dealii::SolverControl::State
-    solver_callback (const unsigned int /*iteration*/,
-                     const double check_value,
-                     const LinearAlgebra::BlockVector &/*current_iterate*/,
-                     std::vector<double> &solver_history)
-    {
-      solver_history.push_back(check_value);
-      return dealii::SolverControl::success;
-    }
   }
 
   template <int dim>
@@ -524,8 +527,6 @@ namespace aspect
   {
     computing_timer.enter_section ("   Solve Stokes system");
     pcout << "   Solving Stokes system... " << std::flush;
-
-    std::vector<double> solver_history;
 
     if (parameters.use_direct_stokes_solver)
       {
@@ -655,7 +656,9 @@ namespace aspect
     // extract Stokes parts of solution vector, without any ghost elements
     LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
 
-    // create vector with distribution of system_rhs.
+    // create a completely distributed vector that will be used for
+    // the scaled and denormalized solution and later used as a
+    // starting guess for the linear solver
     LinearAlgebra::BlockVector remap (introspection.index_sets.stokes_partitioning, mpi_communicator);
 
     // copy the velocity and pressure from current_linearization_point into
@@ -707,15 +710,36 @@ namespace aspect
 
     PrimitiveVectorMemory< LinearAlgebra::BlockVector > mem;
 
-    // step 1a: try if the simple and fast solver
-    // succeeds in 30 steps or less (or whatever the chosen value for the
-    // corresponding parameter is).
+    // create Solver controls for the cheap and expensive solver phase
     SolverControl solver_control_cheap (parameters.n_cheap_stokes_solver_steps,
                                         solver_tolerance);
+
     SolverControl solver_control_expensive (system_matrix.block(block_vel,block_p).m() +
                                             system_matrix.block(block_p,block_vel).m(), solver_tolerance);
 
-    unsigned int its_A = 0, its_S = 0;
+    solver_control_cheap.enable_history_data();
+    solver_control_expensive.enable_history_data();
+
+    // create a cheap preconditioner that consists of only a single V-cycle
+    const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
+          LinearAlgebra::PreconditionILU>
+          preconditioner_cheap (system_matrix, system_preconditioner_matrix,
+                                *Mp_preconditioner, *Amg_preconditioner,
+                                false,
+                                parameters.linear_solver_A_block_tolerance,
+                                parameters.linear_solver_S_block_tolerance);
+
+    // create an expensive preconditioner that solves for the A block with CG
+    const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
+          LinearAlgebra::PreconditionILU>
+          preconditioner_expensive (system_matrix, system_preconditioner_matrix,
+                                    *Mp_preconditioner, *Amg_preconditioner,
+                                    true,
+                                    parameters.linear_solver_A_block_tolerance,
+                                    parameters.linear_solver_S_block_tolerance);
+
+    // step 1a: try if the simple and fast solver
+    // succeeds in n_cheap_stokes_solver_steps steps or less.
     try
       {
         // if this cheaper solver is not desired, then simply short-cut
@@ -723,88 +747,57 @@ namespace aspect
         if (parameters.n_cheap_stokes_solver_steps == 0)
           throw SolverControl::NoConvergence(0,0);
 
-        // otherwise give it a try with a preconditioner that consists
-        // of only a single V-cycle
-        const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
-              LinearAlgebra::PreconditionILU>
-              preconditioner (system_matrix, system_preconditioner_matrix,
-                              *Mp_preconditioner, *Amg_preconditioner,
-                              false,
-                              parameters.linear_solver_A_block_tolerance,
-                              parameters.linear_solver_S_block_tolerance);
-
         SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_cheap, mem,
                SolverFGMRES<LinearAlgebra::BlockVector>::
-               AdditionalData(30, true));
-
-        solver.connect(
-          std_cxx11::bind (&solver_callback,
-                           std_cxx11::_1,
-                           std_cxx11::_2,
-                           std_cxx11::_3,
-                           std_cxx11::ref(solver_history)));
+               AdditionalData(50, true));
 
         solver.solve (stokes_block,
                       distributed_stokes_solution,
                       distributed_stokes_rhs,
-                      preconditioner);
-
-        its_A += preconditioner.n_iterations_A();
-        its_S += preconditioner.n_iterations_S();
+                      preconditioner_cheap);
       }
 
     // step 1b: take the stronger solver in case
     // the simple solver failed
     catch (SolverControl::NoConvergence)
       {
-        // this additional entry serves as a marker between cheap and expensive Stokes solver
-        solver_history.push_back(-1.0);
-
-        const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
-              LinearAlgebra::PreconditionILU>
-              preconditioner (system_matrix, system_preconditioner_matrix,
-                              *Mp_preconditioner, *Amg_preconditioner,
-                              true,
-                              parameters.linear_solver_A_block_tolerance,
-                              parameters.linear_solver_S_block_tolerance);
-
         SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_expensive, mem,
                SolverFGMRES<LinearAlgebra::BlockVector>::
                AdditionalData(50, true));
 
-        solver.connect(
-          std_cxx11::bind (&solver_callback,
-                           std_cxx11::_1,
-                           std_cxx11::_2,
-                           std_cxx11::_3,
-                           std_cxx11::ref(solver_history)));
         try
           {
             solver.solve(stokes_block,
                          distributed_stokes_solution,
                          distributed_stokes_rhs,
-                         preconditioner);
+                         preconditioner_expensive);
           }
         // if the solver fails, report the error from processor 0 with some additional
         // information about its location, and throw a quiet exception on all other
         // processors
         catch (const std::exception &exc)
           {
-            signals.post_stokes_solver(*this, false, solver_history);
+            signals.post_stokes_solver(*this,
+                                       preconditioner_cheap.n_iterations_S() + preconditioner_expensive.n_iterations_S(),
+                                       preconditioner_cheap.n_iterations_A() + preconditioner_expensive.n_iterations_A(),
+                                       solver_control_cheap,
+                                       solver_control_expensive);
 
             if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
               {
                 // output solver history
                 std::ofstream f((parameters.output_directory+"solver_history.txt").c_str());
-                for (unsigned int i=0; i<solver_history.size(); ++i)
-                  {
-                    if (solver_history[i]<0)
-                      f << "\n";
-                    else
-                      f << i << " " << solver_history[i] << "\n";
-                  }
+
+                for (unsigned int i=0; i<solver_control_cheap.get_history_data().size(); ++i)
+                  f << i << " " << solver_control_cheap.get_history_data()[i] << "\n";
+
+                f << "\n";
+
+                for (unsigned int i=0; i<solver_control_expensive.get_history_data().size(); ++i)
+                  f << i << " " << solver_control_expensive.get_history_data()[i] << "\n";
+
                 f.close();
 
                 AssertThrow (false,
@@ -818,14 +811,14 @@ namespace aspect
             else
               throw QuietException();
           }
-
-
-        its_A += preconditioner.n_iterations_A();
-        its_S += preconditioner.n_iterations_S();
       }
 
     // signal successful solver
-    signals.post_stokes_solver(*this, true, solver_history);
+    signals.post_stokes_solver(*this,
+                               preconditioner_cheap.n_iterations_S() + preconditioner_expensive.n_iterations_S(),
+                               preconditioner_cheap.n_iterations_A() + preconditioner_expensive.n_iterations_A(),
+                               solver_control_cheap,
+                               solver_control_expensive);
 
     // distribute hanging node and
     // other constraints
@@ -843,8 +836,7 @@ namespace aspect
 
     normalize_pressure(solution);
 
-    // print the number of iterations to screen and record it in the
-    // statistics file
+    // print the number of iterations to screen
     pcout << solver_control_cheap.last_step() << '+'
           << solver_control_expensive.last_step() << " iterations.";
     pcout << std::endl;
@@ -852,13 +844,6 @@ namespace aspect
     // convert melt pressures:
     if (parameters.include_melt_transport)
       melt_handler->compute_melt_variables(solution);
-
-    statistics.add_value("Iterations for Stokes solver",
-                         solver_control_cheap.last_step() + solver_control_expensive.last_step());
-    statistics.add_value("Velocity iterations in Stokes preconditioner",
-                         its_A);
-    statistics.add_value("Schur complement iterations in Stokes preconditioner",
-                         its_S);
 
     computing_timer.exit_section();
 

@@ -21,7 +21,7 @@
 
 #include <aspect/mesh_refinement/particle_density.h>
 
-#include <aspect/postprocess/tracers.h>
+#include <aspect/postprocess/particles.h>
 #include <aspect/simulator.h>
 
 namespace aspect
@@ -32,14 +32,14 @@ namespace aspect
     void
     ParticleDensity<dim>::execute(Vector<float> &indicators) const
     {
-      const Postprocess::Tracers<dim> *tracer_postprocessor = this->template find_postprocessor<Postprocess::Tracers<dim> >();
+      const Postprocess::Particles<dim> *particle_postprocessor = this->template find_postprocessor<Postprocess::Particles<dim> >();
 
-      AssertThrow(tracer_postprocessor != 0,
+      AssertThrow(particle_postprocessor != 0,
                   ExcMessage("The mesh refinement plugin 'particle density' requires the "
-                             "postprocessor plugin 'tracers' to be selected. Please activate the "
-                             "tracers or deactivate this mesh refinement plugin."));
+                             "postprocessor plugin 'particles' to be selected. Please activate the "
+                             "particles or deactivate this mesh refinement plugin."));
 
-      const std::multimap<Particle::types::LevelInd, Particle::Particle<dim> > *particles = &tracer_postprocessor->get_particle_world().get_particles();
+      const std::multimap<Particle::types::LevelInd, Particle::Particle<dim> > *particles = &particle_postprocessor->get_particle_world().get_particles();
 
       unsigned int i = 0;
       typename DoFHandler<dim>::active_cell_iterator
@@ -49,13 +49,13 @@ namespace aspect
         if (cell->is_locally_owned())
           {
             const Particle::types::LevelInd cell_index (cell->level(),cell->index());
-            const unsigned int n_tracers = particles->count(cell_index);
+            const unsigned int n_particles = particles->count(cell_index);
 
             // Note  that this refinement indicator will level out the number
             // of particles per cell, therefore creating fine cells in regions
             // of high particle density and coarse cells in low particle
             // density regions.
-            indicators(i) = static_cast<float>(n_tracers);
+            indicators(i) = static_cast<float>(n_particles);
           }
       return;
     }

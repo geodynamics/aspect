@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -30,10 +30,25 @@ namespace aspect
       Interface<dim>::~Interface ()
       {}
 
+
+
+      template <int dim>
+      std::vector<std::vector<double> >
+      Interface<dim>::properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
+                                           const std::vector<Point<dim> > &positions,
+                                           const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
+      {
+        return properties_at_points(particles,positions,ComponentMask(), cell);
+      }
+
+
+
       template <int dim>
       void
       Interface<dim>::declare_parameters (ParameterHandler &)
       {}
+
+
 
       template <int dim>
       void
@@ -77,7 +92,7 @@ namespace aspect
         std::string name;
         prm.enter_subsection ("Postprocess");
         {
-          prm.enter_subsection ("Tracers");
+          prm.enter_subsection ("Particles");
           {
             name = prm.get ("Interpolation scheme");
           }
@@ -96,12 +111,12 @@ namespace aspect
         // declare the entry in the parameter file
         prm.enter_subsection ("Postprocess");
         {
-          prm.enter_subsection ("Tracers");
+          prm.enter_subsection ("Particles");
           {
             const std::string pattern_of_names
               = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
 
-            prm.declare_entry ("Interpolation scheme", "first particle",
+            prm.declare_entry ("Interpolation scheme", "cell average",
                                Patterns::Selection (pattern_of_names),
                                "Select one of the following models:\n\n"
                                +

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,10 +19,10 @@
 */
 
 
-#ifndef __aspect__geometry_model_two_merged_boxes_h
-#define __aspect__geometry_model_two_merged_boxes_h
+#ifndef _aspect_geometry_model_two_merged_boxes_h
+#define _aspect_geometry_model_two_merged_boxes_h
 
-#include <aspect/geometry_model/interface.h>
+#include <aspect/geometry_model/box.h>
 
 
 namespace aspect
@@ -37,7 +37,7 @@ namespace aspect
      * for the lithospheric part of the vertical boundaries.
      */
     template <int dim>
-    class TwoMergedBoxes : public Interface<dim>
+    class TwoMergedBoxes : public Box<dim>
     {
       public:
 
@@ -139,6 +139,15 @@ namespace aspect
         virtual
         bool
         has_curved_elements() const;
+
+        /**
+         * Return whether the given point lies within the domain specified
+         * by the geometry. This function does not take into account
+         * initial or dynamic surface topography.
+         */
+        virtual
+        bool
+        point_is_in_domain(const Point<dim> &p) const;
 
         /**
          * Declare the parameters this class takes through input files.

@@ -1,0 +1,15 @@
+This directory contains benchmarks defined in 
+Tan, E., & Gurnis, M. (2007). Compressible thermochemical convection 
+and application to lower mantle structures. Journal of Geophysical 
+Research: Solid Earth, 112(B6) to check compressible convection.
+
+Comparison of the heating terms for TALA, Di=0.5, gamma=1, a=0:
+
+                                       shear heating  adiabatic_heating
+
+analytical solution (Tan, Gurnis '07)  5.306916e-03   5.251999e-03
+
+numerical solution (refinement 4)      5.30690178e-03 5.25196977e-03
+numerical solution (refinement 5)      5.30691533e-03 5.25199721e-03
+numerical solution (refinement 6)      5.30691618e-03 5.25199897e-03
+numerical solution (refinement 7)      5.30691622e-03 5.25199906e-03

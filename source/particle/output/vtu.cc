@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -19,6 +19,7 @@
  */
 
 #include <aspect/particle/output/vtu.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/numerics/data_out.h>
 
@@ -35,19 +36,31 @@ namespace aspect
       {}
 
       template <int dim>
+      void VTUOutput<dim>::initialize ()
+      {
+        aspect::Utilities::create_directory (this->get_output_directory() + "particles/",
+                                             this->get_mpi_communicator(),
+                                             true);
+      }
+
+      template <int dim>
       std::string
       VTUOutput<dim>::output_particle_data(const std::multimap<types::LevelInd, Particle<dim> > &particles,
-                                           const std::vector<std::pair<std::string, unsigned int> > &property_component_list,
+                                           const Property::ParticlePropertyInformation &property_information,
                                            const double current_time)
       {
         const std::string output_file_prefix = "particles-" + Utilities::int_to_string (file_index, 5);
-        const std::string output_path_prefix = this->get_output_directory() + output_file_prefix;
+        const std::string output_path_prefix = this->get_output_directory()
+                                               + "particles/"
+                                               + output_file_prefix;
 
         const std::string filename = (output_file_prefix +
                                       "." +
                                       Utilities::int_to_string(Utilities::MPI::this_mpi_process(this->get_mpi_communicator()), 4) +
                                       ".vtu");
-        const std::string full_filename = (this->get_output_directory() + filename);
+        const std::string full_filename = this->get_output_directory()
+                                          + "particles/"
+                                          + filename;
 
         std::ofstream output (full_filename.c_str());
         AssertThrow (output, ExcIO());
@@ -104,34 +117,58 @@ namespace aspect
         output << "        </DataArray>\n";
 
         // Print the data associated with the particles
-        std::vector<std::pair<std::string,unsigned int> >::const_iterator property = property_component_list.begin();
         unsigned int data_offset = 0;
 
-        for (; property!=property_component_list.end(); ++property)
+        for (unsigned int field_index = 0; field_index < property_information.n_fields(); ++field_index)
           {
+            const unsigned int n_components = property_information.get_components_by_field_index(field_index);
 
-            output << "        <DataArray type=\"Float64\" Name=\"" << property->first << "\" NumberOfComponents=\"" << (property->second == 2 ? 3 : property->second) << "\" Format=\"ascii\">\n";
-            for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator
-                 it=particles.begin(); it!=particles.end(); ++it)
+            // If this is a property with one component or as many components
+            // as spatial dimensions, output it as one scalar / vector field.
+            // Vector fields are padded with zeroes to 3 dimensions (vtk limitation).
+            if ((n_components == 1) || (n_components == dim))
               {
-                const std::vector<double> particle_data = it->second.get_properties();
-
-                output << "          ";
-
-                for (unsigned int d=0; d < property->second; ++d)
+                output << "        <DataArray type=\"Float64\" Name=\""
+                       << property_information.get_field_name_by_index(field_index)
+                       << "\" NumberOfComponents=\"" << (n_components == 1 ? 1 : 3)
+                       << "\" Format=\"ascii\">\n";
+                for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator
+                     it=particles.begin(); it!=particles.end(); ++it)
                   {
-                    output << particle_data[data_offset+d];
+                    const ArrayView<const double> particle_data = it->second.get_properties();
 
-                    if (d+1 < property->second)
-                      output << ' ';
+                    output << "         ";
+                    for (unsigned int d=0; d < n_components; ++d)
+                      output << ' ' << particle_data[data_offset+d];
+
+                    if (n_components == 2)
+                      output << " 0";
+                    output << "\n";
                   }
-
-                if (property->second == 2)
-                  output << " 0";
-                output << "\n";
+                data_offset += n_components;
+                output << "        </DataArray>\n";
               }
-            data_offset += property->second;
-            output << "        </DataArray>\n";
+            // Otherwise create n_components scalar fields
+            else
+              {
+                for (unsigned int d=0; d<n_components; ++d)
+                  {
+                    output << "        <DataArray type=\"Float64\" Name=\""
+                           << property_information.get_field_name_by_index(field_index) << '_' << d
+                           << "\" NumberOfComponents=\"1"
+                           << "\" Format=\"ascii\">\n";
+                    for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator
+                         it=particles.begin(); it!=particles.end(); ++it)
+                      {
+                        const ArrayView<const double> particle_data = it->second.get_properties();
+
+                        output << particle_data[data_offset+d] << "\n";
+                      }
+                    output << "        </DataArray>\n";
+                  }
+                data_offset += n_components;
+
+              }
           }
         output << "      </PointData>\n";
 
@@ -146,7 +183,9 @@ namespace aspect
         if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
           {
             const std::string pvtu_filename = (output_file_prefix + ".pvtu");
-            const std::string full_pvtu_filename = (this->get_output_directory() + pvtu_filename);
+            const std::string full_pvtu_filename = this->get_output_directory()
+                                                   + "particles/"
+                                                   + pvtu_filename;
 
             std::ofstream pvtu_output (full_pvtu_filename.c_str());
             AssertThrow (pvtu_output, ExcIO());
@@ -160,9 +199,19 @@ namespace aspect
             pvtu_output << "    <PPointData Scalars=\"scalars\">\n";
             pvtu_output << "      <PDataArray type=\"UInt64\" Name=\"id\" NumberOfComponents=\"1\" Format=\"ascii\"/>\n";
 
-            for (property=property_component_list.begin(); property!=property_component_list.end(); ++property)
+            for (unsigned int field_index = 0; field_index < property_information.n_fields(); ++field_index)
               {
-                pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << property->first << "\" NumberOfComponents=\"" << (property->second == 2 ? 3 : property->second) << "\" format=\"ascii\"/>\n";
+                const unsigned int n_components = property_information.get_components_by_field_index(field_index);
+                if ((n_components == 1) || (n_components == dim))
+                  pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << property_information.get_field_name_by_index(field_index)
+                              << "\" NumberOfComponents=\"" << (n_components == 1 ? 1 : 3)
+                              << "\" format=\"ascii\"/>\n";
+                else
+                  for (unsigned int component = 0; component < property_information.get_components_by_field_index(field_index); ++component)
+                    pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << property_information.get_field_name_by_index(field_index)
+                                << '_' << component
+                                << "\" NumberOfComponents=\"1"
+                                << "\" format=\"ascii\"/>\n";
               }
             pvtu_output << "    </PPointData>\n";
             for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++i)
@@ -173,22 +222,31 @@ namespace aspect
             pvtu_output << "</VTKFile>\n";
             pvtu_output.close();
 
+            // update the .pvd record for the entire simulation
             times_and_pvtu_file_names.push_back(std::make_pair(current_time,
-                                                               pvtu_filename));
-            vtu_file_names.push_back (full_filename);
-
-            // write .pvd and .visit records
+                                                               "particles/"+pvtu_filename));
             const std::string pvd_master_filename = (this->get_output_directory() + "particles.pvd");
             std::ofstream pvd_master (pvd_master_filename.c_str());
+#if DEAL_II_VERSION_GTE(8,5,0)
+            DataOutBase::write_pvd_record (pvd_master, times_and_pvtu_file_names);
+#else
             DataOut<dim>().write_pvd_record (pvd_master, times_and_pvtu_file_names);
+#endif
 
-//TODO: write a global .visit record. this needs a variant of the write_visit_record
-// function
-            /*
-                          const std::string visit_master_filename = (this->get_output_directory() + "particles.visit");
-                          std::ofstream visit_master (visit_master_filename.c_str());
-                          DataOut<dim>().write_visit_record (visit_master, vtu_file_names);
-            */
+            // same for the .visit record for the entire simulation. for this, we first
+            // have to collect all files that together form this one time step
+#if DEAL_II_VERSION_GTE(8,5,0)
+            std::vector<std::string> this_timestep_output_files;
+            for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++i)
+              this_timestep_output_files.push_back ("particles/" + output_file_prefix +
+                                                    "." + Utilities::int_to_string(i, 4) + ".vtu");
+            times_and_vtu_file_names.push_back (std::make_pair (current_time,
+                                                                this_timestep_output_files));
+
+            const std::string visit_master_filename = (this->get_output_directory() + "particles.visit");
+            std::ofstream visit_master (visit_master_filename.c_str());
+            DataOutBase::write_visit_record (visit_master, times_and_vtu_file_names);
+#endif
           }
         file_index++;
 
@@ -202,7 +260,7 @@ namespace aspect
         // invoke serialization of the base class
         ar &file_index
         & times_and_pvtu_file_names
-        & vtu_file_names
+        & times_and_vtu_file_names
         ;
       }
 

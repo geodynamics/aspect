@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -18,9 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
-#ifndef __aspect__model_steinberger_h
-#define __aspect__model_steinberger_h
+#ifndef _aspect_material_model_steinberger_h
+#define _aspect_material_model_steinberger_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
@@ -53,7 +52,6 @@ namespace aspect
     class Steinberger: public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-
         /**
          * Initialization function. Loads the material data and sets up
          * pointers.
@@ -67,6 +65,7 @@ namespace aspect
          * model to update internal data structures.
          */
         virtual void update();
+
         /**
          * @name Physical parameters used in the basic equations
          * @{
@@ -124,7 +123,7 @@ namespace aspect
          * Return whether the model is compressible or not.  Incompressibility
          * does not necessarily imply that the density is constant; rather, it
          * may still depend on temperature or pressure. In the current
-         * context, compressibility means whether we should solve the contuity
+         * context, compressibility means whether we should solve the continuity
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
@@ -138,10 +137,6 @@ namespace aspect
          * @{
          */
         virtual double reference_viscosity () const;
-
-        virtual double reference_density () const;
-
-        virtual double reference_thermal_expansion_coefficient () const;
         /**
          * @}
          */
@@ -180,68 +175,44 @@ namespace aspect
       private:
         bool interpolation;
         bool latent_heat;
-        bool compressible;
         bool use_lateral_average_temperature;
+
+        /**
+         * Reference viscosity. Only used for pressure scaling purposes.
+         */
         double reference_eta;
+
+        /**
+         * The value for thermal conductivity. This model only
+         * implements a constant thermal conductivity for the whole domain.
+         */
+        double thermal_conductivity_value;
+
+        /**
+         * Information about lateral temperature averages.
+         */
         std::vector<double> avg_temp;
+        unsigned int n_lateral_slices;
+
+        /**
+         * Minimum and maximum allowed viscosity, as well as the maximum allowed
+         * viscosity variation compared to the average radial viscosity.
+         */
         double min_eta;
         double max_eta;
         double max_lateral_eta_variation;
+
+        /**
+         * Information about the location of data files.
+         */
         std::string data_directory;
         std::vector<std::string> material_file_names;
-        unsigned int n_material_data;
         std::string radial_viscosity_file_name;
         std::string lateral_viscosity_file_name;
 
         /**
-         * In the incompressible case we need to adjust the temperature as if
-         * there would be an adiabatic temperature increase to look up the
-         * material properties in the lookup table.
-         */
-        double get_corrected_temperature (const double temperature,
-                                          const double pressure,
-                                          const Point<dim> &position) const;
-
-        /**
-         * In the incompressible case we need to adjust the pressure as if
-         * there would be an compressible adiabatic pressure increase to look
-         * up the material properties in the lookup table. Unfortunately we do
-         * not know the adiabatic pressure profile for the incompressible case
-         * and therefore we do not know the dynamic pressure. The only
-         * currently possible solution is to use the adiabatic pressure
-         * profile only, neglecting dynamic pressure for material lookup in
-         * this case. This is essentially similar to having a depth dependent
-         * reference profile for all properties and modifying the profiles
-         * only in temperature-dimension.
-         */
-        double get_corrected_pressure (const double temperature,
-                                       const double pressure,
-                                       const Point<dim> &position) const;
-
-        /**
-         * This function returns the compressible density derived from the
-         * list of loaded lookup tables.
-         */
-        double get_compressible_density (const double temperature,
-                                         const double pressure,
-                                         const std::vector<double> &compositional_fields,
-                                         const Point<dim> &position) const;
-
-        /**
-         * We need to correct the compressible density in the incompressible
-         * case to an incompressible profile. This is done by dividing the
-         * compressible density with the density at this pressure at adiabatic
-         * temperature and multiplying with the surface adiabatic density.
-         */
-        double get_corrected_density (const double temperature,
-                                      const double pressure,
-                                      const std::vector<double> &compositional_fields,
-                                      const Point<dim> &position) const;
-
-        /**
          * List of pointers to objects that read and process data we get from
-         * Perplex files. There is one pointer/object per compositional field
-         * data provided.
+         * Perplex files.
          */
         std::vector<std_cxx11::shared_ptr<internal::MaterialLookup> > material_lookup;
 

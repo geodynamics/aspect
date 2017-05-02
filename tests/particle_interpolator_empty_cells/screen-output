@@ -1,0 +1,64 @@
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 61+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        2500
+     Particle count per cell min/avg/max: 0, 2, 9
+
+Number of active cells: 574 (on 7 levels)
+Number of degrees of freedom: 10,643 (4,996+651+2,498+2,498)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 59+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        2852
+     Particle count per cell min/avg/max: 2, 4, 20
+
+Number of active cells: 667 (on 7 levels)
+Number of degrees of freedom: 12,463 (5,852+759+2,926+2,926)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 59+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        3213
+     Particle count per cell min/avg/max: 2, 4, 51
+
+Number of active cells: 973 (on 8 levels)
+Number of degrees of freedom: 17,743 (8,336+1,071+4,168+4,168)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 58+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        3343
+     Particle count per cell min/avg/max: 2, 3, 100
+
+*** Timestep 1:  t=7e+09 years
+   Solving temperature system... 255 iterations.
+   Solving Stokes system... 59+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        3389
+     Particle count per cell min/avg/max: 2, 3, 100
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

@@ -11,7 +11,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      RMS, max velocity:         0.000133 m/s, 0.000331 m/s
      Compositions min/max/mass: 0/1/0.1914
-     Writing particle output:   output-particle_initial_adaptive_output/particle-00000
+     Writing particle output:   output-particle_initial_adaptive_output/particles/particle-00000
 
 Number of active cells: 22 (on 4 levels)
 Number of degrees of freedom: 490 (228+34+114+114)
@@ -49,7 +49,7 @@ Number of degrees of freedom: 673 (314+45+157+157)
    Postprocessing:
      RMS, max velocity:         0.000294 m/s, 0.000754 m/s
      Compositions min/max/mass: -0.03271/1.126/0.1805
-     Writing particle output:   output-particle_initial_adaptive_output/particle-00001
+     Writing particle output:   output-particle_initial_adaptive_output/particles/particle-00001
 
 Termination requested by criterion: end time
 

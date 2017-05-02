@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,6 +22,7 @@
 #include <aspect/postprocess/depth_average.h>
 #include <aspect/lateral_averaging.h>
 #include <aspect/global.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/tria.h>
@@ -87,6 +88,15 @@ namespace aspect
         if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic temperature") != output_variables.end() )
           variables.push_back("adiabatic_temperature");
 
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic pressure") != output_variables.end() )
+          variables.push_back("adiabatic_pressure");
+
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic density") != output_variables.end() )
+          variables.push_back("adiabatic_density");
+
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic density derivative") != output_variables.end() )
+          variables.push_back("adiabatic_density_derivative");
+
         if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "velocity magnitude") != output_variables.end() )
           variables.push_back("velocity_magnitude");
 
@@ -126,6 +136,18 @@ namespace aspect
         //adiabatic temperature
         if ( std::find( variables.begin(), variables.end(), "adiabatic_temperature") != variables.end() )
           this->get_adiabatic_conditions().get_adiabatic_temperature_profile(data_point.values[index++]);
+
+        //adiabatic pressure
+        if ( std::find( variables.begin(), variables.end(), "adiabatic_pressure") != variables.end() )
+          this->get_adiabatic_conditions().get_adiabatic_pressure_profile(data_point.values[index++]);
+
+        //adiabatic density
+        if ( std::find( variables.begin(), variables.end(), "adiabatic_density") != variables.end() )
+          this->get_adiabatic_conditions().get_adiabatic_density_profile(data_point.values[index++]);
+
+        //adiabatic density derivative
+        if ( std::find( variables.begin(), variables.end(), "adiabatic_density_derivative") != variables.end() )
+          this->get_adiabatic_conditions().get_adiabatic_density_derivative_profile(data_point.values[index++]);
 
         //velocity magnitude
         if ( std::find( variables.begin(), variables.end(), "velocity_magnitude") != variables.end() )
@@ -231,7 +253,7 @@ namespace aspect
               std::ofstream f(filename.c_str(), std::ofstream::out);
 
               //Write the header
-              f << "#       time" << "       depth";
+              f << "#       time" << "        depth";
               for ( unsigned int i = 0; i < variables.size(); ++i)
                 f << " " << variables[i];
               f << std::endl;
@@ -245,9 +267,9 @@ namespace aspect
                     {
                       f << std::setw(12)
                         << (this->convert_output_to_years() ? point->time/year_in_seconds : point->time)
-                        << std::setw(12) << depth;
+                        << ' ' << std::setw(12) << depth;
                       for ( unsigned int i = 0; i < variables.size(); ++i )
-                        f << std::setw(12) << point->values[i][d];
+                        f << ' ' << std::setw(12) << point->values[i][d];
                       f << std::endl;
                       depth+= max_depth/static_cast<double>(point->values[0].size() );
                     }
@@ -300,14 +322,19 @@ namespace aspect
                              "The format in which the output shall be produced. The "
                              "format in which the output is generated also determines "
                              "the extension of the file into which data is written.");
+          const std::string variables =
+            "all|temperature|composition|"
+            "adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|"
+            "velocity magnitude|sinking velocity|Vs|Vp|"
+            "viscosity|vertical heat flux";
           prm.declare_entry("List of output variables", "all",
-                            Patterns::MultipleSelection("all|temperature|composition|adiabatic temperature|"
-                                                        "velocity magnitude|sinking velocity|Vs|Vp|"
-                                                        "viscosity|vertical heat flux"),
+                            Patterns::MultipleSelection(variables.c_str()),
                             "A comma separated list which specifies which quantites to "
                             "average in each depth slice. It defaults to averaging all "
                             "availabe quantities, but this can be an expensive operation, "
-                            "so you may want to select only a few.");
+                            "so you may want to select only a few.\n\n"
+                            "List of options:\n"
+                            +variables);
         }
         prm.leave_subsection();
       }
@@ -328,7 +355,24 @@ namespace aspect
             output_interval *= year_in_seconds;
           n_depth_zones = prm.get_integer ("Number of zones");
 
+          if (output_interval > 0.0)
+            {
+              // since we increase the time indicating when to write the next graphical output
+              // every time we execute the depth average postprocessor, there is no good way to
+              // figure out when to write graphical output for the nonlinear iterations if we do
+              // not want to output every time step
+              AssertThrow(this->get_parameters().run_postprocessors_on_nonlinear_iterations == false,
+                          ExcMessage("Postprocessing nonlinear iterations is only supported if every time "
+                                     "step is visualized, or in other words, if the 'Time between graphical "
+                                     "output' in the Depth average postprocessor is set to zero."));
+            }
+
           output_variables = Utilities::split_string_list(prm.get("List of output variables"));
+          AssertThrow(Utilities::has_unique_entries(output_variables),
+                      ExcMessage("The list of strings for the parameter "
+                                 "'Postprocess/Depth average/List of output variables' contains entries more than once. "
+                                 "This is not allowed. Please check your parameter file."));
+
           if ( std::find( output_variables.begin(), output_variables.end(), "all") != output_variables.end())
             output_all_variables = true;
           else

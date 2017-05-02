@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -50,7 +50,7 @@ namespace aspect
     FEValues<dim> fe_values (this->get_mapping(),
                              this->get_fe(),
                              quadrature_formula,
-                             update_values | update_gradients | update_quadrature_points);
+                             update_values | update_gradients | update_quadrature_points | update_JxW_values);
 
     std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_q_points));
 

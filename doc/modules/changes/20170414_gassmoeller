@@ -1,0 +1,4 @@
+Changed: The folder benchmark/ was renamed into benchmarks/
+to be consistent with our directory tests/.
+<br>
+(Rene Gassmoeller, 2017/04/14)

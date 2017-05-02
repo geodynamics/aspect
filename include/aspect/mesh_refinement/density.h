@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__mesh_refinement_density_h
-#define __aspect__mesh_refinement_density_h
+#ifndef _aspect_mesh_refinement_density_h
+#define _aspect_mesh_refinement_density_h
 
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/simulator_access.h>

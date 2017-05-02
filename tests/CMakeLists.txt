@@ -1,5 +1,18 @@
 ################### top matter ################
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
+
+SET(ASPECT_BINARY "${ASPECT_BINARY}" CACHE STRING "" FORCE)
+SET(ASPECT_DIR "${ASPECT_DIR}" CACHE STRING "" FORCE)
+FIND_PACKAGE(Aspect 1.5.0 QUIET HINTS ${ASPECT_DIR})
+DEAL_II_INITIALIZE_CACHED_VARIABLES()
+
 FIND_PACKAGE(Perl)
+
+MESSAGE(STATUS "Setting up tests with CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE}")
+
+PROJECT(testsuite CXX)
+
+ENABLE_TESTING()
 
 MACRO(SET_IF_EMPTY _variable _value)
   IF("${${_variable}}" STREQUAL "")
@@ -66,7 +79,7 @@ FUNCTION(SHOULD_ENABLE_TEST _filename)
 
   FILE(STRINGS ${_filename} _input_lines
        REGEX "QUICK_TEST")
-  IF(NOT ${ASPECT_RUN_ALL_TESTS} AND "${_input_lines}" STREQUAL "")
+  IF(NOT ASPECT_RUN_ALL_TESTS AND "${_input_lines}" STREQUAL "")
     SET(_use_test OFF PARENT_SCOPE)
   ENDIF()
 ENDFUNCTION()
@@ -147,40 +160,49 @@ FOREACH(_test ${_tests})
 
     IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.cc)
       ADD_LIBRARY(${_test} SHARED EXCLUDE_FROM_ALL ${_test}.cc)
-      IF (APPLE AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-        # avoid linker errors about missing functions inside ASPECT:
-        SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
+      ASPECT_SETUP_PLUGIN(${_test})
 
-        # make shared libraries end on .so not .dylib
-        SET_TARGET_PROPERTIES(${_test} PROPERTIES SUFFIX ".so")
-      ENDIF()
-
-      SET_PROPERTY(SOURCE ${_test}.cc
-                   APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
-      IF (ASPECT_USE_PETSC)
-        SET_PROPERTY(SOURCE ${_test}.cc
-	             APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_PETSC="1")
-      ENDIF()
-      DEAL_II_SETUP_TARGET(${_test})
       SET(_testlib 'set Additional shared libraries = ./lib${_test}.so')
       SET(_testdepends ${_test})
     ELSE()
-      SET(_testdepends)
       SET(_testlib)
+      SET(_testdepends)
     ENDIF()
 
-    # Create the output directory and a rule to generate the input file therein.
-    # This input file is the one found in the source dir, but it has the
-    # correct output directory so that we do not need to specify it by hand
-    # (a common mistake when copying a previous test) and do not need to
-    # specify any additional plugin shared libraries, should they exist
-    # for this test
+    # Create the output directory and subdirectories as needed. To do this, we
+    # recursively glob all files (and only files, not subdirectories) located
+    # in this test's directory.  For each file get the directory part relative
+    # to the test directory and create a corresponding subdirectory in the
+    # output directory of this test. MAKE_DIRECTORY then does a `mkdir -p`.
+    FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output-${_test})
+
+    FILE(GLOB_RECURSE _outputs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/
+	${CMAKE_CURRENT_SOURCE_DIR}/${_test}/[a-zA-Z0-9]*)
+    FOREACH(_output ${_outputs})
+
+      # get the directory name we should work on; for cmake <2.8.11, the
+      # subcommand was PATH (legacy), for everything after we can use
+      # DIRECTORY
+      IF (${CMAKE_VERSION} VERSION_LESS "2.8.12")
+        GET_FILENAME_COMPONENT(_dir ${_output} PATH)
+      ELSE()
+        GET_FILENAME_COMPONENT(_dir ${_output} DIRECTORY)
+      ENDIF()
+      IF(NOT  ${_dir} STREQUAL "" )
+        FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_dir})
+      ENDIF()
+    ENDFOREACH()
+
+    # A rule to generate the input file therein.  This input file is copied
+    # from the one found in the source dir, but we make sure it has the
+    # correct output directory so that we do not need to specify it by hand (a
+    # common mistake when copying a previous test) and we specify any
+    # additional plugin shared libraries, should they exist for this test
     #
     # We also replace all occurrences of @SOURCE_DIR@ by
     # ${CMAKE_CURRENT_SOURCE_DIR} so that input files can reference
     # mesh, input files, etc, in the tests/ directory without having
     # to know where exactly they are run.
-    FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output-${_test})
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
       COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm
 		 ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
@@ -230,36 +252,27 @@ FOREACH(_test ${_tests})
         MESSAGE(FATAL_ERROR "Invalid setup in test '${_test}.prm': Tests with 'EXPECT FAILURE' are only supported if they use a single MPI rank.")
       ENDIF()
     ENDIF()
+
     IF("${_mpi_count}" STREQUAL "1")
       ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
-	COMMAND
-	  for i in ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/* \; do
-	    if echo \$i | grep -q -v .cmp.notime \; then
-	      rm -f \$i \;
-	    fi \;
-	  done
-	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run_test.sh ${EXPECT} ${CMAKE_BINARY_DIR}/aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
+	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run_test.sh ${EXPECT} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
 	COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
 	COMMAND ${PERL_EXECUTABLE} -pi
 		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
 		  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
-	DEPENDS aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${_testdepends}
+		  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*/*
+	DEPENDS ${ASPECT_BINARY}   ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${_testdepends}
 	)
     ELSE()
       ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
-	COMMAND
-	  for i in ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/* \; do
-	    if echo \$i | grep -q -v .cmp.notime \; then
-	      rm -f \$i \;
-	    fi \;
-	  done
-	COMMAND mpirun -np ${_mpi_count} ${CMAKE_BINARY_DIR}/aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
+	COMMAND mpirun -np ${_mpi_count} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
 		> ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
 	COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
 	COMMAND ${PERL_EXECUTABLE} -pi
 		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
 		  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
-	DEPENDS aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${_testdepends}
+		  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*/*
+	DEPENDS ${ASPECT_BINARY}  ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${_testdepends}
 	)
     ENDIF()
 
@@ -270,11 +283,12 @@ FOREACH(_test ${_tests})
     # this test, create targets that
     # - create a 'output.notime' file
     # - diff this file with the saved one and save the result
-    FILE(GLOB _outputs ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/[a-zA-Z0-9]*)
-    FOREACH(_output ${_outputs})
-      GET_FILENAME_COMPONENT(_output ${_output} NAME)
+    FILE(GLOB_RECURSE _outputs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/
+	${CMAKE_CURRENT_SOURCE_DIR}/${_test}/[a-zA-Z0-9]*)
 
-      get_filename_component(ASPECT_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR} PATH)
+    FOREACH(_output ${_outputs})
+
+      GET_FILENAME_COMPONENT(ASPECT_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR} PATH)
 
       # create the output.notime targets for each of the output files,
       # and also create a similar file for all of the input files (this
@@ -320,12 +334,14 @@ FOREACH(_test ${_tests})
 		${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
       )
 
-      # add the target for this output file to the dependencies of this test
-      ADD_CUSTOM_TARGET(${_test}.${_output}.diff
+      # Add the target for this output file to the dependencies of this
+      # test. Note Note that a target may not contain "/" but outputs can be
+      # in subdirectories (for example solution/solution...), so replace them.
+      STRING(REPLACE "/" "-" _target_name ${_test}.${_output}.diff)
+      ADD_CUSTOM_TARGET(${_target_name}
 	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
 	)
-      ADD_DEPENDENCIES(tests.${_test}
-		       ${_test}.${_output}.diff)
+      ADD_DEPENDENCIES(tests.${_test} ${_target_name})
     ENDFOREACH()
 
     # add this test to the dependencies of the overall 'tests' target
@@ -337,7 +353,7 @@ FOREACH(_test ${_tests})
 	    -DBINARY_DIR=${CMAKE_BINARY_DIR}
 	    -DTESTNAME=tests.${_test}
 	    -DERROR="Test ${_test} failed"
-	    -P ${CMAKE_SOURCE_DIR}/tests/run_test.cmake
+	    -P ${CMAKE_SOURCE_DIR}/run_test.cmake
 	  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
       )
     SET_TESTS_PROPERTIES(${_test} PROPERTIES

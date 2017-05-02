@@ -1,0 +1,27 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: RMS velocity (m/s)
+# 14: Max. velocity (m/s)
+# 15: Minimal temperature (K)
+# 16: Average temperature (K)
+# 17: Maximal temperature (K)
+# 18: Average nondimensional temperature (K)
+# 19: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 20: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 21: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 22: Outward heat flux through boundary with indicator 3 ("top") (W)
+# 23: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 16 187  81  81  0  0  9 10  9 1.78848441e+00 2.50928251e+00 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 2.95142294e-04 -2.95142294e-04 -1.00000000e+00 1.00000000e+00 output-refinement_switch/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 28 341 149 149  0  0 15 16 71 1.79268748e+00 2.54866234e+00 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 1.24954438e-04 -1.24954438e-04 -1.00000000e+00 1.00000000e+00 output-refinement_switch/solution/solution-00001 
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 289  0  0  9 10  9 1.79136553e+00 2.52855217e+00 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 3.76072702e-05 -3.76072702e-05 -1.00000000e+00 1.00000000e+00 output-refinement_switch/solution/solution-00002 
+1 2.466382878077e-02 2.466382878077e-02 64 659 289 289 20 15 13 14 14 8.64093867e+00 1.22017319e+01 0.00000000e+00 5.00000063e-01 1.00000000e+00 5.00000063e-01 1.87014679e-04 -1.86147901e-04 -1.01588175e+00 1.01588065e+00 output-refinement_switch/solution/solution-00003 

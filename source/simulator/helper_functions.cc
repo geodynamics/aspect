@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -23,6 +23,7 @@
 #include <aspect/melt.h>
 #include <aspect/global.h>
 
+#include <aspect/heating_model/adiabatic_heating.h>
 
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
@@ -111,6 +112,13 @@ namespace aspect
   }
 
   template <int dim>
+  typename Parameters<dim>::AdvectionFieldMethod::Kind
+  Simulator<dim>::AdvectionField::advection_method(const Introspection<dim> &introspection) const
+  {
+    return introspection.compositional_field_methods[compositional_variable];
+  }
+
+  template <int dim>
   unsigned int
   Simulator<dim>::AdvectionField::block_index(const Introspection<dim> &introspection) const
   {
@@ -132,6 +140,16 @@ namespace aspect
 
   template <int dim>
   unsigned int
+  Simulator<dim>::AdvectionField::field_index() const
+  {
+    if (this->is_temperature())
+      return 0;
+    else
+      return compositional_variable + 1;
+  }
+
+  template <int dim>
+  unsigned int
   Simulator<dim>::AdvectionField::base_element(const Introspection<dim> &introspection) const
   {
     if (this->is_temperature())
@@ -140,39 +158,25 @@ namespace aspect
       return introspection.base_elements.compositional_fields;
   }
 
-
   template <int dim>
-  void Simulator<dim>::output_program_stats()
+  FEValuesExtractors::Scalar
+  Simulator<dim>::AdvectionField::scalar_extractor(const Introspection<dim> &introspection) const
   {
-    if (!aspect::output_parallel_statistics)
-      return;
-
-    Utilities::System::MemoryStats stats;
-    Utilities::System::get_memory_stats(stats);
-    pcout << "VmPeak (proc0): " << stats.VmPeak/1024 << " mb" << std::endl;
-
-    // memory consumption:
-    const double mb = 1024*1024; //convert from bytes into mb
-    pcout << "memory in MB:" << std::endl
-          << "* tria " << triangulation.memory_consumption()/mb << std::endl
-          << "  - p4est " << triangulation.memory_consumption_p4est()/mb << std::endl
-          << "* DoFHandler " << dof_handler.memory_consumption()/mb <<std::endl
-          << "* ConstraintMatrix " << constraints.memory_consumption()/mb << std::endl
-          << "* current_constraints " << current_constraints.memory_consumption()/mb << std::endl
-          << "* Matrix " << system_matrix.memory_consumption()/mb << std::endl
-          << "* 5 Vectors " << 5*solution.memory_consumption()/mb << std::endl
-          << "* preconditioner " << (system_preconditioner_matrix.memory_consumption()
-//                                     + Amg_preconditioner->memory_consumption()
-                                     /*+Mp_preconditioner->memory_consumption()
-                                                                      +T_preconditioner->memory_consumption()*/)/mb
-          << std::endl
-          << "  - matrix " << system_preconditioner_matrix.memory_consumption()/mb << std::endl
-//          << "  - prec vel " << Amg_preconditioner->memory_consumption()/mb << std::endl
-          << "  - prec mass " << 0/*Mp_preconditioner->memory_consumption()/mb*/ << std::endl
-          << "  - prec T " << 0/*T_preconditioner->memory_consumption()/mb*/ << std::endl
-          << std::endl;
+    if (this->is_temperature())
+      return introspection.extractors.temperature;
+    else
+      return introspection.extractors.compositional_fields[compositional_variable];
   }
 
+  template <int dim>
+  unsigned int
+  Simulator<dim>::AdvectionField::polynomial_degree(const Introspection<dim> &introspection) const
+  {
+    if (this->is_temperature())
+      return introspection.polynomial_degree.temperature;
+    else
+      return introspection.polynomial_degree.compositional_fields;
+  }
 
 
   namespace
@@ -217,21 +221,6 @@ namespace aspect
     if (Utilities::MPI::this_mpi_process(mpi_communicator)!=0)
       return;
 
-    if (parameters.convert_to_years == true)
-      {
-        statistics.set_precision("Time (years)", 12);
-        statistics.set_scientific("Time (years)", true);
-        statistics.set_precision("Time step size (years)", 12);
-        statistics.set_scientific("Time step size (years)", true);
-      }
-    else
-      {
-        statistics.set_precision("Time (seconds)", 12);
-        statistics.set_scientific("Time (seconds)", true);
-        statistics.set_precision("Time step size (seconds)", 12);
-        statistics.set_scientific("Time step size (seconds)", true);
-      }
-
     // formatting the table we're about to output and writing the
     // actual file may take some time, so do it on a separate
     // thread. we pass a pointer to a copy of the statistics
@@ -248,12 +237,10 @@ namespace aspect
 
 
 
-  /**
-   * Find the largest velocity throughout the domain.
-   **/
   template <int dim>
-  double Simulator<dim>::get_maximal_velocity (
-    const LinearAlgebra::BlockVector &solution) const
+  double
+  Simulator<dim>::
+  get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const
   {
     // use a quadrature formula that has one point at
     // the location of each degree of freedom in the
@@ -293,7 +280,140 @@ namespace aspect
 
 
   template <int dim>
-  std::pair<double,bool> Simulator<dim>::compute_time_step () const
+  bool Simulator<dim>::maybe_do_initial_refinement (const unsigned int max_refinement_level)
+  {
+    if (pre_refinement_step < parameters.initial_adaptive_refinement)
+      {
+        if (parameters.timing_output_frequency ==0)
+          computing_timer.print_summary ();
+
+        output_statistics();
+
+        // we only want to do the postprocessing here if it is not already done in
+        // the nonlinear iteration scheme, which is the case if we run postprocessors
+        // on all nonlinear iterations
+        if (parameters.run_postprocessors_on_initial_refinement && (!parameters.run_postprocessors_on_nonlinear_iterations))
+          postprocess ();
+
+        refine_mesh (max_refinement_level);
+        ++pre_refinement_step;
+        return true;
+      }
+    else
+      {
+        // invalidate the value of pre_refinement_step since it will no longer be used from here on
+        pre_refinement_step = std::numeric_limits<unsigned int>::max();
+        return false;
+      }
+  }
+
+
+
+  template <int dim>
+  void Simulator<dim>::maybe_refine_mesh (const double new_time_step,
+                                          unsigned int &max_refinement_level)
+  {
+    /*
+     * see if this is an additional refinement cycle. An additional refinement
+     * cycle differs from a regular, because the maximal refinement level allowed
+     * is increased by one from this time on.
+     */
+    if ((parameters.additional_refinement_times.size() > 0)
+        &&
+        (parameters.additional_refinement_times.front () < time+new_time_step))
+      {
+        // loop over as many times as this is necessary
+        while ((parameters.additional_refinement_times.size() > 0)
+               &&
+               (parameters.additional_refinement_times.front () < time+new_time_step))
+          {
+            ++max_refinement_level;
+            refine_mesh (max_refinement_level);
+
+            parameters.additional_refinement_times
+            .erase (parameters.additional_refinement_times.begin());
+          }
+      }
+    // see if this is a time step where regular refinement is requested
+    else if ((timestep_number > 0
+              &&
+              parameters.adaptive_refinement_interval > 0
+              &&
+              timestep_number % parameters.adaptive_refinement_interval == 0)
+             ||
+             (timestep_number == 0 && parameters.adaptive_refinement_interval == 1)
+            )
+      {
+        refine_mesh (max_refinement_level);
+      }
+  }
+
+
+
+  template <int dim>
+  void Simulator<dim>::maybe_write_timing_output () const
+  {
+    bool write_timing_output = false;
+    if (parameters.timing_output_frequency <= 1)
+      write_timing_output = true;
+    else if ((timestep_number > 0) &&
+             (timestep_number % parameters.timing_output_frequency == 0))
+      write_timing_output = true;
+
+    // if requested output a summary of the current timing information
+    if (write_timing_output)
+      computing_timer.print_summary ();
+  }
+
+
+
+  template <int dim>
+  bool Simulator<dim>::maybe_write_checkpoint (const time_t last_checkpoint_time,
+                                               const std::pair<bool,bool> termination_output)
+  {
+    bool write_checkpoint = false;
+    // If we base checkpoint frequency on timing, measure the time at process 0
+    // This prevents race conditions where some processes will checkpoint and others won't
+    if (parameters.checkpoint_time_secs > 0)
+      {
+        int global_do_checkpoint = ((std::time(NULL)-last_checkpoint_time) >=
+                                    parameters.checkpoint_time_secs);
+        MPI_Bcast(&global_do_checkpoint, 1, MPI_INT, 0, mpi_communicator);
+
+        if (global_do_checkpoint == 1)
+          write_checkpoint = true;
+      }
+
+    // If we base checkpoint frequency on steps, see if it's time for another checkpoint
+    if ((parameters.checkpoint_time_secs == 0) &&
+        (parameters.checkpoint_steps > 0) &&
+        (timestep_number % parameters.checkpoint_steps == 0))
+      write_checkpoint = true;
+
+    // Do a checkpoint if this is the end of simulation,
+    // and the termination criteria say to checkpoint at the end.
+    if (termination_output.first && termination_output.second)
+      write_checkpoint = true;
+
+
+    // Do a checkpoint if indicated by checkpoint parameters
+    if (write_checkpoint)
+      {
+        create_snapshot();
+        // matrices will be regenerated after a resume, so do that here too
+        // to be consistent. otherwise we would get different results
+        // for a restarted computation than for one that ran straight
+        // through
+        rebuild_stokes_matrix =
+          rebuild_stokes_preconditioner = true;
+      }
+    return write_checkpoint;
+  }
+
+
+
+  template <int dim>
+  double Simulator<dim>::compute_time_step () const
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
                                              parameters.stokes_velocity_degree);
@@ -415,8 +535,8 @@ namespace aspect
     if (parameters.use_conduction_timestep)
       min_conduction_timestep = - Utilities::MPI::max (-min_local_conduction_timestep, mpi_communicator);
 
-    double new_time_step = std::min(min_convection_timestep,min_conduction_timestep);
-    bool convection_dominant = (min_convection_timestep < min_conduction_timestep);
+    double new_time_step = std::min(min_convection_timestep,
+                                    min_conduction_timestep);
 
     if (new_time_step == std::numeric_limits<double>::max())
       {
@@ -426,10 +546,12 @@ namespace aspect
         // the velocity was one
         new_time_step = (parameters.CFL_number /
                          (parameters.temperature_degree * 1));
-        convection_dominant = false;
       }
 
-    return std::make_pair(new_time_step, convection_dominant);
+    new_time_step = termination_manager.check_for_last_time_step(std::min(new_time_step,
+                                                                          parameters.maximum_time_step));
+
+    return new_time_step;
   }
 
 
@@ -440,19 +562,11 @@ namespace aspect
   get_extrapolated_advection_field_range (const AdvectionField &advection_field) const
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
-                                             (advection_field.is_temperature() ?
-                                              parameters.temperature_degree :
-                                              parameters.composition_degree));
+                                             advection_field.polynomial_degree(introspection));
 
     const unsigned int n_q_points = quadrature_formula.size();
 
-    const FEValuesExtractors::Scalar field
-      = (advection_field.is_temperature()
-         ?
-         introspection.extractors.temperature
-         :
-         introspection.extractors.compositional_fields[advection_field.compositional_variable]
-        );
+    const FEValuesExtractors::Scalar field = advection_field.scalar_extractor(introspection);
 
     FEValues<dim> fe_values (*mapping, finite_element, quadrature_formula,
                              update_values);
@@ -561,12 +675,10 @@ namespace aspect
     hanging_constraints.distribute(vec);
   }
 
-  /*
-   * normalize the pressure by calculating the surface integral of the pressure on the outer
-   * shell and subtracting this from all pressure nodes.
-   */
+
+
   template <int dim>
-  void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector)
+  void Simulator<dim>::normalize_pressure (LinearAlgebra::BlockVector &vector)
   {
     if (parameters.pressure_normalization == "no")
       return;
@@ -616,7 +728,7 @@ namespace aspect
                 }
             }
       }
-    else if (parameters.pressure_normalization=="volume")
+    else if (parameters.pressure_normalization == "volume")
       {
         const QGauss<dim> quadrature (parameters.stokes_velocity_degree + 1);
 
@@ -648,12 +760,12 @@ namespace aspect
       AssertThrow (false, ExcMessage("Invalid pressure normalization method: " +
                                      parameters.pressure_normalization));
 
-    pressure_adjustment = 0.0;
     // sum up the integrals from each processor
     {
       const double my_temp[2] = {my_pressure, my_area};
       double temp[2];
       Utilities::MPI::sum (my_temp, mpi_communicator, temp);
+
       if (parameters.pressure_normalization == "surface")
         pressure_adjustment = -temp[0]/temp[1] + parameters.surface_pressure;
       else if (parameters.pressure_normalization == "volume")
@@ -752,12 +864,12 @@ namespace aspect
   }
 
 
-  /*
-   * inverse to normalize_pressure.
-   */
+
   template <int dim>
-  void Simulator<dim>::denormalize_pressure (LinearAlgebra::BlockVector &vector,
-                                             const LinearAlgebra::BlockVector &relevant_vector)
+  void
+  Simulator<dim>::
+  denormalize_pressure (LinearAlgebra::BlockVector &vector,
+                        const LinearAlgebra::BlockVector &relevant_vector) const
   {
     if (parameters.pressure_normalization == "no")
       return;
@@ -836,8 +948,6 @@ namespace aspect
               // and that it is in fact a pressure dof
               Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[first_pressure_dof]),
                       ExcInternalError());
-              Assert (local_dof_indices[first_pressure_dof] >= vector.block(0).size(),
-                      ExcInternalError());
 
               // then adjust its value
               vector (local_dof_indices[first_pressure_dof]) -= pressure_adjustment;
@@ -849,48 +959,79 @@ namespace aspect
 
 
 
-  /**
-   * This routine adjusts the second block of the right hand side of the
-   * system containing the compressibility, so that the system becomes
-   * compatible. See the general documentation of this class for more
-   * information.
-   */
   template <int dim>
-  void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector)
+  void
+  Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector)
   {
-    if (parameters.use_locally_conservative_discretization)
-      AssertThrow(false, ExcNotImplemented());
+    // If the mass conservation is written as
+    //   div u = f
+    // make sure this is solvable by modifying f to ensure that
+    // int_\Omega f = int_\Omega div u = 0
+    //
+    // We have to deal with several complications:
+    // - we can have an FE_Q or an FE_DGP for the pressure
+    // - we might use a direct solver, so pressure and velocity is in the same block
+    // - we might have melt transport, where we need to operate only on p_f
+    //
+    // We ensure int_\Omega f = 0 by computing a correction factor
+    //   c = \int f
+    // and adjust pressure RHS to be
+    //  fnew = f - c/|\Omega|
+    // such that
+    //   \int fnew = \int f - c/|\Omega| = -c + \int f = 0.
+    //
+    // We can compute
+    //   c = \int f = (f, 1) = (f, \sum_i \phi_i) = \sum_i (f, \phi_i) = \sum_i F_i
+    // which is just the sum over the RHS vector for FE_Q. For FE_DGP we need
+    // to restrict to 0th shape functions on each cell because this is how we
+    // represent the function 1.
+    //
+    // To make the adjustment fnew = f - c/|\Omega|
+    // note that
+    // fnew_i = f_i - c/|\Omega| * (1, \phi_i)
+    // and the same logic for FE_DGP applies
 
-    // In the following we integrate the right hand side. This integral is the
-    // correction term that needs to be added to the pressure right hand side.
-    // (so that the integral of right hand side is set to zero).
-    if (!parameters.include_melt_transport && introspection.block_indices.velocities != introspection.block_indices.pressure)
+
+    if ((!parameters.use_locally_conservative_discretization)
+        &&
+        (!parameters.include_melt_transport)
+        &&
+        (introspection.block_indices.velocities != introspection.block_indices.pressure))
       {
-        const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
-        const double correction = (- mean * vector.block(introspection.block_indices.pressure).size()) / global_volume;
+        // Easy Case. We have an FE_Q in a separate block, so we can use
+        // mean_value() and vector.block(p) += correction:
+        const double mean = vector.block(introspection.block_indices.pressure).mean_value();
+        const double int_rhs = mean * vector.block(introspection.block_indices.pressure).size();
+        const double correction = -int_rhs / global_volume;
+
         vector.block(introspection.block_indices.pressure).add(correction, pressure_shape_function_integrals.block(introspection.block_indices.pressure));
       }
-    else
+    else if (!parameters.use_locally_conservative_discretization)
       {
+        // FE_Q but we can not access the pressure block separately (either
+        // a direct solver or we have melt with p_f and p_c in the same block).
+        // Luckily we don't need to go over DoFs on each cell, because we
+        // have IndexSets to help us:
+
         // we need to operate only on p_f not on p_c
         const IndexSet &idxset = parameters.include_melt_transport ?
                                  introspection.index_sets.locally_owned_fluid_pressure_dofs
                                  :
                                  introspection.index_sets.locally_owned_pressure_dofs;
-        double pressure_sum = 0.0;
+        double int_rhs = 0.0;
 
         for (unsigned int i=0; i < idxset.n_elements(); ++i)
           {
             types::global_dof_index idx = idxset.nth_index_in_set(i);
-            pressure_sum += vector(idx);
+            int_rhs += vector(idx);
           }
 
         // We do not have to integrate over the normal velocity at the
         // boundaries with a prescribed velocity because the constraints
         // are already distributed to the right hand side in
         // current_constraints.distribute.
-        const double global_pressure_sum = Utilities::MPI::sum(pressure_sum, mpi_communicator);
-        const double correction = (- global_pressure_sum) / global_volume;
+        const double global_int_rhs = Utilities::MPI::sum(int_rhs, mpi_communicator);
+        const double correction = - global_int_rhs / global_volume;
 
         for (unsigned int i=0; i < idxset.n_elements(); ++i)
           {
@@ -900,6 +1041,64 @@ namespace aspect
 
         vector.compress(VectorOperation::add);
       }
+    else
+      {
+        // Locally conservative with or without direct solver and with or
+        // without melt: grab a pickaxe and do everything by hand!
+        AssertThrow(parameters.use_locally_conservative_discretization,
+                    ExcInternalError());
+
+        double int_rhs = 0.0;
+        const unsigned int pressure_component = (parameters.include_melt_transport ?
+                                                 introspection.variable("fluid pressure").first_component_index
+                                                 : introspection.component_indices.pressure);
+        std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = dof_handler.begin_active(),
+        endc = dof_handler.end();
+        for (; cell != endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              // identify the first pressure dof
+              cell->get_dof_indices (local_dof_indices);
+              const unsigned int first_pressure_dof
+                = finite_element.component_to_system_index (pressure_component, 0);
+
+              // make sure that this DoF is really owned by the current processor
+              // and that it is in fact a pressure dof
+              Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[first_pressure_dof]),
+                      ExcInternalError());
+
+              // compute integral:
+              int_rhs += vector(local_dof_indices[first_pressure_dof]);
+            }
+
+        const double global_int_rhs = Utilities::MPI::sum(int_rhs, mpi_communicator);
+        const double correction = - global_int_rhs / global_volume;
+
+        // Now modify our RHS with the correction factor:
+        for (cell = dof_handler.begin_active(); cell != endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              // identify the first pressure dof
+              cell->get_dof_indices (local_dof_indices);
+              const unsigned int first_pressure_dof
+                = finite_element.component_to_system_index (pressure_component, 0);
+
+              // make sure that this DoF is really owned by the current processor
+              // and that it is in fact a pressure dof
+              Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[first_pressure_dof]),
+                      ExcInternalError());
+
+              // correct:
+              types::global_dof_index idx = local_dof_indices[first_pressure_dof];
+              vector(idx) += correction * pressure_shape_function_integrals(idx);
+            }
+
+        vector.compress(VectorOperation::add);
+      }
+
+
   }
 
 
@@ -982,6 +1181,8 @@ namespace aspect
            || parameters.include_melt_transport;
   }
 
+
+
   template <int dim>
   void Simulator<dim>::apply_limiter_to_dg_solutions (const AdvectionField &advection_field)
   {
@@ -994,12 +1195,8 @@ namespace aspect
      * in 2D: the combinations are 21, 12
      * in 3D: the combinations are 211, 121, 112
      */
-    const QGauss<1> quadrature_formula_1 (advection_field.is_temperature() ?
-                                          parameters.temperature_degree+1 :
-                                          parameters.composition_degree+1);
-    const QGaussLobatto<1> quadrature_formula_2 (advection_field.is_temperature() ?
-                                                 parameters.temperature_degree+1 :
-                                                 parameters.composition_degree+1);
+    const QGauss<1> quadrature_formula_1 (advection_field.polynomial_degree(introspection)+1);
+    const QGaussLobatto<1> quadrature_formula_2 (advection_field.polynomial_degree(introspection)+1);
 
     const unsigned int n_q_points_1 = quadrature_formula_1.size();
     const unsigned int n_q_points_2 = quadrature_formula_2.size();
@@ -1094,9 +1291,7 @@ namespace aspect
     Quadrature<dim> quadrature_formula(quadrature_points);
 
     // Quadrature rules only used for the numerical integration for better accuracy
-    const QGauss<dim> quadrature_formula_0 (advection_field.is_temperature() ?
-                                            parameters.temperature_degree+1 :
-                                            parameters.composition_degree+1);
+    const QGauss<dim> quadrature_formula_0 (advection_field.polynomial_degree(introspection)+1);
 
     const unsigned int n_q_points_0 = quadrature_formula_0.size();
 
@@ -1218,6 +1413,100 @@ namespace aspect
     // now get back to the original vector
     solution.block(block_idx) = distributed_solution.block(block_idx);
   }
+
+
+
+  template <int dim>
+  void
+  Simulator<dim>::check_consistency_of_formulation()
+  {
+    // Replace Formulation::MassConservation::ask_material_model by the respective terms to avoid
+    // complicated checks later on
+    if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::ask_material_model)
+      {
+        if (material_model->is_compressible() == true)
+          parameters.formulation_mass_conservation = Parameters<dim>::Formulation::MassConservation::isothermal_compression;
+        else
+          parameters.formulation_mass_conservation = Parameters<dim>::Formulation::MassConservation::incompressible;
+      }
+
+    // Ensure the material model supports the selected formulation of the mass conservation equation
+    if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::incompressible)
+      {
+        AssertThrow(material_model->is_compressible() == false,
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The mass conservation equation was selected to be incompressible, "
+                               "but the provided material model reports that it is compressible. "
+                               "Please check the consistency of your material model and selected formulation."));
+      }
+    else if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::isothermal_compression
+             || parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile
+             || parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
+      {
+        AssertThrow(material_model->is_compressible() == true,
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The mass conservation equation was selected to be compressible, "
+                               "but the provided material model reports that it is incompressible. "
+                               "Please check the consistency of your material model and selected formulation."));
+      }
+
+    // Ensure that the correct heating terms have been selected for the chosen combined formulation
+    // Note that if the combined formulation is 'custom' there is no check
+    // (useful e.g. for smaller scale lithospheric models with shear heating but without adiabatic heating)
+    if (parameters.formulation == Parameters<dim>::Formulation::isothermal_compression)
+      {
+        AssertThrow(heating_model_manager.adiabatic_heating_enabled(),
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The 'isothermal compression' formulation expects adiabatic heating to be enabled, "
+                               "but the 'adiabatic heating' plugin has not been selected in the input file. "
+                               "Please check the consistency of your input file."));
+
+        AssertThrow(heating_model_manager.shear_heating_enabled(),
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The 'isothermal compression' formulation expects shear heating to be enabled, "
+                               "but the 'shear heating' plugin has not been selected in the input file. "
+                               "Please check the consistency of your input file."));
+      }
+    else if (parameters.formulation == Parameters<dim>::Formulation::boussinesq_approximation)
+      {
+        AssertThrow(!heating_model_manager.adiabatic_heating_enabled(),
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The 'boussinesq approximation' formulation expects adiabatic heating to be disabled, "
+                               "but the 'adiabatic heating' plugin has been selected in the input file. "
+                               "Please check the consistency of your input file."));
+
+        AssertThrow(!heating_model_manager.shear_heating_enabled(),
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The 'boussinesq approximation' formulation expects shear heating to be disabled, "
+                               "but the 'shear heating' plugin has been selected in the input file. "
+                               "Please check the consistency of your input file."));
+      }
+    else if (parameters.formulation == Parameters<dim>::Formulation::anelastic_liquid_approximation)
+      {
+        AssertThrow(heating_model_manager.adiabatic_heating_enabled(),
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The 'anelastic liquid approximation' formulation expects adiabatic heating to be enabled, "
+                               "but the 'adiabatic heating' plugin has not been selected in the input file. "
+                               "Please check the consistency of your input file."));
+
+        AssertThrow(heating_model_manager.shear_heating_enabled(),
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The 'anelastic liquid approximation' formulation expects shear heating to be enabled, "
+                               "but the 'shear heating' plugin has not been selected in the input file. "
+                               "Please check the consistency of your input file."));
+
+        const bool use_simplified_adiabatic_heating =
+          heating_model_manager.template find_heating_model<HeatingModel::AdiabaticHeating<dim> >()
+          ->use_simplified_adiabatic_heating();
+
+        AssertThrow(use_simplified_adiabatic_heating == true,
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The 'anelastic liquid approximation' formulation expects adiabatic heating to use "
+                               "a simplified heating term that neglects dynamic pressure influences, "
+                               "but the adiabatic heating plugin does not report to simplify this term. "
+                               "Please check the consistency of your input file."));
+      }
+  }
 }
 // explicit instantiation of the functions we implement in this file
 namespace aspect
@@ -1225,17 +1514,21 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template struct Simulator<dim>::AdvectionField; \
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
-  template void Simulator<dim>::denormalize_pressure(LinearAlgebra::BlockVector &vector, const LinearAlgebra::BlockVector &relevant_vector); \
+  template void Simulator<dim>::denormalize_pressure(LinearAlgebra::BlockVector &vector, const LinearAlgebra::BlockVector &relevant_vector) const; \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
   template std::pair<double,double> Simulator<dim>::get_extrapolated_advection_field_range (const AdvectionField &advection_field) const; \
-  template std::pair<double,bool> Simulator<dim>::compute_time_step () const; \
+  template void Simulator<dim>::maybe_write_timing_output () const; \
+  template bool Simulator<dim>::maybe_write_checkpoint (const time_t last_checkpoint_time, const std::pair<bool,bool> termination_output); \
+  template bool Simulator<dim>::maybe_do_initial_refinement (const unsigned int max_refinement_level); \
+  template void Simulator<dim>::maybe_refine_mesh (const double new_time_step, unsigned int &max_refinement_level); \
+  template double Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
-  template void Simulator<dim>::output_program_stats(); \
   template void Simulator<dim>::output_statistics(); \
   template double Simulator<dim>::compute_initial_stokes_residual(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
-  template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field);
+  template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
+  template void Simulator<dim>::check_consistency_of_formulation();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

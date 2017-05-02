@@ -1,8 +1,8 @@
 # A description of the van Keken et al. benchmark using smooth initial
 # conditions instead of the discontinuous ones in
 # van-keken-discontinuous.prm. See the manual for more information.
-# This test adds tracers to the cookbook parameter file, and therefore
-# tests the behaviour of the tracers.
+# This test adds particles to the cookbook parameter file, and therefore
+# tests the behaviour of the particles.
 
 set Dimension                              = 2
 set End time                               = 70
@@ -17,8 +17,6 @@ subsection Geometry model
 end
 
 subsection Model settings
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
   set Tangential velocity boundary indicators = left, right
   set Zero velocity boundary indicators       = bottom, top
 end
@@ -48,7 +46,7 @@ subsection Boundary temperature model
   set Model name = box
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function expression = 0
@@ -64,7 +62,7 @@ subsection Compositional fields
   set Number of fields = 1
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,z
@@ -96,13 +94,13 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, composition statistics,tracers
+  set List of postprocessors = velocity statistics, composition statistics,particles
 
-  subsection Tracers
-    set Number of tracers = 10
+  subsection Particles
+    set Number of particles = 10
     set Time between data output = 70
     set Data output format = vtu
-    set List of tracer properties = function, initial composition, initial position
+    set List of particle properties = function, initial composition, initial position
 
     subsection Function
       set Variable names      = x,z

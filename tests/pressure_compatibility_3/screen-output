@@ -9,7 +9,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:                  0.00577 m/s, 0.00987 m/s
-     Pressure min/avg/max:               -0.002229 Pa, 0.5 Pa, 0.998 Pa
+     Pressure min/avg/max:               -0.002306 Pa, 0.4999 Pa, 0.9979 Pa
      Temperature min/avg/max:            0 K, 0.8632 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
 
@@ -20,7 +20,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:                  0.00577 m/s, 0.00987 m/s
-     Pressure min/avg/max:               0.0007412 Pa, 0.5 Pa, 0.9647 Pa
+     Pressure min/avg/max:               0.0006644 Pa, 0.4999 Pa, 0.9646 Pa
      Temperature min/avg/max:            0 K, 0.8961 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
 
@@ -31,7 +31,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
-     Pressure min/avg/max:               0.004131 Pa, 0.5 Pa, 0.9328 Pa
+     Pressure min/avg/max:               0.004054 Pa, 0.4999 Pa, 0.9328 Pa
      Temperature min/avg/max:            0 K, 0.9273 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
 
@@ -42,7 +42,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:                  0.00577 m/s, 0.00985 m/s
-     Pressure min/avg/max:               0.008336 Pa, 0.5 Pa, 0.905 Pa
+     Pressure min/avg/max:               0.008259 Pa, 0.4999 Pa, 0.9049 Pa
      Temperature min/avg/max:            0 K, 0.9567 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
 
@@ -53,7 +53,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:                  0.00577 m/s, 0.00985 m/s
-     Pressure min/avg/max:               0.01314 Pa, 0.5 Pa, 0.8825 Pa
+     Pressure min/avg/max:               0.01306 Pa, 0.4999 Pa, 0.8824 Pa
      Temperature min/avg/max:            0 K, 0.983 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
 
@@ -64,7 +64,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
-     Pressure min/avg/max:               0.0185 Pa, 0.5 Pa, 0.8647 Pa
+     Pressure min/avg/max:               0.01843 Pa, 0.4999 Pa, 0.8646 Pa
      Temperature min/avg/max:            0 K, 1.006 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
 
@@ -75,7 +75,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
-     Pressure min/avg/max:               0.02428 Pa, 0.5 Pa, 0.8501 Pa
+     Pressure min/avg/max:               0.02421 Pa, 0.4999 Pa, 0.85 Pa
      Temperature min/avg/max:            0 K, 1.027 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
 
@@ -86,7 +86,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
-     Pressure min/avg/max:               0.0303 Pa, 0.5 Pa, 0.8377 Pa
+     Pressure min/avg/max:               0.03022 Pa, 0.4999 Pa, 0.8376 Pa
      Temperature min/avg/max:            0 K, 1.046 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
 
@@ -97,7 +97,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
-     Pressure min/avg/max:               0.03642 Pa, 0.5 Pa, 0.8271 Pa
+     Pressure min/avg/max:               0.03634 Pa, 0.4999 Pa, 0.8271 Pa
      Temperature min/avg/max:            0 K, 1.062 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
 

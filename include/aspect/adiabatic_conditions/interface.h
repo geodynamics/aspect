@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2013 by the authors of the ASPECT code.
+  Copyright (C) 2013 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__adiabatic_conditions_interface_h
-#define __aspect__adiabatic_conditions_interface_h
+#ifndef _aspect_adiabatic_conditions_interface_h
+#define _aspect_adiabatic_conditions_interface_h
 
 #include <aspect/plugins.h>
 #include <aspect/geometry_model/interface.h>
@@ -101,6 +101,19 @@ namespace aspect
         double pressure (const Point<dim> &p) const = 0;
 
         /**
+         * Return the reference_density at a given point of the domain.
+         */
+        virtual
+        double density (const Point<dim> &p) const = 0;
+
+        /**
+         * Return the derivative of the density with respect to depth
+         * at the given point @p p.
+         */
+        virtual
+        double density_derivative (const Point<dim> &p) const = 0;
+
+        /**
          * Return the adiabatic temperature profile as a vector of values
          * corresponding to increasing depth.
          *
@@ -116,6 +129,19 @@ namespace aspect
          */
         virtual
         void get_adiabatic_pressure_profile(std::vector<double> &values) const;
+
+        /**
+         * Like get_adiabatic_temperature_profile() but for the density.
+         */
+        virtual
+        void get_adiabatic_density_profile(std::vector<double> &values) const;
+
+        /**
+         * Like get_adiabatic_temperature_profile() but for the density derivative.
+         */
+        virtual
+        void get_adiabatic_density_derivative_profile(std::vector<double> &values) const;
+
 
         /**
          * Declare the parameters this class takes through input files. The

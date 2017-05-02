@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,10 +19,12 @@
 */
 
 
-#ifndef __aspect__geometry_model_chunk_h
-#define __aspect__geometry_model_chunk_h
+#ifndef _aspect_geometry_model_chunk_h
+#define _aspect_geometry_model_chunk_h
 
 #include <aspect/geometry_model/interface.h>
+#include <aspect/simulator_access.h>
+
 #include <deal.II/grid/manifold.h>
 #include <deal.II/base/function_lib.h>
 #include <deal.II/grid/grid_out.h>
@@ -48,7 +50,7 @@ namespace aspect
      * number of cells initialised in each dimension.
      */
     template <int dim>
-    class Chunk : public Interface<dim>
+    class Chunk : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
 
@@ -195,6 +197,15 @@ namespace aspect
         has_curved_elements() const;
 
         /**
+         * Return whether the given point lies within the domain specified
+         * by the geometry. This function does not take into account
+         * initial or dynamic surface topography.
+         */
+        virtual
+        bool
+        point_is_in_domain(const Point<dim> &p) const;
+
+        /**
          * Declare the parameters this class takes through input files.
          */
         static
@@ -237,6 +248,8 @@ namespace aspect
         class ChunkGeometry : public ChartManifold<dim,dim>
         {
           public:
+            ChunkGeometry();
+
             virtual
             Point<dim>
             pull_back(const Point<dim> &space_point) const;
@@ -244,6 +257,14 @@ namespace aspect
             virtual
             Point<dim>
             push_forward(const Point<dim> &chart_point) const;
+
+            virtual
+            void
+            set_min_longitude(const double p1_lon);
+
+          private:
+            // The minimum longitude of the domain
+            double point1_lon;
         };
 
         Point<dim> pull_back(const Point<dim>) const;

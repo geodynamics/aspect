@@ -18,7 +18,7 @@ subsection Geometry model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = harmonic perturbation
   subsection Harmonic perturbation
     set Magnitude = 30
@@ -44,8 +44,6 @@ subsection Model settings
 
   set Tangential velocity boundary indicators = 
 
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
 end
 
 subsection Boundary velocity model
@@ -60,7 +58,7 @@ subsection Compositional fields
 end
 
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = ascii data
   subsection Ascii data model
     set Data directory       = $ASPECT_SOURCE_DIR/data/compositional-initial-conditions/ascii-data/test/

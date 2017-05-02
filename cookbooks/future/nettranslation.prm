@@ -51,7 +51,7 @@ subsection Gravity model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function 
     set Variable names      = x,y
@@ -85,8 +85,6 @@ end
 
 
 subsection Model settings
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
   set Fixed temperature boundary indicators   = bottom, top
   set Prescribed velocity boundary indicators =
   set Tangential velocity boundary indicators = bottom, top

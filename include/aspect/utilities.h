@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014, 2015, 2016 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__utilities_h
-#define __aspect__utilities_h
+#ifndef _aspect_utilities_h
+#define _aspect_utilities_h
 
 #include <aspect/global.h>
 
@@ -82,6 +82,15 @@ namespace aspect
     {
 
       /**
+       * Returns distance from the Earth's center, latitude and longitude from a
+       * given ECEF Cartesian coordinates that account for ellipsoidal shape of
+       * the Earth with WGS84 parameters.
+       */
+      template <int dim>
+      std_cxx11::array<double,dim>
+      WGS84_coordinates(const Point<dim> &position);
+
+      /**
        * Returns spherical coordinates of a Cartesian point. The returned array
        * is filled with radius, phi and theta (polar angle). If the dimension is
        * set to 2 theta is omitted. Phi is always normalized to [0,2*pi].
@@ -123,6 +132,15 @@ namespace aspect
     }
 
     /**
+     * Given a 2d point and a list of points which form a polygon, computes if the point
+     * falls within the polygon.
+     */
+    template <int dim>
+    bool
+    polygon_contains_point(const std::vector<Point<2> > &point_list,
+                           const dealii::Point<2> &point);
+
+    /**
      * Given a vector @p v in @p dim dimensional space, return a set
      * of (dim-1) vectors that are orthogonal to @p v and to each
      * other. The lengths of these vectors equals that of the original
@@ -134,7 +152,7 @@ namespace aspect
 
     /**
      * A function for evaluating real spherical harmonics. It takes the degree (l)
-     * and the order (m) of the spherical harmonic, where l >= 0 and 0 <= m <=l.
+     * and the order (m) of the spherical harmonic, where $l \geq 0$ and $0 \leq m \leq l$.
      * It also takes the colatitude (theta) and longitude (phi), which are in
      * radians.
      *
@@ -153,14 +171,14 @@ namespace aspect
      * \f[
      *    Y_{lm}(\theta, \phi) = \sqrt{2} X_{lm}(\theta) \sin m \phi \qquad \mathrm{if}  \qquad 0< m \le m
      * \f]
-     * where \f$X_{lm}( \theta )\f$ is an associated Legendre function.
+     * where $X_{lm}( \theta )$ is an associated Legendre function.
      *
-     * In practice it is often convenient to compute the sine (\f$-l \le m < 0\f$) and cosine (\f$0 < m \le l\f$)
+     * In practice it is often convenient to compute the sine ($-l \le m < 0$) and cosine ($0 < m \le l$)
      * variants of the real spherical harmonic at the same time. That is the approach taken
      * here, where we return a pair of numbers, the first corresponding the cosine part and the
      * second corresponding to the sine part. Given this, it is no longer necessary to distinguish
-     * between postitive and negative \f$ m \f$, so this function only accepts \f$ m \ge 0 \f$.
-     * For \f$ m = 0 \f$, there is only one part, which is stored in the first entry of the pair.
+     * between postitive and negative $m$, so this function only accepts $ m \ge 0$.
+     * For $m = 0$, there is only one part, which is stored in the first entry of the pair.
      *
      * @note This function uses the Boost spherical harmonics implementation internally,
      * which is not designed for very high order (> 100) spherical harmonics computation.
@@ -174,7 +192,24 @@ namespace aspect
                                                       double phi );   //longitude (radians)
 
     /**
-     * Checks whether a file named filename exists.
+     * A struct to enable numerical output with a comma as thousands separator
+     */
+    struct ThousandSep : std::numpunct<char>
+    {
+      protected:
+        virtual char do_thousands_sep() const
+        {
+          return ',';
+        }
+        virtual std::string do_grouping() const
+        {
+          return "\003";  // groups of 3 digits (this string is in octal format)
+        }
+
+    };
+
+    /**
+     * Checks whether a file named @p filename exists and is readable.
      *
      * @param filename File to check existence
      */
@@ -211,6 +246,20 @@ namespace aspect
     mkdirp(std::string pathname, const mode_t mode = 0755);
 
     /**
+     * Create directory @p pathname, optionally printing a message.
+     *
+     * @param pathname String that contains path to create. '/' is used as
+     * directory separator.
+     * @param comm MPI communicator, used to limit creation of directory to
+     * processor 0.
+     * @param silent Print a nicely formatted message on processor 0 if set
+     * to true.
+     */
+    void create_directory(const std::string &pathname,
+                          const MPI_Comm &comm,
+                          bool silent);
+
+    /**
      * A namespace defining the cubic spline interpolation that can be used
      * between different spherical layers in the mantle.
      */
@@ -228,10 +277,13 @@ namespace aspect
            * @param x X coordinates of interpolation points.
            * @param y Values in the interpolation points.
            * @param cubic_spline Whether to construct a cubic spline or just do linear interpolation
+           * @param monotone_spline Wether the cubic spline should be a monotone cubic spline.
+           * Requires cubic_spline to be set to true.
            */
           void set_points(const std::vector<double> &x,
                           const std::vector<double> &y,
-                          bool cubic_spline = true);
+                          const bool cubic_spline = true,
+                          const bool monotone_spline = false);
           /**
            * Evaluate spline at point @p x.
            */
@@ -307,38 +359,63 @@ namespace aspect
     }
 
     /**
-     * Add standard call for replacing $ASPECT_SOURCE_DIR
+     * Replace the string <tt>\$ASPECT_SOURCE_DIR</tt> in @p location by the current
+     * source directory of ASPECT and return the resulting string.
      */
-    inline
     std::string
-    expand_ASPECT_SOURCE_DIR (std::string location)
-    {
-      return Utilities::replace_in_string(location,
-                                          "$ASPECT_SOURCE_DIR",
-                                          ASPECT_SOURCE_DIR);
-    }
+    expand_ASPECT_SOURCE_DIR (const std::string &location);
 
+    /**
+     * Given a string @p s, return it in the form ' ("s")' if nonempty.
+     * Otherwise just return the empty string itself.
+     */
+    std::string parenthesize_if_nonempty (const std::string &s);
 
-
+    /**
+     * Returns if a vector of strings @p strings only contains unique
+     * entries.
+     */
+    bool has_unique_entries (const std::vector<std::string> &strings);
 
     /**
      * AsciiDataLookup reads in files containing input data in ascii format.
      * Note the required format of the input data: The first lines may contain
      * any number of comments if they begin with '#', but one of these lines
      * needs to contain the number of grid points in each dimension as for
-     * example '# POINTS: 3 3'. The order of the columns has to be
+     * example '# POINTS: 3 3'. The comments can optionally be followed by a
+     * single line, which does not start with '#', containing the names of
+     * the data columns.
+     * The order of the following data columns has to be
      * 'coordinates data' with @p dim coordinate columns and @p components
      * data columns. Note that the data in the input files need to be sorted
      * in a specific order: the first coordinate needs to ascend first,
      * followed by the second and so on in order to assign the correct data to
-     * the prescribed coordinates.
+     * the prescribed coordinates. The coordinates do not need to be
+     * equidistant.
      */
     template <int dim>
     class AsciiDataLookup
     {
       public:
+        /**
+         * Constructor that explicitly prescribes the number of data columns
+         * in the data file. If a list of data components is provided in the
+         * data file it is checked that the length of this list is consistent
+         * with this number of components. This constructor is mostly provided
+         * for backwards compatilibity. Not prescribing the number of components
+         * and instead reading them from the input file allows for more
+         * flexible files.
+         */
         AsciiDataLookup(const unsigned int components,
                         const double scale_factor);
+
+        /**
+         * This constructor relies on the list of column names at the beginning
+         * of the model file to determine the number of data components,
+         * therefore when using this constructor it is necessary to provide
+         * this list in the first uncommented line of the data file.
+         */
+        AsciiDataLookup(const double scale_factor);
 
         /**
          * Loads a data text file. Throws an exception if the file does not
@@ -361,24 +438,63 @@ namespace aspect
         get_data(const Point<dim> &position,
                  const unsigned int component) const;
 
+        /**
+         * Returns a vector that contains the names of all data columns in the
+         * order of their appearance in the data file (and their order in the
+         * memory data table). Returns an empty vector if no names are provided
+         * or the file is not read in yet.
+         */
+        std::vector<std::string>
+        get_column_names() const;
+
+        /**
+         * Returns the column index of a column with the given name
+         * @p column_name. Throws an exception if no such
+         * column exists or no names were provided in the file.
+         */
+        unsigned int
+        get_column_index_from_name(const std::string &column_name) const;
+
+        /**
+         * Returns a string that contains the name of the column with index
+         * @p column_index. Throws an exception if no such
+         * column exists or no name was provided in the file.
+         */
+        std::string
+        get_column_name_from_index(const unsigned int column_index) const;
+
       private:
         /**
          * The number of data components read in (=columns in the data file).
          */
-        const unsigned int components;
+        unsigned int components;
+
+        /**
+         * The names of the data components in the columns of the read file.
+         * Does not contain any strings if none are provided in the first
+         * uncommented line of the file.
+         */
+        std::vector<std::string> data_component_names;
 
         /**
          * Interpolation functions to access the data.
+         * Either InterpolatedUniformGridData or InterpolatedTensorProductGridData;
+         * the type is determined from the grid specified in the data file.
          */
-        std::vector<Functions::InterpolatedUniformGridData<dim> *> data;
+        std::vector<Function<dim> *> data;
 
         /**
-         * Min and Max coordinates in data file
+         * The coordinate values in each direction as specified in the data file.
+         */
+        std_cxx11::array<std::vector<double>,dim> coordinate_values;
+
+        /**
+         * The min and max of the coordinates in the data file.
          */
         std_cxx11::array<std::pair<double,double>,dim> grid_extent;
 
         /**
-         * Number of points in the data grid.
+         * Number of points in the data grid as specified in the data file.
          */
         TableIndices<dim> table_points;
 
@@ -459,32 +575,14 @@ namespace aspect
          */
         AsciiDataBoundary();
 
-      protected:
-
         /**
-         * Initialization function. This function is called once at the
-         * beginning of the program. Checks preconditions.
-         */
+          * Initialization function. This function is called once at the
+          * beginning of the program. Checks preconditions.
+          */
         virtual
         void
         initialize (const std::set<types::boundary_id> &boundary_ids,
                     const unsigned int components);
-
-        /**
-         * Determines which of the dimensions of the position is used to find
-         * the data point in the data grid. E.g. the left boundary of a box
-         * model extents in the y and z direction (position[1] and
-         * position[2]), therefore the function would return [1,2] for dim==3
-         * or [1] for dim==2. We are lucky that these indices are identical
-         * for the box and the spherical shell (if we use spherical
-         * coordinates for the spherical shell), therefore we do not need to
-         * distinguish between them. For the initial condition this function
-         * is trivial, because the position in the data grid is the same as
-         * the actual position (the function returns [0,1,2] or [0,1]), but
-         * for the boundary conditions it matters.
-         */
-        std_cxx11::array<unsigned int,dim-1>
-        get_boundary_dimensions (const types::boundary_id boundary_id) const;
 
         /**
          * A function that is called at the beginning of each time step. For
@@ -502,6 +600,39 @@ namespace aspect
         get_data_component (const types::boundary_id             boundary_indicator,
                             const Point<dim>                    &position,
                             const unsigned int                   component) const;
+
+        /**
+         * Declare the parameters all derived classes take from input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler  &prm,
+                            const std::string &default_directory,
+                            const std::string &default_filename);
+
+        /**
+         * Read the parameters from the parameter file.
+         */
+        void
+        parse_parameters (ParameterHandler &prm);
+
+      protected:
+
+        /**
+         * Determines which of the dimensions of the position is used to find
+         * the data point in the data grid. E.g. the left boundary of a box
+         * model extents in the y and z direction (position[1] and
+         * position[2]), therefore the function would return [1,2] for dim==3
+         * or [1] for dim==2. We are lucky that these indices are identical
+         * for the box and the spherical shell (if we use spherical
+         * coordinates for the spherical shell), therefore we do not need to
+         * distinguish between them. For the initial condition this function
+         * is trivial, because the position in the data grid is the same as
+         * the actual position (the function returns [0,1,2] or [0,1]), but
+         * for the boundary conditions it matters.
+         */
+        std_cxx11::array<unsigned int,dim-1>
+        get_boundary_dimensions (const types::boundary_id boundary_id) const;
 
         /**
          * A variable that stores the currently used data file of a series. It
@@ -584,22 +715,6 @@ namespace aspect
         std::string
         create_filename (const int timestep,
                          const types::boundary_id boundary_id) const;
-
-
-        /**
-         * Declare the parameters all derived classes take from input files.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler  &prm,
-                            const std::string &default_directory,
-                            const std::string &default_filename);
-
-        /**
-         * Read the parameters from the parameter file.
-         */
-        void
-        parse_parameters (ParameterHandler &prm);
     };
 
     /**
@@ -637,6 +752,66 @@ namespace aspect
          * files.
          */
         std_cxx11::shared_ptr<aspect::Utilities::AsciiDataLookup<dim> > lookup;
+    };
+
+    /**
+     * A base class that reads in a data profile and provides its values.
+     */
+    template <int dim>
+    class AsciiDataProfile : public Utilities::AsciiDataBase<dim>
+    {
+      public:
+        /**
+         * Constructor
+         */
+        AsciiDataProfile();
+
+        /**
+         * Initialization function. This function is called once at the
+         * beginning of the program. Checks preconditions.
+         */
+        virtual
+        void
+        initialize (const MPI_Comm &communicator);
+
+
+        /**
+         * Returns the data component at the given position.
+         */
+        double
+        get_data_component (const Point<1>                      &position,
+                            const unsigned int                   component) const;
+
+        /**
+         * Returns a vector that contains the names of all data columns in the
+         * order of their appearance in the data file (and their order in the
+         * memory data table). Returns an empty vector if no names are provided
+         * or the file is not read in yet.
+         */
+        std::vector<std::string>
+        get_column_names() const;
+
+        /**
+         * Returns the column index of a column with the given name
+         * @p column_name. Returns numbers::invalid_unsigned_int if no such
+         * column exists or no names were provided in the file.
+         */
+        unsigned int
+        get_column_index_from_name(const std::string &column_name) const;
+
+        /**
+         * Returns a string that contains the name of the column with index
+         * @p column_index. Returns an empty string if no such
+         * column exists or no name was provided in the file.
+         */
+        std::string
+        get_column_name_from_index(const unsigned int column_index) const;
+      protected:
+        /**
+         * Pointer to an object that reads and processes data we get from text
+         * files.
+         */
+        std_cxx11::unique_ptr<aspect::Utilities::AsciiDataLookup<1> > lookup;
     };
   }
 }

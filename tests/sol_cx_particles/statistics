@@ -1,0 +1,25 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Number of advected particles
+# 12: Particle file name
+ 0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 2 37 38  37 10 output-sol_cx_particles/output-sol_cx_particles/particles/particles-00000 
+ 1 8.808144427681e+00 8.808144427681e+00 256 2467 1089 1  0  0   0 10 output-sol_cx_particles/output-sol_cx_particles/particles/particles-00001 
+ 2 1.761628885536e+01 8.808144427681e+00 256 2467 1089 1  0  0   0 10 output-sol_cx_particles/output-sol_cx_particles/particles/particles-00002 
+ 3 2.642443328304e+01 8.808144427681e+00 256 2467 1089 1  0  0   0 10 output-sol_cx_particles/output-sol_cx_particles/particles/particles-00003 
+ 4 3.523257771072e+01 8.808144427681e+00 256 2467 1089 1  0  0   0 10 output-sol_cx_particles/output-sol_cx_particles/particles/particles-00004 
+ 5 4.404072213840e+01 8.808144427681e+00 256 2467 1089 1  0  0   0 10 output-sol_cx_particles/output-sol_cx_particles/particles/particles-00005 
+ 6 5.284886656609e+01 8.808144427681e+00 256 2467 1089 1  0  0   0 10 output-sol_cx_particles/output-sol_cx_particles/particles/particles-00006 
+ 7 6.165701099377e+01 8.808144427681e+00 256 2467 1089 1  0  0   0 10 output-sol_cx_particles/output-sol_cx_particles/particles/particles-00007 
+ 8 7.046515542145e+01 8.808144427681e+00 256 2467 1089 1  0  0   0 10 output-sol_cx_particles/output-sol_cx_particles/particles/particles-00008 
+ 9 7.927329984913e+01 8.808144427681e+00 256 2467 1089 1  0  0   0 10 output-sol_cx_particles/output-sol_cx_particles/particles/particles-00009 
+10 8.808144427681e+01 8.808144427681e+00 256 2467 1089 1  0  0   0 10 output-sol_cx_particles/output-sol_cx_particles/particles/particles-00010 
+11 9.688958870449e+01 8.808144427681e+00 238 2344 1035 2 29 30 120 10 output-sol_cx_particles/output-sol_cx_particles/particles/particles-00011 
+12 1.000000000000e+02 3.110411295510e+00 238 2344 1035 2 27 28 112 10 output-sol_cx_particles/output-sol_cx_particles/particles/particles-00012 

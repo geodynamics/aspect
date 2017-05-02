@@ -1,4 +1,4 @@
-# A test for the tracer load balacing strategy 'remove and add tracers'.
+# A test for the particle load balacing strategy 'remove and add particles'.
 # This test is a copy of particle_load_balancing_removal_addition, except
 # that it additionally tests the generation and interpolation of
 # the properties of the newly generated particles.
@@ -16,8 +16,6 @@ subsection Geometry model
 end
 
 subsection Model settings
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
   set Tangential velocity boundary indicators = left, right
   set Zero velocity boundary indicators       = bottom, top
 end
@@ -47,7 +45,7 @@ subsection Boundary temperature model
   set Model name = box
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function expression = 0
@@ -63,7 +61,7 @@ subsection Compositional fields
   set Number of fields = 1
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,z
@@ -95,16 +93,17 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = tracers
+  set List of postprocessors = particles
 
-  subsection Tracers
-    set Number of tracers = 100
+  subsection Particles
+    set Number of particles = 100
     set Time between data output = 500
     set Load balancing strategy = remove and add particles
-    set List of tracer properties = initial position, position
-    set Maximum tracers per cell = 10
-    set Minimum tracers per cell = 5
+    set List of particle properties = initial position, position
+    set Maximum particles per cell = 10
+    set Minimum particles per cell = 5
     set Data output format = ascii
     set Integration scheme = euler
+    set Update ghost particles = true
   end
 end

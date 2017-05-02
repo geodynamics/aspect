@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -28,13 +28,11 @@ namespace aspect
     {
       template <int dim>
       void
-      PTPath<dim>::initialize_one_particle_property(const Point<dim> &,
-                                                    const Vector<double> &solution,
-                                                    const std::vector<Tensor<1,dim> > &,
+      PTPath<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                     std::vector<double> &data) const
       {
-        data.push_back(solution[this->introspection().component_indices.pressure]);
-        data.push_back(solution[this->introspection().component_indices.temperature]);
+        data.push_back(this->get_adiabatic_conditions().pressure(position));
+        data.push_back(this->get_initial_temperature_manager().initial_temperature(position));
       }
 
       template <int dim>
@@ -43,7 +41,7 @@ namespace aspect
                                                 const Point<dim> &,
                                                 const Vector<double> &solution,
                                                 const std::vector<Tensor<1,dim> > &,
-                                                std::vector<double> &data) const
+                                                const ArrayView<double> &data) const
       {
         data[data_position] = solution[this->introspection().component_indices.pressure];
         data[data_position+1] = solution[this->introspection().component_indices.temperature];
@@ -54,6 +52,13 @@ namespace aspect
       PTPath<dim>::need_update() const
       {
         return update_output_step;
+      }
+
+      template <int dim>
+      UpdateFlags
+      PTPath<dim>::get_needed_update_flags () const
+      {
+        return update_values;
       }
 
       template <int dim>
@@ -77,7 +82,7 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_PROPERTY(PTPath,
                                         "pT path",
-                                        "Implementation of a plugin in which the tracer "
+                                        "Implementation of a plugin in which the particle "
                                         "property is defined as the current pressure and "
                                         "temperature at this position. This can be used "
                                         "to generate pressure-temperature paths of "

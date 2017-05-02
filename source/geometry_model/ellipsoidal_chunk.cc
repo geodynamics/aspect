@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,6 +20,8 @@
 
 
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
+#include <aspect/utilities.h>
+#include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/grid/tria_boundary_lib.h>
 #include <deal.II/grid/tria_accessor.h>
@@ -54,6 +56,7 @@ namespace aspect
       bottom_depth (-1)
     {}
 
+
     template <int dim>
     void
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::set_manifold_parameters(const double para_semi_major_axis_a,
@@ -73,9 +76,11 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward_ellipsoid(const Point<3> &phi_theta_d, const double semi_major_axis_a, const double eccentricity) const
     {
-      const double phi   = phi_theta_d[0];
-      const double theta = phi_theta_d[1];
-      const double d     = phi_theta_d[2];
+      AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
+
+      const double phi   = phi_theta_d[0]; // Longitude in radians
+      const double theta = phi_theta_d[1]; // Latitude in radians
+      const double d     = phi_theta_d[2]; // The negative depth (a depth of 10 meters is -10)
 
       const double R_bar = semi_major_axis_a / std::sqrt(1 - (eccentricity * eccentricity *
                                                               std::sin(theta) * std::sin(theta)));
@@ -89,6 +94,8 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back_ellipsoid(const Point<3> &x, const double semi_major_axis_a, const double eccentricity) const
     {
+      AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
+
       const double R    = semi_major_axis_a;
       const double b      = std::sqrt(R * R * (1 - eccentricity * eccentricity));
       const double ep     = std::sqrt((R * R - b * b) / (b * b));
@@ -108,6 +115,44 @@ namespace aspect
       return phi_theta_d;
     }
 
+    template <int dim>
+    Point<3>
+    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward_topography(const Point<3> &phi_theta_d_hat) const
+    {
+      AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
+
+      const double d_hat = phi_theta_d_hat[2]; // long, lat, depth
+      Point<dim-1> phi_theta;
+      const double rad_to_degree = 180/numbers::PI;
+      if (dim == 3)
+        phi_theta = Point<dim-1>(phi_theta_d_hat[0] * rad_to_degree,phi_theta_d_hat[1] * rad_to_degree);
+      const double h = topography->value(phi_theta);
+      const double d = d_hat + (d_hat + bottom_depth)/bottom_depth*h;
+      const Point<3> phi_theta_d (phi_theta_d_hat[0],
+                                  phi_theta_d_hat[1],
+                                  d);
+      return phi_theta_d;
+    }
+
+    template <int dim>
+    Point<3>
+    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back_topography(const Point<3> &phi_theta_d) const
+    {
+      AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
+
+      const double d = phi_theta_d[2];
+      const double rad_to_degree = 180/numbers::PI;
+      Point<dim-1> phi_theta;
+      if (dim == 3)
+        phi_theta = Point<dim-1>(phi_theta_d[0] * rad_to_degree,phi_theta_d[1] * rad_to_degree);
+      const double h = topography->value(phi_theta);
+      const double d_hat = bottom_depth * (d-h)/(bottom_depth+h);
+      const Point<3> phi_theta_d_hat (phi_theta_d[0],
+                                      phi_theta_d[1],
+                                      d_hat);
+      return phi_theta_d_hat;
+    }
+
     /**
      * TODO: These functions (pull back and push forward) should be changed that they always
      * take an return 3D points, because 2D points make no sense for an ellipsoid, even with
@@ -121,7 +166,7 @@ namespace aspect
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back(const Point<3> &space_point) const
     {
       AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points."));
-      return pull_back_ellipsoid (space_point, semi_major_axis_a, eccentricity);
+      return pull_back_topography(pull_back_ellipsoid (space_point, semi_major_axis_a, eccentricity));
 
     }
 
@@ -139,7 +184,21 @@ namespace aspect
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward(const Point<3> &chart_point) const
     {
       AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points."));
-      return push_forward_ellipsoid (chart_point, semi_major_axis_a, eccentricity);
+      return push_forward_ellipsoid (push_forward_topography(chart_point), semi_major_axis_a, eccentricity);
+    }
+
+    template <int dim>
+    void
+    EllipsoidalChunk<dim>::initialize()
+    {
+      manifold.initialize(&(this->get_initial_topography_model()));
+    }
+
+    template <int dim>
+    void
+    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::initialize(const InitialTopographyModel::Interface<dim> *topography_)
+    {
+      topography = topography_;
     }
 
     template <>
@@ -148,10 +207,8 @@ namespace aspect
     {
       const int dim = 3;
 
-      /**
-       * Generate parallelepiped grid with one point (point 0) at (0,0,0) and the
-       * other corners (respectively corner 1,2 and 4) placed relative to that point.
-       */
+      // Generate parallelepiped grid with one point (point 0) at (0,0,0) and the
+      // other corners (respectively corner 1,2 and 4) placed relative to that point.
       const Point<3> corner_points[dim] = {Point<dim>((corners[1][0]-corners[0][0])*numbers::PI/180,
                                                       (corners[1][1]-corners[0][1])*numbers::PI/180,
                                                       0),
@@ -166,11 +223,9 @@ namespace aspect
 
       GridGenerator::subdivided_parallelepiped (coarse_grid, subdivisions,corner_points, true);
 
-      /**
-       * Shift the grid point at (0,0,0) (and the rest of the
-       * points with it) to the correct location at corner[0] at a
-       * negative depth.
-       */
+      // Shift the grid point at (0,0,0) (and the rest of the
+      // points with it) to the correct location at corner[0] at a
+      // negative depth.
       const Point<3> base_point(corners[0][0] *numbers::PI/180,corners[0][1] *numbers::PI/180,-bottom_depth);
       GridTools::shift(base_point,coarse_grid);
 
@@ -341,20 +396,16 @@ namespace aspect
       {
         prm.enter_subsection("Ellipsoidal chunk");
         {
-          /**
-           * Get latitude and longitudes defining region of interest from
-           * the parameter file.
-           */
+          // Get latitude and longitudes defining region of interest from
+          // the parameter file.
           corners.resize(4);
           std::string NEcorner = prm.get("NE corner");
           std::string NWcorner = prm.get("NW corner");
           std::string SWcorner = prm.get("SW corner");
           std::string SEcorner = prm.get("SE corner");
 
-          /**
-           * make a list of what corners are present and check that there should be one or two corner missing,
-           * otherwise throw an exception
-           */
+          // make a list of what corners are present and check that there should be one or two corner missing,
+          // otherwise throw an exception
           std::vector<bool> present(4,true);
           unsigned int missing = 0;
           if (NEcorner == "")
@@ -388,7 +439,7 @@ namespace aspect
           if (present[0])
             {
               temp = Utilities::string_to_double(Utilities::split_string_list(NEcorner,':'));
-              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the NE-corner should be two (logitude:latitude)."));
+              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the NE-corner should be two (longitude:latitude)."));
               corners[0] = Point<2>(temp[0],temp[1]);
             }
           else
@@ -397,7 +448,7 @@ namespace aspect
           if (present[1])
             {
               temp = Utilities::string_to_double(Utilities::split_string_list(NWcorner,':'));
-              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the NW-corner should be two (logitude:latitude)."));
+              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the NW-corner should be two (longitude:latitude)."));
               corners[1] = Point<2>(temp[0],temp[1]);
             }
           else
@@ -406,7 +457,7 @@ namespace aspect
           if (present[2])
             {
               temp = Utilities::string_to_double(Utilities::split_string_list(SWcorner,':'));
-              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the SW-corner should be two (logitude:latitude)."));
+              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the SW-corner should be two (longitude:latitude)."));
               corners[2] = Point<2>(temp[0],temp[1]);
             }
           else
@@ -415,7 +466,7 @@ namespace aspect
           if (present[3])
             {
               temp = Utilities::string_to_double(Utilities::split_string_list(SEcorner,':'));
-              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the SE-corner should be two (logitude:latitude)."));
+              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the SE-corner should be two (longitude:latitude)."));
               corners[3] = Point<2>(temp[0],temp[1]);
             }
           else
@@ -434,22 +485,22 @@ namespace aspect
           if (present[0] == true && present[1] == true)
             {
               AssertThrow (corners[0][0] >= corners[1][0],
-                           ExcMessage ("The longitude of the NE corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ") cannot be smaller then the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][0]) + ")."));
+                           ExcMessage ("The longitude of the NE corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ") cannot be smaller than the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][0]) + ")."));
             }
           if (present[0] == true && present[3] == true)
             {
               AssertThrow (corners[0][1] >= corners[3][1],
-                           ExcMessage ("The latitude of the NE (" + boost::lexical_cast<std::string>(corners[0][1]) + ") corner cannot be larger then the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][1]) + ")."));
+                           ExcMessage ("The latitude of the NE (" + boost::lexical_cast<std::string>(corners[0][1]) + ") corner cannot be smaller than the latitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][1]) + ")."));
             }
           if (present[2] == true && present[3] == true)
             {
               AssertThrow (corners[2][0] <= corners[3][0],
-                           ExcMessage ("The longitude of the SW (" + boost::lexical_cast<std::string>(corners[2][0]) + ") corner cannot be larger then the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][0]) + ")."));
+                           ExcMessage ("The longitude of the SW (" + boost::lexical_cast<std::string>(corners[2][0]) + ") corner cannot be larger than the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][0]) + ")."));
             }
           if (present[2] == true && present[1] == true)
             {
               AssertThrow (corners[2][1] <= corners[1][1],
-                           ExcMessage ("The latitude of the SW corner (" + boost::lexical_cast<std::string>(corners[2][1]) + ") cannot be smaller then the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][1]) + ")."));
+                           ExcMessage ("The latitude of the SW corner (" + boost::lexical_cast<std::string>(corners[2][1]) + ") cannot be larger than the latitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][1]) + ")."));
             }
           if (missing == 2)
             {
@@ -514,16 +565,16 @@ namespace aspect
             }
           // Check that the calculated corners also obey the rules for the location of the corners.
           Assert (corners[0][0] >= corners[1][0],
-                  ExcMessage ("The longitude of the NE corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ") cannot be smaller then the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][0]) + "). This is an internal check, if you see this please contact the developer."));
+                  ExcMessage ("The longitude of the NE corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ") cannot be smaller than the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][0]) + "). This is an internal check, if you see this please contact the developer."));
 
           Assert (corners[0][1] >= corners[3][1],
-                  ExcMessage ("The latitude of the NE (" + boost::lexical_cast<std::string>(corners[0][1]) + ") corner cannot be larger then the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][1]) + "). This is an internal check, if you see this please contact the developer."));
+                  ExcMessage ("The latitude of the NE (" + boost::lexical_cast<std::string>(corners[0][1]) + ") corner cannot be smaller than the latitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][1]) + "). This is an internal check, if you see this please contact the developer."));
 
           Assert (corners[2][0] <= corners[3][0],
-                  ExcMessage ("The longitude of the SW (" + boost::lexical_cast<std::string>(corners[2][0]) + ") corner cannot be larger then the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][0]) + "). This is an internal check, if you see this please contact the developer."));
+                  ExcMessage ("The longitude of the SW (" + boost::lexical_cast<std::string>(corners[2][0]) + ") corner cannot be larger than the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][0]) + "). This is an internal check, if you see this please contact the developer."));
 
           Assert (corners[2][1] <= corners[1][1],
-                  ExcMessage ("The latitude of the SW corner (" + boost::lexical_cast<std::string>(corners[2][1]) + ") cannot be smaller then the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][1]) + "). This is an internal check, if you see this please contact the developer."));
+                  ExcMessage ("The latitude of the SW corner (" + boost::lexical_cast<std::string>(corners[2][1]) + ") cannot be larger than the latitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][1]) + "). This is an internal check, if you see this please contact the developer."));
 
           westLongitude = corners[2][0];
           eastLongitude = corners[0][0];
@@ -535,9 +586,7 @@ namespace aspect
       prm.leave_subsection();
 
 
-      /**
-       * Construct manifold object Pointer to an object that describes the geometry.
-       */
+      // Construct manifold object Pointer to an object that describes the geometry.
       manifold.set_manifold_parameters(semi_major_axis_a,
                                        eccentricity,
                                        semi_minor_axis_b,
@@ -625,16 +674,39 @@ namespace aspect
              ExcMessage("Given depth must be less than or equal to the maximal depth of this geometry."));
 
       // Choose a point on the center axis of the domain
-      Point<dim> p =
-        (manifold.push_forward(Point<3>(southLatitude * numbers::PI/180,
-                                        eastLongitude * numbers::PI/180,
-                                        -bottom_depth))
-         + manifold.push_forward(Point<3>(northLatitude * numbers::PI/180,
-                                          westLongitude * numbers::PI/180
-                                          , 0))) / 2;
-      p /= p.norm();
-      p *= get_radius(p) - depth;
-      return p;
+      Point<dim> p = Point<3>((eastLongitude + westLongitude) * 0.5 * numbers::PI/180,
+                              (southLatitude + northLatitude) * 0.5 * numbers::PI/180,
+                              -depth);
+
+      return manifold.push_forward(p);
+    }
+
+
+    template <int dim>
+    bool
+    EllipsoidalChunk<dim>::point_is_in_domain(const Point<dim> &point) const
+    {
+      AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
+                  this->get_timestep_number() == 0,
+                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
+
+      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
+                  ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
+
+      // dim = 3
+      const Point<dim> ellipsoidal_point = manifold.pull_back(point);
+      const double rad_to_degree = 180.0/numbers::PI;
+
+      // compare deflection from the ellipsoid surface
+      if (ellipsoidal_point[dim-1] > 0.0+std::numeric_limits<double>::epsilon()*bottom_depth ||
+          -ellipsoidal_point[dim-1] > bottom_depth+std::numeric_limits<double>::epsilon()*bottom_depth)
+        return false;
+
+      // compare lon/lat
+      if (!Utilities::polygon_contains_point<dim>(corners, Point<2>(ellipsoidal_point[0]*rad_to_degree,ellipsoidal_point[1]*rad_to_degree)))
+        return false;
+
+      return true;
     }
   }
 }

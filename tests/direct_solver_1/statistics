@@ -1,18 +1,18 @@
 # 1: Time step number
 # 2: Time (seconds)
-# 3: Number of mesh cells
-# 4: Number of Stokes degrees of freedom
-# 5: Number of temperature degrees of freedom
-# 6: Iterations for temperature solver
-# 7: Time step size (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
 # 8: Visualization file name
-0 0.000000000000e+00 1024 9539 4225  0 7.262219064189e+14 output-direct_solver_1/solution-00000 
-1 7.262219064189e+14 1024 9539 4225 24 6.930293884906e+14 output-direct_solver_1/solution-00001 
-2 1.419251294910e+15 1024 9539 4225 18 6.828818293699e+14 output-direct_solver_1/solution-00002 
-3 2.102133124279e+15 1024 9539 4225 19 6.825877446698e+14 output-direct_solver_1/solution-00003 
-4 2.784720868949e+15 1024 9539 4225 17 6.830024344539e+14 output-direct_solver_1/solution-00004 
-5 3.467723303403e+15 1024 9539 4225 18 6.864477846427e+14 output-direct_solver_1/solution-00005 
-6 4.154171088046e+15 1024 9539 4225 17 6.922687150331e+14 output-direct_solver_1/solution-00006 
-7 4.846439803079e+15 1024 9539 4225 16 7.009792517281e+14 output-direct_solver_1/solution-00007 
-8 5.547419054807e+15 1024 9539 4225 16 4.525809451929e+14 output-direct_solver_1/solution-00008 
-9 6.000000000000e+15 1024 9539 4225 13 7.182833681106e+14 output-direct_solver_1/solution-00009 
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225  0 output-direct_solver_1/solution/solution-00000 
+1 7.262219064360e+14 7.262219064360e+14 1024 9539 4225 24 output-direct_solver_1/solution/solution-00001 
+2 1.442898801359e+15 7.166768949226e+14 1024 9539 4225 19 output-direct_solver_1/solution/solution-00002 
+3 2.149754846973e+15 7.068560456144e+14 1024 9539 4225 19 output-direct_solver_1/solution/solution-00003 
+4 2.854141402429e+15 7.043865554558e+14 1024 9539 4225 18 output-direct_solver_1/solution/solution-00004 
+5 3.554543471050e+15 7.004020686214e+14 1024 9539 4225 19 output-direct_solver_1/solution/solution-00005 
+6 4.253535014010e+15 6.989915429603e+14 1024 9539 4225 17 output-direct_solver_1/solution/solution-00006 
+7 4.950362826251e+15 6.968278122403e+14 1024 9539 4225 16 output-direct_solver_1/solution/solution-00007 
+8 5.645525447153e+15 6.951626209018e+14 1024 9539 4225 16 output-direct_solver_1/solution/solution-00008 
+9 6.000000000000e+15 3.544745528474e+14 1024 9539 4225 11 output-direct_solver_1/solution/solution-00009 

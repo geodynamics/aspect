@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -174,38 +174,6 @@ namespace aspect
     }
 
     template <int dim>
-    double
-    Multicomponent<dim>::
-    reference_density () const
-    {
-      return densities[0];  //background
-    }
-
-    template <int dim>
-    double
-    Multicomponent<dim>::
-    reference_thermal_expansion_coefficient () const
-    {
-      return thermal_expansivities[0]; //background
-    }
-
-    template <int dim>
-    double
-    Multicomponent<dim>::
-    reference_cp () const
-    {
-      return specific_heats[0]; //background
-    }
-
-    template <int dim>
-    double
-    Multicomponent<dim>::
-    reference_thermal_diffusivity () const
-    {
-      return thermal_conductivities[0] /( densities[0]* specific_heats[0] ); //background
-    }
-
-    template <int dim>
     bool
     Multicomponent<dim>::
     is_compressible () const
@@ -241,7 +209,7 @@ namespace aspect
                              "If only one value is given, then all use the same value. Units: $1/K$");
           prm.declare_entry ("Specific heats", "1250.",
                              Patterns::List(Patterns::Double(0)),
-                             "List of specific heats for background mantle and compositional fields,"
+                             "List of specific heats $C_p$ for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
                              "If only one value is given, then all use the same value. Units: $J /kg /K$");
           prm.declare_entry ("Thermal conductivities", "4.7",

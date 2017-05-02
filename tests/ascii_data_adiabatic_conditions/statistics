@@ -1,0 +1,23 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: RMS velocity (m/year)
+# 12: Max. velocity (m/year)
+# 13: Minimal temperature (K)
+# 14: Average temperature (K)
+# 15: Maximal temperature (K)
+# 16: Average nondimensional temperature (K)
+# 17: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 18: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 19: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 20: Outward heat flux through boundary with indicator 3 ("top") (W)
+# 21: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 16 187 81 0  2  3  2 1.24722236e-12 3.22420443e-12 3.00000000e+00 3.50000000e+00 4.00000000e+00 5.00000000e-01 4.79385355e-15 7.98975592e-15 -4.70000000e+00 4.70000000e+00 output-ascii_data_adiabatic_conditions/solution/solution-00000 
+1 1.000000000000e+06 1.000000000000e+06 16 187 81 0 22 23 23 8.28486737e-15 1.50173850e-14 3.00000000e+00 3.50000000e+00 4.00000000e+00 5.00000000e-01 4.79385355e-15 7.98975592e-15 -4.70000000e+00 4.70000000e+00                                                             "" 

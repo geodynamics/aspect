@@ -16,7 +16,7 @@ subsection Gravity model
   set Model name = vertical
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = perturbed box
 end
 

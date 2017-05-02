@@ -1,4 +1,4 @@
-# This test is based on sol_cx_tracers and tests
+# This test is based on sol_cx_particles and tests
 # the particle count statistics postprocessor that outputs
 # the minimum, average and maximum number of particles per cell
 # in the domain.
@@ -67,7 +67,7 @@ subsection Gravity model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = perturbed box
 
 end
@@ -87,8 +87,6 @@ end
 
 
 subsection Model settings
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false # default: true
 
 
   set Fixed temperature boundary indicators   = 0, 1
@@ -102,14 +100,14 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = tracers, particle count statistics
+  set List of postprocessors = particles, particle count statistics
 
   subsection Depth average
     set Time between graphical output = 100
   end
 
-  subsection Tracers
-    set Number of tracers = 1000
+  subsection Particles
+    set Number of particles = 1000
     set Time between data output = 1
     set Data output format = none
   end

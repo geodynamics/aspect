@@ -1,5 +1,7 @@
+!TIME 0
+!TIME 1
 !NBLOCKS 2
-solution-00000.0000.vtu
-solution-00000.0001.vtu
-solution-00001.0000.vtu
-solution-00001.0001.vtu
+solution/solution-00000.0000.vtu
+solution/solution-00000.0001.vtu
+solution/solution-00001.0000.vtu
+solution/solution-00001.0001.vtu

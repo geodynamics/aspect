@@ -1,5 +1,5 @@
 #include <aspect/material_model/simple.h>
-#include <aspect/velocity_boundary_conditions/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
@@ -622,7 +622,7 @@ namespace aspect
          * Incompressibility does not necessarily imply that the density is
          * constant; rather, it may still depend on temperature or pressure.
          * In the current context, compressibility means whether we should
-         * solve the contuity equation as $\nabla \cdot (\rho \mathbf u)=0$
+         * solve the continuity equation as $\nabla \cdot (\rho \mathbf u)=0$
          * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
          * (incompressible Stokes).
          */
@@ -636,15 +636,6 @@ namespace aspect
          * @{
          */
         virtual double reference_viscosity () const;
-
-        virtual double reference_density () const;
-
-        virtual double reference_thermal_expansion_coefficient () const;
-
-//TODO: should we make this a virtual function as well? where is it used?
-        double reference_thermal_diffusivity () const;
-
-        double reference_cp () const;
         /**
          * @}
          */
@@ -678,21 +669,6 @@ namespace aspect
       return 1;
     }
 
-    template <int dim>
-    double
-    SolKzMaterial<dim>::
-    reference_density () const
-    {
-      return 0;
-    }
-
-    template <int dim>
-    double
-    SolKzMaterial<dim>::
-    reference_thermal_expansion_coefficient () const
-    {
-      return 0;
-    }
 
     template <int dim>
     double
@@ -705,13 +681,6 @@ namespace aspect
       return 0;
     }
 
-    template <int dim>
-    double
-    SolKzMaterial<dim>::
-    reference_cp () const
-    {
-      return 0;
-    }
 
     template <int dim>
     double
@@ -724,13 +693,6 @@ namespace aspect
       return 0;
     }
 
-    template <int dim>
-    double
-    SolKzMaterial<dim>::
-    reference_thermal_diffusivity () const
-    {
-      return 0;
-    }
 
     template <int dim>
     double

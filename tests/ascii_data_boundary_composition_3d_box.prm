@@ -17,7 +17,7 @@ subsection Geometry model
   end
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = adiabatic
   subsection Adiabatic
     set Amplitude = 300
@@ -52,8 +52,6 @@ subsection Model settings
 
   set Tangential velocity boundary indicators = 
 
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
 end
 
 

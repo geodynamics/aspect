@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -38,13 +38,6 @@ namespace aspect
       return eta_0;
     }
 
-    template <int dim>
-    double
-    MeltGlobal<dim>::
-    reference_density () const
-    {
-      return reference_rho_s;
-    }
 
     template <int dim>
     bool
@@ -134,7 +127,7 @@ namespace aspect
           // calculate density first, we need it for the reaction term
           // temperature dependence of density is 1 - alpha * (T - T(adiabatic))
           double temperature_dependence = 1.0;
-          if (this->include_adiabatic_heating () && this->get_adiabatic_conditions().is_initialized())
+          if (this->include_adiabatic_heating ())
             temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]))
                                       * thermal_expansivity;
           else
@@ -202,7 +195,7 @@ namespace aspect
           out.compressibilities[i] = 0.0;
 
           double visc_temperature_dependence = 1.0;
-          if (this->include_adiabatic_heating () && this->get_adiabatic_conditions().is_initialized())
+          if (this->include_adiabatic_heating ())
             {
               const double delta_temp = in.temperature[i]-this->get_adiabatic_conditions().temperature(in.position[i]);
               visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])),1e4),1e-4);
@@ -232,7 +225,7 @@ namespace aspect
 
               // temperature dependence of density is 1 - alpha * (T - T(adiabatic))
               double temperature_dependence = 1.0;
-              if (this->include_adiabatic_heating () && this->get_adiabatic_conditions().is_initialized())
+              if (this->include_adiabatic_heating ())
                 temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]))
                                           * thermal_expansivity;
               else
@@ -243,7 +236,7 @@ namespace aspect
               melt_out->compaction_viscosities[i] = xi_0 * exp(- alpha_phi * porosity);
 
               double visc_temperature_dependence = 1.0;
-              if (this->include_adiabatic_heating () && this->get_adiabatic_conditions().is_initialized())
+              if (this->include_adiabatic_heating ())
                 {
                   const double delta_temp = in.temperature[i]-this->get_adiabatic_conditions().temperature(in.position[i]);
                   visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])),1e4),1e-4);
@@ -312,7 +305,7 @@ namespace aspect
                              "Units: $W/m/K$.");
           prm.declare_entry ("Reference specific heat", "1250",
                              Patterns::Double (0),
-                             "The value of the specific heat $cp$. "
+                             "The value of the specific heat $C_p$. "
                              "Units: $J/kg/K$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),

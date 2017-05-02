@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__postprocess_basic_statistics_h
-#define __aspect__postprocess_basic_statistics_h
+#ifndef _aspect_postprocess_basic_statistics_h
+#define _aspect_postprocess_basic_statistics_h
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
@@ -31,7 +31,17 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes some simplified statistics.
+     * A postprocessor that outputs some simplified statistics
+     * like the Rayleigh number and other quantities that only
+     * make sense in certain model setups. The output is written
+     * after completing initial adaptive refinement steps.
+     * The postprocessor assumes a point at the surface at the adiabatic
+     * surface temperature and pressure is a reasonable reference condition
+     * for computing these properties. Furthermore, the Rayleigh
+     * number is computed using the model depth (i.e. not the
+     * radius of the Earth), as we need a definition that is geometry
+     * independent. Take care when comparing these values to published
+     * studies and make sure they use the same definitions.
      *
      * @ingroup Postprocessing
      */

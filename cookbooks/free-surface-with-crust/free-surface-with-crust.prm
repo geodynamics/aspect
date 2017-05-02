@@ -70,7 +70,7 @@ end
 
 # Our temperature initial conditions are simply a blob of hot 
 # rock in the center of the domain
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function 
     set Variable names      = x,y
@@ -113,8 +113,6 @@ end
 # boundary conditions, as well as free slip boundary
 # conditions for the sides and bottom. 
 subsection Model settings
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
   set Fixed temperature boundary indicators   = 0,1,2,3
   set Prescribed velocity boundary indicators =
   set Tangential velocity boundary indicators = 0,1,2

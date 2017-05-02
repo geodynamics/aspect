@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -93,7 +93,7 @@ namespace aspect
             for (unsigned int j=0; j < volume_fractions.size(); ++j)
               np += volume_fractions[j] * nps[j];
 
-            const double tauy = tau_0 + gamma*reference_density()*g*depth;
+            const double tauy = tau_0 + gamma*densities[0]*g*depth;
 
             /**
              * Note: The actual second invariant of strain rate is defined as $e_{00}e_{11} - e_{01}^2$,
@@ -109,7 +109,7 @@ namespace aspect
             double one_over_veffv = 0.0;
             if (temperature != 0.0)
               one_over_veffv = 1.0 / (B * std::pow(edot/ref_strain_rate, -1.0+1.0/nv))
-                               * std::exp(-(activation_energy+activation_volume*reference_density()*g*depth)/(nv*R*temperature));
+                               * std::exp(-(activation_energy+activation_volume*densities[0]*g*depth)/(nv*R*temperature));
             const double one_over_veffp = 1.0 / (tauy * (std::pow(edot, -1.0+1.0/np) / std::pow(ref_strain_rate, 1.0/np)));
             // Effective viscosity = harmonic mean of diffusion and dislocation creep.
             // = (1/(v_eff^v) + 1/(v_eff^p))^-1
@@ -165,14 +165,6 @@ namespace aspect
     }
 
     template <int dim>
-    double
-    MorencyDoin<dim>::
-    reference_density () const
-    {
-      return densities[0];
-    }
-
-    template <int dim>
     bool
     MorencyDoin<dim>::
     is_compressible () const
@@ -214,7 +206,7 @@ namespace aspect
                              "for a total of N+1 values, where N is the number of compositional fields."
                              "If only one values is given, then all use the same value.  Units: None");
           prm.declare_entry ("Thermal diffusivity", "0.8e-6", Patterns::Double(0), "Units: $m^2/s$");
-          prm.declare_entry ("Heat capacity", "1.25e3", Patterns::Double(0), "Units: $J / (K * kg)$");
+          prm.declare_entry ("Heat capacity", "1.25e3", Patterns::Double(0), "Units: $J/kg/K$");
           prm.declare_entry ("Activation volume", "6.4e-6", Patterns::Double(0), "($V_a$). Units: $m^3 / mol$");
           prm.declare_entry ("Reference strain rate", "6.4e-16", Patterns::Double(0), "($\\dot{\\epsilon}_{ref}$). Units: $1 / s$");
           prm.declare_entry ("Preexponential constant for viscous rheology law", "1.24e14", Patterns::Double(0), "($B$). Units: None");

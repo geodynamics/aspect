@@ -2,7 +2,7 @@ set Dimension = 2
 set CFL number                             = 1.0
 set End time                               = 0
 set Start time                             = 0
-set Adiabatic surface temperature          = 0
+set Adiabatic surface temperature          = 1.0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
 set Nonlinear solver scheme                = IMPES
@@ -33,7 +33,7 @@ subsection Compositional fields
   set Number of fields          = 2
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
 
   subsection Function
@@ -43,7 +43,7 @@ subsection Compositional initial conditions
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = perturbed box
 end
 

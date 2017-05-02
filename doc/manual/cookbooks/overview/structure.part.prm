@@ -2,7 +2,7 @@ set Dimension                     = 2
 set Resume computation            = false
 set End time                      = 1e10
 set CFL number                    = 1.0
-set Output directory              = bin
+set Output directory              = output
 
 subsection Mesh refinement
   set Initial adaptive refinement = 1

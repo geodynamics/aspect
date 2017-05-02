@@ -1,0 +1,13 @@
+subsection Postprocess
+  set List of postprocessors = visualization, particles
+
+  subsection Visualization
+    set Time between graphical output = 0.1
+  end
+
+  subsection Particles
+    set Number of particles        = 1000
+    set Time between data output = 0.1
+    set Data output format       = vtu
+  end
+end

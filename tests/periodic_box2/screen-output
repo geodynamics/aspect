@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.3.pre
---     . running in DEBUG mode
---     . running with 2 MPI processes
---     . using Trilinos
------------------------------------------------------------------------------
 
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
@@ -12,7 +5,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+4 iterations.
+   Solving Stokes system... 61+0 iterations.
 
 Number of active cells: 472 (on 7 levels)
 Number of degrees of freedom: 7,181 (4,408+569+2,204)
@@ -20,90 +13,92 @@ Number of degrees of freedom: 7,181 (4,408+569+2,204)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+4 iterations.
+   Solving Stokes system... 59+0 iterations.
 
    Postprocessing:
 
-     Reference density (kg/m^3):                    3300
-     Reference gravity (m/s^2):                     10
-     Reference thermal expansion (1/K):             4e-05
-     Temperature contrast across model domain (K):  0
      Model domain depth (m):                        500000
+     Temperature contrast across model domain (K):  0
+     Reference depth (m):                           0
+     Reference temperature (K):                     0
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     10
+     Reference density (kg/m^3):                    3300
+     Reference thermal expansion coefficient (1/K): 4e-05
+     Reference specific heat capacity (J/(K*kg)):   1250
+     Reference thermal conductivity (W/(m*K)):      4.7
+     Reference viscosity (Pa*s):                    1e+20
      Reference thermal diffusivity (m^2/s):         1.13939e-06
-     Reference viscosity (Pas):                     1e+20
-     Ra number:                                     0
-     k_value:                                       4.7
-     reference_cp:                                  1250
-     reference_thermal_diffusivity:                 1.13939e-06
+     Rayleigh number:                               0
 
      RMS, max velocity: 398 m/year, 1.77e+03 m/year
 
 *** Timestep 1:  t=4.40698 years
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 398 m/year, 1.77e+03 m/year
 
 *** Timestep 2:  t=8.81395 years
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 398 m/year, 1.77e+03 m/year
 
 *** Timestep 3:  t=13.2209 years
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 398 m/year, 1.77e+03 m/year
 
 *** Timestep 4:  t=17.6278 years
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 398 m/year, 1.77e+03 m/year
 
 *** Timestep 5:  t=22.0347 years
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 398 m/year, 1.77e+03 m/year
 
 *** Timestep 6:  t=26.4416 years
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 398 m/year, 1.77e+03 m/year
 
 *** Timestep 7:  t=30.8485 years
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 398 m/year, 1.77e+03 m/year
 
 *** Timestep 8:  t=35.2554 years
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 398 m/year, 1.77e+03 m/year
 
 *** Timestep 9:  t=39.6622 years
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 398 m/year, 1.77e+03 m/year
 
 *** Timestep 10:  t=44.0691 years
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 398 m/year, 1.77e+03 m/year
@@ -115,20 +110,6 @@ Termination requested by criterion: end step
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      6.32s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        12 |      1.18s |        19% |
-| Assemble temperature system     |        12 |      1.38s |        22% |
-| Build Stokes preconditioner     |         2 |     0.609s |       9.6% |
-| Build temperature preconditioner|        12 |    0.0325s |      0.51% |
-| Solve Stokes system             |        12 |      1.12s |        18% |
-| Solve temperature system        |        12 |      0.04s |      0.63% |
-| Initialization                  |         3 |    0.0682s |       1.1% |
-| Postprocessing                  |        11 |    0.0523s |      0.83% |
-| Refine mesh structure, part 1   |         2 |      1.09s |        17% |
-| Refine mesh structure, part 2   |         2 |    0.0126s |       0.2% |
-| Setup dof systems               |         3 |     0.539s |       8.5% |
 +---------------------------------+-----------+------------+------------+
 

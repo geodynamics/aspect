@@ -1,0 +1,16 @@
+Changed: The global statistics information (time, timestep, degrees of
+freedom, solver iterations), is now written at one point in a new
+postprocessor 'global_statistics' instead of wherever they happened
+to be available. This allows to control the order and format of the
+columns in the statistics file, and fixes a bug in the statistics file,
+in which data from later timesteps was written into lines
+of previous timesteps in case of nonlinear solver schemes. Additionally,
+the postprocessor by default now outputs only a single line per 
+timestep also for nonlinear solver schemes. To restore the previous
+behavior (one line per nonlinear iteration) there is a new input
+parameter "Postprocess/Global statistics/Write statistics for each nonlinear
+iteration". A consequence of this change is that statistics about
+the initial refinement steps is only written if the "Mesh refinement/
+Run postprocessors on initial refinement" parameter is set to true.
+<br>
+(Juliane Dannberg, Rene Gassmoeller, 2017/04/14)

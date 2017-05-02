@@ -1,0 +1,36 @@
+
+Number of active cells: 4 (on 2 levels)
+Number of degrees of freedom: 120 (50+9+36+25)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+      
+Total system matrix memory consumption: 0.04 MB.
+Total system matrix nnz: 1,773
+system matrix nnz by block: 
+         288         112           0           0
+         112           0           0           0
+           0           0         972           0
+           0           0           0         289
+
+Total system preconditioner matrix memory consumption: 0.04 MB.
+Total system preconditioner matrix nnz: 1,472
+system preconditioner matrix nnz by block: 
+         162           0           0           0
+           0          49           0           0
+           0           0         972           0
+           0           0           0         289
+
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -18,13 +18,15 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_particle_h
-#define __aspect__particle_particle_h
+#ifndef _aspect_particle_particle_h
+#define _aspect_particle_particle_h
 
 #include <aspect/global.h>
+#include <aspect/particle/property_pool.h>
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/types.h>
+#include <deal.II/base/array_view.h>
 
 #include <boost/serialization/vector.hpp>
 
@@ -33,6 +35,7 @@ namespace aspect
   namespace Particle
   {
     using namespace dealii;
+
     /**
      * A namespace for all type definitions related to particles.
      */
@@ -50,12 +53,12 @@ namespace aspect
 
 #ifdef DEAL_II_WITH_64BIT_INDICES
       /**
-       * The type used for indices of tracers. While in
+       * The type used for indices of particles. While in
        * sequential computations the 4 billion indices of 32-bit unsigned integers
        * is plenty, parallel computations using hundreds of processes can overflow
        * this number and we need a bigger index space. We here utilize the same
        * build variable that controls the dof indices of deal.II because the number
-       * of degrees of freedom and the number of tracers are typically on the same
+       * of degrees of freedom and the number of particles are typically on the same
        * order of magnitude.
        *
        * The data type always indicates an unsigned integer type.
@@ -66,15 +69,15 @@ namespace aspect
        * An identifier that denotes the MPI type associated with
        * types::global_dof_index.
        */
-#  define ASPECT_TRACER_INDEX_MPI_TYPE MPI_UNSIGNED_LONG_LONG
+#  define ASPECT_PARTICLE_INDEX_MPI_TYPE MPI_UNSIGNED_LONG_LONG
 #else
       /**
-       * The type used for indices of tracers. While in
+       * The type used for indices of particles. While in
        * sequential computations the 4 billion indices of 32-bit unsigned integers
        * is plenty, parallel computations using hundreds of processes can overflow
        * this number and we need a bigger index space. We here utilize the same
        * build variable that controls the dof indices of deal.II because the number
-       * of degrees of freedom and the number of tracers are typically on the same
+       * of degrees of freedom and the number of particles are typically on the same
        * order of magnitude.
        *
        * The data type always indicates an unsigned integer type.
@@ -85,7 +88,7 @@ namespace aspect
        * An identifier that denotes the MPI type associated with
        * types::global_dof_index.
        */
-#  define ASPECT_TRACER_INDEX_MPI_TYPE MPI_UNSIGNED
+#  define ASPECT_PARTICLE_INDEX_MPI_TYPE MPI_UNSIGNED
 #endif
     }
 
@@ -114,11 +117,23 @@ namespace aspect
          * does not check for duplicate particle IDs so the generator must
          * make sure the IDs are unique over all processes.
          *
-         * @param[in] new_loc Initial location of particle.
+         * @param[in] new_location Initial location of particle.
+         * @param[in] new_reference_location Initial location of the particle
+         * in the coordinate system of the reference cell.
          * @param[in] new_id Globally unique ID number of particle.
          */
-        Particle (const Point<dim> &new_loc,
-                  const types::particle_index &new_id);
+        Particle (const Point<dim> &new_location,
+                  const Point<dim> &new_reference_location,
+                  const types::particle_index new_id);
+
+        /**
+         * Copy-Constructor for Particle, creates a particle with exactly the
+         * state of the input argument. Note that since each particle has a
+         * handle for a certain piece of the property memory, and is responsible
+         * for registering and freeing this memory in the property pool this
+         * constructor registers a new chunk, and copies the properties.
+         */
+        Particle (const Particle<dim> &particle);
 
         /**
          * Constructor for Particle, creates a particle from a data vector.
@@ -126,35 +141,42 @@ namespace aspect
          * different process.
          *
          * @param[in,out] begin_data A pointer to a memory location from which
-         * to read the information that completely describes a particle.
-         * This class then de-serializes its data from this memory location,
-         * using @p data_size as the length of the memory block from which to
-         * read the data. @p begin_data is advanced by @p data_size bytes in
-         * this constructor.
-
-         * @param[in] data_size Size in bytes of the begin_data array
-         * that will be read in by this particle.
+         * to read the information that completely describes a particle. This
+         * class then de-serializes its data from this memory location and
+         * advance the pointer accordingly.
+         *
+         * @param[in,out] new_property_pool A property pool that is used to
+         * allocate the property data used by this particle.
          */
         Particle (const void *&begin_data,
-                  const unsigned int data_size);
+                  PropertyPool &new_property_pool);
 
+#ifdef DEAL_II_WITH_CXX11
         /**
-         * Destructor for Particle
+         * Move constructor for Particle, creates a particle from an existing
+         * one by stealing its state.
          */
-        virtual
-        ~Particle ();
+        Particle (Particle<dim> &&particle);
 
         /**
-          * Resize the properties member variable to hold the number of doubles
-          * required to represent this particle's properties. This function
-          * is called by the PropertyManager class to prepare this particle
-          * for the initialization of its properties.
-          *
-          * @param [in] n_components Number of additional property components
-          * that this particle holds.
-          */
-        void
-        set_n_property_components (const unsigned int n_components);
+         * Copy assignment operator.
+         */
+        Particle<dim> &operator=(const Particle<dim> &particle);
+
+        /**
+         * Move assignment operator.
+         */
+        Particle<dim> &operator=(Particle<dim> &&particle);
+#endif
+
+        /**
+         * Destructor. Releases the property handle if it is valid, and
+         * therefore frees that memory space for other particles. (Note:
+         * the memory is managed by the property_pool, and the memory is not
+         * deallocated by this function, it is kept in reserve for other
+         * particles).
+         */
+        ~Particle ();
 
         /**
          * Write particle data into a data array. The array is expected
@@ -190,6 +212,23 @@ namespace aspect
         get_location () const;
 
         /**
+         * Set the reference location of this particle. Note that this does not
+         * check whether this is a valid location in the simulation domain.
+         *
+         * @param [in] new_loc The new reference location for this particle.
+         */
+        void
+        set_reference_location (const Point<dim> &new_loc);
+
+        /**
+         * Get the reference location of this particle in its current cell.
+         *
+         * @return The reference location of this particle.
+         */
+        const Point<dim> &
+        get_reference_location () const;
+
+        /**
          * Get the ID number of this particle.
          *
          * @return The id of this particle.
@@ -198,9 +237,20 @@ namespace aspect
         get_id () const;
 
         /**
+         * Tell the particle where to store its properties (even if it does not
+         * own properties). Usually this is only done once per particle, but
+         * since the particle generator does not know about the properties
+         * we want to do it not at construction time. Another use for this
+         * function is after particle transfer to a new process.
+         */
+        void
+        set_property_pool(PropertyPool &property_pool);
+
+        /**
          * Set the properties of this particle.
          *
-         * @param [in] new_properties The new properties for this particle.
+         * @param [in] new_properties A vector containing the
+         * new properties for this particle.
          */
         void
         set_properties (const std::vector<double> &new_properties);
@@ -208,17 +258,17 @@ namespace aspect
         /**
          * Get write-access to properties of this particle.
          *
-         * @return The properties of this particle.
+         * @return An ArrayView of the properties of this particle.
          */
-        std::vector<double> &
+        const ArrayView<double>
         get_properties ();
 
         /**
-         * Get the properties of this particle.
+         * Get read-access to properties of this particle.
          *
-         * @return The properties of this particle.
+         * @return An ArrayView of the properties of this particle.
          */
-        const std::vector<double> &
+        const ArrayView<const double>
         get_properties () const;
 
         /**
@@ -234,14 +284,27 @@ namespace aspect
         Point<dim>             location;
 
         /**
+         * Current particle location in the reference cell.
+         * Storing this reduces the number of times we need to compute this
+         * location, which takes a significant amount of computing time.
+         */
+        Point<dim>             reference_location;
+
+        /**
          * Globally unique ID of particle
          */
         types::particle_index  id;
 
         /**
-         * The vector of all tracer properties
+         * A pointer to the property pool. Necessary to translate from the
+         * handle to the actual memory locations.
          */
-        std::vector<double>    properties;
+        PropertyPool *property_pool;
+
+        /**
+         * A handle to all particle properties
+         */
+        PropertyPool::Handle properties;
     };
 
     /* -------------------------- inline and template functions ---------------------- */

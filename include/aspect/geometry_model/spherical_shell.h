@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2014, 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,11 +19,14 @@
 */
 
 
-#ifndef __aspect__geometry_model_spherical_shell_h
-#define __aspect__geometry_model_spherical_shell_h
+#ifndef _aspect_geometry_model_spherical_shell_h
+#define _aspect_geometry_model_spherical_shell_h
 
 #include <aspect/geometry_model/interface.h>
+#include <aspect/simulator_access.h>
 
+#include <deal.II/grid/tria_boundary_lib.h>
+#include <deal.II/grid/manifold_lib.h>
 
 namespace aspect
 {
@@ -42,7 +45,7 @@ namespace aspect
      * angle of the section of the shell we want to build.
      */
     template <int dim>
-    class SphericalShell : public Interface<dim>
+    class SphericalShell : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -117,6 +120,15 @@ namespace aspect
         has_curved_elements() const;
 
         /**
+         * Return whether the given point lies within the domain specified
+         * by the geometry. This function does not take into account
+         * initial or dynamic surface topography.
+         */
+        virtual
+        bool
+        point_is_in_domain(const Point<dim> &p) const;
+
+        /**
          * Declare the parameters this class takes through input files. The
          * default implementation of this function does not describe any
          * parameters. Consequently, derived classes do not have to overload
@@ -154,7 +166,7 @@ namespace aspect
         double
         opening_angle () const;
 
-      public:
+      private:
         /**
          * Inner and outer radii of the spherical shell.
          */
@@ -169,6 +181,35 @@ namespace aspect
          * Number of tangential mesh cells in the initial, coarse mesh.
          */
         int n_cells_along_circumference;
+
+        /**
+         * The manifold that describes the geometry.
+         */
+        const SphericalManifold<dim> spherical_manifold;
+
+        /**
+         * Set the manifold ids on all cells (also boundaries) before
+         * refinement to generate well shaped cells.
+         */
+        void set_manifold_ids (parallel::distributed::Triangulation<dim> &triangulation) const;
+
+#if !DEAL_II_VERSION_GTE(9,0,0)
+        /**
+         * Clear manifold ids from boundaries after refinement so that
+         * the boundary objects can take over for versions of deal.II,
+         * in which manifolds could not provide the normal vectors that
+         * are necessary at boundaries.
+         */
+        void clear_manifold_ids (parallel::distributed::Triangulation<dim> &triangulation) const;
+
+        /**
+         * Boundary objects that are required until deal.II 9.0,
+         * because the manifold could not provide normal vectors
+         * up to this version.
+         */
+        const HyperShellBoundary<dim> boundary_shell;
+        const StraightBoundary<dim> straight_boundary;
+#endif
     };
   }
 }

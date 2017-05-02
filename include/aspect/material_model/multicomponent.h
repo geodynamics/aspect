@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -18,9 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
-#ifndef __aspect__model_multicomponent_h
-#define __aspect__model_multicomponent_h
+#ifndef _aspect_material_model_multicomponent_h
+#define _aspect_material_model_multicomponent_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
@@ -91,14 +90,6 @@ namespace aspect
          * @{
          */
         virtual double reference_viscosity () const;
-
-        virtual double reference_density () const;
-
-        virtual double reference_thermal_expansion_coefficient () const;
-
-        double reference_thermal_diffusivity () const;
-
-        double reference_cp () const;
         /**
          * @}
          */
@@ -145,11 +136,11 @@ namespace aspect
         double reference_T;
 
         /**
-        * Enumeration for selecting which averaging scheme to use.
-        * Select between harmonic, arithmetic, geometric, and
-        * maximum_composition.  The max composition scheme simply uses the
-        * parameter of whichever field has the highest volume fraction.
-        */
+         * Enumeration for selecting which averaging scheme to use. Select
+         * between harmonic, arithmetic, geometric, and maximum_composition.
+         * The max composition scheme simply uses the parameter of whichever
+         * field has the highest volume fraction.
+         */
         enum AveragingScheme
         {
           harmonic,

@@ -29,8 +29,6 @@ subsection Geometry model
 end
 
 subsection Model settings
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
   set Tangential velocity boundary indicators = front,back 
   set Prescribed velocity boundary indicators = left: function, right:function, bottom:function
   set Free surface boundary indicators        = top
@@ -87,7 +85,7 @@ subsection Boundary temperature model
   set Model name = box
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
 
   subsection Function
@@ -122,7 +120,7 @@ end
 # velocity field.
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, topography, pressure statistics, velocity statistics
+  set List of postprocessors = visualization, velocity statistics, topography, pressure statistics
   subsection Visualization
     set List of output variables = density, viscosity, strain rate, error indicator, partition
     set Time between graphical output = 0

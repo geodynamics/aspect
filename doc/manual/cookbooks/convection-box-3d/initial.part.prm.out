@@ -1,9 +1,0 @@
-subsection %%\hyperref[parameters:Initial_20conditions]{Initial conditions}%
-  set %%\hyperref[parameters:Initial conditions/Model name]{Model name}% = function%% \index[prmindex]{Model name} \index[prmindexfull]{Initial conditions!Model name} %
-
-  subsection %%\hyperref[parameters:Initial_20conditions/Function]{Function}%
-    set %%\hyperref[parameters:Initial conditions/Function/Variable names]{Variable names}%      = x,y,z%% \index[prmindex]{Variable names} \index[prmindexfull]{Initial conditions!Function!Variable names} %
-    set %%\hyperref[parameters:Initial conditions/Function/Function constants]{Function constants}%  = p=0.01, L=1, pi=3.1415926536, k=1%% \index[prmindex]{Function constants} \index[prmindexfull]{Initial conditions!Function!Function constants} %
-    set %%\hyperref[parameters:Initial conditions/Function/Function expression]{Function expression}% = (1.0-z) - p*cos(k*pi*x/L)*sin(pi*z)*y^3%% \index[prmindex]{Function expression} \index[prmindexfull]{Initial conditions!Function!Function expression} %
-  end
-end

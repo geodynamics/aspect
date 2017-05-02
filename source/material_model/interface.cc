@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -54,6 +54,7 @@ namespace aspect
       }
 
 
+
       ModelDependence::ModelDependence ()
         :
         viscosity (uninitialized),
@@ -65,14 +66,19 @@ namespace aspect
     }
 
 
+
     template <int dim>
     Interface<dim>::~Interface ()
     {}
+
+
 
     template <int dim>
     void
     Interface<dim>::initialize ()
     {}
+
+
 
     template <int dim>
     void
@@ -82,18 +88,11 @@ namespace aspect
 
 
     template <int dim>
-    double
-    Interface<dim>::reference_thermal_expansion_coefficient () const
-    {
-      Assert(false, ExcMessage("Implement individual functions or evaluate() in material model."));
-      return 1.0;
-    }
-
-    template <int dim>
     void
     Interface<dim>::
     declare_parameters (dealii::ParameterHandler &)
     {}
+
 
 
     template <int dim>
@@ -165,18 +164,6 @@ namespace aspect
     }
 
 
-    template <int dim>
-    double
-    Interface<dim>::
-    viscosity_ratio (const double,
-                     const double,
-                     const std::vector<double> &,
-                     const SymmetricTensor<2,dim> &,
-                     const Point<dim> &) const
-    {
-      return 1.0;
-    }
-
 
     template <int dim>
     const NonlinearDependence::ModelDependence &
@@ -210,16 +197,6 @@ namespace aspect
       return -1.0;
     }
 
-
-    template <int dim>
-    unsigned int
-    Interface<dim>::
-    thermodynamic_phase (const double,
-                         const double,
-                         const std::vector<double> & /*composition*/) const
-    {
-      return 0;
-    }
 
 
     template <int dim>

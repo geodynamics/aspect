@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_generator_interface_h
-#define __aspect__particle_generator_interface_h
+#ifndef _aspect_particle_generator_interface_h
+#define _aspect_particle_generator_interface_h
 
 #include <aspect/particle/particle.h>
 #include <aspect/plugins.h>
@@ -74,6 +74,15 @@ namespace aspect
            * and destroyed through pointers to the base class.
            */
           virtual ~Interface ();
+
+          /**
+           * Initialization function. This function is called once at the
+           * beginning of the program after parse_parameters is run and after
+           * the SimulatorAccess (if applicable) is initialized.
+           */
+          virtual
+          void
+          initialize ();
 
           /**
            * Generate particles. Every derived class

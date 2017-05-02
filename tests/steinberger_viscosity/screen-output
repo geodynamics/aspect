@@ -1,0 +1,35 @@
+
+Number of active cells: 192 (on 4 levels)
+Number of degrees of freedom: 2,724 (1,666+225+833)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 24+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-steinberger_viscosity/solution/solution-00000
+     RMS, max velocity:                  0.581 m/year, 1.12 m/year
+     Temperature min/avg/max:            273 K, 2254 K, 4250 K
+     Heat fluxes through boundary parts: -2.328e+05 W, 5.39e+05 W, 2170 W, 2170 W
+     Writing depth average:              output-steinberger_viscosity/depth_average.gnuplot
+
+*** Timestep 1:  t=100000 years
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 21+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-steinberger_viscosity/solution/solution-00001
+     RMS, max velocity:                  0.575 m/year, 1.11 m/year
+     Temperature min/avg/max:            273 K, 2252 K, 4250 K
+     Heat fluxes through boundary parts: -2.207e+05 W, 5.146e+05 W, 1930 W, 1930 W
+     Writing depth average:              output-steinberger_viscosity/depth_average.gnuplot
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

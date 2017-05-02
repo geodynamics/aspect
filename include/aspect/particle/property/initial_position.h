@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_property_initial_position_h
-#define __aspect__particle_property_initial_position_h
+#ifndef _aspect_particle_property_initial_position_h
+#define _aspect_particle_property_initial_position_h
 
 #include <aspect/particle/property/interface.h>
 
@@ -30,8 +30,8 @@ namespace aspect
     namespace Property
     {
       /**
-       * A class that initializes tracer properties based on the
-       * initial position of the tracers.
+       * A class that initializes particle properties based on the
+       * initial position of the particles.
        *
        * @ingroup ParticleProperties
        */
@@ -45,13 +45,6 @@ namespace aspect
            * value.
            *
            * @param [in] position The current particle position.
-           *
-           * @param [in] solution The values of the solution variables at the
-           * current particle position.
-           *
-           * @param [in] gradients The gradients of the solution variables at
-           * the current particle position.
-           *
            * @param [in,out] particle_properties The properties of the particle
            * that is initialized within the call of this function. The purpose
            * of this function should be to extend this vector by a number of
@@ -60,21 +53,7 @@ namespace aspect
           virtual
           void
           initialize_one_particle_property (const Point<dim> &position,
-                                            const Vector<double> &solution,
-                                            const std::vector<Tensor<1,dim> > &gradients,
                                             std::vector<double> &particle_properties) const;
-
-          /**
-           * Returns an enum, which determines how this particle property is
-           * initialized for particles that are created later than the initial
-           * particle generation, e.g. to balance the particle load or prevent
-           * empty cells. The implementation of this function in the current
-           * class returns interpolate, which signals that particle properties
-           * should be interpolated from other particles in this cell.
-           */
-          virtual
-          InitializationModeForLateParticles
-          late_initialization_mode () const;
 
           /**
            * Set up the information about the names and number of components

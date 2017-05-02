@@ -7,9 +7,9 @@ Number of degrees of freedom: 268 (162+25+81)
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
-      Nonlinear Stokes residual: 0.0667217
+      Relative Stokes residual after nonlinear iteration 1: 1
    Solving Stokes system... 0+0 iterations.
-      Nonlinear Stokes residual: 4.40627e-09
+      Relative Stokes residual after nonlinear iteration 2: 6.60395e-08
 
 Number of active cells: 22 (on 4 levels)
 Number of degrees of freedom: 392 (238+35+119)
@@ -17,9 +17,9 @@ Number of degrees of freedom: 392 (238+35+119)
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 28+0 iterations.
-      Nonlinear Stokes residual: 0.0972383
+      Relative Stokes residual after nonlinear iteration 1: 1
    Solving Stokes system... 0+0 iterations.
-      Nonlinear Stokes residual: 8.84825e-09
+      Relative Stokes residual after nonlinear iteration 2: 9.09956e-08
 
 Number of active cells: 46 (on 5 levels)
 Number of degrees of freedom: 791 (482+68+241)
@@ -27,9 +27,9 @@ Number of degrees of freedom: 791 (482+68+241)
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 29+0 iterations.
-      Nonlinear Stokes residual: 0.097189
+      Relative Stokes residual after nonlinear iteration 1: 1
    Solving Stokes system... 0+0 iterations.
-      Nonlinear Stokes residual: 9.004e-09
+      Relative Stokes residual after nonlinear iteration 2: 9.26442e-08
 
    Postprocessing:
 

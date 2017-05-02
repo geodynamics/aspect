@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__free_surface_h
-#define __aspect__free_surface_h
+#ifndef _aspect_free_surface_h
+#define _aspect_free_surface_h
 
 #include <aspect/simulator.h>
 
@@ -67,6 +67,7 @@ namespace aspect
        * assemly of the system matrix.
        */
       void apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
                                 internal::Assembly::CopyData::StokesSystem<dim>      &data);
 
       /**

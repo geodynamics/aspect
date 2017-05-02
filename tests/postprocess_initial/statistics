@@ -1,16 +1,16 @@
 # 1: Time step number
 # 2: Time (seconds)
-# 3: Number of mesh cells
-# 4: Number of Stokes degrees of freedom
-# 5: Number of temperature degrees of freedom
-# 6: Number of degrees of freedom for all compositions
-# 7: Iterations for temperature solver
-# 8: Iterations for composition solver 1
-# 9: Iterations for composition solver 2
-# 10: Iterations for Stokes solver
-# 11: Velocity iterations in Stokes preconditioner
-# 12: Schur complement iterations in Stokes preconditioner
-# 13: Time step size (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for Stokes solver
+# 12: Velocity iterations in Stokes preconditioner
+# 13: Schur complement iterations in Stokes preconditioner
 # 14: Visualization file name
 # 15: Minimal temperature (K)
 # 16: Average temperature (K)
@@ -22,8 +22,8 @@
 # 22: Minimal value for composition C_2
 # 23: Maximal value for composition C_2
 # 24: Global mass for composition C_2
-0 0.000000000000e+00  64  659 289  578 0 0 0 22 23 23 1.000000000000e-15 output-postprocess_initial/solution-00000 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01  0.00000000e+00 1.00000000e+00 4.58333333e-01 0.00000000e+00 1.00000000e+00 4.58333333e-01 
-0 0.000000000000e+00  64  734 323  646 0 0 0 22 23 92 1.000000000000e-15 output-postprocess_initial/solution-00001 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01  0.00000000e+00 1.00000000e+00 3.95833333e-01 0.00000000e+00 1.00000000e+00 4.16666667e-01 
-0 0.000000000000e+00 106 1161 511 1022 0 0 0 22 23 92 1.000000000000e-15 output-postprocess_initial/solution-00002 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 -1.25000000e-01 1.00000000e+00 3.94639757e-01 0.00000000e+00 1.00000000e+00 4.16666667e-01 
-0 0.000000000000e+00 160 1755 775 1550 0 0 0 22 23 92 1.000000000000e-15 output-postprocess_initial/solution-00003 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 -1.25000000e-01 1.00000000e+00 3.86935764e-01 0.00000000e+00 1.00000000e+00 4.16666667e-01 
-1 1.000000000000e-15 160 1755 775 1550 0 0 0  0  0  0 5.550528764394e-02 output-postprocess_initial/solution-00004 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 -1.25000000e-01 1.00000000e+00 3.86935764e-01 0.00000000e+00 1.00000000e+00 4.16666667e-01 
+0 0.000000000000e+00 0.000000000000e+00  64  659 289  578 0 0 0 22 23 23 output-postprocess_initial/solution/solution-00000 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01  0.00000000e+00 1.00000000e+00 4.58333333e-01 0.00000000e+00 1.00000000e+00 4.58333333e-01 
+0 0.000000000000e+00 0.000000000000e+00  64  734 323  646 0 0 0 22 23 92 output-postprocess_initial/solution/solution-00001 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01  0.00000000e+00 1.00000000e+00 3.95833333e-01 0.00000000e+00 1.00000000e+00 4.16666667e-01 
+0 0.000000000000e+00 0.000000000000e+00 106 1161 511 1022 0 0 0 22 23 91 output-postprocess_initial/solution/solution-00002 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 -1.25000000e-01 1.00000000e+00 3.94639757e-01 0.00000000e+00 1.00000000e+00 4.16666667e-01 
+0 0.000000000000e+00 0.000000000000e+00 160 1755 775 1550 0 0 0 22 23 92 output-postprocess_initial/solution/solution-00003 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 -1.25000000e-01 1.00000000e+00 3.86935764e-01 0.00000000e+00 1.00000000e+00 4.16666667e-01 
+1 1.000000000000e-15 1.000000000000e-15 160 1755 775 1550 0 0 0  0  0  0 output-postprocess_initial/solution/solution-00004 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 -1.25000000e-01 1.00000000e+00 3.86935764e-01 0.00000000e+00 1.00000000e+00 4.16666667e-01 

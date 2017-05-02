@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -145,7 +145,7 @@ namespace aspect
       std::ostringstream output;
       output.precision(4);
       output << top_density << " kg/m^3, "
-             << bottom_density << " kg/m^3, ";
+             << bottom_density << " kg/m^3";
 
       return std::pair<std::string, std::string> ("Density at top/bottom of domain:",
                                                   output.str());

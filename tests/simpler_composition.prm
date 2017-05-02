@@ -12,7 +12,8 @@ subsection Compositional fields
   set Number of fields          = 1 
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
+  set List of model names = function
   subsection Function
     set Function expression = 1
   end
@@ -35,7 +36,7 @@ subsection Gravity model
   end
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function 
   subsection Function
     set Function expression = 500

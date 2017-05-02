@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -29,31 +29,23 @@ namespace aspect
       template <int dim>
       Function<dim>::Function()
         :
-        function (1)
+        n_components (0)
       {}
 
       template <int dim>
       void
       Function<dim>::initialize_one_particle_property(const Point<dim> &position,
-                                                      const Vector<double> &,
-                                                      const std::vector<Tensor<1,dim> > &,
                                                       std::vector<double> &data) const
       {
-        data.push_back(function.value(position));
-      }
-
-      template <int dim>
-      InitializationModeForLateParticles
-      Function<dim>::late_initialization_mode () const
-      {
-        return interpolate;
+        for (unsigned int i = 0; i < n_components; i++)
+          data.push_back(function->value(position, i));
       }
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int> >
       Function<dim>::get_property_information() const
       {
-        const std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("function",1));
+        const std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("function",n_components));
         return property_information;
       }
 
@@ -64,10 +56,14 @@ namespace aspect
       {
         prm.enter_subsection("Postprocess");
         {
-          prm.enter_subsection("Tracers");
+          prm.enter_subsection("Particles");
           {
             prm.enter_subsection("Function");
             {
+              prm.declare_entry ("Number of components", "1",
+                                 Patterns::Integer (0),
+                                 "The number of function components where each component is described"
+                                 "by a function expression delimited by a ';'.");
               Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
             }
             prm.leave_subsection();
@@ -84,17 +80,19 @@ namespace aspect
       {
         prm.enter_subsection("Postprocess");
         {
-          prm.enter_subsection("Tracers");
+          prm.enter_subsection("Particles");
           {
             prm.enter_subsection("Function");
+            n_components = prm.get_integer ("Number of components");
             try
               {
-                function.parse_parameters (prm);
+                function.reset (new Functions::ParsedFunction<dim>(n_components));
+                function->parse_parameters (prm);
               }
             catch (...)
               {
                 std::cerr << "ERROR: FunctionParser failed to parse\n"
-                          << "\t'Postprocess.Tracers.Function'\n"
+                          << "\t'Postprocess.Particles.Function'\n"
                           << "with expression\n"
                           << "\t'" << prm.get("Function expression") << "'";
                 throw;
@@ -118,11 +116,11 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_PROPERTY(Function,
                                         "function",
-                                        "Implementation of a model in which the tracer "
+                                        "Implementation of a model in which the particle "
                                         "property is set by evaluating an explicit function "
                                         "at the initial position of each particle. The "
                                         "function is defined in the parameters in section "
-                                        "``Tracers|Function''. The format of these "
+                                        "``Particles|Function''. The format of these "
                                         "functions follows the syntax understood by the "
                                         "muparser library, see Section~\\ref{sec:muparser-format}.")
     }

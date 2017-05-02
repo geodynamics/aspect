@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,10 +19,11 @@
 */
 
 
-#ifndef __aspect__geometry_model_box_h
-#define __aspect__geometry_model_box_h
+#ifndef _aspect_geometry_model_box_h
+#define _aspect_geometry_model_box_h
 
 #include <aspect/geometry_model/interface.h>
+#include <aspect/simulator_access.h>
 
 
 namespace aspect
@@ -33,12 +34,31 @@ namespace aspect
 
     /**
      * A class that describes a box geometry of certain width, height, and
-     * depth (in 3d).
+     * depth (in 3d), and, possibly, topography.
      */
     template <int dim>
-    class Box : public Interface<dim>
+    class Box : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
+        /**
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run and after
+         * the SimulatorAccess (if applicable) is initialized.
+         */
+        void initialize ();
+
+        /**
+         * Add initial topography to the mesh.
+         */
+        void topography (typename parallel::distributed::Triangulation<dim> &grid) const;
+
+        /**
+         * Relocate the vertical coordinate of the given point based on
+         * the topography at the surface specified by the initial topography
+         * model.
+         */
+        Point<dim> add_topography (const Point<dim> &x_y_z) const;
+
         /**
          * Generate a coarse mesh for the geometry described by this class.
          */
@@ -49,12 +69,14 @@ namespace aspect
          * Return a point that denotes the size of the box in each dimension
          * of the domain.
          */
+        virtual
         Point<dim> get_extents () const;
 
         /**
          * Return a point that denotes the lower left corner of the box
          * domain.
          */
+        virtual
         Point<dim> get_origin () const;
 
         /**
@@ -79,6 +101,9 @@ namespace aspect
          * as vertical and considers the "top" boundary as the
          * "surface". In almost all cases one will use a gravity model
          * that also matches these definitions.
+         *
+         * Note that the depth is calculated with respect to the
+         * surface without initial topography.
          */
         virtual
         double depth(const Point<dim> &position) const;
@@ -136,6 +161,15 @@ namespace aspect
         has_curved_elements() const;
 
         /**
+         * Return whether the given point lies within the domain specified
+         * by the geometry. This function does not take into account
+         * initial or dynamic surface topography.
+         */
+        virtual
+        bool
+        point_is_in_domain(const Point<dim> &p) const;
+
+        /**
          * Declare the parameters this class takes through input files.
          */
         static
@@ -166,9 +200,14 @@ namespace aspect
         bool periodic[dim];
 
         /**
-         * The number of cells in each coordinate direction
+         * The number of cells in each coordinate direction.
          */
         unsigned int repetitions[dim];
+
+        /**
+         * A pointer to the initial topography model.
+         */
+        InitialTopographyModel::Interface<dim> *topo_model;
 
     };
   }

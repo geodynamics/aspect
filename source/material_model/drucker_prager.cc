@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -87,21 +87,6 @@ namespace aspect
       return reference_eta;
     }
 
-    template <int dim>
-    double
-    DruckerPrager<dim>::
-    reference_density () const
-    {
-      return reference_rho;
-    }
-
-    template <int dim>
-    double
-    DruckerPrager<dim>::
-    reference_thermal_expansion_coefficient () const
-    {
-      return thermal_alpha;
-    }
 
     template <int dim>
     double
@@ -114,13 +99,6 @@ namespace aspect
       return reference_specific_heat;
     }
 
-    template <int dim>
-    double
-    DruckerPrager<dim>::
-    reference_cp () const
-    {
-      return reference_specific_heat;
-    }
 
     template <int dim>
     double
@@ -133,13 +111,6 @@ namespace aspect
       return thermal_k;
     }
 
-    template <int dim>
-    double
-    DruckerPrager<dim>::
-    reference_thermal_diffusivity () const
-    {
-      return thermal_k/(reference_rho*reference_specific_heat);
-    }
 
     template <int dim>
     double
@@ -212,7 +183,7 @@ namespace aspect
                              "Units: $W/m/K$.");
           prm.declare_entry ("Reference specific heat", "1250",
                              Patterns::Double (0),
-                             "The value of the specific heat $cp$. "
+                             "The value of the specific heat $C_p$. "
                              "Units: $J/kg/K$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),
@@ -306,7 +277,7 @@ namespace aspect
                                    "coefficients are chosen to be similar to what is believed to be correct "
                                    "for Earth's mantle. All of the values that define this model are read "
                                    "from a section ``Material model/Drucker Prager'' in the input file, see "
-                                   "Section~\\ref{parameters:Material_model/Drucker Prager}."
+                                   "Section~\\ref{parameters:Material_20model/Drucker_20Prager}."
                                    "Note that the model does not take into account any dependencies of "
                                    "material properties on compositional fields. "
                                    "\n\n"

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_generator_random_uniform_h
-#define __aspect__particle_generator_random_uniform_h
+#ifndef _aspect_particle_generator_random_uniform_h
+#define _aspect_particle_generator_random_uniform_h
 
 #include <aspect/particle/generator/probability_density_function.h>
 

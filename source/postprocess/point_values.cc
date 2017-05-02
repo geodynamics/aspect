@@ -47,7 +47,8 @@ namespace aspect
           bool point_found = false;
           try
             {
-              VectorTools::point_value(this->get_dof_handler(),
+              VectorTools::point_value(this->get_mapping(),
+                                       this->get_dof_handler(),
                                        this->get_solution(),
                                        evaluation_points[p],
                                        current_point_values[p]);
@@ -58,26 +59,29 @@ namespace aspect
               // ignore
             }
 
-          // ensure that exactly one processor found things
-          AssertThrow (Utilities::MPI::sum (point_found ? 1 : 0, this->get_mpi_communicator()) == 1,
-                       ExcMessage ("While trying to evaluate the values of the solution at "
-                                   "evaluation point " + Utilities::int_to_string(p) +
-                                   ", no (or more than one) processor reported that that point lies inside the "
-                                   "set of cells it owns. Are you trying to evaluate the "
-                                   "solution at a point that lies outside the domain?"));
+          // ensure that at least one processor found things
+          const int n_procs = Utilities::MPI::sum (point_found ? 1 : 0, this->get_mpi_communicator());
+          AssertThrow (n_procs > 0,
+                       ExcMessage ("While trying to evaluate the solution at point " +
+                                   Utilities::to_string(evaluation_points[p][0]) + ", " +
+                                   Utilities::to_string(evaluation_points[p][1]) +
+                                   (dim == 3
+                                    ?
+                                    ", " + Utilities::to_string(evaluation_points[p][2])
+                                    :
+                                    "") + "), " +
+                                   "no processors reported that the point lies inside the " +
+                                   "set of cells they own. Are you trying to evaluate the " +
+                                   "solution at a point that lies outside of the domain?"
+                                  ));
 
-          // now exchange things. because we have exactly one processor that found
-          // the point, we can just add up that value plus all of the zero
-          // vectors from the other processors
-          //
-          // at the time of writing this (where we require deal.II 8.2) the
-          // Utilities::MPI::sum function can't sum Vector<double> arguments, so
-          // convert everything into a std::vector and back
-          std::vector<double> v (current_point_values[p].begin(),
-                                 current_point_values[p].end());
-          Utilities::MPI::sum (v, this->get_mpi_communicator(),
-                               v);
-          std::copy (v.begin(), v.end(), current_point_values[p].begin());
+          // Reduce all collected values into local Vector
+          Utilities::MPI::sum (current_point_values[p], this->get_mpi_communicator(),
+                               current_point_values[p]);
+
+          // Normalize in cases where points are claimed by multiple processors
+          if (n_procs > 1)
+            current_point_values[p] /= n_procs;
         }
 
       // finally push these point values all onto the list we keep

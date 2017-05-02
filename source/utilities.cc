@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -17,8 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-#include <boost/math/special_functions/spherical_harmonic.hpp>
-
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 
@@ -30,6 +28,7 @@
 #include <deal.II/base/table_indices.h>
 #include <deal.II/base/function_lib.h>
 #include <deal.II/base/exceptions.h>
+#include <deal.II/base/signaling_nan.h>
 
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
@@ -37,8 +36,13 @@
 
 #include <fstream>
 #include <string>
+#include <locale>
+#include <dirent.h>
 #include <sys/stat.h>
 #include <errno.h>
+
+#include <boost/math/special_functions/spherical_harmonic.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace aspect
 {
@@ -72,6 +76,48 @@ namespace aspect
 
     namespace Coordinates
     {
+
+      template <int dim>
+      std_cxx11::array<double,dim>
+      WGS84_coordinates(const Point<dim> &position)
+      {
+        std_cxx11::array<double,dim> ecoord;
+
+        // Define WGS84 ellipsoid constants.
+        const double radius = 6378137.;
+        const double ellipticity = 8.1819190842622e-2;
+        const double b = std::sqrt(radius * radius
+                                   * (1 - ellipticity * ellipticity));
+        const double ep = std::sqrt((radius * radius - b * b) / (b * b));
+        const double p = std::sqrt(position(0) * position(0) + position(1) * position(1));
+        const double th = std::atan2(radius * position(2), b * p);
+        ecoord[2] = std::atan2((position(2) + ep * ep * b * std::sin(th)
+                                * std::sin(th) * std::sin(th)),
+                               (p - (ellipticity * ellipticity * radius * (std::cos(th)
+                                                                           * std::cos(th) * std::cos(th)))))
+                    * (180. / numbers::PI);
+
+        if (dim == 3)
+          {
+            ecoord[1] = std::atan2(position(1), position(0))
+                        * (180. / numbers::PI);
+
+            /* Set all longitudes between [0,360]. */
+            if (ecoord[1] < 0.)
+              ecoord[1] += 360.;
+            else if (ecoord[1] > 360.)
+              ecoord[1] -= 360.;
+          }
+        else
+          ecoord[1] = 0.0;
+
+
+        ecoord[0] = radius/std::sqrt(1- ellipticity * ellipticity
+                                     * std::sin(numbers::PI * ecoord[2]/180)
+                                     * std::sin(numbers::PI * ecoord[2]/180));
+        return ecoord;
+      }
+
       template <int dim>
       std_cxx11::array<double,dim>
       cartesian_to_spherical_coordinates(const Point<dim> &position)
@@ -167,6 +213,106 @@ namespace aspect
     }
 
     template <int dim>
+    bool
+    polygon_contains_point(const std::vector<Point<2> > &point_list,
+                           const dealii::Point<2> &point)
+    {
+      /**
+       * This code has been based on http://geomalgorithms.com/a03-_inclusion.html,
+       * and therefore requires the following copyright notice:
+       *
+       * Copyright 2000 softSurfer, 2012 Dan Sunday
+       * This code may be freely used and modified for any purpose
+       * providing that this copyright notice is included with it.
+       * SoftSurfer makes no warranty for this code, and cannot be held
+       * liable for any real or imagined damage resulting from its use.
+       * Users of this code must verify correctness for their application.
+       *
+       * The main functional difference between the original code and this
+       * code is that all the boundaries are condidered to be inside the
+       * polygon. One should of course realize that with floating point
+       * arithmetic no guarantees can be made for the borders, but for
+       * exact arithmetic this algorithm would work (also see polygon
+       * in point test).
+       */
+      int pointNo = point_list.size();
+      int    wn = 0;    // the  winding number counter
+      int   j=pointNo-1;
+
+      // loop through all edges of the polygon
+      for (int i=0; i<pointNo; i++)
+        {
+          // edge from V[i] to  V[i+1]
+          if (point_list[j][1] <= point[1])
+            {
+              // start y <= P.y
+              if (point_list[i][1] >= point[1])      // an upward crossing
+                {
+                  const double is_left = (point_list[i][0] - point_list[j][0]) * (point[1] - point_list[j][1])
+                                         - (point[0] -  point_list[j][0]) * (point_list[i][1] - point_list[j][1]);
+
+                  if ( is_left > 0 && point_list[i][1] > point[1])
+                    {
+                      // P left of  edge
+                      ++wn;            // have  a valid up intersect
+                    }
+                  else if ( is_left == 0)
+                    {
+                      // The point is exactly on the infinite line.
+                      // determine if it is on the segment
+                      const double dot_product = (point - point_list[j])*(point_list[i] - point_list[j]);
+
+                      if (dot_product >= 0)
+                        {
+                          const double squaredlength = (point_list[i] - point_list[j]).norm_square();
+
+                          if (dot_product <= squaredlength)
+                            {
+                              return true;
+                            }
+                        }
+                    }
+                }
+            }
+          else
+            {
+              // start y > P.y (no test needed)
+              if (point_list[i][1]  <= point[1])     // a downward crossing
+                {
+                  const double is_left = (point_list[i][0] - point_list[j][0]) * (point[1] - point_list[j][1])
+                                         - (point[0] -  point_list[j][0]) * (point_list[i][1] - point_list[j][1]);
+
+                  if ( is_left < 0)
+                    {
+                      // P right of  edge
+                      --wn;            // have  a valid down intersect
+                    }
+                  else if ( is_left == 0)
+                    {
+                      // This code is to make sure that the boundaries are included in the polygon.
+                      // The point is exactly on the infinite line.
+                      // determine if it is on the segment
+                      const double dot_product = (point - point_list[j])*(point_list[i] - point_list[j]);
+
+                      if (dot_product >= 0)
+                        {
+                          const double squaredlength = (point_list[i] - point_list[j]).norm_square();
+
+                          if (dot_product <= squaredlength)
+                            {
+                              return true;
+                            }
+                        }
+                    }
+                }
+            }
+          j=i;
+        }
+
+      return (wn != 0);
+    }
+
+    template <int dim>
     std_cxx11::array<Tensor<1,dim>,dim-1>
     orthogonal_vectors (const Tensor<1,dim> &v)
     {
@@ -227,10 +373,10 @@ namespace aspect
     }
 
 
-    //Evaluate the cosine and sine terms of a real spherical harmonic.
-    //This is a fully normalized harmonic, that is to say, inner products
-    //of these functions should integrate to a kronecker delta over
-    //the surface of a sphere.
+//Evaluate the cosine and sine terms of a real spherical harmonic.
+//This is a fully normalized harmonic, that is to say, inner products
+//of these functions should integrate to a kronecker delta over
+//the surface of a sphere.
     std::pair<double,double> real_spherical_harmonic( const unsigned int l, //degree
                                                       const unsigned int m, //order
                                                       const double theta,   //colatitude (radians)
@@ -249,7 +395,10 @@ namespace aspect
     fexists(const std::string &filename)
     {
       std::ifstream ifile(filename.c_str());
-      return static_cast<bool>(ifile); // only in c++11 you can convert to bool directly
+
+      // return whether construction of the input file has succeeded;
+      // success requires the file to exist and to be readable
+      return static_cast<bool>(ifile);
     }
 
 
@@ -345,10 +494,53 @@ namespace aspect
       return 0;
     }
 
-    // tk does the cubic spline interpolation that can be used between different spherical layers in the mantle.
-    // This interpolation is based on the script spline.h, which was downloaded from
-    // http://kluge.in-chemnitz.de/opensource/spline/spline.h   //
-    // Copyright (C) 2011, 2014 Tino Kluge (ttk448 at gmail.com)
+    void create_directory(const std::string &pathname,
+                          const MPI_Comm &comm,
+                          bool silent)
+    {
+      // verify that the output directory actually exists. if it doesn't, create
+      // it on processor zero
+      int error;
+
+      if ((Utilities::MPI::this_mpi_process(comm) == 0))
+        {
+          if (opendir(pathname.c_str()) == NULL)
+            {
+              if (!silent)
+                std::cout << "\n"
+                          << "-----------------------------------------------------------------------------\n"
+                          << "The output directory <" << pathname
+                          << "> provided in the input file appears not to exist.\n"
+                          << "ASPECT will create it for you.\n"
+                          << "-----------------------------------------------------------------------------\n\n"
+                          << std::endl;
+
+              error = Utilities::mkdirp(pathname, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+
+            }
+          else
+            {
+              error = 0;
+            }
+          // Broadcast error code
+          MPI_Bcast (&error, 1, MPI_INT, 0, comm);
+          AssertThrow (error == 0,
+                       ExcMessage (std::string("Can't create the output directory at <") + pathname + ">"));
+        }
+      else
+        {
+          // Wait to recieve error code, and throw QuietException if directory
+          // creation has failed
+          MPI_Bcast (&error, 1, MPI_INT, 0, comm);
+          if (error!=0)
+            throw aspect::QuietException();
+        }
+    }
+
+// tk does the cubic spline interpolation that can be used between different spherical layers in the mantle.
+// This interpolation is based on the script spline.h, which was downloaded from
+// http://kluge.in-chemnitz.de/opensource/spline/spline.h   //
+// copyright (C) 2011, 2014 Tino Kluge (ttk448 at gmail.com)
     namespace tk
     {
       /**
@@ -397,7 +589,7 @@ namespace aspect
           /**
            * Read-only access
            */
-          double   operator () (int i, int j) const;
+          double operator () (int i, int j) const;
 
           /**
            * second diagonal (used in LU decomposition), saved in m_lower[0]
@@ -407,7 +599,7 @@ namespace aspect
           /**
            * second diagonal (used in LU decomposition), saved in m_lower[0]
            */
-          double  saved_diag(int i) const;
+          double saved_diag(int i) const;
 
           /**
            * LU-Decomposition of a band matrix
@@ -448,9 +640,9 @@ namespace aspect
 
       void band_matrix::resize(int dim, int n_u, int n_l)
       {
-        assert(dim>0);
-        assert(n_u>=0);
-        assert(n_l>=0);
+        assert(dim > 0);
+        assert(n_u >= 0);
+        assert(n_l >= 0);
         m_upper.resize(n_u+1);
         m_lower.resize(n_l+1);
         for (size_t i=0; i<m_upper.size(); i++)
@@ -477,11 +669,11 @@ namespace aspect
 
       double &band_matrix::operator () (int i, int j)
       {
-        int k=j-i;       // what band is the entry
-        assert( (i>=0) && (i<dim()) && (j>=0) && (j<dim()) );
-        assert( (-num_lower()<=k) && (k<=num_upper()) );
+        int k = j - i;       // what band is the entry
+        assert( (i >= 0) && (i<dim()) && (j >= 0) && (j < dim()) );
+        assert( (-num_lower() <= k) && (k <= num_upper()) );
         // k=0 -> diagonal, k<0 lower left part, k>0 upper right part
-        if (k>=0)
+        if (k >= 0)
           return m_upper[k][i];
         else
           return m_lower[-k][i];
@@ -490,10 +682,10 @@ namespace aspect
       double band_matrix::operator () (int i, int j) const
       {
         int k=j-i;       // what band is the entry
-        assert( (i>=0) && (i<dim()) && (j>=0) && (j<dim()) );
-        assert( (-num_lower()<=k) && (k<=num_upper()) );
+        assert( (i >= 0) && (i < dim()) && (j >= 0) && (j < dim()) );
+        assert( (-num_lower() <= k) && (k <= num_upper()) );
         // k=0 -> diagonal, k<0 lower left part, k>0 upper right part
-        if (k>=0)
+        if (k >= 0)
           return m_upper[k][i];
         else
           return m_lower[-k][i];
@@ -501,51 +693,51 @@ namespace aspect
 
       double band_matrix::saved_diag(int i) const
       {
-        assert( (i>=0) && (i<dim()) );
+        assert( (i >= 0) && (i < dim()) );
         return m_lower[0][i];
       }
 
       double &band_matrix::saved_diag(int i)
       {
-        assert( (i>=0) && (i<dim()) );
+        assert( (i >= 0) && (i < dim()) );
         return m_lower[0][i];
       }
 
       void band_matrix::lu_decompose()
       {
-        int  i_max,j_max;
-        int  j_min;
+        int i_max,j_max;
+        int j_min;
         double x;
 
         // preconditioning
-        //             // normalize column i so that a_ii=1
-        for (int i=0; i<this->dim(); i++)
+        // normalize column i so that a_ii=1
+        for (int i = 0; i < this->dim(); i++)
           {
-            assert(this->operator()(i,i)!=0.0);
-            this->saved_diag(i)=1.0/this->operator()(i,i);
-            j_min=std::max(0,i-this->num_lower());
-            j_max=std::min(this->dim()-1,i+this->num_upper());
-            for (int j=j_min; j<=j_max; j++)
+            assert(this->operator()(i,i) != 0.0);
+            this->saved_diag(i) = 1.0/this->operator()(i,i);
+            j_min = std::max(0,i-this->num_lower());
+            j_max = std::min(this->dim()-1,i+this->num_upper());
+            for (int j = j_min; j <= j_max; j++)
               {
                 this->operator()(i,j) *= this->saved_diag(i);
               }
-            this->operator()(i,i)=1.0;          // prevents rounding errors
+            this->operator()(i,i) = 1.0;          // prevents rounding errors
           }
 
         // Gauss LR-Decomposition
-        for (int k=0; k<this->dim(); k++)
+        for (int k = 0; k < this->dim(); k++)
           {
-            i_max=std::min(this->dim()-1,k+this->num_lower());  // num_lower not a mistake!
-            for (int i=k+1; i<=i_max; i++)
+            i_max = std::min(this->dim()-1,k+this->num_lower());  // num_lower not a mistake!
+            for (int i = k+1; i <= i_max; i++)
               {
-                assert(this->operator()(k,k)!=0.0);
-                x=-this->operator()(i,k)/this->operator()(k,k);
-                this->operator()(i,k)=-x;                         // assembly part of L
-                j_max=std::min(this->dim()-1,k+this->num_upper());
-                for (int j=k+1; j<=j_max; j++)
+                assert(this->operator()(k,k) != 0.0);
+                x = -this->operator()(i,k)/this->operator()(k,k);
+                this->operator()(i,k) = -x;                         // assembly part of L
+                j_max = std::min(this->dim()-1, k + this->num_upper());
+                for (int j = k+1; j <= j_max; j++)
                   {
                     // assembly part of R
-                    this->operator()(i,j)=this->operator()(i,j)+x*this->operator()(k,j);
+                    this->operator()(i,j) = this->operator()(i,j)+x*this->operator()(k,j);
                   }
               }
           }
@@ -553,16 +745,16 @@ namespace aspect
 
       std::vector<double> band_matrix::l_solve(const std::vector<double> &b) const
       {
-        assert( this->dim()==(int)b.size() );
+        assert( this->dim() == (int)b.size() );
         std::vector<double> x(this->dim());
         int j_start;
         double sum;
-        for (int i=0; i<this->dim(); i++)
+        for (int i = 0; i < this->dim(); i++)
           {
-            sum=0;
-            j_start=std::max(0,i-this->num_lower());
-            for (int j=j_start; j<i; j++) sum += this->operator()(i,j)*x[j];
-            x[i]=(b[i]*this->saved_diag(i)) - sum;
+            sum = 0;
+            j_start = std::max(0,i-this->num_lower());
+            for (int j = j_start; j < i; j++) sum += this->operator()(i,j)*x[j];
+            x[i] = (b[i]*this->saved_diag(i)) - sum;
           }
         return x;
       }
@@ -570,16 +762,16 @@ namespace aspect
 
       std::vector<double> band_matrix::r_solve(const std::vector<double> &b) const
       {
-        assert( this->dim()==(int)b.size() );
+        assert( this->dim() == (int)b.size() );
         std::vector<double> x(this->dim());
         int j_stop;
         double sum;
-        for (int i=this->dim()-1; i>=0; i--)
+        for (int i = this->dim()-1; i >= 0; i--)
           {
-            sum=0;
-            j_stop=std::min(this->dim()-1,i+this->num_upper());
-            for (int j=i+1; j<=j_stop; j++) sum += this->operator()(i,j)*x[j];
-            x[i]=( b[i] - sum ) / this->operator()(i,i);
+            sum = 0;
+            j_stop = std::min(this->dim()-1, i + this->num_upper());
+            for (int j = i+1; j <= j_stop; j++) sum += this->operator()(i,j)*x[j];
+            x[i] = (b[i] - sum) / this->operator()(i,i);
           }
         return x;
       }
@@ -587,65 +779,122 @@ namespace aspect
       std::vector<double> band_matrix::lu_solve(const std::vector<double> &b,
                                                 bool is_lu_decomposed)
       {
-        assert( this->dim()==(int)b.size() );
+        assert(this->dim() == (int)b.size());
         std::vector<double>  x,y;
         // TODO: this is completely unsafe because you rely on the user
         // if the function is called more than once.
-        if (is_lu_decomposed==false)
+        if (is_lu_decomposed == false)
           {
             this->lu_decompose();
           }
-        y=this->l_solve(b);
-        x=this->r_solve(y);
+        y = this->l_solve(b);
+        x = this->r_solve(y);
         return x;
       }
 
 
       void spline::set_points(const std::vector<double> &x,
                               const std::vector<double> &y,
-                              bool cubic_spline)
+                              bool cubic_spline,
+                              bool monotone_spline)
       {
-        assert(x.size()==y.size());
-        m_x=x;
-        m_y=y;
-        int   n=x.size();
-        for (int i=0; i<n-1; i++)
+        assert(x.size() == y.size());
+        m_x = x;
+        m_y = y;
+        const unsigned int n = x.size();
+        for (unsigned int i = 0; i < n-1; i++)
           {
-            assert(m_x[i]<m_x[i+1]);
+            assert(m_x[i] < m_x[i+1]);
           }
 
-        if (cubic_spline==true)  // cubic spline interpolation
+        if (cubic_spline == true)  // cubic spline interpolation
           {
-            // setting up the matrix and right hand side of the equation system
-            // for the parameters b[]
-            band_matrix A(n,1,1);
-            std::vector<double>  rhs(n);
-            for (int i=1; i<n-1; i++)
+            if (monotone_spline == true)
               {
-                A(i,i-1)=1.0/3.0*(x[i]-x[i-1]);
-                A(i,i)=2.0/3.0*(x[i+1]-x[i-1]);
-                A(i,i+1)=1.0/3.0*(x[i+1]-x[i]);
-                rhs[i]=(y[i+1]-y[i])/(x[i+1]-x[i]) - (y[i]-y[i-1])/(x[i]-x[i-1]);
+                /**
+                 * This monotone spline algorithm is based on the javascript version
+                 * at https://en.wikipedia.org/wiki/Monotone_cubic_interpolation. The
+                 * parameters from this algorithm prevent overshooting in the
+                 * interpolation spline.
+                 */
+                std::vector<double> dys(n-1), dxs(n-1), ms(n-1);
+                for (unsigned int i=0; i < n-1; i++)
+                  {
+                    dxs[i] = x[i+1]-x[i];
+                    dys[i] = y[i+1]-y[i];
+                    ms[i] = dys[i]/dxs[i];
+                  }
+
+                // get m_a parameter
+                m_c.resize(n);
+                m_c[0] = 0;
+
+                for (unsigned int i = 0; i < n-2; i++)
+                  {
+                    const double m0 = ms[i];
+                    const double m1 = ms[i+1];
+
+                    if (m0 * m1 <= 0)
+                      {
+                        m_c[i+1] = 0;
+                      }
+                    else
+                      {
+                        const double dx0 = dxs[i];
+                        const double dx1 = dxs[i+1];
+                        const double common = dx0 + dx1;
+                        m_c[i+1] = 3*common/((common + dx0)/m0 + (common + dx1)/m1);
+                      }
+                  }
+                m_c[n-1] = ms[n-2];
+
+                // Get b and c coefficients
+                m_a.resize(n);
+                m_b.resize(n);
+                for (unsigned int i = 0; i < m_c.size()-1; i++)
+                  {
+                    const double c1 = m_c[i];
+                    const double m0 = ms[i];
+
+                    const double invDx = 1/dxs[i];
+                    const double common0 = c1 + m_c[i+1] - m0 - m0;
+                    m_b[i] = (m0 - c1 - common0) * invDx;
+                    m_a[i] = common0 * invDx * invDx;
+                  }
               }
-            // boundary conditions, zero curvature b[0]=b[n-1]=0
-            A(0,0)=2.0;
-            A(0,1)=0.0;
-            rhs[0]=0.0;
-            A(n-1,n-1)=2.0;
-            A(n-1,n-2)=0.0;
-            rhs[n-1]=0.0;
-
-            // solve the equation system to obtain the parameters b[]
-            m_b=A.lu_solve(rhs);
-
-            // calculate parameters a[] and c[] based on b[]
-            m_a.resize(n);
-            m_c.resize(n);
-            for (int i=0; i<n-1; i++)
+            else
               {
-                m_a[i]=1.0/3.0*(m_b[i+1]-m_b[i])/(x[i+1]-x[i]);
-                m_c[i]=(y[i+1]-y[i])/(x[i+1]-x[i])
-                       - 1.0/3.0*(2.0*m_b[i]+m_b[i+1])*(x[i+1]-x[i]);
+                // setting up the matrix and right hand side of the equation system
+                // for the parameters b[]
+                band_matrix A(n,1,1);
+                std::vector<double>  rhs(n);
+                for (unsigned int i = 1; i<n-1; i++)
+                  {
+                    A(i,i-1) = 1.0/3.0*(x[i]-x[i-1]);
+                    A(i,i) = 2.0/3.0*(x[i+1]-x[i-1]);
+                    A(i,i+1) = 1.0/3.0*(x[i+1]-x[i]);
+                    rhs[i] = (y[i+1]-y[i])/(x[i+1]-x[i]) - (y[i]-y[i-1])/(x[i]-x[i-1]);
+                  }
+                // boundary conditions, zero curvature b[0]=b[n-1]=0
+                A(0,0) = 2.0;
+                A(0,1) = 0.0;
+                rhs[0] = 0.0;
+                A(n-1,n-1) = 2.0;
+                A(n-1,n-2) = 0.0;
+                rhs[n-1] = 0.0;
+
+                // solve the equation system to obtain the parameters b[]
+                m_b = A.lu_solve(rhs);
+
+                // calculate parameters a[] and c[] based on b[]
+                m_a.resize(n);
+                m_c.resize(n);
+                for (unsigned int i = 0; i<n-1; i++)
+                  {
+                    m_a[i] = 1.0/3.0*(m_b[i+1]-m_b[i])/(x[i+1]-x[i]);
+                    m_c[i] = (y[i+1]-y[i])/(x[i+1]-x[i])
+                             - 1.0/3.0*(2.0*m_b[i]+m_b[i+1])*(x[i+1]-x[i]);
+                  }
               }
           }
         else     // linear interpolation
@@ -653,46 +902,49 @@ namespace aspect
             m_a.resize(n);
             m_b.resize(n);
             m_c.resize(n);
-            for (int i=0; i<n-1; i++)
+            for (unsigned int i = 0; i<n-1; i++)
               {
-                m_a[i]=0.0;
-                m_b[i]=0.0;
-                m_c[i]=(m_y[i+1]-m_y[i])/(m_x[i+1]-m_x[i]);
+                m_a[i] = 0.0;
+                m_b[i] = 0.0;
+                m_c[i] = (m_y[i+1]-m_y[i])/(m_x[i+1]-m_x[i]);
               }
           }
 
         // for the right boundary we define
         // f_{n-1}(x) = b*(x-x_{n-1})^2 + c*(x-x_{n-1}) + y_{n-1}
-        double h=x[n-1]-x[n-2];
+        double h = x[n-1]-x[n-2];
         // m_b[n-1] is determined by the boundary condition
-        m_a[n-1]=0.0;
-        m_c[n-1]=3.0*m_a[n-2]*h*h+2.0*m_b[n-2]*h+m_c[n-2];   // = f'_{n-2}(x_{n-1})
+        if (!monotone_spline)
+          {
+            m_a[n-1] = 0.0;
+            m_c[n-1] = 3.0*m_a[n-2]*h*h+2.0*m_b[n-2]*h+m_c[n-2];   // = f'_{n-2}(x_{n-1})
+          }
       }
 
       double spline::operator() (double x) const
       {
-        size_t n=m_x.size();
+        size_t n = m_x.size();
         // find the closest point m_x[idx] < x, idx=0 even if x<m_x[0]
         std::vector<double>::const_iterator it;
-        it=std::lower_bound(m_x.begin(),m_x.end(),x);
-        int idx=std::max( int(it-m_x.begin())-1, 0);
+        it = std::lower_bound(m_x.begin(),m_x.end(),x);
+        int idx = std::max( int(it-m_x.begin())-1, 0);
 
-        double h=x-m_x[idx];
+        double h = x-m_x[idx];
         double interpol;
         if (x<m_x[0])
           {
             // extrapolation to the left
-            interpol=((m_b[0])*h + m_c[0])*h + m_y[0];
+            interpol = ((m_b[0])*h + m_c[0])*h + m_y[0];
           }
         else if (x>m_x[n-1])
           {
             // extrapolation to the right
-            interpol=((m_b[n-1])*h + m_c[n-1])*h + m_y[n-1];
+            interpol = ((m_b[n-1])*h + m_c[n-1])*h + m_y[n-1];
           }
         else
           {
             // interpolation
-            interpol=((m_a[idx]*h + m_b[idx])*h + m_c[idx])*h + m_y[idx];
+            interpol = ((m_a[idx]*h + m_b[idx])*h + m_c[idx])*h + m_y[idx];
           }
         return interpol;
       }
@@ -700,6 +952,28 @@ namespace aspect
     } // namespace tk
 
 
+    std::string
+    expand_ASPECT_SOURCE_DIR (const std::string &location)
+    {
+      return Utilities::replace_in_string(location,
+                                          "$ASPECT_SOURCE_DIR",
+                                          ASPECT_SOURCE_DIR);
+    }
+
+    std::string parenthesize_if_nonempty (const std::string &s)
+    {
+      if (s.size() > 0)
+        return " (\"" + s + "\")";
+      else
+        return "";
+    }
+
+    bool
+    has_unique_entries (const std::vector<std::string> &strings)
+    {
+      const std::set<std::string> set_of_strings(strings.begin(),strings.end());
+      return (set_of_strings.size() == strings.size());
+    }
 
     template <int dim>
     AsciiDataLookup<dim>::AsciiDataLookup(const unsigned int components,
@@ -709,6 +983,48 @@ namespace aspect
       data(components),
       scale_factor(scale_factor)
     {}
+
+    template <int dim>
+    AsciiDataLookup<dim>::AsciiDataLookup(const double scale_factor)
+      :
+      components(numbers::invalid_unsigned_int),
+      data(),
+      scale_factor(scale_factor)
+    {}
+
+    template <int dim>
+    std::vector<std::string>
+    AsciiDataLookup<dim>::get_column_names() const
+    {
+      return data_component_names;
+    }
+
+    template <int dim>
+    unsigned int
+    AsciiDataLookup<dim>::get_column_index_from_name(const std::string &column_name) const
+    {
+      const std::vector<std::string>::const_iterator column_position =
+        std::find(data_component_names.begin(),data_component_names.end(),column_name);
+
+      AssertThrow(column_position != data_component_names.end(),
+                  ExcMessage("There is no data column named " + column_name
+                             + " in the current data file. Please check the name and the "
+                             "first line not starting with '#' of your data file."));
+
+      return std::distance(data_component_names.begin(),column_position);
+    }
+
+    template <int dim>
+    std::string
+    AsciiDataLookup<dim>::get_column_name_from_index(const unsigned int column_index) const
+    {
+      AssertThrow(data_component_names.size() > column_index,
+                  ExcMessage("There is no data column number " + Utilities::to_string(column_index)
+                             + " in the current data file. The data file only contains "
+                             + Utilities::to_string(data_component_names.size()) + " named columns."));
+
+      return data_component_names[column_index];
+    }
 
     template <int dim>
     void
@@ -754,55 +1070,175 @@ namespace aspect
                                  "(e.g. a missing space character)."));
         }
 
+      // Read column lines if present
+      unsigned int field_index = 0;
+      unsigned int name_column_index = 0;
+      double temp_data;
+
+      while (true)
+        {
+          AssertThrow (name_column_index < 100,
+                       ExcMessage("The program found more than 100 columns in the first line of the data file. "
+                                  "This is unlikely intentional. Check your data file and make sure the data can be "
+                                  "interpreted as floating point numbers. If you do want to read a data file with more "
+                                  "than 100 columns, please remove this assertion."));
+
+          std::string column_name_or_data;
+          in >> column_name_or_data;
+          try
+            {
+              // If the data field contains a name this will throw an exception
+              temp_data = boost::lexical_cast<double>(column_name_or_data);
+
+              // If there was no exception we have left the line containing names
+              // and have read the first data field. Save number of components, and
+              // make sure there is no contradiction if the components were already given to
+              // the constructor of this class.
+              if (components == numbers::invalid_unsigned_int)
+                components = name_column_index - dim;
+              else if (name_column_index != 0)
+                AssertThrow (components == name_column_index,
+                             ExcMessage("The number of expected data columns and the "
+                                        "list of column names at the beginning of the data file "
+                                        + filename + " does not match. The file should contain "
+                                        "one column name per column (one for each dimension "
+                                        "and one per data column."));
+
+              break;
+            }
+          catch (const boost::bad_lexical_cast &e)
+            {
+              // The first dim columns are coordinates and contain no data
+              if (name_column_index >= dim)
+                {
+                  // Transform name to lower case to prevent confusion with capital letters
+                  // Note: only ASCII characters allowed
+                  std::transform(column_name_or_data.begin(), column_name_or_data.end(), column_name_or_data.begin(), ::tolower);
+
+                  AssertThrow(std::find(data_component_names.begin(),data_component_names.end(),column_name_or_data)
+                              == data_component_names.end(),
+                              ExcMessage("There are multiple fields named " + column_name_or_data +
+                                         " in the data file " + filename + ". Please remove duplication to "
+                                         "allow for unique association between column and name."));
+
+                  data_component_names.push_back(column_name_or_data);
+                }
+              ++name_column_index;
+            }
+        }
+
       /**
-       * Table for the new data. This peculiar reinit is necessary, because
+       * Create table for the data. This peculiar reinit is necessary, because
        * there is no constructor for Table, which takes TableIndices as
        * argument.
        */
+      data.resize(components);
       Table<dim,double> data_table;
       data_table.TableBase<dim,double>::reinit(table_points);
       std::vector<Table<dim,double> > data_tables(components+dim,data_table);
 
-      // Read data lines
-      unsigned int i = 0;
-      double temp_data;
 
-      while (in >> temp_data)
+      // Read data lines
+      do
         {
-          const unsigned int column_num = i%(components+dim);
+          const unsigned int column_num = field_index%(components+dim);
 
           if (column_num >= dim)
             temp_data *= scale_factor;
 
-          data_tables[column_num](compute_table_indices(i)) = temp_data;
+          data_tables[column_num](compute_table_indices(field_index)) = temp_data;
 
-          i++;
-
-          // TODO: add checks for coordinate ordering in data files
+          ++field_index;
         }
+      while (in >> temp_data);
 
-      AssertThrow(i == (components + dim) * data_table.n_elements(),
+
+      AssertThrow(field_index == (components + dim) * data_table.n_elements(),
                   ExcMessage (std::string("Number of read in points does not match number of expected points. File corrupted?")));
 
+      // In case the data is specified on a grid that is equidistant
+      // in each coordinate direction, we only need to store
+      // (besides the data) the number of intervals in each direction and
+      // the begin- and endpoints of the coordinates.
+      // In case the grid is not equidistant, we need to keep
+      // all the coordinates in each direction, which is more costly.
+      // Here we fill the data structures needed for both cases,
+      // and check whether the coordinates are equidistant or not.
+      // We also check the requirement that the coordinates are
+      // strictly ascending.
+
+      // The number of intervals in each direction
       std_cxx11::array<unsigned int,dim> table_intervals;
+
+      // Whether or not the grid is equidistant
+      bool equidistant_grid = true;
 
       for (unsigned int i = 0; i < dim; i++)
         {
           table_intervals[i] = table_points[i] - 1;
 
           TableIndices<dim> idx;
-          grid_extent[i].first = data_tables[i](idx);
-          idx[i] = table_points[i] - 1;
-          grid_extent[i].second = data_tables[i](idx);
+          double temp_coord = data_tables[i](idx);
+          double new_temp_coord = 0;
+
+          // The minimum coordinates
+          grid_extent[i].first = temp_coord;
+
+          // The first coordinate value
+          coordinate_values[i].push_back(temp_coord);
+
+          // The grid spacing
+          double grid_spacing = numbers::signaling_nan<double>();
+
+          // Loop over the rest of the coordinate points
+          for (unsigned int n = 1; n < table_points[i]; n++)
+            {
+              idx[i] = n;
+              new_temp_coord = data_tables[i](idx);
+              AssertThrow(new_temp_coord > temp_coord,
+                          ExcMessage ("Coordinates in dimension "
+                                      + int_to_string(i)
+                                      + " are not strictly ascending. "));
+
+              // Test whether grid is equidistant
+              if (n == 1)
+                grid_spacing = new_temp_coord - temp_coord;
+              else
+                {
+                  const double current_grid_spacing = new_temp_coord - temp_coord;
+                  // Compare current grid spacing with first grid spacing,
+                  // taking into account roundoff of the read-in coordinates
+                  if (std::abs(current_grid_spacing - grid_spacing) > 0.005*(current_grid_spacing+grid_spacing))
+                    equidistant_grid = false;
+                }
+
+              // Set the coordinate value
+              coordinate_values[i].push_back(new_temp_coord);
+              temp_coord = new_temp_coord;
+            }
+
+          // The maximum coordinate
+          grid_extent[i].second = temp_coord;
         }
 
+      // For each data component, set up a GridData,
+      // its type depending on the read-in grid.
       for (unsigned int i = 0; i < components; i++)
         {
           if (data[i])
             delete data[i];
-          data[i] = new Functions::InterpolatedUniformGridData<dim> (grid_extent,
-                                                                     table_intervals,
-                                                                     data_tables[dim+i]);
+
+          if (equidistant_grid)
+            data[i] = new Functions::InterpolatedUniformGridData<dim> (grid_extent,
+                                                                       table_intervals,
+                                                                       data_tables[dim+i]);
+          else
+            {
+              if (Utilities::MPI::this_mpi_process(comm) == 0)
+                std::cout << "   Ascii data file coordinates are not equidistant. " << std::endl << std::endl;
+              data[i] = new Functions::InterpolatedTensorProductGridData<dim> (coordinate_values,
+                                                                               data_tables[dim+i]);
+            }
         }
     }
 
@@ -947,7 +1383,7 @@ namespace aspect
                             << create_filename (current_file_number,*boundary_id) << "." << std::endl << std::endl;
 
           const std::string filename (create_filename (current_file_number,*boundary_id));
-          if (fexists(filename))
+          if (Utilities::fexists(filename))
             lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
           else
             AssertThrow(false,
@@ -970,7 +1406,7 @@ namespace aspect
               const std::string filename (create_filename (next_file_number,*boundary_id));
               this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                                 << filename << "." << std::endl << std::endl;
-              if (fexists(filename))
+              if (Utilities::fexists(filename))
                 {
                   lookups.find(*boundary_id)->second.swap(old_lookups.find(*boundary_id)->second);
                   lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
@@ -1122,7 +1558,7 @@ namespace aspect
           const std::string filename (create_filename (current_file_number,boundary_id));
           this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                             << filename << "." << std::endl << std::endl;
-          if (fexists(filename))
+          if (Utilities::fexists(filename))
             {
               lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
               lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
@@ -1143,7 +1579,7 @@ namespace aspect
       const std::string filename (create_filename (next_file_number,boundary_id));
       this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                         << filename << "." << std::endl << std::endl;
-      if (fexists(filename))
+      if (Utilities::fexists(filename))
         {
           lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
           lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
@@ -1297,7 +1733,7 @@ namespace aspect
       this->get_pcout() << std::endl << "   Loading Ascii data initial file "
                         << filename << "." << std::endl << std::endl;
 
-      if (fexists(filename))
+      if (Utilities::fexists(filename))
         lookup->load_file(filename,this->get_mpi_communicator());
       else
         AssertThrow(false,
@@ -1328,7 +1764,65 @@ namespace aspect
       return lookup->get_data(internal_position,component);
     }
 
-    // Explicit instantiations
+
+    template <int dim>
+    AsciiDataProfile<dim>::AsciiDataProfile ()
+    {}
+
+
+    template <int dim>
+    void
+    AsciiDataProfile<dim>::initialize (const MPI_Comm &communicator)
+    {
+      lookup.reset(new Utilities::AsciiDataLookup<1> (Utilities::AsciiDataBase<dim>::scale_factor));
+
+      const std::string filename = Utilities::AsciiDataBase<dim>::data_directory
+                                   + Utilities::AsciiDataBase<dim>::data_file_name;
+
+      if (Utilities::fexists(filename))
+        lookup->load_file(filename,communicator);
+      else
+        AssertThrow(false,
+                    ExcMessage (std::string("Ascii data file <")
+                                +
+                                filename
+                                +
+                                "> not found!"));
+    }
+
+
+    template <int dim>
+    std::vector<std::string>
+    AsciiDataProfile<dim>::get_column_names() const
+    {
+      return lookup->get_column_names();
+    }
+
+    template <int dim>
+    unsigned int
+    AsciiDataProfile<dim>::get_column_index_from_name(const std::string &column_name) const
+    {
+      return lookup->get_column_index_from_name(column_name);
+    }
+
+    template <int dim>
+    std::string
+    AsciiDataProfile<dim>::get_column_name_from_index(const unsigned int column_index) const
+    {
+      return lookup->get_column_name_from_index(column_index);
+    }
+
+
+    template <int dim>
+    double
+    AsciiDataProfile<dim>::
+    get_data_component (const Point<1>                      &position,
+                        const unsigned int                   component) const
+    {
+      return lookup->get_data(position,component);
+    }
+
+// Explicit instantiations
     template class AsciiDataLookup<1>;
     template class AsciiDataLookup<2>;
     template class AsciiDataLookup<3>;
@@ -1338,12 +1832,23 @@ namespace aspect
     template class AsciiDataBoundary<3>;
     template class AsciiDataInitial<2>;
     template class AsciiDataInitial<3>;
+    template class AsciiDataProfile<1>;
+    template class AsciiDataProfile<2>;
+    template class AsciiDataProfile<3>;
 
     template Point<2> Coordinates::spherical_to_cartesian_coordinates<2>(const std_cxx11::array<double,2> &scoord);
     template Point<3> Coordinates::spherical_to_cartesian_coordinates<3>(const std_cxx11::array<double,3> &scoord);
 
     template std_cxx11::array<double,2> Coordinates::cartesian_to_spherical_coordinates<2>(const Point<2> &position);
     template std_cxx11::array<double,3> Coordinates::cartesian_to_spherical_coordinates<3>(const Point<3> &position);
+
+
+    template std_cxx11::array<double,2> Coordinates::WGS84_coordinates<2>(const Point<2> &position);
+    template std_cxx11::array<double,3> Coordinates::WGS84_coordinates<3>(const Point<3> &position);
+
+    template bool polygon_contains_point<2>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
+    template bool polygon_contains_point<3>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
+
 
     template std_cxx11::array<Tensor<1,2>,1> orthogonal_vectors (const Tensor<1,2> &v);
     template std_cxx11::array<Tensor<1,3>,2> orthogonal_vectors (const Tensor<1,3> &v);

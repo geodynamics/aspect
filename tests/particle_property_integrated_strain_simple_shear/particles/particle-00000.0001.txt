@@ -1,0 +1,6 @@
+# position[0] position[1] id integrated strain[0] integrated strain[1] integrated strain[2] integrated strain[3]
+0.483901 0.856879 5 1 0 0 1
+0.424461 0.967838 6 1 0 0 1
+0.532159 0.511138 7 1 0 0 1
+0.675781 0.86825 8 1 0 0 1
+0.760335 0.9761 9 1 0 0 1

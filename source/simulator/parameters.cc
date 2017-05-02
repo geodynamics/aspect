@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -27,7 +27,6 @@
 
 #include <deal.II/base/parameter_handler.h>
 
-#include <dirent.h>
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <boost/lexical_cast.hpp>
@@ -186,7 +185,8 @@ namespace aspect
                        "or for comparing solutions. If the given value is `surface', then "
                        "normalization at the end of each time steps adds a constant value "
                        "to the pressure in such a way that the average pressure at the surface "
-                       "of the domain is zero; the surface of the domain is determined by asking "
+                       "of the domain is what is set in the `Surface pressure' parameter; "
+                       "the surface of the domain is determined by asking "
                        "the geometry model whether a particular face of the geometry has a zero "
                        "or small `depth'. If the value of this parameter is `volume' then the "
                        "pressure is normalized so that the domain average is zero. If `no' is "
@@ -194,6 +194,10 @@ namespace aspect
 
     prm.declare_entry ("Surface pressure", "0",
                        Patterns::Double(),
+                       "The value the pressure is normalized to in each time step when "
+                       "`Pressure normalization' is set to `surface' with default value 0. "
+                       "This setting is ignored in all other cases."
+                       "\n\n"
                        "The mathematical equations that describe thermal convection "
                        "only determine the pressure up to an arbitrary constant. On "
                        "the other hand, for comparison and for looking up material "
@@ -264,28 +268,32 @@ namespace aspect
 
     prm.declare_entry ("Linear solver A block tolerance", "1e-2",
                        Patterns::Double(0,1),
-                       "A relative tolerance up to which the approximate inverse of the A block "
-                       "of the Stokes system is computed. This approximate A is used in the "
-                       "preconditioning used in the GMRES solver.");
+                       "A relative tolerance up to which the approximate inverse of the $A$ block "
+                       "of the Stokes system is computed. This approximate $A$ is used in the "
+                       "preconditioning used in the GMRES solver. The exact definition of this "
+                       "block preconditioner for the Stokes equation can be found in "
+                       "\\cite{KHB12}.");
 
     prm.declare_entry ("Linear solver S block tolerance", "1e-6",
                        Patterns::Double(0,1),
-                       "A relative tolerance up to which the approximate inverse of the S block "
-                       "(Schur complement matrix, $S = BA^{-1}B^{T}$) of the Stokes system is computed. "
-                       "This approximate inverse of the S block is used in the preconditioning "
-                       "used in the GMRES solver.");
+                       "A relative tolerance up to which the approximate inverse of the $S$ block "
+                       "(i.e., the Schur complement matrix $S = BA^{-1}B^{T}$) of the Stokes "
+                       "system is computed. This approximate inverse of the $S$ block is used "
+                       "in the preconditioning used in the GMRES solver. The exact definition of "
+                       "this block preconditioner for the Stokes equation can be found in "
+                       "\\cite{KHB12}.");
 
-    prm.declare_entry ("Number of cheap Stokes solver steps", "30",
+    prm.declare_entry ("Number of cheap Stokes solver steps", "200",
                        Patterns::Integer(0),
-                       "As explained in the ASPECT paper (Kronbichler, Heister, and Bangerth, "
-                       "GJI 2012) we first try to solve the Stokes system in every time "
-                       "step using a GMRES iteration with a poor but cheap "
+                       "As explained in the paper that describes ASPECT (Kronbichler, Heister, and Bangerth, "
+                       "2012, see \\cite{KHB12}) we first try to solve the Stokes system in every "
+                       "time step using a GMRES iteration with a poor but cheap "
                        "preconditioner. By default, we try whether we can converge the GMRES "
-                       "solver in 30 such iterations before deciding that we need a better "
-                       "preconditioner. This is sufficient for simple problems with constant "
+                       "solver in 200 such iterations before deciding that we need a better "
+                       "preconditioner. This is sufficient for simple problems with variable "
                        "viscosity and we never need the second phase with the more expensive "
                        "preconditioner. On the other hand, for more complex problems, and in "
-                       "particular for problems with strongly varying viscosity, the 30 "
+                       "particular for problems with strongly nonlinear viscosity, the 200 "
                        "cheap iterations don't actually do very much good and one might skip "
                        "this part right away. In that case, this parameter can be set to "
                        "zero, i.e., we immediately start with the better but more expensive "
@@ -302,6 +310,46 @@ namespace aspect
                        "The relative tolerance up to which the linear system for "
                        "the composition system gets solved. See 'linear solver "
                        "tolerance' for more details.");
+
+
+    prm.enter_subsection("Formulation");
+    {
+      prm.declare_entry ("Formulation", "custom",
+                         Patterns::Selection ("isothermal compression|custom|anelastic liquid approximation|boussinesq approximation"),
+                         "Select a formulation for the basic equations. Different "
+                         "published formulations are available in ASPECT (see the list of "
+                         "possible values for this parameter in the manual for available options). "
+                         "Two ASPECT specific options are\n"
+                         "\\begin{enumerate}\n"
+                         "  \\item `isothermal compression': ASPECT's original "
+                         "formulation, using the explicit compressible mass equation, "
+                         "and the full density for the temperature equation.\n"
+                         "  \\item `custom': A custom selection of `Mass conservation' and "
+                         "`Temperature equation'.\n"
+                         "\\end{enumerate}\n\n"
+                         "\\note{Warning: The `custom' option is "
+                         "implemented for advanced users that want full control over the "
+                         "equations solved. It is possible to choose inconsistent formulations "
+                         "and no error checking is performed on the consistency of the resulting "
+                         "equations.}");
+
+      prm.declare_entry ("Mass conservation", "ask material model",
+                         Patterns::Selection ("incompressible|isothermal compression|"
+                                              "reference density profile|implicit reference density profile|"
+                                              "ask material model"),
+                         "Possible approximations for the density derivatives in the mass "
+                         "conservation equation. Note that this parameter is only evaluated "
+                         "if `Formulation' is set to `custom'. Other formulations ignore "
+                         "the value of this parameter.");
+      prm.declare_entry ("Temperature equation", "real density",
+                         Patterns::Selection ("real density|reference density profile"),
+                         "Possible approximations for the density in the temperature equation. "
+                         "Possible approximations are `real density' and `reference density profile'. "
+                         "Note that this parameter is only evaluated "
+                         "if `Formulation' is set to `custom'. Other formulations ignore "
+                         "the value of this parameter.");
+    }
+    prm.leave_subsection();
 
     // next declare parameters that pertain to the equations to be
     // solved, along with boundary conditions etc. note that at this
@@ -409,7 +457,7 @@ namespace aspect
                          "use in your model.");
       prm.declare_entry ("Prescribed velocity boundary indicators", "",
                          Patterns::Map (Patterns::Anything(),
-                                        Patterns::Selection(VelocityBoundaryConditions::get_names<dim>())),
+                                        Patterns::Selection(BoundaryVelocity::get_names<dim>())),
                          "A comma separated list denoting those boundaries "
                          "on which the velocity is prescribed, i.e., where unknown "
                          "external forces act to prescribe a particular velocity. This is "
@@ -442,7 +490,7 @@ namespace aspect
                          "to true, velocity should be given in m/yr. ");
       prm.declare_entry ("Prescribed traction boundary indicators", "",
                          Patterns::Map (Patterns::Anything(),
-                                        Patterns::Selection(TractionBoundaryConditions::get_names<dim>())),
+                                        Patterns::Selection(BoundaryTraction::get_names<dim>())),
                          "A comma separated list denoting those boundaries "
                          "on which a traction force is prescribed, i.e., where "
                          "known external forces act, resulting in an unknown velocity. This is "
@@ -519,6 +567,11 @@ namespace aspect
                          Patterns::Double(0,1),
                          "The fraction of cells with the smallest error that "
                          "should be flagged for coarsening.");
+      prm.declare_entry ("Adapt by fraction of cells", "false",
+                         Patterns::Bool(),
+                         "Use fraction of the total number of cells instead of "
+                         "fraction of the total error as the limit for refinement "
+                         "and coarsening.");
       prm.declare_entry ("Minimum refinement level", "0",
                          Patterns::Integer (0),
                          "The minimum refinement level each cell should have, "
@@ -542,6 +595,19 @@ namespace aspect
                          "Whether or not the postproccessors should be executed after "
                          "each of the initial adaptive refinement cycles that are run at "
                          "the start of the simulation.");
+    }
+    prm.leave_subsection();
+
+    prm.enter_subsection ("Postprocess");
+    {
+      prm.declare_entry ("Run postprocessors on nonlinear iterations", "false",
+                         Patterns::Bool (),
+                         "Whether or not the postproccessors should be executed after "
+                         "each of the nonlinear iterations done within one time step. "
+                         "As this is mainly an option for the purposes of debugging, "
+                         "it is not supported when the 'Time between graphical output' "
+                         "is larger than zero, or when the postprocessor is not intended "
+                         "to be run more than once per timestep.");
     }
     prm.leave_subsection();
 
@@ -569,16 +635,29 @@ namespace aspect
                          "in the Stokes system. The polynomial degree for the pressure "
                          "variable will then be one less in order to make the velocity/pressure "
                          "pair conform with the usual LBB (Babuska-Brezzi) condition. In "
-                         "other words, we are using a Taylor-Hood element for the Stoeks "
+                         "other words, we are using a Taylor-Hood element for the Stokes "
                          "equations and this parameter indicates the polynomial degree of it. "
+                         "As an example, a value of 2 for this parameter will yield the "
+                         "element $Q_2^d \times Q_1$ for the $d$ velocity components and the "
+                         "pressure, respectively (unless the `Use locally conservative "
+                         "discretization' parameter is set, which modifies the pressure "
+                         "element). "
                          "Units: None.");
       prm.declare_entry ("Temperature polynomial degree", "2",
                          Patterns::Integer (1),
                          "The polynomial degree to use for the temperature variable. "
+                         "As an example, a value of 2 for this parameter will yield "
+                         "either the element $Q_2$ or $DGQ_2$ for the temperature "
+                         "field, depending on whether we use a continuous or "
+                         "discontinuous field. "
                          "Units: None.");
       prm.declare_entry ("Composition polynomial degree", "2",
                          Patterns::Integer (1),
                          "The polynomial degree to use for the composition variable(s). "
+                         "As an example, a value of 2 for this parameter will yield "
+                         "either the element $Q_2$ or $DGQ_2$ for the compositional "
+                         "field(s), depending on whether we use continuous or "
+                         "discontinuous field(s). "
                          "Units: None.");
       prm.declare_entry ("Use locally conservative discretization", "false",
                          Patterns::Bool (),
@@ -637,18 +716,20 @@ namespace aspect
                            Patterns::Integer (1, 2),
                            "The exponent $\\alpha$ in the entropy viscosity stabilization. Valid "
                            "options are 1 or 2. The recommended setting is 2. (This parameter does "
-                           "not correspond to any variable in the 2012 GJI paper by Kronbichler, "
+                           "not correspond to any variable in the 2012 paper by Kronbichler, "
                            "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
                            "Rather, the paper always uses 2 as the exponent in the definition "
                            "of the entropy, following equation (15) of the paper. The full "
-                           "approach is discussed in \\cite{GPP11}.) "
+                           "approach is discussed in \\cite{GPP11}.) Note that this is not the "
+                           "thermal expansion coefficient, also commonly referred to as $\\alpha$."
                            "Units: None.");
         prm.declare_entry ("cR", "0.33",
                            Patterns::Double (0),
                            "The $c_R$ factor in the entropy viscosity "
                            "stabilization. (For historical reasons, the name used here is different "
-                           "from the one used in the 2012 GJI paper by Kronbichler, "
-                           "Heister and Bangerth that describes ASPECT. This parameter corresponds "
+                           "from the one used in the 2012 paper by Kronbichler, "
+                           "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
+                           "This parameter corresponds "
                            "to the factor $\\alpha_E$ in the formulas following equation (15) of "
                            "the paper. After further experiments, we have also chosen to use a "
                            "different value than described there.) Units: None.");
@@ -657,8 +738,9 @@ namespace aspect
                            "The $\\beta$ factor in the artificial viscosity "
                            "stabilization. An appropriate value for 2d is 0.078 "
                            "and 0.117 for 3d. (For historical reasons, the name used here is different "
-                           "from the one used in the 2012 GJI paper by Kronbichler, "
-                           "Heister and Bangerth that describes ASPECT. This parameter corresponds "
+                           "from the one used in the 2012 paper by Kronbichler, "
+                           "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
+                           "This parameter corresponds "
                            "to the factor $\\alpha_\\text {max}$ in the formulas following equation (15) of "
                            "the paper. After further experiments, we have also chosen to use a "
                            "different value than described there: It can be chosen as stated there for "
@@ -669,8 +751,9 @@ namespace aspect
                            "The strain rate scaling factor in the artificial viscosity "
                            "stabilization. This parameter determines how much the strain rate (in addition "
                            "to the velocity) should influence the stabilization. (This parameter does "
-                           "not correspond to any variable in the 2012 GJI paper by Kronbichler, "
-                           "Heister and Bangerth that describes ASPECT. Rather, the paper always uses "
+                           "not correspond to any variable in the 2012 paper by Kronbichler, "
+                           "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
+                           "Rather, the paper always uses "
                            "0, i.e. they specify the maximum dissipation $\\nu_h^\\text{max}$ as "
                            "$\\nu_h^\\text{max}\\vert_K = \\alpha_\\text{max} h_K \\|\\mathbf u\\|_{\\infty,K}$. "
                            "Here, we use "
@@ -739,6 +822,29 @@ namespace aspect
       prm.declare_entry ("Names of fields", "",
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
+      prm.declare_entry ("Compositional field methods", "",
+                         Patterns::List (Patterns::Selection("field|particles")),
+                         "A comma separated list denoting the solution method of each "
+                         "compositional field. Each entry of the list must be "
+                         "one of the currently implemented field types: "
+                         "``field'', or ``particles''.");
+      prm.declare_entry ("Mapped particle properties", "",
+                         Patterns::Map (Patterns::Anything(),
+                                        Patterns::Anything()),
+                         "A comma separated list denoting the particle properties "
+                         "that will be projected to those compositional fields that "
+                         "are of the ``particles'' field type."
+                         "\n\n"
+                         "The format of valid entries for this parameter is that of a map "
+                         "given as ``key1: value1, key2: value2 [component2], key3: value3 [component4], "
+                         "...'' where each key must be a valid field name of the "
+                         "``particles'' type, and each value must be one of the currently "
+                         "selected particle properties. Component is a component index of "
+                         "the particle property that is 0 by default, but can be set up to "
+                         "n-1, where n is the number of vector components of this particle "
+                         "property. The component indicator only needs to be "
+                         "set if not the first component of the particle property should be "
+                         "mapped (e.g. the $y$-component of the velocity at the particle positions).");
       prm.declare_entry ("List of normalized fields", "",
                          Patterns::List (Patterns::Integer(0)),
                          "A list of integers smaller than or equal to the number of "
@@ -839,24 +945,9 @@ namespace aspect
     else if (output_directory[output_directory.size()-1] != '/')
       output_directory += "/";
 
-    // verify that the output directory actually exists. if it doesn't, create
-    // it on processor zero
-    if ((Utilities::MPI::this_mpi_process(mpi_communicator) == 0) &&
-        (opendir(output_directory.c_str()) == NULL))
-      {
-        std::cout << "\n"
-                  << "-----------------------------------------------------------------------------\n"
-                  << "The output directory <" << output_directory
-                  << "> provided in the input file appears not to exist.\n"
-                  << "ASPECT will create it for you.\n"
-                  << "-----------------------------------------------------------------------------\n\n"
-                  << std::endl;
-
-        const int error = Utilities::mkdirp(output_directory, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-
-        AssertThrow (error == 0,
-                     ExcMessage (std::string("Can't create the output directory at <") + output_directory + ">"));
-      }
+    Utilities::create_directory (output_directory,
+                                 mpi_communicator,
+                                 false);
 
     if (prm.get ("Resume computation") == "true")
       resume_computation = true;
@@ -897,6 +988,7 @@ namespace aspect
       adaptive_refinement_interval = prm.get_integer ("Time steps between mesh refinement");
       refinement_fraction          = prm.get_double ("Refinement fraction");
       coarsening_fraction          = prm.get_double ("Coarsening fraction");
+      adapt_by_fraction_of_cells   = prm.get_bool ("Adapt by fraction of cells");
       min_grid_level               = prm.get_integer ("Minimum refinement level");
 
       AssertThrow(refinement_fraction >= 0 && coarsening_fraction >= 0,
@@ -922,6 +1014,46 @@ namespace aspect
     }
     prm.leave_subsection ();
 
+    prm.enter_subsection ("Postprocess");
+    {
+      run_postprocessors_on_nonlinear_iterations = prm.get_bool("Run postprocessors on nonlinear iterations");
+    }
+    prm.leave_subsection ();
+
+    prm.enter_subsection ("Formulation");
+    {
+      // The following options each have a set of conditions to be met in order
+      // for the formulation to be consistent, however, most of
+      // the information is not available at this point. Therefore, the error checking is done
+      // in Simulator<dim>::check_consistency_of_formulation() after the initialization of
+      // material models, heating plugins, and adiabatic conditions.
+      formulation = Formulation::parse(prm.get("Formulation"));
+      if (formulation == Formulation::isothermal_compression)
+        {
+          formulation_mass_conservation = Formulation::MassConservation::isothermal_compression;
+          formulation_temperature_equation = Formulation::TemperatureEquation::real_density;
+        }
+      else if (formulation == Formulation::boussinesq_approximation)
+        {
+          formulation_mass_conservation = Formulation::MassConservation::incompressible;
+          formulation_temperature_equation = Formulation::TemperatureEquation::reference_density_profile;
+        }
+      else if (formulation == Formulation::anelastic_liquid_approximation)
+        {
+          // equally possible: implicit_reference_profile
+          formulation_mass_conservation = Formulation::MassConservation::reference_density_profile;
+          formulation_temperature_equation = Formulation::TemperatureEquation::reference_density_profile;
+        }
+      else if (formulation == Formulation::custom)
+        {
+          formulation_mass_conservation = Formulation::MassConservation::parse(prm.get("Mass conservation"));
+          formulation_temperature_equation = Formulation::TemperatureEquation::parse(prm.get("Temperature equation"));
+        }
+      else AssertThrow(false, ExcNotImplemented());
+    }
+    prm.leave_subsection ();
+
+
     prm.enter_subsection ("Model settings");
     {
       include_melt_transport = prm.get_bool ("Include melt transport");
@@ -930,6 +1062,11 @@ namespace aspect
         nullspace_removal = NullspaceRemoval::none;
         std::vector<std::string> nullspace_names =
           Utilities::split_string_list(prm.get("Remove nullspace"));
+        AssertThrow(Utilities::has_unique_entries(nullspace_names),
+                    ExcMessage("The list of strings for the parameter "
+                               "'Model settings/Remove nullspace' contains entries more than once. "
+                               "This is not allowed. Please check your parameter file."));
+
         for (unsigned int i=0; i<nullspace_names.size(); ++i)
           {
             if (nullspace_names[i]=="net rotation")
@@ -1012,12 +1149,6 @@ namespace aspect
           = prm.get_bool("Use limiter for discontinuous temperature solution");
         use_limiter_for_discontinuous_composition_solution
           = prm.get_bool("Use limiter for discontinuous composition solution");
-        if (use_limiter_for_discontinuous_temperature_solution
-            || use_limiter_for_discontinuous_composition_solution)
-          AssertThrow (nonlinear_solver == NonlinearSolver::IMPES,
-                       ExcMessage ("The bound preserving limiter currently is "
-                                   "only implemented for the scheme using IMPES nonlinear solver. "
-                                   "Please deactivate the limiter or change the solver scheme."));
         global_temperature_max_preset       = prm.get_double ("Global temperature maximum");
         global_temperature_min_preset       = prm.get_double ("Global temperature minimum");
         global_composition_max_preset       = Utilities::string_to_double
@@ -1124,6 +1255,136 @@ namespace aspect
                      ExcMessage ("The number of multiple 'Global composition maximum' values "
                                  "and the number of multiple 'Global composition minimum' values "
                                  "have to be the same as the total number of compositional fields"));
+
+      std::vector<std::string> x_compositional_field_methods
+        = Utilities::split_string_list
+          (prm.get ("Compositional field methods"));
+
+      AssertThrow ((x_compositional_field_methods.size() == 0) ||
+                   (x_compositional_field_methods.size() == 1) ||
+                   (x_compositional_field_methods.size() == n_compositional_fields),
+                   ExcMessage ("The length of the list of names for the field method of compositional "
+                               "fields needs to be empty, or have one entry, or have a length equal to "
+                               "the number of compositional fields."));
+
+      // If no method is specified set the default, which is solve every composition
+      // by a continuous field method
+      if (x_compositional_field_methods.size() == 0)
+        x_compositional_field_methods = std::vector<std::string> (n_compositional_fields,"field");
+      // If only one method is specified assume all fields are solved by this method
+      else if (x_compositional_field_methods.size() == 1)
+        x_compositional_field_methods = std::vector<std::string> (n_compositional_fields,x_compositional_field_methods[0]);
+
+
+      // Parse all field methods and store them, the vector should be empty
+      // since nobody should have written into it yet.
+      Assert(compositional_field_methods.size() == 0,
+             ExcInternalError());
+      compositional_field_methods.resize(n_compositional_fields);
+      for (unsigned int i = 0; i < n_compositional_fields; ++i)
+        {
+          if (x_compositional_field_methods[i] == "field")
+            compositional_field_methods[i] = AdvectionFieldMethod::fem_field;
+          else if (x_compositional_field_methods[i] == "particles")
+            compositional_field_methods[i] = AdvectionFieldMethod::particles;
+          else
+            AssertThrow(false,ExcNotImplemented());
+        }
+
+
+      const std::vector<std::string> x_mapped_particle_properties
+        = Utilities::split_string_list
+          (prm.get ("Mapped particle properties"));
+
+      const unsigned int number_of_particle_fields =
+        std::count(compositional_field_methods.begin(),compositional_field_methods.end(),AdvectionFieldMethod::particles);
+
+      AssertThrow ((x_mapped_particle_properties.size() == number_of_particle_fields)
+                   || (x_mapped_particle_properties.size() == 0),
+                   ExcMessage ("The list of names for the mapped particle property fields needs to either be empty or have a length equal to "
+                               "the number of compositional fields that are interpolated from particle properties."));
+
+      for (std::vector<std::string>::const_iterator p = x_mapped_particle_properties.begin();
+           p != x_mapped_particle_properties.end(); ++p)
+        {
+          // each entry has the format (white space is optional):
+          // <name> : <value (might have spaces)> [component]
+          //
+          // first tease apart the two halves
+          const std::vector<std::string> split_parts = Utilities::split_string_list (*p, ':');
+          AssertThrow (split_parts.size() == 2,
+                       ExcMessage ("The format for mapped particle properties  "
+                                   "requires that each entry has the form `"
+                                   "<name of field> : <particle property> [component]', "
+                                   "but there does not appear to be a colon in the entry <"
+                                   + *p
+                                   + ">."));
+
+          // the easy part: get the name of the compositional field
+          const std::string key = split_parts[0];
+
+          // check that the names used are actually names of fields,
+          // are solved by particles, and are unique in this list
+          std::vector<std::string>::iterator field_name_iterator = std::find(names_of_compositional_fields.begin(),
+                                                                             names_of_compositional_fields.end(), key);
+          AssertThrow (field_name_iterator
+                       != names_of_compositional_fields.end(),
+                       ExcMessage ("Name of field <" + key +
+                                   "> appears in the parameter "
+                                   "<Compositional fields/Mapped particle properties>, but "
+                                   "there is no field with this name."));
+
+          const unsigned int compositional_field_index = std::distance(names_of_compositional_fields.begin(),
+                                                                       field_name_iterator);
+
+          AssertThrow (compositional_field_methods[compositional_field_index]
+                       == AdvectionFieldMethod::particles,
+                       ExcMessage ("The field <" + key +
+                                   "> appears in the parameter <Compositional fields/Mapped particle properties>, but "
+                                   "is not advected by a particle method."));
+
+          AssertThrow (std::count(names_of_compositional_fields.begin(),
+                                  names_of_compositional_fields.end(), key) == 1,
+                       ExcMessage ("Name of field <" + key +
+                                   "> appears more than once in the parameter "
+                                   "<Compositional fields/Mapped particle properties>."));
+
+          // now for the rest. since we don't know whether there is a
+          // component selector, start reading at the end and subtract
+          // a number that might be a component selector
+          std::string particle_property = split_parts[1];
+          std::string component;
+          if ((particle_property.size()>3) &&
+              (particle_property[particle_property.size()-1] == ']'))
+            {
+              particle_property.erase (--particle_property.end());
+
+              // this handles the (rare) case of multi digit components
+              while ((particle_property[particle_property.size()-1] >= '0') &&
+                     (particle_property[particle_property.size()-1] <= '9'))
+                {
+                  component.insert(component.begin(),particle_property[particle_property.size()-1]);
+                  particle_property.erase (--particle_property.end());
+                }
+
+              AssertThrow (particle_property[particle_property.size()-1] == '[',
+                           ExcMessage("Problem in parsing a component selector from the string <"
+                                      + split_parts[1] + ">. A component selector has to be of the "
+                                      "form [x], where x must be an unsigned integer between 0 "
+                                      "and the maximum number of components of this particle property."));
+
+              particle_property.erase (--particle_property.end());
+            }
+
+          // we've stopped reading component selectors now.
+          // eat spaces that may be at the end of particle_property to get key
+          while ((particle_property.size()>0) && (particle_property[particle_property.size()-1] == ' '))
+            particle_property.erase (--particle_property.end());
+
+          // finally, put it into the list
+          mapped_particle_properties.insert(std::make_pair(compositional_field_index,
+                                                           std::make_pair(particle_property,atoi(component.c_str()))));
+        }
     }
     prm.leave_subsection ();
 
@@ -1330,11 +1591,11 @@ namespace aspect
             std::pair<std::string,std::string>(comp,value);
         }
 
-      const std::vector<std::string> x_prescribed_traction_boundary_indicators
+      const std::vector<std::string> x_prescribed_boundary_traction_indicators
         = Utilities::split_string_list
           (prm.get ("Prescribed traction boundary indicators"));
-      for (std::vector<std::string>::const_iterator p = x_prescribed_traction_boundary_indicators.begin();
-           p != x_prescribed_traction_boundary_indicators.end(); ++p)
+      for (std::vector<std::string>::const_iterator p = x_prescribed_boundary_traction_indicators.begin();
+           p != x_prescribed_boundary_traction_indicators.end(); ++p)
         {
           // each entry has the format (white space is optional):
           // <id> [x][y][z] : <value (might have spaces)>
@@ -1408,14 +1669,14 @@ namespace aspect
                                               + error));
             }
 
-          AssertThrow (prescribed_traction_boundary_indicators.find(boundary_id)
-                       == prescribed_traction_boundary_indicators.end(),
+          AssertThrow (prescribed_boundary_traction_indicators.find(boundary_id)
+                       == prescribed_boundary_traction_indicators.end(),
                        ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
                                    "> appears more than once in the list of indicators "
                                    "for nonzero traction boundaries."));
 
           // finally, put it into the list
-          prescribed_traction_boundary_indicators[boundary_id] =
+          prescribed_boundary_traction_indicators[boundary_id] =
             std::pair<std::string,std::string>(comp,value);
         }
 
@@ -1438,14 +1699,14 @@ namespace aspect
     GeometryModel::declare_parameters <dim>(prm);
     InitialTopographyModel::declare_parameters <dim>(prm);
     GravityModel::declare_parameters<dim> (prm);
-    InitialConditions::declare_parameters<dim> (prm);
-    CompositionalInitialConditions::declare_parameters<dim> (prm);
+    InitialTemperature::Manager<dim>::declare_parameters (prm);
+    InitialComposition::Manager<dim>::declare_parameters (prm);
     PrescribedStokesSolution::declare_parameters<dim> (prm);
     BoundaryTemperature::declare_parameters<dim> (prm);
     BoundaryComposition::declare_parameters<dim> (prm);
     AdiabaticConditions::declare_parameters<dim> (prm);
-    VelocityBoundaryConditions::declare_parameters<dim> (prm);
-    TractionBoundaryConditions::declare_parameters<dim> (prm);
+    BoundaryVelocity::declare_parameters<dim> (prm);
+    BoundaryTraction::declare_parameters<dim> (prm);
   }
 }
 

@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__postprocess_heat_flux_map_h
-#define __aspect__postprocess_heat_flux_map_h
+#ifndef _aspect_postprocess_heat_flux_map_h
+#define _aspect_postprocess_heat_flux_map_h
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2014, 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__geometry_model_interface_h
-#define __aspect__geometry_model_interface_h
+#ifndef _aspect_geometry_model_interface_h
+#define _aspect_geometry_model_interface_h
 
 #include <aspect/plugins.h>
 #include <deal.II/base/parameter_handler.h>
@@ -269,6 +269,14 @@ namespace aspect
         virtual
         bool
         has_curved_elements() const;
+
+        /**
+         * If true, the queried point (in Cartesian coordinates)
+         * lies in the domain specified by the geometry.
+         */
+        virtual
+        bool
+        point_is_in_domain(const Point<dim> &p) const = 0;
 
         /**
          * Declare the parameters this class takes through input files. The

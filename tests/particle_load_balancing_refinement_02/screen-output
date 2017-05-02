@@ -9,7 +9,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving Stokes system... 24+0 iterations.
 
    Postprocessing:
-     Writing particle output: output-particle_load_balancing_refinement_02/particle-00000
+     Writing particle output: output-particle_load_balancing_refinement_02/particles/particle-00000
 
 Number of active cells: 25 (on 4 levels)
 Number of degrees of freedom: 554 (258+38+129+129)
@@ -21,10 +21,10 @@ Number of degrees of freedom: 554 (258+38+129+129)
    Solving Stokes system... 24+0 iterations.
 
    Postprocessing:
-     Writing particle output: output-particle_load_balancing_refinement_02/particle-00001
+     Writing particle output: output-particle_load_balancing_refinement_02/particles/particle-00001
 
-Number of active cells: 25 (on 4 levels)
-Number of degrees of freedom: 554 (258+38+129+129)
+Number of active cells: 10 (on 3 levels)
+Number of degrees of freedom: 246 (114+18+57+57)
 
 *** Timestep 2:  t=274.418 seconds
    Skipping temperature solve because RHS is zero.
@@ -33,43 +33,43 @@ Number of degrees of freedom: 554 (258+38+129+129)
    Solving Stokes system... 24+0 iterations.
 
    Postprocessing:
-     Writing particle output: output-particle_load_balancing_refinement_02/particle-00002
-
-Number of active cells: 25 (on 4 levels)
-Number of degrees of freedom: 554 (258+38+129+129)
-
-*** Timestep 3:  t=407.89 seconds
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 11 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24+0 iterations.
-
-   Postprocessing:
-     Writing particle output: output-particle_load_balancing_refinement_02/particle-00003
+     Writing particle output: output-particle_load_balancing_refinement_02/particles/particle-00002
 
 Number of active cells: 16 (on 4 levels)
-Number of degrees of freedom: 387 (180+27+90+90)
+Number of degrees of freedom: 391 (182+27+91+91)
 
-*** Timestep 4:  t=477.649 seconds
+*** Timestep 3:  t=382.247 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 24+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 10
+     Writing particle output: output-particle_load_balancing_refinement_02/particles/particle-00003
+
+Number of active cells: 10 (on 3 levels)
+Number of degrees of freedom: 246 (114+18+57+57)
+
+*** Timestep 4:  t=442.729 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     Writing particle output: output-particle_load_balancing_refinement_02/particles/particle-00004
 
 Number of active cells: 10 (on 3 levels)
 Number of degrees of freedom: 246 (114+18+57+57)
 
 *** Timestep 5:  t=500 seconds
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 8 iterations.
+   Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 23+0 iterations.
 
    Postprocessing:
-     Writing particle output: output-particle_load_balancing_refinement_02/particle-00004
+     Writing particle output: output-particle_load_balancing_refinement_02/particles/particle-00005
 
 Number of active cells: 10 (on 3 levels)
 Number of degrees of freedom: 246 (114+18+57+57)

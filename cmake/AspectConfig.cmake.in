@@ -22,9 +22,10 @@
 # compiled into a run-time loadable plugin for Aspect.
 
 
-FIND_PACKAGE(deal.II 8.4.0 REQUIRED HINTS @DEAL_II_PATH@)
-SET(ASPECT_INCLUDE_DIRS "@CMAKE_SOURCE_DIR@/include")
-SET(ASPECT_DIR "@CMAKE_BINARY_DIR@")
+FIND_PACKAGE(deal.II 8.4.0 QUIET REQUIRED HINTS @DEAL_II_PATH@)
+SET(Aspect_INCLUDE_DIRS "@CMAKE_SOURCE_DIR@/include")
+SET(Aspect_VERSION "@ASPECT_PACKAGE_VERSION@")
+SET(Aspect_DIR "@CMAKE_BINARY_DIR@")
 SET(ASPECT_USE_PETSC "@ASPECT_USE_PETSC@")
 # force our build type to the one that is used by ASPECT:
 SET(CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@" CACHE STRING "select debug or release mode" FORCE)
@@ -32,11 +33,11 @@ SET(CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@" CACHE STRING "select debug or release 
 MACRO(ASPECT_SETUP_PLUGIN _target)
   MESSAGE(STATUS "Setting up plugin:")
   MESSAGE(STATUS "  name <${_target}>")
-  MESSAGE(STATUS "  using ASPECT_DIR=${ASPECT_DIR}")
+  MESSAGE(STATUS "  using ASPECT_DIR ${Aspect_DIR}")
   MESSAGE(STATUS "  in @CMAKE_BUILD_TYPE@ mode")
   DEAL_II_SETUP_TARGET(${_target})
   SET_PROPERTY(TARGET ${_target} APPEND PROPERTY
-    INCLUDE_DIRECTORIES "${ASPECT_INCLUDE_DIRS}"
+    INCLUDE_DIRECTORIES "${Aspect_INCLUDE_DIRS}"
   )
 
   IF(ASPECT_USE_PETSC)
@@ -45,20 +46,22 @@ MACRO(ASPECT_SETUP_PLUGIN _target)
       APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_PETSC="1")
   ENDIF()
 
+  # export ASPECT_SOURCE_DIR as compile definition
+  TARGET_COMPILE_DEFINITIONS( ${_target} PRIVATE ASPECT_SOURCE_DIR="@CMAKE_SOURCE_DIR@")
 
-# workarounds for MAC OS
-IF (APPLE AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  # avoid linker errors about missing functions inside ASPECT:
-  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
+  # workarounds for MAC OS
+  IF (APPLE AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    # avoid linker errors about missing functions inside ASPECT:
+    SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
 
-  # make shared libraries end on .so not .dylib
-  SET_TARGET_PROPERTIES(${_target} PROPERTIES SUFFIX ".so")
-ENDIF()
+    # make shared libraries end on .so not .dylib
+    SET_TARGET_PROPERTIES(${_target} PROPERTIES SUFFIX ".so")
+  ENDIF()
 
 
-# automatically create a symbolic link to aspect in the current directory:
-ADD_CUSTOM_COMMAND(
+  # automatically create a symbolic link to aspect in the current directory:
+  ADD_CUSTOM_COMMAND(
     TARGET ${_target} POST_BUILD
-    COMMAND ln -sf ${ASPECT_DIR}/aspect .)
+    COMMAND ln -sf ${Aspect_DIR}/aspect .)
 
 ENDMACRO()

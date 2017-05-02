@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -48,7 +48,8 @@ namespace aspect
                                         (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
         {
           Point<dim> extents = gm->get_extents();
-          reference_height = extents[dim-1];
+          Point<dim> origin  = gm->get_origin();
+          reference_height = extents[dim-1]+origin[dim-1];
           vertical_gravity = true;
           relevant_boundary = (dim == 2 ? 3 : 5); //select top boundary
         }
@@ -107,8 +108,8 @@ namespace aspect
                   }
               }
 
-      double max_topography = Utilities::MPI::max(local_max_height, this->get_mpi_communicator());
-      double min_topography = Utilities::MPI::min(local_min_height, this->get_mpi_communicator());
+      const double max_topography = Utilities::MPI::max(local_max_height, this->get_mpi_communicator());
+      const double min_topography = Utilities::MPI::min(local_min_height, this->get_mpi_communicator());
 
       statistics.add_value ("Minimum topography (m)",
                             min_topography);
@@ -128,7 +129,7 @@ namespace aspect
       std::ostringstream output;
       output.precision(4);
       output << min_topography << " m, "
-             << max_topography << " m, ";
+             << max_topography << " m";
 
       return std::pair<std::string, std::string> ("Topography min/max:",
                                                   output.str());

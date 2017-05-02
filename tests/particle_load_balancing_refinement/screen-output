@@ -9,7 +9,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving Stokes system... 24+0 iterations.
 
    Postprocessing:
-     Writing particle output: output-particle_load_balancing_refinement/particle-00000
+     Writing particle output: output-particle_load_balancing_refinement/particles/particle-00000
 
 Number of active cells: 25 (on 4 levels)
 Number of degrees of freedom: 554 (258+38+129+129)
@@ -21,10 +21,10 @@ Number of degrees of freedom: 554 (258+38+129+129)
    Solving Stokes system... 24+0 iterations.
 
    Postprocessing:
-     Writing particle output: output-particle_load_balancing_refinement/particle-00001
+     Writing particle output: output-particle_load_balancing_refinement/particles/particle-00001
 
-Number of active cells: 25 (on 4 levels)
-Number of degrees of freedom: 554 (258+38+129+129)
+Number of active cells: 10 (on 3 levels)
+Number of degrees of freedom: 246 (114+18+57+57)
 
 Termination requested by criterion: end time
 

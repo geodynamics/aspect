@@ -1,8 +1,8 @@
-# This is a modification of the van-keken-tracer tests.
-# It tests that the 'no output' tracer output option works, i.e.
-# that no tracer output is written, but the tracers are generated and
+# This is a modification of the van-keken-particle tests.
+# It tests that the 'no output' particle output option works, i.e.
+# that no particle output is written, but the particles are generated and
 # advected. Since we can not test for not existing files the only test is
-# that no tracer output file is mentioned in the screen output.
+# that no particle output file is mentioned in the screen output.
 
 set Dimension                              = 2
 set Start time                             = 0
@@ -47,7 +47,7 @@ subsection Boundary temperature model
   set Model name = box
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function expression = 0
@@ -63,7 +63,7 @@ subsection Compositional fields
   set Number of fields = 1
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y,z
@@ -95,13 +95,13 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, composition statistics,tracers
+  set List of postprocessors = velocity statistics, composition statistics,particles
 
-  subsection Tracers
-    set Number of tracers = 30
+  subsection Particles
+    set Number of particles = 30
     set Time between data output = 0
     set Data output format = none
-    set List of tracer properties = function, initial composition, initial position
+    set List of particle properties = function, initial composition, initial position
     subsection Function
       set Variable names      = x,y,z
       set Function expression = if( (z>0.2+0.02*cos(pi*x/0.9142)) , 0 , 1 )

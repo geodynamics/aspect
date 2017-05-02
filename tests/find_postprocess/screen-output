@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.1.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Loading shared library <./libfind_postprocess.so>
 
@@ -18,7 +11,7 @@ PressureStatistics is not found!
 HeatFluxStatistics is found!
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 30+0 iterations.
 
    Postprocessing:
      Heat fluxes through boundary parts: 1.688e-07 W, 2.017e-05 W, 2.43e-07 W, 2.43e-07 W
@@ -27,18 +20,6 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.175s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |    0.0176s |        10% |
-| Assemble temperature system     |         1 |     0.018s |        10% |
-| Build Stokes preconditioner     |         1 |    0.0224s |        13% |
-| Build temperature preconditioner|         1 |   0.00142s |      0.81% |
-| Solve Stokes system             |         1 |    0.0152s |       8.7% |
-| Solve temperature system        |         1 |  0.000428s |      0.24% |
-| Initialization                  |         2 |    0.0543s |        31% |
-| Postprocessing                  |         1 |   0.00146s |      0.83% |
-| Setup dof systems               |         1 |    0.0228s |        13% |
 +---------------------------------+-----------+------------+------------+
 
