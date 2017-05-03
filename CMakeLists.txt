@@ -164,6 +164,19 @@ IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
   IF(NOT test_cmake_result EQUAL 0)
     MESSAGE(FATAL_ERROR "ERROR: Test project could not be configured.")
   ENDIF()
+
+
+  IF(POLICY CMP0037)
+    # allow to override "test" target
+    CMAKE_POLICY(SET CMP0037 OLD)
+  ENDIF()
+
+  ADD_CUSTOM_TARGET(test
+    COMMAND ${CMAKE_COMMAND} --build . --target test
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+    DEPENDS aspect
+    COMMENT "Running tests ...")
+
 ENDIF()
 
 
