@@ -115,7 +115,7 @@ For more information, see the section in the manual that discusses the general m
 {\it Default:} 1e-2
 
 
-{\it Description:} A relative tolerance up to which the approximate inverse of the A block of the Stokes system is computed. This approximate A is used in the preconditioning used in the GMRES solver.
+{\it Description:} A relative tolerance up to which the approximate inverse of the $A$ block of the Stokes system is computed. This approximate $A$ is used in the preconditioning used in the GMRES solver. The exact definition of this block preconditioner for the Stokes equation can be found in \cite{KHB12}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 1$
@@ -131,7 +131,7 @@ For more information, see the section in the manual that discusses the general m
 {\it Default:} 1e-6
 
 
-{\it Description:} A relative tolerance up to which the approximate inverse of the S block (Schur complement matrix, $S = BA^{-1}B^{T}$) of the Stokes system is computed. This approximate inverse of the S block is used in the preconditioning used in the GMRES solver.
+{\it Description:} A relative tolerance up to which the approximate inverse of the $S$ block (i.e., the Schur complement matrix $S = BA^{-1}B^{T}$) of the Stokes system is computed. This approximate inverse of the $S$ block is used in the preconditioning used in the GMRES solver. The exact definition of this block preconditioner for the Stokes equation can be found in \cite{KHB12}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 1$
@@ -239,13 +239,13 @@ In practice, you should choose the value of this parameter to be so that if you 
 
 \index[prmindex]{Number of cheap Stokes solver steps}
 \index[prmindexfull]{Number of cheap Stokes solver steps}
-{\it Value:} 30
+{\it Value:} 200
 
 
-{\it Default:} 30
+{\it Default:} 200
 
 
-{\it Description:} As explained in the ASPECT paper (Kronbichler, Heister, and Bangerth, GJI 2012) we first try to solve the Stokes system in every time step using a GMRES iteration with a poor but cheap preconditioner. By default, we try whether we can converge the GMRES solver in 30 such iterations before deciding that we need a better preconditioner. This is sufficient for simple problems with constant viscosity and we never need the second phase with the more expensive preconditioner. On the other hand, for more complex problems, and in particular for problems with strongly varying viscosity, the 30 cheap iterations don't actually do very much good and one might skip this part right away. In that case, this parameter can be set to zero, i.e., we immediately start with the better but more expensive preconditioner.
+{\it Description:} As explained in the ASPECT paper (Kronbichler, Heister, and Bangerth, GJI 2012, \cite{KHB12}) we first try to solve the Stokes system in every time step using a GMRES iteration with a poor but cheap preconditioner. By default, we try whether we can converge the GMRES solver in 200 such iterations before deciding that we need a better preconditioner. This is sufficient for simple problems with variable viscosity and we never need the second phase with the more expensive preconditioner. On the other hand, for more complex problems, and in particular for problems with strongly nonlinear viscosity, the 200 cheap iterations don't actually do very much good and one might skip this part right away. In that case, this parameter can be set to zero, i.e., we immediately start with the better but more expensive preconditioner.
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
@@ -2184,146 +2184,6 @@ The format of valid entries for this parameter is that of a map given as ``key1:
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \end{itemize}
 
-\subsection{Parameters in section \tt Compositional initial conditions}
-\label{parameters:Compositional_20initial_20conditions}
-
-\begin{itemize}
-\item {\it Parameter name:} {\tt Model name}
-\phantomsection\label{parameters:Compositional initial conditions/Model name}
-
-
-\index[prmindex]{Model name}
-\index[prmindexfull]{Compositional initial conditions!Model name}
-{\it Value:} function
-
-
-{\it Default:} function
-
-
-{\it Description:} Select one of the following models:
-
-`ascii data': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. The order of the data columns has to be 'x', 'y', 'composition1', 'composition2', etc. in a 2d model and 'x', 'y', 'z', 'composition1', 'composition2', etc. in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model.Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the data will still be handled as Cartesian, however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions.
-
-`function': Specify the composition in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
-
-
-{\it Possible values:} Any one of ascii data, function
-\end{itemize}
-
-
-
-\subsection{Parameters in section \tt Compositional initial conditions/Ascii data model}
-\label{parameters:Compositional_20initial_20conditions/Ascii_20data_20model}
-
-\begin{itemize}
-\item {\it Parameter name:} {\tt Data directory}
-\phantomsection\label{parameters:Compositional initial conditions/Ascii data model/Data directory}
-
-
-\index[prmindex]{Data directory}
-\index[prmindexfull]{Compositional initial conditions!Ascii data model!Data directory}
-{\it Value:} \$ASPECT\_SOURCE\_DIR/data/compositional-initial-conditions/ascii-data/test/
-
-
-{\it Default:} \$ASPECT\_SOURCE\_DIR/data/compositional-initial-conditions/ascii-data/test/
-
-
-{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the 'data/' subdirectory of ASPECT. 
-
-
-{\it Possible values:} A directory name
-\item {\it Parameter name:} {\tt Data file name}
-\phantomsection\label{parameters:Compositional initial conditions/Ascii data model/Data file name}
-
-
-\index[prmindex]{Data file name}
-\index[prmindexfull]{Compositional initial conditions!Ascii data model!Data file name}
-{\it Value:} box\_2d.txt
-
-
-{\it Default:} box\_2d.txt
-
-
-{\it Description:} The file name of the material data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of a box or a spherical shell).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
-
-
-{\it Possible values:} Any string
-\item {\it Parameter name:} {\tt Scale factor}
-\phantomsection\label{parameters:Compositional initial conditions/Ascii data model/Scale factor}
-
-
-\index[prmindex]{Scale factor}
-\index[prmindexfull]{Compositional initial conditions!Ascii data model!Scale factor}
-{\it Value:} 1
-
-
-{\it Default:} 1
-
-
-{\it Description:} Scalar factor, which is applied to the boundary velocity. You might want to use this to scale the velocities to a reference model (e.g. with free-slip boundary) or another plate reconstruction. Another way to use this factor is to convert units of the input files. The unit is assumed to bem/s or m/yr depending on the 'Use years in output instead of seconds' flag. If you provide velocities in cm/yr set this factor to 0.01.
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\end{itemize}
-
-\subsection{Parameters in section \tt Compositional initial conditions/Function}
-\label{parameters:Compositional_20initial_20conditions/Function}
-
-\begin{itemize}
-\item {\it Parameter name:} {\tt Function constants}
-\phantomsection\label{parameters:Compositional initial conditions/Function/Function constants}
-
-
-\index[prmindex]{Function constants}
-\index[prmindexfull]{Compositional initial conditions!Function!Function constants}
-{\it Value:} 
-
-
-{\it Default:} 
-
-
-{\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
-
-A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
-
-
-{\it Possible values:} Any string
-\item {\it Parameter name:} {\tt Function expression}
-\phantomsection\label{parameters:Compositional initial conditions/Function/Function expression}
-
-
-\index[prmindex]{Function expression}
-\index[prmindexfull]{Compositional initial conditions!Function!Function expression}
-{\it Value:} 0
-
-
-{\it Default:} 0
-
-
-{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
-
-If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
-
-
-{\it Possible values:} Any string
-\item {\it Parameter name:} {\tt Variable names}
-\phantomsection\label{parameters:Compositional initial conditions/Function/Variable names}
-
-
-\index[prmindex]{Variable names}
-\index[prmindexfull]{Compositional initial conditions!Function!Variable names}
-{\it Value:} x,y,t
-
-
-{\it Default:} x,y,t
-
-
-{\it Description:} The name of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated is `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
-
-
-{\it Possible values:} Any string
-\end{itemize}
-
 \subsection{Parameters in section \tt Discretization}
 \label{parameters:Discretization}
 
@@ -2766,7 +2626,7 @@ The names of the boundaries listed here can either be numbers (in which case the
 
 {\it Description:} Select one of the following models:
 
-`box': A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. The box geometry labels its 2*dim sides as follows: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries; in 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries (see also the documentation of the deal.II class ``GeometryInfo''). You can also use symbolic names ``left'', ``right'', etc., to refer to these boundaries in input files.
+`box': A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. The box geometry labels its 2*dim sides as follows: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries; in 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries (see also the documentation of the deal.II class ``GeometryInfo''). You can also use symbolic names ``left'', ``right'', etc., to refer to these boundaries in input files. It is also possible to add initial topography to the box model. Note however that this is done after the last initial adaptive refinement cycle. Also, initial topography is supposed to be small, as it is not taken into account when depth or a representative point is computed. 
 
 `box with lithosphere boundary indicators': A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. This geometry model labels its sides with 2*dim+2*(dim-1) boundary indicators: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries, while indicators4 and 5 denote the upper part of the left and right vertical boundary, respectively. In 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries (see also the documentation of the deal.II class ``GeometryInfo''), while indicators 6, 7, 8 and 9 denote the left, rigth, front and back upper parts of the vertical boundaries, respectively. You can also use symbolic names ``left'', ``right'', ``left lithosphere'', etc., to refer to these boundaries in input files.
 
@@ -4224,10 +4084,6 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} Any string
 \end{itemize}
 
-\subsection{Parameters in section \tt Heating model/Latent heat}
-\label{parameters:Heating_20model/Latent_20heat}
-
-
 \subsection{Parameters in section \tt Heating model/Latent heat melt}
 \label{parameters:Heating_20model/Latent_20heat_20melt}
 
@@ -4384,20 +4240,224 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \end{itemize}
 
-\subsection{Parameters in section \tt Heating model/Shear heating}
-\label{parameters:Heating_20model/Shear_20heating}
-
-
-\subsection{Parameters in section \tt Initial conditions}
-\label{parameters:Initial_20conditions}
+\subsection{Parameters in section \tt Initial composition model}
+\label{parameters:Initial_20composition_20model}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt List of model names}
+\phantomsection\label{parameters:Initial composition model/List of model names}
+
+
+\index[prmindex]{List of model names}
+\index[prmindexfull]{Initial composition model!List of model names}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A comma separated list of initial composition models that describe the initial composition field. The results of each of these criteria will be added.
+
+The following heating models are available:
+
+`ascii data': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. The order of the data columns has to be 'x', 'y', 'composition1', 'composition2', etc. in a 2d model and 'x', 'y', 'z', 'composition1', 'composition2', etc. in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model.Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the data will still be handled as Cartesian, however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions.
+
+`function': Specify the composition in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+
+
+{\it Possible values:} A comma-separated list of any of ascii data, function
 \item {\it Parameter name:} {\tt Model name}
-\phantomsection\label{parameters:Initial conditions/Model name}
+\phantomsection\label{parameters:Initial composition model/Model name}
 
 
 \index[prmindex]{Model name}
-\index[prmindexfull]{Initial conditions!Model name}
+\index[prmindexfull]{Initial composition model!Model name}
+{\it Value:} unspecified
+
+
+{\it Default:} unspecified
+
+
+{\it Description:} Select one of the following models:
+
+Warning: This is the old formulation of specifying initial composition models and shouldn't be used. Please use 'List of model names' instead.`ascii data': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. The order of the data columns has to be 'x', 'y', 'composition1', 'composition2', etc. in a 2d model and 'x', 'y', 'z', 'composition1', 'composition2', etc. in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model.Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the data will still be handled as Cartesian, however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions.
+
+`function': Specify the composition in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+
+
+{\it Possible values:} Any one of ascii data, function, unspecified
+\end{itemize}
+
+
+
+\subsection{Parameters in section \tt Initial composition model/Ascii data model}
+\label{parameters:Initial_20composition_20model/Ascii_20data_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Data directory}
+\phantomsection\label{parameters:Initial composition model/Ascii data model/Data directory}
+
+
+\index[prmindex]{Data directory}
+\index[prmindexfull]{Initial composition model!Ascii data model!Data directory}
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/compositional-initial-conditions/ascii-data/test/
+
+
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/compositional-initial-conditions/ascii-data/test/
+
+
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the 'data/' subdirectory of ASPECT. 
+
+
+{\it Possible values:} A directory name
+\item {\it Parameter name:} {\tt Data file name}
+\phantomsection\label{parameters:Initial composition model/Ascii data model/Data file name}
+
+
+\index[prmindex]{Data file name}
+\index[prmindexfull]{Initial composition model!Ascii data model!Data file name}
+{\it Value:} box\_2d.txt
+
+
+{\it Default:} box\_2d.txt
+
+
+{\it Description:} The file name of the material data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of a box or a spherical shell).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Scale factor}
+\phantomsection\label{parameters:Initial composition model/Ascii data model/Scale factor}
+
+
+\index[prmindex]{Scale factor}
+\index[prmindexfull]{Initial composition model!Ascii data model!Scale factor}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Scalar factor, which is applied to the boundary velocity. You might want to use this to scale the velocities to a reference model (e.g. with free-slip boundary) or another plate reconstruction. Another way to use this factor is to convert units of the input files. The unit is assumed to bem/s or m/yr depending on the 'Use years in output instead of seconds' flag. If you provide velocities in cm/yr set this factor to 0.01.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\end{itemize}
+
+\subsection{Parameters in section \tt Initial composition model/Function}
+\label{parameters:Initial_20composition_20model/Function}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Function constants}
+\phantomsection\label{parameters:Initial composition model/Function/Function constants}
+
+
+\index[prmindex]{Function constants}
+\index[prmindexfull]{Initial composition model!Function!Function constants}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Function expression}
+\phantomsection\label{parameters:Initial composition model/Function/Function expression}
+
+
+\index[prmindex]{Function expression}
+\index[prmindexfull]{Initial composition model!Function!Function expression}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Variable names}
+\phantomsection\label{parameters:Initial composition model/Function/Variable names}
+
+
+\index[prmindex]{Variable names}
+\index[prmindexfull]{Initial composition model!Function!Variable names}
+{\it Value:} x,y,t
+
+
+{\it Default:} x,y,t
+
+
+{\it Description:} The name of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated is `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+
+
+{\it Possible values:} Any string
+\end{itemize}
+
+\subsection{Parameters in section \tt Initial temperature model}
+\label{parameters:Initial_20temperature_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt List of model names}
+\phantomsection\label{parameters:Initial temperature model/List of model names}
+
+
+\index[prmindex]{List of model names}
+\index[prmindexfull]{Initial temperature model!List of model names}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A comma separated list of initial temperature models that will be used to initialize the temperature. The results of each of these models will be added.
+
+The following initial tempeature models are available:
+
+`S40RTS perturbation': An initial temperature field in which the temperature is perturbed following the S20RTS or S40RTS shear wave velocity model by Ritsema and others, which can be downloaded here \url{http://www.earth.lsa.umich.edu/~jritsema/research.html}. Information on the vs model can be found in Ritsema, J., Deuss, A., van Heijst, H.J. \& Woodhouse, J.H., 2011. S40RTS: a degree-40 shear-velocity model for the mantle from new Rayleigh wave dispersion, teleseismic traveltime and normal-mode splitting function measurements, Geophys. J. Int. 184, 1223-1236. The scaling between the shear wave perturbation and the temperature perturbation can be set by the user with the 'Vs to density scaling' parameter and the 'Thermal expansion coefficient in initial temperature scaling' parameter. The scaling is as follows: $\delta ln \rho (r,\theta,\phi) = \xi \cdot \delta ln v_s(r,\theta, \phi)$ and $\delta T(r,\theta,\phi) = - \frac{1}{\alpha} \delta ln \rho(r,\theta,\phi)$. $\xi$ is the 'vs to density scaling' parameter and $\alpha$ is the 'Thermal expansion coefficient in initial temperature scaling' parameter. The temperature perturbation is added to an otherwise constant temperature (incompressible model) or adiabatic reference profile (compressible model). If a depth is specified in 'Remove temperature heterogeneity down to specified depth', there is no temperature perturbation prescribed down to that depth.
+
+`SAVANI perturbation': An initial temperature field in which the temperature is perturbed following the SAVANI shear wave velocity model by Auer and others, which can be downloaded here \url{http://n.ethz.ch/~auerl/savani.tar.bz2}. Information on the vs model can be found in Auer, L., Boschi, L., Becker, T.W., Nissen-Meyer, T. \& Giardini, D., 2014. Savani:A variable resolution whole‐mantle model of anisotropic shear velocityvariations based on multiple data sets. Journal of GeophysicalResearch: Solid Earth 119.4 (2014): 3006-3034. The scaling between the shear wave perturbation and the temperature perturbation can be set by the user with the 'Vs to density scaling' parameter and the 'Thermal expansion coefficient in initial temperature scaling' parameter. The scaling is as follows: $\delta ln \rho (r,\theta,\phi) = \xi \cdot \delta ln v_s(r,\theta, \phi)$ and $\delta T(r,\theta,\phi) = - \frac{1}{\alpha} \delta ln \rho(r,\theta,\phi)$. $\xi$ is the 'vs to density scaling' parameter and $\alpha$ is the 'Thermal expansion coefficient in initial temperature scaling' parameter. The temperature perturbation is added to an otherwise constant temperature (incompressible model) or adiabatic reference profile (compressible model).
+
+`adiabatic': Temperature is prescribed as an adiabatic profile with upper and lower thermal boundary layers, whose ages are given as input parameters.
+
+`adiabatic boundary': An initial temperature condition that allows for discretizing the model domain into two layers separated by a user-defined isothermal boundary using a table look-up approach. The user includes an input ascii data file that is formatted as 3 columns of 'latitude', 'longitude', and 'depth', where 'depth' is in kilometers and represents the depth of an initial temperature of 1673.15 K (by default). The temperature is defined from the surface (273.15 K) to the isotherm as a linear gradient. Below the isotherm the temperature increases approximately adiabatically (0.0005 K per meter). This initial temperature condition is designed specifically for the ellipsoidal chunk geometry model.
+
+`ascii data': Implementation of a model in which the initial temperature is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. The order of the data columns has to be 'x', 'y', 'Temperature [K]' in a 2d model and  'x', 'y', 'z', 'Temperature [K]' in a 3d model, which means that there has to be a single column containing the temperature. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the data will still be handled as Cartesian, however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions.
+
+`function': Specify the initial temperature in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+
+`harmonic perturbation': An initial temperature field in which the temperature is perturbed following a harmonic function (spherical harmonic or sine depending on geometry and dimension) in lateral and radial direction from an otherwise constant temperature (incompressible model) or adiabatic reference profile (compressible model).
+
+`inclusion shape perturbation': An initial temperature field in which there is an inclusion in a constant-temperature box field. The size, shape, gradient, position, and temperature of the inclusion are defined by parameters.
+
+`mandelbox': Fractal-shaped temperature field.
+
+`perturbed box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is chosen in such a way that the initial temperature is constant to one along the entire boundary.
+
+`polar box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is such that there are two poles on opposing corners of the box. 
+
+`solidus': This is a temperature initial condition that starts the model close to solidus, it also contains a user defined lithoshpere thickness and with perturbations  in both lithosphere thickness and temperature based on spherical harmonic functions. It was used as the initial condition of early Mars after the freezing of the magma ocean, using the solidus from Parmentier et al., Melt-solid segregation, Fractional magma ocean solidification, and implications for longterm planetary evolution. Luna and Planetary Science, 2007.
+
+`spherical gaussian perturbation': An initial temperature field in which the temperature is perturbed by a single Gaussian added to an otherwise spherically symmetric state. Additional parameters are read from the parameter file in subsection 'Spherical gaussian perturbation'.
+
+`spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following an $N$-fold pattern in a specified direction from an otherwise spherically symmetric state. The class's name comes from previous versions when the only option was $N=6$.
+
+
+{\it Possible values:} A comma-separated list of any of S40RTS perturbation, SAVANI perturbation, adiabatic, adiabatic boundary, ascii data, function, harmonic perturbation, inclusion shape perturbation, mandelbox, perturbed box, polar box, solidus, spherical gaussian perturbation, spherical hexagonal perturbation
+\item {\it Parameter name:} {\tt Model name}
+\phantomsection\label{parameters:Initial temperature model/Model name}
+
+
+\index[prmindex]{Model name}
+\index[prmindexfull]{Initial temperature model!Model name}
 {\it Value:} adiabatic
 
 
@@ -4434,22 +4494,24 @@ If the function you are describing represents a vector-valued function with mult
 
 `spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following an $N$-fold pattern in a specified direction from an otherwise spherically symmetric state. The class's name comes from previous versions when the only option was $N=6$.
 
+\textbf{Warning}: This parameter provides and old anddeprecated way of specifying initial temperature models and shouldn't be used. Please use 'List of model names' instead.
+
 
 {\it Possible values:} Any one of S40RTS perturbation, SAVANI perturbation, adiabatic, adiabatic boundary, ascii data, function, harmonic perturbation, inclusion shape perturbation, mandelbox, perturbed box, polar box, solidus, spherical gaussian perturbation, spherical hexagonal perturbation, unspecified
 \end{itemize}
 
 
 
-\subsection{Parameters in section \tt Initial conditions/Adiabatic}
-\label{parameters:Initial_20conditions/Adiabatic}
+\subsection{Parameters in section \tt Initial temperature model/Adiabatic}
+\label{parameters:Initial_20temperature_20model/Adiabatic}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Age bottom boundary layer}
-\phantomsection\label{parameters:Initial conditions/Adiabatic/Age bottom boundary layer}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Age bottom boundary layer}
 
 
 \index[prmindex]{Age bottom boundary layer}
-\index[prmindexfull]{Initial conditions!Adiabatic!Age bottom boundary layer}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Age bottom boundary layer}
 {\it Value:} 0e0
 
 
@@ -4461,11 +4523,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Age top boundary layer}
-\phantomsection\label{parameters:Initial conditions/Adiabatic/Age top boundary layer}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Age top boundary layer}
 
 
 \index[prmindex]{Age top boundary layer}
-\index[prmindexfull]{Initial conditions!Adiabatic!Age top boundary layer}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Age top boundary layer}
 {\it Value:} 0e0
 
 
@@ -4477,11 +4539,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Amplitude}
-\phantomsection\label{parameters:Initial conditions/Adiabatic/Amplitude}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Amplitude}
 
 
 \index[prmindex]{Amplitude}
-\index[prmindexfull]{Initial conditions!Adiabatic!Amplitude}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Amplitude}
 {\it Value:} 0e0
 
 
@@ -4493,11 +4555,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Position}
-\phantomsection\label{parameters:Initial conditions/Adiabatic/Position}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Position}
 
 
 \index[prmindex]{Position}
-\index[prmindexfull]{Initial conditions!Adiabatic!Position}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Position}
 {\it Value:} center
 
 
@@ -4509,11 +4571,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} Any one of center
 \item {\it Parameter name:} {\tt Radius}
-\phantomsection\label{parameters:Initial conditions/Adiabatic/Radius}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Radius}
 
 
 \index[prmindex]{Radius}
-\index[prmindexfull]{Initial conditions!Adiabatic!Radius}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Radius}
 {\it Value:} 0e0
 
 
@@ -4525,11 +4587,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Subadiabaticity}
-\phantomsection\label{parameters:Initial conditions/Adiabatic/Subadiabaticity}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Subadiabaticity}
 
 
 \index[prmindex]{Subadiabaticity}
-\index[prmindexfull]{Initial conditions!Adiabatic!Subadiabaticity}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Subadiabaticity}
 {\it Value:} 0e0
 
 
@@ -4546,16 +4608,16 @@ The function object in the Function subsection represents the compositional fiel
 
 
 
-\subsection{Parameters in section \tt Initial conditions/Adiabatic/Function}
-\label{parameters:Initial_20conditions/Adiabatic/Function}
+\subsection{Parameters in section \tt Initial temperature model/Adiabatic/Function}
+\label{parameters:Initial_20temperature_20model/Adiabatic/Function}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Function constants}
-\phantomsection\label{parameters:Initial conditions/Adiabatic/Function/Function constants}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Function/Function constants}
 
 
 \index[prmindex]{Function constants}
-\index[prmindexfull]{Initial conditions!Adiabatic!Function/Function constants}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Function/Function constants}
 {\it Value:} 
 
 
@@ -4569,11 +4631,11 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 {\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Function expression}
-\phantomsection\label{parameters:Initial conditions/Adiabatic/Function/Function expression}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Function/Function expression}
 
 
 \index[prmindex]{Function expression}
-\index[prmindexfull]{Initial conditions!Adiabatic!Function/Function expression}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Function/Function expression}
 {\it Value:} 0
 
 
@@ -4587,11 +4649,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Variable names}
-\phantomsection\label{parameters:Initial conditions/Adiabatic/Function/Variable names}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Function/Variable names}
 
 
 \index[prmindex]{Variable names}
-\index[prmindexfull]{Initial conditions!Adiabatic!Function/Variable names}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Function/Variable names}
 {\it Value:} x,t
 
 
@@ -4604,16 +4666,16 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} Any string
 \end{itemize}
 
-\subsection{Parameters in section \tt Initial conditions/Adiabatic boundary}
-\label{parameters:Initial_20conditions/Adiabatic_20boundary}
+\subsection{Parameters in section \tt Initial temperature model/Adiabatic boundary}
+\label{parameters:Initial_20temperature_20model/Adiabatic_20boundary}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Adiabatic temperature gradient}
-\phantomsection\label{parameters:Initial conditions/Adiabatic boundary/Adiabatic temperature gradient}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic boundary/Adiabatic temperature gradient}
 
 
 \index[prmindex]{Adiabatic temperature gradient}
-\index[prmindexfull]{Initial conditions!Adiabatic boundary!Adiabatic temperature gradient}
+\index[prmindexfull]{Initial temperature model!Adiabatic boundary!Adiabatic temperature gradient}
 {\it Value:} 0.0005
 
 
@@ -4625,11 +4687,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Data directory}
-\phantomsection\label{parameters:Initial conditions/Adiabatic boundary/Data directory}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic boundary/Data directory}
 
 
 \index[prmindex]{Data directory}
-\index[prmindexfull]{Initial conditions!Adiabatic boundary!Data directory}
+\index[prmindexfull]{Initial temperature model!Adiabatic boundary!Data directory}
 {\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/adiabatic-boundary/
 
 
@@ -4641,11 +4703,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A directory name
 \item {\it Parameter name:} {\tt Isotherm depth filename}
-\phantomsection\label{parameters:Initial conditions/Adiabatic boundary/Isotherm depth filename}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic boundary/Isotherm depth filename}
 
 
 \index[prmindex]{Isotherm depth filename}
-\index[prmindexfull]{Initial conditions!Adiabatic boundary!Isotherm depth filename}
+\index[prmindexfull]{Initial temperature model!Adiabatic boundary!Isotherm depth filename}
 {\it Value:} adiabatic\_boundary.txt
 
 
@@ -4657,11 +4719,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} an input filename
 \item {\it Parameter name:} {\tt Isotherm temperature}
-\phantomsection\label{parameters:Initial conditions/Adiabatic boundary/Isotherm temperature}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic boundary/Isotherm temperature}
 
 
 \index[prmindex]{Isotherm temperature}
-\index[prmindexfull]{Initial conditions!Adiabatic boundary!Isotherm temperature}
+\index[prmindexfull]{Initial temperature model!Adiabatic boundary!Isotherm temperature}
 {\it Value:} 1673.15
 
 
@@ -4673,11 +4735,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Surface temperature}
-\phantomsection\label{parameters:Initial conditions/Adiabatic boundary/Surface temperature}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic boundary/Surface temperature}
 
 
 \index[prmindex]{Surface temperature}
-\index[prmindexfull]{Initial conditions!Adiabatic boundary!Surface temperature}
+\index[prmindexfull]{Initial temperature model!Adiabatic boundary!Surface temperature}
 {\it Value:} 273.15
 
 
@@ -4690,16 +4752,16 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \end{itemize}
 
-\subsection{Parameters in section \tt Initial conditions/Ascii data model}
-\label{parameters:Initial_20conditions/Ascii_20data_20model}
+\subsection{Parameters in section \tt Initial temperature model/Ascii data model}
+\label{parameters:Initial_20temperature_20model/Ascii_20data_20model}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Data directory}
-\phantomsection\label{parameters:Initial conditions/Ascii data model/Data directory}
+\phantomsection\label{parameters:Initial temperature model/Ascii data model/Data directory}
 
 
 \index[prmindex]{Data directory}
-\index[prmindexfull]{Initial conditions!Ascii data model!Data directory}
+\index[prmindexfull]{Initial temperature model!Ascii data model!Data directory}
 {\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/ascii-data/test/
 
 
@@ -4711,11 +4773,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A directory name
 \item {\it Parameter name:} {\tt Data file name}
-\phantomsection\label{parameters:Initial conditions/Ascii data model/Data file name}
+\phantomsection\label{parameters:Initial temperature model/Ascii data model/Data file name}
 
 
 \index[prmindex]{Data file name}
-\index[prmindexfull]{Initial conditions!Ascii data model!Data file name}
+\index[prmindexfull]{Initial temperature model!Ascii data model!Data file name}
 {\it Value:} box\_2d.txt
 
 
@@ -4727,11 +4789,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Scale factor}
-\phantomsection\label{parameters:Initial conditions/Ascii data model/Scale factor}
+\phantomsection\label{parameters:Initial temperature model/Ascii data model/Scale factor}
 
 
 \index[prmindex]{Scale factor}
-\index[prmindexfull]{Initial conditions!Ascii data model!Scale factor}
+\index[prmindexfull]{Initial temperature model!Ascii data model!Scale factor}
 {\it Value:} 1
 
 
@@ -4744,16 +4806,16 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \end{itemize}
 
-\subsection{Parameters in section \tt Initial conditions/Function}
-\label{parameters:Initial_20conditions/Function}
+\subsection{Parameters in section \tt Initial temperature model/Function}
+\label{parameters:Initial_20temperature_20model/Function}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Function constants}
-\phantomsection\label{parameters:Initial conditions/Function/Function constants}
+\phantomsection\label{parameters:Initial temperature model/Function/Function constants}
 
 
 \index[prmindex]{Function constants}
-\index[prmindexfull]{Initial conditions!Function!Function constants}
+\index[prmindexfull]{Initial temperature model!Function!Function constants}
 {\it Value:} 
 
 
@@ -4767,11 +4829,11 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 {\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Function expression}
-\phantomsection\label{parameters:Initial conditions/Function/Function expression}
+\phantomsection\label{parameters:Initial temperature model/Function/Function expression}
 
 
 \index[prmindex]{Function expression}
-\index[prmindexfull]{Initial conditions!Function!Function expression}
+\index[prmindexfull]{Initial temperature model!Function!Function expression}
 {\it Value:} 0
 
 
@@ -4785,11 +4847,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Variable names}
-\phantomsection\label{parameters:Initial conditions/Function/Variable names}
+\phantomsection\label{parameters:Initial temperature model/Function/Variable names}
 
 
 \index[prmindex]{Variable names}
-\index[prmindexfull]{Initial conditions!Function!Variable names}
+\index[prmindexfull]{Initial temperature model!Function!Variable names}
 {\it Value:} x,y,t
 
 
@@ -4802,16 +4864,16 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} Any string
 \end{itemize}
 
-\subsection{Parameters in section \tt Initial conditions/Harmonic perturbation}
-\label{parameters:Initial_20conditions/Harmonic_20perturbation}
+\subsection{Parameters in section \tt Initial temperature model/Harmonic perturbation}
+\label{parameters:Initial_20temperature_20model/Harmonic_20perturbation}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Lateral wave number one}
-\phantomsection\label{parameters:Initial conditions/Harmonic perturbation/Lateral wave number one}
+\phantomsection\label{parameters:Initial temperature model/Harmonic perturbation/Lateral wave number one}
 
 
 \index[prmindex]{Lateral wave number one}
-\index[prmindexfull]{Initial conditions!Harmonic perturbation!Lateral wave number one}
+\index[prmindexfull]{Initial temperature model!Harmonic perturbation!Lateral wave number one}
 {\it Value:} 3
 
 
@@ -4823,11 +4885,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} An integer $n$ such that $-2147483648\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Lateral wave number two}
-\phantomsection\label{parameters:Initial conditions/Harmonic perturbation/Lateral wave number two}
+\phantomsection\label{parameters:Initial temperature model/Harmonic perturbation/Lateral wave number two}
 
 
 \index[prmindex]{Lateral wave number two}
-\index[prmindexfull]{Initial conditions!Harmonic perturbation!Lateral wave number two}
+\index[prmindexfull]{Initial temperature model!Harmonic perturbation!Lateral wave number two}
 {\it Value:} 2
 
 
@@ -4839,11 +4901,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} An integer $n$ such that $-2147483648\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Magnitude}
-\phantomsection\label{parameters:Initial conditions/Harmonic perturbation/Magnitude}
+\phantomsection\label{parameters:Initial temperature model/Harmonic perturbation/Magnitude}
 
 
 \index[prmindex]{Magnitude}
-\index[prmindexfull]{Initial conditions!Harmonic perturbation!Magnitude}
+\index[prmindexfull]{Initial temperature model!Harmonic perturbation!Magnitude}
 {\it Value:} 1.0
 
 
@@ -4855,11 +4917,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Reference temperature}
-\phantomsection\label{parameters:Initial conditions/Harmonic perturbation/Reference temperature}
+\phantomsection\label{parameters:Initial temperature model/Harmonic perturbation/Reference temperature}
 
 
 \index[prmindex]{Reference temperature}
-\index[prmindexfull]{Initial conditions!Harmonic perturbation!Reference temperature}
+\index[prmindexfull]{Initial temperature model!Harmonic perturbation!Reference temperature}
 {\it Value:} 1600.0
 
 
@@ -4871,11 +4933,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Vertical wave number}
-\phantomsection\label{parameters:Initial conditions/Harmonic perturbation/Vertical wave number}
+\phantomsection\label{parameters:Initial temperature model/Harmonic perturbation/Vertical wave number}
 
 
 \index[prmindex]{Vertical wave number}
-\index[prmindexfull]{Initial conditions!Harmonic perturbation!Vertical wave number}
+\index[prmindexfull]{Initial temperature model!Harmonic perturbation!Vertical wave number}
 {\it Value:} 1
 
 
@@ -4888,16 +4950,16 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} An integer $n$ such that $-2147483648\leq n \leq 2147483647$
 \end{itemize}
 
-\subsection{Parameters in section \tt Initial conditions/Inclusion shape perturbation}
-\label{parameters:Initial_20conditions/Inclusion_20shape_20perturbation}
+\subsection{Parameters in section \tt Initial temperature model/Inclusion shape perturbation}
+\label{parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Ambient temperature}
-\phantomsection\label{parameters:Initial conditions/Inclusion shape perturbation/Ambient temperature}
+\phantomsection\label{parameters:Initial temperature model/Inclusion shape perturbation/Ambient temperature}
 
 
 \index[prmindex]{Ambient temperature}
-\index[prmindexfull]{Initial conditions!Inclusion shape perturbation!Ambient temperature}
+\index[prmindexfull]{Initial temperature model!Inclusion shape perturbation!Ambient temperature}
 {\it Value:} 1.0
 
 
@@ -4909,11 +4971,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Center X}
-\phantomsection\label{parameters:Initial conditions/Inclusion shape perturbation/Center X}
+\phantomsection\label{parameters:Initial temperature model/Inclusion shape perturbation/Center X}
 
 
 \index[prmindex]{Center X}
-\index[prmindexfull]{Initial conditions!Inclusion shape perturbation!Center X}
+\index[prmindexfull]{Initial temperature model!Inclusion shape perturbation!Center X}
 {\it Value:} 0.5
 
 
@@ -4925,11 +4987,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Center Y}
-\phantomsection\label{parameters:Initial conditions/Inclusion shape perturbation/Center Y}
+\phantomsection\label{parameters:Initial temperature model/Inclusion shape perturbation/Center Y}
 
 
 \index[prmindex]{Center Y}
-\index[prmindexfull]{Initial conditions!Inclusion shape perturbation!Center Y}
+\index[prmindexfull]{Initial temperature model!Inclusion shape perturbation!Center Y}
 {\it Value:} 0.5
 
 
@@ -4941,11 +5003,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Center Z}
-\phantomsection\label{parameters:Initial conditions/Inclusion shape perturbation/Center Z}
+\phantomsection\label{parameters:Initial temperature model/Inclusion shape perturbation/Center Z}
 
 
 \index[prmindex]{Center Z}
-\index[prmindexfull]{Initial conditions!Inclusion shape perturbation!Center Z}
+\index[prmindexfull]{Initial temperature model!Inclusion shape perturbation!Center Z}
 {\it Value:} 0.5
 
 
@@ -4957,11 +5019,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Inclusion gradient}
-\phantomsection\label{parameters:Initial conditions/Inclusion shape perturbation/Inclusion gradient}
+\phantomsection\label{parameters:Initial temperature model/Inclusion shape perturbation/Inclusion gradient}
 
 
 \index[prmindex]{Inclusion gradient}
-\index[prmindexfull]{Initial conditions!Inclusion shape perturbation!Inclusion gradient}
+\index[prmindexfull]{Initial temperature model!Inclusion shape perturbation!Inclusion gradient}
 {\it Value:} constant
 
 
@@ -4973,11 +5035,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} Any one of gaussian, linear, constant
 \item {\it Parameter name:} {\tt Inclusion shape}
-\phantomsection\label{parameters:Initial conditions/Inclusion shape perturbation/Inclusion shape}
+\phantomsection\label{parameters:Initial temperature model/Inclusion shape perturbation/Inclusion shape}
 
 
 \index[prmindex]{Inclusion shape}
-\index[prmindexfull]{Initial conditions!Inclusion shape perturbation!Inclusion shape}
+\index[prmindexfull]{Initial temperature model!Inclusion shape perturbation!Inclusion shape}
 {\it Value:} circle
 
 
@@ -4989,11 +5051,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} Any one of square, circle
 \item {\it Parameter name:} {\tt Inclusion temperature}
-\phantomsection\label{parameters:Initial conditions/Inclusion shape perturbation/Inclusion temperature}
+\phantomsection\label{parameters:Initial temperature model/Inclusion shape perturbation/Inclusion temperature}
 
 
 \index[prmindex]{Inclusion temperature}
-\index[prmindexfull]{Initial conditions!Inclusion shape perturbation!Inclusion temperature}
+\index[prmindexfull]{Initial temperature model!Inclusion shape perturbation!Inclusion temperature}
 {\it Value:} 0.0
 
 
@@ -5005,11 +5067,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Shape radius}
-\phantomsection\label{parameters:Initial conditions/Inclusion shape perturbation/Shape radius}
+\phantomsection\label{parameters:Initial temperature model/Inclusion shape perturbation/Shape radius}
 
 
 \index[prmindex]{Shape radius}
-\index[prmindexfull]{Initial conditions!Inclusion shape perturbation!Shape radius}
+\index[prmindexfull]{Initial temperature model!Inclusion shape perturbation!Shape radius}
 {\it Value:} 1.0
 
 
@@ -5022,16 +5084,16 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \end{itemize}
 
-\subsection{Parameters in section \tt Initial conditions/S40RTS perturbation}
-\label{parameters:Initial_20conditions/S40RTS_20perturbation}
+\subsection{Parameters in section \tt Initial temperature model/S40RTS perturbation}
+\label{parameters:Initial_20temperature_20model/S40RTS_20perturbation}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Data directory}
-\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Data directory}
+\phantomsection\label{parameters:Initial temperature model/S40RTS perturbation/Data directory}
 
 
 \index[prmindex]{Data directory}
-\index[prmindexfull]{Initial conditions!S40RTS perturbation!Data directory}
+\index[prmindexfull]{Initial temperature model!S40RTS perturbation!Data directory}
 {\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/S40RTS/
 
 
@@ -5043,11 +5105,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A directory name
 \item {\it Parameter name:} {\tt Initial condition file name}
-\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Initial condition file name}
+\phantomsection\label{parameters:Initial temperature model/S40RTS perturbation/Initial condition file name}
 
 
 \index[prmindex]{Initial condition file name}
-\index[prmindexfull]{Initial conditions!S40RTS perturbation!Initial condition file name}
+\index[prmindexfull]{Initial temperature model!S40RTS perturbation!Initial condition file name}
 {\it Value:} S40RTS.sph
 
 
@@ -5059,11 +5121,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Maximum order}
-\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Maximum order}
+\phantomsection\label{parameters:Initial temperature model/S40RTS perturbation/Maximum order}
 
 
 \index[prmindex]{Maximum order}
-\index[prmindexfull]{Initial conditions!S40RTS perturbation!Maximum order}
+\index[prmindexfull]{Initial temperature model!S40RTS perturbation!Maximum order}
 {\it Value:} 20
 
 
@@ -5075,11 +5137,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Reference temperature}
-\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Reference temperature}
+\phantomsection\label{parameters:Initial temperature model/S40RTS perturbation/Reference temperature}
 
 
 \index[prmindex]{Reference temperature}
-\index[prmindexfull]{Initial conditions!S40RTS perturbation!Reference temperature}
+\index[prmindexfull]{Initial temperature model!S40RTS perturbation!Reference temperature}
 {\it Value:} 1600.0
 
 
@@ -5091,11 +5153,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Remove degree 0 from perturbation}
-\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Remove degree 0 from perturbation}
+\phantomsection\label{parameters:Initial temperature model/S40RTS perturbation/Remove degree 0 from perturbation}
 
 
 \index[prmindex]{Remove degree 0 from perturbation}
-\index[prmindexfull]{Initial conditions!S40RTS perturbation!Remove degree 0 from perturbation}
+\index[prmindexfull]{Initial temperature model!S40RTS perturbation!Remove degree 0 from perturbation}
 {\it Value:} true
 
 
@@ -5107,11 +5169,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Remove temperature heterogeneity down to specified depth}
-\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Remove temperature heterogeneity down to specified depth}
+\phantomsection\label{parameters:Initial temperature model/S40RTS perturbation/Remove temperature heterogeneity down to specified depth}
 
 
 \index[prmindex]{Remove temperature heterogeneity down to specified depth}
-\index[prmindexfull]{Initial conditions!S40RTS perturbation!Remove temperature heterogeneity down to specified depth}
+\index[prmindexfull]{Initial temperature model!S40RTS perturbation!Remove temperature heterogeneity down to specified depth}
 {\it Value:} -1.7976931348623157e+308
 
 
@@ -5123,11 +5185,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Specify a lower maximum order}
-\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Specify a lower maximum order}
+\phantomsection\label{parameters:Initial temperature model/S40RTS perturbation/Specify a lower maximum order}
 
 
 \index[prmindex]{Specify a lower maximum order}
-\index[prmindexfull]{Initial conditions!S40RTS perturbation!Specify a lower maximum order}
+\index[prmindexfull]{Initial temperature model!S40RTS perturbation!Specify a lower maximum order}
 {\it Value:} false
 
 
@@ -5139,11 +5201,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Spline knots depth file name}
-\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Spline knots depth file name}
+\phantomsection\label{parameters:Initial temperature model/S40RTS perturbation/Spline knots depth file name}
 
 
 \index[prmindex]{Spline knots depth file name}
-\index[prmindexfull]{Initial conditions!S40RTS perturbation!Spline knots depth file name}
+\index[prmindexfull]{Initial temperature model!S40RTS perturbation!Spline knots depth file name}
 {\it Value:} Spline\_knots.txt
 
 
@@ -5155,11 +5217,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Thermal expansion coefficient in initial temperature scaling}
-\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Thermal expansion coefficient in initial temperature scaling}
+\phantomsection\label{parameters:Initial temperature model/S40RTS perturbation/Thermal expansion coefficient in initial temperature scaling}
 
 
 \index[prmindex]{Thermal expansion coefficient in initial temperature scaling}
-\index[prmindexfull]{Initial conditions!S40RTS perturbation!Thermal expansion coefficient in initial temperature scaling}
+\index[prmindexfull]{Initial temperature model!S40RTS perturbation!Thermal expansion coefficient in initial temperature scaling}
 {\it Value:} 2e-5
 
 
@@ -5171,11 +5233,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Vs to density scaling}
-\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Vs to density scaling}
+\phantomsection\label{parameters:Initial temperature model/S40RTS perturbation/Vs to density scaling}
 
 
 \index[prmindex]{Vs to density scaling}
-\index[prmindexfull]{Initial conditions!S40RTS perturbation!Vs to density scaling}
+\index[prmindexfull]{Initial temperature model!S40RTS perturbation!Vs to density scaling}
 {\it Value:} 0.25
 
 
@@ -5188,16 +5250,16 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \end{itemize}
 
-\subsection{Parameters in section \tt Initial conditions/SAVANI perturbation}
-\label{parameters:Initial_20conditions/SAVANI_20perturbation}
+\subsection{Parameters in section \tt Initial temperature model/SAVANI perturbation}
+\label{parameters:Initial_20temperature_20model/SAVANI_20perturbation}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Data directory}
-\phantomsection\label{parameters:Initial conditions/SAVANI perturbation/Data directory}
+\phantomsection\label{parameters:Initial temperature model/SAVANI perturbation/Data directory}
 
 
 \index[prmindex]{Data directory}
-\index[prmindexfull]{Initial conditions!SAVANI perturbation!Data directory}
+\index[prmindexfull]{Initial temperature model!SAVANI perturbation!Data directory}
 {\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/SAVANI/
 
 
@@ -5209,11 +5271,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A directory name
 \item {\it Parameter name:} {\tt Initial condition file name}
-\phantomsection\label{parameters:Initial conditions/SAVANI perturbation/Initial condition file name}
+\phantomsection\label{parameters:Initial temperature model/SAVANI perturbation/Initial condition file name}
 
 
 \index[prmindex]{Initial condition file name}
-\index[prmindexfull]{Initial conditions!SAVANI perturbation!Initial condition file name}
+\index[prmindexfull]{Initial temperature model!SAVANI perturbation!Initial condition file name}
 {\it Value:} savani.dlnvs.60.m.ab
 
 
@@ -5225,11 +5287,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Maximum order}
-\phantomsection\label{parameters:Initial conditions/SAVANI perturbation/Maximum order}
+\phantomsection\label{parameters:Initial temperature model/SAVANI perturbation/Maximum order}
 
 
 \index[prmindex]{Maximum order}
-\index[prmindexfull]{Initial conditions!SAVANI perturbation!Maximum order}
+\index[prmindexfull]{Initial temperature model!SAVANI perturbation!Maximum order}
 {\it Value:} 20
 
 
@@ -5241,11 +5303,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Reference temperature}
-\phantomsection\label{parameters:Initial conditions/SAVANI perturbation/Reference temperature}
+\phantomsection\label{parameters:Initial temperature model/SAVANI perturbation/Reference temperature}
 
 
 \index[prmindex]{Reference temperature}
-\index[prmindexfull]{Initial conditions!SAVANI perturbation!Reference temperature}
+\index[prmindexfull]{Initial temperature model!SAVANI perturbation!Reference temperature}
 {\it Value:} 1600.0
 
 
@@ -5257,11 +5319,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Remove degree 0 from perturbation}
-\phantomsection\label{parameters:Initial conditions/SAVANI perturbation/Remove degree 0 from perturbation}
+\phantomsection\label{parameters:Initial temperature model/SAVANI perturbation/Remove degree 0 from perturbation}
 
 
 \index[prmindex]{Remove degree 0 from perturbation}
-\index[prmindexfull]{Initial conditions!SAVANI perturbation!Remove degree 0 from perturbation}
+\index[prmindexfull]{Initial temperature model!SAVANI perturbation!Remove degree 0 from perturbation}
 {\it Value:} true
 
 
@@ -5273,11 +5335,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Remove temperature heterogeneity down to specified depth}
-\phantomsection\label{parameters:Initial conditions/SAVANI perturbation/Remove temperature heterogeneity down to specified depth}
+\phantomsection\label{parameters:Initial temperature model/SAVANI perturbation/Remove temperature heterogeneity down to specified depth}
 
 
 \index[prmindex]{Remove temperature heterogeneity down to specified depth}
-\index[prmindexfull]{Initial conditions!SAVANI perturbation!Remove temperature heterogeneity down to specified depth}
+\index[prmindexfull]{Initial temperature model!SAVANI perturbation!Remove temperature heterogeneity down to specified depth}
 {\it Value:} -1.7976931348623157e+308
 
 
@@ -5289,11 +5351,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Specify a lower maximum order}
-\phantomsection\label{parameters:Initial conditions/SAVANI perturbation/Specify a lower maximum order}
+\phantomsection\label{parameters:Initial temperature model/SAVANI perturbation/Specify a lower maximum order}
 
 
 \index[prmindex]{Specify a lower maximum order}
-\index[prmindexfull]{Initial conditions!SAVANI perturbation!Specify a lower maximum order}
+\index[prmindexfull]{Initial temperature model!SAVANI perturbation!Specify a lower maximum order}
 {\it Value:} false
 
 
@@ -5305,11 +5367,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Spline knots depth file name}
-\phantomsection\label{parameters:Initial conditions/SAVANI perturbation/Spline knots depth file name}
+\phantomsection\label{parameters:Initial temperature model/SAVANI perturbation/Spline knots depth file name}
 
 
 \index[prmindex]{Spline knots depth file name}
-\index[prmindexfull]{Initial conditions!SAVANI perturbation!Spline knots depth file name}
+\index[prmindexfull]{Initial temperature model!SAVANI perturbation!Spline knots depth file name}
 {\it Value:} Spline\_knots.txt
 
 
@@ -5321,11 +5383,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Thermal expansion coefficient in initial temperature scaling}
-\phantomsection\label{parameters:Initial conditions/SAVANI perturbation/Thermal expansion coefficient in initial temperature scaling}
+\phantomsection\label{parameters:Initial temperature model/SAVANI perturbation/Thermal expansion coefficient in initial temperature scaling}
 
 
 \index[prmindex]{Thermal expansion coefficient in initial temperature scaling}
-\index[prmindexfull]{Initial conditions!SAVANI perturbation!Thermal expansion coefficient in initial temperature scaling}
+\index[prmindexfull]{Initial temperature model!SAVANI perturbation!Thermal expansion coefficient in initial temperature scaling}
 {\it Value:} 2e-5
 
 
@@ -5337,11 +5399,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Vs to density scaling}
-\phantomsection\label{parameters:Initial conditions/SAVANI perturbation/Vs to density scaling}
+\phantomsection\label{parameters:Initial temperature model/SAVANI perturbation/Vs to density scaling}
 
 
 \index[prmindex]{Vs to density scaling}
-\index[prmindexfull]{Initial conditions!SAVANI perturbation!Vs to density scaling}
+\index[prmindexfull]{Initial temperature model!SAVANI perturbation!Vs to density scaling}
 {\it Value:} 0.25
 
 
@@ -5354,16 +5416,16 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \end{itemize}
 
-\subsection{Parameters in section \tt Initial conditions/Solidus}
-\label{parameters:Initial_20conditions/Solidus}
+\subsection{Parameters in section \tt Initial temperature model/Solidus}
+\label{parameters:Initial_20temperature_20model/Solidus}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Lithosphere thickness}
-\phantomsection\label{parameters:Initial conditions/Solidus/Lithosphere thickness}
+\phantomsection\label{parameters:Initial temperature model/Solidus/Lithosphere thickness}
 
 
 \index[prmindex]{Lithosphere thickness}
-\index[prmindexfull]{Initial conditions!Solidus!Lithosphere thickness}
+\index[prmindexfull]{Initial temperature model!Solidus!Lithosphere thickness}
 {\it Value:} 0
 
 
@@ -5375,11 +5437,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Supersolidus}
-\phantomsection\label{parameters:Initial conditions/Solidus/Supersolidus}
+\phantomsection\label{parameters:Initial temperature model/Solidus/Supersolidus}
 
 
 \index[prmindex]{Supersolidus}
-\index[prmindexfull]{Initial conditions!Solidus!Supersolidus}
+\index[prmindexfull]{Initial temperature model!Solidus!Supersolidus}
 {\it Value:} 0e0
 
 
@@ -5394,16 +5456,16 @@ If the function you are describing represents a vector-valued function with mult
 
 
 
-\subsection{Parameters in section \tt Initial conditions/Solidus/Data}
-\label{parameters:Initial_20conditions/Solidus/Data}
+\subsection{Parameters in section \tt Initial temperature model/Solidus/Data}
+\label{parameters:Initial_20temperature_20model/Solidus/Data}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Solidus filename}
-\phantomsection\label{parameters:Initial conditions/Solidus/Data/Solidus filename}
+\phantomsection\label{parameters:Initial temperature model/Solidus/Data/Solidus filename}
 
 
 \index[prmindex]{Solidus filename}
-\index[prmindexfull]{Initial conditions!Solidus!Data/Solidus filename}
+\index[prmindexfull]{Initial temperature model!Solidus!Data/Solidus filename}
 {\it Value:} 
 
 
@@ -5422,16 +5484,16 @@ In order to facilitate placing input files in locations relative to the ASPECT s
 {\it Possible values:} Any string
 \end{itemize}
 
-\subsection{Parameters in section \tt Initial conditions/Solidus/Perturbation}
-\label{parameters:Initial_20conditions/Solidus/Perturbation}
+\subsection{Parameters in section \tt Initial temperature model/Solidus/Perturbation}
+\label{parameters:Initial_20temperature_20model/Solidus/Perturbation}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Lateral wave number one}
-\phantomsection\label{parameters:Initial conditions/Solidus/Perturbation/Lateral wave number one}
+\phantomsection\label{parameters:Initial temperature model/Solidus/Perturbation/Lateral wave number one}
 
 
 \index[prmindex]{Lateral wave number one}
-\index[prmindexfull]{Initial conditions!Solidus!Perturbation/Lateral wave number one}
+\index[prmindexfull]{Initial temperature model!Solidus!Perturbation/Lateral wave number one}
 {\it Value:} 3
 
 
@@ -5443,11 +5505,11 @@ In order to facilitate placing input files in locations relative to the ASPECT s
 
 {\it Possible values:} An integer $n$ such that $-2147483648\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Lateral wave number two}
-\phantomsection\label{parameters:Initial conditions/Solidus/Perturbation/Lateral wave number two}
+\phantomsection\label{parameters:Initial temperature model/Solidus/Perturbation/Lateral wave number two}
 
 
 \index[prmindex]{Lateral wave number two}
-\index[prmindexfull]{Initial conditions!Solidus!Perturbation/Lateral wave number two}
+\index[prmindexfull]{Initial temperature model!Solidus!Perturbation/Lateral wave number two}
 {\it Value:} 2
 
 
@@ -5459,11 +5521,11 @@ In order to facilitate placing input files in locations relative to the ASPECT s
 
 {\it Possible values:} An integer $n$ such that $-2147483648\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Lithosphere thickness amplitude}
-\phantomsection\label{parameters:Initial conditions/Solidus/Perturbation/Lithosphere thickness amplitude}
+\phantomsection\label{parameters:Initial temperature model/Solidus/Perturbation/Lithosphere thickness amplitude}
 
 
 \index[prmindex]{Lithosphere thickness amplitude}
-\index[prmindexfull]{Initial conditions!Solidus!Perturbation/Lithosphere thickness amplitude}
+\index[prmindexfull]{Initial temperature model!Solidus!Perturbation/Lithosphere thickness amplitude}
 {\it Value:} 0e0
 
 
@@ -5475,11 +5537,11 @@ In order to facilitate placing input files in locations relative to the ASPECT s
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Temperature amplitude}
-\phantomsection\label{parameters:Initial conditions/Solidus/Perturbation/Temperature amplitude}
+\phantomsection\label{parameters:Initial temperature model/Solidus/Perturbation/Temperature amplitude}
 
 
 \index[prmindex]{Temperature amplitude}
-\index[prmindexfull]{Initial conditions!Solidus!Perturbation/Temperature amplitude}
+\index[prmindexfull]{Initial temperature model!Solidus!Perturbation/Temperature amplitude}
 {\it Value:} 0e0
 
 
@@ -5492,16 +5554,16 @@ In order to facilitate placing input files in locations relative to the ASPECT s
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \end{itemize}
 
-\subsection{Parameters in section \tt Initial conditions/Spherical gaussian perturbation}
-\label{parameters:Initial_20conditions/Spherical_20gaussian_20perturbation}
+\subsection{Parameters in section \tt Initial temperature model/Spherical gaussian perturbation}
+\label{parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Amplitude}
-\phantomsection\label{parameters:Initial conditions/Spherical gaussian perturbation/Amplitude}
+\phantomsection\label{parameters:Initial temperature model/Spherical gaussian perturbation/Amplitude}
 
 
 \index[prmindex]{Amplitude}
-\index[prmindexfull]{Initial conditions!Spherical gaussian perturbation!Amplitude}
+\index[prmindexfull]{Initial temperature model!Spherical gaussian perturbation!Amplitude}
 {\it Value:} 0.01
 
 
@@ -5513,11 +5575,11 @@ In order to facilitate placing input files in locations relative to the ASPECT s
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Angle}
-\phantomsection\label{parameters:Initial conditions/Spherical gaussian perturbation/Angle}
+\phantomsection\label{parameters:Initial temperature model/Spherical gaussian perturbation/Angle}
 
 
 \index[prmindex]{Angle}
-\index[prmindexfull]{Initial conditions!Spherical gaussian perturbation!Angle}
+\index[prmindexfull]{Initial temperature model!Spherical gaussian perturbation!Angle}
 {\it Value:} 0e0
 
 
@@ -5529,11 +5591,11 @@ In order to facilitate placing input files in locations relative to the ASPECT s
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Filename for initial geotherm table}
-\phantomsection\label{parameters:Initial conditions/Spherical gaussian perturbation/Filename for initial geotherm table}
+\phantomsection\label{parameters:Initial temperature model/Spherical gaussian perturbation/Filename for initial geotherm table}
 
 
 \index[prmindex]{Filename for initial geotherm table}
-\index[prmindexfull]{Initial conditions!Spherical gaussian perturbation!Filename for initial geotherm table}
+\index[prmindexfull]{Initial temperature model!Spherical gaussian perturbation!Filename for initial geotherm table}
 {\it Value:} initial-geotherm-table
 
 
@@ -5545,11 +5607,11 @@ In order to facilitate placing input files in locations relative to the ASPECT s
 
 {\it Possible values:} an input filename
 \item {\it Parameter name:} {\tt Non-dimensional depth}
-\phantomsection\label{parameters:Initial conditions/Spherical gaussian perturbation/Non-dimensional depth}
+\phantomsection\label{parameters:Initial temperature model/Spherical gaussian perturbation/Non-dimensional depth}
 
 
 \index[prmindex]{Non-dimensional depth}
-\index[prmindexfull]{Initial conditions!Spherical gaussian perturbation!Non-dimensional depth}
+\index[prmindexfull]{Initial temperature model!Spherical gaussian perturbation!Non-dimensional depth}
 {\it Value:} 0.7
 
 
@@ -5561,11 +5623,11 @@ In order to facilitate placing input files in locations relative to the ASPECT s
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Sigma}
-\phantomsection\label{parameters:Initial conditions/Spherical gaussian perturbation/Sigma}
+\phantomsection\label{parameters:Initial temperature model/Spherical gaussian perturbation/Sigma}
 
 
 \index[prmindex]{Sigma}
-\index[prmindexfull]{Initial conditions!Spherical gaussian perturbation!Sigma}
+\index[prmindexfull]{Initial temperature model!Spherical gaussian perturbation!Sigma}
 {\it Value:} 0.2
 
 
@@ -5577,11 +5639,11 @@ In order to facilitate placing input files in locations relative to the ASPECT s
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Sign}
-\phantomsection\label{parameters:Initial conditions/Spherical gaussian perturbation/Sign}
+\phantomsection\label{parameters:Initial temperature model/Spherical gaussian perturbation/Sign}
 
 
 \index[prmindex]{Sign}
-\index[prmindexfull]{Initial conditions!Spherical gaussian perturbation!Sign}
+\index[prmindexfull]{Initial temperature model!Spherical gaussian perturbation!Sign}
 {\it Value:} 1
 
 
@@ -5594,16 +5656,16 @@ In order to facilitate placing input files in locations relative to the ASPECT s
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \end{itemize}
 
-\subsection{Parameters in section \tt Initial conditions/Spherical hexagonal perturbation}
-\label{parameters:Initial_20conditions/Spherical_20hexagonal_20perturbation}
+\subsection{Parameters in section \tt Initial temperature model/Spherical hexagonal perturbation}
+\label{parameters:Initial_20temperature_20model/Spherical_20hexagonal_20perturbation}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Angular mode}
-\phantomsection\label{parameters:Initial conditions/Spherical hexagonal perturbation/Angular mode}
+\phantomsection\label{parameters:Initial temperature model/Spherical hexagonal perturbation/Angular mode}
 
 
 \index[prmindex]{Angular mode}
-\index[prmindexfull]{Initial conditions!Spherical hexagonal perturbation!Angular mode}
+\index[prmindexfull]{Initial temperature model!Spherical hexagonal perturbation!Angular mode}
 {\it Value:} 6
 
 
@@ -5615,11 +5677,11 @@ In order to facilitate placing input files in locations relative to the ASPECT s
 
 {\it Possible values:} An integer $n$ such that $-2147483648\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Rotation offset}
-\phantomsection\label{parameters:Initial conditions/Spherical hexagonal perturbation/Rotation offset}
+\phantomsection\label{parameters:Initial temperature model/Spherical hexagonal perturbation/Rotation offset}
 
 
 \index[prmindex]{Rotation offset}
-\index[prmindexfull]{Initial conditions!Spherical hexagonal perturbation!Rotation offset}
+\index[prmindexfull]{Initial temperature model!Spherical hexagonal perturbation!Rotation offset}
 {\it Value:} -45
 
 
@@ -5789,7 +5851,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 Plasticity limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3D is  $\sigma_y = \frac{6*C*\cos(\phi) + 2*P*\sin(\phi)} {\sqrt(3)*(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2D. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2D form is equivalent to the Mohr Coloumb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion). When the viscous stress ($2v{\varepsilon}_{ii}$) the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
 
-The user has the option to linearly reduce the cohesion and internal friction angle as a function of accumulated finite strain. Finite strain may be calculated through tracers (implemented by Rene Gassmoeller) or the compositional field finite strain plugin (implemented by Juliane Dannberg). In either case, the user specifies compositional fields for each of the symmetric strain tensor components, which must be listed before any additional compositional fields and will reflect the following order 2D: fs[0][0], fs[1][1], fs[0][1] 3D: fs[0][0], fs[1][1], fs[2][2], fs[0][1], fs[0][2], fs[1][2] Above, fs refers to the 'finite strain' tensor and the numbers represent tensor indices.  While the user may define any names for each of the finite strain components, the above ordering is assumed in the strain weakening section. 
+The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain invariant. The finite strain invariant may be calculated through particles or the compositional field finite strain invariant plugin (see \cite{buiter2008dissipation} benchmark). In either case, the user specifies a compositional field for the finite strain invariant, which must be the first listed compositional field in the parameter file.
 
 Viscous stress may also be limited by a non-linear stress limiter that has a form similar to the Peierls creep mechanism. This stress limiter assigns an effective viscosity $\sigma_eff = \frac{\tau_y}{2*\varepsilon_y} {\frac{\varepsilon_ii}{\varepsilon_y}}^{\frac{1}{n_y}-1}$ Above $\tau_y$ is a yield stress, $\varepsilon_y$ is the reference strain rate, $\varepsilon_{ii}$ is the strain rate and $n_y$ is the stress limiter exponent.  The yield stress, $\tau_y$, is defined through the Drucker Prager yield criterion formulation.  This method of limiting viscous stress has been used in various forms within the geodynamic literature, including Christensen (1992), JGR, 97(B2), pp. 2015-2036; Cizkova and Bina (2013), EPSL, 379, pp. 95-103; Cizkova and Bina (2015), EPSL, 430, pp. 408-415. When $n_y$ is 1, it essentially becomes a linear viscosity model, and in the limit $n_y\rightarrow \infty$ it converges to the standard viscosity rescaling method (concretely, values $n_y>20$ are large enough).
 
@@ -7020,6 +7082,38 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Maximum viscosity}
+\phantomsection\label{parameters:Material model/Latent heat/Maximum viscosity}
+
+
+\index[prmindex]{Maximum viscosity}
+\index[prmindexfull]{Material model!Latent heat!Maximum viscosity}
+{\it Value:} 1e24
+
+
+{\it Default:} 1e24
+
+
+{\it Description:} Limit for the maximum viscosity in the model. Units: Pa s.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Minimum viscosity}
+\phantomsection\label{parameters:Material model/Latent heat/Minimum viscosity}
+
+
+\index[prmindex]{Minimum viscosity}
+\index[prmindexfull]{Material model!Latent heat!Minimum viscosity}
+{\it Value:} 1e19
+
+
+{\it Default:} 1e19
+
+
+{\it Description:} Limit for the minimum viscosity in the model. Units: Pa s.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Phase transition Clapeyron slopes}
 \phantomsection\label{parameters:Material model/Latent heat/Phase transition Clapeyron slopes}
 
@@ -11223,6 +11317,8 @@ The file format then consists of lines with Euclidiean coordinates followed by t
 
 (As a side note, the postprocessor chooses the cell center instead of the center of the cell face at the surface, where we really are interested in the quantity, since this often gives better accuracy. The results should in essence be the same, though.)
 
+`global statistics': A postprocessor that outputs all the global statistics information, e.g. the time of the simulation, the timestep number, number of degrees of freedom and solver iterations for each timestep. The postprocessor can output different formats, the first printing one line in the statistics file per nonlinear solver iteration (if a nonlinear solver scheme is selected). The second prints one line per timestep, summing the information about all nonlinear iterations in this line. Note that this postprocessor is always active independent on whether or not it is selected in the parameter file.
+
 `heat flux densities': A postprocessor that computes some statistics about the (conductive) heat flux density for each boundary id. The heat flux density is computed in outward direction, i.e., from the domain to the outside, using the formula $\frac{1}{|\Gamma_i|} \int_{\Gamma_i} -k \nabla T \cdot \mathbf n$ where $\Gamma_i$ is the part of the boundary with indicator $i$, $k$ is the thermal conductivity as reported by the material model, $T$ is the temperature, and $\mathbf n$ is the outward normal. Note that the quantity so computed does not include any energy transported across the boundary by material transport in cases where $\mathbf u \cdot \mathbf n \neq 0$.
 
 Note that the ``heat flux'' postprocessor computes the same quantity as the one here, but not divided by the area of the surface. In other words, it computes the \textit{total} heat flux through each boundary.
@@ -11253,6 +11349,8 @@ As stated, this postprocessor computes the \textit{outbound} mass flux. If you a
 
 `particle count statistics': A postprocessor that computes some statistics about the particle distribution, if present in this simulation. In particular, it computes minimal, average and maximal values of particles per cell in the global domain.
 
+`particles': A Postprocessor that creates particles that follow the velocity field of the simulation. The particles can be generated and propagated in various ways and they can carry a number of constant or time-varying properties. The postprocessor can write output positions and properties of all particles at chosen intervals, although this is not mandatory. It also allows other parts of the code to query the particles for information.
+
 `point values': A postprocessor that evaluates the solution (i.e., velocity, pressure, temperature, and compositional fields along with other fields that are treated as primary variables) at the end of every time step at a given set of points and then writes this data into the file <point\_values.txt> in the output directory. The points at which the solution should be evaluated are specified in the section \texttt{Postprocess/Point values} in the input file.
 
 In the output file, data is organized as (i) time, (ii) the 2 or 3 coordinates of the evaluation points, and (iii) followed by the values of the solution vector at this point. The time is provided in seconds or, if the global ``Use years in output instead of seconds'' parameter is set, in years. In the latter case, the velocity is also converted to meters/year, instead of meters/second.
@@ -11267,8 +11365,6 @@ In the output file, data is organized as (i) time, (ii) the 2 or 3 coordinates o
 
 `topography': A postprocessor intended for use with a free surface.  After every step, it loops over all the vertices on the top surface and determines the maximum and minimum topography relative to a reference datum (initial box height for a box geometry model or initial radius for a sphere/spherical shell geometry model).  Outputs topography in meters
 
-`tracers': A Postprocessor that creates tracer particles that follow the velocity field of the simulation. The particles can be generated and propagated in various ways and they can carry a number of constant or time-varying properties. The postprocessor can write output positions and properties of all tracers at chosen intervals, although this is not mandatory. It also allows other parts of the code to query the tracers for information.
-
 `velocity boundary statistics': A postprocessor that computes some statistics about the velocity along the boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the min and max velocity magnitude is computed.
 
 `velocity statistics': A postprocessor that computes some statistics about the velocity field.
@@ -11280,7 +11376,23 @@ The information produced by this postprocessor is a subset of what is generated 
 `visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
 
 
-{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, command, composition statistics, depth average, dynamic topography, heat flux densities, heat flux map, heat flux statistics, heating statistics, mass flux statistics, matrix statistics, melt statistics, memory statistics, particle count statistics, point values, pressure statistics, spherical velocity statistics, temperature statistics, topography, tracers, velocity boundary statistics, velocity statistics, viscous dissipation statistics, visualization
+{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, command, composition statistics, depth average, dynamic topography, global statistics, heat flux densities, heat flux map, heat flux statistics, heating statistics, mass flux statistics, matrix statistics, melt statistics, memory statistics, particle count statistics, particles, point values, pressure statistics, spherical velocity statistics, temperature statistics, topography, velocity boundary statistics, velocity statistics, viscous dissipation statistics, visualization
+\item {\it Parameter name:} {\tt Run postprocessors on nonlinear iterations}
+\phantomsection\label{parameters:Postprocess/Run postprocessors on nonlinear iterations}
+
+
+\index[prmindex]{Run postprocessors on nonlinear iterations}
+\index[prmindexfull]{Postprocess!Run postprocessors on nonlinear iterations}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether or not the postproccessors should be executed after each of the nonlinear iterations done within one time step. As this is mainly an option for the purposes of debugging, it is not supported when the 'Time between graphical output' is larger than zero, or when the postprocessor is not intended to be run more than once per timestep.
+
+
+{\it Possible values:} A boolean value (true or false)
 \end{itemize}
 
 
@@ -11450,38 +11562,38 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Possible values:} A boolean value (true or false)
 \end{itemize}
 
-\subsection{Parameters in section \tt Postprocess/Point values}
-\label{parameters:Postprocess/Point_20values}
+\subsection{Parameters in section \tt Postprocess/Global statistics}
+\label{parameters:Postprocess/Global_20statistics}
 
 \begin{itemize}
-\item {\it Parameter name:} {\tt Evaluation points}
-\phantomsection\label{parameters:Postprocess/Point values/Evaluation points}
+\item {\it Parameter name:} {\tt Write statistics for each nonlinear iteration}
+\phantomsection\label{parameters:Postprocess/Global statistics/Write statistics for each nonlinear iteration}
 
 
-\index[prmindex]{Evaluation points}
-\index[prmindexfull]{Postprocess!Point values!Evaluation points}
-{\it Value:} 
+\index[prmindex]{Write statistics for each nonlinear iteration}
+\index[prmindexfull]{Postprocess!Global statistics!Write statistics for each nonlinear iteration}
+{\it Value:} false
 
 
-{\it Default:} 
+{\it Default:} false
 
 
-{\it Description:} The list of points at which the solution should be evaluated. Points need to be separated by semicolons, and coordinates of each point need to be separated by commas.
+{\it Description:} Whether to put every nonlinear iteration into a separate line in the statistics file (if true), or to output only one line per time step that contains the total number of iterations of the Stokes and advection linear system solver.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements separated by <;> where each element is [A list of 2 to 2 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]]
+{\it Possible values:} A boolean value (true or false)
 \end{itemize}
 
-\subsection{Parameters in section \tt Postprocess/Tracers}
-\label{parameters:Postprocess/Tracers}
+\subsection{Parameters in section \tt Postprocess/Particles}
+\label{parameters:Postprocess/Particles}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Data output format}
-\phantomsection\label{parameters:Postprocess/Tracers/Data output format}
+\phantomsection\label{parameters:Postprocess/Particles/Data output format}
 
 
 \index[prmindex]{Data output format}
-\index[prmindexfull]{Postprocess!Tracers!Data output format}
+\index[prmindexfull]{Postprocess!Particles!Data output format}
 {\it Value:} vtu
 
 
@@ -11499,11 +11611,11 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 {\it Possible values:} Any one of ascii, hdf5, vtu, none
 \item {\it Parameter name:} {\tt Integration scheme}
-\phantomsection\label{parameters:Postprocess/Tracers/Integration scheme}
+\phantomsection\label{parameters:Postprocess/Particles/Integration scheme}
 
 
 \index[prmindex]{Integration scheme}
-\index[prmindexfull]{Postprocess!Tracers!Integration scheme}
+\index[prmindexfull]{Postprocess!Particles!Integration scheme}
 {\it Value:} rk2
 
 
@@ -11527,11 +11639,11 @@ Select one of the following models:
 
 {\it Possible values:} Any one of euler, rk2, rk4
 \item {\it Parameter name:} {\tt Interpolation scheme}
-\phantomsection\label{parameters:Postprocess/Tracers/Interpolation scheme}
+\phantomsection\label{parameters:Postprocess/Particles/Interpolation scheme}
 
 
 \index[prmindex]{Interpolation scheme}
-\index[prmindexfull]{Postprocess!Tracers!Interpolation scheme}
+\index[prmindexfull]{Postprocess!Particles!Interpolation scheme}
 {\it Value:} cell average
 
 
@@ -11540,48 +11652,50 @@ Select one of the following models:
 
 {\it Description:} Select one of the following models:
 
-`cell average': Return the average of all tracer properties in the given cell.
+`cell average': Return the average of all particle properties in the given cell.
 
 
 {\it Possible values:} Any one of cell average
-\item {\it Parameter name:} {\tt List of tracer properties}
-\phantomsection\label{parameters:Postprocess/Tracers/List of tracer properties}
+\item {\it Parameter name:} {\tt List of particle properties}
+\phantomsection\label{parameters:Postprocess/Particles/List of particle properties}
 
 
-\index[prmindex]{List of tracer properties}
-\index[prmindexfull]{Postprocess!Tracers!List of tracer properties}
+\index[prmindex]{List of particle properties}
+\index[prmindexfull]{Postprocess!Particles!List of particle properties}
 {\it Value:} 
 
 
 {\it Default:} 
 
 
-{\it Description:} A comma separated list of tracer properties that should be tracked. By default none is selected, which means only position, velocity and id of the tracers are output. 
+{\it Description:} A comma separated list of particle properties that should be tracked. By default none is selected, which means only position, velocity and id of the particles are output. 
 
 The following properties are available:
 
-`function': Implementation of a model in which the tracer property is set by evaluating an explicit function at the initial position of each particle. The function is defined in the parameters in section ``Tracers|Function''. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+`function': Implementation of a model in which the particle property is set by evaluating an explicit function at the initial position of each particle. The function is defined in the parameters in section ``Particles|Function''. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
-`initial composition': Implementation of a plugin in which the tracer property is given as the initial composition at the particle's initial position. The tracer gets as many properties as there are compositional fields.
+`initial composition': Implementation of a plugin in which the particle property is given as the initial composition at the particle's initial position. The particle gets as many properties as there are compositional fields.
 
-`initial position': Implementation of a plugin in which the tracer property is given as the initial position of the tracer. This property is vector-valued with as many components as there are space dimensions. In practice, it is often most useful to only visualize one of the components of this vector, or the magnitude of the vector. For example, in a spherical mantle simulation, the magnitude of this property equals the starting radius of a particle, and is thereby indicative of which part of the mantle a particle comes from.
+`initial position': Implementation of a plugin in which the particle property is given as the initial position of the particle. This property is vector-valued with as many components as there are space dimensions. In practice, it is often most useful to only visualize one of the components of this vector, or the magnitude of the vector. For example, in a spherical mantle simulation, the magnitude of this property equals the starting radius of a particle, and is thereby indicative of which part of the mantle a particle comes from.
 
-`integrated strain': A plugin in which the tracer property tensor is defined as the deformation gradient tensor $\mathbf F$ this particle has experienced. $\mathbf F$ can be polar-decomposed into the left stretching tensor $\mathbf L$ (the finite strain we are interested in), and the rotation tensor $\mathbf Q$. See the corresponding cookbook in the manual for more detailed information.
+`integrated strain': A plugin in which the particle property tensor is defined as the deformation gradient tensor $\mathbf F$ this particle has experienced. $\mathbf F$ can be polar-decomposed into the left stretching tensor $\mathbf L$ (the finite strain we are interested in), and the rotation tensor $\mathbf Q$. See the corresponding cookbook in the manual for more detailed information.
 
-`pT path': Implementation of a plugin in which the tracer property is defined as the current pressure and temperature at this position. This can be used to generate pressure-temperature paths of material points over time.
+`integrated strain invariant': A plugin in which the particle property is defined as the finite strain invariant ($\varepsilon_{ii}$). This property is calculated with the timestep ($dt$) and the second invariant of the deviatoric strain rate tensor ($\dot{\varepsilon}_{ii}$), where the value at time step $n$ is $\varepsilon_{ii}^{n} = \varepsilon_{ii}^{n-1} + dt*\dot{\varepsilon}_{ii}$.
 
-`position': Implementation of a plugin in which the tracer property is defined as the current position.
+`pT path': Implementation of a plugin in which the particle property is defined as the current pressure and temperature at this position. This can be used to generate pressure-temperature paths of material points over time.
 
-`velocity': Implementation of a plugin in which the tracer property is defined as the recent velocity at this position.
+`position': Implementation of a plugin in which the particle property is defined as the current position.
+
+`velocity': Implementation of a plugin in which the particle property is defined as the recent velocity at this position.
 
 
-{\it Possible values:} A comma-separated list of any of function, initial composition, initial position, integrated strain, pT path, position, velocity
+{\it Possible values:} A comma-separated list of any of function, initial composition, initial position, integrated strain, integrated strain invariant, pT path, position, velocity
 \item {\it Parameter name:} {\tt Load balancing strategy}
-\phantomsection\label{parameters:Postprocess/Tracers/Load balancing strategy}
+\phantomsection\label{parameters:Postprocess/Particles/Load balancing strategy}
 
 
 \index[prmindex]{Load balancing strategy}
-\index[prmindexfull]{Postprocess!Tracers!Load balancing strategy}
+\index[prmindexfull]{Postprocess!Particles!Load balancing strategy}
 {\it Value:} repartition
 
 
@@ -11592,12 +11706,12 @@ The following properties are available:
 
 
 {\it Possible values:} A comma-separated list of any of none, remove particles, add particles, remove and add particles, repartition
-\item {\it Parameter name:} {\tt Maximum tracers per cell}
-\phantomsection\label{parameters:Postprocess/Tracers/Maximum tracers per cell}
+\item {\it Parameter name:} {\tt Maximum particles per cell}
+\phantomsection\label{parameters:Postprocess/Particles/Maximum particles per cell}
 
 
-\index[prmindex]{Maximum tracers per cell}
-\index[prmindexfull]{Postprocess!Tracers!Maximum tracers per cell}
+\index[prmindex]{Maximum particles per cell}
+\index[prmindexfull]{Postprocess!Particles!Maximum particles per cell}
 {\it Value:} 100
 
 
@@ -11608,12 +11722,12 @@ The following properties are available:
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
-\item {\it Parameter name:} {\tt Minimum tracers per cell}
-\phantomsection\label{parameters:Postprocess/Tracers/Minimum tracers per cell}
+\item {\it Parameter name:} {\tt Minimum particles per cell}
+\phantomsection\label{parameters:Postprocess/Particles/Minimum particles per cell}
 
 
-\index[prmindex]{Minimum tracers per cell}
-\index[prmindexfull]{Postprocess!Tracers!Minimum tracers per cell}
+\index[prmindex]{Minimum particles per cell}
+\index[prmindexfull]{Postprocess!Particles!Minimum particles per cell}
 {\it Value:} 0
 
 
@@ -11624,28 +11738,28 @@ The following properties are available:
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
-\item {\it Parameter name:} {\tt Number of tracers}
-\phantomsection\label{parameters:Postprocess/Tracers/Number of tracers}
+\item {\it Parameter name:} {\tt Number of particles}
+\phantomsection\label{parameters:Postprocess/Particles/Number of particles}
 
 
-\index[prmindex]{Number of tracers}
-\index[prmindexfull]{Postprocess!Tracers!Number of tracers}
+\index[prmindex]{Number of particles}
+\index[prmindexfull]{Postprocess!Particles!Number of particles}
 {\it Value:} 1000
 
 
 {\it Default:} 1000
 
 
-{\it Description:} Total number of tracers to create (not per processor or per element). The number is parsed as a floating point number (so that one can specify, for example, '1e4' particles) but it is interpreted as an integer, of course.
+{\it Description:} Total number of particles to create (not per processor or per element). The number is parsed as a floating point number (so that one can specify, for example, '1e4' particles) but it is interpreted as an integer, of course.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Particle generator name}
-\phantomsection\label{parameters:Postprocess/Tracers/Particle generator name}
+\phantomsection\label{parameters:Postprocess/Particles/Particle generator name}
 
 
 \index[prmindex]{Particle generator name}
-\index[prmindexfull]{Postprocess!Tracers!Particle generator name}
+\index[prmindexfull]{Postprocess!Particles!Particle generator name}
 {\it Value:} random uniform
 
 
@@ -11654,7 +11768,7 @@ The following properties are available:
 
 {\it Description:} Select one of the following models:
 
-`ascii file': Generates a distribution of tracers from coordinates specified in an Ascii data file. The file format is a simple text file, with as many columns as spatial dimensions and as many lines as tracers to be generated. Initial comment lines starting with `\#' will be discarded.All of the values that define this generator are read from a section ``Particle generator/Ascii file'' in the input file, see Section~\ref{parameters:Particle_20generator/Ascii_20file}.
+`ascii file': Generates a distribution of particles from coordinates specified in an Ascii data file. The file format is a simple text file, with as many columns as spatial dimensions and as many lines as particles to be generated. Initial comment lines starting with `\#' will be discarded.All of the values that define this generator are read from a section ``Particle generator/Ascii file'' in the input file, see Section~\ref{parameters:Particle_20generator/Ascii_20file}.
 
 `probability density function': Generate a random distribution of particles over the entire simulation domain. The probability density is prescribed in the form of a user-prescribed function. The format of this function follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}. The return value of the function is always checked to be a non-negative probability density but it can be zero inparts of the domain.
 
@@ -11664,18 +11778,34 @@ The following properties are available:
 
 `reference cell': Generate a uniform distribution of particles per cell and spatial direction in the unit cell and transforms each of the particles back to real region in the model domain. Uniform here means the particles will be generated with an equal spacing in each spatial dimension
 
-`uniform box': Generate a uniform distribution of particles over a rectangular domain in 2D or 3D. Uniform here means the particles will be generated with an equal spacing in each spatial dimension. Note that in order to produce a regular distribution the number of generated tracers might not exactly match the one specified in the input file.
+`uniform box': Generate a uniform distribution of particles over a rectangular domain in 2D or 3D. Uniform here means the particles will be generated with an equal spacing in each spatial dimension. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
 
-`uniform radial': Generate a uniform distribution of particlesover a spherical domain in 2D or 3D. Uniform here means the particles will be generated with an equal spacing in each spherical spatial dimension, i.e., the particles are created at positions that increase linearly with equal spacing in radius, colatitude and longitude around a certain center point. Note that in order to produce a regular distribution the number of generated tracers might not exactly match the one specified in the input file.
+`uniform radial': Generate a uniform distribution of particlesover a spherical domain in 2D or 3D. Uniform here means the particles will be generated with an equal spacing in each spherical spatial dimension, i.e., the particles are created at positions that increase linearly with equal spacing in radius, colatitude and longitude around a certain center point. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
 
 
 {\it Possible values:} Any one of ascii file, probability density function, quadrature points, random uniform, reference cell, uniform box, uniform radial
+\item {\it Parameter name:} {\tt Particle weight}
+\phantomsection\label{parameters:Postprocess/Particles/Particle weight}
+
+
+\index[prmindex]{Particle weight}
+\index[prmindexfull]{Postprocess!Particles!Particle weight}
+{\it Value:} 10
+
+
+{\it Default:} 10
+
+
+{\it Description:} Weight that is associated with the computational load of a single particle. The sum of particle weights will be added to the sum of cell weights to determine the partitioning of the mesh if the 'repartition' particle load balancing strategy is selected. The optimal weight depends on the used integrator and particle properties. In general for a more expensive integrator and more expensive properties a larger particle weight is recommended. Before adding the weights of particles, each cell already carries a weight of 1000 to account for the cost of field-based computations.
+
+
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Time between data output}
-\phantomsection\label{parameters:Postprocess/Tracers/Time between data output}
+\phantomsection\label{parameters:Postprocess/Particles/Time between data output}
 
 
 \index[prmindex]{Time between data output}
-\index[prmindexfull]{Postprocess!Tracers!Time between data output}
+\index[prmindexfull]{Postprocess!Particles!Time between data output}
 {\it Value:} 1e8
 
 
@@ -11688,28 +11818,12 @@ Units: years if the 'Use years in output instead of seconds' parameter is set; s
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Tracer weight}
-\phantomsection\label{parameters:Postprocess/Tracers/Tracer weight}
-
-
-\index[prmindex]{Tracer weight}
-\index[prmindexfull]{Postprocess!Tracers!Tracer weight}
-{\it Value:} 10
-
-
-{\it Default:} 10
-
-
-{\it Description:} Weight that is associated with the computational load of a single particle. The sum of particle weights will be added to the sum of cell weights to determine the partitioning of the mesh if the 'repartition' particle load balancing strategy is selected. The optimal weight depends on the used integrator and particle properties. In general for a more expensive integrator and more expensive properties a larger particle weight is recommended. Before adding the weights of particles, each cell already carries a weight of 1000 to account for the cost of field-based computations.
-
-
-{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Update ghost particles}
-\phantomsection\label{parameters:Postprocess/Tracers/Update ghost particles}
+\phantomsection\label{parameters:Postprocess/Particles/Update ghost particles}
 
 
 \index[prmindex]{Update ghost particles}
-\index[prmindexfull]{Postprocess!Tracers!Update ghost particles}
+\index[prmindexfull]{Postprocess!Particles!Update ghost particles}
 {\it Value:} false
 
 
@@ -11724,16 +11838,16 @@ Units: years if the 'Use years in output instead of seconds' parameter is set; s
 
 
 
-\subsection{Parameters in section \tt Postprocess/Tracers/Function}
-\label{parameters:Postprocess/Tracers/Function}
+\subsection{Parameters in section \tt Postprocess/Particles/Function}
+\label{parameters:Postprocess/Particles/Function}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Function constants}
-\phantomsection\label{parameters:Postprocess/Tracers/Function/Function constants}
+\phantomsection\label{parameters:Postprocess/Particles/Function/Function constants}
 
 
 \index[prmindex]{Function constants}
-\index[prmindexfull]{Postprocess!Tracers!Function/Function constants}
+\index[prmindexfull]{Postprocess!Particles!Function/Function constants}
 {\it Value:} 
 
 
@@ -11747,11 +11861,11 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 {\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Function expression}
-\phantomsection\label{parameters:Postprocess/Tracers/Function/Function expression}
+\phantomsection\label{parameters:Postprocess/Particles/Function/Function expression}
 
 
 \index[prmindex]{Function expression}
-\index[prmindexfull]{Postprocess!Tracers!Function/Function expression}
+\index[prmindexfull]{Postprocess!Particles!Function/Function expression}
 {\it Value:} 0
 
 
@@ -11765,11 +11879,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Number of components}
-\phantomsection\label{parameters:Postprocess/Tracers/Function/Number of components}
+\phantomsection\label{parameters:Postprocess/Particles/Function/Number of components}
 
 
 \index[prmindex]{Number of components}
-\index[prmindexfull]{Postprocess!Tracers!Function/Number of components}
+\index[prmindexfull]{Postprocess!Particles!Function/Number of components}
 {\it Value:} 1
 
 
@@ -11781,11 +11895,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Variable names}
-\phantomsection\label{parameters:Postprocess/Tracers/Function/Variable names}
+\phantomsection\label{parameters:Postprocess/Particles/Function/Variable names}
 
 
 \index[prmindex]{Variable names}
-\index[prmindexfull]{Postprocess!Tracers!Function/Variable names}
+\index[prmindexfull]{Postprocess!Particles!Function/Variable names}
 {\it Value:} x,y,t
 
 
@@ -11798,58 +11912,58 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} Any string
 \end{itemize}
 
-\subsection{Parameters in section \tt Postprocess/Tracers/Generator}
-\label{parameters:Postprocess/Tracers/Generator}
+\subsection{Parameters in section \tt Postprocess/Particles/Generator}
+\label{parameters:Postprocess/Particles/Generator}
 
 
-\subsection{Parameters in section \tt Postprocess/Tracers/Generator/Ascii file}
-\label{parameters:Postprocess/Tracers/Generator/Ascii_20file}
+\subsection{Parameters in section \tt Postprocess/Particles/Generator/Ascii file}
+\label{parameters:Postprocess/Particles/Generator/Ascii_20file}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Data directory}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Ascii file/Data directory}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Ascii file/Data directory}
 
 
 \index[prmindex]{Data directory}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Ascii file/Data directory}
+\index[prmindexfull]{Postprocess!Particles!Generator/Ascii file/Data directory}
 {\it Value:} \$ASPECT\_SOURCE\_DIR/data/particle/generator/ascii/
 
 
 {\it Default:} \$ASPECT\_SOURCE\_DIR/data/particle/generator/ascii/
 
 
-{\it Description:} The name of a directory that contains the tracer data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the 'data/' subdirectory of ASPECT. 
+{\it Description:} The name of a directory that contains the particle data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the 'data/' subdirectory of ASPECT. 
 
 
 {\it Possible values:} A directory name
 \item {\it Parameter name:} {\tt Data file name}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Ascii file/Data file name}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Ascii file/Data file name}
 
 
 \index[prmindex]{Data file name}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Ascii file/Data file name}
-{\it Value:} tracer.dat
+\index[prmindexfull]{Postprocess!Particles!Generator/Ascii file/Data file name}
+{\it Value:} particle.dat
 
 
-{\it Default:} tracer.dat
+{\it Default:} particle.dat
 
 
-{\it Description:} The name of the tracer file.
+{\it Description:} The name of the particle file.
 
 
 {\it Possible values:} Any string
 \end{itemize}
 
-\subsection{Parameters in section \tt Postprocess/Tracers/Generator/Probability density function}
-\label{parameters:Postprocess/Tracers/Generator/Probability_20density_20function}
+\subsection{Parameters in section \tt Postprocess/Particles/Generator/Probability density function}
+\label{parameters:Postprocess/Particles/Generator/Probability_20density_20function}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Function constants}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Probability density function/Function constants}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Probability density function/Function constants}
 
 
 \index[prmindex]{Function constants}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Probability density function/Function constants}
+\index[prmindexfull]{Postprocess!Particles!Generator/Probability density function/Function constants}
 {\it Value:} 
 
 
@@ -11863,11 +11977,11 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 {\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Function expression}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Probability density function/Function expression}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Probability density function/Function expression}
 
 
 \index[prmindex]{Function expression}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Probability density function/Function expression}
+\index[prmindexfull]{Postprocess!Particles!Generator/Probability density function/Function expression}
 {\it Value:} 0
 
 
@@ -11881,11 +11995,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Variable names}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Probability density function/Variable names}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Probability density function/Variable names}
 
 
 \index[prmindex]{Variable names}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Probability density function/Variable names}
+\index[prmindexfull]{Postprocess!Particles!Generator/Probability density function/Variable names}
 {\it Value:} x,y,t
 
 
@@ -11898,284 +12012,284 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} Any string
 \end{itemize}
 
-\subsection{Parameters in section \tt Postprocess/Tracers/Generator/Reference cell}
-\label{parameters:Postprocess/Tracers/Generator/Reference_20cell}
+\subsection{Parameters in section \tt Postprocess/Particles/Generator/Reference cell}
+\label{parameters:Postprocess/Particles/Generator/Reference_20cell}
 
 \begin{itemize}
-\item {\it Parameter name:} {\tt Number of tracers per cell per direction}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Reference cell/Number of tracers per cell per direction}
+\item {\it Parameter name:} {\tt Number of particles per cell per direction}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Reference cell/Number of particles per cell per direction}
 
 
-\index[prmindex]{Number of tracers per cell per direction}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Reference cell/Number of tracers per cell per direction}
+\index[prmindex]{Number of particles per cell per direction}
+\index[prmindexfull]{Postprocess!Particles!Generator/Reference cell/Number of particles per cell per direction}
 {\it Value:} 2
 
 
 {\it Default:} 2
 
 
-{\it Description:} List of number of tracers to create per cell and spatial dimension. The size of the list is the number of spatial dimensions. If only one value is given, then each spatial dimension is set to the same value. The list of numbers are parsed as a floating point number (so that one can specify, for example, '1e4' particles) but it is interpreted as an integer, of course.
+{\it Description:} List of number of particles to create per cell and spatial dimension. The size of the list is the number of spatial dimensions. If only one value is given, then each spatial dimension is set to the same value. The list of numbers are parsed as a floating point number (so that one can specify, for example, '1e4' particles) but it is interpreted as an integer, of course.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
 \end{itemize}
 
-\subsection{Parameters in section \tt Postprocess/Tracers/Generator/Uniform box}
-\label{parameters:Postprocess/Tracers/Generator/Uniform_20box}
+\subsection{Parameters in section \tt Postprocess/Particles/Generator/Uniform box}
+\label{parameters:Postprocess/Particles/Generator/Uniform_20box}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Maximum x}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Maximum x}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Uniform box/Maximum x}
 
 
 \index[prmindex]{Maximum x}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Maximum x}
+\index[prmindexfull]{Postprocess!Particles!Generator/Uniform box/Maximum x}
 {\it Value:} 1
 
 
 {\it Default:} 1
 
 
-{\it Description:} Maximum x coordinate for the region of tracers.
+{\it Description:} Maximum x coordinate for the region of particles.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Maximum y}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Maximum y}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Uniform box/Maximum y}
 
 
 \index[prmindex]{Maximum y}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Maximum y}
+\index[prmindexfull]{Postprocess!Particles!Generator/Uniform box/Maximum y}
 {\it Value:} 1
 
 
 {\it Default:} 1
 
 
-{\it Description:} Maximum y coordinate for the region of tracers.
+{\it Description:} Maximum y coordinate for the region of particles.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Maximum z}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Maximum z}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Uniform box/Maximum z}
 
 
 \index[prmindex]{Maximum z}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Maximum z}
+\index[prmindexfull]{Postprocess!Particles!Generator/Uniform box/Maximum z}
 {\it Value:} 1
 
 
 {\it Default:} 1
 
 
-{\it Description:} Maximum z coordinate for the region of tracers.
+{\it Description:} Maximum z coordinate for the region of particles.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Minimum x}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Minimum x}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Uniform box/Minimum x}
 
 
 \index[prmindex]{Minimum x}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Minimum x}
+\index[prmindexfull]{Postprocess!Particles!Generator/Uniform box/Minimum x}
 {\it Value:} 0
 
 
 {\it Default:} 0
 
 
-{\it Description:} Minimum x coordinate for the region of tracers.
+{\it Description:} Minimum x coordinate for the region of particles.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Minimum y}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Minimum y}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Uniform box/Minimum y}
 
 
 \index[prmindex]{Minimum y}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Minimum y}
+\index[prmindexfull]{Postprocess!Particles!Generator/Uniform box/Minimum y}
 {\it Value:} 0
 
 
 {\it Default:} 0
 
 
-{\it Description:} Minimum y coordinate for the region of tracers.
+{\it Description:} Minimum y coordinate for the region of particles.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Minimum z}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Minimum z}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Uniform box/Minimum z}
 
 
 \index[prmindex]{Minimum z}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Minimum z}
+\index[prmindexfull]{Postprocess!Particles!Generator/Uniform box/Minimum z}
 {\it Value:} 0
 
 
 {\it Default:} 0
 
 
-{\it Description:} Minimum z coordinate for the region of tracers.
+{\it Description:} Minimum z coordinate for the region of particles.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \end{itemize}
 
-\subsection{Parameters in section \tt Postprocess/Tracers/Generator/Uniform radial}
-\label{parameters:Postprocess/Tracers/Generator/Uniform_20radial}
+\subsection{Parameters in section \tt Postprocess/Particles/Generator/Uniform radial}
+\label{parameters:Postprocess/Particles/Generator/Uniform_20radial}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Center x}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Center x}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Uniform radial/Center x}
 
 
 \index[prmindex]{Center x}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Center x}
+\index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Center x}
 {\it Value:} 0
 
 
 {\it Default:} 0
 
 
-{\it Description:} x coordinate for the center of the spherical region, where tracers are generated.
+{\it Description:} x coordinate for the center of the spherical region, where particles are generated.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Center y}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Center y}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Uniform radial/Center y}
 
 
 \index[prmindex]{Center y}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Center y}
+\index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Center y}
 {\it Value:} 0
 
 
 {\it Default:} 0
 
 
-{\it Description:} y coordinate for the center of the spherical region, where tracers are generated.
+{\it Description:} y coordinate for the center of the spherical region, where particles are generated.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Center z}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Center z}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Uniform radial/Center z}
 
 
 \index[prmindex]{Center z}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Center z}
+\index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Center z}
 {\it Value:} 0
 
 
 {\it Default:} 0
 
 
-{\it Description:} z coordinate for the center of the spherical region, where tracers are generated.
+{\it Description:} z coordinate for the center of the spherical region, where particles are generated.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Maximum latitude}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Maximum latitude}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Uniform radial/Maximum latitude}
 
 
 \index[prmindex]{Maximum latitude}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Maximum latitude}
+\index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Maximum latitude}
 {\it Value:} 3.1415
 
 
 {\it Default:} 3.1415
 
 
-{\it Description:} Maximum latitude coordinate for the region of tracers in degrees. Measured from the center position.
+{\it Description:} Maximum latitude coordinate for the region of particles in degrees. Measured from the center position.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 180$
 \item {\it Parameter name:} {\tt Maximum longitude}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Maximum longitude}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Uniform radial/Maximum longitude}
 
 
 \index[prmindex]{Maximum longitude}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Maximum longitude}
+\index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Maximum longitude}
 {\it Value:} 3.1415
 
 
 {\it Default:} 3.1415
 
 
-{\it Description:} Maximum longitude coordinate for the region of tracers in degrees. Measured from the center position.
+{\it Description:} Maximum longitude coordinate for the region of particles in degrees. Measured from the center position.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 360$
 \item {\it Parameter name:} {\tt Maximum radius}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Maximum radius}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Uniform radial/Maximum radius}
 
 
 \index[prmindex]{Maximum radius}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Maximum radius}
+\index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Maximum radius}
 {\it Value:} 1
 
 
 {\it Default:} 1
 
 
-{\it Description:} Maximum radial coordinate for the region of tracers. Measured from the center position.
+{\it Description:} Maximum radial coordinate for the region of particles. Measured from the center position.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Minimum latitude}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Minimum latitude}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Uniform radial/Minimum latitude}
 
 
 \index[prmindex]{Minimum latitude}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Minimum latitude}
+\index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Minimum latitude}
 {\it Value:} 0
 
 
 {\it Default:} 0
 
 
-{\it Description:} Minimum latitude coordinate for the region of tracers in degrees. Measured from the center position.
+{\it Description:} Minimum latitude coordinate for the region of particles in degrees. Measured from the center position.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 180$
 \item {\it Parameter name:} {\tt Minimum longitude}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Minimum longitude}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Uniform radial/Minimum longitude}
 
 
 \index[prmindex]{Minimum longitude}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Minimum longitude}
+\index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Minimum longitude}
 {\it Value:} 0
 
 
 {\it Default:} 0
 
 
-{\it Description:} Minimum longitude coordinate for the region of tracers in degrees. Measured from the center position.
+{\it Description:} Minimum longitude coordinate for the region of particles in degrees. Measured from the center position.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 360$
 \item {\it Parameter name:} {\tt Minimum radius}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Minimum radius}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Uniform radial/Minimum radius}
 
 
 \index[prmindex]{Minimum radius}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Minimum radius}
+\index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Minimum radius}
 {\it Value:} 0
 
 
 {\it Default:} 0
 
 
-{\it Description:} Minimum radial coordinate for the region of tracers. Measured from the center position.
+{\it Description:} Minimum radial coordinate for the region of particles. Measured from the center position.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Radial layers}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Radial layers}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Uniform radial/Radial layers}
 
 
 \index[prmindex]{Radial layers}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Radial layers}
+\index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Radial layers}
 {\it Value:} 1
 
 
@@ -12186,6 +12300,28 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Point values}
+\label{parameters:Postprocess/Point_20values}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Evaluation points}
+\phantomsection\label{parameters:Postprocess/Point values/Evaluation points}
+
+
+\index[prmindex]{Evaluation points}
+\index[prmindexfull]{Postprocess!Point values!Evaluation points}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} The list of points at which the solution should be evaluated. Points need to be separated by semicolons, and coordinates of each point need to be separated by commas.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements separated by <;> where each element is [A list of 2 to 2 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]]
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Visualization}
