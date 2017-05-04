@@ -106,8 +106,8 @@ namespace aspect
                                         "This property is calculated with the timestep ($dt$) and "
                                         "the second invariant of the deviatoric strain rate tensor "
                                         "($\\dot{\\varepsilon}_{ii}$), where the value at time step $n$ is "
-                                        "$\\varepsilon_{ii}^{n} = \\varepsilon_{ii}^{n-1} + $ "
-                                        "$dt*\\dot{\\varepsilon}_{ii}.")
+                                        "$\\varepsilon_{ii}^{n} = \\varepsilon_{ii}^{n-1} + "
+                                        "dt\\dot{\\varepsilon}_{ii}$.")
     }
   }
 }
