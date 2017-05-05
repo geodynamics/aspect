@@ -316,12 +316,11 @@ namespace aspect
                                                     min_strain_rate);
                   double viscous_stress = 2. * out.viscosities[i] * edot_ii * (1.0 - porosity);
 
-                  const double x_phi = (porosity > this->get_melt_handler().melt_transport_threshold
-                                        ?
-                                        1.0
-                                        :
-                                        0.0);
-                  const double effective_pressure = (1.0 - porosity) * in.pressure[i] + (porosity - x_phi) * fluid_pressures[i];
+                  const double effective_pressure = (porosity > this->get_melt_handler().melt_transport_threshold
+                                                     ?
+                                                     in.pressure[i] - fluid_pressures[i]
+                                                     :
+                                                     in.pressure[i]);
 
                   double yield_strength = 0.0;
                   double tensile_strength = 0.0;
@@ -335,7 +334,7 @@ namespace aspect
                       const double transition_pressure = (cohesions[c] * std::cos(phi) - tensile_strength_c) / (1.0 -  sin(phi));
 
                       double yield_strength_c = 0.0;
-                      if (effective_pressure < transition_pressure)
+                      if (effective_pressure > transition_pressure)
                         yield_strength_c = ( (dim==3)
                                            ?
                                            ( 6.0 * cohesions[c] * std::cos(phi) + 2.0 * effective_pressure * std::sin(phi) )
@@ -343,14 +342,14 @@ namespace aspect
                                            :
                                            cohesions[c] * std::cos(phi) + effective_pressure * std::sin(phi) );
                       else
-                        yield_strength_c = tensile_strength_c - effective_pressure;
+                        yield_strength_c = tensile_strength_c + effective_pressure;
 
                       yield_strength += volume_fractions[c]*yield_strength_c;
                       tensile_strength += volume_fractions[c]*tensile_strength_c;
                     }
 
                   // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface
-                  if (viscous_stress >= yield_strength)
+                   if (viscous_stress >= yield_strength)
                     out.viscosities[i] = yield_strength / (2.0 * edot_ii);
 
                   // Limit the viscosity with specified minimum and maximum bounds
@@ -387,11 +386,13 @@ namespace aspect
               double porosity = std::max(in.composition[i][porosity_idx],0.0);
 
               melt_out->fluid_viscosities[i] = eta_f;
-              melt_out->permeabilities[i] = (old_porosity[i] > this->get_melt_handler().melt_transport_threshold
+              melt_out->permeabilities[i] = (old_porosity[i] > 1e-3 //this->get_melt_handler().melt_transport_threshold
                                              ?
                                              std::max(reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2),0.0)
                                              :
                                              0.0);
+
+              melt_out->permeabilities[i] = std::max(reference_permeability * std::pow((porosity-1.e-3),3) * std::pow(1.0-porosity,2),0.0);
 
               melt_out->fluid_densities[i] = out.densities[i] + melt_density_change;
               melt_out->fluid_density_gradients[i] = 0.0;
@@ -399,11 +400,14 @@ namespace aspect
               const double compaction_pressure = (1.0 - porosity) * (in.pressure[i] - fluid_pressures[i]);
 
               const double phi_0 = 0.05;
-              porosity = std::max(std::min(porosity,0.995),1.e-3);
+              porosity = std::max(std::min(porosity,0.995),1.e-7);
               melt_out->compaction_viscosities[i] = xi_0 * phi_0 / porosity;
 
-              if (compaction_pressure >= volumetric_yield_strength[i])
-                melt_out->compaction_viscosities[i] = volumetric_yield_strength[i] / volumetric_strain_rates[i];
+               if (in.strain_rate.size() && compaction_pressure >= volumetric_yield_strength[i])
+                melt_out->compaction_viscosities[i] = volumetric_yield_strength[i] / std::max(volumetric_strain_rates[i], min_strain_rate);
+
+              // Limit the viscosity with specified minimum and maximum bounds
+              melt_out->compaction_viscosities[i] = std::min(std::max(melt_out->compaction_viscosities[i], min_visc), max_visc);
             }
         }
 
