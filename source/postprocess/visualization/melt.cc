@@ -25,6 +25,7 @@
 #include <aspect/simulator.h>
 #include <aspect/material_model/interface.h>
 
+#include <deal.II/grid/grid_tools.h>
 #include <deal.II/numerics/data_out.h>
 
 
