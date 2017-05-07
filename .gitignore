@@ -52,7 +52,7 @@
 /tests/lib*.so
 /Testing
 
-# Added by EGP for Clion
+# used for clion:
 
 .idea/
 cmake-build-debug/
