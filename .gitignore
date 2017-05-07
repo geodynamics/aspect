@@ -51,3 +51,8 @@
 /tests/*.x.prm
 /tests/lib*.so
 /Testing
+
+# Added by EGP for Clion
+
+.idea/
+cmake-build-debug/
