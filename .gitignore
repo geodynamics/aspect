@@ -51,3 +51,8 @@
 /tests/*.x.prm
 /tests/lib*.so
 /Testing
+
+# used for clion:
+
+.idea/
+cmake-build-debug/
