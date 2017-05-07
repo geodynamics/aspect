@@ -80,6 +80,8 @@ echo "Please be patient..."
 
 ( (cd solcx; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
+( (cd solcx/compositional_fields; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
 ( (cd solitary_wave; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd solkz; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
