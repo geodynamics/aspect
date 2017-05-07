@@ -27,6 +27,8 @@
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/symmetric_tensor.h>
 
+DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
+
 #include <deal.II/lac/trilinos_block_vector.h>
 #include <deal.II/lac/trilinos_block_sparse_matrix.h>
 #include <deal.II/lac/trilinos_precondition.h>
@@ -38,6 +40,8 @@
 #include <deal.II/fe/fe_system.h>
 #include <deal.II/fe/mapping.h>
 #include <deal.II/base/tensor_function.h>
+
+DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
