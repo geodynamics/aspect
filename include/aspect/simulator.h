@@ -1381,10 +1381,10 @@ namespace aspect
       ConstraintMatrix                                          current_constraints;
 
       /**
-       * The latest correction computed by normalize_pressure(). We store this
-       * so we can undo the correction in denormalize_pressure().
+       * A place to store the latest correction computed by normalize_pressure().
+       * We store this so we can undo the correction in denormalize_pressure().
        */
-      double                                                    pressure_adjustment;
+      double                                                    last_pressure_normalization_adjustment;
 
       /**
        * Scaling factor for the pressure as explained in the

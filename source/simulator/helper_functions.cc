@@ -1147,7 +1147,7 @@ namespace aspect
     // TODO for Timo: can we create the ghost vector inside of denormalize_pressure
     // (only in cases where we need it)
     ghosted.block(block_p) = remap.block(block_p);
-    denormalize_pressure (this->pressure_adjustment, remap, ghosted);
+    denormalize_pressure (this->last_pressure_normalization_adjustment, remap, ghosted);
     current_constraints.set_zero (remap);
 
     remap.block (block_p) /= pressure_scaling;
