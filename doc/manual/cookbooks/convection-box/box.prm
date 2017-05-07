@@ -7,7 +7,7 @@ set Dimension                              = 2
 # also designate an output directory.
 set Use years in output instead of seconds = false
 set End time                               = 0.5
-set Output directory                       = output
+set Output directory                       = output-convection-box
 
 # Then there are variables that describe the tolerance of
 # the linear solver as well as how the pressure should
