@@ -41,9 +41,9 @@ namespace aspect
 
       // use either the user-input reference temperature as background temperature
       // (incompressible model) or the adiabatic temperature profile (compressible model)
-      const double background_temperature = this->include_adiabatic_heating() ?
-                                            this->get_adiabatic_conditions().temperature(position) :
-                                            reference_temperature;
+      double background_temperature = this->include_adiabatic_heating() ?
+                                      this->get_adiabatic_conditions().temperature(position) :
+                                      reference_temperature;
 
       // s = fraction of the way from
       // the inner to the outer

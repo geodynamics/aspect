@@ -240,7 +240,7 @@ namespace aspect
       double
       ExternalMultipoleExpansion<2>::evaluate( const Point<2> &p ) const
       {
-        const std_cxx11::array<double,2> scoord = aspect::Utilities::spherical_coordinates(p);
+        const std_cxx11::array<double,2> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(p);
         const double theta = scoord[1];
         double value = 0.;
 
@@ -256,7 +256,7 @@ namespace aspect
       double
       ExternalMultipoleExpansion<3>::evaluate( const Point<3> &p ) const
       {
-        const std_cxx11::array<double,3> scoord = aspect::Utilities::spherical_coordinates(p);
+        const std_cxx11::array<double,3> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(p);
         const double theta = scoord[2];
         const double phi = scoord[1];
         double value = 0.;
@@ -346,7 +346,7 @@ namespace aspect
       double
       InternalMultipoleExpansion<2>::evaluate( const Point<2> &p ) const
       {
-        const std_cxx11::array<double,2> scoord = aspect::Utilities::spherical_coordinates(p);
+        const std_cxx11::array<double,2> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(p);
         const double theta = scoord[1];
         double value = 0.;
 
@@ -362,7 +362,7 @@ namespace aspect
       double
       InternalMultipoleExpansion<3>::evaluate( const Point<3> &p ) const
       {
-        const std_cxx11::array<double,3> scoord = aspect::Utilities::spherical_coordinates(p);
+        const std_cxx11::array<double,3> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(p);
         const double theta = scoord[2];
         const double phi = scoord[1];
         double value = 0.;
@@ -435,7 +435,7 @@ namespace aspect
       double
       SurfaceExpansion<2>::evaluate( const Point<2> &p ) const
       {
-        const std_cxx11::array<double,2> scoord = aspect::Utilities::spherical_coordinates(p);
+        const std_cxx11::array<double,2> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(p);
         const double theta = scoord[1];
         double value = 0.;
 
@@ -451,7 +451,7 @@ namespace aspect
       double
       SurfaceExpansion<3>::evaluate( const Point<3> &p ) const
       {
-        const std_cxx11::array<double,3> scoord = aspect::Utilities::spherical_coordinates(p);
+        const std_cxx11::array<double,3> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(p);
         const double theta = scoord[2];
         const double phi = scoord[1];
         double value = 0.;
