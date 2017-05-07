@@ -516,6 +516,62 @@ namespace aspect
     };
 
 
+    /**
+     * Base class for additional named material model outputs to be added to the
+     * MaterialModel::MaterialModelOutputs structure, providing a structure to
+     * query for their names and values. The additional quantities must be scalar
+     * values, and a provide a name for each quantity.
+     */
+    template<int dim>
+    class NamedAdditionalMaterialOutputs: public AdditionalMaterialOutputs<dim>
+    {
+      public:
+        NamedAdditionalMaterialOutputs(const std::vector<std::string> output_names);
+
+        /**
+         * Return a reference to the vector names of the additional
+         * outputs.
+         */
+        const std::vector<std::string> &get_names() const;
+
+        /**
+         * Given an index as input argument, return a reference the to vector of
+         * values of the additional output with that index.
+         */
+        virtual const std::vector<double> &get_nth_output(const unsigned int idx) const = 0;
+
+        virtual ~NamedAdditionalMaterialOutputs()
+        {}
+
+        virtual void average (const MaterialAveraging::AveragingOperation /*operation*/,
+                              const FullMatrix<double>  &/*projection_matrix*/,
+                              const FullMatrix<double>  &/*expansion_matrix*/)
+        {}
+
+      private:
+        const std::vector<std::string> names;
+    };
+
+
+    /**
+     * Additional output fields for the seismic velocities to be added to
+     * the MaterialModel::MaterialModelOutputs structure and filled in the
+     * MaterialModel::Interface::evaluate() function.
+     */
+    template<int dim>
+    class SeismicAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        SeismicAdditionalOutputs(const unsigned int n_points);
+
+        virtual const std::vector<double> &get_nth_output(const unsigned int idx) const;
+
+        // seismic s-wave velocity
+        std::vector<double> vs;
+
+        // seismic p-wave velocity
+        std::vector<double> vp;
+    };
 
     /**
      * A base class for parameterizations of material models. Classes derived
@@ -633,49 +689,6 @@ namespace aspect
          */
 
         /**
-         * @name Common auxiliary material properties used for postprocessing
-         * @{
-         */
-        /**
-         * Return the p-wave seismic velocity Vp of the model as a function of
-         * temperature and pressure.
-         *
-         * This function is only called in postprocessing. Derived classes do
-         * not need to implement it if no useful information is known to
-         * compute this quantity, in which case graphical output will simply
-         * show an uninformative field of constant value. By default this
-         * function returns -1 to indicate that no useful value is
-         * implemented.
-         */
-        virtual
-        double
-        seismic_Vp (const double      temperature,
-                    const double      pressure,
-                    const std::vector<double> &compositional_fields,
-                    const Point<dim> &position) const;
-
-        /**
-         * Return the s-wave seismic velocity Vs of the model as a function of
-         * temperature and pressure.
-         *
-         * This function is only called in postprocessing. Derived classes do
-         * not need to implement it if no useful information is known to
-         * compute this quantity, in which case graphical output will simply
-         * show an uninformative field of constant value. By default this
-         * function returns -1 to indicate that no useful value is
-         * implemented.
-         */
-        virtual
-        double
-        seismic_Vs (const double      temperature,
-                    const double      pressure,
-                    const std::vector<double> &compositional_fields,
-                    const Point<dim> &position) const;
-        /**
-         * @}
-         */
-
-        /**
          * Function to compute the material properties in @p out given the
          * inputs in @p in. If MaterialModelInputs.strain_rate has the length
          * 0, then the viscosity does not need to be computed.
@@ -709,6 +722,15 @@ namespace aspect
         /**
          * @}
          */
+
+        /**
+         * If this material model can produce additional named outputs
+         * that are derived from NamedAdditionalOutputs, create them in here.
+         * By default, this does nothing.
+          */
+        virtual
+        void
+        create_additional_named_outputs (MaterialModelOutputs &outputs) const;
 
       protected:
         /**

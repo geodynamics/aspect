@@ -174,27 +174,13 @@ namespace aspect
     }
 
 
-    template <int dim>
-    double
-    Interface<dim>::
-    seismic_Vp (const double,
-                const double,
-                const std::vector<double> &, /*composition*/
-                const Point<dim> &) const
-    {
-      return -1.0;
-    }
-
 
     template <int dim>
-    double
+    void
     Interface<dim>::
-    seismic_Vs (const double,
-                const double,
-                const std::vector<double> &, /*composition*/
-                const Point<dim> &) const
+    create_additional_named_outputs (MaterialModelOutputs &/*outputs*/) const
     {
-      return -1.0;
+      // by default we do nothing!
     }
 
 
@@ -648,8 +634,67 @@ namespace aspect
         for (unsigned int i=0; i<values_out.additional_outputs.size(); ++i)
           values_out.additional_outputs[i]->average (operation, projection_matrix, expansion_matrix);
       }
-
     }
+
+
+
+    template<int dim>
+    NamedAdditionalMaterialOutputs<dim>::NamedAdditionalMaterialOutputs(const std::vector<std::string> output_names)
+      :
+      names(output_names)
+    {}
+
+
+
+    template<int dim>
+    const std::vector<std::string> &
+    NamedAdditionalMaterialOutputs<dim>::get_names() const
+    {
+      return names;
+    }
+
+
+
+    namespace
+    {
+      std::vector<std::string> make_seismic_additional_outputs_names()
+      {
+        std::vector<std::string> names;
+        names.push_back("seismic_Vs");
+        names.push_back("seismic_Vp");
+        return names;
+      }
+    }
+
+
+
+    template<int dim>
+    SeismicAdditionalOutputs<dim>::SeismicAdditionalOutputs (const unsigned int n_points)
+      :
+      NamedAdditionalMaterialOutputs<dim>(make_seismic_additional_outputs_names()),
+      vs(n_points, -1.0),
+      vp(n_points, -1.0)
+    {}
+
+
+
+    template<int dim>
+    const std::vector<double> &
+    SeismicAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      switch (idx)
+        {
+          case 0:
+            return vs;
+          case 1:
+            return vp;
+          default:
+            AssertThrow(false, ExcInternalError());
+        }
+      // we will never get here, so just return something
+      return vs;
+    }
+
   }
 }
 
@@ -705,6 +750,10 @@ namespace aspect
   template struct MaterialModelOutputs<dim>; \
   \
   template class AdditionalMaterialOutputs<dim>; \
+  \
+  template class NamedAdditionalMaterialOutputs<dim>; \
+  \
+  template class SeismicAdditionalOutputs<dim>; \
   \
   namespace MaterialAveraging \
   { \

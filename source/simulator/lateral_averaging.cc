@@ -355,21 +355,28 @@ namespace aspect
         {}
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-                        const MaterialModel::MaterialModelOutputs<dim> &,
+                        MaterialModel::MaterialModelOutputs<dim> &out,
                         FEValues<dim> &,
                         const LinearAlgebra::BlockVector &,
                         std::vector<double> &output)
         {
+          const unsigned int n_points = in.position.size();
+          const unsigned int n_comp = out.reaction_terms[0].size();
+
+          out.additional_outputs.push_back(
+            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
+
+          material_model->evaluate(in, out);
+          MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
+            = out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >();
+
           if (vs_)
             for (unsigned int q=0; q<output.size(); ++q)
-              output[q] = material_model->seismic_Vs(
-                            in.temperature[q], in.pressure[q], in.composition[q],
-                            in.position[q]);
+              output[q] = seismic_outputs->vs[q];
           else
             for (unsigned int q=0; q<output.size(); ++q)
-              output[q] = material_model->seismic_Vp(
-                            in.temperature[q], in.pressure[q], in.composition[q],
-                            in.position[q]);
+              output[q] = seismic_outputs->vp[q];
         }
 
         const MaterialModel::Interface<dim> *material_model;

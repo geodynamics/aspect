@@ -84,7 +84,7 @@ subsection Postprocess
 
   subsection Visualization
     set Output format                 = gnuplot
-    set List of output variables      = seismic vs, seismic vp, Vs anomaly, Vp anomaly
+    set List of output variables      = named additional outputs, Vs anomaly, Vp anomaly
     set Time between graphical output = 0
   end
 

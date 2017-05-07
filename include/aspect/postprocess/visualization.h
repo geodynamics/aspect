@@ -111,6 +111,11 @@ namespace aspect
           ~Interface ();
 
           /**
+           * Initialize function.
+           */
+          virtual void initialize ();
+
+          /**
            * Declare the parameters this class takes through input files.
            * Derived classes should overload this function if they actually do
            * take parameters; this class declares a fall-back function that

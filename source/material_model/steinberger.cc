@@ -769,6 +769,13 @@ namespace aspect
           out.entropy_derivative_temperature[i] = 0;
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c]            = 0;
+
+          // fill seismic velocities outputs if they exist
+          if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
+            {
+              seismic_out->vp[i] = seismic_Vp(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+              seismic_out->vs[i] = seismic_Vs(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+            }
         }
     }
 
@@ -903,6 +910,20 @@ namespace aspect
         this->model_dependence.thermal_conductivity = NonlinearDependence::none;
       }
     }
+
+    template <int dim>
+    void
+    Steinberger<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == NULL)
+        {
+          const unsigned int n_points = out.viscosities.size();
+          out.additional_outputs.push_back(
+            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
+        }
+    }
+
   }
 }
 

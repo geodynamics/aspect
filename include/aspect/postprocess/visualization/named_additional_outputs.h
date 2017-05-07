@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_postprocess_visualization_seismic_vp_h
-#define _aspect_postprocess_visualization_seismic_vp_h
+#ifndef _aspect_postprocess_visualization_named_additional_outputs_h
+#define _aspect_postprocess_visualization_named_additional_outputs_h
 
 #include <aspect/postprocess/visualization.h>
 #include <aspect/simulator_access.h>
@@ -35,26 +35,47 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       /**
-       * A class derived from DataPostprocessor that takes an output vector
-       * and computes a variable that represents the seismic S-wave speed at
-       * every point.
+       * A class derived from DataPostprocessor that generates visualization
+       * output for all additional material outputs that are derived
+       * from the 'NamedAdditionalMaterialOutputs' base class if the are
+       * filled in the evaluate function of the material model used in the
+       * computation.
        *
        * The member functions are all implementations of those declared in the
        * base class. See there for their meaning.
        */
       template <int dim>
-      class SeismicVp
-        : public DataPostprocessorScalar<dim>,
+      class NamedAdditionalOutputs
+        : public DataPostprocessor<dim>,
           public SimulatorAccess<dim>,
           public Interface<dim>
       {
         public:
-          SeismicVp ();
+          NamedAdditionalOutputs ();
+
+          virtual
+          void
+          initialize ();
+
+          virtual
+          std::vector<std::string>
+          get_names () const;
+
+          virtual
+          std::vector<DataComponentInterpretation::DataComponentInterpretation>
+          get_data_component_interpretation () const;
+
+          virtual
+          UpdateFlags
+          get_needed_update_flags () const;
 
           virtual
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                                 std::vector<Vector<double> > &computed_quantities) const;
+
+        private:
+          std::vector<std::string> property_names;
       };
     }
   }
