@@ -111,6 +111,7 @@ subsection Postprocess
   
   subsection Dynamic Topography
     set Subtract mean of dynamic topography = true
+    set Output lower surface topography     = true
   end
  
   subsection Visualization

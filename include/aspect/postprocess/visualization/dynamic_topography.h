@@ -94,6 +94,11 @@ namespace aspect
            * A parameter allows users to set the density value outside the surface
            */
           double density_above;
+
+          /**
+           * A parameter allows users to set the density value below the lower surface
+           */
+          double density_below;
       };
     }
   }
