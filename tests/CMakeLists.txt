@@ -342,7 +342,7 @@ FOREACH(_test ${_tests})
       )
 
       # Add the target for this output file to the dependencies of this
-      # test. Note Note that a target may not contain "/" but outputs can be
+      # test. Note that a target may not contain "/" but outputs can be
       # in subdirectories (for example solution/solution...), so replace them.
       STRING(REPLACE "/" "-" _target_name ${_test}.${_output}.diff)
       ADD_CUSTOM_TARGET(${_target_name}
