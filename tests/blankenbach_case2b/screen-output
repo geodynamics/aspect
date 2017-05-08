@@ -8,7 +8,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system... 47+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-blankenbach-case2b/solution/solution-00000
+     Writing graphical output:           output-blankenbach_case2b/solution/solution-00000
      RMS, max velocity:                  21.8 m/s, 69.8 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: -1.211e-07 W, 1.211e-07 W, -2.5 W, 2.5 W
@@ -20,7 +20,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system... 53+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-blankenbach-case2b/solution/solution-00001
+     Writing graphical output:           output-blankenbach_case2b/solution/solution-00001
      RMS, max velocity:                  94.4 m/s, 312 m/s
      Temperature min/avg/max:            0 K, 0.5003 K, 1 K
      Heat fluxes through boundary parts: -7.206e-06 W, -2.313e-05 W, -2.561 W, 2.513 W
@@ -208,7 +208,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system... 70+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-blankenbach-case2b/solution/solution-00002
+     Writing graphical output:           output-blankenbach_case2b/solution/solution-00002
      RMS, max velocity:                  633 m/s, 2.61e+03 m/s
      Temperature min/avg/max:            0 K, 0.5014 K, 1 K
      Heat fluxes through boundary parts: -0.5001 W, -2.069e-06 W, -7.874 W, 3.457 W
@@ -473,7 +473,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system... 97+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-blankenbach-case2b/solution/solution-00003
+     Writing graphical output:           output-blankenbach_case2b/solution/solution-00003
      RMS, max velocity:                  266 m/s, 1.24e+03 m/s
      Temperature min/avg/max:            0 K, 0.497 K, 1 K
      Heat fluxes through boundary parts: -0.4978 W, -2.898e-05 W, -12.2 W, 17.66 W
