@@ -302,6 +302,13 @@ ENDIF()
 
 IF (ASPECT_PRECOMPILE_HEADERS)
   MESSAGE(STATUS "Enabling cotire to precompile external header files.")
+
+  # Request new BYPRODUCTS behavior
+  CMAKE_MINIMUM_REQUIRED(VERSION 3.2.0)
+  if(POLICY CMP0058) 
+      cmake_policy(SET CMP0058 NEW) 
+  endif() 
+
   INCLUDE(cmake/cotire)
 
   # Set some properties that are necessary for the header precompilations 
