@@ -79,7 +79,8 @@ namespace aspect
           enum Kind
           {
             solid_density,
-            fluid_density
+            fluid_density,
+            average_density
           };
         };
 

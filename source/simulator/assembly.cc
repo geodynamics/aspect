@@ -365,7 +365,7 @@ namespace aspect
                                         + finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
 
     if (parameters.include_melt_transport)
-      stokes_dofs_per_cell += finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
+      stokes_dofs_per_cell += finite_element.base_element(introspection.variable("compaction pressure").base_index).dofs_per_cell;
 
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
@@ -421,7 +421,7 @@ namespace aspect
                                       introspection.component_masks.velocities,
                                       constant_modes);
 
-    Mp_preconditioner.reset (new LinearAlgebra::PreconditionILU());
+    Mp_preconditioner.reset (new LinearAlgebra::PreconditionAMG());
     Amg_preconditioner.reset (new LinearAlgebra::PreconditionAMG());
 
     LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
@@ -458,8 +458,33 @@ namespace aspect
      *  So rather than build a different preconditioner matrix which only
      *  does the mass matrix, we just reuse the same system_preconditioner_matrix
      *  for the Mp_preconditioner block.  Maybe a bit messy*/
-    Mp_preconditioner->initialize (system_preconditioner_matrix.block(1,1));
-    if (parameters.free_surface_enabled)
+
+    {
+      LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
+#ifdef ASPECT_USE_PETSC
+      Amg_data.symmetric_operator = false;
+#else
+      std::vector<std::vector<bool> > constant_modes;
+      dealii::ComponentMask cm_pressure = introspection.component_masks.pressure;
+      if (parameters.include_melt_transport)
+        cm_pressure = cm_pressure | introspection.variable("compaction pressure").component_mask;
+      DoFTools::extract_constant_modes (dof_handler,
+                                        cm_pressure,
+                                        constant_modes);
+
+      //Amg_data.constant_modes = constant_modes;
+      Amg_data.elliptic = true;
+      Amg_data.higher_order_elements = false;
+
+      Amg_data.smoother_sweeps = 2;
+      //Amg_data.aggregation_threshold = 0.001;
+      Amg_data.coarse_type = "symmetric Gauss-Seidel";// "Amesos-KLU";
+      //Amg_data.output_details = true;
+#endif
+      Mp_preconditioner->initialize (system_preconditioner_matrix.block(1,1), Amg_data);
+      //Mp_preconditioner->initialize (system_preconditioner_matrix.block(1,1));
+    }
+    if (parameters.free_surface_enabled || parameters.include_melt_transport)
       Amg_preconditioner->initialize (system_matrix.block(0,0),
                                       Amg_data);
     else
@@ -679,7 +704,7 @@ namespace aspect
                                         + finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
 
     if (parameters.include_melt_transport)
-      stokes_dofs_per_cell += finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
+      stokes_dofs_per_cell += finite_element.base_element(introspection.variable("compaction pressure").base_index).dofs_per_cell;
 
     const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile)
                                                || (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile);

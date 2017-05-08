@@ -80,7 +80,7 @@ namespace aspect
             if (this->include_melt_transport())
               {
                 solution_names.push_back ("p_f");
-                solution_names.push_back ("p_c");
+                solution_names.push_back ("p_c_bar");
                 for (unsigned int i=0; i<dim; ++i)
                   solution_names.push_back ("u_f");
               }

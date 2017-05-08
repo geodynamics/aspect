@@ -990,6 +990,11 @@ namespace aspect
       }
 
 
+    if (parameters.include_melt_transport)
+      {
+        melt_handler->add_current_constraints (current_constraints);
+      }
+
     // let plugins add more constraints if they so choose, then close the
     // constraints object
     signals.post_constraints_creation(*this, current_constraints);
@@ -1185,6 +1190,10 @@ namespace aspect
         coupling[introspection.variable("fluid pressure").first_component_index]
         [introspection.variable("fluid pressure").first_component_index] = DoFTools::always;
         coupling[introspection.variable("compaction pressure").first_component_index]
+        [introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
+        coupling[introspection.variable("compaction pressure").first_component_index]
+        [introspection.variable("fluid pressure").first_component_index] = DoFTools::always;
+        coupling[introspection.variable("fluid pressure").first_component_index]
         [introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
       }
     else
@@ -1722,6 +1731,9 @@ namespace aspect
         case NonlinearSolver::iterated_IMPES:
         {
           solve_iterated_IMPES();
+
+              if (nonlinear_iteration == 0)// hack
+                compute_current_constraints ();
           break;
         }
 

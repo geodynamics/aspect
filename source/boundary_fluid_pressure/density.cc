@@ -62,6 +62,16 @@ namespace aspect
                 break;
               }
 
+              case DensityFormulation::average_density:
+              {
+                const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+                const double phi =  material_model_inputs.composition[q][porosity_idx];
+                fluid_pressure_gradient_outputs[q] = ((1.0 - phi) * material_model_outputs.densities[q] * gravity
+                                                      + phi * melt_outputs->fluid_densities[q] * gravity)
+                                                     * normal_vectors[q];
+                break;
+              }
+
               default:
                 Assert (false, ExcNotImplemented());
             }
@@ -91,7 +101,14 @@ namespace aspect
                              "fluid density times gravity and causes melt to flow in "
                              "with the same velocity as inflowing solid material, "
                              "or no melt flowing in or out if the solid velocity "
-                             "normal to the boundary is zero.");
+                             "normal to the boundary is zero."
+                             "\n\n"
+                             "'average density' prescribes the gradient of the fluid pressure as "
+                             "the averaged fluid and solid density times gravity "
+                             "(which is a better approximation for the lithostatic "
+                             "pressure than just the solid density) and leads to approximately the same pressure in "
+                             "the melt as in the solid, so that fluid is only flowing "
+                             "in or out due to differences in dynamic pressure.");
         }
         prm.leave_subsection ();
       }

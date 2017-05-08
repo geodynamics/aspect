@@ -1,0 +1,203 @@
+# A testcase that demonstrates melt transport with a compactible matrix,
+# and compressible matrix and fluid. Boundary conditions for the 
+# velocity and fluid pressure as well as porosity initial conditions 
+# are applied as described by the the derived analytical solution,
+# which can be found in the manuscript on compressible melt transport 
+# in Aspect.
+# We compute these material properties in a new material model, which
+# is implemented in the .cc file, together with a postprocessor to calculate 
+# the error and a new pressure boundary cinsition.     
+# 
+set Additional shared libraries = ./libplugin.so
+set Nonlinear solver scheme                = IMPES
+set Max nonlinear iterations               = 50
+set Nonlinear solver tolerance             = 1e-10 #1e-10
+set Linear solver tolerance                = 1e-10
+
+set Use direct solver for Stokes system        = false
+set Number of cheap Stokes solver steps    = 0
+set Linear solver A block tolerance            = 1e-3 # {1e-1|1e-2|1e-3|1e-4} #{1e-2|1e-3|1e-5}
+set Linear solver S block tolerance            = 1e-6 #{1e-1|1e-2|1e-3} #{1e-1|1e-2|1e-3|1e-5|1e-7}
+
+#set Do solve real Schur complement = true
+
+subsection Discretization
+  set Use locally conservative discretization      = false
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 2 # {2|3|4|5|6|7|8}
+  set Refinement fraction                      = 0.50#3333
+  set Coarsening fraction                      = 0.0
+
+  set Strategy                                 = composition
+#melt velocity, composition#composition, velocity# gradient#,velocity#viscosity#composition
+
+  set Time steps between mesh refinement       = 0
+  set Initial adaptive refinement              = 0                    # default: 2
+  set Run postprocessors on initial refinement = true
+  set Normalize individual refinement criteria = true
+
+end
+
+
+set Adiabatic surface temperature          = 1623               # default: 0
+set CFL number                             = 1.0
+
+# The number of space dimensions you want to run this program in.
+set Dimension                              = 3
+
+# The end time of the simulation. Units: years if the 'Use years in output
+# instead of seconds' parameter is set; seconds otherwise.
+set End time                               = 0
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0#4787.556617
+set Resume computation                     = false
+set Start time                             = 0
+
+set Use years in output instead of seconds = false
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = porosity
+end
+
+subsection Boundary fluid pressure model
+ set Plugin name = PressureBdry
+end
+
+subsection Boundary temperature model
+  set Model name = initial temperature
+
+  subsection Initial temperature
+    # Temperature at the inner boundary (core mantle boundary). Units: K.
+    set Maximal temperature = 3773 # default: 6000
+
+    # Temperature at the outer boundary (lithosphere water/air). Units: K.
+    set Minimal temperature = 273  # default: 0
+  end
+
+end
+
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+
+subsection Geometry model
+  set Model name = box # default: 
+
+  subsection Box
+    set X extent  = 300000
+    set Y extent  = 100000
+    set Z extent  = 200000
+    set X repetitions           = 3
+    set Y repetitions           = 1
+    set Z repetitions           = 2
+    set Box origin X coordinate = 0
+    set Box origin Y coordinate = 0
+  end
+
+end
+
+
+subsection Gravity model
+  set Model name = MyGravity
+
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Function expression = 0;0;0
+    set Variable names      = x,y,z
+  end
+end  
+
+
+subsection Initial temperature model
+  set Model name = function # default: 
+  subsection Function
+    set Function expression = 0
+    set Variable names      = x,y,z
+  end
+end
+
+subsection Initial composition model
+  set Model name = function # default: 
+  subsection Function
+    set Function constants = pi=3.14159265359
+    set Function expression = exp(-0.50e2 * pow(z / 0.100000e6 - exp(-x / 0.100000e6) - 0.1e1, 0.2e1)) * cos(pi * y / 0.200000e6) / 0.5e1
+
+    set Variable names      = x,y,z
+  end
+end
+
+
+subsection Material model
+
+  set Model name = test melt material
+  
+  set Material averaging = none # pick largest
+
+end
+
+
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 4,5        # default: 
+  set Fixed composition boundary indicators   = #0,1,2,3   
+  set Prescribed velocity boundary indicators = 0:MyPrescribedBoundary, 1:MyPrescribedBoundary, 2:MyPrescribedBoundary, 3:MyPrescribedBoundary, 4:MyPrescribedBoundary, 5:MyPrescribedBoundary
+
+  set Tangential velocity boundary indicators = 
+  set Zero velocity boundary indicators       =           # default: 
+
+  set Include melt transport                  = true
+  set Enable additional Stokes RHS            = true
+end
+
+subsection Melt settings
+  set Melt transport threshold = 0#1e-3
+end
+
+
+subsection Postprocess
+
+  set List of postprocessors = velocity statistics, pressure statistics, velocity boundary statistics, melt error calculation, visualization
+
+  subsection Visualization
+
+  #  set List of output variables      = melt material properties, gravity, material properties, nonadiabatic pressure
+#    set List of output variables      = gravity, material properties, nonadiabatic pressure
+
+   # subsection Material properties
+    #set List of material properties   = density, viscosity, thermal expansivity, reaction terms
+    #end
+
+    #subsection Melt material properties
+   # set List of properties   = fluid density, permeability, fluid viscosity, compaction viscosity
+   # end
+
+    # VTU file output supports grouping files from several CPUs into one file
+    # using MPI I/O when writing on a parallel filesystem. Select 0 for no
+    # grouping. This will disable parallel file output and instead write one
+    # file per processor in a background thread. A value of 1 will generate
+    # one big file containing the whole solution.
+    set Number of grouped files       = 0
+
+    # The file format to be used for graphical output.
+    set Output format                 = vtu
+    set Interpolate output = true
+
+    # The time interval between each generation of graphical output files. A
+    # value of zero indicates that output should be generated in each time
+    # step. Units: years if the 'Use years in output instead of seconds'
+    # parameter is set; seconds otherwise.
+    set Time between graphical output = 0                                                                                # default: 1e8
+  end
+
+end
+
+
+

@@ -57,10 +57,12 @@ namespace aspect
       check (const unsigned int step,
              const double check_value)
       {
+
         dealii::SolverControl::State return_value = dealii::SolverControl::check(step, check_value);
 
-        if (step == 0)
-          history_data.resize(history_data.size()+1);
+        if (history_data_enabled)
+          history_data.resize(maxsteps+1);
+
         return return_value;
       }
 

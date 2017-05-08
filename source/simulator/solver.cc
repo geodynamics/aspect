@@ -280,12 +280,25 @@ namespace aspect
       // first solve with the bottom left block, which we have built
       // as a mass matrix with the inverse of the viscosity
       {
-        SolverControl solver_control(1000, src.block(1).l2_norm() * S_block_tolerance);
+        aspect::SolverControl solver_control(1000, src.block(1).l2_norm() * S_block_tolerance, true);
+        //solver_control.enable_history_data();
+//        std::cout << src.block(1).l2_norm()
+//                  << " -> "
+//                  << src.block(1).l2_norm() * S_block_tolerance
+//                  << std::endl;
+
 
 #ifdef ASPECT_USE_PETSC
-        SolverCG<LinearAlgebra::Vector> solver(solver_control);
+        SolverGMRES<LinearAlgebra::Vector> solver(solver_control);
 #else
         TrilinosWrappers::SolverCG solver(solver_control);
+        //TrilinosWrappers::SolverGMRES solver(solver_control);
+        //TrilinosWrappers::SolverBicgstab solver(solver_control);
+        //SolverFGMRES<LinearAlgebra::Vector> solver(solver_control);
+        //SolverCG<LinearAlgebra::Vector> solver(solver_control);
+
+        //SolverFGMRES<LinearAlgebra::Vector> solver(solver_control,
+        //                                         SolverFGMRES<LinearAlgebra::Vector>::AdditionalData(100));
 #endif
         // Trilinos reports a breakdown
         // in case src=dst=0, even
@@ -301,6 +314,7 @@ namespace aspect
                 solver.solve(stokes_preconditioner_matrix.block(1,1),
                              dst.block(1), src.block(1),
                              mp_preconditioner);
+                //std::cout << "S iter: " << solver_control.last_step() << std::endl;
                 n_iterations_S_ += solver_control.last_step();
               }
             // if the solver fails, report the error from processor 0 with some additional
@@ -308,16 +322,31 @@ namespace aspect
             // processors
             catch (const std::exception &exc)
               {
+
                 if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
-                  AssertThrow (false,
-                               ExcMessage (std::string("The iterative (bottom right) solver in BlockSchurPreconditioner::vmult "
-                                                       "did not converge to a tolerance of "
-                                                       + Utilities::to_string(solver_control.tolerance()) +
-                                                       ". It reported the following error:\n\n")
-                                           +
-                                           exc.what()))
-                  else
-                    throw QuietException();
+                  {
+                    if (false)
+                      {
+                        std::ofstream f("solver_history_S.txt");
+                        f << std::setprecision(16);
+
+                        for (unsigned int i=0; i<solver_control.get_history_data().size(); ++i)
+                          f << i << " " << solver_control.get_history_data()[i] << "\n";
+
+                        f << "\n";
+                        std::cout << "SEE solver_history_S.txt" << std::endl;
+                      }
+
+                    AssertThrow (false,
+                                 ExcMessage (std::string("The iterative (bottom right) solver in BlockSchurPreconditioner::vmult "
+                                                         "did not converge to a tolerance of "
+                                                         + Utilities::to_string(solver_control.tolerance()) +
+                                                         ". It reported the following error:\n\n")
+                                             +
+                                             exc.what()))
+                  }
+                else
+                  throw QuietException();
               }
           }
 
@@ -707,6 +736,12 @@ namespace aspect
                                                                 linearized_stokes_initial_guess,
                                                                 system_rhs);
 
+        for (unsigned int b=0; b<2; ++b)
+          std::cout << "residual " << b << " " << distributed_stokes_solution.block(b).l2_norm() << std::endl;
+
+        // ignore pressure residual
+        initial_residual = distributed_stokes_solution.block(0).l2_norm();
+
             // Note: the residual is computed with a zero velocity, effectively computing
             // || B^T p - g ||, which we are going to use for our solver tolerance.
             // We do not use the current velocity for the initial residual because
@@ -763,7 +798,7 @@ namespace aspect
 
         // create a cheap preconditioner that consists of only a single V-cycle
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
-              LinearAlgebra::PreconditionILU>
+              LinearAlgebra::PreconditionAMG>
               preconditioner_cheap (system_matrix, system_preconditioner_matrix,
                                     *Mp_preconditioner, *Amg_preconditioner,
                                     false,
@@ -772,7 +807,7 @@ namespace aspect
 
         // create an expensive preconditioner that solves for the A block with CG
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
-              LinearAlgebra::PreconditionILU>
+              LinearAlgebra::PreconditionAMG>
               preconditioner_expensive (system_matrix, system_preconditioner_matrix,
                                         *Mp_preconditioner, *Amg_preconditioner,
                                         true,
@@ -809,7 +844,7 @@ namespace aspect
             SolverFGMRES<LinearAlgebra::BlockVector>
             solver(solver_control_expensive, mem,
                    SolverFGMRES<LinearAlgebra::BlockVector>::
-                   AdditionalData(50, true));
+                   AdditionalData(100, true));
 
             try
               {
@@ -835,6 +870,7 @@ namespace aspect
                   {
                     // output solver history
                     std::ofstream f((parameters.output_directory+"solver_history.txt").c_str());
+                    f << std::setprecision(16);
 
                     // Only request the solver history if a history has actually been created
                     if (parameters.n_cheap_stokes_solver_steps > 0)
