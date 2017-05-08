@@ -1,11 +1,9 @@
 include figure_6_1e20.prm
 
-set Additional shared libraries = plugin/libfinite_strain_invariant.so
-
 set Dimension                              = 2
 
 subsection Material model
-  set Model name = finite strain invariant
+  set Model name = visco plastic
   subsection Visco Plastic
     set Prefactors for dislocation creep = 5.e-25, 5.e-25, 5.e-25, 5.e-25, 5.e-23
   end

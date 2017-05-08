@@ -1,5 +1,3 @@
-set Additional shared libraries = plugin/libfinite_strain_invariant.so
-
 # Global parameters
 set Dimension                              = 2
 set Start time                             = 0
@@ -132,7 +130,7 @@ end
 
 # Material model
 subsection Material model
-  set Model name = finite strain invariant
+  set Model name = visco plastic
 
   subsection Visco Plastic
 

@@ -203,7 +203,7 @@ namespace aspect
           if (use_strain_weakening == true)
             {
 
-              // Calculate second strain invariant
+              // Constrain the second strain invariant of the previous timestep
               const double strain_ii = std::max(std::min(composition[0],end_strain_weakening_intervals[j]),start_strain_weakening_intervals[j]);
 
               // Linear strain weakening of cohesion and internal friction angle between specified strain values
@@ -345,6 +345,15 @@ namespace aspect
           // change in compositional field c at point i.
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
+          // If strain weakening is used, overwrite the first reaction term,
+          // which represents the second invariant of the strain tensor
+          if  (use_strain_weakening && this->get_timestep_number() > 0)
+            {
+              const double edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),min_strain_rate);
+
+              // Update reaction term
+              out.reaction_terms[i][0] = edot_ii*this->get_timestep();
+            }
         }
     }
 
@@ -591,6 +600,10 @@ namespace aspect
 
           // Strain weakening parameters
           use_strain_weakening             = prm.get_bool ("Use strain weakening");
+          if (use_strain_weakening)
+            AssertThrow(this->n_compositional_fields() >= 1,
+                        ExcMessage("There must be at least one compositional field. "));
+
           start_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Start strain weakening intervals"))),
                                                                                      n_fields,
                                                                                      "Start strain weakening intervals");
