@@ -722,7 +722,7 @@ namespace aspect
 
         // create a cheap preconditioner that consists of only a single V-cycle
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
-              LinearAlgebra::PreconditionILU>
+          LinearAlgebra::PreconditionAMG>
               preconditioner_cheap (system_matrix, system_preconditioner_matrix,
                                     *Mp_preconditioner, *Amg_preconditioner,
                                     false,
@@ -731,7 +731,7 @@ namespace aspect
 
         // create an expensive preconditioner that solves for the A block with CG
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
-              LinearAlgebra::PreconditionILU>
+          LinearAlgebra::PreconditionAMG>
               preconditioner_expensive (system_matrix, system_preconditioner_matrix,
                                         *Mp_preconditioner, *Amg_preconditioner,
                                         true,
