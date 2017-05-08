@@ -9,7 +9,7 @@ set Start time                             = 0
 set End time                               = 2e6
 set Use years in output instead of seconds = false
 
-set Output directory                       = output
+set Output directory                       = output-radiogenic_heating
 
 subsection Heating model
   set Model name = constant heating

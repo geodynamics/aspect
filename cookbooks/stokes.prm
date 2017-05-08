@@ -13,7 +13,7 @@ set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = false
 
-set Output directory                       = output
+set Output directory                       = output-stokes
 
 
 ############### Parameters describing the model

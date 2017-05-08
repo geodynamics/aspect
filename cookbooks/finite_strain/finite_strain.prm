@@ -11,6 +11,7 @@ set End time                               = 6e8
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Use years in output instead of seconds = true
+set Output directory                       = output-finite_strain
 
 
 subsection Boundary temperature model

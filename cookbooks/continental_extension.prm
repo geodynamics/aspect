@@ -19,7 +19,7 @@ set Nonlinear solver tolerance             = 1e-4
 set Max nonlinear iterations               = 10
 set Number of cheap Stokes solver steps    = 0
 set CFL number                             = 0.5
-set Output directory                       = output
+set Output directory                       = output-continental_extension
 set Timing output frequency                = 1
 set Pressure normalization                 = no
 

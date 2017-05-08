@@ -9,7 +9,7 @@ set Start time                             = 0
 set End time                               = 5e17
 set Use years in output instead of seconds = false
 
-set Output directory                       = output
+set Output directory                       = output-latent-heat
 
 
 subsection Geometry model

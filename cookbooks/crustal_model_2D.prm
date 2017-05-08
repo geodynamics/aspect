@@ -11,7 +11,7 @@ set Nonlinear solver tolerance             = 1e-8
 set Max nonlinear iterations               = 100
 set Number of cheap Stokes solver steps    = 0
 set CFL number                             = 0.5
-set Output directory                       = output_crustal_model
+set Output directory                       = output-crustal_model_2D
 set Timing output frequency                = 1
 set Pressure normalization                 = no
 
