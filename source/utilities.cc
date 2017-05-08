@@ -1888,7 +1888,6 @@ namespace aspect
 
 
 
-
     double
     weighted_p_norm_average ( const std::vector<double> &weights,
                               const std::vector<double> &values,
@@ -2169,6 +2168,30 @@ namespace aspect
         }
     }
 
+    template<int dim>
+    double compute_spd_factor(const double eta,
+                              const SymmetricTensor<2,dim> &strain_rate,
+                              const SymmetricTensor<2,dim> &dviscosities_dstrain_rate,
+                              const double safety_factor)
+    {
+      double alpha = 0;
+      const double norm_a_b = std::sqrt((strain_rate*strain_rate)*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));
+      const double contract_a_b = (strain_rate*dviscosities_dstrain_rate);
+      const double one_minus_part = 1 - (contract_a_b / norm_a_b);
+      const double denom = one_minus_part * one_minus_part * norm_a_b;
+      if (denom == 0)
+        alpha = 1.0;
+      else
+        {
+          alpha = (2.0*eta)/denom;
+          if (alpha >= 1.0)
+            alpha = 1.0;
+          else
+            alpha = std::max(0.0,safety_factor*alpha);
+        }
+      return alpha;
+    }
+
 // Explicit instantiations
     template class AsciiDataLookup<1>;
     template class AsciiDataLookup<2>;
@@ -2223,5 +2246,16 @@ namespace aspect
                                            const std::vector<double> &values,
                                            const std::vector<dealii::SymmetricTensor<2, 3, double> > &derivatives,
                                            const double p);
+
+    template double compute_spd_factor(const double eta,
+                                       const SymmetricTensor<2,2> &strain_rate,
+                                       const SymmetricTensor<2,2> &dviscosities_dstrain_rate,
+                                       const double safety_factor);
+
+    template double compute_spd_factor(const double eta,
+                                       const SymmetricTensor<2,3> &strain_rate,
+                                       const SymmetricTensor<2,3> &dviscosities_dstrain_rate,
+                                       const double safety_factor);
+
   }
 }
