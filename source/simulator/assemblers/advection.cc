@@ -496,15 +496,7 @@ namespace aspect
 
       if (!(face->has_children()))
         {
-          const bool neighbor_or_periodic_neighbor_is_coarser =
-            ( cell_has_periodic_neighbor
-              ?
-              cell->periodic_neighbor_is_coarser(face_no)
-              :
-              cell->neighbor_is_coarser(face_no));
-
-          if (!neighbor_or_periodic_neighbor_is_coarser &&
-              // neighbor->level () == cell->level () &&
+          if (neighbor->level () == cell->level () &&
               neighbor->active() &&
               (((neighbor->is_locally_owned()) && (cell->index() < neighbor->index()))
                ||
@@ -822,8 +814,6 @@ namespace aspect
              cell->neighbor_face_no(face_no));
 
           //loop over subfaces
-          std::cout<< "cell no " << cell  << std::endl;
-          std::cout<< "yyyy test" << std::endl;
           for (unsigned int subface_no=0; subface_no<face->number_of_children(); ++subface_no)
             {
               const typename DoFHandler<dim>::active_cell_iterator neighbor_child
