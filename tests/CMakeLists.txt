@@ -264,7 +264,7 @@ FOREACH(_test ${_tests})
     FOREACH(_output ${_outputs})
         # Assemble full path to output file
         IF(NOT ${_output} MATCHES "screen-output")
-            SET(_outputs_flist ${_outputs_flist} ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output})
+            LIST(APPEND _outputs_flist ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output})
         ENDIF()
     ENDFOREACH()
 
