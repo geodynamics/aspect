@@ -18,6 +18,8 @@ namespace aspect
 {
   /**
    * This is the "Hollowsphere" benchmark defined in the following paper:
+   * Analytical solution for viscous incompressible Stokes flow in a spherical shell
+   * C. Thieulot, in prep.
    */
   namespace HollowsphereBenchmark
   {
