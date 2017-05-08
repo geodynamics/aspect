@@ -1,0 +1,6 @@
+Changed: The chunk geometry now removes the manifold id only from the boundaries and sets the correct
+boundary objects for deal.II versions prior to version 9. For deal.II 9, only the manifold is used,
+for which the push_forward_gradient function was implemented to compute the normal vectors. This way,
+velocity anomalies along mesh refinement levels are removed.
+<br>
+(Anne Glerum, 2017/05/10)

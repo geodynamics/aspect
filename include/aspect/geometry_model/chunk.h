@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -24,6 +24,7 @@
 
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/compat.h>
 
 #include <deal.II/grid/manifold.h>
 #include <deal.II/base/function_lib.h>
@@ -54,11 +55,23 @@ namespace aspect
     {
       public:
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
+        void initialize ();
+#endif
+
         /**
          * Generate a coarse mesh for the geometry described by this class.
          */
         virtual
         void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const;
+
+#if !DEAL_II_VERSION_GTE(9,0,0)
+        /**
+         * Connect the set/clear manifold id functions to the post/pre_compute_no_normal_flux signals.
+         */
+        void
+        connect_to_signal(SimulatorSignals<dim> &signals);
+#endif
 
         /**
          * Return the set of boundary indicators that are used by this model.
@@ -240,9 +253,15 @@ namespace aspect
         /**
          * ChunkGeometry is a class that implements the interface of
          * ChartManifold. The function push_forward takes a point
-         * in the reference (lat,long,radius) domain and transforms
+         * in the reference (radius,lon,lat) domain and transforms
          * it into real space (cartesian). The inverse function
          * pull_back reverses this operation.
+         * The push_forward_gradient provides derivatives of the
+         * reference coordinates to the real space coordinates,
+         * which are used in computing normal vectors.
+         * In set_min_longitude the minimum longitude is set,
+         * which is used to test the quadrant of returned longitudes
+         * in the pull_back function.
          */
 
         class ChunkGeometry : public ChartManifold<dim,dim>
@@ -259,6 +278,10 @@ namespace aspect
             push_forward(const Point<dim> &chart_point) const;
 
             virtual
+            DerivativeForm<1, dim, dim>
+            push_forward_gradient(const Point<dim> &chart_point) const;
+
+            virtual
             void
             set_min_longitude(const double p1_lon);
 
@@ -267,17 +290,15 @@ namespace aspect
             double point1_lon;
         };
 
-        Point<dim> pull_back(const Point<dim>) const;
-        Point<dim> push_forward(const Point<dim>) const;
-
         /**
          * An object that describes the geometry.
          */
         ChunkGeometry manifold;
 
-        static void set_manifold_ids (Triangulation<dim> &triangulation);
-        static void clear_manifold_ids (Triangulation<dim> &triangulation);
-
+#if !DEAL_II_VERSION_GTE(9,0,0)
+        void set_manifold_ids (typename parallel::distributed::Triangulation<dim> &triangulation);
+        void clear_manifold_ids (typename parallel::distributed::Triangulation<dim> &triangulation);
+#endif
     };
   }
 }
