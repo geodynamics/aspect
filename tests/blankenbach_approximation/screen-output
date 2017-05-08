@@ -8,7 +8,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Solving Stokes system... 33+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-blankenbach-approximation/solution/solution-00000
+     Writing graphical output:           output-blankenbach_approximation/solution/solution-00000
      RMS, max velocity:                  17.9 m/s, 25.3 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: -5.912e-06 W, 5.912e-06 W, -4.884 W, 4.884 W
@@ -19,7 +19,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Solving Stokes system... 29+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-blankenbach-approximation/solution/solution-00001
+     Writing graphical output:           output-blankenbach_approximation/solution/solution-00001
      RMS, max velocity:                  17.9 m/s, 25.5 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: -2.665e-06 W, 2.665e-06 W, -4.834 W, 4.834 W
@@ -30,7 +30,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Solving Stokes system... 25+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-blankenbach-approximation/solution/solution-00002
+     Writing graphical output:           output-blankenbach_approximation/solution/solution-00002
      RMS, max velocity:                  18 m/s, 25.7 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: -6.051e-06 W, 6.051e-06 W, -4.727 W, 4.727 W
@@ -41,7 +41,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Solving Stokes system... 25+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-blankenbach-approximation/solution/solution-00003
+     Writing graphical output:           output-blankenbach_approximation/solution/solution-00003
      RMS, max velocity:                  18 m/s, 26 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: -6.344e-06 W, 6.344e-06 W, -4.553 W, 4.553 W
@@ -52,7 +52,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-blankenbach-approximation/solution/solution-00004
+     Writing graphical output:           output-blankenbach_approximation/solution/solution-00004
      RMS, max velocity:                  18.1 m/s, 26 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: -6.55e-06 W, 6.55e-06 W, -4.496 W, 4.496 W
