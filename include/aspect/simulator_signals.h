@@ -151,6 +151,28 @@ namespace aspect
     boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  post_refinement_load_user_data;
 
     /**
+     * A signal that is called before the computation of tangential boundary
+     * conditions for which normal vectors are needed.
+     *
+     * The functions that connect to this signal must take a reference
+     * to a parallel::distributed::Triangulation object as
+     * argument. This argument will point to the triangulation used by
+     * the Simulator class.
+     */
+    boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  pre_compute_no_normal_flux_constraints;
+
+    /**
+     * A signal that is called after the computation of tangential boundary
+     * conditions for which normal vectors are needed.
+     *
+     * The functions that connect to this signal must take a reference
+     * to a parallel::distributed::Triangulation object as
+     * argument. This argument will point to the triangulation used by
+     * the Simulator class.
+     */
+    boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  post_compute_no_normal_flux_constraints;
+
+    /**
      * A signal that is called before the creation of every checkpoint.  This
      * signal allows for registering functions that store data related to mesh
      * cells.
