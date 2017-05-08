@@ -640,7 +640,7 @@ namespace aspect
 
 
     // Many parts of the solver depend on the block layout (velocity = 0,
-    // pressure = 1). For example the remap vector or the StokesBlock matrix
+    // pressure = 1). For example the init_sol vector or the StokesBlock matrix
     // wrapper. Let us make sure that this holds (and shorten their names):
     const unsigned int block_vel = introspection.block_indices.velocities;
     const unsigned int block_p = (parameters.include_melt_transport) ?
@@ -659,26 +659,26 @@ namespace aspect
     // create a completely distributed vector that will be used for
     // the scaled and denormalized solution and later used as a
     // starting guess for the linear solver
-    LinearAlgebra::BlockVector remap (introspection.index_sets.stokes_partitioning, mpi_communicator);
+    LinearAlgebra::BlockVector init_sol (introspection.index_sets.stokes_partitioning, mpi_communicator);
 
     // copy the velocity and pressure from current_linearization_point into
-    // the vector remap. We need to do the copy because remap has a different
+    // the vector init_sol. We need to do the copy because remap has a different
     // layout than current_linearization_point, which also contains all the
     // other solution variables.
-    remap.block (block_vel) = current_linearization_point.block (block_vel);
+    init_sol.block (block_vel) = current_linearization_point.block (block_vel);
 
-    remap.block (block_p) = current_linearization_point.block (block_p);
-    denormalize_pressure (this->pressure_adjustment, remap, current_linearization_point);
+    init_sol.block (block_p) = current_linearization_point.block (block_p);
+    denormalize_pressure (this->pressure_adjustment, init_sol, current_linearization_point);
 
-    current_constraints.set_zero (remap);
-    remap.block (block_p) /= pressure_scaling;
+    current_constraints.set_zero (init_sol);
+    init_sol.block (block_p) /= pressure_scaling;
 
     // (ab)use the distributed solution vector to temporarily put a residual in
     // (we don't care about the residual vector -- all we care about is the
     // value (number) of the initial residual). The initial residual is returned
     // to the caller (for nonlinear computations).
     const double initial_residual = stokes_block.residual (distributed_stokes_solution,
-                                                           remap,
+                                                           init_sol,
                                                            system_rhs);
 
     // Note: the residual is computed with a zero velocity, effectively computing
@@ -691,7 +691,7 @@ namespace aspect
     // pressure (the current pressure is a good approximation for the static
     // pressure).
     const double residual_u = system_matrix.block(0,1).residual (distributed_stokes_solution.block(0),
-                                                                 remap.block(1),
+                                                                 init_sol.block(1),
                                                                  system_rhs.block(0));
     const double residual_p = system_rhs.block(1).l2_norm();
 
@@ -700,7 +700,7 @@ namespace aspect
 
     // Now overwrite the solution vector again with the current best guess
     // to solve the linear system
-    distributed_stokes_solution = remap;
+    distributed_stokes_solution = init_sol;
 
     // extract Stokes parts of rhs vector
     LinearAlgebra::BlockVector distributed_stokes_rhs(introspection.index_sets.stokes_partitioning);

@@ -1112,7 +1112,7 @@ namespace aspect
   double
   Simulator<dim>::compute_initial_stokes_residual()
   {
-    LinearAlgebra::BlockVector remap (introspection.index_sets.stokes_partitioning, mpi_communicator);
+    LinearAlgebra::BlockVector zero_vel_sol (introspection.index_sets.stokes_partitioning, mpi_communicator);
     LinearAlgebra::BlockVector residual (introspection.index_sets.stokes_partitioning, mpi_communicator);
     const unsigned int block_p =
       parameters.include_melt_transport ?
@@ -1132,12 +1132,12 @@ namespace aspect
         for (unsigned int i=0; i < idxset.n_elements(); ++i)
           {
             types::global_dof_index idx = idxset.nth_index_in_set(i);
-            remap(idx)        = current_linearization_point(idx);
+            zero_vel_sol(idx)        = current_linearization_point(idx);
           }
-        remap.block(block_p).compress(VectorOperation::insert);
+        zero_vel_sol.block(block_p).compress(VectorOperation::insert);
       }
     else
-      remap.block (block_p) = current_linearization_point.block (block_p);
+      zero_vel_sol.block (block_p) = current_linearization_point.block (block_p);
 
     // TODO: we don't have .stokes_relevant_partitioning so I am creating a much
     // bigger vector here, oh well.
@@ -1146,11 +1146,11 @@ namespace aspect
                                         mpi_communicator);
     // TODO for Timo: can we create the ghost vector inside of denormalize_pressure
     // (only in cases where we need it)
-    ghosted.block(block_p) = remap.block(block_p);
-    denormalize_pressure (this->pressure_adjustment, remap, ghosted);
-    current_constraints.set_zero (remap);
+    ghosted.block(block_p) = zero_vel_sol.block(block_p);
+    denormalize_pressure (this->pressure_adjustment, zero_vel_sol, ghosted);
+    current_constraints.set_zero (zero_vel_sol);
 
-    remap.block (block_p) /= pressure_scaling;
+    zero_vel_sol.block (block_p) /= pressure_scaling;
 
     // we calculate the velocity residual with a zero velocity,
     // computing only the part of the RHS not balanced by the static pressure
@@ -1158,13 +1158,13 @@ namespace aspect
       {
         // we can use the whole block here because we set the velocity to zero above
         return system_matrix.block(0,0).residual (residual.block(0),
-                                                  remap.block(0),
+                                                  zero_vel_sol.block(0),
                                                   system_rhs.block(0));
       }
     else
       {
         const double residual_u = system_matrix.block(0,1).residual (residual.block(0),
-                                                                     remap.block(1),
+                                                                     zero_vel_sol.block(1),
                                                                      system_rhs.block(0));
         const double residual_p = system_rhs.block(block_p).l2_norm();
         return sqrt(residual_u*residual_u+residual_p*residual_p);
