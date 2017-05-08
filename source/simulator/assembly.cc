@@ -997,7 +997,7 @@ namespace aspect
                                       introspection.component_masks.velocities,
                                       constant_modes);
 
-    Mp_preconditioner.reset (new LinearAlgebra::PreconditionILU());
+    Mp_preconditioner.reset (new LinearAlgebra::PreconditionAMG());
     Amg_preconditioner.reset (new LinearAlgebra::PreconditionAMG());
 
     LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;

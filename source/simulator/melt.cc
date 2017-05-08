@@ -166,29 +166,46 @@ namespace aspect
 
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-              if (scratch.dof_component_indices[i] == scratch.dof_component_indices[j])
-                data.local_matrix(i,j) += ((use_tensor ?
-                                            eta * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
-                                            :
-                                            eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                           +
-                                           (one_over_eta *
-                                            pressure_scaling *
-                                            pressure_scaling)
-                                           * scratch.phi_p[i] * scratch.phi_p[j]
-                                           +
-                                           (K_D *
-                                            pressure_scaling *
-                                            pressure_scaling) *
-                                           scratch.grad_phi_p[i] *
-                                           scratch.grad_phi_p[j]
-                                           +
-                                           (1./eta + 1./viscosity_c) *
-                                           pressure_scaling *
-                                           pressure_scaling *
-                                           (scratch.phi_p_c[i] * scratch.phi_p_c[j])
-                                          )
-                                          * JxW;
+              {
+                if (scratch.dof_component_indices[i] == scratch.dof_component_indices[j])
+                  data.local_matrix(i,j) += ((use_tensor ?
+                                              eta * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
+                                              :
+                                              eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                                             +
+                                             (one_over_eta *
+                                              pressure_scaling *
+                                              pressure_scaling)
+                                             * scratch.phi_p[i] * scratch.phi_p[j]
+                                             +
+                                             (K_D *
+                                              pressure_scaling *
+                                              pressure_scaling) *
+                                             scratch.grad_phi_p[i] *
+                                             scratch.grad_phi_p[j]
+                                             +
+                                             (1./eta + 1./viscosity_c) * K_D *
+                                             pressure_scaling *
+                                             pressure_scaling *
+                                             (scratch.phi_p_c[i] * scratch.phi_p_c[j])
+                                            )
+                                            * JxW;
+                // add S between p_c and p_f
+                if (true)
+                  data.local_matrix(i,j) +=
+                    (
+                      (sqrt(K_D) * one_over_eta *
+                       pressure_scaling *
+                       pressure_scaling)
+                      * scratch.phi_p[i] * scratch.phi_p_c[j]
+                      +
+                      (sqrt(K_D) * one_over_eta *
+                       pressure_scaling *
+                       pressure_scaling)
+                      * scratch.phi_p_c[i] * scratch.phi_p[j]
+                    )
+                    * JxW;
+              }
         }
     }
 
@@ -340,10 +357,10 @@ namespace aspect
                                                 - (pressure_scaling *
                                                    scratch.phi_p[i] * scratch.div_phi_u[j])
                                                 +
-                                                (- pressure_scaling * pressure_scaling / viscosity_c
+                                                (- pressure_scaling * pressure_scaling / viscosity_c * K_D
                                                  * scratch.phi_p_c[i] * scratch.phi_p_c[j])
-                                                - pressure_scaling * scratch.div_phi_u[i] * scratch.phi_p_c[j]
-                                                - pressure_scaling * scratch.phi_p_c[i] * scratch.div_phi_u[j]
+                                                - pressure_scaling * scratch.div_phi_u[i] * scratch.phi_p_c[j] * sqrt(K_D)
+                                                - pressure_scaling * scratch.phi_p_c[i] * scratch.div_phi_u[j] * sqrt(K_D)
                                                 - K_D * pressure_scaling * pressure_scaling *
                                                 (scratch.grad_phi_p[i] * scratch.grad_phi_p[j])
                                                 + (this->get_material_model().is_compressible()
@@ -1016,6 +1033,11 @@ namespace aspect
                                quadrature,
                                update_quadrature_points | update_values);
 
+      MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
+      create_material_model_outputs(out);
+
+
       std::vector<types::global_dof_index> local_dof_indices (this->get_fe().dofs_per_cell);
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
@@ -1031,6 +1053,16 @@ namespace aspect
               solution, p_c_values);
             fe_values[this->introspection().variable("fluid pressure").extractor_scalar()].get_function_values (
               solution, p_f_values);
+            this->compute_material_model_input_values (solution,
+                                                       fe_values,
+                                                       cell,
+                                                       true,
+                                                       in);
+
+            this->get_material_model().evaluate(in, out);
+
+            MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+            Assert(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the melt variables."));
 
             for (unsigned int j=0; j<this->get_fe().base_element(this->introspection().base_elements.pressure).dofs_per_cell; ++j)
               {
@@ -1043,10 +1075,10 @@ namespace aspect
                   continue;
 
                 const double phi = std::max(0.0, porosity_values[j]);
-
+                const double K_D = melt_outputs->permeabilities[j] / melt_outputs->fluid_viscosities[j];
                 double p = p_f_values[j];
                 if (phi < 1.0-this->get_melt_handler().melt_transport_threshold)
-                  p = (p_c_values[j] - (phi-1.0) * p_f_values[j]) / (1.0-phi);
+                  p = (sqrt(K_D)*p_c_values[j] - (phi-1.0) * p_f_values[j]) / (1.0-phi);
 
                 distributed_vector(local_dof_indices[pressure_idx]) = p;
               }

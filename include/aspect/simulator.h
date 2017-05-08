@@ -1394,7 +1394,7 @@ namespace aspect
 
 
       std_cxx11::shared_ptr<LinearAlgebra::PreconditionAMG>     Amg_preconditioner;
-      std_cxx11::shared_ptr<LinearAlgebra::PreconditionILU>     Mp_preconditioner;
+      std_cxx11::shared_ptr<LinearAlgebra::PreconditionAMG>     Mp_preconditioner;
       std_cxx11::shared_ptr<LinearAlgebra::PreconditionILU>     T_preconditioner;
 //TODO: use n_compositional_field separate preconditioners
       std_cxx11::shared_ptr<LinearAlgebra::PreconditionILU>     C_preconditioner;
