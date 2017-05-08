@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -79,7 +79,6 @@ namespace aspect
   class \
   NewtonHandler<dim>; \
   \
-
   ASPECT_INSTANTIATE(INSTANTIATE)
 
 }

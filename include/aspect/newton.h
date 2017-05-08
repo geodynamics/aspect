@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -35,7 +35,9 @@ namespace aspect
 
   namespace MaterialModel
   {
-
+    /**
+     * This class holds the derivatives for the Newton solver.
+     */
     template <int dim>
     class MaterialModelDerivatives : public AdditionalMaterialOutputs<dim>
     {
@@ -43,39 +45,26 @@ namespace aspect
         /**
          * Constructor. Initialize the various arrays of this structure with the
          * given number of quadrature points and (finite element) components.
-         *
-         * @param n_points The number of quadrature points for which input
-         * quantities will be provided.
-         * @param n_comp The number of vector quantities (in the order in which
-         * the Introspection class reports them) for which input will be
-         * provided.
          */
         MaterialModelDerivatives (const unsigned int n_points,
                                   const unsigned int /*n_comp*/)
         {
-          dviscosities_dvelocity.resize(n_points, numbers::signaling_nan<double>());
-          dviscosities_dpressure.resize(n_points, numbers::signaling_nan<double>());
-          dviscosities_dtemperature.resize(n_points, numbers::signaling_nan<double>());
-          dviscosities_dstrain_rate.resize(n_points, numbers::signaling_nan<SymmetricTensor<2,dim> >());
+          viscosity_derivative_wrt_pressure.resize(n_points, numbers::signaling_nan<double>());
+          viscosity_derivative_wrt_strain_rate.resize(n_points, numbers::signaling_nan<SymmetricTensor<2,dim> >());
         };
 
         /**
          * The derivatives of the viscosities
          */
-        std::vector<double> dviscosities_dvelocity;
-        std::vector<double> dviscosities_dpressure;
-        std::vector<double> dviscosities_dtemperature;
-        std::vector<SymmetricTensor<2,dim> > dviscosities_dstrain_rate;
-        std::vector<std::vector<double> > dviscosities_dcompositions;
+        std::vector<double> viscosity_derivative_wrt_pressure;
+        std::vector<SymmetricTensor<2,dim> > viscosity_derivative_wrt_strain_rate;
 
     };
   }
 
   /**
-   * Class that contains all runtime parameters and other helper functions
-   * related to Newton solver. A global instance can be retrieved with
-   * SimulatorAccess<dim>::get_newton_handler(), but keep in mind that it only
-   * exists if parameters.include_melt_transport is true. TODO: rewrite
+   * A Class which can declare and parse parameters and creates
+   * material model outputs for the Newton solver.
    */
   template <int dim>
   class NewtonHandler: public SimulatorAccess<dim>
@@ -85,26 +74,20 @@ namespace aspect
 
       /**
        * Declare additional parameters that are needed in models with
-       * melt transport (including the fluid pressure boundary conditions).
+       * the Newton solver.
        */
       static void declare_parameters (ParameterHandler &prm);
 
       /**
        * Parse additional parameters that are needed in models with
-       * melt transport (including the fluid pressure boundary conditions).
-       *
-       * This has to be called before edit_finite_element_variables,
-       * so that the finite elements that are used for the additional melt
-       * variables can be specified in the input file and are parsed before
-       * the introspection object is created.
+       * the Newton solver.
        */
       void parse_parameters (ParameterHandler &prm);
 
       /**
        * Create an additional material model output object that contains
-       * the additional output variables needed in simulation with melt transport,
-       * and attaches a pointer to it to the corresponding vector in the
-       * MaterialModel::MaterialModelOutputs structure.
+       * the additional output variables (the derivatives) needed for the
+       * Newton solver.
        */
       static void create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output);
 
