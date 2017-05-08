@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,7 +22,6 @@
 
 #include <aspect/heating_model/compositional_heating.h>
 #include <aspect/utilities.h>
-#include <aspect/geometry_model/interface.h>
 #include <aspect/global.h>
 
 namespace aspect
@@ -87,7 +86,7 @@ namespace aspect
 
           // Calculate average compositional heat production
           double compositional_heat_production = 0.;
-          for (unsigned int c=0; c< volume_fractions.size(); ++c)
+          for (unsigned int c=0; c < volume_fractions.size(); ++c)
             {
               compositional_heat_production += volume_fractions[c] * heating_values[c];
             }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -26,8 +26,6 @@
 #include <aspect/simulator_access.h>
 #include <aspect/heating_model/interface.h>
 
-#include <deal.II/base/parsed_function.h>
-
 namespace aspect
 {
   namespace HeatingModel
@@ -35,7 +33,8 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements a heating model based on radioactive decay.
+     * A class that implements a heating model where each compositional field
+     * is assigned a user-defined internal heating value.
      *
      * @ingroup HeatingModels
      */
@@ -74,6 +73,16 @@ namespace aspect
 
       private:
 
+        /**
+         * From a list of compositional fields of length N, we come up with an
+         * N+1 length list that which also includes the fraction of
+         * ``background mantle''. This list should sum to one, and is
+         * interpreted as volume fractions.  If the sum of the
+         * compositional_fields is greater than one, we assume that there is
+         * no background mantle (i.e., that field value is zero).  Otherwise,
+         * the difference between the sum of the compositional fields and 1.0
+         * is assumed to be the amount of background mantle.
+         */
         std::vector<double> compute_volume_fractions(
           const std::vector<double> &compositional_fields) const;
 
@@ -83,7 +92,12 @@ namespace aspect
         std::vector<double> heating_values;
 
         /**
-         * User can choose whether compositional field is used in heat production averaging
+         * User can choose whether the heat production value associated with
+         * each compositional field is used when the average value at each
+         * point is calculated. This is useful if some compositional fields
+         * are used to track properties like finite strain that should not
+         * contribute to material properties like viscosity, heat production,
+         * etc.
          */
         std::vector<int> field_used_in_heat_production_averaging;
 
