@@ -714,8 +714,10 @@ namespace aspect
     SolverControl solver_control_cheap (parameters.n_cheap_stokes_solver_steps,
                                         solver_tolerance);
 
-    SolverControl solver_control_expensive (system_matrix.block(block_vel,block_p).m() +
-                                            system_matrix.block(block_p,block_vel).m(), solver_tolerance);
+    SolverControl solver_control_expensive (std::min(system_matrix.block(block_vel,block_p).m() +
+                                                     system_matrix.block(block_p,block_vel).m(),
+                                                     parameters.n_expensive_stokes_solver_steps),
+                                            solver_tolerance);
 
     solver_control_cheap.enable_history_data();
     solver_control_expensive.enable_history_data();
@@ -759,7 +761,8 @@ namespace aspect
       }
 
     // step 1b: take the stronger solver in case
-    // the simple solver failed
+    // the simple solver failed and attempt solving
+    // it in n_expensive_stokes_solver_steps steps or less.
     catch (SolverControl::NoConvergence)
       {
         SolverFGMRES<LinearAlgebra::BlockVector>
@@ -790,10 +793,15 @@ namespace aspect
                 // output solver history
                 std::ofstream f((parameters.output_directory+"solver_history.txt").c_str());
 
-                for (unsigned int i=0; i<solver_control_cheap.get_history_data().size(); ++i)
-                  f << i << " " << solver_control_cheap.get_history_data()[i] << "\n";
+                // Only request the solver history if a history has actually been created
+                if (parameters.n_cheap_stokes_solver_steps > 0)
+                  {
+                    for (unsigned int i=0; i<solver_control_cheap.get_history_data().size(); ++i)
+                      f << i << " " << solver_control_cheap.get_history_data()[i] << "\n";
 
-                f << "\n";
+                    f << "\n";
+                  }
+
 
                 for (unsigned int i=0; i<solver_control_expensive.get_history_data().size(); ++i)
                   f << i << " " << solver_control_expensive.get_history_data()[i] << "\n";
