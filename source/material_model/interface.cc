@@ -109,8 +109,8 @@ namespace aspect
       std_cxx11::tuple
       <void *,
       void *,
-      internal::Plugins::PluginList<Interface<2> >,
-      internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      aspect::internal::Plugins::PluginList<Interface<2> >,
+      aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
     }
 
 
