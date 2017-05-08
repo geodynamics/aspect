@@ -311,7 +311,7 @@ FOREACH(_test ${_tests})
       # (illegal in target names).
       STRING(REPLACE "/" "-" _target_name_copy_output make-${_test}-${_output}.cmp.notime)
       ADD_CUSTOM_TARGET(${_target_name_copy_output}
-	${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime)
+	DEPENDS	${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime)
       ADD_DEPENDENCIES(${_test}.normalize ${_target_name_copy_output})
 
 
