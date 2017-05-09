@@ -1,4 +1,4 @@
-#include "solkz.h"
+#include "solkz_compositional_fields.h"
 
 
 
@@ -7,10 +7,11 @@ namespace aspect
 {
   namespace InclusionBenchmark
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(SolKzMaterial,
-                                   "SolKzMaterial",
+    ASPECT_REGISTER_MATERIAL_MODEL(SolKzCompositionalMaterial,
+                                   "SolKzCompositionalMaterial",
                                    "A material model that corresponds to the 'SolKz' benchmark "
-                                   "defined in Duretz et al., G-Cubed, 2011.")
+                                   "defined in Duretz et al., G-Cubed, 2011. using "
+                                   "compositional fields. ")
 
 
     ASPECT_REGISTER_POSTPROCESSOR(SolKzPostprocessor,
