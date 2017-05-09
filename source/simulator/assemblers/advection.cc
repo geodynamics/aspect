@@ -437,6 +437,11 @@ namespace aspect
                 }
             }
         }
+      else if (cell->has_periodic_neighbor (face_no))
+        {
+          // Periodic temperature/composition term: consider the corresponding periodic faces as the case of interior faces
+          this->local_assemble_discontinuous_advection_interior_face_terms(cell, face_no, advection_field, scratch, data);
+        }
       else
         {
           //Neumann temperature term - no non-zero contribution as only homogeneous Neumann boundary conditions are implemented elsewhere for temperature
@@ -479,14 +484,20 @@ namespace aspect
 
       typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
 
-      //interior face - no contribution on RHS
-      Assert (cell->neighbor(face_no).state() == IteratorState::valid,
+      //interior face or periodic face - no contribution on RHS
+
+      const typename DoFHandler<dim>::cell_iterator
+      neighbor = cell->neighbor_or_periodic_neighbor (face_no);
+      //note: "neighbor" defined above is NOT active_cell_iterator, so this includes cells that are refined
+      //for example: cell with periodic boundary.
+      Assert (neighbor.state() == IteratorState::valid,
               ExcInternalError());
-      const typename DoFHandler<dim>::cell_iterator neighbor = cell->neighbor(face_no); //note: NOT active_cell_iterator, so this includes cells that are refined.
+      const bool cell_has_periodic_neighbor = cell->has_periodic_neighbor (face_no);
 
       if (!(face->has_children()))
         {
-          if (!cell->neighbor_is_coarser(face_no) &&
+          if (neighbor->level () == cell->level () &&
+              neighbor->active() &&
               (((neighbor->is_locally_owned()) && (cell->index() < neighbor->index()))
                ||
                ((!neighbor->is_locally_owned()) && (cell->subdomain_id() < neighbor->subdomain_id()))))
@@ -494,8 +505,14 @@ namespace aspect
               Assert (cell->is_locally_owned(), ExcInternalError());
               //cell and neighbor are equal-sized, and cell has been chosen to assemble this face, so calculate from cell
 
-              //how does the neighbor talk about this cell?
-              const unsigned int neighbor2=cell->neighbor_of_neighbor(face_no);
+              const unsigned int neighbor2 =
+                (cell->has_periodic_neighbor(face_no)
+                 ?
+                 //how does the periodic neighbor talk about this cell?
+                 cell->periodic_neighbor_of_periodic_neighbor( face_no )
+                 :
+                 //how does the neighbor talk about this cell?
+                 cell->neighbor_of_neighbor(face_no));
 
               //set up neighbor values
               scratch.neighbor_face_finite_element_values->reinit (neighbor, neighbor2);
@@ -789,14 +806,22 @@ namespace aspect
         }
       else //face->has_children(), so always assemble from here.
         {
-          //how does the neighbor talk about this cell?
-          const unsigned int neighbor2 = cell->neighbor_face_no(face_no);
+          const unsigned int neighbor2 =
+            (cell_has_periodic_neighbor
+             ?
+             cell->periodic_neighbor_face_no(face_no)
+             :
+             cell->neighbor_face_no(face_no));
 
           //loop over subfaces
           for (unsigned int subface_no=0; subface_no<face->number_of_children(); ++subface_no)
             {
               const typename DoFHandler<dim>::active_cell_iterator neighbor_child
-                = cell->neighbor_child_on_subface (face_no, subface_no);
+                = ( cell_has_periodic_neighbor
+                    ?
+                    cell->periodic_neighbor_child_on_subface(face_no,subface_no)
+                    :
+                    cell->neighbor_child_on_subface (face_no, subface_no));
 
               //set up subface values
               scratch.subface_finite_element_values->reinit (cell, face_no, subface_no);
