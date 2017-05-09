@@ -111,10 +111,10 @@ namespace aspect
                 fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
                     composition_values[c]);
 
-
-              Utilities::extract_composition_values_at_q_point (composition_values,
-                                                                0,
-                                                                composition_values_at_q_point);
+              if (this->n_compositional_fields() > 0)
+                Utilities::extract_composition_values_at_q_point (composition_values,
+                                                                  0,
+                                                                  composition_values_at_q_point);
 
               const double Vs = this->get_material_model().seismic_Vs(temperature_values[0],
                                                                       pressure_values[0],
@@ -183,10 +183,10 @@ namespace aspect
                 fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
                     composition_values[c]);
 
-
-              Utilities::extract_composition_values_at_q_point (composition_values,
-                                                                0,
-                                                                composition_values_at_q_point);
+              if (this->n_compositional_fields() > 0)
+                Utilities::extract_composition_values_at_q_point (composition_values,
+                                                                  0,
+                                                                  composition_values_at_q_point);
 
               const double Vp = this->get_material_model().seismic_Vp(temperature_values[0],
                                                                       pressure_values[0],
