@@ -130,6 +130,24 @@ namespace aspect
         double depth(const Point<dim> &position) const = 0;
 
         /**
+         * Takes the Cartesian points (x,z or x,y,z) and returns standardized
+         * coordinates which are most 'natural' to the geometry model. For a box
+         * this will  be (x,z) in 2d or (x,y,z) in 3d, and for a spheroid geometry
+         * model it  will be (radius, longitude) in 2d and (radius, longitude,
+         * latitude) in 3d.
+         */
+        virtual
+        std::array<double,dim> cartesian_to_natural_coodinates(const Point<dim> &position) const;
+
+        /**
+         * Undoes the action of cartesian_to_natural_coodinates, and turns the
+         * coordinate system which is most 'natural' to the geometry model into
+         * Cartesian coordinates.
+         */
+        virtual
+        Point<dim> natural_to_cartesian_coodinates(const std::array<double,dim> &position) const;
+
+        /**
          * Returns a representative point for a given depth. Such a point must
          * lie inside the domain for sure (assuming the given depth is valid),
          * but it is not important where exactly in the domain it is. A good
