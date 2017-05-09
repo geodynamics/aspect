@@ -64,12 +64,21 @@ namespace aspect
                            const unsigned int n_comp);
 
       /**
-       * All source terms of the temperature equation at the given position.
-       * This includes shear heating, adiabatic heating, radiogenic heat
-       * production, the right hand side part of latent heat or any other
-       * heating terms on the right hand side of the energy equation.
+       * All source terms of the temperature equation that represent a
+       * continuous process leading to a rate of change in temperature
+       * at the given position. This includes shear heating, adiabatic
+       * heating, radiogenic heat production, or any other heating rates
+       * on the right hand side of the energy equation.
        */
       std::vector<double> heating_source_terms;
+
+      /**
+       * The source terms of the temperature equation that represent
+       * instantaneous changes in temperature, for example due to reactions,
+       * at the given position. This includes for example latent heat of
+       * melt.
+       */
+      std::vector<double> heating_reaction_terms;
 
       /**
        * Left hand side contribution of latent heat; this is added to the

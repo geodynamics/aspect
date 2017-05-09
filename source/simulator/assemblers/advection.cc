@@ -126,13 +126,6 @@ namespace aspect
              :
              0.0);
 
-          const double reaction_term =
-            ((advection_field_is_temperature)
-             ?
-             0.0
-             :
-             scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
-
           const double field_term_for_rhs
             = (use_bdf2_scheme ?
                (scratch.old_field_values[q] *
@@ -161,9 +154,7 @@ namespace aspect
               += (field_term_for_rhs * scratch.phi_field[i]
                   + time_step *
                   scratch.phi_field[i]
-                  * gamma
-                  + scratch.phi_field[i]
-                  * reaction_term)
+                  * gamma)
                  *
                  JxW;
 
@@ -179,6 +170,80 @@ namespace aspect
                      )
                      * JxW;
                 }
+            }
+        }
+    }
+
+
+
+    template <int dim>
+    void
+    AdvectionAssembler<dim>::local_assemble_advection_system_reaction_terms (const typename Simulator<dim>::AdvectionField &advection_field,
+                                                                             const double artificial_viscosity,
+                                                                             internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
+                                                                             internal::Assembly::CopyData::AdvectionSystem<dim> &data) const
+    {
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
+      const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+      const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
+
+      const bool   use_bdf2_scheme = (this->get_timestep_number() > 1);
+      const double time_step = this->get_timestep();
+      const double old_time_step = this->get_old_timestep();
+
+      const double bdf2_factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
+                                                     (time_step + old_time_step)) : 1.0;
+
+      const bool advection_field_is_temperature = advection_field.is_temperature();
+      const unsigned int solution_component = advection_field.component_index(introspection);
+
+      const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
+
+      for (unsigned int q=0; q<n_q_points; ++q)
+        {
+          // precompute the values of shape functions.
+          // We only need to look up values of shape functions if they
+          // belong to 'our' component. They are zero otherwise anyway.
+          // Note that we later only look at the values that we do set here.
+          for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell;/*increment at end of loop*/)
+            {
+              if (fe.system_to_component_index(i).first == solution_component)
+                {
+                  scratch.phi_field[i_advection]      = scratch.finite_element_values[solution_field].value (i,q);
+                  ++i_advection;
+                }
+              ++i;
+            }
+
+          const double gamma =
+            ((advection_field_is_temperature)
+             ?
+             scratch.heating_model_outputs.heating_reaction_terms[q]
+             :
+             0.0);
+
+          const double reaction_term =
+            ((advection_field_is_temperature)
+             ?
+             0.0
+             :
+             scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
+
+          const double JxW = scratch.finite_element_values.JxW(q);
+
+          // do the actual assembly. note that we only need to loop over the advection
+          // shape functions because these are the only contributions we compute here
+          for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+            {
+              data.local_rhs(i)
+              += (time_step *
+                  scratch.phi_field[i]
+                  * gamma
+                  + scratch.phi_field[i]
+                  * reaction_term)
+                 *
+                 JxW;
             }
         }
     }

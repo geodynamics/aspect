@@ -2211,6 +2211,63 @@ namespace aspect
           break;
         }
 
+        case NonlinearSolver::operator_splitting:
+        {
+          // We do the free surface execution at the beginning of the timestep for a specific reason.
+          // The time step size is calculated AFTER the whole solve_timestep() function.  If we call
+          // free_surface_execute() after the Stokes solve, it will be before we know what the appropriate
+          // time step to take is, and we will timestep the boundary incorrectly.
+          if (parameters.free_surface_enabled)
+            free_surface->execute ();
+
+          assemble_advection_system (AdvectionField::temperature());
+          solve_advection(AdvectionField::temperature());
+
+          current_linearization_point.block(introspection.block_indices.temperature)
+            = solution.block(introspection.block_indices.temperature);
+
+          for (unsigned int c=0; c < parameters.n_compositional_fields; ++c)
+            {
+              const AdvectionField adv_field (AdvectionField::composition(c));
+              const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
+              switch (method)
+                {
+                  case Parameters<dim>::AdvectionFieldMethod::fem_field:
+                    assemble_advection_system (adv_field);
+                    solve_advection(adv_field);
+                    break;
+
+                  case Parameters<dim>::AdvectionFieldMethod::particles:
+                    interpolate_particle_properties(adv_field);
+                    break;
+
+                  default:
+                    AssertThrow(false,ExcNotImplemented());
+                }
+            }
+
+          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+            current_linearization_point.block(introspection.block_indices.compositional_fields[c])
+              = solution.block(introspection.block_indices.compositional_fields[c]);
+
+          // the Stokes matrix depends on the viscosity. if the viscosity
+          // depends on other solution variables, then after we need to
+          // update the Stokes matrix in every time step and so need to set
+          // the following flag. if we change the Stokes matrix we also
+          // need to update the Stokes preconditioner.
+          if (stokes_matrix_depends_on_solution() == true)
+            rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+
+          assemble_stokes_system();
+          build_stokes_preconditioner();
+          solve_stokes();
+
+          if (parameters.run_postprocessors_on_nonlinear_iterations)
+            postprocess ();
+
+          break;
+        }
+
         default:
           Assert (false, ExcNotImplemented());
       }

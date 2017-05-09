@@ -910,6 +910,16 @@ namespace aspect
 
       }
 
+    if (!parameters.nonlinear_solver == NonlinearSolver::operator_splitting)
+      assemblers->local_assemble_advection_system
+      .connect (std_cxx11::bind(&aspect::Assemblers::AdvectionAssembler<dim>::local_assemble_advection_system_reaction_terms,
+                                std_cxx11::cref (*adv_assembler),
+                                // discard cell,
+                                std_cxx11::_2,
+                                std_cxx11::_3,
+                                std_cxx11::_4,
+                                std_cxx11::_5));
+
     if (parameters.use_discontinuous_temperature_discretization ||
         parameters.use_discontinuous_composition_discretization)
       {

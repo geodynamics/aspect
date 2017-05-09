@@ -1010,6 +1010,8 @@ namespace aspect
       nonlinear_solver = NonlinearSolver::Stokes_only;
     else if (prm.get ("Nonlinear solver scheme") == "Advection only")
       nonlinear_solver = NonlinearSolver::Advection_only;
+    else if (prm.get ("Nonlinear solver scheme") == "Operator splitting")
+      nonlinear_solver = NonlinearSolver::operator_splitting;
     else
       AssertThrow (false, ExcNotImplemented());
 

@@ -385,7 +385,11 @@ namespace aspect
                                              const unsigned int)
       :
       heating_source_terms(n_points,numbers::signaling_nan<double>()),
+      // initialize the reaction terms with zeroes because they are not filled
+      // in all heating models
+      heating_reaction_terms(n_points,0.0),
       lhs_latent_heat_terms(n_points,numbers::signaling_nan<double>())
+
     {
     }
 

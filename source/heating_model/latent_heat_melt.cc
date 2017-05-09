@@ -43,17 +43,18 @@ namespace aspect
               // with melt migration the reaction term is a mass reaction rate
               const double porosity_idx = this->introspection().compositional_index_for_name("porosity");
               const double latent_heat = melting_entropy_change * material_model_outputs.reaction_terms[q][porosity_idx];
-              heating_model_outputs.heating_source_terms[q] = latent_heat
+              heating_model_outputs.heating_reaction_terms[q] = latent_heat
                                                               * material_model_inputs.temperature[q];
 
               // without melt migration, the reaction term is a constant value in terms of volume,
               // and we have to scale it to the correct units
               if (!this->include_melt_transport())
-                heating_model_outputs.heating_source_terms[q] *= material_model_outputs.densities[q] / this->get_timestep();
+                heating_model_outputs.heating_reaction_terms[q] *= material_model_outputs.densities[q] / this->get_timestep();
             }
           else
-            heating_model_outputs.heating_source_terms[q] = 0.0;
+            heating_model_outputs.heating_reaction_terms[q] = 0.0;
 
+          heating_model_outputs.heating_source_terms[q] = 0.0;
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
     }

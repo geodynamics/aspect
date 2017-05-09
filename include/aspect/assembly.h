@@ -683,6 +683,15 @@ namespace aspect
                                          internal::Assembly::CopyData::AdvectionSystem<dim> &data) const;
 
         /**
+         * Assemble reaction terms.
+         */
+        void
+        local_assemble_advection_system_reaction_terms(const typename Simulator<dim>::AdvectionField &advection_field,
+                                                       const double artificial_viscosity,
+                                                       internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
+                                                       internal::Assembly::CopyData::AdvectionSystem<dim> &data) const;
+
+        /**
          * This function computes the residual for the advection equation at every quadrature
          * point of the current cell and returns the residual in a vector of doubles.
          */
