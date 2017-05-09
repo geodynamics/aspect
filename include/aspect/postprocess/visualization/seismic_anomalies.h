@@ -63,8 +63,8 @@ namespace aspect
           execute () const;
 
           /**
-                 * Declare the parameters this class takes through input files.
-                 */
+          * Declare the parameters this class takes through input files.
+          */
           static
           void
           declare_parameters (ParameterHandler &prm);
@@ -77,6 +77,11 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
         private:
+          /**
+           * Number of depth slices used to define average
+           * seismic shear wave velocities from which anomalies
+           * are calculated.
+           **/
           unsigned int n_slices;
       };
 
@@ -112,8 +117,8 @@ namespace aspect
           execute () const;
 
           /**
-                 * Declare the parameters this class takes through input files.
-                 */
+          * Declare the parameters this class takes through input files.
+          */
           static
           void
           declare_parameters (ParameterHandler &prm);
@@ -126,6 +131,11 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
         private:
+          /**
+           * Number of depth slices used to define average
+           * seismic compressional wave velocities from which anomalies
+           * are calculated.
+           **/
           unsigned int n_slices;
       };
     }

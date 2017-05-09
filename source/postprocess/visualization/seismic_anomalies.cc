@@ -44,7 +44,14 @@ namespace aspect
         std::vector<double> Vs_depth_average(n_slices);
         this->get_lateral_averaging().get_Vs_averages(Vs_depth_average);
 
-        // Pad averages
+        // Estimates of the lateral Vs average at each depth are required
+        // for all cell depths, including those
+        // shallower than the midpoint of the first slice or
+        // deeper than the midpoint of the last slice.
+        // For this reason, the vector of Vs averages need to be padded by
+        // one element before the first element and after the last element.
+        // Mirror padding is chosen as it provides the least biased estimator
+        // (in the absence of further information).
         std::vector<double> padded_Vs_depth_average(n_slices+2);
         padded_Vs_depth_average[0] = 2.*Vs_depth_average[0] - Vs_depth_average[1];
         padded_Vs_depth_average[n_slices+1] = 2.*Vs_depth_average[n_slices-1] - Vs_depth_average[n_slices-2];
@@ -124,9 +131,9 @@ namespace aspect
               // the depth slice which has its center just above that point
               const double depth = this->get_geometry_model().depth(fe_values.quadrature_point(0));
 
-              // N.B. static_cast<int> always truncates the double (i.e. 1.9 -> 1)
+              // Please note: static_cast<int> always truncates the double (i.e. 1.9 -> 1)
               // Here we subtract 0.5 to find the first slice with its center shallower than the cell,
-              // and add 1 to take padding into account
+              // and add 1 to take padding into account (-0.5 + 1.0 = +0.5)
               const double slice_depth = (depth*n_slices)/max_depth + 0.5;
               const unsigned int idx = static_cast<unsigned int>(slice_depth);
               const double fractional_slice = slice_depth - static_cast<double>(idx);
@@ -152,7 +159,14 @@ namespace aspect
         std::vector<double> Vp_depth_average(n_slices);
         this->get_lateral_averaging().get_Vp_averages(Vp_depth_average);
 
-        // Pad averages
+        // Estimates of the lateral Vp average at each depth are required
+        // for all cell depths, including those
+        // shallower than the midpoint of the first slice or
+        // deeper than the midpoint of the last slice.
+        // For this reason, the vector of Vp averages need to be padded by
+        // one element before the first element and after the last element.
+        // Mirror padding is chosen as it provides the least biased estimator
+        // (in the absence of further information).
         std::vector<double> padded_Vp_depth_average(n_slices+2);
         padded_Vp_depth_average[0] = 2.*Vp_depth_average[0] - Vp_depth_average[1];
         padded_Vp_depth_average[n_slices+1] = 2.*Vp_depth_average[n_slices-1] - Vp_depth_average[n_slices-2];
@@ -232,9 +246,9 @@ namespace aspect
               // the depth slice which has its center just above that point
               const double depth = this->get_geometry_model().depth(fe_values.quadrature_point(0));
 
-              // N.B. static_cast<int> always truncates the double (i.e. 1.9 -> 1)
+              // Please note: static_cast<int> always truncates the double (i.e. 1.9 -> 1)
               // Here we subtract 0.5 to find the first slice with its center shallower than the cell,
-              // and add 1 to take padding into account
+              // and add 1 to take padding into account (-0.5 + 1.0 = +0.5)
               const double slice_depth = (depth*n_slices)/max_depth + 0.5;
               const unsigned int idx = static_cast<unsigned int>(slice_depth);
               const double fractional_slice = slice_depth - static_cast<double>(idx);
