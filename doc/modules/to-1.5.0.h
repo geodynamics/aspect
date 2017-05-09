@@ -7,13 +7,6 @@
  *
  * <ol>
  *
- * <li> New: Support for two particle interpolation schemes (bilinear, and
- * biquadratic) has been added. Using the least squares method, a bilinear
- * or biquadratic function is approximated and evaluated onto compositional
- * fields with a simple overshoot and undershoot correction.
- * <br>
- * (Harsha Lokavarapu, Ying He, Gerry Puckett, 2017/02/27)
- *
  * <li> New: Blankenbach benchmarks were added.
  * <br>
  * (Timo Heister, 2017/02/16)
@@ -87,20 +80,8 @@
  * Added tests and benchmarks for the new formulation, and updated
  * the according particle property in the same way. Also updated
  * and extended the cookbook description in the manual.
-<<<<<<< HEAD:doc/modules/to-1.5.0.h
  * <br>
  * (Rene Gassmoeller, 2017/01/19)
-=======
- * <br> (Rene Gassmoeller, 2017/01/19)
-<<<<<<< HEAD:doc/modules/to-1.5.0.h
-=======
- * fields with a simple overshoot and undershoot correction. Support for
- * 2D models only, has been implemented.
- * <br> (Harsha Lokavarapu, Ying He, Gerry Puckett, 2016/12/28)
->>>>>>> Updated code in response to PR #1333 comments
->>>>>>> 7808038... Updated code in response to PR #1333 comments:doc/modules/changes.h
-=======
->>>>>>> 50e1602... Update particle_at_properties function call for bilinear and biquadratic particle interpolation schemes:doc/modules/changes.h
  *
  * <li> New: Added a "heat flux densities" postprocessor.
  * <br>
