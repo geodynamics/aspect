@@ -74,7 +74,7 @@ namespace aspect
     void
     CompositionalHeating<dim>::
     evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+              const MaterialModel::MaterialModelOutputs<dim> &/*material_model_outputs*/,
               HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
 
