@@ -1,0 +1,241 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 10,468 (2,178+289+1,089+2,304+2,304+2,304)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 31+0 iterations.
+
+Number of active cells: 349 (on 6 levels)
+Number of degrees of freedom: 14,423 (3,066+401+1,533+3,141+3,141+3,141)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 33+0 iterations.
+
+Number of active cells: 571 (on 7 levels)
+Number of degrees of freedom: 23,743 (5,112+658+2,556+5,139+5,139+5,139)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 36+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.000399 m/s, 0.000659 m/s
+     Compositions min/max/mass:    0/1/0.602 // 0/0/0 // 0/0/0
+     Number of advected particles: 5710
+
+Number of active cells: 517 (on 7 levels)
+Number of degrees of freedom: 21,589 (4,684+604+2,342+4,653+4,653+4,653)
+
+*** Timestep 1:  t=12.5333 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 6 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 34+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.000265 m/s, 0.000437 m/s
+     Compositions min/max/mass:    -0.3062/1.234/0.602 // 0/0/0 // 0/0/0
+     Number of advected particles: 6051
+
+Number of active cells: 532 (on 7 levels)
+Number of degrees of freedom: 22,189 (4,804+619+2,402+4,788+4,788+4,788)
+
+*** Timestep 2:  t=31.6139 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 4 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 35+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.00017 m/s, 0.00028 m/s
+     Compositions min/max/mass:    -0.4669/1.366/0.602 // 0/0/0 // 0/0/0
+     Number of advected particles: 6470
+
+Number of active cells: 541 (on 7 levels)
+Number of degrees of freedom: 22,546 (4,874+628+2,437+4,869+4,869+4,869)
+
+*** Timestep 3:  t=62.4203 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 4 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 36+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.000111 m/s, 0.000183 m/s
+     Compositions min/max/mass:    -0.514/1.424/0.602 // 0/0/0 // 0/0/0
+     Number of advected particles: 6763
+
+Number of active cells: 556 (on 7 levels)
+Number of degrees of freedom: 23,156 (5,000+644+2,500+5,004+5,004+5,004)
+
+*** Timestep 4:  t=110.251 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 4 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 34+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            6.38e-05 m/s, 0.000106 m/s
+     Compositions min/max/mass:    -0.5134/1.43/0.602 // 0/0/0 // 0/0/0
+     Number of advected particles: 7092
+
+Number of active cells: 562 (on 7 levels)
+Number of degrees of freedom: 23,383 (5,040+649+2,520+5,058+5,058+5,058)
+
+*** Timestep 5:  t=193.342 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 4 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 35+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            6.02e-05 m/s, 9.96e-05 m/s
+     Compositions min/max/mass:    -0.4985/1.494/0.6021 // 0/0/0 // 0/0/0
+     Number of advected particles: 7438
+
+Number of active cells: 562 (on 7 levels)
+Number of degrees of freedom: 23,383 (5,040+649+2,520+5,058+5,058+5,058)
+
+*** Timestep 6:  t=272.523 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 5 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 35+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            3.29e-05 m/s, 7.9e-05 m/s
+     Compositions min/max/mass:    -0.5122/1.527/0.6021 // 0/0/0 // 0/0/0
+     Number of advected particles: 7547
+
+Number of active cells: 544 (on 7 levels)
+Number of degrees of freedom: 22,682 (4,908+632+2,454+4,896+4,896+4,896)
+
+*** Timestep 7:  t=371.778 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 6 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 36+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.00016 m/s, 0.000311 m/s
+     Compositions min/max/mass:    -0.2226/1.119/0.6021 // 0/0/0 // 0/0/0
+     Number of advected particles: 7936
+
+Number of active cells: 553 (on 7 levels)
+Number of degrees of freedom: 23,003 (4,956+638+2,478+4,977+4,977+4,977)
+
+*** Timestep 8:  t=396.926 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 5 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 36+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            4.92e-05 m/s, 9.55e-05 m/s
+     Compositions min/max/mass:    -0.2156/1.119/0.6021 // 0/0/0 // 0/0/0
+     Number of advected particles: 8102
+
+Number of active cells: 532 (on 7 levels)
+Number of degrees of freedom: 22,143 (4,776+615+2,388+4,788+4,788+4,788)
+
+*** Timestep 9:  t=482.642 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 7 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 36+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.000318 m/s, 0.00061 m/s
+     Compositions min/max/mass:    -0.2152/1.104/0.6022 // 0/0/0 // 0/0/0
+     Number of advected particles: 8605
+
+Number of active cells: 493 (on 7 levels)
+Number of degrees of freedom: 20,511 (4,420+570+2,210+4,437+4,437+4,437)
+
+*** Timestep 10:  t=496.412 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 6 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 35+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.000204 m/s, 0.000386 m/s
+     Compositions min/max/mass:    -0.1551/1.102/0.6022 // 0/0/0 // 0/0/0
+     Number of advected particles: 8728
+
+Number of active cells: 481 (on 7 levels)
+Number of degrees of freedom: 20,034 (4,326+558+2,163+4,329+4,329+4,329)
+
+*** Timestep 11:  t=521.446 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 4 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 36+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.000124 m/s, 0.00024 m/s
+     Compositions min/max/mass:    -0.143/1.092/0.6022 // 0/0/0 // 0/0/0
+     Number of advected particles: 8836
+
+Number of active cells: 496 (on 7 levels)
+Number of degrees of freedom: 20,624 (4,440+572+2,220+4,464+4,464+4,464)
+
+*** Timestep 12:  t=562.386 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 3 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 34+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            7.88e-05 m/s, 0.000156 m/s
+     Compositions min/max/mass:    -0.1469/1.086/0.6022 // 0/0/0 // 0/0/0
+     Number of advected particles: 8986
+
+Number of active cells: 532 (on 7 levels)
+Number of degrees of freedom: 22,097 (4,748+611+2,374+4,788+4,788+4,788)
+
+*** Timestep 13:  t=626.636 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 4 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 32+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            4.46e-05 m/s, 0.0001 m/s
+     Compositions min/max/mass:    -0.1499/1.072/0.6022 // 0/0/0 // 0/0/0
+     Number of advected particles: 9210
+
+Number of active cells: 568 (on 7 levels)
+Number of degrees of freedom: 23,561 (5,050+650+2,525+5,112+5,112+5,112)
+
+*** Timestep 14:  t=700 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 4 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 32+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            2.64e-05 m/s, 5.18e-05 m/s
+     Compositions min/max/mass:    -0.1382/1.067/0.6022 // 0/0/0 // 0/0/0
+     Number of advected particles: 9429
+
+Number of active cells: 580 (on 7 levels)
+Number of degrees of freedom: 24,093 (5,178+666+2,589+5,220+5,220+5,220)
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
