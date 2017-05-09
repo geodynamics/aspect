@@ -61,10 +61,10 @@ namespace aspect
           virtual
           std::pair<std::string, Vector<float> *>
           execute () const;
-	  
-	  /**
-           * Declare the parameters this class takes through input files.
-           */
+
+          /**
+                 * Declare the parameters this class takes through input files.
+                 */
           static
           void
           declare_parameters (ParameterHandler &prm);
@@ -75,9 +75,9 @@ namespace aspect
           virtual
           void
           parse_parameters (ParameterHandler &prm);
-	  
+
         private:
-	  unsigned int n_slices;
+          unsigned int n_slices;
       };
 
 
@@ -111,9 +111,9 @@ namespace aspect
           std::pair<std::string, Vector<float> *>
           execute () const;
 
-	  /**
-           * Declare the parameters this class takes through input files.
-           */
+          /**
+                 * Declare the parameters this class takes through input files.
+                 */
           static
           void
           declare_parameters (ParameterHandler &prm);
@@ -124,9 +124,9 @@ namespace aspect
           virtual
           void
           parse_parameters (ParameterHandler &prm);
-	  
+
         private:
-	  unsigned int n_slices;
+          unsigned int n_slices;
       };
     }
   }
