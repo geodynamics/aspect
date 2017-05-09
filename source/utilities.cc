@@ -1822,6 +1822,31 @@ namespace aspect
       return lookup->get_data(position,component);
     }
 
+
+    template<int dim>
+    double compute_spd_factor(const double eta,
+                              const SymmetricTensor<2,dim> &strain_rate,
+                              const SymmetricTensor<2,dim> &dviscosities_dstrain_rate,
+                              const double safety_factor)
+    {
+      double alpha = 0;
+      const double norm_a_b = std::sqrt((strain_rate*strain_rate)*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));
+      const double contract_a_b = (strain_rate*dviscosities_dstrain_rate);
+      const double one_minus_part = 1 - (contract_a_b / norm_a_b);
+      const double denom = one_minus_part * one_minus_part * norm_a_b;
+      if (denom == 0)
+        alpha = 1.0;
+      else
+        {
+          alpha = (2.0*eta)/denom;
+          if (alpha >= 1.0)
+            alpha = 1.0;
+          else
+            alpha = std::max(0.0,safety_factor*alpha);
+        }
+      return alpha;
+    }
+
 // Explicit instantiations
     template class AsciiDataLookup<1>;
     template class AsciiDataLookup<2>;
@@ -1852,5 +1877,15 @@ namespace aspect
 
     template std_cxx11::array<Tensor<1,2>,1> orthogonal_vectors (const Tensor<1,2> &v);
     template std_cxx11::array<Tensor<1,3>,2> orthogonal_vectors (const Tensor<1,3> &v);
+
+    template double compute_spd_factor(const double eta,
+                                       const SymmetricTensor<2,2> &strain_rate,
+                                       const SymmetricTensor<2,2> &dviscosities_dstrain_rate,
+                                       const double safety_factor);
+    template double compute_spd_factor(const double eta,
+                                       const SymmetricTensor<2,3> &strain_rate,
+                                       const SymmetricTensor<2,3> &dviscosities_dstrain_rate,
+                                       const double safety_factor);
+
   }
 }
