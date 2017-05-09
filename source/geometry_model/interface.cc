@@ -168,7 +168,7 @@ namespace aspect
         if (p->second == boundary_id)
           {
             Assert (name == "",
-                    ExcMessage ("This material model appears to provide multiple "
+                    ExcMessage ("This geometry model appears to provide multiple "
                                 "names for the boundary with indicator <" +
                                 Utilities::int_to_string (boundary_id) + ">."));
             name = p->first;
