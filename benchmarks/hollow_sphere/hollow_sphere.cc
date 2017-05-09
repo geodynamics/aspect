@@ -17,11 +17,11 @@
 namespace aspect
 {
   /**
-   * This is the "Hollowsphere" benchmark defined in the following paper:
+   * This is the "HollowSphere" benchmark defined in the following paper:
    * Analytical solution for viscous incompressible Stokes flow in a spherical shell
    * C. Thieulot, in prep.
    */
-  namespace HollowsphereBenchmark
+  namespace HollowSphereBenchmark
   {
     using namespace dealii;
 
@@ -31,10 +31,6 @@ namespace aspect
       hollow_sphere_velocity (const Point<3> &pos,
                               const double mmm)
       {
-        //const double x = pos[0];
-        //const double y = pos[1];
-        //const double z = pos[2];
-
         const double gammma = 1.0;
 
         const std_cxx11::array<double,3> spos =
@@ -81,10 +77,6 @@ namespace aspect
       hollow_sphere_pressure (const Point<3> &pos,
                               const double mmm)
       {
-        //const double x = pos[0];
-        //const double y = pos[1];
-        //const double z = pos[2];
-
         const double gammma = 1.0;
         const double mu0=1;
 
@@ -125,13 +117,13 @@ namespace aspect
 
 
       /**
-       * The exact solution for the Hollowsphere benchmark.
+       * The exact solution for the HollowSphere benchmark.
        */
       template <int dim>
-      class FunctionHollowsphere : public Function<dim>
+      class FunctionHollowSphere : public Function<dim>
       {
         public:
-          FunctionHollowsphere (const double mmm)
+          FunctionHollowSphere (const double mmm)
             :
             Function<dim>(dim+2),
             mmm_(mmm)
@@ -161,13 +153,13 @@ namespace aspect
 
 
     template <int dim>
-    class HollowsphereBoundary : public BoundaryVelocity::Interface<dim>
+    class HollowSphereBoundary : public BoundaryVelocity::Interface<dim>
     {
       public:
         /**
          * Constructor.
          */
-        HollowsphereBoundary();
+        HollowSphereBoundary();
 
         /**
          * Return the boundary velocity as a function of position.
@@ -196,7 +188,7 @@ namespace aspect
     };
 
     template <int dim>
-    HollowsphereBoundary<dim>::HollowsphereBoundary ()
+    HollowSphereBoundary<dim>::HollowSphereBoundary ()
       :
       mmm (0)
     {}
@@ -205,7 +197,7 @@ namespace aspect
 
     template <>
     Tensor<1,2>
-    HollowsphereBoundary<2>::
+    HollowSphereBoundary<2>::
     boundary_velocity (const types::boundary_id ,
                        const Point<2> &p) const
     {
@@ -217,7 +209,7 @@ namespace aspect
 
     template <>
     Tensor<1,3>
-    HollowsphereBoundary<3>::
+    HollowSphereBoundary<3>::
     boundary_velocity (const types::boundary_id ,
                        const Point<3> &p) const
     {
@@ -235,7 +227,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class HollowsphereMaterial : public MaterialModel::InterfaceCompatibility<dim>
+    class HollowSphereMaterial : public MaterialModel::InterfaceCompatibility<dim>
     {
       public:
         /**
@@ -331,7 +323,7 @@ namespace aspect
 
     template <int dim>
     double
-    HollowsphereMaterial<dim>::
+    HollowSphereMaterial<dim>::
     viscosity (const double,
                const double,
                const std::vector<double> &,       /*composition*/
@@ -349,7 +341,7 @@ namespace aspect
 
     template <int dim>
     double
-    HollowsphereMaterial<dim>::
+    HollowSphereMaterial<dim>::
     reference_viscosity () const
     {
       return 1.;
@@ -358,7 +350,7 @@ namespace aspect
 
     template <int dim>
     double
-    HollowsphereMaterial<dim>::
+    HollowSphereMaterial<dim>::
     specific_heat (const double,
                    const double,
                    const std::vector<double> &, /*composition*/
@@ -370,7 +362,7 @@ namespace aspect
 
     template <int dim>
     double
-    HollowsphereMaterial<dim>::
+    HollowSphereMaterial<dim>::
     thermal_conductivity (const double,
                           const double,
                           const std::vector<double> &, /*composition*/
@@ -382,7 +374,7 @@ namespace aspect
 
     template <int dim>
     double
-    HollowsphereMaterial<dim>::
+    HollowSphereMaterial<dim>::
     density (const double,
              const double,
              const std::vector<double> &, /*composition*/
@@ -394,7 +386,7 @@ namespace aspect
 
     template <int dim>
     double
-    HollowsphereMaterial<dim>::
+    HollowSphereMaterial<dim>::
     thermal_expansion_coefficient (const double temperature,
                                    const double,
                                    const std::vector<double> &, /*composition*/
@@ -406,7 +398,7 @@ namespace aspect
 
     template <int dim>
     double
-    HollowsphereMaterial<dim>::
+    HollowSphereMaterial<dim>::
     compressibility (const double,
                      const double,
                      const std::vector<double> &, /*composition*/
@@ -418,7 +410,7 @@ namespace aspect
 
     template <int dim>
     bool
-    HollowsphereMaterial<dim>::
+    HollowSphereMaterial<dim>::
     is_compressible () const
     {
       return false;
@@ -426,18 +418,18 @@ namespace aspect
 
     template <int dim>
     void
-    HollowsphereMaterial<dim>::declare_parameters (ParameterHandler &prm)
+    HollowSphereMaterial<dim>::declare_parameters (ParameterHandler &prm)
     {
       //create a global section in the parameter file for parameters
       //that describe this benchmark. note that we declare them here
       //in the material model, but other kinds of plugins (e.g., the gravity
       //model below) may also read these parameters even though they do not
       //declare them
-      prm.enter_subsection("Hollowsphere benchmark");
+      prm.enter_subsection("HollowSphere benchmark");
       {
         prm.declare_entry("Viscosity parameter", "-1",
                           Patterns::Double (),
-                          "Viscosity in the Hollowsphere benchmark.");
+                          "Viscosity in the HollowSphere benchmark.");
       }
       prm.leave_subsection();
     }
@@ -445,9 +437,9 @@ namespace aspect
 
     template <int dim>
     void
-    HollowsphereMaterial<dim>::parse_parameters (ParameterHandler &prm)
+    HollowSphereMaterial<dim>::parse_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Hollowsphere benchmark");
+      prm.enter_subsection("HollowSphere benchmark");
       {
         mmm = prm.get_double ("Viscosity parameter");
       }
@@ -463,18 +455,18 @@ namespace aspect
 
     template <int dim>
     void
-    HollowsphereBoundary<dim>::declare_parameters (ParameterHandler &prm)
+    HollowSphereBoundary<dim>::declare_parameters (ParameterHandler &prm)
     {
       //nothing to declare here. This plugin will however, read parameters
-      //declared by the material model in the "Hollowsphere benchmark" section
+      //declared by the material model in the "HollowSphere benchmark" section
     }
 
 
     template <int dim>
     void
-    HollowsphereBoundary<dim>::parse_parameters (ParameterHandler &prm)
+    HollowSphereBoundary<dim>::parse_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Hollowsphere benchmark");
+      prm.enter_subsection("HollowSphere benchmark");
       {
         mmm = prm.get_double ("Viscosity parameter");
       }
@@ -485,17 +477,17 @@ namespace aspect
 
     template <int dim>
     double
-    HollowsphereMaterial<dim>::get_mmm() const
+    HollowSphereMaterial<dim>::get_mmm() const
     {
       return mmm;
     }
 
     /**
-     *gravity model for the Hollowsphere benchmark
+     *gravity model for the HollowSphere benchmark
     */
 
     template <int dim>
-    class HollowsphereGravity : public aspect::GravityModel::Interface<dim>
+    class HollowSphereGravity : public aspect::GravityModel::Interface<dim>
     {
       public:
         virtual Tensor<1,dim> gravity_vector (const Point<dim> &pos) const;
@@ -516,7 +508,7 @@ namespace aspect
 
     template <int dim>
     Tensor<1,dim>
-    HollowsphereGravity<dim>::
+    HollowSphereGravity<dim>::
     gravity_vector(const Point<dim> &pos) const
     {
 
@@ -565,17 +557,17 @@ namespace aspect
 
     template <int dim>
     void
-    HollowsphereGravity<dim>::declare_parameters (ParameterHandler &prm)
+    HollowSphereGravity<dim>::declare_parameters (ParameterHandler &prm)
     {
       //nothing to declare here. This plugin will however, read parameters
-      //declared by the material model in the "Hollowsphere benchmark" section
+      //declared by the material model in the "HollowSphere benchmark" section
     }
 
     template <int dim>
     void
-    HollowsphereGravity<dim>::parse_parameters (ParameterHandler &prm)
+    HollowSphereGravity<dim>::parse_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Hollowsphere benchmark");
+      prm.enter_subsection("HollowSphere benchmark");
       {
         mmm = prm.get_double ("Viscosity parameter");
       }
@@ -590,7 +582,7 @@ namespace aspect
       * benchmarks defined in the paper Duretz et al. reference above.
       */
     template <int dim>
-    class HollowspherePostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class HollowSpherePostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -603,15 +595,15 @@ namespace aspect
 
     template <int dim>
     std::pair<std::string,std::string>
-    HollowspherePostprocessor<dim>::execute (TableHandler &statistics)
+    HollowSpherePostprocessor<dim>::execute (TableHandler &statistics)
     {
       std_cxx1x::shared_ptr<Function<dim> > ref_func;
       {
-        const HollowsphereMaterial<dim> *
+        const HollowSphereMaterial<dim> *
         material_model
-          = dynamic_cast<const HollowsphereMaterial<dim> *>(&this->get_material_model());
+          = dynamic_cast<const HollowSphereMaterial<dim> *>(&this->get_material_model());
 
-        ref_func.reset (new AnalyticSolutions::FunctionHollowsphere<dim>(material_model->get_mmm()));
+        ref_func.reset (new AnalyticSolutions::FunctionHollowSphere<dim>(material_model->get_mmm()));
       }
 
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
@@ -677,27 +669,27 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace HollowsphereBenchmark
+  namespace HollowSphereBenchmark
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(HollowsphereMaterial,
-                                   "HollowsphereMaterial",
-                                   "A material model that corresponds to the `Hollowsphere' benchmark. "
+    ASPECT_REGISTER_MATERIAL_MODEL(HollowSphereMaterial,
+                                   "HollowSphereMaterial",
+                                   "A material model that corresponds to the `HollowSphere' benchmark. "
                                    "See the manual for more information.")
 
-    ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL(HollowsphereBoundary,
-                                            "HollowsphereBoundary",
+    ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL(HollowSphereBoundary,
+                                            "HollowSphereBoundary",
                                             "Implementation of the velocity boundary conditions for the "
-                                            "`Hollowsphere' benchmark. See the manual for more information about this "
+                                            "`HollowSphere' benchmark. See the manual for more information about this "
                                             "benchmark.")
 
-    ASPECT_REGISTER_POSTPROCESSOR(HollowspherePostprocessor,
-                                  "HollowspherePostprocessor",
-                                  "A postprocessor that compares the solution of the `Hollowsphere' benchmark "
+    ASPECT_REGISTER_POSTPROCESSOR(HollowSpherePostprocessor,
+                                  "HollowSpherePostprocessor",
+                                  "A postprocessor that compares the solution of the `HollowSphere' benchmark "
                                   "with the one computed by ASPECT "
                                   "and reports the error. See the manual for more information.")
-    ASPECT_REGISTER_GRAVITY_MODEL(HollowsphereGravity,
-                                  "HollowsphereGravity",
-                                  "A gravity model in corresponding to the `Hollowsphere' benchmark. "
+    ASPECT_REGISTER_GRAVITY_MODEL(HollowSphereGravity,
+                                  "HollowSphereGravity",
+                                  "A gravity model in corresponding to the `HollowSphere' benchmark. "
                                   "See the manual for more information.")
   }
 }

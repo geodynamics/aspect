@@ -1,3 +1,6 @@
+# The 3D HollowSphere benchmark, for which an 
+# analytical solution is available (Thieulot, in prep). 
+
 
 ############### Global parameters
 
@@ -32,21 +35,21 @@ end
 #Boundary conditions
 subsection Model settings
 
-  set Prescribed velocity boundary indicators = inner : HollowsphereBoundary, \
-                                                outer : HollowsphereBoundary
+  set Prescribed velocity boundary indicators = inner : HollowSphereBoundary, \
+                                                outer : HollowSphereBoundary
 end
 
 
 subsection Material model
-  set Model name = HollowsphereMaterial
+  set Model name = HollowSphereMaterial
 end
 
 
 subsection Gravity model
-  set Model name = HollowsphereGravity
+  set Model name = HollowSphereGravity
 end
 
-subsection Hollowsphere benchmark
+subsection HollowSphere benchmark
    #Viscosity parameter is m 
    set Viscosity parameter             = -1
 end 
@@ -76,7 +79,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 4
+  set Initial global refinement          = 2
   set Refinement fraction                = 0.2
   set Strategy                           = velocity
 end
@@ -87,7 +90,7 @@ end
 # run at the end of each time step. 
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, HollowspherePostprocessor, depth average, memory statistics
+  set List of postprocessors = visualization, velocity statistics, HollowSpherePostprocessor, depth average, memory statistics
 
   subsection Visualization
     set List of output variables = density, viscosity, strain rate
