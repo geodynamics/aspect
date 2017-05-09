@@ -19,16 +19,16 @@
 */
 
 
-#ifndef __aspect__traction_boundary_conditions_initial_lithospheric_pressure_h
-#define __aspect__traction_boundary_conditions_initial_lithospheric_pressure_h
+#ifndef _aspect_boundary_traction_initial_lithospheric_pressure_h
+#define _aspect_boundary_traction_initial_lithospheric_pressure_h
 
-#include <aspect/traction_boundary_conditions/interface.h>
+#include <aspect/boundary_traction/interface.h>
 #include <aspect/simulator_access.h>
 
 
 namespace aspect
 {
-  namespace TractionBoundaryConditions
+  namespace BoundaryTraction
   {
     using namespace dealii;
 
@@ -36,7 +36,7 @@ namespace aspect
      * A class that implements traction boundary conditions by prescribing
      * the lithostatic pressure as the normal traction component.
      *
-     * @ingroup TractionBoundaryConditionsModels
+     * @ingroup BoundaryTractions
      */
     template <int dim>
     class InitialLithostaticPressure : public Interface<dim>, public SimulatorAccess<dim>
