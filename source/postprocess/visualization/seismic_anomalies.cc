@@ -35,8 +35,11 @@ namespace aspect
       namespace
       {
         /**
-         * Computes a running average of a vector.
+         * Computes a simple 2n+1 point moving average of a vector.
          * http://en.wikipedia.org/wiki/Moving_average
+	 * 
+	 * Overwrites a vector<double> called values 
+	 * with the moving average.
          */
         void
         compute_running_average(std::vector<double> &values,
@@ -44,11 +47,17 @@ namespace aspect
         {
           std::vector<double> temp(values.size());
 
+	  // This nested loop runs over each of the values in the
+	  // outer loop, and then sums the values within
+	  // ncells of the value of interest within the inner loop.
+	  // At the edges, the inner loop pads the array using the
+	  // values at the edge of the array.
           for (unsigned int idx=0; idx<values.size(); idx++)
             {
               double sum = 0;
               for (int isum=-ncells; isum<=ncells; isum++)
                 {
+		  //
                   sum += values[std::max(0,std::min((int) values.size()-1,(int) idx+isum))];
                 }
               temp[idx] = sum/((double) (ncells*2+1));
@@ -58,8 +67,6 @@ namespace aspect
 
       }
 
-
-
       template <int dim>
       std::pair<std::string, Vector<float> *>
       SeismicVsAnomaly<dim>::execute() const
@@ -67,18 +74,24 @@ namespace aspect
         std::pair<std::string, Vector<float> *>
         return_value ("Vs_anomaly",
                       new Vector<float>(this->get_triangulation().n_active_cells()));
-
-
-        const unsigned int npoints = 2; // window in running average half-width of window
-        std::vector<double> Vs_depth_average(50);
-
+		
+	// These three lines calculate the Vs averages within n slices,
+	// and then calculates a simple (unweighted) running average
+	// (effectively smoothing the averages)
+	// The running average simply calculates the mean of the
+	// slice of interest and the slices either side.
+	
+	std::vector<double> Vs_depth_average(n_slices);
+        const unsigned int npoints = 2; 
         this->get_lateral_averaging().get_Vs_averages(Vs_depth_average);
         compute_running_average(Vs_depth_average, npoints);
-
-        const unsigned int num_slices = Vs_depth_average.size();
+	
+	// Calculate the maximum depth of the domain
         const double max_depth = this->get_geometry_model().maximal_depth();
 
-        // evaluate a single point per cell
+        // The following lines evaluate the Vs at a single point per cell
+	// and then compute the percentage deviation from the average in
+	// the slice within which the point lies
         const QMidpoint<dim> quadrature_formula;
         const unsigned int n_q_points = quadrature_formula.size();
 
@@ -94,6 +107,7 @@ namespace aspect
 
         std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
+	// Loop over the cells
         typename DoFHandler<dim>::active_cell_iterator
         cell = this->get_dof_handler().begin_active(),
         endc = this->get_dof_handler().end();
@@ -102,6 +116,7 @@ namespace aspect
         for (; cell!=endc; ++cell,++cell_index)
           if (cell->is_locally_owned())
             {
+	      // Get the pressure, temperature and composition in the cell
               fe_values.reinit (cell);
 
               // get the various components of the solution, then
@@ -119,6 +134,7 @@ namespace aspect
               // we do not need the strain rate
               in.strain_rate.resize(0);
 
+	      // Loop over compositional fields to get composition values
               for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                 fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
                     composition_values[c]);
@@ -137,11 +153,14 @@ namespace aspect
               MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
                 = out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >();
               const double Vs = seismic_outputs->vs[0];
-              const double depth = this->get_geometry_model().depth(fe_values.quadrature_point(0));
-              const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
-              Assert(idx<num_slices, ExcInternalError());
 
-              // compute the deviation from the average in per cent
+	      // Find the depth of the zeroth quadrature point in the cell and work out
+	      // the depth slice within which that point resides
+              const double depth = this->get_geometry_model().depth(fe_values.quadrature_point(0));
+              const unsigned int idx = static_cast<unsigned int>((depth*n_slices)/max_depth);
+              Assert(idx<n_slices, ExcInternalError());
+
+              // Compute the percentage deviation from the average
               (*return_value.second)(cell_index) = (Vs - Vs_depth_average[idx])/Vs_depth_average[idx]*1e2;
             }
 
@@ -156,18 +175,23 @@ namespace aspect
         std::pair<std::string, Vector<float> *>
         return_value ("Vp_anomaly",
                       new Vector<float>(this->get_triangulation().n_active_cells()));
-
-
-        const unsigned int npoints = 2; // window in running average half-width of window
-        std::vector<double> Vp_depth_average(50);
-
+		
+	// These three lines calculate the Vp averages within n slices,
+	// and then calculates a simple (unweighted) running average
+	// (effectively smoothing the averages)
+	// The running average simply calculates the mean of the
+	// slice of interest and the slices either side.
+	std::vector<double> Vp_depth_average(n_slices);
+        const unsigned int npoints = 2; 
         this->get_lateral_averaging().get_Vp_averages(Vp_depth_average);
         compute_running_average(Vp_depth_average, npoints);
-
-        const unsigned int num_slices = Vp_depth_average.size();
+	
+	// Calculate the maximum depth of the domain
         const double max_depth = this->get_geometry_model().maximal_depth();
 
-        // evaluate a single point per cell
+        // The following lines evaluate the Vp at a single point per cell
+	// and then compute the percentage deviation from the average in
+	// the slice within which the point lies
         const QMidpoint<dim> quadrature_formula;
         const unsigned int n_q_points = quadrature_formula.size();
 
@@ -183,6 +207,7 @@ namespace aspect
 
         std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
+	// Loop over the cells
         typename DoFHandler<dim>::active_cell_iterator
         cell = this->get_dof_handler().begin_active(),
         endc = this->get_dof_handler().end();
@@ -191,6 +216,7 @@ namespace aspect
         for (; cell!=endc; ++cell,++cell_index)
           if (cell->is_locally_owned())
             {
+	      // Get the pressure, temperature and composition in the cell
               fe_values.reinit (cell);
 
               // get the various components of the solution, then
@@ -208,6 +234,7 @@ namespace aspect
               // we do not need the strain rate
               in.strain_rate.resize(0);
 
+	      // Loop over compositional fields to get composition values
               for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                 fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
                     composition_values[c]);
@@ -226,20 +253,100 @@ namespace aspect
               MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
                 = out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >();
               const double Vp = seismic_outputs->vp[0];
-              const double depth = this->get_geometry_model().depth(fe_values.quadrature_point(0));
-              const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
-              Assert(idx<num_slices, ExcInternalError());
 
-              // compute the deviation from the average in per cent
+	      // Find the depth of the zeroth quadrature point in the cell and work out
+	      // the depth slice within which that point resides
+              const double depth = this->get_geometry_model().depth(fe_values.quadrature_point(0));
+              const unsigned int idx = static_cast<unsigned int>((depth*n_slices)/max_depth);
+              Assert(idx<n_slices, ExcInternalError());
+
+              // Compute the percentage deviation from the average
               (*return_value.second)(cell_index) = (Vp - Vp_depth_average[idx])/Vp_depth_average[idx]*1e2;
             }
 
         return return_value;
       }
+
+      template <int dim>
+      void
+      SeismicVsAnomaly<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Visualization");
+          {
+            prm.enter_subsection("Seismic Vs anomaly");
+            {
+              prm.declare_entry ("Number of depth slices", "50",
+                                 Patterns::Integer (1),
+                                 "Number of depth slices used to define "
+				 "average seismic shear wave velocities "
+				 "from which anomalies are calculated. "
+                                 "Units: non-dimensional.");
+	    }
+	  }
+	}
+      }
+	      
+      template <int dim>
+      void
+      SeismicVsAnomaly<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Visualization");
+          {
+            prm.enter_subsection("Seismic Vs anomaly");
+            {
+              n_slices = prm.get_integer ("Number of depth slices");
+            }
+            prm.leave_subsection();
+          }
+          prm.leave_subsection();
+	}
+      }
+
+      template <int dim>
+      void
+      SeismicVpAnomaly<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Visualization");
+          {
+            prm.enter_subsection("Seismic Vp anomaly");
+            {
+              prm.declare_entry ("Number of depth slices", "50",
+                                 Patterns::Integer (1),
+                                 "Number of depth slices used to define "
+				 "average seismic compressional wave velocities "
+				 "from which anomalies are calculated. "
+                                 "Units: non-dimensional.");
+	    }
+	  }
+	}
+      }
+	      
+      template <int dim>
+      void
+      SeismicVpAnomaly<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Visualization");
+          {
+            prm.enter_subsection("Seismic Vp anomaly");
+            {
+              n_slices = prm.get_integer ("Number of depth slices");
+            }
+            prm.leave_subsection();
+          }
+          prm.leave_subsection();
+	}
+      }
     }
   }
 }
-
 
 // explicit instantiations
 namespace aspect
@@ -251,20 +358,22 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(SeismicVsAnomaly,
                                                   "Vs anomaly",
                                                   "A visualization output object that generates output "
-                                                  "showing the anomaly in the seismic shear wave "
-                                                  "speed $V_s$ as a spatially variable function with one "
-                                                  "value per cell. This anomaly is shown as a percentage "
-                                                  "change relative to the average value of $V_s$ at "
-                                                  "the depth of this cell.")
+						  "showing the percentage anomaly in the seismic "
+						  "compressional wave speed $V_s$ as a spatially variable "
+						  "function with one value per cell. This anomaly is shown "
+						  "as a percentage change relative to the unweighted moving "
+						  "average of laterally averaged velocities within the "
+						  "three depth slices containing and adjacent to this cell.")
 
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(SeismicVpAnomaly,
                                                   "Vp anomaly",
                                                   "A visualization output object that generates output "
-                                                  "showing the anomaly in the seismic compression wave "
-                                                  "speed $V_p$ as a spatially variable function with one "
-                                                  "value per cell. This anomaly is shown as a percentage "
-                                                  "change relative to the average value of $V_p$ at "
-                                                  "the depth of this cell.")
+						  "showing the percentage anomaly in the seismic "
+						  "compressional wave speed $V_p$ as a spatially variable "
+						  "function with one value per cell. This anomaly is shown "
+						  "as a percentage change relative to the unweighted moving "
+						  "average of laterally averaged velocities within the "
+						  "three depth slices containing and adjacent to this cell.")
     }
   }
 }
