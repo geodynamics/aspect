@@ -20,7 +20,7 @@ end
 subsection Termination criteria
   set Checkpoint on termination = true
   set Termination criteria      = end step
-  set End step                  = 10
+  set End step                  = 3
 
 end
 
@@ -102,7 +102,7 @@ subsection Heating model
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, basic statistics,  temperature statistics, heat flux statistics, depth average
+  set List of postprocessors = velocity statistics, basic statistics,  temperature statistics, heat flux statistics
 
   subsection Visualization
      set Time between graphical output = 0

@@ -25,7 +25,7 @@ set Dimension                              = 2
 # instead of seconds' parameter is set; seconds otherwise.
 # This end time is chosen in such a way that the solitary wave travels
 # approximately 5 times its wavelength during the model time.
-set End time                               = 1000.0
+set End time                               = 250.0
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0

@@ -11,12 +11,12 @@ set CFL number                             = 0.5
 set Composition solver tolerance           = 1e-24
 set Temperature solver tolerance           = 1e-20
 set Nonlinear solver scheme                = iterated IMPES
-set Max nonlinear iterations               = 5
+set Max nonlinear iterations               = 4
 set Nonlinear solver tolerance             = 1e-5
 
 set Dimension                              = 2
 
-set End time                               = 5e-8
+set End time                               = 3e-8
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0

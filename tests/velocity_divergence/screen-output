@@ -9,7 +9,7 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+8 iterations.
-      Relative nonlinear residuals: 2.13333e-16, 2.34662e-16, 1
+      Relative nonlinear residuals: 2.26451e-16, 2.31216e-16, 1
       Total relative residual after nonlinear iteration 1: 1
 
 
@@ -17,7 +17,7 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals: 2.13333e-16, 2.34662e-16, 4.16982e-08
+      Relative nonlinear residuals: 2.26451e-16, 2.31216e-16, 4.16982e-08
       Total relative residual after nonlinear iteration 2: 4.16982e-08
 
 
@@ -28,99 +28,27 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
      RMS, max velocity:                  0.539 m/year, 0.998 m/year
      Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr
 
-*** Timestep 1:  t=273.438 years
-   Solving temperature system... 13 iterations.
-   Solving porosity system ... 15 iterations.
+*** Timestep 1:  t=250 years
+   Solving temperature system... 12 iterations.
+   Solving porosity system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals: 0.000540361, 0.994792, 4.16921e-08
-      Total relative residual after nonlinear iteration 1: 0.994792
+      Relative nonlinear residuals: 0.000494119, 0.993777, 4.16921e-08
+      Total relative residual after nonlinear iteration 1: 0.993777
 
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals: 3.19914e-13, 8.55517e-11, 4.16921e-08
+      Relative nonlinear residuals: 3.18885e-13, 9.81588e-11, 4.16921e-08
       Total relative residual after nonlinear iteration 2: 4.16921e-08
 
 
 
    Postprocessing:
      Writing graphical output:           output-velocity_divergence/solution/solution-00001
-     Compositions min/max/mass:          -0.000656/0.0006635/249.3
-     RMS, max velocity:                  0.539 m/year, 0.998 m/year
-     Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr
-
-*** Timestep 2:  t=546.875 years
-   Solving temperature system... 14 iterations.
-   Solving porosity system ... 18 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals: 4.51621e-05, 0.381263, 4.16921e-08
-      Total relative residual after nonlinear iteration 1: 0.381263
-
-
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals: 6.62571e-13, 4.45291e-11, 4.16921e-08
-      Total relative residual after nonlinear iteration 2: 4.16921e-08
-
-
-
-   Postprocessing:
-     Writing graphical output:           output-velocity_divergence/solution/solution-00002
-     Compositions min/max/mass:          -0.001271/0.001291/234.3
-     RMS, max velocity:                  0.539 m/year, 0.998 m/year
-     Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr
-
-*** Timestep 3:  t=820.312 years
-   Solving temperature system... 14 iterations.
-   Solving porosity system ... 17 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals: 2.17141e-05, 0.07342, 4.16921e-08
-      Total relative residual after nonlinear iteration 1: 0.07342
-
-
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals: 5.7767e-13, 5.96772e-11, 4.16921e-08
-      Total relative residual after nonlinear iteration 2: 4.16921e-08
-
-
-
-   Postprocessing:
-     Writing graphical output:           output-velocity_divergence/solution/solution-00003
-     Compositions min/max/mass:          -0.001846/0.001885/210.2
-     RMS, max velocity:                  0.539 m/year, 0.998 m/year
-     Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr
-
-*** Timestep 4:  t=1000 years
-   Solving temperature system... 11 iterations.
-   Solving porosity system ... 14 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals: 9.36119e-06, 0.0272824, 4.16921e-08
-      Total relative residual after nonlinear iteration 1: 0.0272824
-
-
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals: 9.07893e-13, 8.83623e-11, 4.16921e-08
-      Total relative residual after nonlinear iteration 2: 4.16921e-08
-
-
-
-   Postprocessing:
-     Writing graphical output:           output-velocity_divergence/solution/solution-00004
-     Compositions min/max/mass:          -0.002204/0.002258/196.1
+     Compositions min/max/mass:          -0.0006016/0.0006079/249.8
      RMS, max velocity:                  0.539 m/year, 0.998 m/year
      Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr
 
