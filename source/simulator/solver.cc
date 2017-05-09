@@ -662,7 +662,8 @@ namespace aspect
     LinearAlgebra::BlockVector linearized_stokes_initial_guess (introspection.index_sets.stokes_partitioning, mpi_communicator);
 
     // copy the velocity and pressure from current_linearization_point into
-    // the vector linearized_stokes_initial_guess. We need to do the copy because remap has a different
+    // the vector linearized_stokes_initial_guess. We need to do the copy because 
+    // linearized_stokes_variables has a different
     // layout than current_linearization_point, which also contains all the
     // other solution variables.
     linearized_stokes_initial_guess.block (block_vel) = current_linearization_point.block (block_vel);
