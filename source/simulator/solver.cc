@@ -550,7 +550,7 @@ namespace aspect
         // TODO: if there was an easy way to know if the caller needs the
         // initial residual we could skip all of this stuff.
         distributed_stokes_solution.block(0) = solution.block(0);
-        denormalize_pressure (this->pressure_adjustment, distributed_stokes_solution, solution);
+        denormalize_pressure (this->last_pressure_normalization_adjustment, distributed_stokes_solution, solution);
         current_constraints.set_zero (distributed_stokes_solution);
 
         // Undo the pressure scaling:
@@ -625,7 +625,7 @@ namespace aspect
 
         remove_nullspace(solution, distributed_stokes_solution);
 
-        this->pressure_adjustment = normalize_pressure(solution);
+        this->last_pressure_normalization_adjustment = normalize_pressure(solution);
 
         pcout << "done." << std::endl;
 
@@ -668,7 +668,7 @@ namespace aspect
     remap.block (block_vel) = current_linearization_point.block (block_vel);
 
     remap.block (block_p) = current_linearization_point.block (block_p);
-    denormalize_pressure (this->pressure_adjustment, remap, current_linearization_point);
+    denormalize_pressure (this->last_pressure_normalization_adjustment, remap, current_linearization_point);
 
     current_constraints.set_zero (remap);
     remap.block (block_p) /= pressure_scaling;
@@ -860,7 +860,7 @@ namespace aspect
 
     remove_nullspace(solution, distributed_stokes_solution);
 
-    this->pressure_adjustment = normalize_pressure(solution);
+    this->last_pressure_normalization_adjustment = normalize_pressure(solution);
 
     // print the number of iterations to screen
     pcout << solver_control_cheap.last_step() << '+'

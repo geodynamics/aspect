@@ -31,6 +31,7 @@
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/quadrature_lib.h>
+#include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/constraint_matrix.h>
 #include <deal.II/lac/block_sparsity_pattern.h>
 #include <deal.II/lac/sparsity_tools.h>
@@ -211,6 +212,8 @@ namespace aspect
     finite_element(introspection.get_fes(), introspection.get_multiplicities()),
 
     dof_handler (triangulation),
+
+    last_pressure_normalization_adjustment (numbers::signaling_nan<double>()),
 
     rebuild_stokes_matrix (true),
     rebuild_stokes_preconditioner (true)

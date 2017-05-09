@@ -487,7 +487,7 @@ namespace aspect
 
     // normalize the pressure in such a way that the surface pressure
     // equals a known and desired value
-    this->pressure_adjustment = normalize_pressure(old_solution);
+    this->last_pressure_normalization_adjustment = normalize_pressure(old_solution);
 
     // set all solution vectors to the same value as the previous solution
     solution = old_solution;
