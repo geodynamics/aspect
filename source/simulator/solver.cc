@@ -716,7 +716,7 @@ namespace aspect
 
     SolverControl solver_control_expensive (std::min(system_matrix.block(block_vel,block_p).m() +
                                                      system_matrix.block(block_p,block_vel).m(),
-                                                     parameters.n_expensive_stokes_solver_steps),
+                                                     types::global_dof_index(parameters.n_expensive_stokes_solver_steps)),
                                             solver_tolerance);
 
     solver_control_cheap.enable_history_data();
