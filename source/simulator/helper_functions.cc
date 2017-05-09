@@ -1148,16 +1148,16 @@ namespace aspect
     // (only in cases where we need it)
     ghosted.block(block_p) = linearized_stokes_variables.block(block_p);
     denormalize_pressure (this->last_pressure_normalization_adjustment, linearized_stokes_variables, ghosted);
-                          current_constraints.set_zero (linearized_stokes_variables);
+    current_constraints.set_zero (linearized_stokes_variables);
 
-                          linearized_stokes_variables.block (block_p) /= pressure_scaling;
+    linearized_stokes_variables.block (block_p) /= pressure_scaling;
 
-                          // we calculate the velocity residual with a zero velocity,
-                          // computing only the part of the RHS not balanced by the static pressure
-                          if (block_p == introspection.block_indices.velocities)
-    {
-      // we can use the whole block here because we set the velocity to zero above
-      return system_matrix.block(0,0).residual (residual.block(0),
+    // we calculate the velocity residual with a zero velocity,
+    // computing only the part of the RHS not balanced by the static pressure
+    if (block_p == introspection.block_indices.velocities)
+      {
+        // we can use the whole block here because we set the velocity to zero above
+        return system_matrix.block(0,0).residual (residual.block(0),
                                                   linearized_stokes_variables.block(0),
                                                   system_rhs.block(0));
       }
