@@ -53,6 +53,18 @@ namespace aspect
         dealii::SolverControl (n, tol, log_history, log_result)
       {}
 
+      dealii::SolverControl::State
+      check (const unsigned int step,
+             const double check_value)
+      {
+        dealii::SolverControl::State return_value = dealii::SolverControl::check(step, check_value);
+
+        if (step == 0)
+          history_data.resize(history_data.size()+1);
+        return return_value;
+      }
+
+
       const std::vector<double> &get_history_data() const
       {
         Assert (history_data_enabled, ExcHistoryDataRequired());

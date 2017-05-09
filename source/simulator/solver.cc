@@ -808,6 +808,8 @@ namespace aspect
 
                 f.close();
 
+                // avoid a deadlock that was fixed after deal.II 8.5.0
+#if DEAL_II_VERSION_GTE(9,0,0)
                 AssertThrow (false,
                              ExcMessage (std::string("The iterative Stokes solver "
                                                      "did not converge. It reported the following error:\n\n")
@@ -815,9 +817,25 @@ namespace aspect
                                          exc.what()
                                          + "\n See " + parameters.output_directory+"solver_history.txt"
                                          + " for convergence history."));
+#else
+                std::cerr << "The iterative Stokes solver "
+                          << "did not converge. It reported the following error:\n\n"
+                          << exc.what()
+                          << "\n See "
+                          << parameters.output_directory
+                          << "solver_history.txt for convergence history."
+                          << std::endl;
+                std::abort();
+#endif
               }
             else
-              throw QuietException();
+              {
+#if DEAL_II_VERSION_GTE(9,0,0)
+                throw QuietException();
+#else
+                std::abort();
+#endif
+              }
           }
       }
 
