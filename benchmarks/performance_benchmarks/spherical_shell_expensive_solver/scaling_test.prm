@@ -1,0 +1,93 @@
+# Listing of Parameters
+
+set Dimension                              = 3
+set Timing output frequency                = 1
+set Output directory                       = scaling_output_2
+set Number of cheap Stokes solver steps    = 0
+
+subsection Termination criteria
+  set End step                             = 1
+  set Termination criteria                 = end step
+end
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0
+  set Refinement fraction                      = 0
+
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 2
+end
+
+subsection Compositional fields
+  set Number of fields          = 1
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = sqrt(x*x+y*y+z*z)
+    set Variable names      =  x,y,z
+  end
+end
+
+subsection Initial temperature model
+  set Model name = harmonic perturbation
+
+  subsection Harmonic perturbation
+    set Magnitude = 200.0
+  end
+
+end
+
+subsection Boundary temperature model
+  set Model name = initial temperature
+
+  subsection Initial temperature
+    set Maximal temperature = 1800
+    set Minimal temperature = 1400
+  end
+
+end
+
+subsection Geometry model
+  set Model name = spherical shell 
+
+  subsection Spherical shell
+    set Opening angle = 360
+  end
+
+end
+
+subsection Gravity model
+  set Model name = radial constant 
+
+  subsection Radial constant
+    set Magnitude = 10
+  end
+
+end
+
+subsection Material model
+
+  set Model name = simple 
+
+  subsection Simple model
+    set Viscosity = 1e22
+    set Thermal viscosity exponent = 9.0
+    set Reference temperature = 1600
+  end
+
+end
+
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+
+  set Tangential velocity boundary indicators = 0,1
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics
+end
+

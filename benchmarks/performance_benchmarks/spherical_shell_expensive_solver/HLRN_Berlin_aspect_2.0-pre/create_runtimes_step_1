@@ -1,0 +1,57 @@
+#!/bin/bash
+
+output_file=runtimes_step_1.txt
+plot_file=strong_scaling_step_1_20k.pdf
+min_dofs_per_core=0
+
+if [ -f $output_file ]; then
+  rm $output_file
+fi
+
+echo Resolution 2 3 4 5 6 > $output_file
+echo Cores DoFs 2.7E+5 2.1E+6 1.6E+7 1.3E+8 1.0E+9 >> $output_file
+
+for cores in 1 2 3 4 6 12 24 48 96 192 384 768 1536 3072 6144 12288; do
+  echo -n $cores >> $output_file
+
+  for resolution in `seq 2 6`; do
+    accumulated_wallclock_time=0
+    dofs=0
+    n_runs=0
+
+    for run in `seq 1 1`; do
+      log_file=screen-output/output_${cores}_${resolution}_${run}
+
+      if [ -f $log_file ]; then
+        dofs=`gawk '/Number of degrees of freedom:/ {print $6}' $log_file | sed "s/,//g"`
+        dofs_per_core=`echo 'scale=6;' $dofs ' / ' $cores | bc -l`
+
+        if (( $(bc <<< "$dofs_per_core > $min_dofs_per_core") )); then
+          wallclock_time=`gawk -F '|' '/wallclock time/ {print $3}' $log_file | head -n 1 | head -c -3`
+          initialization_time=`gawk -F '|' '/Initialization/ {print $4}' $log_file | head -n 1 | head -c -3`
+          postprocessing_time=`gawk -F '|' '/Postprocessing/ {if ($4 != "") {print $4}}' $log_file | head -n 1 | head -c -3`
+          setup_time=`gawk -F '|' '/Setup dof systems/ {print $4}' $log_file | head -n 1 | head -c -3`
+          echo resolution: $resolution cores: $cores init: $initialization_time post: $postprocessing_time setup: $setup_time
+
+          if [ $wallclock_time ]; then
+            n_runs=`expr $n_runs + 1`
+            accumulated_wallclock_time=`echo $accumulated_wallclock_time ' + ' $wallclock_time '-' $initialization_time '-' $postprocessing_time '-' $setup_time | bc -l`
+          fi
+
+        fi
+
+      fi
+    done # for run
+    if [ $n_runs != 0 ]; then
+      echo resolution: $resolution cores: $cores number of runs: $n_runs
+      echo -n ' ' `echo 'scale=6;' $accumulated_wallclock_time ' / ' $n_runs | bc -l` >> $output_file
+    else
+      echo -n ' 0' >> $output_file
+    fi
+  done # for resolution
+  echo '' >> $output_file
+done # for cores
+
+gnuplot plot_strong_scaling_step_1.plt
+
+mv plot.pdf $plot_file
