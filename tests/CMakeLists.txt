@@ -272,10 +272,6 @@ FOREACH(_test ${_tests})
       SET(_output_files ${_output_files} ${_path_and_name})
     ENDFOREACH()
 
-    MESSAGE(STATUS "_relative_output_filenames: ${_relative_output_filenames}")
-    MESSAGE(STATUS "_output_files: ${_output_files}")
-
-
     # run command
     IF("${_mpi_count}" STREQUAL "1")
       ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${testname}/screen-output
@@ -326,8 +322,6 @@ FOREACH(_test ${_tests})
 		${CMAKE_CURRENT_BINARY_DIR}
 	DEPENDS ${_ref_file}
 	        ${_run_file})
-
-     MESSAGE(STATUS "diff: ${CMAKE_CURRENT_BINARY_DIR}/output-${testname}/${_name}.diff <- ${_ref_file} ${_run_file}")
 
       # Add the target for this output file to the dependencies of this
       # test. Note that a target may not contain "/" but outputs can be

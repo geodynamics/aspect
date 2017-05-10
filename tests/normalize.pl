@@ -27,6 +27,10 @@ while (<$in>)
     # remove lines starting with --
     s/^--.*\n//;
 
+    # remove time/date from gnuplot files:
+    s/\# Time =.*//;
+    s/\# Date =.*//;
+
     # replace current source directory by ASPECT_DIR
     s/$aspect_src_dir/ASPECT_DIR/g;
 
@@ -37,8 +41,6 @@ while (<$in>)
 
 #s/%%Creation Date:.*//;
 #s/\"created\".*//;
-#s/# Time =.*//;
-#s/# Date =.*//;
 #s/^\s+Time =.*//;
 #s/^\s+Date =.*//;
 #s/Time tag:.*//g;
