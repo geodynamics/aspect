@@ -46,8 +46,7 @@ namespace aspect
          * Constructor. Initialize the various arrays of this structure with the
          * given number of quadrature points and (finite element) components.
          */
-        MaterialModelDerivatives (const unsigned int n_points,
-                                  const unsigned int /*n_comp*/)
+        MaterialModelDerivatives (const unsigned int n_points)
         {
           viscosity_derivative_wrt_pressure.resize(n_points, numbers::signaling_nan<double>());
           viscosity_derivative_wrt_strain_rate.resize(n_points, numbers::signaling_nan<SymmetricTensor<2,dim> >());
