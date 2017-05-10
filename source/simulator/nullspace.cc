@@ -259,7 +259,7 @@ namespace aspect
 
 
     //Vectors for evaluating the finite element solution
-    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,
+    std::vector<std::vector<double> > composition_values (introspection.n_compositional_fields,
                                                           std::vector<double> (n_q_points));
     std::vector< Tensor<1,dim> > velocities( n_q_points );
 
@@ -275,23 +275,23 @@ namespace aspect
 
           // get the density at each quadrature point if necessary
           MaterialModel::MaterialModelInputs<dim> in(n_q_points,
-                                                     parameters.n_compositional_fields);
+                                                     introspection.n_compositional_fields);
           MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
-                                                       parameters.n_compositional_fields);
+                                                       introspection.n_compositional_fields);
           if ( ! use_constant_density)
             {
               fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
               fe[introspection.extractors.temperature].get_function_values (relevant_dst, in.temperature);
               in.velocity = velocities;
               fe[introspection.extractors.pressure].get_function_gradients (relevant_dst, in.pressure_gradient);
-              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                 fe[introspection.extractors.compositional_fields[c]].get_function_values(relevant_dst,
                                                                                          composition_values[c]);
 
               for (unsigned int i=0; i<n_q_points; ++i)
                 {
                   in.position[i] = fe.quadrature_point(i);
-                  for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                  for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                     in.composition[i][c] = composition_values[c][i];
                 }
               material_model->evaluate(in, out);
@@ -374,7 +374,7 @@ namespace aspect
     double local_scalar_angular_momentum = 0.0;
 
     //Vectors for evaluating the finite element solution
-    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,
+    std::vector<std::vector<double> > composition_values (introspection.n_compositional_fields,
                                                           std::vector<double> (n_q_points));
 
     //loop over all local cells
@@ -386,9 +386,9 @@ namespace aspect
 
           // get the density at each quadrature point if necessary
           MaterialModel::MaterialModelInputs<dim> in(n_q_points,
-                                                     parameters.n_compositional_fields);
+                                                     introspection.n_compositional_fields);
           MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
-                                                       parameters.n_compositional_fields);
+                                                       introspection.n_compositional_fields);
 
           //Get the velocity at each quadrature point
           fe[introspection.extractors.velocities].get_function_values (relevant_dst, in.velocity);
@@ -398,14 +398,14 @@ namespace aspect
               fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
               fe[introspection.extractors.temperature].get_function_values (relevant_dst, in.temperature);
               fe[introspection.extractors.pressure].get_function_gradients (relevant_dst, in.pressure_gradient);
-              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                 fe[introspection.extractors.compositional_fields[c]].get_function_values(relevant_dst,
                                                                                          composition_values[c]);
 
               for (unsigned int i=0; i<n_q_points; ++i)
                 {
                   in.position[i] = fe.quadrature_point(i);
-                  for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                  for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                     in.composition[i][c] = composition_values[c][i];
                 }
               in.cell = &cell;
