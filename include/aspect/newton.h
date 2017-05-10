@@ -70,28 +70,12 @@ namespace aspect
   class NewtonHandler: public SimulatorAccess<dim>
   {
     public:
-      NewtonHandler(ParameterHandler &prm);
-
-      /**
-       * Declare additional parameters that are needed in models with
-       * the Newton solver.
-       */
-      static void declare_parameters (ParameterHandler &prm);
-
-      /**
-       * Parse additional parameters that are needed in models with
-       * the Newton solver.
-       */
-      void parse_parameters (ParameterHandler &prm);
-
       /**
        * Create an additional material model output object that contains
        * the additional output variables (the derivatives) needed for the
        * Newton solver.
        */
       static void create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output);
-
-
   };
 
 }

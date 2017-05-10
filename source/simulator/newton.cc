@@ -30,29 +30,6 @@ namespace aspect
   template <int dim>
   void
   NewtonHandler<dim>::
-  declare_parameters (ParameterHandler &/*prm*/)
-  {
-
-  }
-
-  template <int dim>
-  NewtonHandler<dim>::NewtonHandler (ParameterHandler &/*prm*/)
-  {
-
-  }
-
-  template <int dim>
-  void
-  NewtonHandler<dim>::
-  parse_parameters (ParameterHandler &/*prm*/)
-  {
-
-  }
-
-
-  template <int dim>
-  void
-  NewtonHandler<dim>::
   create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output)
   {
     if (output.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >() != NULL)
