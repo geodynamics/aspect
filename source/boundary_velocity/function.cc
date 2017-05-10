@@ -20,7 +20,9 @@
 
 
 #include <aspect/boundary_velocity/function.h>
+#include <aspect/utilities.h>
 #include <aspect/global.h>
+#include <deal.II/base/signaling_nan.h>
 
 namespace aspect
 {
@@ -41,8 +43,38 @@ namespace aspect
                        const Point<dim> &position) const
     {
       Tensor<1,dim> velocity;
-      for (unsigned int d=0; d<dim; ++d)
-        velocity[d] = boundary_velocity_function.value(position,d);
+      if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::cartesian)
+        {
+          for (unsigned int d=0; d<dim; ++d)
+            velocity[d] = boundary_velocity_function.value(position,d);
+        }
+      else if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::spherical)
+        {
+          const std_cxx11::array<double,dim> spherical_coordinates =
+            aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
+          Point<dim> point;
+
+          for (unsigned int d=0; d<dim; ++d)
+            point[d] = spherical_coordinates[d];
+
+          for (unsigned int d=0; d<dim; ++d)
+            velocity[d] = boundary_velocity_function.value(point,d);
+        }
+      else if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::depth)
+        {
+          const double depth = this->get_geometry_model().depth(position);
+          Point<dim> point;
+          point(0) = depth;
+
+          for (unsigned int d=0; d<dim; ++d)
+            velocity[d] = boundary_velocity_function.value(point,d);
+        }
+      else
+        {
+          AssertThrow(false, ExcNotImplemented());
+          return numbers::signaling_nan<Tensor<1,dim>>();
+        }
+
 
       // Aspect always wants things in MKS system. however, as described
       // in the documentation of this class, we interpret the formulas
@@ -80,6 +112,25 @@ namespace aspect
       {
         prm.enter_subsection("Function");
         {
+          /**
+           * Choose the coordinates to evaluate the maximum refinement level
+           * function. The function can be declared in dependence of depth,
+           * cartesian coordinates or spherical coordinates. Note that the order
+           * of spherical coordinates is r,phi,theta and not r,theta,phi, since
+           * this allows for dimension independent expressions.
+           */
+          prm.declare_entry ("Coordinate system", "cartesian",
+                             Patterns::Selection ("cartesian|spherical|depth"),
+                             "A selection that determines the assumed coordinate "
+                             "system for the function variables. Allowed values "
+                             "are 'cartesian', 'spherical', and 'depth'. 'spherical' coordinates "
+                             "are interpreted as r,phi or r,phi,theta in 2D/3D "
+                             "respectively with theta being the polar angle. 'depth' "
+                             "will create a function, in which only the first "
+                             "parameter is non-zero, which is interpreted to "
+                             "be the depth of the point.");
+
+
           Functions::ParsedFunction<dim>::declare_parameters (prm, dim);
         }
         prm.leave_subsection();
@@ -95,6 +146,9 @@ namespace aspect
       prm.enter_subsection("Boundary velocity model");
       {
         prm.enter_subsection("Function");
+        {
+          coordinate_system = ::aspect::Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+        }
         try
           {
             boundary_velocity_function.parse_parameters (prm);

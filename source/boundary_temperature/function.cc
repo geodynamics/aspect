@@ -20,7 +20,9 @@
 
 
 #include <aspect/boundary_temperature/function.h>
+#include <aspect/utilities.h>
 #include <aspect/global.h>
+#include <deal.II/base/signaling_nan.h>
 
 namespace aspect
 {
@@ -40,7 +42,33 @@ namespace aspect
     boundary_temperature (const types::boundary_id /*boundary_indicator*/,
                           const Point<dim> &position) const
     {
-      return boundary_temperature_function.value(position);
+      if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::cartesian)
+        {
+          return boundary_temperature_function.value(position);
+        }
+      else if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::spherical)
+        {
+          const std_cxx11::array<double,dim> spherical_coordinates =
+            aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
+          Point<dim> point;
+
+          for (unsigned int i = 0; i<dim; ++i)
+            point[i] = spherical_coordinates[i];
+
+          return boundary_temperature_function.value(point);
+        }
+      else if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::depth)
+        {
+          const double depth = this->get_geometry_model().depth(position);
+          Point<dim> point;
+          point(0) = depth;
+          return boundary_temperature_function.value(point);
+        }
+      else
+        {
+          AssertThrow(false, ExcNotImplemented());
+          return numbers::signaling_nan<double>();
+        }
     }
 
 
@@ -85,6 +113,24 @@ namespace aspect
       {
         prm.enter_subsection("Function");
         {
+          /**
+           * Choose the coordinates to evaluate the maximum refinement level
+           * function. The function can be declared in dependence of depth,
+           * cartesian coordinates or spherical coordinates. Note that the order
+           * of spherical coordinates is r,phi,theta and not r,theta,phi, since
+           * this allows for dimension independent expressions.
+           */
+          prm.declare_entry ("Coordinate system", "cartesian",
+                             Patterns::Selection ("cartesian|spherical|depth"),
+                             "A selection that determines the assumed coordinate "
+                             "system for the function variables. Allowed values "
+                             "are 'cartesian', 'spherical', and 'depth'. 'spherical' coordinates "
+                             "are interpreted as r,phi or r,phi,theta in 2D/3D "
+                             "respectively with theta being the polar angle. 'depth' "
+                             "will create a function, in which only the first "
+                             "parameter is non-zero, which is interpreted to "
+                             "be the depth of the point.");
+
           Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
 
           prm.declare_entry ("Minimal temperature", "273",
@@ -107,22 +153,26 @@ namespace aspect
       prm.enter_subsection("Boundary temperature model");
       {
         prm.enter_subsection("Function");
-        try
-          {
-            boundary_temperature_function.parse_parameters (prm);
-          }
-        catch (...)
-          {
-            std::cerr << "ERROR: FunctionParser failed to parse\n"
-                      << "\t'Boundary temperature model.Function'\n"
-                      << "with expression\n"
-                      << "\t'" << prm.get("Function expression") << "'"
-                      << "More information about the cause of the parse error \n"
-                      << "is shown below.\n";
-            throw;
-          }
-        min_temperature = prm.get_double ("Minimal temperature");
-        max_temperature = prm.get_double ("Maximal temperature");
+        {
+          coordinate_system = ::aspect::Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+
+          try
+            {
+              boundary_temperature_function.parse_parameters (prm);
+            }
+          catch (...)
+            {
+              std::cerr << "ERROR: FunctionParser failed to parse\n"
+                        << "\t'Boundary temperature model.Function'\n"
+                        << "with expression\n"
+                        << "\t'" << prm.get("Function expression") << "'"
+                        << "More information about the cause of the parse error \n"
+                        << "is shown below.\n";
+              throw;
+            }
+          min_temperature = prm.get_double ("Minimal temperature");
+          max_temperature = prm.get_double ("Maximal temperature");
+        }
         prm.leave_subsection();
       }
       prm.leave_subsection();

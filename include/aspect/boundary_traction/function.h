@@ -24,6 +24,7 @@
 
 #include <aspect/boundary_traction/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parsed_function.h>
 
@@ -94,6 +95,12 @@ namespace aspect
          * A function object representing the components of the traction.
          */
         Functions::ParsedFunction<dim> boundary_traction_function;
+
+        /**
+         * The coordinate representation to evaluate the function. Possible
+         * choices are depth, cartesian and spherical.
+         */
+        ::aspect::Utilities::Coordinates::CoordinateSystem coordinate_system;
     };
   }
 }

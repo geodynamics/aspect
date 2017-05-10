@@ -129,6 +129,16 @@ namespace aspect
       ellipsoidal_to_cartesian_coordinates(const std_cxx11::array<double,3> &phi_theta_d,
                                            const double semi_major_axis_a,
                                            const double eccentricity);
+
+      enum CoordinateSystem
+      {
+        depth,
+        cartesian,
+        spherical
+      };
+      CoordinateSystem
+      string_to_coordinate_system(std::string);
+
     }
 
     /**

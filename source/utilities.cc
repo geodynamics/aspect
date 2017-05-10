@@ -210,6 +210,22 @@ namespace aspect
                          ((1 - eccentricity * eccentricity) * R_bar + d) * std::sin(theta));
 
       }
+
+      CoordinateSystem
+      string_to_coordinate_system(std::string coordinate_system)
+
+      {
+        if (coordinate_system == "cartesian")
+          return CoordinateSystem::cartesian;
+        else if (coordinate_system == "spherical")
+          return CoordinateSystem::spherical;
+        else if (coordinate_system == "depth")
+          return Coordinates::CoordinateSystem::depth;
+        else
+          AssertThrow(false, ExcNotImplemented());
+      }
+
+
     }
 
     template <int dim>
