@@ -24,7 +24,6 @@
 
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
-#include <aspect/assembly.h>
 #include <aspect/material_model/interface.h>
 
 #include <deal.II/base/signaling_nan.h>
