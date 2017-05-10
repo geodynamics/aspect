@@ -435,7 +435,7 @@ namespace aspect
 
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
     std::vector<Tensor<1,dim> > fluid_velocity_values(n_q_points);
-    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
+    std::vector<std::vector<double> > composition_values (introspection.n_compositional_fields,std::vector<double> (n_q_points));
 
     double max_local_speed_over_meshsize = 0;
     double min_local_conduction_timestep = std::numeric_limits<double>::max();
@@ -472,8 +472,8 @@ namespace aspect
 
           if (parameters.use_conduction_timestep)
             {
-              MaterialModel::MaterialModelInputs<dim> in(n_q_points, parameters.n_compositional_fields);
-              MaterialModel::MaterialModelOutputs<dim> out(n_q_points, parameters.n_compositional_fields);
+              MaterialModel::MaterialModelInputs<dim> in(n_q_points, introspection.n_compositional_fields);
+              MaterialModel::MaterialModelOutputs<dim> out(n_q_points, introspection.n_compositional_fields);
 
               in.strain_rate.resize(0); // we do not need the viscosity
               in.position = fe_values.get_quadrature_points();
@@ -486,13 +486,13 @@ namespace aspect
               fe_values[introspection.extractors.pressure].get_function_gradients (solution,
                                                                                    in.pressure_gradient);
 
-              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                 fe_values[introspection.extractors.compositional_fields[c]].get_function_values (solution,
                     composition_values[c]);
 
               for (unsigned int q=0; q<fe_values.n_quadrature_points; ++q)
                 {
-                  for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                  for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                     in.composition[q][c] = composition_values[c][q];
 
                   in.velocity[q] = velocity_values[q];

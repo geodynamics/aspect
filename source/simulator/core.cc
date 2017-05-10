@@ -955,7 +955,7 @@ namespace aspect
         // obtain the boundary indicators that belong to Dirichlet-type
         // composition boundary conditions and interpolate the composition
         // there
-        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
           for (std::set<types::boundary_id>::const_iterator
                p = parameters.fixed_composition_boundary_indicators.begin();
                p != parameters.fixed_composition_boundary_indicators.end(); ++p)
@@ -1050,7 +1050,7 @@ namespace aspect
             }
         }
       coupling[x.temperature][x.temperature] = DoFTools::always;
-      for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+      for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
         {
           const AdvectionField adv_field (AdvectionField::composition(c));
           const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
@@ -1095,7 +1095,7 @@ namespace aspect
 
         if (parameters.use_discontinuous_composition_discretization)
           {
-            for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+            for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
               {
                 const AdvectionField adv_field (AdvectionField::composition(c));
                 const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
@@ -1202,7 +1202,7 @@ namespace aspect
       coupling[x.pressure][x.pressure] = DoFTools::always;
     coupling[x.temperature][x.temperature] = DoFTools::always;
 
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
       {
         const AdvectionField adv_field (AdvectionField::composition(c));
         const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
@@ -1247,7 +1247,7 @@ namespace aspect
 
         if (parameters.use_discontinuous_composition_discretization)
           {
-            for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+            for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
               {
                 const AdvectionField adv_field (AdvectionField::composition(c));
                 const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
@@ -1956,7 +1956,7 @@ namespace aspect
           current_linearization_point.block(introspection.block_indices.temperature)
             = solution.block(introspection.block_indices.temperature);
 
-          for (unsigned int c=0; c < parameters.n_compositional_fields; ++c)
+          for (unsigned int c=0; c < introspection.n_compositional_fields; ++c)
             {
               const AdvectionField adv_field (AdvectionField::composition(c));
               const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
@@ -1976,7 +1976,7 @@ namespace aspect
                 }
             }
 
-          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
             current_linearization_point.block(introspection.block_indices.compositional_fields[c])
               = solution.block(introspection.block_indices.compositional_fields[c]);
 
@@ -2062,7 +2062,7 @@ namespace aspect
         {
           double initial_temperature_residual = 0;
           double initial_stokes_residual      = 0;
-          std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
+          std::vector<double> initial_composition_residual (introspection.n_compositional_fields,0);
 
           do
             {
@@ -2081,9 +2081,9 @@ namespace aspect
               current_linearization_point.block(introspection.block_indices.temperature)
                 = solution.block(introspection.block_indices.temperature);
               rebuild_stokes_matrix = true;
-              std::vector<double> relative_composition_residual (parameters.n_compositional_fields,0);
+              std::vector<double> relative_composition_residual (introspection.n_compositional_fields,0);
 
-              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                 {
                   const AdvectionField adv_field (AdvectionField::composition(c));
                   typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
@@ -2118,7 +2118,7 @@ namespace aspect
 
               // for consistency we update the current linearization point only after we have solved
               // all fields, so that we use the same point in time for every field when solving
-              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                 current_linearization_point.block(introspection.block_indices.compositional_fields[c])
                   = solution.block(introspection.block_indices.compositional_fields[c]);
 
@@ -2144,13 +2144,13 @@ namespace aspect
               // write the residual output in the same order as the output when
               // solving the equations, output only relative residuals
               pcout << "      Relative nonlinear residuals: " << relative_temperature_residual;
-              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                 pcout << ", " << relative_composition_residual[c];
               pcout << ", " << relative_stokes_residual;
               pcout << std::endl;
 
               double max = 0.0;
-              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                 {
                   // in models with melt migration the melt advection equation includes the divergence of the velocity
                   // and can not be expected to converge to a smaller value than the residual of the Stokes equation.
@@ -2201,7 +2201,7 @@ namespace aspect
           current_linearization_point.block(introspection.block_indices.temperature)
             = solution.block(introspection.block_indices.temperature);
 
-          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
             {
               const AdvectionField adv_field (AdvectionField::composition(c));
               typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
@@ -2221,7 +2221,7 @@ namespace aspect
                 }
             }
 
-          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
             current_linearization_point.block(introspection.block_indices.compositional_fields[c])
               = solution.block(introspection.block_indices.compositional_fields[c]);
 
@@ -2311,7 +2311,7 @@ namespace aspect
           current_linearization_point.block(introspection.block_indices.temperature)
             = solution.block(introspection.block_indices.temperature);
 
-          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
             {
               const AdvectionField adv_field (AdvectionField::composition(c));
               typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
@@ -2331,7 +2331,7 @@ namespace aspect
                 }
             }
 
-          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
             current_linearization_point.block(introspection.block_indices.compositional_fields[c])
               = solution.block(introspection.block_indices.compositional_fields[c]);
 

@@ -71,7 +71,7 @@ namespace aspect
     //
     //TODO: it would be great if we had a cleaner way than iterating to 1+n_fields.
     // Additionally, the n==1 logic for normalization at the bottom is not pretty.
-    for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
+    for (unsigned int n=0; n<1+introspection.n_compositional_fields; ++n)
       {
         AdvectionField advf = ((n == 0) ? AdvectionField::temperature()
                                : AdvectionField::composition(n-1));
@@ -220,7 +220,7 @@ namespace aspect
 
     // Now copy the temperature and initial composition blocks into the solution variables
 
-    for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
+    for (unsigned int n=0; n<1+introspection.n_compositional_fields; ++n)
       {
         AdvectionField advf = ((n == 0) ? AdvectionField::temperature()
                                : AdvectionField::composition(n-1));
