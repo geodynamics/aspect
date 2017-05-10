@@ -313,6 +313,70 @@ namespace aspect
     }
 
     template <int dim>
+    double
+    signed_distance_to_polygon(const std::vector<Point<2> > &point_list,
+                               const dealii::Point<2> &point)
+    {
+      // If the point lies outside polygon, we give it a negative sign,
+      // inside a positive sign.
+      const double sign = polygon_contains_point<dim>(point_list, point) ? 1.0 : -1.0;
+
+      /**
+       * This code is based on http://geomalgorithms.com/a02-_lines.html#Distance-to-Infinite-Line,
+       * and therefore requires the following copyright notice:
+       *
+       * Copyright 2000 softSurfer, 2012 Dan Sunday
+       * This code may be freely used and modified for any purpose
+       * providing that this copyright notice is included with it.
+       * SoftSurfer makes no warranty for this code, and cannot be held
+       * liable for any real or imagined damage resulting from its use.
+       * Users of this code must verify correctness for their application.
+       *
+       */
+
+      const unsigned int n_poly_points = point_list.size();
+      AssertThrow(n_poly_points >= 3, ExcMessage("Not enough polygon points were specified."));
+
+      // Initialize a vector of distances for each point of the polygon with a very large distance
+      std::vector<double> distances(n_poly_points, 1e23);
+
+      // Create another polygon but with all points shifted 1 position to the right
+      std::vector<Point<2> > shifted_point_list(n_poly_points);
+      shifted_point_list[0] = point_list[n_poly_points-1];
+
+      for (unsigned int i = 0; i < n_poly_points-1; ++i)
+        shifted_point_list[i+1] = point_list[i];
+
+      for (unsigned int i = 0; i < n_poly_points; ++i)
+        {
+          // Create vector along the polygon line segment
+          Tensor<1,2> vector_segment = shifted_point_list[i] - point_list[i];
+          // Create vector from point to the second segment point
+          Tensor<1,2> vector_point_segment = point - point_list[i];
+
+          // Compute dot products to get angles
+          const double c1 = vector_point_segment * vector_segment;
+          const double c2 = vector_segment * vector_segment;
+
+          // point lies closer to not-shifted polygon point, but perpendicular base line lies outside segment
+          if (c1 <= 0.0)
+            distances[i] = (Tensor<1,2> (point_list[i] - point)).norm();
+          // point lies closer to shifted polygon point, but perpendicular base line lies outside segment
+          else if (c2 <= c1)
+            distances[i] = (Tensor<1,2> (shifted_point_list[i] - point)).norm();
+          // perpendicular base line lies on segment
+          else
+            {
+              const Point<2> point_on_segment = point_list[i] + (c1/c2) * vector_segment;
+              distances[i] = (Tensor<1,2> (point - point_on_segment)).norm();
+            }
+        }
+
+      // Return the minimum of the distances of the point to all polygon segments
+      return *std::min_element(distances.begin(),distances.end()) * sign;
+    }
+
+    template <int dim>
     std_cxx11::array<Tensor<1,dim>,dim-1>
     orthogonal_vectors (const Tensor<1,dim> &v)
     {
@@ -1873,6 +1937,9 @@ namespace aspect
 
     template bool polygon_contains_point<2>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
     template bool polygon_contains_point<3>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
+
+    template double signed_distance_to_polygon<2>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
+    template double signed_distance_to_polygon<3>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
 
 
     template std_cxx11::array<Tensor<1,2>,1> orthogonal_vectors (const Tensor<1,2> &v);

@@ -1,0 +1,1 @@
+set Additional shared libraries = tests/libprm_distance_polygon.so

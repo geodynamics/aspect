@@ -1,0 +1,10 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libprm_distance_polygon.so>
+Testing distance to polygon function with the following parameters: (polygon) 0 0, 1 0, 1 1, 0 1, (points) 0.5 -1, 0.5 0.5, 0.001 0.2, 2 2, 0.001 0.75
+Minimal distance of point 0.5 -1 to polygon = -1
+Minimal distance of point 0.5 0.5 to polygon = 0.5
+Minimal distance of point 0.001 0.2 to polygon = 0.001
+Minimal distance of point 2 2 to polygon = -1.41421
+Minimal distance of point 0.001 0.75 to polygon = 0.001
