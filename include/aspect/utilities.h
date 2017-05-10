@@ -141,6 +141,17 @@ namespace aspect
                            const dealii::Point<2> &point);
 
     /**
+     * Given a 2d point and a list of points which form a polygon, compute the smallest
+     * distance of the point to the polygon. The sign is negative for points outside of
+     * the polygon and positive for points inside the polygon. Note that the polygon
+     * is required to be convex for this function.
+     */
+    template <int dim>
+    double
+    signed_distance_to_polygon(const std::vector<Point<2> > &point_list,
+                               const dealii::Point<2> &point);
+
+    /**
      * Given a vector @p v in @p dim dimensional space, return a set
      * of (dim-1) vectors that are orthogonal to @p v and to each
      * other. The lengths of these vectors equals that of the original
