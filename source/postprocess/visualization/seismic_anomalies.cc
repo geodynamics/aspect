@@ -368,7 +368,13 @@ namespace aspect
                                                   "velocity at the depth of the cell. This velocity is "
                                                   "calculated by linear interpolation between average values "
                                                   "calculated within equally thick depth slices. The "
-                                                  "number of depth slices in the domain is user-defined.")
+                                                  "number of depth slices in the domain is user-defined. "
+                                                  "Typically, the best results will be obtained if the number "
+                                                  "of depth slices is balanced between being large enough to "
+                                                  "capture step changes in velocities, but small enough to "
+                                                  "maintain a reasonable number of evaluation points per slice. "
+                                                  "Bear in mind that lateral averaging subsamples the "
+                                                  "finite element mesh.")
 
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(SeismicVpAnomaly,
                                                   "Vp anomaly",
@@ -380,7 +386,13 @@ namespace aspect
                                                   "velocity at the depth of the cell. This velocity is "
                                                   "calculated by linear interpolation between average values "
                                                   "calculated within equally thick depth slices. The "
-                                                  "number of depth slices in the domain is user-defined.")
+                                                  "number of depth slices in the domain is user-defined. "
+                                                  "Typically, the best results will be obtained if the number "
+                                                  "of depth slices is balanced between being large enough to "
+                                                  "capture step changes in velocities, but small enough to "
+                                                  "maintain a reasonable number of evaluation points per slice. "
+                                                  "Bear in mind that lateral averaging subsamples the "
+                                                  "finite element mesh.")
     }
   }
 }
