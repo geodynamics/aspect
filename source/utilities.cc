@@ -1806,6 +1806,22 @@ namespace aspect
     }
 
     template <int dim>
+    unsigned int
+    AsciiDataProfile<dim>::maybe_get_column_index_from_name(const std::string &column_name) const
+    {
+      try
+        {
+          // read the entries in if they exist
+          return lookup->get_column_index_from_name(column_name);
+        }
+      catch (...)
+        {
+          // return an invalid unsigned int entry if the column does not exist
+          return numbers::invalid_unsigned_int;
+        }
+    }
+
+    template <int dim>
     std::string
     AsciiDataProfile<dim>::get_column_name_from_index(const unsigned int column_index) const
     {

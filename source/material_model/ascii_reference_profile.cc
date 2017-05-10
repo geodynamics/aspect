@@ -33,7 +33,11 @@ namespace aspect
       density_index(numbers::invalid_unsigned_int),
       thermal_expansivity_index(numbers::invalid_unsigned_int),
       specific_heat_index(numbers::invalid_unsigned_int),
-      compressibility_index(numbers::invalid_unsigned_int)
+      compressibility_index(numbers::invalid_unsigned_int),
+      seismic_vp_index(numbers::invalid_unsigned_int),
+      seismic_vs_index(numbers::invalid_unsigned_int),
+      seismic_dvp_dT_index(numbers::invalid_unsigned_int),
+      seismic_dvs_dT_index(numbers::invalid_unsigned_int)
     {}
 
     template <int dim>
@@ -46,6 +50,14 @@ namespace aspect
       thermal_expansivity_index = profile.get_column_index_from_name("thermal_expansivity");
       specific_heat_index = profile.get_column_index_from_name("specific_heat");
       compressibility_index = profile.get_column_index_from_name("compressibility");
+
+      // these are only optional entries in the data file, read them in if they exist,
+      // but keep the invalid unsigned int entry if the columns do not exist
+      // the strings have to be all lower case for the lookup class to find them
+      seismic_vp_index = profile.maybe_get_column_index_from_name("seismic_vp");
+      seismic_vs_index = profile.maybe_get_column_index_from_name("seismic_vs");
+      seismic_dvp_dT_index = profile.maybe_get_column_index_from_name("seismic_dvp_dt");
+      seismic_dvs_dT_index = profile.maybe_get_column_index_from_name("seismic_dvs_dt");
     }
 
     template <int dim>
@@ -91,6 +103,21 @@ namespace aspect
 
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
+
+          // fill seismic velocities outputs if they exist
+          if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
+            {
+              if (seismic_vp_index != numbers::invalid_unsigned_int)
+                seismic_out->vp[i] = profile.get_data_component(profile_position,seismic_vp_index);
+              if (seismic_vs_index != numbers::invalid_unsigned_int)
+                seismic_out->vs[i] = profile.get_data_component(profile_position,seismic_vs_index);
+              if (seismic_dvp_dT_index != numbers::invalid_unsigned_int)
+                seismic_out->vp[i] += profile.get_data_component(profile_position,seismic_dvp_dT_index)
+                                      * temperature_deviation;
+              if (seismic_dvs_dT_index != numbers::invalid_unsigned_int)
+                seismic_out->vs[i] += profile.get_data_component(profile_position,seismic_dvs_dT_index)
+                                      * temperature_deviation;
+            }
         }
     }
 
@@ -198,6 +225,21 @@ namespace aspect
       this->model_dependence.specific_heat = NonlinearDependence::none;
       this->model_dependence.thermal_conductivity = NonlinearDependence::none;
 
+    }
+
+
+
+    template <int dim>
+    void
+    AsciiReferenceProfile<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == NULL)
+        {
+          const unsigned int n_points = out.viscosities.size();
+          out.additional_outputs.push_back(
+            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
+        }
     }
   }
 }
