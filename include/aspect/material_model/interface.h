@@ -33,6 +33,10 @@
 
 namespace aspect
 {
+  template <int dim>
+  struct Introspection;
+
+
   /**
    * A namespace in which we define everything that has to do with modeling
    * convecting material, including descriptions of material parameters such
@@ -179,6 +183,18 @@ namespace aspect
        */
       MaterialModelInputs(const unsigned int n_points,
                           const unsigned int n_comp);
+
+
+      /**
+       * Constructor. Both initialize and populate the various arrays of this
+       * structure with the FEValues and introspection objects and
+       * the solution_vector.
+       */
+      MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
+                          const typename DoFHandler<dim>::active_cell_iterator *cell,
+                          const Introspection<dim> &introspection,
+                          const LinearAlgebra::BlockVector &solution_vector);
+
 
       /**
        * Vector with global positions where the material has to be evaluated
