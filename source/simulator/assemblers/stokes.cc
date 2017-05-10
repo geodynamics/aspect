@@ -181,6 +181,7 @@ namespace aspect
                   if (scratch.rebuild_stokes_matrix)
                     {
                       scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
+                      scratch.grad_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].gradient(i,q);
                       scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
                     }
                   ++i_stokes;
@@ -209,6 +210,7 @@ namespace aspect
 
               if (force != NULL)
                 data.local_rhs(i) += (force->rhs_u[q] * scratch.phi_u[i]
+                                      + double_contract(force->rhs_e[q],Tensor<2,dim>(scratch.grads_phi_u[i]))
                                       + pressure_scaling * force->rhs_p[q] * scratch.phi_p[i])
                                      * JxW;
 
@@ -238,6 +240,18 @@ namespace aspect
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
       const unsigned int n_points = outputs.viscosities.size();
+
+      if (this->get_parameters().enable_elasticity
+          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == NULL)
+        {
+          outputs.additional_outputs.push_back(
+            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >
+            (new MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> (n_points)));
+        }
+      Assert(!this->get_parameters().enable_elasticity
+             ||
+             outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >()->rhs_e.size()
+             == n_points, ExcInternalError());
 
       if (this->get_parameters().enable_additional_stokes_rhs
           && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == NULL)

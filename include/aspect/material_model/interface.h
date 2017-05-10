@@ -745,7 +745,7 @@ namespace aspect
     {
       public:
         AdditionalMaterialOutputsStokesRHS(const unsigned int n_points)
-          : rhs_u(n_points), rhs_p(n_points), rhs_melt_pc(n_points)
+          : rhs_u(n_points), rhs_p(n_points), rhs_melt_pc(n_points), rhs_e(n_points)
         {}
 
         virtual ~AdditionalMaterialOutputsStokesRHS()
@@ -776,6 +776,14 @@ namespace aspect
          * transport) in each quadrature point.
          */
         std::vector<double> rhs_melt_pc;
+
+        /**
+         * Force tensor on the right-hand side for the conservation of
+         * momentum equation (first part of the Stokes equation) in each
+         * quadrature point.
+         */
+        std::vector<Tensor<2,dim> > rhs_e;
+
     };
 
 
