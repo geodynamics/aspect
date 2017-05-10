@@ -825,7 +825,7 @@ namespace aspect
                                                  const bool                                       rebuild_stokes_matrix,
                                                  internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                                  internal::Assembly::CopyData::StokesSystem<dim> &data,
-					                              const Parameters<dim> &parameters) const;
+                                                 const Parameters<dim> &parameters) const;
 
         /**
          * This function assembles the right-hand-side term of the Newton Stokes system

@@ -76,7 +76,7 @@ namespace aspect
     class \
     MaterialModelDerivatives<dim>; \
   }
-
+   
   ASPECT_INSTANTIATE(INSTANTIATE)
 
 }
