@@ -86,13 +86,13 @@ namespace aspect
                                  this->get_fe(),
                                  quadrature_formula,
                                  update_values   |
+                                 update_gradients |
                                  update_quadrature_points );
 
-        std::vector<double> pressure_values(n_q_points);
-        std::vector<double> temperature_values(n_q_points);
-        std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),
-                                                              std::vector<double> (n_q_points));
-        std::vector<double> composition_values_at_q_point (this->n_compositional_fields());
+        MaterialModel::MaterialModelInputs<dim> in(n_q_points, this->n_compositional_fields());
+        MaterialModel::MaterialModelOutputs<dim> out(n_q_points, this->n_compositional_fields());
+
+        std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
         typename DoFHandler<dim>::active_cell_iterator
         cell = this->get_dof_handler().begin_active(),
@@ -103,23 +103,40 @@ namespace aspect
           if (cell->is_locally_owned())
             {
               fe_values.reinit (cell);
-              fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                                                                                        pressure_values);
+
+              // get the various components of the solution, then
+              // evaluate the material properties there
               fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                                                                                           temperature_values);
+                                                                                           in.temperature);
+              fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
+                                                                                        in.pressure);
+              fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                                                                                          in.velocity);
+              fe_values[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(),
+                                                                                           in.pressure_gradient);
+              in.position = fe_values.get_quadrature_points();
+
+              // we do not need the strain rate
+              in.strain_rate.resize(0);
+
               for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                 fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
                     composition_values[c]);
+              for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
+                {
+                  for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                    in.composition[i][c] = composition_values[c][i];
+                }
+              in.cell = &cell;
 
-              if (this->n_compositional_fields() > 0)
-                Utilities::extract_composition_values_at_q_point (composition_values,
-                                                                  0,
-                                                                  composition_values_at_q_point);
+              out.additional_outputs.push_back(
+                std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+                (new MaterialModel::SeismicAdditionalOutputs<dim> (n_q_points)));
+              this->get_material_model().evaluate(in, out);
 
-              const double Vs = this->get_material_model().seismic_Vs(temperature_values[0],
-                                                                      pressure_values[0],
-                                                                      composition_values_at_q_point,
-                                                                      fe_values.quadrature_point(0));
+              MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
+                = out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >();
+              const double Vs = seismic_outputs->vs[0];
               const double depth = this->get_geometry_model().depth(fe_values.quadrature_point(0));
               const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
               Assert(idx<num_slices, ExcInternalError());
@@ -158,13 +175,13 @@ namespace aspect
                                  this->get_fe(),
                                  quadrature_formula,
                                  update_values   |
+                                 update_gradients |
                                  update_quadrature_points );
 
-        std::vector<double> pressure_values(n_q_points);
-        std::vector<double> temperature_values(n_q_points);
-        std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),
-                                                              std::vector<double> (n_q_points));
-        std::vector<double> composition_values_at_q_point (this->n_compositional_fields());
+        MaterialModel::MaterialModelInputs<dim> in(n_q_points, this->n_compositional_fields());
+        MaterialModel::MaterialModelOutputs<dim> out(n_q_points, this->n_compositional_fields());
+
+        std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
         typename DoFHandler<dim>::active_cell_iterator
         cell = this->get_dof_handler().begin_active(),
@@ -175,23 +192,40 @@ namespace aspect
           if (cell->is_locally_owned())
             {
               fe_values.reinit (cell);
-              fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                                                                                        pressure_values);
+
+              // get the various components of the solution, then
+              // evaluate the material properties there
               fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                                                                                           temperature_values);
+                                                                                           in.temperature);
+              fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
+                                                                                        in.pressure);
+              fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                                                                                          in.velocity);
+              fe_values[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(),
+                                                                                           in.pressure_gradient);
+              in.position = fe_values.get_quadrature_points();
+
+              // we do not need the strain rate
+              in.strain_rate.resize(0);
+
               for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                 fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
                     composition_values[c]);
+              for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
+                {
+                  for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                    in.composition[i][c] = composition_values[c][i];
+                }
+              in.cell = &cell;
 
-              if (this->n_compositional_fields() > 0)
-                Utilities::extract_composition_values_at_q_point (composition_values,
-                                                                  0,
-                                                                  composition_values_at_q_point);
+              out.additional_outputs.push_back(
+                std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+                (new MaterialModel::SeismicAdditionalOutputs<dim> (n_q_points)));
+              this->get_material_model().evaluate(in, out);
 
-              const double Vp = this->get_material_model().seismic_Vp(temperature_values[0],
-                                                                      pressure_values[0],
-                                                                      composition_values_at_q_point,
-                                                                      fe_values.quadrature_point(0));
+              MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
+                = out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >();
+              const double Vp = seismic_outputs->vp[0];
               const double depth = this->get_geometry_model().depth(fe_values.quadrature_point(0));
               const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
               Assert(idx<num_slices, ExcInternalError());
