@@ -24,7 +24,6 @@
 
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
-#include <aspect/assembly.h>
 #include <aspect/material_model/interface.h>
 
 #include <deal.II/base/signaling_nan.h>
@@ -44,14 +43,9 @@ namespace aspect
       public:
         /**
          * Constructor. Initialize the various arrays of this structure with the
-         * given number of quadrature points and (finite element) components.
+         * given number of quadrature points.
          */
-        MaterialModelDerivatives (const unsigned int n_points,
-                                  const unsigned int /*n_comp*/)
-        {
-          viscosity_derivative_wrt_pressure.resize(n_points, numbers::signaling_nan<double>());
-          viscosity_derivative_wrt_strain_rate.resize(n_points, numbers::signaling_nan<SymmetricTensor<2,dim> >());
-        };
+        MaterialModelDerivatives (const unsigned int n_points);
 
         /**
          * The derivatives of the viscosities
@@ -70,28 +64,12 @@ namespace aspect
   class NewtonHandler: public SimulatorAccess<dim>
   {
     public:
-      NewtonHandler(ParameterHandler &prm);
-
-      /**
-       * Declare additional parameters that are needed in models with
-       * the Newton solver.
-       */
-      static void declare_parameters (ParameterHandler &prm);
-
-      /**
-       * Parse additional parameters that are needed in models with
-       * the Newton solver.
-       */
-      void parse_parameters (ParameterHandler &prm);
-
       /**
        * Create an additional material model output object that contains
        * the additional output variables (the derivatives) needed for the
        * Newton solver.
        */
       static void create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output);
-
-
   };
 
 }

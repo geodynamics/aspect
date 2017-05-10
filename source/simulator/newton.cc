@@ -27,27 +27,19 @@ using namespace dealii;
 
 namespace aspect
 {
-  template <int dim>
-  void
-  NewtonHandler<dim>::
-  declare_parameters (ParameterHandler &/*prm*/)
+  namespace MaterialModel
   {
+
+    template <int dim>
+    MaterialModelDerivatives<dim>::
+    MaterialModelDerivatives (const unsigned int n_points)
+    {
+      viscosity_derivative_wrt_pressure.resize(n_points, numbers::signaling_nan<double>());
+      viscosity_derivative_wrt_strain_rate.resize(n_points, numbers::signaling_nan<SymmetricTensor<2,dim> >());
+    }
 
   }
 
-  template <int dim>
-  NewtonHandler<dim>::NewtonHandler (ParameterHandler &/*prm*/)
-  {
-
-  }
-
-  template <int dim>
-  void
-  NewtonHandler<dim>::
-  parse_parameters (ParameterHandler &/*prm*/)
-  {
-
-  }
 
 
   template <int dim>
