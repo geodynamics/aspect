@@ -55,7 +55,7 @@ end
 
 subsection Discretization
   set Stokes velocity polynomial degree       = 2
-  set Use locally conservative discretization = true
+  set Use locally conservative discretization = false
   set Use discontinuous composition discretization = true
 end
 
