@@ -34,6 +34,9 @@ while (<$in>)
     # replace current source directory by ASPECT_DIR
     s/$aspect_src_dir/ASPECT_DIR/g;
 
+    # Exceptions
+    s/line <\d+> of file <.*\//file </;
+
     print $_;
 }
 
@@ -46,9 +49,7 @@ while (<$in>)
 #s/Time tag:.*//g;
 #s/by the deal.II library on.*//;
 
-# Exceptions
 
-#s/line <\d+> of file <.*\//file </;
 
 # Make small exponentials zero
 
