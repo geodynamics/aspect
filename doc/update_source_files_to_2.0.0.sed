@@ -6,8 +6,10 @@
 # created by this script should be investigated to ensure a correct renaming.
 #
 # Usage for a c++ source or header file named FILENAME (possibly containing
-# wildcards such as '*.cc'):
+# wildcards such as '*.cc') on Linux:
 # sed -i -f update_source_files_to_2.0.0.sed FILENAME
+# On MacOS:
+# sed -i "" -f update_source_files_to_2.0.0.sed FILENAME
 
 # Rename fluid pressure boundary conditions
 s/fluid_pressure_boundary_conditions/boundary_fluid_pressure/g
