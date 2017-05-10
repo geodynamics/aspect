@@ -70,9 +70,19 @@ namespace aspect
         bool subtract_mean_dyn_topography;
 
         /**
+         * A parameter that specifies whether the lower topography is outputted.
+         */
+        bool output_lower_surface_topography;
+
+        /**
          * A parameter allows users to set the density value outside the surface
          */
         double density_above;
+
+        /**
+         * A parameter allows users to set the density value below the surface
+         */
+        double density_below;
     };
   }
 }
