@@ -1,7 +1,7 @@
 # A simple pure math setup to compute geoid in single degree 2 order 0 perturbation density field.
 # The perturbation is added to a constant density, i.e., degree 0 order 0 component.
-# The analytic solution of the denbsity integral contribution of this case should be 26.529660019
-# for (2,0) component and 79.8723303437 for degree 0 order 0, and the sum up of the spherical harmonics
+# The analytic solution of the denbsity integral contribution of this case should be -5.3059320038
+# for (2,0) component and 14.1570019498 for degree 0 order 0, and the sum up of the spherical harmonics
 # of dynamic topography should be the same as the grid output in dynamic topography postprocessor.
 
 set Dimension                              = 3
@@ -54,7 +54,7 @@ subsection Boundary temperature model
   subsection Function
     set Function constants = pi=3.1415926536
     set Variable names = x,y,z,t
-    set Function expression = 1-((25/2)*sqrt(5/pi)*(3*(z/sqrt(x^2+y^2+z^2))^2-1)+10.0*sqrt(1/pi))
+    set Function expression = (5/2)*sqrt(5/pi)*(3*(z/sqrt(x^2+y^2+z^2))^2-1)
   end
 end
 
@@ -64,7 +64,7 @@ subsection Initial temperature model
   subsection Function
     set Function constants = pi=3.1415926536
     set Variable names = x,y,z,t
-    set Function expression = 1-((25/2)*sqrt(5/pi)*(3*(z/sqrt(x^2+y^2+z^2))^2-1)+10.0*sqrt(1/pi))
+    set Function expression = (5/2)*sqrt(5/pi)*(3*(z/sqrt(x^2+y^2+z^2))^2-1)
   end
 end
 
