@@ -325,7 +325,6 @@ namespace aspect
     double                         composition_solver_tolerance;
     unsigned int                   max_pre_newton_nonlinear_iterations;
     unsigned int                   max_newton_line_search_iterations;
-    unsigned int                   n_cheap_stokes_solver_steps;
 
     /// temporary place it in parameters.h till a better place is found
     double              newton_residual;

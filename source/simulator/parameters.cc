@@ -186,6 +186,13 @@ namespace aspect
                        "Nonlinear solver scheme is set to 'iterated Stokes' or "
                        "'iterated IMPES'.");
 
+    prm.declare_entry ("Nonlinear Newton solver switch tolerance", "1e-5",
+                       Patterns::Double(0,1),
+                       "A relative tolerance up to which the nonlinear Piccard solver "
+                       "will iterate, before changing to the newton solver. This parameter "
+                       "is only relevant if Nonlinear solver scheme is set to a Newton type "
+                       "of solver.");
+
     prm.declare_entry ("Pressure normalization", "surface",
                        Patterns::Selection ("surface|volume|no"),
                        "If and how to normalize the pressure after the solution step. "

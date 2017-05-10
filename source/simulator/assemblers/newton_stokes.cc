@@ -114,7 +114,7 @@ namespace aspect
               const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
               const SymmetricTensor<2,dim> strain_rate = scratch.material_model_inputs.strain_rate[q];
 
-              double alpha = Utilities::compute_spd_factor<dim>(strain_rate, viscosity_derivative_wrt_strain_rate, eta);
+              double alpha = Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, 0.9);
               /*const double denom = std::sqrt((strain_rate*strain_rate)*(viscosity_derivative_wrt_strain_rate*viscosity_derivative_wrt_strain_rate))-(strain_rate*viscosity_derivative_wrt_strain_rate);
               if (denom == 0)
                 alpha = 1.0;
@@ -240,7 +240,7 @@ namespace aspect
               const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
               const double viscosity_derivative_wrt_pressure = derivatives->viscosity_derivative_wrt_pressure[q];
 
-              double alpha  = Utilities::compute_spd_factor<dim>(strain_rate, viscosity_derivative_wrt_strain_rate, eta);
+              double alpha  = Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, 0.9);
               /*const double denom = std::sqrt((strain_rate*strain_rate)*(viscosity_derivative_wrt_strain_rate*viscosity_derivative_wrt_strain_rate))-(strain_rate*viscosity_derivative_wrt_strain_rate);
               if (denom == 0)
                 alpha = 1.0;
