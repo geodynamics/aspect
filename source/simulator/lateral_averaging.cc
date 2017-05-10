@@ -353,7 +353,6 @@ namespace aspect
                         std::vector<double> &output)
         {
           const unsigned int n_points = in.position.size();
-          const unsigned int n_comp = out.reaction_terms[0].size();
 
           out.additional_outputs.push_back(
             std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
