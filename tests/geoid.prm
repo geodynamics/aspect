@@ -104,7 +104,7 @@ subsection Postprocess
     set Minimum degree = 0
     set Output data in geographical coordinates = true
     set Density above = 0
-    set Density below = 10.0
+    set Density below = 2.0
     set Also output the spherical harmonic coefficients of geoid anomaly = true
     set Also output the spherical harmonic coefficients of surface dynamic topography contribution = true
     set Also output the spherical harmonic coefficients of CMB dynamic topography contribution = true
