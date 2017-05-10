@@ -948,6 +948,8 @@ namespace aspect
 
     max_nonlinear_iterations = prm.get_integer ("Max nonlinear iterations");
     max_nonlinear_iterations_in_prerefinement = prm.get_integer ("Max nonlinear iterations in pre-refinement");
+    max_pre_newton_nonlinear_iterations = prm.get_integer ("Max pre-Newton nonlinear iterations");
+    max_newton_line_search_iterations = prm.get_integer ("Max Newton line search iterations");
 
     start_time              = prm.get_double ("Start time");
     if (convert_to_years == true)
