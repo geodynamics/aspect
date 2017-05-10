@@ -143,8 +143,7 @@ namespace aspect
     /**
      * Given a 2d point and a list of points which form a polygon, compute the smallest
      * distance of the point to the polygon. The sign is negative for points outside of
-     * the polygon and positive for points inside the polygon. Note that the polygon
-     * is required to be convex for this function.
+     * the polygon and positive for points inside the polygon.
      */
     template <int dim>
     double
