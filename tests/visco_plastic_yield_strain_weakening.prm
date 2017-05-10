@@ -60,12 +60,10 @@ subsection Initial temperature model
   end
 end
 
-# Compositional fields used to track finite strain
+# Compositional fields used to track finite strain invariant
 subsection Compositional fields
-  set Number of fields = 3
-  set Names of fields = s11, s22, s12
-  set Compositional field methods = particles, particles, particles
-  set Mapped particle properties = s11:integrated strain [1], s22:integrated strain [2], s12:integrated strain [3]
+  set Number of fields = 1
+  set Names of fields = eii
 end
 
 # All compositional fields have an initial value of 0
@@ -73,7 +71,7 @@ subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y
-    set Function expression = 0; 0; 0;
+    set Function expression = 0;
   end
 end
 
@@ -82,24 +80,24 @@ subsection Boundary composition model
   set Model name = initial composition
 end
 
-# Material model (values for background material and strain fields)
+# Material model (values for background material)
 subsection Material model
   set Model name = visco plastic
   subsection Visco Plastic
     set Reference strain rate = 1.e-16
     set Viscous flow law = dislocation
-    set Prefactors for dislocation creep = 5.e-23,5.e-23,5.e-23,5.e-23
-    set Stress exponents for dislocation creep = 1.0,1.0,1.0,1.0
-    set Activation energies for dislocation creep = 0.,0.,0.,0.
-    set Activation volumes for dislocation creep = 0.,0.,0.,0.
+    set Prefactors for dislocation creep = 5.e-23
+    set Stress exponents for dislocation creep = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep = 0.
     set Yield mechanism = drucker
-    set Angles of internal friction = 0.,0.,0.,0.
-    set Cohesions = 1.e6,1.e6,1.e6,1.e6
+    set Angles of internal friction = 0.
+    set Cohesions = 1.e6
     set Use strain weakening = true
-    set Start strain weakening intervals = 0.,0.,0.,0.
-    set End strain weakening intervals = 1.0,1.0,1.0,1.0
-    set Cohesion strain weakening factors = 0.5,0.5,0.5,0.5
-    set Friction strain weakening factors = 0.5,0.5,0.5,0.5
+    set Start strain weakening intervals = 0.
+    set End strain weakening intervals = 1.0
+    set Cohesion strain weakening factors = 0.5
+    set Friction strain weakening factors = 0.5
   end
 end
 
@@ -113,17 +111,5 @@ end
 
 # Post processing
 subsection Postprocess
-  set List of postprocessors = velocity statistics, mass flux statistics, particles
-  subsection Particles
-    set Number of particles = 1000
-    set Time between data output = 1e9
-    set Data output format = none
-    set List of particle properties = integrated strain
-    set Interpolation scheme = cell average
-    set Update ghost particles = true
-    set Particle generator name = random uniform
-    set Load balancing strategy = remove and add particles
-    set Minimum particles per cell = 9
-    set Maximum particles per cell = 11
-  end  
+  set List of postprocessors = velocity statistics, mass flux statistics
 end
