@@ -1,0 +1,104 @@
+# A description of the SolCX benchmark for which a known solution
+# is available. See the manual for more information.
+
+set Additional shared libraries            = ./libsolcx_compositional_fields.so
+
+############### Global parameters
+
+set Dimension                              = 2
+
+set Start time                             = 0
+set End time                               = 0
+
+set Output directory                       = output
+
+set Pressure normalization                 = volume
+set Nonlinear solver scheme                = Stokes only
+
+
+############### Parameters describing the model
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+subsection Model settings
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = left, right, bottom, top
+  set Zero velocity boundary indicators       =
+end
+
+subsection Material model
+  set Model name = SolCxCompositionalMaterial
+
+  subsection SolCx
+    set Viscosity jump = 1e6
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+############### Parameters describing the temperature field
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+subsection Initial temperature model
+  set Model name = perturbed box
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = density_comp, viscosity_comp
+  set Compositional field methods = field, field
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x, z
+    set Function constants  = pi=3.1415926536, eta_b=1e6, background_density=0.0
+    set Function expression = background_density - sin(pi*z) * cos(pi*x); if(x<=0.5, 1, eta_b)
+ end
+end
+
+############### Parameters describing the discretization
+
+subsection Discretization
+  set Composition polynomial degree           = 2
+  set Stokes velocity polynomial degree       = 2
+  set Use discontinuous composition discretization = true
+  set Use locally conservative discretization = true
+
+  subsection Stabilization parameters
+    set Use limiter for discontinuous composition solution = true # apply the limiter to the DG solutions
+    set Global composition maximum = 1, 1e6
+    set Global composition minimum = -1, 1
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 5
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = visualization, SolCxPostprocessor
+  subsection Visualization
+    set Output format = vtu
+    set Number of grouped files = 1
+    set Time between graphical output = 0
+    set List of output variables = density, viscosity
+  end
+end
