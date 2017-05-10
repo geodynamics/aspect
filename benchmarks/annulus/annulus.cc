@@ -530,7 +530,6 @@ namespace aspect
 
       return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2:", os.str());
     }
-
   }
 }
 

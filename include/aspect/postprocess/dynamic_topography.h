@@ -32,7 +32,7 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes dynamic topography at the surface.
+     * A postprocessor that computes dynamic topography at the top and bottom of the domain.
      *
      * @ingroup Postprocessing
      */
@@ -47,42 +47,85 @@ namespace aspect
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
 
+        /**
+         * Return the topography vector as calculated by CBF formulation.
+         * The velocity components store the surface-normal traction,
+         * and the temperature component stores the dynamic topography
+         * computed from that traction.
+         */
+        const LinearAlgebra::BlockVector &
+        topography_vector() const;
 
         /**
-         * Declare the parameters this class takes through input files.
+         * Return the cellwise topography vector as calculated by CBF formulation,
+         * where indices of the vector correspond to cell indices.
+         * This vector is considerably smaller than the full topography vector returned
+         * by topography_vector(), and is useful for text output and visualization.
+         */
+        const Vector<float> &
+        cellwise_topography() const;
+
+        /**
+         * Register the other postprocessor that we need: BoundaryPressures
+         */
+        virtual
+        std::list<std::string>
+        required_other_postprocessors() const;
+
+        /**
+         * Parse the parameters for the postprocessor.
+         */
+        void
+        parse_parameters (ParameterHandler &prm);
+
+        /**
+         * Declare the parameters for the postprocessor.
          */
         static
         void
         declare_parameters (ParameterHandler &prm);
 
-        /**
-         * Read the parameters this class declares from the parameter file.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-
       private:
         /**
-         * A parameter that we read from the input file that denotes whether
-         * we should subtract the mean topography or not.
+         * Output the dynamic topography solution to
+         * a file.
          */
-        bool subtract_mean_dyn_topography;
+        void output_to_file(bool upper, std::vector<std::pair<Point<dim>, double> > &values);
 
         /**
-         * A parameter that specifies whether the lower topography is outputted.
+         * A vector which stores the surface stress values calculated
+         * by the postprocessor.
          */
-        bool output_lower_surface_topography;
+        LinearAlgebra::BlockVector topo_vector;
 
         /**
-         * A parameter allows users to set the density value outside the surface
+         * A vector which stores the surface stress values calculated
+         * at the midpoint of each surface cell face. This can be
+         * given to a visualization postprocessor to output dynamic topography.
+         */
+        Vector<float> visualization_values;
+
+        /**
+         * A parameter that allows users to set the density value
+         * above the top surface.
          */
         double density_above;
 
         /**
-         * A parameter allows users to set the density value below the surface
+         * A parameter that allows users to set the density value
+         * below the bottom surface.
          */
         double density_below;
+
+        /**
+         * Whether to output the surface topography.
+         */
+        bool output_surface;
+
+        /**
+         * Whether to output the bottom topography.
+         */
+        bool output_bottom;
     };
   }
 }
