@@ -1,6 +1,7 @@
+#!/usr/bin/perl
 ######################################################################
 #
-# Copyright (C) 2001, 2003, 2005, 2010, 2011, 2012, the deal.II authors
+# Copyright (C) 2017
 #
 # Remove insignificant volatile data from output files of tests
 #
@@ -11,20 +12,41 @@
 #  small doubles
 ######################################################################
 
+# usage:
+# normalize.pl <infile> <aspect_src_dir>
+
+$infilename = shift;
+$aspect_src_dir = shift;
+
+open my $in,  '<', $infilename or die "Can't read file: $!";
+
+while (<$in>)
+{
+    # remove lines starting and ending with |
+    s/^\|.*\|\n//;
+    # remove lines starting with --
+    s/^--.*\n//;
+
+    # replace current source directory by ASPECT_DIR
+    s/$aspect_src_dir/ASPECT_DIR/g;
+
+    print $_;
+}
+
 # Several date and time strings
 
-s/%%Creation Date:.*//;
-s/\"created\".*//;
-s/# Time =.*//;
-s/# Date =.*//;
-s/^\s+Time =.*//;
-s/^\s+Date =.*//;
-s/Time tag:.*//g;
-s/by the deal.II library on.*//;
+#s/%%Creation Date:.*//;
+#s/\"created\".*//;
+#s/# Time =.*//;
+#s/# Date =.*//;
+#s/^\s+Time =.*//;
+#s/^\s+Date =.*//;
+#s/Time tag:.*//g;
+#s/by the deal.II library on.*//;
 
 # Exceptions
 
-s/line <\d+> of file <.*\//file </;
+#s/line <\d+> of file <.*\//file </;
 
 # Make small exponentials zero
 
@@ -32,7 +54,7 @@ s/line <\d+> of file <.*\//file </;
 
 # See if we have a -0.0... (not followed by any other digit) and replace it
 # by the same number without the negative sign
-s/-0\.(0+)(?!\d)/0.\1/g;
+#s/-0\.(0+)(?!\d)/0.\1/g;
 
 # Residual values
 
@@ -41,4 +63,4 @@ s/-0\.(0+)(?!\d)/0.\1/g;
 
 
 # remove deal.II debug output
-s/^DEAL.*::_.*\n//g;
+#s/^DEAL.*::_.*\n//g;
