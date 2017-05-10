@@ -326,24 +326,24 @@ namespace aspect
   namespace BoundaryTraction
   {
     ASPECT_REGISTER_BOUNDARY_TRACTION_MODEL(InitialLithostaticPressure,
-                                                 "initial lithostatic pressure",
-                                                 "Implementation of a model in which the boundary "
-                                                 "traction is given in terms of a normal traction component "
-                                                 "set to the lithostatic pressure "
-                                                 "calculated according to the parameters in section "
-                                                 "``Boundary traction model|Lithostatic pressure''. "
-                                                 "\n\n"
-                                                 "The lithostatic pressure is calculated by integrating "
-                                                 "the pressure downward based on the initial composition "
-                                                 "and temperature along the user-specified depth profile. "
-                                                 "The user-specified profile is given in terms of a point "
-                                                 "in cartesian coordinates for box geometries and "
-                                                 "in spherical coordinates for all "
-                                                 "other geometries (radius, longitude, latitude), and "
-                                                 "the number of integration points. "
-                                                 "The lateral coordinates of the point are used to calculate "
-                                                 "the lithostatic pressure profile with depth. "
-                                                 "\n\n"
-                                                 "Gravity is expected to point along the depth direction. ")
+                                            "initial lithostatic pressure",
+                                            "Implementation of a model in which the boundary "
+                                            "traction is given in terms of a normal traction component "
+                                            "set to the lithostatic pressure "
+                                            "calculated according to the parameters in section "
+                                            "``Boundary traction model|Lithostatic pressure''. "
+                                            "\n\n"
+                                            "The lithostatic pressure is calculated by integrating "
+                                            "the pressure downward based on the initial composition "
+                                            "and temperature along the user-specified depth profile. "
+                                            "The user-specified profile is given in terms of a point "
+                                            "in cartesian coordinates for box geometries and "
+                                            "in spherical coordinates for all "
+                                            "other geometries (radius, longitude, latitude), and "
+                                            "the number of integration points. "
+                                            "The lateral coordinates of the point are used to calculate "
+                                            "the lithostatic pressure profile with depth. "
+                                            "\n\n"
+                                            "Gravity is expected to point along the depth direction. ")
   }
 }

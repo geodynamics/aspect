@@ -36,7 +36,7 @@ subsection Boundary temperature model
  set Model name = initial temperature
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
    set Function expression = 0
@@ -136,7 +136,7 @@ subsection Boundary composition model
   set Model name = initial composition
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
    set Variable names = x,z
