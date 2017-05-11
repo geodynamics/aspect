@@ -35,19 +35,22 @@ namespace aspect
     HarmonicPerturbation<dim>::
     initial_temperature (const Point<dim> &position) const
     {
+      AssertThrow (this->has_boundary_temperature() || (!use_conductive_profile),
+                   ExcMessage ("The conductive profile can only be used if a boundary "
+                               "temperature is prescribed."));
 
       // use either the user-input reference temperature as background temperature
       // (incompressible model) or the adiabatic temperature profile (compressible model)
-      const double background_temperature = this->include_adiabatic_heating() ?
-                                            this->get_adiabatic_conditions().temperature(position) :
-                                            reference_temperature;
+      double background_temperature = this->include_adiabatic_heating() ?
+                                      this->get_adiabatic_conditions().temperature(position) :
+                                      reference_temperature;
 
       // s = fraction of the way from
       // the inner to the outer
       // boundary; 0<=s<=1
       const double s = this->get_geometry_model().depth(position) / this->get_geometry_model().maximal_depth();
 
-      const double depth_perturbation = std::sin(vertical_wave_number*s*numbers::PI);
+      const double depth_perturbation = (vertical_wave_number == 0 ? 1.0 : std::sin(vertical_wave_number*s*numbers::PI));
 
 
       double lateral_perturbation = 0.0;
@@ -80,7 +83,7 @@ namespace aspect
               std::pair<double,double> sph_harm_vals = Utilities::real_spherical_harmonic( lateral_wave_number_1, lateral_wave_number_2, scoord[2], scoord[1] );
               //For historical reasons, this initial conditions module used an unnormalized real spherical harmonic.
               //Here we denormalize the return value of real_spherical_harmonic to keep the original behavior.
-              lateral_perturbation = sph_harm_vals.first / ( lateral_wave_number_2 == 0 ? 1.0 : std::sqrt(2.) );
+              lateral_perturbation = sph_harm_vals.first;
             }
         }
       else if (const GeometryModel::Chunk<dim> *
@@ -106,6 +109,13 @@ namespace aspect
           // that is scaled to the extent of the geometry.
           // This way the perturbation is alway 0 at the model borders.
           const Point<dim> extent = box_geometry_model->get_extents();
+
+          if (use_conductive_profile)
+            {
+              const double T_outer = this->get_boundary_temperature().minimal_temperature();
+              const double T_inner = this->get_boundary_temperature().maximal_temperature();
+              background_temperature = T_outer + s*(T_inner-T_outer);
+            }
 
           if (dim==2)
             {
@@ -161,6 +171,11 @@ namespace aspect
                              Patterns::Double (0),
                              "The reference temperature that is perturbed by the"
                              "harmonic function. Only used in incompressible models.");
+          prm.declare_entry ("Use conductive profile", "false",
+                             Patterns::Bool (),
+                             "If this is enabled, the harmonic perturbation is added"
+                             "to a conductive temperature profile instead of to the"
+                             "reference temperature.");
         }
         prm.leave_subsection ();
       }
@@ -181,6 +196,7 @@ namespace aspect
           lateral_wave_number_2 = prm.get_integer ("Lateral wave number two");
           magnitude = prm.get_double ("Magnitude");
           reference_temperature = prm.get_double ("Reference temperature");
+          use_conductive_profile = prm.get_bool ("Use conductive profile");
         }
         prm.leave_subsection ();
       }
