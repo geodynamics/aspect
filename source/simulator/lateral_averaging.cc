@@ -224,6 +224,39 @@ namespace aspect
   namespace
   {
     template <int dim>
+    class FunctorDepthAverageDensity
+    {
+      public:
+        bool need_material_properties() const
+        {
+          return true;
+        }
+
+        void setup(const unsigned int)
+        {}
+
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                        const MaterialModel::MaterialModelOutputs<dim> &out,
+                        FEValues<dim> &,
+                        const LinearAlgebra::BlockVector &,
+                        std::vector<double> &output)
+        {
+          output = out.densities;
+        }
+    };
+  }
+
+  template <int dim>
+  void LateralAveraging<dim>::get_density_averages(std::vector<double> &values) const
+  {
+    FunctorDepthAverageDensity<dim> f;
+    compute_lateral_average(values, f);
+  }
+
+
+  namespace
+  {
+    template <int dim>
     class FunctorDepthAverageVelocityMagnitude
     {
       public:

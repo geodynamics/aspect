@@ -342,6 +342,7 @@ namespace aspect
     return simulator->system_preconditioner_matrix;
   }
 
+
   template <int dim>
   const MaterialModel::Interface<dim> &
   SimulatorAccess<dim>::get_material_model () const
