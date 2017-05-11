@@ -312,7 +312,6 @@ parse_parameters (const std::string &input_as_string,
   // try reading on processor 0
   bool success = true;
   if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
-#if DEAL_II_VERSION_GTE(8,5,0)
     try
       {
         prm.parse_input_from_string(input_as_string.c_str());
@@ -323,9 +322,6 @@ parse_parameters (const std::string &input_as_string,
         e.print_info(std::cerr);
         std::cerr << std::endl;
       }
-#else
-    success = prm.read_input_from_string(input_as_string.c_str());
-#endif
 
 
   // broadcast the result. we'd like to do this with a bool
@@ -353,12 +349,7 @@ parse_parameters (const std::string &input_as_string,
   // other processors will be ok as well
   if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) != 0)
     {
-#if DEAL_II_VERSION_GTE(8,5,0)
       prm.parse_input_from_string(input_as_string.c_str());
-#else
-      success = prm.read_input_from_string(input_as_string.c_str());
-      AssertThrow(success, dealii::ExcMessage ("Invalid input parameter file."));
-#endif
     }
 }
 
