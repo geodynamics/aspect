@@ -71,6 +71,7 @@ namespace aspect
       Assert (false,
               ExcMessage ("The cartesian_to_natural_coodinates function has "
                           "not been implemented in this geometry model."));
+      return std::array<double,dim>();
     }
 
     template <int dim>
@@ -80,6 +81,7 @@ namespace aspect
       Assert (false,
               ExcMessage ("The natural_to_cartesian_coodinates function has "
                           "not been implemented in this geometry model."));
+      return Point<dim>();
     }
 
 
