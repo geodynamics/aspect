@@ -711,6 +711,12 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
+
+        /**
+         * Create AdditionalMaterialOutputsStokesRHS if we need to do so.
+         */
+        virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+
         /**
          * This function assembles the terms of the Stokes preconditioner matrix for the current cell.
          */

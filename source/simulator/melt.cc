@@ -21,6 +21,7 @@
 
 #include <aspect/melt.h>
 #include <aspect/simulator.h>
+#include <deal.II/base/signaling_nan.h>
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/lac/sparsity_tools.h>
@@ -88,6 +89,21 @@ namespace aspect
     MeltEquations<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
       MeltHandler<dim>::create_material_model_outputs(outputs);
+
+      const unsigned int n_points = outputs.viscosities.size();
+
+      if (this->get_parameters().enable_additional_stokes_rhs
+          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == NULL)
+        {
+          outputs.additional_outputs.push_back(
+            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >
+            (new MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> (n_points)));
+        }
+
+      Assert(!this->get_parameters().enable_additional_stokes_rhs
+             ||
+             outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >()->rhs_u.size()
+             == n_points, ExcInternalError());
     }
 
 
@@ -215,6 +231,8 @@ namespace aspect
       const unsigned int p_c_component_index = introspection.variable("compaction pressure").first_component_index;
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+      const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
+      *force = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >();
 
       for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
         {
@@ -299,6 +317,13 @@ namespace aspect
             {
               data.local_rhs(i) += (
                                      (bulk_density * gravity * scratch.phi_u[i])
+                                     +
+                                     // add a force to the RHS if present
+                                     (force!=NULL ?
+                                      (force->rhs_u[q] * scratch.phi_u[i]
+                                       + pressure_scaling * force->rhs_p[q] * scratch.phi_p[i]
+                                       + pressure_scaling * force->rhs_melt_pc[q] * scratch.phi_p_c[i])
+                                      : 0.0)
                                      +
                                      // add the term that results from the compressibility. compared
                                      // to the manual, this term seems to have the wrong sign, but this

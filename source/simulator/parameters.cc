@@ -546,6 +546,13 @@ namespace aspect
                          "\n\n"
                          "Note that while more than one operation can be selected it only makes sense to "
                          "pick one rotational and one translational operation.");
+      prm.declare_entry ("Enable additional Stokes RHS", "false",
+                         Patterns::Bool (),
+                         "Whether to ask the material model for additional terms for the right-hand side "
+                         "of the Stokes equation. This feature is likely only used when implementing force "
+                         "vectors for manufactured solution problems and requires filling additional outputs "
+                         "of type AdditionalMaterialOutputsStokesRHS.");
+
     }
     prm.leave_subsection ();
 
@@ -1065,6 +1072,7 @@ namespace aspect
     prm.enter_subsection ("Model settings");
     {
       include_melt_transport = prm.get_bool ("Include melt transport");
+      enable_additional_stokes_rhs = prm.get_bool ("Enable additional Stokes RHS");
 
       {
         nullspace_removal = NullspaceRemoval::none;
