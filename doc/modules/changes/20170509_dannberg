@@ -1,0 +1,8 @@
+Changed: The material model interface now contains a base class for 
+named additional outputs and a derived class that that can be filled 
+with output for the seismic velocities in the evaluate() function. 
+This replaces the member functions seismic_Vs and seismic_Vp in the
+material model inteface, and can now be used to generate graphical 
+output for other quantities as well. 
+<br>
+(Juliane Dannberg, Timo Heister, 2017/05/09)

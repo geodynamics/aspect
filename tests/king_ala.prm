@@ -59,7 +59,7 @@ set Adiabatic surface temperature              = 0.091 #0.100
 # time system we want to work in and what the end time is. We
 # also designate an output directory.
 set Use years in output instead of seconds = false
-set End time                               = 0.45
+set End time                               = 0.15
 set Output directory                       = output
 
 subsection Discretization

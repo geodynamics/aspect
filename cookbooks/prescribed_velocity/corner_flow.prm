@@ -5,6 +5,8 @@ set End time    = 0
 # Load the signal library.
 set Additional shared libraries = ./libprescribed_velocity.so
 
+set Output directory = output-corner_flow
+
 subsection Geometry model
   set Model name = box
 end

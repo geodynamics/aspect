@@ -1,0 +1,27 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Visualization file name
+# 12: RMS velocity (m/s)
+# 13: Max. velocity (m/s)
+# 14: Minimal temperature (K)
+# 15: Average temperature (K)
+# 16: Maximal temperature (K)
+# 17: Average nondimensional temperature (K)
+# 18: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 19: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 20: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 21: Outward heat flux through boundary with indicator 3 ("top") (W)
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089  0 31 32 31 output-blankenbach_case1a/solution/solution-00000 1.79111145e+01 2.53177153e+01 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 -4.72359021e-05 4.72359021e-05 -4.88438657e+00 4.88438657e+00 
+1 6.168470818286e-03 6.168470818286e-03 256 2467 1089 58 29 30 30                                                "" 2.10511746e+01 3.08458562e+01 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 -1.27512053e-04 1.27511947e-04 -3.82721761e+00 3.82721760e+00 
+2 1.123498586489e-02 5.066515046607e-03 256 2467 1089 44 28 29 29                                                "" 2.65381169e+01 3.93760845e+01 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 -4.76685660e-04 4.76685775e-04 -3.23369425e+00 3.23369425e+00 
+3 1.520148151083e-02 3.966495645940e-03 256 2467 1089 43 28 29 29                                                "" 3.36695386e+01 4.97232048e+01 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 -1.50502358e-03 1.50502362e-03 -3.12652477e+00 3.12652477e+00 
+4 1.834257104266e-02 3.141089531831e-03 256 2467 1089 41 27 28 28                                                "" 4.11101034e+01 6.13423532e+01 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 -3.22308997e-03 3.22308994e-03 -3.32296843e+00 3.32296842e+00 
+5 2.000000000000e-02 1.657428957336e-03 256 2467 1089 28 25 26 26                                                "" 4.54446976e+01 6.86834705e+01 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 -4.84685031e-03 4.84685041e-03 -3.53560340e+00 3.53560339e+00 

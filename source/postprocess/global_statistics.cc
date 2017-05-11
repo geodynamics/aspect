@@ -241,9 +241,9 @@ namespace aspect
       statistics.add_value("Number of Stokes degrees of freedom", n_stokes_dofs);
       statistics.add_value("Number of temperature degrees of freedom",
                            this->introspection().system_dofs_per_block[this->introspection().block_indices.temperature]);
-      if (this->get_parameters().n_compositional_fields > 0)
+      if (this->n_compositional_fields() > 0)
         statistics.add_value("Number of degrees of freedom for all compositions",
-                             this->get_parameters().n_compositional_fields
+                             this->n_compositional_fields()
                              * this->introspection().system_dofs_per_block[this->introspection().block_indices.compositional_fields[0]]);
     }
 

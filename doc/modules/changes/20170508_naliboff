@@ -1,0 +1,7 @@
+Added: A new heating model (compositional_heating) that 
+allows users to specify a different internal heating rate
+for each compositional field. Unlike the radioactive decay
+heating model, the internal heating rate for each 
+compositional field is constant through time. 
+<br>
+(John Naliboff, 2017/05/08)

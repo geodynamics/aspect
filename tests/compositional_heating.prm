@@ -1,0 +1,157 @@
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 1e9
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = IMPES
+set Number of cheap Stokes solver steps    = 200
+set Output directory                       = compositional_heating
+set Timing output frequency                = 1
+
+# Model geometry (100x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications 
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+
+# Boundary classifications (fixed T boundaries, prescribed velocity) 
+subsection Model settings
+  set Fixed temperature boundary indicators   = bottom, top
+  set Tangential velocity boundary indicators = bottom, top, left, right
+end
+
+# Temperature boundary conditions
+subsection Boundary temperature model
+  set Model name = box
+  subsection Box
+    set Bottom temperature = 1543
+    set Top temperature    =  273
+  end
+end
+
+# Initial temperature field
+# Typical continental geotherm based equations 4-6 from Chapman 1986 (Geol. Soc. Lon.):
+#   T(z) = Tt + (qt/k)*z - (A*z**2)/(2*k)    (eq 4)
+#   Tb = Tt + (qt/k)*dz - (A*dz**2)/(2*k)    (eq 5)
+#   qb = qt - A*dz                           (eq 6)
+#     T: Temperature, Ts: Layer surface temperature, Tb: layer basal temperature,
+#     qs: Layer surface heat flux, qb: Layer basal heat flux, A = heat production,
+#     dz: Layer thickness, k: thermal conductivity
+# The initial constraints are:
+#   Crust surface temperature (Tsc) = 273 K
+#   Crust surface heat flow   (qsc) = 0.07 W/m^2
+#   Crust heat production      (Ac) = 1.5e-6 W/m^3
+#   Crust thickness           (dzu) = 30.3 m  
+#   Mantle heat production     (Am) = 0. W/m^3
+#   Mantle thickness          (dzm) = 70.e3   
+#   Thermal conducitivty        (K) = 2.5 W/(m K)
+# These constraints allow us to calculate the following values:
+#   qbc = qsc - A*dzc = 0.07 - 1.5e-6*30.e3 = 0.025
+#   Tbc = Tsc + (qsc/k)*dzc - (A*dzc**2)/(2*k) = 
+#         273. + (0.07/2.5)*30.e3 - (1.5e-6 * 30.e3**2)/(2.*2.5) = 843
+#   qsm = qbc = 0.025
+#   Tsm = Tbc = 843
+#   qbm = qsm - A*dzm = 0.025 - 0.*70.e3 = 0.025
+#   Tbm = Tsm + (qts/k)*dzs - (A*dzm**2)/(2*k) = 
+#         843. + (0.025/2.5)*30.e3 - (0. * 70.e3**2)/(2.*2.5) = 1543
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Variable names = x,y
+    set Function constants = h=100e3,tsc=273,tsm=843,qsc=0.07,qsm=0.025,k=2.5,A=1.5e-6
+    set Function expression = if( (h-y)<=30.e3, \
+                                  tsc + (qsc/k)*(h-y) - (A*(h-y)*(h-y))/(2.0*k), \
+                                  tsm + (qsm/k)*(h-y-30.e3))                             
+  end
+end
+
+# Internal heating (user specifies heat flux in W/m^3)
+# Values below are for the background (mantle) and crust.
+# If one wishes to track a property through compositional fields that should
+# not be used to deteremine the heat flux (e.g. finite strain), set the
+# "Use compositional field for heat flux averaging" value for that field to 0. 
+# See Initial conditions section for relationship between heat flux, production
+# and initial temperature profile representative of a continental geotherm.
+subsection Heating model
+  set Model name = compositional heating
+  subsection Compositional heating
+    set Use compositional field for heat production averaging = 1, 1
+    set Compositional heating values = 0., 1.5e-6
+  end
+end
+
+# Compositional fields used to track upper and lower crust
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = upper
+end
+
+# Compositional initial conditions 
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = if(y>=70.e3, 1, 0);
+  end
+end
+
+# Boundary composition specification
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+# Material model (values for background material (mantle) and crust)
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+
+    # Reference values and viscosity averaging
+    set Minimum strain rate = 1.e-20
+    set Reference strain rate = 1.e-16
+    set Minimum viscosity = 1e18
+    set Maximum viscosity = 1e28
+    set Reference viscosity = 1e22
+    set Viscosity averaging scheme = harmonic
+
+    # Thermodynamic properties   
+    # Thermal diffusivity = thermal_conductivity/(density*heat_capacity)
+    set Thermal diffusivities = 1.010101e-6, 1.190476e-6
+    set Heat capacities = 750.
+    set Densities = 3300., 2800.
+    set Thermal expansivities = 0.
+
+    # Uniform viscosity
+    set Viscous flow law = dislocation
+    set Prefactors for dislocation creep = 5.e-23
+    set Stress exponents for dislocation creep = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep = 0.
+
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# Postprocessor
+subsection Postprocess
+  set List of postprocessors = heat flux statistics, temperature statistics
+end

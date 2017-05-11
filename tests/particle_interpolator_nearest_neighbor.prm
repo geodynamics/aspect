@@ -1,0 +1,131 @@
+# A test that performs interpolation from particle properties to
+# compositional fields that are flagged as 'particle' advected
+# fields.
+
+# MPI: 2
+
+set Dimension                              = 2
+set End time                               = 700
+set Use years in output instead of seconds = false
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent  = 1
+    set Y extent  = 1
+  end
+end
+
+subsection Model settings
+  set Tangential velocity boundary indicators = left, right
+  set Zero velocity boundary indicators       = bottom, top
+end
+
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Reference density             = 1010
+    set Viscosity                     = 1e2
+    set Thermal expansion coefficient = 0
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+############### Parameters describing the temperature field
+# Note: The temperature plays no role in this model
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+
+############### Parameters describing the compositional field
+# Note: The compositional field is what drives the flow
+# in this example
+
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields = advection_field, advection_particle, advection_particle2
+  set Compositional field methods = field, particles, particles
+  set Mapped particle properties = advection_particle:initial advection_particle, advection_particle2:initial advection_particle2
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.1415926
+    set Function expression = if(z>(0.4+0.02*cos(pi*x/0.9142)),1,0);0.0;0.0
+  end
+end
+
+subsection Material model
+  subsection Simple model
+    set Density differential for compositional field 1 = -10
+  end
+end
+
+subsection Discretization
+  set Use discontinuous composition discretization = true
+end
+
+
+############### Parameters describing the discretization
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 2
+  set Strategy                           = composition
+  set Initial global refinement          = 4
+  set Minimum refinement level           = 4
+  set Time steps between mesh refinement = 1
+  set Coarsening fraction                = 0.05
+  set Refinement fraction                = 0.5
+end
+
+
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, composition statistics, particles
+
+  subsection Visualization
+    set Time between graphical output = 1
+  end
+
+  subsection Particles
+    set Number of particles = 1000
+    set Time between data output = 1
+    set Data output format = none
+    set List of particle properties = initial composition
+    set Interpolation scheme = nearest neighbor
+    set Update ghost particles = true
+    set Maximum particles per cell = 10
+    set Minimum particles per cell = 10
+
+    set Particle generator name = uniform box
+    set Load balancing strategy = add particles
+
+    subsection Generator
+      subsection Probability density function
+        set Variable names      = x,z
+        set Function expression = 1 #x*x*z
+      end
+    end
+  end
+end

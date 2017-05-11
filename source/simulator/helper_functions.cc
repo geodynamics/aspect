@@ -28,6 +28,7 @@
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/quadrature_lib.h>
+#include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/constraint_matrix.h>
 #include <deal.II/lac/block_sparsity_pattern.h>
 #include <deal.II/grid/grid_tools.h>
@@ -434,7 +435,7 @@ namespace aspect
 
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
     std::vector<Tensor<1,dim> > fluid_velocity_values(n_q_points);
-    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
+    std::vector<std::vector<double> > composition_values (introspection.n_compositional_fields,std::vector<double> (n_q_points));
 
     double max_local_speed_over_meshsize = 0;
     double min_local_conduction_timestep = std::numeric_limits<double>::max();
@@ -471,8 +472,8 @@ namespace aspect
 
           if (parameters.use_conduction_timestep)
             {
-              MaterialModel::MaterialModelInputs<dim> in(n_q_points, parameters.n_compositional_fields);
-              MaterialModel::MaterialModelOutputs<dim> out(n_q_points, parameters.n_compositional_fields);
+              MaterialModel::MaterialModelInputs<dim> in(n_q_points, introspection.n_compositional_fields);
+              MaterialModel::MaterialModelOutputs<dim> out(n_q_points, introspection.n_compositional_fields);
 
               in.strain_rate.resize(0); // we do not need the viscosity
               in.position = fe_values.get_quadrature_points();
@@ -485,13 +486,13 @@ namespace aspect
               fe_values[introspection.extractors.pressure].get_function_gradients (solution,
                                                                                    in.pressure_gradient);
 
-              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                 fe_values[introspection.extractors.compositional_fields[c]].get_function_values (solution,
                     composition_values[c]);
 
               for (unsigned int q=0; q<fe_values.n_quadrature_points; ++q)
                 {
-                  for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                  for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                     in.composition[q][c] = composition_values[c][q];
 
                   in.velocity[q] = velocity_values[q];
@@ -678,10 +679,10 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::normalize_pressure (LinearAlgebra::BlockVector &vector)
+  double Simulator<dim>::normalize_pressure (LinearAlgebra::BlockVector &vector) const
   {
     if (parameters.pressure_normalization == "no")
-      return;
+      return 0;
 
     const FEValuesExtractors::Scalar &extractor_pressure =
       (parameters.include_melt_transport ?
@@ -760,7 +761,8 @@ namespace aspect
       AssertThrow (false, ExcMessage("Invalid pressure normalization method: " +
                                      parameters.pressure_normalization));
 
-    // sum up the integrals from each processor
+    // sum up the integrals from each processor and compute the result we care about
+    double pressure_adjustment = numbers::signaling_nan<double>();
     {
       const double my_temp[2] = {my_pressure, my_area};
       double temp[2];
@@ -859,8 +861,11 @@ namespace aspect
         distributed_vector.compress(VectorOperation::insert);
       }
 
-    // now get back to the original vector
+    // now get back to the original vector and return the adjustment used
+    // in the computations above
     vector = distributed_vector;
+
+    return pressure_adjustment;
   }
 
 
@@ -868,7 +873,8 @@ namespace aspect
   template <int dim>
   void
   Simulator<dim>::
-  denormalize_pressure (LinearAlgebra::BlockVector &vector,
+  denormalize_pressure (const double                      pressure_adjustment,
+                        LinearAlgebra::BlockVector       &vector,
                         const LinearAlgebra::BlockVector &relevant_vector) const
   {
     if (parameters.pressure_normalization == "no")
@@ -1106,7 +1112,7 @@ namespace aspect
   double
   Simulator<dim>::compute_initial_stokes_residual()
   {
-    LinearAlgebra::BlockVector remap (introspection.index_sets.stokes_partitioning, mpi_communicator);
+    LinearAlgebra::BlockVector linearized_stokes_variables (introspection.index_sets.stokes_partitioning, mpi_communicator);
     LinearAlgebra::BlockVector residual (introspection.index_sets.stokes_partitioning, mpi_communicator);
     const unsigned int block_p =
       parameters.include_melt_transport ?
@@ -1126,12 +1132,12 @@ namespace aspect
         for (unsigned int i=0; i < idxset.n_elements(); ++i)
           {
             types::global_dof_index idx = idxset.nth_index_in_set(i);
-            remap(idx)        = current_linearization_point(idx);
+            linearized_stokes_variables(idx)        = current_linearization_point(idx);
           }
-        remap.block(block_p).compress(VectorOperation::insert);
+        linearized_stokes_variables.block(block_p).compress(VectorOperation::insert);
       }
     else
-      remap.block (block_p) = current_linearization_point.block (block_p);
+      linearized_stokes_variables.block (block_p) = current_linearization_point.block (block_p);
 
     // TODO: we don't have .stokes_relevant_partitioning so I am creating a much
     // bigger vector here, oh well.
@@ -1140,11 +1146,11 @@ namespace aspect
                                         mpi_communicator);
     // TODO for Timo: can we create the ghost vector inside of denormalize_pressure
     // (only in cases where we need it)
-    ghosted.block(block_p) = remap.block(block_p);
-    denormalize_pressure (remap, ghosted);
-    current_constraints.set_zero (remap);
+    ghosted.block(block_p) = linearized_stokes_variables.block(block_p);
+    denormalize_pressure (this->last_pressure_normalization_adjustment, linearized_stokes_variables, ghosted);
+    current_constraints.set_zero (linearized_stokes_variables);
 
-    remap.block (block_p) /= pressure_scaling;
+    linearized_stokes_variables.block (block_p) /= pressure_scaling;
 
     // we calculate the velocity residual with a zero velocity,
     // computing only the part of the RHS not balanced by the static pressure
@@ -1152,13 +1158,13 @@ namespace aspect
       {
         // we can use the whole block here because we set the velocity to zero above
         return system_matrix.block(0,0).residual (residual.block(0),
-                                                  remap.block(0),
+                                                  linearized_stokes_variables.block(0),
                                                   system_rhs.block(0));
       }
     else
       {
         const double residual_u = system_matrix.block(0,1).residual (residual.block(0),
-                                                                     remap.block(1),
+                                                                     linearized_stokes_variables.block(1),
                                                                      system_rhs.block(0));
         const double residual_p = system_rhs.block(block_p).l2_norm();
         return sqrt(residual_u*residual_u+residual_p*residual_p);
@@ -1513,8 +1519,10 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template struct Simulator<dim>::AdvectionField; \
-  template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
-  template void Simulator<dim>::denormalize_pressure(LinearAlgebra::BlockVector &vector, const LinearAlgebra::BlockVector &relevant_vector) const; \
+  template double Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector) const; \
+  template void Simulator<dim>::denormalize_pressure(const double pressure_adjustment, \
+                                                     LinearAlgebra::BlockVector &vector, \
+                                                     const LinearAlgebra::BlockVector &relevant_vector) const; \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
   template std::pair<double,double> Simulator<dim>::get_extrapolated_advection_field_range (const AdvectionField &advection_field) const; \
   template void Simulator<dim>::maybe_write_timing_output () const; \

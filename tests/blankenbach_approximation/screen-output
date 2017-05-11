@@ -1,0 +1,67 @@
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 33+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-blankenbach_approximation/solution/solution-00000
+     RMS, max velocity:                  17.9 m/s, 25.3 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: -5.912e-06 W, 5.912e-06 W, -4.884 W, 4.884 W
+     Heating rate (average/total):       0 W/kg, 0 W
+
+*** Timestep 1:  t=0.00061685 seconds
+   Solving temperature system... 29 iterations.
+   Solving Stokes system... 29+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-blankenbach_approximation/solution/solution-00001
+     RMS, max velocity:                  17.9 m/s, 25.5 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: -2.665e-06 W, 2.665e-06 W, -4.834 W, 4.834 W
+     Heating rate (average/total):       0 W/kg, 0 W
+
+*** Timestep 2:  t=0.00122985 seconds
+   Solving temperature system... 21 iterations.
+   Solving Stokes system... 25+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-blankenbach_approximation/solution/solution-00002
+     RMS, max velocity:                  18 m/s, 25.7 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: -6.051e-06 W, 6.051e-06 W, -4.727 W, 4.727 W
+     Heating rate (average/total):       0 W/kg, 0 W
+
+*** Timestep 3:  t=0.00183784 seconds
+   Solving temperature system... 21 iterations.
+   Solving Stokes system... 25+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-blankenbach_approximation/solution/solution-00003
+     RMS, max velocity:                  18 m/s, 26 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: -6.344e-06 W, 6.344e-06 W, -4.553 W, 4.553 W
+     Heating rate (average/total):       0 W/kg, 0 W
+
+*** Timestep 4:  t=0.002 seconds
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-blankenbach_approximation/solution/solution-00004
+     RMS, max velocity:                  18.1 m/s, 26 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: -6.55e-06 W, 6.55e-06 W, -4.496 W, 4.496 W
+     Heating rate (average/total):       0 W/kg, 0 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

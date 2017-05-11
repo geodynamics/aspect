@@ -60,11 +60,6 @@ namespace aspect
     cell = this->get_dof_handler().begin_active(),
     endc = this->get_dof_handler().end();
 
-    MaterialModel::MaterialModelInputs<dim> in(n_q_points,
-                                               this->n_compositional_fields());
-    MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
-                                                 this->n_compositional_fields());
-
     fctr.setup(quadrature_formula.size());
 
     for (; cell!=endc; ++cell)
@@ -73,32 +68,29 @@ namespace aspect
           fe_values.reinit (cell);
           if (fctr.need_material_properties())
             {
-              fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                                                                                        in.pressure);
-              fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                                                                                           in.temperature);
-              fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                                                                                          in.velocity);
-              fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
-                  in.strain_rate);
-              fe_values[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(),
-                                                                                           in.pressure_gradient);
-              for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
-                    composition_values[c]);
 
-              for (unsigned int i=0; i<n_q_points; ++i)
-                {
-                  in.position[i] = fe_values.quadrature_point(i);
-                  for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                    in.composition[i][c] = composition_values[c][i];
-                }
-              in.cell = &cell;
+              // get the density at each quadrature point if necessary
+              MaterialModel::MaterialModelInputs<dim> in(fe_values,
+                                                         &cell,
+                                                         this->introspection(),
+                                                         this->get_solution());
+              MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
+                                                           this->n_compositional_fields());
 
               this->get_material_model().evaluate(in, out);
+              fctr(in, out, fe_values, this->get_solution(), output_values);
+
+            }
+          else
+            {
+              MaterialModel::MaterialModelInputs<dim> in(n_q_points,
+                                                         this->n_compositional_fields());
+              MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
+                                                           this->n_compositional_fields());
+
+              fctr(in, out, fe_values, this->get_solution(), output_values);
             }
 
-          fctr(in, out, fe_values, this->get_solution(), output_values);
 
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
@@ -355,21 +347,27 @@ namespace aspect
         {}
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-                        const MaterialModel::MaterialModelOutputs<dim> &,
+                        MaterialModel::MaterialModelOutputs<dim> &out,
                         FEValues<dim> &,
                         const LinearAlgebra::BlockVector &,
                         std::vector<double> &output)
         {
+          const unsigned int n_points = in.position.size();
+
+          out.additional_outputs.push_back(
+            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
+
+          material_model->evaluate(in, out);
+          MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
+            = out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >();
+
           if (vs_)
             for (unsigned int q=0; q<output.size(); ++q)
-              output[q] = material_model->seismic_Vs(
-                            in.temperature[q], in.pressure[q], in.composition[q],
-                            in.position[q]);
+              output[q] = seismic_outputs->vs[q];
           else
             for (unsigned int q=0; q<output.size(); ++q)
-              output[q] = material_model->seismic_Vp(
-                            in.temperature[q], in.pressure[q], in.composition[q],
-                            in.position[q]);
+              output[q] = seismic_outputs->vp[q];
         }
 
         const MaterialModel::Interface<dim> *material_model;

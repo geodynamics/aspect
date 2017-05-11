@@ -48,19 +48,19 @@ int f()
   std::cout << "* now comparing:" << std::endl;
 
   ret = system ("cd output-resume_free_surface ; "
-                "cp output1.tmp/solution/solution-00009.0000.gnuplot solution/solution-00009.0000.gnuplot1;"
-                "cp output2.tmp/solution/solution-00009.0000.gnuplot solution/solution-00009.0000.gnuplot2;"
-                "cp output1.tmp/log.txt log.txt1;"
-                "cp output2.tmp/log.txt log.txt2;"
-                "cp output1.tmp/statistics statistics1;"
-                "cp output2.tmp/statistics statistics2;"
-                "");
+                " cp output1.tmp/solution/solution-00004.0000.gnuplot solution/solution-00004.0000.gnuplot1 ;"
+                " cp output2.tmp/solution/solution-00004.0000.gnuplot solution/solution-00004.0000.gnuplot2 ;"
+                " cp output1.tmp/log.txt log.txt1 ;"
+                " cp output2.tmp/log.txt log.txt2 ;"
+                " cp output1.tmp/statistics statistics1 ;"
+                " cp output2.tmp/statistics statistics2");
+
   if (ret!=0)
     std::cout << "system() returned error " << ret << std::endl;
 
   ret = system ("cd output-resume_free_surface ; "
-                "diff -c output?.tmp/restart.resume.z;"
-                "diff -c output?.tmp/restart.mesh;"
+                "diff -c output?.tmp/restart.resume.z ; "
+                "diff -c output?.tmp/restart.mesh ; "
                 "");
   if (ret!=0)
     std::cout << "system() returned error " << ret << std::endl;

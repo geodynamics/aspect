@@ -1,5 +1,5 @@
 # test if the melt material properties visulaization output works
-# (for bpth scalar and tensor output variables)
+# (for both scalar and tensor output variables)
 # 
 subsection Discretization
   # The polynomial degree to use for the composition variable(s). Units:
@@ -15,7 +15,7 @@ set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 1.0
 set Composition solver tolerance           = 1e-12
 set Nonlinear solver scheme                = iterated IMPES
-set Max nonlinear iterations               = 50
+set Max nonlinear iterations               = 1
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
@@ -117,7 +117,7 @@ subsection Mesh refinement
   set Refinement fraction                      = 0.0
 
   set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 6                    # default: 2
+  set Initial global refinement                = 5                    # default: 2
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end

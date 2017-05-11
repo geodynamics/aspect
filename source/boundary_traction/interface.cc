@@ -73,7 +73,7 @@ namespace aspect
     DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
     template <int dim>
     Tensor<1,dim>
-    Interface<dim>::boundary_traction (const types::boundary_id boundary_indicator,
+    Interface<dim>::boundary_traction (const types::boundary_id /*boundary_indicator*/,
                                        const Point<dim> &position,
                                        const Tensor<1,dim> &normal_vector) const
     {
@@ -105,8 +105,8 @@ namespace aspect
       std_cxx1x::tuple
       <void *,
       void *,
-      internal::Plugins::PluginList<Interface<2> >,
-      internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      aspect::internal::Plugins::PluginList<Interface<2> >,
+      aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
     }
 
 

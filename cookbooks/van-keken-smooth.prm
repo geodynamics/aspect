@@ -7,7 +7,7 @@ set Start time                             = 0
 set End time                               = 2000
 set Use years in output instead of seconds = false
 set CFL number                             = 1.0
-set Output directory                       = output
+set Output directory                       = output-van-keken-smooth
 
 subsection Geometry model
   set Model name = box

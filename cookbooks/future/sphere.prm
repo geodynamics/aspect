@@ -3,7 +3,7 @@
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 5.0e8
-set Output directory                       = output
+set Output directory                       = output-sphere
 
 
 subsection Material model

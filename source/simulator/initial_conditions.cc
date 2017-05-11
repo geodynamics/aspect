@@ -71,7 +71,7 @@ namespace aspect
     //
     //TODO: it would be great if we had a cleaner way than iterating to 1+n_fields.
     // Additionally, the n==1 logic for normalization at the bottom is not pretty.
-    for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
+    for (unsigned int n=0; n<1+introspection.n_compositional_fields; ++n)
       {
         AdvectionField advf = ((n == 0) ? AdvectionField::temperature()
                                : AdvectionField::composition(n-1));
@@ -220,7 +220,7 @@ namespace aspect
 
     // Now copy the temperature and initial composition blocks into the solution variables
 
-    for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
+    for (unsigned int n=0; n<1+introspection.n_compositional_fields; ++n)
       {
         AdvectionField advf = ((n == 0) ? AdvectionField::temperature()
                                : AdvectionField::composition(n-1));
@@ -237,6 +237,8 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::interpolate_particle_properties (const AdvectionField &advection_field)
   {
+    computing_timer.enter_section("Particles: Interpolate");
+
     // below, we would want to call VectorTools::interpolate on the
     // entire FESystem. there currently is no way to restrict the
     // interpolation operations to only a subset of vector
@@ -344,6 +346,8 @@ namespace aspect
     solution.block(blockidx) = particle_solution.block(blockidx);
     old_solution.block(blockidx) = particle_solution.block(blockidx);
     old_old_solution.block(blockidx) = particle_solution.block(blockidx);
+
+    computing_timer.exit_section("");
   }
 
 
@@ -487,7 +491,7 @@ namespace aspect
 
     // normalize the pressure in such a way that the surface pressure
     // equals a known and desired value
-    normalize_pressure(old_solution);
+    this->last_pressure_normalization_adjustment = normalize_pressure(old_solution);
 
     // set all solution vectors to the same value as the previous solution
     solution = old_solution;

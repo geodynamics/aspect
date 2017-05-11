@@ -94,6 +94,11 @@ namespace aspect
       const unsigned int n_components;
 
       /**
+       * The number of compositional fields.
+       */
+      const unsigned int n_compositional_fields;
+
+      /**
        * A variable that holds whether the temperature field should use a
        * discontinuous discretization.
        */

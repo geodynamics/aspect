@@ -305,7 +305,7 @@ namespace aspect
                                               "solidus",
                                               "This is a temperature initial condition that "
                                               "starts the model close to solidus, it also contains "
-                                              "a user defined lithoshpere thickness and with perturbations "
+                                              "a user defined lithosphere thickness and with perturbations "
                                               " in both lithosphere thickness and temperature based on "
                                               "spherical harmonic functions. It was used as the initial condition "
                                               "of early Mars after the freezing of the magma ocean, "

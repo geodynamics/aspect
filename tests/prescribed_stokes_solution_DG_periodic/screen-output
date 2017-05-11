@@ -1,0 +1,147 @@
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,235 (578+81+576)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/s, 1 m/s
+     Temperature min/avg/max:            -1 K, -1.54e-17 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+*** Timestep 1:  t=0.0625 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/s, 1 m/s
+     Temperature min/avg/max:            -0.93 K, 3.469e-18 K, 0.93 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+*** Timestep 2:  t=0.125 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/s, 1 m/s
+     Temperature min/avg/max:            -0.9117 K, 1.095e-17 K, 0.9117 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+*** Timestep 3:  t=0.1875 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/s, 1 m/s
+     Temperature min/avg/max:            -0.8992 K, 7.112e-17 K, 0.8992 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+*** Timestep 4:  t=0.25 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/s, 1 m/s
+     Temperature min/avg/max:            -0.8982 K, 7.589e-18 K, 0.8982 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+*** Timestep 5:  t=0.3125 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/s, 1 m/s
+     Temperature min/avg/max:            -0.89 K, 7.698e-17 K, 0.89 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+*** Timestep 6:  t=0.375 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/s, 1 m/s
+     Temperature min/avg/max:            -0.8894 K, 8.218e-17 K, 0.8894 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+*** Timestep 7:  t=0.4375 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/s, 1 m/s
+     Temperature min/avg/max:            -0.8801 K, 6.402e-17 K, 0.8801 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+*** Timestep 8:  t=0.5 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/s, 1 m/s
+     Temperature min/avg/max:            -0.879 K, 1.065e-16 K, 0.879 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+*** Timestep 9:  t=0.5625 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/s, 1 m/s
+     Temperature min/avg/max:            -0.869 K, 5.708e-17 K, 0.869 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+*** Timestep 10:  t=0.625 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/s, 1 m/s
+     Temperature min/avg/max:            -0.8677 K, 1.027e-16 K, 0.8677 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+*** Timestep 11:  t=0.6875 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/s, 1 m/s
+     Temperature min/avg/max:            -0.857 K, 4.749e-17 K, 0.857 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+*** Timestep 12:  t=0.75 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/s, 1 m/s
+     Temperature min/avg/max:            -0.8555 K, 7.242e-17 K, 0.8555 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+*** Timestep 13:  t=0.8125 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/s, 1 m/s
+     Temperature min/avg/max:            -0.8488 K, 9.78e-17 K, 0.8488 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+*** Timestep 14:  t=0.875 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/s, 1 m/s
+     Temperature min/avg/max:            -0.8459 K, 9.628e-17 K, 0.8459 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+*** Timestep 15:  t=0.9375 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/s, 1 m/s
+     Temperature min/avg/max:            -0.8467 K, 1.061e-16 K, 0.8467 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+*** Timestep 16:  t=1 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/s, 1 m/s
+     Temperature min/avg/max:            -0.843 K, 1.042e-16 K, 0.843 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

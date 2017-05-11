@@ -7,14 +7,6 @@ Number of degrees of freedom: 3,041 (2,187+125+729)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 200+22 iterations.
 
-Number of active cells: 316 (on 2 levels)
-Number of degrees of freedom: 13,612 (9,837+496+3,279)
-
-*** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 136+0 iterations.
-
    Postprocessing:
      Writing depth average: output-adiabatic_initial_conditions_chunk_3d/depth_average.gnuplot
 

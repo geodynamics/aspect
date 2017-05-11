@@ -172,6 +172,11 @@ namespace aspect
          * @}
          */
 
+        virtual
+        void
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+
       private:
         bool interpolation;
         bool latent_heat;
