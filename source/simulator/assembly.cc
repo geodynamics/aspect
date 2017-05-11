@@ -480,17 +480,17 @@ namespace aspect
 
     // the values of the compositional fields are stored as blockvectors for each field
     // we have to extract them in this structure
-    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,
+    std::vector<std::vector<double> > composition_values (introspection.n_compositional_fields,
                                                           std::vector<double> (n_q_points));
 
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
       input_finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(input_solution,
           composition_values[c]);
 
     // then we copy these values to exchange the inner and outer vector, because for the material
     // model we need a vector with values of all the compositional fields for every quadrature point
     for (unsigned int q=0; q<n_q_points; ++q)
-      for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+      for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
         material_model_inputs.composition[q][c] = composition_values[c][q];
 
     material_model_inputs.cell = &cell;
@@ -614,8 +614,8 @@ namespace aspect
     aspect::Assemblers::AdvectionAssembler<dim> *adv_assembler
       = new aspect::Assemblers::AdvectionAssembler<dim>();
 
-    assemblers->advection_system_assembler_properties.resize(1+parameters.n_compositional_fields);
-    assemblers->advection_system_assembler_on_face_properties.resize(1+parameters.n_compositional_fields);
+    assemblers->advection_system_assembler_properties.resize(1+introspection.n_compositional_fields);
+    assemblers->advection_system_assembler_on_face_properties.resize(1+introspection.n_compositional_fields);
 
     aspect::Assemblers::MeltEquations<dim> *melt_equation_assembler = NULL;
     if (parameters.include_melt_transport)
@@ -835,7 +835,7 @@ namespace aspect
 
         if (parameters.use_discontinuous_composition_discretization)
           {
-            for (unsigned int i = 1; i<=parameters.n_compositional_fields; ++i)
+            for (unsigned int i = 1; i<=introspection.n_compositional_fields; ++i)
               {
                 assemblers->advection_system_assembler_on_face_properties[i].need_face_material_model_data = true;
                 assemblers->advection_system_assembler_on_face_properties[i].need_face_finite_element_evaluation = true;
@@ -963,7 +963,7 @@ namespace aspect
          StokesPreconditioner<dim> (finite_element, quadrature_formula,
                                     *mapping,
                                     cell_update_flags,
-                                    parameters.n_compositional_fields,
+                                    introspection.n_compositional_fields,
                                     stokes_dofs_per_cell,
                                     parameters.include_melt_transport),
          internal::Assembly::CopyData::
@@ -1267,7 +1267,7 @@ namespace aspect
                             face_quadrature_formula,
                             cell_update_flags,
                             face_update_flags,
-                            parameters.n_compositional_fields,
+                            introspection.n_compositional_fields,
                             stokes_dofs_per_cell,
                             parameters.include_melt_transport,
                             use_reference_density_profile),
@@ -1633,7 +1633,7 @@ namespace aspect
                                 Quadrature<dim-1> ()),
                                update_flags,
                                face_update_flags,
-                               parameters.n_compositional_fields),
+                               introspection.n_compositional_fields),
          internal::Assembly::CopyData::
          AdvectionSystem<dim> (finite_element.base_element(advection_field.base_element(introspection)),
                                allocate_neighbor_contributions));
