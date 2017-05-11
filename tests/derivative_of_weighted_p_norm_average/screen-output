@@ -1,0 +1,15 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libderivative_of_weighted_p_norm_average.so>
+p = -1000, average = 5
+p = -2.5, average = 5.61923
+p = -2, average = 5.62637
+p = -1, average = 5.64
+p = 0, average = 5.65326
+p = 1, average = 5.66667
+p = 2, average = 5.68052
+p = 2.5, average = 5.68765
+p = 3, average = 5.69491
+p = 4, average = 5.70974
+p = 1000, average = 6
