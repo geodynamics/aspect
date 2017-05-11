@@ -1,0 +1,8 @@
+Refactored the SolKz benchmark and added the SolKz benchmark with
+compositional fields and the SolKz benchmark using active
+particles. For all three cases, we used Q2_Q1 elements with
+Q2 temperature and Q2 compositional fields for SolKz and
+discontinuous piecewise constant composition field for the
+active particle case.
+<br>
+(Elbridge Gerry Puckett, Ying He, Harsha Lokavarapu 2017/05/10)
