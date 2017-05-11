@@ -93,7 +93,7 @@ namespace aspect
         	const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
         	const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q];
 
-          computed_quantities[q](0) = Utilities::compute_spd_factor<dim>(strain_rate, viscosity_derivative_wrt_strain_rate, eta);
+          computed_quantities[q](0) = Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, 0.9);
         }
       }
     }
