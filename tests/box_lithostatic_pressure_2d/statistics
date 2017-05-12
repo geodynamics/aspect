@@ -1,0 +1,25 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: RMS velocity (m/year)
+# 14: Max. velocity (m/year)
+# 15: Maximum velocity magnitude on boundary with indicator 0 ("left") (m/yr)
+# 16: Minimum velocity magnitude on boundary with indicator 0 ("left") (m/yr)
+# 17: Maximum velocity magnitude on boundary with indicator 1 ("right") (m/yr)
+# 18: Minimum velocity magnitude on boundary with indicator 1 ("right") (m/yr)
+# 19: Maximum velocity magnitude on boundary with indicator 2 ("bottom") (m/yr)
+# 20: Minimum velocity magnitude on boundary with indicator 2 ("bottom") (m/yr)
+# 21: Maximum velocity magnitude on boundary with indicator 3 ("top") (m/yr)
+# 22: Minimum velocity magnitude on boundary with indicator 3 ("top") (m/yr)
+# 23: Pressure at top (Pa)
+# 24: Pressure at bottom (Pa)
+0 0.000000000000e+00 0.000000000000e+00 4096 37507 16641 16641 0 0 33 34 33 2.79678738e-02 7.16094684e-02 4.21276761e-02 1.88670134e-02 7.95056230e-03 1.62118151e-05 4.50051869e-02 1.29667643e-05 4.50051852e-02 1.29684481e-05 -3.47837032e-08 9.41296181e+10 

@@ -1,0 +1,22 @@
+
+Number of active cells: 8 (on 2 levels)
+Number of degrees of freedom: 652 (375+27+125+125)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 32+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:        1.43 m/year, 3.34 m/year
+     Pressure min/avg/max:     -4.865e+08 Pa, 3.262e+10 Pa, 8.994e+10 Pa
+     Writing graphical output: output-chunk_lithostatic_pressure_2d/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

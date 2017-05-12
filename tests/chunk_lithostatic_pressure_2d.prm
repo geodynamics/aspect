@@ -1,0 +1,142 @@
+# In this test we prescribe a lithostatic pressure
+# for the traction on the eastern boundary of the
+# chunk geometry. This boundary condition is known 
+# as "open". However, there are no lateral variations
+# in density, so with increasing resolution,
+# velocity should go to zero.
+
+
+set Dimension = 3
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 1600
+set Surface pressure                       = 0
+set Pressure normalization                 = surface
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = IMPES
+
+
+subsection Gravity model
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude = 9.81
+  end
+end
+
+
+subsection Boundary temperature model
+  set Model name = initial temperature
+end
+
+
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+
+subsection Geometry model
+  set Model name = chunk
+
+  subsection Chunk
+              set Chunk inner radius = 3471000
+              set Chunk outer radius = 6371000
+              set Chunk minimum longitude = 10
+              set Chunk maximum longitude = 50
+              set Chunk minimum latitude = 0
+              set Chunk maximum latitude = 40
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+   set Function expression = 1.600e3
+  end 
+end
+
+
+# We prescribe one compositional field
+# to represent the lithosphere
+subsection Material model
+  set Model name = multicomponent
+
+  subsection Multicomponent
+    set Densities                  = 3300,3250
+    set Reference temperature      = 293
+    set Specific heats             = 1250
+    set Thermal conductivities     = 4.7
+    set Thermal expansivities      = 2e-5
+    set Viscosities                = 1e21,1e24
+    set Viscosity averaging scheme = harmonic
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 1
+  set Strategy                           = minimum refinement function
+  subsection Minimum refinement function
+    set Coordinate system = spherical
+    set Function expression = if (y > 45.0*pi/180.0, 4, 3)
+  end
+end
+
+
+# Because the eastern boundary is open and material might
+# move through it, 
+# we set fixed temperature and composition boundary conditions.
+subsection Model settings
+  set Fixed temperature boundary indicators   = inner, outer, east
+  set Fixed composition boundary indicators   = inner, outer, east
+  set Zero velocity boundary indicators       = 
+  set Prescribed velocity boundary indicators = 
+  set Prescribed traction boundary indicators = east: initial lithostatic pressure
+  set Tangential velocity boundary indicators = inner, outer, west, north, south
+  set Include shear heating                   = false
+end
+
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = lith_depth=8e4, model_height=6e5
+    set Function expression = if(z>=(model_height-lith_depth),-1,0);0
+  end
+end
+
+
+subsection Boundary traction model
+   subsection Initial lithostatic pressure
+     set Representative point =  6371000, 50, 40
+   end
+end
+
+
+# The lithosphere is represented by a lower density,
+# higher viscosity compositional field.
+subsection Compositional fields
+ set Number of fields = 1
+end
+
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names = x,y,z
+    set Function constants = lith_depth=100e3, model_height=6e5
+    set Function expression = if(sqrt(x*x+y*y+z*z)<(6.371e6-lith_depth),0,1)
+  end
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, pressure statistics, visualization
+  subsection Visualization
+    set Output format = gnuplot
+    set List of output variables = stress, strain rate, nonadiabatic pressure
+  end
+end
+
