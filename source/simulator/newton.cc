@@ -54,7 +54,7 @@ namespace aspect
     const unsigned int n_comp = output.reaction_terms[0].size();
     output.additional_outputs.push_back(
       std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-      (new MaterialModel::MaterialModelDerivatives<dim> (n_points, n_comp)));
+      (new MaterialModel::MaterialModelDerivatives<dim> (n_points)));
   }
 }
 
@@ -71,6 +71,13 @@ namespace aspect
   class \
   NewtonHandler<dim>; \
   \
+  namespace MaterialModel \
+  { \
+    template \
+    class \
+    MaterialModelDerivatives<dim>; \
+  }
+
   ASPECT_INSTANTIATE(INSTANTIATE)
 
 }
