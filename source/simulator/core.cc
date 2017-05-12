@@ -1117,7 +1117,6 @@ namespace aspect
               }
           }
 
-#if DEAL_II_VERSION_GTE(8,5,0)
         DoFTools::make_flux_sparsity_pattern (dof_handler,
                                               sp,
                                               constraints, false,
@@ -1125,26 +1124,6 @@ namespace aspect
                                               face_coupling,
                                               Utilities::MPI::
                                               this_mpi_process(mpi_communicator));
-#else
-        if (Utilities::MPI::n_mpi_processes(mpi_communicator) == 1)
-          {
-            DoFTools::make_sparsity_pattern (dof_handler,
-                                             coupling, sp,
-                                             constraints, false,
-                                             Utilities::MPI::
-                                             this_mpi_process(mpi_communicator));
-            DoFTools::make_flux_sparsity_pattern (dof_handler,
-                                                  sp,
-                                                  coupling,
-                                                  face_coupling);
-          }
-        else
-          DoFTools::make_flux_sparsity_pattern (dof_handler,
-                                                sp,
-                                                constraints, false,
-                                                Utilities::MPI::
-                                                this_mpi_process(mpi_communicator));
-#endif
       }
     else
       DoFTools::make_sparsity_pattern (dof_handler,
@@ -1269,7 +1248,6 @@ namespace aspect
               }
           }
 
-#if DEAL_II_VERSION_GTE(8,5,0)
         DoFTools::make_flux_sparsity_pattern (dof_handler,
                                               sp,
                                               constraints, false,
@@ -1277,26 +1255,6 @@ namespace aspect
                                               face_coupling,
                                               Utilities::MPI::
                                               this_mpi_process(mpi_communicator));
-#else
-        if (Utilities::MPI::n_mpi_processes(mpi_communicator) == 1)
-          {
-            DoFTools::make_sparsity_pattern (dof_handler,
-                                             coupling, sp,
-                                             constraints, false,
-                                             Utilities::MPI::
-                                             this_mpi_process(mpi_communicator));
-            DoFTools::make_flux_sparsity_pattern (dof_handler,
-                                                  sp,
-                                                  coupling,
-                                                  face_coupling);
-          }
-        else
-          DoFTools::make_flux_sparsity_pattern (dof_handler,
-                                                sp,
-                                                constraints, false,
-                                                Utilities::MPI::
-                                                this_mpi_process(mpi_communicator));
-#endif
       }
     else
       DoFTools::make_sparsity_pattern (dof_handler,
