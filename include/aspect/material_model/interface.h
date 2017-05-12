@@ -512,11 +512,30 @@ namespace aspect
 
 
     /**
-     * A base class for additional output fields to be added to the
-     * MaterialModel::MaterialModelOutputs structure and filled in the
-     * MaterialModel::Interface::evaluate() function. The format of the
-     * additional quantities defined in derived classes should be the
-     * same as for MaterialModel::MaterialModelOutputs.
+     * Some material models can compute more than just the basic material
+     * coefficients defined in the MaterialModel::MaterialModelOutputs
+     * class. These additions are either for more complicated physics
+     * than the basic flow model usually solved by ASPECT (for example
+     * to support the melt migration functionality), or other derived
+     * quantities that are not coefficients in any of the equations
+     * ASPECT solves but that may be of interest for visualization
+     * (for example seismic velocities).
+     *
+     * Rather than litter the MaterialModelOutputs class with additional
+     * fields that are not universally used, we use a mechanism by
+     * which MaterialModelOutputs can store a set of pointers to
+     * "additional" output objects that store information such as
+     * mentioned above. These pointers are all to objects whose types
+     * are derived from the current class.
+     *
+     * If an implementation of the MaterialModel::Interface::evaluate()
+     * in a class derived from MaterialModel::Interface encounters
+     * a MaterialModelOutputs object that has these pointers set
+     * (and if it recognizes the type of the object pointed to),
+     * it should fill this set of additional output quantities.
+     *
+     * The format of the additional quantities defined in derived classes
+     * should be the same as for MaterialModel::MaterialModelOutputs.
      */
     template<int dim>
     class AdditionalMaterialOutputs
@@ -533,19 +552,47 @@ namespace aspect
 
 
     /**
-     * Base class for additional named material model outputs to be added to the
-     * MaterialModel::MaterialModelOutputs structure, providing a structure to
-     * query for their names and values. The additional quantities must be scalar
-     * values, and a provide a name for each quantity.
+     * Some material models can compute things that are not used anywhere
+     * in the physics modules of ASPECT, but that may be of interest for
+     * visualization purposes. An example would be a material model that can
+     * compute seismic velocities -- these are irrelevant to the rest of
+     * ASPECT, but would be nice to have for postprocessing.
+     *
+     * This class is a base class for material models to provide this kind
+     * of information. It follows the scheme laid out by
+     * AdditionalMaterialModelOutputs but also provides an interface by which
+     * consumers of these objects (e.g., the
+     * Postprocess::Visualization::NamedAdditionalOutputs class) can query the
+     * names and values material models have put into these additional
+     * outputs. (Because every material model can decide by itself which --
+     * if any -- additional outputs it produces, there are no standard
+     * names. Consequently, the material models have to describe what
+     * values and how many values they can produce.)
+     *
+     * This class is then this base class for additional named material model outputs
+     * to be added to the MaterialModel::MaterialModelOutputs structure.
      */
     template<int dim>
-    class NamedAdditionalMaterialOutputs: public AdditionalMaterialOutputs<dim>
+    class NamedAdditionalMaterialOutputs : public AdditionalMaterialOutputs<dim>
     {
       public:
-        NamedAdditionalMaterialOutputs(const std::vector<std::string> output_names);
+        /**
+         * Constructor.
+         *
+         * @param output_names A list of names for the additional output variables
+         *   this object will store. The length of the list also indicates
+         *   how many additional output variables objects of derived classes
+         *   will store.
+         */
+        NamedAdditionalMaterialOutputs(const std::vector<std::string> &output_names);
 
         /**
-         * Return a reference to the vector names of the additional
+         * Destructor.
+         */
+        virtual ~NamedAdditionalMaterialOutputs();
+
+        /**
+         * Return a reference to the vector of names of the additional
          * outputs.
          */
         const std::vector<std::string> &get_names() const;
@@ -555,9 +602,6 @@ namespace aspect
          * values of the additional output with that index.
          */
         virtual const std::vector<double> &get_nth_output(const unsigned int idx) const = 0;
-
-        virtual ~NamedAdditionalMaterialOutputs()
-        {}
 
         virtual void average (const MaterialAveraging::AveragingOperation /*operation*/,
                               const FullMatrix<double>  &/*projection_matrix*/,
@@ -582,10 +626,18 @@ namespace aspect
 
         virtual const std::vector<double> &get_nth_output(const unsigned int idx) const;
 
-        // seismic s-wave velocity
+        /**
+         * Seismic s-wave velocities at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         */
         std::vector<double> vs;
 
-        // seismic p-wave velocity
+        /**
+         * Seismic p-wave velocities at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         */
         std::vector<double> vp;
     };
 

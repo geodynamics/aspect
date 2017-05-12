@@ -675,9 +675,17 @@ namespace aspect
 
 
     template<int dim>
-    NamedAdditionalMaterialOutputs<dim>::NamedAdditionalMaterialOutputs(const std::vector<std::string> output_names)
+    NamedAdditionalMaterialOutputs<dim>::
+    NamedAdditionalMaterialOutputs(const std::vector<std::string> &output_names)
       :
       names(output_names)
+    {}
+
+
+
+    template<int dim>
+    NamedAdditionalMaterialOutputs<dim>::
+    ~NamedAdditionalMaterialOutputs()
     {}
 
 
@@ -718,12 +726,15 @@ namespace aspect
     const std::vector<double> &
     SeismicAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
+      AssertIndexRange (idx, 2);
       switch (idx)
         {
           case 0:
             return vs;
+
           case 1:
             return vp;
+
           default:
             AssertThrow(false, ExcInternalError());
         }
