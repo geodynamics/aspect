@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -30,9 +30,8 @@ namespace aspect
 {
   namespace Postprocess
   {
-
     /**
-     * A postprocessor that computes geoid anomaly at the surface.
+     * A postprocessor that computes the geoid anomaly at the surface.
      *
      * @ingroup Postprocessing
      */
@@ -41,7 +40,7 @@ namespace aspect
     {
       public:
         /**
-         * Evaluate the solution for the geoid anomaly.
+         * Evaluate the solution for the geoid in spherical harmonics and then transfer it to grid output.
          */
         virtual
         std::pair<std::string,std::string>
@@ -65,8 +64,8 @@ namespace aspect
         /**
          * Parameters to set the maximum and minimum degree when computing geoid from spherical harmonics
          */
-        int max_degree;
-        int min_degree;
+        unsigned int max_degree;
+        unsigned int min_degree;
 
         /**
          * A parameter to control whether to output the data in geographical coordinates.
@@ -101,23 +100,32 @@ namespace aspect
         double density_below;
 
         /**
-         * Function to compute the spherical harmonic coefficients
+         * Function to compute the real spherical harmonic coefficients (cos and sin part) from min degree to max degree
+         * The input spherical_function is a vector of vectors.
+         * The inner vector stores theta, phi, spherical infinitesimal, and function value on a spherical surface.
+         * The outer vector stores the inner vector associated with each quadrature point on a spherical surface.
          */
         std::pair<std::vector<double>,std::vector<double> >
-        sph_fun2coes(const std::vector<std::vector<double> > &spherical_function) const;
+        to_spherical_harmonic_coefficients(const std::vector<std::vector<double> > &spherical_function) const;
+
+        /**
+         * Function to compute the density contribution in spherical harmonic expansion throughout the mantle
+         * The input outer radius is needed to evaluate the density integral contribution of whole model domain at the surface
+         * This function returns a pair containing real spherical harmonics of density integral (cos and sin part) from min degree to max degree.
+         */
+        std::pair<std::vector<double>,std::vector<double> >
+        density_contribution (const double &outer_radius) const;
 
         /**
          * Function to compute the surface and CMB dynamic topography contribution in spherical harmonic expansion
+         * The input inner and outer radius are used to calculate spherical infinitesimal area, i.e., sin(theta)*d_theta*d_phi
+         * associated with each quadrature point on surface and bottom respectively.
+         * This function returns a pair containing surface and CMB dynamic topography's real spherical harmonic coefficients (cos and sin part)
+         * from min degree to max degree. The surface and CMB average density are also included as the first single element of each subpair respectively.
          */
         std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double> > >, std::pair<double, std::pair<std::vector<double>,std::vector<double> > > >
         dynamic_topography_contribution(const double &outer_radius,
                                         const double &inner_radius) const;
-
-        /**
-         * Function to compute the density contribution in spherical harmonic expansion throughout the mantle
-         */
-        std::pair<std::vector<double>,std::vector<double> >
-        density_contribution (const double &outer_radius) const;
     };
   }
 }

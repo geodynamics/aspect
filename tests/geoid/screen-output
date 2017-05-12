@@ -29,7 +29,6 @@ Number of degrees of freedom: 28,690 (20,790+970+6,930)
 
      Writing geoid anomaly:      output-geoid/geoid_anomaly.00000
      Writing dynamic topography: output-geoid/dynamic_topography.00000
-     Writing graphical output:   output-geoid/solution/solution-00000
 
 Termination requested by criterion: end time
 

@@ -8,5 +8,4 @@
 # 8: Iterations for Stokes solver
 # 9: Velocity iterations in Stokes preconditioner
 # 10: Schur complement iterations in Stokes preconditioner
-# 11: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 768 21760 6930 2 215 874 1339 output-geoid/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 768 21760 6930 2 215 874 1339 

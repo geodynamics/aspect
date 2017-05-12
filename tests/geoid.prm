@@ -84,16 +84,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = basic statistics, geoid, dynamic topography, visualization
-
-  subsection Visualization
-    set Output format                 = gnuplot
-    set List of output variables      = density, dynamic topography
-    set Time between graphical output = 0
-    subsection Dynamic Topography
-      set Subtract mean of dynamic topography  = true
-    end
-  end
+  set List of postprocessors = basic statistics, geoid, dynamic topography
 
   subsection Dynamic Topography
     set Subtract mean of dynamic topography  = true
