@@ -2184,29 +2184,39 @@ namespace aspect
         }
     }
 
+
+
     template<int dim>
     double compute_spd_factor(const double eta,
                               const SymmetricTensor<2,dim> &strain_rate,
                               const SymmetricTensor<2,dim> &dviscosities_dstrain_rate,
                               const double safety_factor)
     {
-      double alpha = 0;
+      // if the strain rate is zero, or the derivative is zero, then
+      // the exact choice of alpha factor does not matter because the
+      // factor that it multiplies is zero -- so return the best value
+      // (i.e., one)
+      if ((strain_rate.norm() == 0) || (dviscosities_dstrain_rate.norm() == 0))
+        return 1;
+
       const double norm_a_b = std::sqrt((strain_rate*strain_rate)*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));
       const double contract_a_b = (strain_rate*dviscosities_dstrain_rate);
       const double one_minus_part = 1 - (contract_a_b / norm_a_b);
       const double denom = one_minus_part * one_minus_part * norm_a_b;
+
       if (denom == 0)
-        alpha = 1.0;
+        return 1.0;
       else
         {
-          alpha = (2.0*eta)/denom;
+          const double alpha = (2.0*eta)/denom;
           if (alpha >= 1.0)
-            alpha = 1.0;
+            return 1.0;
           else
-            alpha = std::max(0.0,safety_factor*alpha);
+            return std::max(0.0,safety_factor*alpha);
         }
-      return alpha;
     }
+
+
 
 // Explicit instantiations
     template class AsciiDataLookup<1>;
