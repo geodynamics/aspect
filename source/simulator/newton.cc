@@ -51,7 +51,6 @@ namespace aspect
       return;
 
     const unsigned int n_points = output.viscosities.size();
-    const unsigned int n_comp = output.reaction_terms[0].size();
     output.additional_outputs.push_back(
       std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
       (new MaterialModel::MaterialModelDerivatives<dim> (n_points)));
