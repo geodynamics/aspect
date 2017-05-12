@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_interpolator_nearest_neighbor_h
-#define __aspect__particle_interpolator_nearest_neighbor_h
+#ifndef _aspect__particle_interpolator_nearest_neighbor_h
+#define _aspect__particle_interpolator_nearest_neighbor_h
 
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/simulator_access.h>

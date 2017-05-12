@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__gravity_model_ascii_data_h
-#define __aspect__gravity_model_ascii_data_h
+#ifndef _aspect__gravity_model_ascii_data_h
+#define _aspect__gravity_model_ascii_data_h
 
 #include <aspect/gravity_model/interface.h>
 #include <aspect/utilities.h>
