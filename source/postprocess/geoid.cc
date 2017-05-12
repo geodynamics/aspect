@@ -917,13 +917,13 @@ namespace aspect
         {
           prm.declare_entry("Maximum degree","20",
                             Patterns::Integer (0),
-                            "This parameter can be a random positive integral. However, the value normally should not exceed the maximum"
-                            "degree of the initial perturbed temperature field. For example, if the initial condition uses S40RTS, the"
+                            "This parameter can be a random positive integer. However, the value normally should not exceed the maximum"
+                            "degree of the initial perturbed temperature field. For example, if the initial temperature uses S40RTS, the"
                             "maximun degree should not be larger than 40.");
           prm.declare_entry("Minimum degree","2",
                             Patterns::Integer (0),
                             "This parameter normally is set to 2 since the perturbed gravitational potential at degree 1 always vanishes"
-                            "in a reference frame with the planetary center of mass as the center of the reference frame.");
+                            "in a reference frame with the planetary center of mass same as the center of figure.");
           prm.declare_entry("Output data in geographical coordinates", "false",
                             Patterns::Bool(),
                             "Option to output the geoid anomaly in geographical coordinates (latitude and longitude). "
@@ -937,7 +937,7 @@ namespace aspect
           prm.declare_entry("Also output the spherical harmonic coefficients of geoid anomaly", "false",
                             Patterns::Bool(),
                             "Option to also output the spherical harmonic coefficients of the geoid anomaly up to the maximum degree. "
-                            "The default is false, so postprocess will only output the grid geoid anomaly. ");
+                            "The default is false, so postprocess will only output the geoid anomaly in grid format. ");
           prm.declare_entry("Also output the spherical harmonic coefficients of surface dynamic topography contribution", "false",
                             Patterns::Bool(),
                             "Option to also output the spherical harmonic coefficients of the surface dynamic topography contribution "
@@ -993,7 +993,7 @@ namespace aspect
                                   "A postprocessor that computes a measure of geoid anomaly based on the density anomaly determined "
                                   "from the temperature field in the mantle, and the dynamic topography at the surface and core mantle "
                                   "boundary(CMB). The geoid is computed from the spherical harmonics expansion, so the geometry of the "
-                                  "domain needs to be a spherical shell.")
+                                  "domain needs to be a 3D spherical shell.")
 
   }
 }
