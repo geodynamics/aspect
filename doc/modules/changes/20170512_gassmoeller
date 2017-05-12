@@ -1,0 +1,6 @@
+Changed: The names of ASPECT's data directories now follow the same naming
+scheme used for the source and include directories. The conversion scripts
+in the doc/ directory have been adjusted to correctly modify parameter and
+source files to the new naming scheme.
+<br>
+(Rene Gassmoeller, 2017/05/12)
