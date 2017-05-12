@@ -1,9 +1,9 @@
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/box_2d_top.2.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.2.txt.
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/box_2d_top.1.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.1.txt.
 
 Number of active cells: 80 (on 3 levels)
 Number of degrees of freedom: 1,212 (738+105+369)
@@ -16,7 +16,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
    Postprocessing:
      RMS, max velocity:                  0.36 m/year, 0.893 m/year
      Temperature min/avg/max:            0 K, 1488 K, 1913 K
-     Heat fluxes through boundary parts: 3.737e-12 W, 3.737e-12 W, 4.647e+05 W, 4.549e+05 W
+     Heat fluxes through boundary parts: 7.474e-12 W, 4.484e-12 W, 4.647e+05 W, 4.549e+05 W
 
 *** Timestep 1:  t=82500 years
    Solving temperature system... 10 iterations.
@@ -50,7 +50,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
 
 *** Timestep 4:  t=330000 years
 
-   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/box_2d_top.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.0.txt.
 
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
@@ -83,7 +83,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
 
 *** Timestep 7:  t=577500 years
 
-   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/box_2d_top.-1.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.-1.txt.
 
 
    Loading new data file did not succeed.
