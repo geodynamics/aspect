@@ -107,6 +107,14 @@ namespace aspect
          * @}
          */
 
+        /**
+         * Add the named outputs for seismic velocities.
+         */
+        virtual
+        void
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+
       private:
         /**
          * Use truncated anelastic approximation?
@@ -154,6 +162,15 @@ namespace aspect
         unsigned int thermal_expansivity_index;
         unsigned int specific_heat_index;
         unsigned int compressibility_index;
+
+        /**
+         * The column indices of the seismic velocities and their temperature
+         * derivatives columns in the data file.
+         */
+        unsigned int seismic_vp_index;
+        unsigned int seismic_vs_index;
+        unsigned int seismic_dvp_dT_index;
+        unsigned int seismic_dvs_dT_index;
     };
 
   }

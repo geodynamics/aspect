@@ -803,11 +803,19 @@ namespace aspect
 
         /**
          * Returns the column index of a column with the given name
-         * @p column_name. Returns numbers::invalid_unsigned_int if no such
+         * @p column_name. Throws an exception if no such
          * column exists or no names were provided in the file.
          */
         unsigned int
         get_column_index_from_name(const std::string &column_name) const;
+
+        /**
+         * Returns the column index of a column with the given name
+         * @p column_name. Returns an invalid unsigned int if no such
+         * column exists or no names were provided in the file.
+         */
+        unsigned int
+        maybe_get_column_index_from_name(const std::string &column_name) const;
 
         /**
          * Returns a string that contains the name of the column with index
