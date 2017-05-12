@@ -443,6 +443,13 @@ namespace aspect
     typename DoFHandler<dim>::active_cell_iterator
     cell = dof_handler.begin_active(),
     endc = dof_handler.end();
+
+
+    MaterialModel::MaterialModelInputs<dim> in(n_q_points,
+                                               introspection.n_compositional_fields);
+    MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
+                                                 introspection.n_compositional_fields);
+
     for (; cell!=endc; ++cell)
       if (cell->is_locally_owned())
         {
@@ -472,33 +479,13 @@ namespace aspect
 
           if (parameters.use_conduction_timestep)
             {
-              MaterialModel::MaterialModelInputs<dim> in(n_q_points, introspection.n_compositional_fields);
-              MaterialModel::MaterialModelOutputs<dim> out(n_q_points, introspection.n_compositional_fields);
-
-              in.strain_rate.resize(0); // we do not need the viscosity
-              in.position = fe_values.get_quadrature_points();
-              in.cell = &cell;
-
-              fe_values[introspection.extractors.pressure].get_function_values (solution,
-                                                                                in.pressure);
-              fe_values[introspection.extractors.temperature].get_function_values (solution,
-                                                                                   in.temperature);
-              fe_values[introspection.extractors.pressure].get_function_gradients (solution,
-                                                                                   in.pressure_gradient);
-
-              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-                fe_values[introspection.extractors.compositional_fields[c]].get_function_values (solution,
-                    composition_values[c]);
-
-              for (unsigned int q=0; q<fe_values.n_quadrature_points; ++q)
-                {
-                  for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-                    in.composition[q][c] = composition_values[c][q];
-
-                  in.velocity[q] = velocity_values[q];
-                }
+              in.reinit(fe_values,
+                        &cell,
+                        introspection,
+                        solution);
 
               material_model->evaluate(in, out);
+
 
               // Evaluate thermal diffusivity at each quadrature point and
               // calculate the corresponding conduction timestep, if applicable
