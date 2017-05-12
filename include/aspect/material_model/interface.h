@@ -186,14 +186,24 @@ namespace aspect
 
 
       /**
-       * Constructor. Both initialize and populate the various arrays of this
+       * Constructor. Initializes the various arrays of this
        * structure with the FEValues and introspection objects and
-       * the solution_vector.
+       * the solution_vector. This constructor calls the function
+       * reinit to populate the newly created arrays.
        */
       MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
                           const typename DoFHandler<dim>::active_cell_iterator *cell,
                           const Introspection<dim> &introspection,
                           const LinearAlgebra::BlockVector &solution_vector);
+
+      /**
+       * Function to re-initialize and populate the pre-existing arrays
+       * created by the constructor MaterialModelInputs.
+       */
+      void reinit(const FEValuesBase<dim,dim> &fe_values,
+                  const typename DoFHandler<dim>::active_cell_iterator *cell,
+                  const Introspection<dim> &introspection,
+                  const LinearAlgebra::BlockVector &solution_vector);
 
 
       /**

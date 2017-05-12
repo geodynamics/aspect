@@ -256,6 +256,18 @@ namespace aspect
       strain_rate(fe_values.n_quadrature_points, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
       cell(cell_x)
     {
+      // Call the function reinit to populate the new arrays.
+      this->reinit(fe_values, cell, introspection, solution_vector);
+    }
+
+
+    template <int dim>
+    void
+    MaterialModelInputs<dim>::reinit(const FEValuesBase<dim,dim> &fe_values,
+                                     const typename DoFHandler<dim>::active_cell_iterator *cell_x,
+                                     const Introspection<dim> &introspection,
+                                     const LinearAlgebra::BlockVector &solution_vector)
+    {
       // Populate the newly allocated arrays
       fe_values[introspection.extractors.temperature].get_function_values (solution_vector, this->temperature);
       fe_values[introspection.extractors.velocities].get_function_values (solution_vector, this->velocity);
