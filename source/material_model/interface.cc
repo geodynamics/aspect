@@ -288,6 +288,8 @@ namespace aspect
           for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
             this->composition[i][c] = composition_values[c][i];
         }
+
+      this->cell = cell_x;
     }
 
     template <int dim>
