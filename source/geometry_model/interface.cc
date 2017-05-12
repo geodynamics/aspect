@@ -39,6 +39,7 @@ namespace aspect
     {}
 
 
+
     template<int dim>
     std::map<std::string,types::boundary_id>
     Interface<dim>::get_symbolic_boundary_names_map() const
@@ -46,6 +47,7 @@ namespace aspect
       //return an empty map in the base class
       return std::map<std::string,types::boundary_id>();
     }
+
 
 
     template<int dim>
@@ -57,12 +59,15 @@ namespace aspect
     }
 
 
+
     template <int dim>
     bool
     Interface<dim>::has_curved_elements() const
     {
       return true;
     }
+
+
 
     template <int dim>
     std::array<double,dim>
@@ -73,6 +78,8 @@ namespace aspect
                           "not been implemented in this geometry model."));
       return std::array<double,dim>();
     }
+
+
 
     template <int dim>
     Point<dim>
@@ -85,11 +92,13 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     Interface<dim>::
     declare_parameters (dealii::ParameterHandler &)
     {}
+
 
 
     template <int dim>
