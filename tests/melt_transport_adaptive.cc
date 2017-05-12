@@ -37,7 +37,7 @@ namespace aspect
 
         KellyErrorEstimator<dim>::estimate (this->get_mapping(),
                                             this->get_dof_handler(),
-                                            QGauss<dim-1>(this->get_fe().base_element(this->introspection().base_elements.velocities).degree+1),
+                                            QGauss<dim-1>(this->introspection().polynomial_degree.velocities +1),
                                             typename FunctionMap<dim>::type(),
                                             this->get_solution(),
                                             indicators,
@@ -70,7 +70,7 @@ namespace aspect
 
         KellyErrorEstimator<dim>::estimate (this->get_mapping(),
                                             this->get_dof_handler(),
-                                            QGauss<dim-1>(this->get_fe().base_element(this->introspection().base_elements.velocities).degree+1),
+                                            QGauss<dim-1>(this->introspection().polynomial_degree.velocities +1),
                                             typename FunctionMap<dim>::type(),
                                             this->get_solution(),
                                             indicators,
@@ -224,7 +224,7 @@ namespace aspect
   ConvergenceMeltPostprocessor<dim>::execute (TableHandler &statistics)
   {
     RefFunction<dim> ref_func;
-    const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
+    const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities +2);
 
     const unsigned int n_total_comp = this->introspection().n_components;
 
