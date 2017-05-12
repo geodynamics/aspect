@@ -94,7 +94,7 @@ end
 # crust (y>136 km) where it is randomized in order to help localize faulting.
 # The next five compositional fields represent the upper crust, lower crust, mantle, 
 # asthenosphere and a 'seed' placed in the mantle to help localize deformation.
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y
@@ -145,7 +145,7 @@ end
 #                             - asthenosphere (ts4) = 1589.36 K
 #   Thermal conductivity      - mantle         (k3) = 3.30 W/(m K)
 #                             - asthenosphere  (k4) = 25.59 W/(m K)
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Variable names = x,y

@@ -293,7 +293,7 @@ namespace aspect
                 }
 
               // reduce viscosity due to plastic yielding and the presence of melt
-              if (in.strain_rate.size())
+              if (in.strain_rate.size() && this->get_timestep_number() > 0)
                 {
 
                   const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i]);
