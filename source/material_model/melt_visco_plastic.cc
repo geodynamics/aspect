@@ -344,9 +344,13 @@ namespace aspect
                                                     min_strain_rate) );
                   double viscous_stress = 2. * out.viscosities[i] * edot_ii * (1.0 - porosity);
 
+                  // In case porosity lies above the melt transport threshold
+                  // P_effective = P_bulk - P_f = (1-porosity) * P_s + porosity * P_f - P_f = (1-porosity) * (P_s - P_f)
+                  // otherwise,
+                  // P_effective = P_bulk, which equals P_solid (which is given by in.pressure[i])
                   const double effective_pressure = (porosity > this->get_melt_handler().melt_transport_threshold
                                                      ?
-                                                     in.pressure[i] - fluid_pressures[i]
+                                                     (1. - porosity) * (in.pressure[i] - fluid_pressures[i])
                                                      :
                                                      in.pressure[i]);
 
