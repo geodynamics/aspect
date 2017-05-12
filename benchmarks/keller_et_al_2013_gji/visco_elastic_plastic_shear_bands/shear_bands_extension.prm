@@ -1,0 +1,199 @@
+#  Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 1e6
+set Use years in output instead of seconds = true
+set Use direct solver for Stokes system    = false
+set Linear solver tolerance                = 1e-7
+set Nonlinear solver scheme                = iterated Stokes
+set Nonlinear solver tolerance             = 1e-10
+set Max nonlinear iterations               = 50
+set Number of cheap Stokes solver steps    = 200
+set CFL number                             = 0.1
+set Output directory                       = output_shear_bands_extension
+set Timing output frequency                = 1
+set Pressure normalization                 = no
+
+# Model geometry (2x1 km, ~ 0.0166 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 120
+    set Y repetitions = 60
+    set X extent      = 2e3
+    set Y extent      = 1e3
+  end
+end
+
+# Mesh refinement specifications 
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+# Boundary classifications
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+  set Fixed temperature boundary indicators   = bottom, top
+  set Prescribed velocity boundary indicators = left x:function, \
+                                                right x:function, \
+                                                top y:function, \
+                                                bottom y:function
+  set Include melt transport                  = false
+end
+
+subsection Melt settings
+  set Melt transport threshold                = 0.0 #1e-5
+  set Heat advection by melt                  = false
+end
+
+# Advecting the free surface vertically rather than
+# in the surface normal direction can result in a
+# more stable mesh when the deformation is large
+subsection Free surface
+  set Surface velocity projection = vertical
+end
+
+# Velocity on boundaries characterized by functions
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = velx=0.0003154,vely=0.0001577
+    set Function expression =  if (x<1.0e3, -1*velx, 1*velx); \
+                               if (y>0.5e3, -1*vely, 1*vely);
+  end
+end
+
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields = seed, porosity, peridotite
+end
+
+
+# Spatial domain of different compositional fields
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = if( (sqrt((x-1.0e3)^2+(y-0.5e3)^2)>(0.005e3^2)) , 0 , 1 ); 0; 0;
+  end
+end
+
+# Composition boundary conditions
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+# Temperature boundary and initial conditions
+subsection Boundary temperature model
+  set Model name = box
+  subsection Box
+    set Bottom temperature = 273
+    set Left temperature   = 273
+    set Right temperature  = 273
+    set Top temperature    = 273
+  end
+end
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+# Material model
+subsection Material model
+  set Model name = melt visco plastic
+
+  subsection Melt visco plastic
+
+    set Depletion density change          = 0
+    set Reference permeability            = 1e-8
+    set Reference bulk viscosity          = 1e21
+    set Exponential melt weakening factor = 0
+    set Reference melt viscosity          = 0.1
+
+    set Use linear viscosities = true
+    set Linear viscosities = 1.e24,1.e19,1.e19,1.e19
+
+    set Angles of internal friction = 30.
+    set Cohesions = 100.e6,1.e20,1.e20,1.e20
+
+    set Model is viscoelastic = false
+    set Elastic shear moduli = 0.001
+
+  end
+
+  subsection Diffusion dislocation
+    set Reference temperature = 273 
+    set Minimum strain rate = 1.e-20
+    set Minimum viscosity = 1e18
+    set Maximum viscosity = 1e23
+
+    set Thermal diffusivity = 1.e-6
+    set Heat capacity = 750.
+    set Densities = 2800
+    set Thermal expansivities = 0.
+
+    set Viscosity averaging scheme = harmonic
+
+    set Prefactors for diffusion creep = 5.e-24,5.e-19,5.e-24,5.e-24
+    set Stress exponents for diffusion creep = 1.0 
+    set Activation energies for diffusion creep = 0.
+    set Activation volumes for diffusion creep = 0.
+    set Grain size exponents for diffusion creep = 0.
+
+    set Prefactors for dislocation creep = 0.
+
+  end
+
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.
+  end
+end
+
+# Element types
+subsection Discretization
+  set Composition polynomial degree     = 2
+  set Stokes velocity polynomial degree = 2
+  set Temperature polynomial degree     = 1
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, basic statistics, temperature statistics, visualization
+  set Run postprocessors on nonlinear iterations = true
+  subsection Visualization
+    set List of output variables = density, viscosity, strain rate
+
+
+    #subsection Melt material properties
+    #  set List of properties = compaction viscosity,permeability,fluid density
+    #end
+
+    set Time between graphical output = 0
+    set Interpolate output = false
+  end
+end
+
+# Termination criteria
+subsection Termination criteria
+ set End step = 0
+ set Termination criteria = end step
+end
+
+
+subsection Checkpointing
+  set Time between checkpoint = 10
+end
