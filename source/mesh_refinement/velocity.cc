@@ -36,7 +36,7 @@ namespace aspect
 
       KellyErrorEstimator<dim>::estimate (this->get_mapping(),
                                           this->get_dof_handler(),
-                                          QGauss<dim-1>(this->get_fe().base_element(this->introspection().base_elements.velocities).degree+1),
+                                          QGauss<dim-1>(this->get_fe().base_element(this->introspection().polynomial_degree.velocities +1),
                                           typename FunctionMap<dim>::type(),
                                           this->get_solution(),
                                           indicators,

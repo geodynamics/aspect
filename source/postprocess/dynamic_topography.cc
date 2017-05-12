@@ -32,7 +32,7 @@ namespace aspect
     std::pair<std::string,std::string>
     DynamicTopography<dim>::execute (TableHandler &)
     {
-      const unsigned int quadrature_degree = this->get_fe().base_element(this->introspection().base_elements.velocities).degree;
+      const unsigned int quadrature_degree = this->get_fe().base_element(this->introspection().polynomial_degree.velocities ;
       const QGauss<dim> quadrature_formula(quadrature_degree);
       const QGauss<dim-1> quadrature_formula_face(quadrature_degree);
 

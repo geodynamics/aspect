@@ -606,7 +606,7 @@ namespace aspect
         ref_func.reset (new AnalyticSolutions::FunctionHollowSphere<dim>(material_model->get_mmm()));
       }
 
-      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
+      const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities +2);
 
       Vector<float> cellwise_errors_u (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());

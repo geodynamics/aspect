@@ -36,7 +36,7 @@ namespace aspect
     VelocityBoundaryStatistics<dim>::execute (TableHandler &statistics)
     {
       // create a quadrature formula for the velocity.
-      const QGauss<dim-1> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+1);
+      const QGauss<dim-1> quadrature_formula (this->get_fe().base_element(this->introspection().polynomial_degree.velocities +1);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),
