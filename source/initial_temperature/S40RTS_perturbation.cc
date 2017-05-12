@@ -35,7 +35,7 @@ namespace aspect
     {
       namespace S40RTS
       {
-        // Read in the spherical harmonics that are located in data/initial-conditions/S40RTS
+        // Read in the spherical harmonics that are located in data/initial-temperature/S40RTS
         // and were downloaded from http://www.earth.lsa.umich.edu/~jritsema/research.html
         // Ritsema et al. choose real sine and cosine coefficients that follow the normalization
         // by Dahlen & Tromp, Theoretical Global Seismology (equations B.58 and B.99).
@@ -115,7 +115,7 @@ namespace aspect
         };
 
         // Read in the knot points for the spline interpolation. They are located in data/
-        // initial-conditions/S40RTS and were taken from the plotting script
+        // initial-temperature/S40RTS and were taken from the plotting script
         // lib/libS20/splhsetup.f which is part of the plotting package downloadable at
         // http://www.earth.lsa.umich.edu/~jritsema/research.html
         class SplineDepthsLookup
@@ -294,7 +294,7 @@ namespace aspect
       {
         prm.enter_subsection("S40RTS perturbation");
         {
-          prm.declare_entry("Data directory", "$ASPECT_SOURCE_DIR/data/initial-conditions/S40RTS/",
+          prm.declare_entry("Data directory", "$ASPECT_SOURCE_DIR/data/initial-temperature/S40RTS/",
                             Patterns::DirectoryName (),
                             "The path to the model data. ");
           prm.declare_entry ("Initial condition file name", "S40RTS.sph",

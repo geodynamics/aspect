@@ -35,7 +35,7 @@ namespace aspect
     {
       namespace SAVANI
       {
-        // Read in the spherical harmonics that are located in data/initial-conditions/SAVANI
+        // Read in the spherical harmonics that are located in data/initial-temperature/SAVANI
         // and were downloaded from http://n.ethz.ch/~auerl/research.html
         // choose real sine and cosine coefficients that follow the normalization
         // by Dahlen & Tromp, Theoretical Global Seismology (equations B.58 and B.99).
@@ -118,7 +118,7 @@ namespace aspect
         };
 
         // Read in the knot points for the spline interpolation. They are located in data/
-        // initial-conditions/SAVANI and were taken from the 28 spherical layers of SAVANI
+        // initial-temperature/SAVANI and were taken from the 28 spherical layers of SAVANI
         // tomography model by a matlab script convert_to_knots.m located in the same directory.
         class SplineDepthsLookup
         {
@@ -284,7 +284,7 @@ namespace aspect
       {
         prm.enter_subsection("SAVANI perturbation");
         {
-          prm.declare_entry("Data directory", "$ASPECT_SOURCE_DIR/data/initial-conditions/SAVANI/",
+          prm.declare_entry("Data directory", "$ASPECT_SOURCE_DIR/data/initial-temperature/SAVANI/",
                             Patterns::DirectoryName (),
                             "The path to the model data. ");
           prm.declare_entry ("Initial condition file name", "savani.dlnvs.60.m.ab",

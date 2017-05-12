@@ -107,7 +107,7 @@ namespace aspect
 
         AssertThrow(Utilities::has_unique_entries(model_names),
                     ExcMessage("The list of strings for the parameter "
-                               "'Compositional initial conditions/List of model names' contains entries more than once. "
+                               "'Initial composition model/List of model names' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
 
         const std::string model_name = prm.get ("Model name");
@@ -138,7 +138,7 @@ namespace aspect
           initial_composition_objects.push_back (std_cxx11::shared_ptr<Interface<dim> >
                                                  (std_cxx11::get<dim>(registered_plugins)
                                                   .create_plugin (model_names[name],
-                                                                  "Compositional initial conditions::Model names")));
+                                                                  "Initial composition model::Model names")));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_composition_objects.back()))
             sim->initialize_simulator (this->get_simulator());

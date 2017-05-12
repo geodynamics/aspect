@@ -90,7 +90,7 @@ namespace aspect
       {
         prm.enter_subsection("Adiabatic boundary");
         {
-          prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/initial-conditions/adiabatic-boundary/",
+          prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/initial-temperature/adiabatic-boundary/",
                              Patterns::DirectoryName (),
                              "The path to the isotherm depth data file");
           prm.declare_entry ("Isotherm depth filename",

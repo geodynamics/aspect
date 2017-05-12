@@ -784,7 +784,7 @@ namespace aspect
         prm.enter_subsection ("GPlates model");
         {
           prm.declare_entry ("Data directory",
-                             "$ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/gplates/",
+                             "$ASPECT_SOURCE_DIR/data/boundary-velocity/gplates/",
                              Patterns::DirectoryName (),
                              "The name of a directory that contains the model data. This path "
                              "may either be absolute (if starting with a '/') or relative to "
