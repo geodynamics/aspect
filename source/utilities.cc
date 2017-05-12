@@ -1996,7 +1996,7 @@ namespace aspect
           const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
           Assert (sum_of_weights != 0,
                   ExcMessage ("The sum of the weights may not be equal to zero, because we need to divide through it."));
-          return std::cbrt(averaged_parameter/sum_of_weights);
+          return cbrt(averaged_parameter/sum_of_weights);
         }
       else if (p >= 1000)
         {
