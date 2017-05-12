@@ -31,6 +31,7 @@ s/\@ingroup BoundaryTractionModels/\@ingroup BoundaryTractions/g
 # Rename velocity boundary conditions
 s/velocity_boundary_conditions_model/boundary_velocity/g
 s/velocity_boundary_conditions/boundary_velocity/g
+s/velocity-boundary-conditions/boundary-velocity/g
 s/VelocityBoundaryConditions/BoundaryVelocity/g
 s/Velocity boundary conditions/Boundary velocity/g
 s/VELOCITY_BOUNDARY_CONDITIONS/BOUNDARY_VELOCITY_MODEL/g
@@ -39,6 +40,7 @@ s/\@ingroup BoundaryVelocityModels/\@ingroup BoundaryVelocities/g
 # Rename compositional initial conditions
 s/compositional_initial_conditions__model/initial_composition/g
 s/compositional_initial_conditions/initial_composition/g
+s/compositional-initial-conditions/initial-composition/g
 s/CompositionalInitialConditions/InitialComposition/g
 s/Compositional initial conditions/Initial composition model/g
 s/COMPOSITIONAL_INITIAL_CONDITIONS/INITIAL_COMPOSITION_MODEL/g
@@ -46,8 +48,9 @@ s/\@ingroup CompositionalInitialConditionsModels/\@ingroup InitialCompositions/g
 
 # Rename initial (temperature) conditions
 s/initial_conditions_model/initial_temperature/g
-s/initial_conditions/initial_temperature/g
-s/initial_condition/initial_temperature/g
+s/initial_conditions[^\.][^c]/initial_temperature/g
+s/initial-conditions\//initial-temperature\//g
+s/initial_condition[^s]/initial_temperature/g
 s/InitialConditionsModels/InitialTemperatures/g
 s/InitialConditions/InitialTemperature/g
 s/enter_subsection*("Initial conditions")/enter_subsection ("Initial temperature model")/g
