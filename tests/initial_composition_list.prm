@@ -33,7 +33,7 @@ subsection Initial composition model
   set List of model names = ascii data, function
 
   subsection Ascii data model
-    set Data directory       = $ASPECT_SOURCE_DIR/data/compositional-initial-conditions/ascii-data/test/
+    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
     set Data file name       = box_2d.txt
   end
 

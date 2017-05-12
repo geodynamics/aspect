@@ -83,7 +83,7 @@ end
 # If one wishes to track a property through compositional fields that should
 # not be used to deteremine the heat flux (e.g. finite strain), set the
 # "Use compositional field for heat flux averaging" value for that field to 0. 
-# See Initial conditions section for relationship between heat flux, production
+# See Initial temperature model section for relationship between heat flux, production
 # and initial temperature profile representative of a continental geotherm.
 subsection Heating model
   set Model name = compositional heating
@@ -99,7 +99,7 @@ subsection Compositional fields
   set Names of fields = upper
 end
 
-# Compositional initial conditions 
+# Initial composition model 
 subsection Initial composition model
   set Model name = function
   subsection Function

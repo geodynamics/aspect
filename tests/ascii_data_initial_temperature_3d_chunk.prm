@@ -24,7 +24,7 @@ end
 subsection Initial temperature model
   set Model name = ascii data
   subsection Ascii data model
-    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-conditions/ascii-data/test/
+    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/
     set Data file name       = shell_3d.txt
   end
 end

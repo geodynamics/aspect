@@ -41,7 +41,7 @@ subsection Initial composition model
   set Model name = ascii data
 
   subsection Ascii data model
-    set Data directory       = $ASPECT_SOURCE_DIR/data/compositional-initial-conditions/ascii-data/test/
+    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
     set Data file name       = jelly.txt
   end
 end
