@@ -81,13 +81,20 @@ namespace aspect
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               in.composition[q][c] = solution_values[q][this->introspection().component_indices.compositional_fields[c]];
           }
+        //const MaterialModel::MaterialModelDerivatives<dim> *derivatives = out.template create_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+        std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> > mmd(new MaterialModel::MaterialModelDerivatives<dim> (n_quadrature_points));
+
+        out.additional_outputs.push_back(mmd);
 
         this->get_material_model().evaluate(in, out);
+
+        const MaterialModel::MaterialModelDerivatives<dim> *derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
         {
         	const double eta = out.viscosities[q];
-        	const MaterialModel::MaterialModelDerivatives<dim> *derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();;
+        	//const MaterialModel::MaterialModelDerivatives<dim> *derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();;
         	AssertThrow(derivatives != NULL, ExcMessage ("Error: The newton method requires the derivatives"));
 
         	const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];

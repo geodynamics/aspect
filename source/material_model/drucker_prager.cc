@@ -20,6 +20,8 @@
 
 
 #include <aspect/material_model/drucker_prager.h>
+#include <aspect/utilities.h>
+#include <aspect/newton.h>
 
 using namespace dealii;
 
@@ -27,6 +29,227 @@ namespace aspect
 {
   namespace MaterialModel
   {
+
+  template <int dim>
+    void
+	DruckerPrager<dim>::
+    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+             MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      //set up additional output for the derivatives
+	  MaterialModel::MaterialModelDerivatives<dim> *derivatives;
+      derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+
+      /*if (derivatives == NULL)
+      {
+
+      const unsigned int n_points = out.viscosities.size();
+      const unsigned int n_comp = out.reaction_terms[0].size();
+      out.additional_outputs.push_back(
+        std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+        (new MaterialModel::MaterialModelDerivatives<dim> (n_points)));
+      }
+
+      derivatives = out.template get_additional_output<MaterialModelDerivatives<dim> >();*/
+
+      for (unsigned int i=0; i < in.temperature.size(); ++i)
+        {
+          // const Point<dim> position = in.position[i];
+          const double temperature = in.temperature[i];
+          const double pressure=std::max(in.pressure[i],0.0);
+
+          // calculate effective viscosity
+          if (in.strain_rate.size())
+            {
+              // This function calculates viscosities assuming that all the compositional fields
+              // experience the same strain rate (isostrain). Since there is only one process in
+              // this material model (a general powerlaw) we do not need to worry about how to
+              // distribute the strain-rate and stress over the processes.
+              //double composition_viscosities;
+              SymmetricTensor<2,dim> composition_viscosity_strain_rate_derivatives;//(volume_fractions.size());
+              double composition_viscosity_pressure_derivatives = 0;//(volume_fractions.size());
+
+              const SymmetricTensor<2,dim> strain_rate_deviator = deviator(in.strain_rate[i]);
+        	  const double edot_ii_strict = std::sqrt(0.5*strain_rate_deviator*strain_rate_deviator);
+
+              const double sqrt3 = std::sqrt(3.0);
+              const double degree_to_rad = numbers::PI/180;
+              //const int ct = -1;
+
+              //for (unsigned int c=0; c < volume_fractions.size(); ++c)
+                //{
+                  // If strain rate is zero (like during the first time step) set it to some very small number
+                  // to prevent a division-by-zero, and a floating point exception.
+                  // Otherwise, calculate the square-root of the norm of the second invariant of the deviatoric-
+                  // strain rate (often simplified as epsilondot_ii)
+                  //const double edot_ii = 2.0 * std::max(edot_ii_strict, min_strain_rate[c] * min_strain_rate[c]);
+
+                  // Find effective viscosities for each of the individual phases
+                  // Viscosities should have same number of entries as compositional fields
+
+                  // Power law equation
+                  // edot_ii_i = A_i * stress_ii_i^{n_i} * d^{-m} \exp\left(-\frac{E_i^* + PV_i^*}{n_iRT}\right)
+                  // where ii indicates the square root of the second invariant and
+                  // i corresponds to diffusion or dislocation creep
+
+                  // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
+                  // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
+                  // creep (where n_diff=1) viscosities are stress and strain-rate independent, so the calculation
+                  // of compositional field viscosities is consistent with any averaging scheme.
+                  // TODO: Mailed Bob and asked why the averaging should be arithmetic. Bob replyed that this has to
+                  //       do with effective medium theory. Have to look into this a bit more.
+                  //const double stress_exponent_inv = 1/stress_exponent[c];
+
+                  bool bool_min_strain_rate = false;
+                  double strain_rate_effective = edot_ii_strict;
+                  if(edot_ii_strict < reference_strain_rate * reference_strain_rate)
+                  {
+                	  strain_rate_effective = 2.0 * reference_strain_rate * reference_strain_rate;
+                	  bool_min_strain_rate = true;
+                  }
+
+//std::cout << "i = " << i << "sr = " << strain_rate_effective << " -> " << in.strain_rate[0] << ", eta = " << eta_dislocation << ", A sei c = " << A_sei_c << ", exp_disloc = " << exp_dislocation << ", inner exp = " << (activation_energies_dislocation[c] + activation_volumes_dislocation[c] * in.pressure[i])*RT_inv*stress_exponent_inv << ", aed = " << activation_energies_dislocation[c] << ", avd = " << activation_volumes_dislocation[c] << ", p = " << in.pressure[i] << ", RT_inv = " << RT_inv <<  std::endl;
+                  // plasticity
+                  const double sin_phi = std::sin(angle_of_internal_friction * degree_to_rad);
+                  const double cos_phi = std::cos(angle_of_internal_friction * degree_to_rad);
+                  const double strain_rate_effective_inv = 1/strain_rate_effective;
+                  const double strength_inv_part = 6.0/(sqrt3*(3.0-sin_phi));
+                  const double strength = (dim == 2 ?
+                		                           pressure * sin_phi + cohesion * cos_phi
+                                                   :
+												   (cohesion*cos_phi*strength_inv_part)
+												   + (sin_phi * strength_inv_part) * pressure);
+                  const double eta_plastic     = 0.5 * strength * strain_rate_effective_inv;
+                  //std::cout << "eta plastic = " << eta_plastic << " = 0.5 * " << strength << " * " << strain_rate_effective_inv << std::endl;
+                  //std::cout << "strenght  = " << strength << " = (" << cohesions[c] << "*" << cos_phi << "*" << strength_inv_part << ") + " << (sin_phi * strength_inv_part) * pressure << std::endl;
+
+
+                  /*
+        if (dim==3)
+        {
+          const int ct = -1;
+          strength = ((6.0*cohesion*std::cos(phi))/(std::sqrt(3.0)*(3.0+ct*std::sin(phi)))) +
+                     ((6.0*std::sin(phi))/(std::sqrt(3.0)*(3.0+ct*std::sin(phi)))) * std::max(pressure,0.0);
+        }
+      else strength = std::max(pressure,0.0) * std::sin(phi) + cohesion * std::cos(phi);
+      return strength / (2.0*strain_rate_norm);
+                   */
+
+
+                  const double composition_viscosity = std::max(std::min(eta_plastic, maximum_viscosity), minimum_viscosity);
+
+                  Assert(dealii::numbers::is_finite(composition_viscosity),ExcMessage ("Error: Viscosity is not finite."));
+                  if (/*this->get_parameters().newton_theta != 0 &&*/ derivatives != NULL)
+                    {
+                	  //std::cout << "viscosity = " << composition_viscosities[c] << ", min_visc = " << min_visc[c] << ", viscoplast = " << std::min(eta_viscous,eta_plastic) << ", visco = " << eta_viscous << ", plastic = " << eta_plastic << ", eta_diffusion = " << eta_diffusion << ", eta_dislocation = " << eta_dislocation << std::endl;
+                	  //std::cout << "viscosity = " << composition_viscosities[c] << ", min_visc = " << min_visc[c]  << ", max_visc = " << max_visc[c] << ", bool = " << bool_min_strain_rate << std::endl;
+                      if (!bool_min_strain_rate && composition_viscosity < maximum_viscosity && composition_viscosity > minimum_viscosity)
+                        { //std::cout << "viscous = " << eta_viscous << ", eta_plastic = " << eta_plastic << std::endl;
+
+                    		  //std::cout << "I am fully plastic! " << strain_rate_deviator  << ", " << in.strain_rate[i] << std::endl;
+                    		  composition_viscosity_strain_rate_derivatives = 0.5 * (eta_plastic * (-1/(edot_ii_strict * edot_ii_strict))) * strain_rate_deviator;
+                    		  composition_viscosity_pressure_derivatives = (dim == 2 ?
+                    				                                                      0.5 * sin_phi * strain_rate_effective_inv
+																						  :
+																						  (sin_phi*strength_inv_part));
+                    		  /*std::cout << "B " << eta_viscous << ":" << eta_plastic << ", eIIstict = " << edot_ii_strict << "; "
+                    		  << -1/(edot_ii_strict * edot_ii_strict) << ", " << 0.5 * (eta_plastic * (-1/(edot_ii_strict * edot_ii_strict))) *
+                    		   strain_rate_deviator  << " ; " << sin_phi << "*" << strength_inv_part << ", sr = "
+                    		   << composition_viscosities_strain_rate_derivatives[c] << std::endl;*/
+                        }
+                      else
+                        {
+                          composition_viscosity_strain_rate_derivatives = 0;
+                          //std::cout << "Set " << i << " to 0, becasue of bool_min_strain_rate = " << bool_min_strain_rate << " = " << edot_ii_strict << "<" << min_strain_rate[c] * min_strain_rate[c] << ", max:" << max_visc[c] << ", min:" << min_visc[c]  << std::endl;
+                        }
+                      //std::cout << std::setprecision (15) << "B " << composition_viscosities[c] << " = " << eta_viscous << ":" << eta_plastic << ", " << composition_viscosities_strain_rate_derivatives[c] << " = " << sin_phi << "*" << strength_inv_part << std::endl;
+                    }
+
+                //}
+
+              out.viscosities[i] = composition_viscosity;//Utilities::weighted_p_norm_average(volume_fractions, composition_viscosities, viscosity_averaging_p);
+              /*std::cout << "C " << out.viscosities[i] << " = ";
+              for(unsigned int c=0; c < volume_fractions.size(); ++c)
+            	  std::cout << ", " << composition_viscosities[c];
+              std::cout << std::endl;*/
+              Assert(dealii::numbers::is_finite(out.viscosities[i]),ExcMessage ("Error: Averaged viscosity is not finite."));
+
+              if (/*this->get_parameters().newton_theta != 0 &&*/ derivatives != NULL)
+                {
+            	  //std::cout << "A derivatives->dviscosities_dpressure[i] = " << derivatives->dviscosities_dpressure[i] ;
+                  /*for(unsigned int c=0; c < volume_fractions.size(); ++c)
+                	  std::cout << ", " << composition_viscosities_pressure_derivatives[c];
+                  std::cout << std::endl;*/
+                  derivatives->viscosity_derivative_wrt_strain_rate[i] = composition_viscosity_strain_rate_derivatives;//Utilities::derivatives_weighed_p_norm_average(out.viscosities[i],volume_fractions, composition_viscosities, composition_viscosities_strain_rate_derivatives, viscosity_averaging_p);
+
+                  derivatives->viscosity_derivative_wrt_pressure[i] = composition_viscosity_pressure_derivatives;//Utilities::derivatives_weighed_p_norm_average(out.viscosities[i],volume_fractions, composition_viscosities, composition_viscosities_pressure_derivatives, viscosity_averaging_p);
+//p_norm_average(volume_fractions, composition_viscosities_pressure_derivatives, viscosity_averaging_p);
+                  //std::cout << "B derivatives->dviscosities_dpressure[i] = " << derivatives->dviscosities_dpressure[i] << ", " << composition_viscosities_pressure_derivatives[0] << ":" << composition_viscosities_pressure_derivatives[1] << ":" << composition_viscosities_pressure_derivatives[2] << ":" << composition_viscosities_pressure_derivatives[3] << ":" << composition_viscosities_pressure_derivatives[4] << std::endl;
+                  //std::cout << derivatives->dviscosities_dpressure[i] << ":" << composition_viscosities_pressure_derivatives[0] << ":" << std::endl;
+/*#ifdef DEBUG
+                  for (int x = 0; x < dim; x++)
+                    for (int y = 0; y < dim; y++)
+                      if (!dealii::numbers::is_finite(derivatives->dviscosities_dstrain_rate[i][x][y]))
+                        std::cout << "Error: Averaged viscosity to strain-rate devrivative is not finite." << std::endl;
+
+                  //derivatives->dviscosities_dpressure[i]    = 0;* /
+                  if (!dealii::numbers::is_finite(derivatives->dviscosities_dpressure[i]))
+                    {
+                      std::cout << "Error: Averaged viscosity to pressure devrivative is not finite. " << std::endl;
+                      for (unsigned int c=0; c < volume_fractions.size(); ++c)
+                        std::cout << composition_viscosities_pressure_derivatives[c] << ",";
+                      std::cout << std::endl;
+                    }
+                  Assert(dealii::numbers::is_finite(derivatives->dviscosities_dpressure[i]),ExcMessage ("Error: Averaged dviscosities_dpressure is not finite."));
+                  for (int x = 0; x < dim; x++)
+                    for (int y = 0; y < dim; y++)
+                      Assert(dealii::numbers::is_finite(derivatives->dviscosities_dstrain_rate[i][x][y]),ExcMessage ("Error: Averaged dviscosities_dstrain_rate is not finite."));
+                  //Assert(dealii::numbers::is_nan(out.viscosities[i]),ExcMessage ("Error: Averaged viscosity is not finite."));
+#endif*/
+                  /*if (isnan(derivatives->dviscosities_dpressure[i]))
+                  {
+                                      std::cout << "Error: Averaged viscosity to pressure devrivative is nam: " << derivatives->dviscosities_dpressure[i] << ":" << composition_viscosities_pressure_derivatives[0]  << ":" << composition_viscosities_pressure_derivatives[1] << ":" << composition_viscosities_pressure_derivatives[2] << ":" << composition_viscosities_pressure_derivatives[3] << ":" << composition_viscosities_pressure_derivatives[4]  << ":" << composition_viscosities_pressure_derivatives[5] << ":" << composition_viscosities_pressure_derivatives[6]  << ":" << composition_viscosities_pressure_derivatives[7] << ":" << composition_viscosities_pressure_derivatives[8]  << ":" << composition_viscosities_pressure_derivatives[9] << std::endl;
+                                    AssertThrow(false,ExcMessage ("Error: Averaged viscosity is nan."));
+                  }
+                  if (!dealii::numbers::is_finite(derivatives->dviscosities_dpressure[i]))
+                  {
+                                      std::cout << "Error: Averaged viscosity to pressure devrivative is not finite: " << derivatives->dviscosities_dpressure[i] << ":" << composition_viscosities_pressure_derivatives[0] << std::endl;
+                                    AssertThrow(false,ExcMessage ("Error: Averaged viscosity is not finite."));
+                  }*/
+/*#ifdef DEBUG
+                  for (int x = 0; x < dim; x++)
+                    for (int y = 0; y < dim; y++)
+                      if (!dealii::numbers::is_finite(derivatives->dviscosities_dstrain_rate[i][x][y]))
+                        std::cout << "Error: Averaged viscosity to strain-rate devrivative is not finite." << std::endl;
+
+                  //derivatives->dviscosities_dpressure[i]    = 0;
+                  / *if (isnan(derivatives->dviscosities_dpressure[i]))
+                    std::cout << "Error: Averaged viscosity to pressure devrivative is not finite: " << derivatives->dviscosities_dpressure[i] << ":" << composition_viscosities_pressure_derivatives[0] << std::endl;
+                  AssertThrow(false,ExcMessage ("Error: Averaged viscosity is not finite."))* /
+#endif*/
+                }
+            }
+          out.densities[i] = reference_rho * (1 - thermal_expansivity * (temperature - reference_T));
+          out.thermal_expansion_coefficients[i] = thermal_expansivity;
+          // Specific heat at the given positions.
+          out.specific_heat[i] = reference_specific_heat;
+          // Thermal conductivity at the given positions.
+          out.thermal_conductivities[i] = thermal_conductivities;
+          // Compressibility at the given positions.
+          // The compressibility is given as
+          // $\frac 1\rho \frac{\partial\rho}{\partial p}$.
+          out.compressibilities[i] = 0.0;
+          // Pressure derivative of entropy at the given positions.
+          out.entropy_derivative_pressure[i] = 0.0;
+          // Temperature derivative of entropy at the given positions.
+          out.entropy_derivative_temperature[i] = 0.0;
+          // Change in composition due to chemical reactions at the
+          // given positions. The term reaction_terms[i][c] is the
+          // change in compositional field c at point i.
+          for (unsigned int c=0; c < in.composition[i].size(); ++c)
+            out.reaction_terms[i][c] = 0.0;
+        }
+    }
 
     template <int dim>
     double
@@ -62,10 +285,10 @@ namespace aspect
       // we make sure the pressure is not negative
       const double strength = ( (dim==3)
                                 ?
-                                ( 6.0 * cohesion * std::cos(phi) + 2.0 * std::max(pressure,0.0) * std::sin(phi) )
-                                / ( std::sqrt(3.0) * ( 3.0 + std::sin(phi) ) )
+                                ( 6.0 * cohesion * std::cos(angle_of_internal_friction) + 2.0 * std::max(pressure,0.0) * std::sin(angle_of_internal_friction) )
+                                / ( std::sqrt(3.0) * ( 3.0 + std::sin(angle_of_internal_friction) ) )
                                 :
-                                cohesion * std::cos(phi) + std::max(pressure,0.0) * std::sin(phi) );
+                                cohesion * std::cos(angle_of_internal_friction) + std::max(pressure,0.0) * std::sin(angle_of_internal_friction) );
 
       // Rescale the viscosity back onto the yield surface
       const double viscosity = strength / ( 2.0 * std::sqrt(strain_rate_dev_inv2) );
@@ -108,7 +331,7 @@ namespace aspect
                           const std::vector<double> &, /*composition*/
                           const Point<dim> &) const
     {
-      return thermal_k;
+      return thermal_conductivities;
     }
 
 
@@ -120,7 +343,7 @@ namespace aspect
              const std::vector<double> &, /*composition*/
              const Point<dim> &) const
     {
-      return reference_rho * (1 - thermal_alpha * (temperature - reference_T));
+      return reference_rho * (1 - thermal_expansivity * (temperature - reference_T));
     }
 
 
@@ -132,7 +355,7 @@ namespace aspect
                                    const std::vector<double> &, /*composition*/
                                    const Point<dim> &) const
     {
-      return thermal_alpha;
+      return thermal_expansivity;
     }
 
 
@@ -231,16 +454,16 @@ namespace aspect
           reference_rho              = prm.get_double ("Reference density");
           reference_T                = prm.get_double ("Reference temperature");
           reference_eta              = prm.get_double ("Reference viscosity");
-          thermal_k                  = prm.get_double ("Thermal conductivity");
+          thermal_conductivities     = prm.get_double ("Thermal conductivity");
           reference_specific_heat    = prm.get_double ("Reference specific heat");
-          thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
+          thermal_expansivity              = prm.get_double ("Thermal expansion coefficient");
           prm.enter_subsection ("Viscosity");
           {
             minimum_viscosity        = prm.get_double ("Minimum viscosity");
             maximum_viscosity        = prm.get_double ("Maximum viscosity");
             reference_strain_rate    = prm.get_double ("Reference strain rate");
             // Convert degrees to radians
-            phi                      = prm.get_double ("Angle of internal friction") * numbers::PI/180.0;
+            angle_of_internal_friction = prm.get_double ("Angle of internal friction") * numbers::PI/180.0;
             cohesion                 = prm.get_double ("Cohesion");
           }
           prm.leave_subsection();
@@ -256,10 +479,10 @@ namespace aspect
       this->model_dependence.viscosity = NonlinearDependence::strain_rate;
       this->model_dependence.density = NonlinearDependence::none;
 
-      if (phi==0.0)
+      if (angle_of_internal_friction==0.0)
         this->model_dependence.viscosity |= NonlinearDependence::pressure;
 
-      if (thermal_alpha != 0)
+      if (thermal_expansivity != 0)
         this->model_dependence.density = NonlinearDependence::temperature;
     }
   }
