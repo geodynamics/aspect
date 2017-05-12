@@ -162,7 +162,7 @@ namespace aspect
     MeltViscoPlastic<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      // get all material properties form the visco-plastic model
+      // get all material properties from the visco-plastic model
       DiffusionDislocation<dim>::evaluate(in, out);
 
       // Define elastic time step
@@ -376,6 +376,7 @@ namespace aspect
                       else
                         yield_strength_c = tensile_strength_c + effective_pressure;
 
+                      // TODO add different averagings?
                       yield_strength += volume_fractions[c]*yield_strength_c;
                       tensile_strength += volume_fractions[c]*tensile_strength_c;
                     }
@@ -393,7 +394,7 @@ namespace aspect
         }
 
       // overwrite the reaction terms, which is needed to track the finite strain invariant.
-      if (in.cell && this->get_timestep_number() > 0 && in.strain_rate.size())
+      if (use_strain_weakening && this->get_timestep_number() > 0 && in.strain_rate.size())
         {
 
           // Loop through quadrature points
@@ -418,13 +419,11 @@ namespace aspect
               double porosity = std::max(in.composition[i][porosity_idx],0.0);
 
               melt_out->fluid_viscosities[i] = eta_f;
-              melt_out->permeabilities[i] = (old_porosity[i] > 1e-3 //this->get_melt_handler().melt_transport_threshold
+              melt_out->permeabilities[i] = (old_porosity[i] > this->get_melt_handler().melt_transport_threshold
                                              ?
                                              std::max(reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2),0.0)
                                              :
                                              0.0);
-
-              melt_out->permeabilities[i] = std::max(reference_permeability * std::pow((porosity-1.e-3),3) * std::pow(1.0-porosity,2),0.0);
 
               melt_out->fluid_densities[i] = out.densities[i] + melt_density_change;
               melt_out->fluid_density_gradients[i] = 0.0;
