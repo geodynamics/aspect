@@ -432,7 +432,7 @@ namespace aspect
                       ExcMessage("Postprocessor only works with the inclusion material model."));
         }
 
-      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
+      const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);
 
       Vector<float> cellwise_errors_u (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());

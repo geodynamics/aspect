@@ -42,7 +42,7 @@ namespace aspect
       // so we get them from the finite element.
       if (in.cell && this->get_timestep_number() > 0)
         {
-          const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+1);
+          const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+1);
           FEValues<dim> fe_values (this->get_mapping(),
                                    this->get_fe(),
                                    quadrature_formula,
