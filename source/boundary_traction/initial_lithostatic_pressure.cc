@@ -155,8 +155,6 @@ namespace aspect
       // p'(z) = rho(p,c,T) * |g| * delta_z
       double sum = delta_z * 0.5 * density0 * gravity0;
 
-      double z;
-
       for (unsigned int i=1; i<n_points; ++i)
         {
           AssertThrow (i < pressure.size(), ExcMessage(std::string("The current index ")
