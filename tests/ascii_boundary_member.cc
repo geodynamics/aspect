@@ -123,7 +123,7 @@ namespace aspect
     prm.enter_subsection("Boundary velocity model");
     {
       Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
-                                                            "$ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/ascii-data/test/",
+                                                            "$ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/",
                                                             "box_2d_%s.%d.txt");
     }
     prm.leave_subsection();

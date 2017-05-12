@@ -57,7 +57,7 @@ namespace aspect
       prm.enter_subsection("Initial composition model");
       {
         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                          "$ASPECT_SOURCE_DIR/data/compositional-initial-conditions/ascii-data/test/",
+                                                          "$ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/",
                                                           "box_2d.txt");
       }
       prm.leave_subsection();

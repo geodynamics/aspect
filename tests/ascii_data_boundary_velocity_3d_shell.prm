@@ -50,7 +50,7 @@ subsection Boundary velocity model
   subsection Ascii data model
     set Data file name       = shell_3d_%s.0.txt
     
-    set Data directory = $ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/ascii-data/test/
+    set Data directory = $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/
     set Scale factor = 10
   end
 end

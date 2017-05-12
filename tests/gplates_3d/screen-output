@@ -3,7 +3,7 @@
    Setting up GPlates boundary velocity plugin.
 
 
-   Loading GPlates data boundary file ASPECT_DIR/data/velocity-boundary-conditions/gplates/current_day_1.4.gpml.
+   Loading GPlates data boundary file ASPECT_DIR/data/boundary-velocity/gplates/current_day_1.4.gpml.
 
 
    Loading new velocity file did not succeed.

@@ -1,34 +1,34 @@
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_3d_inner.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_inner.0.txt.
 
 
    Loading new data file did not succeed.
    Assuming constant boundary conditions for rest of model run.
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_3d_outer.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_outer.0.txt.
 
 
    Loading new data file did not succeed.
    Assuming constant boundary conditions for rest of model run.
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_3d_east.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_east.0.txt.
 
 
    Loading new data file did not succeed.
    Assuming constant boundary conditions for rest of model run.
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_3d_west.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_west.0.txt.
 
 
    Loading new data file did not succeed.
    Assuming constant boundary conditions for rest of model run.
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_3d_south.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_south.0.txt.
 
 
    Loading new data file did not succeed.

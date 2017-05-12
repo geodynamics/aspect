@@ -13,7 +13,7 @@
    The ParaView rotation angles are: 32.70 148.06 17.14
    The inverse ParaView rotation angles are: 36.45 -152.58 -1.64
 
-   Loading GPlates data boundary file ASPECT_DIR/data/velocity-boundary-conditions/gplates/current_day.gpml.
+   Loading GPlates data boundary file ASPECT_DIR/data/boundary-velocity/gplates/current_day.gpml.
 
 
    Loading new velocity file did not succeed.

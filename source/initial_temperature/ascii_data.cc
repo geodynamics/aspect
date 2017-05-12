@@ -55,7 +55,7 @@ namespace aspect
       prm.enter_subsection ("Initial temperature model");
       {
         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                          "$ASPECT_SOURCE_DIR/data/initial-conditions/ascii-data/test/",
+                                                          "$ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/",
                                                           "box_2d.txt");
       }
       prm.leave_subsection();

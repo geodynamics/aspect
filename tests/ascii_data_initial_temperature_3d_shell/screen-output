@@ -1,6 +1,6 @@
 
 
-   Loading Ascii data initial file ASPECT_DIR/data/initial-conditions/ascii-data/test/shell_3d.txt.
+   Loading Ascii data initial file ASPECT_DIR/data/initial-temperature/ascii-data/test/shell_3d.txt.
 
 Number of active cells: 24 (on 2 levels)
 Number of degrees of freedom: 1,277 (915+57+305)

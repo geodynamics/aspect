@@ -20,3 +20,12 @@ s/Initial conditions/Initial temperature model/g
 # Rename tracers to particles
 s/tracer/particle/g
 s/Tracer/Particle/g
+
+# Rename velocity boundary conditions
+s/velocity-boundary-conditions/boundary-velocity/g
+
+# Rename compositional initial conditions
+s/compositional-initial-conditions/initial-composition/g
+
+# Rename initial (temperature) conditions
+s/initial-conditions/initial-temperature/g
