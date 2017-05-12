@@ -148,6 +148,12 @@ namespace aspect
         // melt fraction exponent
         double beta;
 
+        double ref_strain_rate;
+
+        // linear viscosity option parameters
+        bool use_linear_viscosities;
+        std::vector<double> linear_viscosities;
+
         // strain weakening parameters
         bool use_strain_weakening;
         std::vector<double> start_strain_weakening_intervals;
@@ -166,6 +172,8 @@ namespace aspect
 
         // elasticity parameters
         std::vector<double> elastic_shear_moduli;
+        double elastic_time_step;
+        bool model_is_viscoelastic;
 
         std::vector<double> compute_volume_fractions(
           const std::vector<double> &compositional_fields) const;

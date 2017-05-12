@@ -165,6 +165,24 @@ namespace aspect
       // get all material properties form the visco-plastic model
       DiffusionDislocation<dim>::evaluate(in, out);
 
+      // Define elastic time step
+      const double dte = elastic_time_step * year_in_seconds;
+
+      // Modify viscosity if not using DiffusionDislocation viscosity
+      if ( use_linear_viscosities == true)
+        { 
+          for (unsigned int i=0; i<in.position.size(); ++i)
+            {
+              const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i]);
+              double linear_viscosity = 0.;
+              for (unsigned int c=0; c< volume_fractions.size(); ++c)
+                {
+                  linear_viscosity += volume_fractions[c] * linear_viscosities[c];
+                }
+              out.viscosities[i] = linear_viscosity;     
+            }
+        }
+
       std::vector<double> maximum_melt_fractions(in.position.size());
       std::vector<double> old_porosity(in.position.size());
       std::vector<double> fluid_pressures(in.position.size());
@@ -189,8 +207,8 @@ namespace aspect
                 {   
                   elastic_shear_modulus += volume_fractions[c] * elastic_shear_moduli[c];
                 }   
-                elastic_out->elastic_viscosities[i] = 1. / ( ( 1. / initial_viscosity ) + ( 1. / ( elastic_shear_modulus * this->get_timestep() ) ) );
-                elastic_out->elastic_evolutions[i] = 1. / ( 1. + ( ( elastic_shear_modulus * this->get_timestep() ) / initial_viscosity ) );
+                elastic_out->elastic_viscosities[i] = 1. / ( ( 1. / initial_viscosity ) + ( 1. / ( elastic_shear_modulus * dte ) ) );
+                elastic_out->elastic_evolutions[i] = 1. / ( 1. + ( ( elastic_shear_modulus * dte ) / initial_viscosity ) );
             }
         }
  
@@ -293,27 +311,37 @@ namespace aspect
                 }
 
               // reduce viscosity due to plastic yielding and the presence of melt
-              if (in.strain_rate.size() && this->get_timestep_number() > 0)
+              if ( in.strain_rate.size() )
                 {
 
                   const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i]);
  
                   // Calculate viscoelastic viscosity
-                  const double initial_viscosity = out.viscosities[i];
-                  double viscoelastic = 0.0;
-                  for (unsigned int c=0; c< volume_fractions.size(); ++c)
+                  if (model_is_viscoelastic == true)
                     {
-                      double elastic_shear_modulus = elastic_shear_moduli[c];
-                      viscoelastic += volume_fractions[c] * 1. / ( ( 1. / initial_viscosity ) + ( 1. / ( elastic_shear_modulus * this->get_timestep() ) ) );
+                      const double initial_viscosity = out.viscosities[i];
+                      double viscoelastic = 0.0;
+  
+                      for (unsigned int c=0; c< volume_fractions.size(); ++c)
+                        {
+                          double elastic_shear_modulus = elastic_shear_moduli[c];
+                          viscoelastic += volume_fractions[c] * 1. / ( ( 1. / initial_viscosity ) + ( 1. / ( elastic_shear_modulus * dte ) ) );
+                        }
+                      out.viscosities[i] = viscoelastic; 
                     }
-                  out.viscosities[i] = viscoelastic; 
-                  
+ 
                   const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
                   out.viscosities[i] *= exp(- alpha_phi * porosity);
 
                   // calculate deviatoric strain rate and viscous stress
-                  const double edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),
-                                                    min_strain_rate);
+                  //const double edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),
+                  //                                  min_strain_rate);
+                  const double edot_ii = ( (this->get_timestep_number() == 0 && in.strain_rate[i].norm() <= std::numeric_limits<double>::min())
+                                           ?
+                                           ref_strain_rate
+                                           :
+                                           std::max(std::sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),
+                                                    min_strain_rate) );
                   double viscous_stress = 2. * out.viscosities[i] * edot_ii * (1.0 - porosity);
 
                   const double effective_pressure = (porosity > this->get_melt_handler().melt_transport_threshold
@@ -456,6 +484,20 @@ namespace aspect
                              "field with the name peridotite. Not used if this field does not "
                              "exist in the model."
                              "Units: $kg/m^3$.");
+
+          prm.declare_entry ("Reference strain rate","1.0e-15",Patterns::Double(0),
+                             "Reference strain rate for first time step. Units: $1 / s$");
+
+          prm.declare_entry ("Linear viscosities", "1.e22",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of linear viscosities for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "The values can be used instead of the viscosities derived from the "
+                             "DiffusionDislocation material model. Units Pa s.");
+          prm.declare_entry ("Use linear viscosities", "false",
+                             Patterns::Bool (),
+                             "Use user-specified linear visocsity values in replace of viscosity "
+                             "values derived from the DiffusionDislocation material mdoel.  Units: None");
 
           prm.declare_entry ("A1", "1085.7",
                              Patterns::Double (),
@@ -606,6 +648,13 @@ namespace aspect
                              "for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "The default value of 75 GPa is representative of mantle rocks. Units: none.");
+          prm.declare_entry ("Elastic time step", "1.e3",
+                             Patterns::Double (0),
+                             "The elastic time step $dte$. Units: $yr$.");
+          prm.declare_entry ("Model is viscoelastic", "false",
+                             Patterns::Bool (),
+                             "Viscosity is modified according elastic parameters. Units: None ");
+
         }
         prm.leave_subsection();
       }
@@ -634,6 +683,8 @@ namespace aspect
           alpha_phi                  = prm.get_double ("Exponential melt weakening factor");
           freezing_rate              = prm.get_double ("Freezing rate");
           depletion_density_change   = prm.get_double ("Depletion density change");
+
+          ref_strain_rate = prm.get_double("Reference strain rate");
 
           A1              = prm.get_double ("A1");
           A2              = prm.get_double ("A2");
@@ -666,6 +717,11 @@ namespace aspect
           min_visc = prm.get_double ("Minimum viscosity");
           max_visc = prm.get_double ("Maximum viscosity");
 
+          use_linear_viscosities = prm.get_bool ("Use linear viscosities");
+          linear_viscosities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Linear viscosities"))),
+                                                                                     n_fields,
+                                                                                     "Linear viscosities");
+
           // Strain weakening parameters
           use_strain_weakening             = prm.get_bool ("Use strain weakening");
           start_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Start strain weakening intervals"))),
@@ -685,7 +741,8 @@ namespace aspect
          elastic_shear_moduli = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Elastic shear moduli"))),
                                                                               n_fields,
                                                                               "Elastic shear moduli");
-
+         elastic_time_step = prm.get_double ("Elastic time step");
+         model_is_viscoelastic = prm.get_bool ("Model is viscoelastic");
 
         }
         prm.leave_subsection();
