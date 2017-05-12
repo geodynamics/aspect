@@ -105,7 +105,7 @@ namespace aspect
 #endif
 
       // If there were expensive iterations add them after a signalling -1.
-      if ((solver_control_cheap.last_check() == SolverControl::State::failure)
+      if ((solver_control_cheap.last_check() == dealii::SolverControl::failure)
           && (solver_control_cheap.last_step() == solver_control_cheap.max_steps()))
         {
           data_point.values.push_back(-1.0);
