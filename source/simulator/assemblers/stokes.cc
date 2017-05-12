@@ -22,11 +22,32 @@
 #include <aspect/utilities.h>
 #include <aspect/assembly.h>
 #include <aspect/simulator_access.h>
+#include <deal.II/base/signaling_nan.h>
 
 namespace aspect
 {
   namespace Assemblers
   {
+    template <int dim>
+    void
+    StokesAssembler<dim>::
+    create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
+    {
+      const unsigned int n_points = outputs.viscosities.size();
+
+      if (this->get_parameters().enable_additional_stokes_rhs
+          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == NULL)
+        {
+          outputs.additional_outputs.push_back(
+            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >
+            (new MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> (n_points)));
+        }
+      Assert(!this->get_parameters().enable_additional_stokes_rhs
+             ||
+             outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >()->rhs_u.size()
+             == n_points, ExcInternalError());
+    }
+
     template <int dim>
     void
     StokesAssembler<dim>::
@@ -113,6 +134,9 @@ namespace aspect
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
+      const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
+      *force = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >();
+
       for (unsigned int q=0; q<n_q_points; ++q)
         {
           for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
@@ -147,13 +171,17 @@ namespace aspect
           gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
 
           const double density = scratch.material_model_outputs.densities[q];
-
           const double JxW = scratch.finite_element_values.JxW(q);
 
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             {
               data.local_rhs(i) += (density * gravity * scratch.phi_u[i])
                                    * JxW;
+
+              if (force != NULL)
+                data.local_rhs(i) += (force->rhs_u[q] * scratch.phi_u[i]
+                                      + pressure_scaling * force->rhs_p[q] * scratch.phi_p[i])
+                                     * JxW;
 
               if (rebuild_stokes_matrix)
                 for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)

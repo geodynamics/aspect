@@ -1,9 +1,10 @@
 
 Number of active cells: 100 (on 1 levels)
-Number of degrees of freedom: 2,767 (882+121+441+441+441+441)
+Number of degrees of freedom: 1,885 (882+121+441+441)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
+   Skipping eii composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+2 iterations.
       Relative Stokes residual after nonlinear iteration 1: 1
@@ -12,7 +13,6 @@ Number of degrees of freedom: 2,767 (882+121+441+441+441+441)
    Postprocessing:
      RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
      Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
-     Number of advected particles:       995
 
 
 

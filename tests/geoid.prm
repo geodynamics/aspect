@@ -1,0 +1,104 @@
+# A simple pure math setup to compute geoid in single degree 2 order 0 perturbation density field.
+# The perturbation is added to a constant density, i.e., degree 0 order 0 component.
+# The analytic solution of the denbsity integral contribution of this case should be -5.3059320038
+# for (2,0) component and 14.1570019498 for degree 0 order 0, and the sum up of the spherical harmonics
+# of dynamic topography should be the same as the grid output in dynamic topography postprocessor.
+
+set Dimension                              = 3
+set Use years in output instead of seconds = true
+set Start time                             = 0
+set End time                               = 0
+set Linear solver tolerance                = 1e-7
+set Adiabatic surface temperature          = 0.0
+set Nonlinear solver scheme                = Stokes only
+
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Thermal expansion coefficient = 1.0
+    set Viscosity                     = 1.0
+    set Thermal conductivity          = 1.0
+    set Reference temperature         = 0.0
+    set Reference density             = 1.0
+    set Reference specific heat       = 1.0
+  end
+end
+
+subsection Discretization
+  set Stokes velocity polynomial degree = 2
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Inner radius  = 200000
+    set Outer radius  = 400000
+  end
+end
+
+
+subsection Model settings
+  set Tangential velocity boundary indicators = inner,outer
+  set Prescribed velocity boundary indicators =
+  set Fixed temperature boundary indicators   =
+  set Include shear heating                   = false
+  set Include adiabatic heating               = false
+  set Include latent heat                     = false
+  set Remove nullspace                        = angular momentum
+end
+
+
+subsection Boundary temperature model
+  set Model name = function
+  subsection Function
+    set Function constants = pi=3.1415926536
+    set Variable names = x,y,z,t
+    set Function expression = (5/2)*sqrt(5/pi)*(3*(z/sqrt(x^2+y^2+z^2))^2-1)
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function constants = pi=3.1415926536
+    set Variable names = x,y,z,t
+    set Function expression = (5/2)*sqrt(5/pi)*(3*(z/sqrt(x^2+y^2+z^2))^2-1)
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude = 9.8
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement          = 1
+  set Initial adaptive refinement        = 0
+  set Strategy                           = density
+end
+
+
+subsection Postprocess
+  set List of postprocessors = basic statistics, geoid, dynamic topography
+
+  subsection Dynamic Topography
+    set Subtract mean of dynamic topography  = true
+  end
+
+  subsection Geoid
+    set Maximum degree = 10
+    set Minimum degree = 0
+    set Output data in geographical coordinates = true
+    set Density above = 0
+    set Density below = 2.0
+    set Also output the spherical harmonic coefficients of geoid anomaly = true
+    set Also output the spherical harmonic coefficients of surface dynamic topography contribution = true
+    set Also output the spherical harmonic coefficients of CMB dynamic topography contribution = true
+    set Also output the spherical harmonic coefficients of density anomaly contribution = true
+  end
+end

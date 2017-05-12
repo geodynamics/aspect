@@ -1,0 +1,4 @@
+New: The dynamic topography post processor now also calculates the
+topography at the bottom of the domain (and not only the upper surface). 
+<br>
+(Jacky Austermann, 2017/05/08)

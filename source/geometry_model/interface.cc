@@ -64,6 +64,26 @@ namespace aspect
       return true;
     }
 
+    template <int dim>
+    std::array<double,dim>
+    Interface<dim>::cartesian_to_natural_coodinates(const Point<dim> &) const
+    {
+      Assert (false,
+              ExcMessage ("The cartesian_to_natural_coodinates function has "
+                          "not been implemented in this geometry model."));
+      return std::array<double,dim>();
+    }
+
+    template <int dim>
+    Point<dim>
+    Interface<dim>::natural_to_cartesian_coodinates(const std::array<double,dim> &) const
+    {
+      Assert (false,
+              ExcMessage ("The natural_to_cartesian_coodinates function has "
+                          "not been implemented in this geometry model."));
+      return Point<dim>();
+    }
+
 
     template <int dim>
     void
@@ -168,7 +188,7 @@ namespace aspect
         if (p->second == boundary_id)
           {
             Assert (name == "",
-                    ExcMessage ("This material model appears to provide multiple "
+                    ExcMessage ("This geometry model appears to provide multiple "
                                 "names for the boundary with indicator <" +
                                 Utilities::int_to_string (boundary_id) + ">."));
             name = p->first;

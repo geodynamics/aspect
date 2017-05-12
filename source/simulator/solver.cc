@@ -550,7 +550,7 @@ namespace aspect
         // TODO: if there was an easy way to know if the caller needs the
         // initial residual we could skip all of this stuff.
         distributed_stokes_solution.block(0) = solution.block(0);
-        denormalize_pressure (this->pressure_adjustment, distributed_stokes_solution, solution);
+        denormalize_pressure (this->last_pressure_normalization_adjustment, distributed_stokes_solution, solution);
         current_constraints.set_zero (distributed_stokes_solution);
 
         // Undo the pressure scaling:
@@ -625,7 +625,7 @@ namespace aspect
 
         remove_nullspace(solution, distributed_stokes_solution);
 
-        this->pressure_adjustment = normalize_pressure(solution);
+        this->last_pressure_normalization_adjustment = normalize_pressure(solution);
 
         pcout << "done." << std::endl;
 
@@ -640,7 +640,7 @@ namespace aspect
 
 
     // Many parts of the solver depend on the block layout (velocity = 0,
-    // pressure = 1). For example the remap vector or the StokesBlock matrix
+    // pressure = 1). For example the linearized_stokes_initial_guess vector or the StokesBlock matrix
     // wrapper. Let us make sure that this holds (and shorten their names):
     const unsigned int block_vel = introspection.block_indices.velocities;
     const unsigned int block_p = (parameters.include_melt_transport) ?
@@ -659,26 +659,27 @@ namespace aspect
     // create a completely distributed vector that will be used for
     // the scaled and denormalized solution and later used as a
     // starting guess for the linear solver
-    LinearAlgebra::BlockVector remap (introspection.index_sets.stokes_partitioning, mpi_communicator);
+    LinearAlgebra::BlockVector linearized_stokes_initial_guess (introspection.index_sets.stokes_partitioning, mpi_communicator);
 
     // copy the velocity and pressure from current_linearization_point into
-    // the vector remap. We need to do the copy because remap has a different
+    // the vector linearized_stokes_initial_guess. We need to do the copy because
+    // linearized_stokes_variables has a different
     // layout than current_linearization_point, which also contains all the
     // other solution variables.
-    remap.block (block_vel) = current_linearization_point.block (block_vel);
+    linearized_stokes_initial_guess.block (block_vel) = current_linearization_point.block (block_vel);
 
-    remap.block (block_p) = current_linearization_point.block (block_p);
-    denormalize_pressure (this->pressure_adjustment, remap, current_linearization_point);
+    linearized_stokes_initial_guess.block (block_p) = current_linearization_point.block (block_p);
+    denormalize_pressure (this->last_pressure_normalization_adjustment, linearized_stokes_initial_guess, current_linearization_point);
 
-    current_constraints.set_zero (remap);
-    remap.block (block_p) /= pressure_scaling;
+    current_constraints.set_zero (linearized_stokes_initial_guess);
+    linearized_stokes_initial_guess.block (block_p) /= pressure_scaling;
 
     // (ab)use the distributed solution vector to temporarily put a residual in
     // (we don't care about the residual vector -- all we care about is the
     // value (number) of the initial residual). The initial residual is returned
     // to the caller (for nonlinear computations).
     const double initial_residual = stokes_block.residual (distributed_stokes_solution,
-                                                           remap,
+                                                           linearized_stokes_initial_guess,
                                                            system_rhs);
 
     // Note: the residual is computed with a zero velocity, effectively computing
@@ -691,7 +692,7 @@ namespace aspect
     // pressure (the current pressure is a good approximation for the static
     // pressure).
     const double residual_u = system_matrix.block(0,1).residual (distributed_stokes_solution.block(0),
-                                                                 remap.block(1),
+                                                                 linearized_stokes_initial_guess.block(1),
                                                                  system_rhs.block(0));
     const double residual_p = system_rhs.block(1).l2_norm();
 
@@ -700,7 +701,7 @@ namespace aspect
 
     // Now overwrite the solution vector again with the current best guess
     // to solve the linear system
-    distributed_stokes_solution = remap;
+    distributed_stokes_solution = linearized_stokes_initial_guess;
 
     // extract Stokes parts of rhs vector
     LinearAlgebra::BlockVector distributed_stokes_rhs(introspection.index_sets.stokes_partitioning);
@@ -714,8 +715,8 @@ namespace aspect
     SolverControl solver_control_cheap (parameters.n_cheap_stokes_solver_steps,
                                         solver_tolerance);
 
-    SolverControl solver_control_expensive (system_matrix.block(block_vel,block_p).m() +
-                                            system_matrix.block(block_p,block_vel).m(), solver_tolerance);
+    SolverControl solver_control_expensive (parameters.n_expensive_stokes_solver_steps,
+                                            solver_tolerance);
 
     solver_control_cheap.enable_history_data();
     solver_control_expensive.enable_history_data();
@@ -759,7 +760,8 @@ namespace aspect
       }
 
     // step 1b: take the stronger solver in case
-    // the simple solver failed
+    // the simple solver failed and attempt solving
+    // it in n_expensive_stokes_solver_steps steps or less.
     catch (SolverControl::NoConvergence)
       {
         SolverFGMRES<LinearAlgebra::BlockVector>
@@ -790,16 +792,23 @@ namespace aspect
                 // output solver history
                 std::ofstream f((parameters.output_directory+"solver_history.txt").c_str());
 
-                for (unsigned int i=0; i<solver_control_cheap.get_history_data().size(); ++i)
-                  f << i << " " << solver_control_cheap.get_history_data()[i] << "\n";
+                // Only request the solver history if a history has actually been created
+                if (parameters.n_cheap_stokes_solver_steps > 0)
+                  {
+                    for (unsigned int i=0; i<solver_control_cheap.get_history_data().size(); ++i)
+                      f << i << " " << solver_control_cheap.get_history_data()[i] << "\n";
 
-                f << "\n";
+                    f << "\n";
+                  }
+
 
                 for (unsigned int i=0; i<solver_control_expensive.get_history_data().size(); ++i)
                   f << i << " " << solver_control_expensive.get_history_data()[i] << "\n";
 
                 f.close();
 
+                // avoid a deadlock that was fixed after deal.II 8.5.0
+#if DEAL_II_VERSION_GTE(9,0,0)
                 AssertThrow (false,
                              ExcMessage (std::string("The iterative Stokes solver "
                                                      "did not converge. It reported the following error:\n\n")
@@ -807,9 +816,25 @@ namespace aspect
                                          exc.what()
                                          + "\n See " + parameters.output_directory+"solver_history.txt"
                                          + " for convergence history."));
+#else
+                std::cerr << "The iterative Stokes solver "
+                          << "did not converge. It reported the following error:\n\n"
+                          << exc.what()
+                          << "\n See "
+                          << parameters.output_directory
+                          << "solver_history.txt for convergence history."
+                          << std::endl;
+                std::abort();
+#endif
               }
             else
-              throw QuietException();
+              {
+#if DEAL_II_VERSION_GTE(9,0,0)
+                throw QuietException();
+#else
+                std::abort();
+#endif
+              }
           }
       }
 
@@ -834,7 +859,7 @@ namespace aspect
 
     remove_nullspace(solution, distributed_stokes_solution);
 
-    this->pressure_adjustment = normalize_pressure(solution);
+    this->last_pressure_normalization_adjustment = normalize_pressure(solution);
 
     // print the number of iterations to screen
     pcout << solver_control_cheap.last_step() << '+'

@@ -1,0 +1,99 @@
+# A description of the SolKZ benchmark using compositional fields
+# for which a known solution is available. See the manual for
+# more information.
+
+set Additional shared libraries            = ./libsolkz_compositional_fields.so
+
+############### Global parameters
+
+set Dimension                              = 2
+
+set Start time                             = 0
+set End time                               = 0
+
+set Output directory                       = output
+
+set Pressure normalization                 = volume
+set Nonlinear solver scheme                = Stokes only
+
+############### Parameters describing the model
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+subsection Model settings
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = left, right, bottom, top
+  set Zero velocity boundary indicators       =
+end
+
+subsection Material model
+  set Model name = SolKzCompositionalMaterial
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+############### Parameters describing the temperature field
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+subsection Initial temperature model
+  set Model name = perturbed box
+end
+
+############### Parameters describing the discretization
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+  set Use locally conservative discretization = false
+
+  # Whether to use a composition discretization that is discontinuous as
+  # opposed to continuous. This then requires the assembly of face terms
+  # between cells, and weak imposition of boundary terms for the composition
+  # field via the discontinuous Galerkin method.
+
+  set Use discontinuous composition discretization = true
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 5
+end
+
+############### Parameters describing the compositional field
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = density_comp, viscosity_comp
+  set Compositional field methods = field, field
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi = 3.1415926536
+    set Function expression = -1 * sin(2*z) * cos(3*pi*x); exp(log(1e6)*z)
+  end
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = visualization, SolKzPostprocessor
+  subsection Visualization
+    set Output format = vtu
+    set Number of grouped files = 1
+    set Time between graphical output = 0
+    set List of output variables = density, viscosity
+  end
+end

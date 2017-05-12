@@ -173,6 +173,7 @@ namespace aspect
     :
     FEVariableCollection<dim>(variable_definition),
     n_components (FEVariableCollection<dim>::n_components()),
+    n_compositional_fields (parameters.n_compositional_fields),
     use_discontinuous_temperature_discretization (parameters.use_discontinuous_temperature_discretization),
     use_discontinuous_composition_discretization (parameters.use_discontinuous_composition_discretization),
     component_indices (internal::setup_component_indices<dim>(*this)),

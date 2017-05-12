@@ -31,6 +31,7 @@
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/quadrature_lib.h>
+#include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/constraint_matrix.h>
 #include <deal.II/lac/block_sparsity_pattern.h>
 #include <deal.II/lac/sparsity_tools.h>
@@ -212,6 +213,8 @@ namespace aspect
 
     dof_handler (triangulation),
 
+    last_pressure_normalization_adjustment (numbers::signaling_nan<double>()),
+
     rebuild_stokes_matrix (true),
     rebuild_stokes_preconditioner (true)
   {
@@ -359,6 +362,29 @@ namespace aspect
                                      "> is listed as having more "
                                      "than one type of velocity or traction boundary condition in the input file."));
           }
+
+      // Check that the periodic boundaries do not have other boundary conditions set
+      typedef std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >
+      periodic_boundary_set;
+      periodic_boundary_set pbs = geometry_model->get_periodic_boundary_pairs();
+
+      for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
+        {
+          //Throw error if we are trying to use the same boundary for more than one boundary condition
+          AssertThrow( is_element( (*p).first.first, parameters.fixed_temperature_boundary_indicators ) == false &&
+                       is_element( (*p).first.second, parameters.fixed_temperature_boundary_indicators ) == false &&
+                       is_element( (*p).first.first, parameters.fixed_composition_boundary_indicators ) == false &&
+                       is_element( (*p).first.second, parameters.fixed_composition_boundary_indicators ) == false &&
+                       is_element( (*p).first.first, boundary_indicator_lists[0] ) == false && // zero velocity
+                       is_element( (*p).first.second, boundary_indicator_lists[0] ) == false && // zero velocity
+                       is_element( (*p).first.first, boundary_indicator_lists[1] ) == false && // tangential velocity
+                       is_element( (*p).first.second, boundary_indicator_lists[1] ) == false && // tangential velocity
+                       is_element( (*p).first.first, boundary_indicator_lists[2] ) == false && // free surface
+                       is_element( (*p).first.second, boundary_indicator_lists[2] ) == false && // free surface
+                       is_element( (*p).first.first, boundary_indicator_lists[3] ) == false && // prescribed traction or velocity
+                       is_element( (*p).first.second, boundary_indicator_lists[3] ) == false,  // prescribed traction or velocity
+                       ExcMessage("Periodic boundaries must not have boundary conditions set."));
+        }
 
       const std::set<types::boundary_id> all_boundary_indicators
         = geometry_model->get_used_boundary_indicators();
@@ -929,7 +955,7 @@ namespace aspect
         // obtain the boundary indicators that belong to Dirichlet-type
         // composition boundary conditions and interpolate the composition
         // there
-        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
           for (std::set<types::boundary_id>::const_iterator
                p = parameters.fixed_composition_boundary_indicators.begin();
                p != parameters.fixed_composition_boundary_indicators.end(); ++p)
@@ -1024,7 +1050,7 @@ namespace aspect
             }
         }
       coupling[x.temperature][x.temperature] = DoFTools::always;
-      for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+      for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
         {
           const AdvectionField adv_field (AdvectionField::composition(c));
           const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
@@ -1069,7 +1095,7 @@ namespace aspect
 
         if (parameters.use_discontinuous_composition_discretization)
           {
-            for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+            for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
               {
                 const AdvectionField adv_field (AdvectionField::composition(c));
                 const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
@@ -1091,7 +1117,6 @@ namespace aspect
               }
           }
 
-#if DEAL_II_VERSION_GTE(8,5,0)
         DoFTools::make_flux_sparsity_pattern (dof_handler,
                                               sp,
                                               constraints, false,
@@ -1099,26 +1124,6 @@ namespace aspect
                                               face_coupling,
                                               Utilities::MPI::
                                               this_mpi_process(mpi_communicator));
-#else
-        if (Utilities::MPI::n_mpi_processes(mpi_communicator) == 1)
-          {
-            DoFTools::make_sparsity_pattern (dof_handler,
-                                             coupling, sp,
-                                             constraints, false,
-                                             Utilities::MPI::
-                                             this_mpi_process(mpi_communicator));
-            DoFTools::make_flux_sparsity_pattern (dof_handler,
-                                                  sp,
-                                                  coupling,
-                                                  face_coupling);
-          }
-        else
-          DoFTools::make_flux_sparsity_pattern (dof_handler,
-                                                sp,
-                                                constraints, false,
-                                                Utilities::MPI::
-                                                this_mpi_process(mpi_communicator));
-#endif
       }
     else
       DoFTools::make_sparsity_pattern (dof_handler,
@@ -1176,7 +1181,7 @@ namespace aspect
       coupling[x.pressure][x.pressure] = DoFTools::always;
     coupling[x.temperature][x.temperature] = DoFTools::always;
 
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
       {
         const AdvectionField adv_field (AdvectionField::composition(c));
         const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
@@ -1221,7 +1226,7 @@ namespace aspect
 
         if (parameters.use_discontinuous_composition_discretization)
           {
-            for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+            for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
               {
                 const AdvectionField adv_field (AdvectionField::composition(c));
                 const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
@@ -1243,7 +1248,6 @@ namespace aspect
               }
           }
 
-#if DEAL_II_VERSION_GTE(8,5,0)
         DoFTools::make_flux_sparsity_pattern (dof_handler,
                                               sp,
                                               constraints, false,
@@ -1251,26 +1255,6 @@ namespace aspect
                                               face_coupling,
                                               Utilities::MPI::
                                               this_mpi_process(mpi_communicator));
-#else
-        if (Utilities::MPI::n_mpi_processes(mpi_communicator) == 1)
-          {
-            DoFTools::make_sparsity_pattern (dof_handler,
-                                             coupling, sp,
-                                             constraints, false,
-                                             Utilities::MPI::
-                                             this_mpi_process(mpi_communicator));
-            DoFTools::make_flux_sparsity_pattern (dof_handler,
-                                                  sp,
-                                                  coupling,
-                                                  face_coupling);
-          }
-        else
-          DoFTools::make_flux_sparsity_pattern (dof_handler,
-                                                sp,
-                                                constraints, false,
-                                                Utilities::MPI::
-                                                this_mpi_process(mpi_communicator));
-#endif
       }
     else
       DoFTools::make_sparsity_pattern (dof_handler,
@@ -1375,19 +1359,6 @@ namespace aspect
 
       for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
         {
-          //Throw error if we are trying to use the same boundary for more than one boundary condition
-          Assert( is_element( (*p).first.first, parameters.fixed_temperature_boundary_indicators ) == false &&
-                  is_element( (*p).first.second, parameters.fixed_temperature_boundary_indicators ) == false &&
-                  is_element( (*p).first.first, parameters.zero_velocity_boundary_indicators ) == false &&
-                  is_element( (*p).first.second, parameters.zero_velocity_boundary_indicators ) == false &&
-                  is_element( (*p).first.first, parameters.tangential_velocity_boundary_indicators ) == false &&
-                  is_element( (*p).first.second, parameters.tangential_velocity_boundary_indicators ) == false &&
-                  parameters.prescribed_velocity_boundary_indicators.find( (*p).first.first)
-                  == parameters.prescribed_velocity_boundary_indicators.end() &&
-                  parameters.prescribed_velocity_boundary_indicators.find( (*p).first.second)
-                  == parameters.prescribed_velocity_boundary_indicators.end(),
-                  ExcMessage("Periodic boundaries must not have boundary conditions set."));
-
           DoFTools::make_periodicity_constraints(dof_handler,
                                                  (*p).first.first,  //first boundary id
                                                  (*p).first.second, //second boundary id
@@ -1943,7 +1914,7 @@ namespace aspect
           current_linearization_point.block(introspection.block_indices.temperature)
             = solution.block(introspection.block_indices.temperature);
 
-          for (unsigned int c=0; c < parameters.n_compositional_fields; ++c)
+          for (unsigned int c=0; c < introspection.n_compositional_fields; ++c)
             {
               const AdvectionField adv_field (AdvectionField::composition(c));
               const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
@@ -1963,7 +1934,7 @@ namespace aspect
                 }
             }
 
-          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
             current_linearization_point.block(introspection.block_indices.compositional_fields[c])
               = solution.block(introspection.block_indices.compositional_fields[c]);
 
@@ -2049,7 +2020,7 @@ namespace aspect
         {
           double initial_temperature_residual = 0;
           double initial_stokes_residual      = 0;
-          std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
+          std::vector<double> initial_composition_residual (introspection.n_compositional_fields,0);
 
           do
             {
@@ -2068,9 +2039,9 @@ namespace aspect
               current_linearization_point.block(introspection.block_indices.temperature)
                 = solution.block(introspection.block_indices.temperature);
               rebuild_stokes_matrix = true;
-              std::vector<double> relative_composition_residual (parameters.n_compositional_fields,0);
+              std::vector<double> relative_composition_residual (introspection.n_compositional_fields,0);
 
-              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                 {
                   const AdvectionField adv_field (AdvectionField::composition(c));
                   typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
@@ -2105,7 +2076,7 @@ namespace aspect
 
               // for consistency we update the current linearization point only after we have solved
               // all fields, so that we use the same point in time for every field when solving
-              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                 current_linearization_point.block(introspection.block_indices.compositional_fields[c])
                   = solution.block(introspection.block_indices.compositional_fields[c]);
 
@@ -2131,13 +2102,13 @@ namespace aspect
               // write the residual output in the same order as the output when
               // solving the equations, output only relative residuals
               pcout << "      Relative nonlinear residuals: " << relative_temperature_residual;
-              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                 pcout << ", " << relative_composition_residual[c];
               pcout << ", " << relative_stokes_residual;
               pcout << std::endl;
 
               double max = 0.0;
-              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                 {
                   // in models with melt migration the melt advection equation includes the divergence of the velocity
                   // and can not be expected to converge to a smaller value than the residual of the Stokes equation.
@@ -2188,7 +2159,7 @@ namespace aspect
           current_linearization_point.block(introspection.block_indices.temperature)
             = solution.block(introspection.block_indices.temperature);
 
-          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
             {
               const AdvectionField adv_field (AdvectionField::composition(c));
               typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
@@ -2208,7 +2179,7 @@ namespace aspect
                 }
             }
 
-          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
             current_linearization_point.block(introspection.block_indices.compositional_fields[c])
               = solution.block(introspection.block_indices.compositional_fields[c]);
 
@@ -2298,7 +2269,7 @@ namespace aspect
           current_linearization_point.block(introspection.block_indices.temperature)
             = solution.block(introspection.block_indices.temperature);
 
-          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
             {
               const AdvectionField adv_field (AdvectionField::composition(c));
               typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
@@ -2318,7 +2289,7 @@ namespace aspect
                 }
             }
 
-          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
             current_linearization_point.block(introspection.block_indices.compositional_fields[c])
               = solution.block(introspection.block_indices.compositional_fields[c]);
 

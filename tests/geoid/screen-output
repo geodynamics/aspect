@@ -1,0 +1,39 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Number of active cells: 768 (on 2 levels)
+Number of degrees of freedom: 28,690 (20,790+970+6,930)
+
+*** Timestep 0:  t=0 years
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+15 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 1
+   Solving Stokes system... 0+0 iterations.
+      Relative Stokes residual after nonlinear iteration 2: 1.92946e-08
+
+   Postprocessing:
+
+     Model domain depth (m):                        200000
+     Temperature contrast across model domain (K):  0
+     Reference depth (m):                           0
+     Reference temperature (K):                     0
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     9.8
+     Reference density (kg/m^3):                    1
+     Reference thermal expansion coefficient (1/K): 1
+     Reference specific heat capacity (J/(K*kg)):   1
+     Reference thermal conductivity (W/(m*K)):      1
+     Reference viscosity (Pa*s):                    1
+     Reference thermal diffusivity (m^2/s):         1
+     Rayleigh number:                               0
+
+     Writing geoid anomaly:      output-geoid/geoid_anomaly.00000
+     Writing dynamic topography: output-geoid/dynamic_topography.00000
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

@@ -9,4 +9,4 @@
 # 9: Iterations for temperature solver
 # 10: Iterations for composition solver 1
 # 11: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 4096 45957 16641 16641 3 0 0 output-melt_property_visualization/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 1024 11717 4225 4225 1 0 0 output-melt_property_visualization/solution/solution-00000 

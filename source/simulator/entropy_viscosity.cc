@@ -218,7 +218,7 @@ namespace aspect
     Assert(viscosity_per_cell.size()==triangulation.n_active_cells(), ExcInternalError());
 
     if (advection_field.field_type == AdvectionField::compositional_field)
-      Assert(parameters.n_compositional_fields > advection_field.compositional_variable, ExcInternalError());
+      Assert(introspection.n_compositional_fields > advection_field.compositional_variable, ExcInternalError());
 
     viscosity_per_cell = 0.0;
 
@@ -255,7 +255,7 @@ namespace aspect
                                   Quadrature<dim-1> (),
                                   update_flags,
                                   face_update_flags,
-                                  parameters.n_compositional_fields);
+                                  introspection.n_compositional_fields);
 
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
     for (; cell<dof_handler.end(); ++cell)
@@ -301,7 +301,7 @@ namespace aspect
         scratch.finite_element_values[introspection.extractors.pressure].get_function_values (old_old_solution,
             scratch.old_old_pressure);
 
-        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
           {
             scratch.finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(old_solution,
                 scratch.old_composition_values[c]);
@@ -363,7 +363,7 @@ namespace aspect
             scratch.material_model_inputs.velocity[q] = (scratch.old_velocity_values[q] + scratch.old_old_velocity_values[q]) / 2;
             scratch.material_model_inputs.pressure_gradient[q] = (scratch.old_pressure_gradients[q] + scratch.old_old_pressure_gradients[q]) / 2;
 
-            for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+            for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
               scratch.material_model_inputs.composition[q][c] = (scratch.old_composition_values[c][q] + scratch.old_old_composition_values[c][q]) / 2;
             scratch.material_model_inputs.strain_rate[q] = (scratch.old_strain_rates[q] + scratch.old_old_strain_rates[q]) / 2;
           }

@@ -853,6 +853,11 @@ namespace aspect
        * surface or volume average is decided by a parameter in the
        * input file.
        *
+       * @note This function is called after setting the initial
+       * pressure field in compute_initial_pressure_field() and at the end
+       * of solve_stokes(). This makes sense because these are exactly the
+       * places where the pressure is modified or re-computed.
+       *
        * @return This function returns the pressure adjustment by value.
        * This is so that its negative can later be used again in
        * denormalize_pressure().
@@ -863,7 +868,30 @@ namespace aspect
       double normalize_pressure(LinearAlgebra::BlockVector &vector) const;
 
       /**
-       * Invert the action of the normalize_pressure() function above.
+       * Invert the action of the normalize_pressure() function above. This
+       * means that we move from a pressure that satisfies the pressure
+       * normalization (e.g., has a zero average pressure, or a zero average
+       * surface pressure) to one that does not actually satisfy this
+       * normalization, and this doesn't seem to make sense because we are
+       * not interested in such a pressure.
+       *
+       * Indeed, this function is only called at the very beginning of
+       * solve_stokes() before we compute the initial (linear) residual
+       * of the linear system $Ax=b$ that corresponds to the Stokes system,
+       * where $x$ is the variable for which the pressure is adjusted
+       * back to the "wrong" form. Because stokes_system() calls
+       * normalize_pressure() at the end of its operations, no such
+       * "wrong" pressure ever escapes the realm of solve_stokes(). The
+       * "wrong" pressure is then used for two purposes in that function:
+       * (i) To compute the initial Stokes residual, which makes sense
+       * because it can only be zero (if we solved the same linear system
+       * twice) if we re-use the exact same pressure as we got from the
+       * previous solve -- i.e., before we called normalize_pressure()
+       * at the end of the solve. (ii) To initialize the solution vector
+       * before calling the GMRES solver, which also makes sense because
+       * the best guess vector for GMRES is the one that had previously
+       * come out of GMRES, namely the one on which we later called
+       * normalize_pressure().
        *
        * This function modifies @p vector in-place. In some cases, we need
        * locally_relevant values of the pressure. To avoid creating a new vector
@@ -875,7 +903,10 @@ namespace aspect
        * @note The adjustment made in this function is done using the
        * negative of the @p pressure_adjustment function argument that
        * would typically have been computed and returned by the
-       * normalize_pressure() function.
+       * normalize_pressure() function. This value is typically stored in
+       * the member variable @p last_pressure_normalization_adjustment,
+       * but the current function doesn't read this variable but instead
+       * gets the adjustment variable from the given argument.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
@@ -1350,10 +1381,10 @@ namespace aspect
       ConstraintMatrix                                          current_constraints;
 
       /**
-       * The latest correction computed by normalize_pressure(). We store this
-       * so we can undo the correction in denormalize_pressure().
+       * A place to store the latest correction computed by normalize_pressure().
+       * We store this so we can undo the correction in denormalize_pressure().
        */
-      double                                                    pressure_adjustment;
+      double                                                    last_pressure_normalization_adjustment;
 
       /**
        * Scaling factor for the pressure as explained in the

@@ -1,0 +1,1 @@
+set Additional shared libraries = tests/libweighted_p_norm_average.so

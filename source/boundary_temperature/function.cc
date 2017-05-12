@@ -113,13 +113,6 @@ namespace aspect
       {
         prm.enter_subsection("Function");
         {
-          /**
-           * Choose the coordinates to evaluate the maximum refinement level
-           * function. The function can be declared in dependence of depth,
-           * cartesian coordinates or spherical coordinates. Note that the order
-           * of spherical coordinates is r,phi,theta and not r,theta,phi, since
-           * this allows for dimension independent expressions.
-           */
           prm.declare_entry ("Coordinate system", "cartesian",
                              Patterns::Selection ("cartesian|spherical|depth"),
                              "A selection that determines the assumed coordinate "

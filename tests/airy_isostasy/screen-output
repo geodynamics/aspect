@@ -1,0 +1,46 @@
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
+
+Number of free surface degrees of freedom: 2178
+*** Timestep 0:  t=0 years
+   Solving mesh velocity system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+5 iterations.
+
+Number of active cells: 1,264 (on 7 levels)
+Number of degrees of freedom: 22,397 (10,522+1,353+5,261+5,261)
+
+Number of free surface degrees of freedom: 2706
+*** Timestep 0:  t=0 years
+   Solving mesh velocity system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+3 iterations.
+
+Number of active cells: 2,128 (on 8 levels)
+Number of degrees of freedom: 37,750 (17,742+2,266+8,871+8,871)
+
+Number of free surface degrees of freedom: 4532
+*** Timestep 0:  t=0 years
+   Solving mesh velocity system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+5 iterations.
+
+   Postprocessing:
+     RMS, max velocity:    6.62e+05 m/year, 8.87e+05 m/year
+     Pressure min/avg/max: -0.6507 Pa, 5.005 Pa, 10 Pa
+     Topography min/max:   0 m, 0 m
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

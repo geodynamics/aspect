@@ -1,0 +1,7 @@
+New: ASPECT can now compute geoid in 3D spherical shell geometry. 
+The calculation is based on spherical harmonics from min to max degree and 
+the final results are transferred into cartesian coordinates. The users can 
+also choose to output the spherical harmonics of geoid, density contribution part, 
+surface dynamic topography part, and CMB dynamic topography part respectively.
+<br>
+(Shangxin Liu and Ian Rose, 2017/05/11)

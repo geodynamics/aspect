@@ -735,6 +735,7 @@ namespace aspect
                                    "parallel ellipsoidal chunk will be created. The points are defined in the input "
                                    "file by longitude:latitude. It is also possible to define additional subdivisions of the "
                                    "mesh in each direction. Faces of the model are defined as 0, west; 1,east; 2, south; 3, "
-                                   "north; 4, inner; 5, outer. ")
+                                   "north; 4, inner; 5, outer.\n\n"
+                                   "This geometry model supports initial topography for deforming the initial mesh.")
   }
 }

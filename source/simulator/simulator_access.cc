@@ -196,7 +196,7 @@ namespace aspect
   unsigned int
   SimulatorAccess<dim>::n_compositional_fields () const
   {
-    return simulator->parameters.n_compositional_fields;
+    return simulator->introspection.n_compositional_fields;
   }
 
 

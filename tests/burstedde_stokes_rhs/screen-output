@@ -1,0 +1,24 @@
+
+Loading shared library <./libburstedde_stokes_rhs.so>
+
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 3,041 (2,187+125+729)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+XYZ iterations.
+      Relative Stokes residual after nonlinear iteration 1: 1
+   Solving Stokes system... 0+XYZ iterations.
+      Relative Stokes residual after nonlinear iteration 2: 6.80562e-13
+
+   Postprocessing:
+     RMS, max velocity:             4.3 m/s, 13.2 m/s
+     Errors u_L1, p_L1, u_L2, p_L2: 6.029938e-01, 1.448270e-03, 1.059164e+00, 3.023064e-03
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

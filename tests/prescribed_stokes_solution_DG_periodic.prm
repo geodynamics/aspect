@@ -1,0 +1,93 @@
+# test DG advection solver on a PrescribedStokesSolution (u,v) = (0,1 )
+# with periodic boundary conditions on both x and y axises 
+set Dimension                              = 2
+
+set Use years in output instead of seconds = false
+set End time                               = 1
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+subsection Prescribed Stokes solution  
+  set Model name = function
+  subsection Velocity function
+  set Function expression = 0;1
+  end
+end
+set Nonlinear solver scheme                = Advection only
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X periodic = true
+    set Y periodic = true
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = pi=3.1415926536
+    set Function expression = cos(2*pi*x)*sin(2*pi*y)
+  end
+end
+
+
+subsection Boundary temperature model
+  set Model name = box
+  subsection Box
+    set Bottom temperature = 0
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 
+  set Zero velocity boundary indicators       = 
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10   # = Ra / Thermal expansion coefficient
+  end
+end
+
+subsection Material model
+  set Model name = simple # default:
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 0
+    set Viscosity                     = 1
+  end
+end
+
+subsection Discretization
+  set Temperature polynomial degree = 2
+  set Use discontinuous temperature discretization = true
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 3
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics
+end

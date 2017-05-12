@@ -299,6 +299,13 @@ namespace aspect
                        "zero, i.e., we immediately start with the better but more expensive "
                        "preconditioner.");
 
+    prm.declare_entry ("Maximum number of expensive Stokes solver steps", "1000",
+                       Patterns::Integer(0),
+                       "This sets the maximum number of iterations used in the expensive Stokes solver. "
+                       "If this value is set too low for the size of the problem, the Stokes solver will "
+                       "not converge and return an error message pointing out that the user didn't allow "
+                       "a sufficiently large number of iterations for the iterative solver to converge.");
+
     prm.declare_entry ("Temperature solver tolerance", "1e-12",
                        Patterns::Double(0,1),
                        "The relative tolerance up to which the linear system for "
@@ -539,6 +546,13 @@ namespace aspect
                          "\n\n"
                          "Note that while more than one operation can be selected it only makes sense to "
                          "pick one rotational and one translational operation.");
+      prm.declare_entry ("Enable additional Stokes RHS", "false",
+                         Patterns::Bool (),
+                         "Whether to ask the material model for additional terms for the right-hand side "
+                         "of the Stokes equation. This feature is likely only used when implementing force "
+                         "vectors for manufactured solution problems and requires filling additional outputs "
+                         "of type AdditionalMaterialOutputsStokesRHS.");
+
     }
     prm.leave_subsection ();
 
@@ -977,6 +991,7 @@ namespace aspect
     linear_solver_A_block_tolerance = prm.get_double ("Linear solver A block tolerance");
     linear_solver_S_block_tolerance = prm.get_double ("Linear solver S block tolerance");
     n_cheap_stokes_solver_steps     = prm.get_integer ("Number of cheap Stokes solver steps");
+    n_expensive_stokes_solver_steps = prm.get_integer ("Maximum number of expensive Stokes solver steps");
     temperature_solver_tolerance    = prm.get_double ("Temperature solver tolerance");
     composition_solver_tolerance    = prm.get_double ("Composition solver tolerance");
 
@@ -1057,6 +1072,7 @@ namespace aspect
     prm.enter_subsection ("Model settings");
     {
       include_melt_transport = prm.get_bool ("Include melt transport");
+      enable_additional_stokes_rhs = prm.get_bool ("Enable additional Stokes RHS");
 
       {
         nullspace_removal = NullspaceRemoval::none;

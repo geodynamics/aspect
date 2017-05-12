@@ -71,7 +71,7 @@ namespace aspect
     //
     //TODO: it would be great if we had a cleaner way than iterating to 1+n_fields.
     // Additionally, the n==1 logic for normalization at the bottom is not pretty.
-    for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
+    for (unsigned int n=0; n<1+introspection.n_compositional_fields; ++n)
       {
         AdvectionField advf = ((n == 0) ? AdvectionField::temperature()
                                : AdvectionField::composition(n-1));
@@ -91,7 +91,6 @@ namespace aspect
 
         std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
 
-#if DEAL_II_VERSION_GTE(8,5,0)
         const VectorFunctionFromScalarFunctionObject<dim, double> &advf_init_function =
           (advf.is_temperature()
            ?
@@ -145,50 +144,6 @@ namespace aspect
                       }
                   }
               }
-#else
-        for (typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
-             cell != dof_handler.end(); ++cell)
-          if (cell->is_locally_owned())
-            {
-              fe_values.reinit (cell);
-
-              // go through the temperature/composition dofs and set their global values
-              // to the temperature/composition field interpolated at these points
-              cell->get_dof_indices (local_dof_indices);
-              for (unsigned int i=0; i<finite_element.base_element(base_element).dofs_per_cell; ++i)
-                {
-                  const unsigned int system_local_dof
-                    = finite_element.component_to_system_index(advf.component_index(introspection),
-                                                               /*dof index within component=*/i);
-
-                  const double value =
-                    (advf.is_temperature()
-                     ?
-                     initial_temperature_manager.initial_temperature(fe_values.quadrature_point(i))
-                     :
-                     initial_composition_manager.initial_composition(fe_values.quadrature_point(i),n-1));
-
-                  initial_solution(local_dof_indices[system_local_dof]) = value;
-
-                  // if it is specified in the parameter file that the sum of all compositional fields
-                  // must not exceed one, this should be checked
-                  if (parameters.normalized_fields.size()>0 && n == 1)
-                    {
-                      double sum = 0;
-                      for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
-                        sum += initial_composition_manager.initial_composition(fe_values.quadrature_point(i),
-                                                                               parameters.normalized_fields[m]);
-
-                      if (std::abs(sum) > 1.0+std::numeric_limits<double>::epsilon())
-                        {
-                          max_sum_comp = std::max(sum, max_sum_comp);
-                          normalize_composition = true;
-                        }
-                    }
-
-                }
-            }
-#endif
 
         initial_solution.compress(VectorOperation::insert);
 
@@ -220,7 +175,7 @@ namespace aspect
 
     // Now copy the temperature and initial composition blocks into the solution variables
 
-    for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
+    for (unsigned int n=0; n<1+introspection.n_compositional_fields; ++n)
       {
         AdvectionField advf = ((n == 0) ? AdvectionField::temperature()
                                : AdvectionField::composition(n-1));
@@ -237,6 +192,8 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::interpolate_particle_properties (const AdvectionField &advection_field)
   {
+    computing_timer.enter_section("Particles: Interpolate");
+
     // below, we would want to call VectorTools::interpolate on the
     // entire FESystem. there currently is no way to restrict the
     // interpolation operations to only a subset of vector
@@ -344,6 +301,8 @@ namespace aspect
     solution.block(blockidx) = particle_solution.block(blockidx);
     old_solution.block(blockidx) = particle_solution.block(blockidx);
     old_old_solution.block(blockidx) = particle_solution.block(blockidx);
+
+    computing_timer.exit_section("");
   }
 
 
@@ -487,7 +446,7 @@ namespace aspect
 
     // normalize the pressure in such a way that the surface pressure
     // equals a known and desired value
-    this->pressure_adjustment = normalize_pressure(old_solution);
+    this->last_pressure_normalization_adjustment = normalize_pressure(old_solution);
 
     // set all solution vectors to the same value as the previous solution
     solution = old_solution;

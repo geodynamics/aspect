@@ -21,16 +21,17 @@ subsection Geometry model
   subsection Spherical shell
     set Inner radius  = 3481000
     set Outer radius  = 6336000
+    set Opening angle = 90
   end
 end
 
 
 subsection Model settings
-  set Zero velocity boundary indicators       = 0
-  set Tangential velocity boundary indicators = 1
+  set Zero velocity boundary indicators       = inner
+  set Tangential velocity boundary indicators = outer, west, south, east
   set Prescribed velocity boundary indicators =
 
-  set Fixed temperature boundary indicators   = 0,1
+  set Fixed temperature boundary indicators   = inner, outer
 
 end
 
@@ -64,7 +65,7 @@ end
 
 
 subsection Mesh refinement
-  set Initial global refinement          = 0
+  set Initial global refinement          = 1
   set Initial adaptive refinement        = 0
   set Strategy                           = temperature
   set Time steps between mesh refinement = 15

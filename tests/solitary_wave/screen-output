@@ -2,26 +2,26 @@
 Loading shared library <./libsolitary_wave.so>
 
 Initialize solitary wave solution
-Number of active cells: 2,560 (on 4 levels)
-Number of degrees of freedom: 74,049 (21,794+5,778+21,794+2,889+10,897+10,897)
+Number of active cells: 640 (on 3 levels)
+Number of degrees of freedom: 19,749 (5,778+1,610+5,778+805+2,889+2,889)
 
 *** Timestep 0:  t=0 years
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+23 iterations.
-   Solving for u_f in 10 iterations.
-      Relative nonlinear residuals: 0, 1.49047e-16, 0.999786
-      Total relative residual after nonlinear iteration 1: 0.999786
+   Solving Stokes system... 0+24 iterations.
+   Solving for u_f in 9 iterations.
+      Relative nonlinear residuals: 0, 1.61e-16, 0.9994
+      Total relative residual after nonlinear iteration 1: 0.9994
 
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-   Solving for u_f in 10 iterations.
-      Relative nonlinear residuals: 0, 1.49047e-16, 9.53538e-11
-      Total relative residual after nonlinear iteration 2: 9.53538e-11
+   Solving for u_f in 9 iterations.
+      Relative nonlinear residuals: 0, 1.61e-16, 5.59393e-11
+      Total relative residual after nonlinear iteration 2: 5.59393e-11
 
 
 
@@ -29,55 +29,23 @@ Number of degrees of freedom: 74,049 (21,794+5,778+21,794+2,889+10,897+10,897)
      Writing graphical output:    output-solitary_wave/solution/solution-00000
      Compositions min/max/mass:   0.001/0.01/13.3
      RMS, max velocity:           0.000166 m/year, 0.000167 m/year
-     Errors e_f, e_p, e_c, delta: 2.539743e-05, 2.204725e-02, 0.000000e+00, 4.386066e-17
+     Errors e_f, e_p, e_c, delta: 2.027221e-04, 8.793269e-02, 0.000000e+00, 3.221824e-16
 
-*** Timestep 1:  t=3738.96 years
+*** Timestep 1:  t=2000 years
    Skipping temperature solve because RHS is zero.
-   Solving porosity system ... 27 iterations.
+   Solving porosity system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+9 iterations.
-   Solving for u_f in 10 iterations.
-      Relative nonlinear residuals: 0, 0.000141122, 7.83167e-07
-      Total relative residual after nonlinear iteration 1: 7.83167e-07
+   Solving for u_f in 9 iterations.
+      Relative nonlinear residuals: 0, 7.6007e-05, 6.27477e-07
+      Total relative residual after nonlinear iteration 1: 6.27477e-07
 
 
 
    Postprocessing:
      Compositions min/max/mass:   0.001/0.01/13.3
      RMS, max velocity:           0.000166 m/year, 0.000167 m/year
-     Errors e_f, e_p, e_c, delta: 9.179852e-04, 2.204448e-02, 1.421077e-02, 8.802844e-03
-
-*** Timestep 2:  t=7477.92 years
-   Skipping temperature solve because RHS is zero.
-   Solving porosity system ... 16 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+5 iterations.
-   Solving for u_f in 10 iterations.
-      Relative nonlinear residuals: 0, 1.79308e-06, 1.43682e-08
-      Total relative residual after nonlinear iteration 1: 1.43682e-08
-
-
-
-   Postprocessing:
-     Compositions min/max/mass:   0.001/0.01/13.3
-     RMS, max velocity:           0.000166 m/year, 0.000167 m/year
-     Errors e_f, e_p, e_c, delta: 1.831665e-03, 2.243161e-02, 1.421017e-02, 1.760495e-02
-
-*** Timestep 3:  t=10000 years
-   Skipping temperature solve because RHS is zero.
-   Solving porosity system ... 13 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+4 iterations.
-   Solving for u_f in 10 iterations.
-      Relative nonlinear residuals: 0, 5.0846e-07, 4.54282e-09
-      Total relative residual after nonlinear iteration 1: 4.54282e-09
-
-
-
-   Postprocessing:
-     Compositions min/max/mass:   0.001/0.01/13.3
-     RMS, max velocity:           0.000166 m/year, 0.000167 m/year
-     Errors e_f, e_p, e_c, delta: 2.447804e-03, 2.286894e-02, 1.420926e-02, 2.354105e-02
+     Errors e_f, e_p, e_c, delta: 6.007180e-04, 8.787966e-02, 1.424092e-02, 4.718700e-03
 
 Termination requested by criterion: end time
 

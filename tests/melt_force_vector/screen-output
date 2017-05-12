@@ -1,0 +1,44 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libmelt_force_vector.so>
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,977 (740+578+81+289+289)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 1 iterations.
+
+   Postprocessing:
+     Writing graphical output:                  output-melt_force_vector/solution/solution-00000
+     RMS, max velocity:                         0.999 m/s, 1.3 m/s
+     Pressure min/avg/max:                      -0.9567 Pa, -3.107e-07 Pa, 1.749 Pa
+     Max and min velocity along boundary parts: 1.307 m/s, 1.013 m/s, 1.307 m/s, 1.013 m/s, 0.9869 m/s, 0.541 m/s, 0.9869 m/s, 0.541 m/s
+     Errors                                      h = 3.535534e-01 ndofs= 1977 u_L2= 2.853705e-03 p_L2= 1.230062e+00 p_f_L2= 1.427437e-02 p_c_L= 4.216512e-03 phi_L2= 1.736581e-02 u_f_L2= 4.884622e+02
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 7,401 (2,756+2,178+289+1,089+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 11 iterations.
+
+   Postprocessing:
+     Writing graphical output:                  output-melt_force_vector/solution/solution-00001
+     RMS, max velocity:                         1 m/s, 1.3 m/s
+     Pressure min/avg/max:                      -0.9547 Pa, -7.517e-08 Pa, 1.743 Pa
+     Max and min velocity along boundary parts: 1.307 m/s, 1.006 m/s, 1.307 m/s, 1.006 m/s, 0.9935 m/s, 0.5405 m/s, 0.9935 m/s, 0.5405 m/s
+     Errors                                      h = 1.767767e-01 ndofs= 7401 u_L2= 7.160918e-04 p_L2= 1.238271e+00 p_f_L2= 3.576420e-03 p_c_L= 1.046767e-03 phi_L2= 2.988517e-03 u_f_L2= 3.851425e+02
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

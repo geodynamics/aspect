@@ -223,6 +223,8 @@ namespace aspect
           return Coordinates::CoordinateSystem::depth;
         else
           AssertThrow(false, ExcNotImplemented());
+
+        return Coordinates::CoordinateSystem::invalid;
       }
 
 
@@ -326,6 +328,70 @@ namespace aspect
         }
 
       return (wn != 0);
+    }
+
+    template <int dim>
+    double
+    signed_distance_to_polygon(const std::vector<Point<2> > &point_list,
+                               const dealii::Point<2> &point)
+    {
+      // If the point lies outside polygon, we give it a negative sign,
+      // inside a positive sign.
+      const double sign = polygon_contains_point<dim>(point_list, point) ? 1.0 : -1.0;
+
+      /**
+       * This code is based on http://geomalgorithms.com/a02-_lines.html#Distance-to-Infinite-Line,
+       * and therefore requires the following copyright notice:
+       *
+       * Copyright 2000 softSurfer, 2012 Dan Sunday
+       * This code may be freely used and modified for any purpose
+       * providing that this copyright notice is included with it.
+       * SoftSurfer makes no warranty for this code, and cannot be held
+       * liable for any real or imagined damage resulting from its use.
+       * Users of this code must verify correctness for their application.
+       *
+       */
+
+      const unsigned int n_poly_points = point_list.size();
+      AssertThrow(n_poly_points >= 3, ExcMessage("Not enough polygon points were specified."));
+
+      // Initialize a vector of distances for each point of the polygon with a very large distance
+      std::vector<double> distances(n_poly_points, 1e23);
+
+      // Create another polygon but with all points shifted 1 position to the right
+      std::vector<Point<2> > shifted_point_list(n_poly_points);
+      shifted_point_list[0] = point_list[n_poly_points-1];
+
+      for (unsigned int i = 0; i < n_poly_points-1; ++i)
+        shifted_point_list[i+1] = point_list[i];
+
+      for (unsigned int i = 0; i < n_poly_points; ++i)
+        {
+          // Create vector along the polygon line segment
+          Tensor<1,2> vector_segment = shifted_point_list[i] - point_list[i];
+          // Create vector from point to the second segment point
+          Tensor<1,2> vector_point_segment = point - point_list[i];
+
+          // Compute dot products to get angles
+          const double c1 = vector_point_segment * vector_segment;
+          const double c2 = vector_segment * vector_segment;
+
+          // point lies closer to not-shifted polygon point, but perpendicular base line lies outside segment
+          if (c1 <= 0.0)
+            distances[i] = (Tensor<1,2> (point_list[i] - point)).norm();
+          // point lies closer to shifted polygon point, but perpendicular base line lies outside segment
+          else if (c2 <= c1)
+            distances[i] = (Tensor<1,2> (shifted_point_list[i] - point)).norm();
+          // perpendicular base line lies on segment
+          else
+            {
+              const Point<2> point_on_segment = point_list[i] + (c1/c2) * vector_segment;
+              distances[i] = (Tensor<1,2> (point - point_on_segment)).norm();
+            }
+        }
+
+      // Return the minimum of the distances of the point to all polygon segments
+      return *std::min_element(distances.begin(),distances.end()) * sign;
     }
 
     template <int dim>
@@ -1838,6 +1904,312 @@ namespace aspect
       return lookup->get_data(position,component);
     }
 
+
+
+    double
+    weighted_p_norm_average ( const std::vector<double> &weights,
+                              const std::vector<double> &values,
+                              const double p)
+    {
+      //TODO: prevent devision by zero for all
+      double averaged_parameter = 0.0;
+
+      // first look at the special cases which can be done faster
+      if (p <= -1000)
+        {
+          // Minimum
+          double min_value = 0;
+          unsigned int first_element_with_nonzero_weight = 0;
+          for (; first_element_with_nonzero_weight < weights.size(); ++first_element_with_nonzero_weight)
+            if (weights[first_element_with_nonzero_weight] > 0)
+              {
+                min_value = values[first_element_with_nonzero_weight];
+                break;
+              }
+          Assert (first_element_with_nonzero_weight < weights.size(),
+                  ExcMessage ("There are only zero (or smaller) weights in the weights vector."));
+
+          for (unsigned int i=first_element_with_nonzero_weight+1; i < weights.size(); ++i)
+            if (weights[i] != 0)
+              if (values[i] < min_value)
+                min_value = values[i];
+
+          return min_value;
+        }
+      else if (p == -1)
+        {
+          // Harmonic average
+          for (unsigned int i=0; i< weights.size(); ++i)
+            {
+              /**
+               * if the value is zero, we get a division by zero. To prevent this
+               * we look at what should happen in this case. When a value is zero,
+               * and the correspondent weight is non-zero, this corresponds to no
+               * resistance in a parallel system. This means that this will dominate,
+               * and we should return zero. If the value is zero and the weight is
+               * zero, we just ignore it.
+               */
+              if (values[i] == 0 && weights[i] > 0)
+                return 0;
+              else if (values[i] != 0)
+                averaged_parameter += weights[i]/values[i];
+            }
+
+          Assert (averaged_parameter > 0, ExcMessage ("The sum of the weights/values may not be smaller or equal to zero."));
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+          return sum_of_weights/averaged_parameter;
+        }
+      else if (p == 0)
+        {
+          // Geometric average
+          for (unsigned int i=0; i < weights.size(); ++i)
+            averaged_parameter += weights[i]*std::log(values[i]);
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+          Assert (sum_of_weights != 0,
+                  ExcMessage ("The sum of the weights may not be equal to zero, because we need to divide through it."));
+          return std::exp(averaged_parameter/sum_of_weights);
+        }
+      else if (p == 1)
+        {
+          // Arithmetic average
+          for (unsigned int i=0; i< weights.size(); ++i)
+            averaged_parameter += weights[i]*values[i];
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+          Assert (sum_of_weights != 0,
+                  ExcMessage ("The sum of the weights may not be equal to zero, because we need to divide through it."));
+          return averaged_parameter/sum_of_weights;
+        }
+      else if (p == 2)
+        {
+          // Quadratic average (RMS)
+          for (unsigned int i=0; i< weights.size(); ++i)
+            averaged_parameter += weights[i]*values[i]*values[i];
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+          Assert (sum_of_weights != 0,
+                  ExcMessage ("The sum of the weights may not be equal to zero, because we need to divide through it."));
+          Assert (averaged_parameter/sum_of_weights > 0, ExcMessage ("The sum of the weights is smaller or equal to zero."));
+          return std::sqrt(averaged_parameter/sum_of_weights);
+        }
+      else if (p == 3)
+        {
+          // Cubic average
+          for (unsigned int i=0; i< weights.size(); ++i)
+            averaged_parameter += weights[i]*values[i]*values[i]*values[i];
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+          Assert (sum_of_weights != 0,
+                  ExcMessage ("The sum of the weights may not be equal to zero, because we need to divide through it."));
+          return std::cbrt(averaged_parameter/sum_of_weights);
+        }
+      else if (p >= 1000)
+        {
+          // Maximum
+          double max_value = 0;
+          unsigned int first_element_with_nonzero_weight = 0;
+          for (; first_element_with_nonzero_weight < weights.size(); ++first_element_with_nonzero_weight)
+            if (weights[first_element_with_nonzero_weight] > 0)
+              {
+                max_value = values[first_element_with_nonzero_weight];
+                break;
+              }
+          Assert (first_element_with_nonzero_weight < weights.size(),
+                  ExcMessage ("There are only zero (or smaller) weights in the weights vector."));
+
+          for (unsigned int i=first_element_with_nonzero_weight+1; i < weights.size(); ++i)
+            if (weights[i] != 0)
+              if (values[i] > max_value)
+                max_value = values[i];
+
+          return max_value;
+        }
+      else
+        {
+          for (unsigned int i=0; i< weights.size(); ++i)
+            {
+              /**
+               * When a value is zero or smaller, the exponent is smaller then one and the
+               * correspondent  weight is non-zero, this corresponds to no resistance in a
+               * parallel system.  This means that this 'path' will be followed, and we
+               * return zero.
+               */
+              if (values[i] <= 0 && p < 0)
+                return 0;
+              averaged_parameter += weights[i] * std::pow(values[i],p);
+            }
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+          Assert (sum_of_weights > 0, ExcMessage ("The sum of the weights may not be smaller or equal to zero."));
+          Assert (averaged_parameter > 0,
+                  ExcMessage ("The sum of the weights times the values to the power p may not be smaller or equal to zero."));
+          return std::pow(averaged_parameter/sum_of_weights, 1/p);
+        }
+    }
+
+
+
+    template <typename T>
+    T
+    derivative_of_weighted_p_norm_average (const double /*averaged_parameter*/,
+                                           const std::vector<double> &weights,
+                                           const std::vector<double> &values,
+                                           const std::vector<T> &derivatives,
+                                           const double p)
+    {
+      // TODO: use averaged_parameter to speed up computation?
+      // TODO: add special cases p = 2 and p = 3
+      double averaged_parameter_derivative_part_1 = 0.0;
+      T averaged_parameter_derivative_part_2 = T();
+
+      // first look at the special cases which can be done faster
+      if (p <= -1000)
+        {
+          // Minimum
+          double min_value = 0;
+          unsigned int element_with_minimum_value = 0;
+          unsigned int first_element_with_nonzero_weight = 0;
+          for (; first_element_with_nonzero_weight < weights.size(); ++first_element_with_nonzero_weight)
+            if (weights[first_element_with_nonzero_weight] > 0)
+              {
+                min_value = values[first_element_with_nonzero_weight];
+                element_with_minimum_value = first_element_with_nonzero_weight;
+                break;
+              }
+          Assert (first_element_with_nonzero_weight < weights.size(),
+                  ExcMessage ("There are only zero (or smaller) weights in the weights vector."));
+
+          for (unsigned int i=first_element_with_nonzero_weight+1; i < weights.size(); ++i)
+            if (weights[i] != 0)
+              if (values[i] < min_value)
+                {
+                  min_value = values[i];
+                  element_with_minimum_value = i;
+                }
+          return derivatives[element_with_minimum_value];
+        }
+      else if (p == -1)
+        {
+          // Harmonic average
+          for (unsigned int i=0; i< weights.size(); ++i)
+            {
+              /**
+               * if the value is zero, we get a division by zero. To prevent this
+               * we look at what should happen in this case. When a value is zero,
+               * and the correspondent weight is non-zero, this corresponds to no
+               * resistance in a parallel system. This means that this will dominate,
+               * and we should return this derivative. If the value is zero and the
+               * weight is zero, we just ignore it.
+               */
+              if (values[i] == 0 && weights[i] > 0)
+                return derivatives[i];
+              else if (values[i] != 0)
+                {
+                  averaged_parameter_derivative_part_1 += weights[i] / values[i];
+                  averaged_parameter_derivative_part_2 += weights[i] * (1/(values[i] * values[i])) * derivatives[i];
+                }
+            }
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+          Assert (sum_of_weights > 0, ExcMessage ("The sum of the weights may not be smaller or equal to zero."));
+          return std::pow(averaged_parameter_derivative_part_1/sum_of_weights,-2) * averaged_parameter_derivative_part_2/sum_of_weights;
+        }
+      else if (p == 0)
+        {
+          // Geometric average
+          for (unsigned int i=0; i < weights.size(); ++i)
+            {
+              averaged_parameter_derivative_part_1 += weights[i]*std::log(values[i]);
+              averaged_parameter_derivative_part_2 += weights[i]*(1/values[i])*derivatives[i];
+            }
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+          Assert (sum_of_weights != 0,
+                  ExcMessage ("The sum of the weights may not be equal to zero, because we need to divide through it."));
+          return std::exp(averaged_parameter_derivative_part_1/sum_of_weights) * averaged_parameter_derivative_part_2/sum_of_weights;
+        }
+      else if (p == 1)
+        {
+          // Arithmetic average
+          for (unsigned int i=0; i< weights.size(); ++i)
+            averaged_parameter_derivative_part_2 += weights[i]*derivatives[i];
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+          Assert (sum_of_weights != 0,
+                  ExcMessage ("The sum of the weights may not be equal to zero, because we need to divide through it."));
+          return averaged_parameter_derivative_part_2/sum_of_weights;
+        }
+      else if (p >= 1000)
+        {
+          // Maximum
+          double max_value = 0;
+          unsigned int element_with_maximum_value = 0;
+          unsigned int first_element_with_nonzero_weight = 0;
+          for (; first_element_with_nonzero_weight < weights.size(); ++first_element_with_nonzero_weight)
+            if (weights[first_element_with_nonzero_weight] > 0)
+              {
+                max_value = values[first_element_with_nonzero_weight];
+                element_with_maximum_value = first_element_with_nonzero_weight;
+                break;
+              }
+          Assert (first_element_with_nonzero_weight < weights.size(),
+                  ExcMessage ("There are only zero (or smaller) weights in the weights vector."));
+
+          for (unsigned int i=first_element_with_nonzero_weight+1; i < weights.size(); ++i)
+            if (weights[i] != 0)
+              if (values[i] > max_value)
+                {
+                  max_value = values[i];
+                  element_with_maximum_value = i;
+                }
+
+          return derivatives[element_with_maximum_value];
+        }
+      else
+        {
+          // The general case: We can simplify the equation by stating that (1/p) * p = 1
+          //TODO: This can probably be optimized by using:
+          //averaged_parameter_derivative_part_2 += weights[i]*values_p[i]*(1/values[i])*derivatives[i]; and
+          //averaged_parameter_derivative = averaged_parameter * (1/averaged_parameter_derivative_part_1) * averaged_parameter_derivative_part_2;
+          for (unsigned int i=0; i< weights.size(); ++i)
+            {
+              /**
+               * When a value is zero or smaller, the exponent is smaller then one and the
+               * correspondent  weight is non-zero, this corresponds to no resistance in a
+               * parallel system. This means that this 'path' will be followed, and we
+               * return that derivative.
+               */
+              if (values[i] <= 0 && p < 0)
+                return derivatives[i];
+              averaged_parameter_derivative_part_1 += weights[i] * std::pow(values[i],p);
+              averaged_parameter_derivative_part_2 += weights[i] * std::pow(values[i],p-1) * derivatives[i];
+            }
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+          Assert (sum_of_weights > 0, ExcMessage ("The sum of the weights may not be smaller or equal to zero."));
+          Assert (averaged_parameter_derivative_part_1/sum_of_weights > 0,
+                  ExcMessage ("The sum of the weights times the values to the power p may not be smaller or equal to zero."));
+          return std::pow(averaged_parameter_derivative_part_1/sum_of_weights,(1/p)-1) * averaged_parameter_derivative_part_2/sum_of_weights;
+          // TODO: find a way to check if value is finite for any type? Or just leave this kind of checking up to the user?
+        }
+    }
+
+    template<int dim>
+    double compute_spd_factor(const double eta,
+                              const SymmetricTensor<2,dim> &strain_rate,
+                              const SymmetricTensor<2,dim> &dviscosities_dstrain_rate,
+                              const double safety_factor)
+    {
+      double alpha = 0;
+      const double norm_a_b = std::sqrt((strain_rate*strain_rate)*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));
+      const double contract_a_b = (strain_rate*dviscosities_dstrain_rate);
+      const double one_minus_part = 1 - (contract_a_b / norm_a_b);
+      const double denom = one_minus_part * one_minus_part * norm_a_b;
+      if (denom == 0)
+        alpha = 1.0;
+      else
+        {
+          alpha = (2.0*eta)/denom;
+          if (alpha >= 1.0)
+            alpha = 1.0;
+          else
+            alpha = std::max(0.0,safety_factor*alpha);
+        }
+      return alpha;
+    }
+
 // Explicit instantiations
     template class AsciiDataLookup<1>;
     template class AsciiDataLookup<2>;
@@ -1865,8 +2237,43 @@ namespace aspect
     template bool polygon_contains_point<2>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
     template bool polygon_contains_point<3>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
 
+    template double signed_distance_to_polygon<2>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
+    template double signed_distance_to_polygon<3>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
+
 
     template std_cxx11::array<Tensor<1,2>,1> orthogonal_vectors (const Tensor<1,2> &v);
     template std_cxx11::array<Tensor<1,3>,2> orthogonal_vectors (const Tensor<1,3> &v);
+
+    template double
+    derivative_of_weighted_p_norm_average (const double averaged_parameter,
+                                           const std::vector<double> &weights,
+                                           const std::vector<double> &values,
+                                           const std::vector<double> &derivatives,
+                                           const double p);
+
+    template dealii::SymmetricTensor<2, 2, double>
+    derivative_of_weighted_p_norm_average (const double averaged_parameter,
+                                           const std::vector<double> &weights,
+                                           const std::vector<double> &values,
+                                           const std::vector<dealii::SymmetricTensor<2, 2, double> > &derivatives,
+                                           const double p);
+
+    template dealii::SymmetricTensor<2, 3, double>
+    derivative_of_weighted_p_norm_average (const double averaged_parameter,
+                                           const std::vector<double> &weights,
+                                           const std::vector<double> &values,
+                                           const std::vector<dealii::SymmetricTensor<2, 3, double> > &derivatives,
+                                           const double p);
+
+    template double compute_spd_factor(const double eta,
+                                       const SymmetricTensor<2,2> &strain_rate,
+                                       const SymmetricTensor<2,2> &dviscosities_dstrain_rate,
+                                       const double safety_factor);
+
+    template double compute_spd_factor(const double eta,
+                                       const SymmetricTensor<2,3> &strain_rate,
+                                       const SymmetricTensor<2,3> &dviscosities_dstrain_rate,
+                                       const double safety_factor);
+
   }
 }

@@ -160,6 +160,12 @@ namespace aspect
 
       template <int dim>
       void
+      Interface<dim>::initialize ()
+      {}
+
+
+      template <int dim>
+      void
       Interface<dim>::declare_parameters (ParameterHandler &)
       {}
 
@@ -939,6 +945,7 @@ namespace aspect
             sim->initialize_simulator (this->get_simulator());
 
           postprocessors.back()->parse_parameters (prm);
+          postprocessors.back()->initialize ();
         }
 
       // Finally also set up a listener to check when the mesh changes

@@ -84,14 +84,20 @@ subsection Postprocess
 
   subsection Visualization
     set Output format                 = gnuplot
-    set List of output variables      = seismic vs, seismic vp
+    set List of output variables      = named additional outputs, Vs anomaly, Vp anomaly
     set Time between graphical output = 0
+    subsection Vp anomaly
+      set Number of depth slices = 96
+    end
+    subsection Vs anomaly
+      set Number of depth slices = 96
+    end
   end
 
   subsection Depth average
     set Time between graphical output = 0
     set Number of zones = 10
- end
+  end
 
 end
 

@@ -1,0 +1,128 @@
+# A description of the SolCX benchmark using active particles
+# to interpolate both density and viscosity onto the compositional
+# field for which a known solution is available. See the manual
+# for more information.
+
+set Additional shared libraries            = ./libsolcx_compositional_fields.so
+
+############### Global parameters
+
+set Dimension                              = 2
+
+set Start time                             = 0
+set End time                               = 0
+
+set Output directory                       = output
+
+set Pressure normalization                 = volume
+
+############### Parameters describing the model
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+subsection Model settings
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = left, right, bottom, top
+  set Zero velocity boundary indicators       =
+end
+
+subsection Material model
+  set Model name = SolCxCompositionalMaterial
+
+  subsection SolCx
+    set Viscosity jump = 1e6
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+############### Parameters describing the temperature field
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+
+subsection Initial temperature model
+  set Model name = perturbed box
+end
+
+############### Parameters describing the discretization
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+  set Use locally conservative discretization = true
+  set Use discontinuous composition discretization = true
+  subsection Stabilization parameters
+    set Use limiter for discontinuous composition solution = false # apply the limiter to the DG solutions
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 5
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = density_comp, viscosity_comp
+  set Compositional field methods = particles, particles
+  set Mapped particle properties = density_comp:function[0], viscosity_comp:function[1]
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = pi=3.1415926, eta_b=1e6, background_density=0.0
+    set Function expression = background_density - sin(pi*y) * cos(pi*x); if(x<0.5, 1, eta_b)
+  end
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = particles, visualization, SolCxPostprocessor
+
+  subsection Visualization
+    set Output format                 = vtu
+    set Number of grouped files       = 1
+    set Time between graphical output = 0
+    set List of output variables = density, viscosity
+  end
+
+  subsection Particles
+    set Number of particles = 16384
+    set Time between data output = 0
+    set Data output format = vtu
+    set List of particle properties = function
+    set Integration scheme = rk2
+    set Interpolation scheme = cell average
+    set Maximum particles per cell = 16384
+    set Update ghost particles = true
+
+    subsection Function
+      set Number of components = 2
+      set Variable names      = x, y
+      set Function constants  = pi=3.1415926, eta_b=1e6, background_density=0.0
+      set Function expression =  background_density - sin(pi*y) * cos(pi*x); if(x<0.5, 1, eta_b)
+    end
+
+    set Particle generator name = reference cell
+
+    subsection Generator
+      subsection Reference cell
+        set Number of particles per cell per direction = 4
+      end
+    end
+  end
+end

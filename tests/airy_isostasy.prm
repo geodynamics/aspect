@@ -1,0 +1,154 @@
+# We setup three columns, of which the middle column has a higher density
+# and viscosity. By choosing a free surface in combination with a 
+# prescribed lithostatic pressure calculated in the left column,
+# we see the middle column sink until isostasy is reached (if end time is increased)
+
+set Dimension = 2
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Nonlinear solver scheme                = IMPES
+set Pressure normalization                 = no
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+# A simple one by one box
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+
+# Temperature is zero everywhere
+subsection Boundary temperature model
+ set Model name = initial temperature
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+   set Function expression = 0
+  end 
+end
+
+
+
+# The composition field has a higher density and viscosity
+subsection Material model
+  set Model name = multicomponent
+
+  subsection Multicomponent
+    set Densities                  = 1,1.05
+
+    set Reference temperature      = 0
+
+    set Specific heats             = 1.
+
+    set Thermal conductivities     = 0.
+
+    set Thermal expansivities      = 0.
+
+    set Viscosities                = 1,1e4
+
+    set Viscosity averaging scheme = geometric
+  end
+end
+
+
+# We refine at the surface along the compositional field
+subsection Mesh refinement
+  set Initial adaptive refinement        = 2
+  set Initial global refinement          = 5
+  set Strategy                           = minimum refinement function
+  set Refinement fraction                = 0.7
+  set Time steps between mesh refinement       = 3
+  set Minimum refinement level           = 3
+  subsection Minimum refinement function
+    set Coordinate system   = cartesian
+   set Variable names = x, z
+   set Function expression = if(x>0.2&x<0.8&z>0.9, 7,5)
+  end
+  
+end
+
+
+# In/outflow through the bottom in the vertical direction only
+# The lithostatic pressure is prescribed for the normal traction
+# component of the bottom boundary.
+# We choose to set zero velocity boundary conditions on the
+# vertical boundaries through Prescribed velocity boundary indicators
+# because then we can specify that the mesh along these boundaries
+# is allowed to move according to the free surface displacement
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0, 1, 2, 3
+  set Fixed composition boundary indicators   = 2 #,3
+  set Prescribed traction boundary indicators = 2 y: initial lithostatic pressure
+  set Prescribed velocity boundary indicators = 0: function, 1: function, 2 x: function
+  set Free surface boundary indicators        = 3
+  set Include shear heating                   = false
+end
+
+# The representative point determines where the pressure
+# profile is calculated, this can be anywhere in the two
+# outer columns
+subsection Boundary traction model
+  subsection Initial lithostatic pressure
+   set Number of integration points = 260
+   set Representative point         = 0.1,1
+  end
+end
+
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names = x,z
+    set Function expression = 0;0  
+  end
+end
+
+
+# On the vertical boundaries we allow the mesh to move tangentially
+# We only displace the surface in the vertical direction
+subsection Free surface
+  set Additional tangential mesh velocity boundary indicators = 0,1
+  set Surface velocity projection                             = vertical
+end
+
+
+# One compositional field in the middle of the domain
+subsection Compositional fields
+ set Number of fields = 1
+end
+
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+   set Variable names = x,z
+   set Function constants = r=0.3333,p=0.6666
+   set Function expression = if(x>=r&x<p,1,0)
+  end
+end
+
+
+# In the end, the middle column should have sunk by ~0.048
+subsection Postprocess
+  set List of postprocessors = velocity statistics, pressure statistics, topography
+  
+end
+

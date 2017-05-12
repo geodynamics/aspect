@@ -12,4 +12,4 @@
 # 12: Minimal temperature (K)
 # 13: Average temperature (K)
 # 14: Maximal temperature (K)
-0 0.000000000000e+00 0.000000000000e+00 96 3060 970 0 60 62 366 output-initial_condition_SAVANI/solution/solution-00000 1.45178743e+03 1.60068048e+03 1.72262141e+03 
+0 0.000000000000e+00 0.000000000000e+00 24 972 305 0 48 49 98 output-initial_condition_SAVANI/solution/solution-00000 1.47701487e+03 1.59929620e+03 1.75220108e+03 

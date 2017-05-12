@@ -257,10 +257,6 @@ FOREACH(_test ${_tests})
       ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
 	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run_test.sh ${EXPECT} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
 	COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
-	COMMAND ${PERL_EXECUTABLE} -pi
-		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
-		  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
-		  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*/*
 	DEPENDS ${ASPECT_BINARY}   ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${_testdepends}
 	)
     ELSE()
@@ -268,16 +264,16 @@ FOREACH(_test ${_tests})
 	COMMAND mpirun -np ${_mpi_count} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
 		> ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
 	COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
-	COMMAND ${PERL_EXECUTABLE} -pi
-		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
-		  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
-		  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*/*
 	DEPENDS ${ASPECT_BINARY}  ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${_testdepends}
 	)
     ENDIF()
 
-
-
+    # command to normalize all output files and all reference output files
+    ADD_CUSTOM_TARGET(${_test}.normalize
+	COMMAND ${PERL_EXECUTABLE} -pi
+		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
+		  `find ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/ -type f`
+	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output)
 
     # for each of the output files saved in the source directory for
     # this test, create targets that
@@ -298,7 +294,8 @@ FOREACH(_test ${_tests})
       #
       # do the same with the second egrep command to strip out the status
       # message at the top of the run
-      ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
+      ADD_CUSTOM_COMMAND(
+	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
 	COMMAND
 	  cat ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}
 	  | egrep -v '^\\|'
@@ -306,6 +303,17 @@ FOREACH(_test ${_tests})
 	  > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}
       )
+
+      # The screen-output target needs to normalize the .cmp.notime
+      # tests. They need to exist first, so add an explicit dependency. To do
+      # that, we first create a target to the command above (ADD_DEPENDENCIES
+      # can only deal with targets, not commands). Finally, we need to remove "/"
+      # (illegal in target names).
+      STRING(REPLACE "/" "-" _target_name_copy_output make-${_test}-${_output}.cmp.notime)
+      ADD_CUSTOM_TARGET(${_target_name_copy_output}
+	DEPENDS	${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime)
+      ADD_DEPENDENCIES(${_test}.normalize ${_target_name_copy_output})
+
 
       # While it looks like a typo to depend on screen-output and not on
       # ${_output}, there is no rule to generate ${_output}. But generating
@@ -318,9 +326,7 @@ FOREACH(_test ${_tests})
 	  | egrep -v '^--'
 	  | sed 's\#${ASPECT_BASE_DIR}\#ASPECT_DIR\#g'
 	  > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
-	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
-		${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
-      )
+	DEPENDS ${_test}.normalize)
 
       # create the target that compares the .notime with the saved file
       ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
@@ -330,12 +336,13 @@ FOREACH(_test ${_tests})
 		${_test}/${_output}
 		${CMAKE_CURRENT_SOURCE_DIR}
 		${CMAKE_CURRENT_BINARY_DIR}
-	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
+	DEPENDS ${_test}.normalize
+		${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
 		${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
       )
 
       # Add the target for this output file to the dependencies of this
-      # test. Note Note that a target may not contain "/" but outputs can be
+      # test. Note that a target may not contain "/" but outputs can be
       # in subdirectories (for example solution/solution...), so replace them.
       STRING(REPLACE "/" "-" _target_name ${_test}.${_output}.diff)
       ADD_CUSTOM_TARGET(${_target_name}

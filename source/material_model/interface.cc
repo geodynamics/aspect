@@ -174,27 +174,13 @@ namespace aspect
     }
 
 
-    template <int dim>
-    double
-    Interface<dim>::
-    seismic_Vp (const double,
-                const double,
-                const std::vector<double> &, /*composition*/
-                const Point<dim> &) const
-    {
-      return -1.0;
-    }
-
 
     template <int dim>
-    double
+    void
     Interface<dim>::
-    seismic_Vs (const double,
-                const double,
-                const std::vector<double> &, /*composition*/
-                const Point<dim> &) const
+    create_additional_named_outputs (MaterialModelOutputs &/*outputs*/) const
     {
-      return -1.0;
+      // by default we do nothing!
     }
 
 
@@ -255,6 +241,42 @@ namespace aspect
     {}
 
 
+    template <int dim>
+    MaterialModelInputs<dim>::MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
+                                                  const typename DoFHandler<dim>::active_cell_iterator *cell_x,
+                                                  const Introspection<dim> &introspection,
+                                                  const LinearAlgebra::BlockVector &solution_vector)
+      :
+      position(fe_values.get_quadrature_points()),
+      temperature(fe_values.n_quadrature_points, numbers::signaling_nan<double>()),
+      pressure(fe_values.n_quadrature_points, numbers::signaling_nan<double>()),
+      pressure_gradient(fe_values.n_quadrature_points, numbers::signaling_nan<Tensor<1,dim> >()),
+      velocity(fe_values.n_quadrature_points, numbers::signaling_nan<Tensor<1,dim> >()),
+      composition(fe_values.n_quadrature_points, std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
+      strain_rate(fe_values.n_quadrature_points, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
+      cell(cell_x)
+    {
+      // Populate the newly allocated arrays
+      fe_values[introspection.extractors.temperature].get_function_values (solution_vector, this->temperature);
+      fe_values[introspection.extractors.velocities].get_function_values (solution_vector, this->velocity);
+      fe_values[introspection.extractors.pressure].get_function_values (solution_vector, this->pressure);
+      fe_values[introspection.extractors.pressure].get_function_gradients (solution_vector, this->pressure_gradient);
+      fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (solution_vector,this->strain_rate);
+
+      // Vectors for evaluating the the compositional field parts of the finite element solution
+      std::vector<std::vector<double> > composition_values (introspection.n_compositional_fields, std::vector<double> (fe_values.n_quadrature_points));
+      for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+        {
+          fe_values[introspection.extractors.compositional_fields[c]].get_function_values(solution_vector,composition_values[c]);
+        }
+
+      for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
+        {
+          this->position[i] = fe_values.quadrature_point(i);
+          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+            this->composition[i][c] = composition_values[c][i];
+        }
+    }
 
     template <int dim>
     MaterialModelOutputs<dim>::MaterialModelOutputs(const unsigned int n_points,
@@ -648,8 +670,67 @@ namespace aspect
         for (unsigned int i=0; i<values_out.additional_outputs.size(); ++i)
           values_out.additional_outputs[i]->average (operation, projection_matrix, expansion_matrix);
       }
-
     }
+
+
+
+    template<int dim>
+    NamedAdditionalMaterialOutputs<dim>::NamedAdditionalMaterialOutputs(const std::vector<std::string> output_names)
+      :
+      names(output_names)
+    {}
+
+
+
+    template<int dim>
+    const std::vector<std::string> &
+    NamedAdditionalMaterialOutputs<dim>::get_names() const
+    {
+      return names;
+    }
+
+
+
+    namespace
+    {
+      std::vector<std::string> make_seismic_additional_outputs_names()
+      {
+        std::vector<std::string> names;
+        names.push_back("seismic_Vs");
+        names.push_back("seismic_Vp");
+        return names;
+      }
+    }
+
+
+
+    template<int dim>
+    SeismicAdditionalOutputs<dim>::SeismicAdditionalOutputs (const unsigned int n_points)
+      :
+      NamedAdditionalMaterialOutputs<dim>(make_seismic_additional_outputs_names()),
+      vs(n_points, -1.0),
+      vp(n_points, -1.0)
+    {}
+
+
+
+    template<int dim>
+    const std::vector<double> &
+    SeismicAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      switch (idx)
+        {
+          case 0:
+            return vs;
+          case 1:
+            return vp;
+          default:
+            AssertThrow(false, ExcInternalError());
+        }
+      // we will never get here, so just return something
+      return vs;
+    }
+
   }
 }
 
@@ -705,6 +786,10 @@ namespace aspect
   template struct MaterialModelOutputs<dim>; \
   \
   template class AdditionalMaterialOutputs<dim>; \
+  \
+  template class NamedAdditionalMaterialOutputs<dim>; \
+  \
+  template class SeismicAdditionalOutputs<dim>; \
   \
   namespace MaterialAveraging \
   { \

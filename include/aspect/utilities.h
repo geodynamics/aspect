@@ -134,7 +134,8 @@ namespace aspect
       {
         depth,
         cartesian,
-        spherical
+        spherical,
+        invalid
       };
       CoordinateSystem
       string_to_coordinate_system(std::string);
@@ -149,6 +150,17 @@ namespace aspect
     bool
     polygon_contains_point(const std::vector<Point<2> > &point_list,
                            const dealii::Point<2> &point);
+
+    /**
+     * Given a 2d point and a list of points which form a polygon, compute the smallest
+     * distance of the point to the polygon. The sign is negative for points outside of
+     * the polygon and positive for points inside the polygon. Note that the polygon
+     * is required to be convex for this function.
+     */
+    template <int dim>
+    double
+    signed_distance_to_polygon(const std::vector<Point<2> > &point_list,
+                               const dealii::Point<2> &point);
 
     /**
      * Given a vector @p v in @p dim dimensional space, return a set
@@ -823,6 +835,89 @@ namespace aspect
          */
         std_cxx11::unique_ptr<aspect::Utilities::AsciiDataLookup<1> > lookup;
     };
+
+
+    /**
+     * This function computes the weighted average $\bar y$ of $y_i$  for a weighted p norm. This
+     * leads for a general p to:
+     * $\bar y = \left(\frac{\sum_{i=1}^k w_i y_i^p}{\sum_{i=1}^k w_i}\right)^{\frac{1}{p}}$.
+     * When p = 0 we take the geometric average:
+     * $\bar y = \exp\left(\frac{\sum_{i=1}^k w_i \log\left(y_i\right)}{\sum_{i=1}^k w_i}\right)$,
+     * and when $p \le -1000$ or $p \ge 1000$ we take the minimum and maximum norm respectively.
+     * This means that the smallest and largest value is respectively taken taken.
+     *
+     * This function has been set up to be very tolerant to strange values, such as negative weights.
+     * The only things we require in for the general p is that the sum of the weights and the sum of
+     * the weights times the values to the power p may not be smaller or equal to zero. Futhermore,
+     * when a value is zero, the exponent is smaller then one and the correspondent weight is non-zero,
+     * this corresponds to no resistance in a parallel system. This means that this 'path' will be followed,
+     * and we return zero.
+     *
+     * The implemented special cases (which are minimum (p <= -1000), harmonic average (p = -1), geometric
+     * average (p = 0), arithmetic average (p = 1), quadratic average (RMS) (p = 2), cubic average (p = 3)
+     * and maximum (p >= 1000) ) is, except for the harmonic and quadratic averages even more tolerant of
+     * negative values, because they only require the sum of weights to be non-zero.
+     */
+    double weighted_p_norm_average (const std::vector<double> &weights,
+                                    const std::vector<double> &values,
+                                    const double p);
+
+
+    /**
+     * This function computes the derivative ($\frac{\partial\bar y}{\partial x}$) of an average
+     * of the values $y_i(x)$ with regard to $x$, using $\frac{\partial y_i(x)}{\partial x}$.
+     * This leads for a general p to:
+     * $\frac{\partial\bar y}{\partial x} =
+     * \frac{1}{p}\left(\frac{\sum_{i=1}^k w_i y_i^p}{\sum_{i=1}^k w_i}\right)^{\frac{1}{p}-1}
+     * \frac{\sum_{i=1}^k w_i p y_i^{p-1} y'_i}{\sum_{i=1}^k w_i}$.
+     * When p = 0 we take the geometric average as a reference, which results in:
+     * $\frac{\partial\bar y}{\partial x} =
+     * \exp\left(\frac{\sum_{i=1}^k w_i \log\left(y_i\right)}{\sum_{i=1}^k w_i}\right)
+     * \frac{\sum_{i=1}^k\frac{w_i y'_i}{y_i}}{\sum_{i=1}^k w_i}$
+     * and when $p \le -1000$ or $p \ge 1000$ we take the min and max norm respectively.
+     * This means that the derivative is taken which has the min/max value.
+     *
+     * This function has, like the function weighted_p_norm_average been set up to be very tolerant to
+     * strange values, such as negative weights. The only things we require in for the general p is that
+     * the sum of the weights and the sum of the weights times the values to the power p may not be smaller
+     * or equal to zero. Futhermore, when a value is zero, the exponent is smaller then one and the
+     * correspondent weight is non-zero, this corresponds to no resistance in a parallel system. This means
+     * that this 'path' will be followed, and we return the corresponding derivative.
+     *
+     * The implemented special cases (which are minimum (p <= -1000), harmonic average (p = -1), geometric
+     * average (p = 0), arithmetic average (p = 1), and maximum (p >= 1000) ) is, except for the harmonic
+     * average even more tolerant of negative values, because they only require the sum of weights to be non-zero.
+     */
+    template<typename T>
+    T derivative_of_weighted_p_norm_average (const double averaged_parameter,
+                                             const std::vector<double> &weights,
+                                             const std::vector<double> &values,
+                                             const std::vector<T> &derivatives,
+                                             const double p);
+    /**
+     * This function computes a factor which can be used to make sure that the
+     * Jacobian remains positive definite.
+     *
+     * The goal of this function is to find a factor $\alpha$ so that
+     * $2\eta(\varepsilon(\bm u)) I \otimes I +  \alpha\left[a \otimes b + b \otimes a\right]$ remains a
+     * positive definite matrix. Here, $a=\varepsilon(\bm u)$ is the @p strain_rate
+     * and $b=\frac{\partial\eta(\varepsilon(\bm u),p)}{\partial \varepsilon}$ is the derivative of the viscosity
+     * with respect to the strain rate and is given by @p dviscosities_dstrain_rate. Since the viscosity $\eta$
+     * must be positive, there is always a value of $\alpha$ (possibly small) so that the result is a positive
+     * definite matrix. In the best case, we want to choose $\alpha=1$ because that corresponds to the full Newton step,
+     * and so the function never returns anything larger than one.
+     *
+     * The factor is defined by:
+     * $\frac{2\eta(\varepsilon(\bm u))}{\left[1-\frac{b:a}{\|a\| \|b\|} \right]^2\|a\|\|b\|}$. Alpha is
+     * reset to a maximum of one, and if it is smaller then one, a safety_factor scales the alpha to make
+     * sure that the 1-alpha won't get to close to zero.
+     */
+    template<int dim>
+    double compute_spd_factor(const double eta,
+                              const SymmetricTensor<2,dim> &strain_rate,
+                              const SymmetricTensor<2,dim> &dviscosities_dstrain_rate,
+                              const double safety_factor);
+
   }
 }
 

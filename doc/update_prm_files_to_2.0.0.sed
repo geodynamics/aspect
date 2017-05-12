@@ -8,6 +8,8 @@
 # Usage for a parameter file named FILENAME (possibly containing
 # wildcards such as '*.prm'):
 # sed -i -f update_prm_files_to_2.0.0.sed FILENAME
+# On MacOS:
+# sed -i "" -f update_source_files_to_2.0.0.sed FILENAME
 
 # Rename compositional initial conditions
 s/Compositional initial conditions/Initial composition model/g

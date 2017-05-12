@@ -4193,6 +4193,27 @@ to the directory that contains the parameter-GUI executable (optional).
 This will allow \aspect{} to automatically enable the GUI during configuration.
 \end{enumerate}
 
+\paragraph{Installing on macOS} On a mac machine with recent macOS Sierra 10.12.4, Qt development libraries of version 4.x.x at the libraries' official website \url{https://www.qt.io/download-open-source/} may fail to install.  Alternatively, you can install \texttt{qt4} through Homebrew (also see instruction here \url{https://github.com/cartr/homebrew-qt4})
+\begin{verbatim}
+brew tap cartr/qt4
+brew tap-pin cartr/qt4
+brew install qt@4
+\end{verbatim}
+or install it through Mac Ports (\url{https://www.macports.org/})
+\begin{verbatim}
+sudo port install qt4-mac
+\end{verbatim}
+Then you can follow the Linux user instructions provided previously to download and install dealii parameter-GUI. 
+Before running \texttt{cmake .}, you may need to either pass the path of \texttt{qt4} and specify the value of variable \texttt{QT\_LIBRARIES} to the directory that contains the libraries of \texttt{qt4}
+or add those information into your \texttt{.bash\_profile}. For example, for installation through Mac Ports, you can set the following into your \texttt{.bash\_profile}
+\begin{verbatim}
+export PATH="$PATH:/opt/local/libexec/qt4"
+export QT_LIBRARIES="/opt/local/libexec/qt4"
+\end{verbatim}
+
+
+
+
 \subsubsection{Using \aspect{}-GUI}
 
 When configuring \aspect{} after executing the above steps, it should automatically pick up the
