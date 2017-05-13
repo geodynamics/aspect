@@ -530,7 +530,7 @@ namespace aspect
 
     if (parameters.use_direct_stokes_solver)
       {
-        // We hardcode the blocks down below, so make sure block 0 is indeed
+        // We hard-code the blocks down below, so make sure block 0 is indeed
         // the block containing velocity and pressure:
         Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
         Assert(introspection.block_indices.pressure == 0

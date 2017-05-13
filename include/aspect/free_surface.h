@@ -64,7 +64,7 @@ namespace aspect
        * Apply stabilization to a cell of the system matrix.  The
        * stabilization is only added to cells on a free surface.  The
        * scheme is based on that of Kaus et. al., 2010.  Called during
-       * assemly of the system matrix.
+       * assembly of the system matrix.
        */
       void apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
                                 internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
@@ -85,7 +85,7 @@ namespace aspect
       /**
        * Set the boundary conditions for the solution of the elliptic
        * problem, which computes the displacements of the internal
-       * vertices so that the mesh does not become too distored due to
+       * vertices so that the mesh does not become too distorted due to
        * motion of the free surface.  Velocities of vertices on the free
        * surface are set to be the normal of the Stokes velocity solution
        * projected onto that surface.  Velocities of vertices on free-slip
@@ -123,7 +123,7 @@ namespace aspect
       const FESystem<dim> free_surface_fe;
 
       /**
-       * DoFHanlder for the free surface implementation.
+       * DoFHandler for the free surface implementation.
        */
       DoFHandler<dim> free_surface_dof_handler;
 

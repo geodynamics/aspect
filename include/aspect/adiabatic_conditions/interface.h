@@ -72,7 +72,7 @@ namespace aspect
         /**
          * Some plugins need to know whether the adiabatic conditions are
          * already calculated. Namely all plugins that are needed to create
-         * the adiabatic conditions but themselves depedend on the adiabatic
+         * the adiabatic conditions but themselves depend on the adiabatic
          * profile. Utilizing this function they may behave differently on
          * initialization of the adiabatic conditions and at model runtime.
          */

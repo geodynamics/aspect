@@ -58,7 +58,7 @@ namespace aspect
         // Calculate strain rate from velocity gradients
         const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
 
-        // Calculate strain rate second invaraint
+        // Calculate strain rate second invariant
         const double edot_ii = std::sqrt(std::fabs(second_invariant(deviator(strain_rate))));
 
         // New strain is the old strain plus dt*edot_ii

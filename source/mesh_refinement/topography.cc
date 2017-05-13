@@ -37,7 +37,7 @@ namespace aspect
       // we use the pressure in the middle of the cell. Thus, to get an
       // accurate result, all the cells at the upper boundary should have
       // the same level of refinement. This postprocessor causes a refinement
-      // in the upermost cells, which also makes sure that the upper
+      // in the uppermost cells, which also makes sure that the upper
       // boundary layer is resolved as good as possible.
 
       indicators = 0;

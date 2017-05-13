@@ -42,7 +42,7 @@ namespace aspect
      *
      * The viscosity of this model is based on the paper
      * Steinberger/Calderwood 2006: "Models of large-scale viscous flow in the
-     * Earth's mantle with contraints from mineral physics and surface
+     * Earth's mantle with constraints from mineral physics and surface
      * observations". The thermal conductivity is constant and the other
      * parameters are provided via lookup tables from the software PERPLEX.
      *

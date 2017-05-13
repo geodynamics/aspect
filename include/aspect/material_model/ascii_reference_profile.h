@@ -133,7 +133,7 @@ namespace aspect
         double thermal_viscosity_exponent;
 
         /**
-         * A list of constants that make up the piecewise constant function
+         * A list of constants that make up the piece-wise constant function
          * $\eta_r(z)$, which determines the depth dependence of viscosity,
          * and is multiplied with the reference viscosity and the
          * temperature dependence to compute the viscosity $\eta(z,T)$.
@@ -142,7 +142,7 @@ namespace aspect
 
         /**
          * A list of depths that determine the locations of the jumps in
-         * the piecewise constant function $\eta_r(z)$, which describes the
+         * the piece-wise constant function $\eta_r(z)$, which describes the
          * depth dependence of viscosity.
          */
         std::vector<double> transition_depths;

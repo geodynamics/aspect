@@ -182,7 +182,7 @@ namespace aspect
     if (timestep_number <= 1
         || std::abs(global_entropy_variation) < 1e-50
         || std::abs(global_field_variation) < 1e-50)
-      // we don't have sensible timesteps during the first two iterations
+      // we don't have sensible time-steps during the first two iterations
       // and we can not divide by the entropy_variation if it is zero
       return max_viscosity;
     else

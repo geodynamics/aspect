@@ -62,7 +62,7 @@ namespace aspect
         /**
          * Some plugins need to know whether the adiabatic conditions are
          * already calculated. This is for example the case for the simple
-         * com- pressible material model, which uses the adiabatic temperature
+         * compressible material model, which uses the adiabatic temperature
          * as reference temperature to calculate the density. For the
          * calculation of the adiabatic conditions this functionality is
          * simply switched off, because we are always on the reference
@@ -110,7 +110,7 @@ namespace aspect
       private:
 
         /**
-         * Wether the adiabatic conditions are already calculated. This is
+         * Whether the adiabatic conditions are already calculated. This is
          * important for plugins that are used by the adiabatic conditions but
          * also depend on the adiabatic conditions. This way they can behave
          * differently in initialization and model run.

@@ -139,7 +139,7 @@ namespace aspect
     private:
 
       /**
-       * Internal routine to compute the depth average of a certain quantitiy.
+       * Internal routine to compute the depth average of a certain quantity.
        *
        * The functor @p fctr must be an object of a user defined type that can
        * be arbitrary but has to satisfy certain requirements. In essence,

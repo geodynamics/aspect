@@ -146,7 +146,7 @@ namespace aspect
          * Enumeration for selecting which viscosity averaging scheme to use.
          * Select between harmonic, arithmetic, geometric, and
          * maximum_composition. The max composition scheme simply uses the
-         * viscosity of whichever field has the highes volume fraction. For
+         * viscosity of whichever field has the highest volume fraction. For
          * each quadrature point, averaging is conducted over the N
          * compositional fields plus the background field.
          */

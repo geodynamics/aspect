@@ -35,7 +35,7 @@ namespace aspect
      * mesh on a free surface.  Specifically, it calculates the slope of the
      * surface by comparing the local normal and gravity vectors.
      * Cells with steeper slopes get refined. This is useful for cases where
-     * there is steep topgraphy which needs to be tracked better.
+     * there is steep topography which needs to be tracked better.
      *
      * @ingroup MeshRefinement
      */

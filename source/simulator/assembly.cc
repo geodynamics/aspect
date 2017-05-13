@@ -478,7 +478,7 @@ namespace aspect
     else
       material_model_inputs.strain_rate.resize(0);
 
-    // the values of the compositional fields are stored as blockvectors for each field
+    // the values of the compositional fields are stored as block vectors for each field
     // we have to extract them in this structure
     std::vector<std::vector<double> > composition_values (introspection.n_compositional_fields,
                                                           std::vector<double> (n_q_points));
@@ -1010,7 +1010,7 @@ namespace aspect
 
     // set the AMG parameters in a way that minimizes the run
     // time. compared to some of the deal.II tutorial programs, we
-    // found that it pays off to set the aggregration threshold to
+    // found that it pays off to set the aggregation threshold to
     // zero, especially for ill-conditioned problems with large
     // variations in the viscosity
     //

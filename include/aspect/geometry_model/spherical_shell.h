@@ -93,7 +93,7 @@ namespace aspect
          *
          * The spherical shell model uses boundary indicators zero and one,
          * with zero corresponding to the inner surface and one corresponding
-         * to the outer surface. In 2d, if the geomery is only a slice of the
+         * to the outer surface. In 2d, if the geometry is only a slice of the
          * shell, boundary indicators 2 and 3 indicate the left and right
          * radial bounding lines.
          */

@@ -37,7 +37,7 @@ namespace aspect
      *
      * Add the term
      *    $   \xi \left( \nabla \cdot \mathbf u_s \right)^2 $,
-     * which correponds to bulk (compression) heating,
+     * which corresponds to bulk (compression) heating,
      * and the term
      *    $   \frac{\eta_f \phi^2}{k_{\phi}} \left( \mathbf u_f - \mathbf u_s \right)^2 $,
      * which corresponds to heating due to melt segregation.

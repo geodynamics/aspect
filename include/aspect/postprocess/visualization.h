@@ -70,12 +70,12 @@ namespace aspect
        * of the solution and other information such as the location of
        * quadrature points into the desired quantity to output. A typical case
        * would be if the quantity $g(x)$ you want to output can be written as
-       * a function $g(x) = G(u(x),\nabla u(x), x, ...)$ in a pointwise sense
+       * a function $g(x) = G(u(x),\nabla u(x), x, ...)$ in a point-wise sense
        * where $u(x)$ is the value of the solution vector (i.e., the
        * velocities, pressure, temperature, etc) at an evaluation point. In
        * the context of this program an example would be to output the density
        * of the medium as a spatially variable function since this is a
-       * quantity that for realistic media depends pointwise on the values of
+       * quantity that for realistic media depends point-wise on the values of
        * the solution.
        *
        * Using this way of describing a visualization postprocessor will yield
@@ -88,10 +88,10 @@ namespace aspect
        * dealii::DataPostprocessor but instead from the CellDataVectorCreator
        * class. In this case, a visualization postprocessor would generate and
        * return a vector that consists of one element per cell. The intent of
-       * this option is to output quantities that are not pointwise functions
+       * this option is to output quantities that are not point-wise functions
        * of the solution but instead can only be computed as integrals or
        * other functionals on a per-cell basis. A typical case would be error
-       * estimators that do depend on the solution but not in a pointwise
+       * estimators that do depend on the solution but not in a point-wise
        * sense; rather, they yield one value per cell of the mesh. See the
        * documentation of the CellDataVectorCreator class for more
        * information.
@@ -149,7 +149,7 @@ namespace aspect
            * the input file) of the postprocessors it requires. The manager
            * will ensure that these postprocessors are indeed used, even if
            * they were not explicitly listed in the input file, and are indeed
-           * run <i>before</i> this postprocessor everytime they are executed.
+           * run <i>before</i> this postprocessor every time they are executed.
            *
            * The postprocessors you can nominate here are of the general
            * postprocessor class, not visualization postprocessors.
@@ -204,9 +204,9 @@ namespace aspect
 
       /**
        * As explained in the documentation of the Interface class, the second
-       * kind of visualization plugin is one that wants to generate cellwise
+       * kind of visualization plugin is one that wants to generate cell-wise
        * data. Classes derived from this class need to implement a function
-       * execute() that computes these cellwise values and return a pair of
+       * execute() that computes these cell-wise values and return a pair of
        * values where the first one indicates the name of a variable and the
        * second one is a vector with one entry per cell. This class is the
        * interface that such plugins have to implement.
@@ -220,7 +220,7 @@ namespace aspect
         public:
           /**
            * The function classes have to implement that want to output
-           * cellwise data.
+           * cell-wise data.
            * @return A pair of values with the following meaning: - The first
            * element provides the name by which this data should be written to
            * the output file. - The second element is a pointer to a vector

@@ -220,13 +220,13 @@ namespace aspect
   {
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
       {
-        // only open the logfile on processor 0, the other processors won't be
+        // only open the log file on processor 0, the other processors won't be
         // writing into the stream anyway
         log_file_stream.open((parameters.output_directory + "log.txt").c_str(),
                              parameters.resume_computation ? std::ios_base::app : std::ios_base::out);
 
         // we already printed the header to the screen, so here we just dump it
-        // into the logfile.
+        // into the log file.
         print_aspect_header(log_file_stream);
       }
 
@@ -448,13 +448,13 @@ namespace aspect
     // where we declare a variable *inside* the 'if' condition, and only
     // enter the code block guarded by the 'if' in case the so-declared
     // variable evaluates to something non-zero, which here means that
-    // the dynamic_cast succeeded and returned the address of the subling
+    // the dynamic_cast succeeded and returned the address of the sibling
     // object.
     //
     // we also need to let all models parse their parameters. this is done *after* setting
     // up their SimulatorAccess base class so that they can query, for example, the
     // geometry model's description of symbolic names for boundary parts. note that
-    // the geometry model is the only model whose runtime parameters are already read
+    // the geometry model is the only model whose run time parameters are already read
     // at the time it is created
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(initial_topography_model.get()))
       sim->initialize_simulator (*this);
@@ -628,8 +628,8 @@ namespace aspect
          ++p)
       open_velocity_boundary_indicators.erase (*p);
 
-    // We need to do the rhs compatibility modification, if the model is
-    // compressible or compactible (in the case of melt transport), and
+    // We need to do the RHS compatibility modification, if the model is
+    // compressible or compatible (in the case of melt transport), and
     // there is no open boundary to balance the pressure.
     do_pressure_rhs_compatibility_modification = ((material_model->is_compressible() && !parameters.include_melt_transport)
                                                   ||
@@ -1005,7 +1005,7 @@ namespace aspect
     // - all velocities couple with all velocities
     // - pressure couples with all velocities and the other way
     //   around
-    // - temperature only couples with itself when using the impes
+    // - temperature only couples with itself when using the IMPES
     //   scheme
     // - compositional fields only couple with themselves
     // this is also valid in the case of melt transport (for the
@@ -1342,7 +1342,7 @@ namespace aspect
 
     //We need to setup the free surface degrees of freedom first if there is a free
     //surface active, since the mapping must be in place before applying boundary
-    //conditions that rely on it (such as no flux bcs).
+    //conditions that rely on it (such as no flux BCs).
     if (parameters.free_surface_enabled)
       free_surface->setup_dofs();
 
@@ -1977,7 +1977,7 @@ namespace aspect
               // the previous solution, but we still need to iterate since the right
               // hand side depends on it. in those cases, the matrix does not change,
               // but if we have to repeat computing the right hand side, we need to
-              // also rebuild the matrix if we end up with inhomogenous velocity
+              // also rebuild the matrix if we end up with inhomogeneous velocity
               // boundary conditions (i.e., if there are prescribed velocity boundary
               // indicators)
               if ((stokes_matrix_depends_on_solution() == true)

@@ -248,7 +248,7 @@ namespace aspect
        * Users of this code must verify correctness for their application.
        *
        * The main functional difference between the original code and this
-       * code is that all the boundaries are condidered to be inside the
+       * code is that all the boundaries are considered to be inside the
        * polygon. One should of course realize that with floating point
        * arithmetic no guarantees can be made for the borders, but for
        * exact arithmetic this algorithm would work (also see polygon
@@ -612,7 +612,7 @@ namespace aspect
         }
       else
         {
-          // Wait to recieve error code, and throw QuietException if directory
+          // Wait to receive error code, and throw QuietException if directory
           // creation has failed
           MPI_Bcast (&error, 1, MPI_INT, 0, comm);
           if (error!=0)
@@ -1928,7 +1928,7 @@ namespace aspect
                               const std::vector<double> &values,
                               const double p)
     {
-      //TODO: prevent devision by zero for all
+      //TODO: prevent division by zero for all
       double averaged_parameter = 0.0;
 
       // first look at the special cases which can be done faster

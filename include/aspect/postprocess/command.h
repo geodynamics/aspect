@@ -49,7 +49,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Parse paramters
+         * Parse parameters
          */
         virtual
         void

@@ -45,7 +45,7 @@ namespace aspect
         {
           for (unsigned int iord = 0; iord < ideg+1; iord++)
             {
-              // do the sphercial harmonic expansion
+              // do the spherical harmonic expansion
               for (unsigned int ds_num = 0; ds_num < spherical_function.size(); ds_num++)
                 {
                   // normalization after Dahlen and Tromp, 1986, Appendix B.6
@@ -96,8 +96,8 @@ namespace aspect
 
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
-      // Directly do the global 3D intergral over each quadrature point of every cell (different from traditional way to do layer integral).
-      // This work around ASPECT's adpative mesh refinment feature.
+      // Directly do the global 3D integral over each quadrature point of every cell (different from traditional way to do layer integral).
+      // This work around ASPECT's adaptive mesh refinement feature.
       std::vector<double> SH_density_coecos;
       std::vector<double> SH_density_coesin;
       for (unsigned int ideg =  min_degree; ideg < max_degree+1; ideg++)
@@ -181,7 +181,7 @@ namespace aspect
                                                 const double &inner_radius) const
     {
       const unsigned int quadrature_degree = this->introspection().polynomial_degree.velocities;
-      const QGauss<dim> quadrature_formula(quadrature_degree); // need to retrieve normal shear stess, pressure, density to calculate dynamic topography here
+      const QGauss<dim> quadrature_formula(quadrature_degree); // need to retrieve normal shear stress, pressure, density to calculate dynamic topography here
       const QGauss<dim-1> quadrature_formula_face(quadrature_degree); // need to grab the infinitesimal area of each quadrature points on every boundary face here
 
       FEValues<dim> fe_values (this->get_mapping(),
@@ -200,7 +200,7 @@ namespace aspect
                                         update_q_points |
                                         update_JxW_values);
 
-      // Material model in/out for the gauss quadrature rule evaluations
+      // Material model in/out for the Gauss quadrature rule evaluations
       MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values.n_quadrature_points, this->n_compositional_fields());
@@ -219,7 +219,7 @@ namespace aspect
       double integrated_bottom_layer_density = 0;
       double integrated_bottom_layer_volume = 0;
 
-      // vectors to store the location, infitesimal area, and dynamic topography associated with each quadrature point of each surface and bottom cell respectively.
+      // vectors to store the location, infinitesimal area, and dynamic topography associated with each quadrature point of each surface and bottom cell respectively.
       std::vector<std::pair<Point<dim>,std::pair<double,double> > > surface_stored_values;
       std::vector<std::pair<Point<dim>,std::pair<double,double> > > CMB_stored_values;
 
@@ -241,14 +241,14 @@ namespace aspect
                   {
                     if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
                       {
-                        // if the cell is at top boundary, assign the correspongding upper face index to top_face_idx but keep the CMB_face_idx still invalid_unsigned_int
+                        // if the cell is at top boundary, assign the corresponding upper face index to top_face_idx but keep the CMB_face_idx still invalid_unsigned_int
                         top_face_idx = f;
                         break;
                       }
                     else if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
                              > (this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.))
                       {
-                        // if the cell is at bottom boundary, assign the correspongding lower face index to CMB_face_idx but keep the top_face_idx still invalid_unsigned_int
+                        // if the cell is at bottom boundary, assign the corresponding lower face index to CMB_face_idx but keep the top_face_idx still invalid_unsigned_int
                         CMB_face_idx = f;
                         break;
                       }
@@ -294,7 +294,7 @@ namespace aspect
 
               // Calculate the average dynamic topography of the cell.
               // For each of the quadrature points, evaluate the density, dynamic pressure, and shear stress in direction of the gravity vector.
-              // Compute the integral of the dynamic topograhy function over the entire cell, by looping over all quadrature points.
+              // Compute the integral of the dynamic topography function over the entire cell, by looping over all quadrature points.
               double dynamic_topography_x_volume = 0.;
               double cell_volume = 0.;
               double density_x_volume = 0.;
@@ -332,7 +332,7 @@ namespace aspect
                   cell_volume += fe_values.JxW(q);
                 }
 
-              // get the average dynamic topograhy of the cell.
+              // get the average dynamic topography of the cell.
               const double dynamic_topography_cell_average = dynamic_topography_x_volume / cell_volume;
 
               // Get the boundary face index and check again to make sure the cell is at the boundary.
@@ -376,10 +376,10 @@ namespace aspect
 
               this->get_material_model().evaluate(in_face, out_face);
 
-              // if the cell at top boundary, calculate dynamic topography and add the results into surface dynamic topogaphy storage vector
+              // if the cell at top boundary, calculate dynamic topography and add the results into surface dynamic topography storage vector
               if (top_face_idx != numbers::invalid_unsigned_int)
                 {
-                  // Although we calculate the average dynamic topograhy of the cell's boundary face, we store this same dynamic topography with every
+                  // Although we calculate the average dynamic topography of the cell's boundary face, we store this same dynamic topography with every
                   // surface quadrature point's associated area into the storage vector. The reason to do this is that later in the spherical
                   // harmonic expansion, we will calculate sin(theta)*d_theta*d_phi by infinitesimal_area/radius^2. The accuracy of this relation
                   // is improved as infinitesimal_area is closer to zero, so using every surface quadrature point's associated area of each
@@ -397,10 +397,10 @@ namespace aspect
                   integrated_surface_area += face_area;
                 }
 
-              // if the cell at bottom boundary, calculate dynamic topography and add the results into bottom dynamic topogaphy storage vector
+              // if the cell at bottom boundary, calculate dynamic topography and add the results into bottom dynamic topography storage vector
               if (CMB_face_idx != numbers::invalid_unsigned_int)
                 {
-                  // Although we calculate the average dynamic topograhy of the cell's boundary face, we store this same dynamic topography with every
+                  // Although we calculate the average dynamic topography of the cell's boundary face, we store this same dynamic topography with every
                   // bottom quadrature point's associated area into the storage vector. The reason to do this is that later in the spherical
                   // harmonic expansion, we will calculate sin(theta)*d_theta*d_phi by infinitesimal_area/radius^2. The accuracy of this relation
                   // is improved as infinitesimal_area is closer to zero, so using every bottom quadrature point's associated area of each
@@ -919,7 +919,7 @@ namespace aspect
                             Patterns::Integer (0),
                             "This parameter can be a random positive integer. However, the value normally should not exceed the maximum"
                             "degree of the initial perturbed temperature field. For example, if the initial temperature uses S40RTS, the"
-                            "maximun degree should not be larger than 40.");
+                            "maximum degree should not be larger than 40.");
           prm.declare_entry("Minimum degree","2",
                             Patterns::Integer (0),
                             "This parameter normally is set to 2 since the perturbed gravitational potential at degree 1 always vanishes"

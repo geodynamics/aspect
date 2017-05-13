@@ -745,7 +745,7 @@ namespace aspect
                              "parallel file output and instead write one file per processor. "
                              "A value of 1 will generate one big file containing the whole "
                              "solution, while a larger value will create that many files "
-                             "(at most as many as there are mpi ranks).");
+                             "(at most as many as there are MPI ranks).");
 
           prm.declare_entry ("Write in background thread", "false",
                              Patterns::Bool(),

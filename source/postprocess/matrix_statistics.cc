@@ -36,7 +36,7 @@ namespace
   {
     std::ostringstream output;
 
-    // convert from bytes intto mb
+    // convert from bytes into Mb
     const double mb = 1024*1024;
     //sum up local matrix memory usage
     double global_matrix_memory_consumption = dealii::Utilities::MPI::sum(matrix.memory_consumption(),
@@ -48,7 +48,7 @@ namespace
     // output number of nonzero elements in matrix. Do so with 1000s separator
     // since they are frequently large; this was previously done by using the empty
     // string locale, but creating std::locale with an empty string caused problems
-    // on some platforms, so the functionaltity yo catch the exception and ignore
+    // on some platforms, so the functionality yo catch the exception and ignore
     // is kept here, even though explicitly setting a facet should always work.
     try
       {

@@ -1165,7 +1165,7 @@ namespace aspect
     // currently, the only coefficient that really appears on the
     // left hand side of the Stokes equation is the viscosity. note
     // that our implementation of compressible materials makes sure
-    // that the density does not appear on the lhs.
+    // that the density does not appear on the LHS.
     // if melt transport is included in the simulation, we have an
     // additional equation with more coefficients on the left hand
     // side.
@@ -1182,7 +1182,7 @@ namespace aspect
     /*
      * First setup the quadrature points which are used to find the maximum and minimum solution values at those points.
      * A quadrature formula that combines all quadrature points constructed as all tensor products of
-     * 1) one dimentional Gauss points; 2) one dimentional Gauss-Lobatto points.
+     * 1) one dimensional Gauss points; 2) one dimensional Gauss-Lobatto points.
      * We require that the Gauss-Lobatto points (2) appear in only one direction.
      * Therefore, possible combination
      * in 2D: the combinations are 21, 12
@@ -1288,7 +1288,7 @@ namespace aspect
 
     const unsigned int n_q_points_0 = quadrature_formula_0.size();
 
-    // fe values for points evalution
+    // fe values for points evaluation
     FEValues<dim> fe_values (*mapping,
                              finite_element,
                              quadrature_formula,
@@ -1464,13 +1464,13 @@ namespace aspect
       {
         AssertThrow(!heating_model_manager.adiabatic_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
-                               "The 'boussinesq approximation' formulation expects adiabatic heating to be disabled, "
+                               "The 'Boussinesq approximation' formulation expects adiabatic heating to be disabled, "
                                "but the 'adiabatic heating' plugin has been selected in the input file. "
                                "Please check the consistency of your input file."));
 
         AssertThrow(!heating_model_manager.shear_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
-                               "The 'boussinesq approximation' formulation expects shear heating to be disabled, "
+                               "The 'Boussinesq approximation' formulation expects shear heating to be disabled, "
                                "but the 'shear heating' plugin has been selected in the input file. "
                                "Please check the consistency of your input file."));
       }

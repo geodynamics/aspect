@@ -32,7 +32,7 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes the pointwise heatflux density through the boundaries.
+     * A postprocessor that computes the point-wise heat flux density through the boundaries.
 
      * @ingroup Postprocessing
      */

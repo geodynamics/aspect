@@ -95,7 +95,7 @@ namespace aspect
                   }
               }
 
-      //vector for packing local values before mpi summing them
+      //vector for packing local values before MPI summing them
       double values[4] = {local_bottom_area, local_top_area, local_bottom_pressure, local_top_pressure};
 
       Utilities::MPI::sum<double, 4>( values, this->get_mpi_communicator(), values );

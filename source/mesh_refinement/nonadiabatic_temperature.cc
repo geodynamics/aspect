@@ -58,7 +58,7 @@ namespace aspect
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(),
                                                  this->n_compositional_fields());
 
-      // the values of the compositional fields are stored as blockvectors for each field
+      // the values of the compositional fields are stored as block vectors for each field
       // we have to extract them in this structure
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),

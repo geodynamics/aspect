@@ -82,7 +82,7 @@ namespace aspect
         double delta;
 
         /**
-         * A function that returns the isothem depth for a given position.
+         * A function that returns the isotherm depth for a given position.
          */
         double
         get_isotherm_depth (const double latitude,

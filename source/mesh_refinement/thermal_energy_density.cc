@@ -55,7 +55,7 @@ namespace aspect
                                quadrature,
                                update_quadrature_points | update_values | update_gradients);
 
-      // the values of the compositional fields are stored as blockvectors for each field
+      // the values of the compositional fields are stored as block vectors for each field
       // we have to extract them in this structure
       std::vector<std::vector<double> > prelim_composition_values (this->n_compositional_fields(),
                                                                    std::vector<double> (quadrature.size()));

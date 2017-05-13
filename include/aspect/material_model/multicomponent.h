@@ -168,7 +168,7 @@ namespace aspect
         std::vector<double> viscosities;
 
         /**
-         * Vector for field thermal expnsivities, read from parameter file.
+         * Vector for field thermal expansivities, read from parameter file.
          */
         std::vector<double> thermal_expansivities;
 
