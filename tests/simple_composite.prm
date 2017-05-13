@@ -49,17 +49,9 @@ end
 subsection Material model
   set Model name = compositing
 
-  subsection Simple compressible model
-    set Reference density = 33
-    set Reference specific heat = 1200
-    set Thermal expansion coefficient = 3e-5
-    set Viscosity = 1e21
-    set Reference compressibility = 2.5e-12
-  end
-
   subsection Simple model
     set Reference density = 3340
-    set Reference specific heat = 12
+    set Reference specific heat = 1200
     set Thermal expansion coefficient = 3e-5
     set Viscosity = 1e21
   end
