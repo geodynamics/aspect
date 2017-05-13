@@ -45,26 +45,26 @@ namespace aspect
     //Copy the requested data for one model
     template <int dim>
     void
-    Compositing<dim>::composite(const unsigned int model_index,
-                                const typename Interface<dim>::MaterialModelOutputs &evaluated,
-                                typename Interface<dim>::MaterialModelOutputs &out) const
+    Compositing<dim>::copy_required_properties(const unsigned int model_index,
+                                               const typename Interface<dim>::MaterialModelOutputs &base_output,
+                                               typename Interface<dim>::MaterialModelOutputs &out) const
     {
       if (model_property_map.at(Property::viscosity) == model_index)
-        out.viscosities = evaluated.viscosities;
+        out.viscosities = base_output.viscosities;
       if (model_property_map.at(Property::density) == model_index)
-        out.densities = evaluated.densities;
+        out.densities = base_output.densities;
       if (model_property_map.at(Property::thermal_expansion_coefficient) == model_index)
-        out.thermal_expansion_coefficients = evaluated.thermal_expansion_coefficients;
+        out.thermal_expansion_coefficients = base_output.thermal_expansion_coefficients;
       if (model_property_map.at(Property::specific_heat) == model_index)
-        out.specific_heat = evaluated.specific_heat;
+        out.specific_heat = base_output.specific_heat;
       if (model_property_map.at(Property::compressibility) == model_index)
-        out.compressibilities = evaluated.compressibilities;
+        out.compressibilities = base_output.compressibilities;
       if (model_property_map.at(Property::entropy_derivative_pressure) == model_index)
-        out.entropy_derivative_pressure = evaluated.entropy_derivative_pressure;
+        out.entropy_derivative_pressure = base_output.entropy_derivative_pressure;
       if (model_property_map.at(Property::entropy_derivative_temperature) == model_index)
-        out.entropy_derivative_temperature = evaluated.entropy_derivative_temperature;
+        out.entropy_derivative_temperature = base_output.entropy_derivative_temperature;
       if (model_property_map.at(Property::reaction_terms) == model_index)
-        out.reaction_terms = evaluated.reaction_terms;
+        out.reaction_terms = base_output.reaction_terms;
     }
 
     template <int dim>
@@ -72,8 +72,8 @@ namespace aspect
     Compositing<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                                typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      typename Interface<dim>::MaterialModelOutputs evaluated(out.viscosities.size(),
-                                                              this->introspection().n_compositional_fields);
+      typename Interface<dim>::MaterialModelOutputs base_output(out.viscosities.size(),
+                                                                this->introspection().n_compositional_fields);
 
       for (unsigned int i=0; i<models.size(); ++i)
         {
