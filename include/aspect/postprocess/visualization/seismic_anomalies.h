@@ -77,20 +77,20 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
         private:
-	  
+
           /**
-           * Scheme chosen to define the average seismic velocity as 
-	   * a function of depth. Reference profile evaluates the 
-	   * material model using the P-T profile defined by the reference 
-	   * adiabatic conditions and the lateral average option calculates
-	   * the average velocity within a number n_slices of depth slices.
+           * Scheme chosen to define the average seismic velocity as
+          * a function of depth. Reference profile evaluates the
+          * material model using the P-T profile defined by the reference
+          * adiabatic conditions and the lateral average option calculates
+          * the average velocity within a number n_slices of depth slices.
            */
-	  enum average_velocity_scheme
-	  {
-	    reference_profile,
-	    lateral_average
-	  } average_velocity_scheme;
-	  
+          enum average_velocity_scheme
+          {
+            reference_profile,
+            lateral_average
+          } average_velocity_scheme;
+
           /**
            * Number of depth slices used to define average
            * seismic shear wave velocities from which anomalies
@@ -145,20 +145,20 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
         private:
-	  
+
           /**
-           * Scheme chosen to define the average seismic velocity as 
-	   * a function of depth. Reference profile evaluates the 
-	   * material model using the P-T profile defined by the reference 
-	   * adiabatic conditions and the lateral average option calculates
-	   * the average velocity within a number n_slices of depth slices.
+           * Scheme chosen to define the average seismic velocity as
+          * a function of depth. Reference profile evaluates the
+          * material model using the P-T profile defined by the reference
+          * adiabatic conditions and the lateral average option calculates
+          * the average velocity within a number n_slices of depth slices.
            */
-	  enum average_velocity_scheme
-	  {
-	    reference_profile,
-	    lateral_average
-	  } average_velocity_scheme;
-	  
+          enum average_velocity_scheme
+          {
+            reference_profile,
+            lateral_average
+          } average_velocity_scheme;
+
           /**
            * Number of depth slices used to define average
            * seismic compressional wave velocities from which anomalies
