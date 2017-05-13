@@ -347,7 +347,7 @@ namespace aspect
                                                   "the deformation of the upper surface. "
                                                   "Note that this implementation takes "
                                                   "the direction of gravity into account, which means that reversing the flow "
-                                                  "in backward advection calculations will not reverse the intantaneous topography "
+                                                  "in backward advection calculations will not reverse the instantaneous topography "
                                                   "because the reverse flow will be divided by the reverse surface gravity."
                                                   "\n\n"
                                                   "Strictly speaking, the dynamic topography is of course a "

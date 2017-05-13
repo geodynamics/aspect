@@ -388,9 +388,9 @@ namespace aspect
                 dealii::Utilities::MPI::sum(particles_to_add_locally,this->get_mpi_communicator());
 
               AssertThrow (next_free_particle_index <= std::numeric_limits<types::particle_index>::max() - globally_generated_particles,
-                           ExcMessage("There is no free particle index left to generate a new particle id. Please check if your"
-                                      "model generates unusually many new particles (by repeatedly deleting and regenerating particles), or"
-                                      "recompile deal.II with the DEAL_II_WITH_64BIT_INDICES option enabled, to use 64-bit integers for"
+                           ExcMessage("There is no free particle index left to generate a new particle id. Please check if your "
+                                      "model generates unusually many new particles (by repeatedly deleting and regenerating particles), or "
+                                      "recompile deal.II with the DEAL_II_WITH_64BIT_INDICES option enabled, to use 64-bit integers for "
                                       "particle ids."));
 
               next_free_particle_index += globally_generated_particles;
@@ -1540,7 +1540,7 @@ namespace aspect
           prm.declare_entry ("Load balancing strategy", "repartition",
                              Patterns::MultipleSelection ("none|remove particles|add particles|"
                                                           "remove and add particles|repartition"),
-                             "Strategy that is used to balance the computational"
+                             "Strategy that is used to balance the computational "
                              "load across processors for adaptive meshes.");
           prm.declare_entry ("Minimum particles per cell", "0",
                              Patterns::Integer (0),
@@ -1614,7 +1614,7 @@ namespace aspect
       AssertThrow((n_processes == 1) || (CFL_number <= 1.0),
                   ExcMessage("The current particle algorithm does not work in "
                              "parallel if the CFL number is larger than 1.0, because "
-                             "in this case particles can move more than one cell's "
+                             "in this case particles can move more than one cell "
                              "diameter in one time step and therefore skip the layer "
                              "of ghost cells around the local subdomain."));
 

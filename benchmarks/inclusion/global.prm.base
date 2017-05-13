@@ -55,7 +55,7 @@ subsection Boundary temperature model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = perturbed box
 end
 
@@ -70,6 +70,7 @@ end
 
 
 subsection Mesh refinement
+  set Initial global refinement                = 5
   set Initial adaptive refinement              = 0
 end
 

@@ -459,7 +459,7 @@ namespace aspect
                              Patterns::Double(0),
                              "Depth above that melt will be extracted from the model, "
                              "which is done by a negative reaction term proportional to the "
-                             "porosity field."
+                             "porosity field. "
                              "Units: $m$.");
           prm.declare_entry ("Solid compressibility", "0.0",
                              Patterns::Double (0),
@@ -471,12 +471,12 @@ namespace aspect
                              "Units: $1/Pa$.");
           prm.declare_entry ("Melt bulk modulus derivative", "0.0",
                              Patterns::Double (0),
-                             "The value of the pressure derivative of the melt bulk"
+                             "The value of the pressure derivative of the melt bulk "
                              "modulus. "
                              "Units: None.");
           prm.declare_entry ("Use full compressibility", "false",
                              Patterns::Bool (),
-                             "If the compressibility should be used everywhere in the code"
+                             "If the compressibility should be used everywhere in the code "
                              "(if true), changing the volume of material when the density changes, "
                              "or only in the momentum conservation and advection equations "
                              "(if false).");
@@ -497,16 +497,16 @@ namespace aspect
           prm.declare_entry ("Depletion density change", "0.0",
                              Patterns::Double (),
                              "The density contrast between material with a depletion of 1 and a "
-                             "depletion of zero. Negative values indicate lower densities of"
-                             "depleted material. Depletion is indicated by the compositional"
+                             "depletion of zero. Negative values indicate lower densities of "
+                             "depleted material. Depletion is indicated by the compositional "
                              "field with the name peridotite. Not used if this field does not "
-                             "exist in the model."
+                             "exist in the model. "
                              "Units: $kg/m^3$.");
           prm.declare_entry ("Depletion solidus change", "200.0",
                              Patterns::Double (0),
                              "The solidus temperature change for a depletion of 100\\%. For positive "
                              "values, the solidus gets increased for a positive peridotite field "
-                             "(depletion) and lowered for a negative peridotite field (enrichment)."
+                             "(depletion) and lowered for a negative peridotite field (enrichment). "
                              "Scaling with depletion is linear. Only active when fractional melting "
                              "is used. "
                              "Units: $K$.");

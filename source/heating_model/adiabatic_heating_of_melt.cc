@@ -151,7 +151,7 @@ namespace aspect
   {
     ASPECT_REGISTER_HEATING_MODEL(AdiabaticHeatingMelt,
                                   "adiabatic heating of melt",
-                                  "Implementation of a standard and a simplified model of"
+                                  "Implementation of a standard and a simplified model of "
                                   "adiabatic heating of melt. The full model implements the "
                                   "heating term \n"
                                   "$\\alpha T (-\\phi \\mathbf u_s \\cdot \\nabla p) "

@@ -1,2 +1,2 @@
-#include "inclusion_2.cc"
+#include "../benchmarks/inclusion/inclusion.cc"
 

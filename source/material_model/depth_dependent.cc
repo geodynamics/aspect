@@ -176,7 +176,7 @@ namespace aspect
 
           prm.declare_entry("Depth list", "", Patterns::List(Patterns::Double ()),
                             "A comma-separated list of depth values for use with the ``List'' "
-                            "``Depth dependence method''. The list must be provided in order of"
+                            "``Depth dependence method''. The list must be provided in order of "
                             "increasing depth, and the last value must be greater than or equal to "
                             "the maximal depth of the model. The depth list is interpreted as a layered "
                             "viscosity structure and the depth values specify the maximum depths of each "

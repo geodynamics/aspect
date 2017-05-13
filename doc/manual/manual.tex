@@ -2472,7 +2472,7 @@ with file permission conflicts between the host system and the container.
 Therefore, we recommend this slightly more cumbersome, but also more reliable
 workflow.}. This is accomplished by specifying the -v flag followed by
 the absolute path on the host machine, colon, absolute path within the docker
-container, colon, and specifing readonly permissions as in the example below.
+container, colon, and specifying read-only permissions as in the example below.
 
 Make sure your parameter file specifies a model output directory \textit{other}
 than the input directory, e.g. \texttt{/home/dealii/aspect/model\_output}. When
@@ -3935,7 +3935,7 @@ The default settings of \aspect{} use quadratic finite elements for the
 velocity. Given that the temperature and compositional fields essentially (up
 to material parameters) satisfy advection equations of the kind $\partial_t T +
 \mathbf u \cdot \nabla T = \ldots$, it seems appropriate to also use quadratic
-finite elemen shape functions for the temperature and compositional fields.
+finite element shape functions for the temperature and compositional fields.
 
 However, this is not mandatory. If you do not care about high accuracy in these
 fields and are mostly interested in the velocity or pressure field, you can
@@ -4430,7 +4430,7 @@ is well understood:
   heat from the bottom to the top boundaries. The simulations we will set up
   operates in this regime. Specifically, we will choose $Ra=10^4$.
 
-  On the other hand, if the Rayleigh number becomes even larger, a serious of
+  On the other hand, if the Rayleigh number becomes even larger, a series of
   period doublings starts that makes the system become more and more unstable.
   We will investigate some of this behavior at the end of this section.
 
@@ -4932,7 +4932,7 @@ the bottom and top, the following will make sense:
 
 
 The next step is to describe the initial conditions. As before, we will use an
-instably layered medium but the perturbation now needs to be both in $x$- and
+unstably layered medium but the perturbation now needs to be both in $x$- and
 $y$-direction
 \lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/initial.part.prm.out}
 
@@ -5076,7 +5076,7 @@ shows the negative of the values available in the statistics file.}
 The figure reinforces a pattern that can also be seen by watching the movie of
 the temperature field referenced above, namely that the simulation can be
 subdivided into three distinct phases. The first phase corresponds to the
-initial overturning of the instable layering of the temperature field and is
+initial overturning of the unstable layering of the temperature field and is
 associated with a large spike in heat flux as well as large velocities (not
 shown here). The second phase, until approximately $t=0.01$ corresponds to a
 relative lull: some plumes rise up, but not very fast because the medium is now
@@ -5637,7 +5637,7 @@ information to particles, and how to visualize these.
 
 \paragraph{Using particle properties.}
 
-The particles in the above example only fulfill the purpose of
+The particles in the above example only fulfil the purpose of
 visualizing the convection pattern. A more meaningful use for
 particles is to attach ``properties'' to them. A property consists of
 one or more numbers (or vectors or tensors) that may either be set at
@@ -5646,7 +5646,7 @@ during the model runtime. These properties can then be used for many
 applications, e.g., storing an initial property (like the position, or
 initial composition), evaluating a property at a defined particle path (like the
 pressure-temperature evolution of a certain piece of rock), or by integrating a
-quantity along a particle parth (like the integrated strain a certain domain has
+quantity along a particle path (like the integrated strain a certain domain has
 experienced).  We illustrate these properties in the cookbook
 \url{cookbooks/composition-passive-particles-properties.prm}, in which we add the
 following lines to the \texttt{Particles} subsection (we also increase the number
@@ -5714,7 +5714,7 @@ Section~\ref{sec:write-plugin}.) The properties selected above do the following:
   particle property's values always exactly mirror the pressure and
   temperature at the particle's current location. This does not seem
   to be very useful since the information is already
-  avaiable. However, because each particle has a unique id, one can
+  available. However, because each particle has a unique id, one can
   select a particular particle and output its properties
   (including pressure and temperature based on the \texttt{pT path}
   property) at all time steps. This allows for the creation of a pressure-temperature curve of a certain piece of rock. This property is interesting in many lithosphere and crustal scale models, because it is determining the metamorphic reactions that happen during deformation processes (e.g., in a subduction zone).
@@ -5830,12 +5830,12 @@ details to run this cookbook.  Here we demonstrate the evolution of surface topo
 that results when a blob of hot material rises in the mantle, pushing up the free
 surface as it does.  Usually the amplitude of free surface topography 
 will be small enough that it is difficult to see with the naked eye in visualizations,
-but the \texttt{topography} postprocessor can help by outputting the maximum and minumum 
+but the \texttt{topography} postprocessor can help by outputting the maximum and minimum 
 topography on the free surface at every time step. 
 
 The bulk of the parameter file for this cookbook is similar to previous ones in this manual.
 We use initial temperature conditions that set up a hot blob of rock in the center of the 
-domain. In the \texttt{Model settings} secion you need to give \aspect{} a comma 
+domain. In the \texttt{Model settings} section you need to give \aspect{} a comma 
 separated list of the free surface boundary indicators.  In this case, we are 
 dealing with the top boundary of a box in 2D, corresponding to boundary indicator 3.  
 
@@ -5999,7 +5999,7 @@ numerical computations. First, you will find that they lead to very long compute
 times because our solvers and preconditioners break down. This may be
 acceptable if it would at least lead to accurate solutions, but large viscosity
 gradients lead also to large pressure gradients, and this in turn leads to over-
-and undershots in the numerical approximation of the gradient. We will 
+and undershoots in the numerical approximation of the gradient. We will 
 demonstrate both of these issues experimentally below.
 
 One of the solution to such problems is the realization that one can mitigate
@@ -6010,7 +6010,7 @@ properties not per quadrature point when doing the integrals for forming the
 finite element matrix, but per cell, then we will lose accuracy in the solution
 in those cases where the solution is smooth. More specifically, we will likely
 lose one or more orders of convergence. In other words, it would be a bad idea
-to do this averging unconditionally. On the other hand, if the solution has
+to do this averaging unconditionally. On the other hand, if the solution has
 essentially discontinuous gradients and kinks in the velocity field, then at
 least at these locations we cannot expect a particularly high convergence order
 anyway, and the averaging will not hurt very much either. In cases where
@@ -6085,14 +6085,14 @@ equations~\eqref{eq:stokes-1}--\eqref{eq:stokes-2}.%
   global refinement steps, the 30+188 outer iterations without averaging shown
   in Table~\ref{tab:sinker-with-averaging-iteration-counts} require a total of
   22,096 inner CG iterations for the elliptic block (and a total of 837 for the
-  aproximate Schur complement). Using harmonic averaging, the 30+26 outer
+  approximate Schur complement). Using harmonic averaging, the 30+26 outer
   iterations require only 1258 iterations on the elliptic block (and 84 on the
   Schur complement). In other words, the number of inner iterations per outer
   iteration (taking into account the split into ``cheap'' and ``expensive''
   outer iterations, see \cite{KHB12}) is reduced from 117 to 47 for the
   elliptic block and from 3.8 to 1.5 for the Schur complement.}
 The implication of these results is that the averaging gives us a solution
-that not only reduces the degree of pressure over- and undershots, but is also
+that not only reduces the degree of pressure over- and undershoots, but is also
 significantly faster to compute: for example, the total run time for 8 global
 refinement steps is reduced from 5,250s for no averaging to 358s for harmonic
 averaging.
@@ -6486,7 +6486,7 @@ have already been assigned to each path (Figure~\ref{fig:jelly-picture}).
 \note{The page of your drawing in Inkscape should already have the extents (in px) that you later want to use in your model (in m).}
 
 After geomIO is initialized in MATLAB, we \href{http://geomio-doc.bitbucket.org/tuto2D.html#assigning-phase-to-markers}
-{run geomIO as desribed in the documentation}, loading the default options and then specifying all the option we want to 
+{run geomIO as described in the documentation}, loading the default options and then specifying all the option we want to 
 change, such as the path to the input file, or the resolution: 
 \lstinputlisting[language=matlab]{cookbooks/geomio/run_geomio.part1.m}
 You can view all of the options available by typing \texttt{opt} in MATLAB. 
@@ -6573,7 +6573,7 @@ one by one:
     This question is easier to answer. To first order, the domains we want to
     simulate are spherical shells, and to second order ellipsoid shells that can
     be obtained by considering the isopotential surface of the gravity field of
-    a homogenous, rotating fluid.
+    a homogeneous, rotating fluid.
     A more accurate description is of course the geoid for which several
     parameterizations are available. A complication arises if we ask whether we
     want to include the mostly rigid crust in the domain and simply assume that
@@ -6779,7 +6779,7 @@ the current case to be%
 \end{equation*}
 
 Second, the initial temperature profile we chose is not realistic -- in fact, it
-is a completely instable one: there is hot material underlying cold one, and
+is a completely unstable one: there is hot material underlying cold one, and
 this is not just the result of boundary layers. Consequently, what happens in
 the simulation is that we first overturn the entire temperature field with the
 hot material in the lower half of the domain swapping places with the colder
@@ -6806,7 +6806,7 @@ the entire depth of the mantle.
 \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/depth_average_temperature}
 \caption{\it Simple convection in a quarter of an annulus. Left: Root mean
 square values of the velocity field. The initial spike (off the scale) is due to
-the overturning of the instable layering of the temperature. Convection is suppressed for the
+the overturning of the unstable layering of the temperature. Convection is suppressed for the
 first 800 million years due to the stable layering that results from it. The
 maximal velocity encountered follows generally the same trend and is in the
 range of 2--3 cm/year between 100 and 800 million years, and 4--8 cm/year
@@ -6921,7 +6921,7 @@ beginning, the average temperature \textit{rises}, and apparently there are
 parts of the mantle that become hotter than the 4273 K we have given the core,
 leading to a downward heat flux. This heating can of course only come from the
 shear heating term we have accidentally left in the model: at the beginning, the
-instable layering leads to very large velocities, and large velocities lead to
+unstable layering leads to very large velocities, and large velocities lead to
 large velocity gradients that in turn lead to a lot of shear heating! Once the
 initial overturning has subsided, after say 100 million years (see the mean
 velocity in Fig.~\ref{fig:simple-shell-2d-rms}), the shear heating becomes
@@ -6942,7 +6942,7 @@ always positive, and where the average temperature strictly drops!
 identified as unrealistic in the following sections.
 However, despite all of this, some things are at least at the right order of
 magnitude, confirming that what \aspect{} is computing is reasonable. For
-example, the maximal velocities encounted in our model (after the 800 million
+example, the maximal velocities encountered in our model (after the 800 million
 year boundary) are in the range of 6--7cm per year, with occasional excursions
 up to 11cm. Clearly, something is going in the right direction.
 
@@ -7025,7 +7025,7 @@ graphical output every million years. Computations of this size typically run
 with ~1000 MPI processes, and it is not efficient to let every one of them write
 their own file to disk every time we generate graphical output; rather, we group
 all of these into a single file to keep file systems reasonably happy. Likewise,
-to accomodate the large amount of data, we output depth averaged fields in VTU
+to accommodate the large amount of data, we output depth averaged fields in VTU
 format since it is easier to visualize:
 
 \lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/postprocess.part.prm.out}
@@ -7138,7 +7138,7 @@ $a_{20}$ $a_{21}$ $b_{21}$ $a_{22}$ $b_{22}$ \\
 $a_{yz}$ is the cosine coefficient of degree $y$ and order $z$ and $b_{yz}$ is 
 the sine coefficient of degree $y$ and order $z$. The depth layers are specified 
 in the file \texttt{Spline\_knots.txt} by a normalized depth value ranging from the CMB (3480km, 
-normalized to -1) to the moho (6346km, normalized to 1). This is the original
+normalized to -1) to the Moho (6346km, normalized to 1). This is the original
 format provided on the homepage. 
 
 Any other perturbation model in this same format can also be used, one only
@@ -7329,7 +7329,7 @@ For this cookbook we will use the parameter file provided in
 \url{cookbooks/gplates-2d.prm} which uses the 2d shell geometry previously
 discussed in Section~\ref{sec:shell-simple-2d}. \aspect{}'s GPlates plugin
 allows for the use of two- and three-dimensional models incorporating the
-GPlates velocities. Since the output by GPlates is threedimensional in any case,
+GPlates velocities. Since the output by GPlates is three-dimensional in any case,
 \aspect{} internally handles the 2D model by rotating the model plane to the
 orientation specified by the user and projecting the plate velocities into this plane. The
 user specifies the orientation of the model plane by prescribing two points that
@@ -7782,7 +7782,7 @@ the end of the first time step after one level of strain rate-based adaptive mes
 \label{sec:cookbooks-continental-extension}
 \textit{This section was contributed by John Naliboff}
 
-In the crustal deformation examples above, the viscosity depends solely on the drucker prager yield criterion defined by the cohesion and internal friction angle. While this approximation works reasonably well for the uppermost crust, deeper portions of the lithosphere may undergo either brittle or viscous deformation, with the latter depending on a combination of composition, temperature, pressure and strain-rate. In effect, a combination of the Drucker-Prager and Diffusion dislocation material models is required. The visco-plastic material model is designed to take into account both brittle (plastic) and non-linear viscous deformation, thus providing a template for modeling complex lithospheric processes. Such a material model can be used in \aspect{} using the following set of input parameters: 
+In the crustal deformation examples above, the viscosity depends solely on the Drucker Prager yield criterion defined by the cohesion and internal friction angle. While this approximation works reasonably well for the uppermost crust, deeper portions of the lithosphere may undergo either brittle or viscous deformation, with the latter depending on a combination of composition, temperature, pressure and strain-rate. In effect, a combination of the Drucker-Prager and Diffusion dislocation material models is required. The visco-plastic material model is designed to take into account both brittle (plastic) and non-linear viscous deformation, thus providing a template for modeling complex lithospheric processes. Such a material model can be used in \aspect{} using the following set of input parameters: 
 
 \lstinputlisting[language=prmfile]{cookbooks/continental_extension/continental_extension_material_model.prm}
 
@@ -7807,7 +7807,7 @@ The initial thermal structure, radiogenic heating model and associated thermal p
   \label{eq:continental-geotherm-1}
   T(z) &= T_T + \frac{q_T}{k}z - \frac{Az^2}{2k}
 \end{align}
-where T is temperature, z is depth, $T_T$ is the temperature at the layer surface (top), $q_T$ is surface heat flux, $k$ is thermal conductivty, and $A$ is radiogenic heat production.
+where T is temperature, z is depth, $T_T$ is the temperature at the layer surface (top), $q_T$ is surface heat flux, $k$ is thermal conductivity, and $A$ is radiogenic heat production.
 
 For a layer thickness $\Delta z$, the basal temperature ($T_B$) and heat flux ($q_B$) are
 \begin{align}
@@ -7820,9 +7820,9 @@ For a layer thickness $\Delta z$, the basal temperature ($T_B$) and heat flux ($
 
 In this example, specifying the top (273 K) and bottom temperature (1573 K), thermal conductivity of each layer and radiogenic heat production in each layer provides enough constraints to successively solve for the temperature and heat flux at the top of the lower crust and mantle.
 
-As noted above, the mechanically weak seed placed within the mantle localizes the majority of deformation onto two conjugate shear bands that propogate from the surface of the seed to the free surface. After 5 million years of extension background `stretching' is clearly visible in the strain-rate field, but deformation is still largely focused within the set of conjugate shear bands originating at the weak seed  (Fig.~\ref{fig:continental_extension_cookbook_strainrate_5e6yr}). As expected, crustal thickness and surface topography patterns reveal a relatively symmetric horst and graben structure, which arises from displacements along the shear bands (Fig.~\ref{fig:continental_extension_cookbook_composition_5e6yr}). While deformation along the two major shear bands dominates at this early stage of extension, additional shear bands often develop within the horst-grabben system leading to small inter-graben topographic variations. This pattern is illustrated in a model with double the numerical resolution (initial 1 km grid spacing) after 10 million years of extension  (Fig.~\ref{fig:continental_extension_cookbook_strainrate_highres_10e6yr}).
+As noted above, the mechanically weak seed placed within the mantle localizes the majority of deformation onto two conjugate shear bands that propagate from the surface of the seed to the free surface. After 5 million years of extension background `stretching' is clearly visible in the strain-rate field, but deformation is still largely focused within the set of conjugate shear bands originating at the weak seed  (Fig.~\ref{fig:continental_extension_cookbook_strainrate_5e6yr}). As expected, crustal thickness and surface topography patterns reveal a relatively symmetric horst and graben structure, which arises from displacements along the shear bands (Fig.~\ref{fig:continental_extension_cookbook_composition_5e6yr}). While deformation along the two major shear bands dominates at this early stage of extension, additional shear bands often develop within the horst-graben system leading to small inter-graben topographic variations. This pattern is illustrated in a model with double the numerical resolution (initial 1 km grid spacing) after 10 million years of extension  (Fig.~\ref{fig:continental_extension_cookbook_strainrate_highres_10e6yr}).
 
-With further extension for millions of years, significant crustal thinning and surface topography development should occur in response to displacement along the conjugate shear bands. However, given that the model only extends to 100 km depth, the simulation will not produce a realistic representation of continental breakup due to the lack of an upwelling asthenospheric layer. Indeed, numerical studies that examine continental breakup, rather than just the initial stages of continental extension, include an asthenospheric layer or modified basal boundary conditions (e.g. Winkler boundary condition \cite[for example]{Bru14})
+With further extension for millions of years, significant crustal thinning and surface topography development should occur in response to displacement along the conjugate shear bands. However, given that the model only extends to 100 km depth, the simulation will not produce a realistic representation of continental breakup due to the lack of an upwelling asthenosphere layer. Indeed, numerical studies that examine continental breakup, rather than just the initial stages of continental extension, include an asthenospheric layer or modified basal boundary conditions (e.g. Winkler boundary condition \cite[for example]{Bru14})
 as temperature variations associated with lithospheric thinning exert a first-order influence on the deformation patterns. As noted below, numerous additional parameters may also affect the temporal evolution of deformation patterns.
 
 \note{It is important to consider that the non-linearity of visco-plastic rheologies and mesh-dependence of brittle shear bands make lithospheric deformation models highly sensitive to a large number of parameters. In order to ensure the conclusions drawn from a series of numerical experiments are robust, one should complete a sensitivity test for a large range of parameters including grid resolution, model geometry, boundary conditions, initial composition and temperature conditions, material properties, composition discretization, CFL number and solver settings. If you are new to modeling lithospheric processes, a reasonable starting point is to try and reproduce results from a relevant previous study and then perform a sensitivity test for the parameters listed above. While highly time consuming, completing this procedure will prove invaluable when you design and assess the results of your own numerical study.}
@@ -8088,8 +8088,8 @@ illustrate this.
 Although van Keken's paper title suggests that the paper is really about
 thermochemical convection, the part we look here can equally be considered as
 thermal or chemical convection: all that is necessary is that we describe the
-fluid's density somehow. We can do that by using an inhomogenous initial
-temperature field, or an inhomogenous initial composition field. We will use the
+fluid's density somehow. We can do that by using an inhomogeneous initial
+temperature field, or an inhomogeneous initial composition field. We will use the
 input file in \url{cookbooks/van-keken-discontinuous.prm} as input, the central
 piece of which is as follows (go to the actual input file
 to see the remainder of the input parameters):
@@ -9020,7 +9020,7 @@ We can put this in terms of heat flux
   q_r = -k\frac{\partial T}{\partial r}
 \end{equation*}
 through the inner and outer surfaces,
-where $q_r$ is heat flux in the radial direction. Let $Q$ be the total heat that flows throug a surface,
+where $q_r$ is heat flux in the radial direction. Let $Q$ be the total heat that flows through a surface,
 \begin{equation*}
   Q = \int \limits_{0}^{2\pi} q_r\, d\theta,
 \end{equation*}
@@ -9190,7 +9190,7 @@ discussed above. First, the final steady state temperature fields are shown in
 Fig.~\ref{fig:davies-2DcylinderFSS}. It is immediately obvious how the
 different Rayleigh numbers affect the width of the plumes. If one imagines a
 setup with constant gravity, constant inner and outer temperatures and
-constant thermal expension coefficient (this is not how we describe it in the
+constant thermal expansion coefficient (this is not how we describe it in the
 input files, but we could have done so and it is closer to how we intuit about
 fluids than adjusting the gravity), then the Rayleigh number is inversely
 proportional to the viscosity -- and it is immediately clear that larger
@@ -9364,7 +9364,7 @@ corresponds to background mantle, the second corresponds to the rising blob, and
 corresponds to the viscous lid.
 
 
-Furthermore, the results of this benchmark are sensitive to the mesh refenement and timestepping 
+Furthermore, the results of this benchmark are sensitive to the mesh refinement and timestepping 
 parameters. Here we have nine refinement levels, and refine according to density and the 
 compositional fields.
 
@@ -10840,7 +10840,7 @@ class.%
 
 Visualization plugins can come in two flavors:
 \begin{itemize}
-  \item \textit{Plugins that compute things from the solution in a pointwise way:}
+  \item \textit{Plugins that compute things from the solution in a point-wise way:}
    The classes in this group are derived not only from the respective interface class (and possibly
    the \href{doc/doxygen/classaspect_1_1SimulatorAccess.html}{SimulatorAccess} class) but also from the deal.II class
    \texttt{DataPostprocessor} or any of
@@ -10850,12 +10850,12 @@ Visualization plugins can come in two flavors:
    of the solution and other information such as the location of quadrature
    points into the desired quantity to output. A typical case would be
    if the quantity $g(x)$ you want to output can be written as a function
-   $g(x) = G(u(x),\nabla u(x), x, ...)$ in a pointwise sense where $u(x)$
+   $g(x) = G(u(x),\nabla u(x), x, ...)$ in a point-wise sense where $u(x)$
    is the value of the solution vector (i.e., the velocities, pressure,
    temperature, etc) at an evaluation point. In the context
    of this program an example would be to output the density of the medium as
    a spatially variable function since this is a quantity that for realistic
-   media depends pointwise on the values of the solution.
+   media depends point-wise on the values of the solution.
 
 To sum this, slightly confusing multiple inheritance up, visualization
 postprocessors do the following:
@@ -10912,17 +10912,17 @@ postprocessors do the following:
   \texttt{dealii::DataPostprocessorScalar::DataPostprocessorScalar}.
 \end{itemize}
 
-  \item \textit{Plugins that compute things from the solution in a cellwise way:}
+  \item \textit{Plugins that compute things from the solution in a cell-wise way:}
    The second possibility is for a class to not derive from
    \texttt{dealii::DataPostprocessor} but instead from the
    \href{doc/doxygen/classaspect_1_1Postprocess_1_1VisualizationPostprocessors_1_1CellDataVectorCreator.html}{aspect::Postprocess::VisualizationPostprocessors::CellDataVectorCreator}
    class. In this case, a visualization postprocessor would generate
    and return a vector that consists of one element per cell. The
-   intent of this option is to output quantities that are not pointwise
+   intent of this option is to output quantities that are not point-wise
    functions of the solution but instead can only be computed as
    integrals or other functionals on a per-cell basis. A typical
    case would be error estimators that do depend on the solution but
-   not in a pointwise sense; rather, they yield one value per cell of
+   not in a point-wise sense; rather, they yield one value per cell of
    the mesh. See the documentation of the
    \texttt{CellDataVectorCreator} class
    for more information.
@@ -11428,7 +11428,7 @@ time step if coefficients strongly depend on the solution variables.
   solver and/or preconditioner options would seem to be a useful goal.
 
 \item \textit{More, and more realistic material models:} The number of
-  material models available in \aspect{} is sizable, but it does not include
+  material models available in \aspect{} is sizeable, but it does not include
   all models that have in the past been used in the literature. On the other
   hand, how realistic a simulation is depends on how realistic the used
   material model is. We hope to obtain more descriptions of realistic

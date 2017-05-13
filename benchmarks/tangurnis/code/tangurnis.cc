@@ -47,7 +47,7 @@ namespace aspect
   {
 
     template <int dim>
-    class TanGurnis : public MaterialModel::InterfaceCompatibility<dim>
+    class TanGurnis : public MaterialModel::Interface<dim>
     {
       public:
 
@@ -57,40 +57,29 @@ namespace aspect
          * @name Physical parameters used in the basic equations
          * @{
          */
-        virtual double viscosity (const double                  temperature,
-                                  const double                  pressure,
-                                  const std::vector<double>    &compositional_fields,
-                                  const SymmetricTensor<2,dim> &strain_rate,
-                                  const Point<dim>             &position) const;
 
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        {
+          for (unsigned int i=0; i < in.position.size(); ++i)
+            {
+              /**
+               * @name Physical parameters used in the basic equations
+               * @{
+               */
 
-        virtual double density (const double temperature,
-                                const double pressure,
-                                const std::vector<double> &compositional_fields,
-                                const Point<dim> &position) const;
+              const Point<dim> &pos = in.position[i];
+              const double depth = 1.0 - pos[dim-1];
+              const double temperature = sin(numbers::PI*pos(dim-1))*cos(numbers::PI*wavenumber*pos(0));
 
-        virtual double compressibility (const double temperature,
-                                        const double pressure,
-                                        const std::vector<double> &compositional_fields,
-                                        const Point<dim> &position) const;
-
-        virtual double specific_heat (const double temperature,
-                                      const double pressure,
-                                      const std::vector<double> &compositional_fields,
-                                      const Point<dim> &position) const;
-
-        virtual double thermal_expansion_coefficient (const double      temperature,
-                                                      const double      pressure,
-                                                      const std::vector<double> &compositional_fields,
-                                                      const Point<dim> &position) const;
-
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const std::vector<double> &compositional_fields,
-                                             const Point<dim> &position) const;
-        /**
-         * @}
-         */
+              out.viscosities[i] = ( Di==0.0 ? 1.0 : Di ) * exp( a * depth );
+              out.densities[i] = ( Di==0.0 ? 1.0 : Di ) * (-1.0 * temperature ) * exp( Di/gamma * (depth) );
+              out.specific_heat[i] = 1.0;
+              out.thermal_conductivities[i] = 1.0;
+              out.thermal_expansion_coefficients[i] = ( Di==0.0 ) ? 1.0 : Di;
+              out.compressibilities[i] = numbers::signaling_nan<double>();;
+            }
+        }
 
         /**
          * @name Qualitative properties one can ask a material model
@@ -173,21 +162,6 @@ namespace aspect
       wavenumber=1;
     }
 
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    viscosity (const double,
-               const double,
-               const std::vector<double> &,       /*composition*/
-               const SymmetricTensor<2,dim> &,
-               const Point<dim> &pos) const
-    {
-      const double depth = 1.0-pos(dim-1);
-      return (Di==0.0?1.0:Di)*exp(a*depth);
-    }
-
-
     template <int dim>
     double
     TanGurnis<dim>::
@@ -195,73 +169,6 @@ namespace aspect
     {
       return 1.0;
     }
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    specific_heat (const double,
-                   const double,
-                   const std::vector<double> &, /*composition*/
-                   const Point<dim> &) const
-    {
-      return 1.0;
-    }
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    thermal_conductivity (const double,
-                          const double,
-                          const std::vector<double> &, /*composition*/
-                          const Point<dim> &) const
-    {
-      return 1.0;
-    }
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    density (const double,
-             const double,
-             const std::vector<double> &, /*composition*/
-             const Point<dim> &pos) const
-    {
-      const double depth = 1.0-pos(dim-1);
-      const double temperature = sin(numbers::PI*pos(dim-1))*cos(numbers::PI*wavenumber*pos(0));
-      return (Di==0.0?1.0:Di)*(-1.0*temperature)*exp(Di/gamma*(depth));
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    thermal_expansion_coefficient (const double,
-                                   const double,
-                                   const std::vector<double> &, /*composition*/
-                                   const Point<dim> &) const
-    {
-      return (Di==0.0)?1.0:Di;
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    compressibility (const double /*temperature*/,
-                     const double /*pressure*/,
-                     const std::vector<double> &/*compositional_fields*/,
-                     const Point<dim> &/*position*/) const
-    {
-      // this is no longer used because we use the new adiabatic mass formulation
-      // based on AdiabaticConditions
-      return numbers::signaling_nan<double>();
-    }
-
 
 
     template <int dim>

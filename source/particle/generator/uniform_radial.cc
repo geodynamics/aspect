@@ -185,7 +185,7 @@ namespace aspect
                                    "in degrees. Measured from the center position.");
                 prm.declare_entry ("Radial layers", "1",
                                    Patterns::Integer(1),
-                                   "The number of radial shells of particles that will be generated"
+                                   "The number of radial shells of particles that will be generated "
                                    "around the central point.");
               }
               prm.leave_subsection();
@@ -260,7 +260,7 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_GENERATOR(UniformRadial,
                                          "uniform radial",
-                                         "Generate a uniform distribution of particles"
+                                         "Generate a uniform distribution of particles "
                                          "over a spherical domain in 2D or 3D. Uniform here means "
                                          "the particles will be generated with an equal spacing in "
                                          "each spherical spatial dimension, i.e., the particles are "

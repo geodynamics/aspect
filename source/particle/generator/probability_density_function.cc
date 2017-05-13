@@ -259,7 +259,7 @@ namespace aspect
                                          "Section~\\ref{sec:muparser-format}. The "
                                          "return value of the function is always "
                                          "checked to be a non-negative probability "
-                                         "density but it can be zero in"
+                                         "density but it can be zero in "
                                          "parts of the domain.")
     }
   }

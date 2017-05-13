@@ -169,7 +169,7 @@ namespace aspect
                              "Units: $m$.");
           prm.declare_entry ("Viscosity prefactors", "10, 0.1, 1, 10",
                              Patterns::List (Patterns::Double(0)),
-                             "A list of prefactors for the viscosity that determine the viscosity"
+                             "A list of prefactors for the viscosity that determine the viscosity "
                              "profile. Each prefactor is applied in a depth range specified by the "
                              "list of `Transition depths', i.e. the first prefactor is applied above "
                              "the first transition depth, the second one between the first and second "
@@ -252,7 +252,7 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(AsciiReferenceProfile,
                                    "ascii reference profile",
                                    "A material model that reads in a reference "
-                                   "state for density, thermal expansivity, compressibility"
+                                   "state for density, thermal expansivity, compressibility "
                                    "and specific heat from a text file. "
                                    "\n"
                                    "Note the required format of the "
@@ -282,8 +282,8 @@ namespace aspect
                                    "where $\\eta_r(z)$ is the the depth-dependence, which is a "
                                    "piecewise constant function computed according to the the "
                                    "list of ``Viscosity prefactors'' and ``Transition depths'', "
-                                   "$\\eta_0$ is the reference viscosity specified by the parameter ``Viscosity''"
+                                   "$\\eta_0$ is the reference viscosity specified by the parameter ``Viscosity'' "
                                    "and $A$ describes the dependence on temperature and corresponds to "
-                                   "the parameter ``Thermal viscosity exponent''. ")
+                                   "the parameter ``Thermal viscosity exponent''.")
   }
 }
