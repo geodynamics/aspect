@@ -342,7 +342,7 @@ namespace aspect
                          "\\note{The `anelastic liquid approximation' option here can also be "
                          "used to set up `truncated anelastic liquid approximation' as long as "
                          "this option is chosen together with a material model that defines a "
-                         "density that dependes on temperature and depth and not on the pressure.}");
+                         "density that depends on temperature and depth and not on the pressure.}");
 
       prm.declare_entry ("Mass conservation", "ask material model",
                          Patterns::Selection ("incompressible|isothermal compression|"
@@ -610,7 +610,7 @@ namespace aspect
                          "seconds otherwise.");
       prm.declare_entry ("Run postprocessors on initial refinement", "false",
                          Patterns::Bool (),
-                         "Whether or not the postproccessors should be executed after "
+                         "Whether or not the postprocessors should be executed after "
                          "each of the initial adaptive refinement cycles that are run at "
                          "the start of the simulation.");
     }
@@ -620,7 +620,7 @@ namespace aspect
     {
       prm.declare_entry ("Run postprocessors on nonlinear iterations", "false",
                          Patterns::Bool (),
-                         "Whether or not the postproccessors should be executed after "
+                         "Whether or not the postprocessors should be executed after "
                          "each of the nonlinear iterations done within one time step. "
                          "As this is mainly an option for the purposes of debugging, "
                          "it is not supported when the 'Time between graphical output' "
@@ -789,7 +789,7 @@ namespace aspect
         prm.declare_entry ("Use limiter for discontinuous temperature solution", "false",
                            Patterns::Bool (),
                            "Whether to apply the bound preserving limiter as a correction after computing "
-                           "the discontinous temperature solution. Currently we apply this only to the "
+                           "the discontinuous temperature solution. Currently we apply this only to the "
                            "temperature solution if the 'Global temperature maximum' and "
                            "'Global temperature minimum' are already defined in the .prm file. "
                            "This limiter keeps the discontinuous solution in the range given by "
@@ -797,7 +797,7 @@ namespace aspect
         prm.declare_entry ("Use limiter for discontinuous composition solution", "false",
                            Patterns::Bool (),
                            "Whether to apply the bound preserving limiter as a correction after having "
-                           "the discontinous composition solution. Currently we apply this only to the "
+                           "the discontinuous composition solution. Currently we apply this only to the "
                            "compositional solution if the 'Global composition maximum' and "
                            "'Global composition minimum' are already defined in the .prm file. "
                            "This limiter keeps the discontinuous solution in the range given by "
@@ -817,15 +817,15 @@ namespace aspect
                            Patterns::List(Patterns::Double ()),
                            "The maximum global composition values that will be used in the bound preserving "
                            "limiter for the discontinuous solutions from composition advection fields. "
-                           "The number of the input 'Global composition maximum' values seperated by ',' has to be "
-                           "the same as the number of the compositional fileds");
+                           "The number of the input 'Global composition maximum' values separated by ',' has to be "
+                           "the same as the number of the compositional fields");
         prm.declare_entry ("Global composition minimum",
                            boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
                            Patterns::List(Patterns::Double ()),
                            "The minimum global composition value that will be used in the bound preserving "
                            "limiter for the discontinuous solutions from composition advection fields. "
-                           "The number of the input 'Global composition minimum' values seperated by ',' has to be "
-                           "the same as the number of the compositional fileds");
+                           "The number of the input 'Global composition minimum' values separated by ',' has to be "
+                           "the same as the number of the compositional fields");
       }
       prm.leave_subsection ();
     }

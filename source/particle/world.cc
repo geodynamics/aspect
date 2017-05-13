@@ -1706,7 +1706,7 @@ namespace aspect
         sim->initialize_simulator (this->get_simulator());
       interpolator->parse_parameters(prm);
 
-      // Creaty an property_manager object and initialize its properties
+      // Create an property_manager object and initialize its properties
       property_manager.reset(new Property::Manager<dim> ());
       SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager.get());
       sim->initialize_simulator (this->get_simulator());

@@ -128,7 +128,7 @@ namespace aspect
         if ( std::find( variables.begin(), variables.end(), "temperature") != variables.end() )
           this->get_lateral_averaging().get_temperature_averages(data_point.values[index++]);
 
-        //composition (search output_variables for this, since it has a different name in varibles)
+        //composition (search output_variables for this, since it has a different name in variables)
         if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "composition") != output_variables.end() )
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
             this->get_lateral_averaging().get_composition_averages(c, data_point.values[index++]);
@@ -178,7 +178,7 @@ namespace aspect
       const double max_depth = this->get_geometry_model().maximal_depth();
 
       // On the root process, write out the file. do this using the DataOutStack
-      // class on a piecewise constant finite element space on
+      // class on a piece-wise constant finite element space on
       // a 1d mesh with the correct subdivisions
       std::string filename;
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
@@ -329,9 +329,9 @@ namespace aspect
             "viscosity|vertical heat flux";
           prm.declare_entry("List of output variables", "all",
                             Patterns::MultipleSelection(variables.c_str()),
-                            "A comma separated list which specifies which quantites to "
+                            "A comma separated list which specifies which quantities to "
                             "average in each depth slice. It defaults to averaging all "
-                            "availabe quantities, but this can be an expensive operation, "
+                            "available quantities, but this can be an expensive operation, "
                             "so you may want to select only a few.\n\n"
                             "List of options:\n"
                             +variables);

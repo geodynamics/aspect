@@ -160,7 +160,7 @@ namespace aspect
                                "\n\n"
                                "As a consequence of these considerations, if you try to "
                                "assess convergence properties of an ODE integrator -- for "
-                               "example to verify that the RK4 integator converges with "
+                               "example to verify that the RK4 integrator converges with "
                                "forth order --, it is important to recall that the "
                                "integrator may not solve the equation you think it "
                                "solves. If, for example, we call the numerical solution "

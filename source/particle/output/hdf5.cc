@@ -35,7 +35,7 @@ namespace aspect
     namespace Output
     {
 
-      // Define the hdf5 type of the partice index output
+      // Define the hdf5 type of the particle index output
 #ifdef DEAL_II_WITH_HDF5
 
 #ifdef DEAL_II_WITH_64BIT_INDICES

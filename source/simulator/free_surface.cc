@@ -180,7 +180,7 @@ namespace aspect
     sim.computing_timer.enter_section("Free surface");
 
     //Make the constraints for the elliptic problem.  On the free surface, we
-    //constrain mesh velocity to be v.n, on free slip it is constrainted to
+    //constrain mesh velocity to be v.n, on free slip it is constrained to
     //be tangential, and on no slip boundaries it is zero.
     make_constraints();
 
@@ -417,7 +417,7 @@ namespace aspect
     mass_matrix.compress(VectorOperation::add);
 
     //Jacobi seems to be fine here.  Other preconditioners (ILU, IC) run into troubles
-    //because the matrrix is mostly empty, since we don't touch internal vertices.
+    //because the matrix is mostly empty, since we don't touch internal vertices.
     LinearAlgebra::PreconditionJacobi preconditioner_mass;
     preconditioner_mass.initialize(mass_matrix);
 
