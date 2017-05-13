@@ -159,7 +159,7 @@ namespace aspect
                              "The magnitude of the Harmonic perturbation.");
           prm.declare_entry ("Reference temperature", "1600.0",
                              Patterns::Double (0),
-                             "The reference temperature that is perturbed by the"
+                             "The reference temperature that is perturbed by the "
                              "harmonic function. Only used in incompressible models.");
         }
         prm.leave_subsection ();

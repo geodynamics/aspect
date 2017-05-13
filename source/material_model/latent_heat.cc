@@ -397,8 +397,8 @@ namespace aspect
           prm.declare_entry ("Phase transition pressures", "",
                              Patterns::List (Patterns::Double(0)),
                              "A list of pressures where phase transitions occur. Values must "
-                             "monotonically increase. Define transition by depth instead of"
-                             "pressure must be set to false to use this parameter."
+                             "monotonically increase. Define transition by depth instead of "
+                             "pressure must be set to false to use this parameter. "
                              "Units: $Pa$.");
           prm.declare_entry ("Phase transition pressure widths", "",
                              Patterns::List (Patterns::Double(0)),
@@ -406,15 +406,15 @@ namespace aspect
                              "are scaled with these values, leading to a jump between phases "
                              "for a value of zero and a gradual transition for larger values. "
                              "List must have the same number of entries as Phase transition pressures. "
-                             "Define transition by depth instead of pressure must be set to false"
-                             "to use this parameter."
+                             "Define transition by depth instead of pressure must be set to false "
+                             "to use this parameter. "
                              "Units: $Pa$.");
           prm.declare_entry ("Define transition by depth instead of pressure", "true",
                              Patterns::Bool (),
-                             "Whether to list phase transitions by depth or pressure. If this parameter is true,"
-                             "then the input file will use Phase transitions depths and Phase transition widths"
-                             "to define the phase transition. If it is false, the parameter file will read in"
-                             "phase transition data from Phase transition pressures and"
+                             "Whether to list phase transitions by depth or pressure. If this parameter is true, "
+                             "then the input file will use Phase transitions depths and Phase transition widths "
+                             "to define the phase transition. If it is false, the parameter file will read in "
+                             "phase transition data from Phase transition pressures and "
                              "Phase transition pressure widths.");
           prm.declare_entry ("Phase transition temperatures", "",
                              Patterns::List (Patterns::Double(0)),

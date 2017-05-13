@@ -49,6 +49,11 @@ namespace aspect
     {
       public:
         /**
+         *
+         */
+        SphericalShell();
+
+        /**
          * Generate a coarse mesh for the geometry described by this class.
          */
         virtual

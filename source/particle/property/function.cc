@@ -62,7 +62,7 @@ namespace aspect
             {
               prm.declare_entry ("Number of components", "1",
                                  Patterns::Integer (0),
-                                 "The number of function components where each component is described"
+                                 "The number of function components where each component is described "
                                  "by a function expression delimited by a ';'.");
               Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
             }

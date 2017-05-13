@@ -293,7 +293,7 @@ namespace aspect
                              "from Auer et al.");
           prm.declare_entry ("Spline knots depth file name", "Spline_knots.txt",
                              Patterns::Anything(),
-                             "The file name of the spline knots taken from the 28 spherical layers"
+                             "The file name of the spline knots taken from the 28 spherical layers "
                              "of SAVANI tomography model.");
           prm.declare_entry ("Vs to density scaling", "0.25",
                              Patterns::Double (0),
@@ -330,7 +330,7 @@ namespace aspect
                              Patterns::Integer (0),
                              "The maximum order the users specify when reading the data file of spherical harmonic "
                              "coefficients, which must be smaller than the maximum order the data file stored. "
-                             "This parameter will be used only if 'Specify a lower maximum order' is set to true");
+                             "This parameter will be used only if 'Specify a lower maximum order' is set to true.");
         }
         prm.leave_subsection ();
       }
@@ -384,9 +384,9 @@ namespace aspect
                                               "velocity model by Auer and others, which can be downloaded "
                                               "here \\url{http://n.ethz.ch/~auerl/savani.tar.bz2}. "
                                               "Information on the vs model can be found in Auer, L., Boschi, "
-                                              "L., Becker, T.W., Nissen-Meyer, T. \\& Giardini, D., 2014. Savani:"
-                                              "A variable resolution whole‐mantle model of anisotropic shear velocity"
-                                              "variations based on multiple data sets. Journal of Geophysical"
+                                              "L., Becker, T.W., Nissen-Meyer, T. \\& Giardini, D., 2014. Savani: "
+                                              "A variable resolution whole‐mantle model of anisotropic shear velocity "
+                                              "variations based on multiple data sets. Journal of Geophysical "
                                               "Research: Solid Earth 119.4 (2014): 3006-3034. "
                                               "The scaling between the shear wave perturbation and the "
                                               "temperature perturbation can be set by the user with the "

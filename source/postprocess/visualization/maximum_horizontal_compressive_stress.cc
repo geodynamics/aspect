@@ -243,7 +243,7 @@ namespace aspect
                                                   "field. The direction of this vector can often be used to "
                                                   "visualize the principal mode of deformation (e.g., at "
                                                   "normal faults or extensional margins) and can be "
-                                                  "correlated with seismic anisotropies. Recall that the "
+                                                  "correlated with seismic anisotropy. Recall that the "
                                                   "\\textit{compressive} stress is simply the negative stress, "
                                                   "$\\sigma_c=-\\sigma=-\\left["
                                                   "     2\\eta (\\varepsilon(\\mathbf u)"

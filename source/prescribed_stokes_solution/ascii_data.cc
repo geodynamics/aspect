@@ -88,7 +88,7 @@ namespace aspect
   {
     ASPECT_REGISTER_PRESCRIBED_STOKES_SOLUTION(AsciiData,
                                                "ascii data",
-                                               "Implementation of a model in which the velocity"
+                                               "Implementation of a model in which the velocity "
                                                "is derived from files containing data "
                                                "in ascii format. Note the required format of the "
                                                "input data: The first lines may contain any number of comments "
