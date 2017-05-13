@@ -199,7 +199,7 @@ namespace aspect
                            +
                            std_cxx11::get<dim>(registered_plugins).get_description_string()
                            + "\n\n" +
-                           "\\textbf{Warning}: This parameter provides and old and"
+                           "\\textbf{Warning}: This parameter provides an old and "
                            "deprecated way of specifying "
                            "initial temperature models and shouldn't be used. "
                            "Please use 'List of model names' instead.");

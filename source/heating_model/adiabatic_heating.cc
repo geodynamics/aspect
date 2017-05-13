@@ -105,7 +105,7 @@ namespace aspect
   {
     ASPECT_REGISTER_HEATING_MODEL(AdiabaticHeating,
                                   "adiabatic heating",
-                                  "Implementation of a standard and a simplified model of"
+                                  "Implementation of a standard and a simplified model of "
                                   "adiabatic heating.")
   }
 }

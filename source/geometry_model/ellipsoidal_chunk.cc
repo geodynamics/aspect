@@ -336,25 +336,25 @@ namespace aspect
                             "",
                             Patterns::Anything(),
                             "Longitude:latitude in degrees of the North-East corner point of model region."
-                            "The North-East direction is positive. If one of the three corners is not provided"
+                            "The North-East direction is positive. If one of the three corners is not provided "
                             "the missing corner value will be calculated so all faces are parallel.");
           prm.declare_entry("NW corner",
                             "",
                             Patterns::Anything(),
                             "Longitude:latitude in degrees of the North-West corner point of model region. "
-                            "The North-East direction is positive. If one of the three corners is not provided"
+                            "The North-East direction is positive. If one of the three corners is not provided "
                             "the missing corner value will be calculated so all faces are parallel.");
           prm.declare_entry("SW corner",
                             "",
                             Patterns::Anything(),
                             "Longitude:latitude in degrees of the South-West corner point of model region. "
-                            "The North-East direction is positive. If one of the three corners is not provided"
+                            "The North-East direction is positive. If one of the three corners is not provided "
                             "the missing corner value will be calculated so all faces are parallel.");
           prm.declare_entry("SE corner",
                             "",
                             Patterns::Anything(),
                             "Longitude:latitude in degrees of the South-East corner point of model region. "
-                            "The North-East direction is positive. If one of the three corners is not provided"
+                            "The North-East direction is positive. If one of the three corners is not provided "
                             "the missing corner value will be calculated so all faces are parallel.");
           prm.declare_entry("Depth",
                             "500000.0",

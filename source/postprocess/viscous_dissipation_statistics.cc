@@ -155,7 +155,7 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(ViscousDissipationStatistics,
                                   "viscous dissipation statistics",
-                                  "A postprocessor that computes the viscous dissipation"
+                                  "A postprocessor that computes the viscous dissipation "
                                   "for the whole domain as: "
                                   "$\\frac{1}{2} \\int_{V} \\sigma : \\dot{\\epsilon}dV$ "
                                   "= $\\int_{V} (-p\\nabla \\cdot u+2\\mu\\dot{\\epsilon}:\\dot{\\epsilon} "

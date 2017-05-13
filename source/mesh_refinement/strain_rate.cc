@@ -71,7 +71,7 @@ namespace aspect
   {
     ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(StrainRate,
                                               "strain rate",
-                                              "A mesh refinement criterion that computes the"
+                                              "A mesh refinement criterion that computes the "
                                               "refinement indicators equal to the strain rate "
                                               "norm computed at the center of the elements.")
   }

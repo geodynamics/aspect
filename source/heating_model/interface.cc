@@ -179,7 +179,7 @@ namespace aspect
         const std::string model_name = prm.get ("Model name");
 
         AssertThrow (model_name == "unspecified" || model_names.size() == 0,
-                     ExcMessage ("The parameter 'Model name' is only used for reasons"
+                     ExcMessage ("The parameter 'Model name' is only used for reasons "
                                  "of backwards compatibility and can not be used together with "
                                  "the new functionality 'List of model names'. Please add your "
                                  "heating model to the list instead."));
@@ -194,30 +194,30 @@ namespace aspect
       {
         const bool include_shear_heating = prm.get_bool ("Include shear heating");
         Assert(!(include_shear_heating && std::find(model_names.begin(), model_names.end(), "shear heating") != model_names.end()),
-               ExcMessage ("Deprecated: The old functionality 'Include shear heating'"
+               ExcMessage ("Deprecated: The old functionality 'Include shear heating' "
                            "is only allowed for reasons of backwards compatibility and "
                            "can not be used together with the new functionality 'List "
-                           "of model names'. Please remove the 'Include shear heating'"
+                           "of model names'. Please remove the 'Include shear heating' "
                            "setting."));
         if (include_shear_heating)
           model_names.push_back("shear heating");
 
         const bool include_adiabatic_heating = prm.get_bool ("Include adiabatic heating");
         Assert(!(include_adiabatic_heating && std::find(model_names.begin(), model_names.end(), "adiabatic heating") != model_names.end()),
-               ExcMessage ("Deprecated: The old functionality 'Include adiabatic heating'"
+               ExcMessage ("Deprecated: The old functionality 'Include adiabatic heating' "
                            "is only allowed for reasons of backwards compatibility and "
                            "can not be used together with the new functionality 'List "
-                           "of model names'. Please remove the 'Include adiabatic heating'"
+                           "of model names'. Please remove the 'Include adiabatic heating' "
                            "setting."));
         if (include_adiabatic_heating)
           model_names.push_back("adiabatic heating");
 
         const bool include_latent_heat = prm.get_bool ("Include latent heat");
         Assert(!(include_latent_heat && std::find(model_names.begin(), model_names.end(), "latent heat") != model_names.end()),
-               ExcMessage ("Deprecated: The old functionality 'Include latent heat'"
+               ExcMessage ("Deprecated: The old functionality 'Include latent heat' "
                            "is only allowed for reasons of backwards compatibility and "
                            "can not be used together with the new functionality 'List "
-                           "of model names'. Please remove the 'Include latent heat'"
+                           "of model names'. Please remove the 'Include latent heat' "
                            "setting."));
         if (include_latent_heat)
           model_names.push_back("latent heat");
