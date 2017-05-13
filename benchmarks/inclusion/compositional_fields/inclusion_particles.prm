@@ -4,7 +4,7 @@
 
 ############### Global parameters
 
-set Additional shared libraries            = ./libinclusion_compositional_field.so
+set Additional shared libraries            = ./libinclusion_compositional_fields.so
 
 
 set Dimension                              = 2
@@ -37,7 +37,7 @@ subsection Model settings
 end
 
 subsection Material model
-  set Model name = InclusionMaterial
+  set Model name = InclusionCompositionalMaterial
   subsection Inclusion
     set Viscosity jump = 1e3
   end
@@ -64,7 +64,7 @@ end
 ############### Parameters describing the discretization
 
 subsection Discretization
-  set Composition polynomial degree                = 1
+  set Composition polynomial degree                = 2
   set Stokes velocity polynomial degree            = 2
   set Use discontinuous composition discretization = true
   set Use locally conservative discretization      = false
@@ -96,7 +96,7 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = tracers, visualization, InclusionPostprocessor
+  set List of postprocessors = particles, visualization, InclusionPostprocessor
   subsection Visualization
     set Output format                 = vtu
     set Number of grouped files       = 1
@@ -104,14 +104,14 @@ subsection Postprocess
     set List of output variables = density, viscosity
   end
 
-  subsection Tracers
-    set Number of tracers = 16384
+  subsection Particles
+    set Number of particles = 16384
     set Time between data output = 0
     set Data output format = vtu
-    set List of tracer properties = function
+    set List of particle properties = function
     set Integration scheme = rk2
     set Interpolation scheme = cell average
-    set Maximum tracers per cell = 16384
+    set Maximum particles per cell = 16384
     set Update ghost particles = true
 
     subsection Function
@@ -124,7 +124,7 @@ subsection Postprocess
 
     subsection Generator
       subsection Reference cell
-        set Number of tracers per cell per direction = 4
+        set Number of particles per cell per direction = 4
       end
     end
   end
