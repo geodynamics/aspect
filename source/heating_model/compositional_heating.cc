@@ -162,8 +162,8 @@ namespace aspect
   {
     ASPECT_REGISTER_HEATING_MODEL(CompositionalHeating,
                                   "compositional heating",
-                                  "Implementation of a model in which magnitude of internal heat production"
-                                  "is determined from fixed values assigned to each compositional"
+                                  "Implementation of a model in which magnitude of internal heat production "
+                                  "is determined from fixed values assigned to each compositional "
                                   "field. These values are interpreted as having units $W/m^3$.")
   }
 }

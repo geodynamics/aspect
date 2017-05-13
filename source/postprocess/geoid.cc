@@ -917,12 +917,12 @@ namespace aspect
         {
           prm.declare_entry("Maximum degree","20",
                             Patterns::Integer (0),
-                            "This parameter can be a random positive integer. However, the value normally should not exceed the maximum"
-                            "degree of the initial perturbed temperature field. For example, if the initial temperature uses S40RTS, the"
+                            "This parameter can be a random positive integer. However, the value normally should not exceed the maximum "
+                            "degree of the initial perturbed temperature field. For example, if the initial temperature uses S40RTS, the "
                             "maximum degree should not be larger than 40.");
           prm.declare_entry("Minimum degree","2",
                             Patterns::Integer (0),
-                            "This parameter normally is set to 2 since the perturbed gravitational potential at degree 1 always vanishes"
+                            "This parameter normally is set to 2 since the perturbed gravitational potential at degree 1 always vanishes "
                             "in a reference frame with the planetary center of mass same as the center of figure.");
           prm.declare_entry("Output data in geographical coordinates", "false",
                             Patterns::Bool(),

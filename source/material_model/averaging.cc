@@ -362,14 +362,14 @@ namespace aspect
         {
           prm.declare_entry("Base model","simple",
                             Patterns::Selection(MaterialModel::get_valid_model_names_pattern<dim>()),
-                            "The name of a material model that will be modified by an"
+                            "The name of a material model that will be modified by an "
                             "averaging operation. Valid values for this parameter "
                             "are the names of models that are also valid for the "
                             "``Material models/Model name'' parameter. See the documentation for "
                             "that for more information.");
           prm.declare_entry ("Averaging operation", "none",
                              Patterns::Selection ("none|arithmetic average|harmonic average|geometric average|pick largest|log average|nwd arithmetic average|nwd harmonic average|nwd geometric average"),
-                             "Chose the averaging operation to use.");
+                             "Choose the averaging operation to use.");
           prm.declare_entry ("Bell shape limit", "1",
                              Patterns::Double(0),
                              "The limit normalized distance between 0 and 1 where the bell shape becomes zero. See the manual for a more information.");
@@ -440,13 +440,13 @@ namespace aspect
                                    "within a cell. The values to average are supplied by any of the other available "
                                    "material models. In other words, it is a ``compositing material model''. "
                                    "Parameters related to the average model are read from a subsection "
-                                   "``Material model/Averaging''. "
+                                   "``Material model/Averaging''."
                                    "\n\n"
                                    "The user must specify a ``Base model'' from which material properties are "
                                    "derived. Furthermore an averaging operation must be selected, where the "
                                    "Choice should be from the list none|arithmetic average|harmonic average|"
                                    "geometric average|pick largest|log average|NWD arithmetic average|NWD harmonic average"
-                                   "|NWD geometric average. "
+                                   "|NWD geometric average."
                                    "\n\n"
                                    "NWD stands for Normalized Weighed Distance. The models with this in front "
                                    "of their name work with a weighed average, which means each quadrature point "

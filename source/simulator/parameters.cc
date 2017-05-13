@@ -725,7 +725,7 @@ namespace aspect
       {
         prm.declare_entry ("Use artificial viscosity smoothing", "false",
                            Patterns::Bool (),
-                           "If set to false, the artificial viscosity of a cell is computed and"
+                           "If set to false, the artificial viscosity of a cell is computed and "
                            "is computed on every cell separately as discussed in \\cite{KHB12}. "
                            "If set to true, the maximum of the artificial viscosity in "
                            "the cell as well as the neighbors of the cell is computed and used "

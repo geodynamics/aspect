@@ -141,7 +141,7 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(HeatFluxMap,
                                                   "heat flux map",
                                                   "A visualization output object that generates output for "
-                                                  "the heat flux density across each boundary. The heat flux density"
+                                                  "the heat flux density across each boundary. The heat flux density "
                                                   "is computed in outward direction, i.e., from the domain to the "
                                                   "outside, using the formula $-k \\nabla T \\cdot \\mathbf n$, where "
                                                   "$k$ is the thermal conductivity as reported by the material "
