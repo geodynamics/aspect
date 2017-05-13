@@ -198,7 +198,10 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(Compositing,
                                    "compositing",
                                    "The ``compositing'' Material model selects material model properties from a "
-                                   "given set of other material models."
+                                   "given set of other material models, and is intended to make mixing different "
+                                   "material models easier. However, the implementation is somewhat expensive, "
+                                   "and it is therefore likely to be preferred that a separate implementation be "
+                                   "used if computing speed is critical."
                                   )
   }
 }
