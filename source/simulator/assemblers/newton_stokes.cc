@@ -190,7 +190,7 @@ namespace aspect
           const bool use_tensor = (stress_strain_director !=  dealii::identity_tensor<dim> ());
           const SymmetricTensor<2,dim> strain_rate = scratch.material_model_inputs.strain_rate[q];
           const double pressure = scratch.material_model_inputs.pressure[q];
-          const double velocity_divergence = scratch.velocity_divergence[q];
+          const double velocity_divergence = scratch.velocity_divergences[q];
 
           const Tensor<1,dim>
           gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
@@ -443,7 +443,7 @@ namespace aspect
           const SymmetricTensor<4,dim> &stress_strain_director =
             scratch.material_model_outputs.stress_strain_directors[q];
           const bool use_tensor = (stress_strain_director !=  dealii::identity_tensor<dim> ());
-          const double velocity_divergence = scratch.velocity_divergence[q];
+          const double velocity_divergence = scratch.velocity_divergences[q];
 
           const double JxW = scratch.finite_element_values.JxW(q);
 
