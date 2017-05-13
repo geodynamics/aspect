@@ -25,7 +25,7 @@
 
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/simulator_access.h>
-
+#include <aspect/utilities.h>
 #include <deal.II/base/parsed_function.h>
 
 namespace aspect
@@ -80,12 +80,7 @@ namespace aspect
          * The coordinate representation to evaluate the function. Possible
          * choices are depth, cartesian and spherical.
          */
-        enum coordinates
-        {
-          depth,
-          cartesian,
-          spherical
-        } coordinate_system;
+        ::aspect::Utilities::Coordinates::CoordinateSystem coordinate_system;
 
         /**
          * A function object representing the maximum refinement level. The

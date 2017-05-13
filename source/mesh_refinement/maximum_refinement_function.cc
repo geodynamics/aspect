@@ -63,14 +63,14 @@ namespace aspect
                   const Point<dim> vertex = cell->vertex(v);
                   double maximum_refinement_level = 0;
 
-                  if (coordinate_system == depth)
+                  if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::depth)
                     {
                       const double depth = this->get_geometry_model().depth(vertex);
                       Point<dim> point;
                       point(0) = depth;
                       maximum_refinement_level = max_refinement_level.value(point);
                     }
-                  else if (coordinate_system == spherical)
+                  else if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::spherical)
                     {
                       const std_cxx11::array<double,dim> spherical_coordinates =
                         aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(vertex);
@@ -83,7 +83,7 @@ namespace aspect
 
                       maximum_refinement_level = max_refinement_level.value(point);
                     }
-                  else if (coordinate_system == cartesian)
+                  else if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::cartesian)
                     {
                       maximum_refinement_level = max_refinement_level.value(vertex);
                     }
@@ -154,11 +154,11 @@ namespace aspect
         prm.enter_subsection("Maximum refinement function");
         {
           if (prm.get ("Coordinate system") == "depth")
-            coordinate_system = depth;
+            coordinate_system = ::aspect::Utilities::Coordinates::CoordinateSystem::depth;
           else if (prm.get ("Coordinate system") == "cartesian")
-            coordinate_system = cartesian;
+            coordinate_system = ::aspect::Utilities::Coordinates::CoordinateSystem::cartesian;
           else if (prm.get ("Coordinate system") == "spherical")
-            coordinate_system = spherical;
+            coordinate_system = ::aspect::Utilities::Coordinates::CoordinateSystem::spherical;
           else
             AssertThrow (false, ExcNotImplemented());
 

@@ -24,6 +24,7 @@
 
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parsed_function.h>
 
@@ -120,6 +121,12 @@ namespace aspect
          */
         double min_temperature;
         double max_temperature;
+
+        /**
+         * The coordinate representation to evaluate the function. Possible
+         * choices are depth, cartesian and spherical.
+         */
+        ::aspect::Utilities::Coordinates::CoordinateSystem coordinate_system;
     };
   }
 }
