@@ -104,7 +104,7 @@
  * (Timo Heister, Juliane Dannberg, Rene Gassmoeller, 2016/12/18)
  *
  * <li> New: ASPECT now supports the choice between different formulations for
- * the governing equations including boussinesq and anelastic liquid
+ * the governing equations including Boussinesq and anelastic liquid
  * approximation. For this, the adiabatic conditions have been extended to
  * provide values and gradients of the reference density. Several benchmarks
  * for these formulations have been added.

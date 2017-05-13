@@ -89,7 +89,7 @@ subsection Model settings
 end
 
 subsection Formulation
-  set Formulation = boussinesq approximation # this overwrites the parameters below
+  set Formulation = Boussinesq approximation # this overwrites the parameters below
   set Mass conservation                 = implicit reference density profile
   set Temperature equation = reference density profile
 end

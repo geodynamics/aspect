@@ -141,7 +141,7 @@ namespace aspect
           return Formulation::isothermal_compression;
         else if (input == "anelastic liquid approximation")
           return Formulation::anelastic_liquid_approximation;
-        else if (input == "boussinesq approximation")
+        else if (input == "Boussinesq approximation")
           return Formulation::boussinesq_approximation;
         else if (input == "custom")
           return Formulation::custom;
