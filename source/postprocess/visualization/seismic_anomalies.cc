@@ -592,3 +592,6 @@ namespace aspect
                                                   "maintain a reasonable number of evaluation points per slice. "
                                                   "Bear in mind that lateral averaging subsamples the "
                                                   "finite element mesh.")
+    }
+  }
+}

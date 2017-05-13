@@ -85,7 +85,7 @@ namespace aspect
           * adiabatic conditions and the lateral average option calculates
           * the average velocity within a number n_slices of depth slices.
            */
-          enum average_velocity_scheme
+          enum VelocityScheme
           {
             reference_profile,
             lateral_average
@@ -153,7 +153,7 @@ namespace aspect
           * adiabatic conditions and the lateral average option calculates
           * the average velocity within a number n_slices of depth slices.
            */
-          enum average_velocity_scheme
+          enum VelocityScheme
           {
             reference_profile,
             lateral_average
