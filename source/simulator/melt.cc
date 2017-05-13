@@ -940,6 +940,7 @@ namespace aspect
 
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
+
       create_material_model_outputs(out);
 
       typename DoFHandler<dim>::active_cell_iterator cell = this->get_dof_handler().begin_active(),
@@ -959,11 +960,13 @@ namespace aspect
 
             fe_values[this->introspection().variable("fluid pressure").extractor_scalar()].get_function_gradients (
               solution, grad_p_f_values);
-            this->compute_material_model_input_values (solution,
-                                                       fe_values,
-                                                       cell,
-                                                       true,
-                                                       in);
+
+
+            in.reinit(fe_values,
+                      &cell,
+                      this->introspection(),
+                      this->get_solution());
+
 
             this->get_material_model().evaluate(in, out);
 

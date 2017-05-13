@@ -60,6 +60,12 @@ namespace aspect
     cell = this->get_dof_handler().begin_active(),
     endc = this->get_dof_handler().end();
 
+
+    MaterialModel::MaterialModelInputs<dim> in(n_q_points,
+                                               this->n_compositional_fields());
+    MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
+                                                 this->n_compositional_fields());
+
     fctr.setup(quadrature_formula.size());
 
     for (; cell!=endc; ++cell)
@@ -70,27 +76,16 @@ namespace aspect
             {
 
               // get the density at each quadrature point if necessary
-              MaterialModel::MaterialModelInputs<dim> in(fe_values,
-                                                         &cell,
-                                                         this->introspection(),
-                                                         this->get_solution());
-              MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
-                                                           this->n_compositional_fields());
+              in.reinit(fe_values,
+                        &cell,
+                        this->introspection(),
+                        this->get_solution());
 
               this->get_material_model().evaluate(in, out);
-              fctr(in, out, fe_values, this->get_solution(), output_values);
 
             }
-          else
-            {
-              MaterialModel::MaterialModelInputs<dim> in(n_q_points,
-                                                         this->n_compositional_fields());
-              MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
-                                                           this->n_compositional_fields());
 
-              fctr(in, out, fe_values, this->get_solution(), output_values);
-            }
-
+          fctr(in, out, fe_values, this->get_solution(), output_values);
 
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
