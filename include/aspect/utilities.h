@@ -130,6 +130,7 @@ namespace aspect
                                            const double semi_major_axis_a,
                                            const double eccentricity);
 
+
       enum CoordinateSystem
       {
         depth,
@@ -137,10 +138,17 @@ namespace aspect
         spherical,
         invalid
       };
-      CoordinateSystem
-      string_to_coordinate_system(std::string);
 
+
+      /**
+       * A function that takes a string representation of the name of a
+       * coordinate system (as represented by the CoordinateSystem enum)
+       * and returns the corresponding value.
+       */
+      CoordinateSystem
+      string_to_coordinate_system (const std::string &);
     }
+
 
     /**
      * Given a 2d point and a list of points which form a polygon, computes if the point

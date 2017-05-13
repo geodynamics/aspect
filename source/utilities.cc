@@ -211,9 +211,10 @@ namespace aspect
 
       }
 
-      CoordinateSystem
-      string_to_coordinate_system(std::string coordinate_system)
 
+
+      CoordinateSystem
+      string_to_coordinate_system(const std::string &coordinate_system)
       {
         if (coordinate_system == "cartesian")
           return CoordinateSystem::cartesian;
