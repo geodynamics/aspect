@@ -338,7 +338,11 @@ namespace aspect
                          "implemented for advanced users that want full control over the "
                          "equations solved. It is possible to choose inconsistent formulations "
                          "and no error checking is performed on the consistency of the resulting "
-                         "equations.}");
+                         "equations.}\n\n"
+                         "\\note{The `anelastic liquid approximation' option here can also be "
+                         "used to set up `truncated anelastic liquid approximation' as long as "
+                         "this option is chosen together with a material model that defines a "
+                         "density that dependes on temperature and depth and not on the pressure.");
 
       prm.declare_entry ("Mass conservation", "ask material model",
                          Patterns::Selection ("incompressible|isothermal compression|"
