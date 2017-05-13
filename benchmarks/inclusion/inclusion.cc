@@ -73,7 +73,7 @@ namespace aspect
         *p=-2*epsilon*dphi.real();
       }
 
-      
+
 
       /**
        * The exact solution for the Inclusion benchmark.
@@ -184,7 +184,7 @@ namespace aspect
               out.thermal_conductivities[i] = 0;
               out.thermal_expansion_coefficients[i] = 0;
             }
-          }
+        }
 
         /**
          * @}
