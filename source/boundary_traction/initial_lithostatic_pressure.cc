@@ -129,14 +129,14 @@ namespace aspect
         in0.position[0] = representative_point;
 
       // We need the initial temperature at this point
-      in0.temperature[0] = this->get_initial_temperature().initial_temperature(in0.position[0]);
+      in0.temperature[0] = this->get_initial_temperature_manager().initial_temperature(in0.position[0]);
 
       // and the surface pressure.
       in0.pressure[0] = pressure[0];
 
       // Then the compositions at this point.
       for (unsigned int c=0; c<n_compositional_fields; ++c)
-        in0.composition[0][c] = this->get_initial_composition().initial_composition(in0.position[0], c);
+        in0.composition[0][c] = this->get_initial_composition_manager().initial_composition(in0.position[0], c);
 
       // We do not need the viscosity.
       in0.strain_rate.resize(0);
@@ -183,13 +183,13 @@ namespace aspect
             }
 
           // Retrieve the initial temperature at this point.
-          in.temperature[0] = this->get_initial_temperature().initial_temperature(in.position[0]);
+          in.temperature[0] = this->get_initial_temperature_manager().initial_temperature(in.position[0]);
           // and use the previous pressure
           in.pressure[0] = pressure[i-1];
 
           // Retrieve the compositions at this point.
           for (unsigned int c=0; c<n_compositional_fields; ++c)
-            in.composition[0][c] = this->get_initial_composition().initial_composition(in.position[0], c);
+            in.composition[0][c] = this->get_initial_composition_manager().initial_composition(in.position[0], c);
 
           // We do not need the viscosity.
           in.strain_rate.resize(0);
