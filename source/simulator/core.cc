@@ -905,7 +905,8 @@ namespace aspect
                 mask[i]=introspection.component_masks.velocities[i];
             }
 
-          VectorTools::interpolate_boundary_values (dof_handler,
+          VectorTools::interpolate_boundary_values (*mapping,
+                                                    dof_handler,
                                                     p->first,
                                                     vel,
                                                     current_constraints,
@@ -931,7 +932,8 @@ namespace aspect
           {
             Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
                     ExcInternalError());
-            VectorTools::interpolate_boundary_values (dof_handler,
+            VectorTools::interpolate_boundary_values (*mapping,
+                                                      dof_handler,
                                                       *p,
                                                       VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryTemperature::Interface<dim>::boundary_temperature,
                                                           std_cxx11::cref(*boundary_temperature),
@@ -962,7 +964,8 @@ namespace aspect
             {
               Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
                       ExcInternalError());
-              VectorTools::interpolate_boundary_values (dof_handler,
+              VectorTools::interpolate_boundary_values (*mapping,
+                                                        dof_handler,
                                                         *p,
                                                         VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryComposition::Interface<dim>::boundary_composition,
                                                             std_cxx11::cref(*boundary_composition),
@@ -1382,7 +1385,8 @@ namespace aspect
       for (std::set<types::boundary_id>::const_iterator
            p = parameters.zero_velocity_boundary_indicators.begin();
            p != parameters.zero_velocity_boundary_indicators.end(); ++p)
-        VectorTools::interpolate_boundary_values (dof_handler,
+        VectorTools::interpolate_boundary_values (*mapping,
+                                                  dof_handler,
                                                   *p,
                                                   ZeroFunction<dim>(introspection.n_components),
                                                   constraints,

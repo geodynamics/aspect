@@ -1,0 +1,4 @@
+Fixed: Non-zero prescribed velocity boundary conditions used a linear instead
+of the correct mapping. This caused incorrect values on curved boundaries.
+<br>
+(Timo Heister, 2017/05/12)
