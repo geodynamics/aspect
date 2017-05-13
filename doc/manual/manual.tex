@@ -36,6 +36,7 @@
 \usepackage{listings}
 \lstset{
   language=C++,
+  showstringspaces=false,
   basicstyle=\small\ttfamily,
   columns=fullflexible,
   keepspaces=true,
@@ -2478,7 +2479,7 @@ texttt{aspect} first to check your model for errors, then run
 \texttt{aspect-release} for a faster model run.
 
 To sum up, the steps you will want to execute are:
-\begin{lstlisting}[frame=single,language=ksh]
+\begin{lstlisting}[frame=single,language=ksh,showstringspaces=false]
 docker run -it -v "$(pwd):/home/dealii/aspect/model_input:ro" \
   gassmoeller/aspect:latest bash
 ./aspect model_input/your_input_file.prm
@@ -2532,7 +2533,7 @@ mount an \aspect{} source directory from your host system and compile it inside
 of the container. An example workflow could look as following (assuming you
 navigated in a terminal into the modified \aspect{} source folder):
 
-\begin{lstlisting}[frame=single,language=ksh]
+\begin{lstlisting}[frame=single,language=ksh,showstringspaces=false]
 docker pull dealii/dealii:v8.5.pre.4-gcc-mpi-fulldepsmanual-debugrelease
 docker run -it -v "$(pwd):/home/dealii/aspect:ro" \
   dealii/dealii:v8.5.pre.4-gcc-mpi-fulldepsmanual-debugrelease bash
@@ -3180,7 +3181,7 @@ The purpose of these files is as follows:
   is essentially a table that allows for the simple production of time
   trends. In the example above, and at the time when we are writing this
   section, it looks like this:
-  \begin{lstlisting}[frame=single,language=ksh]
+  \begin{lstlisting}[frame=single,language=ksh,showstringspaces=false]
 # 1: Time step number
 # 2: Time (years)
 # 3: Iterations for Stokes solver
@@ -3534,7 +3535,7 @@ a file called \texttt{statistics} in the output directory that, at the time
 of writing this, looked like this:
 This file has a structure that looks (at the time of writing this section)
 like this:
-\begin{lstlisting}[frame=single,language=ksh]
+\begin{lstlisting}[frame=single,language=ksh,showstringspaces=false]
 # 1: Time step number
 # 2: Time (seconds)
 # 3: Number of mesh cells
@@ -3585,7 +3586,7 @@ It is extensively documented at \url{http://www.gnuplot.info/}.
 \texttt{Gnuplot} is a command line program in which you enter commands that
 plot data or modify the way data is plotted. When you call it, you will first
 get a screen that looks like this:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}[frame=single,showstringspaces=false]
 /home/user/aspect/output gnuplot
 
         G N U P L O T
@@ -3607,7 +3608,7 @@ description of the individual columns given above, let us first try to
 plot the heat flux through boundary 2 (the bottom
 boundary of the box), i.e., column 19, as a function of time (column 2).
 This can be achieved using the following command:
-\begin{lstlisting}[frame=single,language=gnuplot]
+\begin{lstlisting}[frame=single,language=gnuplot,showstringspaces=false]
   plot "statistics" using 2:19
 \end{lstlisting}
 The left panel of Fig.~\ref{fig:viz-gnuplot-1} shows what \texttt{Gnuplot}
@@ -3620,7 +3621,7 @@ $[-10:10]$,
 plot not only the flux through the bottom but also through the top boundary
 (column 20) and finally add a key to the figure, then the following
 commands achieve this:
-\begin{lstlisting}[frame=single,language=gnuplot]
+\begin{lstlisting}[frame=single,language=gnuplot,showstringspaces=false]
   set xlabel "Time"
   set ylabel "Heat flux"
   set style data linespoints
@@ -3652,7 +3653,7 @@ different ways. For example, one can abbreviate most commands. Furthermore,
 one does not need to repeat the name of an input file if it is the same
 as the previous one in a plot command. Thus, instead of the commands above,
 the following abbreviated form would have achieved the same effect:
-\begin{lstlisting}[frame=single,language=gnuplot]
+\begin{lstlisting}[frame=single,language=gnuplot,showstringspaces=false]
   se xl "Time"
   se yl "Heat flux"
   se sty da lp
@@ -3666,7 +3667,7 @@ want to save it into a file. \texttt{Gnuplot} can write output in many
 different formats. For inclusion in publications, either \texttt{eps} or
 \texttt{png} are the most common. In the latter case, the commands to
 achieve this are
-\begin{lstlisting}[frame=single,language=gnuplot]
+\begin{lstlisting}[frame=single,language=gnuplot,showstringspaces=false]
   set terminal png
   set output "heatflux.png"
   replot
