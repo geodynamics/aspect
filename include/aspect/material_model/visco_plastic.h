@@ -139,7 +139,7 @@ namespace aspect
          * Enumeration for selecting which viscosity averaging scheme to use.
          * Select between harmonic, arithmetic, geometric, and
          * maximum_composition. The max composition scheme simply uses the
-         * viscosity of whichever field has the highes volume fraction.
+         * viscosity of whichever field has the highest volume fraction.
          * For each quadrature point, averaging is conducted over the
          * N compositional fields plus the background field.
          */
@@ -164,7 +164,7 @@ namespace aspect
 
         /**
          * Enumeration for selecting which type of yield mechanism to use.
-         * Select between drucker prager and stress limiter.
+         * Select between Drucker Prager and stress limiter.
          */
         enum YieldScheme
         {

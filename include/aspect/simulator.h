@@ -902,9 +902,9 @@ namespace aspect
                                 const LinearAlgebra::BlockVector &relevant_vector) const;
 
       /**
-       * Apply the bound preserving limiter to the discontinuous galerkin solutions:
+       * Apply the bound preserving limiter to the discontinuous Galerkin solutions:
        * i.e., given two fixed upper and lower bound [min, max], after applying the limiter,
-       * the discontinuous galerkin solution will stay in the predescribed bounds.
+       * the discontinuous Galerkin solution will stay in the prescribed bounds.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
@@ -930,7 +930,7 @@ namespace aspect
        * This method will add a zero Dirichlet constraint for the first
        * velocity unknown in the domain for each velocity component, which is
        * later being processed for translational or linear momentum removal.
-       * This avoids breakdowns of the linear solvers that otherwise occured
+       * This avoids breakdowns of the linear solvers that otherwise occurred
        * in some instances.
        *
        * @note: Rotational modes are currently not handled and don't appear to
@@ -1012,7 +1012,7 @@ namespace aspect
                                     const AdvectionField &advection_field) const;
 
       /**
-       * Compute the minimal and maximal temperature througout the domain from
+       * Compute the minimal and maximal temperature throughout the domain from
        * a solution vector extrapolated from the previous time steps. This is
        * needed to compute the artificial diffusion stabilization terms.
        *

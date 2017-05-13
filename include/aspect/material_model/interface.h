@@ -309,7 +309,7 @@ namespace aspect
        *
        * @note The strain rate term in equation (1) of the manual will be
        * multiplied by this tensor *and* the viscosity scalar ($\eta$), as
-       * described in the manual secion titled "Constitutive laws". This
+       * described in the manual section titled "Constitutive laws". This
        * variable is assigned the rank-four identity tensor by default.
        * This leaves the isotropic constitutive law unchanged if the material
        * model does not explicitly assign a value.
@@ -484,7 +484,7 @@ namespace aspect
 
       /**
        * Return a string that represents the various averaging options laid
-       * out above and that can be used in the claration of an input
+       * out above and that can be used in the declaration of an input
        * parameter. The options are separated by "|" so that they can be used
        * in a dealii::Patterns::Selection argument.
        */
@@ -725,14 +725,14 @@ namespace aspect
     {
       public:
         /**
-         * A typedef to import the MatertialModelInputs name into the current
+         * A typedef to import the MaterialModelInputs name into the current
          * class. This typedef primarily exists as a backward compatibility
          * measure given that the referenced structure used to be a member of
          * the current class.
          */
         typedef MaterialModel::MaterialModelInputs<dim> MaterialModelInputs;
         /**
-         * A typedef to import the MatertialModelOutputs name into the current
+         * A typedef to import the MaterialModelOutputs name into the current
          * class. This typedef primarily exists as a backward compatibility
          * measure given that the referenced structure used to be a member of
          * the current class.
@@ -868,7 +868,7 @@ namespace aspect
          * constructor of this member variable which in turn
          * initializes the object to invalid values. Derived classes
          * then need to fill it either in their constructor (if they
-         * already know the correct dependences at that time) or
+         * already know the correct dependencies at that time) or
          * at the end of their parse_parameter() functions where
          * they know the correct material parameters they will
          * use.

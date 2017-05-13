@@ -90,12 +90,12 @@ namespace aspect
         std::vector<double>            radioactive_heating_rates;
 
         /**
-         * Store the initial consentration in the crust.
+         * Store the initial concentration in the crust.
          */
         std::vector<double>            radioactive_initial_concentrations_crust;
 
         /**
-         * Store the initial consentration in the mantle.
+         * Store the initial concentration in the mantle.
          */
         std::vector<double>            radioactive_initial_concentrations_mantle;
 

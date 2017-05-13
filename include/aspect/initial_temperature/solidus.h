@@ -51,7 +51,7 @@ namespace aspect
         double T(const double p, const double radius) const;
 
         /**
-         * Is the melting curve denpendent on radius. The melting curve can be
+         * Is the melting curve dependent on radius. The melting curve can be
          * dependent on radius or pressure.
          */
         bool is_radius;

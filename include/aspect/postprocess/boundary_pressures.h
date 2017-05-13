@@ -33,7 +33,7 @@ namespace aspect
     /**
      * A postprocessor that computes the laterally averaged pressure
      * at the top and bottom boundaries of the solution.  This is useful
-     * for calculating the dyanamic topography at those surfaces.
+     * for calculating the dynamic topography at those surfaces.
      *
      * @ingroup Postprocessing
      */

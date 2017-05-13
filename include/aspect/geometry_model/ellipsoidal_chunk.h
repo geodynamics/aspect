@@ -86,7 +86,7 @@ namespace aspect
 
             /**
              * The deal.ii pull back function in 2d. This function should
-             * not be used, until the todo in the cc file has been fixed.
+             * not be used, until the TODO in the cc file has been fixed.
              */
             virtual
             Point<2>
@@ -215,7 +215,7 @@ namespace aspect
         get_used_boundary_indicators() const;
 
         /*
-        *Set symbolic names for boudaries (mrtf)
+        *Set symbolic names for boundaries (mrtf)
         */
         virtual std::map<std::string,types::boundary_id>
         get_symbolic_boundary_names_map() const;

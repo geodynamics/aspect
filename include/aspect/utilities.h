@@ -110,7 +110,7 @@ namespace aspect
       spherical_to_cartesian_coordinates(const std_cxx11::array<double,dim> &scoord);
 
       /**
-       * Returns ellispoidal coordinates of a Cartesian point. The returned array
+       * Returns ellipsoidal coordinates of a Cartesian point. The returned array
        * is filled with phi, theta and radius.
        *
        */
@@ -121,7 +121,7 @@ namespace aspect
                                            const double eccentricity);
 
       /**
-       * Return the Cartesian point of a ellispoidal position defined by phi,
+       * Return the Cartesian point of a ellipsoidal position defined by phi,
        * phi and radius.
        */
       template <int dim>
@@ -198,7 +198,7 @@ namespace aspect
      * variants of the real spherical harmonic at the same time. That is the approach taken
      * here, where we return a pair of numbers, the first corresponding the cosine part and the
      * second corresponding to the sine part. Given this, it is no longer necessary to distinguish
-     * between postitive and negative $m$, so this function only accepts $ m \ge 0$.
+     * between positive and negative $m$, so this function only accepts $ m \ge 0$.
      * For $m = 0$, there is only one part, which is stored in the first entry of the pair.
      *
      * @note This function uses the Boost spherical harmonics implementation internally,
@@ -298,7 +298,7 @@ namespace aspect
            * @param x X coordinates of interpolation points.
            * @param y Values in the interpolation points.
            * @param cubic_spline Whether to construct a cubic spline or just do linear interpolation
-           * @param monotone_spline Wether the cubic spline should be a monotone cubic spline.
+           * @param monotone_spline Whether the cubic spline should be a monotone cubic spline.
            * Requires cubic_spline to be set to true.
            */
           void set_points(const std::vector<double> &x,
@@ -423,7 +423,7 @@ namespace aspect
          * in the data file. If a list of data components is provided in the
          * data file it is checked that the length of this list is consistent
          * with this number of components. This constructor is mostly provided
-         * for backwards compatilibity. Not prescribing the number of components
+         * for backwards compatibility. Not prescribing the number of components
          * and instead reading them from the input file allows for more
          * flexible files.
          */
@@ -855,7 +855,7 @@ namespace aspect
      *
      * This function has been set up to be very tolerant to strange values, such as negative weights.
      * The only things we require in for the general p is that the sum of the weights and the sum of
-     * the weights times the values to the power p may not be smaller or equal to zero. Futhermore,
+     * the weights times the values to the power p may not be smaller or equal to zero. Furthermore,
      * when a value is zero, the exponent is smaller then one and the correspondent weight is non-zero,
      * this corresponds to no resistance in a parallel system. This means that this 'path' will be followed,
      * and we return zero.
@@ -887,7 +887,7 @@ namespace aspect
      * This function has, like the function weighted_p_norm_average been set up to be very tolerant to
      * strange values, such as negative weights. The only things we require in for the general p is that
      * the sum of the weights and the sum of the weights times the values to the power p may not be smaller
-     * or equal to zero. Futhermore, when a value is zero, the exponent is smaller then one and the
+     * or equal to zero. Furthermore, when a value is zero, the exponent is smaller then one and the
      * correspondent weight is non-zero, this corresponds to no resistance in a parallel system. This means
      * that this 'path' will be followed, and we return the corresponding derivative.
      *

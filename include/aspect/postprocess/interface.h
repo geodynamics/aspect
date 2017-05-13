@@ -135,7 +135,7 @@ namespace aspect
          * the input file) of the postprocessors it requires. The manager
          * will ensure that these postprocessors are indeed used, even if
          * they were not explicitly listed in the input file, and are indeed
-         * run <i>before</i> this postprocessor everytime they are executed.
+         * run <i>before</i> this postprocessor every time they are executed.
          *
          * The default implementation of this function returns an empty list.
          *

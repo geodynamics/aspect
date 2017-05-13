@@ -176,7 +176,7 @@ namespace aspect
             statistics.add_value("Number of nonlinear iterations",
                                  nonlinear_iterations);
 
-          // Only output statistics columns if the solver actually signalled at least one
+          // Only output statistics columns if the solver actually signaled at least one
           // successful solve. Some solver schemes might need no advection or Stokes solver
           for (unsigned int column=0; column<advection_iterations.size(); ++column)
             statistics.add_value(advection_iterations[column].first,
