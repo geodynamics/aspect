@@ -1,4 +1,4 @@
-#include "inclusion.h"
+#include "inclusion_compositional_fields.h"
 
 
 
@@ -7,10 +7,11 @@ namespace aspect
 {
   namespace InclusionBenchmark
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(InclusionMaterial,
-                                   "InclusionMaterial",
+    ASPECT_REGISTER_MATERIAL_MODEL(InclusionCompositionalMaterial,
+                                   "InclusionCompositionalMaterial",
                                    "A material model that corresponds to the 'Inclusion' benchmark "
-                                   "defined in Duretz et al., G-Cubed, 2011.")
+                                   "defined in Duretz et al., G-Cubed, 2011. using "
+                                   "compositional fields.")
 
     ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL(InclusionBoundary,
                                             "InclusionBoundary",

@@ -74,6 +74,8 @@ echo "Please be patient..."
 
 ( (cd inclusion; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
+( (cd inclusion/compositional_fields; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
 ( (cd king2dcompressible && make_lib && run_prm "ala.prm" ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd shear_bands; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
