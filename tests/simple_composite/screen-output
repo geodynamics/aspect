@@ -1,0 +1,49 @@
+
+Number of active cells: 192 (on 4 levels)
+Number of degrees of freedom: 2,724 (1,666+225+833)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 29+0 iterations.
+
+   Postprocessing:
+
+     Model domain depth (m):                        2.89e+06
+     Temperature contrast across model domain (K):  3977
+     Reference depth (m):                           0
+     Reference temperature (K):                     1600
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     9.81
+     Reference density (kg/m^3):                    3209.04
+     Reference thermal expansion coefficient (1/K): 3e-05
+     Reference specific heat capacity (J/(K*kg)):   1200
+     Reference thermal conductivity (W/(m*K)):      4.7
+     Reference viscosity (Pa*s):                    1e+21
+     Reference thermal diffusivity (m^2/s):         1.22051e-06
+     Rayleigh number:                               7.42801e+07
+
+     Writing graphical output:           output-simple_incompressible/solution/solution-00000
+     RMS, max velocity:                  0.507 m/year, 0.971 m/year
+     Temperature min/avg/max:            273 K, 1630 K, 4250 K
+     Heat fluxes through boundary parts: -5.644e+05 W, 5.205e+05 W, 2170 W, 2170 W
+     Writing depth average:              output-simple_incompressible/depth_average.gnuplot
+
+*** Timestep 1:  t=100000 years
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-simple_incompressible/solution/solution-00001
+     RMS, max velocity:                  0.506 m/year, 0.974 m/year
+     Temperature min/avg/max:            273 K, 1632 K, 4250 K
+     Heat fluxes through boundary parts: -5.339e+05 W, 4.989e+05 W, 1893 W, 1893 W
+     Writing depth average:              output-simple_incompressible/depth_average.gnuplot
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
