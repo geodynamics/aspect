@@ -1,8 +1,10 @@
+#include <aspect/simulator.h>
 #include <aspect/material_model/simple.h>
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <aspect/gravity_model/interface.h>
+#include <aspect/postprocess/dynamic_topography.h>
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
@@ -34,6 +36,11 @@ namespace aspect
 
     namespace AnalyticSolutions
     {
+      const double A=2.0, B=-3/log(2), C=-1;
+      const double inner_radius = 1, outer_radius = 2.;
+      const double rho_0 = 1000.;
+      const double gravity = 1.;
+
       Tensor<1,2>
       Annulus_velocity (const Point<2> &pos,
                         const double k)
@@ -42,7 +49,6 @@ namespace aspect
         const double y = pos[1];
         const double r = sqrt(x*x+y*y);
         const double theta = atan2(y,x);
-        const double A=2.0, B=-3/log(2), C=-1;
         const double f_r = A*r + B/r;
         const double g_r = A*r/2 + B*log(r)/r + C/r;
         const double v_r = g_r*k*sin(k*theta);
@@ -60,12 +66,25 @@ namespace aspect
         const double y = pos[1];
         const double r=sqrt(x*x+y*y);
         const double theta = atan2(y,x);
-        const double A=2.0, B=-3/log(2), C=-1;
         const double f_r = 2*r + B/r;
         const double g_r = A*r/2 + B*log(r)/r + C/r;
         const double h_r=(2*g_r-f_r)/r;
-        const double l_r=0;
-        return k*h_r*sin(k*theta)+l_r;
+        return k*h_r*sin(k*theta)+rho_0*gravity*(outer_radius-r);
+      }
+
+      template<int dim>
+      double
+      Annulus_normal_traction (const Point<dim> &pos,
+                               const double k)
+      {
+        Assert (dim == 2, ExcNotImplemented());
+        const double x = pos[0];
+        const double y = pos[1];
+        const double r=sqrt(x*x+y*y);
+        const double theta = atan2(y,x);
+        const double f_r = 2*r + B/r;
+        const double g_r = A*r/2 + B*log(r)/r + C/r;
+        return k * 3.*f_r/r * std::sin(k*theta) - rho_0 * g_r * (outer_radius - r);
       }
 
 
@@ -123,11 +142,6 @@ namespace aspect
       private:
         const double beta;
     };
-
-
-
-
-
 
 
     /**
@@ -239,7 +253,7 @@ namespace aspect
                const double,
                const std::vector<double> &,       /*composition*/
                const SymmetricTensor<2,dim> &,
-               const Point<dim> &p) const
+               const Point<dim> &) const
     {
       return 1.;
     }
@@ -298,7 +312,8 @@ namespace aspect
       const double g_prime = A/2 - B*log(r)/std::pow(r,2.0) + B/std::pow(r,2.0) - C/std::pow(r,2.0);
       const double g_prime_prime = -B/std::pow(r,3)*(3-2*log(r)) - 2./std::pow(r,3);
       const double N = g_prime_prime - g_prime/r - (g*(std::pow(k,2) - 1))/std::pow(r,2.0) + f/std::pow(r,2.0) + f_prime/r;
-      const double density = N*k*sin(k*theta);
+      const double rho_0 = 1000.;
+      const double density = N*k*sin(k*theta) + rho_0;
       return density;
     }
 
@@ -306,7 +321,7 @@ namespace aspect
     template <int dim>
     double
     AnnulusMaterial<dim>::
-    thermal_expansion_coefficient (const double temperature,
+    thermal_expansion_coefficient (const double,
                                    const double,
                                    const std::vector<double> &, /*composition*/
                                    const Point<dim> &) const
@@ -411,7 +426,7 @@ namespace aspect
     Tensor<1,3>
     AnnulusBoundary<3>::
     boundary_velocity (const types::boundary_id ,
-                       const Point<3> &p) const
+                       const Point<3> &) const
     {
       Assert (false, ExcNotImplemented());
       return Tensor<1,3>();
@@ -461,11 +476,24 @@ namespace aspect
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
+
+        /**
+         * List the other postprocessors required by this plugin.
+         */
+        std::list<std::string>
+        required_other_postprocessors() const;
+
+      private:
+        /**
+         * Calculate the L2 dynamic topography error.
+         */
+        double
+        compute_dynamic_topography_error() const;
     };
 
     template <int dim>
     std::pair<std::string,std::string>
-    AnnulusPostprocessor<dim>::execute (TableHandler &statistics)
+    AnnulusPostprocessor<dim>::execute (TableHandler &)
     {
       std_cxx1x::shared_ptr<Function<dim> > ref_func;
       {
@@ -520,15 +548,83 @@ namespace aspect
       const double p_l1 =  Utilities::MPI::sum(cellwise_errors_p.l1_norm(),this->get_mpi_communicator());
       const double u_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),this->get_mpi_communicator()));
       const double p_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),this->get_mpi_communicator()));
+      const double topo_l2 = compute_dynamic_topography_error();
 
       std::ostringstream os;
 
       os << std::scientific <<  u_l1
          << ", " << p_l1
          << ", " << u_l2
-         << ", " << p_l2;
+         << ", " << p_l2
+         << ", " << topo_l2;
 
-      return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2:", os.str());
+      return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2, topo_L2:", os.str());
+    }
+
+    /**
+     * Register the other postprocessor that we need: DynamicTopography
+     */
+    template <int dim>
+    std::list<std::string>
+    AnnulusPostprocessor<dim>::required_other_postprocessors() const
+    {
+      return std::list<std::string> (1, "dynamic topography");
+    }
+
+    /**
+     * Integrate the difference between the analytical and numerical
+     * solutions for dynamic topography.
+     */
+    template <int dim>
+    double
+    AnnulusPostprocessor<dim>::compute_dynamic_topography_error() const
+    {
+      Postprocess::DynamicTopography<dim> *dynamic_topography =
+        this->template find_postprocessor<Postprocess::DynamicTopography<dim> >();
+
+      const AnnulusMaterial<dim> *material_model
+        = dynamic_cast<const AnnulusMaterial<dim> *>(&this->get_material_model());
+      const double beta = material_model->get_beta();
+
+      const QGauss<dim-1> quadrature_formula (this->introspection().polynomial_degree.velocities+2);
+      FEFaceValues<dim> fe_face_values(this->get_mapping(),
+                                       this->get_fe(),
+                                       quadrature_formula,
+                                       update_values | update_gradients |
+                                       update_q_points | update_JxW_values);
+      LinearAlgebra::BlockVector topo_vector = dynamic_topography->topography_vector();
+      std::vector<double> topo_values(quadrature_formula.size());
+
+      double l2_error = 0.;
+
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
+
+      for (; cell!=endc; ++cell)
+        if (cell->is_locally_owned())
+          if (cell->at_boundary())
+            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              if (cell->face(f)->at_boundary())
+                {
+                  fe_face_values.reinit(cell, f);
+                  MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, &cell, this->introspection(), this->get_solution());
+                  MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+                  fe_face_values[this->introspection().extractors.temperature].get_function_values(topo_vector, topo_values);
+                  this->get_material_model().evaluate(in_face, out_face);
+
+                  for (unsigned int q=0; q < quadrature_formula.size(); ++q)
+                    {
+                      const Point<dim> p = fe_face_values.quadrature_point(q);
+                      const double analytic_normal_stress = AnalyticSolutions::Annulus_normal_traction<dim>(p, beta);
+                      const double gravity = this->get_gravity_model().gravity_vector(p).norm();
+                      const double density = out_face.densities[q];
+                      const double diff = - analytic_normal_stress / gravity/ density - topo_values[q];
+                      l2_error += (diff*diff) * fe_face_values.JxW(q);
+                    }
+                }
+      const double total_l2_error =  Utilities::MPI::sum(l2_error,this->get_mpi_communicator());
+      return std::sqrt(total_l2_error);
     }
   }
 }
