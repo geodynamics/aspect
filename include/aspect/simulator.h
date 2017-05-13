@@ -362,20 +362,6 @@ namespace aspect
       void set_initial_temperature_and_compositional_fields ();
 
       /**
-       * A function that is responsible for initializing the
-       * particles and their properties before the first time step. We want this
-       * to happen before the first timestep in case other properties depend
-       * on them, but it can only happen after the other initial conditions
-       * have been set up, because particle properties likely depend on the
-       * initial conditions. If the particle postprocessor has not been selected
-       * this function simply does nothing.
-       *
-       * This function is implemented in
-       * <code>source/simulator/initial_conditions.cc</code>.
-       */
-      void initialize_particles ();
-
-      /**
        * A function that initializes the pressure variable before the first
        * time step. It does so by either interpolating (for continuous
        * pressure finite elements) or projecting (for discontinuous elements)
