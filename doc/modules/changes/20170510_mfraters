@@ -1,0 +1,6 @@
+New: Added functions to compute weighted p norm averages (Utilities::weighted_p_norm_average) 
+and the derivatives of these weighted p norm averages (Utilities::derivative_of_weighted_p_norm_average) 
+to namespace Utilities. The derivatives function is templated to be able to compute derivatives which 
+are doubles and tensors.
+<br>
+(Menno Fraters 2017/05/10)
