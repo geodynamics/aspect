@@ -62,11 +62,11 @@ namespace aspect
                               MaterialModel::MaterialModelOutputs<dim> &out) const
         {
           for (unsigned int i=0; i < in.position.size(); ++i)
-            {        
-            /**
-             * @name Physical parameters used in the basic equations
-             * @{
-             */
+            {
+              /**
+               * @name Physical parameters used in the basic equations
+               * @{
+               */
 
               const Point<dim> &pos = in.position[i];
               const double depth = 1.0 - pos[dim-1];
@@ -79,7 +79,7 @@ namespace aspect
               out.thermal_expansion_coefficients[i] = ( Di==0.0 ) ? 1.0 : Di;
               out.compressibilities[i] = numbers::signaling_nan<double>();;
             }
-          }
+        }
 
         /**
          * @name Qualitative properties one can ask a material model
