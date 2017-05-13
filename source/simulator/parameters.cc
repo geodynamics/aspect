@@ -162,10 +162,10 @@ namespace aspect
                        "and then iterates out the solution of the Stokes equation. The 'Stokes only' "
                        "scheme only solves the Stokes system and ignores compositions and the "
                        "temperature equation (careful, the material model must not depend on "
-                       "the temperature; mostly useful for Stokes benchmarks). The 'Advection only'"
+                       "the temperature; mostly useful for Stokes benchmarks). The 'Advection only' "
                        "scheme only solves the temperature and other advection systems and instead "
                        "of solving for the Stokes system, a prescribed velocity and pressure is "
-                       "used");
+                       "used.");
 
     prm.declare_entry ("Nonlinear solver tolerance", "1e-5",
                        Patterns::Double(0,1),
@@ -656,7 +656,7 @@ namespace aspect
                          "other words, we are using a Taylor-Hood element for the Stokes "
                          "equations and this parameter indicates the polynomial degree of it. "
                          "As an example, a value of 2 for this parameter will yield the "
-                         "element $Q_2^d \times Q_1$ for the $d$ velocity components and the "
+                         "element $Q_2^d \\times Q_1$ for the $d$ velocity components and the "
                          "pressure, respectively (unless the `Use locally conservative "
                          "discretization' parameter is set, which modifies the pressure "
                          "element). "
