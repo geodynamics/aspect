@@ -74,7 +74,7 @@ echo "Please be patient..."
 
 ( (cd inclusion; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
-( (cd king2dcompressible/ala && make_lib && run_prm "ala.prm" && cat ala.prm tala.prm >mytala.prm && run_prm "mytala.prm" && rm mytala.prm ) || { echo "FAILED"; exit 1; } ) &
+( (cd king2dcompressible && make_lib && run_prm "ala.prm" ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd shear_bands; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
