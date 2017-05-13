@@ -1179,6 +1179,10 @@ namespace aspect
         [introspection.variable("fluid pressure").first_component_index] = DoFTools::always;
         coupling[introspection.variable("compaction pressure").first_component_index]
         [introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
+        coupling[introspection.variable("compaction pressure").first_component_index]
+        [introspection.variable("fluid pressure").first_component_index] = DoFTools::always;
+        coupling[introspection.variable("fluid pressure").first_component_index]
+        [introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
       }
     else
       coupling[x.pressure][x.pressure] = DoFTools::always;
