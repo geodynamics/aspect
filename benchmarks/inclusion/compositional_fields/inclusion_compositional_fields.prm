@@ -4,7 +4,7 @@
 
 ############### Global parameters
 
-set Additional shared libraries            = ./libinclusion_compositional_field.so
+set Additional shared libraries            = ./libinclusion_compositional_fields.so
 
 
 set Dimension                              = 2

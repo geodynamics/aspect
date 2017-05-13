@@ -32,8 +32,8 @@ ENDIF ()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
-SET(TARGET "inclusion_compositional_field")
+SET(TARGET "inclusion_compositional_fields")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED inclusion_compositional_field.cc)
+ADD_LIBRARY(${TARGET} SHARED inclusion_compositional_fields.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})
