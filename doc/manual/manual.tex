@@ -1889,7 +1889,7 @@ gravity is assumed to point downwards in depth direction.
 \item
 ``implicit reference density profile'':
 \[
- \nabla \cdot \textbf{u} + \frac{1}{\bar{\rho}} \frac{\partial \bar{\rho}}{\partial z} \frac{\textbf{g}}{g} \cdot \textbf{u} = 0,
+ \nabla \cdot \textbf{u} + \frac{1}{\bar{\rho}} \frac{\partial \bar{\rho}}{\partial z} \frac{\textbf{g}}{\|\textbf{g}\|} \cdot \textbf{u} = 0,
 \]
 which uses the same approximation for the density as ``reference density profile'', 
 but implements this term on the left-hand side instead of the right-hand side of the mass
