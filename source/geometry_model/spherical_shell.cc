@@ -32,6 +32,16 @@ namespace aspect
   namespace GeometryModel
   {
     template <int dim>
+    SphericalShell<dim>::SphericalShell()
+      :
+      spherical_manifold()
+#if !DEAL_II_VERSION_GTE(9,0,0)
+      , boundary_shell(),
+      straight_boundary()
+#endif
+    {}
+
+    template <int dim>
     void
     SphericalShell<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
