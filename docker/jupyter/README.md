@@ -13,4 +13,4 @@ and browse to http://localhost:8888/
 
 Alternatively, you can run
 
-    docker run -d -p 8888:8888 --name tmpnb-aspect-jupyter tjhei/tjhei/aspect-jupyter start-notebook.sh --NotebookApp.token=''
+    docker run -d -p 8888:8888 --name tmpnb-aspect-jupyter tjhei/aspect-jupyter start-notebook.sh --NotebookApp.token=''
