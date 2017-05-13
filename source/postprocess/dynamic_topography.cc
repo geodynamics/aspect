@@ -392,7 +392,7 @@ namespace aspect
           prm.declare_entry("Output lower surface topography","false",
                             Patterns::Bool (),
                             "Option to output the lower surface topography "
-                            "in a separate file lower_dynamic_topography.");
+                            "in a separate file bottom\\_dynamic\\_topography.");
           prm.declare_entry ("Density above","0",
                              Patterns::Double (0),
                              "Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. "

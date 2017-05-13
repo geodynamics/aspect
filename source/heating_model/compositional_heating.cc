@@ -164,7 +164,7 @@ namespace aspect
                                   "compositional heating",
                                   "Implementation of a model in which magnitude of internal heat production"
                                   "is determined from fixed values assigned to each compositional"
-                                  "field. These values are interpreted as having units W/m^3.")
+                                  "field. These values are interpreted as having units $W/m^3$.")
   }
 }
 
