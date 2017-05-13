@@ -37,6 +37,9 @@ while (<$in>)
     # Exceptions
     s/line <\d+> of file <.*\//file </;
 
+    # eat timestamp in graphical output
+    s/by the deal.II library on.*//;
+
     print $_;
 }
 
@@ -47,7 +50,6 @@ while (<$in>)
 #s/^\s+Time =.*//;
 #s/^\s+Date =.*//;
 #s/Time tag:.*//g;
-#s/by the deal.II library on.*//;
 
 
 
