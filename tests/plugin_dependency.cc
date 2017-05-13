@@ -1,7 +1,7 @@
 // create a postprocessor that does exactly the same as
 // SolCxPostprocessor, but also requires something else
 
-#include "solcx.cc"
+#include "../benchmarks/solcx/solcx.cc"
 
 namespace aspect
 {

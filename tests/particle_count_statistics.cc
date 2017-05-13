@@ -1,2 +1,2 @@
-#include "solcx.cc"
+#include "../benchmarks/solcx/solcx.cc"
 

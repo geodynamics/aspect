@@ -4,7 +4,7 @@
 // viz postprocessor, not a regular postprocessor that has
 // dependencies
 
-#include "solcx.cc"
+#include "../benchmarks/solcx/solcx.cc"
 #include <aspect/postprocess/visualization.h>
 
 namespace aspect
