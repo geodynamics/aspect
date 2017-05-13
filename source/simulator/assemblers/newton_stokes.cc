@@ -172,7 +172,7 @@ namespace aspect
 
           const SymmetricTensor<2,dim> strain_rate = scratch.material_model_inputs.strain_rate[q];
           const double pressure = scratch.material_model_inputs.pressure[q];
-          const double velocity_divergence = scratch.velocity_divergences[q];
+          const double velocity_divergence = trace(scratch.grads_phi_u[q]);
 
           const Tensor<1,dim>
           gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
@@ -212,7 +212,7 @@ namespace aspect
             {
               const MaterialModel::MaterialModelDerivatives<dim> *derivatives = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
 
-              // This one is only avaiable in debug mode, because normally
+              // This one is only available in debug mode, because normally
               // the AssertTrow in the preconditioner should already have
               // caught the problem.
               Assert(derivatives != NULL, ExcMessage ("Error: The newton method requires the derivatives"));
@@ -251,8 +251,8 @@ namespace aspect
                       }
 
                 }
-#if debug
-              // Testing wheter the Jacobian is Symetric Positive Definite (SPD)
+#if DEBUG
+              // Testing whether the Jacobian is Symmetric Positive Definite (SPD)
               if (assemble_newton_stokes_matrix)
                 {
                   SymmetricTensor<4,dim> H;
@@ -301,7 +301,7 @@ namespace aspect
                   if (testing == false)
                     std::cout << std::endl;
                 }
-#endif debug
+#endif DEBUG
 
             }
         }
@@ -352,7 +352,7 @@ namespace aspect
           AssertThrow(stress_strain_director == dealii::identity_tensor<dim>(),
                       ExcMessage ("Error: The newton method currently doesn't support anisotropic viscosities."));
 
-          const double velocity_divergence = scratch.velocity_divergences[q];
+          const double velocity_divergence = trace(scratch.grads_phi_u[q]);
 
           const double JxW = scratch.finite_element_values.JxW(q);
 

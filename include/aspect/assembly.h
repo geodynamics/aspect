@@ -104,7 +104,6 @@ namespace aspect
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
           std::vector<double>                  div_phi_u;
           std::vector<Tensor<1,dim> >          velocity_values;
-          std::vector<double>                  velocity_divergences;
 
           /**
            * Material model inputs and outputs computed at the current
@@ -787,7 +786,6 @@ namespace aspect
                                      internal::Assembly::CopyData::StokesSystem<dim> &data,
                                      const Parameters<dim> &parameters) const;
     };
-
   }
 }
 

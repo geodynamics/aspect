@@ -324,22 +324,20 @@ namespace aspect
       {
         prm.declare_entry ("Nonlinear Newton solver switch tolerance", "1e-5",
                            Patterns::Double(0,1),
-                           "A relative tolerance up to which the nonlinear Piccard solver "
-                           "will iterate, before changing to the newton solver. This parameter "
-                           "is only relevant if Nonlinear solver scheme is set to a Newton type "
-                           "of solver.");
+                           "A relative tolerance with respect to the the residual of the first "
+                           "iteration, up to which the nonlinear Piccard solver will iterate, "
+                           "before changing to the newton solver.");
 
         prm.declare_entry ("Max pre-Newton nonlinear iterations", "10",
                            Patterns::Integer (0),
-                           "The maximum number of Piccard nonlinear iterations to be performed, "
-                           "before switching to Newton iterations. This is only used in the case "
-                           "that the 'Nonlinear solver scheme' is set to a Newton type of solver.");
+                           "The maximum number of Piccard nonlinear iterations to be performed "
+                           "before switching to Newton iterations.");
 
         prm.declare_entry ("Max Newton line search iterations", "5",
                            Patterns::Integer (0),
-                           "The minimum number of Piccard nonlinear iterations to be performed, "
-                           "before switching to Newton iterations. This is only used in the case "
-                           "That the Nonlinear solver scheme is set to a Newton type of solver.");
+                           "The maximum amount of line search iterations allowed. If the "
+                           "criterion is not reached after this iteration, we apply the scaled "
+                           "increment to the solution and continue.");
       }
       prm.leave_subsection ();
     }
