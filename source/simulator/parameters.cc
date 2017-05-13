@@ -342,7 +342,7 @@ namespace aspect
                          "\\note{The `anelastic liquid approximation' option here can also be "
                          "used to set up `truncated anelastic liquid approximation' as long as "
                          "this option is chosen together with a material model that defines a "
-                         "density that dependes on temperature and depth and not on the pressure.");
+                         "density that dependes on temperature and depth and not on the pressure.}");
 
       prm.declare_entry ("Mass conservation", "ask material model",
                          Patterns::Selection ("incompressible|isothermal compression|"
