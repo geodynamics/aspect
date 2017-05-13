@@ -1,9 +1,4 @@
 -----------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.0.0-pre
---     . running in OPTIMIZED mode
---     . running with 1 MPI process
---     . using Trilinos
 -----------------------------------------------------------------------------
 
 Loading shared library <./libhollow_sphere.so>
@@ -16,29 +11,19 @@ Number of degrees of freedom: 28,690 (20,790+970+6,930)
    Solving Stokes system... 0+46 iterations.
       Relative Stokes residual after nonlinear iteration 1: 1
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 2: 2.566e-13
+      Relative Stokes residual after nonlinear iteration 2: 3.32809e-13
 
    Postprocessing:
-     Writing graphical output:          output/solution/solution-00000
-     RMS, max velocity:                 1.55 m/s, 4.84 m/s
-     Errors u_L1, p_L1, u_L2, p_L2:     5.111117e-01, 1.866412e-01, 1.767652e-01, 1.552251e-01
-     Writing depth average:             output/depth_average.gnuplot
+     Writing graphical output:          output-hollow_sphere/solution/solution-00000
+     RMS, max velocity:                 1.54 m/s, 4.59 m/s
+     Errors u_L1, p_L1, u_L2, p_L2:     1.558193e-02, 1.215643e-01, 7.656806e-03, 1.253073e-01
+     Writing depth average:             output-hollow_sphere/depth_average.gnuplot
      System matrix memory consumption:  53.68 MB
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      15.4s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |      2.26s |        15% |
-| Build Stokes preconditioner     |         1 |     0.531s |       3.5% |
-| Solve Stokes system             |         2 |      3.58s |        23% |
-| Initialization                  |         1 |     0.031s |       0.2% |
-| Postprocessing                  |         1 |      8.54s |        56% |
-| Setup dof systems               |         1 |      0.29s |       1.9% |
-| Setup initial conditions        |         1 |    0.0522s |      0.34% |
 +---------------------------------+-----------+------------+------------+
 
