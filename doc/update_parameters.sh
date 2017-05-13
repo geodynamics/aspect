@@ -4,9 +4,17 @@
 # you need an in-source build or a symbolic link to the ASPECT binary in the
 # main directory.
 
+ASPECT=${1:-"./aspect"}
+
 cd ..
+
+if test ! -f $ASPECT ; then
+  echo "Please provide the path of the ASPECT executable as the first argument to this script or create a link in the main source directory. "
+  exit 1
+fi
+
 rm -f output/parameters.tex
-./aspect doc/manual/empty.prm >/dev/null 2>/dev/null
+$ASPECT doc/manual/empty.prm >/dev/null 2>/dev/null || echo "running ASPECT failed"
 cp output/parameters.tex doc/manual/ || echo "ERROR: could not copy parameters.tex"
 cd doc/manual
 echo patching parameters.tex
