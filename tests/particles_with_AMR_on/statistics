@@ -1,0 +1,23 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: Number of advected particles
+# 13: RMS velocity (m/year)
+# 14: Max. velocity (m/year)
+# 15: Minimal value for composition composition
+# 16: Maximal value for composition composition
+# 17: Global mass for composition composition
+0 0.000000000000e+00 0.000000000000e+00 352 3750 1663 3168 0 32 33 137 5433 1.36629812e-02 3.69482906e-02 0.00000000e+00 1.00000000e+00 1.56250000e+10 
+1 1.133159370251e+05 1.133159370251e+05 376 3966 1759 3384 0 19 20  98 5774 1.36629793e-02 3.69483030e-02 0.00000000e+00 1.00000000e+00 1.56250000e+10 
+2 2.266316069952e+05 1.133156699701e+05 376 3966 1759 3384 0 28 29 139 5867 1.38258622e-02 3.73666729e-02 0.00000000e+00 1.00000000e+00 1.56618066e+10 
+3 3.375987195511e+05 1.109671125560e+05 376 3966 1759 3384 0 25 26 127 5977 1.39961813e-02 3.79068462e-02 0.00000000e+00 1.00000000e+00 1.56554266e+10 
+4 4.458839204941e+05 1.082852009429e+05 364 3867 1715 3276 0 26 27 132 6034 1.41068001e-02 3.81019220e-02 0.00000000e+00 1.00000000e+00 1.56126914e+10 
+5 5.000000000000e+05 5.411607950592e+04 364 3894 1727 3276 0 26 27 122 6033 1.42085779e-02 3.83361691e-02 0.00000000e+00 1.00000000e+00 1.55688190e+10 
