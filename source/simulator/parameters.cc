@@ -320,28 +320,28 @@ namespace aspect
 
     prm.enter_subsection ("Solver parameters");
     {
-    	prm.enter_subsection ("Newton solver parameters");
-		{
-    	    prm.declare_entry ("Nonlinear Newton solver switch tolerance", "1e-5",
-    	                       Patterns::Double(0,1),
-    	                       "A relative tolerance up to which the nonlinear Piccard solver "
-    	                       "will iterate, before changing to the newton solver. This parameter "
-    	                       "is only relevant if Nonlinear solver scheme is set to a Newton type "
-    	                       "of solver.");
+      prm.enter_subsection ("Newton solver parameters");
+      {
+        prm.declare_entry ("Nonlinear Newton solver switch tolerance", "1e-5",
+                           Patterns::Double(0,1),
+                           "A relative tolerance up to which the nonlinear Piccard solver "
+                           "will iterate, before changing to the newton solver. This parameter "
+                           "is only relevant if Nonlinear solver scheme is set to a Newton type "
+                           "of solver.");
 
-    	    prm.declare_entry ("Max pre-Newton nonlinear iterations", "10",
-    	                       Patterns::Integer (0),
-    	                       "The minimum number of Piccard nonlinear iterations to be performed, "
-    	                       "before switching to Newton iterations. This is only used in the case "
-    	                       "That the Nonlinear solver scheme is set to a Newton type of solver.");
+        prm.declare_entry ("Max pre-Newton nonlinear iterations", "10",
+                           Patterns::Integer (0),
+                           "The maximum number of Piccard nonlinear iterations to be performed, "
+                           "before switching to Newton iterations. This is only used in the case "
+                           "that the 'Nonlinear solver scheme' is set to a Newton type of solver.");
 
-    	    prm.declare_entry ("Max Newton line search iterations", "5",
-    	                       Patterns::Integer (0),
-    	                       "The minimum number of Piccard nonlinear iterations to be performed, "
-    	                       "before switching to Newton iterations. This is only used in the case "
-    	                       "That the Nonlinear solver scheme is set to a Newton type of solver.");
-		}
-    	prm.leave_subsection ();
+        prm.declare_entry ("Max Newton line search iterations", "5",
+                           Patterns::Integer (0),
+                           "The minimum number of Piccard nonlinear iterations to be performed, "
+                           "before switching to Newton iterations. This is only used in the case "
+                           "That the Nonlinear solver scheme is set to a Newton type of solver.");
+      }
+      prm.leave_subsection ();
     }
     prm.leave_subsection ();
 
@@ -972,13 +972,13 @@ namespace aspect
 
     prm.enter_subsection ("Solver parameters");
     {
-    	prm.enter_subsection ("Newton solver parameters");
-		{
-    		nonlinear_switch_tolerance = prm.get_double("Nonlinear Newton solver switch tolerance");
-       		max_pre_newton_nonlinear_iterations = prm.get_integer ("Max pre-Newton nonlinear iterations");
-       		max_newton_line_search_iterations = prm.get_integer ("Max Newton line search iterations");
-		}
-    	prm.leave_subsection ();
+      prm.enter_subsection ("Newton solver parameters");
+      {
+        nonlinear_switch_tolerance = prm.get_double("Nonlinear Newton solver switch tolerance");
+        max_pre_newton_nonlinear_iterations = prm.get_integer ("Max pre-Newton nonlinear iterations");
+        max_newton_line_search_iterations = prm.get_integer ("Max Newton line search iterations");
+      }
+      prm.leave_subsection ();
     }
     prm.leave_subsection ();
 
