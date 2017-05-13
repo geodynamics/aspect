@@ -78,7 +78,7 @@ namespace aspect
                                                                   .material_model_outputs.stress_strain_directors[q];
 
           AssertThrow(stress_strain_director == dealii::identity_tensor<dim>(),
-        		  ExcMessage ("Error: The newton method currently doesn't support anisotropic viscosities."));
+                      ExcMessage ("Error: The newton method currently doesn't support anisotropic viscosities."));
 
           const double JxW = scratch.finite_element_values.JxW(q);
 
@@ -168,7 +168,7 @@ namespace aspect
             scratch.material_model_outputs.stress_strain_directors[q];
 
           AssertThrow(stress_strain_director == dealii::identity_tensor<dim>(),
-        		  ExcMessage ("Error: The newton method currently doesn't support anisotropic viscosities."));
+                      ExcMessage ("Error: The newton method currently doesn't support anisotropic viscosities."));
 
           const SymmetricTensor<2,dim> strain_rate = scratch.material_model_inputs.strain_rate[q];
           const double pressure = scratch.material_model_inputs.pressure[q];
@@ -254,7 +254,7 @@ namespace aspect
 #if debug
               // Testing wheter the Jacobian is Symetric Positive Definite (SPD)
               if (assemble_newton_stokes_matrix)
-              {
+                {
                   SymmetricTensor<4,dim> H;
                   SymmetricTensor<4,dim> HT;
                   H = outer_product(strain_rate,viscosity_derivative_wrt_strain_rate);
@@ -262,45 +262,45 @@ namespace aspect
                   SymmetricTensor<4,dim> SPD = 2 * eta * identity_tensor<dim>() + H + HT;
 
 
-              bool testing = true;
-              for (unsigned int sample = 0; sample < 10; ++sample)
-              {
-                Vector<double> tmp (stokes_dofs_per_cell);
-
-                for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                  if (scratch.finite_element_values.get_fe().system_to_component_index(i).first < dim)
-                    tmp[i] = Utilities::generate_normal_random_number (0, 1);
-
-                const double abc =  data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp);
-                if (abc < -1e-12*data.local_matrix.frobenius_norm())
-                {
-                  testing = false;
-                  std::cout << sample << " Not SPD: " << abc << "; " << std::endl;
-
-                  for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                  {
-                    for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-                      std::cout << std::setprecision(1)  << data.local_matrix(i,j) << "," << std::flush;
-                    std::cout << "},{" << std::endl;
-                  }
-                  std::cout << std::endl;
-                  std::cout << std::setprecision(6) << std::endl;
-
-                  Assert(testing,ExcMessage ("Error: Assembly not SPD!."));
-
-                  // Testing whether all entries are finite.
-                  for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                  {
-                    for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                  bool testing = true;
+                  for (unsigned int sample = 0; sample < 10; ++sample)
                     {
-                      Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),ExcMessage ("Error: Assembly matrix is not finite."));
+                      Vector<double> tmp (stokes_dofs_per_cell);
+
+                      for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                        if (scratch.finite_element_values.get_fe().system_to_component_index(i).first < dim)
+                          tmp[i] = Utilities::generate_normal_random_number (0, 1);
+
+                      const double abc =  data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp);
+                      if (abc < -1e-12*data.local_matrix.frobenius_norm())
+                        {
+                          testing = false;
+                          std::cout << sample << " Not SPD: " << abc << "; " << std::endl;
+
+                          for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                            {
+                              for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                                std::cout << std::setprecision(1)  << data.local_matrix(i,j) << "," << std::flush;
+                              std::cout << "},{" << std::endl;
+                            }
+                          std::cout << std::endl;
+                          std::cout << std::setprecision(6) << std::endl;
+
+                          Assert(testing,ExcMessage ("Error: Assembly not SPD!."));
+
+                          // Testing whether all entries are finite.
+                          for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                            {
+                              for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                                {
+                                  Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),ExcMessage ("Error: Assembly matrix is not finite."));
+                                }
+                            }
+                        }
                     }
-                  }
+                  if (testing == false)
+                    std::cout << std::endl;
                 }
-              }
-              if(testing == false)
-                std::cout << std::endl;
-              }
 #endif debug
 
             }
@@ -350,7 +350,7 @@ namespace aspect
             scratch.material_model_outputs.stress_strain_directors[q];
 
           AssertThrow(stress_strain_director == dealii::identity_tensor<dim>(),
-        		  ExcMessage ("Error: The newton method currently doesn't support anisotropic viscosities."));
+                      ExcMessage ("Error: The newton method currently doesn't support anisotropic viscosities."));
 
           const double velocity_divergence = scratch.velocity_divergences[q];
 
