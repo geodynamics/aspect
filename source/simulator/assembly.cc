@@ -1219,7 +1219,7 @@ namespace aspect
       = (
           // see if we need to assemble traction boundary conditions.
           // only if so do we actually need to have an FEFaceValues object
-          parameters.prescribed_boundary_traction_indicators.size() > 0
+          parameters.prescribed_traction_boundary_indicators.size() > 0
           ?
           update_values |
           update_quadrature_points |

@@ -253,8 +253,8 @@ namespace aspect
         velocity_bi.insert(p->first);
 
       for (std::map<types::boundary_id,std::pair<std::string, std::string> >::const_iterator
-           r = parameters.prescribed_boundary_traction_indicators.begin();
-           r != parameters.prescribed_boundary_traction_indicators.end();
+           r = parameters.prescribed_traction_boundary_indicators.begin();
+           r != parameters.prescribed_traction_boundary_indicators.end();
            ++r)
         traction_bi.insert(r->first);
 
@@ -284,8 +284,8 @@ namespace aspect
                 velocity_selector.insert(*it_selector);
 
               for (std::string::const_iterator
-                   it_selector  = parameters.prescribed_boundary_traction_indicators[*it].first.begin();
-                   it_selector != parameters.prescribed_boundary_traction_indicators[*it].first.end();
+                   it_selector  = parameters.prescribed_traction_boundary_indicators[*it].first.begin();
+                   it_selector != parameters.prescribed_traction_boundary_indicators[*it].first.end();
                    ++it_selector)
                 traction_selector.insert(*it_selector);
 
@@ -590,8 +590,8 @@ namespace aspect
       }
 
     for (std::map<types::boundary_id,std::pair<std::string,std::string> >::const_iterator
-         p = parameters.prescribed_boundary_traction_indicators.begin();
-         p != parameters.prescribed_boundary_traction_indicators.end();
+         p = parameters.prescribed_traction_boundary_indicators.begin();
+         p != parameters.prescribed_traction_boundary_indicators.end();
          ++p)
       {
         BoundaryTraction::Interface<dim> *bv

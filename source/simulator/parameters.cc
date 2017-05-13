@@ -1607,11 +1607,11 @@ namespace aspect
             std::pair<std::string,std::string>(comp,value);
         }
 
-      const std::vector<std::string> x_prescribed_boundary_traction_indicators
+      const std::vector<std::string> x_prescribed_traction_boundary_indicators
         = Utilities::split_string_list
           (prm.get ("Prescribed traction boundary indicators"));
-      for (std::vector<std::string>::const_iterator p = x_prescribed_boundary_traction_indicators.begin();
-           p != x_prescribed_boundary_traction_indicators.end(); ++p)
+      for (std::vector<std::string>::const_iterator p = x_prescribed_traction_boundary_indicators.begin();
+           p != x_prescribed_traction_boundary_indicators.end(); ++p)
         {
           // each entry has the format (white space is optional):
           // <id> [x][y][z] : <value (might have spaces)>
@@ -1685,14 +1685,14 @@ namespace aspect
                                               + error));
             }
 
-          AssertThrow (prescribed_boundary_traction_indicators.find(boundary_id)
-                       == prescribed_boundary_traction_indicators.end(),
+          AssertThrow (prescribed_traction_boundary_indicators.find(boundary_id)
+                       == prescribed_traction_boundary_indicators.end(),
                        ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
                                    "> appears more than once in the list of indicators "
                                    "for nonzero traction boundaries."));
 
           // finally, put it into the list
-          prescribed_boundary_traction_indicators[boundary_id] =
+          prescribed_traction_boundary_indicators[boundary_id] =
             std::pair<std::string,std::string>(comp,value);
         }
 
