@@ -65,11 +65,11 @@ subsection Material model
   end
 
   subsection Compositing
-    set Viscosity = simple compressible
+    set Viscosity = simple
     set Density = simple
-    set Thermal expansion coefficient = simple compressible
-    set Specific heat = simple compressible
-    set Thermal conductivity = simple compressible
+    set Thermal expansion coefficient = simple
+    set Specific heat = simple
+    set Thermal conductivity = simple
     set Compressibility = simple
     set Entropy derivative pressure = simple
     set Entropy derivative temperature = simple
