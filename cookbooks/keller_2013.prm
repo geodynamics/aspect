@@ -18,6 +18,8 @@ set Output directory                       = output5
 set Timing output frequency                = 1
 set Pressure normalization                 = surface
 set Surface pressure                       = 50e6
+set Pressure normalization                 = no
+set Surface pressure                       = 0 #50e6
 
 #### Parameters describing the model
 
@@ -49,11 +51,14 @@ subsection Model settings
   set Prescribed velocity boundary indicators = left x: function, right x:function#, bottom y:function
   set Free surface boundary indicators        = #top
   set Tangential velocity boundary indicators = top, bottom
+  set Free surface boundary indicators        = top
+  set Tangential velocity boundary indicators = bottom
   set Include melt transport                  = true
 end
 
 subsection Melt settings
   set Melt transport threshold                = 0.0 #1e-3
+  set Melt transport threshold                = 1e-3
   set Heat advection by melt                  = false
 end
 
@@ -77,6 +82,7 @@ subsection Boundary velocity model
   subsection Function
     set Variable names      = x,y
     set Function constants  = m=0.00012, year=1
+    set Function constants  = m=0.0000946728, year=1
     set Function expression =  if (x<3e3 , -1*m/year, 1*m/year) ; 0.0
   end
 end
@@ -146,6 +152,8 @@ subsection Material model
 
     set Angles of internal friction = 30.
     set Cohesions = 40.e6
+    set Use compositional field for viscosity averaging = 0 #!!
+    set Use linear viscosities = true
   end
 
   subsection Diffusion dislocation
@@ -216,4 +224,5 @@ end
 
 subsection Checkpointing
   set Time between checkpoint = 300
+  set Time between checkpoint = 0
 end

@@ -100,15 +100,15 @@ namespace aspect
         }
 
       // fill melt outputs if they exist
-      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
-
-      if (melt_out != NULL)
-        {
-          for (unsigned int q=0; q < in.position.size(); ++q)
-            {
-              melt_out->compaction_viscosities[q] *= (1.0 - in.composition[q][porosity_idx]);
-            }
-        }
+//      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
+//
+//      if (melt_out != NULL)
+//        {
+//          for (unsigned int q=0; q < in.position.size(); ++q)
+//            {
+//              melt_out->compaction_viscosities[q] *= (1.0 - in.composition[q][porosity_idx]);
+//            }
+//        }
     }
 
 

@@ -80,7 +80,7 @@ namespace aspect
       std::vector<double> x_comp = compositional_fields;
       for ( unsigned int i=0; i < x_comp.size(); ++i)
         {
-          if (field_used_in_viscosity_averaging[i] == true)
+          if (field_used_in_viscosity_averaging[i+1] == true)
             {
               // clip the compositional fields so they are between zero and one
               // and sum them for normalization purposes
@@ -182,6 +182,8 @@ namespace aspect
               out.viscosities[i] = linear_viscosity;     
             }
         }
+
+      const std::vector<double> xis = out.viscosities;
 
       std::vector<double> maximum_melt_fractions(in.position.size());
       std::vector<double> old_porosity(in.position.size());
@@ -315,7 +317,11 @@ namespace aspect
                 {
 
                   const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i]);
- 
+
+                  // melt dependence of shear viscosity 
+                  const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
+                  out.viscosities[i] *= exp(- alpha_phi * porosity);
+
                   // Calculate viscoelastic viscosity
                   if (model_is_viscoelastic == true)
                     {
@@ -330,9 +336,6 @@ namespace aspect
                       out.viscosities[i] = viscoelastic; 
                     }
  
-                  const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
-                  out.viscosities[i] *= exp(- alpha_phi * porosity);
-
                   // calculate deviatoric strain rate and viscous stress
                   //const double edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),
                   //                                  min_strain_rate);
@@ -420,6 +423,7 @@ namespace aspect
 
               melt_out->fluid_viscosities[i] = eta_f;
               melt_out->permeabilities[i] = (old_porosity[i] > this->get_melt_handler().melt_transport_threshold
+              melt_out->permeabilities[i] = (porosity > this->get_melt_handler().melt_transport_threshold
                                              ?
                                              std::max(reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2),0.0)
                                              :
@@ -432,9 +436,14 @@ namespace aspect
 
               const double phi_0 = 0.05;
               porosity = std::max(std::min(porosity,0.995),1.e-7);
-              melt_out->compaction_viscosities[i] = xi_0 * phi_0 / porosity;
+              //melt_out->compaction_viscosities[i] = xi_0 * phi_0 / porosity;
+              melt_out->compaction_viscosities[i] = xis[i] * phi_0 / porosity;
 
-               if (in.strain_rate.size() && compaction_pressure >= volumetric_yield_strength[i])
+              // visco(elastic) compaction viscosity
+              melt_out->compaction_viscosities[i] *= (1. - porosity);
+
+              // effective compaction viscosity
+              if (in.strain_rate.size() && compaction_pressure >= volumetric_yield_strength[i])
                 melt_out->compaction_viscosities[i] = volumetric_yield_strength[i] / std::max(volumetric_strain_rates[i], min_strain_rate);
 
               // Limit the viscosity with specified minimum and maximum bounds
