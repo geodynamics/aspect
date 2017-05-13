@@ -340,7 +340,7 @@ namespace aspect
                          "and no error checking is performed on the consistency of the resulting "
                          "equations.}\n\n"
                          "\\note{The `anelastic liquid approximation' option here can also be "
-                         "used to set up `truncated anelastic liquid approximation' as long as "
+                         "used to set up the `truncated anelastic liquid approximation' as long as "
                          "this option is chosen together with a material model that defines a "
                          "density that dependes on temperature and depth and not on the pressure.}");
 
