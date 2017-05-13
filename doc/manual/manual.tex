@@ -1874,7 +1874,8 @@ We provide the following options, which can be selected in the parameter file in
  \nabla \cdot \textbf{u} = -\frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u},
 \]
 where $\frac{1}{\rho} \frac{\partial \rho}{\partial p} = \kappa$ is the compressibility, and 
-is defined in the material model. 
+is defined in the material model. This is the explicit compressible mass equation where 
+the velocity $\textbf{u}$ on the right-hand side is an extrapolated velocity from the last timesteps.
 
 \item
 ``reference density profile'':
@@ -1883,8 +1884,9 @@ is defined in the material model.
 \]
 where the reference profiles for the density $\bar{\rho}$ and the density gradient $\frac{\partial \bar{\rho}}{\partial z}$
 provided by the adiabatic conditions model (\ref{sec:adiabatic})
-are used. Note that the
-gravity is assumed to point downwards in depth direction.
+are used. Note that the gravity is assumed to point downwards in depth direction.
+This is the explicit mass equation where the velocity $\textbf{u}$ on the right-hand 
+side is an extrapolated velocity from the last timesteps.
 
 \item
 ``implicit reference density profile'':
@@ -1894,7 +1896,7 @@ gravity is assumed to point downwards in depth direction.
 which uses the same approximation for the density as ``reference density profile'', 
 but implements this term on the left-hand side instead of the right-hand side of the mass
 conservation equation. This effectively uses the current velocity $\textbf{u}$ instead
-of an extrapolated velocity from the last timesteps.
+of an explicitly extrapolated velocity from the last timesteps.
 
  \item 
 ``ask material model'', which uses ``isothermal compression'' if the material model reports 
