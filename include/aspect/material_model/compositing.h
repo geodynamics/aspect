@@ -47,6 +47,19 @@ namespace aspect
         entropy_derivative_temperature,
         reaction_terms
       };
+
+      static const std::map<std::string, MaterialProperty>
+          property_map = {
+              {"Viscosity", viscosity},
+              {"Density", density},
+              {"Thermal expansion coefficient", thermal_expansion_coefficient},
+              {"Specific heat", specific_heat},
+              {"Thermal conductivity", thermal_conductivity},
+              {"Compressibility", compressibility},
+              {"Entropy derivative pressure", entropy_derivative_pressure},
+              {"Entropy derivative temperature", entropy_derivative_temperature},
+              {"Reaction terms", reaction_terms}
+          };
     }
 
     /**

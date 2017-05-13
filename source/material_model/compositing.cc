@@ -34,27 +34,12 @@ namespace aspect
     Property::MaterialProperty
     Compositing<dim>::parse_property_name(const std::string &s)
     {
-      if (s == "viscosity")
-        return Property::viscosity;
-      else if (s == "density")
-        return Property::density;
-      else if (s == "thermal expansion coefficient")
-        return Property::thermal_expansion_coefficient;
-      else if (s == "specific heat")
-        return Property::specific_heat;
-      else if (s == "compressibility")
-        return Property::compressibility;
-      else if (s == "entropy derivative pressure")
-        return Property::entropy_derivative_pressure;
-      else if (s == "entropy derivative temperature")
-        return Property::entropy_derivative_temperature;
-      else if (s == "reaction terms")
-        return Property::reaction_terms;
-      else
+      if (Property::property_map.count(s) == 0)
         AssertThrow (false,
                      ExcMessage ("The value <" + s + "> for a material "
                                  "property is not one of the valid values."));
       return Property::viscosity;
+      return Property::property_map.at(s);
     }
 
     //Copy the requested data for one model
@@ -79,7 +64,7 @@ namespace aspect
       if (model_property_map.at(Property::entropy_derivative_temperature) == model_index)
         out.entropy_derivative_temperature = evaluated.entropy_derivative_temperature;
       if (model_property_map.at(Property::reaction_terms) == model_index)
-        out.reaction_terms == evaluated.reaction_terms;
+        out.reaction_terms = evaluated.reaction_terms;
     }
 
     template <int dim>
@@ -105,10 +90,16 @@ namespace aspect
       {
         prm.enter_subsection("Compositing");
         {
-          prm.declare_entry("Models", "",
-                            Patterns::Map(Patterns::Selection("viscosity|density|thermal expansion coefficient|specific heat|compressibility|entropy derivative pressure|entropy derivative temperature|reaction terms"),
-                                          Patterns::Selection(MaterialModel::get_valid_model_names_pattern<dim>())),
-                            "The material property and material model associations used for this composite material model");
+          std::map<std::string, Property::MaterialProperty>::const_iterator prop_it = Property::property_map.begin();
+          for (; prop_it != Property::property_map.end(); ++prop_it)
+            {
+              prm.declare_entry(prop_it->first, "compositing",
+                                Patterns::Selection(MaterialModel::get_valid_model_names_pattern<dim>()),
+                                "Material model to use for " + prop_it->first +". Valid values for this "
+                                "parameter are the names of models that are also valid for the "
+                                "``Material models/Model name'' parameter. See the documentation for "
+                                "that for more information.");
+            }
         }
         prm.leave_subsection();
       }
@@ -124,35 +115,26 @@ namespace aspect
         prm.enter_subsection("Compositing");
         {
           model_names.clear();
-          const std::vector<std::string> x_models
-            = Utilities::split_string_list
-              (prm.get("Models"));
-          for (std::vector<std::string>::const_iterator p = x_models.begin();
-               p != x_models.end(); ++p)
+          std::map<std::string, Property::MaterialProperty>::const_iterator prop_it = Property::property_map.begin();
+          for (; prop_it != Property::property_map.end(); ++prop_it)
             {
-              const std::vector<std::string> split_parts = Utilities::split_string_list(*p, ':');
-              AssertThrow (split_parts.size() == 2,
-                           ExcMessage("The format for composite models requires that each entry has the form "
-                                      "<property> : <model>, but there is no colon in the entry <"
-                                      + *p
-                                      + ">."));
-              Property::MaterialProperty prop = parse_property_name(split_parts[0]);
-              AssertThrow(split_parts[1] != "averaging",
-                          ExcMessage("You may not use ``averaging'' as the base model for "
-                                     "a compositing material model."));
-              AssertThrow(split_parts[1] != "compositing",
-                          ExcMessage("You may not use ``compositing'' as the base model for "
-                                     "a compositing material model."));
+              const Property::MaterialProperty prop = prop_it->second;
+              const std::string model_name = prm.get(prop_it->first);
+
+              AssertThrow(model_name != "averaging",
+                          ExcMessage("You may not use ``averaging'' as the base model for the "
+                                     + prop_it->first +" property of a compositing material model."));
+              AssertThrow(model_name != "compositing",
+                          ExcMessage("You may not use ``compositing'' as the base model for the "
+                                     + prop_it->first +" property of a compositing material model."));
               unsigned int model_ind;
               for (model_ind=0; model_ind < model_names.size(); ++model_ind)
                 {
-                  if (model_names[model_ind] == split_parts[1])
+                  if (model_names[model_ind] == model_name)
                     break;
                 }
               if (model_ind == model_names.size())
-                model_names.push_back(split_parts[1]);
-              AssertThrow(model_property_map.count(prop)==0,
-                          ExcMessage("You may not define a propery multiple times"));
+                model_names.push_back(model_name);
 
               model_property_map[prop] = model_ind;
             }
@@ -177,6 +159,7 @@ namespace aspect
       for (unsigned int i=0; i<model_names.size(); ++i)
         {
           models[i]->parse_parameters(prm);
+          // All models will need to compute all quantities, so do so
           this -> model_dependence.viscosity |= models[i]->get_model_dependence().viscosity;
           this -> model_dependence.density |= models[i]->get_model_dependence().density;
           this -> model_dependence.compressibility |= models[i]->get_model_dependence().compressibility;
