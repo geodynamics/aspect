@@ -87,18 +87,6 @@ namespace aspect
                        "steps. This does not include the last refinement step before moving to timestep 1. "
                        "When this parameter has a larger value than max nonlinear iterations, the latter is used.");
 
-    prm.declare_entry ("Max pre-Newton nonlinear iterations", "10",
-                       Patterns::Integer (0),
-                       "The minimum number of Piccard nonlinear iterations to be performed, "
-                       "before switching to Newton iterations. This is only used in the case "
-                       "That the Nonlinear solver scheme is set to a Newton type of solver.");
-
-    prm.declare_entry ("Max Newton line search iterations", "5",
-                       Patterns::Integer (0),
-                       "The minimum number of Piccard nonlinear iterations to be performed, "
-                       "before switching to Newton iterations. This is only used in the case "
-                       "That the Nonlinear solver scheme is set to a Newton type of solver.");
-
     prm.declare_entry ("Start time", "0",
                        Patterns::Double (),
                        "The start time of the simulation. Units: Years if the "
@@ -185,13 +173,6 @@ namespace aspect
                        "will iterate. This parameter is only relevant if "
                        "Nonlinear solver scheme is set to 'iterated Stokes' or "
                        "'iterated IMPES'.");
-
-    prm.declare_entry ("Nonlinear Newton solver switch tolerance", "1e-5",
-                       Patterns::Double(0,1),
-                       "A relative tolerance up to which the nonlinear Piccard solver "
-                       "will iterate, before changing to the newton solver. This parameter "
-                       "is only relevant if Nonlinear solver scheme is set to a Newton type "
-                       "of solver.");
 
     prm.declare_entry ("Pressure normalization", "surface",
                        Patterns::Selection ("surface|volume|no"),
@@ -337,6 +318,32 @@ namespace aspect
                        "the composition system gets solved. See 'linear solver "
                        "tolerance' for more details.");
 
+    prm.enter_subsection ("Solver parameters");
+    {
+    	prm.enter_subsection ("Newton solver parameters");
+		{
+    	    prm.declare_entry ("Nonlinear Newton solver switch tolerance", "1e-5",
+    	                       Patterns::Double(0,1),
+    	                       "A relative tolerance up to which the nonlinear Piccard solver "
+    	                       "will iterate, before changing to the newton solver. This parameter "
+    	                       "is only relevant if Nonlinear solver scheme is set to a Newton type "
+    	                       "of solver.");
+
+    	    prm.declare_entry ("Max pre-Newton nonlinear iterations", "10",
+    	                       Patterns::Integer (0),
+    	                       "The minimum number of Piccard nonlinear iterations to be performed, "
+    	                       "before switching to Newton iterations. This is only used in the case "
+    	                       "That the Nonlinear solver scheme is set to a Newton type of solver.");
+
+    	    prm.declare_entry ("Max Newton line search iterations", "5",
+    	                       Patterns::Integer (0),
+    	                       "The minimum number of Piccard nonlinear iterations to be performed, "
+    	                       "before switching to Newton iterations. This is only used in the case "
+    	                       "That the Nonlinear solver scheme is set to a Newton type of solver.");
+		}
+    	prm.leave_subsection ();
+    }
+    prm.leave_subsection ();
 
     prm.enter_subsection("Formulation");
     {
@@ -963,13 +970,22 @@ namespace aspect
     else
       AssertThrow (false, ExcNotImplemented());
 
+    prm.enter_subsection ("Solver parameters");
+    {
+    	prm.enter_subsection ("Newton solver parameters");
+		{
+    		nonlinear_switch_tolerance = prm.get_double("Nonlinear Newton solver switch tolerance");
+       		max_pre_newton_nonlinear_iterations = prm.get_integer ("Max pre-Newton nonlinear iterations");
+       		max_newton_line_search_iterations = prm.get_integer ("Max Newton line search iterations");
+		}
+    	prm.leave_subsection ();
+    }
+    prm.leave_subsection ();
+
     nonlinear_tolerance = prm.get_double("Nonlinear solver tolerance");
-    nonlinear_switch_tolerance = prm.get_double("Nonlinear Newton solver switch tolerance");
 
     max_nonlinear_iterations = prm.get_integer ("Max nonlinear iterations");
     max_nonlinear_iterations_in_prerefinement = prm.get_integer ("Max nonlinear iterations in pre-refinement");
-    max_pre_newton_nonlinear_iterations = prm.get_integer ("Max pre-Newton nonlinear iterations");
-    max_newton_line_search_iterations = prm.get_integer ("Max Newton line search iterations");
 
     start_time              = prm.get_double ("Start time");
     if (convert_to_years == true)

@@ -104,7 +104,7 @@ namespace aspect
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
           std::vector<double>                  div_phi_u;
           std::vector<Tensor<1,dim> >          velocity_values;
-          std::vector<double>                  velocity_divergence;
+          std::vector<double>                  velocity_divergences;
 
           /**
            * Material model inputs and outputs computed at the current
@@ -818,7 +818,7 @@ namespace aspect
 
         /**
          * This function assembles the term that arises in the viscosity term of Newton Stokes matrix for
-         * compressible models, because the divergence of the velocity is not longer zero.
+         * compressible models, because the divergence of the velocity is no longer zero.
          */
         void
         compressible_strain_rate_viscosity_term (const double                                     pressure_scaling,
@@ -869,7 +869,7 @@ namespace aspect
                                      const Parameters<dim> &parameters) const;
 
         /**
-         * Attach melt outputs.
+         * Attach derivatives outputs.
          */
         virtual
         void
