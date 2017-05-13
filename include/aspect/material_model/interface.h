@@ -672,6 +672,21 @@ namespace aspect
         std::vector<double> vp;
     };
 
+    template <int dim>
+    class ReactionRateOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        ReactionRateOutputs (const unsigned int n_points,
+                             const unsigned int n_comp);
+
+        virtual const std::vector<double> &get_nth_output(const unsigned int idx) const;
+
+      /**
+       * Reaction rates.
+       */
+        std::vector<std::vector<double> > reaction_rates;
+    };
+
 
     /**
      * A class for additional output fields to be added to the RHS of the

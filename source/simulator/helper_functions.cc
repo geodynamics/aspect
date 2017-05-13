@@ -1484,6 +1484,114 @@ namespace aspect
 
 
   template <int dim>
+  void Simulator<dim>::compute_reactions ()
+  {
+    if(time_step == 0)
+      return;
+
+    LinearAlgebra::BlockVector distributed_vector (introspection.index_sets.system_partitioning,
+                                                   mpi_communicator);
+
+    const int number_of_reaction_steps = parameters.reaction_time_step < time_step
+                                         ?
+                                         (int) (time_step / parameters.reaction_time_step)
+                                         :
+                                         1;
+    const double reaction_time_step_size = time_step / ((double) number_of_reaction_steps);
+
+
+    pcout << "   Solving composition reactions in "
+          << number_of_reaction_steps
+          << " substep(s)."
+          << std::endl;
+
+    const Quadrature<dim> quadrature(dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).get_unit_support_points());
+    std::vector<std::vector<double> > composition_values (introspection.n_compositional_fields,std::vector<double> (quadrature.size()));
+
+    FEValues<dim> fe_values (*mapping,
+                             dof_handler.get_fe(),
+                             quadrature,
+                             update_quadrature_points | update_values | update_gradients);
+
+    std::vector<types::global_dof_index> local_dof_indices (dof_handler.get_fe().dofs_per_cell);
+    MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), introspection.n_compositional_fields);
+    MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), introspection.n_compositional_fields);
+
+    // add reaction rate outputs
+    out.additional_outputs.push_back(
+      std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+      (new MaterialModel::ReactionRateOutputs<dim> (quadrature.size(),introspection.n_compositional_fields)));
+
+    typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
+                                                   endc = dof_handler.end();
+    for (; cell!=endc; ++cell)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          cell->get_dof_indices (local_dof_indices);
+
+          // get the various components of the solution, then
+          // evaluate the material properties there
+          fe_values[introspection.extractors.temperature].get_function_values (solution, in.temperature);
+          fe_values[introspection.extractors.pressure].get_function_values (solution, in.pressure);
+          fe_values[introspection.extractors.velocities].get_function_values (solution, in.velocity);
+          fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (solution, in.strain_rate);
+          fe_values[introspection.extractors.pressure].get_function_gradients (solution, in.pressure_gradient);
+
+          in.position = fe_values.get_quadrature_points();
+          in.cell = &cell;
+
+          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+            fe_values[introspection.extractors.compositional_fields[c]].get_function_values(solution,
+                                                                                            composition_values[c]);
+          for (unsigned int q=0; q<quadrature.size(); ++q)
+            {
+              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+                in.composition[q][c] = composition_values[c][q];
+            }
+
+          // make the reaction time steps: we have to update the values of compositional fields
+          for (unsigned int i=0; i<number_of_reaction_steps; ++i)
+            {
+              material_model->evaluate(in, out);
+
+              MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs
+                = out.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
+
+              for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).dofs_per_cell; ++j)
+                for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+                  {
+                    // simple forward euler
+                    in.composition[j][c] = in.composition[j][c]
+                                           + reaction_time_step_size * reaction_rate_outputs->reaction_rates[c][j];
+                  }
+            }
+
+          for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).dofs_per_cell; ++j)
+            for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+              {
+                const unsigned int composition_idx
+                  = dof_handler.get_fe().component_to_system_index(introspection.component_indices.compositional_fields[c],
+                                                             /*dof index within component=*/ j);
+
+                // skip entries that are not locally owned:
+                if (!dof_handler.locally_owned_dofs().is_element(local_dof_indices[composition_idx]))
+                  continue;
+
+                distributed_vector(local_dof_indices[composition_idx]) = in.composition[j][c];
+              }
+        }
+
+    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+      {
+        const unsigned int block_c = introspection.block_indices.compositional_fields[c];
+        distributed_vector.block(block_c).compress(VectorOperation::insert);
+        solution.block(block_c) = distributed_vector.block(block_c);
+      }
+  }
+
+
+  template <int dim>
   void
   Simulator<dim>::check_consistency_of_formulation()
   {
@@ -1598,6 +1706,7 @@ namespace aspect
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
+  template void Simulator<dim>::compute_reactions(); \
   template void Simulator<dim>::check_consistency_of_formulation();
 
   ASPECT_INSTANTIATE(INSTANTIATE)

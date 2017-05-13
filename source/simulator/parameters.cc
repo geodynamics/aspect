@@ -142,6 +142,14 @@ namespace aspect
                        "Units: Years or seconds, depending on the ``Use years "
                        "in output instead of seconds'' parameter.");
 
+    prm.declare_entry ("Reaction time step", "1000.0",
+                       Patterns::Double (0),
+                       "Set a time step size reactions of compositional fields and the "
+                       "temperature field in case operator splitting is used. This is only used "
+                       "when the nonlinear solver scheme ``operator splitting'' is used. "
+                       "Units: Years or seconds, depending on the ``Use years "
+                       "in output instead of seconds'' parameter.");
+
     prm.declare_entry ("Use conduction timestep", "false",
                        Patterns::Bool (),
                        "Mantle convection simulations are often focused on convection "
@@ -151,7 +159,7 @@ namespace aspect
                        "heat conduction in determining the length of each time step.");
 
     prm.declare_entry ("Nonlinear solver scheme", "IMPES",
-                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes|Stokes only|Advection only"),
+                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes|Stokes only|Advection only|Operator splitting"),
                        "The kind of scheme used to resolve the nonlinearity in the system. "
                        "'IMPES' is the classical IMplicit Pressure Explicit Saturation scheme "
                        "in which ones solves the temperatures and Stokes equations exactly "
@@ -999,6 +1007,10 @@ namespace aspect
     maximum_time_step       = prm.get_double("Maximum time step");
     if (convert_to_years == true)
       maximum_time_step *= year_in_seconds;
+
+    reaction_time_step       = prm.get_double("Reaction time step");
+    if (convert_to_years == true)
+      reaction_time_step *= year_in_seconds;
 
     if (prm.get ("Nonlinear solver scheme") == "IMPES")
       nonlinear_solver = NonlinearSolver::IMPES;

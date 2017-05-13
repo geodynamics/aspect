@@ -924,6 +924,16 @@ namespace aspect
        */
       void apply_limiter_to_dg_solutions (const AdvectionField &advection_field);
 
+
+      /**
+       * Compute the reactions in case of operator splitting.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void compute_reactions ();
+
+
       /**
        * Interpolate the given function onto the velocity FE space and write
        * it into the given vector.

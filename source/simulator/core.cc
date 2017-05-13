@@ -2220,6 +2220,7 @@ namespace aspect
           if (parameters.free_surface_enabled)
             free_surface->execute ();
 
+          // first, we solve the advection equations for temperature and compositional fields
           assemble_advection_system (AdvectionField::temperature());
           solve_advection(AdvectionField::temperature());
 
@@ -2249,6 +2250,9 @@ namespace aspect
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             current_linearization_point.block(introspection.block_indices.compositional_fields[c])
               = solution.block(introspection.block_indices.compositional_fields[c]);
+
+          // then we compute the reaction of compositional fields and temperature
+          compute_reactions ();
 
           // the Stokes matrix depends on the viscosity. if the viscosity
           // depends on other solution variables, then after we need to

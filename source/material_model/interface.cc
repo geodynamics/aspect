@@ -758,6 +758,38 @@ namespace aspect
       return vs;
     }
 
+
+
+    namespace
+    {
+      std::vector<std::string> make_reaction_additional_outputs_names(const unsigned int n_comp)
+      {
+        std::vector<std::string> names;
+        for (unsigned int c=0; c<n_comp; ++c)
+          names.push_back("reaction_rate_C" + Utilities::int_to_string(c));
+
+        return names;
+      }
+    }
+
+
+
+    template<int dim>
+    ReactionRateOutputs<dim>::ReactionRateOutputs (const unsigned int n_points,
+                                                   const unsigned int n_comp)
+    :
+    NamedAdditionalMaterialOutputs<dim>(make_reaction_additional_outputs_names(n_comp)),
+    reaction_rates(n_comp, std::vector<double>(n_points, numbers::signaling_nan<double>()))
+    {}
+
+
+
+    template<int dim>
+    const std::vector<double> &
+    ReactionRateOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      return reaction_rates[idx];
+    }
   }
 }
 
@@ -819,6 +851,8 @@ namespace aspect
   template class NamedAdditionalMaterialOutputs<dim>; \
   \
   template class SeismicAdditionalOutputs<dim>; \
+  \
+  template class ReactionRateOutputs<dim>; \
   \
   namespace MaterialAveraging \
   { \
