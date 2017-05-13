@@ -204,7 +204,7 @@ namespace aspect
       const std::vector<double> a_lm = spherical_harmonics_lookup->cos_coeffs();
       const std::vector<double> b_lm = spherical_harmonics_lookup->sin_coeffs();
 
-      // get spline knots and rescale them from [-1 1] to [CMB moho]
+      // get spline knots and rescale them from [-1 1] to [CMB Moho]
       const std::vector<double> r = spline_depths_lookup->spline_depths();
       const double rmoho = 6346e3;
       const double rcmb = 3480e3;
@@ -260,7 +260,7 @@ namespace aspect
         spline_values_inv[i] = spline_values[num_spline_knots-1 - i];
 
       // The boundary condition for the cubic spline interpolation is that the function is linear
-      // at the boundary (i.e. moho and CMB). Values outside the range are linearly
+      // at the boundary (i.e. Moho and CMB). Values outside the range are linearly
       // extrapolated.
       aspect::Utilities::tk::spline s;
       s.set_points(depth_values,spline_values_inv);
@@ -327,7 +327,7 @@ namespace aspect
                              Patterns::Double (),
                              "This will set the heterogeneity prescribed by S20RTS or S40RTS to zero "
                              "down to the specified depth (in meters). Note that your resolution has "
-                             "to be adquate to capture this cutoff. For example if you specify a depth "
+                             "to be adequate to capture this cutoff. For example if you specify a depth "
                              "of 660km, but your closest spherical depth layers are only at 500km and "
                              "750km (due to a coarse resolution) it will only zero out heterogeneities "
                              "down to 500km. Similar caution has to be taken when using adaptive meshing.");

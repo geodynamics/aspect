@@ -33,7 +33,7 @@
 
 /**
  * This geometry model implements an (3d) ellipsoidal_chunk geometry which can be non-coordinate parallel.
- * @author This plugin is a joined effort of Menno Fraters, D Sarah Stamps and Wolfgang Bangerth
+ * @author This plugin is a joint effort of Menno Fraters, D Sarah Stamps and Wolfgang Bangerth
  */
 
 namespace aspect
@@ -157,7 +157,7 @@ namespace aspect
      * TODO: These functions (pull back and push forward) should be changed that they always
      * take an return 3D points, because 2D points make no sense for an ellipsoid, even with
      * a 2D triangulation. To do this correctly we need to add the spacedim to the triangulation
-     * in ASPECT. What is now presented is just a temporary fix to get acces to the pull back
+     * in ASPECT. What is now presented is just a temporary fix to get access to the pull back
      * function from outside. The push forward function can't be fixed in this way, because
      * it is used by a bind statement.
      */
@@ -509,11 +509,11 @@ namespace aspect
 
               if (present[0] == true && present[2] == true)
                 AssertThrow (corners[0][0] > corners[2][0] && corners[0][1] > corners[2][1],
-                             ExcMessage ("The North-East corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ":"  + boost::lexical_cast<std::string>(corners[0][1]) + ") must be stricly North and East of the South-West corner (" + boost::lexical_cast<std::string>(corners[2][0]) + ":"  + boost::lexical_cast<std::string>(corners[2][1]) + ") when only two points are given."));
+                             ExcMessage ("The North-East corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ":"  + boost::lexical_cast<std::string>(corners[0][1]) + ") must be strictly North and East of the South-West corner (" + boost::lexical_cast<std::string>(corners[2][0]) + ":"  + boost::lexical_cast<std::string>(corners[2][1]) + ") when only two points are given."));
 
               if (present[1] == true && present[3] == true)
                 AssertThrow (corners[1][0] < corners[3][0] && corners[1][1] > corners[3][1],
-                             ExcMessage ("The North-West corner (" + boost::lexical_cast<std::string>(corners[1][0]) + ":"  + boost::lexical_cast<std::string>(corners[1][1]) + ") must be stricly North and West of the South-East corner (" + boost::lexical_cast<std::string>(corners[3][0]) + ":"  + boost::lexical_cast<std::string>(corners[3][1]) + ") when only two points are given."));
+                             ExcMessage ("The North-West corner (" + boost::lexical_cast<std::string>(corners[1][0]) + ":"  + boost::lexical_cast<std::string>(corners[1][1]) + ") must be strictly North and West of the South-East corner (" + boost::lexical_cast<std::string>(corners[3][0]) + ":"  + boost::lexical_cast<std::string>(corners[3][1]) + ") when only two points are given."));
             }
 
 

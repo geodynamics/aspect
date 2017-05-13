@@ -61,7 +61,7 @@ namespace aspect
           if (dim==2)
             {
               // Use a sine as lateral perturbation that is scaled to the opening angle of the geometry.
-              // This way the perturbation is alway 0 at the model boundaries.
+              // This way the perturbation is always 0 at the model boundaries.
               const double opening_angle = spherical_geometry_model->opening_angle()*numbers::PI/180.0;
               lateral_perturbation = std::sin(lateral_wave_number_1*scoord[1]*numbers::PI/opening_angle);
             }
@@ -93,7 +93,7 @@ namespace aspect
           const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
           // Use a sine as lateral perturbation that is scaled to the opening angle of the geometry.
-          // This way the perturbation is alway 0 at the model boundaries.
+          // This way the perturbation is always 0 at the model boundaries.
           const double opening_angle = chunk_geometry_model->longitude_range(); // in radians
           const double start_angle = chunk_geometry_model->west_longitude(); // in radians
           lateral_perturbation = std::sin((lateral_wave_number_1*(scoord[1]-start_angle))*numbers::PI/opening_angle);
@@ -104,7 +104,7 @@ namespace aspect
         {
           // In case of Box model use a sine as lateral perturbation
           // that is scaled to the extent of the geometry.
-          // This way the perturbation is alway 0 at the model borders.
+          // This way the perturbation is always 0 at the model borders.
           const Point<dim> extent = box_geometry_model->get_extents();
 
           if (dim==2)

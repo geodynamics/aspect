@@ -289,7 +289,7 @@ namespace aspect
                     const double distance = position[i].distance(position[j])/max_distance;
                     double weight = alfad * ((1 + 3 * (distance / bell_shape_limit)) * (1 - (distance / bell_shape_limit)) * (1 - (distance / bell_shape_limit)) * (1 - (distance / bell_shape_limit)));
 
-                    // the weigth beyond the bell shape limit should always be zero.
+                    // the weight beyond the bell shape limit should always be zero.
                     if (distance > bell_shape_limit )
                       weight = 0;
 

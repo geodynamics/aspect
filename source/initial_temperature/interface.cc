@@ -189,7 +189,7 @@ namespace aspect
                           "A comma separated list of initial temperature models that "
                           "will be used to initialize the temperature. "
                           "The results of each of these models will be added.\n\n"
-                          "The following initial tempeature models are available:\n\n"
+                          "The following initial temperature models are available:\n\n"
                           +
                           std_cxx11::get<dim>(registered_plugins).get_description_string());
 

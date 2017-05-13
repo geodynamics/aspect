@@ -329,7 +329,7 @@ namespace aspect
                                    " is a reference strain rate; $n_v$, and $n_p$ are stress exponents; $E_a$"
                                    " is the activation energy; $V_a$ is the activation volume; $\\rho_m$ is the"
                                    " mantle density; $R$ is the gas constant; $T$ is temperature; $\\tau_0$ is"
-                                   " the cohestive strength of rocks at the surface; $\\gamma$ is a coefficient"
+                                   " the cohesive strength of rocks at the surface; $\\gamma$ is a coefficient"
                                    " of yield stress increase with depth; and $z$ is depth."
                                    " \n\n"
                                    " Note: (Morency and Doin, 2004) defines the second invariant of the strain"
