@@ -1,0 +1,15 @@
+Changed: ASPECT's seismic anomalies post-processor produced spurious
+anomalies as a result of laterally averaging velocities in depth slices,
+and then smoothing slices. The new post-processor provides two options,
+given by the Average velocity scheme variable. The option
+reference profile provides a percentage anomaly relative to the
+Vp and Vs calculated by evaluating the material model at the P-T
+conditions given by adiabatic conditions. The lateral average provides
+an anomaly relative to the laterally averaged velocity in the model at
+that depth. This velocity is calculated by linear interpolation between
+volumetric averages calculated within depth slices. The number of depth
+slices in the domain is user-defined. This second option may give
+odd results if there is a jump in seismic velocity not aligned with
+the depth slices, so in general, the first option is preferred.
+<br>
+(Bob Myhill, 2017/05/12)
