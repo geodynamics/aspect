@@ -12,8 +12,6 @@
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/vector_tools.h>
 
-
-
 namespace aspect
 {
   /**
@@ -119,7 +117,7 @@ namespace aspect
          */
         virtual
         Tensor<1,dim>
-        boundary_velocity (const types::boundary_id ,
+        boundary_velocity (const types::boundary_id boundary_indicator,
                            const Point<dim> &position) const;
 
       private:
@@ -166,46 +164,49 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class BursteddeMaterial : public MaterialModel::InterfaceCompatibility<dim>
+    class BursteddeMaterial : public MaterialModel::Interface<dim>
     {
       public:
-        /**
-         * @name Physical parameters used in the basic equations
-         * @{
-         */
-        virtual double viscosity (const double                  temperature,
-                                  const double                  pressure,
-                                  const std::vector<double>    &compositional_fields,
-                                  const SymmetricTensor<2,dim> &strain_rate,
-                                  const Point<dim>             &position) const;
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        {
+          for (unsigned int i=0; i < in.position.size(); ++i)
+            {
+              const Point<dim> &p = in.position[i];
 
-        virtual double density (const double temperature,
-                                const double pressure,
-                                const std::vector<double> &compositional_fields,
-                                const Point<dim> &position) const;
+              const double x=p[0];
+              const double y=p[1];
+              const double z=p[2];
+              const double mu=exp(1. - beta * (x*(1.-x)+y*(1.-y) + z*(1.-z)));
 
-        virtual double compressibility (const double temperature,
-                                        const double pressure,
-                                        const std::vector<double> &compositional_fields,
-                                        const Point<dim> &position) const;
+              out.viscosities[i] = mu;
+              out.thermal_conductivities[i] = 0.0;
+              out.densities[i] = 1.0;
 
-        virtual double specific_heat (const double temperature,
-                                      const double pressure,
-                                      const std::vector<double> &compositional_fields,
-                                      const Point<dim> &position) const;
+              out.thermal_expansion_coefficients[i] = 0.0;
+              out.compressibilities[i] = 0.0;
 
-        virtual double thermal_expansion_coefficient (const double      temperature,
-                                                      const double      pressure,
-                                                      const std::vector<double> &compositional_fields,
-                                                      const Point<dim> &position) const;
+              out.specific_heat[i] = 0.0;
 
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const std::vector<double> &compositional_fields,
-                                             const Point<dim> &position) const;
-        /**
-         * @}
-         */
+              // Pressure derivative of entropy at the given positions.
+              out.entropy_derivative_pressure[i] = 0.0;
+              // Temperature derivative of entropy at the given positions.
+              out.entropy_derivative_temperature[i] = 0.0;
+              // Change in composition due to chemical reactions at the
+              // given positions. The term reaction_terms[i][c] is the
+              // change in compositional field c at point i.
+              for (unsigned int c=0; c<in.composition[i].size(); ++c)
+                out.reaction_terms[i][c] = 0.0;
+
+            }
+
+        }
+
+
+
+
+
+
 
         /**
          * @name Qualitative properties one can ask a material model
@@ -217,7 +218,7 @@ namespace aspect
          * Incompressibility does not necessarily imply that the density is
          * constant; rather, it may still depend on temperature or pressure.
          * In the current context, compressibility means whether we should
-         * solve the contuity equation as $\nabla \cdot (\rho \mathbf u)=0$
+         * solve the continuity equation as $\nabla \cdot (\rho \mathbf u)=0$
          * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
          * (incompressible Stokes).
          */
@@ -239,8 +240,6 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
-
-
         /**
          * @name Reference quantities
          * @{
@@ -260,18 +259,6 @@ namespace aspect
         double beta;
     };
 
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    viscosity (const double,
-               const double,
-               const std::vector<double> &,       /*composition*/
-               const SymmetricTensor<2,dim> &,
-               const Point<dim> &p) const
-    {
-      const double mu = exp(1. - beta * (p(0)*(1.-p(0))+p(1)*(1.-p(1)) + p(2)*(1.-p(2))));
-      return mu;
-    }
 
 
     template <int dim>
@@ -282,65 +269,6 @@ namespace aspect
       return 1.;
     }
 
-
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    specific_heat (const double,
-                   const double,
-                   const std::vector<double> &, /*composition*/
-                   const Point<dim> &) const
-    {
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    thermal_conductivity (const double,
-                          const double,
-                          const std::vector<double> &, /*composition*/
-                          const Point<dim> &) const
-    {
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    density (const double,
-             const double,
-             const std::vector<double> &, /*composition*/
-             const Point<dim> &p) const
-    {
-      return 1;
-    }
-
-
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    thermal_expansion_coefficient (const double temperature,
-                                   const double,
-                                   const std::vector<double> &, /*composition*/
-                                   const Point<dim> &) const
-    {
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    compressibility (const double,
-                     const double,
-                     const std::vector<double> &, /*composition*/
-                     const Point<dim> &) const
-    {
-      return 0.0;
-    }
 
 
     template <int dim>
@@ -546,10 +474,10 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_p);
 
-      const double u_l1 =  Utilities::MPI::sum(cellwise_errors_u.l1_norm(),this->get_mpi_communicator());
-      const double p_l1 =  Utilities::MPI::sum(cellwise_errors_p.l1_norm(),this->get_mpi_communicator());
-      const double u_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),this->get_mpi_communicator()));
-      const double p_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),this->get_mpi_communicator()));
+      const double u_l1 = Utilities::MPI::sum(cellwise_errors_u.l1_norm(),this->get_mpi_communicator());
+      const double p_l1 = Utilities::MPI::sum(cellwise_errors_p.l1_norm(),this->get_mpi_communicator());
+      const double u_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),this->get_mpi_communicator()));
+      const double p_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),this->get_mpi_communicator()));
 
       std::ostringstream os;
 
