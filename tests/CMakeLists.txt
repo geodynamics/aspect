@@ -319,9 +319,7 @@ FOREACH(_test ${_tests})
       # the normalized output file:
       SET(_run_file ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.notime)
 
-      # Note that ${_run_file} is not created by a rule directly, so we should
-      # not depend on it (ninja needs generated files to be
-      # specified). Instead, just depend on the screen output directly
+      # generate .diff file:
       ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.diff
 	COMMAND
 	    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/diff_test.sh 
@@ -330,7 +328,7 @@ FOREACH(_test ${_tests})
 		${CMAKE_CURRENT_SOURCE_DIR}
 		${CMAKE_CURRENT_BINARY_DIR}
 	DEPENDS ${_ref_file}
-		${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output)
+		${_run_file})
 
       # Add the target for this output file to the dependencies of this
       # test. Note that a target may not contain "/" but outputs can be
