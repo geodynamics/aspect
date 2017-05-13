@@ -1,19 +1,20 @@
 
 ############### Global parameters
 
-set Dimension                              = 2
-set Start time                             = 0
-set End time                               = 1e6
-set Use years in output instead of seconds = true
-set Linear solver tolerance                = 1e-9
-set Nonlinear solver scheme                = iterated Stokes
-set Nonlinear solver tolerance             = 1e-8
-set Max nonlinear iterations               = 100
-set Number of cheap Stokes solver steps    = 0
-set CFL number                             = 0.5
-set Output directory                       = output-crustal_model_2D
-set Timing output frequency                = 1
-set Pressure normalization                 = no
+set Dimension                                       = 2
+set Start time                                      = 0
+set End time                                        = 1e6
+set Use years in output instead of seconds          = true
+set Linear solver tolerance                         = 1e-9
+set Nonlinear solver scheme                         = iterated Stokes
+set Nonlinear solver tolerance                      = 1e-8
+set Max nonlinear iterations                        = 100
+set Number of cheap Stokes solver steps             = 0
+set Maximum number of expensive Stokes solver steps = 5000
+set CFL number                                      = 0.5
+set Output directory                                = output-crustal_model_2D
+set Timing output frequency                         = 1
+set Pressure normalization                          = no
 
 ############### Parameters describing the model
 
