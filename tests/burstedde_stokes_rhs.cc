@@ -265,21 +265,11 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
-
-
         /**
          * @name Reference quantities
          * @{
          */
         virtual double reference_viscosity () const;
-
-        virtual double reference_density () const;
-
-        virtual double reference_thermal_expansion_coefficient () const;
-
-        double reference_thermal_diffusivity () const;
-
-        double reference_cp () const;
         /**
          * @}
          */
@@ -304,38 +294,7 @@ namespace aspect
       return 1.;
     }
 
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    reference_density () const
-    {
-      return 1.;
-    }
 
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    reference_thermal_expansion_coefficient () const
-    {
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    reference_cp () const
-    {
-      return 0;
-    }
-
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    reference_thermal_diffusivity () const
-    {
-      return 0;
-    }
 
     template <int dim>
     bool
@@ -426,7 +385,7 @@ namespace aspect
         ref_func.reset (new AnalyticSolutions::FunctionBurstedde<dim>(material_model->get_beta()));
       }
 
-      const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities +2);
+      const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);
 
       Vector<float> cellwise_errors_u (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
@@ -466,13 +425,12 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_p);
 
-      const double u_l1 = Utilities::MPI::sum(cellwise_errors_u.l1_norm(),MPI_COMM_WORLD);
-      const double p_l1 = Utilities::MPI::sum(cellwise_errors_p.l1_norm(),MPI_COMM_WORLD);
-      const double u_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),MPI_COMM_WORLD));
-      const double p_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),MPI_COMM_WORLD));
+      const double u_l1 = Utilities::MPI::sum(cellwise_errors_u.l1_norm(),this->get_mpi_communicator());
+      const double p_l1 = Utilities::MPI::sum(cellwise_errors_p.l1_norm(),this->get_mpi_communicator());
+      const double u_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),this->get_mpi_communicator()));
+      const double p_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),this->get_mpi_communicator()));
 
       std::ostringstream os;
-
 
       os << std::scientific <<  u_l1
          << ", " << p_l1
