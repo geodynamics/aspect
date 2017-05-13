@@ -463,7 +463,7 @@ namespace aspect
                                    "indicators 0 through 5 indicate left, right, front, back, bottom "
                                    "and top boundaries (see also the documentation of the deal.II class "
                                    "``GeometryInfo''), while indicators 6, 7, 8 and 9 denote the left, "
-                                   "rigth, front and back upper parts of the vertical boundaries, respectively. "
+                                   "right, front and back upper parts of the vertical boundaries, respectively. "
                                    "You can also use symbolic names ``left'', ``right'', "
                                    "``left lithosphere'', etc., to refer to these boundaries in input files."
                                    "\n\n"

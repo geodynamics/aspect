@@ -196,7 +196,7 @@ namespace aspect
           // Convert friction angle from degrees to radians
           double phi = angles_internal_friction[j] * numbers::PI/180.0;
 
-          // Assing cohesions to a new variable
+          // Passing cohesions to a new variable
           double coh = cohesions[j];
 
           // Strain weakening
@@ -214,7 +214,7 @@ namespace aspect
 
             }
 
-          // Calculate drucker prager yield strength (i.e. yield stress)
+          // Calculate Drucker Prager yield strength (i.e. yield stress)
           double yield_strength = ( (dim==3)
                                     ?
                                     ( 6.0 * coh * std::cos(phi) + 2.0 * std::max(pressure,0.0) * std::sin(phi) )
@@ -239,7 +239,7 @@ namespace aspect
           viscosity_limiter = yield_strength / (2.0 * ref_strain_rate) *
                               std::pow((edot_ii/ref_strain_rate), 1./exponents_stress_limiter[j] - 1.0);
 
-          // Select if yield viscosity is based on drucker prager or stress limiter rheology
+          // Select if yield viscosity is based on Drucker Prager or stress limiter rheology
           double viscosity_yield;
           switch (yield_type)
             {
@@ -732,7 +732,7 @@ namespace aspect
                                    "$V$ is activation volume, $P$ is pressure, $R$ is the gas "
                                    "exponent and $T$ is temperature. "
                                    "This form of the viscosity equation is commonly used in "
-                                   "geodnynamic simulations.  See, for example, Billen and Hirth "
+                                   "geodynamic simulations.  See, for example, Billen and Hirth "
                                    "(2007), G3, 8, Q08012."
                                    "\n\n "
                                    "One may select to use the diffusion ($v_{diff}$; $n=1$, $m!=0$), "
@@ -749,7 +749,7 @@ namespace aspect
                                    "$\\sigma_y = C\\cos(\\phi) + P\\sin(\\phi)$ "
                                    "in 2D. Above, $C$ is cohesion and $\\phi$  is the angle of "
                                    "internal friction.  Note that the 2D form is equivalent to the "
-                                   "Mohr Coloumb yield surface.  If $\\phi$ is 0, the yield stress "
+                                   "Mohr Coulomb yield surface.  If $\\phi$ is 0, the yield stress "
                                    "is fixed and equal to the cohesion (Von Mises yield criterion). "
                                    "When the viscous stress ($2v{\\varepsilon}_{ii}$) "
                                    "the yield stress, the viscosity is rescaled back to the yield "

@@ -390,7 +390,7 @@ namespace aspect
           prm.declare_entry ("Phase transition widths", "",
                              Patterns::List (Patterns::Double(0)),
                              "A list of widths for each phase transition, in terms of depth. The phase functions "
-                             "are scaled with these values, leading to a jump betwen phases "
+                             "are scaled with these values, leading to a jump between phases "
                              "for a value of zero and a gradual transition for larger values. "
                              "List must have the same number of entries as Phase transition depths. "
                              "Units: $m$.");
@@ -403,7 +403,7 @@ namespace aspect
           prm.declare_entry ("Phase transition pressure widths", "",
                              Patterns::List (Patterns::Double(0)),
                              "A list of widths for each phase transition, in terms of pressure. The phase functions "
-                             "are scaled with these values, leading to a jump betwen phases "
+                             "are scaled with these values, leading to a jump between phases "
                              "for a value of zero and a gradual transition for larger values. "
                              "List must have the same number of entries as Phase transition pressures. "
                              "Define transition by depth instead of pressure must be set to false"
@@ -419,7 +419,7 @@ namespace aspect
           prm.declare_entry ("Phase transition temperatures", "",
                              Patterns::List (Patterns::Double(0)),
                              "A list of temperatures where phase transitions occur. Higher or lower "
-                             "temperatures lead to phase transition ocurring in smaller or greater "
+                             "temperatures lead to phase transition occurring in smaller or greater "
                              "depths than given in Phase transition depths, depending on the "
                              "Clapeyron slope given in Phase transition Clapeyron slopes. "
                              "List must have the same number of entries as Phase transition depths. "

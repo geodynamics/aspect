@@ -98,7 +98,7 @@ namespace aspect
     DepthDependent<dim>::calculate_depth_dependent_prefactor(const double &depth) const
     {
       /* The depth dependent prefactor is the multiplicative factor by which the
-       * viscosity computed by the base model's evaluate mathod will be scaled */
+       * viscosity computed by the base model's evaluate method will be scaled */
       const double reference_viscosity = base_model->reference_viscosity();
       if ( viscosity_source == File )
         {

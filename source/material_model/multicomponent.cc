@@ -234,7 +234,7 @@ namespace aspect
     Multicomponent<dim>::parse_parameters (ParameterHandler &prm)
     {
       //not pretty, but we need to get the number of compositional fields before
-      //simulatoraccess has been initialized here...
+      //simulator access has been initialized here...
       unsigned int n_foreground_fields;
       prm.enter_subsection ("Compositional fields");
       {
@@ -304,7 +304,7 @@ namespace aspect
                                    "This model is for use with an arbitrary number of compositional fields, where each field"
                                    " represents a rock type which can have completely different properties from the others."
                                    " However, each rock type itself has constant material properties.  The value of the "
-                                   " compositional field is interpreed as a volume fraction. If the sum of the fields is"
+                                   " compositional field is interpreted as a volume fraction. If the sum of the fields is"
                                    " greater than one, they are renormalized.  If it is less than one, material properties "
                                    " for ``background mantle'' make up the rest. When more than one field is present, the"
                                    " material properties are averaged arithmetically.  An exception is the viscosity,"

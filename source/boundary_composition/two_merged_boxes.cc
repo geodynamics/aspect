@@ -174,7 +174,7 @@ namespace aspect
         AssertThrow (composition_values[f].size() == this->n_compositional_fields(),
                      ExcMessage (std::string("The specification of boundary composition values for the 'box with "
                                              "lithosphere boundary indicators' model "
-                                             "requires as many values for each boundary indicatof the box as there "
+                                             "requires as many values for each boundary indicator the box as there "
                                              "are compositional "
                                              "fields. However, for boundary indicator ")
                                  +

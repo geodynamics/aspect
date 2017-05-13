@@ -73,7 +73,7 @@ namespace aspect
                     p*=1.e3;                    // km to meters
                   else if (P_Unit!="m")
                     AssertThrow(false,ExcMessage ("Unit of the second column of melting curve data "
-                                                  "has to be one of the following: Pa/Gpa/km/m."))
+                                                  "has to be one of the following: Pa/GPa/km/m."))
                   }
               T_array.push_back(T);
               P_or_R_array.push_back(p);
@@ -141,7 +141,7 @@ namespace aspect
       if (dim==2)
         {
           // Use a sine as lateral perturbation that is scaled to the opening angle of the geometry.
-          // This way the perturbation is alway 0 at the model boundaries.
+          // This way the perturbation is always 0 at the model boundaries.
           const double opening_angle = spherical_geometry_model->opening_angle()*numbers::PI/180.0;
           lateral_perturbation = std::sin(lateral_wave_number_1*scoord[1]*numbers::PI/opening_angle);
         }
@@ -311,6 +311,6 @@ namespace aspect
                                               "of early Mars after the freezing of the magma ocean, "
                                               "using the solidus from Parmentier et al., "
                                               "Melt-solid segregation, Fractional magma ocean solidification, and implications for "
-                                              "longterm planetary evolution. Luna and Planetary Science, 2007.")
+                                              "long term planetary evolution. Luna and Planetary Science, 2007.")
   }
 }

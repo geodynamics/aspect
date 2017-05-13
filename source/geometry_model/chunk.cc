@@ -79,7 +79,7 @@ namespace aspect
           {
             output_vertex[1] = std::atan2(v[1], v[0]);
             output_vertex[0] = v.norm();
-            // We must garantee that all returned points have a longitude coordinate
+            // We must guarantee that all returned points have a longitude coordinate
             // value that is larger than (or equal to) the longitude of point1.
             // For example:
             // If the domain runs from longitude -10 to 200 degrees,

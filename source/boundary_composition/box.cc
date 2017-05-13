@@ -86,12 +86,12 @@ namespace aspect
               prm.declare_entry ("Front composition", "",
                                  Patterns::List(Patterns::Double ()),
                                  "A comma separated list of composition boundary values "
-                                 "at the front boundary (at momimal y-value). This list must have as many "
+                                 "at the front boundary (at minimum y-value). This list must have as many "
                                  "entries as there are compositional fields. Units: none.");
               prm.declare_entry ("Back composition", "",
                                  Patterns::List(Patterns::Double ()),
                                  "A comma separated list of composition boundary values "
-                                 "at the back boundary (at maximal y-value). This list must have as many "
+                                 "at the back boundary (at maximum y-value). This list must have as many "
                                  "entries as there are compositional fields. Units: none.");
             }
         }
