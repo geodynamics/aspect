@@ -109,7 +109,3 @@ subsection Postprocess
   end
 
 end
-
-subsection Heating model
-  set List of model names = adiabatic heating
-end
