@@ -1,0 +1,23 @@
+
+Number of active cells: 12,288 (on 6 levels)
+Number of degrees of freedom: 162,432 (99,840+12,672+49,920)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 78+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-shell_with_variable_coordinate_systems/solution/solution-00000
+     RMS, max velocity:                  2.81e-08 m/year, 6.42e-08 m/year
+     Temperature min/avg/max:            0 K, 1790 K, 3729 K
+     Heat fluxes through boundary parts: 7.772e+06 W, 6.003e+05 W
+     Writing depth average:              output-shell_with_variable_coordinate_systems/depth_average.gnuplot
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
