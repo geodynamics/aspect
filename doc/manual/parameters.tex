@@ -185,6 +185,22 @@ In practice, you should choose the value of this parameter to be so that if you 
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Maximum number of expensive Stokes solver steps}
+\phantomsection\label{parameters:Maximum number of expensive Stokes solver steps}
+
+
+\index[prmindex]{Maximum number of expensive Stokes solver steps}
+\index[prmindexfull]{Maximum number of expensive Stokes solver steps}
+{\it Value:} 1000
+
+
+{\it Default:} 1000
+
+
+{\it Description:} This sets the maximum number of iterations used in the expensive Stokes solver. If this value is set too low for the size of the problem, the Stokes solver will not converge and return an error message pointing out that the user didn't allow a sufficiently large number of iterations for the iterative solver to converge.
+
+
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Maximum time step}
 \phantomsection\label{parameters:Maximum time step}
 
@@ -245,7 +261,7 @@ In practice, you should choose the value of this parameter to be so that if you 
 {\it Default:} 200
 
 
-{\it Description:} As explained in the ASPECT paper (Kronbichler, Heister, and Bangerth, GJI 2012, \cite{KHB12}) we first try to solve the Stokes system in every time step using a GMRES iteration with a poor but cheap preconditioner. By default, we try whether we can converge the GMRES solver in 200 such iterations before deciding that we need a better preconditioner. This is sufficient for simple problems with variable viscosity and we never need the second phase with the more expensive preconditioner. On the other hand, for more complex problems, and in particular for problems with strongly nonlinear viscosity, the 200 cheap iterations don't actually do very much good and one might skip this part right away. In that case, this parameter can be set to zero, i.e., we immediately start with the better but more expensive preconditioner.
+{\it Description:} As explained in the paper that describes ASPECT (Kronbichler, Heister, and Bangerth, 2012, see \cite{KHB12}) we first try to solve the Stokes system in every time step using a GMRES iteration with a poor but cheap preconditioner. By default, we try whether we can converge the GMRES solver in 200 such iterations before deciding that we need a better preconditioner. This is sufficient for simple problems with variable viscosity and we never need the second phase with the more expensive preconditioner. On the other hand, for more complex problems, and in particular for problems with strongly nonlinear viscosity, the 200 cheap iterations don't actually do very much good and one might skip this part right away. In that case, this parameter can be set to zero, i.e., we immediately start with the better but more expensive preconditioner.
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
@@ -580,7 +596,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 `initial composition': A model in which the composition at the boundary is chosen to be the same as given in the initial conditions.
 
-Because this class simply takes what the initial composition had described, this class can not know certain pieces of information such as the minimal and maximal composition on the boundary. For operations that require this, for example in postprocessing, this boundary composition model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section ``Boundary composition model/Initial composition''.
+Because this class simply takes what the initial composition had described, this class can not know certain pieces of information such as the minimal and maximal composition on the boundary. For operations that require this, for example in post-processing, this boundary composition model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section ``Boundary composition model/Initial composition''.
 
 `spherical constant': A model in which the composition is chosen constant on the inner and outer boundaries of a spherical shell or chunk. Parameters are read from subsection 'Spherical constant'.
 
@@ -1038,13 +1054,13 @@ Because this class simply takes what the initial composition had described, this
 
 Since the symbol $t$ indicating time may appear in the formulas for the prescribed temperatures, it is interpreted as having units seconds unless the global input parameter ``Use years in output instead of seconds'' is set, in which case we interpret the formula expressions as having units year.
 
-Because this class simply takes what the function calculates, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in postprocessing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section ``Boundary temperature model/Initial temperature''.
+Because this class simply takes what the function calculates, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in post-processing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section ``Boundary temperature model/Initial temperature''.
 
 The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 `initial temperature': A model in which the temperature at the boundary is chosen to be the same as given in the initial conditions.
 
-Because this class simply takes what the initial temperature had described, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in postprocessing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section ``Boundary temperature model/Initial temperature''.
+Because this class simply takes what the initial temperature had described, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in post-processing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section ``Boundary temperature model/Initial temperature''.
 
 `spherical constant': A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell, ellipsoidal chunk or chunk. Parameters are read from subsection 'Spherical constant'.
 
@@ -1712,6 +1728,44 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} Any string
 \end{itemize}
 
+\subsection{Parameters in section \tt Boundary traction model/Initial lithostatic pressure}
+\label{parameters:Boundary_20traction_20model/Initial_20lithostatic_20pressure}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Number of integration points}
+\phantomsection\label{parameters:Boundary traction model/Initial lithostatic pressure/Number of integration points}
+
+
+\index[prmindex]{Number of integration points}
+\index[prmindexfull]{Boundary traction model!Initial lithostatic pressure!Number of integration points}
+{\it Value:} 1000
+
+
+{\it Default:} 1000
+
+
+{\it Description:} The number of integration points over which we integrate the lithostatic pressure downwards. 
+
+
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Representative point}
+\phantomsection\label{parameters:Boundary traction model/Initial lithostatic pressure/Representative point}
+
+
+\index[prmindex]{Representative point}
+\index[prmindexfull]{Boundary traction model!Initial lithostatic pressure!Representative point}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} The point where the pressure profile will be calculated. Cartesian coordinates when geometry is a box, otherwise enter radius, longitude, and in 3D latitude.Units: m or degrees.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
+\end{itemize}
+
 \subsection{Parameters in section \tt Boundary velocity model}
 \label{parameters:Boundary_20velocity_20model}
 
@@ -1726,10 +1780,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Data directory}
 \index[prmindexfull]{Boundary velocity model!Ascii data model!Data directory}
-{\it Value:} \$ASPECT\_SOURCE\_DIR/data/velocity-boundary-conditions/ascii-data/test/
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/boundary-velocity/ascii-data/test/
 
 
-{\it Default:} \$ASPECT\_SOURCE\_DIR/data/velocity-boundary-conditions/ascii-data/test/
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/boundary-velocity/ascii-data/test/
 
 
 {\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the 'data/' subdirectory of ASPECT. 
@@ -1902,10 +1956,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Data directory}
 \index[prmindexfull]{Boundary velocity model!GPlates model!Data directory}
-{\it Value:} \$ASPECT\_SOURCE\_DIR/data/velocity-boundary-conditions/gplates/
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/boundary-velocity/gplates/
 
 
-{\it Default:} \$ASPECT\_SOURCE\_DIR/data/velocity-boundary-conditions/gplates/
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/boundary-velocity/gplates/
 
 
 {\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the 'data/' subdirectory of ASPECT. 
@@ -2438,7 +2492,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 2
 
 
-{\it Description:} The exponent $\alpha$ in the entropy viscosity stabilization. Valid options are 1 or 2. The recommended setting is 2. (This parameter does not correspond to any variable in the 2012 GJI paper by Kronbichler, Heister and Bangerth that describes ASPECT, see \cite{KHB12}. Rather, the paper always uses 2 as the exponent in the definition of the entropy, following equation (15) of the paper. The full approach is discussed in \cite{GPP11}.) Note that this is not the thermal expansion coefficient, also commonly referred to as $\alpha$.Units: None.
+{\it Description:} The exponent $\alpha$ in the entropy viscosity stabilization. Valid options are 1 or 2. The recommended setting is 2. (This parameter does not correspond to any variable in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see \cite{KHB12}. Rather, the paper always uses 2 as the exponent in the definition of the entropy, following equation (15) of the paper. The full approach is discussed in \cite{GPP11}.) Note that this is not the thermal expansion coefficient, also commonly referred to as $\alpha$.Units: None.
 
 
 {\it Possible values:} An integer $n$ such that $1\leq n \leq 2$
@@ -2454,7 +2508,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 0.078
 
 
-{\it Description:} The $\beta$ factor in the artificial viscosity stabilization. An appropriate value for 2d is 0.078 and 0.117 for 3d. (For historical reasons, the name used here is different from the one used in the 2012 GJI paper by Kronbichler, Heister and Bangerth that describes ASPECT. This parameter corresponds to the factor $\alpha_\text {max}$ in the formulas following equation (15) of the paper. After further experiments, we have also chosen to use a different value than described there: It can be chosen as stated there for uniformly refined meshes, but it needs to be chosen larger if the mesh has cells that are not squares or cubes.) Units: None.
+{\it Description:} The $\beta$ factor in the artificial viscosity stabilization. An appropriate value for 2d is 0.078 and 0.117 for 3d. (For historical reasons, the name used here is different from the one used in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see \cite{KHB12}. This parameter corresponds to the factor $\alpha_\text {max}$ in the formulas following equation (15) of the paper. After further experiments, we have also chosen to use a different value than described there: It can be chosen as stated there for uniformly refined meshes, but it needs to be chosen larger if the mesh has cells that are not squares or cubes.) Units: None.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -2470,7 +2524,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 0.33
 
 
-{\it Description:} The $c_R$ factor in the entropy viscosity stabilization. (For historical reasons, the name used here is different from the one used in the 2012 GJI paper by Kronbichler, Heister and Bangerth that describes ASPECT. This parameter corresponds to the factor $\alpha_E$ in the formulas following equation (15) of the paper. After further experiments, we have also chosen to use a different value than described there.) Units: None.
+{\it Description:} The $c_R$ factor in the entropy viscosity stabilization. (For historical reasons, the name used here is different from the one used in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see \cite{KHB12}. This parameter corresponds to the factor $\alpha_E$ in the formulas following equation (15) of the paper. After further experiments, we have also chosen to use a different value than described there.) Units: None.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -2486,7 +2540,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 0.0
 
 
-{\it Description:} The strain rate scaling factor in the artificial viscosity stabilization. This parameter determines how much the strain rate (in addition to the velocity) should influence the stabilization. (This parameter does not correspond to any variable in the 2012 GJI paper by Kronbichler, Heister and Bangerth that describes ASPECT. Rather, the paper always uses 0, i.e. they specify the maximum dissipation $\nu_h^\text{max}$ as $\nu_h^\text{max}\vert_K = \alpha_\text{max} h_K \|\mathbf u\|_{\infty,K}$. Here, we use $\|\lvert\mathbf u\rvert + \gamma h_K \lvert\varepsilon (\mathbf u)\rvert\|_{\infty,K}$ instead of $\|\mathbf u\|_{\infty,K}$. Units: None.
+{\it Description:} The strain rate scaling factor in the artificial viscosity stabilization. This parameter determines how much the strain rate (in addition to the velocity) should influence the stabilization. (This parameter does not correspond to any variable in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see \cite{KHB12}. Rather, the paper always uses 0, i.e. they specify the maximum dissipation $\nu_h^\text{max}$ as $\nu_h^\text{max}\vert_K = \alpha_\text{max} h_K \|\mathbf u\|_{\infty,K}$. Here, we use $\|\lvert\mathbf u\rvert + \gamma h_K \lvert\varepsilon (\mathbf u)\rvert\|_{\infty,K}$ instead of $\|\mathbf u\|_{\infty,K}$. Units: None.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -2515,6 +2569,8 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 \end{enumerate}
 
 \note{Warning: The `custom' option is implemented for advanced users that want full control over the equations solved. It is possible to choose inconsistent formulations and no error checking is performed on the consistency of the resulting equations.}
+
+\note{The `anelastic liquid approximation' option here can also be used to set up `truncated anelastic liquid approximation' as long as this option is chosen together with a material model that defines a density that dependes on temperature and depth and not on the pressure.}
 
 
 {\it Possible values:} Any one of isothermal compression, custom, anelastic liquid approximation, boussinesq approximation
@@ -2628,7 +2684,7 @@ The names of the boundaries listed here can either be numbers (in which case the
 
 `box': A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. The box geometry labels its 2*dim sides as follows: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries; in 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries (see also the documentation of the deal.II class ``GeometryInfo''). You can also use symbolic names ``left'', ``right'', etc., to refer to these boundaries in input files. It is also possible to add initial topography to the box model. Note however that this is done after the last initial adaptive refinement cycle. Also, initial topography is supposed to be small, as it is not taken into account when depth or a representative point is computed. 
 
-`box with lithosphere boundary indicators': A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. This geometry model labels its sides with 2*dim+2*(dim-1) boundary indicators: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries, while indicators4 and 5 denote the upper part of the left and right vertical boundary, respectively. In 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries (see also the documentation of the deal.II class ``GeometryInfo''), while indicators 6, 7, 8 and 9 denote the left, rigth, front and back upper parts of the vertical boundaries, respectively. You can also use symbolic names ``left'', ``right'', ``left lithosphere'', etc., to refer to these boundaries in input files.
+`box with lithosphere boundary indicators': A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. This geometry model labels its sides with 2*dim+2*(dim-1) boundary indicators: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries, while indicators4 and 5 denote the upper part of the left and right vertical boundary, respectively. In 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries (see also the documentation of the deal.II class ``GeometryInfo''), while indicators 6, 7, 8 and 9 denote the left, right, front and back upper parts of the vertical boundaries, respectively. You can also use symbolic names ``left'', ``right'', ``left lithosphere'', etc., to refer to these boundaries in input files.
 
 Note that for a given ``Global refinement level'' and no user-specified ``Repetitions'', the lithosphere part of the mesh will be more refined. 
 
@@ -2636,7 +2692,9 @@ The additional boundary indicators for the lithosphere allow for selecting bound
 
 `chunk': A geometry which can be described as a chunk of a spherical shell, bounded by lines of longitude, latitude and radius. The minimum and maximum longitude, (latitude) and depth of the chunk is set in the parameter file. The chunk geometry labels its 2*dim sides as follows: ``west'' and ``east'': minimum and maximum longitude, ``south'' and ``north'': minimum and maximum latitude, ``inner'' and ``outer'': minimum and maximum radii. Names in the parameter files are as follows: Chunk (minimum || maximum) (longitude || latitude): edges of geographical quadrangle (in degrees)Chunk (inner || outer) radius: Radii at bottom and top of chunk(Longitude || Latitude || Radius) repetitions: number of cells in each coordinate direction.
 
-`ellipsoidal chunk': A 3D chunk geometry that accounts for Earth's ellipticity (default assuming the WGS84 ellipsoid definition) which can be defined in non-coordinate directions. In the description of the ellipsoidal chunk, two of the ellipsoidal axes have the same length so that there is only a semi-major axis and a semi-minor axis. The user has two options for creating an ellipsoidal chunk geometry: 1) by defining two opposing points (SW and NE or NW and SE) a coordinate parallel ellipsoidal chunk geometry will be created. 2) by defining three points a non-coordinate parallel ellipsoidal chunk will be created. The points are defined in the input file by longitude:latitude. It is also possible to define additional subdivisions of the mesh in each direction. Faces of the model are defined as 0, west; 1,east; 2, south; 3, north; 4, inner; 5, outer. It is now possible to add initial topography to the ellipsoidal chunk model. 
+`ellipsoidal chunk': A 3D chunk geometry that accounts for Earth's ellipticity (default assuming the WGS84 ellipsoid definition) which can be defined in non-coordinate directions. In the description of the ellipsoidal chunk, two of the ellipsoidal axes have the same length so that there is only a semi-major axis and a semi-minor axis. The user has two options for creating an ellipsoidal chunk geometry: 1) by defining two opposing points (SW and NE or NW and SE) a coordinate parallel ellipsoidal chunk geometry will be created. 2) by defining three points a non-coordinate parallel ellipsoidal chunk will be created. The points are defined in the input file by longitude:latitude. It is also possible to define additional subdivisions of the mesh in each direction. Faces of the model are defined as 0, west; 1,east; 2, south; 3, north; 4, inner; 5, outer.
+
+This geometry model supports initial topography for deforming the initial mesh.
 
 `sphere': Geometry model for sphere with a user specified radius. This geometry has only a single boundary, so the only valid boundary indicator to specify in the input file is ``0''. It can also be referenced by the symbolic name ``surface'' in input files.
 
@@ -3887,6 +3945,8 @@ $\alpha T (-\phi \mathbf u_s \cdot \nabla p) + \alpha T (\phi \mathbf u_f \cdot
 abla p)$.
 For full adiabatic heating, this has to be used in combination with the heating model 'adiabatic heating' to also include adiabatic heating for the solid part, and the full heating term is then $\alpha T ((1-\phi) \mathbf u_s \cdot \nabla p) + \alpha T (\phi \mathbf u_f \cdot \nabla p)$.
 
+`compositional heating': Implementation of a model in which magnitude of internal heat productionis determined from fixed values assigned to each compositionalfield. These values are interpreted as having units $W/m^3$.
+
 `constant heating': Implementation of a model in which the heating rate is constant.
 
 `function': Implementation of a model in which the heating rate is given in terms of an explicit formula that is elaborated in the parameters in section ``Heating model|Function''. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
@@ -3910,7 +3970,7 @@ The formula is interpreted as having units W/kg.
 `shear heating with melt': Implementation of a standard model for shear heating of migrating melt, including bulk (compression) heating $\xi \left( \nabla \cdot \mathbf u_s \right)^2 $ and heating due to melt segregation $\frac{\eta_f \phi^2}{k} \left( \mathbf u_f - \mathbf u_s \right)^2 $. For full shear heating, this has to be used in combination with the heating model shear heating to also include shear heating for the solid part.
 
 
-{\it Possible values:} A comma-separated list of any of adiabatic heating, adiabatic heating of melt, constant heating, function, latent heat, latent heat melt, radioactive decay, shear heating, shear heating with melt
+{\it Possible values:} A comma-separated list of any of adiabatic heating, adiabatic heating of melt, compositional heating, constant heating, function, latent heat, latent heat melt, radioactive decay, shear heating, shear heating with melt
 \item {\it Parameter name:} {\tt Model name}
 \phantomsection\label{parameters:Heating model/Model name}
 
@@ -3932,6 +3992,8 @@ $\alpha T (-\phi \mathbf u_s \cdot \nabla p) + \alpha T (\phi \mathbf u_f \cdot
 abla p)$.
 For full adiabatic heating, this has to be used in combination with the heating model 'adiabatic heating' to also include adiabatic heating for the solid part, and the full heating term is then $\alpha T ((1-\phi) \mathbf u_s \cdot \nabla p) + \alpha T (\phi \mathbf u_f \cdot \nabla p)$.
 
+`compositional heating': Implementation of a model in which magnitude of internal heat productionis determined from fixed values assigned to each compositionalfield. These values are interpreted as having units $W/m^3$.
+
 `constant heating': Implementation of a model in which the heating rate is constant.
 
 `function': Implementation of a model in which the heating rate is given in terms of an explicit formula that is elaborated in the parameters in section ``Heating model|Function''. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
@@ -3955,7 +4017,7 @@ The formula is interpreted as having units W/kg.
 `shear heating with melt': Implementation of a standard model for shear heating of migrating melt, including bulk (compression) heating $\xi \left( \nabla \cdot \mathbf u_s \right)^2 $ and heating due to melt segregation $\frac{\eta_f \phi^2}{k} \left( \mathbf u_f - \mathbf u_s \right)^2 $. For full shear heating, this has to be used in combination with the heating model shear heating to also include shear heating for the solid part.
 
 
-{\it Possible values:} Any one of adiabatic heating, adiabatic heating of melt, constant heating, function, latent heat, latent heat melt, radioactive decay, shear heating, shear heating with melt, unspecified
+{\it Possible values:} Any one of adiabatic heating, adiabatic heating of melt, compositional heating, constant heating, function, latent heat, latent heat melt, radioactive decay, shear heating, shear heating with melt, unspecified
 \end{itemize}
 
 
@@ -4002,6 +4064,44 @@ The formula is interpreted as having units W/kg.
 
 
 {\it Possible values:} A boolean value (true or false)
+\end{itemize}
+
+\subsection{Parameters in section \tt Heating model/Compositional heating}
+\label{parameters:Heating_20model/Compositional_20heating}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Compositional heating values}
+\phantomsection\label{parameters:Heating model/Compositional heating/Compositional heating values}
+
+
+\index[prmindex]{Compositional heating values}
+\index[prmindexfull]{Heating model!Compositional heating!Compositional heating values}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} List of heat production per unit volume values for background and compositional fields, for a total of N+1 values, where N is the number of compositional fields. Units: W/m3.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Use compositional field for heat production averaging}
+\phantomsection\label{parameters:Heating model/Compositional heating/Use compositional field for heat production averaging}
+
+
+\index[prmindex]{Use compositional field for heat production averaging}
+\index[prmindexfull]{Heating model!Compositional heating!Use compositional field for heat production averaging}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} List of integers, detailing for each compositional field if it should be included in the averaging scheme when the heat production is computed (if 1) or not (if 0).
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [An integer $n$ such that $0\leq n \leq 1$]
 \end{itemize}
 
 \subsection{Parameters in section \tt Heating model/Constant heating}
@@ -4300,10 +4400,10 @@ Warning: This is the old formulation of specifying initial composition models an
 
 \index[prmindex]{Data directory}
 \index[prmindexfull]{Initial composition model!Ascii data model!Data directory}
-{\it Value:} \$ASPECT\_SOURCE\_DIR/data/compositional-initial-conditions/ascii-data/test/
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-composition/ascii-data/test/
 
 
-{\it Default:} \$ASPECT\_SOURCE\_DIR/data/compositional-initial-conditions/ascii-data/test/
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-composition/ascii-data/test/
 
 
 {\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the 'data/' subdirectory of ASPECT. 
@@ -4420,7 +4520,7 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Description:} A comma separated list of initial temperature models that will be used to initialize the temperature. The results of each of these models will be added.
 
-The following initial tempeature models are available:
+The following initial temperature models are available:
 
 `S40RTS perturbation': An initial temperature field in which the temperature is perturbed following the S20RTS or S40RTS shear wave velocity model by Ritsema and others, which can be downloaded here \url{http://www.earth.lsa.umich.edu/~jritsema/research.html}. Information on the vs model can be found in Ritsema, J., Deuss, A., van Heijst, H.J. \& Woodhouse, J.H., 2011. S40RTS: a degree-40 shear-velocity model for the mantle from new Rayleigh wave dispersion, teleseismic traveltime and normal-mode splitting function measurements, Geophys. J. Int. 184, 1223-1236. The scaling between the shear wave perturbation and the temperature perturbation can be set by the user with the 'Vs to density scaling' parameter and the 'Thermal expansion coefficient in initial temperature scaling' parameter. The scaling is as follows: $\delta ln \rho (r,\theta,\phi) = \xi \cdot \delta ln v_s(r,\theta, \phi)$ and $\delta T(r,\theta,\phi) = - \frac{1}{\alpha} \delta ln \rho(r,\theta,\phi)$. $\xi$ is the 'vs to density scaling' parameter and $\alpha$ is the 'Thermal expansion coefficient in initial temperature scaling' parameter. The temperature perturbation is added to an otherwise constant temperature (incompressible model) or adiabatic reference profile (compressible model). If a depth is specified in 'Remove temperature heterogeneity down to specified depth', there is no temperature perturbation prescribed down to that depth.
 
@@ -4444,7 +4544,7 @@ The following initial tempeature models are available:
 
 `polar box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is such that there are two poles on opposing corners of the box. 
 
-`solidus': This is a temperature initial condition that starts the model close to solidus, it also contains a user defined lithoshpere thickness and with perturbations  in both lithosphere thickness and temperature based on spherical harmonic functions. It was used as the initial condition of early Mars after the freezing of the magma ocean, using the solidus from Parmentier et al., Melt-solid segregation, Fractional magma ocean solidification, and implications for longterm planetary evolution. Luna and Planetary Science, 2007.
+`solidus': This is a temperature initial condition that starts the model close to solidus, it also contains a user defined lithosphere thickness and with perturbations  in both lithosphere thickness and temperature based on spherical harmonic functions. It was used as the initial condition of early Mars after the freezing of the magma ocean, using the solidus from Parmentier et al., Melt-solid segregation, Fractional magma ocean solidification, and implications for long term planetary evolution. Luna and Planetary Science, 2007.
 
 `spherical gaussian perturbation': An initial temperature field in which the temperature is perturbed by a single Gaussian added to an otherwise spherically symmetric state. Additional parameters are read from the parameter file in subsection 'Spherical gaussian perturbation'.
 
@@ -4488,7 +4588,7 @@ The following initial tempeature models are available:
 
 `polar box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is such that there are two poles on opposing corners of the box. 
 
-`solidus': This is a temperature initial condition that starts the model close to solidus, it also contains a user defined lithoshpere thickness and with perturbations  in both lithosphere thickness and temperature based on spherical harmonic functions. It was used as the initial condition of early Mars after the freezing of the magma ocean, using the solidus from Parmentier et al., Melt-solid segregation, Fractional magma ocean solidification, and implications for longterm planetary evolution. Luna and Planetary Science, 2007.
+`solidus': This is a temperature initial condition that starts the model close to solidus, it also contains a user defined lithosphere thickness and with perturbations  in both lithosphere thickness and temperature based on spherical harmonic functions. It was used as the initial condition of early Mars after the freezing of the magma ocean, using the solidus from Parmentier et al., Melt-solid segregation, Fractional magma ocean solidification, and implications for long term planetary evolution. Luna and Planetary Science, 2007.
 
 `spherical gaussian perturbation': An initial temperature field in which the temperature is perturbed by a single Gaussian added to an otherwise spherically symmetric state. Additional parameters are read from the parameter file in subsection 'Spherical gaussian perturbation'.
 
@@ -4692,10 +4792,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Data directory}
 \index[prmindexfull]{Initial temperature model!Adiabatic boundary!Data directory}
-{\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/adiabatic-boundary/
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/adiabatic-boundary/
 
 
-{\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/adiabatic-boundary/
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/adiabatic-boundary/
 
 
 {\it Description:} The path to the isotherm depth data file
@@ -4746,7 +4846,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 273.15
 
 
-{\it Description:} The value of the suface temperature. Units: Kelvin.
+{\it Description:} The value of the surface temperature. Units: Kelvin.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -4762,10 +4862,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Data directory}
 \index[prmindexfull]{Initial temperature model!Ascii data model!Data directory}
-{\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/ascii-data/test/
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/ascii-data/test/
 
 
-{\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/ascii-data/test/
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/ascii-data/test/
 
 
 {\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the 'data/' subdirectory of ASPECT. 
@@ -5094,10 +5194,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Data directory}
 \index[prmindexfull]{Initial temperature model!S40RTS perturbation!Data directory}
-{\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/S40RTS/
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/S40RTS/
 
 
-{\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/S40RTS/
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/S40RTS/
 
 
 {\it Description:} The path to the model data. 
@@ -5180,7 +5280,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} -1.7976931348623157e+308
 
 
-{\it Description:} This will set the heterogeneity prescribed by S20RTS or S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adquate to capture this cutoff. For example if you specify a depth of 660km, but your closest spherical depth layers are only at 500km and 750km (due to a coarse resolution) it will only zero out heterogeneities down to 500km. Similar caution has to be taken when using adaptive meshing.
+{\it Description:} This will set the heterogeneity prescribed by S20RTS or S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660km, but your closest spherical depth layers are only at 500km and 750km (due to a coarse resolution) it will only zero out heterogeneities down to 500km. Similar caution has to be taken when using adaptive meshing.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -5260,10 +5360,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Data directory}
 \index[prmindexfull]{Initial temperature model!SAVANI perturbation!Data directory}
-{\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/SAVANI/
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/SAVANI/
 
 
-{\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/SAVANI/
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/SAVANI/
 
 
 {\it Description:} The path to the model data. 
@@ -5346,7 +5446,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} -1.7976931348623157e+308
 
 
-{\it Description:} This will set the heterogeneity prescribed by SAVANI to zero down to the specified depth (in meters). Note that your resolution has to be adquate to capture this cutoff. For example if you specify a depth of 660km, but your closest spherical depth layers are only at 500km and 750km (due to a coarse resolution) it will only zero out heterogeneities down to 500km. Similar caution has to be taken when using adaptive meshing.
+{\it Description:} This will set the heterogeneity prescribed by SAVANI to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660km, but your closest spherical depth layers are only at 500km and 750km (due to a coarse resolution) it will only zero out heterogeneities down to 500km. Similar caution has to be taken when using adaptive meshing.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -5736,7 +5836,7 @@ More averaging schemes are available in the averaging material model. This mater
 
 You can select one of the following models:
 
-`Morency and Doin': An implementation of the visco-plastic rheology described by (Morency and Doin, 2004). Compositional fields can each be assigned individual activation energies, reference densities, thermal expansivities, and stress exponents. The effective viscosity is defined as \[v_{eff} = \left(\frac{1}{v_{eff}^v}+\frac{1}{v_{eff}^p}\right)^{-1}\] where \[v_{eff}^v = B \left(\frac{\dot{\epsilon}}{\dot{\epsilon}_{ref}} \right)^{-1+1/n_v} exp\left(\frac{E_a +V_a \rho_m g z}{n_v R T}\right) \] \[v_{eff}^p = (\tau_0 + \gamma \rho_m g z) \left( \frac{\dot{\epsilon}^{-1+1/n_p}} {\dot{\epsilon}_{ref}^{1/n_p}} \right) \] where $B$ is a scaling constant; $\dot{\epsilon}$ is defined as the quadratic sum of the second invariant of the strain rate tensor and a minimum strain rate, $\dot{\epsilon}_0$; $\dot{\epsilon}_{ref}$ is a reference strain rate; $n_v$, and $n_p$ are stress exponents; $E_a$ is the activation energy; $V_a$ is the activation volume; $\rho_m$ is the mantle density; $R$ is the gas constant; $T$ is temperature; $\tau_0$ is the cohestive strength of rocks at the surface; $\gamma$ is a coefficient of yield stress increase with depth; and $z$ is depth. 
+`Morency and Doin': An implementation of the visco-plastic rheology described by (Morency and Doin, 2004). Compositional fields can each be assigned individual activation energies, reference densities, thermal expansivities, and stress exponents. The effective viscosity is defined as \[v_{eff} = \left(\frac{1}{v_{eff}^v}+\frac{1}{v_{eff}^p}\right)^{-1}\] where \[v_{eff}^v = B \left(\frac{\dot{\epsilon}}{\dot{\epsilon}_{ref}} \right)^{-1+1/n_v} exp\left(\frac{E_a +V_a \rho_m g z}{n_v R T}\right) \] \[v_{eff}^p = (\tau_0 + \gamma \rho_m g z) \left( \frac{\dot{\epsilon}^{-1+1/n_p}} {\dot{\epsilon}_{ref}^{1/n_p}} \right) \] where $B$ is a scaling constant; $\dot{\epsilon}$ is defined as the quadratic sum of the second invariant of the strain rate tensor and a minimum strain rate, $\dot{\epsilon}_0$; $\dot{\epsilon}_{ref}$ is a reference strain rate; $n_v$, and $n_p$ are stress exponents; $E_a$ is the activation energy; $V_a$ is the activation volume; $\rho_m$ is the mantle density; $R$ is the gas constant; $T$ is temperature; $\tau_0$ is the cohesive strength of rocks at the surface; $\gamma$ is a coefficient of yield stress increase with depth; and $z$ is depth. 
 
  Note: (Morency and Doin, 2004) defines the second invariant of the strain rate in a nonstandard way. The formulation in the paper is given as $\epsilon_{II} = \sqrt{\frac{1}{2} (\epsilon_{11}^2 + \epsilon_{12}^2)}$ where $\epsilon$ is the strain rate tensor. For consistency, that is also the formulation implemented in this material model. 
 
@@ -5811,7 +5911,7 @@ Most of the material properties are constant, except for the shear, viscosity $\
 
 The model is compressible only if this is specified in the input file, and contains compressibility for both solid and melt.
 
-`multicomponent': This model is for use with an arbitrary number of compositional fields, where each field represents a rock type which can have completely different properties from the others. However, each rock type itself has constant material properties.  The value of the  compositional field is interpreed as a volume fraction. If the sum of the fields is greater than one, they are renormalized.  If it is less than one, material properties  for ``background mantle'' make up the rest. When more than one field is present, the material properties are averaged arithmetically.  An exception is the viscosity, where the averaging should make more of a difference.  For this, the user selects between arithmetic, harmonic, geometric, or maximum composition averaging.
+`multicomponent': This model is for use with an arbitrary number of compositional fields, where each field represents a rock type which can have completely different properties from the others. However, each rock type itself has constant material properties.  The value of the  compositional field is interpreted as a volume fraction. If the sum of the fields is greater than one, they are renormalized.  If it is less than one, material properties  for ``background mantle'' make up the rest. When more than one field is present, the material properties are averaged arithmetically.  An exception is the viscosity, where the averaging should make more of a difference.  For this, the user selects between arithmetic, harmonic, geometric, or maximum composition averaging.
 
 `nondimensional': A material model for nondimensionalized computations for compressible or incompressible computations defined through Rayleigh number 	ext{Ra} and Dissipation number Di. This model is made to be used with the Boussinesq, ALA, or TALA formulation.
 
@@ -5843,13 +5943,13 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 `visco plastic': An implementation of a visco-plastic rheology with options for selecting dislocation creep, diffusion creep or composite viscous flow laws.  Plasticity limits viscous stresses through a Drucker Prager yield criterion. The model is incompressible. Note that this material model is based heavily on the DiffusionDislocation (Bob Myhill) and DruckerPrager (Anne Glerum) material models. 
 
- The viscosity for dislocation or diffusion creep is defined as \[v = 0.5 * A^{-\frac{1}{n}} * d^{\frac{m}{n}} * \dot{\varepsilon}_{ii}^{\frac{1-n}{n}} * \exp\left(\frac{E + PV}{nRT}\right)\] where $A$ is the prefactor, $n$ is the stress exponent, $\dot{\varepsilon}_{ii}$ is the square root of the deviatoric strain rate tensor second invariant, $d$ is grain size, $m$ is the grain size exponent, $E$ is activation energy, $V$ is activation volume, $P$ is pressure, $R$ is the gas exponent and $T$ is temperature. This form of the viscosity equation is commonly used in geodnynamic simulations.  See, for example, Billen and Hirth (2007), G3, 8, Q08012.
+ The viscosity for dislocation or diffusion creep is defined as \[v = 0.5 * A^{-\frac{1}{n}} * d^{\frac{m}{n}} * \dot{\varepsilon}_{ii}^{\frac{1-n}{n}} * \exp\left(\frac{E + PV}{nRT}\right)\] where $A$ is the prefactor, $n$ is the stress exponent, $\dot{\varepsilon}_{ii}$ is the square root of the deviatoric strain rate tensor second invariant, $d$ is grain size, $m$ is the grain size exponent, $E$ is activation energy, $V$ is activation volume, $P$ is pressure, $R$ is the gas exponent and $T$ is temperature. This form of the viscosity equation is commonly used in geodynamic simulations.  See, for example, Billen and Hirth (2007), G3, 8, Q08012.
 
  One may select to use the diffusion ($v_{diff}$; $n=1$, $m!=0$), dislocation ($v_{disl}$, $n>1$, $m=0$) or composite $\frac{v_{diff}*v_{disl}}{v_{diff}+v_{disl}}$ equation form. 
 
  Viscosity is limited through one of two different 'yielding' mechanisms. 
 
-Plasticity limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3D is  $\sigma_y = \frac{6*C*\cos(\phi) + 2*P*\sin(\phi)} {\sqrt(3)*(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2D. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2D form is equivalent to the Mohr Coloumb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion). When the viscous stress ($2v{\varepsilon}_{ii}$) the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
+Plasticity limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3D is  $\sigma_y = \frac{6*C*\cos(\phi) + 2*P*\sin(\phi)} {\sqrt(3)*(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2D. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2D form is equivalent to the Mohr Coulomb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion). When the viscous stress ($2v{\varepsilon}_{ii}$) the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
 
 The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain invariant. The finite strain invariant may be calculated through particles or the compositional field finite strain invariant plugin (see \cite{buiter2008dissipation} benchmark). In either case, the user specifies a compositional field for the finite strain invariant, which must be the first listed compositional field in the parameter file.
 
@@ -7174,7 +7274,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 
 
 
-{\it Description:} A list of widths for each phase transition, in terms of pressure. The phase functions are scaled with these values, leading to a jump betwen phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition pressures. Define transition by depth instead of pressure must be set to falseto use this parameter.Units: $Pa$.
+{\it Description:} A list of widths for each phase transition, in terms of pressure. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition pressures. Define transition by depth instead of pressure must be set to falseto use this parameter.Units: $Pa$.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -7206,7 +7306,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 
 
 
-{\it Description:} A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition ocurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: $K$.
+{\it Description:} A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition occurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: $K$.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -7222,7 +7322,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 
 
 
-{\it Description:} A list of widths for each phase transition, in terms of depth. The phase functions are scaled with these values, leading to a jump betwen phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition depths. Units: $m$.
+{\it Description:} A list of widths for each phase transition, in terms of depth. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition depths. Units: $m$.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -11043,6 +11143,22 @@ If the function you are describing represents a vector-valued function with mult
 \label{parameters:Model_20settings}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Enable additional Stokes RHS}
+\phantomsection\label{parameters:Model settings/Enable additional Stokes RHS}
+
+
+\index[prmindex]{Enable additional Stokes RHS}
+\index[prmindexfull]{Model settings!Enable additional Stokes RHS}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to ask the material model for additional terms for the right-hand side of the Stokes equation. This feature is likely only used when implementing force vectors for manufactured solution problems and requires filling additional outputs of type AdditionalMaterialOutputsStokesRHS.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Fixed composition boundary indicators}
 \phantomsection\label{parameters:Model settings/Fixed composition boundary indicators}
 
@@ -11188,7 +11304,7 @@ Warning: deprecated! Add 'shear heating' to the 'List of model names' instead.
 The format of valid entries for this parameter is that of a map given as ``key1 [selector]: value1, key2 [selector]: value2, key3: value3, ...'' where each key must be a valid boundary indicator (which is either an integer or the symbolic name the geometry model in use may have provided for this part of the boundary) and each value must be one of the currently implemented boundary traction models. ``selector'' is an optional string given as a subset of the letters 'xyz' that allows you to apply the boundary conditions only to the components listed. As an example, '1 y: function' applies the type 'function' to the y component on boundary 1. Without a selector it will affect all components of the traction.
 
 
-{\it Possible values:} A key-value map of 0 to 4294967295 elements  where each key is [Any string] and each value is [Any one of ascii data, function, zero traction]
+{\it Possible values:} A key-value map of 0 to 4294967295 elements  where each key is [Any string] and each value is [Any one of ascii data, function, initial lithostatic pressure, zero traction]
 \item {\it Parameter name:} {\tt Prescribed velocity boundary indicators}
 \phantomsection\label{parameters:Model settings/Prescribed velocity boundary indicators}
 
@@ -11310,12 +11426,14 @@ The following postprocessors are available:
 
 In the output files, the $x$-value of each data point corresponds to the depth, whereas the $y$-value corresponds to the simulation time. The time is provided in seconds or, if the global ``Use years in output instead of seconds'' parameter is set, in years.
 
-`dynamic topography': A postprocessor that computes a measure of dynamic topography based on the stress at the surface. The data is written into text files named 'dynamic\_topography.NNNNN' in the output directory, where NNNNN is the number of the time step.
+`dynamic topography': A postprocessor that computes a measure of dynamic topography based on the stress at the surface and bottom. The data is written into text files named 'dynamic\_topography.NNNNN' in the output directory, where NNNNN is the number of the time step.
 
-The exact approach works as follows: At the centers of all cells that sit along the top surface, we evaluate the stress and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)- \frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{(\mathbf g \cdot \mathbf n)  \rho}$ where $\rho$ is the density at the cell center. Note that this implementation takes the direction of gravity into account, which means that reversing the flow in backward advection calculations will not reverse the intantaneous topography because the reverse flow will be divided by the reverse surface gravity.  
-The file format then consists of lines with Euclidiean coordinates followed by the corresponding topography value.
+The exact approach works as follows: At the centers of all cells that sit along the top surface, we evaluate the stress and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)- \frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{(\mathbf g \cdot \mathbf n)  \rho}$ where $\rho$ is the density at the cell center. For the bottom surface we chose the convection that positive values are up (out) and negative values are in (down), analogous to the deformation of the upper surface. Note that this implementation takes the direction of gravity into account, which means that reversing the flow in backward advection calculations will not reverse the instantaneous topography because the reverse flow will be divided by the reverse surface gravity.  
+The file format then consists of lines with Euclidean coordinates followed by the corresponding topography value.
 
 (As a side note, the postprocessor chooses the cell center instead of the center of the cell face at the surface, where we really are interested in the quantity, since this often gives better accuracy. The results should in essence be the same, though.)
+
+`geoid': A postprocessor that computes a measure of geoid anomaly based on the density anomaly determined from the temperature field in the mantle, and the dynamic topography at the surface and core mantle boundary(CMB). The geoid is computed from the spherical harmonics expansion, so the geometry of the domain needs to be a 3D spherical shell.
 
 `global statistics': A postprocessor that outputs all the global statistics information, e.g. the time of the simulation, the timestep number, number of degrees of freedom and solver iterations for each timestep. The postprocessor can output different formats, the first printing one line in the statistics file per nonlinear solver iteration (if a nonlinear solver scheme is selected). The second prints one line per timestep, summing the information about all nonlinear iterations in this line. Note that this postprocessor is always active independent on whether or not it is selected in the parameter file.
 
@@ -11376,7 +11494,7 @@ The information produced by this postprocessor is a subset of what is generated 
 `visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
 
 
-{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, command, composition statistics, depth average, dynamic topography, global statistics, heat flux densities, heat flux map, heat flux statistics, heating statistics, mass flux statistics, matrix statistics, melt statistics, memory statistics, particle count statistics, particles, point values, pressure statistics, spherical velocity statistics, temperature statistics, topography, velocity boundary statistics, velocity statistics, viscous dissipation statistics, visualization
+{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, command, composition statistics, depth average, dynamic topography, geoid, global statistics, heat flux densities, heat flux map, heat flux statistics, heating statistics, mass flux statistics, matrix statistics, melt statistics, memory statistics, particle count statistics, particles, point values, pressure statistics, spherical velocity statistics, temperature statistics, topography, velocity boundary statistics, velocity statistics, viscous dissipation statistics, visualization
 \item {\it Parameter name:} {\tt Run postprocessors on nonlinear iterations}
 \phantomsection\label{parameters:Postprocess/Run postprocessors on nonlinear iterations}
 
@@ -11544,6 +11662,38 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Density below}
+\phantomsection\label{parameters:Postprocess/Dynamic Topography/Density below}
+
+
+\index[prmindex]{Density below}
+\index[prmindexfull]{Postprocess!Dynamic Topography!Density below}
+{\it Value:} 9900
+
+
+{\it Default:} 9900
+
+
+{\it Description:} Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. mantle above CMB, and the density of the material that is displaced (generally outer core material). While the density of mantle rock is part of the material model, this parameter `Density below' allows the user to specify the density value of material that is displaced below the solid surface. By default this material is assumed to be outer core material with a density of 9900. Units: $kg/m^3$.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Output lower surface topography}
+\phantomsection\label{parameters:Postprocess/Dynamic Topography/Output lower surface topography}
+
+
+\index[prmindex]{Output lower surface topography}
+\index[prmindexfull]{Postprocess!Dynamic Topography!Output lower surface topography}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Option to output the lower surface topography in a separate file bottom\_dynamic\_topography.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Subtract mean of dynamic topography}
 \phantomsection\label{parameters:Postprocess/Dynamic Topography/Subtract mean of dynamic topography}
 
@@ -11556,7 +11706,157 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} false
 
 
-{\it Description:} Option to remove the mean dynamic topography in the outputted data file (not visualization). 'true' subtracts the mean, 'false' leaves the calculated dynamic topography as is. 
+{\it Description:} Option to remove the mean dynamic topography in the visualization. The mean dynamic topography is calculated and subtracted separately for the upper and lower boundary. 'true' subtracts the mean, 'false' leaves the calculated dynamic topography as is.
+
+
+{\it Possible values:} A boolean value (true or false)
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Geoid}
+\label{parameters:Postprocess/Geoid}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Also output the spherical harmonic coefficients of CMB dynamic topography contribution}
+\phantomsection\label{parameters:Postprocess/Geoid/Also output the spherical harmonic coefficients of CMB dynamic topography contribution}
+
+
+\index[prmindex]{Also output the spherical harmonic coefficients of CMB dynamic topography contribution}
+\index[prmindexfull]{Postprocess!Geoid!Also output the spherical harmonic coefficients of CMB dynamic topography contribution}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Option to also output the spherical harmonic coefficients of the CMB dynamic topography contribution to the maximum degree. The default is false. 
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Also output the spherical harmonic coefficients of density anomaly contribution}
+\phantomsection\label{parameters:Postprocess/Geoid/Also output the spherical harmonic coefficients of density anomaly contribution}
+
+
+\index[prmindex]{Also output the spherical harmonic coefficients of density anomaly contribution}
+\index[prmindexfull]{Postprocess!Geoid!Also output the spherical harmonic coefficients of density anomaly contribution}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Option to also output the spherical harmonic coefficients of the density anomaly contribution to the maximum degree. The default is false. 
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Also output the spherical harmonic coefficients of geoid anomaly}
+\phantomsection\label{parameters:Postprocess/Geoid/Also output the spherical harmonic coefficients of geoid anomaly}
+
+
+\index[prmindex]{Also output the spherical harmonic coefficients of geoid anomaly}
+\index[prmindexfull]{Postprocess!Geoid!Also output the spherical harmonic coefficients of geoid anomaly}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Option to also output the spherical harmonic coefficients of the geoid anomaly up to the maximum degree. The default is false, so postprocess will only output the geoid anomaly in grid format. 
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Also output the spherical harmonic coefficients of surface dynamic topography contribution}
+\phantomsection\label{parameters:Postprocess/Geoid/Also output the spherical harmonic coefficients of surface dynamic topography contribution}
+
+
+\index[prmindex]{Also output the spherical harmonic coefficients of surface dynamic topography contribution}
+\index[prmindexfull]{Postprocess!Geoid!Also output the spherical harmonic coefficients of surface dynamic topography contribution}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Option to also output the spherical harmonic coefficients of the surface dynamic topography contribution to the maximum degree. The default is false. 
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Density above}
+\phantomsection\label{parameters:Postprocess/Geoid/Density above}
+
+
+\index[prmindex]{Density above}
+\index[prmindexfull]{Postprocess!Geoid!Density above}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The density value above the surface boundary.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Density below}
+\phantomsection\label{parameters:Postprocess/Geoid/Density below}
+
+
+\index[prmindex]{Density below}
+\index[prmindexfull]{Postprocess!Geoid!Density below}
+{\it Value:} 8000
+
+
+{\it Default:} 8000
+
+
+{\it Description:} The density value below the CMB boundary.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Maximum degree}
+\phantomsection\label{parameters:Postprocess/Geoid/Maximum degree}
+
+
+\index[prmindex]{Maximum degree}
+\index[prmindexfull]{Postprocess!Geoid!Maximum degree}
+{\it Value:} 20
+
+
+{\it Default:} 20
+
+
+{\it Description:} This parameter can be a random positive integer. However, the value normally should not exceed the maximumdegree of the initial perturbed temperature field. For example, if the initial temperature uses S40RTS, themaximun degree should not be larger than 40.
+
+
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Minimum degree}
+\phantomsection\label{parameters:Postprocess/Geoid/Minimum degree}
+
+
+\index[prmindex]{Minimum degree}
+\index[prmindexfull]{Postprocess!Geoid!Minimum degree}
+{\it Value:} 2
+
+
+{\it Default:} 2
+
+
+{\it Description:} This parameter normally is set to 2 since the perturbed gravitational potential at degree 1 always vanishesin a reference frame with the planetary center of mass same as the center of figure.
+
+
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Output data in geographical coordinates}
+\phantomsection\label{parameters:Postprocess/Geoid/Output data in geographical coordinates}
+
+
+\index[prmindex]{Output data in geographical coordinates}
+\index[prmindexfull]{Postprocess!Geoid!Output data in geographical coordinates}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Option to output the geoid anomaly in geographical coordinates (latitude and longitude). The default is false, so postprocess will output the data in geocentric coordinates (x,y,z) as normally.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -11654,8 +11954,10 @@ Select one of the following models:
 
 `cell average': Return the average of all particle properties in the given cell.
 
+`nearest neighbor': Return the properties of the nearest neighboring particle in the current cell, or nearest particle in nearest neighboring cell if current cell is empty.
 
-{\it Possible values:} Any one of cell average
+
+{\it Possible values:} Any one of cell average, nearest neighbor
 \item {\it Parameter name:} {\tt List of particle properties}
 \phantomsection\label{parameters:Postprocess/Particles/List of particle properties}
 
@@ -11680,7 +11982,7 @@ The following properties are available:
 
 `integrated strain': A plugin in which the particle property tensor is defined as the deformation gradient tensor $\mathbf F$ this particle has experienced. $\mathbf F$ can be polar-decomposed into the left stretching tensor $\mathbf L$ (the finite strain we are interested in), and the rotation tensor $\mathbf Q$. See the corresponding cookbook in the manual for more detailed information.
 
-`integrated strain invariant': A plugin in which the particle property is defined as the finite strain invariant ($\varepsilon_{ii}$). This property is calculated with the timestep ($dt$) and the second invariant of the deviatoric strain rate tensor ($\dot{\varepsilon}_{ii}$), where the value at time step $n$ is $\varepsilon_{ii}^{n} = \varepsilon_{ii}^{n-1} + dt*\dot{\varepsilon}_{ii}$.
+`integrated strain invariant': A plugin in which the particle property is defined as the finite strain invariant ($\varepsilon_{ii}$). This property is calculated with the timestep ($dt$) and the second invariant of the deviatoric strain rate tensor ($\dot{\varepsilon}_{ii}$), where the value at time step $n$ is $\varepsilon_{ii}^{n} = \varepsilon_{ii}^{n-1} + dt\dot{\varepsilon}_{ii}$.
 
 `pT path': Implementation of a plugin in which the particle property is defined as the current pressure and temperature at this position. This can be used to generate pressure-temperature paths of material points over time.
 
@@ -12366,9 +12668,9 @@ Of course, activating this option also greatly increases the amount of data \asp
 
 The following postprocessors are available:
 
-`Vp anomaly': A visualization output object that generates output showing the anomaly in the seismic compression wave speed $V_p$ as a spatially variable function with one value per cell. This anomaly is shown as a percentage change relative to the average value of $V_p$ at the depth of this cell.
+`Vp anomaly': A visualization output object that generates output showing the percentage anomaly in the seismic compressional wave speed $V_p$ as a spatially variable function with one value per cell. This anomaly is shown as a percentage change relative to the laterally averaged velocity at the depth of the cell. This velocity is calculated by linear interpolation between average values calculated within equally thick depth slices. The number of depth slices in the domain is user-defined. Typically, the best results will be obtained if the number of depth slices is balanced between being large enough to capture step changes in velocities, but small enough to maintain a reasonable number of evaluation points per slice. Bear in mind that lateral averaging subsamples the finite element mesh.
 
-`Vs anomaly': A visualization output object that generates output showing the anomaly in the seismic shear wave speed $V_s$ as a spatially variable function with one value per cell. This anomaly is shown as a percentage change relative to the average value of $V_s$ at the depth of this cell.
+`Vs anomaly': A visualization output object that generates output showing the percentage anomaly in the seismic compressional wave speed $V_s$ as a spatially variable function with one value per cell. This anomaly is shown as a percentage change relative to the laterally averaged velocity at the depth of the cell. This velocity is calculated by linear interpolation between average values calculated within equally thick depth slices. The number of depth slices in the domain is user-defined. Typically, the best results will be obtained if the number of depth slices is balanced between being large enough to capture step changes in velocities, but small enough to maintain a reasonable number of evaluation points per slice. Bear in mind that lateral averaging subsamples the finite element mesh.
 
 `adiabat': A visualization output object that generates adiabatic temperature, pressure, density, and density derivative as produced by AdiabaticConditions.
 
@@ -12384,7 +12686,7 @@ The following postprocessors are available:
 
 `depth': A visualization output postprocessor that outputs the depth for all points inside the domain, as determined by the geometry model.
 
-`dynamic topography': A visualization output object that generates output for the dynamic topography. The approach to determine the dynamic topography requires us to compute the stress tensor and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)-\frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{(\mathbf g \cdot \mathbf n)  \rho}$ where $\rho$ is the density at the cell center. Note that this implementation takes the direction of gravity into account, which means that reversing the flow in backward advection calculations will not reverse the intantaneous topography because the reverse flow will be divided by the reverse surface gravity.
+`dynamic topography': A visualization output object that generates output for the dynamic topography at the top and bottom of the model space. The approach to determine the dynamic topography requires us to compute the stress tensor and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)-\frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{(\mathbf g \cdot \mathbf n)  \rho}$ where $\rho$ is the density at the cell center. For the bottom surface we chose the convection that positive values are up (out) and negative values are in (down), analogous to the deformation of the upper surface. Note that this implementation takes the direction of gravity into account, which means that reversing the flow in backward advection calculations will not reverse the intantaneous topography because the reverse flow will be divided by the reverse surface gravity.
 
 Strictly speaking, the dynamic topography is of course a quantity that is only of interest at the surface. However, we compute it everywhere to make things fit into the framework within which we produce data for visualization. You probably only want to visualize whatever data this postprocessor generates at the surface of your domain and simply ignore the rest of the data generated.
 
@@ -12422,6 +12724,10 @@ Fig.~\ref{fig:max-horizontal-compressive-stress} shows a simple example for this
 
 `melt material properties': A visualization output object that generates output for melt related properties of the material model.
 
+`named additional outputs': Some material models can compute quantities other than those that typically appear in the equations that \aspect{} solves (such as the viscosity, density, etc). Examples of quantities material models may be able to compute are seismic velocities, or other quantities that can be derived from the state variables and the material coefficients such as the stress or stress anisotropies. These quantities are generically referred to as `named outputs' because they are given an explicit name different from the usual outputs of material models.
+
+This visualization postprocessor outputs whatever quantities the material model can compute. What quantities these are is specific to the material model in use for a simulation, and for many models in fact does not contain any named outputs at all.
+
 `nonadiabatic pressure': A visualization output object that generates output for the non-adiabatic component of the pressure.
 
 `nonadiabatic temperature': A visualization output object that generates output for the non-adiabatic component of the pressure.
@@ -12429,10 +12735,6 @@ Fig.~\ref{fig:max-horizontal-compressive-stress} shows a simple example for this
 `particle count': A visualization output object that generates output about the number of particles per cell.
 
 `partition': A visualization output object that generates output for the parallel partition that every cell of the mesh is associated with.
-
-`seismic vp': A visualization output object that generates output for the seismic P-wave speed.
-
-`seismic vs': A visualization output object that generates output for the seismic S-wave speed.
 
 `shear stress': A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the shear stress tensor, i.e., for the components of the tensor $2\eta\varepsilon(\mathbf u)$ in the incompressible case and $2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]$ in the compressible case. The shear stress differs from the full stress tensor by the absence of the pressure.
 
@@ -12453,7 +12755,7 @@ Fig.~\ref{fig:max-horizontal-compressive-stress} shows a simple example for this
 `viscosity': A visualization output object that generates output for the viscosity.
 
 
-{\it Possible values:} A comma-separated list of any of Vp anomaly, Vs anomaly, adiabat, artificial viscosity, artificial viscosity composition, boundary indicators, compositional vector, density, depth, dynamic topography, error indicator, friction heating, gravity, heat flux map, heating, material properties, maximum horizontal compressive stress, melt fraction, melt material properties, nonadiabatic pressure, nonadiabatic temperature, particle count, partition, seismic vp, seismic vs, shear stress, specific heat, strain rate, stress, thermal conductivity, thermal diffusivity, thermal expansivity, vertical heat flux, viscosity
+{\it Possible values:} A comma-separated list of any of Vp anomaly, Vs anomaly, adiabat, artificial viscosity, artificial viscosity composition, boundary indicators, compositional vector, density, depth, dynamic topography, error indicator, friction heating, gravity, heat flux map, heating, material properties, maximum horizontal compressive stress, melt fraction, melt material properties, named additional outputs, nonadiabatic pressure, nonadiabatic temperature, particle count, partition, shear stress, specific heat, strain rate, stress, thermal conductivity, thermal diffusivity, thermal expansivity, vertical heat flux, viscosity
 \item {\it Parameter name:} {\tt Number of grouped files}
 \phantomsection\label{parameters:Postprocess/Visualization/Number of grouped files}
 
@@ -12634,6 +12936,22 @@ Fig.~\ref{fig:max-horizontal-compressive-stress} shows a simple example for this
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Density below}
+\phantomsection\label{parameters:Postprocess/Visualization/Dynamic Topography/Density below}
+
+
+\index[prmindex]{Density below}
+\index[prmindexfull]{Postprocess!Visualization!Dynamic Topography/Density below}
+{\it Value:} 9900
+
+
+{\it Default:} 9900
+
+
+{\it Description:} Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. mantle above CMB, and the density of the material that is displaced (generally outer core material). While the density of mantle rock is part of the material model, this parameter `Density below' allows the user to specify the density value of material that is displaced below the solid surface. By default this material is assumed to be outer core material with a density of 9900. Units: $kg/m^3$.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Subtract mean of dynamic topography}
 \phantomsection\label{parameters:Postprocess/Visualization/Dynamic Topography/Subtract mean of dynamic topography}
 
@@ -12646,7 +12964,7 @@ Fig.~\ref{fig:max-horizontal-compressive-stress} shows a simple example for this
 {\it Default:} false
 
 
-{\it Description:} Option to remove the mean dynamic topography in the outputted data file (not visualization). 'true' subtracts the mean, 'false' leaves the calculated dynamic topography as is. 
+{\it Description:} Option to remove the mean dynamic topography in the visualization. The mean dynamic topography is calculated and subtracted separately for the upper and lower boundary. 'true' subtracts the mean, 'false' leaves the calculated dynamic topography as is.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -12992,6 +13310,50 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 
 
 {\it Possible values:} A comma-separated list of any of compaction viscosity, fluid viscosity, permeability, fluid density, fluid density gradient
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Visualization/Vp anomaly}
+\label{parameters:Postprocess/Visualization/Vp_20anomaly}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Number of depth slices}
+\phantomsection\label{parameters:Postprocess/Visualization/Vp anomaly/Number of depth slices}
+
+
+\index[prmindex]{Number of depth slices}
+\index[prmindexfull]{Postprocess!Visualization!Vp anomaly/Number of depth slices}
+{\it Value:} 50
+
+
+{\it Default:} 50
+
+
+{\it Description:} Number of depth slices used to define average seismic compressional wave velocities from which anomalies are calculated. Units: non-dimensional.
+
+
+{\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Visualization/Vs anomaly}
+\label{parameters:Postprocess/Visualization/Vs_20anomaly}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Number of depth slices}
+\phantomsection\label{parameters:Postprocess/Visualization/Vs anomaly/Number of depth slices}
+
+
+\index[prmindex]{Number of depth slices}
+\index[prmindexfull]{Postprocess!Visualization!Vs anomaly/Number of depth slices}
+{\it Value:} 50
+
+
+{\it Default:} 50
+
+
+{\it Description:} Number of depth slices used to define average seismic shear wave velocities from which anomalies are calculated. Units: non-dimensional.
+
+
+{\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
 \end{itemize}
 
 \subsection{Parameters in section \tt Prescribed Stokes solution}
