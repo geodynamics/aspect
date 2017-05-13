@@ -57,6 +57,8 @@ namespace aspect
         out.thermal_expansion_coefficients = base_output.thermal_expansion_coefficients;
       if (model_property_map.at(Property::specific_heat) == model_index)
         out.specific_heat = base_output.specific_heat;
+      if (model_property_map.at(Property::thermal_conductivity) == model_index)
+        out.thermal_conductivities = base_output.thermal_conductivities;
       if (model_property_map.at(Property::compressibility) == model_index)
         out.compressibilities = base_output.compressibilities;
       if (model_property_map.at(Property::entropy_derivative_pressure) == model_index)
@@ -77,8 +79,8 @@ namespace aspect
 
       for (unsigned int i=0; i<models.size(); ++i)
         {
-          models[i]->evaluate(in, evaluated);
-          composite(i, evaluated, out);
+          models[i]->evaluate(in, base_output);
+          copy_required_properties(i, base_output, out);
         }
     }
 
