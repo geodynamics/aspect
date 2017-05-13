@@ -41,14 +41,14 @@ namespace aspect
     Function<dim>::
     initial_temperature (const Point<dim> &position) const
     {
-      if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::cartesian)
+      if (coordinate_system == Utilities::Coordinates::CoordinateSystem::cartesian)
         {
           return function.value(position);
         }
-      else if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::spherical)
+      else if (coordinate_system == Utilities::Coordinates::CoordinateSystem::spherical)
         {
           const std_cxx11::array<double,dim> spherical_coordinates =
-            aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
+            Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
           Point<dim> point;
 
           for (unsigned int i = 0; i<dim; ++i)
@@ -56,7 +56,7 @@ namespace aspect
 
           return function.value(point);
         }
-          else if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::depth)
+      else if (coordinate_system == Utilities::Coordinates::CoordinateSystem::depth)
         {
           const double depth = this->get_geometry_model().depth(position);
           Point<dim> point;
@@ -112,7 +112,7 @@ namespace aspect
       {
         prm.enter_subsection("Function");
         {
-          coordinate_system = ::aspect::Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+          coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
         }
 
         try
