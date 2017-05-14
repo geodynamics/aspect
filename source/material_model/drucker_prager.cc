@@ -29,54 +29,107 @@ namespace aspect
   {
 
     template <int dim>
-    double
+    void
     DruckerPrager<dim>::
-    viscosity (const double /*temperature*/,
-               const double pressure,
-               const std::vector<double> &/*composition*/,
-               const SymmetricTensor<2,dim> &strain_rate,
-               const Point<dim> &/*position*/) const
-    {
-      // For the very first time this function is called
-      // (the first iteration of the first timestep), this function is called
-      // with a zero input strain rate. We provide a representative reference
-      // strain rate for this case, which avoids division by zero and produces
-      // a representative first guess of the viscosities.
-      // In later iterations and timesteps we calculate the second moment
-      // invariant of the deviatoric strain rate tensor.
-      // This is equal to the negative of the second principle
-      // invariant calculated with the function second_invariant.
-      const double strain_rate_dev_inv2 = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
-                                            ?
-                                            reference_strain_rate * reference_strain_rate
-                                            :
-                                            std::fabs(second_invariant(deviator(strain_rate))));
+    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+            MaterialModel::MaterialModelOutputs<dim> &out) const
+        {
+          for (unsigned int i=0; i < in.position.size(); ++i)
+            {
+            // For the very first time this function is called
+            // (the first iteration of the first timestep), this function is called
+            // with a zero input strain rate. We provide a representative reference
+            // strain rate for this case, which avoids division by zero and produces
+            // a representative first guess of the viscosities.
+            // In later iterations and timesteps we calculate the second moment
+            // invariant of the deviatoric strain rate tensor.
+            // This is equal to the negative of the second principle
+            // invariant calculated with the function second_invariant.
+            const double strain_rate_dev_inv2 = ( (this->get_timestep_number() == 0 && in.strain_rate[i].norm() <= std::numeric_limits<double>::min())
+                                                  ?
+                                                  reference_strain_rate * reference_strain_rate
+                                                  :
+                                                  std::fabs(second_invariant(deviator(in.strain_rate[i]))));
 
-      // In later timesteps, we still need to care about cases of very small
-      // strain rates. We expect the viscosity to approach the maximum_viscosity
-      // in these cases. This check prevents a division-by-zero.
-      if (std::sqrt(strain_rate_dev_inv2) <= std::numeric_limits<double>::min())
-        return maximum_viscosity;
+            // In later timesteps, we still need to care about cases of very small
+            // strain rates. We expect the viscosity to approach the maximum_viscosity
+            // in these cases. This check prevents a division-by-zero.
+            if (std::sqrt(strain_rate_dev_inv2) <= std::numeric_limits<double>::min())
+              out.viscosities[i] = maximum_viscosity;
+              // To avoid negative yield strengths and eventually viscosities,
+              // we make sure the pressure is not negative
+              const double strength = ( (dim==3)
+                                        ?
+                                        ( 6.0 * cohesion * std::cos(phi) + 2.0 * std::max(in.pressure[i],0.0) * std::sin(phi) )
+                                        / ( std::sqrt(3.0) * ( 3.0 + std::sin(phi) ) )
+                                        :
+                                        cohesion * std::cos(phi) + std::max(in.pressure[i],0.0) * std::sin(phi) );
 
-      // To avoid negative yield strengths and eventually viscosities,
-      // we make sure the pressure is not negative
-      const double strength = ( (dim==3)
-                                ?
-                                ( 6.0 * cohesion * std::cos(phi) + 2.0 * std::max(pressure,0.0) * std::sin(phi) )
-                                / ( std::sqrt(3.0) * ( 3.0 + std::sin(phi) ) )
-                                :
-                                cohesion * std::cos(phi) + std::max(pressure,0.0) * std::sin(phi) );
+              // Rescale the viscosity back onto the yield surface
+              const double viscosity = strength / ( 2.0 * std::sqrt(strain_rate_dev_inv2) );
 
-      // Rescale the viscosity back onto the yield surface
-      const double viscosity = strength / ( 2.0 * std::sqrt(strain_rate_dev_inv2) );
+              // Cut off the viscosity between a minimum and maximum value to avoid
+              // a numerically unfavourable large viscosity range.
+              const double effective_viscosity = 1.0 / ( ( 1.0 / ( viscosity + minimum_viscosity ) ) + ( 1.0 / maximum_viscosity ) );
 
-      // Cut off the viscosity between a minimum and maximum value to avoid
-      // a numerically unfavourable large viscosity range.
-      const double effective_viscosity = 1.0 / ( ( 1.0 / ( viscosity + minimum_viscosity ) ) + ( 1.0 / maximum_viscosity ) );
+              out.viscosities[i] = effective_viscosity;
+              out.specific_heat[i] = reference_specific_heat;
+              out.thermal_conductivities[i] = thermal_k;
+              out.densities[i] = reference_rho * (1 - thermal_alpha * (in.temperature[i] - reference_T));
+              out.thermal_expansion_coefficients[i] = thermal_alpha;
+              out.compressibilities[i] = 0;
 
-      return effective_viscosity;
+            }
+          }
 
-    }
+
+
+    // viscosity (const double /*temperature*/,
+    //            const double pressure,
+    //            const std::vector<double> &/*composition*/,
+    //            const SymmetricTensor<2,dim> &strain_rate,
+    //            const Point<dim> &/*position*/) const
+    // {
+    //   // For the very first time this function is called
+    //   // (the first iteration of the first timestep), this function is called
+    //   // with a zero input strain rate. We provide a representative reference
+    //   // strain rate for this case, which avoids division by zero and produces
+    //   // a representative first guess of the viscosities.
+    //   // In later iterations and timesteps we calculate the second moment
+    //   // invariant of the deviatoric strain rate tensor.
+    //   // This is equal to the negative of the second principle
+    //   // invariant calculated with the function second_invariant.
+    //   const double strain_rate_dev_inv2 = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
+    //                                         ?
+    //                                         reference_strain_rate * reference_strain_rate
+    //                                         :
+    //                                         std::fabs(second_invariant(deviator(strain_rate))));
+
+    //   // In later timesteps, we still need to care about cases of very small
+    //   // strain rates. We expect the viscosity to approach the maximum_viscosity
+    //   // in these cases. This check prevents a division-by-zero.
+    //   if (std::sqrt(strain_rate_dev_inv2) <= std::numeric_limits<double>::min())
+    //     return maximum_viscosity;
+
+    //   // To avoid negative yield strengths and eventually viscosities,
+    //   // we make sure the pressure is not negative
+    //   const double strength = ( (dim==3)
+    //                             ?
+    //                             ( 6.0 * cohesion * std::cos(phi) + 2.0 * std::max(pressure,0.0) * std::sin(phi) )
+    //                             / ( std::sqrt(3.0) * ( 3.0 + std::sin(phi) ) )
+    //                             :
+    //                             cohesion * std::cos(phi) + std::max(pressure,0.0) * std::sin(phi) );
+
+    //   // Rescale the viscosity back onto the yield surface
+    //   const double viscosity = strength / ( 2.0 * std::sqrt(strain_rate_dev_inv2) );
+
+    //   // Cut off the viscosity between a minimum and maximum value to avoid
+    //   // a numerically unfavourable large viscosity range.
+    //   const double effective_viscosity = 1.0 / ( ( 1.0 / ( viscosity + minimum_viscosity ) ) + ( 1.0 / maximum_viscosity ) );
+
+    //   return effective_viscosity;
+
+    // }
 
 
     template <int dim>
@@ -88,64 +141,64 @@ namespace aspect
     }
 
 
-    template <int dim>
-    double
-    DruckerPrager<dim>::
-    specific_heat (const double,
-                   const double,
-                   const std::vector<double> &, /*composition*/
-                   const Point<dim> &) const
-    {
-      return reference_specific_heat;
-    }
+    // template <int dim>
+    // double
+    // DruckerPrager<dim>::
+    // specific_heat (const double,
+    //                const double,
+    //                const std::vector<double> &, /*composition*/
+    //                const Point<dim> &) const
+    // {
+    //   return reference_specific_heat;
+    // }
 
 
-    template <int dim>
-    double
-    DruckerPrager<dim>::
-    thermal_conductivity (const double,
-                          const double,
-                          const std::vector<double> &, /*composition*/
-                          const Point<dim> &) const
-    {
-      return thermal_k;
-    }
+    // template <int dim>
+    // double
+    // DruckerPrager<dim>::
+    // thermal_conductivity (const double,
+    //                       const double,
+    //                       const std::vector<double> &, /*composition*/
+    //                       const Point<dim> &) const
+    // {
+    //   return thermal_k;
+    // }
 
 
-    template <int dim>
-    double
-    DruckerPrager<dim>::
-    density (const double temperature,
-             const double,
-             const std::vector<double> &, /*composition*/
-             const Point<dim> &) const
-    {
-      return reference_rho * (1 - thermal_alpha * (temperature - reference_T));
-    }
+    // template <int dim>
+    // double
+    // DruckerPrager<dim>::
+    // density (const double temperature,
+    //          const double,
+    //          const std::vector<double> &, /*composition*/
+    //          const Point<dim> &) const
+    // {
+    //   return reference_rho * (1 - thermal_alpha * (temperature - reference_T));
+    // }
 
 
-    template <int dim>
-    double
-    DruckerPrager<dim>::
-    thermal_expansion_coefficient (const double,
-                                   const double,
-                                   const std::vector<double> &, /*composition*/
-                                   const Point<dim> &) const
-    {
-      return thermal_alpha;
-    }
+    // template <int dim>
+    // double
+    // DruckerPrager<dim>::
+    // thermal_expansion_coefficient (const double,
+    //                                const double,
+    //                                const std::vector<double> &, /*composition*/
+    //                                const Point<dim> &) const
+    // {
+    //   return thermal_alpha;
+    // }
 
 
-    template <int dim>
-    double
-    DruckerPrager<dim>::
-    compressibility (const double,
-                     const double,
-                     const std::vector<double> &, /*composition*/
-                     const Point<dim> &) const
-    {
-      return 0.0;
-    }
+    // template <int dim>
+    // double
+    // DruckerPrager<dim>::
+    // compressibility (const double,
+    //                  const double,
+    //                  const std::vector<double> &, /*composition*/
+    //                  const Point<dim> &) const
+    // {
+    //   return 0.0;
+    // }
 
 
 
