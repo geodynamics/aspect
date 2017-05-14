@@ -478,6 +478,11 @@ namespace aspect
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 
+      Assert(melt_outputs->compaction_viscosities[0] > 0.0,
+             ExcMessage ("MeltOutputs have to be filled for models with melt transport. "
+                         "At the moment, these outputs are not filled, or they do not have "
+                         "reasonable values."));
+
       std::vector<Tensor<1,dim> > fluid_velocity_values(n_q_points);
       const FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
       scratch.finite_element_values[ex_u_f].get_function_values (this->get_solution(),fluid_velocity_values);
