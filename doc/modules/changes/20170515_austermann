@@ -1,0 +1,5 @@
+Changed: The default number of grouped files has been changed from 0 (i.e. the nunmber of 
+processors) to 16 in order to keep the number of output files small if not explicitely
+stated otherwise.
+<br>
+(Jacky Austermann, 2017/05/15)
