@@ -32,7 +32,7 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A material model for incompressible (using the boussinesq approximation)
+     * A material model for incompressible (using the Boussinesq approximation)
      * and compressible computations (with ALA or TALA) for a nondimensionalized
      * problem. The viscosity is (optionally) depth and temperature dependent.
      *
