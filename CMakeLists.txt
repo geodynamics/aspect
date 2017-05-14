@@ -189,7 +189,7 @@ ADD_CUSTOM_TARGET(generate_reference_output
 ADD_CUSTOM_TARGET(indent
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
   COMMAND ./doc/indent
-  COMMENT "Indenting all source files..."
+  COMMENT "Indenting all ASPECT header and source files..."
   )
 
 
