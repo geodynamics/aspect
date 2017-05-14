@@ -1972,7 +1972,7 @@ namespace aspect
             }
 
           Assert (averaged_parameter > 0, ExcMessage ("The sum of the weights/values may not be smaller or equal to zero."));
-          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0.0);
           return sum_of_weights/averaged_parameter;
         }
       else if (p == 0)
@@ -1980,7 +1980,8 @@ namespace aspect
           // Geometric average
           for (unsigned int i=0; i < weights.size(); ++i)
             averaged_parameter += weights[i]*std::log(values[i]);
-          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0.0);
           Assert (sum_of_weights != 0,
                   ExcMessage ("The sum of the weights may not be equal to zero, because we need to divide through it."));
           return std::exp(averaged_parameter/sum_of_weights);
@@ -1990,7 +1991,8 @@ namespace aspect
           // Arithmetic average
           for (unsigned int i=0; i< weights.size(); ++i)
             averaged_parameter += weights[i]*values[i];
-          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0.0);
           Assert (sum_of_weights != 0,
                   ExcMessage ("The sum of the weights may not be equal to zero, because we need to divide through it."));
           return averaged_parameter/sum_of_weights;
@@ -2000,7 +2002,8 @@ namespace aspect
           // Quadratic average (RMS)
           for (unsigned int i=0; i< weights.size(); ++i)
             averaged_parameter += weights[i]*values[i]*values[i];
-          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0.0);
           Assert (sum_of_weights != 0,
                   ExcMessage ("The sum of the weights may not be equal to zero, because we need to divide through it."));
           Assert (averaged_parameter/sum_of_weights > 0, ExcMessage ("The sum of the weights is smaller or equal to zero."));
@@ -2011,7 +2014,8 @@ namespace aspect
           // Cubic average
           for (unsigned int i=0; i< weights.size(); ++i)
             averaged_parameter += weights[i]*values[i]*values[i]*values[i];
-          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0.0);
           Assert (sum_of_weights != 0,
                   ExcMessage ("The sum of the weights may not be equal to zero, because we need to divide through it."));
           return cbrt(averaged_parameter/sum_of_weights);
@@ -2051,7 +2055,9 @@ namespace aspect
                 return 0;
               averaged_parameter += weights[i] * std::pow(values[i],p);
             }
-          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0.0);
+
           Assert (sum_of_weights > 0, ExcMessage ("The sum of the weights may not be smaller or equal to zero."));
           Assert (averaged_parameter > 0,
                   ExcMessage ("The sum of the weights times the values to the power p may not be smaller or equal to zero."));
@@ -2121,7 +2127,7 @@ namespace aspect
                   averaged_parameter_derivative_part_2 += weights[i] * (1/(values[i] * values[i])) * derivatives[i];
                 }
             }
-          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0.0);
           Assert (sum_of_weights > 0, ExcMessage ("The sum of the weights may not be smaller or equal to zero."));
           return std::pow(averaged_parameter_derivative_part_1/sum_of_weights,-2) * averaged_parameter_derivative_part_2/sum_of_weights;
         }
@@ -2133,7 +2139,8 @@ namespace aspect
               averaged_parameter_derivative_part_1 += weights[i]*std::log(values[i]);
               averaged_parameter_derivative_part_2 += weights[i]*(1/values[i])*derivatives[i];
             }
-          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0.0);
           Assert (sum_of_weights != 0,
                   ExcMessage ("The sum of the weights may not be equal to zero, because we need to divide through it."));
           return std::exp(averaged_parameter_derivative_part_1/sum_of_weights) * averaged_parameter_derivative_part_2/sum_of_weights;
@@ -2143,7 +2150,8 @@ namespace aspect
           // Arithmetic average
           for (unsigned int i=0; i< weights.size(); ++i)
             averaged_parameter_derivative_part_2 += weights[i]*derivatives[i];
-          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0.0);
           Assert (sum_of_weights != 0,
                   ExcMessage ("The sum of the weights may not be equal to zero, because we need to divide through it."));
           return averaged_parameter_derivative_part_2/sum_of_weights;
@@ -2193,7 +2201,7 @@ namespace aspect
               averaged_parameter_derivative_part_1 += weights[i] * std::pow(values[i],p);
               averaged_parameter_derivative_part_2 += weights[i] * std::pow(values[i],p-1) * derivatives[i];
             }
-          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0);
+          const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0.0);
           Assert (sum_of_weights > 0, ExcMessage ("The sum of the weights may not be smaller or equal to zero."));
           Assert (averaged_parameter_derivative_part_1/sum_of_weights > 0,
                   ExcMessage ("The sum of the weights times the values to the power p may not be smaller or equal to zero."));
