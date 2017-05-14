@@ -172,8 +172,7 @@ namespace aspect
               out.specific_heat[i] = 0;
             }
           }
-        
-        const Point<dim> &position) const;
+          
         /**
          * @}
          */
