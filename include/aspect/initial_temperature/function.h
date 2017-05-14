@@ -23,6 +23,8 @@
 #define _aspect_initial_temperature_function_h
 
 #include <aspect/initial_temperature/interface.h>
+#include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parsed_function.h>
 
@@ -39,7 +41,7 @@ namespace aspect
      * @ingroup InitialTemperatures
      */
     template <int dim>
-    class Function : public Interface<dim>
+    class Function : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -78,6 +80,13 @@ namespace aspect
          * A function object representing the temperature.
          */
         Functions::ParsedFunction<dim> function;
+
+        /**
+         * The coordinate representation to evaluate the function. Possible
+         * choices are depth, cartesian and spherical.
+         */
+        ::aspect::Utilities::Coordinates::CoordinateSystem coordinate_system;
+
     };
   }
 }
