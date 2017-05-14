@@ -217,12 +217,12 @@ namespace aspect
               // Calculate and/or constrain the strain invariant of the previous timestep
               if ( use_finite_strain_tensor == true )
                 {
-                  // Calculate second invarinat of left stretching tensor "L"
+                  // Calculate second invariant of left stretching tensor "L"
                   Tensor<2,dim> strain;
                   for (unsigned int q = 0; q < Tensor<2,dim>::n_independent_components ; ++q)
                     strain[Tensor<2,dim>::unrolled_to_component_indices(q)] = composition[q];
-                  const SymmetricTensor<2,dim> L = symmetrize( strain * transpose(strain) );                  
-                  strain_ii = std::fabs(second_invariant(L)); 
+                  const SymmetricTensor<2,dim> L = symmetrize( strain * transpose(strain) );
+                  strain_ii = std::max(std::min(std::fabs(second_invariant(L)),end_strain_weakening_intervals[j]),start_strain_weakening_intervals[j]);
                 }
               else
                 {
@@ -379,16 +379,16 @@ namespace aspect
           double e_ii = 0.;
           if  (use_strain_weakening == true && use_finite_strain_tensor == false && this->get_timestep_number() > 0)
             {
-               edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),min_strain_rate);
-               e_ii = edot_ii*this->get_timestep();
-               // Update reaction term
+              edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),min_strain_rate);
+              e_ii = edot_ii*this->get_timestep();
+              // Update reaction term
               out.reaction_terms[i][0] = e_ii;
             }
         }
 
       // We need the velocity gradient for the finite strain (they are not included in material model inputs),
       // so we get them from the finite element.
-      if (in.cell && use_finite_strain_tensor == true && this->get_timestep_number() > 0)
+      if (in.cell && use_strain_weakening == true && use_finite_strain_tensor == true && this->get_timestep_number() > 0)
         {
           const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+1);
           FEValues<dim> fe_values (this->get_mapping(),
@@ -416,7 +416,7 @@ namespace aspect
 
               // Compute the strain accumulated in this timestep.
               const Tensor<2,dim> strain_increment = this->get_timestep() * (velocity_gradients[q] * strain);
-              
+
               // Output the strain increment component-wise to its respective compositional field's reaction terms.
               for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
                 {
@@ -424,7 +424,7 @@ namespace aspect
                 }
             }
 
-        }        
+        }
     }
 
     template <int dim>
@@ -849,10 +849,10 @@ namespace aspect
                                    "strain rate tensor and $dt$ is the time step size. In the case of the "
                                    "full strain tensor $F$, the finite strain magnitude is derived from the "
                                    "second invariant of the symmetric stretching tensor $L$, where "
-                                   "$L = F * [F]^T$. In either case, the user specifies a single compositional "
+                                   "$L = F * [F]^T$. The user must specify a single compositional "
                                    "field for the finite strain invariant or multiple fields (4 in 2D, 9 in 3D) "
                                    "for the finite strain tensor. These field(s) must be the first lised "
-                                   "compositional fields in the paramter file. Note that one or more of the finite strain "
+                                   "compositional fields in the parameter file. Note that one or more of the finite strain "
                                    "tensor components must be assigned a non-zero value intially. This value can be "
                                    "be quite small (ex: 1.e-8), but still non-zero. While the option to track and use "
                                    "the full finite strain tensor exists, tracking the associated compositional "

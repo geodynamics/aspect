@@ -66,7 +66,7 @@ subsection Compositional fields
   set Names of fields = s11, s12, s21, s22
 end
 
-# All compositional fields have an initial value of 0
+# The compositional fields have an initial value 0 or 0.5
 subsection Initial composition model
   set Model name = function
   subsection Function
