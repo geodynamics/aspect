@@ -18,7 +18,6 @@ Number of degrees of freedom: 28,690 (20,790+970+6,930)
      RMS, max velocity:                 1.54 m/s, 4.59 m/s
      Errors u_L1, p_L1, u_L2, p_L2:     1.558193e-02, 1.215643e-01, 7.656806e-03, 1.253073e-01
      Writing depth average:             output-hollow_sphere/depth_average.gnuplot
-     System matrix memory consumption:  53.68 MB
 
 Termination requested by criterion: end time
 

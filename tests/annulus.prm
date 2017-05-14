@@ -99,7 +99,7 @@ end
 # run at the end of each time step. 
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, AnnulusPostprocessor, depth average, memory statistics
+  set List of postprocessors = visualization, velocity statistics, AnnulusPostprocessor
 
   subsection Visualization
     set List of output variables = density, viscosity, strain rate
