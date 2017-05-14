@@ -29,3 +29,8 @@ s/compositional-initial-conditions/initial-composition/g
 
 # Rename initial (temperature) conditions
 s/initial-conditions/initial-temperature/g
+
+# Replace removed postprocessors
+s/seismic vs/named additional outputs/g
+s/seismic vp/named additional outputs/g
+s/named additional outputs.*named additional outputs/named additional outputs/g
