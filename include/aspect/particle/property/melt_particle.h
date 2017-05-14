@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -31,16 +31,16 @@ namespace aspect
     namespace Property
     {
       /**
-       * Implementation of a plugin in which the particle
-       * property is defined as presence of melt above the
-       * melt transport threshold. Returns a porosity of 0
-       * if melt is not present and a porosity of 1 if melt
+       * Implementation of a plugin in which the particle 
+       * property is defined as presence of melt above the 
+       * melt transport threshold. This property is set 
+       * to 0 if melt is not present and set to 1 if melt 
        * is present.
        *
        * @ingroup ParticleProperties
        */
       template <int dim>
-      class Melt : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+      class MeltParticle : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
       {
         public:
           /**

@@ -32,7 +32,7 @@
           0
           2
         </DataArray>
-        <DataArray type="Float64" Name="porosity" NumberOfComponents="1" Format="ascii">
+        <DataArray type="Float64" Name="melt_presence" NumberOfComponents="1" Format="ascii">
           0
           1
           0

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -31,7 +31,7 @@ namespace aspect
     {
       template <int dim>
       void
-      Melt<dim>::initialize_one_particle_property(const Point<dim> &position,
+      MeltParticle<dim>::initialize_one_particle_property(const Point<dim> &/*position*/,
                                                   std::vector<double> &data) const
       {
         data.push_back(0.0);
@@ -39,15 +39,15 @@ namespace aspect
 
       template <int dim>
       void
-      Melt<dim>::update_one_particle_property(const unsigned int data_position,
+      MeltParticle<dim>::update_one_particle_property(const unsigned int data_position,
                                               const Point<dim> &,
                                               const Vector<double> &solution,
                                               const std::vector<Tensor<1,dim> > &,
                                               const ArrayView<double> &data) const
       {
         AssertThrow(this->introspection().compositional_name_exists("porosity"),
-                    ExcMessage("Material model Melt simple with melt transport only "
-                               "works if there is a compositional field called porosity."));
+                    ExcMessage("Particle property melt particle only works if"
+                               "there is a compositional field called porosity."));
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
         const unsigned int solution_component = this->introspection().component_indices.compositional_fields[porosity_idx];
 
@@ -59,23 +59,23 @@ namespace aspect
 
       template <int dim>
       UpdateTimeFlags
-      Melt<dim>::need_update() const
+      MeltParticle<dim>::need_update() const
       {
         return update_time_step;
       }
 
       template <int dim>
       UpdateFlags
-      Melt<dim>::get_needed_update_flags () const
+      MeltParticle<dim>::get_needed_update_flags () const
       {
         return update_values;
       }
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int> >
-      Melt<dim>::get_property_information() const
+      MeltParticle<dim>::get_property_information() const
       {
-        std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("porosity",1));
+        std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("melt_presence",1));
         return property_information;
       }
     }
@@ -89,12 +89,12 @@ namespace aspect
   {
     namespace Property
     {
-      ASPECT_REGISTER_PARTICLE_PROPERTY(Melt,
-                                        "melt",
+      ASPECT_REGISTER_PARTICLE_PROPERTY(MeltParticle,
+                                        "melt particle",
                                         "Implementation of a plugin in which the particle "
                                         "property is defined as presence of melt above the "
-                                        "melt transport theshold. Returns a porosity of 0 "
-                                        "if melt is not present and a porosity of 1 if melt  "
+                                        "melt transport theshold. This property is set "
+                                        "to 0 if melt is not present and set to 1 if melt  "
                                         "is present.")
     }
   }

@@ -1,8 +1,7 @@
 # Listing of Parameters
 # ---------------------
-# Set up the solitary wave benchmark
-# (Barcilon & Richter, 1986; Simpson & Spiegelman, 2011; 
-# Keller et al., 2013; Schmeling, 200
+# Uses the solitary wave benchmark to demonstrate the particle property melt particle, 
+# which records the presence of melt over the melt thransport threshold
 
 set Additional shared libraries            = ./libsolitary_wave.so
 
@@ -162,7 +161,7 @@ subsection Postprocess
       end
     end
     set Particle generator name       = ascii file 
-    set List of particle properties   = melt
+    set List of particle properties   = melt particle
     set Time between data output      = 0
     set Number of particles           = 10
   end
