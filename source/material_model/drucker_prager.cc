@@ -45,12 +45,15 @@ namespace aspect
             // invariant of the deviatoric strain rate tensor.
             // This is equal to the negative of the second principle
             // invariant calculated with the function second_invariant.
-            const double strain_rate_dev_inv2 = ( (this->get_timestep_number() == 0 && in.strain_rate[i].norm() <= std::numeric_limits<double>::min())
-                                                  ?
-                                                  reference_strain_rate * reference_strain_rate
-                                                  :
-                                                  std::fabs(second_invariant(deviator(in.strain_rate[i]))));
 
+            if (in.strain_rate.size() > 0 )
+            {
+              const double strain_rate_dev_inv2 = ( (this->get_timestep_number() == 0 && in.strain_rate[i].norm() <= std::numeric_limits<double>::min() )
+                                          ?
+                                          reference_strain_rate * reference_strain_rate
+                                          :
+                                          std::fabs(second_invariant(deviator(in.strain_rate[i]))));
+            
             // In later timesteps, we still need to care about cases of very small
             // strain rates. We expect the viscosity to approach the maximum_viscosity
             // in these cases. This check prevents a division-by-zero.
@@ -73,6 +76,7 @@ namespace aspect
               const double effective_viscosity = 1.0 / ( ( 1.0 / ( viscosity + minimum_viscosity ) ) + ( 1.0 / maximum_viscosity ) );
 
               out.viscosities[i] = effective_viscosity;
+            }  
               out.specific_heat[i] = reference_specific_heat;
               out.thermal_conductivities[i] = thermal_k;
               out.densities[i] = reference_rho * (1 - thermal_alpha * (in.temperature[i] - reference_T));
