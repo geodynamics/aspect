@@ -332,9 +332,9 @@ namespace aspect
 
         template <int dim>
         void StokesPreconditioner<dim>::
-        extract_stokes_dof_indices(const Introspection<dim> &introspection,
-                                   const internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,
-                                   const dealii::FESystem<dim,dim> &finite_element)
+        extract_stokes_dof_indices(const std::vector<types::global_dof_index> &all_dof_indices,
+                                   const Introspection<dim>                   &introspection,
+                                   const dealii::FiniteElement<dim>           &finite_element)
         {
           const unsigned int dofs_per_cell = finite_element.dofs_per_cell;
 
@@ -342,12 +342,13 @@ namespace aspect
             {
               if (introspection.is_stokes_component(finite_element.system_to_component_index(i).first))
                 {
-                  this->local_dof_indices[i_stokes] = scratch.local_dof_indices[i];
+                  this->local_dof_indices[i_stokes] = all_dof_indices[i];
                   ++i_stokes;
                 }
               ++i;
             }
         }
+
 
         template <int dim>
         StokesPreconditioner<dim>::
@@ -887,7 +888,7 @@ namespace aspect
     // models with melt transport).
 
     cell->get_dof_indices (scratch.local_dof_indices);
-    data.extract_stokes_dof_indices(introspection, scratch, finite_element);
+    data.extract_stokes_dof_indices(scratch.local_dof_indices, introspection, finite_element);
 
     // Prepare the data structures for assembly
     scratch.finite_element_values.reinit (cell);
@@ -1073,7 +1074,7 @@ namespace aspect
 
     cell->get_dof_indices (scratch.local_dof_indices);
 
-    data.extract_stokes_dof_indices(introspection, scratch, finite_element);
+    data.extract_stokes_dof_indices (scratch.local_dof_indices, introspection, finite_element);
 
     // Prepare the data structures for assembly
     scratch.finite_element_values.reinit (cell);
