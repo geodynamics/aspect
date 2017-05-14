@@ -1031,12 +1031,8 @@ namespace aspect
       for (unsigned int i=0; i<n_neighbors; ++i)
         n_send_particles += send_particles[i].size();
 
-#if DEAL_II_VERSION_GTE(8,5,0)
       const unsigned int cellid_size = sizeof(CellId::binary_type);
       const unsigned int particle_size = property_manager->get_particle_size() + integrator->get_data_size() + cellid_size;
-#else
-      const unsigned int particle_size = property_manager->get_particle_size() + integrator->get_data_size();
-#endif
 
       // Determine the amount of data we will send to other processors
       std::vector<unsigned int> n_send_data(n_neighbors);
@@ -1059,14 +1055,13 @@ namespace aspect
           end_particle = send_particles[neighbor_id].end();
           for (; cell_particle != end_particle; ++cell_particle)
             {
-#if DEAL_II_VERSION_GTE(8,5,0)
               const typename parallel::distributed::Triangulation<dim>::cell_iterator cell (&this->get_triangulation(),
                                                                                             cell_particle->first.first,
                                                                                             cell_particle->first.second);
               const CellId::binary_type cellid = cell->id().template to_binary<dim>();
               memcpy(data, &cellid, cellid_size);
               data = static_cast<char *>(data) + cellid_size;
-#endif
+
               cell_particle->second.write_data(data);
               data = integrator->write_data(data, cell_particle->second.get_id());
             }
@@ -1115,17 +1110,8 @@ namespace aspect
       // Put the received particles into the domain if they are in the triangulation
       const void *recv_data_it = static_cast<const void *> (&recv_data.front());
 
-#if !DEAL_II_VERSION_GTE(8,5,0)
-      const std::vector<std::set<typename Triangulation<dim>::active_cell_iterator> >
-      vertex_to_cells(GridTools::vertex_to_cell_map(this->get_triangulation()));
-      const std::vector<std::vector<Tensor<1,dim> > > vertex_to_cell_centers(vertex_to_cell_centers_directions(vertex_to_cells));
-
-      std::vector<unsigned int> neighbor_permutation;
-#endif
-
       while (reinterpret_cast<std::size_t> (recv_data_it) - reinterpret_cast<std::size_t> (&recv_data.front()) < total_recv_data)
         {
-#if DEAL_II_VERSION_GTE(8,5,0)
           CellId::binary_type binary_cellid;
           memcpy(&binary_cellid, recv_data_it, cellid_size);
           const CellId id(binary_cellid);
@@ -1134,66 +1120,6 @@ namespace aspect
           const typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell = id.to_cell(this->get_triangulation());
           const Particle<dim> recv_particle(recv_data_it,property_manager->get_property_pool());
           recv_data_it = integrator->read_data(recv_data_it, recv_particle.get_id());
-#else
-          Particle<dim> recv_particle(recv_data_it,property_manager->get_property_pool());
-          recv_data_it = integrator->read_data(recv_data_it, recv_particle.get_id());
-          const std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
-                Point<dim> > current_cell_and_position =
-                  GridTools::find_active_cell_around_point<> (this->get_mapping(),
-                                                              this->get_triangulation(),
-                                                              recv_particle.get_location());
-          typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell = current_cell_and_position.first;
-          recv_particle.set_reference_location(current_cell_and_position.second);
-
-          // GridTools::find_active_cell_around_point can find a different cell than
-          // particle_is_in_cell if the particle is very close to the boundary
-          // therefore, we might get a cell here that does not belong to us.
-          // But then at least one of its neighbors belongs to us, and the particle
-          // is extremely close to the boundary of these two cells. Look in the
-          // neighbor cells for the particle.
-          if (!cell->is_locally_owned())
-            {
-              const unsigned int closest_vertex = get_closest_vertex_of_cell(cell,recv_particle.get_location());
-              const unsigned int closest_vertex_index = cell->vertex_index(closest_vertex);
-              Tensor<1,dim> vertex_to_particle = recv_particle.get_location() - cell->vertex(closest_vertex);
-              vertex_to_particle /= vertex_to_particle.norm();
-
-              const unsigned int n_neighbor_cells = vertex_to_cells[closest_vertex_index].size();
-
-              neighbor_permutation.resize(n_neighbor_cells);
-              for (unsigned int i=0; i<n_neighbor_cells; ++i)
-                neighbor_permutation[i] = i;
-
-              std::sort(neighbor_permutation.begin(),
-                        neighbor_permutation.end(),
-                        std_cxx11::bind(&compare_particle_association<dim>,
-                                        std_cxx11::_1,
-                                        std_cxx11::_2,
-                                        std_cxx11::cref(vertex_to_particle),
-                                        std_cxx11::cref(vertex_to_cell_centers[closest_vertex_index])));
-
-              // Search all of the cells adjacent to the closest vertex of the previous cell
-              // Most likely we will find the particle in them.
-              for (unsigned int i=0; i<n_neighbor_cells; ++i)
-                {
-                  try
-                    {
-                      typename std::set<typename Triangulation<dim>::active_cell_iterator>::const_iterator neighbor_cell = vertex_to_cells[closest_vertex_index].begin();
-                      std::advance(neighbor_cell,neighbor_permutation[i]);
-                      const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(*neighbor_cell,
-                                                                                                recv_particle.get_location());
-                      if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
-                        {
-                          cell = *neighbor_cell;
-                          recv_particle.set_reference_location(p_unit);
-                          break;
-                        }
-                    }
-                  catch (typename Mapping<dim>::ExcTransformationFailed &)
-                    {}
-                }
-            }
-#endif
 
           const types::LevelInd found_cell = std::make_pair(cell->level(),cell->index());
 

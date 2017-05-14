@@ -227,15 +227,11 @@ namespace aspect
                                                                "particles/"+pvtu_filename));
             const std::string pvd_master_filename = (this->get_output_directory() + "particles.pvd");
             std::ofstream pvd_master (pvd_master_filename.c_str());
-#if DEAL_II_VERSION_GTE(8,5,0)
+
             DataOutBase::write_pvd_record (pvd_master, times_and_pvtu_file_names);
-#else
-            DataOut<dim>().write_pvd_record (pvd_master, times_and_pvtu_file_names);
-#endif
 
             // same for the .visit record for the entire simulation. for this, we first
             // have to collect all files that together form this one time step
-#if DEAL_II_VERSION_GTE(8,5,0)
             std::vector<std::string> this_timestep_output_files;
             for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++i)
               this_timestep_output_files.push_back ("particles/" + output_file_prefix +
@@ -246,7 +242,6 @@ namespace aspect
             const std::string visit_master_filename = (this->get_output_directory() + "particles.visit");
             std::ofstream visit_master (visit_master_filename.c_str());
             DataOutBase::write_visit_record (visit_master, times_and_vtu_file_names);
-#endif
           }
         file_index++;
 
