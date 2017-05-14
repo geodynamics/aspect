@@ -81,7 +81,7 @@ namespace aspect
          * The coordinate representation to evaluate the function. Possible
          * choices are depth, cartesian and spherical.
          */
-        ::aspect::Utilities::Coordinates::CoordinateSystem coordinate_system;
+        Utilities::Coordinates::CoordinateSystem coordinate_system;
 
         /**
          * A function object representing the minimum refinement level. The
