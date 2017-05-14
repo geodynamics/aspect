@@ -87,6 +87,34 @@ namespace aspect
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const;
 
+
+        /**
+         * @}
+         */
+
+        /**
+         * @name Qualitative properties one can ask a material model
+         * @{
+         */
+
+        /**
+         * Return whether the model is compressible or not.  Incompressibility
+         * does not necessarily imply that the density is constant; rather, it
+         * may still depend on temperature or pressure. In the current
+         * context, compressibility means whether we should solve the continuity
+         * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
+         * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
+         */
+        virtual bool is_compressible () const;
+        /**
+         * @}
+         */
+
+        /**
+         * @name Reference quantities
+         * @{
+         */
+        virtual double reference_viscosity () const;
         /**
          * @}
          */
