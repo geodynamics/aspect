@@ -9,8 +9,8 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Solving Stokes system... 32+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:        1.43 m/year, 3.34 m/year
-     Pressure min/avg/max:     -4.865e+08 Pa, 3.262e+10 Pa, 8.994e+10 Pa
+     RMS, max velocity:        1.09 m/year, 5.17 m/year
+     Pressure min/avg/max:     -2.198e+07 Pa, 3.29e+10 Pa, 9.196e+10 Pa
      Writing graphical output: output-chunk_lithostatic_pressure_2d/solution/solution-00000
 
 Termination requested by criterion: end time
