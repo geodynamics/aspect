@@ -1,11 +1,10 @@
+# Duplicate of the simple incompressible model with using the
+# composite model instead
+
 # This is a relatively realistic compressible model setup.
 # There is no simple analytical solution to it, it is rather
 # intended to serve as a comparison for more complicated
 # material models, which should be able to reproduce it.
-# The material model used here is already tested by
-# simple_compressibility_iterated_stokes.
-# Currently there is the steinberger_compressible test
-# reproducing this test.
 
 set CFL number                             = 1.0
 set End time                               = 1e5
