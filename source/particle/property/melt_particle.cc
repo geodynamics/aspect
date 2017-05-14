@@ -32,7 +32,7 @@ namespace aspect
       template <int dim>
       void
       MeltParticle<dim>::initialize_one_particle_property(const Point<dim> &/*position*/,
-                                                  std::vector<double> &data) const
+                                                          std::vector<double> &data) const
       {
         data.push_back(0.0);
       }
@@ -40,10 +40,10 @@ namespace aspect
       template <int dim>
       void
       MeltParticle<dim>::update_one_particle_property(const unsigned int data_position,
-                                              const Point<dim> &,
-                                              const Vector<double> &solution,
-                                              const std::vector<Tensor<1,dim> > &,
-                                              const ArrayView<double> &data) const
+                                                      const Point<dim> &,
+                                                      const Vector<double> &solution,
+                                                      const std::vector<Tensor<1,dim> > &,
+                                                      const ArrayView<double> &data) const
       {
         AssertThrow(this->introspection().compositional_name_exists("porosity"),
                     ExcMessage("Particle property melt particle only works if"

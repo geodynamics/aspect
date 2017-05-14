@@ -31,10 +31,10 @@ namespace aspect
     namespace Property
     {
       /**
-       * Implementation of a plugin in which the particle 
-       * property is defined as presence of melt above the 
-       * melt transport threshold. This property is set 
-       * to 0 if melt is not present and set to 1 if melt 
+       * Implementation of a plugin in which the particle
+       * property is defined as presence of melt above the
+       * melt transport threshold. This property is set
+       * to 0 if melt is not present and set to 1 if melt
        * is present.
        *
        * @ingroup ParticleProperties
