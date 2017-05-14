@@ -318,6 +318,30 @@ namespace aspect
                        "the composition system gets solved. See 'linear solver "
                        "tolerance' for more details.");
 
+    prm.enter_subsection ("Solver parameters");
+    {
+      prm.enter_subsection ("Newton solver parameters");
+      {
+        prm.declare_entry ("Nonlinear Newton solver switch tolerance", "1e-5",
+                           Patterns::Double(0,1),
+                           "A relative tolerance with respect to the the residual of the first "
+                           "iteration, up to which the nonlinear Picard solver will iterate, "
+                           "before changing to the newton solver.");
+
+        prm.declare_entry ("Max pre-Newton nonlinear iterations", "10",
+                           Patterns::Integer (0),
+                           "The maximum number of Picard nonlinear iterations to be performed "
+                           "before switching to Newton iterations.");
+
+        prm.declare_entry ("Max Newton line search iterations", "5",
+                           Patterns::Integer (0),
+                           "The maximum number of line search iterations allowed. If the "
+                           "criterion is not reached after this iteration, we apply the scaled "
+                           "increment to the solution and continue.");
+      }
+      prm.leave_subsection ();
+    }
+    prm.leave_subsection ();
 
     prm.enter_subsection("Formulation");
     {
@@ -947,6 +971,18 @@ namespace aspect
       nonlinear_solver = NonlinearSolver::Advection_only;
     else
       AssertThrow (false, ExcNotImplemented());
+
+    prm.enter_subsection ("Solver parameters");
+    {
+      prm.enter_subsection ("Newton solver parameters");
+      {
+        nonlinear_switch_tolerance = prm.get_double("Nonlinear Newton solver switch tolerance");
+        max_pre_newton_nonlinear_iterations = prm.get_integer ("Max pre-Newton nonlinear iterations");
+        max_newton_line_search_iterations = prm.get_integer ("Max Newton line search iterations");
+      }
+      prm.leave_subsection ();
+    }
+    prm.leave_subsection ();
 
     nonlinear_tolerance = prm.get_double("Nonlinear solver tolerance");
 

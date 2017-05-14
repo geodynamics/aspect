@@ -302,6 +302,7 @@ namespace aspect
     typename NonlinearSolver::Kind nonlinear_solver;
 
     double                         nonlinear_tolerance;
+    double                         nonlinear_switch_tolerance;
     bool                           resume_computation;
     double                         start_time;
     double                         CFL_number;
@@ -323,7 +324,14 @@ namespace aspect
     unsigned int                   n_expensive_stokes_solver_steps;
     double                         temperature_solver_tolerance;
     double                         composition_solver_tolerance;
+    unsigned int                   max_pre_newton_nonlinear_iterations;
+    unsigned int                   max_newton_line_search_iterations;
+    double                         switch_initial_newton_residual;
+    double                         minimum_linear_stokes_solver_tolerance;
 
+    // possibly find a better place for these variables
+    double                         newton_theta;
+    double                         newton_residual;
     /**
      * @}
      */
