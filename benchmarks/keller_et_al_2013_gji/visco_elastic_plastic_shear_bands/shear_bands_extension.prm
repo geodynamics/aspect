@@ -13,6 +13,7 @@ set CFL number                             = 0.1
 set Output directory                       = output_shear_bands_extension
 set Timing output frequency                = 1
 set Pressure normalization                 = no
+set Pressure normalization                 = surface
 
 # Model geometry (2x1 km, ~ 0.0166 km spacing)
 subsection Geometry model
@@ -38,6 +39,7 @@ subsection Model settings
   set Include adiabatic heating               = false
   set Include shear heating                   = false
   set Fixed temperature boundary indicators   = bottom, top
+  set Fixed composition boundary indicators   = bottom, top, left, right
   set Prescribed velocity boundary indicators = left x:function, \
                                                 right x:function, \
                                                 top y:function, \
@@ -120,6 +122,8 @@ subsection Material model
 
     set Use linear viscosities = true
     set Linear viscosities = 1.e24,1.e19,1.e19,1.e19
+    set Linear viscosities = 1.e23,1.e19,1.e19,1.e19
+    set Use compositional field for viscosity averaging = 1, 1, 0, 0
 
     set Angles of internal friction = 30.
     set Cohesions = 100.e6,1.e20,1.e20,1.e20

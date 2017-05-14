@@ -80,6 +80,8 @@ namespace aspect
       std::vector<double> x_comp = compositional_fields;
       for ( unsigned int i=0; i < x_comp.size(); ++i)
         {
+          // The first element represents the background mantle, which is
+          // not included in x_comp
           if (field_used_in_viscosity_averaging[i+1] == true)
             {
               // clip the compositional fields so they are between zero and one
@@ -149,7 +151,7 @@ namespace aspect
     MeltViscoPlastic<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                     std::vector<double> &melt_fractions) const
-    { 
+    {
       for (unsigned int q=0; q<in.temperature.size(); ++q)
         melt_fractions[q] = melt_fraction(in.temperature[q],
                                           std::max(0.0, in.pressure[q]));
@@ -162,121 +164,103 @@ namespace aspect
     MeltViscoPlastic<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
+      // 1) Get the background viscosities
+
       // get all material properties from the visco-plastic model
       DiffusionDislocation<dim>::evaluate(in, out);
 
-      // Define elastic time step
-      const double dte = elastic_time_step * year_in_seconds;
-
       // Modify viscosity if not using DiffusionDislocation viscosity
       if ( use_linear_viscosities == true)
-        { 
+        {
           for (unsigned int i=0; i<in.position.size(); ++i)
             {
+              // Compute volume fractions
               const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i]);
               double linear_viscosity = 0.;
               for (unsigned int c=0; c< volume_fractions.size(); ++c)
                 {
                   linear_viscosity += volume_fractions[c] * linear_viscosities[c];
                 }
-              out.viscosities[i] = linear_viscosity;     
+              out.viscosities[i] = linear_viscosity;
             }
         }
 
+      // Store the intrinsic viscosities for computing the compaction viscosities later on
+      // (Keller et al. eq. 51).
       const std::vector<double> xis = out.viscosities;
+
+      // 2) Retrieve porosity, depletion, fluid pressure and volumetric strain rate
+      // for timesteps bigger than 0.
 
       std::vector<double> maximum_melt_fractions(in.position.size());
       std::vector<double> old_porosity(in.position.size());
       std::vector<double> fluid_pressures(in.position.size());
       std::vector<double> volumetric_strain_rates(in.position.size());
+      std::vector<double> volumetric_yield_strength(in.position.size());
 
-      // Fill elastic outputs
-      ElasticOutputs<dim> *elastic_out = out.template get_additional_output<ElasticOutputs<dim> >();
-      if (elastic_out != NULL)
-        {   
-          for (unsigned int i=0; i<in.position.size(); ++i)
-            {   
+      // The porosity (if no melt transport is used, it is set to zero)
+      double porosity = 0.0;
 
-              // Obtain viscosity output from diffusion dislocation
-              const double initial_viscosity = out.viscosities[i];
-    
-              // Compute volume fractions
-              const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i]);
-    
-              // Compute average elastic shear modulus
-              double elastic_shear_modulus = 0;
-              for (unsigned int c=0; c< volume_fractions.size(); ++c)
-                {   
-                  elastic_shear_modulus += volume_fractions[c] * elastic_shear_moduli[c];
-                }   
-                elastic_out->elastic_viscosities[i] = 1. / ( ( 1. / initial_viscosity ) + ( 1. / ( elastic_shear_modulus * dte ) ) );
-                elastic_out->elastic_evolutions[i] = 1. / ( 1. + ( ( elastic_shear_modulus * dte ) / initial_viscosity ) );
-            }
-        }
- 
       // we want to get the porosity and the peridotite field (the depletion) from the old
       // solution here, so we can compute differences between the equilibrium in the current
       // time step and the melt generated up to the previous time step
-      if (this->include_melt_transport() && in.cell
-          && this->get_timestep_number() > 0)
+      if (this->include_melt_transport() )
         {
-          // Prepare the field function
-          Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
-          fe_value(this->get_dof_handler(), this->get_old_solution(), this->get_mapping());
-
-          // get peridotite and porosity field from the old the solution
+          // get peridotite and porosity field indices
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
           const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
 
-          fe_value.set_active_cell(*in.cell);
-          fe_value.value_list(in.position,
-                              maximum_melt_fractions,
-                              this->introspection().component_indices.compositional_fields[peridotite_idx]);
-
-          fe_value.value_list(in.position,
-                              old_porosity,
-                              this->introspection().component_indices.compositional_fields[porosity_idx]);
-
-          // get fluid pressure from the current solution
-          Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
-          fe_value_current(this->get_dof_handler(), this->get_solution(), this->get_mapping());
-          fe_value_current.set_active_cell(*in.cell);
-
-          fe_value_current.value_list(in.position,
-                                      fluid_pressures,
-                                      this->introspection().variable("fluid pressure").first_component_index);
-
-          // get volumetric strain rate
-          std::vector<Tensor<1,dim> > velocity_gradients(in.position.size());
-          for (unsigned int d=0; d<dim; ++d)
+          if ( in.cell
+               && this->get_timestep_number() > 0)
             {
-              fe_value_current.gradient_list(in.position,
-                                             velocity_gradients,
-                                             this->introspection().component_indices.velocities[d]);
-              for (unsigned int i=0; i<in.position.size(); ++i)
-                volumetric_strain_rates[i] += velocity_gradients[i][d];
+              // Prepare the field function
+              Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
+              fe_value(this->get_dof_handler(), this->get_old_solution(), this->get_mapping());
+
+
+              fe_value.set_active_cell(*in.cell);
+              fe_value.value_list(in.position,
+                                  maximum_melt_fractions,
+                                  this->introspection().component_indices.compositional_fields[peridotite_idx]);
+
+              fe_value.value_list(in.position,
+                                  old_porosity,
+                                  this->introspection().component_indices.compositional_fields[porosity_idx]);
+
+              // get fluid pressure from the current solution
+              Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
+              fe_value_current(this->get_dof_handler(), this->get_solution(), this->get_mapping());
+              fe_value_current.set_active_cell(*in.cell);
+
+              fe_value_current.value_list(in.position,
+                                          fluid_pressures,
+                                          this->introspection().variable("fluid pressure").first_component_index);
+
+              // get volumetric strain rate
+              // see Keller et al. eq. 11.
+              std::vector<Tensor<1,dim> > velocity_gradients(in.position.size());
+              for (unsigned int d=0; d<dim; ++d)
+                {
+                  fe_value_current.gradient_list(in.position,
+                                                 velocity_gradients,
+                                                 this->introspection().component_indices.velocities[d]);
+                  for (unsigned int i=0; i<in.position.size(); ++i)
+                    volumetric_strain_rates[i] += velocity_gradients[i][d];
+                }
             }
-        }
 
-      // we compute the volumetric yield strength here, but need it later in the melt part
-      std::vector<double> volumetric_yield_strength(in.position.size());
 
-      for (unsigned int i=0; i<in.position.size(); ++i)
-        {
-
-          // we can not use the densities from the visco-plastic model
-          // as they assume compositional fields between 0 and 1, and the depletion field can become negative
-          const double delta_rho = this->introspection().compositional_name_exists("peridotite")
-                                   ?
-                                   depletion_density_change * in.composition[i][this->introspection().compositional_index_for_name("peridotite")]
-                                   :
-                                   0.0;
-          out.densities[i] += delta_rho;
-
-          if (this->include_melt_transport())
+          // 3) Get porosity, melt density and update melt reaction terms
+          for (unsigned int i=0; i<in.position.size(); ++i)
             {
-              const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-              const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
+              // we can not use the densities from the visco-plastic model
+              // as they assume compositional fields between 0 and 1, and the depletion field can become negative
+              const double delta_rho = this->introspection().compositional_name_exists("peridotite")
+                                       ?
+                                       depletion_density_change * in.composition[i][peridotite_idx]
+                                       :
+                                       0.0;
+              out.densities[i] += delta_rho;
 
               // calculate the melting rate as difference between the equilibrium melt fraction
               // and the solution of the previous time step
@@ -312,101 +296,130 @@ namespace aspect
                     out.reaction_terms[i][c] = 0.0;
                 }
 
-              // reduce viscosity due to plastic yielding and the presence of melt
+              porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
+
+              // 4) Reduce shear viscosity due to melt presence
               if ( in.strain_rate.size() )
                 {
-
-                  const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i]);
-
-                  // melt dependence of shear viscosity 
-                  const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
+                  // melt dependence of shear viscosity
                   out.viscosities[i] *= exp(- alpha_phi * porosity);
-
-                  // Calculate viscoelastic viscosity
-                  if (model_is_viscoelastic == true)
-                    {
-                      const double initial_viscosity = out.viscosities[i];
-                      double viscoelastic = 0.0;
-  
-                      for (unsigned int c=0; c< volume_fractions.size(); ++c)
-                        {
-                          double elastic_shear_modulus = elastic_shear_moduli[c];
-                          viscoelastic += volume_fractions[c] * 1. / ( ( 1. / initial_viscosity ) + ( 1. / ( elastic_shear_modulus * dte ) ) );
-                        }
-                      out.viscosities[i] = viscoelastic; 
-                    }
- 
-                  // calculate deviatoric strain rate and viscous stress
-                  //const double edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),
-                  //                                  min_strain_rate);
-                  const double edot_ii = ( (this->get_timestep_number() == 0 && in.strain_rate[i].norm() <= std::numeric_limits<double>::min())
-                                           ?
-                                           ref_strain_rate
-                                           :
-                                           std::max(std::sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),
-                                                    min_strain_rate) );
-                  double viscous_stress = 2. * out.viscosities[i] * edot_ii * (1.0 - porosity);
-
-                  // In case porosity lies above the melt transport threshold
-                  // P_effective = P_bulk - P_f = (1-porosity) * P_s + porosity * P_f - P_f = (1-porosity) * (P_s - P_f)
-                  // otherwise,
-                  // P_effective = P_bulk, which equals P_solid (which is given by in.pressure[i])
-                  const double effective_pressure = (porosity > this->get_melt_handler().melt_transport_threshold
-                                                     ?
-                                                     (1. - porosity) * (in.pressure[i] - fluid_pressures[i])
-                                                     :
-                                                     in.pressure[i]);
-
-                  double yield_strength = 0.0;
-                  double tensile_strength = 0.0;
-
-                  for (unsigned int c=0; c< volume_fractions.size(); ++c)
-                    {
-                      const double tensile_strength_c = cohesions[c]/strength_reductions[c];
-
-                      // Convert friction angle from degrees to radians
-                      double phi = angles_internal_friction[c] * numbers::PI/180.0;
-                      const double transition_pressure = (cohesions[c] * std::cos(phi) - tensile_strength_c) / (1.0 -  sin(phi));
-
-                      double yield_strength_c = 0.0;
-                      if (effective_pressure > transition_pressure)
-                        yield_strength_c = ( (dim==3)
-                                           ?
-                                           ( 6.0 * cohesions[c] * std::cos(phi) + 2.0 * effective_pressure * std::sin(phi) )
-                                           / ( std::sqrt(3.0) * (3.0 + std::sin(phi) ) )
-                                           :
-                                           cohesions[c] * std::cos(phi) + effective_pressure * std::sin(phi) );
-                      else
-                        yield_strength_c = tensile_strength_c + effective_pressure;
-
-                      // TODO add different averagings?
-                      yield_strength += volume_fractions[c]*yield_strength_c;
-                      tensile_strength += volume_fractions[c]*tensile_strength_c;
-                    }
-
-                  // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface
-                   if (viscous_stress >= yield_strength)
-                    out.viscosities[i] = yield_strength / (2.0 * edot_ii);
-
-                  // Limit the viscosity with specified minimum and maximum bounds
-                  out.viscosities[i] = std::min(std::max(out.viscosities[i], min_visc), max_visc);
-
-                  volumetric_yield_strength[i] = viscous_stress - tensile_strength;
                 }
             }
         }
 
-      // overwrite the reaction terms, which is needed to track the finite strain invariant.
-      if (use_strain_weakening && this->get_timestep_number() > 0 && in.strain_rate.size())
+      if ( in.strain_rate.size() )
         {
 
-          // Loop through quadrature points
-          for (unsigned int q=0; q < in.position.size(); ++q)
-            {
-              const double edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[q])))),this->min_strain_rate);
+          // 5) Compute elastic viscosities and evolutions, fill elastic outputs
+          std::vector<double > elastic_evolutions(in.position.size());
+          ElasticOutputs<dim> *elastic_out = out.template get_additional_output<ElasticOutputs<dim> >();
 
-              // New strain invariant is old strain invariant plus the strain invariant of the current time step
-              out.reaction_terms[q][0] = edot_ii*this->get_timestep();
+          if (model_is_viscoelastic == true)
+            {
+              for (unsigned int i=0; i<in.position.size(); ++i)
+                {
+
+                  // Obtain melt-weakened viscosity output
+                  const double initial_viscosity = out.viscosities[i];
+
+                  // Compute average elastic shear modulus
+                  // Compute volume fractions
+                  const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i]);
+                  double elastic_shear_modulus = 0;
+                  for (unsigned int c=0; c< volume_fractions.size(); ++c)
+                    elastic_shear_modulus += volume_fractions[c] * elastic_shear_moduli[c];
+
+                  // Compute elastic viscosities and shear stress evolution parameters (Keller et al. eq. 29).
+                  out.viscosities[i] = 1. / ( ( 1. / initial_viscosity ) + ( 1. / ( elastic_shear_modulus * elastic_time_step ) ) );
+                  elastic_evolutions[i] = 1. / ( 1. + ( ( elastic_shear_modulus * elastic_time_step ) / initial_viscosity ) );
+                  // TODO multiply elastic_viscosities and elastic_evolutions by (1-porosity)
+                }
+            }
+
+          if (elastic_out != NULL)
+            {
+              elastic_out->elastic_viscosities = out.viscosities;
+              elastic_out->elastic_evolutions = elastic_evolutions;
+            }
+
+          // 6) Compute plastic weakening of visco(elastic) viscosity
+          for (unsigned int i=0; i<in.position.size(); ++i)
+            {
+
+              // Compute volume fractions
+              const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i]);
+              // calculate deviatoric strain rate (Keller et al. eq. 13)
+              const double edot_ii = ( (this->get_timestep_number() == 0 && in.strain_rate[i].norm() <= std::numeric_limits<double>::min())
+                                       ?
+                                       ref_strain_rate
+                                       :
+                                       std::max(std::sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),
+                                                min_strain_rate) );
+
+              // compute visco(elastic) stress
+              const double viscous_stress = 2. * out.viscosities[i] * edot_ii * (1.0 - porosity);
+
+              // overwrite the reaction terms, which is needed to track the finite strain invariant.
+              // TODO clarify what field tracks strain
+              // TODO I removed the condition time_step > 0, because there can be initial strain present, correct?
+              // TODO so far, strain weakening is not implemented anywhere else in this material model (e.g. compute_volume_fractions,
+              // or to actually change the cohesions and friction angles)
+              if (use_strain_weakening && in.strain_rate.size())
+                {
+                  // New strain invariant is old strain invariant plus the strain invariant of the current time step
+                  out.reaction_terms[i][0] = edot_ii*this->get_timestep();
+                }
+              // In case porosity lies above the melt transport threshold
+              // P_effective = P_bulk - P_f = (1-porosity) * P_s + porosity * P_f - P_f = (1-porosity) * (P_s - P_f)
+              // otherwise,
+              // P_effective = P_bulk, which equals P_solid (which is given by in.pressure[i])
+              const double effective_pressure = ((this->include_melt_transport() && porosity > this->get_melt_handler().melt_transport_threshold)
+                                                 ?
+                                                 (1. - porosity) * (in.pressure[i] - fluid_pressures[i])
+                                                 :
+                                                 in.pressure[i]);
+
+              double yield_strength = 0.0;
+              double tensile_strength = 0.0;
+
+              for (unsigned int c=0; c< volume_fractions.size(); ++c)
+                {
+                  const double tensile_strength_c = cohesions[c]/strength_reductions[c];
+
+                  // Convert friction angle from degrees to radians
+                  double phi = angles_internal_friction[c] * numbers::PI/180.0;
+                  const double transition_pressure = (cohesions[c] * std::cos(phi) - tensile_strength_c) / (1.0 -  sin(phi));
+
+                  double yield_strength_c = 0.0;
+                  // In case we're not using the Keller et al. formulation,
+                  // or the effective pressure is bigger than the transition pressure, use
+                  // the normal yield strength formulation
+                  if (effective_pressure > transition_pressure || !this->include_melt_transport())
+                    yield_strength_c = ( (dim==3)
+                                         ?
+                                         ( 6.0 * cohesions[c] * std::cos(phi) + 2.0 * effective_pressure * std::sin(phi) )
+                                         / ( std::sqrt(3.0) * (3.0 + std::sin(phi) ) )
+                                         :
+                                         cohesions[c] * std::cos(phi) + effective_pressure * std::sin(phi) );
+                  else
+                    // Note typo in Keller et al. paper eq. (37) (minus sign)
+                    yield_strength_c = tensile_strength_c + effective_pressure;
+
+                  // TODO add different averagings?
+                  yield_strength += volume_fractions[c]*yield_strength_c;
+                  tensile_strength += volume_fractions[c]*tensile_strength_c;
+                }
+
+              // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface
+              // TODO add in shear stress evolution parameter! (or in viscous_stress) (see Keller et al. eq (29) and eq (40))
+              if (viscous_stress >= yield_strength)
+                out.viscosities[i] = yield_strength / (2.0 * edot_ii);
+
+              // Limit the viscosity with specified minimum and maximum bounds
+              out.viscosities[i] = std::min(std::max(out.viscosities[i], min_visc), max_visc);
+
+              // Compute the volumetric yield strength (Keller et al. eq (38))
+              volumetric_yield_strength[i] = viscous_stress - tensile_strength;
             }
         }
 
@@ -415,14 +428,11 @@ namespace aspect
 
       if (melt_out != NULL)
         {
-          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-
           for (unsigned int i=0; i<in.position.size(); ++i)
             {
-              double porosity = std::max(in.composition[i][porosity_idx],0.0);
-
+              const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+              porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
               melt_out->fluid_viscosities[i] = eta_f;
-              melt_out->permeabilities[i] = (old_porosity[i] > this->get_melt_handler().melt_transport_threshold
               melt_out->permeabilities[i] = (porosity > this->get_melt_handler().melt_transport_threshold
                                              ?
                                              std::max(reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2),0.0)
@@ -436,22 +446,27 @@ namespace aspect
 
               const double phi_0 = 0.05;
               porosity = std::max(std::min(porosity,0.995),1.e-7);
-              //melt_out->compaction_viscosities[i] = xi_0 * phi_0 / porosity;
+              // compaction viscosities (Keller et al. eq (51)
               melt_out->compaction_viscosities[i] = xis[i] * phi_0 / porosity;
 
               // visco(elastic) compaction viscosity
+              // Keller et al. eq (36)
+              // TODO include elastic part
               melt_out->compaction_viscosities[i] *= (1. - porosity);
 
-              // effective compaction viscosity
-              if (in.strain_rate.size() && compaction_pressure >= volumetric_yield_strength[i])
-                melt_out->compaction_viscosities[i] = volumetric_yield_strength[i] / std::max(volumetric_strain_rates[i], min_strain_rate);
+              // TODO compaction stress evolution parameter
+
+              // effective compaction viscosity (Keller et al. eq (43) )
+              // NB: I've added a minus sign as according to eq 43
+              if (in.strain_rate.size() && compaction_pressure > volumetric_yield_strength[i])
+                melt_out->compaction_viscosities[i] =  -volumetric_yield_strength[i] / std::max(volumetric_strain_rates[i], min_strain_rate);
 
               // Limit the viscosity with specified minimum and maximum bounds
               melt_out->compaction_viscosities[i] = std::min(std::max(melt_out->compaction_viscosities[i], min_visc), max_visc);
             }
         }
 
- 
+
     }
 
 
@@ -662,7 +677,7 @@ namespace aspect
                              "The default value of 75 GPa is representative of mantle rocks. Units: none.");
           prm.declare_entry ("Elastic time step", "1.e3",
                              Patterns::Double (0),
-                             "The elastic time step $dte$. Units: $yr$.");
+                             "The elastic time step $elastic_time_step$. Units: $yr$.");
           prm.declare_entry ("Model is viscoelastic", "false",
                              Patterns::Bool (),
                              "Viscosity is modified according elastic parameters. Units: None ");
@@ -723,16 +738,16 @@ namespace aspect
                                                                         n_fields,
                                                                         "Host rock strength reductions");
           field_used_in_viscosity_averaging = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_int(Utilities::split_string_list(prm.get("Use compositional field for viscosity averaging"))),
-                                                                        n_fields,
-                                                                        "Use compositional field for viscosity averaging");
+                                                                                      n_fields,
+                                                                                      "Use compositional field for viscosity averaging");
           min_strain_rate = prm.get_double("Minimum strain rate");
           min_visc = prm.get_double ("Minimum viscosity");
           max_visc = prm.get_double ("Maximum viscosity");
 
           use_linear_viscosities = prm.get_bool ("Use linear viscosities");
           linear_viscosities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Linear viscosities"))),
-                                                                                     n_fields,
-                                                                                     "Linear viscosities");
+                                                                       n_fields,
+                                                                       "Linear viscosities");
 
           // Strain weakening parameters
           use_strain_weakening             = prm.get_bool ("Use strain weakening");
@@ -749,12 +764,15 @@ namespace aspect
                                                                                       n_fields,
                                                                                       "Friction strain weakening factors");
 
-         // Elastic parameters
-         elastic_shear_moduli = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Elastic shear moduli"))),
-                                                                              n_fields,
-                                                                              "Elastic shear moduli");
-         elastic_time_step = prm.get_double ("Elastic time step");
-         model_is_viscoelastic = prm.get_bool ("Model is viscoelastic");
+          // Elastic parameters
+          elastic_shear_moduli = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Elastic shear moduli"))),
+                                                                         n_fields,
+                                                                         "Elastic shear moduli");
+          elastic_time_step = prm.get_double ("Elastic time step");
+          if (this->convert_output_to_years ())
+            elastic_time_step *= year_in_seconds;
+
+          model_is_viscoelastic = prm.get_bool ("Model is viscoelastic");
 
         }
         prm.leave_subsection();
