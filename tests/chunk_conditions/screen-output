@@ -5,7 +5,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 55+0 iterations.
+   Solving Stokes system... 53+0 iterations.
 
    Postprocessing:
 
@@ -23,9 +23,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Reference thermal diffusivity (m^2/s):         1.22051e-06
      Rayleigh number:                               3.25205e+07
 
-     RMS, max velocity:                  195 m/year, 477 m/year
+     RMS, max velocity:                  195 m/year, 484 m/year
      Temperature min/avg/max:            273 K, 1610 K, 1800 K
-     Heat fluxes through boundary parts: -4.662e+04 W, 6.286e+05 W, 3540 W, 3540 W
+     Heat fluxes through boundary parts: -4.659e+04 W, 6.283e+05 W, 3773 W, 3773 W
 
 Termination requested by criterion: end time
 

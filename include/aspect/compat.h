@@ -77,6 +77,73 @@ namespace aspect
       }
   };
 }
+
+#include <deal.II/grid/tria_boundary_lib.h>
+
+/**
+ * The ConeBoundary implements the normal_vector function.
+ */
+namespace aspect
+{
+  using namespace dealii;
+
+  template <int dim>
+  class ConeBoundary : public dealii::ConeBoundary<dim>
+  {
+    public:
+
+      /**
+       * Constructor. Here the boundary object is constructed. The points
+       * <tt>x_0</tt> and <tt>x_1</tt> describe the starting and ending points of
+       * the axis of the (truncated) cone. <tt>radius_0</tt> denotes the radius
+       * corresponding to <tt>x_0</tt> and <tt>radius_1</tt> the one corresponding
+       * to <tt>x_1</tt>.
+       */
+      ConeBoundary (const double radius_0,
+                    const double radius_1,
+                    const Point<dim> x_0,
+                    const Point<dim> x_1);
+
+      virtual
+      Tensor<1,dim>
+      normal_vector (const typename Triangulation<dim>::face_iterator &face,
+                     const Point<dim> &p) const;
+
+  };
+
+}
+namespace aspect
+{
+  template<int dim>
+  inline
+  ConeBoundary<dim>::ConeBoundary (const double radius_0,
+                                   const double radius_1,
+                                   const Point<dim> x_0,
+                                   const Point<dim> x_1)
+    :
+    dealii::ConeBoundary<dim>(radius_0, radius_1, x_0, x_1)
+  {}
+
+  template<int dim>
+  inline
+  Tensor<1,dim>
+  ConeBoundary<dim>::
+  normal_vector (const typename Triangulation<dim>::face_iterator &,
+                 const Point<dim> &p) const
+  {
+    // TODO only for cone opening along z-axis
+    AssertThrow (dim == 3, ExcInternalError());
+    AssertThrow (this->radius_0 == 0., ExcInternalError());
+    AssertThrow (this->x_0[0] == 0., ExcInternalError());
+    const double c_squared = (this->radius_1 / this->x_1[dim-1])*(this->radius_1 / this->x_1[dim-1]);
+    Tensor<1,dim> normal = p;
+    normal[0] *= -2.0/c_squared;
+    normal[1] *= -2.0/c_squared;
+    normal[dim-1] *= 2.0;
+
+    return normal/normal.norm();
+  }
+}
 #endif
 
 
