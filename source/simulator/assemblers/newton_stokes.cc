@@ -255,13 +255,6 @@ namespace aspect
               // Testing whether the Jacobian is Symmetric Positive Definite (SPD)
               if (assemble_newton_stokes_matrix)
                 {
-                  SymmetricTensor<4,dim> H;
-                  SymmetricTensor<4,dim> HT;
-                  H = outer_product(strain_rate,viscosity_derivative_wrt_strain_rate);
-                  HT = outer_product(viscosity_derivative_wrt_strain_rate,strain_rate);
-                  SymmetricTensor<4,dim> SPD = 2 * eta * identity_tensor<dim>() + H + HT;
-
-
                   bool testing = true;
                   for (unsigned int sample = 0; sample < 10; ++sample)
                     {
@@ -301,8 +294,7 @@ namespace aspect
                   if (testing == false)
                     std::cout << std::endl;
                 }
-#endif DEBUG
-
+#endif
             }
         }
     }
