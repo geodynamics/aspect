@@ -191,7 +191,7 @@ namespace aspect
                       if (edot_ii_strict > min_strain_rate[c] * min_strain_rate[c] && composition_viscosities[c] < max_visc[c] && composition_viscosities[c] > min_visc[c])
                         {
                           //strictly speaking the derivative is this: 0.5 * ((1/stress_exponent)-1) * std::pow(2,2) * out.viscosities[i] * (1/(edot_ii*edot_ii)) * deviator(in.strain_rate[i])
-                          composition_viscosities_derivatives[c] = 0;//2 * (stress_exponent_inv-1) * composition_viscosities[c] * (1/(edot_ii*edot_ii)) * deviator(in.strain_rate[i]);
+                          composition_viscosities_derivatives[c] = 2 * (stress_exponent_inv-1) * composition_viscosities[c] * (1/(edot_ii*edot_ii)) * deviator(in.strain_rate[i]);
                           //std::cout << composition_viscosities_derivatives[i] << ", dev strt:" << deviator(in.strain_rate[i]) << std::endl;
                         }
                       else
@@ -201,6 +201,7 @@ namespace aspect
                         }
                     }
                 }
+
               out.viscosities[i] = Utilities::weighted_p_norm_average(volume_fractions, composition_viscosities, viscosity_averaging_p);
               Assert(dealii::numbers::is_finite(out.viscosities[i]),ExcMessage ("Error: Averaged viscosity is not finite."));
 
