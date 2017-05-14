@@ -169,55 +169,6 @@ namespace aspect
           }
         }
 
-        // virtual double viscosity (const double                  temperature,
-        //                           const double                  pressure,
-        //                           const std::vector<double>    &compositional_fields,
-        //                           const SymmetricTensor<2,dim> &strain_rate,
-        //                           const Point<dim>             &position) const
-        // {
-        //   const double r2 = (position(0)-1.0)*(position(0)-1.0) + (position(1)-1.0)*(position(1)-1.0);
-        //   return (r2<0.2*0.2)? eta_B : 1.0;
-        // }
-
-        // virtual double density (const double temperature,
-        //                         const double pressure,
-        //                         const std::vector<double> &compositional_fields,
-        //                         const Point<dim> &position) const
-        // {
-        //   return 0;
-        // }
-
-        // virtual double compressibility (const double temperature,
-        //                                 const double pressure,
-        //                                 const std::vector<double> &compositional_fields,
-        //                                 const Point<dim> &position) const
-        // {
-        //   return 0.0;
-        // }
-
-        // virtual double specific_heat (const double temperature,
-        //                               const double pressure,
-        //                               const std::vector<double> &compositional_fields,
-        //                               const Point<dim> &position) const
-        // {
-        //   return 0;
-        // }
-
-        // virtual double thermal_expansion_coefficient (const double      temperature,
-        //                                               const double      pressure,
-        //                                               const std::vector<double> &compositional_fields,
-        //                                               const Point<dim> &position) const
-        // {
-        //   return 0;
-        // }
-
-        // virtual double thermal_conductivity (const double temperature,
-        //                                      const double pressure,
-        //                                      const std::vector<double> &compositional_fields,
-        //                                      const Point<dim> &position) const
-        // {
-        //   return 0;
-        // }
         /**
          * @}
          */
