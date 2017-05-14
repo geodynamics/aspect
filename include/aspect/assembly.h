@@ -250,6 +250,15 @@ namespace aspect
 
           FullMatrix<double>          local_matrix;
           std::vector<types::global_dof_index>   local_dof_indices;
+
+          /**
+           * Extract the values listed in scratch.local_dof_indices only if
+           * it corresponds to the Stokes component and copy it to the variable
+           * local_dof_indices declared above in the same class as this function
+          */
+          void extract_stokes_dof_indices(const Introspection<dim> &introspection,
+                                          const internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,
+                                          const dealii::FESystem<dim,dim> &finite_element);
         };
 
 

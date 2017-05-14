@@ -330,6 +330,24 @@ namespace aspect
         {}
 
 
+        template <int dim>
+        void StokesPreconditioner<dim>::
+        extract_stokes_dof_indices(const Introspection<dim> &introspection,
+                                   const internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,
+                                   const dealii::FESystem<dim,dim> &finite_element)
+        {
+          const unsigned int dofs_per_cell = finite_element.dofs_per_cell;
+
+          for (unsigned int i=0, i_stokes=0; i<dofs_per_cell; /*increment at end of loop*/)
+            {
+              if (introspection.is_stokes_component(finite_element.system_to_component_index(i).first))
+                {
+                  this->local_dof_indices[i_stokes] = scratch.local_dof_indices[i];
+                  ++i_stokes;
+                }
+              ++i;
+            }
+        }
 
         template <int dim>
         StokesPreconditioner<dim>::
@@ -361,6 +379,7 @@ namespace aspect
           local_rhs (data.local_rhs),
           local_pressure_shape_function_integrals (data.local_pressure_shape_function_integrals.size())
         {}
+
 
 
 
@@ -868,15 +887,7 @@ namespace aspect
     // models with melt transport).
 
     cell->get_dof_indices (scratch.local_dof_indices);
-
-    const unsigned int dofs_per_cell = finite_element.dofs_per_cell;
-
-    for (unsigned int i=0, i_stokes=0; i<dofs_per_cell; ++i)
-      if (introspection.is_stokes_component(finite_element.system_to_component_index(i).first))
-        {
-          data.local_dof_indices[i_stokes] = scratch.local_dof_indices[i];
-          ++i_stokes;
-        }
+    data.extract_stokes_dof_indices(introspection, scratch, finite_element);
 
     // Prepare the data structures for assembly
     scratch.finite_element_values.reinit (cell);
@@ -1062,18 +1073,7 @@ namespace aspect
 
     cell->get_dof_indices (scratch.local_dof_indices);
 
-    const unsigned int dofs_per_cell = finite_element.dofs_per_cell;
-
-    for (unsigned int i=0, i_stokes=0; i<dofs_per_cell; /*increment at end of loop*/)
-      {
-        if (introspection.is_stokes_component(finite_element.system_to_component_index(i).first))
-          {
-            data.local_dof_indices[i_stokes] = scratch.local_dof_indices[i];
-            ++i_stokes;
-          }
-        ++i;
-      }
-
+    data.extract_stokes_dof_indices(introspection, scratch, finite_element);
 
     // Prepare the data structures for assembly
     scratch.finite_element_values.reinit (cell);
