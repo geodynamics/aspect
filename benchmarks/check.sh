@@ -19,12 +19,14 @@ fi
 #
 run_prm ()
 {
-prm=$1
-    echo "Running '$prm' at `pwd` with '$BUILD' ..."
-    cp $prm $prm.tmp
-    echo "set End time=0" >> $prm.tmp
-    $BUILD/aspect $prm.tmp >/dev/null || { rm -f $prm.tmp; return 2; }
-    rm -f $prm.tmp
+    for prm in "$@"
+    do
+        echo "Running '$prm' at `pwd` with '$BUILD' ..."
+        cp $prm $prm.tmp
+        echo "set End time=0" >> $prm.tmp
+        $BUILD/aspect $prm.tmp >/dev/null || { rm -f $prm.tmp; return 2; }
+        rm -f $prm.tmp
+    done
 }
 
 # run aspect on all .prm files in the current folder or any subdirectory
@@ -32,15 +34,15 @@ run_all_prms ()
 {
     for prm in `find . -name "*prm"`;
     do
-    if [ "`basename $prm`" = "parameters.prm" ];
-    then
-	continue;
-    fi
-    echo "Running '$prm' at `pwd` with '$BUILD' ..."
-    cp $prm $prm.tmp
-    echo "set End time=0" >> $prm.tmp
-    $BUILD/aspect $prm.tmp >/dev/null || { rm -f $prm.tmp; return 2; }
-    rm -f $prm.tmp
+        if [ "`basename $prm`" = "parameters.prm" ];
+        then
+	        continue;
+        fi
+        echo "Running '$prm' at `pwd` with '$BUILD' ..."
+        cp $prm $prm.tmp
+        echo "set End time=0" >> $prm.tmp
+        $BUILD/aspect $prm.tmp >/dev/null || { rm -f $prm.tmp; return 2; }
+        rm -f $prm.tmp
     done
     echo "... completed `pwd`"
     return 0;
@@ -72,7 +74,7 @@ echo "Please be patient..."
 
 ( (cd finite_strain && make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
-( (cd inclusion; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+( (cd inclusion; make_lib && run_prm "global.prm.base" "adaptive.prm.base") || { echo "FAILED"; exit 1; } ) &
 
 ( (cd inclusion/compositional_fields; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
@@ -80,13 +82,13 @@ echo "Please be patient..."
 
 ( (cd shear_bands; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
-( (cd solcx; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+( (cd solcx; make_lib && run_prm "solcx.prm" ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd solcx/compositional_fields; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd solitary_wave; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
-( (cd solkz; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+( (cd solkz; make_lib && run_prm "solkz.prm" ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd solkz/compositional_fields; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
