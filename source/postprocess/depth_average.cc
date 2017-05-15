@@ -203,8 +203,17 @@ namespace aspect
                           "depth_average" +
                           DataOutBase::default_suffix(output_format));
               std::ofstream f (filename.c_str());
-              data_out_stack.write (f, output_format);
 
+	      if (output_format == DataOutBase::gnuplot)
+		{
+		  DataOutBase::GnuplotFlags gnuplot_flags;
+		  gnuplot_flags.space_dimension_labels.resize(2);
+		  gnuplot_flags.space_dimension_labels[0] = "depth";
+		  gnuplot_flags.space_dimension_labels[1] = "time";
+		  data_out_stack.set_flags(gnuplot_flags);
+		}
+	      data_out_stack.write (f, output_format);
+	      
               AssertThrow (f, ExcMessage("Writing data to <" + filename +
                                          "> did not succeed in the `point values' "
                                          "postprocessor."));
