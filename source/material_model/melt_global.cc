@@ -360,7 +360,7 @@ namespace aspect
                              "Units: None.");
           prm.declare_entry ("Include melting and freezing", "true",
                              Patterns::Bool (),
-                             "Whether to include malting and freezing (according to a simplified "
+                             "Whether to include melting and freezing (according to a simplified "
                              "linear melting approximation in the model (if true), or not (if "
                              "false).");
         }
