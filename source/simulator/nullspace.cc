@@ -395,21 +395,8 @@ namespace aspect
 
           if ( ! use_constant_density)
             {
-              fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
-              fe[introspection.extractors.temperature].get_function_values (relevant_dst, in.temperature);
-              fe[introspection.extractors.pressure].get_function_gradients (relevant_dst, in.pressure_gradient);
-              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-                fe[introspection.extractors.compositional_fields[c]].get_function_values(relevant_dst,
-                                                                                         composition_values[c]);
-
-              for (unsigned int i=0; i<n_q_points; ++i)
-                {
-                  in.position[i] = fe.quadrature_point(i);
-                  for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-                    in.composition[i][c] = composition_values[c][i];
-                }
-              in.cell = &cell;
-
+              //Set use_strain_rates to false since we don't need viscosity
+              in.reinit(fe, &cell, introspection, solution, false);
               material_model->evaluate(in, out);
             }
 

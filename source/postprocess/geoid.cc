@@ -117,31 +117,8 @@ namespace aspect
                 if (cell->is_locally_owned())
                   {
                     fe_values.reinit (cell);
-                    // get the various components of the solution, then
-                    // evaluate the material properties there
-                    fe_values[this->introspection().extractors.temperature]
-                    .get_function_values (this->get_solution(), in.temperature);
-                    fe_values[this->introspection().extractors.pressure]
-                    .get_function_values (this->get_solution(), in.pressure);
-                    fe_values[this->introspection().extractors.velocities]
-                    .get_function_values (this->get_solution(), in.velocity);
-                    fe_values[this->introspection().extractors.velocities]
-                    .get_function_symmetric_gradients (this->get_solution(), in.strain_rate);
-                    fe_values[this->introspection().extractors.pressure]
-                    .get_function_gradients (this->get_solution(), in.pressure_gradient);
-
-                    in.position = fe_values.get_quadrature_points();
-
-                    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                      fe_values[this->introspection().extractors.compositional_fields[c]]
-                      .get_function_values(this->get_solution(),
-                                           composition_values[c]);
-                    for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
-                      {
-                        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                          in.composition[i][c] = composition_values[c][i];
-                      }
-                    in.cell = &cell;
+                    // Set use_strain_rates to false since we don't need viscosity
+                    in.reinit(fe_values, &cell, this->introspection(), this->get_solution(), false);
 
                     this->get_material_model().evaluate(in, out);
 
@@ -263,31 +240,7 @@ namespace aspect
 
               // focus on the boundary cell
               fe_values.reinit (cell);
-              // get the various components of the solution, then
-              // evaluate the material properties there
-              fe_values[this->introspection().extractors.temperature]
-              .get_function_values (this->get_solution(), in.temperature);
-              fe_values[this->introspection().extractors.pressure]
-              .get_function_values (this->get_solution(), in.pressure);
-              fe_values[this->introspection().extractors.velocities]
-              .get_function_values (this->get_solution(), in.velocity);
-              fe_values[this->introspection().extractors.velocities]
-              .get_function_symmetric_gradients (this->get_solution(), in.strain_rate);
-              fe_values[this->introspection().extractors.pressure]
-              .get_function_gradients (this->get_solution(), in.pressure_gradient);
-
-              in.position = fe_values.get_quadrature_points();
-
-              for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                fe_values[this->introspection().extractors.compositional_fields[c]]
-                .get_function_values(this->get_solution(),
-                                     composition_values[c]);
-              for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
-                {
-                  for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                    in.composition[i][c] = composition_values[c][i];
-                }
-              in.cell = &cell;
+              in.reinit(fe_values, &cell, this->introspection(), this->get_solution());
 
               this->get_material_model().evaluate(in, out);
 
@@ -349,30 +302,7 @@ namespace aspect
 
               // focus on the boundary cell's upper face if on the top boundary and lower face if on the bottom boundary
               fe_face_values.reinit(cell, face_idx);
-              // get the various components of the solution, then
-              // evaluate the material properties there
-              fe_face_values[this->introspection().extractors.temperature]
-              .get_function_values (this->get_solution(), in_face.temperature);
-              fe_face_values[this->introspection().extractors.pressure]
-              .get_function_values (this->get_solution(), in_face.pressure);
-              fe_face_values[this->introspection().extractors.velocities]
-              .get_function_values (this->get_solution(), in_face.velocity);
-              fe_face_values[this->introspection().extractors.velocities]
-              .get_function_symmetric_gradients (this->get_solution(), in_face.strain_rate);
-              fe_face_values[this->introspection().extractors.pressure]
-              .get_function_gradients (this->get_solution(), in_face.pressure_gradient);
-
-              in_face.position = fe_face_values.get_quadrature_points();
-
-              for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                fe_face_values[this->introspection().extractors.compositional_fields[c]]
-                .get_function_values(this->get_solution(),
-                                     face_composition_values[c]);
-              for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
-                {
-                  for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                    in_face.composition[i][c] = face_composition_values[c][i];
-                }
+              in_face.reinit(fe_face_values, &cell, this->introspection(), this->get_solution(), false);
 
               this->get_material_model().evaluate(in_face, out_face);
 
