@@ -1750,6 +1750,15 @@ namespace aspect
       return data[component]->value(position);
     }
 
+    template <int dim>
+    Tensor<1,dim-1>
+    AsciiDataLookup<dim>::get_gradients(const Point<dim> &position,
+                                   const unsigned int component) 
+    {
+      Tensor<1,dim>  gradients = data[component]->gradient(position,component);
+      return gradients;
+    }
+
 
     template <int dim>
     TableIndices<dim>
@@ -2200,13 +2209,43 @@ namespace aspect
     }
 
     template <int dim>
-    std::vector<Tensor<1,dim> >
+    Tensor<1,dim>
     AsciiDataBoundary<dim>::vector_gradient (const types::boundary_id             boundary_indicator,
                         const Point<dim>                    &position,
                         const unsigned int                   component) const
     {
-     std::vector<Tensor<1,dim> > gradient;
-     return gradient;
+      if (this->get_time() - first_data_file_model_time >= 0.0)
+        {
+          Point<dim> internal_position = position;
+
+          if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0
+              || dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != 0)
+            {
+              const std_cxx11::array<double,dim> spherical_position =
+                ::aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
+
+              for (unsigned int i = 0; i < dim; i++)
+                internal_position[i] = spherical_position[i];
+            }
+
+          const std_cxx11::array<unsigned int,dim-1> boundary_dimensions =
+            get_boundary_dimensions(boundary_indicator);
+
+          Point<dim-1> data_position;
+          for (unsigned int i = 0; i < dim-1; i++)
+            data_position[i] = internal_position[boundary_dimensions[i]];
+
+          const Tensor<1,dim>  gradients = lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
+
+          if (!time_dependent)
+            return gradients;
+
+          const Tensor<1,dim> old_gradients = old_lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
+
+          return time_weight * gradients + (1 - time_weight) * old_gradients;
+        }
+      else
+        return 0.0;
     }
 
 

@@ -78,7 +78,7 @@ namespace aspect
          * Return the gradient of the surface topography for a given position along
          * along the surface.
          */
-        std::vector<Tensor<1,dim> >
+        Tensor<1,dim>
         vector_gradient(const Point<dim> &p) const; 
 
         /**
