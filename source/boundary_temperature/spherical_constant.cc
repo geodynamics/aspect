@@ -48,35 +48,35 @@ namespace aspect
       const std::string boundary_name = geometry_model->translate_id_to_symbol_name(boundary_indicator);
 
       if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
-	{
-	  if (boundary_name =="surface")
-	    return outer_temperature;
-	  else
-	    {
-	      Assert (false, ExcMessage ("Unknown boundary indicator for spherical shell. The given boundary should be ``surface''."));
-	      return std::numeric_limits<double>::quiet_NaN();
-	    }
-	}
+        {
+          if (boundary_name =="surface")
+            return outer_temperature;
+          else
+            {
+              Assert (false, ExcMessage ("Unknown boundary indicator for spherical shell. The given boundary should be ``surface''."));
+              return std::numeric_limits<double>::quiet_NaN();
+            }
+        }
       else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0
-	       || dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0
-	       || dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>(geometry_model) != 0)
-	{
-	  if (boundary_name == "inner")
-	    return inner_temperature;
-	  else if (boundary_name =="outer")
-	    return outer_temperature;
-	  else
-	    {
-	      Assert (false, ExcMessage ("Unknown boundary indicator for geometry model. The given boundary should be ``inner'' or ``outer''."));
-	      return std::numeric_limits<double>::quiet_NaN();
-	    }
-	}
+               || dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0
+               || dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>(geometry_model) != 0)
+        {
+          if (boundary_name == "inner")
+            return inner_temperature;
+          else if (boundary_name =="outer")
+            return outer_temperature;
+          else
+            {
+              Assert (false, ExcMessage ("Unknown boundary indicator for geometry model. The given boundary should be ``inner'' or ``outer''."));
+              return std::numeric_limits<double>::quiet_NaN();
+            }
+        }
       else
-	{
-	  Assert (false, ExcMessage ("This boundary model is only implemented if the geometry "
-				     "is a sphere, spherical shell, chunk or ellipsoidal chunk."));
-	  return std::numeric_limits<double>::quiet_NaN();
-	}
+        {
+          Assert (false, ExcMessage ("This boundary model is only implemented if the geometry "
+                                     "is a sphere, spherical shell, chunk or ellipsoidal chunk."));
+          return std::numeric_limits<double>::quiet_NaN();
+        }
     }
 
 
