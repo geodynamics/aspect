@@ -49,7 +49,6 @@ namespace aspect
                     ExcMessage("Particle property melt particle only works if"
                                "there is a compositional field called porosity."));
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-        const unsigned int solution_component = this->introspection().component_indices.compositional_fields[porosity_idx];
 
         if (solution[this->introspection().component_indices.compositional_fields[porosity_idx]] > this->get_melt_handler().melt_transport_threshold)
           data[data_position] = 1.0;
