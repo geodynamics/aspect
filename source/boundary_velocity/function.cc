@@ -43,12 +43,12 @@ namespace aspect
                        const Point<dim> &position) const
     {
       Tensor<1,dim> velocity;
-      if (coordinate_system == ::aspect::Utilities::Coordinates::cartesian)
+      if (coordinate_system == Utilities::Coordinates::cartesian)
         {
           for (unsigned int d=0; d<dim; ++d)
             velocity[d] = boundary_velocity_function.value(position,d);
         }
-      else if (coordinate_system == ::aspect::Utilities::Coordinates::spherical)
+      else if (coordinate_system == Utilities::Coordinates::spherical)
         {
           const std_cxx11::array<double,dim> spherical_coordinates =
             aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
@@ -60,7 +60,7 @@ namespace aspect
           for (unsigned int d=0; d<dim; ++d)
             velocity[d] = boundary_velocity_function.value(point,d);
         }
-      else if (coordinate_system == ::aspect::Utilities::Coordinates::depth)
+      else if (coordinate_system == Utilities::Coordinates::depth)
         {
           const double depth = this->get_geometry_model().depth(position);
           Point<dim> point;
@@ -139,7 +139,7 @@ namespace aspect
       {
         prm.enter_subsection("Function");
         {
-          coordinate_system = ::aspect::Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+          coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
         }
         try
           {
