@@ -32,81 +32,81 @@ namespace aspect
     LatentHeatMelt<dim>::
 
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-            MaterialModel::MaterialModelOutputs<dim> &out) const
+             MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      for (unsigned int i=0; i < in.position.size(); ++i)
         {
-          for (unsigned int i=0; i < in.position.size(); ++i)
+
+          std::vector<double> composition = in.composition[i];
+          const double delta_temp = in.temperature[i] - reference_T;
+          const double T_dependence = ( thermal_viscosity_exponent == 0.0
+                                        ?
+                                        0.0
+                                        :
+                                        thermal_viscosity_exponent * delta_temp / reference_T );
+
+          double temperature_dependence = std::max (std::min ( std::exp( - T_dependence ), 1e2 ), 1e-2 );
+
+          if (std::isnan(temperature_dependence))
+            temperature_dependence = 1.0;
+
+          double composition_dependence = 1.0;
+          if ((composition_viscosity_prefactor != 1.0) && (composition.size() > 0))
             {
-
-              std::vector<double> composition = in.composition[i];
-              const double delta_temp = in.temperature[i] - reference_T;
-              const double T_dependence = ( thermal_viscosity_exponent == 0.0
-                                           ?
-                                           0.0
-                                           :
-                                           thermal_viscosity_exponent * delta_temp / reference_T );
-
-              double temperature_dependence = std::max (std::min ( std::exp( - T_dependence ), 1e2 ), 1e-2 );
-
-              if (std::isnan(temperature_dependence))
-                temperature_dependence = 1.0; 
-
-              double composition_dependence = 1.0;
-              if ((composition_viscosity_prefactor != 1.0) && (composition.size() > 0))
-              {
-                //geometric interpolation
-                out.viscosities[i] = (pow (10, ( (1 - composition[0] ) * log10 ( eta * temperature_dependence )
-                                   + composition[0] * log10 ( eta * composition_viscosity_prefactor * temperature_dependence))));
-              }
-              else 
-              {
-                out.viscosities[i] = composition_dependence * temperature_dependence * eta;
-              }
-
-              out.specific_heat[i] = reference_specific_heat;
-              out.thermal_conductivities[i] = k_value;
-              out.thermal_expansion_coefficients[i] = thermal_alpha;
-              out.compressibilities[i] = reference_compressibility;
-
-              temperature_dependence = 1.0;
-              
-              if (this->include_adiabatic_heating ())
-              {
-                // temperature dependence is 1 - alpha * (T - T(adiabatic))
-                temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i])) * thermal_alpha;
-              }
-              else
-              {
-                temperature_dependence -= in.temperature[i] * thermal_alpha;
-              }
-              // second, calculate composition dependence of density
-              // constant density difference between peridotite and eclogite
-              composition_dependence = composition.size()>0
-                                     ?
-                                     compositional_delta_rho * composition[0]
-                                     :
-                                     0.0;
-
-              // third, pressure dependence of density
-              const double kappa = reference_compressibility;
-              const double pressure_dependence = reference_rho * kappa * (in.pressure[i] - this->get_surface_pressure());
-
-              // fourth, melt fraction dependence
-              double melt_dependence = (1.0 - relative_melt_density)
-                                       * melt_fraction(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-
-              // in the end, all the influences are added up
-              out.densities[i] = (reference_rho + composition_dependence + pressure_dependence) * temperature_dependence
-                               * (1.0 - melt_dependence);
-
-
-              out.entropy_derivative_pressure[i] = entropy_derivative (in.temperature[i], in.pressure[i], composition, 
-                                                   in.position[i], NonlinearDependence::pressure) ; // for pressure dependence
-
-              out.entropy_derivative_temperature[i] = entropy_derivative (in.temperature[i], in.pressure[i], composition, 
-                                                   in.position[i], NonlinearDependence::temperature) ; // for temperature dependence
-
+              //geometric interpolation
+              out.viscosities[i] = (pow (10, ( (1 - composition[0] ) * log10 ( eta * temperature_dependence )
+                                               + composition[0] * log10 ( eta * composition_viscosity_prefactor * temperature_dependence))));
             }
-          }
+          else
+            {
+              out.viscosities[i] = composition_dependence * temperature_dependence * eta;
+            }
+
+          out.specific_heat[i] = reference_specific_heat;
+          out.thermal_conductivities[i] = k_value;
+          out.thermal_expansion_coefficients[i] = thermal_alpha;
+          out.compressibilities[i] = reference_compressibility;
+
+          temperature_dependence = 1.0;
+
+          if (this->include_adiabatic_heating ())
+            {
+              // temperature dependence is 1 - alpha * (T - T(adiabatic))
+              temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i])) * thermal_alpha;
+            }
+          else
+            {
+              temperature_dependence -= in.temperature[i] * thermal_alpha;
+            }
+          // second, calculate composition dependence of density
+          // constant density difference between peridotite and eclogite
+          composition_dependence = composition.size()>0
+                                   ?
+                                   compositional_delta_rho * composition[0]
+                                   :
+                                   0.0;
+
+          // third, pressure dependence of density
+          const double kappa = reference_compressibility;
+          const double pressure_dependence = reference_rho * kappa * (in.pressure[i] - this->get_surface_pressure());
+
+          // fourth, melt fraction dependence
+          double melt_dependence = (1.0 - relative_melt_density)
+                                   * melt_fraction(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+
+          // in the end, all the influences are added up
+          out.densities[i] = (reference_rho + composition_dependence + pressure_dependence) * temperature_dependence
+                             * (1.0 - melt_dependence);
+
+
+          out.entropy_derivative_pressure[i] = entropy_derivative (in.temperature[i], in.pressure[i], composition,
+                                                                   in.position[i], NonlinearDependence::pressure) ; // for pressure dependence
+
+          out.entropy_derivative_temperature[i] = entropy_derivative (in.temperature[i], in.pressure[i], composition,
+                                                                      in.position[i], NonlinearDependence::temperature) ; // for temperature dependence
+
+        }
+    }
 
 
     template <int dim>
@@ -607,7 +607,7 @@ namespace aspect
       this->model_dependence.compressibility = NonlinearDependence::none;
       this->model_dependence.specific_heat = NonlinearDependence::none;
       this->model_dependence.thermal_conductivity = NonlinearDependence::none;
-     // this->model_dependence.entropy_derivative_temperature = NonlinearDependence::temperature;
+      // this->model_dependence.entropy_derivative_temperature = NonlinearDependence::temperature;
     }
   }
 }

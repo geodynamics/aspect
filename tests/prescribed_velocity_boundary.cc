@@ -171,8 +171,8 @@ namespace aspect
               out.thermal_conductivities[i] = 0.0;
               out.specific_heat[i] = 0;
             }
-          }
-          
+        }
+
         /**
          * @}
          */

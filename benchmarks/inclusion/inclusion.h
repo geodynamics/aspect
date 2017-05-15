@@ -155,18 +155,18 @@ namespace aspect
                               MaterialModel::MaterialModelOutputs<dim> &out) const
         {
           for (unsigned int i=0; i < in.position.size(); ++i)
-          {
-            const Point<dim> &pos = in.position[i];
-            double r2 = (pos[0]-1.0)*(pos[0]-1.0) + (pos[1]-1.0)*(pos[1]-1.0);
-            
-            out.viscosities[i] = (r2<0.2*0.2)? eta_B : 1.0;
-           
-            out.densities[i] = 0;
-            out.compressibilities[i] = 0;
-            out.specific_heat[i] = 0;
-            out.thermal_expansion_coefficients[i] = 0;
-            out.thermal_conductivities[i] = 0.0;
-          }
+            {
+              const Point<dim> &pos = in.position[i];
+              double r2 = (pos[0]-1.0)*(pos[0]-1.0) + (pos[1]-1.0)*(pos[1]-1.0);
+
+              out.viscosities[i] = (r2<0.2*0.2)? eta_B : 1.0;
+
+              out.densities[i] = 0;
+              out.compressibilities[i] = 0;
+              out.specific_heat[i] = 0;
+              out.thermal_expansion_coefficients[i] = 0;
+              out.thermal_conductivities[i] = 0.0;
+            }
         }
 
         /**

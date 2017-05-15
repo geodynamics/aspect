@@ -659,10 +659,10 @@ namespace aspect
                               MaterialModel::MaterialModelOutputs<dim> &out) const
         {
           for (unsigned int i=0; i < in.position.size(); ++i)
-          {
+            {
 
               const Point<dim> &pos = in.position[i];
-              
+
               static const double B = 0.5 * std::log(1e6);
               out.viscosities[i] = std::exp(2 * B * pos[1]);
 
@@ -671,7 +671,7 @@ namespace aspect
               out.specific_heat[i] = 0;
               out.thermal_expansion_coefficients[i] = 0;
               out.thermal_conductivities[i] = 0.0;
-          }
+            }
         }
 
         /**

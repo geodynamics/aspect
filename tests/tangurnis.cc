@@ -57,13 +57,13 @@ namespace aspect
          * @{
          */
         evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-            MaterialModel::MaterialModelOutputs<dim> &out) const
+                 MaterialModel::MaterialModelOutputs<dim> &out) const
         {
           for (unsigned int i=0; i < in.position.size(); ++i)
             {
 
               const Point<dim> &pos = in.position[i];
-              
+
               const double depth = 1.0 - pos[dim-1];
 
               const double temperature = sin(numbers::PI*pos(dim-1))*cos(numbers::PI*wavenumber*pos(0));
@@ -79,7 +79,7 @@ namespace aspect
               double d = 1.0*exp(Di/gamma*(depth));
               out.compressibilities[i] = (d==0) ? 1.0 : (Di/gamma / d);
             }
-          }
+        }
 
 
         /**
