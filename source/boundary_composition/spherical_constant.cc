@@ -41,29 +41,35 @@ namespace aspect
                           const Point<dim> &/*position*/,
                           const unsigned int /*compositional_field*/) const
     {
-      // verify that the geometry is a spherical shell, a chunk, or an
-      // ellipsoidal chunk since only for geometries based on spherical shells
+      // Verify that the GeometryModel is a SphericalShell, Chunk, or an
+      // EllipsoidalChunk since only for geometries based on spherical shells
       // do we know which boundary indicators are used and what they mean
       const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
-      Assert ((dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0
-               || dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0
-               || dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>(geometry_model) != 0),
-              ExcMessage ("This boundary model is only implemented if the geometry "
-                          "is a spherical shell or chunk."));
-
       const std::string boundary_name = geometry_model->translate_id_to_symbol_name(boundary_indicator);
-
-      if (boundary_name == "inner")
-        return inner_composition;
-      else if (boundary_name =="outer")
-        return outer_composition;
+      
+      if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0
+	  || dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0
+	  || dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>(geometry_model) != 0)
+	{
+	  if (boundary_name == "inner")
+	    return inner_composition;
+	  else if (boundary_name =="outer")
+	    return outer_composition;
+	  else
+	    {
+	      Assert (false, ExcMessage ("Unknown boundary indicator for geometry model. The given boundary should be ``inner'' or ``outer''."));
+	      return std::numeric_limits<double>::quiet_NaN();
+	    }
+	}
       else
-        {
-          Assert (false, ExcMessage ("Unknown boundary indicator. The given boundary should be ``inner'' or ``outer''."));
-          return std::numeric_limits<double>::quiet_NaN();
-        }
+	{
+	  Assert (false, ExcMessage ("This boundary model is only implemented if the geometry "
+				     "is a spherical shell, chunk or ellipsoidal chunk."));
+	  return std::numeric_limits<double>::quiet_NaN();
+	}
     }
 
+    
 
     template <int dim>
     double
