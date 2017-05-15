@@ -25,6 +25,7 @@
 #include <deal.II/base/utilities.h>
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/multithread_info.h>
+#include <deal.II/base/revision.h>
 
 #include <string>
 
@@ -386,6 +387,7 @@ void print_version_information(Stream &stream)
   stream << "Version information of underlying libraries:\n"
          << "   . deal.II:    "
          << DEAL_II_PACKAGE_VERSION << '\n'
+         << DEAL_II_GIT_SHORTREV    << '\n'
 #ifndef ASPECT_USE_PETSC
          << "   . Trilinos:   "
          << DEAL_II_TRILINOS_VERSION_MAJOR    << '.'
