@@ -1,0 +1,7 @@
+New: The dynamic topography postprocessor now uses the consistent
+boundary flux method for computing surface stresses, which is
+significantly more accurate. The postprocessor also exposes a method
+for getting the dynamic topography vector, so that the visualization
+and geoid postprocessors do not need to duplicate effort.
+<br>
+(Ian Rose, 2017/05/15)
