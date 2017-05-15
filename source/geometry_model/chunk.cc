@@ -38,11 +38,13 @@ namespace aspect
   namespace GeometryModel
   {
     template <int dim>
+    InitialTopographyModel::Interface<dim> *Chunk<dim>::ChunkGeometry::topo = 0;
+
+    template <int dim>
     Chunk<dim>::ChunkGeometry::ChunkGeometry()
       :
       point1_lon(0.0)
     {}
-
 
 
     template <int dim>
@@ -51,7 +53,6 @@ namespace aspect
       ChartManifold<dim,dim>(other),
       point1_lon(other.point1_lon)
     {}
-
 
 
     template <int dim>
@@ -100,12 +101,27 @@ namespace aspect
       return DX;
     }
 
+    template <int dim>
+    Point<dim>
+    Chunk<dim>::ChunkGeometry::
+    push_forward(const Point<dim> &r_phi_theta) const
+    {
+      return push_forward_sphere(r_phi_theta);
+    }
+
+    template <int dim>
+    Point<dim>
+    Chunk<dim>::ChunkGeometry::
+    pull_back(const Point<dim> &x_y_z) const
+    {
+      return pull_back_sphere(x_y_z);
+    }
 
 
     template <int dim>
     Point<dim>
     Chunk<dim>::ChunkGeometry::
-    push_forward(const Point<dim> &input_vertex) const
+    push_forward_sphere(const Point<dim> &input_vertex) const
     {
       Point<dim> output_vertex;
       switch (dim)
@@ -134,7 +150,7 @@ namespace aspect
     template <int dim>
     Point<dim>
     Chunk<dim>::ChunkGeometry::
-    pull_back(const Point<dim> &v) const
+    pull_back_sphere(const Point<dim> &v) const
     {
       Point<dim> output_vertex;
       switch (dim)
@@ -186,7 +202,6 @@ namespace aspect
     }
 
 
-
 #if DEAL_II_VERSION_GTE(9,0,0)
     template <int dim>
     std::unique_ptr<Manifold<dim,dim> >
@@ -198,6 +213,107 @@ namespace aspect
 #endif
 
 
+    template <int dim>
+    Point<dim>
+    Chunk<dim>::ChunkGeometry::
+    push_forward_topo(const Point<dim> &r_phi_theta) const
+    {
+      // the radius of the current point without topography
+      const double radius = r_phi_theta[0];
+
+      double topography = 0;
+
+      // Grab lon,lat coordinates
+      Point<dim-1> surface_point;
+      for (unsigned int d=0; d<dim-1; d++)
+        surface_point[d] = r_phi_theta[d+1];
+      // Convert latitude to colatitude
+      if (dim == 3)
+        surface_point[1] = 0.5*numbers::PI - surface_point[1];
+      topography = topo->value(surface_point);
+
+      // adjust the radius based on the radius of the point
+      // through a linear interpolation between 0 at max depth and
+      // "topography" at the surface
+      const double topo_radius = std::max(inner_radius,radius + (radius-inner_radius)/max_depth*topography);
+
+
+      // return the point with adjusted radius
+      Point<dim> topor_phi_theta = r_phi_theta;
+      topor_phi_theta[0] = topo_radius;
+//      return topor_phi_theta;
+      return r_phi_theta;
+    }
+
+    template <int dim>
+    Point<dim>
+    Chunk<dim>::ChunkGeometry::
+    pull_back_topo(const Point<dim> &topor_phi_theta) const
+    {
+      // the radius of the point with topography
+      const double topo_radius = topor_phi_theta[0];
+
+      double topography = 0;
+      // Grab lon,lat coordinates
+      Point<dim-1> surface_point;
+      for (unsigned int d=0; d<dim-1; d++)
+        surface_point[d] = topor_phi_theta[d+1];
+      // Convert latitude to colatitude
+      if (dim == 3)
+        surface_point[1] = 0.5*numbers::PI - surface_point[1];
+      topography = topo->value(surface_point);
+
+      // remove the topography (which scales with radius)
+      const double radius = std::max(inner_radius,(topo_radius*max_depth+inner_radius*topography)/(max_depth+topography));
+
+      // return the point without topography
+      Point<dim> r_phi_theta = topor_phi_theta;
+      r_phi_theta[0] = radius;
+//      return r_phi_theta;
+      return topor_phi_theta;
+    }
+
+    template <int dim>
+    double
+    Chunk<dim>::ChunkGeometry::
+    get_radius(const Point<dim> &x_y_z) const
+    {
+      const Point<dim> r_phi_theta = pull_back(x_y_z);
+      Point<dim-1> surface_point;
+      for (unsigned int d=0; d<dim-1; d++)
+        surface_point[d] = r_phi_theta[d+1];
+      // Convert latitude to colatitude
+      if (dim == 3)
+        surface_point[1] = 0.5*numbers::PI - surface_point[1];
+      const double topography = topo->value(surface_point);
+
+      // return the outer radius at this phi, theta point including topography
+      return topography + inner_radius + max_depth;
+    }
+
+    template <int dim>
+    void
+    Chunk<dim>::ChunkGeometry::
+    set_topo_pointer(InitialTopographyModel::Interface<dim> *topo_pointer) const
+    {
+      topo = topo_pointer;
+    }
+
+    template <int dim>
+    void
+    Chunk<dim>::ChunkGeometry::
+    set_min_radius(const double p1_rad)
+    {
+      inner_radius = p1_rad;
+    }
+
+    template <int dim>
+    void
+    Chunk<dim>::ChunkGeometry::
+    set_max_depth(const double p2_p1_rad)
+    {
+      max_depth = p2_p1_rad;
+    }
 
 #if !DEAL_II_VERSION_GTE(9,0,0)
     template <int dim>
@@ -327,6 +443,7 @@ namespace aspect
         }
 
       // Attach shell boundary objects to the curved inner and outer boundaries
+      // TODO is this boundary still correct for a displaced mesh?
       static const HyperShellBoundary<dim> boundary_shell;
       coarse_grid.set_boundary (0, boundary_shell);
       coarse_grid.set_boundary (1, boundary_shell);
@@ -451,9 +568,21 @@ namespace aspect
     double
     Chunk<dim>::depth(const Point<dim> &position) const
     {
+      // depth is defined wrt the reference surface point2[0]
+      // positive topography therefore has a negative depth and vv.
       return std::min (std::max (point2[0]-position.norm(), 0.), maximal_depth());
     }
 
+    template <int dim>
+    double
+    Chunk<dim>::depth_wrt_topo(const Point<dim> &position) const
+    {
+      // depth is defined wrt the reference surface point2[0] + the topography
+      // depth is therefore always positive
+      const double outer_radius = manifold.get_radius(position);
+      const Point<dim> rtopo_phi_theta = manifold.pull_back_sphere(position);
+      return std::max(0.0, outer_radius - rtopo_phi_theta[0]);
+    }
 
 
     template <int dim>
@@ -480,7 +609,7 @@ namespace aspect
       p[0] = point2[0]-depth;
 
       // Now convert to Cartesian coordinates
-      return manifold.push_forward(p);
+      return manifold.push_forward_sphere(p);
     }
 
     template <int dim>
@@ -728,6 +857,10 @@ namespace aspect
 
           // Inform the manifold about the minimum longitude
           manifold.set_min_longitude(point1[1]);
+          // Inform the manifold about the minimum radius
+          manifold.set_min_radius(point1[0]);
+          // Inform the manifold about the maximum depth (without topo)
+          manifold.set_max_depth(point2[0]-point1[0]);
 
           if (dim == 3)
             {
