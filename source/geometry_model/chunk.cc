@@ -36,13 +36,17 @@ namespace aspect
   namespace GeometryModel
   {
     template <int dim>
-    InitialTopographyModel::Interface<dim> *Chunk<dim>::ChunkGeometry::topo = 0;
-
-    template <int dim>
     Chunk<dim>::ChunkGeometry::ChunkGeometry()
       :
       point1_lon(0.0)
     {}
+
+    template <int dim>
+    void
+    Chunk<dim>::ChunkGeometry::initialize(const InitialTopographyModel::Interface<dim> *topo_pointer)
+    {
+      topo = topo_pointer;
+    }
 
     // TODO gradient still correct?
     template <int dim>
@@ -269,14 +273,6 @@ namespace aspect
     template <int dim>
     void
     Chunk<dim>::ChunkGeometry::
-    set_topo_pointer(InitialTopographyModel::Interface<dim> *topo_pointer) const
-    {
-      topo = topo_pointer;
-    }
-
-    template <int dim>
-    void
-    Chunk<dim>::ChunkGeometry::
     set_min_radius(const double p1_rad)
     {
       inner_radius = p1_rad;
@@ -290,17 +286,18 @@ namespace aspect
       max_depth = p2_p1_rad;
     }
 
-#if !DEAL_II_VERSION_GTE(9,0,0)
     template <int dim>
     void
     Chunk<dim>::initialize ()
     {
+#if !DEAL_II_VERSION_GTE(9,0,0)
       // Call function to connect the set/clear manifold id functions
       // to the right signal
       connect_to_signal(this->get_signals());
-
-    }
 #endif
+
+      manifold.initialize(&(this->get_initial_topography_model()));
+    }
 
     template <int dim>
     void
