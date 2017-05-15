@@ -1,0 +1,7 @@
+# Columns: x_coordinate y_coordinate
+
+5 210
+5 200
+5 190
+5 100
+5 300
