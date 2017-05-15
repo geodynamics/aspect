@@ -97,44 +97,10 @@ namespace aspect
               // in the end, all the influences are added up
               out.densities[i] = (reference_rho + composition_dependence + pressure_dependence) * temperature_dependence
                                * (1.0 - melt_dependence);
-
+              
 
             }
           }
-            
-
-
-
-
-
-
-    // viscosity (const double temperature,
-    //            const double,
-    //            const std::vector<double> &composition,       /*composition*/
-    //            const SymmetricTensor<2,dim> &,
-    //            const Point<dim> &) const
-    // {
-    //   const double delta_temp = temperature-reference_T;
-    //   const double T_dependence = (thermal_viscosity_exponent == 0.0
-    //                                ?
-    //                                0.0
-    //                                :
-    //                                thermal_viscosity_exponent*delta_temp/reference_T);
-    //   double temperature_dependence = std::max(std::min(std::exp(-T_dependence),1e2),1e-2);
-
-    //   if (std::isnan(temperature_dependence))
-    //     temperature_dependence = 1.0;
-
-    //   double composition_dependence = 1.0;
-    //   if ((composition_viscosity_prefactor != 1.0) && (composition.size() > 0))
-    //     {
-    //       //geometric interpolation
-    //       return (pow(10, ((1-composition[0]) * log10(eta*temperature_dependence)
-    //                        + composition[0] * log10(eta*composition_viscosity_prefactor*temperature_dependence))));
-    //     }
-
-    //   return composition_dependence * temperature_dependence * eta;
-    // }
 
 
     template <int dim>
@@ -144,98 +110,6 @@ namespace aspect
     {
       return eta;
     }
-
-
-    // template <int dim>
-    // double
-    // LatentHeatMelt<dim>::
-    // specific_heat (const double,
-    //                const double,
-    //                const std::vector<double> &, /*composition*/
-    //                const Point<dim> &) const
-    // {
-    //   return reference_specific_heat;
-    // }
-
-
-    // template <int dim>
-    // double
-    // LatentHeatMelt<dim>::
-    // thermal_conductivity (const double,
-    //                       const double,
-    //                       const std::vector<double> &, /*composition*/
-    //                       const Point<dim> &) const
-    // {
-    //   return k_value;
-    // }
-
-
-    // template <int dim>
-    // double
-    // LatentHeatMelt<dim>::
-    // density (const double temperature,
-    //          const double pressure,
-    //          const std::vector<double> &compositional_fields, /*composition*/
-    //          const Point<dim> &position) const
-    // {
-    //   // first, calculate temperature dependence of density
-    //   double temperature_dependence = 1.0;
-    //   if (this->include_adiabatic_heating ())
-    //     {
-    //       // temperature dependence is 1 - alpha * (T - T(adiabatic))
-    //       temperature_dependence -= (temperature - this->get_adiabatic_conditions().temperature(position))
-    //                                 * thermal_expansion_coefficient(temperature, pressure, compositional_fields, position);
-    //     }
-    //   else
-    //     temperature_dependence -= temperature * thermal_expansion_coefficient(temperature, pressure, compositional_fields, position);
-
-    //   // second, calculate composition dependence of density
-    //   // constant density difference between peridotite and eclogite
-    //   const double composition_dependence = compositional_fields.size()>0
-    //                                         ?
-    //                                         compositional_delta_rho * compositional_fields[0]
-    //                                         :
-    //                                         0.0;
-
-    //   // third, pressure dependence of density
-    //   const double kappa = compressibility(temperature,pressure,compositional_fields,position);
-    //   const double pressure_dependence = reference_rho * kappa * (pressure - this->get_surface_pressure());
-
-    //   // fourth, melt fraction dependence
-    //   double melt_dependence = (1.0 - relative_melt_density)
-    //                            * melt_fraction(temperature, pressure, compositional_fields, position);
-
-    //   // in the end, all the influences are added up
-    //   return (reference_rho + composition_dependence + pressure_dependence) * temperature_dependence
-    //          * (1.0 - melt_dependence);
-    // }
-
-
-    // template <int dim>
-    // double
-    // LatentHeatMelt<dim>::
-    // thermal_expansion_coefficient (const double temperature,
-    //                                const double pressure,
-    //                                const std::vector<double> &composition,
-    //                                const Point<dim> &position) const
-    // {
-    //   return thermal_alpha;
-
-    //   const double melt_frac = melt_fraction(temperature, pressure, composition, position);
-    //   return thermal_alpha * (1-melt_frac) + melt_thermal_alpha * melt_frac;
-    // }
-
-
-    // template <int dim>
-    // double
-    // LatentHeatMelt<dim>::
-    // compressibility (const double,
-    //                  const double,
-    //                  const std::vector<double> &, /*composition*/
-    //                  const Point<dim> &) const
-    // {
-    //   return reference_compressibility;
-    // }
 
 
     template <int dim>
