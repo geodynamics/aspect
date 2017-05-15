@@ -97,7 +97,12 @@ namespace aspect
               // in the end, all the influences are added up
               out.densities[i] = (reference_rho + composition_dependence + pressure_dependence) * temperature_dependence
                                * (1.0 - melt_dependence);
-              
+
+              out.entropy_derivative_pressure[i] = entropy_derivative (in.temperature[i], in.pressure[i], composition[i], 
+                                                   in.position[i], pressure) ;
+
+              out.entropy_derivative_temperature[i] = entropy_derivative (in.temperature[i], in.pressure[i], composition[i], 
+                                                   in.position[i], temperature) ;
 
             }
           }

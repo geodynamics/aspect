@@ -49,11 +49,7 @@ namespace aspect
         virtual void  evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const;
 
-        virtual double entropy_derivative (const double temperature,
-                                           const double pressure,
-                                           const std::vector<double> &compositional_fields,
-                                           const Point<dim> &position,
-                                           const NonlinearDependence::Dependence dependence) const;
+        
         /**
          * @}
          */
@@ -202,6 +198,14 @@ namespace aspect
                                   const double pressure,
                                   const std::vector<double> &compositional_fields,
                                   const Point<dim> &position) const;
+
+        virtual 
+        double 
+        entropy_derivative ( const double temperature,
+                             const double pressure,
+                             const std::vector<double> &compositional_fields,
+                             const Point<dim> &position,
+                             const NonlinearDependence::Dependence dependence) const;
     };
 
   }
