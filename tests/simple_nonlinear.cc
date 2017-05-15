@@ -171,7 +171,6 @@ int f(double parameter)
   derivatives = out_base.get_additional_output<MaterialModelDerivatives<dim> >();
 
   double temp;
-  SymmetricTensor<2,dim> temp_tensor = SymmetricTensor<2,dim> ();
   for (unsigned int i = 0; i < 5; i++)
     {
       // prevent division by zero. If it is zero, the test has passed, because or

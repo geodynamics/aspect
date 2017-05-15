@@ -169,7 +169,6 @@ int f(double parameter)
   derivatives = out_base.get_additional_output<MaterialModelDerivatives<dim> >();
 
   double temp;
-  SymmetricTensor<2,dim> temp_tensor = SymmetricTensor<2,dim> ();
   for (unsigned int i = 0; i < 5; i++)
     {
       // prevent division by zero. If it is zero, the test has passed, because or
@@ -180,10 +179,11 @@ int f(double parameter)
         {
           temp /= (in_base.pressure[i] * finite_difference_accuracy);
         }
-
-      if (temp > derivatives->viscosity_derivative_wrt_pressure[i] * finite_difference_factor || temp < derivatives->viscosity_derivative_wrt_pressure[i] * (2-finite_difference_factor))
+      std::cout << "pressure " << i << ": Finite difference = " << temp << ". Analytical derivative = " << derivatives->viscosity_derivative_wrt_pressure[i]  << std::endl;
+      if (std::fabs(temp - derivatives->viscosity_derivative_wrt_pressure[i]) > 1e-3 * (std::fabs(temp) + std::fabs(derivatives->viscosity_derivative_wrt_pressure[i])))
+        //if (temp > derivatives->viscosity_derivative_wrt_pressure[i] * finite_difference_factor || temp < derivatives->viscosity_derivative_wrt_pressure[i] * (2-finite_difference_factor))
         {
-          std::cout << "Error: The derivative of the viscosity to the pressure is too different from the analitical value." << std::endl;
+          std::cout << "   Error: The derivative of the viscosity to the pressure is too different from the analitical value." << std::endl;
           Error = true;
         }
 

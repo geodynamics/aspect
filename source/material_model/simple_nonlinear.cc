@@ -51,31 +51,6 @@ namespace aspect
     SimpleNonlinear<dim>::
     compute_volume_fractions( const std::vector<double> &compositional_fields) const
     {
-      /*std::cout << "vfFlag 1 " << std::endl;
-         std::vector<double> volume_fractions(compositional_fields.size());
-         std::cout << "vfFlag 2 " << std::endl;
-         //clip the compositional fields so they are between zero and one
-         std::vector<double> x_comp = compositional_fields;
-         for ( unsigned int i=0; i < x_comp.size(); ++i)
-           x_comp[i] = std::min(std::max(x_comp[i], 0.0), 1.0);
-         std::cout << "vfFlag 5 " << std::endl;
-         //sum the compositional fields for normalization purposes
-         double sum_composition = 0.0;
-         for ( unsigned int i=0; i < x_comp.size(); ++i)
-           sum_composition += x_comp[i];
-         std::cout << "vfFlag 8 " << std::endl;
-         // If the sum of the compositions is smaller
-         // than 0.1 something is going really wrong
-         // and we abort.
-         AssertThrow(sum_composition >= 0.1,
-             ExcMessage("The sum of the compositions is smaller than 0.1. There are " + std::to_string(x_comp.size()) + " compositions. It is " +  std::to_string(sum_composition) + ", xcomp 0: "  +  std::to_string(x_comp[0]) + ", comp 0: "  +  std::to_string(compositional_fields[0]) ))
-         std::cout << "vfFlag 10 " << std::endl;
-         //volume_fractions[0] = 0.0;  //background mantle
-         for ( unsigned int i=0; i < x_comp.size(); ++i)
-           volume_fractions[i] = x_comp[i]/sum_composition;std::cout << "vfFlag 15 " << std::endl;
-         //std::cout << "Multiple compositions, return them." << std::endl;
-         return volume_fractions;*/
-
       std::vector<double> volume_fractions( compositional_fields.size()+1);
 
       //clip the compositional fields so they are between zero and one
@@ -99,7 +74,7 @@ namespace aspect
           volume_fractions[0] = 1.0 - sum_composition; //background mantle
           for ( unsigned int i=1; i <= x_comp.size(); ++i)
             volume_fractions[i] = x_comp[i-1];
-        } //std::cout << "Background mantle = " << volume_fractions[0] << std::endl;
+        }
       return volume_fractions;
     }
 
@@ -115,9 +90,7 @@ namespace aspect
 
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-          // const Point<dim> position = in.position[i];
           const double temperature = in.temperature[i];
-          const double pressure= in.pressure[i];
 
           // Averaging composition-field dependent properties
           // Compositions
@@ -192,12 +165,10 @@ namespace aspect
                         {
                           //strictly speaking the derivative is this: 0.5 * ((1/stress_exponent)-1) * std::pow(2,2) * out.viscosities[i] * (1/(edot_ii*edot_ii)) * deviator(in.strain_rate[i])
                           composition_viscosities_derivatives[c] = 2 * (stress_exponent_inv-1) * composition_viscosities[c] * (1/(edot_ii*edot_ii)) * deviator(in.strain_rate[i]);
-                          //std::cout << composition_viscosities_derivatives[i] << ", dev strt:" << deviator(in.strain_rate[i]) << std::endl;
                         }
                       else
                         {
                           composition_viscosities_derivatives[c] = 0;
-                          //std::cout << "Set " << i << " to 0" << std::endl;
                         }
                     }
                 }
@@ -205,8 +176,6 @@ namespace aspect
               out.viscosities[i] = Utilities::weighted_p_norm_average(volume_fractions, composition_viscosities, viscosity_averaging_p);
               Assert(dealii::numbers::is_finite(out.viscosities[i]),ExcMessage ("Error: Averaged viscosity is not finite."));
 
-              //for(int ccc = 0; ccc < in.composition[i].size(); ccc++)
-              //  std::cout << " comp " << ccc << " = " << in.composition[i][ccc] << std::endl;
               if (derivatives != NULL)
                 {
                   derivatives->viscosity_derivative_wrt_strain_rate[i] = Utilities::derivative_of_weighted_p_norm_average(out.viscosities[i],volume_fractions, composition_viscosities, composition_viscosities_derivatives, viscosity_averaging_p);
@@ -405,7 +374,7 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(SimpleNonlinear,
                                    "simple nonlinear",
-                                   " An implementation of a viscous rheology including diffusion"
+                                   " TODO: rewrite... An implementation of a viscous rheology including diffusion"
                                    " and dislocation creep."
                                    " Compositional fields can each be assigned individual"
                                    " activation energies, reference densities, thermal expansivities,"

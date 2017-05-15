@@ -48,12 +48,17 @@ namespace aspect
           // calculate effective viscosity
           if (in.strain_rate.size())
             {
-              SymmetricTensor<2,dim> composition_viscosity_strain_rate_derivatives;
-              double composition_viscosity_pressure_derivatives = 0;
+              SymmetricTensor<2,dim> effective_viscosity_strain_rate_derivatives;
+              double effective_viscosity_pressure_derivatives = 0;
 
               const SymmetricTensor<2,dim> strain_rate_deviator = deviator(in.strain_rate[i]);
-              const double edot_ii_strict = std::sqrt(0.5*strain_rate_deviator*strain_rate_deviator);
+              //const double edot_ii_strict = std::fabs(second_invariant(strain_rate_deviator));//std::sqrt(0.5*strain_rate_deviator*strain_rate_deviator);//
 
+              const double edot_ii_strict = ( (this->get_timestep_number() == 0 && in.strain_rate[i].norm() <= std::numeric_limits<double>::min())
+                                              ?
+                                              reference_strain_rate * reference_strain_rate
+                                              :
+                                              std::fabs(second_invariant(deviator(in.strain_rate[i]))));
               const double sqrt3 = std::sqrt(3.0);
               const double degree_to_rad = numbers::PI/180;
 
@@ -62,51 +67,69 @@ namespace aspect
               double strain_rate_effective = edot_ii_strict;
               if (edot_ii_strict < reference_strain_rate * reference_strain_rate)
                 {
-                  strain_rate_effective = 2.0 * reference_strain_rate * reference_strain_rate;
+                  //strain_rate_effective = /*2.0 **/ reference_strain_rate * reference_strain_rate;
                   bool_min_strain_rate = true;
                 }
 
               // plasticity
-              const double sin_phi = std::sin(angle_of_internal_friction * degree_to_rad);
-              const double cos_phi = std::cos(angle_of_internal_friction * degree_to_rad);
-              const double strain_rate_effective_inv = 1/strain_rate_effective;
-              const double strength_inv_part = 6.0/(sqrt3*(3.0-sin_phi));
-              const double strength = (dim == 2 ?
+              const double sin_phi = std::sin(angle_of_internal_friction);
+              const double cos_phi = std::cos(angle_of_internal_friction);
+              const double strain_rate_effective_inv = 1/(2*std::sqrt(strain_rate_effective));
+              const double strength_inv_part = 1/(sqrt3*(3.0+sin_phi));
+              /*const double strength = (dim == 2 ?
                                        pressure * sin_phi + cohesion * cos_phi
                                        :
                                        (cohesion*cos_phi*strength_inv_part)
                                        + (sin_phi * strength_inv_part) * pressure);
-              const double eta_plastic     = 0.5 * strength * strain_rate_effective_inv;
+              const double eta_plastic     = 0.5 * strength * strain_rate_effective_inv;*/
+              const double strength = ( (dim==3)
+                                        ?
+                                        ( 6.0 * cohesion * cos_phi + 2.0 * std::max(pressure,0.0) * sin_phi) * strength_inv_part
+                                        :
+                                        cohesion * cos_phi + std::max(pressure,0.0) * sin_phi );
+
+              // Rescale the viscosity back onto the yield surface
+              const double eta_plastic = strength * strain_rate_effective_inv;
 
 
-              const double composition_viscosity = std::max(std::min(eta_plastic, maximum_viscosity), minimum_viscosity);
+              double effective_viscosity = 1.0 / ( ( 1.0 / ( eta_plastic + minimum_viscosity ) ) + ( 1.0 / maximum_viscosity ) );
+              effective_viscosity = std::max(std::min(eta_plastic, maximum_viscosity), minimum_viscosity);
 
-              Assert(dealii::numbers::is_finite(composition_viscosity),ExcMessage ("Error: Viscosity is not finite."));
-              if (/*this->get_parameters().newton_theta != 0 &&*/ derivatives != NULL)
+              Assert(dealii::numbers::is_finite(effective_viscosity),ExcMessage ("Error: Viscosity is not finite."));
+              if (derivatives != NULL)
                 {
-                  if (!bool_min_strain_rate && composition_viscosity < maximum_viscosity && composition_viscosity > minimum_viscosity)
+                  if (!bool_min_strain_rate)// && effective_viscosity < maximum_viscosity && effective_viscosity > minimum_viscosity)
                     {
-                      composition_viscosity_strain_rate_derivatives = 0.5 * (eta_plastic * (-1/(edot_ii_strict * edot_ii_strict))) * strain_rate_deviator;
-                      composition_viscosity_pressure_derivatives = (dim == 2 ?
-                                                                    0.5 * sin_phi * strain_rate_effective_inv
-                                                                    :
-                                                                    (sin_phi*strength_inv_part));
+                      const double averaging_factor = effective_viscosity * effective_viscosity * std::pow(eta_plastic + minimum_viscosity,-2);
+                      effective_viscosity_strain_rate_derivatives = averaging_factor * 0.5 * (eta_plastic * (-1/(edot_ii_strict * edot_ii_strict))) * strain_rate_deviator;
+                      effective_viscosity_pressure_derivatives = averaging_factor * (dim == 2 ?
+                                                                                     0.5 * sin_phi * strain_rate_effective_inv
+                                                                                     :
+                                                                                     (sin_phi*strength_inv_part));
                     }
                   else
                     {
-                      composition_viscosity_strain_rate_derivatives = 0;
+                      effective_viscosity_strain_rate_derivatives = 0;
                     }
                 }
 
-              out.viscosities[i] = composition_viscosity;
+              if (std::sqrt(strain_rate_effective) <= std::numeric_limits<double>::min())
+                {
+                  out.viscosities[i] = maximum_viscosity;
+                }
+              else
+                {
+                  out.viscosities[i] = effective_viscosity;
+                }
+
               Assert(dealii::numbers::is_finite(out.viscosities[i]),ExcMessage ("Error: Averaged viscosity is not finite."));
 
               if (/*this->get_parameters().newton_theta != 0 &&*/ derivatives != NULL)
                 {
 
-                  derivatives->viscosity_derivative_wrt_strain_rate[i] = composition_viscosity_strain_rate_derivatives;//Utilities::derivatives_weighed_p_norm_average(out.viscosities[i],volume_fractions, composition_viscosities, composition_viscosities_strain_rate_derivatives, viscosity_averaging_p);
+                  derivatives->viscosity_derivative_wrt_strain_rate[i] = effective_viscosity_strain_rate_derivatives;//Utilities::derivatives_weighed_p_norm_average(out.viscosities[i],volume_fractions, composition_viscosities, composition_viscosities_strain_rate_derivatives, viscosity_averaging_p);
 
-                  derivatives->viscosity_derivative_wrt_pressure[i] = composition_viscosity_pressure_derivatives;//Utilities::derivatives_weighed_p_norm_average(out.viscosities[i],volume_fractions, composition_viscosities, composition_viscosities_pressure_derivatives, viscosity_averaging_p);
+                  derivatives->viscosity_derivative_wrt_pressure[i] = effective_viscosity_pressure_derivatives;//Utilities::derivatives_weighed_p_norm_average(out.viscosities[i],volume_fractions, composition_viscosities, composition_viscosities_pressure_derivatives, viscosity_averaging_p);
 
 #ifdef DEBUG
                   Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_pressure[i]),

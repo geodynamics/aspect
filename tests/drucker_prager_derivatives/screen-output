@@ -4,161 +4,201 @@
 Loading shared library <./libdrucker_prager_derivatives.so>
 
 Test for p = -1000
-zerozero 0: Finite difference = 0. Analytical derivative = 0
-zerozero 1: Finite difference = 0. Analytical derivative = 0
-zerozero 2: Finite difference = 2.77544e+28. Analytical derivative = 2.77544e+28
-zerozero 3: Finite difference = 0. Analytical derivative = 0
-zerozero 4: Finite difference = -1.04858e+24. Analytical derivative = -0
+pressure 0: Finite difference = 9.91172e+08. Analytical derivative = 9.91172e+08
+pressure 1: Finite difference = 7.84058e+08. Analytical derivative = 7.84058e+08
+pressure 2: Finite difference = 4.56212e+08. Analytical derivative = 4.56212e+08
+pressure 3: Finite difference = 2.62329e+07. Analytical derivative = 2.62324e+07
+pressure 4: Finite difference = 4.56076e+08. Analytical derivative = 4.56076e+08
+zerozero 0: Finite difference = 3.34623e+29. Analytical derivative = 3.34623e+29
+zerozero 1: Finite difference = 8.85574e+27. Analytical derivative = 8.85583e+27
+zerozero 2: Finite difference = 2.77533e+28. Analytical derivative = 2.77533e+28
+zerozero 3: Finite difference = 0. Analytical derivative = -0
+zerozero 4: Finite difference = -9.17504e+23. Analytical derivative = -0
    Error: The derivative of the viscosity to the strain rate is too different from the analitical value.
-onezero 0: Finite difference = 0. Analytical derivative = 0
-onezero 1: Finite difference = 0. Analytical derivative = 0
-onezero 2: Finite difference = -5.04626e+29. Analytical derivative = -5.04626e+29
-onezero 3: Finite difference = 0. Analytical derivative = 0
-onezero 4: Finite difference = -4.5742e+31. Analytical derivative = -4.5742e+31
-oneone 0: Finite difference = 0. Analytical derivative = 0
-oneone 1: Finite difference = 0. Analytical derivative = 0
-oneone 2: Finite difference = -2.77545e+28. Analytical derivative = -2.77544e+28
-oneone 3: Finite difference = 0. Analytical derivative = 0
-oneone 4: Finite difference = -1.04858e+24. Analytical derivative = -0
+onezero 0: Finite difference = -7.43607e+28. Analytical derivative = -7.43607e+28
+onezero 1: Finite difference = 4.83508e+29. Analytical derivative = 4.83508e+29
+onezero 2: Finite difference = -5.04606e+29. Analytical derivative = -5.04606e+29
+onezero 3: Finite difference = -5.41254e+38. Analytical derivative = -5.41214e+38
+onezero 4: Finite difference = -4.56575e+31. Analytical derivative = -4.56575e+31
+oneone 0: Finite difference = -3.34623e+29. Analytical derivative = -3.34623e+29
+oneone 1: Finite difference = -8.85607e+27. Analytical derivative = -8.85583e+27
+oneone 2: Finite difference = -2.77537e+28. Analytical derivative = -2.77533e+28
+oneone 3: Finite difference = 0. Analytical derivative = -0
+oneone 4: Finite difference = -9.17504e+23. Analytical derivative = -0
    Error: The derivative of the viscosity to the strain rate is too different from the analitical value.
 Some parts of the test where not succesfull.
 
 Test for p = -2
-zerozero 0: Finite difference = 0. Analytical derivative = 0
-zerozero 1: Finite difference = 0. Analytical derivative = 0
-zerozero 2: Finite difference = 2.77544e+28. Analytical derivative = 2.77544e+28
-zerozero 3: Finite difference = 0. Analytical derivative = 0
-zerozero 4: Finite difference = -1.04858e+24. Analytical derivative = -0
+pressure 0: Finite difference = 9.91172e+08. Analytical derivative = 9.91172e+08
+pressure 1: Finite difference = 7.84058e+08. Analytical derivative = 7.84058e+08
+pressure 2: Finite difference = 4.56212e+08. Analytical derivative = 4.56212e+08
+pressure 3: Finite difference = 2.62329e+07. Analytical derivative = 2.62324e+07
+pressure 4: Finite difference = 4.56076e+08. Analytical derivative = 4.56076e+08
+zerozero 0: Finite difference = 3.34623e+29. Analytical derivative = 3.34623e+29
+zerozero 1: Finite difference = 8.85574e+27. Analytical derivative = 8.85583e+27
+zerozero 2: Finite difference = 2.77533e+28. Analytical derivative = 2.77533e+28
+zerozero 3: Finite difference = 0. Analytical derivative = -0
+zerozero 4: Finite difference = -9.17504e+23. Analytical derivative = -0
    Error: The derivative of the viscosity to the strain rate is too different from the analitical value.
-onezero 0: Finite difference = 0. Analytical derivative = 0
-onezero 1: Finite difference = 0. Analytical derivative = 0
-onezero 2: Finite difference = -5.04626e+29. Analytical derivative = -5.04626e+29
-onezero 3: Finite difference = 0. Analytical derivative = 0
-onezero 4: Finite difference = -4.5742e+31. Analytical derivative = -4.5742e+31
-oneone 0: Finite difference = 0. Analytical derivative = 0
-oneone 1: Finite difference = 0. Analytical derivative = 0
-oneone 2: Finite difference = -2.77545e+28. Analytical derivative = -2.77544e+28
-oneone 3: Finite difference = 0. Analytical derivative = 0
-oneone 4: Finite difference = -1.04858e+24. Analytical derivative = -0
+onezero 0: Finite difference = -7.43607e+28. Analytical derivative = -7.43607e+28
+onezero 1: Finite difference = 4.83508e+29. Analytical derivative = 4.83508e+29
+onezero 2: Finite difference = -5.04606e+29. Analytical derivative = -5.04606e+29
+onezero 3: Finite difference = -5.41254e+38. Analytical derivative = -5.41214e+38
+onezero 4: Finite difference = -4.56575e+31. Analytical derivative = -4.56575e+31
+oneone 0: Finite difference = -3.34623e+29. Analytical derivative = -3.34623e+29
+oneone 1: Finite difference = -8.85607e+27. Analytical derivative = -8.85583e+27
+oneone 2: Finite difference = -2.77537e+28. Analytical derivative = -2.77533e+28
+oneone 3: Finite difference = 0. Analytical derivative = -0
+oneone 4: Finite difference = -9.17504e+23. Analytical derivative = -0
    Error: The derivative of the viscosity to the strain rate is too different from the analitical value.
 Some parts of the test where not succesfull.
 
 Test for p = -1.5
-zerozero 0: Finite difference = 0. Analytical derivative = 0
-zerozero 1: Finite difference = 0. Analytical derivative = 0
-zerozero 2: Finite difference = 2.77544e+28. Analytical derivative = 2.77544e+28
-zerozero 3: Finite difference = 0. Analytical derivative = 0
-zerozero 4: Finite difference = -1.04858e+24. Analytical derivative = -0
+pressure 0: Finite difference = 9.91172e+08. Analytical derivative = 9.91172e+08
+pressure 1: Finite difference = 7.84058e+08. Analytical derivative = 7.84058e+08
+pressure 2: Finite difference = 4.56212e+08. Analytical derivative = 4.56212e+08
+pressure 3: Finite difference = 2.62329e+07. Analytical derivative = 2.62324e+07
+pressure 4: Finite difference = 4.56076e+08. Analytical derivative = 4.56076e+08
+zerozero 0: Finite difference = 3.34623e+29. Analytical derivative = 3.34623e+29
+zerozero 1: Finite difference = 8.85574e+27. Analytical derivative = 8.85583e+27
+zerozero 2: Finite difference = 2.77533e+28. Analytical derivative = 2.77533e+28
+zerozero 3: Finite difference = 0. Analytical derivative = -0
+zerozero 4: Finite difference = -9.17504e+23. Analytical derivative = -0
    Error: The derivative of the viscosity to the strain rate is too different from the analitical value.
-onezero 0: Finite difference = 0. Analytical derivative = 0
-onezero 1: Finite difference = 0. Analytical derivative = 0
-onezero 2: Finite difference = -5.04626e+29. Analytical derivative = -5.04626e+29
-onezero 3: Finite difference = 0. Analytical derivative = 0
-onezero 4: Finite difference = -4.5742e+31. Analytical derivative = -4.5742e+31
-oneone 0: Finite difference = 0. Analytical derivative = 0
-oneone 1: Finite difference = 0. Analytical derivative = 0
-oneone 2: Finite difference = -2.77545e+28. Analytical derivative = -2.77544e+28
-oneone 3: Finite difference = 0. Analytical derivative = 0
-oneone 4: Finite difference = -1.04858e+24. Analytical derivative = -0
+onezero 0: Finite difference = -7.43607e+28. Analytical derivative = -7.43607e+28
+onezero 1: Finite difference = 4.83508e+29. Analytical derivative = 4.83508e+29
+onezero 2: Finite difference = -5.04606e+29. Analytical derivative = -5.04606e+29
+onezero 3: Finite difference = -5.41254e+38. Analytical derivative = -5.41214e+38
+onezero 4: Finite difference = -4.56575e+31. Analytical derivative = -4.56575e+31
+oneone 0: Finite difference = -3.34623e+29. Analytical derivative = -3.34623e+29
+oneone 1: Finite difference = -8.85607e+27. Analytical derivative = -8.85583e+27
+oneone 2: Finite difference = -2.77537e+28. Analytical derivative = -2.77533e+28
+oneone 3: Finite difference = 0. Analytical derivative = -0
+oneone 4: Finite difference = -9.17504e+23. Analytical derivative = -0
    Error: The derivative of the viscosity to the strain rate is too different from the analitical value.
 Some parts of the test where not succesfull.
 
 Test for p = -1
-zerozero 0: Finite difference = 0. Analytical derivative = 0
-zerozero 1: Finite difference = 0. Analytical derivative = 0
-zerozero 2: Finite difference = 2.77544e+28. Analytical derivative = 2.77544e+28
-zerozero 3: Finite difference = 0. Analytical derivative = 0
-zerozero 4: Finite difference = -1.04858e+24. Analytical derivative = -0
+pressure 0: Finite difference = 9.91172e+08. Analytical derivative = 9.91172e+08
+pressure 1: Finite difference = 7.84058e+08. Analytical derivative = 7.84058e+08
+pressure 2: Finite difference = 4.56212e+08. Analytical derivative = 4.56212e+08
+pressure 3: Finite difference = 2.62329e+07. Analytical derivative = 2.62324e+07
+pressure 4: Finite difference = 4.56076e+08. Analytical derivative = 4.56076e+08
+zerozero 0: Finite difference = 3.34623e+29. Analytical derivative = 3.34623e+29
+zerozero 1: Finite difference = 8.85574e+27. Analytical derivative = 8.85583e+27
+zerozero 2: Finite difference = 2.77533e+28. Analytical derivative = 2.77533e+28
+zerozero 3: Finite difference = 0. Analytical derivative = -0
+zerozero 4: Finite difference = -9.17504e+23. Analytical derivative = -0
    Error: The derivative of the viscosity to the strain rate is too different from the analitical value.
-onezero 0: Finite difference = 0. Analytical derivative = 0
-onezero 1: Finite difference = 0. Analytical derivative = 0
-onezero 2: Finite difference = -5.04626e+29. Analytical derivative = -5.04626e+29
-onezero 3: Finite difference = 0. Analytical derivative = 0
-onezero 4: Finite difference = -4.5742e+31. Analytical derivative = -4.5742e+31
-oneone 0: Finite difference = 0. Analytical derivative = 0
-oneone 1: Finite difference = 0. Analytical derivative = 0
-oneone 2: Finite difference = -2.77545e+28. Analytical derivative = -2.77544e+28
-oneone 3: Finite difference = 0. Analytical derivative = 0
-oneone 4: Finite difference = -1.04858e+24. Analytical derivative = -0
+onezero 0: Finite difference = -7.43607e+28. Analytical derivative = -7.43607e+28
+onezero 1: Finite difference = 4.83508e+29. Analytical derivative = 4.83508e+29
+onezero 2: Finite difference = -5.04606e+29. Analytical derivative = -5.04606e+29
+onezero 3: Finite difference = -5.41254e+38. Analytical derivative = -5.41214e+38
+onezero 4: Finite difference = -4.56575e+31. Analytical derivative = -4.56575e+31
+oneone 0: Finite difference = -3.34623e+29. Analytical derivative = -3.34623e+29
+oneone 1: Finite difference = -8.85607e+27. Analytical derivative = -8.85583e+27
+oneone 2: Finite difference = -2.77537e+28. Analytical derivative = -2.77533e+28
+oneone 3: Finite difference = 0. Analytical derivative = -0
+oneone 4: Finite difference = -9.17504e+23. Analytical derivative = -0
    Error: The derivative of the viscosity to the strain rate is too different from the analitical value.
 Some parts of the test where not succesfull.
 
 Test for p = 0
-zerozero 0: Finite difference = 0. Analytical derivative = 0
-zerozero 1: Finite difference = 0. Analytical derivative = 0
-zerozero 2: Finite difference = 2.77544e+28. Analytical derivative = 2.77544e+28
-zerozero 3: Finite difference = 0. Analytical derivative = 0
-zerozero 4: Finite difference = -1.04858e+24. Analytical derivative = -0
+pressure 0: Finite difference = 9.91172e+08. Analytical derivative = 9.91172e+08
+pressure 1: Finite difference = 7.84058e+08. Analytical derivative = 7.84058e+08
+pressure 2: Finite difference = 4.56212e+08. Analytical derivative = 4.56212e+08
+pressure 3: Finite difference = 2.62329e+07. Analytical derivative = 2.62324e+07
+pressure 4: Finite difference = 4.56076e+08. Analytical derivative = 4.56076e+08
+zerozero 0: Finite difference = 3.34623e+29. Analytical derivative = 3.34623e+29
+zerozero 1: Finite difference = 8.85574e+27. Analytical derivative = 8.85583e+27
+zerozero 2: Finite difference = 2.77533e+28. Analytical derivative = 2.77533e+28
+zerozero 3: Finite difference = 0. Analytical derivative = -0
+zerozero 4: Finite difference = -9.17504e+23. Analytical derivative = -0
    Error: The derivative of the viscosity to the strain rate is too different from the analitical value.
-onezero 0: Finite difference = 0. Analytical derivative = 0
-onezero 1: Finite difference = 0. Analytical derivative = 0
-onezero 2: Finite difference = -5.04626e+29. Analytical derivative = -5.04626e+29
-onezero 3: Finite difference = 0. Analytical derivative = 0
-onezero 4: Finite difference = -4.5742e+31. Analytical derivative = -4.5742e+31
-oneone 0: Finite difference = 0. Analytical derivative = 0
-oneone 1: Finite difference = 0. Analytical derivative = 0
-oneone 2: Finite difference = -2.77545e+28. Analytical derivative = -2.77544e+28
-oneone 3: Finite difference = 0. Analytical derivative = 0
-oneone 4: Finite difference = -1.04858e+24. Analytical derivative = -0
+onezero 0: Finite difference = -7.43607e+28. Analytical derivative = -7.43607e+28
+onezero 1: Finite difference = 4.83508e+29. Analytical derivative = 4.83508e+29
+onezero 2: Finite difference = -5.04606e+29. Analytical derivative = -5.04606e+29
+onezero 3: Finite difference = -5.41254e+38. Analytical derivative = -5.41214e+38
+onezero 4: Finite difference = -4.56575e+31. Analytical derivative = -4.56575e+31
+oneone 0: Finite difference = -3.34623e+29. Analytical derivative = -3.34623e+29
+oneone 1: Finite difference = -8.85607e+27. Analytical derivative = -8.85583e+27
+oneone 2: Finite difference = -2.77537e+28. Analytical derivative = -2.77533e+28
+oneone 3: Finite difference = 0. Analytical derivative = -0
+oneone 4: Finite difference = -9.17504e+23. Analytical derivative = -0
    Error: The derivative of the viscosity to the strain rate is too different from the analitical value.
 Some parts of the test where not succesfull.
 
 Test for p = 1
-zerozero 0: Finite difference = 0. Analytical derivative = 0
-zerozero 1: Finite difference = 0. Analytical derivative = 0
-zerozero 2: Finite difference = 2.77544e+28. Analytical derivative = 2.77544e+28
-zerozero 3: Finite difference = 0. Analytical derivative = 0
-zerozero 4: Finite difference = -1.04858e+24. Analytical derivative = -0
+pressure 0: Finite difference = 9.91172e+08. Analytical derivative = 9.91172e+08
+pressure 1: Finite difference = 7.84058e+08. Analytical derivative = 7.84058e+08
+pressure 2: Finite difference = 4.56212e+08. Analytical derivative = 4.56212e+08
+pressure 3: Finite difference = 2.62329e+07. Analytical derivative = 2.62324e+07
+pressure 4: Finite difference = 4.56076e+08. Analytical derivative = 4.56076e+08
+zerozero 0: Finite difference = 3.34623e+29. Analytical derivative = 3.34623e+29
+zerozero 1: Finite difference = 8.85574e+27. Analytical derivative = 8.85583e+27
+zerozero 2: Finite difference = 2.77533e+28. Analytical derivative = 2.77533e+28
+zerozero 3: Finite difference = 0. Analytical derivative = -0
+zerozero 4: Finite difference = -9.17504e+23. Analytical derivative = -0
    Error: The derivative of the viscosity to the strain rate is too different from the analitical value.
-onezero 0: Finite difference = 0. Analytical derivative = 0
-onezero 1: Finite difference = 0. Analytical derivative = 0
-onezero 2: Finite difference = -5.04626e+29. Analytical derivative = -5.04626e+29
-onezero 3: Finite difference = 0. Analytical derivative = 0
-onezero 4: Finite difference = -4.5742e+31. Analytical derivative = -4.5742e+31
-oneone 0: Finite difference = 0. Analytical derivative = 0
-oneone 1: Finite difference = 0. Analytical derivative = 0
-oneone 2: Finite difference = -2.77545e+28. Analytical derivative = -2.77544e+28
-oneone 3: Finite difference = 0. Analytical derivative = 0
-oneone 4: Finite difference = -1.04858e+24. Analytical derivative = -0
+onezero 0: Finite difference = -7.43607e+28. Analytical derivative = -7.43607e+28
+onezero 1: Finite difference = 4.83508e+29. Analytical derivative = 4.83508e+29
+onezero 2: Finite difference = -5.04606e+29. Analytical derivative = -5.04606e+29
+onezero 3: Finite difference = -5.41254e+38. Analytical derivative = -5.41214e+38
+onezero 4: Finite difference = -4.56575e+31. Analytical derivative = -4.56575e+31
+oneone 0: Finite difference = -3.34623e+29. Analytical derivative = -3.34623e+29
+oneone 1: Finite difference = -8.85607e+27. Analytical derivative = -8.85583e+27
+oneone 2: Finite difference = -2.77537e+28. Analytical derivative = -2.77533e+28
+oneone 3: Finite difference = 0. Analytical derivative = -0
+oneone 4: Finite difference = -9.17504e+23. Analytical derivative = -0
    Error: The derivative of the viscosity to the strain rate is too different from the analitical value.
 Some parts of the test where not succesfull.
 
 Test for p = 2
-zerozero 0: Finite difference = 0. Analytical derivative = 0
-zerozero 1: Finite difference = 0. Analytical derivative = 0
-zerozero 2: Finite difference = 2.77544e+28. Analytical derivative = 2.77544e+28
-zerozero 3: Finite difference = 0. Analytical derivative = 0
-zerozero 4: Finite difference = -1.04858e+24. Analytical derivative = -0
+pressure 0: Finite difference = 9.91172e+08. Analytical derivative = 9.91172e+08
+pressure 1: Finite difference = 7.84058e+08. Analytical derivative = 7.84058e+08
+pressure 2: Finite difference = 4.56212e+08. Analytical derivative = 4.56212e+08
+pressure 3: Finite difference = 2.62329e+07. Analytical derivative = 2.62324e+07
+pressure 4: Finite difference = 4.56076e+08. Analytical derivative = 4.56076e+08
+zerozero 0: Finite difference = 3.34623e+29. Analytical derivative = 3.34623e+29
+zerozero 1: Finite difference = 8.85574e+27. Analytical derivative = 8.85583e+27
+zerozero 2: Finite difference = 2.77533e+28. Analytical derivative = 2.77533e+28
+zerozero 3: Finite difference = 0. Analytical derivative = -0
+zerozero 4: Finite difference = -9.17504e+23. Analytical derivative = -0
    Error: The derivative of the viscosity to the strain rate is too different from the analitical value.
-onezero 0: Finite difference = 0. Analytical derivative = 0
-onezero 1: Finite difference = 0. Analytical derivative = 0
-onezero 2: Finite difference = -5.04626e+29. Analytical derivative = -5.04626e+29
-onezero 3: Finite difference = 0. Analytical derivative = 0
-onezero 4: Finite difference = -4.5742e+31. Analytical derivative = -4.5742e+31
-oneone 0: Finite difference = 0. Analytical derivative = 0
-oneone 1: Finite difference = 0. Analytical derivative = 0
-oneone 2: Finite difference = -2.77545e+28. Analytical derivative = -2.77544e+28
-oneone 3: Finite difference = 0. Analytical derivative = 0
-oneone 4: Finite difference = -1.04858e+24. Analytical derivative = -0
+onezero 0: Finite difference = -7.43607e+28. Analytical derivative = -7.43607e+28
+onezero 1: Finite difference = 4.83508e+29. Analytical derivative = 4.83508e+29
+onezero 2: Finite difference = -5.04606e+29. Analytical derivative = -5.04606e+29
+onezero 3: Finite difference = -5.41254e+38. Analytical derivative = -5.41214e+38
+onezero 4: Finite difference = -4.56575e+31. Analytical derivative = -4.56575e+31
+oneone 0: Finite difference = -3.34623e+29. Analytical derivative = -3.34623e+29
+oneone 1: Finite difference = -8.85607e+27. Analytical derivative = -8.85583e+27
+oneone 2: Finite difference = -2.77537e+28. Analytical derivative = -2.77533e+28
+oneone 3: Finite difference = 0. Analytical derivative = -0
+oneone 4: Finite difference = -9.17504e+23. Analytical derivative = -0
    Error: The derivative of the viscosity to the strain rate is too different from the analitical value.
 Some parts of the test where not succesfull.
 
 Test for p = 1000
-zerozero 0: Finite difference = 0. Analytical derivative = 0
-zerozero 1: Finite difference = 0. Analytical derivative = 0
-zerozero 2: Finite difference = 2.77544e+28. Analytical derivative = 2.77544e+28
-zerozero 3: Finite difference = 0. Analytical derivative = 0
-zerozero 4: Finite difference = -1.04858e+24. Analytical derivative = -0
+pressure 0: Finite difference = 9.91172e+08. Analytical derivative = 9.91172e+08
+pressure 1: Finite difference = 7.84058e+08. Analytical derivative = 7.84058e+08
+pressure 2: Finite difference = 4.56212e+08. Analytical derivative = 4.56212e+08
+pressure 3: Finite difference = 2.62329e+07. Analytical derivative = 2.62324e+07
+pressure 4: Finite difference = 4.56076e+08. Analytical derivative = 4.56076e+08
+zerozero 0: Finite difference = 3.34623e+29. Analytical derivative = 3.34623e+29
+zerozero 1: Finite difference = 8.85574e+27. Analytical derivative = 8.85583e+27
+zerozero 2: Finite difference = 2.77533e+28. Analytical derivative = 2.77533e+28
+zerozero 3: Finite difference = 0. Analytical derivative = -0
+zerozero 4: Finite difference = -9.17504e+23. Analytical derivative = -0
    Error: The derivative of the viscosity to the strain rate is too different from the analitical value.
-onezero 0: Finite difference = 0. Analytical derivative = 0
-onezero 1: Finite difference = 0. Analytical derivative = 0
-onezero 2: Finite difference = -5.04626e+29. Analytical derivative = -5.04626e+29
-onezero 3: Finite difference = 0. Analytical derivative = 0
-onezero 4: Finite difference = -4.5742e+31. Analytical derivative = -4.5742e+31
-oneone 0: Finite difference = 0. Analytical derivative = 0
-oneone 1: Finite difference = 0. Analytical derivative = 0
-oneone 2: Finite difference = -2.77545e+28. Analytical derivative = -2.77544e+28
-oneone 3: Finite difference = 0. Analytical derivative = 0
-oneone 4: Finite difference = -1.04858e+24. Analytical derivative = -0
+onezero 0: Finite difference = -7.43607e+28. Analytical derivative = -7.43607e+28
+onezero 1: Finite difference = 4.83508e+29. Analytical derivative = 4.83508e+29
+onezero 2: Finite difference = -5.04606e+29. Analytical derivative = -5.04606e+29
+onezero 3: Finite difference = -5.41254e+38. Analytical derivative = -5.41214e+38
+onezero 4: Finite difference = -4.56575e+31. Analytical derivative = -4.56575e+31
+oneone 0: Finite difference = -3.34623e+29. Analytical derivative = -3.34623e+29
+oneone 1: Finite difference = -8.85607e+27. Analytical derivative = -8.85583e+27
+oneone 2: Finite difference = -2.77537e+28. Analytical derivative = -2.77533e+28
+oneone 3: Finite difference = 0. Analytical derivative = -0
+oneone 4: Finite difference = -9.17504e+23. Analytical derivative = -0
    Error: The derivative of the viscosity to the strain rate is too different from the analitical value.
 Some parts of the test where not succesfull.
