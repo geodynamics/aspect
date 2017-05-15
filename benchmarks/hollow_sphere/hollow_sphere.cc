@@ -227,43 +227,33 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class HollowSphereMaterial : public MaterialModel::InterfaceCompatibility<dim>
+    class HollowSphereMaterial : public MaterialModel::Interface<dim>
     {
       public:
         /**
          * @name Physical parameters used in the basic equations
          * @{
          */
-        virtual double viscosity (const double                  temperature,
-                                  const double                  pressure,
-                                  const std::vector<double>    &compositional_fields,
-                                  const SymmetricTensor<2,dim> &strain_rate,
-                                  const Point<dim>             &position) const;
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        {
+          for (unsigned int i=0; i < in.position.size(); ++i)
+            {
 
-        virtual double density (const double temperature,
-                                const double pressure,
-                                const std::vector<double> &compositional_fields,
-                                const Point<dim> &position) const;
+              const Point<dim> &pos = in.position[i];
+              const std_cxx11::array<double,dim> spos = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(pos);
+              const double r = spos[0];
+              const double mu = pow(r,mmm+1);
+              out.viscosities[i] = mu;
 
-        virtual double compressibility (const double temperature,
-                                        const double pressure,
-                                        const std::vector<double> &compositional_fields,
-                                        const Point<dim> &position) const;
+              out.densities[i] =  1;
+              out.compressibilities[i] = 0;
+              out.specific_heat[i] = 0;
+              out.thermal_expansion_coefficients[i] = 0;
+              out.thermal_conductivities[i] = 0.0;
+            }
+        }
 
-        virtual double specific_heat (const double temperature,
-                                      const double pressure,
-                                      const std::vector<double> &compositional_fields,
-                                      const Point<dim> &position) const;
-
-        virtual double thermal_expansion_coefficient (const double      temperature,
-                                                      const double      pressure,
-                                                      const std::vector<double> &compositional_fields,
-                                                      const Point<dim> &position) const;
-
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const std::vector<double> &compositional_fields,
-                                             const Point<dim> &position) const;
         /**
          * @}
          */
@@ -321,23 +311,6 @@ namespace aspect
         double mmm;
     };
 
-    template <int dim>
-    double
-    HollowSphereMaterial<dim>::
-    viscosity (const double,
-               const double,
-               const std::vector<double> &,       /*composition*/
-               const SymmetricTensor<2,dim> &,
-               const Point<dim> &pos) const
-    {
-      const std_cxx11::array<double,dim> spos =
-        aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(pos);
-
-      const double r=spos[0];
-      const double mu = pow(r,mmm+1);
-      return mu;
-    }
-
 
     template <int dim>
     double
@@ -345,66 +318,6 @@ namespace aspect
     reference_viscosity () const
     {
       return 1.;
-    }
-
-
-    template <int dim>
-    double
-    HollowSphereMaterial<dim>::
-    specific_heat (const double,
-                   const double,
-                   const std::vector<double> &, /*composition*/
-                   const Point<dim> &) const
-    {
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    HollowSphereMaterial<dim>::
-    thermal_conductivity (const double,
-                          const double,
-                          const std::vector<double> &, /*composition*/
-                          const Point<dim> &) const
-    {
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    HollowSphereMaterial<dim>::
-    density (const double,
-             const double,
-             const std::vector<double> &, /*composition*/
-             const Point<dim> &p) const
-    {
-      return 1;
-    }
-
-
-    template <int dim>
-    double
-    HollowSphereMaterial<dim>::
-    thermal_expansion_coefficient (const double temperature,
-                                   const double,
-                                   const std::vector<double> &, /*composition*/
-                                   const Point<dim> &) const
-    {
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    HollowSphereMaterial<dim>::
-    compressibility (const double,
-                     const double,
-                     const std::vector<double> &, /*composition*/
-                     const Point<dim> &) const
-    {
-      return 0.0;
     }
 
 

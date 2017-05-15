@@ -138,43 +138,43 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class AnnulusMaterial : public MaterialModel::InterfaceCompatibility<dim>
+    class AnnulusMaterial : public MaterialModel::Interface<dim>
     {
       public:
         /**
          * @name Physical parameters used in the basic equations
          * @{
          */
-        virtual double viscosity (const double                  temperature,
-                                  const double                  pressure,
-                                  const std::vector<double>    &compositional_fields,
-                                  const SymmetricTensor<2,dim> &strain_rate,
-                                  const Point<dim>             &position) const;
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        {
+          for (unsigned int i=0; i < in.position.size(); ++i)
+            {
+              const Point<dim> &pos = in.position[i];
 
-        virtual double density (const double temperature,
-                                const double pressure,
-                                const std::vector<double> &compositional_fields,
-                                const Point<dim> &position) const;
+              out.viscosities[i] = 1;
 
-        virtual double compressibility (const double temperature,
-                                        const double pressure,
-                                        const std::vector<double> &compositional_fields,
-                                        const Point<dim> &position) const;
+              const double k = beta;
+              const double x = pos[0];
+              const double y = pos[1];
+              const double r = sqrt(x*x + y*y);
+              const double theta = atan2(y,x);
+              const double  A = 2.0, B = -3/log(2), C = -1;
+              const double f = A*r + B/r;
+              const double f_prime = 2 - B/std::pow(r,2.0);
+              const double g = A*r/2 + B*log(r)/r + C/r;
+              const double g_prime = A/2 - B*log(r)/std::pow(r,2.0) + B/std::pow(r,2.0) - C/std::pow(r,2.0);
+              const double g_prime_prime = -B/std::pow(r,3)*(3-2*log(r)) - 2./std::pow(r,3);
+              const double N = g_prime_prime - g_prime/r - (g*(std::pow(k,2) - 1))/std::pow(r,2.0) + f/std::pow(r,2.0) + f_prime/r;
+              out.densities[i] = N*k*sin(k*theta);
 
-        virtual double specific_heat (const double temperature,
-                                      const double pressure,
-                                      const std::vector<double> &compositional_fields,
-                                      const Point<dim> &position) const;
+              out.compressibilities[i] = 0;
+              out.specific_heat[i] = 0;
+              out.thermal_expansion_coefficients[i] = 0;
+              out.thermal_conductivities[i] = 0.0;
+            }
+        }
 
-        virtual double thermal_expansion_coefficient (const double      temperature,
-                                                      const double      pressure,
-                                                      const std::vector<double> &compositional_fields,
-                                                      const Point<dim> &position) const;
-
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const std::vector<double> &compositional_fields,
-                                             const Point<dim> &position) const;
         /**
          * @}
          */
@@ -232,18 +232,6 @@ namespace aspect
         double beta;
     };
 
-    template <int dim>
-    double
-    AnnulusMaterial<dim>::
-    viscosity (const double,
-               const double,
-               const std::vector<double> &,       /*composition*/
-               const SymmetricTensor<2,dim> &,
-               const Point<dim> &p) const
-    {
-      return 1.;
-    }
-
 
     template <int dim>
     double
@@ -252,80 +240,6 @@ namespace aspect
     {
       return 1.;
     }
-
-
-    template <int dim>
-    double
-    AnnulusMaterial<dim>::
-    specific_heat (const double,
-                   const double,
-                   const std::vector<double> &, /*composition*/
-                   const Point<dim> &) const
-    {
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    AnnulusMaterial<dim>::
-    thermal_conductivity (const double,
-                          const double,
-                          const std::vector<double> &, /*composition*/
-                          const Point<dim> &) const
-    {
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    AnnulusMaterial<dim>::
-    density (const double,
-             const double,
-             const std::vector<double> &, /*composition*/
-             const Point<dim> &pos) const
-    {
-      const double k=beta;
-      const double x = pos[0];
-      const double y = pos[1];
-      const double r=sqrt(x*x+y*y);
-      const double theta = atan2(y,x);
-      const double  A=2.0, B=-3/log(2), C=-1;
-      const double f = A*r + B/r;
-      const double f_prime = 2 - B/std::pow(r,2.0);
-      const double g = A*r/2 + B*log(r)/r + C/r;
-      const double g_prime = A/2 - B*log(r)/std::pow(r,2.0) + B/std::pow(r,2.0) - C/std::pow(r,2.0);
-      const double g_prime_prime = -B/std::pow(r,3)*(3-2*log(r)) - 2./std::pow(r,3);
-      const double N = g_prime_prime - g_prime/r - (g*(std::pow(k,2) - 1))/std::pow(r,2.0) + f/std::pow(r,2.0) + f_prime/r;
-      const double density = N*k*sin(k*theta);
-      return density;
-    }
-
-
-    template <int dim>
-    double
-    AnnulusMaterial<dim>::
-    thermal_expansion_coefficient (const double temperature,
-                                   const double,
-                                   const std::vector<double> &, /*composition*/
-                                   const Point<dim> &) const
-    {
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    AnnulusMaterial<dim>::
-    compressibility (const double,
-                     const double,
-                     const std::vector<double> &, /*composition*/
-                     const Point<dim> &) const
-    {
-      return 0.0;
-    }
-
 
     template <int dim>
     bool

@@ -100,6 +100,13 @@ namespace aspect
     Interface<dim>::parse_parameters (dealii::ParameterHandler &)
     {}
 
+    template <int dim>
+    void
+    Interface<dim>::
+    evaluate(const MaterialModel::MaterialModelInputs<dim> &,
+             MaterialModel::MaterialModelOutputs<dim> &) const
+    {}
+
 
 // -------------------------------- Deal with registering material models and automating
 // -------------------------------- their setup and selection at run time
@@ -309,55 +316,56 @@ namespace aspect
     {}
 
 
-    template <int dim>
-    double
-    InterfaceCompatibility<dim>::
-    entropy_derivative (const double,
-                        const double,
-                        const std::vector<double> &,
-                        const Point<dim> &,
-                        const NonlinearDependence::Dependence) const
-    {
-      return 0.0;
-    }
+    // template <int dim>
+    // double
+    // InterfaceCompatibility<dim>::
+    // entropy_derivative (const double,
+    //                     const double,
+    //                     const std::vector<double> &,
+    //                     const Point<dim> &,
+    //                     const NonlinearDependence::Dependence) const
+    // {
+    //   return 0.0;
+    // }
 
 
-    template <int dim>
-    double
-    InterfaceCompatibility<dim>::
-    reaction_term (const double,
-                   const double,
-                   const std::vector<double> &,
-                   const Point<dim> &,
-                   const unsigned int) const
-    {
-      return 0.0;
-    }
+    // template <int dim>
+    // double
+    // InterfaceCompatibility<dim>::
+    // reaction_term (const double,
+    //                const double,
+    //                const std::vector<double> &,
+    //                const Point<dim> &,
+    //                const unsigned int) const
+    // {
+    //   return 0.0;
+    // }
 
 
-    template <int dim>
-    void
-    InterfaceCompatibility<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                                          MaterialModel::MaterialModelOutputs<dim> &out) const
-    {
-      for (unsigned int i=0; i < in.temperature.size(); ++i)
-        {
-          // as documented, if the strain rate array is empty, then do not compute the
-          // viscosities
-          if (in.strain_rate.size() > 0)
-            out.viscosities[i]                  = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
+    // template <int dim>
+    // void
+    // Interface<dim>::
+    // evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+    //          MaterialModel::MaterialModelOutputs<dim> &out) const;
+    // {
+    //   for (unsigned int i=0; i < in.temperature.size(); ++i)
+    //     {
+    //       // as documented, if the strain rate array is empty, then do not compute the
+    //       // viscosities
+    //       if (in.strain_rate.size() > 0)
+    //         out.viscosities[i]                  = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
 
-          out.densities[i]                      = density                       (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-          out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-          out.specific_heat[i]                  = specific_heat                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-          out.thermal_conductivities[i]         = thermal_conductivity          (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-          out.compressibilities[i]              = compressibility               (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-          out.entropy_derivative_pressure[i]    = entropy_derivative            (in.temperature[i], in.pressure[i], in.composition[i], in.position[i], NonlinearDependence::pressure);
-          out.entropy_derivative_temperature[i] = entropy_derivative            (in.temperature[i], in.pressure[i], in.composition[i], in.position[i], NonlinearDependence::temperature);
-          for (unsigned int c=0; c<in.composition[i].size(); ++c)
-            out.reaction_terms[i][c]            = reaction_term                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i], c);
-        }
-    }
+    //       out.densities[i]                      = density                       (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+    //       out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+    //       out.specific_heat[i]                  = specific_heat                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+    //       out.thermal_conductivities[i]         = thermal_conductivity          (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+    //       out.compressibilities[i]              = compressibility               (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+    //       out.entropy_derivative_pressure[i]    = entropy_derivative            (in.temperature[i], in.pressure[i], in.composition[i], in.position[i], NonlinearDependence::pressure);
+    //       out.entropy_derivative_temperature[i] = entropy_derivative            (in.temperature[i], in.pressure[i], in.composition[i], in.position[i], NonlinearDependence::temperature);
+    //       for (unsigned int c=0; c<in.composition[i].size(); ++c)
+    //         out.reaction_terms[i][c]            = reaction_term                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i], c);
+    //     }
+    // }
 
 
     namespace MaterialAveraging
@@ -780,9 +788,6 @@ namespace aspect
   {
 #define INSTANTIATE(dim) \
   template class Interface<dim>; \
-  \
-  template class InterfaceCompatibility<dim>; \
-  \
   template \
   void \
   register_material_model<dim> (const std::string &, \
