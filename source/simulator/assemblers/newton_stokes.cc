@@ -247,7 +247,8 @@ namespace aspect
                                                        scratch.phi_p[i] * scratch.div_phi_u[j]))
                                                   * JxW;
 
-                        Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),ExcMessage ("Error: Assembly matrix is not finite." + std::to_string(data.local_matrix(i,j)) + " = " + std::to_string(eta)));
+                        Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),
+                        		ExcMessage ("Error: Assembly matrix is not finite." + Utilities::to_string(data.local_matrix(i,j)) + " = " + Utilities::to_string(eta)));
                       }
 
                 }
