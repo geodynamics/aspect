@@ -38,42 +38,36 @@ namespace aspect
     SphericalHexagonalPerturbation<dim>::
     initial_temperature (const Point<dim> &position) const
     {
-      // this initial condition only makes sense if the geometry is derived from a
-      // spherical shell (i.e. a spherical shell or chunk)
-      AssertThrow ((dynamic_cast<const GeometryModel::SphericalShell<dim>*>
-                    (&this->get_geometry_model()) != 0
-                    || dynamic_cast<const GeometryModel::Chunk<dim>*>
-                    (&this->get_geometry_model()) != 0
-                    || dynamic_cast<const GeometryModel::Sphere<dim>*>
-                    (&this->get_geometry_model()) != 0),
-                   ExcMessage ("This initial condition can only be used if the geometry "
-                               "is a spherical shell, a sphere or a chunk."));
-
-      // this initial condition only makes sense if a boundary temperature
-      // is prescribed. verify that it is indeed
+      // Check that a boundary temperature is prescribed
       AssertThrow (this->has_boundary_temperature(),
                    ExcMessage ("This initial condition can only be used if a boundary "
                                "temperature is prescribed."));
-
+      
+      // This initial condition only makes sense if the geometry is derived from
+      // a spherical model (i.e. a sphere, spherical shell or chunk)
+      const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
       double R1;
-      if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>
-          (&this->get_geometry_model())
-          != 0)
-        R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
-             (this->get_geometry_model()).outer_radius();
-      else if (dynamic_cast<const GeometryModel::Sphere<dim>*>
-               (&this->get_geometry_model())
-               != 0)
-        R1 = dynamic_cast<const GeometryModel::Sphere<dim>&>
-             (this->get_geometry_model()).radius();
-      else
-        R1 = dynamic_cast<const GeometryModel::Chunk<dim>&>
-             (this->get_geometry_model()).outer_radius();
-
-
-      // s = fraction of the way from
-      // the inner to the outer
-      // boundary; 0<=s<=1
+      
+      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
+	{
+	  R1 = dynamic_cast<const GeometryModel::Sphere<dim>&>
+	    (this->get_geometry_model()).radius();
+	}
+      else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0)
+	{
+	  R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
+	    (this->get_geometry_model()).outer_radius()
+	}
+      else if (dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0)
+	{
+	  R1 = dynamic_cast<const GeometryModel::Chunk<dim>&>
+	    (this->get_geometry_model()).outer_radius();
+	}
+      else:
+	Assert (false, ExcMessage ("This initial condition can only be used if the geometry "
+				   "is a sphere, a spherical shell or a chunk."));
+      
+      // s = fraction of the way from the inner to the outer boundary; 0<=s<=1
       const double s = this->get_geometry_model().depth(position)
                        / this->get_geometry_model().maximal_depth();
 
@@ -116,7 +110,7 @@ namespace aspect
 
           prm.declare_entry ("Angular mode", "6",
                              Patterns::Integer (),
-                             "The number of convection cells to perturb the system with.");
+                             "The number of convection cells with which to perturb the system.");
 
           prm.declare_entry  ("Rotation offset", "-45",
                               Patterns::Double (),
@@ -154,8 +148,7 @@ namespace aspect
     SphericalGaussianPerturbation()
     {
 
-      /*       Note that the values we read in here have reasonable default values equation to
-             the following:*/
+      // Note that the values we read in here have reasonable default values
       geotherm.resize(4);
       radial_position.resize(4);
       geotherm[0] = 1e0;
@@ -174,24 +167,41 @@ namespace aspect
     double
     SphericalGaussianPerturbation<dim>::
     initial_temperature (const Point<dim> &position) const
-    {
-      // this initial condition only makes sense if the geometry is derived from a
-      // spherical shell (i.e. a spherical shell or chunk)
-      AssertThrow ((dynamic_cast<const GeometryModel::SphericalShell<dim>*>
-                    (&this->get_geometry_model()) != 0
-                    || dynamic_cast<const GeometryModel::Chunk<dim>*>
-                    (&this->get_geometry_model()) != 0),
-                   ExcMessage ("This initial condition can only be used if the geometry "
-                               "is a spherical shell or a chunk."));
-
-      // this initial condition only makes sense if a boundary temperature
-      // is prescribed. verify that it is indeed
+    { 
+      // Check that a boundary temperature is prescribed
       AssertThrow (this->has_boundary_temperature(),
                    ExcMessage ("This initial condition can only be used if a boundary "
                                "temperature is prescribed."));
-      const double
-      R0 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (this->get_geometry_model()).inner_radius(),
-      R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (this->get_geometry_model()).outer_radius();
+      
+      // This initial condition only makes sense if the geometry is derived from
+      // a spherical model (i.e. a sphere, spherical shell or chunk)
+      const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
+      double R0, R1;
+      
+      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
+	{
+	  R0 = 0.;
+	  R1 = dynamic_cast<const GeometryModel::Sphere<dim>&>
+	    (this->get_geometry_model()).radius();
+	}
+      else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0)
+	{
+	  R0 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
+	    (this->get_geometry_model()).inner_radius()
+	  R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
+	    (this->get_geometry_model()).outer_radius()
+	}
+      else if (dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0)
+	{
+	  R0 = dynamic_cast<const GeometryModel::Chunk<dim>&>
+	    (this->get_geometry_model()).inner_radius();
+	  R1 = dynamic_cast<const GeometryModel::Chunk<dim>&>
+	    (this->get_geometry_model()).outer_radius();
+	}
+      else:
+	Assert (false, ExcMessage ("This initial condition can only be used if the geometry "
+				   "is a sphere, a spherical shell or a chunk."));
+
       const double dT = this->get_boundary_temperature().maximal_temperature()
                         - this->get_boundary_temperature().minimal_temperature();
       const double T0 = this->get_boundary_temperature().maximal_temperature()/dT;
