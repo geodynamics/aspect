@@ -49,19 +49,19 @@ namespace aspect
       const std::string boundary_name = geometry_model->translate_id_to_symbol_name(boundary_indicator);
 
       if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
-	{
-	  if (boundary_name == "surface")
+        {
+          if (boundary_name == "surface")
             return surface_composition;
           else
             {
               Assert (false, ExcMessage ("Unknown boundary indicator for geometry model. "
-					 "The given boundary should be ``surface''."));
+                                         "The given boundary should be ``surface''."));
               return std::numeric_limits<double>::quiet_NaN();
             }
-	}
+        }
       else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0
-          || dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0
-          || dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>(geometry_model) != 0)
+               || dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0
+               || dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>(geometry_model) != 0)
         {
           if (boundary_name == "inner")
             return inner_composition;
@@ -70,7 +70,7 @@ namespace aspect
           else
             {
               Assert (false, ExcMessage ("Unknown boundary indicator for geometry model. "
-					 "The given boundary should be ``inner'' or ``outer''."));
+                                         "The given boundary should be ``inner'' or ``outer''."));
               return std::numeric_limits<double>::quiet_NaN();
             }
         }
@@ -89,10 +89,11 @@ namespace aspect
     SphericalConstant<dim>::
     minimal_composition (const std::set<types::boundary_id> &) const
     {
+      const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
       if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
-	return surface_composition;
+        return surface_composition;
       else
-	return std::min (inner_composition, outer_composition);
+        return std::min (inner_composition, outer_composition);
     }
 
 
@@ -102,10 +103,11 @@ namespace aspect
     SphericalConstant<dim>::
     maximal_composition (const std::set<types::boundary_id> &) const
     {
+      const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
       if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
-	return surface_composition;
+        return surface_composition;
       else
-	return std::max (inner_composition, outer_composition);
+        return std::max (inner_composition, outer_composition);
     }
 
 
@@ -162,7 +164,7 @@ namespace aspect
                                                "spherical constant",
                                                "A model in which the composition is chosen constant on "
                                                "the inner and outer boundaries of a surface, spherical "
-					       "shell, chunk or ellipsoidal chunk. "
+                                               "shell, chunk or ellipsoidal chunk. "
                                                "Parameters are read from subsection 'Spherical constant'.")
   }
 }

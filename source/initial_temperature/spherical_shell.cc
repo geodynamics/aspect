@@ -23,6 +23,7 @@
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/chunk.h>
+#include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <fstream>
 #include <iostream>
 #include <cstring>
@@ -42,31 +43,50 @@ namespace aspect
       AssertThrow (this->has_boundary_temperature(),
                    ExcMessage ("This initial condition can only be used if a boundary "
                                "temperature is prescribed."));
-      
+
       // This initial condition only makes sense if the geometry is derived from
       // a spherical model (i.e. a sphere, spherical shell or chunk)
       const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
       double R1;
-      
+
       if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
-	{
-	  R1 = dynamic_cast<const GeometryModel::Sphere<dim>&>
-	    (this->get_geometry_model()).radius();
-	}
+        {
+          R1 = dynamic_cast<const GeometryModel::Sphere<dim>&>
+               (this->get_geometry_model()).radius();
+        }
       else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0)
-	{
-	  R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
-	    (this->get_geometry_model()).outer_radius()
-	}
+        {
+          R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
+               (this->get_geometry_model()).outer_radius();
+        }
       else if (dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0)
-	{
-	  R1 = dynamic_cast<const GeometryModel::Chunk<dim>&>
-	    (this->get_geometry_model()).outer_radius();
-	}
-      else:
-	Assert (false, ExcMessage ("This initial condition can only be used if the geometry "
-				   "is a sphere, a spherical shell or a chunk."));
-      
+        {
+          R1 = dynamic_cast<const GeometryModel::Chunk<dim>&>
+               (this->get_geometry_model()).outer_radius();
+        }
+      else if (const GeometryModel::EllipsoidalChunk<dim> *gm = dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*> (&this->get_geometry_model()))
+        {
+
+          // TODO
+          // If the eccentricity of the EllipsoidalChunk is non-zero, the radius can vary along a boundary,
+          // but the maximal depth is the same everywhere and we could calculate a representative pressure
+          // profile. However, it requires some extra logic with ellipsoidal
+          // coordinates, so for now we only allow eccentricity zero.
+          // Using the EllipsoidalChunk with eccentricity zero can still be useful,
+          // because the domain can be non-coordinate parallel.
+
+          AssertThrow(gm->get_eccentricity() == 0.0,
+                      ExcMessage("This plugin cannot be used with a non-zero eccentricity. "));
+
+          R1 = gm->get_semi_major_axis_a();
+        }
+      else
+        {
+          Assert (false, ExcMessage ("This initial condition can only be used if the geometry "
+                                     "is a sphere, a spherical shell or a chunk."));
+          R1 = std::numeric_limits<double>::quiet_NaN();
+        }
+
       // s = fraction of the way from the inner to the outer boundary; 0<=s<=1
       const double s = this->get_geometry_model().depth(position)
                        / this->get_geometry_model().maximal_depth();
@@ -167,40 +187,64 @@ namespace aspect
     double
     SphericalGaussianPerturbation<dim>::
     initial_temperature (const Point<dim> &position) const
-    { 
+    {
       // Check that a boundary temperature is prescribed
       AssertThrow (this->has_boundary_temperature(),
                    ExcMessage ("This initial condition can only be used if a boundary "
                                "temperature is prescribed."));
-      
+
       // This initial condition only makes sense if the geometry is derived from
-      // a spherical model (i.e. a sphere, spherical shell or chunk)
+      // a spherical model
+      // (i.e. a sphere, spherical shell, chunk or ellipsoidal chunk with zero ellipticity)
       const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
       double R0, R1;
-      
+
       if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
-	{
-	  R0 = 0.;
-	  R1 = dynamic_cast<const GeometryModel::Sphere<dim>&>
-	    (this->get_geometry_model()).radius();
-	}
+        {
+          R0 = 0.;
+          R1 = dynamic_cast<const GeometryModel::Sphere<dim>&>
+               (this->get_geometry_model()).radius();
+        }
       else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0)
-	{
-	  R0 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
-	    (this->get_geometry_model()).inner_radius()
-	  R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
-	    (this->get_geometry_model()).outer_radius()
-	}
+        {
+          R0 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
+               (this->get_geometry_model()).inner_radius();
+          R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
+               (this->get_geometry_model()).outer_radius();
+        }
       else if (dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0)
-	{
-	  R0 = dynamic_cast<const GeometryModel::Chunk<dim>&>
-	    (this->get_geometry_model()).inner_radius();
-	  R1 = dynamic_cast<const GeometryModel::Chunk<dim>&>
-	    (this->get_geometry_model()).outer_radius();
-	}
-      else:
-	Assert (false, ExcMessage ("This initial condition can only be used if the geometry "
-				   "is a sphere, a spherical shell or a chunk."));
+        {
+          R0 = dynamic_cast<const GeometryModel::Chunk<dim>&>
+               (this->get_geometry_model()).inner_radius();
+          R1 = dynamic_cast<const GeometryModel::Chunk<dim>&>
+               (this->get_geometry_model()).outer_radius();
+        }
+
+      else if (const GeometryModel::EllipsoidalChunk<dim> *gm = dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*> (&this->get_geometry_model()))
+        {
+
+          // TODO
+          // If the eccentricity of the EllipsoidalChunk is non-zero, the radius can vary along a boundary,
+          // but the maximal depth is the same everywhere and we could calculate a representative pressure
+          // profile. However, it requires some extra logic with ellipsoidal
+          // coordinates, so for now we only allow eccentricity zero.
+          // Using the EllipsoidalChunk with eccentricity zero can still be useful,
+          // because the domain can be non-coordinate parallel.
+
+          AssertThrow(gm->get_eccentricity() == 0.0,
+                      ExcMessage("This plugin cannot be used with a non-zero eccentricity. "));
+
+          R0 = gm->get_semi_major_axis_a() - gm->maximal_depth();
+          R1 = gm->get_semi_major_axis_a();
+        }
+      else
+        {
+          Assert (false, ExcMessage ("This initial condition can only be used if the geometry "
+                                     "is a sphere, a spherical shell or a chunk."));
+
+          R0 = std::numeric_limits<double>::quiet_NaN();
+          R1 = std::numeric_limits<double>::quiet_NaN();
+        }
 
       const double dT = this->get_boundary_temperature().maximal_temperature()
                         - this->get_boundary_temperature().minimal_temperature();

@@ -36,7 +36,7 @@ namespace aspect
      * spherical shell geometry in which the composition at the inner and
      * outer surfaces (i.e. at the core-mantle and the mantle-
      * lithosphere/atmosphere boundaries) are constant.
-     * This class works for the sphere, spherical shell, 
+     * This class works for the sphere, spherical shell,
      * chunk and ellipsoidal chunk geometries.
      *
      * @ingroup BoundaryCompositions
