@@ -96,7 +96,8 @@ namespace aspect
     Chunk<dim>::ChunkGeometry::
     push_forward(const Point<dim> &r_phi_theta) const
     {
-      return push_forward_sphere(r_phi_theta);
+      return push_forward_sphere(push_forward_topo(r_phi_theta));
+      //return push_forward_sphere(r_phi_theta);
     }
 
     template <int dim>
@@ -104,7 +105,8 @@ namespace aspect
     Chunk<dim>::ChunkGeometry::
     pull_back(const Point<dim> &x_y_z) const
     {
-      return pull_back_sphere(x_y_z);
+      return pull_back_topo(pull_back_sphere(x_y_z));
+  //    return pull_back_sphere(x_y_z);
     }
 
     template <int dim>
@@ -214,8 +216,8 @@ namespace aspect
       // return the point with adjusted radius
       Point<dim> topor_phi_theta = r_phi_theta;
       topor_phi_theta[0] = topo_radius;
-//      return topor_phi_theta;
-      return r_phi_theta;
+      return topor_phi_theta;
+//      return r_phi_theta;
     }
 
     template <int dim>
@@ -242,8 +244,8 @@ namespace aspect
       // return the point without topography
       Point<dim> r_phi_theta = topor_phi_theta;
       r_phi_theta[0] = radius;
-//      return r_phi_theta;
-      return topor_phi_theta;
+      return r_phi_theta;
+//      return topor_phi_theta;
     }
 
     template <int dim>
