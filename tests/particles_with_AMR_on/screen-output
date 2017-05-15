@@ -1,0 +1,105 @@
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 5,860 (2,178+289+1,089+2,304)
+
+*** Timestep 0:  t=0 years
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+0 iterations.
+
+Number of active cells: 196 (on 6 levels)
+Number of degrees of freedom: 4,728 (1,818+237+909+1,764)
+
+*** Timestep 0:  t=0 years
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18+0 iterations.
+
+Number of active cells: 352 (on 7 levels)
+Number of degrees of freedom: 8,581 (3,326+424+1,663+3,168)
+
+*** Timestep 0:  t=0 years
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 32+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 5433
+     RMS, max velocity:            0.0137 m/year, 0.0369 m/year
+     Compositions min/max/mass:    0/1/1.563e+10
+
+Number of active cells: 376 (on 7 levels)
+Number of degrees of freedom: 9,109 (3,518+448+1,759+3,384)
+
+*** Timestep 1:  t=113316 years
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 19+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 5774
+     RMS, max velocity:            0.0137 m/year, 0.0369 m/year
+     Compositions min/max/mass:    0/1/1.563e+10
+
+Number of active cells: 376 (on 7 levels)
+Number of degrees of freedom: 9,109 (3,518+448+1,759+3,384)
+
+*** Timestep 2:  t=226632 years
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 28+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 5867
+     RMS, max velocity:            0.0138 m/year, 0.0374 m/year
+     Compositions min/max/mass:    0/1/1.566e+10
+
+Number of active cells: 376 (on 7 levels)
+Number of degrees of freedom: 9,109 (3,518+448+1,759+3,384)
+
+*** Timestep 3:  t=337599 years
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 25+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 5977
+     RMS, max velocity:            0.014 m/year, 0.0379 m/year
+     Compositions min/max/mass:    0/1/1.566e+10
+
+Number of active cells: 364 (on 7 levels)
+Number of degrees of freedom: 8,858 (3,430+437+1,715+3,276)
+
+*** Timestep 4:  t=445884 years
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 6034
+     RMS, max velocity:            0.0141 m/year, 0.0381 m/year
+     Compositions min/max/mass:    0/1/1.561e+10
+
+Number of active cells: 364 (on 7 levels)
+Number of degrees of freedom: 8,897 (3,454+440+1,727+3,276)
+
+*** Timestep 5:  t=500000 years
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 6033
+     RMS, max velocity:            0.0142 m/year, 0.0383 m/year
+     Compositions min/max/mass:    0/1/1.557e+10
+
+Number of active cells: 394 (on 7 levels)
+Number of degrees of freedom: 9,492 (3,654+465+1,827+3,546)
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
