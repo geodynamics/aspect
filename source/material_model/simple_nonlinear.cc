@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -157,11 +157,11 @@ namespace aspect
                   // TODO: Mailed Bob and asked why the averaging should be arithmetic. Bob replyed that this has to
                   //       do with effective medium theory. Have to look into this a bit more.
                   const double stress_exponent_inv = 1/stress_exponent[c];
-                  composition_viscosities[c] = std::max(std::min(std::pow(prefactor[c],-stress_exponent_inv) * std::pow(edot_ii,stress_exponent_inv-1), max_visc[c]), min_visc[c]);
+                  composition_viscosities[c] = std::max(std::min(std::pow(prefactor[c],-stress_exponent_inv) * std::pow(edot_ii,stress_exponent_inv-1), max_viscosity[c]), min_viscosity[c]);
                   Assert(dealii::numbers::is_finite(composition_viscosities[c]),ExcMessage ("Error: Viscosity is not finite."));
                   if (derivatives != NULL)
                     {
-                      if (edot_ii_strict > min_strain_rate[c] * min_strain_rate[c] && composition_viscosities[c] < max_visc[c] && composition_viscosities[c] > min_visc[c])
+                      if (edot_ii_strict > min_strain_rate[c] * min_strain_rate[c] && composition_viscosities[c] < max_viscosity[c] && composition_viscosities[c] > min_viscosity[c])
                         {
                           //strictly speaking the derivative is this: 0.5 * ((1/stress_exponent)-1) * std::pow(2,2) * out.viscosities[i] * (1/(edot_ii*edot_ii)) * deviator(in.strain_rate[i])
                           composition_viscosities_derivatives[c] = 2 * (stress_exponent_inv-1) * composition_viscosities[c] * (1/(edot_ii*edot_ii)) * deviator(in.strain_rate[i]);
@@ -332,8 +332,8 @@ namespace aspect
           reference_T = prm.get_double("Reference temperature");
           ref_visc = prm.get_double ("Reference viscosity");
           min_strain_rate = get_vector_double("Minimum strain rate",n_fields,prm);
-          min_visc = get_vector_double ("Minimum viscosity",n_fields,prm);
-          max_visc = get_vector_double ("Maximum viscosity",n_fields,prm);
+          min_viscosity = get_vector_double ("Minimum viscosity",n_fields,prm);
+          max_viscosity = get_vector_double ("Maximum viscosity",n_fields,prm);
           veff_coefficient = get_vector_double ("Effective viscosity coefficient",n_fields,prm);
 
           // Equation of state parameters

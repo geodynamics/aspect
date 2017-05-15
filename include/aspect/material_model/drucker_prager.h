@@ -79,7 +79,6 @@ namespace aspect
     class DruckerPrager : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        std::vector<double> compute_volume_fractions( const std::vector<double> &compositional_fields) const;
         /**
          * @name Physical parameters used in the basic equations
          * @{
@@ -141,6 +140,12 @@ namespace aspect
          */
 
       private:
+        /**
+         * computes the volume fractions of the compositional fields, and returns it so that the sum
+         * of the volume fractions is one.
+         */
+        std::vector<double> compute_volume_fractions( const std::vector<double> &compositional_fields) const;
+
         double reference_rho;
         double reference_T;
         double reference_eta;

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -42,13 +42,13 @@ namespace aspect
        * base class. See there for their meaning.
        */
       template <int dim>
-      class SPDfactor
+      class SPD_Factor
         : public DataPostprocessorScalar<dim>,
           public SimulatorAccess<dim>,
           public Interface<dim>
       {
         public:
-          SPDfactor ();
+          SPD_Factor ();
 
           virtual
           void

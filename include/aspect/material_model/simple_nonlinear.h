@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -79,8 +79,8 @@ namespace aspect
          * which involves a division by the strain rate. Units: $1/s$.
          */
         std::vector<double> min_strain_rate;
-        std::vector<double> min_visc;
-        std::vector<double> max_visc;
+        std::vector<double> min_viscosity;
+        std::vector<double> max_viscosity;
         std::vector<double> veff_coefficient;
         double ref_visc;
 
@@ -98,10 +98,7 @@ namespace aspect
         unsigned int n_fields;
         // averaging parameters
         double viscosity_averaging_p;
-
-
     };
-
   }
 }
 

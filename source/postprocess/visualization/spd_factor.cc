@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -32,8 +32,8 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      SPDfactor<dim>::
-      SPDfactor ()
+      SPD_Factor<dim>::
+      SPD_Factor ()
         :
         DataPostprocessorScalar<dim> ("spd_factor",
                                       update_values | update_gradients | update_q_points)
@@ -43,7 +43,7 @@ namespace aspect
 
       template <int dim>
       void
-      SPDfactor<dim>::
+      SPD_Factor<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                             std::vector<Vector<double> > &computed_quantities) const
       {
@@ -104,7 +104,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(SPDfactor,
+      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(SPD_Factor,
                                                   "spd factor",
                                                   "A visualization output object that generates output "
                                                   "for the spd factor.")

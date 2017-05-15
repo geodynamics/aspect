@@ -58,7 +58,7 @@ namespace aspect
                                               ?
                                               reference_strain_rate * reference_strain_rate
                                               :
-											  0.5*strain_rate_deviator*strain_rate_deviator);//std::fabs(second_invariant(strain_rate_deviator)));
+                                              0.5*strain_rate_deviator*strain_rate_deviator);//std::fabs(second_invariant(strain_rate_deviator)));
               const double sqrt3 = std::sqrt(3.0);
               //const double degree_to_rad = numbers::PI/180;
 
@@ -132,14 +132,12 @@ namespace aspect
 
                   derivatives->viscosity_derivative_wrt_pressure[i] = effective_viscosity_pressure_derivatives;//Utilities::derivatives_weighed_p_norm_average(out.viscosities[i],volume_fractions, composition_viscosities, composition_viscosities_pressure_derivatives, viscosity_averaging_p);
 
-#ifdef DEBUG
                   Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_pressure[i]),
                          ExcMessage ("Error: Averaged dviscosities_dpressure is not finite."));
                   for (int x = 0; x < dim; x++)
                     for (int y = 0; y < dim; y++)
                       Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_strain_rate[i][x][y]),
                              ExcMessage ("Error: Averaged dviscosities_dstrain_rate is not finite."));
-#endif
 
                 }
             }
@@ -165,6 +163,8 @@ namespace aspect
         }
     }
 
+
+
     template <int dim>
     double
     DruckerPrager<dim>::
@@ -173,6 +173,8 @@ namespace aspect
       return reference_eta;
     }
 
+
+
     template <int dim>
     bool
     DruckerPrager<dim>::
@@ -180,6 +182,8 @@ namespace aspect
     {
       return false;
     }
+
+
 
     template <int dim>
     void
@@ -286,6 +290,7 @@ namespace aspect
     }
   }
 }
+
 
 // explicit instantiations
 namespace aspect
