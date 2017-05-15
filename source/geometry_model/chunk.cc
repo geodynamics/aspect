@@ -72,6 +72,7 @@ namespace aspect
 
       DerivativeForm<1, dim, dim> DX;
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
       switch (dim)
         {
           case 2:
@@ -104,6 +105,42 @@ namespace aspect
         }
 
       return DX;
+#endif
+
+      switch (dim)
+        {
+          case 2:
+          {
+            DX[0][0] =      std::cos(phi);
+            DX[0][1] = -R * std::sin(phi);
+            DX[1][0] =      std::sin(phi);
+            DX[1][1] =  R * std::cos(phi);
+            break;
+          }
+          case 3:
+          {
+            const double theta = chart_point[2]; // Latitude (not colatitude)
+
+            DX[0][0] =      std::cos(theta) * std::cos(phi);
+            DX[0][1] = -R * std::cos(theta) * std::sin(phi);
+            DX[0][2] = -R * std::sin(theta) * std::cos(phi);
+            DX[1][0] =      std::cos(theta) * std::sin(phi);
+            DX[1][1] =  R * std::cos(theta) * std::cos(phi);
+            DX[1][2] = -R * std::sin(theta) * std::sin(phi);
+            DX[2][0] =      std::sin(theta);
+            DX[2][1] = 0;
+            DX[2][2] =  R * std::cos(theta);
+            break;
+          }
+          default:
+            Assert (false, ExcNotImplemented ());
+
+
+        }
+
+      return DX;
+
+
     }
 
     template <int dim>
@@ -111,8 +148,10 @@ namespace aspect
     Chunk<dim>::ChunkGeometry::
     push_forward(const Point<dim> &r_phi_theta) const
     {
+#if !DEAL_II_VERSION_GTE(9,0,0)
+      return push_forward_sphere(r_phi_theta);
+#endif
       return push_forward_sphere(push_forward_topo(r_phi_theta));
-      //return push_forward_sphere(r_phi_theta);
     }
 
     template <int dim>
@@ -120,8 +159,10 @@ namespace aspect
     Chunk<dim>::ChunkGeometry::
     pull_back(const Point<dim> &x_y_z) const
     {
+#if !DEAL_II_VERSION_GTE(9,0,0)
+      return pull_back_sphere(x_y_z);
+#endif
       return pull_back_topo(pull_back_sphere(x_y_z));
-  //    return pull_back_sphere(x_y_z);
     }
 
 
