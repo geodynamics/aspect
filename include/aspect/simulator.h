@@ -1431,6 +1431,8 @@ namespace aspect
       std_cxx11::shared_ptr<LinearAlgebra::PreconditionILU>     C_preconditioner;
 
       bool                                                      rebuild_stokes_matrix;
+      bool                                                      assemble_newton_stokes_matrix;
+      bool                                                      assemble_newton_stokes_system;
       bool                                                      rebuild_stokes_preconditioner;
 
       /**

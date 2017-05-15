@@ -24,6 +24,7 @@
 #include <aspect/assembly.h>
 #include <aspect/simulator_access.h>
 #include <aspect/melt.h>
+#include <aspect/newton.h>
 #include <aspect/free_surface.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -629,8 +630,14 @@ namespace aspect
     // create an object for the complete equations assembly; add its
     // member functions to the signals and add the object the list
     // of assembler objects
-    aspect::Assemblers::StokesAssembler<dim> *stokes_assembler
-      = new aspect::Assemblers::StokesAssembler<dim>();
+    aspect::Assemblers::StokesAssembler<dim> *stokes_assembler = NULL;
+    aspect::Assemblers::NewtonStokesAssembler<dim> *newton_stokes_assembler = NULL;
+
+    if (assemble_newton_stokes_system)
+      newton_stokes_assembler = new aspect::Assemblers::NewtonStokesAssembler<dim>();
+    else
+      stokes_assembler = new aspect::Assemblers::StokesAssembler<dim>();
+
     aspect::Assemblers::AdvectionAssembler<dim> *adv_assembler
       = new aspect::Assemblers::AdvectionAssembler<dim>();
 
@@ -646,11 +653,20 @@ namespace aspect
       .connect (std_cxx11::bind(&aspect::Assemblers::MeltEquations<dim>::local_assemble_stokes_preconditioner_melt,
                                 std_cxx11::cref (*melt_equation_assembler),
                                 std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
+    else if (assemble_newton_stokes_system)
+      assemblers->local_assemble_stokes_preconditioner
+      .connect (std_cxx11::bind(&aspect::Assemblers::NewtonStokesAssembler<dim>::preconditioner,
+                                std_cxx11::cref (*newton_stokes_assembler),
+                                std_cxx11::_1,
+                                std_cxx11::_2,
+                                std_cxx11::_3,
+                                std_cxx11::cref (this->parameters)));
     else
       assemblers->local_assemble_stokes_preconditioner
       .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::preconditioner,
                                 std_cxx11::cref (*stokes_assembler),
                                 std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
+
 
     if (parameters.include_melt_transport)
       assemblers->local_assemble_stokes_system
@@ -661,6 +677,71 @@ namespace aspect
                                 std_cxx11::_3,
                                 std_cxx11::_4,
                                 std_cxx11::_5));
+
+    else  if (assemble_newton_stokes_system)
+      {
+        assemblers->local_assemble_stokes_system
+        .connect (std_cxx11::bind(&aspect::Assemblers::NewtonStokesAssembler<dim>::incompressible_terms,
+                                  std_cxx11::cref (*newton_stokes_assembler),
+                                  // discard cell,
+                                  std_cxx11::_2,
+                                  std_cxx11::_3,
+                                  std_cxx11::_4,
+                                  std_cxx11::_5,
+                                  std_cxx11::cref (this->parameters)));
+
+        if (material_model->is_compressible())
+          assemblers->local_assemble_stokes_system
+          .connect (std_cxx11::bind(&aspect::Assemblers::NewtonStokesAssembler<dim>::compressible_strain_rate_viscosity_term,
+                                    std_cxx11::cref (*newton_stokes_assembler),
+                                    // discard cell,
+                                    std_cxx11::_2,
+                                    std_cxx11::_3,
+                                    std_cxx11::_4,
+                                    std_cxx11::_5,
+                                    std_cxx11::cref (this->parameters)));
+
+        if (parameters.formulation_mass_conservation ==
+            Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
+          assemblers->local_assemble_stokes_system
+          .connect (std_cxx11::bind(&aspect::Assemblers::NewtonStokesAssembler<dim>::implicit_reference_density_compressibility_term,
+                                    std_cxx11::cref (*newton_stokes_assembler),
+                                    // discard cell,
+                                    std_cxx11::_2,
+                                    std_cxx11::_3,
+                                    std_cxx11::_4,
+                                    std_cxx11::_5,
+                                    std_cxx11::cref (this->parameters)));
+        else if (parameters.formulation_mass_conservation ==
+                 Parameters<dim>::Formulation::MassConservation::reference_density_profile)
+          {
+            assemblers->local_assemble_stokes_system
+            .connect (std_cxx11::bind(&aspect::Assemblers::NewtonStokesAssembler<dim>::reference_density_compressibility_term,
+                                      std_cxx11::cref (*newton_stokes_assembler),
+                                      // discard cell,
+                                      std_cxx11::_2,
+                                      std_cxx11::_3,
+                                      std_cxx11::_4,
+                                      std_cxx11::_5,
+                                      std_cxx11::cref (this->parameters)));
+          }
+        else if (parameters.formulation_mass_conservation ==
+                 Parameters<dim>::Formulation::MassConservation::incompressible)
+          {
+            // do nothing, because we assembled div u =0 above already
+          }
+        else
+          assemblers->local_assemble_stokes_system
+          .connect (std_cxx11::bind(&aspect::Assemblers::NewtonStokesAssembler<dim>::isothermal_compression_term,
+                                    std_cxx11::cref (*newton_stokes_assembler),
+                                    // discard cell,
+                                    std_cxx11::_2,
+                                    std_cxx11::_3,
+                                    std_cxx11::_4,
+                                    std_cxx11::_5,
+                                    std_cxx11::cref (this->parameters)));
+
+      }
     else
       {
         assemblers->local_assemble_stokes_system
@@ -724,9 +805,12 @@ namespace aspect
 
       }
 
-
-    assembler_objects.push_back (std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
-                                 (stokes_assembler));
+    if (assemble_newton_stokes_system)
+      assembler_objects.push_back (std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
+                                   (newton_stokes_assembler));
+    else
+      assembler_objects.push_back (std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
+                                   (stokes_assembler));
 
     assembler_objects.push_back (std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
                                  (adv_assembler));
@@ -1091,7 +1175,7 @@ namespace aspect
     compute_material_model_input_values (current_linearization_point,
                                          scratch.finite_element_values,
                                          cell,
-                                         rebuild_stokes_matrix,
+                                         assemble_newton_stokes_system ? true : rebuild_stokes_matrix,
                                          scratch.material_model_inputs);
     create_additional_material_model_outputs(scratch.material_model_outputs);
 
@@ -1194,7 +1278,17 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::assemble_stokes_system ()
   {
-    computing_timer.enter_section ("   Assemble Stokes system");
+    if (!assemble_newton_stokes_system)
+      computing_timer.enter_section ("   Assemble Stokes system");
+    else if (assemble_newton_stokes_matrix)
+      {
+        if (parameters.newton_theta == 0)
+          computing_timer.enter_section ("   Assemble Stokes system picard");
+        else
+          computing_timer.enter_section ("   Assemble Stokes system newton");
+      }
+    else
+      computing_timer.enter_section ("   Assemble Stokes system rhs");
 
     if (rebuild_stokes_matrix == true)
       system_matrix = 0;
