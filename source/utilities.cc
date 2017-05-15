@@ -1829,7 +1829,6 @@ namespace aspect
     }
 
 
-
     template <int dim>
     AsciiDataBoundary<dim>::AsciiDataBoundary ()
       :
@@ -2198,6 +2197,16 @@ namespace aspect
         }
       else
         return 0.0;
+    }
+
+    template <int dim>
+    std::vector<Tensor<1,dim> >
+    AsciiDataBoundary<dim>::vector_gradient (const types::boundary_id             boundary_indicator,
+                        const Point<dim>                    &position,
+                        const unsigned int                   component) const
+    {
+     std::vector<Tensor<1,dim> > gradient;
+     return gradient;
     }
 
 

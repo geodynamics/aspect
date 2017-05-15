@@ -95,6 +95,12 @@ namespace aspect
       return topo;
     }
 
+    template <int dim>
+    std::vector<Tensor<1,dim> >
+    AsciiData<dim>::vector_gradient(const Point<dim> &point) const
+    {
+      return Utilities::AsciiDataBoundary<dim>::vector_gradient(surface_boundary_id, point,0);
+    }
 
     template <int dim>
     double

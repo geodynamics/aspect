@@ -74,6 +74,12 @@ namespace aspect
         virtual
         double max_topography () const;
 
+        /**
+         * Return the gradient of the surface topography for a given position along
+         * along the surface.
+         */
+        std::vector<Tensor<1,dim> >
+        vector_gradient(const Point<dim> &p) const; 
 
         /**
          * Declare the parameters this class takes through input files.
