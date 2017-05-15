@@ -797,7 +797,7 @@ namespace aspect
         /**
          * Return the gradients of the parameters from the parameter file.
          */
-        Tensor<1,dim> 
+        Tensor<1,dim-1> 
         vector_gradient(const types::boundary_id             boundary_indicator,
                         const Point<dim> &p,
                         const unsigned int                   component) const;

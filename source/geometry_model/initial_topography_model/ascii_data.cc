@@ -96,7 +96,7 @@ namespace aspect
     }
 
     template <int dim>
-    Tensor<1,dim> 
+    Tensor<1,dim-1> 
     AsciiData<dim>::vector_gradient(const Point<dim> &point) const
     {
       return Utilities::AsciiDataBoundary<dim>::vector_gradient(surface_boundary_id, point,0);
