@@ -98,11 +98,12 @@ namespace aspect
               out.densities[i] = (reference_rho + composition_dependence + pressure_dependence) * temperature_dependence
                                * (1.0 - melt_dependence);
 
-              out.entropy_derivative_pressure[i] = entropy_derivative (in.temperature[i], in.pressure[i], composition[i], 
-                                                   in.position[i], pressure) ;
 
-              out.entropy_derivative_temperature[i] = entropy_derivative (in.temperature[i], in.pressure[i], composition[i], 
-                                                   in.position[i], temperature) ;
+              out.entropy_derivative_pressure[i] = entropy_derivative (in.temperature[i], in.pressure[i], composition, 
+                                                   in.position[i], NonlinearDependence::pressure) ; // for pressure dependence
+
+              out.entropy_derivative_temperature[i] = entropy_derivative (in.temperature[i], in.pressure[i], composition, 
+                                                   in.position[i], NonlinearDependence::temperature) ; // for temperature dependence
 
             }
           }
@@ -606,6 +607,7 @@ namespace aspect
       this->model_dependence.compressibility = NonlinearDependence::none;
       this->model_dependence.specific_heat = NonlinearDependence::none;
       this->model_dependence.thermal_conductivity = NonlinearDependence::none;
+     // this->model_dependence.entropy_derivative_temperature = NonlinearDependence::temperature;
     }
   }
 }
