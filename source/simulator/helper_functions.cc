@@ -1492,6 +1492,9 @@ namespace aspect
     LinearAlgebra::BlockVector distributed_vector (introspection.index_sets.system_partitioning,
                                                    mpi_communicator);
 
+    LinearAlgebra::BlockVector distributed_reaction_vector (introspection.index_sets.system_partitioning,
+                                                            mpi_communicator);
+
     const int number_of_reaction_steps = parameters.reaction_time_step < time_step
                                          ?
                                          (int) (time_step / parameters.reaction_time_step)
@@ -1541,6 +1544,8 @@ namespace aspect
           in.position = fe_values.get_quadrature_points();
           in.cell = &cell;
 
+          std::vector<std::vector<double> > accumulated_reactions (quadrature.size(),std::vector<double> (introspection.n_compositional_fields));
+
           for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
             fe_values[introspection.extractors.compositional_fields[c]].get_function_values(solution,
                                                                                             composition_values[c]);
@@ -1564,6 +1569,7 @@ namespace aspect
                     // simple forward euler
                     in.composition[j][c] = in.composition[j][c]
                                            + reaction_time_step_size * reaction_rate_outputs->reaction_rates[c][j];
+                    accumulated_reactions[j][c] += reaction_time_step_size * reaction_rate_outputs->reaction_rates[c][j];
                   }
             }
 
@@ -1579,6 +1585,7 @@ namespace aspect
                   continue;
 
                 distributed_vector(local_dof_indices[composition_idx]) = in.composition[j][c];
+                distributed_reaction_vector(local_dof_indices[composition_idx]) = accumulated_reactions[j][c];
               }
         }
 
@@ -1587,6 +1594,15 @@ namespace aspect
         const unsigned int block_c = introspection.block_indices.compositional_fields[c];
         distributed_vector.block(block_c).compress(VectorOperation::insert);
         solution.block(block_c) = distributed_vector.block(block_c);
+
+        // we have to update the old solution with our reaction update too
+        // so that the advection scheme will have the correct time stepping in the next step
+        distributed_reaction_vector.block(block_c).compress(VectorOperation::insert);
+
+        // we do not need distributed_vector any more, use it to temporarily store the update
+        distributed_vector.block(block_c) = old_solution.block(block_c);
+        distributed_vector.block(block_c) +=  distributed_reaction_vector.block(block_c);
+        old_solution.block(block_c) = distributed_vector.block(block_c);
       }
   }
 
