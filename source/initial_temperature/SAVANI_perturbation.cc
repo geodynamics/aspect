@@ -286,7 +286,7 @@ namespace aspect
         {
           prm.declare_entry("Data directory", "$ASPECT_SOURCE_DIR/data/initial-temperature/SAVANI/",
                             Patterns::DirectoryName (),
-                            "The path to the model data. ");
+                            "The path to the model data.");
           prm.declare_entry ("Initial condition file name", "savani.dlnvs.60.m.ab",
                              Patterns::Anything(),
                              "The file name of the spherical harmonics coefficients "
@@ -343,7 +343,7 @@ namespace aspect
     SAVANIPerturbation<dim>::parse_parameters (ParameterHandler &prm)
     {
       AssertThrow (dim == 3,
-                   ExcMessage ("The 'S40RTS perturbation' model for the initial "
+                   ExcMessage ("The 'SAVANI perturbation' model for the initial "
                                "temperature is only available for 3d computations."));
 
       prm.enter_subsection ("Initial temperature model");
@@ -384,10 +384,10 @@ namespace aspect
                                               "velocity model by Auer and others, which can be downloaded "
                                               "here \\url{http://n.ethz.ch/~auerl/savani.tar.bz2}. "
                                               "Information on the vs model can be found in Auer, L., Boschi, "
-                                              "L., Becker, T.W., Nissen-Meyer, T. \\& Giardini, D., 2014. Savani: "
-                                              "A variable resolution whole‐mantle model of anisotropic shear velocity "
-                                              "variations based on multiple data sets. Journal of Geophysical "
-                                              "Research: Solid Earth 119.4 (2014): 3006-3034. "
+                                              "L., Becker, T.W., Nissen-Meyer, T. \\& Giardini, D., 2014. "
+                                              "Savani: A variable resolution whole-mantle model of anisotropic "
+                                              "shear velocity variations based on multiple data sets. Journal "
+                                              "of Geophysical Research: Solid Earth 119.4 (2014): 3006-3034. "
                                               "The scaling between the shear wave perturbation and the "
                                               "temperature perturbation can be set by the user with the "
                                               "'Vs to density scaling' parameter and the 'Thermal "

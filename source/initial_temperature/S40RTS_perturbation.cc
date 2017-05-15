@@ -340,7 +340,7 @@ namespace aspect
                              Patterns::Integer (0),
                              "The maximum order the users specify when reading the data file of spherical harmonic "
                              "coefficients, which must be smaller than the maximum order the data file stored. "
-                             "This parameter will be used only if 'Specify a lower maximum order' is set to true");
+                             "This parameter will be used only if 'Specify a lower maximum order' is set to true.");
         }
         prm.leave_subsection ();
       }
