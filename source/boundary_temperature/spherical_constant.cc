@@ -20,8 +20,8 @@
 
 
 #include <aspect/boundary_temperature/spherical_constant.h>
-#include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/sphere.h>
+#include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 
@@ -41,7 +41,7 @@ namespace aspect
     boundary_temperature (const types::boundary_id boundary_indicator,
                           const Point<dim> &) const
     {
-      // Verify that the GeometryModel is a SphericalShell, Sphere, Chunk, or an
+      // Verify that the GeometryModel is a Sphere, SphericalShell, Chunk, or an
       // EllipsoidalChunk since only for geometries based on spherical shells
       // do we know which boundary indicators are used and what they mean
       const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
