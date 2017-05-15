@@ -33,7 +33,17 @@ namespace aspect
     /**
      * A material model based on a simple powerlaw rheology and
      * Implements the derivatives needed for the Newton method.
-     * TODO: more documentation.
+     *
+     * Power law equation to compute the viscosity $\eta$ per composition:
+     * $\eta = A * \dot\varepsilon_{II}^{\frac{1}{n}-1}$ where  $A$ is the
+     * prefactor, $\dot\varepsion$ is the strain-rate, II indicates
+     * the square root of the second invariant defined as
+     * $\frac{1}{2} \dot\varepsilon_{ij} \dot\varepsilon_{ij}$, and
+     * $n$ is the stress exponent.
+     *
+     * Afther this the viscosities per composition are averaged using the
+     * utilities weightd p-norm function, where the volume fractions are
+     * the weights.
      *
      * @ingroup MaterialModels
      */

@@ -26,23 +26,6 @@ using namespace dealii;
 
 namespace aspect
 {
-  namespace
-  {
-    std::vector<double>
-    get_vector_double (const std::string &parameter, const unsigned int n_fields, ParameterHandler &prm)
-    {
-      std::vector<double> parameter_list;
-      parameter_list = Utilities::string_to_double(Utilities::split_string_list(prm.get (parameter)));
-      if (parameter_list.size() == 1)
-        parameter_list.resize(n_fields, parameter_list[0]);
-
-      AssertThrow(parameter_list.size() == n_fields,
-                  ExcMessage("Length of " + parameter + " list (size "+ std::to_string(parameter_list.size()) +") must be either one,"
-                             " or n_compositional_fields+1 (= " + std::to_string(n_fields) + ")."));
-
-      return parameter_list;
-    }
-  }
 
   namespace MaterialModel
   {
@@ -180,16 +163,15 @@ namespace aspect
                 {
                   derivatives->viscosity_derivative_wrt_strain_rate[i] = Utilities::derivative_of_weighted_p_norm_average(out.viscosities[i],volume_fractions, composition_viscosities, composition_viscosities_derivatives, viscosity_averaging_p);
 
-#ifdef DEBUG
                   for (int x = 0; x < dim; x++)
                     for (int y = 0; y < dim; y++)
-                      if (!dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_strain_rate[i][x][y]))
-                        std::cout << "Error: Averaged viscosity to strain-rate devrivative is not finite." << std::endl;
+                    	Assert (dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_strain_rate[i][x][y]),
+                    			ExcMessage ("Averaged viscosity to strain-rate devrivative is not finite."));
 
                   derivatives->viscosity_derivative_wrt_pressure[i]    = 0;
-                  if (!dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_pressure[i]))
-                    std::cout << "Error: Averaged viscosity to pressure devrivative is not finite." << std::endl;
-#endif
+              	Assert (dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_strain_rate[i][x][y]),
+              			ExcMessage ("Averaged viscosity to pressure devrivative is not finite."));
+
                 }
             }
           out.densities[i] = density;
@@ -313,13 +295,12 @@ namespace aspect
     void
     SimpleNonlinear<dim>::parse_parameters (ParameterHandler &prm)
     {
-      // can't use this->n_compositional_fields(), because some
-      // tests never initiate the simulator, but uses the material
+      // Can't use this->n_compositional_fields(), because some
+      // tests never initialize the simulator, but uses the material
       // model directly.
       prm.enter_subsection ("Compositional fields");
       {
         n_fields = prm.get_integer ("Number of fields")+1;
-        //AssertThrow(n_fields > 0, ExcMessage("This material model needs at least one compositional field."))
       }
       prm.leave_subsection();
 
@@ -331,22 +312,22 @@ namespace aspect
           // Reference and minimum/maximum values
           reference_T = prm.get_double("Reference temperature");
           ref_visc = prm.get_double ("Reference viscosity");
-          min_strain_rate = get_vector_double("Minimum strain rate",n_fields,prm);
-          min_viscosity = get_vector_double ("Minimum viscosity",n_fields,prm);
-          max_viscosity = get_vector_double ("Maximum viscosity",n_fields,prm);
-          veff_coefficient = get_vector_double ("Effective viscosity coefficient",n_fields,prm);
+          min_strain_rate =  Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Minimum strain rate"))),n_fields,"Minimum strain rate");
+          min_viscosity =  Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get ("Minimum viscosity"))),n_fields,"Minimum viscosity");
+          max_viscosity =  Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get ("Maximum viscosity"))),n_fields,"Maximum viscosity");
+          veff_coefficient =  Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get ("Effective viscosity coefficient"))),n_fields,"Effective viscosity coefficient");
 
           // Equation of state parameters
-          thermal_diffusivity = get_vector_double("Thermal diffusivity",n_fields,prm);
-          heat_capacity = get_vector_double("Heat capacity",n_fields,prm);
+          thermal_diffusivity =  Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal diffusivity"))),n_fields,"Thermal diffusivity");
+          heat_capacity =  Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Heat capacity"))),n_fields,"Heat capacity");
 
           // ---- Compositional parameters
-          densities = get_vector_double("Densities",n_fields,prm);
-          thermal_expansivities = get_vector_double("Thermal expansivities",n_fields,prm);
+          densities =  Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),n_fields,"Densities");
+          thermal_expansivities =  Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal expansivities"))),n_fields,"Thermal expansivities");
 
           // Rheological parameters
-          prefactor = get_vector_double("Prefactor",n_fields,prm);
-          stress_exponent = get_vector_double("Stress exponent",n_fields,prm);
+          prefactor =  Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactor"))),n_fields,"Prefactor");
+          stress_exponent =  Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress exponent"))),n_fields,"Stress exponent");
 
           // averaging parameters
           viscosity_averaging_p = prm.get_double("Viscosity averaging p");
