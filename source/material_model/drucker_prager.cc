@@ -54,17 +54,18 @@ namespace aspect
               const SymmetricTensor<2,dim> strain_rate_deviator = deviator(in.strain_rate[i]);
               //const double edot_ii_strict = std::fabs(second_invariant(strain_rate_deviator));//std::sqrt(0.5*strain_rate_deviator*strain_rate_deviator);//
 
-              const double edot_ii_strict = ( (this->get_timestep_number() == 0 && in.strain_rate[i].norm() <= std::numeric_limits<double>::min())
+              const double edot_ii_strict = ( (in.strain_rate[i].norm() <= std::numeric_limits<double>::min())
                                               ?
                                               reference_strain_rate * reference_strain_rate
                                               :
-                                              std::fabs(second_invariant(deviator(in.strain_rate[i]))));
+											  0.5*strain_rate_deviator*strain_rate_deviator);//std::fabs(second_invariant(strain_rate_deviator)));
               const double sqrt3 = std::sqrt(3.0);
-              const double degree_to_rad = numbers::PI/180;
+              //const double degree_to_rad = numbers::PI/180;
 
 
               bool bool_min_strain_rate = false;
               double strain_rate_effective = edot_ii_strict;
+
               if (edot_ii_strict < reference_strain_rate * reference_strain_rate)
                 {
                   //strain_rate_effective = /*2.0 **/ reference_strain_rate * reference_strain_rate;
@@ -84,26 +85,26 @@ namespace aspect
               const double eta_plastic     = 0.5 * strength * strain_rate_effective_inv;*/
               const double strength = ( (dim==3)
                                         ?
-                                        ( 6.0 * cohesion * cos_phi + 2.0 * std::max(pressure,0.0) * sin_phi) * strength_inv_part
+                                        ( 6.0 * cohesion * cos_phi + 2.0 * pressure * sin_phi) * strength_inv_part
                                         :
-                                        cohesion * cos_phi + std::max(pressure,0.0) * sin_phi );
+                                        cohesion * cos_phi + pressure * sin_phi );
 
               // Rescale the viscosity back onto the yield surface
               const double eta_plastic = strength * strain_rate_effective_inv;
 
 
-              double effective_viscosity = 1.0 / ( ( 1.0 / ( eta_plastic + minimum_viscosity ) ) + ( 1.0 / maximum_viscosity ) );
-              effective_viscosity = std::max(std::min(eta_plastic, maximum_viscosity), minimum_viscosity);
+              const double effective_viscosity = 1.0 / ( ( 1.0 / ( eta_plastic + minimum_viscosity ) ) + ( 1.0 / maximum_viscosity ) );
+              //effective_viscosity = std::max(std::min(eta_plastic, maximum_viscosity), minimum_viscosity);
 
               Assert(dealii::numbers::is_finite(effective_viscosity),ExcMessage ("Error: Viscosity is not finite."));
               if (derivatives != NULL)
                 {
-                  if (!bool_min_strain_rate)// && effective_viscosity < maximum_viscosity && effective_viscosity > minimum_viscosity)
+                  if (std::sqrt(strain_rate_effective) > std::numeric_limits<double>::min())//!bool_min_strain_rate)// && effective_viscosity < maximum_viscosity && effective_viscosity > minimum_viscosity)
                     {
                       const double averaging_factor = effective_viscosity * effective_viscosity * std::pow(eta_plastic + minimum_viscosity,-2);
-                      effective_viscosity_strain_rate_derivatives = averaging_factor * 0.5 * (eta_plastic * (-1/(edot_ii_strict * edot_ii_strict))) * strain_rate_deviator;
+                      effective_viscosity_strain_rate_derivatives = averaging_factor * 0.5 * (eta_plastic * (-1/std::sqrt(edot_ii_strict * edot_ii_strict))) * strain_rate_deviator;
                       effective_viscosity_pressure_derivatives = averaging_factor * (dim == 2 ?
-                                                                                     0.5 * sin_phi * strain_rate_effective_inv
+                                                                                     /*0.5 * */sin_phi * strain_rate_effective_inv
                                                                                      :
                                                                                      (sin_phi*strength_inv_part));
                     }
