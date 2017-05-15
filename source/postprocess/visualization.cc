@@ -727,7 +727,7 @@ namespace aspect
                              Patterns::Selection (DataOutBase::get_output_format_names ()),
                              "The file format to be used for graphical output.");
 
-          prm.declare_entry ("Number of grouped files", "0",
+          prm.declare_entry ("Number of grouped files", "16",
                              Patterns::Integer(0),
                              "VTU file output supports grouping files from several CPUs "
                              "into a given number of files using MPI I/O when writing on a parallel "
