@@ -155,7 +155,9 @@ namespace aspect
                                               "refinement indicator for each cell. This will give a "
                                               "reasonable approximation of the true gradient of the "
                                               "compositional field if you are using a continuous "
-                                              "finite element. On the other hand, for discontinuous "
+                                              "finite element."
+                                              "\n\n"
+                                              "On the other hand, for discontinuous "
                                               "finite elements (see the `Use discontinuous composition "
                                               "discretization' parameter in the `Discretization' "
                                               "section), the gradient at quadrature points does not "
@@ -169,6 +171,9 @@ namespace aspect
                                               "even if the finite element solution is different "
                                               "from each cell to the next. Consequently, the "
                                               "current refinement criterion will likely not be "
-                                              "useful in this situation.")
+                                              "useful in this situation. That said, "
+                                              "the `composition approximate "
+                                              "gradient' refinement criterion exists for exactly "
+                                              "this purpose.")
   }
 }
