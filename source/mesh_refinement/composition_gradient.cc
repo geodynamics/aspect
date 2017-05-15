@@ -37,6 +37,7 @@ namespace aspect
                                "compositional fields are active!"));
 
       indicators = 0;
+      Vector<float> this_indicator (indicators.size());
       const double power = 1.0 + dim/2.0;
 
       const Quadrature<dim> quadrature(this->get_fe().base_element(this->introspection().base_elements.compositional_fields).get_unit_support_points());
@@ -66,7 +67,7 @@ namespace aspect
                 // composition gradient. Note that quadrature points and dofs
                 // are enumerated in the same order.
                 for (unsigned int j=0; j<this->get_fe().base_element(this->introspection().base_elements.compositional_fields).dofs_per_cell; ++j)
-                  indicators[i] += composition_gradients[j].norm() * composition_scaling_factors[c];
+                  this_indicator[i] += composition_gradients[j].norm();
 
                 // Scale gradient in each cell with the correct power of h. Otherwise,
                 // error indicators do not reduce when refined if there is a density
@@ -74,8 +75,9 @@ namespace aspect
                 // refining, so anything >1 should work. (note that the gradient
                 // itself scales like 1/h, so multiplying it with any factor h^s, s>1
                 // will yield convergence of the error indicators to zero as h->0)
-                indicators[i] *= std::pow(cell->diameter(), power);
+                this_indicator[i] *= std::pow(cell->diameter(), power);
               }
+          indicators.add(composition_scaling_factors[c], this_indicator);
         }
     }
 
