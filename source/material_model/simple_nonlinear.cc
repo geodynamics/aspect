@@ -155,7 +155,7 @@ namespace aspect
                               ExcMessage ("Averaged viscosity to strain-rate devrivative is not finite."));
 
                   derivatives->viscosity_derivative_wrt_pressure[i]    = 0;
-                  Assert (dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_strain_rate[i][x][y]),
+                  Assert (dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_pressure[i]),
                           ExcMessage ("Averaged viscosity to pressure devrivative is not finite."));
 
                 }

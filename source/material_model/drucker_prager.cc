@@ -54,35 +54,31 @@ namespace aspect
               const SymmetricTensor<2,dim> strain_rate_deviator = deviator(in.strain_rate[i]);
               //const double edot_ii_strict = std::fabs(second_invariant(strain_rate_deviator));//std::sqrt(0.5*strain_rate_deviator*strain_rate_deviator);//
 
-              const double edot_ii_strict = ( (in.strain_rate[i].norm() <= std::numeric_limits<double>::min())
-                                              ?
-                                              reference_strain_rate * reference_strain_rate
-                                              :
-                                              0.5*strain_rate_deviator*strain_rate_deviator);//std::fabs(second_invariant(strain_rate_deviator)));
+              const double edot_ii_strict = (&(this->get_simulator()) == NULL
+            		  ?
+            				  // no simulator object available -- we are probably in a unit test
+            				  std::fabs(second_invariant(strain_rate_deviator))
+            		  :
+							  // simulator object is available, but we need to treat the
+							  // first time step separately
+					  ((this->get_timestep_number() == 0)
+            		   &&
+					   (in.strain_rate[i].norm() <= std::numeric_limits<double>::min())
+					   ?
+							   reference_strain_rate * reference_strain_rate
+							   :
+							   std::fabs(second_invariant(strain_rate_deviator))));//0.5*strain_rate_deviator*strain_rate_deviator);
+
               const double sqrt3 = std::sqrt(3.0);
-              //const double degree_to_rad = numbers::PI/180;
 
-
-              bool bool_min_strain_rate = false;
               double strain_rate_effective = edot_ii_strict;
-
-              if (edot_ii_strict < reference_strain_rate * reference_strain_rate)
-                {
-                  //strain_rate_effective = /*2.0 **/ reference_strain_rate * reference_strain_rate;
-                  bool_min_strain_rate = true;
-                }
 
               // plasticity
               const double sin_phi = std::sin(angle_of_internal_friction);
               const double cos_phi = std::cos(angle_of_internal_friction);
               const double strain_rate_effective_inv = 1/(2*std::sqrt(strain_rate_effective));
               const double strength_inv_part = 1/(sqrt3*(3.0+sin_phi));
-              /*const double strength = (dim == 2 ?
-                                       pressure * sin_phi + cohesion * cos_phi
-                                       :
-                                       (cohesion*cos_phi*strength_inv_part)
-                                       + (sin_phi * strength_inv_part) * pressure);
-              const double eta_plastic     = 0.5 * strength * strain_rate_effective_inv;*/
+
               const double strength = ( (dim==3)
                                         ?
                                         ( 6.0 * cohesion * cos_phi + 2.0 * pressure * sin_phi) * strength_inv_part
@@ -125,7 +121,7 @@ namespace aspect
 
               Assert(dealii::numbers::is_finite(out.viscosities[i]),ExcMessage ("Error: Averaged viscosity is not finite."));
 
-              if (/*this->get_parameters().newton_theta != 0 &&*/ derivatives != NULL)
+              if (derivatives != NULL)
                 {
 
                   derivatives->viscosity_derivative_wrt_strain_rate[i] = effective_viscosity_strain_rate_derivatives;//Utilities::derivatives_weighed_p_norm_average(out.viscosities[i],volume_fractions, composition_viscosities, composition_viscosities_strain_rate_derivatives, viscosity_averaging_p);
