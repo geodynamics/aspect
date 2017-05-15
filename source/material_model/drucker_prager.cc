@@ -20,6 +20,8 @@
 
 
 #include <aspect/material_model/drucker_prager.h>
+#include <aspect/utilities.h>
+#include <aspect/newton.h>
 
 using namespace dealii;
 
@@ -29,54 +31,145 @@ namespace aspect
   {
 
     template <int dim>
-    double
+    void
     DruckerPrager<dim>::
-    viscosity (const double /*temperature*/,
-               const double pressure,
-               const std::vector<double> &/*composition*/,
-               const SymmetricTensor<2,dim> &strain_rate,
-               const Point<dim> &/*position*/) const
+    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+             MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      // For the very first time this function is called
-      // (the first iteration of the first timestep), this function is called
-      // with a zero input strain rate. We provide a representative reference
-      // strain rate for this case, which avoids division by zero and produces
-      // a representative first guess of the viscosities.
-      // In later iterations and timesteps we calculate the second moment
-      // invariant of the deviatoric strain rate tensor.
-      // This is equal to the negative of the second principle
-      // invariant calculated with the function second_invariant.
-      const double strain_rate_dev_inv2 = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
-                                            ?
-                                            reference_strain_rate * reference_strain_rate
-                                            :
-                                            std::fabs(second_invariant(deviator(strain_rate))));
+      //set up additional output for the derivatives
+      MaterialModel::MaterialModelDerivatives<dim> *derivatives;
+      derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
 
-      // In later timesteps, we still need to care about cases of very small
-      // strain rates. We expect the viscosity to approach the maximum_viscosity
-      // in these cases. This check prevents a division-by-zero.
-      if (std::sqrt(strain_rate_dev_inv2) <= std::numeric_limits<double>::min())
-        return maximum_viscosity;
+      for (unsigned int i=0; i < in.temperature.size(); ++i)
+        {
+          const double temperature = in.temperature[i];
+          // To avoid negative yield strengths and eventually viscosities,
+          // we make sure the pressure is not negative
+          const double pressure=std::max(in.pressure[i],0.0);
 
-      // To avoid negative yield strengths and eventually viscosities,
-      // we make sure the pressure is not negative
-      const double strength = ( (dim==3)
-                                ?
-                                ( 6.0 * cohesion * std::cos(phi) + 2.0 * std::max(pressure,0.0) * std::sin(phi) )
-                                / ( std::sqrt(3.0) * ( 3.0 + std::sin(phi) ) )
-                                :
-                                cohesion * std::cos(phi) + std::max(pressure,0.0) * std::sin(phi) );
+          // calculate effective viscosity
+          if (in.strain_rate.size() > 0)
+            {
+              SymmetricTensor<2,dim> effective_viscosity_strain_rate_derivatives;
+              double effective_viscosity_pressure_derivatives = 0;
 
-      // Rescale the viscosity back onto the yield surface
-      const double viscosity = strength / ( 2.0 * std::sqrt(strain_rate_dev_inv2) );
+              const SymmetricTensor<2,dim> strain_rate_deviator = deviator(in.strain_rate[i]);
 
-      // Cut off the viscosity between a minimum and maximum value to avoid
-      // a numerically unfavourable large viscosity range.
-      const double effective_viscosity = 1.0 / ( ( 1.0 / ( viscosity + minimum_viscosity ) ) + ( 1.0 / maximum_viscosity ) );
+              // For the very first time this function is called
+              // (the first iteration of the first timestep), this function is called
+              // with a zero input strain rate. We provide a representative reference
+              // strain rate for this case, which avoids division by zero and produces
+              // a representative first guess of the viscosities.
+              // In later iterations and timesteps we calculate the second moment
+              // invariant of the deviatoric strain rate tensor.
+              // This is equal to the negative of the second principle
+              // invariant calculated with the function second_invariant.
+              const double edot_ii_strict = (&(this->get_simulator()) == NULL
+                                             ?
+                                             // no simulator object available -- we are probably in a unit test
+                                             std::fabs(second_invariant(strain_rate_deviator))
+                                             :
+                                             // simulator object is available, but we need to treat the
+                                             // first time step separately
+                                             ((this->get_timestep_number() == 0)
+                                              &&
+                                              (in.strain_rate[i].norm() <= std::numeric_limits<double>::min())
+                                              ?
+                                              reference_strain_rate * reference_strain_rate
+                                              :
+                                              std::fabs(second_invariant(strain_rate_deviator))));
 
-      return effective_viscosity;
+              const double sqrt3 = std::sqrt(3.0);
 
+              double strain_rate_effective = edot_ii_strict;
+
+              // plasticity
+              const double sin_phi = std::sin(angle_of_internal_friction);
+              const double cos_phi = std::cos(angle_of_internal_friction);
+              const double strain_rate_effective_inv = 1/(2*std::sqrt(strain_rate_effective));
+              const double strength_inv_part = 1/(sqrt3*(3.0+sin_phi));
+
+              const double strength = ( (dim==3)
+                                        ?
+                                        ( 6.0 * cohesion * cos_phi + 2.0 * pressure * sin_phi) * strength_inv_part
+                                        :
+                                        cohesion * cos_phi + pressure * sin_phi );
+
+              // Rescale the viscosity back onto the yield surface
+              const double eta_plastic = strength * strain_rate_effective_inv;
+
+              // Cut off the viscosity between a minimum and maximum value to avoid
+              // a numerically unfavourable large viscosity range.
+              const double effective_viscosity = 1.0 / ( ( 1.0 / ( eta_plastic + minimum_viscosity ) ) + ( 1.0 / maximum_viscosity ) );
+
+              Assert(dealii::numbers::is_finite(effective_viscosity), ExcMessage ("Error: Viscosity is not finite."));
+
+              // In later timesteps, we still need to care about cases of very small
+              // strain rates. We expect the viscosity to approach the maximum_viscosity
+              // in these cases. This check prevents a division-by-zero.
+              if (std::sqrt(strain_rate_effective) <= std::numeric_limits<double>::min())
+                {
+                  out.viscosities[i] = maximum_viscosity;
+                }
+              else
+                {
+                  out.viscosities[i] = effective_viscosity;
+                }
+
+              Assert(dealii::numbers::is_finite(out.viscosities[i]),
+                     ExcMessage ("Error: Averaged viscosity is not finite."));
+
+              if (derivatives != NULL)
+                {
+                  if (std::sqrt(strain_rate_effective) > std::numeric_limits<double>::min())
+                    {
+                      const double averaging_factor = effective_viscosity * effective_viscosity * std::pow(eta_plastic + minimum_viscosity,-2);
+                      effective_viscosity_strain_rate_derivatives = averaging_factor * 0.5 * (eta_plastic * (-1.0/std::sqrt(edot_ii_strict * edot_ii_strict))) * strain_rate_deviator;
+                      effective_viscosity_pressure_derivatives = averaging_factor * (dim == 2 ?
+                                                                                     sin_phi * strain_rate_effective_inv
+                                                                                     :
+                                                                                     (sin_phi*strength_inv_part));
+                    }
+                  else
+                    {
+                      effective_viscosity_strain_rate_derivatives = 0;
+                    }
+
+                  derivatives->viscosity_derivative_wrt_strain_rate[i] = effective_viscosity_strain_rate_derivatives;
+
+                  derivatives->viscosity_derivative_wrt_pressure[i] = effective_viscosity_pressure_derivatives;
+
+                  Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_pressure[i]),
+                         ExcMessage ("Error: Averaged dviscosities_dpressure is not finite."));
+                  for (int x = 0; x < dim; x++)
+                    for (int y = 0; y < dim; y++)
+                      Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_strain_rate[i][x][y]),
+                             ExcMessage ("Error: Averaged dviscosities_dstrain_rate is not finite."));
+
+                }
+            }
+          out.densities[i] = reference_rho * (1.0 - thermal_expansivity * (temperature - reference_T));
+          out.thermal_expansion_coefficients[i] = thermal_expansivity;
+          // Specific heat at the given positions.
+          out.specific_heat[i] = reference_specific_heat;
+          // Thermal conductivity at the given positions.
+          out.thermal_conductivities[i] = thermal_conductivities;
+          // Compressibility at the given positions.
+          // The compressibility is given as
+          // $\frac 1\rho \frac{\partial\rho}{\partial p}$.
+          out.compressibilities[i] = 0.0;
+          // Pressure derivative of entropy at the given positions.
+          out.entropy_derivative_pressure[i] = 0.0;
+          // Temperature derivative of entropy at the given positions.
+          out.entropy_derivative_temperature[i] = 0.0;
+          // Change in composition due to chemical reactions at the
+          // given positions. The term reaction_terms[i][c] is the
+          // change in compositional field c at point i.
+          for (unsigned int c=0; c < in.composition[i].size(); ++c)
+            out.reaction_terms[i][c] = 0.0;
+        }
     }
+
 
 
     template <int dim>
@@ -85,66 +178,6 @@ namespace aspect
     reference_viscosity () const
     {
       return reference_eta;
-    }
-
-
-    template <int dim>
-    double
-    DruckerPrager<dim>::
-    specific_heat (const double,
-                   const double,
-                   const std::vector<double> &, /*composition*/
-                   const Point<dim> &) const
-    {
-      return reference_specific_heat;
-    }
-
-
-    template <int dim>
-    double
-    DruckerPrager<dim>::
-    thermal_conductivity (const double,
-                          const double,
-                          const std::vector<double> &, /*composition*/
-                          const Point<dim> &) const
-    {
-      return thermal_k;
-    }
-
-
-    template <int dim>
-    double
-    DruckerPrager<dim>::
-    density (const double temperature,
-             const double,
-             const std::vector<double> &, /*composition*/
-             const Point<dim> &) const
-    {
-      return reference_rho * (1 - thermal_alpha * (temperature - reference_T));
-    }
-
-
-    template <int dim>
-    double
-    DruckerPrager<dim>::
-    thermal_expansion_coefficient (const double,
-                                   const double,
-                                   const std::vector<double> &, /*composition*/
-                                   const Point<dim> &) const
-    {
-      return thermal_alpha;
-    }
-
-
-    template <int dim>
-    double
-    DruckerPrager<dim>::
-    compressibility (const double,
-                     const double,
-                     const std::vector<double> &, /*composition*/
-                     const Point<dim> &) const
-    {
-      return 0.0;
     }
 
 
@@ -231,17 +264,17 @@ namespace aspect
           reference_rho              = prm.get_double ("Reference density");
           reference_T                = prm.get_double ("Reference temperature");
           reference_eta              = prm.get_double ("Reference viscosity");
-          thermal_k                  = prm.get_double ("Thermal conductivity");
+          thermal_conductivities     = prm.get_double ("Thermal conductivity");
           reference_specific_heat    = prm.get_double ("Reference specific heat");
-          thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
+          thermal_expansivity        = prm.get_double ("Thermal expansion coefficient");
           prm.enter_subsection ("Viscosity");
           {
-            minimum_viscosity        = prm.get_double ("Minimum viscosity");
-            maximum_viscosity        = prm.get_double ("Maximum viscosity");
-            reference_strain_rate    = prm.get_double ("Reference strain rate");
+            minimum_viscosity          = prm.get_double ("Minimum viscosity");
+            maximum_viscosity          = prm.get_double ("Maximum viscosity");
+            reference_strain_rate      = prm.get_double ("Reference strain rate");
             // Convert degrees to radians
-            phi                      = prm.get_double ("Angle of internal friction") * numbers::PI/180.0;
-            cohesion                 = prm.get_double ("Cohesion");
+            angle_of_internal_friction = prm.get_double ("Angle of internal friction") * numbers::PI/180.0;
+            cohesion                   = prm.get_double ("Cohesion");
           }
           prm.leave_subsection();
         }
@@ -256,14 +289,15 @@ namespace aspect
       this->model_dependence.viscosity = NonlinearDependence::strain_rate;
       this->model_dependence.density = NonlinearDependence::none;
 
-      if (phi==0.0)
+      if (angle_of_internal_friction==0.0)
         this->model_dependence.viscosity |= NonlinearDependence::pressure;
 
-      if (thermal_alpha != 0)
+      if (thermal_expansivity != 0)
         this->model_dependence.density = NonlinearDependence::temperature;
     }
   }
 }
+
 
 // explicit instantiations
 namespace aspect
