@@ -110,13 +110,13 @@ namespace aspect
     boundary_temperature (const types::boundary_id boundary_indicator,
                           const Point<dim> &position) const
     {
-      // verify that the geometry is in fact a time_dep_box since only
+      // verify that the geometry is a time_dep_box since only
       // for this geometry do we know for sure what boundary indicators it
       // uses and what they mean
       Assert (dynamic_cast<const GeometryModel::Box<dim>*>(&this->get_geometry_model())
               != 0,
               ExcMessage ("This boundary model is only implemented if the geometry is "
-                          "in fact a time_dep_box."));
+                          "a time_dep_box."));
 
       Assert (boundary_indicator<2*dim, ExcMessage ("Unknown boundary indicator."));
       return temperature_[boundary_indicator] * this->get_time();
