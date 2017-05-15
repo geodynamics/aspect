@@ -110,9 +110,9 @@ subsection Initial composition model
   set Model name = Solitary wave initial condition # default: 
   subsection Solitary wave initial condition
     set Offset = 200
-    set Read solution from file = true
+    set Read solution from file = false
     set Amplitude = 0.01
-    set Background porosity = 0.0001
+    set Background porosity = 0.001
   end
 end
 
@@ -148,7 +148,7 @@ subsection Model settings
 end
 
 subsection Melt settings
-  set Melt transport threshold                = 5e-4
+  set Melt transport threshold                = 5e-3
 end
 
 
