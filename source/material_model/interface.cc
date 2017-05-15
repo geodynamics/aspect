@@ -100,6 +100,13 @@ namespace aspect
     Interface<dim>::parse_parameters (dealii::ParameterHandler &)
     {}
 
+    template <int dim>
+    void
+    Interface<dim>::
+    evaluate(const MaterialModel::MaterialModelInputs<dim> &,
+             MaterialModel::MaterialModelOutputs<dim> &) const
+    {}
+
 
 // -------------------------------- Deal with registering material models and automating
 // -------------------------------- their setup and selection at run time
@@ -339,7 +346,7 @@ namespace aspect
     // void
     // Interface<dim>::
     // evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-    //          MaterialModel::MaterialModelOutputs<dim> &out) const
+    //          MaterialModel::MaterialModelOutputs<dim> &out) const;
     // {
     //   for (unsigned int i=0; i < in.temperature.size(); ++i)
     //     {
