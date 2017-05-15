@@ -217,15 +217,15 @@ namespace aspect
       string_to_coordinate_system(const std::string &coordinate_system)
       {
         if (coordinate_system == "cartesian")
-          return CoordinateSystem::cartesian;
+          return cartesian;
         else if (coordinate_system == "spherical")
-          return CoordinateSystem::spherical;
+          return spherical;
         else if (coordinate_system == "depth")
-          return Coordinates::CoordinateSystem::depth;
+          return Coordinates::depth;
         else
           AssertThrow(false, ExcNotImplemented());
 
-        return Coordinates::CoordinateSystem::invalid;
+        return Coordinates::invalid;
       }
 
 

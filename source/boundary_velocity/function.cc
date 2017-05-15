@@ -43,12 +43,12 @@ namespace aspect
                        const Point<dim> &position) const
     {
       Tensor<1,dim> velocity;
-      if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::cartesian)
+      if (coordinate_system == ::aspect::Utilities::Coordinates::cartesian)
         {
           for (unsigned int d=0; d<dim; ++d)
             velocity[d] = boundary_velocity_function.value(position,d);
         }
-      else if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::spherical)
+      else if (coordinate_system == ::aspect::Utilities::Coordinates::spherical)
         {
           const std_cxx11::array<double,dim> spherical_coordinates =
             aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
@@ -60,7 +60,7 @@ namespace aspect
           for (unsigned int d=0; d<dim; ++d)
             velocity[d] = boundary_velocity_function.value(point,d);
         }
-      else if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::depth)
+      else if (coordinate_system == ::aspect::Utilities::Coordinates::depth)
         {
           const double depth = this->get_geometry_model().depth(position);
           Point<dim> point;
@@ -72,7 +72,7 @@ namespace aspect
       else
         {
           AssertThrow(false, ExcNotImplemented());
-          return numbers::signaling_nan<Tensor<1,dim>>();
+          return numbers::signaling_nan<Tensor<1,dim> >();
         }
 
 
