@@ -55,19 +55,19 @@ namespace aspect
               //const double edot_ii_strict = std::fabs(second_invariant(strain_rate_deviator));//std::sqrt(0.5*strain_rate_deviator*strain_rate_deviator);//
 
               const double edot_ii_strict = (&(this->get_simulator()) == NULL
-            		  ?
-            				  // no simulator object available -- we are probably in a unit test
-            				  std::fabs(second_invariant(strain_rate_deviator))
-            		  :
-							  // simulator object is available, but we need to treat the
-							  // first time step separately
-					  ((this->get_timestep_number() == 0)
-            		   &&
-					   (in.strain_rate[i].norm() <= std::numeric_limits<double>::min())
-					   ?
-							   reference_strain_rate * reference_strain_rate
-							   :
-							   std::fabs(second_invariant(strain_rate_deviator))));//0.5*strain_rate_deviator*strain_rate_deviator);
+                                             ?
+                                             // no simulator object available -- we are probably in a unit test
+                                             std::fabs(second_invariant(strain_rate_deviator))
+                                             :
+                                             // simulator object is available, but we need to treat the
+                                             // first time step separately
+                                             ((this->get_timestep_number() == 0)
+                                              &&
+                                              (in.strain_rate[i].norm() <= std::numeric_limits<double>::min())
+                                              ?
+                                              reference_strain_rate * reference_strain_rate
+                                              :
+                                              std::fabs(second_invariant(strain_rate_deviator))));//0.5*strain_rate_deviator*strain_rate_deviator);
 
               const double sqrt3 = std::sqrt(3.0);
 
