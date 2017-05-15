@@ -8,4 +8,6 @@
 # 8: Iterations for Stokes solver
 # 9: Velocity iterations in Stokes preconditioner
 # 10: Schur complement iterations in Stokes preconditioner
-0 0.000000000000e+00 0.000000000000e+00 768 21760 6930 2 215 874 1339 
+# 11: Pressure at top (Pa)
+# 12: Pressure at bottom (Pa)
+0 0.000000000000e+00 0.000000000000e+00 768 21760 6930 2 215 874 1339 -2.65616422e-03 1.95999993e+06 

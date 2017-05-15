@@ -88,10 +88,6 @@ end
 subsection Postprocess
   set List of postprocessors = basic statistics, geoid, dynamic topography
 
-  subsection Dynamic Topography
-    set Subtract mean of dynamic topography  = true
-  end
-
   subsection Geoid
     set Maximum degree = 10
     set Minimum degree = 0

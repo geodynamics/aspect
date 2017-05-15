@@ -9,12 +9,14 @@ Number of degrees of freedom: 28,690 (20,790+970+6,930)
    Solving Stokes system... 0+46 iterations.
       Relative Stokes residual after nonlinear iteration 1: 1
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 2: 3.3321e-13
+      Relative Stokes residual after nonlinear iteration 2: 4.31947e-13
 
    Postprocessing:
-     Writing graphical output:      output-hollow_sphere/solution/solution-00000
-     RMS, max velocity:             1.54 m/s, 4.59 m/s
-     Errors u_L1, p_L1, u_L2, p_L2: 1.558193e-02, 1.215643e-01, 7.656806e-03, 1.253073e-01
+     Writing graphical output:              output-hollow_sphere/solution/solution-00000
+     RMS, max velocity:                     1.54 m/s, 4.59 m/s
+     Pressure at top/bottom of domain:      -9.419e-08 Pa, 500 Pa
+     Computing dynamic topography           
+     Errors u_L1, p_L1, u_L2, p_L2 topo_L2: 1.571219e-02, 1.225284e-01, 7.689527e-03, 1.256502e-01, 1.077410e-04
 
 Termination requested by criterion: end time
 

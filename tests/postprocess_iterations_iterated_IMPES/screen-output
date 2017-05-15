@@ -7,26 +7,28 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 49+0 iterations.
-      Relative nonlinear residuals: 2.00269e-16, 1.56192e-16, 1
+      Relative nonlinear residuals: 1.89643e-16, 1.57797e-16, 1
       Total relative residual after nonlinear iteration 1: 1
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00000.0000
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00000.0000
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00000.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00000.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00000.0000
+     Pressure at top/bottom of domain: 4.346e-14 Pa, 6.444e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residuals: 2.00269e-16, 1.56192e-16, 8.71789e-13
-      Total relative residual after nonlinear iteration 2: 8.71789e-13
+      Relative nonlinear residuals: 1.89643e-16, 1.57797e-16, 8.73885e-13
+      Total relative residual after nonlinear iteration 2: 8.73885e-13
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00000.0001
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00000.0001
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00000.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00000.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00000.0001
+     Pressure at top/bottom of domain: 9.313e-15 Pa, 6.444e+05 Pa
+     Computing dynamic topography      
 
 
 *** Timestep 1:  t=13251 years
@@ -38,9 +40,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0000
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00001.0000
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0000
+     Pressure at top/bottom of domain: -4.393e-13 Pa, 6.395e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 10 iterations.
    Solving porosity system ... 9 iterations.
@@ -50,9 +53,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0001
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00001.0001
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0001
+     Pressure at top/bottom of domain: 1.009e-13 Pa, 6.388e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 9 iterations.
    Solving porosity system ... 8 iterations.
@@ -62,9 +66,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0002
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00001.0002
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0002
+     Pressure at top/bottom of domain: 4.967e-14 Pa, 6.386e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 9 iterations.
    Solving porosity system ... 8 iterations.
@@ -74,9 +79,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0003
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00001.0003
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0003
+     Pressure at top/bottom of domain: -1.715e-13 Pa, 6.386e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
    Solving porosity system ... 7 iterations.
@@ -86,9 +92,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0004
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00001.0004
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0004
+     Pressure at top/bottom of domain: 7.916e-14 Pa, 6.386e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
    Solving porosity system ... 7 iterations.
@@ -98,9 +105,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0005
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00001.0005
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0005
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0005
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0005
+     Pressure at top/bottom of domain: -2.158e-13 Pa, 6.386e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 7 iterations.
    Solving porosity system ... 6 iterations.
@@ -110,9 +118,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0006
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00001.0006
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0006
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0006
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0006
+     Pressure at top/bottom of domain: -1.141e-13 Pa, 6.386e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 6 iterations.
    Solving porosity system ... 6 iterations.
@@ -122,9 +131,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0007
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00001.0007
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0007
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0007
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0007
+     Pressure at top/bottom of domain: 1.979e-13 Pa, 6.386e+05 Pa
+     Computing dynamic topography      
 
 
 *** Timestep 2:  t=25357.2 years
@@ -136,9 +146,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0000
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00002.0000
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0000
+     Pressure at top/bottom of domain: 1.77e-13 Pa, 6.314e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 10 iterations.
    Solving porosity system ... 10 iterations.
@@ -148,9 +159,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0001
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00002.0001
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0001
+     Pressure at top/bottom of domain: -2.577e-13 Pa, 6.311e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 9 iterations.
    Solving porosity system ... 9 iterations.
@@ -160,9 +172,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0002
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00002.0002
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0002
+     Pressure at top/bottom of domain: -2.561e-13 Pa, 6.31e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
    Solving porosity system ... 8 iterations.
@@ -172,9 +185,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0003
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00002.0003
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0003
+     Pressure at top/bottom of domain: -1.459e-13 Pa, 6.31e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 7 iterations.
    Solving porosity system ... 7 iterations.
@@ -184,9 +198,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0004
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00002.0004
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0004
+     Pressure at top/bottom of domain: -5.898e-14 Pa, 6.31e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 6 iterations.
    Solving porosity system ... 7 iterations.
@@ -196,9 +211,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0005
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00002.0005
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0005
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0005
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0005
+     Pressure at top/bottom of domain: -3.958e-13 Pa, 6.31e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 6 iterations.
    Solving porosity system ... 6 iterations.
@@ -208,9 +224,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0006
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00002.0006
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0006
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0006
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0006
+     Pressure at top/bottom of domain: -2.173e-14 Pa, 6.31e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 5 iterations.
    Solving porosity system ... 5 iterations.
@@ -220,9 +237,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0007
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00002.0007
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0007
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0007
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0007
+     Pressure at top/bottom of domain: -9.934e-14 Pa, 6.31e+05 Pa
+     Computing dynamic topography      
 
 
 *** Timestep 3:  t=36192.1 years
@@ -234,9 +252,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0000
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00003.0000
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0000
+     Pressure at top/bottom of domain: 6.674e-14 Pa, 6.25e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 9 iterations.
    Solving porosity system ... 10 iterations.
@@ -246,9 +265,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0001
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00003.0001
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0001
+     Pressure at top/bottom of domain: -3.306e-13 Pa, 6.25e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
    Solving porosity system ... 9 iterations.
@@ -258,9 +278,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0002
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00003.0002
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0002
+     Pressure at top/bottom of domain: 1.77e-13 Pa, 6.25e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 7 iterations.
    Solving porosity system ... 7 iterations.
@@ -270,9 +291,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0003
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00003.0003
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0003
+     Pressure at top/bottom of domain: -1.149e-13 Pa, 6.25e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 6 iterations.
    Solving porosity system ... 6 iterations.
@@ -282,9 +304,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0004
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00003.0004
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0004
+     Pressure at top/bottom of domain: -4.501e-14 Pa, 6.25e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 5 iterations.
    Solving porosity system ... 5 iterations.
@@ -294,9 +317,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0005
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00003.0005
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0005
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0005
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0005
+     Pressure at top/bottom of domain: -7.249e-13 Pa, 6.25e+05 Pa
+     Computing dynamic topography      
 
 
 *** Timestep 4:  t=46125 years
@@ -308,9 +332,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0000
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00004.0000
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0000
+     Pressure at top/bottom of domain: -5.355e-13 Pa, 6.212e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 9 iterations.
    Solving porosity system ... 11 iterations.
@@ -320,9 +345,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0001
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00004.0001
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0001
+     Pressure at top/bottom of domain: -1.552e-15 Pa, 6.211e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
    Solving porosity system ... 9 iterations.
@@ -332,9 +358,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0002
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00004.0002
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0002
+     Pressure at top/bottom of domain: -5.153e-13 Pa, 6.211e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 7 iterations.
    Solving porosity system ... 8 iterations.
@@ -344,9 +371,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0003
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00004.0003
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0003
+     Pressure at top/bottom of domain: -2.732e-13 Pa, 6.211e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 6 iterations.
    Solving porosity system ... 7 iterations.
@@ -356,9 +384,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0004
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00004.0004
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0004
+     Pressure at top/bottom of domain: -6.069e-13 Pa, 6.211e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 5 iterations.
    Solving porosity system ... 5 iterations.
@@ -368,9 +397,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0005
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00004.0005
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0005
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0005
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0005
+     Pressure at top/bottom of domain: 9.779e-14 Pa, 6.211e+05 Pa
+     Computing dynamic topography      
 
 
 *** Timestep 5:  t=55855.4 years
@@ -382,9 +412,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0000
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00005.0000
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0000
+     Pressure at top/bottom of domain: -4.501e-14 Pa, 6.186e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 9 iterations.
    Solving porosity system ... 11 iterations.
@@ -394,9 +425,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0001
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00005.0001
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0001
+     Pressure at top/bottom of domain: -1.676e-13 Pa, 6.186e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
    Solving porosity system ... 9 iterations.
@@ -406,9 +438,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0002
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00005.0002
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0002
+     Pressure at top/bottom of domain: -3.679e-13 Pa, 6.186e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 7 iterations.
    Solving porosity system ... 8 iterations.
@@ -418,9 +451,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0003
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00005.0003
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0003
+     Pressure at top/bottom of domain: -1.801e-13 Pa, 6.186e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 6 iterations.
    Solving porosity system ... 7 iterations.
@@ -430,9 +464,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0004
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00005.0004
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0004
+     Pressure at top/bottom of domain: -1.738e-13 Pa, 6.186e+05 Pa
+     Computing dynamic topography      
 
 
 *** Timestep 6:  t=65167.2 years
@@ -444,9 +479,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0000
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00006.0000
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0000
+     Pressure at top/bottom of domain: -3.229e-13 Pa, 6.17e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 9 iterations.
    Solving porosity system ... 11 iterations.
@@ -456,9 +492,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0001
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00006.0001
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0001
+     Pressure at top/bottom of domain: 3.104e-15 Pa, 6.17e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
    Solving porosity system ... 10 iterations.
@@ -468,9 +505,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0002
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00006.0002
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0002
+     Pressure at top/bottom of domain: 1.832e-13 Pa, 6.17e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 7 iterations.
    Solving porosity system ... 8 iterations.
@@ -480,9 +518,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0003
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00006.0003
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0003
+     Pressure at top/bottom of domain: -4.036e-14 Pa, 6.17e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 6 iterations.
    Solving porosity system ... 7 iterations.
@@ -492,9 +531,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0004
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00006.0004
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0004
+     Pressure at top/bottom of domain: 4.967e-14 Pa, 6.17e+05 Pa
+     Computing dynamic topography      
 
 
 *** Timestep 7:  t=73771.7 years
@@ -506,9 +546,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0000
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00007.0000
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0000
+     Pressure at top/bottom of domain: -1.397e-13 Pa, 6.16e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 10 iterations.
    Solving porosity system ... 11 iterations.
@@ -518,9 +559,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0001
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00007.0001
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0001
+     Pressure at top/bottom of domain: -4.346e-14 Pa, 6.161e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 9 iterations.
    Solving porosity system ... 10 iterations.
@@ -530,9 +572,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0002
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00007.0002
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0002
+     Pressure at top/bottom of domain: 0 Pa, 6.161e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
    Solving porosity system ... 8 iterations.
@@ -542,9 +585,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0003
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00007.0003
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0003
+     Pressure at top/bottom of domain: -5.091e-13 Pa, 6.161e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 7 iterations.
    Solving porosity system ... 7 iterations.
@@ -554,9 +598,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0004
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00007.0004
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0004
+     Pressure at top/bottom of domain: -4.082e-13 Pa, 6.161e+05 Pa
+     Computing dynamic topography      
 
 
 *** Timestep 8:  t=81630.4 years
@@ -568,9 +613,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0000
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00008.0000
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0000
+     Pressure at top/bottom of domain: 1.552e-15 Pa, 6.155e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 11 iterations.
    Solving porosity system ... 11 iterations.
@@ -580,9 +626,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0001
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00008.0001
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0001
+     Pressure at top/bottom of domain: -3.725e-13 Pa, 6.155e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 9 iterations.
    Solving porosity system ... 9 iterations.
@@ -592,9 +639,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0002
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00008.0002
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0002
+     Pressure at top/bottom of domain: 1.645e-13 Pa, 6.155e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
    Solving porosity system ... 8 iterations.
@@ -604,9 +652,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0003
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00008.0003
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0003
+     Pressure at top/bottom of domain: -3.244e-13 Pa, 6.155e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 7 iterations.
    Solving porosity system ... 7 iterations.
@@ -616,9 +665,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0004
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00008.0004
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0004
+     Pressure at top/bottom of domain: 6.054e-14 Pa, 6.155e+05 Pa
+     Computing dynamic topography      
 
 
 *** Timestep 9:  t=88740.3 years
@@ -630,9 +680,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0000
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00009.0000
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0000
+     Pressure at top/bottom of domain: -9.934e-14 Pa, 6.152e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 11 iterations.
    Solving porosity system ... 11 iterations.
@@ -642,9 +693,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0001
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00009.0001
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0001
+     Pressure at top/bottom of domain: 4.657e-15 Pa, 6.152e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 9 iterations.
    Solving porosity system ... 9 iterations.
@@ -654,9 +706,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0002
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00009.0002
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0002
+     Pressure at top/bottom of domain: -2.903e-13 Pa, 6.152e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
    Solving porosity system ... 8 iterations.
@@ -666,9 +719,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0003
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00009.0003
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0003
+     Pressure at top/bottom of domain: 4.439e-13 Pa, 6.152e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 7 iterations.
    Solving porosity system ... 7 iterations.
@@ -678,9 +732,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0004
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00009.0004
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0004
+     Pressure at top/bottom of domain: -1.832e-13 Pa, 6.152e+05 Pa
+     Computing dynamic topography      
 
 
 *** Timestep 10:  t=95202.3 years
@@ -692,9 +747,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0000
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00010.0000
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0000
+     Pressure at top/bottom of domain: -6.054e-14 Pa, 6.15e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 11 iterations.
    Solving porosity system ... 10 iterations.
@@ -704,9 +760,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0001
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00010.0001
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0001
+     Pressure at top/bottom of domain: -1.055e-13 Pa, 6.15e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 9 iterations.
    Solving porosity system ... 9 iterations.
@@ -716,9 +773,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0002
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00010.0002
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0002
+     Pressure at top/bottom of domain: -1.164e-13 Pa, 6.15e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
    Solving porosity system ... 8 iterations.
@@ -728,21 +786,23 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0003
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00010.0003
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0003
+     Pressure at top/bottom of domain: 2.856e-13 Pa, 6.15e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 7 iterations.
    Solving porosity system ... 6 iterations.
    Solving Stokes system... 26+0 iterations.
-      Relative nonlinear residuals: 2.47978e-07, 2.58616e-07, 1.04354e-06
-      Total relative residual after nonlinear iteration 5: 1.04354e-06
+      Relative nonlinear residuals: 2.47978e-07, 2.58616e-07, 1.04355e-06
+      Total relative residual after nonlinear iteration 5: 1.04355e-06
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0004
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00010.0004
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0004
+     Pressure at top/bottom of domain: 1.024e-13 Pa, 6.15e+05 Pa
+     Computing dynamic topography      
 
 
 *** Timestep 11:  t=100000 years
@@ -754,9 +814,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0000
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00011.0000
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00011.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00011.0000
+     Pressure at top/bottom of domain: -2.328e-14 Pa, 6.149e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 10 iterations.
    Solving porosity system ... 10 iterations.
@@ -766,9 +827,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0001
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00011.0001
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00011.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00011.0001
+     Pressure at top/bottom of domain: -1.894e-13 Pa, 6.149e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
    Solving porosity system ... 8 iterations.
@@ -778,9 +840,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0002
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00011.0002
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00011.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00011.0002
+     Pressure at top/bottom of domain: -2.872e-13 Pa, 6.149e+05 Pa
+     Computing dynamic topography      
 
    Solving temperature system... 7 iterations.
    Solving porosity system ... 7 iterations.
@@ -790,9 +853,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 
    Postprocessing:
-     Writing graphical output:   output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0003
-     Writing dynamic topography: output-postprocess_iterations_iterated_IMPES/dynamic_topography.00011.0003
-     Writing heat flux map:      output-postprocess_iterations_iterated_IMPES/heat_flux.00011.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00011.0003
+     Pressure at top/bottom of domain: -1.444e-13 Pa, 6.149e+05 Pa
+     Computing dynamic topography      
 
 
 Termination requested by criterion: end time
