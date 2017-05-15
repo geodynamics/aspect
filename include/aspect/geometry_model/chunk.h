@@ -134,6 +134,11 @@ namespace aspect
         double depth(const Point<dim> &position) const;
 
         virtual
+        double depth_wrt_topo(const Point<dim> &position) const;
+
+
+
+        virtual
         Point<dim> representative_point(const double depth) const;
 
         /**
@@ -282,12 +287,48 @@ namespace aspect
             push_forward_gradient(const Point<dim> &chart_point) const;
 
             virtual
+            Point<dim>
+            pull_back_sphere(const Point<dim> &space_point) const;
+
+            virtual
+            Point<dim>
+            push_forward_sphere(const Point<dim> &chart_point) const;
+
+            virtual
+            double
+            get_radius(const Point<dim> &chart_point) const;
+
+            virtual
             void
             set_min_longitude(const double p1_lon);
+
+            virtual
+            void
+            set_min_radius(const double p1_rad);
+
+            virtual
+            void
+            set_max_depth(const double p2_rad_minus_p1_rad);
+
+            void
+            set_topo_pointer(InitialTopographyModel::Interface<dim> *topo_pointer) const;
+
+            static InitialTopographyModel::Interface<dim> *topo;
 
           private:
             // The minimum longitude of the domain
             double point1_lon;
+            double inner_radius;
+
+            double max_depth;
+
+            virtual
+            Point<dim>
+            pull_back_topo(const Point<dim> &space_point) const;
+
+            virtual
+            Point<dim>
+            push_forward_topo(const Point<dim> &chart_point) const;
         };
 
         /**
