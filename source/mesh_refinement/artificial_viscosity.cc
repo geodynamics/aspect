@@ -30,6 +30,7 @@ namespace aspect
     ArtificialViscosity<dim>::execute(Vector<float> &indicators) const
     {
       indicators = 0;
+      Vector<float> this_indicator(indicators.size());
       if (temperature_scaling_factor > 0.0)
         {
           this->get_artificial_viscosity(indicators);
@@ -38,7 +39,7 @@ namespace aspect
 
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         {
-          Vector<float> this_indicator (indicators.size());
+          this_indicator = 0;
           this->get_artificial_viscosity_composition(this_indicator, c);
 
           // compute indicators += c*this_indicator:

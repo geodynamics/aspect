@@ -42,11 +42,11 @@ namespace aspect
     boundary_temperature (const types::boundary_id /*boundary_indicator*/,
                           const Point<dim> &position) const
     {
-      if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::cartesian)
+      if (coordinate_system == ::aspect::Utilities::Coordinates::cartesian)
         {
           return boundary_temperature_function.value(position);
         }
-      else if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::spherical)
+      else if (coordinate_system == ::aspect::Utilities::Coordinates::spherical)
         {
           const std_cxx11::array<double,dim> spherical_coordinates =
             aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
@@ -57,7 +57,7 @@ namespace aspect
 
           return boundary_temperature_function.value(point);
         }
-      else if (coordinate_system == ::aspect::Utilities::Coordinates::CoordinateSystem::depth)
+      else if (coordinate_system == ::aspect::Utilities::Coordinates::depth)
         {
           const double depth = this->get_geometry_model().depth(position);
           Point<dim> point;

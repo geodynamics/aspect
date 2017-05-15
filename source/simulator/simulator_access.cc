@@ -26,6 +26,8 @@ namespace aspect
 {
   template <int dim>
   SimulatorAccess<dim>::SimulatorAccess ()
+    :
+    simulator (NULL)
   {}
 
 
