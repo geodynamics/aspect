@@ -594,6 +594,7 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
+
         /**
          * Directory in which the data files are present.
          */
@@ -653,6 +654,14 @@ namespace aspect
         get_data_component (const types::boundary_id             boundary_indicator,
                             const Point<dim>                    &position,
                             const unsigned int                   component) const;
+
+        /**
+         * Return the gradients of the parameters from the parameter file.
+         */
+        std::vector<Tensor<1,dim> > 
+        vector_gradient(const types::boundary_id             boundary_indicator,
+                        const Point<dim> &p,
+                        const unsigned int                   component) const;
 
         /**
          * Declare the parameters all derived classes take from input files.
