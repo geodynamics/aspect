@@ -125,20 +125,6 @@ namespace aspect
                   const double edot_ii_strict = std::sqrt(0.5*deviator(in.strain_rate[i])*deviator(in.strain_rate[i]));
                   const double edot_ii = 2.0 * std::max(edot_ii_strict, min_strain_rate[c] * min_strain_rate[c]);
 
-                  // Find effective viscosities for each of the individual phases
-                  // Viscosities should have same number of entries as compositional fields
-
-                  // Power law equation
-                  // edot_ii_i = A_i * stress_ii_i^{n_i} * d^{-m} \exp\left(-\frac{E_i^* + PV_i^*}{n_iRT}\right)
-                  // where ii indicates the square root of the second invariant and
-                  // i corresponds to diffusion or dislocation creep
-
-                  // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
-                  // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
-                  // creep (where n_diff=1) viscosities are stress and strain-rate independent, so the calculation
-                  // of compositional field viscosities is consistent with any averaging scheme.
-                  // TODO: Mailed Bob and asked why the averaging should be arithmetic. Bob replyed that this has to
-                  //       do with effective medium theory. Have to look into this a bit more.
                   const double stress_exponent_inv = 1/stress_exponent[c];
                   composition_viscosities[c] = std::max(std::min(std::pow(prefactor[c],-stress_exponent_inv) * std::pow(edot_ii,stress_exponent_inv-1), max_viscosity[c]), min_viscosity[c]);
                   Assert(dealii::numbers::is_finite(composition_viscosities[c]),ExcMessage ("Error: Viscosity is not finite."));
@@ -165,12 +151,12 @@ namespace aspect
 
                   for (int x = 0; x < dim; x++)
                     for (int y = 0; y < dim; y++)
-                    	Assert (dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_strain_rate[i][x][y]),
-                    			ExcMessage ("Averaged viscosity to strain-rate devrivative is not finite."));
+                      Assert (dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_strain_rate[i][x][y]),
+                              ExcMessage ("Averaged viscosity to strain-rate devrivative is not finite."));
 
                   derivatives->viscosity_derivative_wrt_pressure[i]    = 0;
-              	Assert (dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_strain_rate[i][x][y]),
-              			ExcMessage ("Averaged viscosity to pressure devrivative is not finite."));
+                  Assert (dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_strain_rate[i][x][y]),
+                          ExcMessage ("Averaged viscosity to pressure devrivative is not finite."));
 
                 }
             }
