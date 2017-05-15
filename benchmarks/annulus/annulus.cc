@@ -85,7 +85,7 @@ namespace aspect
           virtual void vector_value (const Point< dim >   &pos,
                                      Vector< double >   &values) const
           {
-            Assert (dim == 3, ExcNotImplemented());
+            Assert (dim == 2, ExcNotImplemented());
             Assert (values.size() >= 4, ExcInternalError());
 
             const Point<2> p (pos[0], pos[1]);

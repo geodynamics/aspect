@@ -1,12 +1,17 @@
-# The 3D HollowSphere benchmark, for which an 
-# analytical solution is available (Thieulot, in prep). 
-
+# The 2D Stokes in an annulus benchmark, for which an 
+# analytical solution is available. 
+# 
+# See the manual for more information.
 
 ############### Global parameters
+# We use a 2d setup. Since we are only interested
+# in a steady state solution, we set the end time
+# equal to the start time to force a single time
+# step before the program terminates.
 
-set Additional shared libraries            = ./libhollow_sphere.so
-set Linear solver tolerance                = 1e-6
-set Dimension                              = 3
+set Additional shared libraries            = ./libannulus.so
+set Linear solver tolerance                = 1e-12
+set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = false
@@ -16,42 +21,47 @@ set Pressure normalization                 = surface
 set Number of cheap Stokes solver steps    = 0
 
 ############### Parameters describing the model
-# The setup is a 3D shell 
 # Because the temperature plays no role in this model we need not
 # bother to describe temperature boundary conditions or
 # the material parameters that pertain to the temperature.
 
 subsection Geometry model
   set Model name = spherical shell
-
   subsection Spherical shell
-    set Inner radius = 0.5
-    set Outer radius = 1.0
-    set Cells along circumference = 12
-  end
-
+    set Inner radius = 1 
+    set Outer radius = 2 
+    set Opening angle = 360 
+  end 
 end
 
 #Boundary conditions
 subsection Model settings
-
-  set Prescribed velocity boundary indicators = inner : HollowSphereBoundary, \
-                                                outer : HollowSphereBoundary
+  set Tangential velocity boundary indicators = 
+  set Prescribed velocity boundary indicators = 0  : AnnulusBoundary, \
+                                                1  : AnnulusBoundary
 end
 
+#subsection Discretization
+#set Stokes velocity polynomial degree = 1
+#set Use locally conservative discretization = true
+#end
 
 subsection Material model
-  set Model name = HollowSphereMaterial
+  set Model name = AnnulusMaterial
 end
-
 
 subsection Gravity model
-  set Model name = HollowSphereGravity
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude =  1
+  end
 end
 
-subsection HollowSphere benchmark
-   #Viscosity parameter is m 
-   set Viscosity parameter             = 3
+#Viscosity parameter is k, which controls the number
+#of mantle convection cells
+
+subsection Annulus benchmark
+   set Viscosity parameter             = 4
 end 
 
 ############### Parameters describing the temperature field
@@ -59,10 +69,10 @@ end
 # temperature boundary conditions.
 
 subsection Boundary temperature model
-  set Model name = box 
+  set Model name = box
 end
 
-subsection Initial temperature model 
+subsection Initial temperature model
   set Model name = function
 
   subsection Function
@@ -79,22 +89,17 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 4
+  set Initial global refinement          = 2
   set Refinement fraction                = 0.2
   set Strategy                           = velocity
 end
-
-#subsection Discretization
-#set Stokes velocity polynomial degree = 1
-#set Use locally conservative discretization = true
-#end
 
 ############### Parameters describing what to do with the solution
 # The final section allows us to choose which postprocessors to
 # run at the end of each time step. 
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, HollowSpherePostprocessor, memory statistics
+  set List of postprocessors = visualization, velocity statistics, AnnulusPostprocessor
 
   subsection Visualization
     set List of output variables = density, viscosity, strain rate
