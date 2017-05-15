@@ -37,3 +37,6 @@ s/named additional outputs.*named additional outputs/named additional outputs/g
 
 # Make all instances of boussinesq into Boussinesq
 s/boussinesq/Boussinesq/g
+
+# Remove all instances of `Subtract mean of dynamic topography`
+/Subtract mean of dynamic topography/d

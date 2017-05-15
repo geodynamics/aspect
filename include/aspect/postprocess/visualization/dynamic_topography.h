@@ -70,35 +70,11 @@ namespace aspect
           execute () const;
 
           /**
-           * Declare the parameters this class takes through input files.
-           */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
-
-          /**
-           * Read the parameters this class declares from the parameter file.
+           * Register the other postprocessor that we need: DynamicTopography
            */
           virtual
-          void
-          parse_parameters (ParameterHandler &prm);
-
-        private:
-          /**
-           * A parameter that we read from the input file that denotes whether
-           * we should subtract the mean topography or not.
-           */
-          bool subtract_mean_dyn_topography;
-
-          /**
-           * A parameter allows users to set the density value outside the surface
-           */
-          double density_above;
-
-          /**
-           * A parameter allows users to set the density value below the lower surface
-           */
-          double density_below;
+          std::list<std::string>
+          required_other_postprocessors() const;
       };
     }
   }

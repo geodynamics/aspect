@@ -46,7 +46,10 @@ end
 
 
 subsection Gravity model
-  set Model name = HollowSphereGravity
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude = 1.0
+  end
 end
 
 subsection HollowSphere benchmark
@@ -94,10 +97,10 @@ end
 # run at the end of each time step. 
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, HollowSpherePostprocessor, memory statistics
+  set List of postprocessors = visualization, velocity statistics, HollowSpherePostprocessor, memory statistics, dynamic topography
 
   subsection Visualization
-    set List of output variables = density, viscosity, strain rate
+    set List of output variables = density, viscosity, strain rate, dynamic topography, gravity
   end
 end
 
