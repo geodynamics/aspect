@@ -66,7 +66,11 @@
       git push cig v$VER
   . create a release on github, upload tarball, upload manual-$VER.pdf
   . link it on download.html, update version info etc.
-  . ask Eric to update http://geodynamics.org/cig/software/aspect/
+  . update http://geodynamics.org/cig/software/aspect/:
+       update current release number
+       create entry for the new release
+       update the list of contributors
+       ... (to be completed when we go through the 2.0 release process)
   . announce on
        cig-all@geodynamics.org
        aspect-devel@geodynamics.org
