@@ -55,9 +55,7 @@ namespace aspect
     {
       public:
 
-#if !DEAL_II_VERSION_GTE(9,0,0)
         void initialize ();
-#endif
 
         /**
          * Generate a coarse mesh for the geometry described by this class.
@@ -308,6 +306,13 @@ namespace aspect
              */
             ChunkGeometry(const ChunkGeometry &other);
 
+            /*
+             * An initialization function necessary for to make sure that the
+             * manifold has access to the topography plugins.
+             */
+            void
+            initialize(const InitialTopographyModel::Interface<dim> *topography);
+
             virtual
             Point<dim>
             pull_back(const Point<dim> &space_point) const;
@@ -353,10 +358,6 @@ namespace aspect
             void
             set_max_depth(const double p2_rad_minus_p1_rad);
 
-            void
-            set_topo_pointer(InitialTopographyModel::Interface<dim> *topo_pointer) const;
-
-            static InitialTopographyModel::Interface<dim> *topo;
 
           private:
             // The minimum longitude of the domain
@@ -372,6 +373,8 @@ namespace aspect
             virtual
             Point<dim>
             push_forward_topo(const Point<dim> &chart_point) const;
+
+            const InitialTopographyModel::Interface<dim> *topo;
         };
 
         /**
