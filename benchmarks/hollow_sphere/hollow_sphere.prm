@@ -5,7 +5,7 @@
 ############### Global parameters
 
 set Additional shared libraries            = ./libhollow_sphere.so
-set Linear solver tolerance                = 1e-12
+set Linear solver tolerance                = 1e-6
 set Dimension                              = 3
 set Start time                             = 0
 set End time                               = 0
@@ -51,7 +51,7 @@ end
 
 subsection HollowSphere benchmark
    #Viscosity parameter is m 
-   set Viscosity parameter             = -1
+   set Viscosity parameter             = 3
 end 
 
 ############### Parameters describing the temperature field
@@ -79,18 +79,22 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 2
+  set Initial global refinement          = 4
   set Refinement fraction                = 0.2
   set Strategy                           = velocity
 end
 
+#subsection Discretization
+#set Stokes velocity polynomial degree = 1
+#set Use locally conservative discretization = true
+#end
 
 ############### Parameters describing what to do with the solution
 # The final section allows us to choose which postprocessors to
 # run at the end of each time step. 
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, HollowSpherePostprocessor, depth average, memory statistics
+  set List of postprocessors = visualization, velocity statistics, HollowSpherePostprocessor, memory statistics
 
   subsection Visualization
     set List of output variables = density, viscosity, strain rate

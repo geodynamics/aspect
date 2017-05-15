@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libhollow_sphere.so>
 
@@ -11,13 +9,12 @@ Number of degrees of freedom: 28,690 (20,790+970+6,930)
    Solving Stokes system... 0+46 iterations.
       Relative Stokes residual after nonlinear iteration 1: 1
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 2: 3.32809e-13
+      Relative Stokes residual after nonlinear iteration 2: 3.3321e-13
 
    Postprocessing:
-     Writing graphical output:          output-hollow_sphere/solution/solution-00000
-     RMS, max velocity:                 1.54 m/s, 4.59 m/s
-     Errors u_L1, p_L1, u_L2, p_L2:     1.558193e-02, 1.215643e-01, 7.656806e-03, 1.253073e-01
-     Writing depth average:             output-hollow_sphere/depth_average.gnuplot
+     Writing graphical output:      output-hollow_sphere/solution/solution-00000
+     RMS, max velocity:             1.54 m/s, 4.59 m/s
+     Errors u_L1, p_L1, u_L2, p_L2: 1.558193e-02, 1.215643e-01, 7.656806e-03, 1.253073e-01
 
 Termination requested by criterion: end time
 
