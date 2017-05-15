@@ -1401,12 +1401,11 @@ namespace aspect
     }
 
     template <int dim>
-    Tensor<1,dim-1>
+    Tensor<1,dim>
     AsciiDataLookup<dim>::get_gradients(const Point<dim> &position,
                                    const unsigned int component) 
     {
-      Tensor<1,dim>  gradients = data[component]->gradient(position,component);
-      return gradients;
+      return data[component]->gradient(position,component);
     }
 
 
@@ -1860,7 +1859,7 @@ namespace aspect
     }
 
     template <int dim>
-    Tensor<1,dim>
+    Tensor<1,dim-1>
     AsciiDataBoundary<dim>::vector_gradient (const types::boundary_id             boundary_indicator,
                         const Point<dim>                    &position,
                         const unsigned int                   component) const
@@ -1886,17 +1885,17 @@ namespace aspect
           for (unsigned int i = 0; i < dim-1; i++)
             data_position[i] = internal_position[boundary_dimensions[i]];
 
-          const Tensor<1,dim>  gradients = lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
+          const Tensor<1,dim-1>  gradients = lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
 
           if (!time_dependent)
             return gradients;
 
-          const Tensor<1,dim> old_gradients = old_lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
+          const Tensor<1,dim-1> old_gradients = old_lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
 
           return time_weight * gradients + (1 - time_weight) * old_gradients;
         }
       else
-        return 0.0;
+        return Tensor<1,dim-1>();
     }
 
 
