@@ -250,6 +250,7 @@ namespace aspect
           }
       }
 
+    sim.signals.pre_compute_no_normal_flux_constraints(sim.triangulation);
     // Make the no flux boundary constraints for boundaries with tangential mesh boundaries
     VectorTools::compute_no_normal_flux_constraints (free_surface_dof_handler,
                                                      /* first_vector_component= */
@@ -269,6 +270,7 @@ namespace aspect
                                                      0,
                                                      periodic_boundaries,
                                                      mesh_displacement_constraints, *sim.mapping);
+    sim.signals.post_compute_no_normal_flux_constraints(sim.triangulation);
 
     // For the free surface indicators we constrain the displacement to be v.n
     LinearAlgebra::Vector boundary_velocity;
