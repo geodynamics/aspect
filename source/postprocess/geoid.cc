@@ -19,8 +19,11 @@
  */
 
 
+#include <aspect/simulator.h>
 #include <aspect/utilities.h>
 #include <aspect/postprocess/geoid.h>
+#include <aspect/postprocess/dynamic_topography.h>
+#include <aspect/postprocess/boundary_densities.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -157,51 +160,42 @@ namespace aspect
     Geoid<dim>::dynamic_topography_contribution(const double &outer_radius,
                                                 const double &inner_radius) const
     {
-      const unsigned int quadrature_degree = this->introspection().polynomial_degree.velocities;
-      const QGauss<dim> quadrature_formula(quadrature_degree); // need to retrieve normal shear stress, pressure, density to calculate dynamic topography here
-      const QGauss<dim-1> quadrature_formula_face(quadrature_degree); // need to grab the infinitesimal area of each quadrature points on every boundary face here
+      // Get a pointer to the dynamic topography postprocessor.
+      Postprocess::DynamicTopography<dim> *dynamic_topography =
+        this->template find_postprocessor<Postprocess::DynamicTopography<dim> >();
+      AssertThrow(dynamic_topography != NULL,
+                  ExcMessage("Could not find the DynamicTopography postprocessor") );
 
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature_formula,
-                               update_values |
-                               update_gradients |
-                               update_q_points |
-                               update_JxW_values);
+      // Get the already-computed dynamic topography solution.
+      const LinearAlgebra::BlockVector topo_vector = dynamic_topography->topography_vector();
+
+      // Get a pointer to the boundary densities postprocessor.
+      Postprocess::BoundaryDensities<dim> *boundary_densities =
+        this->template find_postprocessor<Postprocess::BoundaryDensities<dim> >();
+      AssertThrow(boundary_densities != NULL,
+                  ExcMessage("Could not find the BoundaryDensities postprocessor") );
+      const double top_layer_average_density = boundary_densities->density_at_top();
+      const double bottom_layer_average_density = boundary_densities->density_at_bottom();
+
+
+      const unsigned int quadrature_degree = this->introspection().polynomial_degree.velocities;
+      const QGauss<dim-1> quadrature_formula_face(quadrature_degree); // need to grab the infinitesimal area of each quadrature points on every boundary face here
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),
                                         quadrature_formula_face,
                                         update_values |
-                                        update_gradients |
                                         update_q_points |
                                         update_JxW_values);
 
-      // Material model in/out for the Gauss quadrature rule evaluations
-      MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
-      MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
-      MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-      MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-
-      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
-      std::vector<std::vector<double> > face_composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula_face.size()));
-
-      // initialization of the surface and CMB integrated dynamic topography, density, area, and volume, later used to calculate average dynamic topography and boundary layer density
-      double integrated_surface_topography = 0;
-      double integrated_surface_area = 0;
-      double integrated_CMB_topography = 0;
-      double integrated_CMB_area = 0;
-      double integrated_top_layer_density = 0;
-      double integrated_top_layer_volume = 0;
-      double integrated_bottom_layer_density = 0;
-      double integrated_bottom_layer_volume = 0;
+      std::vector<double> topo_values( quadrature_formula_face.size());
 
       // vectors to store the location, infinitesimal area, and dynamic topography associated with each quadrature point of each surface and bottom cell respectively.
       std::vector<std::pair<Point<dim>,std::pair<double,double> > > surface_stored_values;
       std::vector<std::pair<Point<dim>,std::pair<double,double> > > CMB_stored_values;
 
       // loop over all of the boundary cells and if one is at
-      // surface or CMB, evaluate the stress at its center
+      // surface or CMB, evaluate the dynamic topography vector there.
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
@@ -211,22 +205,24 @@ namespace aspect
           if (cell->at_boundary())
             {
               // see if the cell is at the *top* boundary or CMB, not just any boundary
-              unsigned int top_face_idx = numbers::invalid_unsigned_int;
-              unsigned int CMB_face_idx = numbers::invalid_unsigned_int;
+              unsigned int face_idx = numbers::invalid_unsigned_int;
+              bool at_upper_surface = false;
               {
                 for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
                   {
                     if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
                       {
-                        // if the cell is at top boundary, assign the corresponding upper face index to top_face_idx but keep the CMB_face_idx still invalid_unsigned_int
-                        top_face_idx = f;
+                        // if the cell is at the top boundary, assign face_idx.
+                        face_idx = f;
+                        at_upper_surface = true;
                         break;
                       }
                     else if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
                              > (this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.))
                       {
-                        // if the cell is at bottom boundary, assign the corresponding lower face index to CMB_face_idx but keep the top_face_idx still invalid_unsigned_int
-                        CMB_face_idx = f;
+                        // if the cell is at the bottom boundary, assign face_idx.
+                        face_idx = f;
+                        at_upper_surface = false;
                         break;
                       }
                     else
@@ -234,128 +230,38 @@ namespace aspect
                   }
 
                 // if the cell is not at the boundary, keep the search loop
-                if (top_face_idx == numbers::invalid_unsigned_int && CMB_face_idx == numbers::invalid_unsigned_int)
+                if (face_idx == numbers::invalid_unsigned_int)
                   continue;
               }
 
-              // focus on the boundary cell
-              fe_values.reinit (cell);
-              in.reinit(fe_values, &cell, this->introspection(), this->get_solution());
-
-              this->get_material_model().evaluate(in, out);
-
-
-              // Calculate the average dynamic topography of the cell.
-              // For each of the quadrature points, evaluate the density, dynamic pressure, and shear stress in direction of the gravity vector.
-              // Compute the integral of the dynamic topography function over the entire cell, by looping over all quadrature points.
-              double dynamic_topography_x_volume = 0.;
-              double cell_volume = 0.;
-              double density_x_volume = 0.;
-
-              for (unsigned int q=0; q<quadrature_formula.size(); ++q)
-                {
-                  const Point<dim> location = fe_values.quadrature_point(q);
-                  const double viscosity = out.viscosities[q];
-                  const double density   = out.densities[q];
-
-                  const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q] - 1./3 * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>();
-                  const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
-
-                  const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(location);
-                  const Tensor<1,dim> gravity_direction = gravity/gravity.norm();
-
-                  // Subtract the dynamic pressure to get the normal stress
-                  const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(location);
-                  const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
-
-                  // Compute dynamic topography either at top or bottom cell
-                  double dynamic_topography;
-                  if (top_face_idx != numbers::invalid_unsigned_int)
-                    dynamic_topography = - sigma_rr / gravity.norm() / (density - density_above);
-                  else if (CMB_face_idx != numbers::invalid_unsigned_int)
-                    dynamic_topography = sigma_rr / gravity.norm() / (density_below - density);
-                  else
-                    dynamic_topography = std::numeric_limits<double>::signaling_NaN();
-
-                  Assert(std::isnan(dynamic_topography) == false,
-                         ExcMessage("The cells not at the top and bottom boundaries are mistakenly used to calculate dynamic topography contribution to the geoid!"));
-
-                  density_x_volume += density * fe_values.JxW(q);
-                  dynamic_topography_x_volume += dynamic_topography * fe_values.JxW(q);
-                  cell_volume += fe_values.JxW(q);
-                }
-
-              // get the average dynamic topography of the cell.
-              const double dynamic_topography_cell_average = dynamic_topography_x_volume / cell_volume;
-
-              // Get the boundary face index and check again to make sure the cell is at the boundary.
-              unsigned int face_idx;
-              if (top_face_idx != numbers::invalid_unsigned_int)
-                face_idx = top_face_idx;
-              else if (CMB_face_idx != numbers::invalid_unsigned_int)
-                face_idx = CMB_face_idx;
-              else
-                face_idx = numbers::invalid_unsigned_int;
-
-              Assert(face_idx != numbers::invalid_unsigned_int,
-                     ExcMessage("The cells not at the top and bottom boundaries are mistakenly used to calculate dynamic topography contribution to the geoid!"));
-
               // focus on the boundary cell's upper face if on the top boundary and lower face if on the bottom boundary
               fe_face_values.reinit(cell, face_idx);
-              in_face.reinit(fe_face_values, &cell, this->introspection(), this->get_solution(), false);
+              fe_face_values[this->introspection().extractors.temperature].get_function_values(topo_vector, topo_values);
 
-              this->get_material_model().evaluate(in_face, out_face);
-
-              // if the cell at top boundary, calculate dynamic topography and add the results into surface dynamic topography storage vector
-              if (top_face_idx != numbers::invalid_unsigned_int)
+              // if the cell at top boundary, add its contributions dynamic topography storage vector
+              if (face_idx != numbers::invalid_unsigned_int && at_upper_surface)
                 {
                   // Although we calculate the average dynamic topography of the cell's boundary face, we store this same dynamic topography with every
                   // surface quadrature point's associated area into the storage vector. The reason to do this is that later in the spherical
                   // harmonic expansion, we will calculate sin(theta)*d_theta*d_phi by infinitesimal_area/radius^2. The accuracy of this relation
                   // is improved as infinitesimal_area is closer to zero, so using every surface quadrature point's associated area of each
                   // surface cell will lead to better accuracy in spherical harmonic expansion, especially in the coarse mesh.
-                  double face_area = 0.;
                   for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                    {
-                      surface_stored_values.push_back (std::make_pair(in_face.position[q], std::make_pair(fe_face_values.JxW(q),dynamic_topography_cell_average)));
-                      face_area += fe_face_values.JxW(q);
-                    }
-                  // Contribute the density, volume, dynamic topography, and surface area of the cell to the integration of the current processor.
-                  integrated_top_layer_density += density_x_volume;
-                  integrated_top_layer_volume += cell_volume;
-                  integrated_surface_topography += dynamic_topography_cell_average * face_area;
-                  integrated_surface_area += face_area;
+                    surface_stored_values.push_back (std::make_pair(fe_face_values.quadrature_point(q), std::make_pair(fe_face_values.JxW(q), topo_values[q])));
                 }
 
-              // if the cell at bottom boundary, calculate dynamic topography and add the results into bottom dynamic topography storage vector
-              if (CMB_face_idx != numbers::invalid_unsigned_int)
+              // if the cell at bottom boundary, add its contributions dynamic topography storage vector
+              if (face_idx != numbers::invalid_unsigned_int && !at_upper_surface)
                 {
                   // Although we calculate the average dynamic topography of the cell's boundary face, we store this same dynamic topography with every
                   // bottom quadrature point's associated area into the storage vector. The reason to do this is that later in the spherical
                   // harmonic expansion, we will calculate sin(theta)*d_theta*d_phi by infinitesimal_area/radius^2. The accuracy of this relation
                   // is improved as infinitesimal_area is closer to zero, so using every bottom quadrature point's associated area of each
                   // bottom cell will lead to better accuracy in spherical harmonic expansion, especially in the coarse mesh.
-                  double face_area = 0.;
                   for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                    {
-                      CMB_stored_values.push_back (std::make_pair(in_face.position[q], std::make_pair(fe_face_values.JxW(q),dynamic_topography_cell_average)));
-                      face_area += fe_face_values.JxW(q);
-                    }
-                  // Contribute the density, volume, dynamic topography, and CMB area of the cell to the integration of the current processor.
-                  integrated_bottom_layer_density += density_x_volume;
-                  integrated_bottom_layer_volume += cell_volume;
-                  integrated_CMB_topography += dynamic_topography_cell_average * face_area;
-                  integrated_CMB_area += face_area;
+                    CMB_stored_values.push_back (std::make_pair(fe_face_values.quadrature_point(q), std::make_pair(fe_face_values.JxW(q), topo_values[q])));
                 }
             }
-
-      // Calculate the surface and CMB weighted average dynamic topography
-      const double surface_average_topography = dealii::Utilities::MPI::sum (integrated_surface_topography,this->get_mpi_communicator()) / dealii::Utilities::MPI::sum (integrated_surface_area,this->get_mpi_communicator());
-      const double CMB_average_topography = dealii::Utilities::MPI::sum (integrated_CMB_topography,this->get_mpi_communicator()) / dealii::Utilities::MPI::sum (integrated_CMB_area,this->get_mpi_communicator());
-
-      // Calculate the surface and CMB layer weighted average density.
-      const double top_layer_average_density = dealii::Utilities::MPI::sum (integrated_top_layer_density,this->get_mpi_communicator()) / dealii::Utilities::MPI::sum (integrated_top_layer_volume,this->get_mpi_communicator());
-      const double bottom_layer_average_density = dealii::Utilities::MPI::sum (integrated_bottom_layer_density,this->get_mpi_communicator()) / dealii::Utilities::MPI::sum (integrated_bottom_layer_volume,this->get_mpi_communicator());
 
       // Subtract the average dynamic topography.
       // Transfer the geocentric coordinates to the spherical coordinates.
@@ -364,7 +270,6 @@ namespace aspect
       std::vector<std::vector<double> > CMB_topo_spherical_function; // store theta, phi, spherical infinitesimal, and CMB dynamic topography
       for (unsigned int i=0; i<surface_stored_values.size(); ++i)
         {
-          surface_stored_values.at(i).second.second -= surface_average_topography;
           const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(surface_stored_values.at(i).first);
           const double theta = scoord[2];
           const double phi = scoord[1];
@@ -380,7 +285,6 @@ namespace aspect
         }
       for (unsigned int i=0; i<CMB_stored_values.size(); ++i)
         {
-          CMB_stored_values.at(i).second.second -= CMB_average_topography;
           const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(CMB_stored_values.at(i).first);
           const double theta = scoord[2];
           const double phi = scoord[1];
@@ -835,6 +739,16 @@ namespace aspect
 
       return std::pair<std::string,std::string>("Writing geoid anomaly:",
                                                 filename);
+    }
+
+    template <int dim>
+    std::list<std::string>
+    Geoid<dim>::required_other_postprocessors() const
+    {
+      std::list<std::string> deps;
+      deps.push_back("dynamic topography");
+      deps.push_back("boundary densities");
+      return deps;
     }
 
     template <int dim>
