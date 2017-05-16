@@ -17,12 +17,19 @@ namespace aspect
 {
   template <int dim>
   class TestMeltMaterial:
-    public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
       virtual bool is_compressible () const
       {
         return false;
+      }
+
+      virtual double reference_darcy_coefficient () const
+      {
+        const double porosity = 0.01;
+        const double permeability = porosity * porosity;
+        return permeability / 1.0;
       }
 
       virtual double reference_viscosity () const
