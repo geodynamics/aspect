@@ -1,0 +1,134 @@
+
+Number of active cells: 128 (on 4 levels)
+Number of degrees of freedom: 1,836 (1,122+153+561)
+
+Number of free surface degrees of freedom: 306
+*** Timestep 0:  t=0 years
+   Solving mesh velocity system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+17 iterations.
+
+   Postprocessing:
+     Topography min/max: -9.313e-10 m, 9.313e-10 m
+     RMS, max velocity:  0.292 m/year, 0.816 m/year
+
+*** Timestep 1:  t=22998.4 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+
+   Postprocessing:
+     Topography min/max: -5484 m, 1.173e+04 m
+     RMS, max velocity:  0.318 m/year, 0.74 m/year
+
+*** Timestep 2:  t=47192.1 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+
+   Postprocessing:
+     Topography min/max: -6952 m, 3720 m
+     RMS, max velocity:  0.319 m/year, 0.847 m/year
+
+*** Timestep 3:  t=69378.9 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+
+   Postprocessing:
+     Topography min/max: -2878 m, 5706 m
+     RMS, max velocity:  0.212 m/year, 0.484 m/year
+
+*** Timestep 4:  t=107897 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+
+   Postprocessing:
+     Topography min/max: -7541 m, 4354 m
+     RMS, max velocity:  0.274 m/year, 0.778 m/year
+
+*** Timestep 5:  t=132008 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+
+   Postprocessing:
+     Topography min/max: -1114 m, 2326 m
+     RMS, max velocity:  0.185 m/year, 0.572 m/year
+
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+*** Timestep 6:  t=164885 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+
+   Postprocessing:
+     Topography min/max: -527.7 m, 431.2 m
+     RMS, max velocity:  0.198 m/year, 0.638 m/year
+
+*** Timestep 7:  t=194303 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+
+   Postprocessing:
+     Topography min/max: -1009 m, 2109 m
+     RMS, max velocity:  0.186 m/year, 0.579 m/year
+
+*** Timestep 8:  t=226838 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+
+   Postprocessing:
+     Topography min/max: -274.2 m, 370.4 m
+     RMS, max velocity:  0.194 m/year, 0.621 m/year
+
+*** Timestep 9:  t=257087 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+
+   Postprocessing:
+     Topography min/max: -835.2 m, 1800 m
+     RMS, max velocity:  0.187 m/year, 0.586 m/year
+
+*** Timestep 10:  t=289196 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+
+   Postprocessing:
+     Topography min/max: -291.8 m, 770.7 m
+     RMS, max velocity:  0.192 m/year, 0.61 m/year
+
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+Termination requested by criterion: end step
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
