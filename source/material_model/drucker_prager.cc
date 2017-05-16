@@ -60,10 +60,16 @@ namespace aspect
               // with a zero input strain rate. We provide a representative reference
               // strain rate for this case, which avoids division by zero and produces
               // a representative first guess of the viscosities.
+              //
               // In later iterations and timesteps we calculate the second moment
               // invariant of the deviatoric strain rate tensor.
               // This is equal to the negative of the second principle
-              // invariant calculated with the function second_invariant.
+              // invariant of the deviatoric strain rate (calculated with the function second_invariant),
+              // as shown in Appendix A of Zienkiewicz and Taylor (Solid Mechanics, 2000).
+              //
+              // The negative of the second principle invariant is equal to 0.5 e_dot_dev_ij e_dot_dev_ji,
+              // where e_dot_dev is the deviatoric strain rate tensor. The square root of this quantity
+              // gives the common definition of effective strain rate.
               const double edot_ii_strict = (&(this->get_simulator()) == NULL
                                              ?
                                              // no simulator object available -- we are probably in a unit test
