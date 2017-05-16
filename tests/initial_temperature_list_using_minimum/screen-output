@@ -1,5 +1,6 @@
 
-   Loading Ascii data initial file /home/bob/software/aspect/data/initial-temperature/ascii-data/test/box_2d.txt.
+
+   Loading Ascii data initial file ASPECT_DIR/data/initial-temperature/ascii-data/test/box_2d.txt.
 
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)

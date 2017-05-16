@@ -108,10 +108,6 @@ namespace aspect
                                "'Initial conditions/List of model names' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
 
-        model_operator_names = Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
-                                                                       model_names.size(),
-                                                                       "List of model operators");
-
         const std::string model_name = prm.get ("Model name");
 
         AssertThrow (model_name == "unspecified" || model_names.size() == 0,
@@ -122,6 +118,11 @@ namespace aspect
 
         if (!(model_name == "unspecified"))
           model_names.push_back(model_name);
+
+
+        model_operator_names = Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
+                                                                       model_names.size(),
+                                                                       "List of model operators");
 
       }
       prm.leave_subsection ();
@@ -235,21 +236,21 @@ namespace aspect
         prm.declare_entry("List of model names",
                           "",
                           Patterns::MultipleSelection(pattern_of_names),
-                          "A comma separated list of initial temperature models that "
+                          "A comma-separated list of initial temperature models that "
                           "will be used to initialize the temperature. "
-                          "The results of each of these models will affect the "
-                          "already created temperature field via the operator listed"
-                          "in List of model operators.\n\n"
+                          "These plugins are loaded in the order given, and modify the "
+                          "existing temperature field via the operators listed "
+                          "in 'List of model operators'.\n\n"
                           "The following initial temperature models are available:\n\n"
                           +
                           std_cxx11::get<dim>(registered_plugins).get_description_string());
 
         prm.declare_entry("List of model operators", "add",
                           Patterns::MultipleSelection("add|subtract|minimum|maximum"),
-                          "A comma separated list of operators that "
+                          "A comma-separated list of operators that "
                           "will be used to append the listed temperature models onto "
                           "the previous models. If only one operator is given, "
-                          "the same operator is applied to all models. \n\n");
+                          "the same operator is applied to all models.");
 
         prm.declare_entry ("Model name", "unspecified",
                            Patterns::Selection (pattern_of_names+"|unspecified"),

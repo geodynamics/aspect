@@ -210,10 +210,10 @@ namespace aspect
         std::vector<std::string> model_names;
 
         /**
-         * A list of names of initial temperature operator strings that have been
+         * A list of names of initial composition operator strings that have been
          * requested in the parameter file. Either one operator is given
          * (in which case it will be used for all models), or each name is associated
-         * with a model_name, in which case each is used to modify the temperature
+         * with a model_name, in which case each is used to modify the composition
          * field with the values from the current plugin. The operators should be
          * one of: add, subtract, minimum and maximum.
          */
