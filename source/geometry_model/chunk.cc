@@ -451,6 +451,8 @@ namespace aspect
       // Call function to connect the set/clear manifold id functions
       // to the right signal
       connect_to_signal(this->get_signals());
+      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
+                  ExcMessage("Only with deal.II 9 or higher, an initial topography model can be used."));
 #endif
       AssertThrow(dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != 0,
                   ExcMessage("At the moment, only the AsciiData initial topography model can be used."));
