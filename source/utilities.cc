@@ -84,7 +84,7 @@ namespace aspect
     template <int dim, int spacedim>
     std::vector<unsigned char>
     get_local_component_association (const FiniteElement<dim,spacedim>  &fe,
-                                     const ComponentMask        &component_mask)
+                                     const ComponentMask        & /*component_mask*/)
     {
       std::vector<unsigned char> local_component_association (fe.dofs_per_cell,
                                                               (unsigned char)(-1));
@@ -99,15 +99,14 @@ namespace aspect
           Assert (fe.is_primitive(i), ExcNotImplemented());
           local_component_association[i] =
             fe.system_to_component_index(i).first;
-
-          Assert (std::find (local_component_association.begin(),
-                             local_component_association.end(),
-                             (unsigned char)(-1))
-                  ==
-                  local_component_association.end(),
-                  ExcInternalError());
         }
 
+      Assert (std::find (local_component_association.begin(),
+                         local_component_association.end(),
+                         (unsigned char)(-1))
+              ==
+              local_component_association.end(),
+              ExcInternalError());
 
       return local_component_association;
     }
