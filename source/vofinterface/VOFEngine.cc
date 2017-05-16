@@ -1,0 +1,785 @@
+/*
+  Copyright (C) 2016 by the authors of the ASPECT code.
+
+ This file is part of ASPECT.
+
+ ASPECT is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2, or (at your option)
+ any later version.
+
+ ASPECT is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with ASPECT; see the file doc/COPYING.  If not see
+ <http://www.gnu.org/licenses/>.
+ */
+
+#include <aspect/vofinterface/VOFEngine.h>
+#include <aspect/vofinterface/VOFUtils.h>
+
+#include <deal.II/dofs/dof_tools.h>
+
+namespace aspect
+{
+
+  namespace InterfaceTracker
+  {
+    using namespace dealii;
+
+    template <int dim>
+    std::vector<std::string> VOFEngine<dim>::component_names ()
+    {
+      std::vector<std::string> names (1, "VOF1");
+      return names;
+    }
+
+    template <int dim>
+    std::vector<std::string> VOFEngine<dim>::interface_component_names ()
+    {
+      std::vector<std::string> names (2, "vofNormal");
+      names.push_back ("vofD");
+      return names;
+    }
+
+    template <int dim>
+    std::vector<DataComponentInterpretation::DataComponentInterpretation> VOFEngine<
+    dim>::component_interpretation ()
+    {
+      std::vector<DataComponentInterpretation::DataComponentInterpretation> data_component_interpretation (
+        1, DataComponentInterpretation::component_is_scalar);
+      return data_component_interpretation;
+    }
+
+    template <int dim>
+    std::vector<DataComponentInterpretation::DataComponentInterpretation> VOFEngine<
+    dim>::interface_component_interpretation ()
+    {
+      std::vector<DataComponentInterpretation::DataComponentInterpretation> data_component_interpretation (
+        2, DataComponentInterpretation::component_is_part_of_vector);
+      data_component_interpretation.push_back (
+        DataComponentInterpretation::component_is_scalar);
+      return data_component_interpretation;
+    }
+
+    template <int dim>
+    VOFEngine<dim>::VOFEngine ()
+      : voleps (std::numeric_limits<double>::quiet_NaN ()),
+        interfaceFE (FE_DGP<dim> (0), 1),
+        dof_handler (NULL),
+        normals_calced (false),
+        old_vel_set (false),
+        dir_order (0),
+        qorder (3),
+        triangulation (NULL),
+        parent_sim_handler (NULL),
+        mapping (NULL),
+        communicator (NULL),
+        world_size (0),
+        self_rank (0)
+    {
+    }
+
+    template <int dim>
+    VOFEngine<dim>::~VOFEngine ()
+    {
+      clear_dof_handler ();
+    }
+
+    template <int dim>
+    void VOFEngine<dim>::clear_dof_handler ()
+    {
+      triangulation = NULL;
+      parent_sim_handler = NULL;
+      if (dof_handler != NULL)
+        {
+          delete dof_handler;
+          dof_handler = NULL;
+        }
+    }
+
+    template <int dim>
+    void VOFEngine<dim>::init (Function<dim> &initFunc,
+                               unsigned int n_samp,
+                               double time)
+    {
+      // Check for required info
+      AssertThrow(triangulation!=NULL,
+                  ExcMessage ("vofinterface requires triangulation."));
+      AssertThrow(parent_sim_handler!=NULL,
+                  ExcMessage ("vofinterface requires parent simulation dofs."));
+
+      const QIterated<dim> quadrature (QMidpoint<1>(), n_samp);
+      FEValues<dim> fe_init (*mapping, interfaceFE, quadrature,
+                             update_JxW_values | update_quadrature_points);
+
+      // Create location to store required data
+      dof_handler = new DoFHandler<dim> (*triangulation);
+      dof_handler->distribute_dofs (interfaceFE);
+      triangulation->signals.clear.connect (
+        std_cxx11::bind (&VOFEngine<dim>::clear_dof_handler,
+                         std_cxx11::ref (*this)));
+
+      state.reinit (dof_handler->n_dofs ());
+      interfaceData.reinit (triangulation->n_active_cells()*n_interface_components);
+
+      DynamicSparsityPattern dsp(dof_handler->n_dofs ());
+      DoFTools::make_sparsity_pattern (*dof_handler, dsp);
+      sparsity_pattern.copy_from(dsp);
+      system_matrix.reinit(sparsity_pattern);
+      rhs.reinit (dof_handler->n_dofs ());
+
+      // Required references
+      const unsigned int dofs_per_cell = interfaceFE.dofs_per_cell;
+      std::vector<types::global_dof_index> local_dof_indicies (dofs_per_cell);
+
+      AssertThrow(dofs_per_cell == VOFEngine<dim>::n_components,
+                  ExcMessage ("VOF must be single valued per cell."));
+
+      double h = 1.0/n_samp;
+
+      initFunc.set_time (time);
+
+      vol_init = 0.0;
+      double curr_vol = 0.0, curr_vol_corr = 0.0;
+
+      // Initialize state based on provided function
+      for (auto cell : dof_handler->active_cell_iterators ())
+        {
+          // Calculate approximation for volume
+          double cell_vol, cell_diam, d_func;
+          cell->get_dof_indices (local_dof_indicies);
+          cell_vol = cell->measure ();
+          cell_diam = cell->diameter();
+          d_func = initFunc.value(cell->barycenter());
+          fe_init.reinit (cell);
+
+          double vof_val = 0.0;
+
+          if (d_func <=-0.5*cell_diam)
+            {
+              vof_val = 0.0;
+            }
+          else
+            {
+              if (d_func >= 0.5*cell_diam)
+                {
+                  vof_val = 1.0;
+                }
+              else
+                {
+
+                  for (unsigned int i = 0; i < fe_init.n_quadrature_points; ++i)
+                    {
+                      double d = 0.0;
+                      Tensor<1, dim, double> grad;
+                      Point<dim> xU = quadrature.point (i);
+                      for (unsigned int di = 0; di < dim; ++di)
+                        {
+                          Point<dim> xH, xL;
+                          xH = xU;
+                          xL = xU;
+                          xH[di] += 0.5*h;
+                          xL[di] -= 0.5*h;
+                          double dH = initFunc.value(cell->intermediate_point(xH));
+                          double dL = initFunc.value(cell->intermediate_point(xL));
+                          grad[di] = (dL-dH);
+                          d += (0.5/dim)*(dH+dL);
+                        }
+                      double ptvof = vof_from_d<dim> (grad, d);
+                      vof_val += ptvof * (fe_init.JxW (i) / cell_vol);
+                    }
+                }
+            }
+          state (local_dof_indicies[VOFEngine<dim>::vof_ind]) = vof_val;
+          double c_nterm = vof_val * cell_vol - curr_vol_corr;
+          double nsum = curr_vol + c_nterm;
+          curr_vol_corr = (nsum - curr_vol) - c_nterm;
+          curr_vol = nsum;
+        }
+      vol_init = curr_vol;
+
+      normals_calced = false;
+    }
+
+    template <int dim>
+    void VOFEngine<dim>::set_voleps (double new_voleps)
+    {
+      voleps = new_voleps;
+    }
+
+    template <int dim>
+    void VOFEngine<dim>::set_triangulation (const parallel::distributed::Triangulation<
+                                            dim> *new_tria)
+    {
+      triangulation = new_tria;
+    }
+
+    template <int dim>
+    void VOFEngine<dim>::set_mapping (const Mapping<dim> *new_mapping)
+    {
+      mapping = new_mapping;
+
+    }
+
+    template <int dim>
+    void VOFEngine<dim>::set_parent_dofs (const DoFHandler<dim> *new_par_dofs)
+    {
+      parent_sim_handler = new_par_dofs;
+    }
+
+    template <int dim>
+    void VOFEngine<dim>::set_comm (MPI_Comm new_comm_world)
+    {
+      communicator = new_comm_world;
+
+      world_size = Utilities::MPI::n_mpi_processes (communicator);
+      self_rank = Utilities::MPI::this_mpi_process (communicator);
+    }
+
+    template <int dim>
+    DoFHandler<dim> *VOFEngine<dim>::get_dof_handler ()
+    {
+      return dof_handler;
+    }
+
+    template <int dim>
+    Vector<double> &VOFEngine<dim>::get_state ()
+    {
+      return state;
+    }
+
+    template <int dim>
+    Vector<double> &VOFEngine<dim>::get_interfaceData ()
+    {
+      return interfaceData;
+    }
+
+    template <int dim>
+    void VOFEngine<dim>::do_step (const LinearAlgebra::BlockVector &par_new_soln,
+                                  const LinearAlgebra::BlockVector &par_old_soln,
+                                  double timestep)
+    {
+      if (dir_order == 0)
+        {
+          for (unsigned int dir = 0; dir < dim; ++dir)
+            {
+              calc_flux (par_new_soln, par_old_soln, timestep, dir);
+              update_vof ();
+            }
+        }
+      else
+        {
+          for (unsigned int dir = 0; dir < dim; ++dir)
+            {
+              calc_flux (par_new_soln, par_old_soln, timestep, dim - dir - 1);
+              update_vof ();
+            }
+        }
+      dir_order = (dir_order + 1) % 2;
+      old_vel_set = true;
+    }
+
+    template <>
+    void VOFEngine<2>::calc_normals ()
+    {
+      const int dim = 2;
+      if (normals_calced)
+        return;
+
+      // Boundary reference
+      typename DoFHandler<dim>::active_cell_iterator endc =
+        dof_handler->end ();
+
+      // Interface Reconstruction vars
+      const unsigned int n_local = 9;
+
+      Vector<double> local_vofs (n_local);
+      std::vector<Point<dim>> resc_cell_centers (n_local);
+
+      const unsigned int n_sums = 3;
+      std::vector<double> strip_sums (dim * n_sums);
+
+      const unsigned int n_normals = 6;
+      std::vector<Tensor<1, dim, double>> normals (n_normals);
+      std::vector<double> errs (2 * n_normals);
+
+      // Normal holding vars
+      Tensor<1, dim, double> normal;
+      double d;
+
+      //Iterate over cells
+      DoFHandler<dim>::active_cell_iterator par_cell =
+        parent_sim_handler->begin_active ();
+      for (auto cell : dof_handler->active_cell_iterators ())
+        {
+          std::vector<types::global_dof_index> cell_dof_indicies (
+            interfaceFE.dofs_per_cell);
+          types::global_dof_index cell_vof_index;
+          double cell_vof;
+          unsigned int cell_normal_index, cell_d_index;
+
+          // Obtain data for this cell and neighbors
+          cell->get_dof_indices (cell_dof_indicies);
+          cell_vof_index = cell_dof_indicies[VOFEngine<dim>::vof_ind];
+          cell_normal_index = cell->active_cell_index()*n_interface_components
+                              + first_inter_normal_ind;
+          cell_d_index = cell->active_cell_index()*n_interface_components
+                         + inter_d_ind;
+          cell_vof = state (cell_vof_index);
+
+          normal[0] = 0.0;
+          normal[1] = 0.0;
+          d = -0.5;
+
+          if (cell_vof > 1.0 - voleps)
+            {
+              d = 0.5;
+            }
+          else if (cell_vof > voleps)
+            {
+              //Identify best normal
+              // Get references to neighboring cells
+              for (unsigned int i = 0; i < 3; ++i)
+                {
+                  typename DoFHandler<dim>::active_cell_iterator cen;
+                  if (i == 0)
+                    cen = cell->neighbor (0);
+                  if (i == 1)
+                    cen = cell;
+                  if (i == 2)
+                    cen = cell->neighbor (1);
+                  for (unsigned int j = 0; j < 3; ++j)
+                    {
+                      typename DoFHandler<dim>::active_cell_iterator curr;
+                      if (cen == endc)
+                        {
+                          curr = endc;
+                        }
+                      else
+                        {
+                          if (j == 0)
+                            curr = cen->neighbor (2);
+                          if (j == 1)
+                            curr = cen;
+                          if (j == 2)
+                            curr = cen->neighbor (3);
+                        }
+                      if (curr != endc)
+                        {
+                          curr->get_dof_indices (cell_dof_indicies);
+                          resc_cell_centers[3 * j + i] = Point<dim> (-1.0 + i,
+                                                                     -1.0 + j);
+                        }
+                      else
+                        {
+                          cell->get_dof_indices (cell_dof_indicies);
+                          resc_cell_centers[3 * j + i] = Point<dim> (0.0,
+                                                                     0.0);
+                        }
+                      local_vofs (3 * j + i) = state (
+                                                 cell_dof_indicies[VOFEngine<dim>::vof_ind]);
+                    }
+                }
+              // Gather cell strip sums
+              for (unsigned int i = 0; i < dim * n_sums; ++i)
+                strip_sums[i] = 0.0;
+
+              for (unsigned int i = 0; i < 3; ++i)
+                {
+                  for (unsigned int j = 0; j < 3; ++j)
+                    {
+                      strip_sums[3 * 0 + i] += local_vofs (3 * j + i);
+                      strip_sums[3 * 1 + j] += local_vofs (3 * j + i);
+                    }
+                }
+
+              // std::cout << "  Strip sums: " << std::endl;
+              // for (unsigned int i = 0; i < dim * n_sums; ++i)
+              //   std::cout << "    " << strip_sums[i] << std::endl;
+
+              for (unsigned int di = 0; di < dim; ++di)
+                {
+                  unsigned int di2 = (di + 1) % dim;
+                  for (unsigned int i = 0; i < 3; ++i)
+                    {
+                      normals[3 * di + i][di] = 0.0;
+                      normals[3 * di + i][di2] = 0.0;
+                      if (i % 2 == 0)
+                        {
+                          //use low sum
+                          normals[3 * di + i][di] += strip_sums[3 * di + 0];
+                          normals[3 * di + i][di2] += 1.0;
+                        }
+                      else
+                        {
+                          //use high sum
+                          normals[3 * di + i][di] += strip_sums[3 * di + 1];
+                          normals[3 * di + i][di2] += 0.0;
+                        }
+                      if (i == 0)
+                        {
+                          //use low sum
+                          normals[3 * di + i][di] -= strip_sums[3 * di + 1];
+                          normals[3 * di + i][di2] += 0.0;
+                        }
+                      else
+                        {
+                          //use high sum
+                          normals[3 * di + i][di] -= strip_sums[3 * di + 2];
+                          normals[3 * di + i][di2] += 1.0;
+                        }
+                      if (strip_sums[3 * di2 + 2] > strip_sums[3 * di2 + 0])
+                        normals[3 * di + i][di2] *= -1.0;
+                    }
+                }
+
+              unsigned int mn_ind = 0;
+              for (unsigned int nind = 0; nind < n_normals; ++nind)
+                {
+                  errs[nind] = 0.0;
+                  d = d_from_vof<dim> (normals[nind], cell_vof);
+                  for (unsigned int i = 0; i < n_local; ++i)
+                    {
+                      double dot = 0.0;
+                      for (unsigned int di = 0; di < dim; ++di)
+                        dot += normals[nind][di] * resc_cell_centers[i][di];
+                      double val = local_vofs (i)
+                                   - vof_from_d<dim> (normals[nind],
+                                                      d - dot);
+                      errs[nind] += val * val;
+                    }
+                  if (errs[mn_ind] >= errs[nind])
+                    mn_ind = nind;
+                  // std::cout << "   " << normals[nind] << " e ";
+                  // std::cout  << errs[nind] << " " << mn_ind << std::endl;
+                }
+
+              normal = normals[mn_ind];
+              d = d_from_vof<dim> (normal, cell_vof);
+            }
+
+          double n2 = sqrt (normal * normal);
+          if (n2 > voleps)
+            {
+              normal = (normal / n2);
+              d = d_from_vof<dim> (normal, cell_vof);
+            }
+          else
+            {
+              normal[0] = 0.0;
+              normal[1] = 0.0;
+            }
+          for (unsigned int i=0; i < dim; ++i)
+            {
+              interfaceData (cell_normal_index + i) = normal[i];
+            }
+          interfaceData (cell_d_index) = d;
+        }
+
+      normals_calced = true;
+    }
+
+    template <>
+    void VOFEngine<3>::calc_normals ()
+    {
+      // 3D interface reconstruction not yet implemented
+    }
+
+
+    template <int dim>
+    void VOFEngine<dim>::calc_flux (const LinearAlgebra::BlockVector &par_new_soln,
+                                    const LinearAlgebra::BlockVector &par_old_soln,
+                                    double timestep,
+                                    unsigned int dir)
+    {
+      // Boundary reference
+      typename DoFHandler<dim>::active_cell_iterator endc =
+        dof_handler->end ();
+
+      // Interface holding vars
+
+      calc_normals ();
+      Point<dim> normal;
+      double d;
+
+      // Flux Computation Vars
+
+      Functions::FEFieldFunction<dim, DoFHandler<dim>,
+                LinearAlgebra::BlockVector> par_new_state (*parent_sim_handler,
+                                                           par_new_soln, *mapping);
+      Functions::FEFieldFunction<dim, DoFHandler<dim>,
+                LinearAlgebra::BlockVector> par_old_state (*parent_sim_handler,
+                                                           par_old_soln, *mapping);
+      const QGauss<dim - 1> quadrature (qorder);
+      FEFaceValues<dim> fe_face (*mapping, interfaceFE, quadrature,
+                                 update_JxW_values | update_quadrature_points
+                                 | update_normal_vectors);
+      std::vector<Vector<double>> nvels (fe_face.n_quadrature_points);
+      std::vector<Vector<double>> ovels (fe_face.n_quadrature_points);
+
+      const unsigned int n_neighbor = 2;
+      Vector<double> dvofs (n_neighbor);
+
+      Vector<double> flux (n_neighbor);
+      Vector<double> flux_vof (n_neighbor);
+
+      system_matrix = 0.0;
+      rhs = 0.0;
+
+      // std::cout << "Dir: " << dir << std::endl;
+
+      //Iterate over cells
+      typename DoFHandler<dim>::active_cell_iterator par_cell =
+        parent_sim_handler->begin_active ();
+      for (auto cell : dof_handler->active_cell_iterators ())
+        {
+          std::vector<types::global_dof_index> cell_dof_indicies (
+            interfaceFE.dofs_per_cell);
+          types::global_dof_index cell_vof_index;
+          unsigned int cell_normal_index, cell_d_index;
+          double cell_vof, cell_vol;
+
+          // Obtain data for this cell and neighbors
+          cell->get_dof_indices (cell_dof_indicies);
+          cell_vof_index = cell_dof_indicies[VOFEngine<dim>::vof_ind];
+          cell_normal_index = cell->active_cell_index()*n_interface_components
+                              + first_inter_normal_ind;
+          cell_d_index = cell->active_cell_index()*n_interface_components
+                         + inter_d_ind;
+          cell_vof = state (cell_vof_index);
+          cell_vol = cell->measure ();
+
+          double dflux = 0;
+          par_new_state.set_active_cell (par_cell);
+          par_old_state.set_active_cell (par_cell);
+          for (unsigned int i = 0; i < 2; ++i)
+            {
+              fe_face.reinit (cell, 2 * dir + i);
+              flux[i] = 0.0;
+              const std::vector<double> &jxw = fe_face.get_JxW_values ();
+              const std::vector<Tensor<1, dim>> &normals =
+                                               fe_face.get_all_normal_vectors ();
+              par_new_state.vector_value_list (
+                fe_face.get_quadrature_points (), nvels);
+              par_old_state.vector_value_list (
+                fe_face.get_quadrature_points (), ovels);
+              for (unsigned int j = 0; j < fe_face.n_quadrature_points;
+                   ++j)
+                {
+                  Point<dim> vel;
+                  Point<dim> vGrad;
+                  for (unsigned int vdi = 0; vdi < dim; ++vdi)
+                    {
+                      if (old_vel_set)
+                        {
+                          vel[vdi] = 0.5 * (nvels[j][vdi] + ovels[j][vdi]);
+                        }
+                      else
+                        {
+                          vel[vdi] = nvels[j][vdi];
+                        }
+                    }
+                  flux[i] +=  jxw[j] * (normals[j] * (timestep * vel));
+                }
+              dflux += flux[i];
+            }
+
+          for (unsigned int i=0; i < dim; ++i)
+            {
+              normal[i] = interfaceData (cell_normal_index + i);
+            }
+          d = interfaceData (cell_d_index);
+
+
+
+          for (unsigned int i = 0; i < 2; ++i)
+            {
+              double adj = flux[i]/cell_vol;
+              Tensor<1, dim, double> dir_t;
+              Tensor<1, dim, double> vflux;
+              dir_t[dir] = (i == 0 ? -1.0 : 1.0);
+              vflux[dir] = adj*dir_t[dir];
+              flux_vof[i] = calc_vof_flux_edge<dim> (dir_t, vflux, normal, d);
+            }
+
+          for (unsigned int i = 0; i < n_neighbor; ++i)
+            {
+              dvofs[i] = flux_vof[i] * flux[i];
+            }
+
+          if (numbers::NumberTraits<double>::abs(dflux) < cell_vol * voleps)
+            {
+              dflux = 0.0;
+            }
+
+          system_matrix.add(cell_vof_index, cell_vof_index, cell_vol-dflux);
+          rhs(cell_vof_index) += cell_vol*state(cell_vof_index);
+          // Set valid fluxes
+          for (unsigned int i = 0; i < n_neighbor; ++i)
+            {
+              rhs(cell_vof_index) -= dvofs[i];
+              typename DoFHandler<dim>::active_cell_iterator curr;
+              curr = cell->neighbor (2 * dir + i);
+              if (curr != endc)
+                {
+                  curr->get_dof_indices (cell_dof_indicies);
+                  types::global_dof_index curr_vof_ind;
+                  curr_vof_ind = cell_dof_indicies[VOFEngine<dim>::vof_ind];
+                  rhs(curr_vof_ind) += dvofs[i];
+                }
+            }
+          ++par_cell;
+        }
+    }
+
+    template <int dim>
+    void VOFEngine<dim>::update_vof ()
+    {
+      SolverControl solver_control(solv_iter, solv_tol);
+      SolverCG<> solver(solver_control);
+      solver.solve(system_matrix, state, rhs, PreconditionIdentity());
+      normals_calced = false;
+    }
+
+    template <int dim>
+    std::vector<std::string> VOFEngine<dim>::error_names ()
+    {
+      std::vector<std::string> names (1, "L1 Interface Error");
+      names.push_back ("L1 Field Error");
+      names.push_back ("Volume delta");
+      return names;
+    }
+
+
+    template <int dim>
+    std::vector<std::string> VOFEngine<dim>::error_abrev ()
+    {
+      std::vector<std::string> names (1, "I_EL1");
+      names.push_back ("F_EL1");
+      names.push_back ("D_vol");
+      return names;
+    }
+
+    template <int dim>
+    std::vector<double> VOFEngine<dim>::calc_error (Function<dim> &func,
+                                                    unsigned int n_samp,
+                                                    double time)
+    {
+      double I_err_est = 0.0;
+      double F_err_est = 0.0;
+      double curr_vol = 0.0, curr_vol_corr = 0.0;
+      double h = 1.0/n_samp;
+
+      Point<dim> xU;
+      Tensor<1, dim, double> normal;
+      double d;
+
+      const unsigned int dofs_per_cell = interfaceFE.dofs_per_cell;
+      std::vector<types::global_dof_index> local_dof_indicies (dofs_per_cell);
+
+      const QIterated<dim> quadrature (QMidpoint<1>(), n_samp);
+      FEValues<dim> fe_err (*mapping, interfaceFE, quadrature,
+                            update_JxW_values | update_quadrature_points);
+
+      calc_normals ();
+
+      func.set_time (time);
+
+      // Initialize state based on provided function
+      for (auto cell : dof_handler->active_cell_iterators ())
+        {
+
+          std::vector<types::global_dof_index> cell_dof_indicies (
+            interfaceFE.dofs_per_cell);
+          types::global_dof_index cell_vof_index;
+          unsigned int cell_normal_index, cell_d_index;
+          double cell_vof, cell_vol;
+          double cell_diam;
+          double d_func;
+
+          // Obtain data for this cell and neighbors
+          cell->get_dof_indices (local_dof_indicies);
+          cell_vof_index = local_dof_indicies[VOFEngine<dim>::vof_ind];
+          cell_normal_index = cell->active_cell_index()*n_interface_components
+                              + first_inter_normal_ind;
+          cell_d_index = cell->active_cell_index()*n_interface_components
+                         + inter_d_ind;
+
+          // Calculate approximation for volume
+          fe_err.reinit (cell);
+
+          cell_vol = cell->measure ();
+          cell_diam = cell->diameter();
+          d_func = func.value(cell->barycenter());
+          cell_vof = state (cell_vof_index);
+          double nnorm1 = 0;
+          for (unsigned int i=0; i < dim; ++i)
+            {
+              normal[i] = interfaceData (cell_normal_index + i);
+              nnorm1 += numbers::NumberTraits<double>::abs (normal[i]);
+            }
+          d = interfaceData (cell_d_index);
+
+          double c_nterm = cell_vof * cell_vol - curr_vol_corr;
+          double nsum = curr_vol + c_nterm;
+          curr_vol_corr = (nsum - curr_vol) - c_nterm;
+          curr_vol = nsum;
+
+          if (numbers::NumberTraits<double>::abs (d) >= 0.5*nnorm1 &&
+              numbers::NumberTraits<double>::abs (d_func) >= 0.5*cell_diam &&
+              d*d_func>=0.0)
+            {
+              continue;
+            }
+
+          Tensor<1, dim, double> grad_t;
+          double d_t;
+          double val = 0.0;
+          double vof_reinit = 0.0;
+          for (unsigned int i = 0; i < fe_err.n_quadrature_points; ++i)
+            {
+              d_t = 0.0;
+              xU = quadrature.point (i);
+              for (unsigned int di = 0; di < dim; ++di)
+                {
+                  Point<dim> xH, xL;
+                  xH = xU;
+                  xL = xU;
+                  xH[di] += 0.5*h;
+                  xL[di] -= 0.5*h;
+                  double dH = func.value(cell->intermediate_point(xH));
+                  double dL = func.value(cell->intermediate_point(xL));
+                  grad_t[di] = (dL-dH);
+                  d_t += (0.5/dim)*(dH+dL);
+                }
+              double ptvof_t = vof_from_d<dim> (grad_t, d_t);
+              vof_reinit += ptvof_t *(fe_err.JxW (i)/cell_vol);
+              for (unsigned int di = 0; di < dim; ++di)
+                {
+                  xU[di] -= 0.5;
+                }
+              double dot = normal * xU;
+              double ptvof_e = vof_from_d<dim> (h*normal,
+                                                (d - dot));
+              double diff = numbers::NumberTraits<double>::abs (ptvof_t - ptvof_e);
+              val += diff * fe_err.JxW (i);
+            }
+          I_err_est += val;
+          F_err_est += numbers::NumberTraits<double>::abs (cell_vof-vof_reinit)
+                       * cell_vol;
+        }
+
+      std::vector<double> errors(1, I_err_est);
+      errors.push_back (F_err_est);
+      errors.push_back (curr_vol-vol_init);
+      return errors;
+    }
+
+    template class VOFEngine<2> ;
+    template class VOFEngine<3> ;
+  }
+}

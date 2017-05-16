@@ -1,0 +1,232 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.0-pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------
+The output directory <output/> provided in the input file appears not to exist.
+ASPECT will create it for you.
+-----------------------------------------------------------------------------
+
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 3,556 (2,178+289+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation: Initialized. Wrote vofs-00000.vtu. I_EL1=2.697418772178993e-17 F_EL1=1.647987302177970e-17 D_vol=0.000000000000000e+00.
+
+*** Timestep 1:  t=0.03125 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=3.487726647302974e-05 F_EL1=2.103352214621879e-17 D_vol=-1.550292968750000e-02.
+
+*** Timestep 2:  t=0.0625 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=7.573580169203701e-05 F_EL1=2.322219488226434e-05 D_vol=-3.076171875000000e-02.
+
+*** Timestep 3:  t=0.09375 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=7.833347331349057e-05 F_EL1=6.201395707312776e-05 D_vol=-4.577636718750000e-02.
+
+*** Timestep 4:  t=0.125 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=8.496114161993013e-06 F_EL1=7.622147846468943e-06 D_vol=-6.054687500000000e-02.
+
+*** Timestep 5:  t=0.15625 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=3.716032632559885e-05 F_EL1=3.069335916469195e-06 D_vol=-7.507324218750000e-02.
+
+*** Timestep 6:  t=0.1875 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=7.740032812222523e-05 F_EL1=2.562557422776835e-05 D_vol=-8.935546875000000e-02.
+
+*** Timestep 7:  t=0.21875 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=7.957413283391030e-05 F_EL1=6.344664330498894e-05 D_vol=-1.033935546875000e-01.
+
+*** Timestep 8:  t=0.25 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=8.656091430036940e-06 F_EL1=7.764389811686418e-06 D_vol=-1.171875000000000e-01.
+
+*** Timestep 9:  t=0.28125 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=3.721221096759047e-05 F_EL1=3.140024582013075e-06 D_vol=-1.307373046875000e-01.
+
+*** Timestep 10:  t=0.3125 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=7.743949251964584e-05 F_EL1=2.568122953470792e-05 D_vol=-1.440429687500000e-01.
+
+*** Timestep 11:  t=0.34375 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=7.960307684554972e-05 F_EL1=6.347995251253978e-05 D_vol=-1.571044921875000e-01.
+
+*** Timestep 12:  t=0.375 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=8.659896846253163e-06 F_EL1=7.767773083758599e-06 D_vol=-1.699218750000000e-01.
+
+*** Timestep 13:  t=0.40625 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=3.721344830889112e-05 F_EL1=3.141710771045660e-06 D_vol=-1.824951171875000e-01.
+
+*** Timestep 14:  t=0.4375 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=7.744042672100246e-05 F_EL1=2.568255710395874e-05 D_vol=-1.948242187500000e-01.
+
+*** Timestep 15:  t=0.46875 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=7.960376734441612e-05 F_EL1=6.348074708843491e-05 D_vol=-2.069091796875000e-01.
+
+*** Timestep 16:  t=0.5 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=8.659987663913648e-06 F_EL1=7.767853826915659e-06 D_vol=-2.187500000000000e-01.
+
+*** Timestep 17:  t=0.53125 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=3.721347783942132e-05 F_EL1=3.141751014020845e-06 D_vol=-2.303466796875000e-01.
+
+*** Timestep 18:  t=0.5625 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=7.744044901689508e-05 F_EL1=2.568258878808986e-05 D_vol=-2.416992187500000e-01.
+
+*** Timestep 19:  t=0.59375 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=7.960378382409426e-05 F_EL1=6.348076605202789e-05 D_vol=-2.528076171875000e-01.
+
+*** Timestep 20:  t=0.625 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=8.659989831417910e-06 F_EL1=7.767855753977495e-06 D_vol=-2.636718750000000e-01.
+
+*** Timestep 21:  t=0.65625 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=3.721347854421159e-05 F_EL1=3.141751974481289e-06 D_vol=-2.742919921875000e-01.
+
+*** Timestep 22:  t=0.6875 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=7.744044954901939e-05 F_EL1=2.568258954427751e-05 D_vol=-2.846679687500000e-01.
+
+*** Timestep 23:  t=0.71875 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=7.960378421740779e-05 F_EL1=6.348076650462337e-05 D_vol=-2.947998046875000e-01.
+
+*** Timestep 24:  t=0.75 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=8.659989883148091e-06 F_EL1=7.767855799967671e-06 D_vol=-3.046875000000000e-01.
+
+*** Timestep 25:  t=0.78125 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=3.721347856103361e-05 F_EL1=3.141751997405226e-06 D_vol=-3.143310546875000e-01.
+
+*** Timestep 26:  t=0.8125 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=7.744044956171749e-05 F_EL1=2.568258956232557e-05 D_vol=-3.237304687500000e-01.
+
+*** Timestep 27:  t=0.84375 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=7.960378422679044e-05 F_EL1=6.348076651542352e-05 D_vol=-3.328857421875000e-01.
+
+*** Timestep 28:  t=0.875 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=8.659989884378462e-06 F_EL1=7.767855801061644e-06 D_vol=-3.417968750000000e-01.
+
+*** Timestep 29:  t=0.90625 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=3.721347856143150e-05 F_EL1=3.141751997946677e-06 D_vol=-3.504638671875000e-01.
+
+*** Timestep 30:  t=0.9375 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=7.744044956202028e-05 F_EL1=2.568258956275220e-05 D_vol=-3.588867187500000e-01.
+
+*** Timestep 31:  t=0.96875 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=7.960378422647284e-05 F_EL1=6.348076651568383e-05 D_vol=-3.670654296875000e-01.
+
+*** Timestep 32:  t=1 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     VOF Calculation:  I_EL1=8.659989884407109e-06 F_EL1=7.767855801087177e-06 D_vol=-3.750000000000000e-01.
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |       138s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble temperature system     |        33 |      9.53s |       6.9% |
+| Build temperature preconditioner|        33 |      0.58s |      0.42% |
+| Solve temperature system        |        33 |     0.072s |     0.052% |
+| Initialization                  |         2 |     0.321s |      0.23% |
+| Postprocessing                  |        33 |       126s |        91% |
+| Setup dof systems               |         1 |      0.19s |      0.14% |
++---------------------------------+-----------+------------+------------+
+
