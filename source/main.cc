@@ -386,8 +386,9 @@ void print_version_information(Stream &stream)
 {
   stream << "Version information of underlying libraries:\n"
          << "   . deal.II:    "
-         << DEAL_II_PACKAGE_VERSION << '\n'
-         << DEAL_II_GIT_SHORTREV    << '\n'
+         << DEAL_II_PACKAGE_VERSION           << '\t'
+         << "   (git revision "
+         << DEAL_II_GIT_SHORTREV              << ")\n"
 #ifndef ASPECT_USE_PETSC
          << "   . Trilinos:   "
          << DEAL_II_TRILINOS_VERSION_MAJOR    << '.'
