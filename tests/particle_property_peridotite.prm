@@ -10,7 +10,7 @@ set CFL number                             = 1.0
 set Composition solver tolerance           = 1e-14
 set Temperature solver tolerance           = 1e-14
 set Nonlinear solver scheme                = iterated IMPES
-set Output directory                       = particle_property_solid_comp
+set Output directory                       = particle_property_peridotite
 set Max nonlinear iterations               = 10
 set Nonlinear solver tolerance             = 1e-5
 set Linear solver tolerance                = 1e-10
@@ -157,11 +157,11 @@ subsection Postprocess
   subsection Particles
     subsection Generator
       subsection Ascii file
-        set Data file name            = particle_property_solid_comp.txt
+        set Data file name            = particle_property_peridotite.txt
       end
     end
     set Particle generator name       = ascii file 
-    set List of particle properties   = solid comp
+    set List of particle properties   = peridotite
     set Time between data output      = 0
     set Number of particles           = 10
   end

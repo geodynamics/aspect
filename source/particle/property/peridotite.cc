@@ -19,7 +19,7 @@
  */
 
 
-#include <aspect/particle/property/solid_comp.h>
+#include <aspect/particle/property/peridotite.h>
 #include <aspect/simulator.h>
 #include <aspect/melt.h>
 
@@ -31,22 +31,22 @@ namespace aspect
     {
       template <int dim>
       void
-      SolidComp<dim>::initialize_one_particle_property(const Point<dim> &/*position*/,
-                                                       std::vector<double> &data) const
+      Peridotite<dim>::initialize_one_particle_property(const Point<dim> &/*position*/,
+                                                        std::vector<double> &data) const
       {
         data.push_back(0.0);
       }
 
       template <int dim>
       void
-      SolidComp<dim>::update_one_particle_property(const unsigned int data_position,
-                                                   const Point<dim> &,
-                                                   const Vector<double> &solution,
-                                                   const std::vector<Tensor<1,dim> > &,
-                                                   const ArrayView<double> &data) const
+      Peridotite<dim>::update_one_particle_property(const unsigned int data_position,
+                                                    const Point<dim> &,
+                                                    const Vector<double> &solution,
+                                                    const std::vector<Tensor<1,dim> > &,
+                                                    const ArrayView<double> &data) const
       {
         AssertThrow(this->introspection().compositional_name_exists("peridotite"),
-                    ExcMessage("Particle property solid comp only works if "
+                    ExcMessage("Particle property peridotite only works if "
                                "there is a compositional field called peridotite."));
         const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
         const unsigned int solution_component = this->introspection().component_indices.compositional_fields[peridotite_idx];
@@ -56,21 +56,21 @@ namespace aspect
 
       template <int dim>
       UpdateTimeFlags
-      SolidComp<dim>::need_update() const
+      Peridotite<dim>::need_update() const
       {
         return update_time_step;
       }
 
       template <int dim>
       UpdateFlags
-      SolidComp<dim>::get_needed_update_flags () const
+      Peridotite<dim>::get_needed_update_flags () const
       {
         return update_values;
       }
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int> >
-      SolidComp<dim>::get_property_information() const
+      Peridotite<dim>::get_property_information() const
       {
         std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("peridotite",1));
         return property_information;
@@ -86,8 +86,8 @@ namespace aspect
   {
     namespace Property
     {
-      ASPECT_REGISTER_PARTICLE_PROPERTY(SolidComp,
-                                        "solid comp",
+      ASPECT_REGISTER_PARTICLE_PROPERTY(Peridotite,
+                                        "peridotite",
                                         "Implementation of a plugin in which the particle "
                                         "property is defined as the peridotite depletion "
                                         "at this position. This can be used to track solid "

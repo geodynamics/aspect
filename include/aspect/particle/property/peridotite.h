@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _aspect_particle_property_solid_comp_h
-#define _aspect_particle_property_solid_comp_h
+#ifndef _aspect_particle_property_peridotite_h
+#define _aspect_particle_property_peridotite_h
 
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
@@ -39,7 +39,7 @@ namespace aspect
        * @ingroup ParticleProperties
        */
       template <int dim>
-      class SolidComp : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+      class Peridotite : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
       {
         public:
           /**
