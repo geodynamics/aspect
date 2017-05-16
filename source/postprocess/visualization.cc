@@ -521,7 +521,13 @@ namespace aspect
               write_master_files (data_out, solution_file_prefix, filenames);
             }
 
-          const unsigned int my_file_id = (group_files == 0) ? my_id : my_id % group_files;
+          const unsigned int n_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+
+          const unsigned int my_file_id = (group_files == 0
+                                           ?
+                                           my_id
+                                           :
+                                           my_id % group_files);
           const std::string filename = this->get_output_directory()
                                        + "solution/"
                                        + solution_file_prefix
@@ -539,7 +545,7 @@ namespace aspect
           // Write as many files as processes. For this case we support writing in a
           // background thread and to a temporary location, so we first write everything
           // into a string that is written to disk in a writer function
-          if (group_files == 0)
+          if ((group_files == 0) || (group_files >= n_processes))
             {
               // Put the content we want to write into a string object that
               // we can then write in the background
