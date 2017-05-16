@@ -128,6 +128,7 @@ namespace aspect
       const Point<dim> topo_point = push_forward_topo(chart_point); 
 
       DerivativeForm<1, dim, dim> Dtopo;
+      DerivativeForm<1, dim, dim> Dtotal;
       const double R_topo = topo_point[0];
       const double phi_topo = topo_point[1];
 
@@ -143,6 +144,7 @@ namespace aspect
             Dtopo[1][0] = 1.;
             //dphi_topo/dphi
             Dtopo[1][1] = 1.;
+
             //dx/dR_topo
             DX[0][0] =           std::cos(phi_topo);
             //dx/dphi_topo
@@ -151,6 +153,15 @@ namespace aspect
             DX[1][0] =           std::sin(phi_topo);
             //dy/dphi_topo
             DX[1][1] =  R_topo * std::cos(phi_topo);
+
+      // dx/dR   = dx/dR_topo * dR_topo/dR   + dx/dphi_topo * dphi_topo/dR 
+            Dtotal[0][0] = DX[0][0] * Dtopo[0][0] + DX[0][1] * Dtopo[1][0];
+      // dx/dphi = dx/dR_topo * dR_topo/dphi + dx/dphi_topo * dphi_topo/dphi 
+            Dtotal[0][1] = DX[0][0] * Dtopo[0][1] + DX[0][1] * Dtopo[1][1];
+      // dy/dR   = dy/dR_topo * dR_topo/dR + dy/dphi_topo * dphi_topo/dR 
+            Dtotal[1][0] = DX[1][0] * Dtopo[0][0] + DX[1][1] * Dtopo[1][0];
+      // dy/dphi = dy/dR_topo * dR_topo/dphi + dy/dphi_topo * dphi_topo/dphi 
+            Dtotal[1][1] = DX[1][0] * Dtopo[0][1] + DX[1][1] * Dtopo[1][1];
             break;
           }
           case 3:
@@ -158,21 +169,21 @@ namespace aspect
             //dR_topo/dR
             Dtopo[0][0] = (d_topo / max_depth) + 1.;
             //dR_topo/dphi
-            Dtopo[0][1] = -R * std::cos(theta) * std::sin(phi);
+            Dtopo[0][1] = (R - inner_radius) / max_depth * topo_derivatives[0];
             //dR_topo/dtheta
-            Dtopo[0][2] = -R * std::sin(theta) * std::cos(phi);
+            Dtopo[0][2] = (R - inner_radius) / max_depth * topo_derivatives[1];
             //dphi_topo/dR
-            Dtopo[1][0] =      std::cos(theta) * std::sin(phi);
+            Dtopo[1][0] = 1.;
             //dphi_topo/dphi
-            Dtopo[1][1] =  R * std::cos(theta) * std::cos(phi);
+            Dtopo[1][1] = 1.;
             //dphi_topo/dtheta
-            Dtopo[1][2] = -R * std::sin(theta) * std::sin(phi);
+            Dtopo[1][2] = 1.;
             //dtheta_topo/dR
-            Dtopo[2][0] =      std::sin(theta);
+            Dtopo[2][0] = 1.;
             //dtheta_topo/dphi
-            Dtopo[2][1] = 0;
+            Dtopo[2][1] = 1.;
             //dtheta_topo/dtheta
-            Dtopo[2][2] =  R * std::cos(theta);
+            Dtopo[2][2] = 1.;
 
             const double theta_topo = topo_point[2]; // Latitude (not colatitude)
 
@@ -185,6 +196,26 @@ namespace aspect
             DX[2][0] =      std::sin(theta_topo);
             DX[2][1] = 0;
             DX[2][2] =  R_topo * std::cos(theta_topo);
+
+            // dx/dR     = dx/dR_topo * dR_topo/dR   + dx/dphi_topo * dphi_topo/dR  + dx/dtheta_topo * dtheta_topo/dR
+            Dtotal[0][0] = DX[0][0] * Dtopo[0][0] + DX[0][1] * Dtopo[1][0] + DX[0][2] * Dtopo[2][0];
+            // dx/dphi   = dx/dR_topo * dR_topo/dphi + dx/dphi_topo * dphi_topo/dphi + dx/dtheta_topo * dtheta_topo/dphi
+            Dtotal[0][1] = DX[0][0] * Dtopo[0][1] + DX[0][1] * Dtopo[1][1] + DX[0][2] * Dtopo[2][1];
+            // dx/dtheta = dx/dR_topo * dR_topo/dtheta + dx/dphi_topo * dphi_topo/dtheta + dx/dtheta_topo * dtheta_topo/dtheta
+            Dtotal[0][2] = DX[0][0] * Dtopo[0][2] + DX[0][1] * Dtopo[1][2] + DX[0][2] * Dtopo[2][2];
+            // dy/dR     = dy/dR_topo * dR_topo/dR   + dy/dphi_topo * dphi_topo/dR  + dy/dtheta_topo * dtheta_topo/dR
+            Dtotal[1][0] = DX[1][0] * Dtopo[0][0] + DX[0][1] * Dtopo[1][0] + DX[0][2] * Dtopo[2][0];
+            // dy/dphi   = dy/dR_topo * dR_topo/dphi + dy/dphi_topo * dphi_topo/dphi + dy/dtheta_topo * dtheta_topo/dphi
+            Dtotal[1][1] = DX[1][0] * Dtopo[0][1] + DX[0][1] * Dtopo[1][1] + DX[0][2] * Dtopo[2][1];
+            // dy/dtheta = dy/dR_topo * dR_topo/dtheta + dy/dphi_topo * dphi_topo/dtheta + dy/dtheta_topo * dtheta_topo/dtheta
+            Dtotal[1][2] = DX[1][0] * Dtopo[0][2] + DX[0][1] * Dtopo[1][2] + DX[0][2] * Dtopo[2][2];
+            // dz/dR     = dz/dR_topo * dR_topo/dR   + dz/dphi_topo * dphi_topo/dR  + dz/dtheta_topo * dtheta_topo/dR
+            Dtotal[2][0] = DX[2][0] * Dtopo[0][0] + DX[0][1] * Dtopo[1][0] + DX[0][2] * Dtopo[2][0];
+            // dz/dphi   = dz/dR_topo * dR_topo/dphi + dz/dphi_topo * dphi_topo/dphi + dz/dtheta_topo * dtheta_topo/dphi
+            Dtotal[2][1] = DX[2][0] * Dtopo[0][1] + DX[0][1] * Dtopo[1][1] + DX[0][2] * Dtopo[2][1];
+            // dz/dtheta = dz/dR_topo * dR_topo/dtheta + dz/dphi_topo * dphi_topo/dtheta + dz/dtheta_topo * dtheta_topo/dtheta
+            Dtotal[2][2] = DX[2][0] * Dtopo[0][2] + DX[0][1] * Dtopo[1][2] + DX[0][2] * Dtopo[2][2];
+
             break;
           }
           default:
@@ -204,43 +235,10 @@ namespace aspect
       // dx/dR   = dx/dR_topo * dR_topo/dR   + dx/dphi_topo * dphi_topo/dR = cos(phi_topo) * (1+d_topo(phi)/(R_1-R_0)) + (R_topo * - sin(phi_topo)) * 0 
       // dx/dphi = dx/dR_topo * dR_topo/dphi + dx/dphi_topo * dphi_topo/dphi 
       //         = cos(phi_topo) * (R-R_0)/(R_1-R_0) *dd_topo(phi)/dphi + - R_topo * sin(phi_topo) * 1
-
       // dy/dR   = dy/dR_topo * dR_topo/dR + dy/dphi_topo * dphi_topo/dR = sin(phi_topo) * (1+d_topo(phi)/(R_1-R_0)) + R_topo * cos(phi_topo) * 0
       // dy/dphi = dy/dR_topo * dR_topo/dphi + dy/dphi_topo * dphi_topo/dphi = sin(phi_topo) * (R-R_0)/(R_1-R_0) *dd_topo(phi)/dphi + R_topo * cos(phi_topo)) * 1
 
-      switch (dim)
-        {
-          case 2:
-          {
-            DX[0][0] =      std::cos(topo_point[1]) * ;
-            DX[0][1] = -R * std::sin(phi);
-            DX[1][0] =      std::sin(phi);
-            DX[1][1] =  R * std::cos(phi);
-            break;
-          }
-          case 3:
-          {
-            const double theta = chart_point[2]; // Latitude (not colatitude)
-
-            DX[0][0] =      std::cos(theta) * std::cos(phi);
-            DX[0][1] = -R * std::cos(theta) * std::sin(phi);
-            DX[0][2] = -R * std::sin(theta) * std::cos(phi);
-            DX[1][0] =      std::cos(theta) * std::sin(phi);
-            DX[1][1] =  R * std::cos(theta) * std::cos(phi);
-            DX[1][2] = -R * std::sin(theta) * std::sin(phi);
-            DX[2][0] =      std::sin(theta);
-            DX[2][1] = 0;
-            DX[2][2] =  R * std::cos(theta);
-            break;
-          }
-          default:
-            Assert (false, ExcNotImplemented ());
-
-
-        }
-
-      return DX;
-
+      return Dtotal;
 
     }
 
