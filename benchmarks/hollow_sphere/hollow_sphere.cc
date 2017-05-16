@@ -306,8 +306,6 @@ namespace aspect
             }
         }
 
-        virtual double density (const Point<dim> &position) const;
-
         /**
          * @}
          */
