@@ -56,13 +56,13 @@ namespace aspect
 
       if (sum_composition >= 1.0)
         {
-          volume_fractions[0] = 0.0;  //background material
+          volume_fractions[0] = 0.0;  // background material
           for ( unsigned int i=1; i <= x_comp.size(); ++i)
             volume_fractions[i] = x_comp[i-1]/sum_composition;
         }
       else
         {
-          volume_fractions[0] = 1.0 - sum_composition; //background material
+          volume_fractions[0] = 1.0 - sum_composition; // background material
           for ( unsigned int i=1; i <= x_comp.size(); ++i)
             volume_fractions[i] = x_comp[i-1];
         }
@@ -129,7 +129,7 @@ namespace aspect
     CompositionalHeating<dim>::parse_parameters (ParameterHandler &prm)
     {
 
-      //increment by one for background:
+      // increment by one for background:
       const unsigned int n_fields = this->n_compositional_fields() + 1;
 
       prm.enter_subsection("Heating model");

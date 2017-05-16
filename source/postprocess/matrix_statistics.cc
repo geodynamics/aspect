@@ -38,7 +38,7 @@ namespace
 
     // convert from bytes into Mb
     const double mb = 1024*1024;
-    //sum up local matrix memory usage
+    // sum up local matrix memory usage
     double global_matrix_memory_consumption = dealii::Utilities::MPI::sum(matrix.memory_consumption(),
                                                                           comm);
     output << "\nTotal " << matrix_name << " memory consumption: "

@@ -50,8 +50,8 @@ namespace aspect
                 {
                   // normalization after Dahlen and Tromp, 1986, Appendix B.6
                   const std::pair<double,double> sph_harm_vals = aspect::Utilities::real_spherical_harmonic(ideg,iord,spherical_function.at(ds_num).at(0),spherical_function.at(ds_num).at(1));
-                  const double cos_component = sph_harm_vals.first; //real / cos part
-                  const double sin_component = sph_harm_vals.second; //imaginary / sine part
+                  const double cos_component = sph_harm_vals.first; // real / cos part
+                  const double sin_component = sph_harm_vals.second; // imaginary / sine part
 
                   cosi.at(ds_num) = (spherical_function.at(ds_num).at(3) * cos_component);
                   sini.at(ds_num) = (spherical_function.at(ds_num).at(3) * sin_component);
@@ -131,8 +131,8 @@ namespace aspect
 
                         // normalization after Dahlen and Tromp, 1986, Appendix B.6
                         const std::pair<double,double> sph_harm_vals = aspect::Utilities::real_spherical_harmonic(ideg,iord,scoord[2],scoord[1]);
-                        const double cos_component = sph_harm_vals.first; //real / cos part
-                        const double sin_component = sph_harm_vals.second; //imaginary / sine part
+                        const double cos_component = sph_harm_vals.first; // real / cos part
+                        const double sin_component = sph_harm_vals.second; // imaginary / sine part
 
                         const double density = out.densities[q];
                         const double r_q = in.position[q].norm();
@@ -544,8 +544,8 @@ namespace aspect
                 {
                   // normalization after Dahlen and Tromp, 1986, Appendix B.6
                   const std::pair<double,double> sph_harm_vals = aspect::Utilities::real_spherical_harmonic(ideg,iord,surface_cell_spherical_coordinates.at(i).first,surface_cell_spherical_coordinates.at(i).second);
-                  const double cos_component = sph_harm_vals.first; //real / cos part
-                  const double sin_component = sph_harm_vals.second; //imaginary / sine part
+                  const double cos_component = sph_harm_vals.first; // real / cos part
+                  const double sin_component = sph_harm_vals.second; // imaginary / sine part
 
                   geoid_value += geoid_coecos.at(ind)*cos_component+geoid_coesin.at(ind)*sin_component;
                   ++ind;

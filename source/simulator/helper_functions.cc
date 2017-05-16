@@ -1201,7 +1201,7 @@ namespace aspect
       {
         case 2:
         {
-          //append quadrature points combination 12
+          // append quadrature points combination 12
           for ( unsigned int i=0; i < n_q_points_1 ; i++)
             {
               const double  x = quadrature_formula_1.point(i)(0);
@@ -1212,7 +1212,7 @@ namespace aspect
                 }
             }
           const unsigned int n_q_points_12 = n_q_points_1 * n_q_points_2;
-          //append quadrature points combination 21
+          // append quadrature points combination 21
           for ( unsigned int i=0; i < n_q_points_2 ; i++)
             {
               const double  x = quadrature_formula_2.point(i)(0);
@@ -1227,7 +1227,7 @@ namespace aspect
 
         case 3:
         {
-          //append quadrature points combination 121
+          // append quadrature points combination 121
           for ( unsigned int i=0; i < n_q_points_1 ; i++)
             {
               const double  x = quadrature_formula_1.point(i)(0);
@@ -1243,7 +1243,7 @@ namespace aspect
                 }
             }
           const unsigned int n_q_points_121 = n_q_points_1 * n_q_points_2 * n_q_points_1;
-          //append quadrature points combination 112
+          // append quadrature points combination 112
           for ( unsigned int i=0; i < n_q_points_1 ; i++)
             {
               const double  x = quadrature_formula_1.point(i)(0);
@@ -1259,7 +1259,7 @@ namespace aspect
                     }
                 }
             }
-          //append quadrature points combination 211
+          // append quadrature points combination 211
           for ( unsigned int i=0; i < n_q_points_2 ; i++)
             {
               const double  x = quadrature_formula_2.point(i)(0);
@@ -1341,21 +1341,21 @@ namespace aspect
         if (cell->is_locally_owned())
           {
             cell->get_dof_indices (local_dof_indices);
-            //used to find the maximum, minimum
+            // used to find the maximum, minimum
             fe_values.reinit (cell);
             fe_values[field].get_function_values(solution, values);
-            //used for the numerical integration
+            // used for the numerical integration
             fe_values_0.reinit (cell);
             fe_values_0[field].get_function_values(solution, values_0);
 
-            //Find the local max and local min
+            // Find the local max and local min
             const double min_solution_local = *std::min_element (values.begin(), values.end());
             const double max_solution_local = *std::max_element (values.begin(), values.end());
-            //Find the trouble cell
+            // Find the trouble cell
             if (min_solution_local < min_solution_exact_global
                 || max_solution_local > max_solution_exact_global)
               {
-                //Compute the cell area and cell solution average
+                // Compute the cell area and cell solution average
                 double local_area = 0;
                 double local_solution_average = 0;
                 for (unsigned int q = 0; q < n_q_points_0; ++q)

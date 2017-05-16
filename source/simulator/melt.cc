@@ -570,7 +570,7 @@ namespace aspect
               (density_c_P + latent_heat_LHS);
 
           Tensor<1,dim> current_u = scratch.current_velocity_values[q];
-          //Subtract off the mesh velocity for ALE corrections if necessary
+          // Subtract off the mesh velocity for ALE corrections if necessary
           if (this->get_parameters().free_surface_enabled)
             current_u -= scratch.mesh_velocity_values[q];
 
@@ -1015,7 +1015,7 @@ namespace aspect
 #ifdef ASPECT_USE_PETSC
       Amg_data.symmetric_operator = false;
 #else
-      //Amg_data.constant_modes = constant_modes;
+      // Amg_data.constant_modes = constant_modes;
       Amg_data.elliptic = true;
       Amg_data.higher_order_elements = false;
       Amg_data.smoother_sweeps = 2;
@@ -1034,7 +1034,7 @@ namespace aspect
       solution.block(block_idx) = distributed_solution.block(block_idx);
     }
 
-    //compute solid pressure
+    // compute solid pressure
     {
       const unsigned int block_p = this->introspection().block_indices.pressure;
 

@@ -662,7 +662,7 @@ namespace aspect
                 :
                 (current_file_number + 1);
 
-              //Calculate new file_number
+              // Calculate new file_number
               current_file_number =
                 (decreasing_file_order)
                 ?

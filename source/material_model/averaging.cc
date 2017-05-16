@@ -160,7 +160,7 @@ namespace aspect
           }
           case nwd_arithmetic_average:
           {
-            //initialize variables
+            // initialize variables
             double sum_value = 0;
             double sum_weights = 0;
             std::vector<double> temp_values(N,0);
@@ -212,7 +212,7 @@ namespace aspect
                   return;
                 }
 
-            //initialize variables
+            // initialize variables
             double sum_value = 0;
             double sum_weights = 0;
             std::vector<double> temp_values(N,0);
@@ -257,7 +257,7 @@ namespace aspect
           }
           case nwd_geometric_average:
           {
-            //initialize variables
+            // initialize variables
             double sum_value = 0;
             double sum_weights = 0;
             std::vector<double> temp_values(N,0);

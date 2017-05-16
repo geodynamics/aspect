@@ -135,7 +135,7 @@ namespace aspect
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                                 std::vector<Vector<double> > &computed_quantities) const
           {
-            //check that the first quadrature point has dim components
+            // check that the first quadrature point has dim components
             Assert( computed_quantities[0].size() == dim,
                     ExcMessage("Unexpected dimension in mesh velocity postprocessor"));
             const double velocity_scaling_factor =
@@ -464,7 +464,7 @@ namespace aspect
                                   DataOut<dim>::no_curved_cells);
         }
       else
-        data_out.build_patches(this->get_mapping()); //Giving the mapping ensures that the case with mesh deformation works correctly.
+        data_out.build_patches(this->get_mapping()); // Giving the mapping ensures that the case with mesh deformation works correctly.
 
       // Now prepare everything for writing the output and choose output format
       std::string solution_file_prefix = "solution-" + Utilities::int_to_string (output_file_number, 5);

@@ -103,7 +103,7 @@ namespace aspect
       x_system[1] = &old_solution;
       x_system[2] = &old_old_solution;
 
-      //If we are using a free surface, include the mesh velocity, which uses the system dof handler
+      // If we are using a free surface, include the mesh velocity, which uses the system dof handler
       if (parameters.free_surface_enabled)
         x_system.push_back( &free_surface->mesh_velocity );
 
@@ -112,8 +112,8 @@ namespace aspect
 
       system_trans.prepare_serialization (x_system);
 
-      //If we are using a free surface, also serialize the mesh vertices vector, which
-      //uses its own dof handler
+      // If we are using a free surface, also serialize the mesh vertices vector, which
+      // uses its own dof handler
       std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
       std_cxx11::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> > freesurface_trans;
       if (parameters.free_surface_enabled)
@@ -238,8 +238,8 @@ namespace aspect
     x_system[1] = & (old_distributed_system);
     x_system[2] = & (old_old_distributed_system);
 
-    //If necessary, also include the mesh velocity for deserialization
-    //with the system dof handler
+    // If necessary, also include the mesh velocity for deserialization
+    // with the system dof handler
     if (parameters.free_surface_enabled)
       x_system.push_back(&distributed_mesh_velocity);
 
@@ -254,10 +254,10 @@ namespace aspect
 
     if (parameters.free_surface_enabled)
       {
-        //copy the mesh velocity which uses the system dof handler
+        // copy the mesh velocity which uses the system dof handler
         free_surface->mesh_velocity = distributed_mesh_velocity;
 
-        //deserialize and copy the vectors using the free surface dof handler
+        // deserialize and copy the vectors using the free surface dof handler
         parallel::distributed::SolutionTransfer<dim, LinearAlgebra::Vector> freesurface_trans( free_surface->free_surface_dof_handler );
         LinearAlgebra::Vector distributed_mesh_displacements( free_surface->mesh_locally_owned,
                                                               mpi_communicator );

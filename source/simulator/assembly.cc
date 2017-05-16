@@ -1457,7 +1457,7 @@ namespace aspect
             (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(current_linearization_point,
                 scratch.face_current_velocity_values);
 
-            //get the mesh velocity, as we need to subtract it off of the advection systems
+            // get the mesh velocity, as we need to subtract it off of the advection systems
             if (parameters.free_surface_enabled)
               (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(free_surface->mesh_velocity,
                   scratch.face_mesh_velocity_values);
@@ -1478,7 +1478,7 @@ namespace aspect
                 heating_model_manager.evaluate(scratch.face_material_model_inputs,
                                                scratch.face_material_model_outputs,
                                                scratch.face_heating_model_outputs);
-                //TODO: the following doesn't currently compile because the get_quadrature() call returns
+                // TODO: the following doesn't currently compile because the get_quadrature() call returns
                 //  a dim-1 dimensional quadrature
                 // MaterialModel::MaterialAveraging::average (parameters.material_averaging,
                 //                                            cell,

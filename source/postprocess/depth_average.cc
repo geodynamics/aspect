@@ -74,9 +74,9 @@ namespace aspect
       if (this->get_time() < last_output_time + output_interval)
         return std::pair<std::string,std::string>();
 
-      //Set up the header for the requested output variables
+      // Set up the header for the requested output variables
       std::vector<std::string> variables;
-      //we have to parse the list in this order to match the output below
+      // we have to parse the list in this order to match the output below
       {
         if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "temperature") != output_variables.end() )
           variables.push_back("temperature");
@@ -120,56 +120,56 @@ namespace aspect
       data_point.time       = this->get_time();
       data_point.values.resize(variables.size(), std::vector<double> (n_depth_zones));
 
-      //Add all the requested fields
+      // Add all the requested fields
       {
         unsigned int index = 0;
 
-        //temperature
+        // temperature
         if ( std::find( variables.begin(), variables.end(), "temperature") != variables.end() )
           this->get_lateral_averaging().get_temperature_averages(data_point.values[index++]);
 
-        //composition (search output_variables for this, since it has a different name in variables)
+        // composition (search output_variables for this, since it has a different name in variables)
         if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "composition") != output_variables.end() )
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
             this->get_lateral_averaging().get_composition_averages(c, data_point.values[index++]);
 
-        //adiabatic temperature
+        // adiabatic temperature
         if ( std::find( variables.begin(), variables.end(), "adiabatic_temperature") != variables.end() )
           this->get_adiabatic_conditions().get_adiabatic_temperature_profile(data_point.values[index++]);
 
-        //adiabatic pressure
+        // adiabatic pressure
         if ( std::find( variables.begin(), variables.end(), "adiabatic_pressure") != variables.end() )
           this->get_adiabatic_conditions().get_adiabatic_pressure_profile(data_point.values[index++]);
 
-        //adiabatic density
+        // adiabatic density
         if ( std::find( variables.begin(), variables.end(), "adiabatic_density") != variables.end() )
           this->get_adiabatic_conditions().get_adiabatic_density_profile(data_point.values[index++]);
 
-        //adiabatic density derivative
+        // adiabatic density derivative
         if ( std::find( variables.begin(), variables.end(), "adiabatic_density_derivative") != variables.end() )
           this->get_adiabatic_conditions().get_adiabatic_density_derivative_profile(data_point.values[index++]);
 
-        //velocity magnitude
+        // velocity magnitude
         if ( std::find( variables.begin(), variables.end(), "velocity_magnitude") != variables.end() )
           this->get_lateral_averaging().get_velocity_magnitude_averages(data_point.values[index++]);
 
-        //sinking velocity
+        // sinking velocity
         if ( std::find( variables.begin(), variables.end(), "sinking_velocity") != variables.end() )
           this->get_lateral_averaging().get_sinking_velocity_averages(data_point.values[index++]);
 
-        //Vs
+        // Vs
         if ( std::find( variables.begin(), variables.end(), "Vs") != variables.end() )
           this->get_lateral_averaging().get_Vs_averages(data_point.values[index++]);
 
-        //Vp
+        // Vp
         if ( std::find( variables.begin(), variables.end(), "Vp") != variables.end() )
           this->get_lateral_averaging().get_Vp_averages(data_point.values[index++]);
 
-        //viscosity
+        // viscosity
         if ( std::find( variables.begin(), variables.end(), "viscosity") != variables.end() )
           this->get_lateral_averaging().get_viscosity_averages(data_point.values[index++]);
 
-        //vertical heat flux
+        // vertical heat flux
         if ( std::find( variables.begin(), variables.end(), "vertical_heat_flux") != variables.end() )
           this->get_lateral_averaging().get_vertical_heat_flux_averages(data_point.values[index++]);
       }
@@ -252,13 +252,13 @@ namespace aspect
               filename = (this->get_output_directory() + "depth_average.txt");
               std::ofstream f(filename.c_str(), std::ofstream::out);
 
-              //Write the header
+              // Write the header
               f << "#       time" << "        depth";
               for ( unsigned int i = 0; i < variables.size(); ++i)
                 f << " " << variables[i];
               f << std::endl;
 
-              //Output each data point in the entries object
+              // Output each data point in the entries object
               for (typename std::vector<DataPoint>::const_iterator point = entries.begin();
                    point != entries.end(); ++point)
                 {
