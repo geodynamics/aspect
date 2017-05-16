@@ -29,7 +29,7 @@ all: aspect.tag manual.pdf
 %.prm.out: %.prm Makefile
 	@echo "generating '$@' from '$<'..."
 	@perl manual/cookbooks/annotate.pl $< >$@
-	@for i in `seq 1 10`; do sed -i 's/{\([^!]*\)!\([^!]*\)!\([^!]*\)!\([^}]*\)}/{\1!\2!\3\/\4}/' $@; done
+	@for i in `seq 1 10`; do sed -i.bak 's/{\([^!]*\)!\([^!]*\)!\([^!]*\)!\([^}]*\)}/{\1!\2!\3\/\4}/' $@; rm $@.bak; done
 
 # Generate changes.h from the bits in modules/changes/
 modules/changes.h: modules/changes/* modules/create_changes.sh modules/current_changes_*

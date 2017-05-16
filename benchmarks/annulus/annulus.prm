@@ -27,9 +27,11 @@ set Number of cheap Stokes solver steps    = 0
 
 subsection Geometry model
   set Model name = spherical shell
+  # NOTE: the analytical solutions are hard-coded
+  # to these geometry values: do not change them.
   subsection Spherical shell
     set Inner radius = 1 
-    set Outer radius = 2 
+    set Outer radius = 2
     set Opening angle = 360 
   end 
 end
@@ -89,7 +91,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 4
+  set Initial global refinement          = 6
   set Refinement fraction                = 0.2
   set Strategy                           = velocity
 end
@@ -100,9 +102,12 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, AnnulusPostprocessor, depth average, memory statistics
-
+  subsection Dynamic Topography
+    set Density above = 0
+    set Density below = 0
+  end
   subsection Visualization
-    set List of output variables = density, viscosity, strain rate
+    set List of output variables = density, viscosity, strain rate, dynamic topography
   end
 end
 

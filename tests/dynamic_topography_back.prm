@@ -109,18 +109,10 @@ end
 subsection Postprocess
   set List of postprocessors = dynamic topography, visualization
   
-  subsection Dynamic Topography
-    set Subtract mean of dynamic topography = true
-    set Output lower surface topography     = true
-  end
- 
   subsection Visualization
     set Time between graphical output = 0
     set List of output variables = dynamic topography
     set Output format                 = gnuplot
-    subsection Dynamic Topography
-      set Subtract mean of dynamic topography = true
-    end 
   end
 
 end

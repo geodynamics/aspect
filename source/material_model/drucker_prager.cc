@@ -171,7 +171,7 @@ namespace aspect
     }
 
 
-
+    
     template <int dim>
     double
     DruckerPrager<dim>::
@@ -180,8 +180,8 @@ namespace aspect
       return reference_eta;
     }
 
-
-
+  
+  
     template <int dim>
     bool
     DruckerPrager<dim>::

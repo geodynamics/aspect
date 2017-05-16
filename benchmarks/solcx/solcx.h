@@ -2955,61 +2955,31 @@ namespace aspect
     * @ingroup MaterialModels
     */
     template <int dim>
-    class SolCxMaterial : public MaterialModel::InterfaceCompatibility<dim>
+    class SolCxMaterial : public MaterialModel::Interface<dim>
     {
       public:
         /**
          * @name Physical parameters used in the basic equations
          * @{
          */
-        virtual double viscosity (const double                  temperature,
-                                  const double                  pressure,
-                                  const std::vector<double>    &compositional_fields,
-                                  const SymmetricTensor<2,dim> &strain_rate,
-                                  const Point<dim>             &position) const
+
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const
         {
-          return (position[0] < 0.5 ? 1 : eta_B);
+          for (unsigned int i=0; i < in.position.size(); ++i)
+            {
+
+              const Point<dim> &pos = in.position[i];
+              out.viscosities[i] = (pos[0] < 0.5 ? 1 : eta_B);
+              out.densities[i] =  background_density-std::sin(numbers::PI*pos[1])*std::cos(numbers::PI*pos[0]);
+              out.compressibilities[i] = 0;
+              out.specific_heat[i] = 0;
+              out.thermal_expansion_coefficients[i] = 0;
+              out.thermal_conductivities[i] = 0.0;
+
+            }
         }
 
-        virtual double density (const double temperature,
-                                const double pressure,
-                                const std::vector<double> &compositional_fields,
-                                const Point<dim> &position) const
-        {
-          return background_density-std::sin(numbers::PI*position[1])*std::cos(numbers::PI*position[0]);
-        }
-
-        virtual double compressibility (const double temperature,
-                                        const double pressure,
-                                        const std::vector<double> &compositional_fields,
-                                        const Point<dim> &position) const
-        {
-          return 0.0;
-        }
-
-        virtual double specific_heat (const double temperature,
-                                      const double pressure,
-                                      const std::vector<double> &compositional_fields,
-                                      const Point<dim> &position) const
-        {
-          return 0;
-        }
-
-        virtual double thermal_expansion_coefficient (const double      temperature,
-                                                      const double      pressure,
-                                                      const std::vector<double> &compositional_fields,
-                                                      const Point<dim> &position) const
-        {
-          return 0;
-        }
-
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const std::vector<double> &compositional_fields,
-                                             const Point<dim> &position) const
-        {
-          return 0;
-        }
         /**
          * @}
          */

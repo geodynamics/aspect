@@ -18,8 +18,9 @@ Number of degrees of freedom: 1,390 (650+90+325+325)
    Solving Stokes system... 34+0 iterations.
 
    Postprocessing:
-     Writing dynamic topography: output-dynamic_topography_back/dynamic_topography.00000
-     Writing graphical output:   output-dynamic_topography_back/solution/solution-00000
+     Pressure at top/bottom of domain: -1.187e-10 Pa, -2.31e+10 Pa
+     Computing dynamic topography      
+     Writing graphical output:         output-dynamic_topography_back/solution/solution-00000
 
 Termination requested by criterion: end time
 

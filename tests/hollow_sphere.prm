@@ -46,7 +46,10 @@ end
 
 
 subsection Gravity model
-  set Model name = HollowSphereGravity
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude = 1.0
+  end
 end
 
 subsection HollowSphere benchmark
