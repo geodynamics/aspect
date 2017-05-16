@@ -340,6 +340,47 @@ namespace aspect
                            "increment to the solution and continue.");
       }
       prm.leave_subsection ();
+      prm.enter_subsection ("AMG parameters");
+      {
+        prm.declare_entry ("AMG smoother type", "Chebyshev",
+                           Patterns::Selection ("Chebyshev|symmetric Gauss-Seidel"),
+                           "This parameter sets the type of smoother for the AMG. "
+                           "The default is strongly recommended for any normal runs "
+                           "with ASPECT. There are some indications that the symmetric "
+                           "Gaus-Seidel might be better and more stable for the Newton "
+                           "solver. For extensive benchmarking of various settings of the "
+                           "AMG parameters in this secton for the Stokes problem and others, "
+                           "see https://github.com/geodynamics/aspect/pull/234.");
+
+        prm.declare_entry ("AMG smoother sweeps", "2",
+                           Patterns::Integer(0),
+                           "Determines how many sweeps of the smoother should be performed. When the flag elliptic "
+                           "is set to true, (which is true for ASPECT), the polynomial degree of "
+                           "the Chebyshev smoother is set to smoother_sweeps. The term sweeps refers to the number of "
+                           "matrix-vector products performed in the Chebyshev case. In the non-elliptic case, "
+                           "smoother_sweeps sets the number of SSOR relaxation sweeps for post-smoothing to be performed. "
+                           "The default is strongly recommended. There are indications that for the Newton solver a different "
+                           "value might be better. For extensive benchmarking of various settings of the "
+                           "AMG parameters in this secton for the Stokes problem and others, "
+                           "see https://github.com/geodynamics/aspect/pull/234.");
+
+        prm.declare_entry ("AMG aggregation threshold", "0.001",
+                           Patterns::Double(0,1),
+                           "This threshold tells the AMG setup how the coarsening should be performed. "
+                           "In the AMG used by ML, all points that strongly couple with the tentative coarse-level "
+                           "point form one aggregate. The term strong coupling is controlled by the variable "
+                           "aggregation_threshold, meaning that all elements that are not smaller than "
+                           "aggregation_threshold times the diagonal element do couple strongly. "
+                           "The default is strongly recommended. There are indications that for the Newton solver a different "
+                           "value might be better. For extensive benchmarking of various settings of the "
+                           "AMG parameters in this secton for the Stokes problem and others, "
+                           "see https://github.com/geodynamics/aspect/pull/234.");
+
+        prm.declare_entry ("AMG output details", "false",
+                           Patterns::Bool(),
+                           "Turns on extra information on the AMG solver. Note that this will generate much more output.");
+      }
+      prm.leave_subsection ();
     }
     prm.leave_subsection ();
 
@@ -979,6 +1020,14 @@ namespace aspect
         nonlinear_switch_tolerance = prm.get_double("Nonlinear Newton solver switch tolerance");
         max_pre_newton_nonlinear_iterations = prm.get_integer ("Max pre-Newton nonlinear iterations");
         max_newton_line_search_iterations = prm.get_integer ("Max Newton line search iterations");
+      }
+      prm.leave_subsection ();
+      prm.enter_subsection ("AMG parameters");
+      {
+        AMG_smoother_type                      = prm.get ("AMG smoother type");
+        AMG_smoother_sweeps                    = prm.get_integer ("AMG smoother sweeps");
+        AMG_aggregation_threshold              = prm.get_double ("AMG aggregation threshold");
+        AMG_output_details                     = prm.get_bool ("AMG output details");
       }
       prm.leave_subsection ();
     }

@@ -1029,8 +1029,10 @@ namespace aspect
     // for extensive benchmarking of various settings of these
     // parameters and others, see
     // https://github.com/geodynamics/aspect/pull/234
-    Amg_data.smoother_sweeps = 2;
-    Amg_data.aggregation_threshold = 0.001;
+    Amg_data.smoother_type = parameters.AMG_smoother_type.c_str();
+    Amg_data.smoother_sweeps = parameters.AMG_smoother_sweeps;
+    Amg_data.aggregation_threshold = parameters.AMG_aggregation_threshold;
+    Amg_data.output_details = parameters.AMG_output_details;
 #endif
 
     /*  The stabilization term for the free surface (Kaus et. al., 2010)

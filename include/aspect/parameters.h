@@ -318,6 +318,10 @@ namespace aspect
     double                         linear_stokes_solver_tolerance;
     double                         linear_solver_A_block_tolerance;
     double                         linear_solver_S_block_tolerance;
+    std::string                    AMG_smoother_type;
+    unsigned int                   AMG_smoother_sweeps;
+    double                         AMG_aggregation_threshold;
+    bool                           AMG_output_details;
     unsigned int                   max_nonlinear_iterations;
     unsigned int                   max_nonlinear_iterations_in_prerefinement;
     unsigned int                   n_cheap_stokes_solver_steps;
