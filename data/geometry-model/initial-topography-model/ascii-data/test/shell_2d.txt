@@ -1,0 +1,7 @@
+# Test data for ascii data initial topography.
+# Only next line is parsed in format: [nx] [ny] [nz] because of keyword "POINTS:"
+# POINTS: 3 3
+# Columns: phi      topography [m] 
+000.
+0.7854     2000.
+1.5708     000.
