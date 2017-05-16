@@ -50,13 +50,13 @@ namespace aspect
 
       if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
         {
-          if (boundary_name == "surface")
-            return surface_composition;
+          if (boundary_name == "outer")
+            return outer_composition;
           else
             {
               Assert (false, ExcMessage ("Unknown boundary indicator for geometry model. "
-                                         "The given boundary should be ``surface''."));
-              return std::numeric_limits<double>::quiet_NaN();
+                                         "The given boundary should be ``outer''."));
+              return numbers::signaling_nan<double>();
             }
         }
       else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0
@@ -71,14 +71,14 @@ namespace aspect
             {
               Assert (false, ExcMessage ("Unknown boundary indicator for geometry model. "
                                          "The given boundary should be ``inner'' or ``outer''."));
-              return std::numeric_limits<double>::quiet_NaN();
+              return numbers::signaling_nan<double>();
             }
         }
       else
         {
           Assert (false, ExcMessage ("This boundary model is only implemented if the geometry "
                                      "is a sphere, spherical shell, chunk or ellipsoidal chunk."));
-          return std::numeric_limits<double>::quiet_NaN();
+          return numbers::signaling_nan<double>();
         }
     }
 
@@ -91,7 +91,7 @@ namespace aspect
     {
       const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
       if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
-        return surface_composition;
+        return outer_composition;
       else
         return std::min (inner_composition, outer_composition);
     }
@@ -105,7 +105,7 @@ namespace aspect
     {
       const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
       if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
-        return surface_composition;
+        return outer_composition;
       else
         return std::max (inner_composition, outer_composition);
     }
@@ -120,12 +120,11 @@ namespace aspect
       {
         prm.enter_subsection("Spherical constant");
         {
-          prm.declare_entry ("Surface composition", "0",
-                             Patterns::Double (),
-                             "Composition at the surface (lithosphere water/air). Units: none.");
           prm.declare_entry ("Outer composition", "0",
                              Patterns::Double (),
-                             "Composition at the outer boundary (lithosphere water/air). Units: none.");
+                             "Composition at the outer boundary (lithosphere water/air). "
+                             "For a spherical geometry model, this is the only boundary. "
+                             "Units: none.");
           prm.declare_entry ("Inner composition", "1",
                              Patterns::Double (),
                              "Composition at the inner boundary (core mantle boundary). Units: none.");
@@ -144,7 +143,6 @@ namespace aspect
       {
         prm.enter_subsection("Spherical constant");
         {
-          surface_composition = prm.get_double ("Surface composition");
           inner_composition = prm.get_double ("Inner composition");
           outer_composition = prm.get_double ("Outer composition");
         }

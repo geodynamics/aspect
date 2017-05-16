@@ -89,7 +89,6 @@ namespace aspect
         /**
          * Compositions at the inner and outer boundaries.
          */
-        double surface_composition;
         double inner_composition;
         double outer_composition;
     };

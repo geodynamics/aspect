@@ -76,15 +76,16 @@ namespace aspect
           // because the domain can be non-coordinate parallel.
 
           AssertThrow(gm->get_eccentricity() == 0.0,
-                      ExcMessage("This plugin cannot be used with a non-zero eccentricity. "));
+                      ExcNotImplemented("This plugin cannot be used with a non-zero eccentricity. "));
 
           R1 = gm->get_semi_major_axis_a();
         }
       else
         {
           Assert (false, ExcMessage ("This initial condition can only be used if the geometry "
-                                     "is a sphere, a spherical shell or a chunk."));
-          R1 = std::numeric_limits<double>::quiet_NaN();
+                                     "is a sphere, a spherical shell, a chunk or an "
+                                     "ellipsoidal chunk."));
+          R1 = numbers::signaling_nan<double>();
         }
 
       // s = fraction of the way from the inner to the outer boundary; 0<=s<=1
@@ -232,7 +233,7 @@ namespace aspect
           // because the domain can be non-coordinate parallel.
 
           AssertThrow(gm->get_eccentricity() == 0.0,
-                      ExcMessage("This plugin cannot be used with a non-zero eccentricity. "));
+                      ExcNotImplemented("This plugin cannot be used with a non-zero eccentricity. "));
 
           R0 = gm->get_semi_major_axis_a() - gm->maximal_depth();
           R1 = gm->get_semi_major_axis_a();
@@ -240,10 +241,11 @@ namespace aspect
       else
         {
           Assert (false, ExcMessage ("This initial condition can only be used if the geometry "
-                                     "is a sphere, a spherical shell or a chunk."));
+                                     "is a sphere, a spherical shell, a chunk or an "
+                                     "ellipsoidal chunk."));
 
-          R0 = std::numeric_limits<double>::quiet_NaN();
-          R1 = std::numeric_limits<double>::quiet_NaN();
+          R0 = numbers::signaling_nan<double>();
+          R1 = numbers::signaling_nan<double>();
         }
 
       const double dT = this->get_boundary_temperature().maximal_temperature()

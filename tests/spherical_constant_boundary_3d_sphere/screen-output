@@ -1,0 +1,20 @@
+
+Number of active cells: 80 (on 3 levels)
+Number of degrees of freedom: 1,437 (674+89+337+337)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 24+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-spherical_constant_boundary_3d_sphere/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
