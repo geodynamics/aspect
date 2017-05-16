@@ -15,7 +15,7 @@ namespace aspect
 
   template <int dim>
   class TestMeltMaterial:
-    public MaterialModel::Melt Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
 
