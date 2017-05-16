@@ -33,8 +33,7 @@ namespace aspect
 
       virtual double reference_darcy_coefficient () const
       {
-        return 1e-8 * std::pow(0.01,3) / 10.0;
-
+        return 1e-8 * std::pow(0.01, 3.0) / 10.0;
       }
 
       virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,

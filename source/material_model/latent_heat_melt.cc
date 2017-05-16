@@ -130,15 +130,6 @@ namespace aspect
     template <int dim>
     double
     LatentHeatMelt<dim>::
-    reference_darcy_coefficient() const
-    {
-      return -1.0; // invalid
-    }
-
-
-    template <int dim>
-    double
-    LatentHeatMelt<dim>::
     entropy_derivative (const double temperature,
                         const double pressure,
                         const std::vector<double> &compositional_fields,
