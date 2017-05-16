@@ -17,7 +17,7 @@ namespace aspect
 {
   template <int dim>
   class CompressibleMeltMaterial:
-    public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
       virtual bool is_compressible () const
@@ -28,6 +28,12 @@ namespace aspect
       virtual double reference_viscosity () const
       {
         return 1.0;
+      }
+
+      virtual double reference_darcy_coefficient () const
+      {
+        const double permeability = K_D_0 + 2.0 * B / E - rho_s_0 * B * D / E * (1.0/rho_s_0 - 1.0/rho_f_0) * std::exp(0.5);
+        return permeability / 1.0;
       }
 
       virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,

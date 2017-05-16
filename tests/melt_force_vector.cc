@@ -15,9 +15,16 @@ namespace aspect
 
   template <int dim>
   class TestMeltMaterial:
-    public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
+
+      virtual double reference_darcy_coefficient () const
+      {
+        return 1.0;
+      }
+
+
       virtual bool
       viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
       {

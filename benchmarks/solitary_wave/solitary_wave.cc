@@ -298,7 +298,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class SolitaryWaveMaterial : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class SolitaryWaveMaterial : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         virtual bool is_compressible () const
@@ -309,6 +309,11 @@ namespace aspect
         virtual double reference_viscosity () const
         {
           return eta_0;
+        }
+
+        virtual double reference_darcy_coefficient () const
+        {
+          return reference_permeability * pow(0.01, 3.0) / eta_f;
         }
 
         double length_scaling (const double porosity) const

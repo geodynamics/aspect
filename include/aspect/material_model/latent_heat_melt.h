@@ -77,6 +77,7 @@ namespace aspect
          * @{
          */
         virtual double reference_viscosity () const;
+
         /**
          * @}
          */
