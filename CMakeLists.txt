@@ -149,7 +149,7 @@ IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
 
   SET(aspect_binary ${CMAKE_BINARY_DIR}/aspect)
 
-  MESSAGE(STATUS "Setting up test project, see setup_tests.log for details.")
+  MESSAGE(STATUS "Setting up test project, see tests/setup_tests.log for details.")
   EXECUTE_PROCESS(
     COMMAND ${CMAKE_COMMAND} -G ${ASPECT_TEST_GENERATOR}
 	-D ASPECT_RUN_ALL_TESTS=${ASPECT_RUN_ALL_TESTS}
