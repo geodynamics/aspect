@@ -843,7 +843,7 @@ namespace aspect
                                    "The finite strain invariant or full strain tensor is calculated through "
                                    "compositional fields within the material model. This implementation is "
                                    "identical to the compositional field finite strain plugin and cookbook "
-                                   "described in the manual (author: Gassmoeller). If the user selects to track "
+                                   "described in the manual (author: Gassmoeller, Dannberg). If the user selects to track "
                                    "the finite strain invariant ($e_ii$), a single compositional field tracks "
                                    "the value derived from $e_ii^t = (e_ii)^(t-1) + edot_ii*dt, where $t$ and $t-1$ "
                                    "are the current and prior time steps, $edot_ii$ is the second invariant of the "
