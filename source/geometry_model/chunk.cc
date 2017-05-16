@@ -21,6 +21,7 @@
 
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
+#include <aspect/geometry_model/initial_topography_model/ascii_data.h>
 
 #include <aspect/simulator_signals.h>
 #include <deal.II/grid/grid_generator.h>
@@ -107,11 +108,111 @@ namespace aspect
       return DX;
 #endif
 
+      // The initial topography derivatives.
+      const InitialTopographyModel::AsciiData<dim> *itm = dynamic_cast<const InitialTopographyModel::AsciiData<dim> *> (topo);
+      const Tensor<1,dim-1> topo_derivatives = itm->vector_gradient(push_forward_sphere(chart_point));
+
+      // Grab lon,lat coordinates
+      Point<dim-1> surface_point;
+      for (unsigned int d=0; d<dim-1; d++)
+        surface_point[d] = chart_point[d+1];
+
+      // Convert latitude to colatitude
+      if (dim == 3)
+        surface_point[1] = 0.5*numbers::PI - surface_point[1];
+
+      // get the maximum topography (at the surface)
+      const double d_topo = topo->value(surface_point);
+    
+      // get the spherical point including topography
+      const Point<dim> topo_point = push_forward_topo(chart_point); 
+
+      DerivativeForm<1, dim, dim> Dtopo;
+      const double R_topo = topo_point[0];
+      const double phi_topo = topo_point[1];
+
       switch (dim)
         {
           case 2:
           {
-            DX[0][0] =      std::cos(phi);
+            //dR_topo/dR
+            Dtopo[0][0] = (d_topo / max_depth) + 1.;
+            //dR_topo/dphi
+            Dtopo[0][1] = (R-inner_radius)/max_depth * topo_derivatives[0];
+            //dphi_topo/dR
+            Dtopo[1][0] = 1.;
+            //dphi_topo/dphi
+            Dtopo[1][1] = 1.;
+            //dx/dR_topo
+            DX[0][0] =           std::cos(phi_topo);
+            //dx/dphi_topo
+            DX[0][1] = -R_topo * std::sin(phi_topo);
+            //dy/dR_topo
+            DX[1][0] =           std::sin(phi_topo);
+            //dy/dphi_topo
+            DX[1][1] =  R_topo * std::cos(phi_topo);
+            break;
+          }
+          case 3:
+          {
+            //dR_topo/dR
+            Dtopo[0][0] = (d_topo / max_depth) + 1.;
+            //dR_topo/dphi
+            Dtopo[0][1] = -R * std::cos(theta) * std::sin(phi);
+            //dR_topo/dtheta
+            Dtopo[0][2] = -R * std::sin(theta) * std::cos(phi);
+            //dphi_topo/dR
+            Dtopo[1][0] =      std::cos(theta) * std::sin(phi);
+            //dphi_topo/dphi
+            Dtopo[1][1] =  R * std::cos(theta) * std::cos(phi);
+            //dphi_topo/dtheta
+            Dtopo[1][2] = -R * std::sin(theta) * std::sin(phi);
+            //dtheta_topo/dR
+            Dtopo[2][0] =      std::sin(theta);
+            //dtheta_topo/dphi
+            Dtopo[2][1] = 0;
+            //dtheta_topo/dtheta
+            Dtopo[2][2] =  R * std::cos(theta);
+
+            const double theta_topo = topo_point[2]; // Latitude (not colatitude)
+
+            DX[0][0] =      std::cos(theta_topo) * std::cos(phi_topo);
+            DX[0][1] = -R_topo * std::cos(theta_topo) * std::sin(phi_topo);
+            DX[0][2] = -R_topo * std::sin(theta_topo) * std::cos(phi_topo);
+            DX[1][0] =      std::cos(theta_topo) * std::sin(phi_topo);
+            DX[1][1] =  R_topo * std::cos(theta_topo) * std::cos(phi_topo);
+            DX[1][2] = -R_topo * std::sin(theta_topo) * std::sin(phi_topo);
+            DX[2][0] =      std::sin(theta_topo);
+            DX[2][1] = 0;
+            DX[2][2] =  R_topo * std::cos(theta_topo);
+            break;
+          }
+          default:
+            Assert (false, ExcNotImplemented ());
+ 
+      
+      // In 2D (phi==phi_topo)
+      // x = R_topo cos(phi_topo) = (R+d_topo(phi)*(R-R_0)/(R_1-R_0)) cos(phi) = R*cos(phi) + d_topo(phi)*(R-R_0)/(R_1-R_0)*cos(phi)
+      // y = R_topo sin(phi_topo) = (R+d_topo(phi)*(R-R_0)/(R_1-R_0)) sin(phi) = R*sin(phi) + d_topo(phi)*(R-R_0)/(R_1-R_0)*sin(phi)
+      //
+      // Thus
+      // dx/dR = cos(phi) + d_topo(phi) / (R_1-R_0) * cos(phi) = cos(phi) * (1+d_topo(phi) / (R_1-R_0))
+      // dx/dphi = -R*sin(phi) + (R-R_0)/(R_1-R_0)*d_topo(phi)*-sin(phi) + dd_topo(phi)/dphi *(R-R_0)/(R_1-R_0)*cos(phi)
+      // dy/dR = sin(phi) + d_topo(phi) / (R_1-R_0) * sin(phi) = sin(phi) * (1+d_topo(phi) / (R_1-R_0))
+      // dy/dphi =R*cos(phi) + (R-R_0)/(R_1-R_0)*d_topo(phi)*cos(phi) + dd_topo(phi)/dphi *(R-R_0)/(R_1-R_0)*sin(phi)
+      // Which is equal to 
+      // dx/dR   = dx/dR_topo * dR_topo/dR   + dx/dphi_topo * dphi_topo/dR = cos(phi_topo) * (1+d_topo(phi)/(R_1-R_0)) + (R_topo * - sin(phi_topo)) * 0 
+      // dx/dphi = dx/dR_topo * dR_topo/dphi + dx/dphi_topo * dphi_topo/dphi 
+      //         = cos(phi_topo) * (R-R_0)/(R_1-R_0) *dd_topo(phi)/dphi + - R_topo * sin(phi_topo) * 1
+
+      // dy/dR   = dy/dR_topo * dR_topo/dR + dy/dphi_topo * dphi_topo/dR = sin(phi_topo) * (1+d_topo(phi)/(R_1-R_0)) + R_topo * cos(phi_topo) * 0
+      // dy/dphi = dy/dR_topo * dR_topo/dphi + dy/dphi_topo * dphi_topo/dphi = sin(phi_topo) * (R-R_0)/(R_1-R_0) *dd_topo(phi)/dphi + R_topo * cos(phi_topo)) * 1
+
+      switch (dim)
+        {
+          case 2:
+          {
+            DX[0][0] =      std::cos(topo_point[1]) * ;
             DX[0][1] = -R * std::sin(phi);
             DX[1][0] =      std::sin(phi);
             DX[1][1] =  R * std::cos(phi);
@@ -364,7 +465,8 @@ namespace aspect
       // to the right signal
       connect_to_signal(this->get_signals());
 #endif
-
+      AssertThrow(dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != 0,
+                  ExcMessage("At the moment, only the AsciiData initial topography model can be used."));
       manifold.initialize(&(this->get_initial_topography_model()));
     }
 
