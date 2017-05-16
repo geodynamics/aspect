@@ -23,6 +23,7 @@
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/chunk.h>
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 
@@ -62,6 +63,13 @@ namespace aspect
         }
       else if (GeometryModel::SphericalShell<dim> *gm = dynamic_cast<GeometryModel::SphericalShell<dim> *>
                                                         (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
+        {
+          reference_height = gm->outer_radius();
+          vertical_gravity = false;
+          relevant_boundary = 1;  //select top boundary
+        }
+      else if (GeometryModel::Chunk<dim> *gm = dynamic_cast<GeometryModel::Chunk<dim> *>
+                                               (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
         {
           reference_height = gm->outer_radius();
           vertical_gravity = false;
