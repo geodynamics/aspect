@@ -76,43 +76,17 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class DruckerPrager : public MaterialModel::InterfaceCompatibility<dim>, public ::aspect::SimulatorAccess<dim>
+    class DruckerPrager : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
          * @name Physical parameters used in the basic equations
          * @{
          */
-        virtual double viscosity (const double                  temperature,
-                                  const double                  pressure,
-                                  const std::vector<double>    &compositional_fields,
-                                  const SymmetricTensor<2,dim> &strain_rate,
-                                  const Point<dim>             &position) const;
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const;
 
-        virtual double density (const double temperature,
-                                const double pressure,
-                                const std::vector<double> &compositional_fields,
-                                const Point<dim> &position) const;
 
-        virtual double compressibility (const double temperature,
-                                        const double pressure,
-                                        const std::vector<double> &compositional_fields,
-                                        const Point<dim> &position) const;
-
-        virtual double specific_heat (const double temperature,
-                                      const double pressure,
-                                      const std::vector<double> &compositional_fields,
-                                      const Point<dim> &position) const;
-
-        virtual double thermal_expansion_coefficient (const double      temperature,
-                                                      const double      pressure,
-                                                      const std::vector<double> &compositional_fields,
-                                                      const Point<dim> &position) const;
-
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const std::vector<double> &compositional_fields,
-                                             const Point<dim> &position) const;
         /**
          * @}
          */
@@ -166,17 +140,23 @@ namespace aspect
          */
 
       private:
+        /**
+         * computes the volume fractions of the compositional fields, and returns it so that the sum
+         * of the volume fractions is one.
+         */
+        std::vector<double> compute_volume_fractions( const std::vector<double> &compositional_fields) const;
+
         double reference_rho;
         double reference_T;
         double reference_eta;
-        double thermal_alpha;
+        double thermal_expansivity;
         double reference_specific_heat;
-        double thermal_k;
+        double thermal_conductivities;
 
         /**
          * The angle of internal friction
          */
-        double phi;
+        double angle_of_internal_friction;
 
         /**
          * The cohesion
