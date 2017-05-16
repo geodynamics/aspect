@@ -148,43 +148,31 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class InclusionMaterial : public MaterialModel::InterfaceCompatibility<dim>
+    class InclusionMaterial : public MaterialModel::Interface<dim>
     {
       public:
+
         /**
          * @name Physical parameters used in the basic equations
          * @{
          */
-        virtual double viscosity (const double                  temperature,
-                                  const double                  pressure,
-                                  const std::vector<double>    &compositional_fields,
-                                  const SymmetricTensor<2,dim> &strain_rate,
-                                  const Point<dim>             &position) const;
 
-        virtual double density (const double temperature,
-                                const double pressure,
-                                const std::vector<double> &compositional_fields,
-                                const Point<dim> &position) const;
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        {
+          for (unsigned int i=0; i < in.position.size(); ++i)
+            {
+              const Point<dim> &pos = in.position[i];
+              const double r2 = ( pos[0] - 1.0 ) * ( p[0] - 1.0 ) + ( p[1] - 1.0 ) * ( p[1] - 1.0 );
+              out.viscosities[i] = ( r2 < 0.2 * 0.2 ) ? eta_B : 1.0;
+              out.densities[i] = 0;
+              out.thermal_expansion_coefficients[i] = 0;
+              out.compressibilities[i] = 0;
+              out.thermal_conductivities[i] = 0.0;
+              out.specific_heat[i] = 0;
+            }
+        }
 
-        virtual double compressibility (const double temperature,
-                                        const double pressure,
-                                        const std::vector<double> &compositional_fields,
-                                        const Point<dim> &position) const;
-
-        virtual double specific_heat (const double temperature,
-                                      const double pressure,
-                                      const std::vector<double> &compositional_fields,
-                                      const Point<dim> &position) const;
-
-        virtual double thermal_expansion_coefficient (const double      temperature,
-                                                      const double      pressure,
-                                                      const std::vector<double> &compositional_fields,
-                                                      const Point<dim> &position) const;
-
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const std::vector<double> &compositional_fields,
-                                             const Point<dim> &position) const;
         /**
          * @}
          */
@@ -247,83 +235,9 @@ namespace aspect
     template <int dim>
     double
     InclusionMaterial<dim>::
-    viscosity (const double,
-               const double,
-               const std::vector<double> &,       /*composition*/
-               const SymmetricTensor<2,dim> &,
-               const Point<dim> &p) const
-    {
-      const double r2 = (p(0)-1.0)*(p(0)-1.0) + (p(1)-1.0)*(p(1)-1.0);
-      return (r2<0.2*0.2)? eta_B : 1.0;
-    }
-
-
-    template <int dim>
-    double
-    InclusionMaterial<dim>::
     reference_viscosity () const
     {
       return 1;
-    }
-
-
-    template <int dim>
-    double
-    InclusionMaterial<dim>::
-    specific_heat (const double,
-                   const double,
-                   const std::vector<double> &, /*composition*/
-                   const Point<dim> &) const
-    {
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    InclusionMaterial<dim>::
-    thermal_conductivity (const double,
-                          const double,
-                          const std::vector<double> &, /*composition*/
-                          const Point<dim> &) const
-    {
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    InclusionMaterial<dim>::
-    density (const double,
-             const double,
-             const std::vector<double> &, /*composition*/
-             const Point<dim> &p) const
-    {
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    InclusionMaterial<dim>::
-    thermal_expansion_coefficient (const double temperature,
-                                   const double,
-                                   const std::vector<double> &, /*composition*/
-                                   const Point<dim> &) const
-    {
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    InclusionMaterial<dim>::
-    compressibility (const double,
-                     const double,
-                     const std::vector<double> &, /*composition*/
-                     const Point<dim> &) const
-    {
-      return 0.0;
     }
 
 
@@ -382,9 +296,6 @@ namespace aspect
     {
       return eta_B;
     }
-
-
-
 
 
 
