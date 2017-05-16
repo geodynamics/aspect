@@ -78,8 +78,6 @@ namespace aspect
          */
         virtual double reference_viscosity () const;
 
-        virtual double reference_darcy_coefficient () const;
-
         /**
          * @}
          */
