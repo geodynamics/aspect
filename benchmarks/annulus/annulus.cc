@@ -163,31 +163,31 @@ namespace aspect
                               MaterialModel::MaterialModelOutputs<dim> &out) const
         {
           for (unsigned int i=0; i < in.position.size(); ++i)
-          {
-            const Point<dim> &pos = in.position[i];
+            {
+              const Point<dim> &pos = in.position[i];
 
-            out.viscosities[i] = 1;
+              out.viscosities[i] = 1;
 
-            const double k=beta;
-            const double x = pos[0];
-            const double y = pos[1];
-            const double r=sqrt(x*x+y*y);
-            const double theta = atan2(y,x);
-            const double  A=2.0, B=-3/log(2), C=-1;
-            const double f = A*r + B/r;
-            const double f_prime = 2 - B/std::pow(r,2.0);
-            const double g = A*r/2 + B*log(r)/r + C/r;
-            const double g_prime = A/2 - B*log(r)/std::pow(r,2.0) + B/std::pow(r,2.0) - C/std::pow(r,2.0);
-            const double g_prime_prime = -B/std::pow(r,3)*(3-2*log(r)) - 2./std::pow(r,3);
-            const double N = g_prime_prime - g_prime/r - (g*(std::pow(k,2) - 1))/std::pow(r,2.0) + f/std::pow(r,2.0) + f_prime/r;
-            const double rho_0 = 1000.;
-            out.densities[i] = N*k*sin(k*theta) + rho_0;
+              const double k=beta;
+              const double x = pos[0];
+              const double y = pos[1];
+              const double r=sqrt(x*x+y*y);
+              const double theta = atan2(y,x);
+              const double  A=2.0, B=-3/log(2), C=-1;
+              const double f = A*r + B/r;
+              const double f_prime = 2 - B/std::pow(r,2.0);
+              const double g = A*r/2 + B*log(r)/r + C/r;
+              const double g_prime = A/2 - B*log(r)/std::pow(r,2.0) + B/std::pow(r,2.0) - C/std::pow(r,2.0);
+              const double g_prime_prime = -B/std::pow(r,3)*(3-2*log(r)) - 2./std::pow(r,3);
+              const double N = g_prime_prime - g_prime/r - (g*(std::pow(k,2) - 1))/std::pow(r,2.0) + f/std::pow(r,2.0) + f_prime/r;
+              const double rho_0 = 1000.;
+              out.densities[i] = N*k*sin(k*theta) + rho_0;
 
-            out.compressibilities[i] = 0;
-            out.specific_heat[i] = 0;
-            out.thermal_expansion_coefficients[i] = 0;
-            out.thermal_conductivities[i] = 0.0;
-          }
+              out.compressibilities[i] = 0;
+              out.specific_heat[i] = 0;
+              out.thermal_expansion_coefficients[i] = 0;
+              out.thermal_conductivities[i] = 0.0;
+            }
         }
         /**
          * @}
@@ -245,7 +245,7 @@ namespace aspect
          */
         double beta;
     };
-    
+
 
     template <int dim>
     double
