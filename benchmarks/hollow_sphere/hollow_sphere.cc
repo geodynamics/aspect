@@ -255,43 +255,57 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class HollowSphereMaterial : public MaterialModel::InterfaceCompatibility<dim>
+    class HollowSphereMaterial : public MaterialModel::Interface<dim>
     {
       public:
         /**
          * @name Physical parameters used in the basic equations
          * @{
          */
-        virtual double viscosity (const double                  temperature,
-                                  const double                  pressure,
-                                  const std::vector<double>    &compositional_fields,
-                                  const SymmetricTensor<2,dim> &strain_rate,
-                                  const Point<dim>             &position) const;
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        {
+          for (unsigned int i=0; i < in.position.size(); ++i)
+            {
+              const Point<dim> &pos = in.position[i];
+              const std_cxx11::array<double,dim> spos = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(pos);
+              const double r = spos[0];
+              const double mu = pow(r,mmm+1);
+              out.viscosities[i] = mu;
 
-        virtual double density (const double temperature,
-                                const double pressure,
-                                const std::vector<double> &compositional_fields,
-                                const Point<dim> &position) const;
+              const double theta=spos[2];
 
-        virtual double compressibility (const double temperature,
-                                        const double pressure,
-                                        const std::vector<double> &compositional_fields,
-                                        const Point<dim> &position) const;
+              Tensor<1,dim> g;
 
-        virtual double specific_heat (const double temperature,
-                                      const double pressure,
-                                      const std::vector<double> &compositional_fields,
-                                      const Point<dim> &position) const;
+              const double gammma = 1.0;
+              const double R1 = 0.5;
+              const double R2 = 1.0;
 
-        virtual double thermal_expansion_coefficient (const double      temperature,
-                                                      const double      pressure,
-                                                      const std::vector<double> &compositional_fields,
-                                                      const Point<dim> &position) const;
+              double alpha,beta,rho;
+              const double rho_0 = 1000.;
 
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const std::vector<double> &compositional_fields,
-                                             const Point<dim> &position) const;
+              if (mmm == -1)
+                {
+                  alpha = -gammma*(pow(R2,3)-pow(R1,3))/(pow(R2,3)*log(R1)-pow(R1,3)*log(R2));
+                  beta  = -3*gammma*(log(R2)-log(R1))/(pow(R1,3)*log(R2)-pow(R2,3)*log(R1)) ;
+                  rho = -(alpha/pow(r,4)*(8*log(r)-6) + 8./3.*beta/r+8*gammma/pow(r,4))*cos(theta) + rho_0;
+                }
+              else
+                {
+                  alpha=gammma*(mmm+1)*(pow(R1,-3)-pow(R2,-3))/(pow(R1,-mmm-4)-pow(R2,-mmm-4));
+                  beta=-3*gammma*(pow(R1,mmm+1)-pow(R2,mmm+1))/(pow(R1,mmm+4)-pow(R2,mmm+4));
+                  rho= -(2*alpha*pow(r,-4)*(mmm+3)/(mmm+1)*(mmm-1)-2*beta/3*(mmm-1)*(mmm+3)*pow(r,mmm)-mmm*(mmm+5)*2*gammma*pow(r,mmm-3) )*cos(theta) + rho_0;
+                }
+
+              out.densities[i] = rho;
+
+              out.specific_heat[i] = 0;
+              out.thermal_conductivities[i] = 0.0;
+              out.compressibilities[i] = 0;
+              out.thermal_expansion_coefficients[i] = 0;
+            }
+        }
+
         /**
          * @}
          */
@@ -349,23 +363,6 @@ namespace aspect
         double mmm;
     };
 
-    template <int dim>
-    double
-    HollowSphereMaterial<dim>::
-    viscosity (const double,
-               const double,
-               const std::vector<double> &,       /*composition*/
-               const SymmetricTensor<2,dim> &,
-               const Point<dim> &pos) const
-    {
-      const std_cxx11::array<double,dim> spos =
-        aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(pos);
-
-      const double r=spos[0];
-      const double mu = pow(r,mmm+1);
-      return mu;
-    }
-
 
     template <int dim>
     double
@@ -374,94 +371,6 @@ namespace aspect
     {
       return 1.;
     }
-
-
-    template <int dim>
-    double
-    HollowSphereMaterial<dim>::
-    specific_heat (const double,
-                   const double,
-                   const std::vector<double> &, /*composition*/
-                   const Point<dim> &) const
-    {
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    HollowSphereMaterial<dim>::
-    thermal_conductivity (const double,
-                          const double,
-                          const std::vector<double> &, /*composition*/
-                          const Point<dim> &) const
-    {
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    HollowSphereMaterial<dim>::
-    density (const double,
-             const double,
-             const std::vector<double> &, /*composition*/
-             const Point<dim> &pos) const
-    {
-      const std_cxx11::array<double,dim> spos =
-        aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(pos);
-
-      const double r=spos[0];
-      const double theta=spos[2];
-
-      Tensor<1,dim> g;
-
-      const double gammma = 1.0;
-      const double R1 = 0.5;
-      const double R2 = 1.0;
-
-      double alpha,beta,rho;
-      const double rho_0 = 1000.;
-
-      if (mmm == -1)
-        {
-          alpha = -gammma*(pow(R2,3)-pow(R1,3))/(pow(R2,3)*log(R1)-pow(R1,3)*log(R2));
-          beta  = -3*gammma*(log(R2)-log(R1))/(pow(R1,3)*log(R2)-pow(R2,3)*log(R1)) ;
-          rho = -(alpha/pow(r,4)*(8*log(r)-6) + 8./3.*beta/r+8*gammma/pow(r,4))*cos(theta) + rho_0;
-        }
-      else
-        {
-          alpha=gammma*(mmm+1)*(pow(R1,-3)-pow(R2,-3))/(pow(R1,-mmm-4)-pow(R2,-mmm-4));
-          beta=-3*gammma*(pow(R1,mmm+1)-pow(R2,mmm+1))/(pow(R1,mmm+4)-pow(R2,mmm+4));
-          rho= -(2*alpha*pow(r,-4)*(mmm+3)/(mmm+1)*(mmm-1)-2*beta/3*(mmm-1)*(mmm+3)*pow(r,mmm)-mmm*(mmm+5)*2*gammma*pow(r,mmm-3) )*cos(theta) + rho_0;
-        }
-      return rho;
-    }
-
-
-    template <int dim>
-    double
-    HollowSphereMaterial<dim>::
-    thermal_expansion_coefficient (const double,
-                                   const double,
-                                   const std::vector<double> &, /*composition*/
-                                   const Point<dim> &) const
-    {
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    HollowSphereMaterial<dim>::
-    compressibility (const double,
-                     const double,
-                     const std::vector<double> &, /*composition*/
-                     const Point<dim> &) const
-    {
-      return 0.0;
-    }
-
 
     template <int dim>
     bool
