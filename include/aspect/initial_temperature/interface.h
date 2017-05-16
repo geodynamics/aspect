@@ -205,6 +205,16 @@ namespace aspect
          * in the parameter file.
          */
         std::vector<std::string> model_names;
+
+        /**
+         * A list of names of initial temperature operator strings that have been
+         * requested in the parameter file. Either one operator is given
+         * (in which case is will be used for all models), or each name is associated
+         * with a model_name, in which case each is used to append the new model onto
+         * the previous models. The operators should be one of:
+         * add, subtract, minimum and maximum.
+         */
+        std::vector<std::string> model_operators;
     };
 
 
