@@ -1,0 +1,25 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for Stokes solver
+# 12: Velocity iterations in Stokes preconditioner
+# 13: Schur complement iterations in Stokes preconditioner
+# 14: Visualization file name
+# 15: Minimal temperature (K)
+# 16: Average temperature (K)
+# 17: Maximal temperature (K)
+# 18: Average nondimensional temperature (K)
+# 19: Minimal value for composition C_1
+# 20: Maximal value for composition C_1
+# 21: Global mass for composition C_1
+# 22: Minimal value for composition C_2
+# 23: Maximal value for composition C_2
+# 24: Global mass for composition C_2
+0 0.000000000000e+00 0.000000000000e+00 3072 28291 12545 25090 0 0 0 71 73 72 output_composition-passive_quarter-shell-cartesian/solution/solution-00000 0.00000000e+00 2.41684626e-01 1.00000000e+00 2.41684626e-01 0.00000000e+00 1.00000000e+00 8.00446865e-02 0.00000000e+00 1.00000000e+00 4.01708022e-02 
