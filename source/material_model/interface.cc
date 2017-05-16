@@ -240,6 +240,43 @@ namespace aspect
       cell (NULL)
     {}
 
+    template <int dim>
+    MaterialModelInputs<dim>::MaterialModelInputs(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                                  const Introspection<dim> &introspection,
+                                                  const bool use_strain_rate)
+      :
+      position(input_data.evaluation_points),
+      temperature(input_data.solution_values.size(), numbers::signaling_nan<double>()),
+      pressure(input_data.solution_values.size(), numbers::signaling_nan<double>()),
+      pressure_gradient(input_data.solution_values.size(), numbers::signaling_nan<Tensor<1,dim> >()),
+      velocity(input_data.solution_values.size(), numbers::signaling_nan<Tensor<1,dim> >()),
+      composition(input_data.solution_values.size(), std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
+      strain_rate(input_data.solution_values.size(), numbers::signaling_nan<SymmetricTensor<2,dim> >()),
+      cell(NULL)
+    {
+      for (unsigned int q=0; q<input_data.solution_values.size(); ++q)
+        {
+          Tensor<2,dim> grad_u;
+          for (unsigned int d=0; d<dim; ++d)
+            {
+              grad_u[d] = input_data.solution_gradients[q][d];
+              this->velocity[q][d] = input_data.solution_values[q][introspection.component_indices.velocities[d]];
+              this->pressure_gradient[q][d] = input_data.solution_gradients[q][introspection.component_indices.pressure][d];
+            }
+
+          if (use_strain_rate)
+            this->strain_rate[q] = symmetrize (grad_u);
+          else
+            this->strain_rate.resize(0);
+
+          this->pressure[q] = input_data.solution_values[q][introspection.component_indices.pressure];
+          this->temperature[q] = input_data.solution_values[q][introspection.component_indices.temperature];
+
+          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+            this->composition[q][c] = input_data.solution_values[q][introspection.component_indices.compositional_fields[c]];
+        }
+    }
+
 
     template <int dim>
     MaterialModelInputs<dim>::MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,

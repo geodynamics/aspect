@@ -30,6 +30,7 @@
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/dofs/dof_accessor.h>
 #include <deal.II/fe/mapping.h>
+#include <deal.II/numerics/data_postprocessor.h>
 
 namespace aspect
 {
@@ -184,12 +185,30 @@ namespace aspect
       MaterialModelInputs(const unsigned int n_points,
                           const unsigned int n_comp);
 
+      /**
+       * Constructor. Initialize the arrays of the structure with the number
+       * of points in the `input_data` structure, and fills them appropriately.
+       *
+       * @param input_data The data used to populate the material model input quantities.
+       * @param introspection A reference to the simulator introspection object.
+       * @param use_strain_rate Whether to compute the strain rates.
+       */
+      MaterialModelInputs(const DataPostprocessorInputs::Vector<dim> &input_data,
+                          const Introspection<dim> &introspection,
+                          const bool use_strain_rate = true);
+
 
       /**
        * Constructor. Initializes the various arrays of this
        * structure with the FEValues and introspection objects and
        * the solution_vector. This constructor calls the function
        * reinit to populate the newly created arrays.
+       *
+       * @param fe_values An FEValuesBase object used to evaluate the finite elements.
+       * @param cell The currently active cell for the fe_values object.
+       * @param introspection A reference to the simulator introspection object.
+       * @param solution_vector The finite element vector from which to construct the inputs.
+       * @param use_strain_rate Whether to compute the strain rates.
        */
       MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
                           const typename DoFHandler<dim>::active_cell_iterator *cell,
