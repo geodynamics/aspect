@@ -108,15 +108,9 @@ namespace aspect
                                "'Initial conditions/List of model names' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
 
-        model_operator_names
-          = Utilities::split_string_list(prm.get("List of model operators"));
-
-        AssertThrow(model_names.size() == model_operator_names.size() ||
-                    model_operator_names.size() == 1,
-                    ExcMessage("The list of strings for the parameter "
-                               "'Initial conditions/List of model names' is not of length one or "
-                               "the same size as 'Initial conditions/List of model operators'. "
-                               "Please check your parameter file."));
+        model_operator_names = Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
+                                                                       model_names.size(),
+                                                                       "List of model operators");
 
         const std::string model_name = prm.get ("Model name");
 
@@ -149,17 +143,13 @@ namespace aspect
           initial_temperature_objects.back()->initialize ();
 
           // create operator list
-          unsigned int j = 0;
-          if (model_operator_names.size() != 1)
-            j = i;
-
-          if (model_operator_names[j] == "add")
+          if (model_operator_names[i] == "add")
             model_operators.push_back(add);
-          else if (model_operator_names[j] == "subtract")
+          else if (model_operator_names[i] == "subtract")
             model_operators.push_back(subtract);
-          else if (model_operator_names[j] == "minimum")
+          else if (model_operator_names[i] == "minimum")
             model_operators.push_back(minimum);
-          else if (model_operator_names[j] == "maximum")
+          else if (model_operator_names[i] == "maximum")
             model_operators.push_back(maximum);
           else
             AssertThrow( false,
@@ -167,7 +157,6 @@ namespace aspect
                                      "add, subtract, minimum and maximum. Please check your parameter file.") );
         }
     }
-
 
 
     template <int dim>

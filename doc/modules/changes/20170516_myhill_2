@@ -1,0 +1,11 @@
+New: Aspect can now create initial temperature conditions by supplying 
+a list of plugins and operators determining how each plugin modifies the 
+temperature field. The operators are specified as a new input file 
+parameter 'List of model operators', which takes a comma-separated list 
+taken from the selection add, subtract, minimum and maximum. This list 
+defaults to add if it is not given in the parameter file. If it is given, 
+it may either be of length 1 (in which case all plugins modify the 
+temperature field in the same way), or of the same length as 
+'List of model names'.
+<br>
+(Bob Myhill, 2017/05/16)
