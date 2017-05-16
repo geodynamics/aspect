@@ -1,5 +1,8 @@
 ################### top matter ################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
+IF(POLICY CMP0058)
+    CMAKE_POLICY(SET CMP0058 NEW) 
+ENDIF()
 
 SET(ASPECT_BINARY "${ASPECT_BINARY}" CACHE STRING "" FORCE)
 SET(ASPECT_DIR "${ASPECT_DIR}" CACHE STRING "" FORCE)
@@ -253,19 +256,50 @@ FOREACH(_test ${_tests})
       ENDIF()
     ENDIF()
 
+    # Collect expected outputs
+    FILE(GLOB_RECURSE _outputs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/
+        ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/[a-zA-Z0-9]*)
+    
+    SET(_outputs_flist)
+    FOREACH(_output ${_outputs})
+        # Assemble full path to output file
+        IF(NOT ${_output} MATCHES "screen-output")
+            LIST(APPEND _outputs_flist ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output})
+        ENDIF()
+    ENDFOREACH()
+
     IF("${_mpi_count}" STREQUAL "1")
-      ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
-	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run_test.sh ${EXPECT} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
-	COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
-	DEPENDS ${ASPECT_BINARY}   ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${_testdepends}
-	)
+      IF(POLICY CMP0058)
+          ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
+              BYPRODUCTS ${_outputs_flist}
+              COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run_test.sh ${EXPECT} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
+              COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
+              DEPENDS ${ASPECT_BINARY}   ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${_testdepends}
+              )
+      ELSE()
+          ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
+              COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run_test.sh ${EXPECT} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
+              COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
+              DEPENDS ${ASPECT_BINARY}   ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${_testdepends}
+              )
+      ENDIF()
     ELSE()
-      ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
-	COMMAND mpirun -np ${_mpi_count} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
-		> ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
-	COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
-	DEPENDS ${ASPECT_BINARY}  ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${_testdepends}
-	)
+        IF(POLICY CMP0058)
+          ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
+              BYPRODUCTS ${_outputs_flist}
+              COMMAND mpirun -np ${_mpi_count} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
+              > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
+              COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
+              DEPENDS ${ASPECT_BINARY}  ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${_testdepends}
+              )
+      ELSE()
+          ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
+              COMMAND mpirun -np ${_mpi_count} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
+              > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
+              COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
+              DEPENDS ${ASPECT_BINARY}  ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${_testdepends}
+              )
+      ENDIF()
     ENDIF()
 
     # command to normalize all output files and all reference output files
@@ -279,8 +313,6 @@ FOREACH(_test ${_tests})
     # this test, create targets that
     # - create a 'output.notime' file
     # - diff this file with the saved one and save the result
-    FILE(GLOB_RECURSE _outputs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/
-	${CMAKE_CURRENT_SOURCE_DIR}/${_test}/[a-zA-Z0-9]*)
 
     FOREACH(_output ${_outputs})
 
@@ -319,14 +351,30 @@ FOREACH(_test ${_tests})
       # ${_output}, there is no rule to generate ${_output}. But generating
       # screen-output will of course generate all output files (including
       # ${_output}), so this rule will work as expected.
-      ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
-	COMMAND
-	  cat ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}
-	  | egrep -v '^\\|.*\\|'
-	  | egrep -v '^--'
-	  | sed 's\#${ASPECT_BASE_DIR}\#ASPECT_DIR\#g'
-	  > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
-	DEPENDS ${_test}.normalize)
+      IF(POLICY CMP0058)
+        ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
+            COMMAND
+            cat ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}
+            | egrep -v '^\\|.*\\|'
+            | egrep -v '^--'
+            | sed 's\#${ASPECT_BASE_DIR}\#ASPECT_DIR\#g'
+            > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
+            DEPENDS ${_test}.normalize
+            ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}
+            ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
+            )
+      ELSE()
+        ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
+            COMMAND
+            cat ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}
+            | egrep -v '^\\|.*\\|'
+            | egrep -v '^--'
+            | sed 's\#${ASPECT_BASE_DIR}\#ASPECT_DIR\#g'
+            > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
+            DEPENDS ${_test}.normalize
+            ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
+            )
+      ENDIF()
 
       # create the target that compares the .notime with the saved file
       ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
