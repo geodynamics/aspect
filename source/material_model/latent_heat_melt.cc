@@ -67,9 +67,18 @@ namespace aspect
                                                + composition[0] * log10 ( eta * composition_viscosity_prefactor * temperature_dependence))));
             }
           else
+            reference_darcy_coefficient() const
             {
-              out.viscosities[i] = composition_dependence * temperature_dependence * eta;
+              return -1.0; // invalid
             }
+
+
+          template <int dim>
+          double
+          LatentHeatMelt<dim>::
+          {
+            out.viscosities[i] = composition_dependence * temperature_dependence * eta;
+          }
 
           out.specific_heat[i] = reference_specific_heat;
           out.thermal_conductivities[i] = k_value;

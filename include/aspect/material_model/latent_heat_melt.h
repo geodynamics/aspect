@@ -39,7 +39,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class LatentHeatMelt : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>, public MaterialModel::MeltFractionModel<dim>
+    class LatentHeatMelt : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>, public MaterialModel::MeltFractionModel<dim>
     {
       public:
         /**
@@ -77,6 +77,9 @@ namespace aspect
          * @{
          */
         virtual double reference_viscosity () const;
+
+        virtual double reference_darcy_coefficient () const;
+
         /**
          * @}
          */

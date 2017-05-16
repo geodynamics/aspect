@@ -38,6 +38,14 @@ namespace aspect
       return eta_0;
     }
 
+    template <int dim>
+    double
+    MeltGlobal<dim>::
+    reference_darcy_coefficient () const
+    {
+      // 0.01 = 1% melt
+      return reference_permeability * pow(0.01,3.0) / eta_f;
+    }
 
     template <int dim>
     bool

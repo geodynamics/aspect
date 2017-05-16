@@ -13,7 +13,7 @@ namespace aspect
 
   template <int dim>
   class SimpleWithMelt:
-    public MaterialModel::Interface<dim>
+    public MaterialModel::MeltInterface<dim>
   {
     public:
       virtual bool is_compressible () const
@@ -25,6 +25,12 @@ namespace aspect
       {
         return 0.2;
       }
+
+      virtual double reference_darcy_coefficient () const
+      {
+        return 1.0;
+      }
+
 
       /**
        * Declare the parameters this class takes through input files.

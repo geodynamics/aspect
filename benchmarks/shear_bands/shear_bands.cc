@@ -49,7 +49,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class ShearBandsMaterial : public MaterialModel::Interface<dim>,
+    class ShearBandsMaterial : public MaterialModel::MeltInterface<dim>,
       public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -62,6 +62,12 @@ namespace aspect
         {
           return eta_0;
         }
+
+        virtual double reference_darcy_coefficient () const
+        {
+          return reference_permeability * pow(0.01, permeability_exponent) / eta_f;
+        }
+
 
         double
         get_background_porosity () const;

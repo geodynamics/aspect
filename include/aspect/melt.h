@@ -107,6 +107,20 @@ namespace aspect
         {};
     };
 
+    /**
+     * Base class for material models to be used with melt transport enabled.
+     */
+    template <int dim>
+    class MeltInterface: public MaterialModel::Interface<dim>
+    {
+      public:
+        /**
+          * Reference permeability divided by fluid viscosity, also known as Darcy coeffcient, Units: m^2/Pa/s
+          */
+        virtual double reference_darcy_coefficient () const = 0;
+    };
+
+
   }
 
 
