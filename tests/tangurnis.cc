@@ -169,13 +169,13 @@ namespace aspect
     {
       a=0; // 0 or 2
 
-      //BA:
-      //Di=0;gamma=10000; //=inf
+      // BA:
+      // Di=0;gamma=10000; //=inf
 
-      //EBA:
-      //Di=0.5;gamma=inf;
+      // EBA:
+      // Di=0.5;gamma=inf;
 
-      //TALA:
+      // TALA:
       Di=0.5;
       gamma=1.0;
 

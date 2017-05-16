@@ -82,12 +82,12 @@ namespace aspect
         double y = p(1);
         double porosity = -0.1 * std::exp(-(y+0.1))/(y+0.1) + 1.0;
 
-        values[0]=0;       //x vel
-        values[1]=0;    //y vel
+        values[0]=0;       // x vel
+        values[1]=0;    // y vel
         values[2]=0;  // p_f
         values[3]=0;  // p_c
-        values[4]=0;       //x melt vel
-        values[5]=0;    //y melt vel
+        values[4]=0;       // x melt vel
+        values[5]=0;    // y melt vel
         values[6]=0;  // p_s
         values[7]=0; // T
         values[8]=porosity; // porosity

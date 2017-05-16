@@ -107,7 +107,7 @@ namespace aspect
           for (unsigned int i=0; i<in.position.size(); ++i)
             {
               double porosity = in.composition[i][porosity_idx];
-              //porosity = 0.1000000000e-1 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.2e1 * z, 0.2e1));
+              // porosity = 0.1000000000e-1 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.2e1 * z, 0.2e1));
               const double x = in.position[i](0);
               const double z = in.position[i](1);
               melt_out->compaction_viscosities[i] = 0.1e0 + 0.1e0 * exp(-0.20e2 * x * x - 0.20e2 * z * z + 0.1e1); // xi

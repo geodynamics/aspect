@@ -74,8 +74,8 @@ namespace aspect
 
       private:
 
-        unsigned int order;  //Order of the perturbation
-        double amplitude;  //amplitude of the perturbation
+        unsigned int order;  // Order of the perturbation
+        double amplitude;  // amplitude of the perturbation
 
     };
 
@@ -85,10 +85,10 @@ namespace aspect
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
 
-      //Call the normal Box mesh generator
+      // Call the normal Box mesh generator
       Box<dim>::create_coarse_mesh( coarse_grid );
 
-      //move the vertices
+      // move the vertices
       std::vector<bool> vertex_touched (coarse_grid.n_vertices(), false);
 
       typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell;

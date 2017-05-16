@@ -324,7 +324,7 @@ namespace aspect
         const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
         const unsigned int n_q_points           = scratch.face_finite_element_values.n_quadrature_points;
 
-        //assemble force terms for the matrix for all boundary faces
+        // assemble force terms for the matrix for all boundary faces
         if (cell->face(face_no)->at_boundary())
           {
             scratch.face_finite_element_values.reinit (cell, face_no);
