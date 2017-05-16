@@ -2165,7 +2165,7 @@ This finally allows us to write
 \approx \frac{1}{\rho_s} \frac{\partial \rho_s}{\partial p_s} \rho_s \textbf{g}
 \approx \kappa_s \rho_s \textbf{g}. 
 \end{equation*}
-For the fluid pressure, choosing a good approximation depends on the model parameters and setup (see \cite{DH2015}). 
+For the fluid pressure, choosing a good approximation depends on the model parameters and setup (see \cite{dannberg_melt}). 
 Hence, we make $\nabla \rho_{f}$ a model input parameter, which can be adapted based on the forces that are expected 
 to be dominant in the model. 
 We can then replace the second equation by
@@ -2234,7 +2234,7 @@ so we get
 + (1 - \phi) (\nabla \cdot \mathbf{u}_s + \kappa_s \rho_s \textbf{g} \cdot \mathbf{u}_s ).
 \end{equation*}
 
-More details on the implementation can be found in \cite{DH2015}. A benchmark case demonstrating the propagation of solitary waves can be found in Section~\ref{sec:benchmark-solitary_wave}.
+More details on the implementation can be found in \cite{dannberg_melt}. A benchmark case demonstrating the propagation of solitary waves can be found in Section~\ref{sec:benchmark-solitary_wave}.
 
 \subsection{Nullspace removal}
 
@@ -9409,7 +9409,7 @@ results using compositional fields.
 \subsubsection{The solitary wave benchmark}
 \label{sec:benchmark-solitary_wave}
 
-\textit{This section was contributed by Juliane Dannberg and is based on a section in \cite{DH2015} by Juliane Dannberg and Timo Heister.}
+\textit{This section was contributed by Juliane Dannberg and is based on a section in \cite{dannberg_melt} by Juliane Dannberg and Timo Heister.}
 
 One of the most widely used benchmarks for codes that model the migration of melt through a compacting and dilating matrix is the propagation of solitary waves (e.g. \cite{SS11, KMK2013, Schm00}). 
 The benchmark is intended to test the accuracy of the solution of the two-phase flow equations as described in Section \ref{sec:melt_transport} and makes use of the fact that there is an analytical solution for the shape of solitary waves that travel through a partially molten rock with a constant background porosity without changing their shape and with a constant wave speed. 
@@ -9459,7 +9459,7 @@ The parameter file and material model for this setup can be found in \url{benchm
 The benchmark uses a custom model to generate the initial condition for the porosity field as specified by the analytical solution, and its own material model, which includes the additional material properties needed by models with melt migration, such as the permeability, melt density and compaction viscosity. The solitary wave postprocessor compares the porosity and pressure in the model to the analytical solution, and computes the errors for the shape of the porosity, shape of the compaction pressure and the phase speed. 
 We apply the negative phase speed of the solitary wave as a boundary condition for the solid velocity. This changes the reference frame, so that the solitary wave stays in the center of the domain, while the solid moves downwards. The temperature evolution does not play a role in this benchmark, so all temperature and heating-related parameters are disabled or set to zero. 
 
-And extensive discussion of the results and convergence behavior can be found in \cite{DH2015}.
+And extensive discussion of the results and convergence behavior can be found in \cite{dannberg_melt}.
 
 
 \section{Extending \aspect}
