@@ -151,7 +151,7 @@ namespace aspect
                        "heat conduction in determining the length of each time step.");
 
     prm.declare_entry ("Nonlinear solver scheme", "IMPES",
-                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes|Stokes only|Advection only"),
+                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes|Newton Stokes|Stokes only|Advection only"),
                        "The kind of scheme used to resolve the nonlinearity in the system. "
                        "'IMPES' is the classical IMplicit Pressure Explicit Saturation scheme "
                        "in which ones solves the temperatures and Stokes equations exactly "
@@ -346,6 +346,18 @@ namespace aspect
                            "The maximum number of line search iterations allowed. If the "
                            "criterion is not reached after this iteration, we apply the scaled "
                            "increment to the solution and continue.");
+
+        prm.declare_entry ("Use Newton residual scaling method", "false",
+                           Patterns::Bool (),
+                           "This method allows to slowly introduce the derivatives based on the improvement "
+                           "of the residual. If we do not use it, we just set it so the newton_derivative_scaling_factor "
+                           "goes from zero to one when switching on the Newton solver.");
+
+        prm.declare_entry ("Maximum linear Stokes solver tolerance", "0.9",
+                           Patterns::Double (0,1),
+                           "When the linear Stokes solver tolerance is dynamically chosen, this defines "
+                           "the most loose tolerance allowed.");
+
       }
       prm.leave_subsection ();
       prm.enter_subsection ("AMG parameters");
@@ -1049,6 +1061,8 @@ namespace aspect
       nonlinear_solver = NonlinearSolver::iterated_Stokes;
     else if (prm.get ("Nonlinear solver scheme") == "Stokes only")
       nonlinear_solver = NonlinearSolver::Stokes_only;
+    else if (prm.get ("Nonlinear solver scheme") == "Newton Stokes")
+      nonlinear_solver = NonlinearSolver::Newton_Stokes;
     else if (prm.get ("Nonlinear solver scheme") == "Advection only")
       nonlinear_solver = NonlinearSolver::Advection_only;
     else
@@ -1061,6 +1075,8 @@ namespace aspect
         nonlinear_switch_tolerance = prm.get_double("Nonlinear Newton solver switch tolerance");
         max_pre_newton_nonlinear_iterations = prm.get_integer ("Max pre-Newton nonlinear iterations");
         max_newton_line_search_iterations = prm.get_integer ("Max Newton line search iterations");
+        use_newton_residual_scaling_method = prm.get_bool("Use Newton residual scaling method");
+        maximum_linear_stokes_solver_tolerance = prm.get_double("Maximum linear Stokes solver tolerance");
       }
       prm.leave_subsection ();
       prm.enter_subsection ("AMG parameters");

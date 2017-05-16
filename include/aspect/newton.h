@@ -105,8 +105,7 @@ namespace aspect
         void
         preconditioner (const double                                             pressure_scaling,
                         internal::Assembly::Scratch::StokesPreconditioner<dim>  &scratch,
-                        internal::Assembly::CopyData::StokesPreconditioner<dim> &data,
-                        const Parameters<dim> &parameters) const;
+                        internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const;
 
         /**
          * This function assembles the terms for the matrix and right-hand-side of the incompressible
@@ -116,8 +115,7 @@ namespace aspect
         incompressible_terms (const double                                     pressure_scaling,
                               const bool                                       rebuild_stokes_matrix,
                               internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                              internal::Assembly::CopyData::StokesSystem<dim> &data,
-                              const Parameters<dim> &parameters) const;
+                              internal::Assembly::CopyData::StokesSystem<dim> &data) const;
 
         /**
          * This function assembles the term that arises in the viscosity term of Newton Stokes matrix for
@@ -127,8 +125,7 @@ namespace aspect
         compressible_strain_rate_viscosity_term (const double                                     pressure_scaling,
                                                  const bool                                       rebuild_stokes_matrix,
                                                  internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                                 internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                                 const Parameters<dim> &parameters) const;
+                                                 internal::Assembly::CopyData::StokesSystem<dim> &data) const;
 
         /**
          * This function assembles the right-hand-side term of the Newton Stokes system

@@ -100,6 +100,8 @@ namespace aspect
 
   template <int dim> class MeltHandler;
 
+  template <int dim> class NewtonHandler;
+
   /**
    * SimulatorAccess is a base class for different plugins like postprocessors.
    * It provides access to the various variables of the main class that
@@ -631,10 +633,16 @@ namespace aspect
       get_heating_model_manager () const;
 
       /**
-       * Return a pointer to the melt handler.
+       * Return a reference to the melt handler.
        */
       const MeltHandler<dim> &
       get_melt_handler () const;
+
+      /**
+       * Return a reference to the newton handler.
+       */
+      const NewtonHandler<dim> &
+      get_newton_handler () const;
 
       /**
        * Return a reference to the lateral averaging object owned
