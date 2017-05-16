@@ -1,0 +1,5 @@
+New: Added a postprocessor which visualizes the spd factor for the newton solver. This factor is used in
+the Newton solver to make sure the Jacobian stays Positive definite. For more info see the Utilities 
+function compute_spd_factor. 
+<br>
+(Menno Fraters 2017/05/16)
