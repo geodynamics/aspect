@@ -73,6 +73,7 @@ namespace aspect
 
       DerivativeForm<1, dim, dim> DX;
 
+      // prior to deal.II 9, we do not apply initial topography
 #if !DEAL_II_VERSION_GTE(9,0,0)
       switch (dim)
         {
@@ -108,11 +109,11 @@ namespace aspect
       return DX;
 #endif
 
-      // The initial topography derivatives.
+      // The initial topography derivatives (dtopo/dphi and dtopo/dtheta)
       const InitialTopographyModel::AsciiData<dim> *itm = dynamic_cast<const InitialTopographyModel::AsciiData<dim> *> (topo);
       const Tensor<1,dim-1> topo_derivatives = itm->vector_gradient(push_forward_sphere(chart_point));
 
-      // Grab lon,lat coordinates
+      // Construct surface point in lon(,lat) coordinates
       Point<dim-1> surface_point;
       for (unsigned int d=0; d<dim-1; d++)
         surface_point[d] = chart_point[d+1];
@@ -121,16 +122,19 @@ namespace aspect
       if (dim == 3)
         surface_point[1] = 0.5*numbers::PI - surface_point[1];
 
-      // get the maximum topography (at the surface)
+      // get the maximum topography at the surface point
       const double d_topo = topo->value(surface_point);
-    
-      // get the spherical point including topography
-      const Point<dim> topo_point = push_forward_topo(chart_point); 
 
-      DerivativeForm<1, dim, dim> Dtopo;
-      DerivativeForm<1, dim, dim> Dtotal;
+      // get the spherical point including topography
+      const Point<dim> topo_point = push_forward_topo(chart_point);
       const double R_topo = topo_point[0];
       const double phi_topo = topo_point[1];
+
+      // The derivatives of topo_point to chart_point
+      DerivativeForm<1, dim, dim> Dtopo;
+      // The derivatives of the cartesian point to chart_point
+      DerivativeForm<1, dim, dim> Dtotal;
+
 
       switch (dim)
         {
@@ -154,13 +158,13 @@ namespace aspect
             //dy/dphi_topo
             DX[1][1] =  R_topo * std::cos(phi_topo);
 
-      // dx/dR   = dx/dR_topo * dR_topo/dR   + dx/dphi_topo * dphi_topo/dR 
+            // dx/dR   = dx/dR_topo * dR_topo/dR   + dx/dphi_topo * dphi_topo/dR
             Dtotal[0][0] = DX[0][0] * Dtopo[0][0] + DX[0][1] * Dtopo[1][0];
-      // dx/dphi = dx/dR_topo * dR_topo/dphi + dx/dphi_topo * dphi_topo/dphi 
+            // dx/dphi = dx/dR_topo * dR_topo/dphi + dx/dphi_topo * dphi_topo/dphi
             Dtotal[0][1] = DX[0][0] * Dtopo[0][1] + DX[0][1] * Dtopo[1][1];
-      // dy/dR   = dy/dR_topo * dR_topo/dR + dy/dphi_topo * dphi_topo/dR 
+            // dy/dR   = dy/dR_topo * dR_topo/dR + dy/dphi_topo * dphi_topo/dR
             Dtotal[1][0] = DX[1][0] * Dtopo[0][0] + DX[1][1] * Dtopo[1][0];
-      // dy/dphi = dy/dR_topo * dR_topo/dphi + dy/dphi_topo * dphi_topo/dphi 
+            // dy/dphi = dy/dR_topo * dR_topo/dphi + dy/dphi_topo * dphi_topo/dphi
             Dtotal[1][1] = DX[1][0] * Dtopo[0][1] + DX[1][1] * Dtopo[1][1];
             break;
           }
@@ -185,8 +189,9 @@ namespace aspect
             //dtheta_topo/dtheta
             Dtopo[2][2] = 1.;
 
-            const double theta_topo = topo_point[2]; // Latitude (not colatitude)
+            const double theta_topo = topo_point[2];
 
+            // The derivatives of the cartesian points to topo_point
             DX[0][0] =      std::cos(theta_topo) * std::cos(phi_topo);
             DX[0][1] = -R_topo * std::cos(theta_topo) * std::sin(phi_topo);
             DX[0][2] = -R_topo * std::sin(theta_topo) * std::cos(phi_topo);
@@ -220,23 +225,7 @@ namespace aspect
           }
           default:
             Assert (false, ExcNotImplemented ());
- 
-      
-      // In 2D (phi==phi_topo)
-      // x = R_topo cos(phi_topo) = (R+d_topo(phi)*(R-R_0)/(R_1-R_0)) cos(phi) = R*cos(phi) + d_topo(phi)*(R-R_0)/(R_1-R_0)*cos(phi)
-      // y = R_topo sin(phi_topo) = (R+d_topo(phi)*(R-R_0)/(R_1-R_0)) sin(phi) = R*sin(phi) + d_topo(phi)*(R-R_0)/(R_1-R_0)*sin(phi)
-      //
-      // Thus
-      // dx/dR = cos(phi) + d_topo(phi) / (R_1-R_0) * cos(phi) = cos(phi) * (1+d_topo(phi) / (R_1-R_0))
-      // dx/dphi = -R*sin(phi) + (R-R_0)/(R_1-R_0)*d_topo(phi)*-sin(phi) + dd_topo(phi)/dphi *(R-R_0)/(R_1-R_0)*cos(phi)
-      // dy/dR = sin(phi) + d_topo(phi) / (R_1-R_0) * sin(phi) = sin(phi) * (1+d_topo(phi) / (R_1-R_0))
-      // dy/dphi =R*cos(phi) + (R-R_0)/(R_1-R_0)*d_topo(phi)*cos(phi) + dd_topo(phi)/dphi *(R-R_0)/(R_1-R_0)*sin(phi)
-      // Which is equal to 
-      // dx/dR   = dx/dR_topo * dR_topo/dR   + dx/dphi_topo * dphi_topo/dR = cos(phi_topo) * (1+d_topo(phi)/(R_1-R_0)) + (R_topo * - sin(phi_topo)) * 0 
-      // dx/dphi = dx/dR_topo * dR_topo/dphi + dx/dphi_topo * dphi_topo/dphi 
-      //         = cos(phi_topo) * (R-R_0)/(R_1-R_0) *dd_topo(phi)/dphi + - R_topo * sin(phi_topo) * 1
-      // dy/dR   = dy/dR_topo * dR_topo/dR + dy/dphi_topo * dphi_topo/dR = sin(phi_topo) * (1+d_topo(phi)/(R_1-R_0)) + R_topo * cos(phi_topo) * 0
-      // dy/dphi = dy/dR_topo * dR_topo/dphi + dy/dphi_topo * dphi_topo/dphi = sin(phi_topo) * (R-R_0)/(R_1-R_0) *dd_topo(phi)/dphi + R_topo * cos(phi_topo)) * 1
+        }
 
       return Dtotal;
 

@@ -78,6 +78,9 @@ namespace aspect
         virtual
         double max_topography () const = 0;
 
+//        virtual
+//        Tensor<1,dim-1> vector_gradient (const Point<dim> &p) const = 0;
+
         /**
          * Declare the parameters this class takes through input files. The
          * default implementation of this function does not describe any

@@ -595,7 +595,7 @@ namespace aspect
          */
         Tensor<1,dim>
         get_gradients(const Point<dim> &position,
-                 const unsigned int component);
+                      const unsigned int component);
 
         /**
          * Returns a vector that contains the names of all data columns in the
@@ -797,7 +797,7 @@ namespace aspect
         /**
          * Return the gradients of the parameters from the parameter file.
          */
-        Tensor<1,dim-1> 
+        Tensor<1,dim-1>
         vector_gradient(const types::boundary_id             boundary_indicator,
                         const Point<dim> &p,
                         const unsigned int                   component) const;
