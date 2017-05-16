@@ -92,12 +92,12 @@ namespace aspect
         double z = p(1);
         const double porosity = 0.15 + 1.0/20.0 * (numbers::PI/2.0 + std::atan(x + 2*z));
 
-        values[0]= 1.0;       //x vel
-        values[1]= 1.0;    //z vel
+        values[0]= 1.0;       // x vel
+        values[1]= 1.0;    // z vel
         values[2]= std::exp(z/10.0);  // p_f
         values[3]= 0;  // p_c
-        values[4]= 1.0;       //x melt vel
-        values[5]= 1.0;    //y melt vel
+        values[4]= 1.0;       // x melt vel
+        values[5]= 1.0;    // y melt vel
         values[6]= std::exp(z/10.0);  // p_s
         values[7]= 0; // T
         values[8]= porosity;

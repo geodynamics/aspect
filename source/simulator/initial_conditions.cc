@@ -69,7 +69,7 @@ namespace aspect
     // a (simplified) copy of the code in VectorTools::interpolate
     // that only works on the temperature component
     //
-    //TODO: it would be great if we had a cleaner way than iterating to 1+n_fields.
+    // TODO: it would be great if we had a cleaner way than iterating to 1+n_fields.
     // Additionally, the n==1 logic for normalization at the bottom is not pretty.
     for (unsigned int n=0; n<1+introspection.n_compositional_fields; ++n)
       {

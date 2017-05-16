@@ -55,8 +55,8 @@ namespace aspect
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
 
-        //Create vector for the temperature gradients.  All the other things
-        //we need are in MaterialModelInputs/Outputs
+        // Create vector for the temperature gradients.  All the other things
+        // we need are in MaterialModelInputs/Outputs
         std::vector<Tensor<1,dim> > temperature_gradient(n_quadrature_points);
 
         in.position = input_data.evaluation_points;

@@ -34,7 +34,7 @@ namespace aspect
   void change_boundary_condition (const SimulatorAccess<dim> &simulator_access,
                                   Parameters<dim> &parameters)
   {
-    types::boundary_id bottom = 2; //bottom boundary indicator for 2D box
+    types::boundary_id bottom = 2; // bottom boundary indicator for 2D box
 
     if ( simulator_access.get_timestep_number() >= switch_step && !switched )
       {

@@ -50,7 +50,7 @@ namespace aspect
           in>>T>>p;
           if (!in.fail())
             {
-              //Unit switching
+              // Unit switching
               if (T_Unit=="C")
                 {
                   T+=273.15;                      // Degree C to K

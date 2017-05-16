@@ -308,11 +308,11 @@ namespace aspect
     void
     BursteddeMaterial<dim>::declare_parameters (ParameterHandler &prm)
     {
-      //create a global section in the parameter file for parameters
-      //that describe this benchmark. note that we declare them here
-      //in the material model, but other kinds of plugins (e.g., the gravity
-      //model below) may also read these parameters even though they do not
-      //declare them
+      // create a global section in the parameter file for parameters
+      // that describe this benchmark. note that we declare them here
+      // in the material model, but other kinds of plugins (e.g., the gravity
+      // model below) may also read these parameters even though they do not
+      // declare them
       prm.enter_subsection("Burstedde benchmark");
       {
         prm.declare_entry("Viscosity parameter", "20",

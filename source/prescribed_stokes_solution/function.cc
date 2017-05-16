@@ -37,7 +37,7 @@ namespace aspect
     void
     Function<dim>::stokes_solution (const Point<dim> &position, Vector<double> &value) const
     {
-      //velocity
+      // velocity
       for (unsigned int d=0; d<dim; ++d)
         value[d] = prescribed_velocity_function.value(position,d);
 

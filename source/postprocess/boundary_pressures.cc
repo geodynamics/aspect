@@ -65,7 +65,7 @@ namespace aspect
                 bool cell_at_top = false;
                 bool cell_at_bottom = false;
 
-                //Test for top or bottom surface cell faces
+                // Test for top or bottom surface cell faces
                 if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
                     < cell->face(f)->minimum_vertex_distance()/3.)
                   cell_at_top = true;
@@ -75,11 +75,11 @@ namespace aspect
 
                 if ( cell_at_top || cell_at_bottom )
                   {
-                    //evaluate the pressure on the face
+                    // evaluate the pressure on the face
                     fe_face_values.reinit (cell, f);
                     fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), pressure_vals);
 
-                    //calculate the top properties
+                    // calculate the top properties
                     if (cell_at_top)
                       for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
                         {
@@ -95,13 +95,13 @@ namespace aspect
                   }
               }
 
-      //vector for packing local values before MPI summing them
+      // vector for packing local values before MPI summing them
       double values[4] = {local_bottom_area, local_top_area, local_bottom_pressure, local_top_pressure};
 
       Utilities::MPI::sum<double, 4>( values, this->get_mpi_communicator(), values );
 
-      top_pressure = values[3] / values[1]; //density over area
-      bottom_pressure = values[2] / values[0]; //density over area
+      top_pressure = values[3] / values[1]; // density over area
+      bottom_pressure = values[2] / values[0]; // density over area
 
       statistics.add_value ("Pressure at top (Pa)",
                             top_pressure);

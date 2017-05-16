@@ -756,7 +756,7 @@ namespace aspect
     {
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-          //We are only asked to give viscosities if strain_rate.size() > 0.
+          // We are only asked to give viscosities if strain_rate.size() > 0.
           if (in.strain_rate.size() > 0)
             out.viscosities[i]                  = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
 

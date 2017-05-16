@@ -370,7 +370,7 @@ namespace aspect
 
       for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
         {
-          //Throw error if we are trying to use the same boundary for more than one boundary condition
+          // Throw error if we are trying to use the same boundary for more than one boundary condition
           AssertThrow( is_element( (*p).first.first, parameters.fixed_temperature_boundary_indicators ) == false &&
                        is_element( (*p).first.second, parameters.fixed_temperature_boundary_indicators ) == false &&
                        is_element( (*p).first.first, parameters.fixed_composition_boundary_indicators ) == false &&
@@ -535,17 +535,17 @@ namespace aspect
     // Initialize the free surface handler
     if (parameters.free_surface_enabled)
       {
-        //It should be possible to make the free surface work with any of a number of nonlinear
-        //schemes, but I do not see a way to do it in generality --IR
+        // It should be possible to make the free surface work with any of a number of nonlinear
+        // schemes, but I do not see a way to do it in generality --IR
         AssertThrow( parameters.nonlinear_solver == NonlinearSolver::IMPES ||
                      parameters.nonlinear_solver == NonlinearSolver::iterated_Stokes,
                      ExcMessage("The free surface scheme is only implemented for the IMPES or Iterated Stokes solver") );
-        //Pressure normalization doesn't really make sense with a free surface, and if we do
-        //use it, we can run into problems with geometry_model->depth().
+        // Pressure normalization doesn't really make sense with a free surface, and if we do
+        // use it, we can run into problems with geometry_model->depth().
         AssertThrow ( parameters.pressure_normalization == "no",
                       ExcMessage("The free surface scheme can only be used with no pressure normalization") );
 
-        //Allocate the FreeSurfaceHandler object
+        // Allocate the FreeSurfaceHandler object
         free_surface.reset( new FreeSurfaceHandler<dim>( *this, prm ) );
       }
 
@@ -814,7 +814,7 @@ namespace aspect
     compute_current_constraints ();
 
 
-    //TODO: do this in a more efficient way (TH)? we really only need
+    // TODO: do this in a more efficient way (TH)? we really only need
     // to make sure that the time dependent velocity boundary conditions
     // end up in the right hand side in the right way; we currently do
     // that by re-assembling the entire system
@@ -1340,21 +1340,21 @@ namespace aspect
       pcout.get_stream().imbue(s);
     }
 
-    //We need to setup the free surface degrees of freedom first if there is a free
-    //surface active, since the mapping must be in place before applying boundary
-    //conditions that rely on it (such as no flux BCs).
+    // We need to setup the free surface degrees of freedom first if there is a free
+    // surface active, since the mapping must be in place before applying boundary
+    // conditions that rely on it (such as no flux BCs).
     if (parameters.free_surface_enabled)
       free_surface->setup_dofs();
 
 
-    //reinit the constraints matrix and make hanging node constraints
+    // reinit the constraints matrix and make hanging node constraints
     constraints.clear();
     constraints.reinit(introspection.index_sets.system_relevant_set);
 
     DoFTools::make_hanging_node_constraints (dof_handler,
                                              constraints);
 
-    //Now set up the constraints for periodic boundary conditions
+    // Now set up the constraints for periodic boundary conditions
     {
       typedef std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >
       periodic_boundary_set;
@@ -1363,9 +1363,9 @@ namespace aspect
       for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
         {
           DoFTools::make_periodicity_constraints(dof_handler,
-                                                 (*p).first.first,  //first boundary id
-                                                 (*p).first.second, //second boundary id
-                                                 (*p).second,       //cartesian direction for translational symmetry
+                                                 (*p).first.first,  // first boundary id
+                                                 (*p).first.second, // second boundary id
+                                                 (*p).second,       // cartesian direction for translational symmetry
                                                  constraints);
         }
 
@@ -1783,7 +1783,7 @@ namespace aspect
     }
     computing_timer.exit_section();
 
-    //calculate global volume after displacing mesh (if we have, in fact, displaced it)
+    // calculate global volume after displacing mesh (if we have, in fact, displaced it)
     global_volume = GridTools::volume (triangulation, *mapping);
   }
 
@@ -1891,8 +1891,8 @@ namespace aspect
 
     if (timestep_number > 1)
       {
-        //TODO: Trilinos sadd does not like ghost vectors even as input. Copy
-        //into distributed vectors for now:
+        // TODO: Trilinos sadd does not like ghost vectors even as input. Copy
+        // into distributed vectors for now:
         LinearAlgebra::BlockVector distr_solution (system_rhs);
         distr_solution = old_solution;
         LinearAlgebra::BlockVector distr_old_solution (system_rhs);
@@ -1907,10 +1907,10 @@ namespace aspect
       {
         case NonlinearSolver::IMPES:
         {
-          //We do the free surface execution at the beginning of the timestep for a specific reason.
-          //The time step size is calculated AFTER the whole solve_timestep() function.  If we call
-          //free_surface_execute() after the Stokes solve, it will be before we know what the appropriate
-          //time step to take is, and we will timestep the boundary incorrectly.
+          // We do the free surface execution at the beginning of the timestep for a specific reason.
+          // The time step size is calculated AFTER the whole solve_timestep() function.  If we call
+          // free_surface_execute() after the Stokes solve, it will be before we know what the appropriate
+          // time step to take is, and we will timestep the boundary incorrectly.
           if (parameters.free_surface_enabled)
             free_surface->execute ();
 
@@ -2254,7 +2254,7 @@ namespace aspect
                                                                             std_cxx1x::_1,
                                                                             std_cxx1x::_2),
                                                            0,
-                                                           dim+1, //velocity and pressure
+                                                           dim+1, // velocity and pressure
                                                            introspection.n_components);
 
           VectorTools::interpolate (*mapping, dof_handler, func, distributed_stokes_solution);

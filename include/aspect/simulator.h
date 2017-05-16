@@ -1435,7 +1435,7 @@ namespace aspect
 
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;
-      friend class FreeSurfaceHandler<dim>;  //FreeSurfaceHandler needs access to the internals of the Simulator
+      friend class FreeSurfaceHandler<dim>;  // FreeSurfaceHandler needs access to the internals of the Simulator
       friend struct Parameters<dim>;
   };
 }

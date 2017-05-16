@@ -76,10 +76,6 @@ namespace aspect
 
                 for (int i=0; i<order+1; i++)
                   {
-                    //a_lm.push_back(coeffs[ind]);
-                    //b_lm.push_back(0.0);
-                    //ind += 1;
-
                     ind_degree = 0;
                     while (ind_degree <= i)
                       {
@@ -189,7 +185,7 @@ namespace aspect
                                             this->get_adiabatic_conditions().temperature(position) :
                                             reference_temperature;
 
-      //get the degree from the input file (60)
+      // get the degree from the input file (60)
       int max_degree = spherical_harmonics_lookup->maxdegree();
 
       // lower the maximum order if needed

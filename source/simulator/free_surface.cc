@@ -44,8 +44,8 @@ namespace aspect
   template <int dim>
   FreeSurfaceHandler<dim>::FreeSurfaceHandler (Simulator<dim> &simulator,
                                                ParameterHandler &prm)
-    : sim(simulator),  //reference to the simulator that owns the FreeSurfaceHandler
-      free_surface_fe (FE_Q<dim>(1),dim), //Q1 elements which describe the mesh geometry
+    : sim(simulator),  // reference to the simulator that owns the FreeSurfaceHandler
+      free_surface_fe (FE_Q<dim>(1),dim), // Q1 elements which describe the mesh geometry
       free_surface_dof_handler (sim.triangulation)
   {
     parse_parameters(prm);
@@ -75,10 +75,10 @@ namespace aspect
   template <int dim>
   FreeSurfaceHandler<dim>::~FreeSurfaceHandler ()
   {
-    //Free the Simulator's mapping object, otherwise
-    //when the FreeSurfaceHandler gets destroyed,
-    //the mapping's reference to the mesh displacement
-    //vector will be invalid.
+    // Free the Simulator's mapping object, otherwise
+    // when the FreeSurfaceHandler gets destroyed,
+    // the mapping's reference to the mesh displacement
+    // vector will be invalid.
     sim.mapping.reset();
   }
 
@@ -179,21 +179,21 @@ namespace aspect
       return;
     sim.computing_timer.enter_section("Free surface");
 
-    //Make the constraints for the elliptic problem.  On the free surface, we
-    //constrain mesh velocity to be v.n, on free slip it is constrained to
-    //be tangential, and on no slip boundaries it is zero.
+    // Make the constraints for the elliptic problem.  On the free surface, we
+    // constrain mesh velocity to be v.n, on free slip it is constrained to
+    // be tangential, and on no slip boundaries it is zero.
     make_constraints();
 
-    //Assemble and solve the vector Laplace problem which determines
-    //the mesh displacements in the interior of the domain
+    // Assemble and solve the vector Laplace problem which determines
+    // the mesh displacements in the interior of the domain
     compute_mesh_displacements();
 
-    //Interpolate the mesh velocity into the same
-    //finite element space as used in the Stokes solve, which
-    //is needed for the ALE corrections.
+    // Interpolate the mesh velocity into the same
+    // finite element space as used in the Stokes solve, which
+    // is needed for the ALE corrections.
     interpolate_mesh_velocity();
 
-    //After changing the mesh we need to rebuild things
+    // After changing the mesh we need to rebuild things
     sim.rebuild_stokes_matrix = sim.rebuild_stokes_preconditioner = true;
     sim.computing_timer.exit_section("Free surface");
   }
@@ -206,21 +206,21 @@ namespace aspect
     if (!sim.parameters.free_surface_enabled)
       return;
 
-    //Now construct the mesh displacement constraints
+    // Now construct the mesh displacement constraints
     mesh_displacement_constraints.clear();
     mesh_displacement_constraints.reinit(mesh_locally_relevant);
 
-    //mesh_displacement_constraints can use the same hanging node
-    //information that was used for mesh_vertex constraints.
+    // mesh_displacement_constraints can use the same hanging node
+    // information that was used for mesh_vertex constraints.
     mesh_displacement_constraints.merge(mesh_vertex_constraints);
 
-    //Add the vanilla periodic boundary constraints
+    // Add the vanilla periodic boundary constraints
     typedef std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundary_pairs;
     periodic_boundary_pairs pbp = sim.geometry_model->get_periodic_boundary_pairs();
     for (periodic_boundary_pairs::iterator p = pbp.begin(); p != pbp.end(); ++p)
       DoFTools::make_periodicity_constraints(free_surface_dof_handler, (*p).first.first, (*p).first.second, (*p).second, mesh_displacement_constraints);
 
-    //Zero out the displacement for the zero-velocity boundary indicators
+    // Zero out the displacement for the zero-velocity boundary indicators
     for (std::set<types::boundary_id>::const_iterator p = sim.parameters.zero_velocity_boundary_indicators.begin();
          p != sim.parameters.zero_velocity_boundary_indicators.end(); ++p)
       VectorTools::interpolate_boundary_values (free_surface_dof_handler, *p,
@@ -257,7 +257,7 @@ namespace aspect
                                                      tangential_mesh_boundary_indicators,
                                                      mesh_displacement_constraints, *sim.mapping);
 
-    //make the periodic boundary indicators no displacement normal to the boundary
+    // make the periodic boundary indicators no displacement normal to the boundary
     std::set< types::boundary_id > periodic_boundaries;
     for (periodic_boundary_pairs::iterator p = pbp.begin(); p != pbp.end(); ++p)
       {
@@ -299,7 +299,7 @@ namespace aspect
   {
     // TODO: should we use the extrapolated solution?
 
-    //stuff for iterating over the mesh
+    // stuff for iterating over the mesh
     QGauss<dim-1> face_quadrature(free_surface_fe.degree+1);
     UpdateFlags update_flags = UpdateFlags(update_values | update_quadrature_points
                                            | update_normal_vectors | update_JxW_values);
@@ -308,15 +308,15 @@ namespace aspect
     const unsigned int n_face_q_points = fe_face_values.n_quadrature_points,
                        dofs_per_cell = fs_fe_face_values.dofs_per_cell;
 
-    //stuff for assembling system
+    // stuff for assembling system
     std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
     Vector<double> cell_vector (dofs_per_cell);
     FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
 
-    //stuff for getting the velocity values
+    // stuff for getting the velocity values
     std::vector<Tensor<1,dim> > velocity_values(n_face_q_points);
 
-    //set up constraints
+    // set up constraints
     ConstraintMatrix mass_matrix_constraints(mesh_locally_relevant);
     DoFTools::make_hanging_node_constraints(free_surface_dof_handler, mass_matrix_constraints);
 
@@ -328,7 +328,7 @@ namespace aspect
 
     mass_matrix_constraints.close();
 
-    //set up the matrix
+    // set up the matrix
     LinearAlgebra::SparseMatrix mass_matrix;
 #ifdef ASPECT_USE_PETSC
     LinearAlgebra::DynamicSparsityPattern sp(mesh_locally_relevant);
@@ -355,7 +355,7 @@ namespace aspect
 
     FEValuesExtractors::Vector extract_vel(0);
 
-    //make distributed vectors.
+    // make distributed vectors.
     LinearAlgebra::Vector rhs, dist_solution;
     rhs.reinit(mesh_locally_owned, sim.mpi_communicator);
     dist_solution.reinit(mesh_locally_owned, sim.mpi_communicator);
@@ -385,11 +385,11 @@ namespace aspect
               cell_matrix = 0;
               for (unsigned int point=0; point<n_face_q_points; ++point)
                 {
-                  //Select the direction onto which to project the velocity solution
+                  // Select the direction onto which to project the velocity solution
                   Tensor<1,dim> direction;
-                  if ( advection_direction == SurfaceAdvection::normal ) //project onto normal vector
+                  if ( advection_direction == SurfaceAdvection::normal ) // project onto normal vector
                     direction = fs_fe_face_values.normal_vector(point);
-                  else if ( advection_direction == SurfaceAdvection::vertical ) //project onto local gravity
+                  else if ( advection_direction == SurfaceAdvection::vertical ) // project onto local gravity
                     direction = sim.gravity_model->gravity_vector( fs_fe_face_values.quadrature_point(point) );
                   else AssertThrow(false, ExcInternalError());
                   direction *= ( direction.norm() > 0.0 ? 1./direction.norm() : 0.0 );
@@ -416,8 +416,8 @@ namespace aspect
     rhs.compress (VectorOperation::add);
     mass_matrix.compress(VectorOperation::add);
 
-    //Jacobi seems to be fine here.  Other preconditioners (ILU, IC) run into troubles
-    //because the matrix is mostly empty, since we don't touch internal vertices.
+    // Jacobi seems to be fine here.  Other preconditioners (ILU, IC) run into troubles
+    // because the matrix is mostly empty, since we don't touch internal vertices.
     LinearAlgebra::PreconditionJacobi preconditioner_mass;
     preconditioner_mass.initialize(mass_matrix);
 
@@ -479,7 +479,7 @@ namespace aspect
     mesh_matrix.reinit (sp);
 #endif
 
-    //carry out the solution
+    // carry out the solution
     FEValuesExtractors::Vector extract_vel(0);
 
     LinearAlgebra::Vector rhs, velocity_solution;
@@ -512,7 +512,7 @@ namespace aspect
     rhs.compress (VectorOperation::add);
     mesh_matrix.compress (VectorOperation::add);
 
-    //Make the AMG preconditioner
+    // Make the AMG preconditioner
     std::vector<std::vector<bool> > constant_modes;
     DoFTools::extract_constant_modes (free_surface_dof_handler,
                                       ComponentMask(dim, true),
@@ -539,10 +539,10 @@ namespace aspect
 
     mesh_displacement_constraints.distribute (velocity_solution);
 
-    //Update the free surface mesh velocity vector
+    // Update the free surface mesh velocity vector
     fs_mesh_velocity = velocity_solution;
 
-    //Update the mesh displacement vector
+    // Update the mesh displacement vector
     LinearAlgebra::Vector distributed_mesh_displacements(mesh_locally_owned, sim.mpi_communicator);
     distributed_mesh_displacements = mesh_displacements;
     distributed_mesh_displacements.add(sim.time_step, velocity_solution);
@@ -554,7 +554,7 @@ namespace aspect
   template <int dim>
   void FreeSurfaceHandler<dim>::interpolate_mesh_velocity()
   {
-    //Interpolate the mesh vertex velocity onto the Stokes velocity system for use in ALE corrections
+    // Interpolate the mesh vertex velocity onto the Stokes velocity system for use in ALE corrections
     LinearAlgebra::BlockVector distributed_mesh_velocity;
     distributed_mesh_velocity.reinit(sim.introspection.index_sets.system_partitioning, sim.mpi_communicator);
 
@@ -631,26 +631,26 @@ namespace aspect
     mesh_displacements.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
     fs_mesh_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
 
-    //if we are just starting, we need to initialize the mesh displacement vector.
+    // if we are just starting, we need to initialize the mesh displacement vector.
     if (sim.timestep_number == 0)
       mesh_displacements = 0.;
 
-    //We would like to make sure that the mesh stays conforming upon
-    //redistribution, so we construct mesh_vertex_constraints, which
-    //keeps track of hanging node constraints.
-    //Note: this would be a more natural fit in make_constraints(),
-    //but we would like to be able to apply vertex constraints directly
-    //after setup_dofs(), as is done, for instance, during mesh
-    //refinement.
+    // We would like to make sure that the mesh stays conforming upon
+    // redistribution, so we construct mesh_vertex_constraints, which
+    // keeps track of hanging node constraints.
+    // Note: this would be a more natural fit in make_constraints(),
+    // but we would like to be able to apply vertex constraints directly
+    // after setup_dofs(), as is done, for instance, during mesh
+    // refinement.
     mesh_vertex_constraints.clear();
     mesh_vertex_constraints.reinit(mesh_locally_relevant);
 
     DoFTools::make_hanging_node_constraints(free_surface_dof_handler, mesh_vertex_constraints);
 
-    //We can safely close this now
+    // We can safely close this now
     mesh_vertex_constraints.close();
 
-    //Now reset the mapping of the simulator to be something that captures mesh deformation in time.
+    // Now reset the mapping of the simulator to be something that captures mesh deformation in time.
     sim.mapping.reset (new MappingQ1Eulerian<dim, LinearAlgebra::Vector> (free_surface_dof_handler,
                                                                           mesh_displacements));
   }
@@ -671,7 +671,7 @@ namespace aspect
     const unsigned int n_face_q_points = scratch.face_finite_element_values.n_quadrature_points;
     const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
 
-    //only apply on free surface faces
+    // only apply on free surface faces
     if (cell->at_boundary() && cell->is_locally_owned())
       for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
         if (cell->face(face_no)->at_boundary())
@@ -709,18 +709,18 @@ namespace aspect
                 gravity = sim.gravity_model->gravity_vector(scratch.face_finite_element_values.quadrature_point(q_point));
                 double g_norm = gravity.norm();
 
-                //construct the relevant vectors
+                // construct the relevant vectors
                 const Tensor<1,dim> n_hat = scratch.face_finite_element_values.normal_vector(q_point);
                 const Tensor<1,dim> g_hat = (g_norm == 0.0 ? Tensor<1,dim>() : gravity/g_norm);
 
                 double pressure_perturbation = scratch.face_material_model_outputs.densities[q_point] *
                                                sim.time_step * free_surface_theta * g_norm;
 
-                //see Kaus et al 2010 for details of the stabilization term
+                // see Kaus et al 2010 for details of the stabilization term
                 for (unsigned int i=0; i< stokes_dofs_per_cell; ++i)
                   for (unsigned int j=0; j< stokes_dofs_per_cell; ++j)
                     {
-                      //The fictive stabilization stress is (phi_u[i].g)*(phi_u[j].n)
+                      // The fictive stabilization stress is (phi_u[i].g)*(phi_u[j].n)
                       const double stress_value = -pressure_perturbation*
                                                   (scratch.phi_u[i]*g_hat) * (scratch.phi_u[j]*n_hat)
                                                   *scratch.face_finite_element_values.JxW(q_point);

@@ -227,10 +227,10 @@ namespace aspect
             {
               for (int order_m = 0; order_m < degree_l+1; order_m++)
                 {
-                  //Evaluate the spherical harmonics at this position.
-                  //NOTE: there is apparently a factor of sqrt(2) difference
-                  //between the standard orthonormalized spherical harmonics
-                  //and those used for S40RTS (see PR # 966)
+                  // Evaluate the spherical harmonics at this position.
+                  // NOTE: there is apparently a factor of sqrt(2) difference
+                  // between the standard orthonormalized spherical harmonics
+                  // and those used for S40RTS (see PR # 966)
                   const std::pair<double,double> sph_harm_vals = Utilities::real_spherical_harmonic( degree_l, order_m, scoord[2], scoord[1] );
                   const double cos_component = sph_harm_vals.first;
                   const double sin_component = sph_harm_vals.second;

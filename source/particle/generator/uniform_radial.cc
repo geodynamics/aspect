@@ -102,7 +102,7 @@ namespace aspect
                   {
                     spherical_coordinates[2] = P_min[2] + j * theta_spacing;
 
-                    //Average value of sin(n) from 0 to 180 degrees is (2/pi)
+                    // Average value of sin(n) from 0 to 180 degrees is (2/pi)
                     const unsigned int adjusted_phi_particles = std::max(static_cast<unsigned int> (phi_particles * std::sin(spherical_coordinates[2])),(unsigned int) 1);
                     const double phi_spacing = (P_max[1] - P_min[1]) / fmax(adjusted_phi_particles-1,1);
                     for (unsigned int k = 0; k < adjusted_phi_particles; ++k)

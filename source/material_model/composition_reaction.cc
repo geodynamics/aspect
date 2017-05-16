@@ -50,7 +50,7 @@ namespace aspect
                 out.viscosities[i] = temperature_dependence * eta;
                 break;
               case 1:
-                //geometric interpolation
+                // geometric interpolation
                 out.viscosities[i] = (pow(10, ((1-composition[0]) * log10(eta*temperature_dependence)
                                                + composition[0] * log10(eta*composition_viscosity_prefactor_1*temperature_dependence))));
                 break;

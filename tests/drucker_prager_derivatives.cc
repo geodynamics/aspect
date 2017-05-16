@@ -164,7 +164,7 @@ int f(double parameter)
   mat.evaluate(in_dviscositydstrainrate_oneone, out_dviscositydstrainrate_oneone);
   mat.evaluate(in_dviscositydtemperature, out_dviscositydtemperature);
 
-  //set up additional output for the derivatives
+  // set up additional output for the derivatives
   MaterialModelDerivatives<dim> *derivatives;
   derivatives = out_base.get_additional_output<MaterialModelDerivatives<dim> >();
 
@@ -181,7 +181,7 @@ int f(double parameter)
         }
       std::cout << "pressure " << i << ": Finite difference = " << temp << ". Analytical derivative = " << derivatives->viscosity_derivative_wrt_pressure[i]  << std::endl;
       if (std::fabs(temp - derivatives->viscosity_derivative_wrt_pressure[i]) > 1e-3 * (std::fabs(temp) + std::fabs(derivatives->viscosity_derivative_wrt_pressure[i])))
-        //if (temp > derivatives->viscosity_derivative_wrt_pressure[i] * finite_difference_factor || temp < derivatives->viscosity_derivative_wrt_pressure[i] * (2-finite_difference_factor))
+        // if (temp > derivatives->viscosity_derivative_wrt_pressure[i] * finite_difference_factor || temp < derivatives->viscosity_derivative_wrt_pressure[i] * (2-finite_difference_factor))
         {
           std::cout << "   Error: The derivative of the viscosity to the pressure is too different from the analitical value." << std::endl;
           Error = true;

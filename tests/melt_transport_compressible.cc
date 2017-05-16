@@ -117,12 +117,12 @@ namespace aspect
         double porosity = 1.0 - 0.3 * std::exp(y);
         double K_D = 2.2 + 2.0 * 0.075/0.135 + (1.0 - 5.0/6.0) * 0.075 * 0.3 * 1.2 / 0.135 * std::exp(y);
 
-        values[0]=0.1 * std::exp(y);       //x vel
-        values[1]=-0.075 * std::exp(y);    //y vel
+        values[0]=0.1 * std::exp(y);       // x vel
+        values[1]=-0.075 * std::exp(y);    // y vel
         values[2]=-0.135*(std::exp(y) - std::exp(1)) + 1.0 - y;  // p_f
         values[3]=0.75 * (std::exp(-y) + 2.0/3.0 * std::exp(2.0*x) + 1.0) * 0.1 * std::exp(y);  // p_c
-        values[4]=0.1 * std::exp(y);       //x melt vel
-        values[5]=-0.075 * std::exp(y) + 0.135 * std::exp(y) * K_D / porosity;    //y melt vel
+        values[4]=0.1 * std::exp(y);       // x melt vel
+        values[5]=-0.075 * std::exp(y) + 0.135 * std::exp(y) * K_D / porosity;    // y melt vel
 
         values[6]=values[2] + values[3] / (1.0 - porosity);  // p_s
         values[7]=0; // T

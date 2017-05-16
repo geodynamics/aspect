@@ -118,7 +118,7 @@ namespace aspect
                         }
                     }
 
-                //store final position and heatflow
+                // store final position and heatflow
                 (*return_value.second)(cell_index) = normal_flux / face_area;
 
               }

@@ -460,10 +460,10 @@ namespace aspect
 //This is a fully normalized harmonic, that is to say, inner products
 //of these functions should integrate to a kronecker delta over
 //the surface of a sphere.
-    std::pair<double,double> real_spherical_harmonic( const unsigned int l, //degree
-                                                      const unsigned int m, //order
-                                                      const double theta,   //colatitude (radians)
-                                                      const double phi )    //longitude (radians)
+    std::pair<double,double> real_spherical_harmonic( const unsigned int l, // degree
+                                                      const unsigned int m, // order
+                                                      const double theta,   // colatitude (radians)
+                                                      const double phi )    // longitude (radians)
     {
       const double sqrt_2 = numbers::SQRT2;
       const std::complex<double> sph_harm_val = boost::math::spherical_harmonic( l, m, theta, phi );
@@ -1601,7 +1601,7 @@ namespace aspect
                 :
                 current_file_number + 1;
 
-              //Calculate new file_number
+              // Calculate new file_number
               current_file_number =
                 (decreasing_file_order) ?
                 first_data_file_number
@@ -1928,7 +1928,7 @@ namespace aspect
                               const std::vector<double> &values,
                               const double p)
     {
-      //TODO: prevent division by zero for all
+      // TODO: prevent division by zero for all
       double averaged_parameter = 0.0;
 
       // first look at the special cases which can be done faster
@@ -2186,9 +2186,9 @@ namespace aspect
       else
         {
           // The general case: We can simplify the equation by stating that (1/p) * p = 1
-          //TODO: This can probably be optimized by using:
-          //averaged_parameter_derivative_part_2 += weights[i]*values_p[i]*(1/values[i])*derivatives[i]; and
-          //averaged_parameter_derivative = averaged_parameter * (1/averaged_parameter_derivative_part_1) * averaged_parameter_derivative_part_2;
+          // TODO: This can probably be optimized by using:
+          // averaged_parameter_derivative_part_2 += weights[i]*values_p[i]*(1/values[i])*derivatives[i]; and
+          // averaged_parameter_derivative = averaged_parameter * (1/averaged_parameter_derivative_part_1) * averaged_parameter_derivative_part_2;
           for (unsigned int i=0; i< weights.size(); ++i)
             {
               /**

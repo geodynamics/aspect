@@ -224,10 +224,10 @@ namespace aspect
      * For more information, see:
      * http://www.boost.org/doc/libs/1_49_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_poly/sph_harm.html
      */
-    std::pair<double,double> real_spherical_harmonic( unsigned int l, //degree
-                                                      unsigned int m, //order
-                                                      double theta,   //colatitude (radians)
-                                                      double phi );   //longitude (radians)
+    std::pair<double,double> real_spherical_harmonic( unsigned int l, // degree
+                                                      unsigned int m, // order
+                                                      double theta,   // colatitude (radians)
+                                                      double phi );   // longitude (radians)
 
     /**
      * A struct to enable numerical output with a comma as thousands separator

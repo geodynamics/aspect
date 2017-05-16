@@ -65,7 +65,7 @@ namespace aspect
               {
                 fe_face_values.reinit (cell, f);
 
-                //evaluate position of heat flow to write into output file
+                // evaluate position of heat flow to write into output file
                 const Point<dim> midpoint_at_surface = cell->face(f)->center();
 
                 // get the various components of the solution, then
@@ -116,7 +116,7 @@ namespace aspect
 
                 const double flux_density = normal_flux / face_area;
 
-                //store final position and heat flow
+                // store final position and heat flow
                 stored_values.push_back (std::make_pair(midpoint_at_surface, flux_density));
 
               }

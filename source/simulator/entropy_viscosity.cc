@@ -222,7 +222,7 @@ namespace aspect
 
     viscosity_per_cell = 0.0;
 
-    //discontinuous Galerkin doesn't require an artificial viscosity
+    // discontinuous Galerkin doesn't require an artificial viscosity
     if (advection_field.is_discontinuous(introspection))
       return;
 

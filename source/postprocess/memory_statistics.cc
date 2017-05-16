@@ -36,7 +36,7 @@ namespace aspect
     MemoryStatistics<dim>::execute (TableHandler &statistics)
     {
       // memory consumption:
-      const double mb = 1024*1024; //convert from bytes into mb
+      const double mb = 1024*1024; // convert from bytes into mb
       statistics.add_value ("System matrix memory consumption (MB) ", this->get_system_matrix().memory_consumption()/mb);
       statistics.add_value ("Triangulation memory consumption (MB) ", this->get_triangulation().memory_consumption()/mb);
       statistics.add_value ("p4est memory consumption (MB) ", this->get_triangulation().memory_consumption_p4est()/mb);

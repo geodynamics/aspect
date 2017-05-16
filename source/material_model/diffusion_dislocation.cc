@@ -35,25 +35,25 @@ namespace aspect
     {
       std::vector<double> volume_fractions( compositional_fields.size()+1);
 
-      //clip the compositional fields so they are between zero and one
+      // clip the compositional fields so they are between zero and one
       std::vector<double> x_comp = compositional_fields;
       for ( unsigned int i=0; i < x_comp.size(); ++i)
         x_comp[i] = std::min(std::max(x_comp[i], 0.0), 1.0);
 
-      //sum the compositional fields for normalization purposes
+      // sum the compositional fields for normalization purposes
       double sum_composition = 0.0;
       for ( unsigned int i=0; i < x_comp.size(); ++i)
         sum_composition += x_comp[i];
 
       if (sum_composition >= 1.0)
         {
-          volume_fractions[0] = 0.0;  //background mantle
+          volume_fractions[0] = 0.0;  // background mantle
           for ( unsigned int i=1; i <= x_comp.size(); ++i)
             volume_fractions[i] = x_comp[i-1]/sum_composition;
         }
       else
         {
-          volume_fractions[0] = 1.0 - sum_composition; //background mantle
+          volume_fractions[0] = 1.0 - sum_composition; // background mantle
           for ( unsigned int i=1; i <= x_comp.size(); ++i)
             volume_fractions[i] = x_comp[i-1];
         }
@@ -204,8 +204,8 @@ namespace aspect
           double density = 0.0;
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
             {
-              //not strictly correct if thermal expansivities are different, since we are interpreting
-              //these compositions as volume fractions, but the error introduced should not be too bad.
+              // not strictly correct if thermal expansivities are different, since we are interpreting
+              // these compositions as volume fractions, but the error introduced should not be too bad.
               const double temperature_factor= (1.0 - thermal_expansivities[j] * (temperature - reference_T));
               density += volume_fractions[j] * densities[j] * temperature_factor;
             }
@@ -387,7 +387,7 @@ namespace aspect
     void
     DiffusionDislocation<dim>::parse_parameters (ParameterHandler &prm)
     {
-      //increment by one for background:
+      // increment by one for background:
       const unsigned int n_fields = this->n_compositional_fields() + 1;
 
       prm.enter_subsection("Material model");

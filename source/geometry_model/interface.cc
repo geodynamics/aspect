@@ -44,7 +44,7 @@ namespace aspect
     std::map<std::string,types::boundary_id>
     Interface<dim>::get_symbolic_boundary_names_map() const
     {
-      //return an empty map in the base class
+      // return an empty map in the base class
       return std::map<std::string,types::boundary_id>();
     }
 
@@ -54,7 +54,7 @@ namespace aspect
     std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int > >
     Interface<dim>::get_periodic_boundary_pairs() const
     {
-      //return an empty set in the base class
+      // return an empty set in the base class
       return std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int > >();
     }
 

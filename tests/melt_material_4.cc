@@ -88,8 +88,8 @@ namespace aspect
         const double p_f = 1.0 - (y+0.1);
         const double p_s = 0.0;
 
-        values[0]=0;  //x vel
-        values[1]=0.5 * std::pow(y+0.1, 2.0);  //y vel
+        values[0]=0;  // x vel
+        values[1]=0.5 * std::pow(y+0.1, 2.0);  // y vel
         values[2]=p_f;  // p_f
         values[3]=(1.0-porosity)*(p_s-p_f); // p_c
         values[4]=-1; // u_f_x

@@ -50,7 +50,7 @@ namespace aspect
       double composition_dependence = 1.0;
       if ((composition_viscosity_prefactor != 1.0) && (composition.size() > 0))
         {
-          //geometric interpolation
+          // geometric interpolation
           return (pow(10, ((1-composition[0]) * log10(eta*temperature_dependence)
                            + composition[0] * log10(eta*composition_viscosity_prefactor*temperature_dependence))));
         }

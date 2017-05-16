@@ -51,21 +51,21 @@ namespace aspect
           Point<dim> origin  = gm->get_origin();
           reference_height = extents[dim-1]+origin[dim-1];
           vertical_gravity = true;
-          relevant_boundary = (dim == 2 ? 3 : 5); //select top boundary
+          relevant_boundary = (dim == 2 ? 3 : 5); // select top boundary
         }
       else if (GeometryModel::Sphere<dim> *gm = dynamic_cast<GeometryModel::Sphere<dim> *>
                                                 (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
         {
           reference_height = gm->radius();
           vertical_gravity = false;
-          relevant_boundary = 0;  //select top boundary
+          relevant_boundary = 0;  // select top boundary
         }
       else if (GeometryModel::SphericalShell<dim> *gm = dynamic_cast<GeometryModel::SphericalShell<dim> *>
                                                         (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
         {
           reference_height = gm->outer_radius();
           vertical_gravity = false;
-          relevant_boundary = 1;  //select top boundary
+          relevant_boundary = 1;  // select top boundary
         }
       else
         {
@@ -73,15 +73,15 @@ namespace aspect
                                         "Consider using a box, a spherical shell, or a sphere.") );
         }
 
-      //Get a quadrature rule that exists only on the corners
+      // Get a quadrature rule that exists only on the corners
       QTrapez<dim-1> face_corners;
       FEFaceValues<dim> face_vals (this->get_mapping(), this->get_fe(), face_corners, update_quadrature_points);
 
-      //get maximum surface topography
+      // get maximum surface topography
       typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell = this->get_triangulation().begin_active(),
                                                                                endc = this->get_triangulation().end();
 
-      //Choose stupidly large values for initialization
+      // Choose stupidly large values for initialization
       double local_max_height = -std::numeric_limits<double>::max();
       double local_min_height = std::numeric_limits<double>::max();
 

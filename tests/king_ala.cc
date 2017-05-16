@@ -214,7 +214,7 @@ namespace aspect
         {
           reference_rho   = prm.get_double ("Reference density");
           //          reference_T = prm.get_double ("Reference temperature");
-          //eta                   = prm.get_double ("Viscosity");
+          // eta                   = prm.get_double ("Viscosity");
           b               = prm.get_double ("b");
           c               = prm.get_double ("c");
           Di              = prm.get_double ("Di");

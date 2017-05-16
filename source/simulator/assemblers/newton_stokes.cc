@@ -83,7 +83,7 @@ namespace aspect
           const double JxW = scratch.finite_element_values.JxW(q);
 
           // TODO: Find out why in this version of ASPECT adding the derivative to the preconditioning
-          //is way worse than the normal preconditioning
+          // is way worse than the normal preconditioning
           if (theta == 0)
             {
               for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
@@ -105,7 +105,7 @@ namespace aspect
               const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
               const SymmetricTensor<2,dim> strain_rate = scratch.material_model_inputs.strain_rate[q];
 
-              //todo: make this 0.9 into a global input parameter
+              // todo: make this 0.9 into a global input parameter
               double alpha = Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, 0.9);
 
               for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
@@ -220,7 +220,7 @@ namespace aspect
               const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
               const double viscosity_derivative_wrt_pressure = derivatives->viscosity_derivative_wrt_pressure[q];
 
-              //todo: make this 0.9 into a global input parameter
+              // todo: make this 0.9 into a global input parameter
               double alpha  = Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, 0.9);
 
               for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)

@@ -59,13 +59,13 @@ namespace aspect
                   {
                     fe_face_values.reinit(cell, face_no);
 
-                    const Tensor<1,dim> normal( fe_face_values.normal_vector(0) ); //Only one q point
+                    const Tensor<1,dim> normal( fe_face_values.normal_vector(0) ); // Only one q point
                     const Point<dim> midpoint = fe_face_values.quadrature_point(0);
                     const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(midpoint);
 
-                    indicators(i) = std::acos( std::abs ( normal * gravity / gravity.norm() ) ) //Don't care whether gravity is in the opposite direction
-                                    * std::pow( cell->diameter(), double(dim-1)); //scale with approximate surface area of the cell
-                    break;  //no need to loop over the rest of the faces
+                    indicators(i) = std::acos( std::abs ( normal * gravity / gravity.norm() ) ) // Don't care whether gravity is in the opposite direction
+                                    * std::pow( cell->diameter(), double(dim-1)); // scale with approximate surface area of the cell
+                    break;  // no need to loop over the rest of the faces
                   }
               }
 

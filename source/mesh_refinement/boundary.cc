@@ -50,7 +50,7 @@ namespace aspect
                      boundary_refinement_indicators.end() )
                   {
                     indicators(i) = 1.0;
-                    break;  //no need to loop over the rest of the faces
+                    break;  // no need to loop over the rest of the faces
                   }
               }
 

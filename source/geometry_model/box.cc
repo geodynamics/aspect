@@ -61,7 +61,7 @@ namespace aspect
                                                  box_origin+extents,
                                                  true);
 
-      //Tell p4est about the periodicity of the mesh.
+      // Tell p4est about the periodicity of the mesh.
       std::vector<GridTools::PeriodicFacePair<typename parallel::distributed::Triangulation<dim>::cell_iterator> >
       periodicity_vector;
       for (int i=0; i<dim; ++i)

@@ -223,7 +223,7 @@ namespace aspect
             // in the loop corresponds to the index of the phase transition, whereas
             // for the viscosities we have a list of prefactors (which has one more
             // entry for the first layer), so we have to use i+1 as index
-            if (composition.size()==0)      //only one field
+            if (composition.size()==0)      // only one field
               {
                 for (unsigned int i=0; i<number_of_phase_transitions; ++i)
                   {

@@ -121,15 +121,15 @@ namespace aspect
         std::vector<double> densities;
         std::vector<double> activation_energies;
         std::vector<double> thermal_expansivities;
-        std::vector<double> nvs; //Stress exponent, viscous rheology
+        std::vector<double> nvs; // Stress exponent, viscous rheology
         std::vector<double> nps;//Stress exponent, plastic rheology
         double thermal_diffusivity;
         double gamma; // Coefficient of yield stress increase with depth
         double heat_capacity;
         double activation_volume;
         double ref_strain_rate;
-        double B; //Preexponential constant in the viscous rheology law B
-        double tau_0; //cohesive strength of rocks at the surface
+        double B; // Preexponential constant in the viscous rheology law B
+        double tau_0; // cohesive strength of rocks at the surface
         double reference_T;
         double min_strain_rate;
 

@@ -76,7 +76,7 @@ namespace aspect
 
                 this->get_material_model().evaluate(in, out);
 
-                //Get the temperature gradients from the solution.
+                // Get the temperature gradients from the solution.
                 fe_face_values[this->introspection().extractors.temperature].get_function_gradients (this->get_solution(), temperature_gradients);
 
                 double local_normal_flux = 0;
