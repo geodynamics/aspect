@@ -280,7 +280,7 @@ namespace aspect
               out.compressibilities[i] = 0;
               out.thermal_expansion_coefficients[i] = 0;
             }
-          }
+        }
 
         virtual double density (const Point<dim> &position) const;
 
