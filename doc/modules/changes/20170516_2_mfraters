@@ -1,0 +1,5 @@
+New: Rewrote the Drucker Prager material model into the new evaluate style and added the derivatives of the
+viscosity wrt the strain-rate and pressure. Also created a test to test the derivatives against a finite 
+difference derivative. 
+<br>
+(Menno Fraters 2017/05/16)

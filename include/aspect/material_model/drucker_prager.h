@@ -84,7 +84,8 @@ namespace aspect
          * @{
          */
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const ;
+                              MaterialModel::MaterialModelOutputs<dim> &out) const;
+
         /**
          * @}
          */
@@ -138,17 +139,18 @@ namespace aspect
          */
 
       private:
+
         double reference_rho;
         double reference_T;
         double reference_eta;
-        double thermal_alpha;
+        double thermal_expansivity;
         double reference_specific_heat;
-        double thermal_k;
+        double thermal_conductivities;
 
         /**
          * The angle of internal friction
          */
-        double phi;
+        double angle_of_internal_friction;
 
         /**
          * The cohesion
