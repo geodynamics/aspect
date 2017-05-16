@@ -214,7 +214,17 @@ namespace aspect
          * the previous models. The operators should be one of:
          * add, subtract, minimum and maximum.
          */
-        std::vector<std::string> model_operators;
+        std::vector<std::string> model_operator_names;
+
+        enum OperatorList
+        {
+          add,
+          subtract,
+          minimum,
+          maximum
+        };
+
+        std::vector<OperatorList> model_operators;
     };
 
 

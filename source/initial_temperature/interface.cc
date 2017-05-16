@@ -103,16 +103,16 @@ namespace aspect
         model_names
           = Utilities::split_string_list(prm.get("List of model names"));
 
-        model_operators
-          = Utilities::split_string_list(prm.get("List of model operators"));
-
         AssertThrow(Utilities::has_unique_entries(model_names),
                     ExcMessage("The list of strings for the parameter "
                                "'Initial conditions/List of model names' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
 
-        AssertThrow(model_names.size() == model_operators.size() ||
-                    model_operators.size() == 1,
+        model_operator_names
+          = Utilities::split_string_list(prm.get("List of model operators"));
+
+        AssertThrow(model_names.size() == model_operator_names.size() ||
+                    model_operator_names.size() == 1,
                     ExcMessage("The list of strings for the parameter "
                                "'Initial conditions/List of model names' is not of length one or "
                                "the same size as 'Initial conditions/List of model operators'. "
@@ -134,11 +134,12 @@ namespace aspect
 
       // go through the list, create objects and let them parse
       // their own parameters
-      for (unsigned int name=0; name<model_names.size(); ++name)
+      for (unsigned int i=0; i<model_names.size(); ++i)
         {
+          // create initial temperature objects
           initial_temperature_objects.push_back (std_cxx11::shared_ptr<Interface<dim> >
                                                  (std_cxx11::get<dim>(registered_plugins)
-                                                  .create_plugin (model_names[name],
+                                                  .create_plugin (model_names[i],
                                                                   "Initial conditions::Model names")));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_temperature_objects.back()))
@@ -146,6 +147,24 @@ namespace aspect
 
           initial_temperature_objects.back()->parse_parameters (prm);
           initial_temperature_objects.back()->initialize ();
+
+          // create operator list
+          unsigned int j = 0;
+          if (model_operator_names.size() != 1)
+            j = i;
+
+          if (model_operator_names[j] == "add")
+            model_operators.push_back(add);
+          else if (model_operator_names[j] == "subtract")
+            model_operators.push_back(subtract);
+          else if (model_operator_names[j] == "minimum")
+            model_operators.push_back(minimum);
+          else if (model_operator_names[j] == "maximum")
+            model_operators.push_back(maximum);
+          else
+            AssertThrow( false,
+                         ExcMessage ("Initial temperature interface only accepts the following operators: "
+                                     "add, subtract, minimum and maximum. Please check your parameter file.") );
         }
     }
 
@@ -156,12 +175,43 @@ namespace aspect
     Manager<dim>::initial_temperature (const Point<dim> &position) const
     {
       double temperature = 0.0;
-      for (typename std::list<std_cxx11::shared_ptr<InitialTemperature::Interface<dim> > >::const_iterator
-           initial_temperature_object = initial_temperature_objects.begin();
+      int i = 0;
+
+      for (typename std::list<std_cxx11::shared_ptr<InitialTemperature::Interface<dim> > >::const_iterator initial_temperature_object = initial_temperature_objects.begin();
            initial_temperature_object != initial_temperature_objects.end();
            ++initial_temperature_object)
         {
-          temperature += (*initial_temperature_object)->initial_temperature(position);
+          switch (model_operators[i])
+            {
+              case add:
+              {
+                temperature += (*initial_temperature_object)->initial_temperature(position);
+                break;
+              }
+              case subtract:
+              {
+                temperature -= (*initial_temperature_object)->initial_temperature(position);
+                break;
+              }
+              case minimum:
+              {
+                temperature = std::min (temperature, (*initial_temperature_object)->initial_temperature(position));
+                break;
+              }
+              case maximum:
+              {
+                temperature = std::max (temperature, (*initial_temperature_object)->initial_temperature(position));
+                break;
+              }
+              default:
+              {
+                Assert ( false, ExcMessage ("Initial temperature interface only accepts the following operators: "
+                                            "add, subtract, minimum and maximum. Please check your parameter file.") );
+                break;
+              }
+            }
+
+          i++;
         }
       return temperature;
     }
@@ -206,7 +256,7 @@ namespace aspect
                           std_cxx11::get<dim>(registered_plugins).get_description_string());
 
         prm.declare_entry("List of model operators", "add",
-                          Patterns::MultipleSelection("add"|"subtract"|"minimum"|"maximum"),
+                          Patterns::MultipleSelection("add|subtract|minimum|maximum"),
                           "A comma separated list of operators that "
                           "will be used to append the listed temperature models onto "
                           "the previous models. If only one operator is given, "
