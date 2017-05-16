@@ -163,7 +163,7 @@ namespace aspect
           for (unsigned int i=0; i < in.position.size(); ++i)
             {
               const Point<dim> &pos = in.position[i];
-              const double r2 = ( pos[0] - 1.0 ) * ( p[0] - 1.0 ) + ( p[1] - 1.0 ) * ( p[1] - 1.0 );
+              const double r2 = ( pos[0] - 1.0 ) * ( pos[0] - 1.0 ) + ( pos[1] - 1.0 ) * ( pos[1] - 1.0 );
               out.viscosities[i] = ( r2 < 0.2 * 0.2 ) ? eta_B : 1.0;
               out.densities[i] = 0;
               out.thermal_expansion_coefficients[i] = 0;
