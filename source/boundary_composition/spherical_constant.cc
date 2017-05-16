@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <deal.II/base/signaling_nan.h>
 #include <aspect/boundary_composition/spherical_constant.h>
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/spherical_shell.h>
@@ -50,12 +50,12 @@ namespace aspect
 
       if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
         {
-          if (boundary_name == "outer")
+          if (boundary_name == "surface")
             return outer_composition;
           else
             {
               Assert (false, ExcMessage ("Unknown boundary indicator for geometry model. "
-                                         "The given boundary should be ``outer''."));
+                                         "The given boundary should be ``surface''."));
               return numbers::signaling_nan<double>();
             }
         }

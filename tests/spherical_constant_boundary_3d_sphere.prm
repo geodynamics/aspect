@@ -23,7 +23,7 @@ end
 subsection Boundary composition model
   set Model name = spherical constant
   subsection Spherical constant
-    set Surface composition = 0
+    set Outer composition = 0
   end
 end
 

@@ -1,0 +1,6 @@
+New: The sphere geometry model can now be used with the
+spherical constant boundary composition and ellipsoidal
+chunk can now be used with the spherical shell initial
+temperature models.
+<br>
+(Bob Myhill, 2017/05/16)
