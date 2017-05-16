@@ -76,10 +76,6 @@ namespace aspect
 
                 for (int i=0; i<order+1; i++)
                   {
-                    // a_lm.push_back(coeffs[ind]);
-                    // b_lm.push_back(0.0);
-                    // ind += 1;
-
                     ind_degree = 0;
                     while (ind_degree <= i)
                       {
