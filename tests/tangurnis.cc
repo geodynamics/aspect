@@ -56,8 +56,8 @@ namespace aspect
          * @name Physical parameters used in the basic equations
          * @{
          */
-        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                 MaterialModel::MaterialModelOutputs<dim> &out) const
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const
         {
           for (unsigned int i=0; i < in.position.size(); ++i)
             {
