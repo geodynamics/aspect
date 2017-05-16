@@ -194,7 +194,8 @@ namespace aspect
       MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
                           const typename DoFHandler<dim>::active_cell_iterator *cell,
                           const Introspection<dim> &introspection,
-                          const LinearAlgebra::BlockVector &solution_vector);
+                          const LinearAlgebra::BlockVector &solution_vector,
+                          const bool use_strain_rates = true);
 
       /**
        * Function to re-initialize and populate the pre-existing arrays
@@ -203,7 +204,8 @@ namespace aspect
       void reinit(const FEValuesBase<dim,dim> &fe_values,
                   const typename DoFHandler<dim>::active_cell_iterator *cell,
                   const Introspection<dim> &introspection,
-                  const LinearAlgebra::BlockVector &solution_vector);
+                  const LinearAlgebra::BlockVector &solution_vector,
+                  const bool use_strain_rates = true);
 
 
       /**

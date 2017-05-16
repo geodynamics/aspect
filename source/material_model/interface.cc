@@ -245,7 +245,8 @@ namespace aspect
     MaterialModelInputs<dim>::MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
                                                   const typename DoFHandler<dim>::active_cell_iterator *cell_x,
                                                   const Introspection<dim> &introspection,
-                                                  const LinearAlgebra::BlockVector &solution_vector)
+                                                  const LinearAlgebra::BlockVector &solution_vector,
+                                                  const bool use_strain_rate)
       :
       position(fe_values.get_quadrature_points()),
       temperature(fe_values.n_quadrature_points, numbers::signaling_nan<double>()),
@@ -257,7 +258,7 @@ namespace aspect
       cell(cell_x)
     {
       // Call the function reinit to populate the new arrays.
-      this->reinit(fe_values, cell, introspection, solution_vector);
+      this->reinit(fe_values, cell, introspection, solution_vector, use_strain_rate);
     }
 
 
@@ -266,14 +267,18 @@ namespace aspect
     MaterialModelInputs<dim>::reinit(const FEValuesBase<dim,dim> &fe_values,
                                      const typename DoFHandler<dim>::active_cell_iterator *cell_x,
                                      const Introspection<dim> &introspection,
-                                     const LinearAlgebra::BlockVector &solution_vector)
+                                     const LinearAlgebra::BlockVector &solution_vector,
+                                     const bool use_strain_rate)
     {
       // Populate the newly allocated arrays
       fe_values[introspection.extractors.temperature].get_function_values (solution_vector, this->temperature);
       fe_values[introspection.extractors.velocities].get_function_values (solution_vector, this->velocity);
       fe_values[introspection.extractors.pressure].get_function_values (solution_vector, this->pressure);
       fe_values[introspection.extractors.pressure].get_function_gradients (solution_vector, this->pressure_gradient);
-      fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (solution_vector,this->strain_rate);
+      if (use_strain_rate)
+        fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (solution_vector,this->strain_rate);
+      else
+        this->strain_rate.resize(0);
 
       // Vectors for evaluating the the compositional field parts of the finite element solution
       std::vector<std::vector<double> > composition_values (introspection.n_compositional_fields, std::vector<double> (fe_values.n_quadrature_points));
