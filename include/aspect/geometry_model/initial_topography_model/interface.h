@@ -73,6 +73,12 @@ namespace aspect
         double value (const Point<dim-1> &p) const = 0;
 
         /**
+         * Return the value of the elevation at the given point.
+         */
+//        virtual
+//        Tensor<1,dim-1> vector_gradient (const Point<dim> &p) const = 0;
+
+        /**
          * Declare the parameters this class takes through input files. The
          * default implementation of this function does not describe any
          * parameters. Consequently, derived classes do not have to overload

@@ -1403,7 +1403,7 @@ namespace aspect
     template <int dim>
     Tensor<1,dim>
     AsciiDataLookup<dim>::get_gradients(const Point<dim> &position,
-                                   const unsigned int component) 
+                                        const unsigned int component)
     {
       return data[component]->gradient(position,component);
     }
@@ -1861,8 +1861,8 @@ namespace aspect
     template <int dim>
     Tensor<1,dim-1>
     AsciiDataBoundary<dim>::vector_gradient (const types::boundary_id             boundary_indicator,
-                        const Point<dim>                    &position,
-                        const unsigned int                   component) const
+                                             const Point<dim>                    &position,
+                                             const unsigned int                   component) const
     {
       if (this->get_time() - first_data_file_model_time >= 0.0)
         {
