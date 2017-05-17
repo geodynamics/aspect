@@ -74,6 +74,71 @@ namespace aspect
         }
     }
 
+
+    /**
+    * This is an internal deal.II function stolen from dof_tools.cc
+    *
+    * Return an array that for each dof on the reference cell lists the
+    * corresponding vector component.
+    */
+    template <int dim, int spacedim>
+    std::vector<unsigned char>
+    get_local_component_association (const FiniteElement<dim,spacedim>  &fe,
+                                     const ComponentMask        & /*component_mask*/)
+    {
+      std::vector<unsigned char> local_component_association (fe.dofs_per_cell,
+                                                              (unsigned char)(-1));
+
+      // compute the component each local dof belongs to.
+      // if the shape function is primitive, then this
+      // is simple and we can just associate it with
+      // what system_to_component_index gives us
+      for (unsigned int i=0; i<fe.dofs_per_cell; ++i)
+        {
+          // see the deal.II version if we ever need non-primitive FEs.
+          Assert (fe.is_primitive(i), ExcNotImplemented());
+          local_component_association[i] =
+            fe.system_to_component_index(i).first;
+        }
+
+      Assert (std::find (local_component_association.begin(),
+                         local_component_association.end(),
+                         (unsigned char)(-1))
+              ==
+              local_component_association.end(),
+              ExcInternalError());
+
+      return local_component_association;
+    }
+
+
+    template <int dim>
+    IndexSet extract_locally_active_dofs_with_component(const DoFHandler<dim> &dof_handler,
+                                                        const ComponentMask &component_mask)
+    {
+      std::vector<unsigned char> local_asoc =
+        get_local_component_association (dof_handler.get_fe(),
+                                         ComponentMask(dof_handler.get_fe().n_components(), true));
+
+      IndexSet ret(dof_handler.n_dofs());
+
+      unsigned int dofs_per_cell = dof_handler.get_fe().dofs_per_cell;
+      std::vector<types::global_dof_index> indices(dofs_per_cell);
+      for (typename DoFHandler<dim>::active_cell_iterator cell=dof_handler.begin_active();
+           cell!=dof_handler.end(); ++cell)
+        if (cell->is_locally_owned())
+          {
+            cell->get_dof_indices(indices);
+            for (unsigned int i=0; i<dofs_per_cell; ++i)
+              if (component_mask[local_asoc[i]])
+                ret.add_index(indices[i]);
+          }
+
+      return ret;
+    }
+
+
+
     namespace Coordinates
     {
 
@@ -2246,6 +2311,16 @@ namespace aspect
 
 
 // Explicit instantiations
+
+#define INSTANTIATE(dim) \
+  template \
+  IndexSet extract_locally_active_dofs_with_component(const DoFHandler<dim> &, \
+                                                      const ComponentMask &);
+
+    ASPECT_INSTANTIATE(INSTANTIATE)
+
+
+
     template class AsciiDataLookup<1>;
     template class AsciiDataLookup<2>;
     template class AsciiDataLookup<3>;

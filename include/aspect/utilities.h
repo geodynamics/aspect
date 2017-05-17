@@ -78,6 +78,19 @@ namespace aspect
                          const IndexSet &whole_set,
                          std::vector<IndexSet> &partitioned);
 
+
+    /**
+     * Returns an IndexSet that contains all locally active DoFs that belong to
+     * the given component_mask.
+     *
+     * This function should be moved into deal.II at some point.
+     */
+    template <int dim>
+    IndexSet extract_locally_active_dofs_with_component(const DoFHandler<dim> &dof_handler,
+                                                        const ComponentMask &component_mask);
+
+
+
     namespace Coordinates
     {
 
