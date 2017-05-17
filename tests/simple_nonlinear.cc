@@ -600,7 +600,7 @@ int f(double parameter)
 
       if (temp > derivatives->viscosity_derivative_wrt_pressure[i] * finite_difference_factor || temp < derivatives->viscosity_derivative_wrt_pressure[i] * (2-finite_difference_factor))
         {
-          std::cout << "Error: The derivative of the viscosity to the pressure is too different from the analitical value." << std::endl;
+          std::cout << "Error: The derivative of the viscosity to the pressure is too different from the analytical value." << std::endl;
           Error = true;
         }
 
@@ -619,7 +619,7 @@ int f(double parameter)
       std::cout << "zerozero " << i << ": Finite difference = " << temp << ". Analytical derivative = " << derivatives->viscosity_derivative_wrt_strain_rate[i][0][0]  << std::endl;
       if (std::fabs(temp - derivatives->viscosity_derivative_wrt_strain_rate[i][0][0]) > 1e-3 * (std::fabs(temp) + std::fabs(derivatives->viscosity_derivative_wrt_strain_rate[i][0][0])))
         {
-          std::cout << "   Error: The derivative of the viscosity to the strain rate is too different from the analitical value." << std::endl;
+          std::cout << "   Error: The derivative of the viscosity to the strain rate is too different from the analytical value." << std::endl;
           Error = true;
         }
 
@@ -640,7 +640,7 @@ int f(double parameter)
       std::cout << "onezero " << i << ": Finite difference = " << temp << ". Analytical derivative = " << derivatives->viscosity_derivative_wrt_strain_rate[i][1][0]   << std::endl;
       if (std::fabs(temp - derivatives->viscosity_derivative_wrt_strain_rate[i][1][0]) > 1e-3 * (std::fabs(temp) + std::fabs(derivatives->viscosity_derivative_wrt_strain_rate[i][1][0])) )
         {
-          std::cout << "   Error: The derivative of the viscosity to the strain rate is too different from the analitical value." << std::endl;
+          std::cout << "   Error: The derivative of the viscosity to the strain rate is too different from the analytical value." << std::endl;
           Error = true;
         }
     }
@@ -658,7 +658,7 @@ int f(double parameter)
       std::cout << "oneone " << i << ": Finite difference = " << temp << ". Analytical derivative = " << derivatives->viscosity_derivative_wrt_strain_rate[i][1][1]  << std::endl;
       if (std::fabs(temp - derivatives->viscosity_derivative_wrt_strain_rate[i][1][1]) > 1e-3 * (std::fabs(temp) + std::fabs(derivatives->viscosity_derivative_wrt_strain_rate[i][1][1])) )
         {
-          std::cout << "   Error: The derivative of the viscosity to the strain rate is too different from the analitical value." << std::endl;
+          std::cout << "   Error: The derivative of the viscosity to the strain rate is too different from the analytical value." << std::endl;
           Error = true;
         }
 
