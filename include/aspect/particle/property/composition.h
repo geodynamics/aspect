@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _aspect_particle_property_peridotite_h
-#define _aspect_particle_property_peridotite_h
+#ifndef _aspect_particle_property_composition_h
+#define _aspect_particle_property_composition_h
 
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
@@ -32,14 +32,14 @@ namespace aspect
     {
       /**
        * Implementation of a plugin in which the particle
-       * property is defined as the peridotite depletion
-       * at this position. This can be used to track solid
-       * composition evolution over time.
+       * property is defined by the compositional fields in
+       * the model. This can be used to track solid composition
+       * evolution over time.
        *
        * @ingroup ParticleProperties
        */
       template <int dim>
-      class Peridotite : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+      class Composition : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
       {
         public:
           /**

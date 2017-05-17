@@ -42,6 +42,13 @@
           0
           4
         </DataArray>
+        <DataArray type="Float64" Name="porosity" NumberOfComponents="1" Format="ascii">
+          0.00100398
+          0.0098349
+          0.01
+          0.0098349
+          0.00100398
+        </DataArray>
         <DataArray type="Float64" Name="peridotite" NumberOfComponents="1" Format="ascii">
           0.00100398
           0.0098349
