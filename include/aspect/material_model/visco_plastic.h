@@ -31,6 +31,34 @@ namespace aspect
     using namespace dealii;
 
     /**
+     * Additional output fields for the plastic parameters weakened (or hardened)
+     * by strain to be added to the MaterialModel::MaterialModelOutputs structure
+     * and filled in the MaterialModel::Interface::evaluate() function.
+     */
+    template<int dim>
+    class PlasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        PlasticAdditionalOutputs(const unsigned int n_points);
+
+        virtual const std::vector<double> &get_nth_output(const unsigned int idx) const;
+
+        /**
+         * Cohesions at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         */
+        std::vector<double> cohesions;
+
+        /**
+         * Internal angles of friction at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         */
+        std::vector<double> friction_angles;
+    };
+
+    /**
      * A material model combining viscous and plastic deformation.
      *
      * Viscous deformation is defined by a viscous flow law describing
@@ -114,6 +142,10 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
+        virtual
+        void
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+
         double get_min_strain_rate() const;
 
       protected:
@@ -184,6 +216,15 @@ namespace aspect
                                           const SymmetricTensor<2,dim> &strain_rate,
                                           const ViscosityScheme &viscous_type,
                                           const YieldScheme &yield_type) const;
+
+        /**
+         * A function that computes the strain weakened values
+         * of cohesion and internal friction angle for a given
+         * compositional field.
+         */
+        std::pair<double, double>
+        calculate_weakening ( const double strain_ii,
+                              const unsigned int j ) const;
 
         bool use_strain_weakening;
         bool use_finite_strain_tensor;
