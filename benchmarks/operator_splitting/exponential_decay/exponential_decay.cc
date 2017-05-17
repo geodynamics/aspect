@@ -3,6 +3,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/melt.h>
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/numerics/vector_tools.h>
 
 #include <aspect/utilities.h>
 
@@ -152,6 +153,92 @@ namespace aspect
       this->model_dependence = base_model->get_model_dependence();
     }
   }
+  
+  
+  
+  template <int dim>
+  class RefFunction : public Function<dim>
+  {
+    public:
+      RefFunction () : Function<dim>(dim+2) {}
+      virtual void vector_value (const Point< dim >   &p,
+                                 Vector< double >   &values) const
+      {
+        double x = p(0);
+        double z = p(1);
+
+        values[0] = 0.0; // velocity x
+        values[1] = 0.0; // velocity z
+        values[2] = 0.0; // pressure
+        values[3] = 0.0; // temperature
+        values[4] = exp(-log(2.0)/10.0*this->get_time());
+      }
+  };
+  
+  
+  
+  /**
+     * A postprocessor that evaluates the accuracy of the solution
+     * by using the L2 norm.
+     */
+   template <int dim>
+   class ExponentialDecayPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+   {
+     public:
+       ExponentialDecayPostprocessor();
+     
+       /**
+        * Generate graphical output from the current solution.
+        */
+       virtual
+       std::pair<std::string,std::string>
+       execute (TableHandler &statistics);
+       
+       double max_error;
+   };
+   
+   template<int dim>
+   ExponentialDecayPostprocessor<dim>::ExponentialDecayPostprocessor ()
+   {
+     max_error = 0.0;
+   }
+
+   template <int dim>
+   std::pair<std::string,std::string>
+   ExponentialDecayPostprocessor<dim>::execute (TableHandler & /*statistics*/)
+   {
+     RefFunction<dim> ref_func;
+     ref_func.set_time(this->get_time());
+     
+     const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
+
+     const unsigned int n_total_comp = this->introspection().n_components;
+
+     Vector<float> cellwise_errors_composition (this->get_triangulation().n_active_cells());
+
+     ComponentSelectFunction<dim> comp_C(dim+2, n_total_comp);
+
+     VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+                                        this->get_solution(),
+                                        ref_func,
+                                        cellwise_errors_composition,
+                                        quadrature_formula,
+                                        VectorTools::L2_norm,
+                                        &comp_C);
+     
+     const double current_error = std::sqrt(Utilities::MPI::sum(cellwise_errors_composition.norm_sqr(),MPI_COMM_WORLD));
+     max_error = std::max(max_error, current_error);
+
+     std::ostringstream os;
+     os << std::scientific
+        << "time=" << this->get_time()
+        << " ndofs= " << this->get_solution().size()
+        << " C_L2_current= " << current_error
+        << " C_L2_max= " << max_error
+       ;
+
+     return std::make_pair("Errors", os.str());
+   }
 }
 
 // explicit instantiations
@@ -165,7 +252,11 @@ namespace aspect
                                    "material model and that will replace the reaction rate by a "
                                    "function that can be chosen as an input parameter "
                                    "(units: 1/s or 1/yr).")
-
+                                   
   }
+   ASPECT_REGISTER_POSTPROCESSOR(ExponentialDecayPostprocessor,
+                                 "ExponentialDecayPostprocessor",
+                                 "A postprocessor that compares the solution "
+                                 "to the analytical solution for exponential decay.")
 }
 
