@@ -83,11 +83,10 @@ namespace aspect
         std_cxx11::unique_ptr<Functions::ParsedFunction<dim> > function;
 
         /**
-               * The coordinate representation to evaluate the function. Possible
-               * choices are depth, cartesian and spherical.
-               */
+         * The coordinate representation to evaluate the function. Possible
+         * choices are depth, cartesian and spherical.
+         */
         Utilities::Coordinates::CoordinateSystem coordinate_system;
-
     };
   }
 }
