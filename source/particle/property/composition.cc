@@ -82,9 +82,8 @@ namespace aspect
 
         for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
           {
-            std::ostringstream field_name;
-            field_name << this->introspection().name_for_compositional_index(i);
-            property_information.push_back(std::make_pair(field_name.str(),1));
+        	const std::string field_name = this->introspection().name_for_compositional_index(i);
+        	property_information.push_back(std::make_pair(field_name,1));
           }
         return property_information;
       }
