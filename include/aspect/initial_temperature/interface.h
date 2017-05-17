@@ -205,6 +205,34 @@ namespace aspect
          * in the parameter file.
          */
         std::vector<std::string> model_names;
+
+        /**
+         * A list of names of initial temperature operator strings that have been
+         * requested in the parameter file. Either one operator is given
+         * (in which case it will be used for all models), or each name is associated
+         * with a model_name, in which case each is used to modify the temperature
+         * field with the values from the current plugin. The operators should be
+         * one of: add, subtract, minimum and maximum.
+         */
+        std::vector<std::string> model_operator_names;
+
+        /**
+         * An enum of operators which match the allowed
+         * model operator names which can be given in the parameter file.
+         */
+        enum Operator
+        {
+          add,
+          subtract,
+          minimum,
+          maximum
+        };
+
+        /**
+         * A vector of enums corresponding to the list
+         * of plugin operators given in the parameter file.
+         */
+        std::vector<Operator> model_operators;
     };
 
 

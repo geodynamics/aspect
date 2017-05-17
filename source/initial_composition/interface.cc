@@ -121,6 +121,10 @@ namespace aspect
         if (!(model_name == "unspecified"))
           model_names.push_back(model_name);
 
+        model_operator_names = Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
+                                                                       model_names.size(),
+                                                                       "List of model operators");
+
       }
       prm.leave_subsection ();
 
@@ -133,11 +137,11 @@ namespace aspect
 
       // go through the list, create objects and let them parse
       // their own parameters
-      for (unsigned int name=0; name<model_names.size(); ++name)
+      for (unsigned int i=0; i<model_names.size(); ++i)
         {
           initial_composition_objects.push_back (std_cxx11::shared_ptr<Interface<dim> >
                                                  (std_cxx11::get<dim>(registered_plugins)
-                                                  .create_plugin (model_names[name],
+                                                  .create_plugin (model_names[i],
                                                                   "Initial composition model::Model names")));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_composition_objects.back()))
@@ -145,9 +149,22 @@ namespace aspect
 
           initial_composition_objects.back()->parse_parameters (prm);
           initial_composition_objects.back()->initialize ();
+
+          // create operator list
+          if (model_operator_names[i] == "add")
+            model_operators.push_back(add);
+          else if (model_operator_names[i] == "subtract")
+            model_operators.push_back(subtract);
+          else if (model_operator_names[i] == "minimum")
+            model_operators.push_back(minimum);
+          else if (model_operator_names[i] == "maximum")
+            model_operators.push_back(maximum);
+          else
+            AssertThrow( false,
+                         ExcMessage ("Initial composition interface only accepts the following operators: "
+                                     "add, subtract, minimum and maximum. Please check your parameter file.") );
         }
     }
-
 
 
     template <int dim>
@@ -156,13 +173,46 @@ namespace aspect
                                        const unsigned int n_comp) const
     {
       double composition = 0.0;
+      int i = 0;
+
       for (typename std::list<std_cxx11::shared_ptr<InitialComposition::Interface<dim> > >::const_iterator
            initial_composition_object = initial_composition_objects.begin();
            initial_composition_object != initial_composition_objects.end();
            ++initial_composition_object)
         {
-          composition += (*initial_composition_object)->initial_composition(position,n_comp);
+          switch (model_operators[i])
+            {
+              case add:
+              {
+                composition += (*initial_composition_object)->initial_composition(position,  n_comp);
+                break;
+              }
+              case subtract:
+              {
+                composition -= (*initial_composition_object)->initial_composition(position, n_comp);
+                break;
+              }
+              case minimum:
+              {
+                composition = std::min (composition, (*initial_composition_object)->initial_composition(position, n_comp));
+                break;
+              }
+              case maximum:
+              {
+                composition = std::max (composition, (*initial_composition_object)->initial_composition(position, n_comp));
+                break;
+              }
+              default:
+              {
+                Assert ( false, ExcMessage ("Initial composition interface only accepts the following operators: "
+                                            "add, subtract, minimum and maximum. Please check your parameter file.") );
+                break;
+              }
+            }
+
+          i++;
         }
+
       return composition;
     }
 
@@ -196,21 +246,32 @@ namespace aspect
         prm.declare_entry("List of model names",
                           "",
                           Patterns::MultipleSelection(pattern_of_names),
-                          "A comma separated list of initial composition models that "
-                          "describe the initial composition field. The results "
-                          "of each of these criteria will be added.\n\n"
-                          "The following heating models are available:\n\n"
+                          "A comma-separated list of initial composition models that "
+                          "together describe the initial composition field. "
+                          "These plugins are loaded in the order given, and modify the "
+                          "existing composition field via the operators listed "
+                          "in 'List of model operators'.\n\n"
+                          "The following composition models are available:\n\n"
                           +
                           std_cxx11::get<dim>(registered_plugins).get_description_string());
+
+        prm.declare_entry("List of model operators", "add",
+                          Patterns::MultipleSelection("add|subtract|minimum|maximum"),
+                          "A comma-separated list of operators that "
+                          "will be used to append the listed composition models onto "
+                          "the previous models. If only one operator is given, "
+                          "the same operator is applied to all models.");
 
         prm.declare_entry ("Model name", "unspecified",
                            Patterns::Selection (pattern_of_names+"|unspecified"),
                            "Select one of the following models:\n\n"
-                           "Warning: This is the old formulation of specifying "
-                           "initial composition models and shouldn't be used. "
-                           "Please use 'List of model names' instead."
                            +
-                           std_cxx11::get<dim>(registered_plugins).get_description_string());
+                           std_cxx11::get<dim>(registered_plugins).get_description_string()
+                           + "\n\n" +
+                           "\\textbf{Warning}: This parameter provides an old and "
+                           "deprecated way of specifying "
+                           "initial composition models and shouldn't be used. "
+                           "Please use 'List of model names' instead.");
       }
       prm.leave_subsection ();
 

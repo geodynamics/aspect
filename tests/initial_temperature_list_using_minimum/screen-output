@@ -1,0 +1,24 @@
+
+
+   Loading Ascii data initial file ASPECT_DIR/data/initial-temperature/ascii-data/test/box_2d.txt.
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 3,556 (2,178+289+1,089)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 34+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/year, 1 m/year
+     Temperature min/avg/max:            0 K, 45 K, 50 K
+     Heat fluxes through boundary parts: 347.6 W, 347.6 W, 347.6 W, 347.6 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
