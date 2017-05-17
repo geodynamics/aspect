@@ -44,7 +44,7 @@ namespace aspect
     reference_darcy_coefficient () const
     {
       // 0.01 = 1% melt
-      return reference_permeability * pow(0.01,3.0) / eta_f;
+      return reference_permeability * std::pow(0.01,3.0) / eta_f;
     }
 
     template <int dim>
