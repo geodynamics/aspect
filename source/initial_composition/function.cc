@@ -114,7 +114,7 @@ namespace aspect
       prm.enter_subsection ("Compositional fields");
       const unsigned int n_compositional_fields = prm.get_integer ("Number of fields");
       prm.leave_subsection ();
-
+ 
       prm.enter_subsection("Initial composition model");
       {
         prm.enter_subsection("Function");
