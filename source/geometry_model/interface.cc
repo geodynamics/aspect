@@ -125,7 +125,7 @@ namespace aspect
         // backwards compatibility (rename boundaries to all use "top" and "bottom"
         if (name == "surface" || name == "outer")
           name = "top";
-        else if (name == "lower" || name == "inner")
+        else if (name == "inner")
           name = "bottom";
 
         // see if the given name is a symbolic one
