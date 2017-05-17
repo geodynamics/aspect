@@ -1,13 +1,17 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 Number of active cells: 768 (on 2 levels)
 Number of degrees of freedom: 28,690 (20,790+970+6,930)
 
 *** Timestep 0:  t=0 years
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+15 iterations.
+   Solving Stokes system... 130+0 iterations.
       Relative Stokes residual after nonlinear iteration 1: 1
+   Solving Stokes system... 46+0 iterations.
+      Relative Stokes residual after nonlinear iteration 2: 1.0625e-05
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 2: 1.9043e-08
+      Relative Stokes residual after nonlinear iteration 3: 3.16066e-08
 
    Postprocessing:
 
@@ -18,7 +22,7 @@ Number of degrees of freedom: 28,690 (20,790+970+6,930)
      Reference pressure (Pa):                       0
      Reference gravity (m/s^2):                     9.8
      Reference density (kg/m^3):                    1
-     Reference thermal expansion coefficient (1/K): 1
+     Reference thermal expansion coefficient (1/K): 0.1
      Reference specific heat capacity (J/(K*kg)):   1
      Reference thermal conductivity (W/(m*K)):      1
      Reference viscosity (Pa*s):                    1
