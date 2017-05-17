@@ -510,7 +510,7 @@ namespace aspect
     {
       prm.enter_subsection("Postprocess");
       {
-        prm.enter_subsection("Dynamic Topography");
+        prm.enter_subsection("Dynamic topography");
         {
           prm.declare_entry ("Density above","0",
                              Patterns::Double (0),
@@ -551,7 +551,7 @@ namespace aspect
     {
       prm.enter_subsection("Postprocess");
       {
-        prm.enter_subsection("Dynamic Topography");
+        prm.enter_subsection("Dynamic topography");
         {
           density_above = prm.get_double ("Density above");
           density_below = prm.get_double ("Density below");
