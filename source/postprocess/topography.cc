@@ -43,7 +43,7 @@ namespace aspect
 
       double reference_height = 0.0;
       bool vertical_gravity = false;
-      types::boundary_id relevant_boundary = 0;
+      const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
 
       if (GeometryModel::Box<dim> *gm = dynamic_cast<GeometryModel::Box<dim> *>
                                         (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
@@ -52,33 +52,29 @@ namespace aspect
           Point<dim> origin  = gm->get_origin();
           reference_height = extents[dim-1]+origin[dim-1];
           vertical_gravity = true;
-          relevant_boundary = (dim == 2 ? 3 : 5); // select top boundary
         }
       else if (GeometryModel::Sphere<dim> *gm = dynamic_cast<GeometryModel::Sphere<dim> *>
                                                 (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
         {
           reference_height = gm->radius();
           vertical_gravity = false;
-          relevant_boundary = 0;  // select top boundary
         }
       else if (GeometryModel::SphericalShell<dim> *gm = dynamic_cast<GeometryModel::SphericalShell<dim> *>
                                                         (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
         {
           reference_height = gm->outer_radius();
           vertical_gravity = false;
-          relevant_boundary = 1;  // select top boundary
         }
       else if (GeometryModel::Chunk<dim> *gm = dynamic_cast<GeometryModel::Chunk<dim> *>
                                                (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
         {
           reference_height = gm->outer_radius();
           vertical_gravity = false;
-          relevant_boundary = 1;  //select top boundary
         }
       else
         {
-          AssertThrow(false, ExcMessage("The topography postprocessor does not recognize the geometry model."
-                                        "Consider using a box, a spherical shell, or a sphere.") );
+          AssertThrow(false, ExcMessage("The topography postprocessor does not recognize the geometry model. "
+                                        "Consider using a box, spherical shell, sphere, or chunk.") );
         }
 
       // Get a quadrature rule that exists only on the corners

@@ -294,10 +294,10 @@ namespace aspect
           case 2:
           {
             static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("east",  0),
-                  std::pair<std::string,types::boundary_id>("west",  1),
-                  std::pair<std::string,types::boundary_id>("inner", 2),
-                  std::pair<std::string,types::boundary_id>("outer", 3)
+              = { std::pair<std::string,types::boundary_id>("east",   0),
+                  std::pair<std::string,types::boundary_id>("west",   1),
+                  std::pair<std::string,types::boundary_id>("bottom", 2),
+                  std::pair<std::string,types::boundary_id>("top",    3)
                 };
 
             return std::map<std::string,types::boundary_id> (&mapping[0],
@@ -307,12 +307,12 @@ namespace aspect
           case 3:
           {
             static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("east",  0),
-                  std::pair<std::string,types::boundary_id>("west",  1),
-                  std::pair<std::string,types::boundary_id>("north", 2),
-                  std::pair<std::string,types::boundary_id>("south", 3),
-                  std::pair<std::string,types::boundary_id>("inner", 4),
-                  std::pair<std::string,types::boundary_id>("outer", 5)
+              = { std::pair<std::string,types::boundary_id>("east",   0),
+                  std::pair<std::string,types::boundary_id>("west",   1),
+                  std::pair<std::string,types::boundary_id>("north",  2),
+                  std::pair<std::string,types::boundary_id>("south",  3),
+                  std::pair<std::string,types::boundary_id>("bottom", 4),
+                  std::pair<std::string,types::boundary_id>("top",    5)
                 };
 
             return std::map<std::string,types::boundary_id> (&mapping[0],

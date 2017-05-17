@@ -122,6 +122,12 @@ namespace aspect
         while ((name.size() > 0) && (name[name.size()-1] == ' '))
           name.erase (name.end()-1);
 
+        // backwards compatibility (rename boundaries to all use "top" and "bottom"
+        if (name == "surface" || name == "outer")
+          name = "top";
+        else if (name == "lower" || name == "inner")
+          name = "bottom";
+
         // see if the given name is a symbolic one
         if (boundary_names_mapping.find (name) != boundary_names_mapping.end())
           return boundary_names_mapping.find(name)->second;
