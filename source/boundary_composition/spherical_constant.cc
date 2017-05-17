@@ -45,16 +45,16 @@ namespace aspect
       const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
       const std::string boundary_name = geometry_model->translate_id_to_symbol_name(boundary_indicator);
 
-          if (boundary_name == "bottom")
-            return inner_composition;
-          else if (boundary_name =="top")
-            return outer_composition;
-          else
-            {
-              Assert (false, ExcMessage ("Unknown boundary indicator for geometry model. "
-                                         "The given boundary should be ``top'' or ``bottom''."));
-              return numbers::signaling_nan<double>();
-            }
+      if (boundary_name == "bottom")
+        return inner_composition;
+      else if (boundary_name =="top")
+        return outer_composition;
+      else
+        {
+          Assert (false, ExcMessage ("Unknown boundary indicator for geometry model. "
+                                     "The given boundary should be ``top'' or ``bottom''."));
+          return numbers::signaling_nan<double>();
+        }
     }
 
 
