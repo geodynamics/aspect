@@ -92,7 +92,7 @@ namespace aspect
         Assert (computed_quantities[0].size() == heating_model_objects.size(), ExcInternalError());
         Assert (input_data.solution_values[0].size() == this->introspection().n_components, ExcInternalError());
 
-        MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points, this->n_compositional_fields());
+        MaterialModel::MaterialModelInputs<dim> in(input_data, this->introspection());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
 
         std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_quadrature_points));
@@ -104,28 +104,7 @@ namespace aspect
         // To find the cell, we find a point in the middle of the cell by averaging over the quadrature points.
         Point<dim> mid_point;
         for (unsigned int q=0; q<n_quadrature_points; ++q)
-          {
-            Tensor<2,dim> grad_u;
-            for (unsigned int d=0; d<dim; ++d)
-              grad_u[d] = input_data.solution_gradients[q][d];
-            in.strain_rate[q] = symmetrize (grad_u);
-
-            in.temperature[q] = input_data.solution_values[q][this->introspection().component_indices.temperature];
-            in.pressure[q]    = input_data.solution_values[q][this->introspection().component_indices.pressure];
-
-            for (unsigned int d = 0; d < dim; ++d)
-              {
-                in.velocity[q][d] = input_data.solution_values[q][this->introspection().component_indices.velocities[d]];
-                in.pressure_gradient[q][d] = input_data.solution_gradients[q][this->introspection().component_indices.pressure][d];
-              }
-
-            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              in.composition[q][c] = input_data.solution_values[q][this->introspection().component_indices.compositional_fields[c]];
-
-            mid_point += input_data.evaluation_points[q]/n_quadrature_points;
-          }
-
-        in.position = input_data.evaluation_points;
+          mid_point += input_data.evaluation_points[q]/n_quadrature_points;
 
         typename DoFHandler<dim>::active_cell_iterator cell;
         cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_dof_handler(), mid_point)).first;

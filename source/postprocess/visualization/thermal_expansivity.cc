@@ -50,28 +50,11 @@ namespace aspect
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
         Assert (input_data.solution_values[0].size() == this->introspection().n_components,           ExcInternalError());
 
-        MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points,
-                                                   this->n_compositional_fields());
+        // Set use_strain_rates to false since we have no need for viscosity.
+        MaterialModel::MaterialModelInputs<dim> in(input_data,
+                                                   this->introspection(), false);
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
-
-        in.position = input_data.evaluation_points;
-        in.strain_rate.resize(0); // we do not need the viscosity
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
-          {
-            // in.strain_rate[q] =
-            in.pressure[q] = input_data.solution_values[q][this->introspection().component_indices.pressure];
-            in.temperature[q] = input_data.solution_values[q][this->introspection().component_indices.temperature];
-            for (unsigned int d = 0; d < dim; ++d)
-              {
-                in.velocity[q][d] = input_data.solution_values[q][this->introspection().component_indices.velocities[d]];
-                in.pressure_gradient[q][d] = input_data.solution_gradients[q][this->introspection().component_indices.pressure][d];
-              }
-
-            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              in.composition[q][c] = input_data.solution_values[q][this->introspection().component_indices.compositional_fields[c]];
-
-          }
 
         this->get_material_model().evaluate(in, out);
 
