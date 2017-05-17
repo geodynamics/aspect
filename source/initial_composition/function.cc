@@ -21,6 +21,9 @@
 
 #include <aspect/initial_composition/function.h>
 #include <aspect/postprocess/interface.h>
+#include <aspect/utilities.h>
+#include <deal.II/base/signaling_nan.h>
+
 
 namespace aspect
 {
@@ -35,8 +38,35 @@ namespace aspect
     Function<dim>::
     initial_composition (const Point<dim> &position, const unsigned int n_comp) const
     {
-      return function->value(position,n_comp);
+      if (coordinate_system == Utilities::Coordinates::cartesian)
+        {
+          return function->value(position,n_comp);
+        }
+      else if (coordinate_system == ::aspect::Utilities::Coordinates::spherical)
+        {
+          const std_cxx11::array<double,dim> spherical_coordinates =
+            aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
+          Point<dim> point;
+
+          for (unsigned int i = 0; i<dim; ++i)
+            point[i] = spherical_coordinates[i];
+
+          return function->value(point,n_comp);
+        }
+      else if (coordinate_system == Utilities::Coordinates::depth)
+        {
+          const double depth = this->get_geometry_model().depth(position);
+          Point<dim> point;
+          point(0) = depth;
+          return function->value(point,n_comp);
+        }
+      else
+        {
+          AssertThrow(false, ExcNotImplemented());
+          return numbers::signaling_nan<double>();
+        }
     }
+
 
     template <int dim>
     void
@@ -46,6 +76,24 @@ namespace aspect
       {
         prm.enter_subsection("Function");
         {
+          /**
+                 * Choose the coordinates to evaluate the maximum refinement level
+                 * function. The function can be declared in dependence of depth,
+                 * cartesian coordinates or spherical coordinates. Note that the order
+                 * of spherical coordinates is r,phi,theta and not r,theta,phi, since
+                 * this allows for dimension independent expressions.
+                 */
+          prm.declare_entry ("Coordinate system", "cartesian",
+                             Patterns::Selection ("cartesian|spherical|depth"),
+                             "A selection that determines the assumed coordinate "
+                             "system for the function variables. Allowed values "
+                             "are 'cartesian', 'spherical', and 'depth'. 'spherical' coordinates "
+                             "are interpreted as r,phi or r,phi,theta in 2D/3D "
+                             "respectively with theta being the polar angle.'depth' "
+                             "will create a function, in which only the first "
+                             "parameter is non-zero, which is interpreted to "
+                             "be the depth of the point.");
+
           Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
         }
         prm.leave_subsection();
@@ -58,21 +106,16 @@ namespace aspect
     void
     Function<dim>::parse_parameters (ParameterHandler &prm)
     {
-      // we need to get at the number of compositional fields here to
-      // initialize the function parser. unfortunately, we can't get it
-      // via SimulatorAccess from the simulator itself because at the
-      // current point the SimulatorAccess hasn't been initialized
-      // yet. so get it from the parameter file directly.
-      prm.enter_subsection ("Compositional fields");
-      const unsigned int n_compositional_fields = prm.get_integer ("Number of fields");
-      prm.leave_subsection ();
-
       prm.enter_subsection("Initial composition model");
       {
         prm.enter_subsection("Function");
+        {
+          coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+        }
+
         try
           {
-            function.reset (new Functions::ParsedFunction<dim>(n_compositional_fields));
+            function.reset (new Functions::ParsedFunction<dim>(this->n_compositional_fields()));
             function->parse_parameters (prm);
           }
         catch (...)
