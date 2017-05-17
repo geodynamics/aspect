@@ -47,6 +47,13 @@ namespace aspect
         execute (TableHandler &statistics);
 
         /**
+         * Register with the simulator the other postprocessors that we need
+         * (namely: dynamic topography).
+         */
+        std::list<std::string>
+        required_other_postprocessors() const;
+
+        /**
          * Declare the parameters this class takes through input files.
          */
         static
