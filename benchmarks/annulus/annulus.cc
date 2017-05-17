@@ -36,7 +36,7 @@ namespace aspect
 
     namespace AnalyticSolutions
     {
-      const double A=2.0, B=-3/log(2), C=-1;
+      const double A=2.0, B=-3.0/log(2.0), C=-1;
       const double inner_radius = 1, outer_radius = 2.;
       const double rho_0 = 1000.;
       const double gravity = 1.;
@@ -173,7 +173,7 @@ namespace aspect
               const double y = pos[1];
               const double r=sqrt(x*x+y*y);
               const double theta = atan2(y,x);
-              const double  A=2.0, B=-3/log(2), C=-1;
+              const double  A=2.0, B=-3.0/log(2.0), C=-1;
               const double f = A*r + B/r;
               const double f_prime = 2 - B/std::pow(r,2.0);
               const double g = A*r/2 + B*log(r)/r + C/r;
