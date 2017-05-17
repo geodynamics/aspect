@@ -191,8 +191,8 @@ namespace aspect
           case 2:
           {
             static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id> ("inner", 0),
-                  std::pair<std::string,types::boundary_id> ("outer", 1),
+              = { std::pair<std::string,types::boundary_id> ("bottom", 0),
+                  std::pair<std::string,types::boundary_id> ("top", 1),
                   std::pair<std::string,types::boundary_id> ("left",  2),
                   std::pair<std::string,types::boundary_id> ("right", 3)
                 };

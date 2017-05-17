@@ -94,9 +94,9 @@ namespace aspect
          * describing which parts of the boundary have to satisfy which
          * boundary conditions.
          *
-         * This geometry returns the map <code>{{"inner"->0}, {"outer"->1},
-         * {"west"->2}, {"east"->3}}</code> in 2d, and <code>{{"inner"->0},
-         * {"outer"->1}, {"west"->2}, {"east"->3}, {"south"->4},
+         * This geometry returns the map <code>{{"bottom"->0}, {"top"->1},
+         * {"west"->2}, {"east"->3}}</code> in 2d, and <code>{{"bottom"->0},
+         * {"top"->1}, {"west"->2}, {"east"->3}, {"south"->4},
          * {"north"->5}}</code> in 3d.
          */
         virtual
@@ -126,7 +126,7 @@ namespace aspect
          * Computing a depth requires a geometry model to define a
          * "vertical" direction. The current class considers the
          * radial vector away from the origin as vertical and
-         * considers the "outer" boundary as the "surface". In almost
+         * considers the "top" boundary as the surface. In almost
          * all cases one will use a gravity model that also matches
          * these definitions.
          */
