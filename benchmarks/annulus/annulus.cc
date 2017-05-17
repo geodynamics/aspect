@@ -36,7 +36,7 @@ namespace aspect
 
     namespace AnalyticSolutions
     {
-      const double A=2.0, B=-3/log(2), C=-1;
+      const double A=2.0, B=-3.0/std::log(2.0), C=-1;
       const double inner_radius = 1, outer_radius = 2.;
       const double rho_0 = 1000.;
       const double gravity = 1.;
@@ -47,10 +47,10 @@ namespace aspect
       {
         const double x = pos[0];
         const double y = pos[1];
-        const double r = sqrt(x*x+y*y);
-        const double theta = atan2(y,x);
+        const double r = std::sqrt(x*x+y*y);
+        const double theta = std::atan2(y,x);
         const double f_r = A*r + B/r;
-        const double g_r = A*r/2 + B*log(r)/r + C/r;
+        const double g_r = A*r/2 + B*std::log(r)/r + C/r;
         const double v_r = g_r*k*sin(k*theta);
         const double v_theta = f_r*cos(k*theta);
         const double v_x = cos(theta)*v_r - sin(theta)*v_theta;
@@ -64,10 +64,10 @@ namespace aspect
       {
         const double x = pos[0];
         const double y = pos[1];
-        const double r=sqrt(x*x+y*y);
-        const double theta = atan2(y,x);
+        const double r=std::sqrt(x*x+y*y);
+        const double theta = std::atan2(y,x);
         const double f_r = 2*r + B/r;
-        const double g_r = A*r/2 + B*log(r)/r + C/r;
+        const double g_r = A*r/2 + B*std::log(r)/r + C/r;
         const double h_r=(2*g_r-f_r)/r;
         return k*h_r*sin(k*theta)+rho_0*gravity*(outer_radius-r);
       }
@@ -80,10 +80,10 @@ namespace aspect
         Assert (dim == 2, ExcNotImplemented());
         const double x = pos[0];
         const double y = pos[1];
-        const double r=sqrt(x*x+y*y);
-        const double theta = atan2(y,x);
+        const double r=std::sqrt(x*x+y*y);
+        const double theta = std::atan2(y,x);
         const double f_r = 2*r + B/r;
-        const double g_r = A*r/2 + B*log(r)/r + C/r;
+        const double g_r = A*r/2 + B*std::log(r)/r + C/r;
         return k * 3.*f_r/r * std::sin(k*theta) - rho_0 * g_r * (outer_radius - r);
       }
 
@@ -171,14 +171,14 @@ namespace aspect
               const double k=beta;
               const double x = pos[0];
               const double y = pos[1];
-              const double r=sqrt(x*x+y*y);
-              const double theta = atan2(y,x);
-              const double  A=2.0, B=-3/log(2), C=-1;
+              const double r=std::sqrt(x*x+y*y);
+              const double theta = std::atan2(y,x);
+              const double  A=2.0, B=-3.0/std::log(2.0), C=-1;
               const double f = A*r + B/r;
               const double f_prime = 2 - B/std::pow(r,2.0);
-              const double g = A*r/2 + B*log(r)/r + C/r;
-              const double g_prime = A/2 - B*log(r)/std::pow(r,2.0) + B/std::pow(r,2.0) - C/std::pow(r,2.0);
-              const double g_prime_prime = -B/std::pow(r,3)*(3-2*log(r)) - 2./std::pow(r,3);
+              const double g = A*r/2 + B*std::log(r)/r + C/r;
+              const double g_prime = A/2 - B*std::log(r)/std::pow(r,2.0) + B/std::pow(r,2.0) - C/std::pow(r,2.0);
+              const double g_prime_prime = -B/std::pow(r,3)*(3-2*std::log(r)) - 2./std::pow(r,3);
               const double N = g_prime_prime - g_prime/r - (g*(std::pow(k,2) - 1))/std::pow(r,2.0) + f/std::pow(r,2.0) + f_prime/r;
               const double rho_0 = 1000.;
               out.densities[i] = N*k*sin(k*theta) + rho_0;
