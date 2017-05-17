@@ -88,7 +88,7 @@ end
 subsection Postprocess
   set List of postprocessors = basic statistics, geoid, dynamic topography
 
-  subsection Dynamic topography
+  subsection Dynamic Topography
     set Density above = 0.
     set Density below = 2.0
   end
