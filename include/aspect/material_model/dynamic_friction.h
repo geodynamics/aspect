@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_material_model_DynamicFriction_h
-#define _aspect_material_model_DynamicFriction_h
+#ifndef _aspect_material_model_dynamic_friction_h
+#define _aspect_material_model_dynamic_friction_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
@@ -33,16 +33,18 @@ namespace aspect
 
     /**
      * A material model which is intended for use with multiple compositional
-     * fields. Each compositional field is meant to be a single rock type,
-     * where the value of the field at a point is interpreted to be a volume
-     * fraction of that rock type.  If the sum of the compositional field
-     * volume fractions is less than one, then the remainder of the volume is
-     * assumed to be ``background mantle''.  If the sum of the compositional
+     * fields. Each compositional field is meant to be of Drucker Prager
+     * rheology with friction coefficient calculated from slip - weakening
+     * law. If the sum of the compositional field volume fractions is less
+     * than one, then the remainder of the volume is assumed to be ``background mantle''.
+     * If the sum of the compositional
      * field volume fractions is greater than one, then they are renormalized
      * to sum to one and there is no background mantle.
      *
      * For each material parameter the user supplies a comma delimited list of
-     * length N+1, where N is the number of compositional fields.  The
+     * length N+1, static friction of coefficient, dynamic friction of coefficient,
+     * cohesions and background viscosity (to calculate viscous stresses )where N
+     * is the number of compositional fields.  The
      * additional field corresponds to the value for background mantle.  They
      * should be ordered ``background, composition1, composition2...''
      *
@@ -130,9 +132,17 @@ namespace aspect
         const std::vector<double> compute_volume_fractions(
           const std::vector<double> &compositional_fields) const;
 
+        /**
+        * From a list of static friction of coefficient, dynamic friction of
+        * coefficient, cohesions and background viscosity for N + 1 fields
+        * (background mantle and N compositions) , we compute viscosities
+        * for drucker prager model with coefficient of friction dependent
+        * on the strain rate.
+        */
+
         const std::vector<double> compute_viscosities(
-               const double pressure,
-               const SymmetricTensor<2,dim> &strain_rate) const; 
+          const double pressure,
+          const SymmetricTensor<2,dim> &strain_rate) const;
         /**
          * Reference temperature for thermal expansion.  All components use
          * the same reference_T.
@@ -166,9 +176,9 @@ namespace aspect
          */
         std::vector<double> densities;
 
-         /**
-         * The dynamic coefficient of friction
-         */
+        /**
+        * The dynamic coefficient of friction
+        */
         std::vector<double> mu_d;
 
         /**
@@ -196,7 +206,7 @@ namespace aspect
          * The reference strain rate used as a first estimate
          */
         double reference_strain_rate;
-        double minimum_strain_rate;        
+        double minimum_strain_rate;
 
         /**
          * Vector for field thermal expnsivities, read from parameter file.

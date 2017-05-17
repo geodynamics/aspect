@@ -62,25 +62,25 @@ namespace aspect
         }
       return volume_fractions;
     }
-    
+
     template <int dim>
-    const std::vector<double> 
+    const std::vector<double>
     DynamicFriction<dim>::
     compute_viscosities(
-               const double pressure,
-               const SymmetricTensor<2,dim> &strain_rate) const 
+      const double pressure,
+      const SymmetricTensor<2,dim> &strain_rate) const
     {
 
       std::vector<double> viscosities( mu_s.size());
 
-      // second invariant for strain tensor 
+      // second invariant for strain tensor
       const double edot_ii = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
                                ?
                                reference_strain_rate
                                :
                                std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
                                         minimum_strain_rate) );
-      
+
       const double strain_rate_dev_inv2 = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
                                             ?
                                             reference_strain_rate * reference_strain_rate
@@ -89,54 +89,54 @@ namespace aspect
       // In later timesteps, we still need to care about cases of very small
       // strain rates. We expect the viscosity to approach the maximum_viscosity
       // in these cases. This check prevents a division-by-zero.
-      for (int i = 0; i <= mu_s.size(); i++) 
-      {
-        std::vector<double> mu( mu_s.size());
-        std::vector<double> phi( mu_s.size());
-        std::vector<double> strength( mu_s.size());
-        //std::vector<double> eta( mu_s.size());
-        std::vector<double> viscous_stress( mu_s.size());
+      for (int i = 0; i <= mu_s.size(); i++)
+        {
+          std::vector<double> mu( mu_s.size());
+          std::vector<double> phi( mu_s.size());
+          std::vector<double> strength( mu_s.size());
+          //std::vector<double> eta( mu_s.size());
+          std::vector<double> viscous_stress( mu_s.size());
 
-        // Calculate viscous stress
-        viscous_stress[i] = 2. * background_viscosities[i] * edot_ii;
+          // Calculate viscous stress
+          viscous_stress[i] = 2. * background_viscosities[i] * edot_ii;
 
-        // Calculate effective steady-state friction coefficient. The formula below is equivalent to the 
-        // equation 13 in van Dinther et al., (2013, JGR) . Although here the dynamic friction coefficient
-        // is directly specified. In addition, we also use a reference strain rate in place of a characteristic
-        // velocity divided by local element size.
-        mu[i]  = mu_d[i] + ( mu_s[i] - mu_d[i] ) / ( ( 1 + strain_rate_dev_inv2/reference_strain_rate ) );
+          // Calculate effective steady-state friction coefficient. The formula below is equivalent to the
+          // equation 13 in van Dinther et al., (2013, JGR) . Although here the dynamic friction coefficient
+          // is directly specified. In addition, we also use a reference strain rate in place of a characteristic
+          // velocity divided by local element size.
+          mu[i]  = mu_d[i] + ( mu_s[i] - mu_d[i] ) / ( ( 1 + strain_rate_dev_inv2/reference_strain_rate ) );
 
-        // Convert effective steady-state friction coefficient to internal angle of friction.
-        phi[i] = std::atan (mu[i]);
+          // Convert effective steady-state friction coefficient to internal angle of friction.
+          phi[i] = std::atan (mu[i]);
 
-        if (std::sqrt(strain_rate_dev_inv2) <= std::numeric_limits<double>::min())
-          viscosities[i] = maximum_viscosity;
+          if (std::sqrt(strain_rate_dev_inv2) <= std::numeric_limits<double>::min())
+            viscosities[i] = maximum_viscosity;
 
-        // Drucker Prager yield criterion.
-        strength[i] = ( (dim==3)
-                        ?
-                        ( 6.0 * cohesions[i] * std::cos(phi[i]) + 2.0 * std::max(pressure,0.0) * std::sin(phi[i]) )
-                        / ( std::sqrt(3.0) * ( 3.0 + std::sin(phi[i]) ) )
-                        :
-                        cohesions[i] * std::cos(phi[i]) + std::max(pressure,0.0) * std::sin(phi[i]) );
-        
-        if ( viscous_stress[i] >= strength[i]  )
-          {
-            viscosities[i] = strength[i] / (2.0 * edot_ii);
-          }
-        else
-          {
-            viscosities[i] = background_viscosities[i];
-          }
+          // Drucker Prager yield criterion.
+          strength[i] = ( (dim==3)
+                          ?
+                          ( 6.0 * cohesions[i] * std::cos(phi[i]) + 2.0 * std::max(pressure,0.0) * std::sin(phi[i]) )
+                          / ( std::sqrt(3.0) * ( 3.0 + std::sin(phi[i]) ) )
+                          :
+                          cohesions[i] * std::cos(phi[i]) + std::max(pressure,0.0) * std::sin(phi[i]) );
 
-        // Rescale the viscosity back onto the yield surface
-       // viscosities[i] = strength[i] / ( 2.0 * std::sqrt(strain_rate_dev_inv2) );
+          if ( viscous_stress[i] >= strength[i]  )
+            {
+              viscosities[i] = strength[i] / (2.0 * edot_ii);
+            }
+          else
+            {
+              viscosities[i] = background_viscosities[i];
+            }
 
-        // Cut off the viscosity between a minimum and maximum value to avoid
-        // a numerically unfavourable large viscosity range.
-        //viscosities[i] = 1.0 / ( ( 1.0 / ( eta[i] + minimum_viscosity ) ) + ( 1.0 / maximum_viscosity ) );        
+          // Rescale the viscosity back onto the yield surface
+          viscosities[i] = strength[i] / ( 2.0 * std::sqrt(strain_rate_dev_inv2) );
 
-      } 
+          // Cut off the viscosity between a minimum and maximum value to avoid
+          // a numerically unfavourable large viscosity range.
+          //viscosities[i] = 1.0 / ( ( 1.0 / ( eta[i] + minimum_viscosity ) ) + ( 1.0 / maximum_viscosity ) );
+
+        }
       return viscosities;
     }
 
@@ -197,15 +197,15 @@ namespace aspect
     {
       for (unsigned int i=0; i < in.position.size(); ++i)
         {
-          const double temperature = in.temperature[i];
+
           const std::vector<double> composition = in.composition[i];
           const std::vector<double> volume_fractions = compute_volume_fractions(composition);
-          
-          if (in.strain_rate.size() > 0) 
-          {
-          const std::vector<double> viscosities = compute_viscosities(in.pressure[i], in.strain_rate[i]);
-          out.viscosities[i] = average_value ( volume_fractions, viscosities, viscosity_averaging);
-          }
+
+          if (in.strain_rate.size() > 0)
+            {
+              const std::vector<double> viscosities = compute_viscosities(in.pressure[i], in.strain_rate[i]);
+              out.viscosities[i] = average_value ( volume_fractions, viscosities, viscosity_averaging);
+            }
           out.specific_heat[i] = average_value ( volume_fractions, specific_heats, arithmetic);
 
 
@@ -219,7 +219,7 @@ namespace aspect
             {
               // not strictly correct if thermal expansivities are different, since we are interpreting
               // these compositions as volume fractions, but the error introduced should not be too bad.
-              const double temperature_factor= (1.0 - thermal_expansivities[j] * (temperature - reference_T));
+              const double temperature_factor = (1.0 - thermal_expansivities[j] * (in.temperature[i] - reference_T));
               density += volume_fractions[j] * densities[j] * temperature_factor;
             }
           out.densities[i] = density;
@@ -312,25 +312,25 @@ namespace aspect
                                "The value of the initial strain rate prescribed during the "
                                "first nonlinear iteration $\\dot{\\epsilon}_ref$. Units: $1/s$.");
             prm.declare_entry ("Coefficients of static friction", "0.5",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of coefficients of static friction for background mantle and compositional fields,"
-                             "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one value is given, then all use the same value. Units: $dimensionless$");
+                               Patterns::List(Patterns::Double(0)),
+                               "List of coefficients of static friction for background mantle and compositional fields,"
+                               "for a total of N+1 values, where N is the number of compositional fields."
+                               "If only one value is given, then all use the same value. Units: $dimensionless$");
             prm.declare_entry ("Coefficients of dynamic friction", "0.4",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of coefficients of dynamic friction for background mantle and compositional fields,"
-                             "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one value is given, then all use the same value. Units: $dimensionless$");
+                               Patterns::List(Patterns::Double(0)),
+                               "List of coefficients of dynamic friction for background mantle and compositional fields,"
+                               "for a total of N+1 values, where N is the number of compositional fields."
+                               "If only one value is given, then all use the same value. Units: $dimensionless$");
             prm.declare_entry ("Cohesions", "4.e6",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of cohesions for background mantle and compositional fields,"
-                             "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one value is given, then all use the same value. Units: $Pa$");
+                               Patterns::List(Patterns::Double(0)),
+                               "List of cohesions for background mantle and compositional fields,"
+                               "for a total of N+1 values, where N is the number of compositional fields."
+                               "If only one value is given, then all use the same value. Units: $Pa$");
             prm.declare_entry ("Background Viscosities", "1.e20",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of background viscosities for mantle and compositional fields,"
-                             "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one value is given, then all use the same value. Units: $Pa s $");                    
+                               Patterns::List(Patterns::Double(0)),
+                               "List of background viscosities for mantle and compositional fields,"
+                               "for a total of N+1 values, where N is the number of compositional fields."
+                               "If only one value is given, then all use the same value. Units: $Pa s $");
           }
           prm.leave_subsection();
         }
@@ -345,15 +345,10 @@ namespace aspect
     {
       //not pretty, but we need to get the number of compositional fields before
       //simulatoraccess has been initialized here...
-      unsigned int n_foreground_fields;
+
       prm.enter_subsection ("Compositional fields");
-      {
-        n_foreground_fields = prm.get_integer ("Number of fields");
-      }
+      const unsigned int n_fields = this->n_compositional_fields() + 1;
       prm.leave_subsection();
-
-      const unsigned int n_fields= n_foreground_fields + 1;
-
 
       prm.enter_subsection("Material model");
       {
@@ -375,7 +370,7 @@ namespace aspect
           // Parse DynamicFriction properties
           densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),
                                                               n_fields,
-                                                              "Densities");          
+                                                              "Densities");
           thermal_conductivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal conductivities"))),
                                                                            n_fields,
                                                                            "Thermal conductivities");
@@ -392,17 +387,17 @@ namespace aspect
             reference_strain_rate    = prm.get_double ("Reference strain rate");
 
             mu_s = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Coefficients of static friction"))),
-                                                                  n_fields,
-                                                                  "Coefficients of static friction");
+                                                           n_fields,
+                                                           "Coefficients of static friction");
             mu_d = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Coefficients of dynamic friction"))),
-                                                                  n_fields,
-                                                                  "Coefficients of dynamic friction");
+                                                           n_fields,
+                                                           "Coefficients of dynamic friction");
             cohesions = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Cohesions"))),
-                                                                  n_fields,
-                                                                  "Cohesions"); 
+                                                                n_fields,
+                                                                "Cohesions");
             background_viscosities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Background Viscosities"))),
-                                                                  n_fields,
-                                                                  "Background Viscosities"); 
+                                                                             n_fields,
+                                                                             "Background Viscosities");
           }
           prm.leave_subsection();
         }
@@ -411,7 +406,7 @@ namespace aspect
       prm.leave_subsection();
 
       // Declare dependencies on solution variables
-      this->model_dependence.viscosity = NonlinearDependence::compositional_fields;
+      this->model_dependence.viscosity = NonlinearDependence::compositional_fields | NonlinearDependence::strain_rate;
       this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
       this->model_dependence.compressibility = NonlinearDependence::none;
       this->model_dependence.specific_heat = NonlinearDependence::compositional_fields;
@@ -427,13 +422,13 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(DynamicFriction,
                                    "dynamic friction",
-                                   "This model is for use with an arbitrary number of compositional fields, where each field"
+                                   "This model is for use with an arbitrary number of compositional fields, where each field "
                                    "represents a rock type which can have completely different properties from the others."
                                    "Each rock type itself has constant material properties, with the exception of viscosity "
                                    "which is modified according to a Drucker-Prager yield criterion. Unlike the drucker prager "
-                                   "or visco plastic material models, the angle of internal friction is a function of velocity "
+                                   "or visco plastic material models, the angle of internal friction is a function of velocity. "
                                    "This relationship is similar to rate-and-state friction constitutive relationships, which "
-                                   "are applicable to the strenght of rocks during earthquakes. The formulation used here is "
+                                   "are applicable to the strength of rocks during earthquakes. The formulation used here is "
                                    "derived from van Dinther et al. 2013, JGR. Each compositional field is interpreed as a volume fraction. "
                                    "If the sum of the fields is greater than one, they are renormalized. If it is less than one, material properties "
                                    "for ``background material'' make up the rest. When more than one field is present, the "
