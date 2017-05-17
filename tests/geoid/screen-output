@@ -25,9 +25,10 @@ Number of degrees of freedom: 28,690 (20,790+970+6,930)
      Reference thermal diffusivity (m^2/s):         1
      Rayleigh number:                               0
 
-     Writing geoid anomaly:            output-geoid/geoid_anomaly.00000
+     Density at top/bottom of domain:  1 kg/m^3, 1 kg/m^3
      Pressure at top/bottom of domain: -0.002656 Pa, 1.96e+06 Pa
      Computing dynamic topography      
+     Writing geoid anomaly:            output-geoid/geoid_anomaly.00000
 
 Termination requested by criterion: end time
 
