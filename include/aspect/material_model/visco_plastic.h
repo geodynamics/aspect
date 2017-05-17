@@ -186,6 +186,7 @@ namespace aspect
                                           const YieldScheme &yield_type) const;
 
         bool use_strain_weakening;
+        bool use_finite_strain_tensor;
         std::vector<double> start_strain_weakening_intervals;
         std::vector<double> end_strain_weakening_intervals;
         std::vector<double> viscous_strain_weakening_factors;

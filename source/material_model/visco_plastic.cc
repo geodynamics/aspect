@@ -20,6 +20,7 @@
 
 #include <aspect/material_model/visco_plastic.h>
 #include <aspect/utilities.h>
+#include <deal.II/fe/fe_values.h>
 using namespace dealii;
 
 namespace aspect
@@ -41,7 +42,17 @@ namespace aspect
 
       // assign compositional fields associated with strain a value of 0
       if (use_strain_weakening == true)
-        x_comp[0] = 0.0;
+        {
+          if (use_finite_strain_tensor == false)
+            {
+              x_comp[0] = 0.0;
+            }
+          else
+            {
+              for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
+                x_comp[i] = 0.;
+            }
+        }
 
       // sum the compositional fields for normalization purposes
       double sum_composition = 0.0;
@@ -200,11 +211,25 @@ namespace aspect
           double coh = cohesions[j];
 
           // Strain weakening
+          double strain_ii = 0.;
           if (use_strain_weakening == true)
             {
 
-              // Constrain the second strain invariant of the previous timestep
-              const double strain_ii = std::max(std::min(composition[0],end_strain_weakening_intervals[j]),start_strain_weakening_intervals[j]);
+              // Calculate and/or constrain the strain invariant of the previous timestep
+              if ( use_finite_strain_tensor == true )
+                {
+                  // Calculate second invariant of left stretching tensor "L"
+                  Tensor<2,dim> strain;
+                  for (unsigned int q = 0; q < Tensor<2,dim>::n_independent_components ; ++q)
+                    strain[Tensor<2,dim>::unrolled_to_component_indices(q)] = composition[q];
+                  const SymmetricTensor<2,dim> L = symmetrize( strain * transpose(strain) );
+                  strain_ii = std::max(std::min(std::fabs(second_invariant(L)),end_strain_weakening_intervals[j]),start_strain_weakening_intervals[j]);
+                }
+              else
+                {
+                  // Here the compositional field already contains the finite strain invariant magnitude
+                  strain_ii = std::max(std::min(composition[0],end_strain_weakening_intervals[j]),start_strain_weakening_intervals[j]);
+                }
 
               // Linear strain weakening of cohesion and internal friction angle between specified strain values
               const double strain_fraction = ( strain_ii - start_strain_weakening_intervals[j] ) /
@@ -274,6 +299,10 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
+
+
+
+      // Loop through points
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
           const double temperature = in.temperature[i];
@@ -347,13 +376,55 @@ namespace aspect
             out.reaction_terms[i][c] = 0.0;
           // If strain weakening is used, overwrite the first reaction term,
           // which represents the second invariant of the strain tensor
-          if  (use_strain_weakening && this->get_timestep_number() > 0)
+          double edot_ii = 0.;
+          double e_ii = 0.;
+          if  (use_strain_weakening == true && use_finite_strain_tensor == false && this->get_timestep_number() > 0)
             {
-              const double edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),min_strain_rate);
-
+              edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),min_strain_rate);
+              e_ii = edot_ii*this->get_timestep();
               // Update reaction term
-              out.reaction_terms[i][0] = edot_ii*this->get_timestep();
+              out.reaction_terms[i][0] = e_ii;
             }
+        }
+
+      // We need the velocity gradient for the finite strain (they are not included in material model inputs),
+      // so we get them from the finite element.
+      if (in.cell && use_strain_weakening == true && use_finite_strain_tensor == true && this->get_timestep_number() > 0)
+        {
+          const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+1);
+          FEValues<dim> fe_values (this->get_mapping(),
+                                   this->get_fe(),
+                                   quadrature_formula,
+                                   update_gradients);
+
+          std::vector<Tensor<2,dim> > velocity_gradients (quadrature_formula.size(), Tensor<2,dim>());
+
+          fe_values.reinit (*in.cell);
+          fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_solution(),
+                                                                                         velocity_gradients);
+
+          // Assign the strain components to the compositional fields reaction terms.
+          // If there are too many fields, we simply fill only the first fields with the
+          // existing strain rate tensor components.
+          for (unsigned int q=0; q < in.position.size(); ++q)
+            {
+              // Convert the compositional fields into the tensor quantity they represent.
+              Tensor<2,dim> strain;
+              for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
+                {
+                  strain[Tensor<2,dim>::unrolled_to_component_indices(i)] = in.composition[q][i];
+                }
+
+              // Compute the strain accumulated in this timestep.
+              const Tensor<2,dim> strain_increment = this->get_timestep() * (velocity_gradients[q] * strain);
+
+              // Output the strain increment component-wise to its respective compositional field's reaction terms.
+              for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
+                {
+                  out.reaction_terms[q][i] = strain_increment[Tensor<2,dim>::unrolled_to_component_indices(i)];
+                }
+            }
+
         }
     }
 
@@ -429,6 +500,10 @@ namespace aspect
                              Patterns::Bool (),
                              "Apply strain weakening to viscosity, cohesion and internal angle "
                              "of friction based on accumulated finite strain.  Units: None");
+          prm.declare_entry ("Use finite strain tensor", "false",
+                             Patterns::Bool (),
+                             "Track and use the full finite strain tensor for strain weakening. "
+                             "Units: None");
           prm.declare_entry ("Start strain weakening intervals", "0.",
                              Patterns::List(Patterns::Double(0)),
                              "List of strain weakening interval initial strains "
@@ -568,6 +643,9 @@ namespace aspect
       // increment by one for background:
       const unsigned int n_fields = this->n_compositional_fields() + 1;
 
+      // number of required compositional fields for full finite strain tensor
+      const unsigned int s = Tensor<2,dim>::n_independent_components;
+
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection ("Visco Plastic");
@@ -603,7 +681,10 @@ namespace aspect
           if (use_strain_weakening)
             AssertThrow(this->n_compositional_fields() >= 1,
                         ExcMessage("There must be at least one compositional field. "));
-
+          use_finite_strain_tensor  = prm.get_bool ("Use finite strain tensor");
+          if (use_finite_strain_tensor)
+            AssertThrow(this->n_compositional_fields() >= s,
+                        ExcMessage("There must be enough compositional fields to track all components of the finite strain tensor (4 in 2D, 9 in 3D). "));
           start_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Start strain weakening intervals"))),
                                                                                      n_fields,
                                                                                      "Start strain weakening intervals");
@@ -758,12 +839,29 @@ namespace aspect
                                    "See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. "
                                    "\n\n"
                                    "The user has the option to linearly reduce the cohesion and "
-                                   "internal friction angle as a function of the finite strain invariant. "
-                                   "The finite strain invariant may be calculated through particles or the compositional "
-                                   "field finite strain invariant plugin (see \\cite{buiter2008dissipation} benchmark). "
-                                   "In either case, the user specifies a compositional field for the finite "
-                                   "strain invariant, which must be the first listed compositional field "
-                                   "in the parameter file."
+                                   "internal friction angle as a function of the finite strain magnitude. "
+                                   "The finite strain invariant or full strain tensor is calculated through "
+                                   "compositional fields within the material model. This implementation is "
+                                   "identical to the compositional field finite strain plugin and cookbook "
+                                   "described in the manual (author: Gassmoeller, Dannberg). If the user selects to track "
+                                   "the finite strain invariant ($e_ii$), a single compositional field tracks "
+                                   "the value derived from $e_ii^t = (e_ii)^(t-1) + edot_ii*dt, where $t$ and $t-1$ "
+                                   "are the current and prior time steps, $edot_ii$ is the second invariant of the "
+                                   "strain rate tensor and $dt$ is the time step size. In the case of the "
+                                   "full strain tensor $F$, the finite strain magnitude is derived from the "
+                                   "second invariant of the symmetric stretching tensor $L$, where "
+                                   "$L = F * [F]^T$. The user must specify a single compositional "
+                                   "field for the finite strain invariant or multiple fields (4 in 2D, 9 in 3D) "
+                                   "for the finite strain tensor. These field(s) must be the first lised "
+                                   "compositional fields in the parameter file. Note that one or more of the finite strain "
+                                   "tensor components must be assigned a non-zero value intially. This value can be "
+                                   "be quite small (ex: 1.e-8), but still non-zero. While the option to track and use "
+                                   "the full finite strain tensor exists, tracking the associated compositional "
+                                   "is computationally expensive in 3D. Similarly, the finite strain magnitudes "
+                                   "may in fact decrease if the orientation of the deformation field switches "
+                                   "through time. Consequently, the ideal solution is track the finite strain "
+                                   "invariant (single compositional) field within the material and track "
+                                   "the full finite strain tensor through tracers."
                                    ""
                                    "\n\n"
                                    "Viscous stress may also be limited by a non-linear stress limiter "
@@ -775,7 +873,7 @@ namespace aspect
                                    "reference strain rate, $\\varepsilon_{ii}$ is the strain rate "
                                    "and $n_y$ is the stress limiter exponent.  The yield stress, "
                                    "$\\tau_y$, is defined through the Drucker Prager yield criterion "
-                                   "formulation.  This method of limiting viscous stress has been used "
+                                   "formulation. This method of limiting viscous stress has been used "
                                    "in various forms within the geodynamic literature, including "
                                    "Christensen (1992), JGR, 97(B2), pp. 2015-2036; "
                                    "Cizkova and Bina (2013), EPSL, 379, pp. 95-103; "
