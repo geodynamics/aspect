@@ -5,7 +5,6 @@
 #include <aspect/assembly.h>
 
 #include <iostream>
-#include <typeinfo>
 
 unsigned int counter_without = 0, counter_with = 0;
 bool quiet = true;

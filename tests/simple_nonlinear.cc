@@ -5,7 +5,6 @@
 #include <aspect/newton.h>
 
 #include <iostream>
-#include <typeinfo>
 
 #include <aspect/utilities.h>
 

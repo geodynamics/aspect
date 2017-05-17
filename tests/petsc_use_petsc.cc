@@ -3,7 +3,6 @@
 #include <deal.II/grid/tria.h>
 
 #include <iostream>
-#include <typeinfo>
 
 // create a function that is run upon loading the plugin
 // and that produces some output
