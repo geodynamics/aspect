@@ -4,7 +4,6 @@
 #include <aspect/simulator_access.h>
 
 #include <iostream>
-#include <typeinfo>
 
 int f()
 {

@@ -3,7 +3,6 @@
 #include <aspect/utilities.h>
 
 #include <iostream>
-#include <typeinfo>
 
 int f()
 {

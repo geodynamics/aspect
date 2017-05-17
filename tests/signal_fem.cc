@@ -6,7 +6,6 @@
 
 #include <deal.II/fe/fe_dgq.h>
 #include <iostream>
-#include <typeinfo>
 
 using namespace dealii;
 

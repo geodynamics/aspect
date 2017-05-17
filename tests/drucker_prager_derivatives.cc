@@ -6,7 +6,6 @@
 #include <aspect/newton.h>
 
 #include <iostream>
-#include <typeinfo>
 
 int f(double parameter)
 {

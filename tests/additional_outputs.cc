@@ -5,7 +5,6 @@
 #include <aspect/simulator_access.h>
 
 #include <iostream>
-#include <typeinfo>
 
 namespace aspect
 {
