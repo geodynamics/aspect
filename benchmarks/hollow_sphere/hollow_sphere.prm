@@ -35,8 +35,8 @@ end
 #Boundary conditions
 subsection Model settings
 
-  set Prescribed velocity boundary indicators = inner : HollowSphereBoundary, \
-                                                outer : HollowSphereBoundary
+  set Prescribed velocity boundary indicators = bottom : HollowSphereBoundary, \
+                                                top : HollowSphereBoundary
 end
 
 
