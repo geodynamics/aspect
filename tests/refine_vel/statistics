@@ -13,8 +13,8 @@
 # 13: Minimal temperature (K)
 # 14: Average temperature (K)
 # 15: Maximal temperature (K)
-# 16: Outward heat flux through boundary with indicator 0 ("inner") (W)
-# 17: Outward heat flux through boundary with indicator 1 ("outer") (W)
+# 16: Outward heat flux through boundary with indicator 0 ("bottom") (W)
+# 17: Outward heat flux through boundary with indicator 1 ("top") (W)
 # 18: Outward heat flux through boundary with indicator 2 ("left") (W)
 # 19: Outward heat flux through boundary with indicator 3 ("right") (W)
 0 0.000000000000e+00 0.000000000000e+00 768 7235 3201  0  43  44  43 1.20140402e-09 3.64093625e-09  0.00000000e+00 1.00295496e+02 1.61300000e+03 -1.19074581e-01 -2.68105204e-01  4.16316676e-16  7.06383428e-16 
