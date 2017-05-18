@@ -622,6 +622,12 @@ namespace aspect
       get_current_constraints() const;
 
       /**
+       * Return whether or not the current object has been initialized by providing it with
+       * a pointer to a Simulator class object.
+       */
+      bool simulator_is_initialized () const;
+
+      /**
        * A convenience function that copies the values of the compositional
        * fields at the quadrature point q given as input parameter to the
        * output vector composition_values_at_q_point.

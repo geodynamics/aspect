@@ -578,6 +578,13 @@ namespace aspect
     return simulator->current_constraints;
   }
 
+  template <int dim>
+  bool
+  SimulatorAccess<dim>::simulator_is_initialized () const
+  {
+    return (simulator != NULL);
+  }
+
 }
 
 
