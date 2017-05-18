@@ -47,7 +47,7 @@ namespace aspect
       const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
       const Point<dim> bottom_point = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
       const double adiabatic_surface_temperature = this->get_adiabatic_conditions().temperature(surface_point);
-      const double adiabatic_bottom_temperature = (this->include_adiabatic_heating())
+      const double adiabatic_bottom_temperature = (this->include_adiabatic_heating() && this->get_adiabatic_conditions().is_initialized())
                                                   ?
                                                   this->get_adiabatic_conditions().temperature(bottom_point)
                                                   :
