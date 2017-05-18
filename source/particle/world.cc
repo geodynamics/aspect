@@ -1626,18 +1626,18 @@ namespace aspect
         sim->initialize_simulator (this->get_simulator());
       integrator->parse_parameters(prm);
 
-      // Create an interpolator object depending on the specified parameter
-      interpolator.reset(Interpolator::create_particle_interpolator<dim> (prm));
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator.get()))
-        sim->initialize_simulator (this->get_simulator());
-      interpolator->parse_parameters(prm);
-
       // Create an property_manager object and initialize its properties
       property_manager.reset(new Property::Manager<dim> ());
       SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager.get());
       sim->initialize_simulator (this->get_simulator());
       property_manager->parse_parameters(prm);
       property_manager->initialize();
+
+      // Create an interpolator object depending on the specified parameter
+      interpolator.reset(Interpolator::create_particle_interpolator<dim> (prm));
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator.get()))
+        sim->initialize_simulator (this->get_simulator());
+      interpolator->parse_parameters(prm);
     }
   }
 }

@@ -2,7 +2,7 @@
 # least squares interpolation from particle properties to
 # compositional fields that are flagged as 'particle' advected fields.
 
-set Additional shared libraries            = ./libparticle_interpolator_bilinear_solkz.so
+set Additional shared libraries            = ./libparticle_interpolator_bilinear_least_squares_solkz.so
 
 ############### Global parameters
 
@@ -94,7 +94,7 @@ subsection Postprocess
     set Data output format = vtu
     set List of particle properties = function
     set Integration scheme = rk2
-    set Interpolation scheme = cell average
+    set Interpolation scheme = bilinear least squares
     set Maximum particles per cell = 16384
     set Update ghost particles = true
 
@@ -110,6 +110,14 @@ subsection Postprocess
     subsection Generator
       subsection Reference cell
         set Number of particles per cell per direction = 4
+      end
+    end
+
+    subsection Interpolator
+      subsection Bilinear least squares
+        set Use limiter = true
+        set Global particle property minimum = -1, 1
+        set Global particle property maximum = 1, 1e6
       end
     end
   end
