@@ -96,6 +96,14 @@ namespace aspect
     class MeltFractionModel
     {
       public:
+        /**
+         * Compute the equilibrium melt fractions for the given input conditions.
+         * @p in and @p melt_fractions need to have the same size.
+         *
+         * @param in Object that contains the current conditions.
+         * @param melt_fractions Vector of doubles that is filled with the
+         * equilibrium melt fraction for each given input conditions.
+         */
         virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                                      std::vector<double> &melt_fractions) const = 0;
 
