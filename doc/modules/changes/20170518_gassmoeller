@@ -1,0 +1,7 @@
+New: The adiabatic initial conditions plugin 'initial profile' can now use a
+reference function to initialize the composition, instead of using the initial
+composition plugin. This is useful, if the initial composition plugin depends
+on the adiabatic conditions and can therefore not be used for computing
+the initial profile.
+<br>
+(Rene Gassmoeller, 2017/05/18)

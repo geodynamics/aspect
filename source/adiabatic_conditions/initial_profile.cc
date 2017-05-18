@@ -121,8 +121,18 @@ namespace aspect
           else
             in.pressure_gradient[0] = Tensor <1,dim> ();
 
-          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-            in.composition[0][c] = this->get_initial_composition_manager().initial_composition(representative_point, c);
+          if (reference_composition == initial_composition)
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              in.composition[0][c] = this->get_initial_composition_manager().initial_composition(representative_point, c);
+          else if (reference_composition == reference_function)
+            {
+              const double depth = this->get_geometry_model().depth(representative_point);
+              const Point<1> p(depth);
+              for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                in.composition[0][c] = composition_function->value(p, c);
+            }
+          else
+            AssertThrow(false,ExcNotImplemented());
 
           this->get_material_model().evaluate(in, out);
 
@@ -250,6 +260,72 @@ namespace aspect
 
       return d*property[i+1] + (1.-d)*property[i];
     }
+
+
+
+
+    template <int dim>
+    void
+    InitialProfile<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Adiabatic conditions model");
+      {
+        prm.enter_subsection("Initial profile");
+        {
+          Functions::ParsedFunction<1>::declare_parameters (prm, 1);
+          prm.declare_entry("Composition reference profile","initial composition",
+                            Patterns::Selection("initial composition|function"),
+                            "Select how the reference profile for composition "
+                            "is computed. This profile is used to evaluate the "
+                            "material model, when computing the pressure and "
+                            "temperature profile.");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+    }
+
+
+    template <int dim>
+    void
+    InitialProfile<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Adiabatic conditions model");
+      {
+        prm.enter_subsection("Initial profile");
+        {
+          const std::string composition_profile = prm.get("Composition reference profile");
+
+          if (composition_profile == "initial composition")
+            reference_composition = initial_composition;
+          else if (composition_profile == "function")
+            reference_composition = reference_function;
+          else
+            AssertThrow(false, ExcNotImplemented());
+
+          if ((this->n_compositional_fields() > 0) && (reference_composition == reference_function))
+            {
+              composition_function.reset(new Functions::ParsedFunction<1>(this->n_compositional_fields()));
+              try
+                {
+                  composition_function->parse_parameters (prm);
+                }
+              catch (...)
+                {
+                  std::cerr << "ERROR: FunctionParser failed to parse\n"
+                            << "\t'Adiabatic conditions model.Initial profile'\n"
+                            << "with expression\n"
+                            << "\t'" << prm.get("Function expression") << "'"
+                            << "More information about the cause of the parse error \n"
+                            << "is shown below.\n";
+                  throw;
+                }
+            }
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+    }
   }
 }
 
@@ -264,9 +340,10 @@ namespace aspect
                                                "A model in which the adiabatic profile is "
                                                "calculated once at the start of the model run. "
                                                "The gravity is assumed to be in depth direction "
-                                               "and the composition is evaluated at reference "
-                                               "points, no lateral averaging is performed. "
-                                               "All material parameters are used from the "
+                                               "and the composition is either given by the initial "
+                                               "composition at reference points or computed "
+                                               "as a reference depth-function. "
+                                               "All material parameters are computed by the "
                                                "material model plugin.")
   }
 }
