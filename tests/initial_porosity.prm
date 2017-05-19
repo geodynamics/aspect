@@ -1,6 +1,5 @@
-# Listing of Parameters
-# ---------------------
-# Test for melt migration in a global-scale model
+# A test that computes an initial porosity field based on the
+# equilibrium melt fraction for the given temperature field.
 
 set Adiabatic surface temperature          = 1600               # default: 0
 set CFL number                             = 1.0
@@ -115,11 +114,6 @@ end
 
 subsection Initial composition model
   set Model name = porosity
-  subsection Function
-    set Function constants  = pi=3.1415926,a = 0.0, b = 2500000, c = 100000, d=1450000
-    set Function expression = a * exp(-((y-b)*(y-b)+(0.2*(x-d))*(0.2*(x-d)))/(2*c*c)); a * exp(-((y-b)*(y-b)+(0.2*(x-d))*(0.2*(x-d)))/(2*c*c))
-    set Variable names      = x,y
-  end
 end
 
 

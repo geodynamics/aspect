@@ -67,7 +67,7 @@ namespace aspect
               in.composition[0][i] = 0.0;
 
           in.strain_rate[0] = SymmetricTensor<2,dim>();
-          in.cell= NULL;
+          in.cell = NULL;
 
           std::vector<double> melt_fraction(1);
           material_model->melt_fractions(in,melt_fraction);
@@ -90,6 +90,8 @@ namespace aspect
                                               "condition and reference pressure profile. Note that this plugin only "
                                               "works if there is a compositional field called 'porosity', and the "
                                               "used material model implements the 'MeltFractionModel' interface. "
-                                              "All compositional fields except porosity are not changed by this plugin.")
+                                              "For all compositional fields except porosity this plugin returns 0.0, "
+                                              "and they are therefore not changed as long as the default 'add' "
+                                              "operator is selected for this plugin.")
   }
 }
