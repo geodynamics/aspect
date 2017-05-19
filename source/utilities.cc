@@ -1624,19 +1624,65 @@ namespace aspect
       return boundary_dimensions;
     }
 
+    namespace
+    {
+      std::string replace_placeholders(const std::string &filename_and_path,
+                                       const std::string &boundary_name,
+                                       const int filenumber)
+      {
+        const int maxsize = filename_and_path.length() + 256;
+        char *filename = static_cast<char *>(malloc (maxsize * sizeof(char)));
+        int ret = snprintf (filename,
+                            maxsize,
+                            filename_and_path.c_str(),
+                            boundary_name.c_str(),
+                            filenumber);
+
+        AssertThrow(ret >= 0, ExcMessage("Invalid string placeholder in filename detected."));
+        AssertThrow(ret< maxsize, ExcInternalError("snprintf string overflow detected."));
+        const std::string str_result (filename);
+        free (filename);
+        return str_result;
+      }
+
+    }
+
     template <int dim>
     std::string
     AsciiDataBoundary<dim>::create_filename (const int filenumber,
                                              const types::boundary_id boundary_id) const
     {
       std::string templ = Utilities::AsciiDataBase<dim>::data_directory + Utilities::AsciiDataBase<dim>::data_file_name;
-      const int size = templ.length();
+
       const std::string boundary_name = this->get_geometry_model().translate_id_to_symbol_name(boundary_id);
-      char *filename = (char *) (malloc ((size + 10) * sizeof(char)));
-      snprintf (filename, size + 10, templ.c_str (), boundary_name.c_str(),filenumber);
-      std::string str_filename (filename);
-      free (filename);
-      return str_filename;
+
+      const std::string result = replace_placeholders(templ, boundary_name, filenumber);
+      if (fexists(result))
+        return result;
+
+      // Backwards compatibility check: people might still be using the old
+      // names of the top/bottom boundary. If they do, print a warning but
+      // accept those files.
+      std::string compatible_result;
+      if (boundary_name == "top")
+        {
+          compatible_result = replace_placeholders(templ, "surface", filenumber);
+          if (!fexists(compatible_result))
+            compatible_result = replace_placeholders(templ, "outer", filenumber);
+        }
+      else if (boundary_name == "bottom")
+        compatible_result = replace_placeholders(templ, "inner", filenumber);
+
+      if (!fexists(result) && fexists(compatible_result))
+        {
+          std::cout << "WARNING: Filename convention concerning geometry boundary "
+                    "names changed. Please rename '" << compatible_result << "'"
+                    << " to '" << result << "'"
+                    << std::endl;
+          return compatible_result;
+        }
+
+      return result;
     }
 
 

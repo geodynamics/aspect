@@ -66,10 +66,10 @@ end
 # The present-day plate velocities are imposed on the upper model
 # boundary.
 subsection Model settings
-  set Prescribed velocity boundary indicators = outer:gplates
-  set Tangential velocity boundary indicators = inner
+  set Prescribed velocity boundary indicators = top:gplates
+  set Tangential velocity boundary indicators = bottom
 
-  set Fixed temperature boundary indicators   = inner, outer
+  set Fixed temperature boundary indicators   = top, bottom
 end
 
 

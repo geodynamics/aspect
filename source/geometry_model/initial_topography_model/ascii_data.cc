@@ -46,17 +46,7 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      // Based on the current geometry, set the boundary id of the surface
-      if (const GeometryModel::Box<dim> *gm = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()))
-        surface_boundary_id = gm->translate_symbolic_boundary_name_to_id("top");
-      else if (const GeometryModel::Chunk<dim> *gm = dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()))
-        surface_boundary_id = gm->translate_symbolic_boundary_name_to_id("outer");
-      else if (const GeometryModel::Sphere<dim> *gm = dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()))
-        surface_boundary_id = gm->translate_symbolic_boundary_name_to_id("surface");
-      else if (const GeometryModel::SphericalShell<dim> *gm = dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
-        surface_boundary_id = gm->translate_symbolic_boundary_name_to_id("outer");
-      else
-        AssertThrow(false, ExcMessage("This initial topography plugin can only be used for a Box, Shell, Sphere or Chunk geometry."));
+      surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
       std::set<types::boundary_id> surface_boundary_set;
       surface_boundary_set.insert(surface_boundary_id);

@@ -17,8 +17,8 @@
 # 17: Average temperature (K)
 # 18: Maximal temperature (K)
 # 19: Average nondimensional temperature (K)
-# 20: Outward heat flux through boundary with indicator 0 ("inner") (W)
-# 21: Outward heat flux through boundary with indicator 1 ("outer") (W)
+# 20: Outward heat flux through boundary with indicator 0 ("bottom") (W)
+# 21: Outward heat flux through boundary with indicator 1 ("top") (W)
 # 22: Outward heat flux through boundary with indicator 2 ("left") (W)
 # 23: Outward heat flux through boundary with indicator 3 ("right") (W)
 0 0.000000000000e+00 0.000000000000e+00 192 1891 833 833  0  0 24 25 25 output-steinberger_background/solution/solution-00000 5.81113046e-01 1.11437426e+00 2.73000000e+02 2.43678326e+03 4.25000000e+03 5.44074243e-01 -4.73556050e+04 1.73976565e+05 6.92640921e+02 6.92640921e+02 

@@ -42,42 +42,17 @@ namespace aspect
                           const Point<dim> &/*position*/,
                           const unsigned int /*compositional_field*/) const
     {
-      // Verify that the GeometryModel is a Sphere, SphericalShell, Chunk, or an
-      // EllipsoidalChunk since only for geometries based on spherical shells
-      // do we know which boundary indicators are used and what they mean
       const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
       const std::string boundary_name = geometry_model->translate_id_to_symbol_name(boundary_indicator);
 
-      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
-        {
-          if (boundary_name == "surface")
-            return outer_composition;
-          else
-            {
-              Assert (false, ExcMessage ("Unknown boundary indicator for geometry model. "
-                                         "The given boundary should be ``surface''."));
-              return numbers::signaling_nan<double>();
-            }
-        }
-      else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0
-               || dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0
-               || dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>(geometry_model) != 0)
-        {
-          if (boundary_name == "inner")
-            return inner_composition;
-          else if (boundary_name =="outer")
-            return outer_composition;
-          else
-            {
-              Assert (false, ExcMessage ("Unknown boundary indicator for geometry model. "
-                                         "The given boundary should be ``inner'' or ``outer''."));
-              return numbers::signaling_nan<double>();
-            }
-        }
+      if (boundary_name == "bottom")
+        return inner_composition;
+      else if (boundary_name =="top")
+        return outer_composition;
       else
         {
-          Assert (false, ExcMessage ("This boundary model is only implemented if the geometry "
-                                     "is a sphere, spherical shell, chunk or ellipsoidal chunk."));
+          Assert (false, ExcMessage ("Unknown boundary indicator for geometry model. "
+                                     "The given boundary should be ``top'' or ``bottom''."));
           return numbers::signaling_nan<double>();
         }
     }

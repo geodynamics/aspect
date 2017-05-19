@@ -83,8 +83,8 @@ end
 
 
 subsection Model settings
-  set Fixed temperature boundary indicators   = inner, outer
-  set Tangential velocity boundary indicators = inner, left, right, outer
+  set Fixed temperature boundary indicators   = top, bottom
+  set Tangential velocity boundary indicators = top, bottom, left, right
 end
 
 

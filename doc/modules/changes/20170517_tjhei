@@ -1,0 +1,3 @@
+New: Boundary names for all geometries are now consistently named "top" and "bottom". Old names are accepted for now.
+<br>
+(Timo Heister, 2017/05/17)
