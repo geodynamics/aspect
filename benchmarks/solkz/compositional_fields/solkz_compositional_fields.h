@@ -16,21 +16,16 @@ namespace aspect
     class SolKzCompositionalMaterial : public SolKzMaterial<dim>
     {
       public:
-        virtual double density(const double temperature,
-                               const double pressure,
-                               const std::vector<double> &composition,
-                               const Point<dim> &position) const
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const
         {
-          return composition[0];
-        }
+          SolKzMaterial<dim>::evaluate(in, out);
 
-        virtual double viscosity(const double temperature,
-                                 const double pressure,
-                                 const std::vector<double> &composition,
-                                 const SymmetricTensor<2, dim> &strain_rate,
-                                 const Point<dim> &position) const
-        {
-          return composition[1];
+          for (unsigned int i=0; i < in.position.size(); ++i)
+            {
+              out.densities[i] = in.composition[i][0];
+              out.viscosities[i] = in.composition[i][1];
+            }
         }
     };
   }
