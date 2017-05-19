@@ -67,6 +67,14 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
+        /**
+         * Evaluate the geoid solution at a point. The evaluation point
+         * must be outside of the model domain, and it must be called
+         * after execute().
+         */
+        double
+        evaluate (const Point<dim> &) const;
+
       private:
         /**
          * Parameters to set the maximum and minimum degree when computing geoid from spherical harmonics
@@ -133,6 +141,15 @@ namespace aspect
         std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double> > >, std::pair<double, std::pair<std::vector<double>,std::vector<double> > > >
         dynamic_topography_contribution(const double &outer_radius,
                                         const double &inner_radius) const;
+
+        /**
+         * A vector to store the cosine terms of the geoid anomaly spherical harmonic coefficients.
+         */
+        std::vector<double> geoid_coecos;
+        /**
+         * A vector to store the sine terms of the geoid anomaly spherical harmonic coefficients.
+         */
+        std::vector<double> geoid_coesin;
     };
   }
 }

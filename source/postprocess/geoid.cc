@@ -350,8 +350,8 @@ namespace aspect
       std::vector<double> surface_dyna_topo_contribution_coesin; // a vector to store sin terms of surface dynamic topography contribution SH coefficients
       std::vector<double> CMB_dyna_topo_contribution_coecos; // a vector to store cos terms of CMB dynamic topography contribution SH coefficients
       std::vector<double> CMB_dyna_topo_contribution_coesin; // a vector to store sin terms of CMB dynamic topography contribution SH coefficients
-      std::vector<double> geoid_coecos;  // a vector to store cos terms of geoid anomaly SH coefficients
-      std::vector<double> geoid_coesin;  // a vector to store sin terms of geoid anomaly SH coefficients
+      geoid_coecos.clear();
+      geoid_coesin.clear();
 
       // First compute the spherical harmonic contributions from density anomaly, surface dynamic topography and CMB dynamic topography
       int ind = 0; // coefficients index
@@ -749,6 +749,27 @@ namespace aspect
       deps.push_back("dynamic topography");
       deps.push_back("boundary densities");
       return deps;
+    }
+
+    template <int dim>
+    double
+    Geoid<dim>::evaluate (const Point<dim> &p) const
+    {
+      const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(p);
+      const double theta = scoord[2];
+      const double phi = scoord[1];
+      double value = 0.;
+
+      for (unsigned int ideg=min_degree, k=0; ideg < max_degree+1; ideg++)
+        for (unsigned int iord = 0; iord < ideg+1; iord++, k++)
+          {
+            std::pair<double,double> val = aspect::Utilities::real_spherical_harmonic( ideg, iord, theta, phi );
+
+            value += geoid_coecos[k] * val.first +
+                     geoid_coesin[k] * val.second;
+
+          }
+      return value;
     }
 
     template <int dim>
