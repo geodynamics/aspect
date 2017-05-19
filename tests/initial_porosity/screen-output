@@ -1,0 +1,102 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Number of active cells: 192 (on 4 levels)
+Number of degrees of freedom: 5,290 (1,666+450+1,666+225+833+225+225)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+36 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 1.87476e-16, 1.20111e-16, 0, 0.956793
+      Total relative residual after nonlinear iteration 1: 0.956793
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+36 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 2.06779e-16, 1.20111e-16, 0, 0.752886
+      Total relative residual after nonlinear iteration 2: 0.752886
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+35 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 2.27332e-16, 1.20111e-16, 0, 0.16311
+      Total relative residual after nonlinear iteration 3: 0.16311
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+32 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 2.11339e-16, 1.20111e-16, 0, 0.025768
+      Total relative residual after nonlinear iteration 4: 0.025768
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+28 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 2.18051e-16, 1.20111e-16, 0, 0.00311419
+      Total relative residual after nonlinear iteration 5: 0.00311419
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+25 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 2.12606e-16, 1.20111e-16, 0, 0.000303303
+      Total relative residual after nonlinear iteration 6: 0.000303303
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+21 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 2.18238e-16, 1.20111e-16, 0, 2.46785e-05
+      Total relative residual after nonlinear iteration 7: 2.46785e-05
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+17 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 2.06733e-16, 1.20111e-16, 0, 1.71537e-06
+      Total relative residual after nonlinear iteration 8: 1.71537e-06
+
+
+
+   Postprocessing:
+     Writing graphical output:  output-initial_porosity/solution/solution-00000
+     Compositions min/max/mass: 0/0.2721/8.939e+10 // 0/0/0
+     RMS, max velocity:         0.279 m/year, 1.38 m/year
+     Temperature min/avg/max:   293 K, 2136 K, 4200 K
+     Writing depth average:     output-initial_porosity/depth_average.gnuplot
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
