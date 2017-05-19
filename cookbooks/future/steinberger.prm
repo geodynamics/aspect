@@ -94,7 +94,7 @@ subsection Postprocess
 
   subsection Visualization
     set Output format                 = vtu
-    set List of output variables      = viscosity, density, thermal expansivity, specific heat, seismic vp, seismic vs
+    set List of output variables      = viscosity, density, thermal expansivity, specific heat, named additional outputs
     set Time between graphical output = 1e6
   end
 
