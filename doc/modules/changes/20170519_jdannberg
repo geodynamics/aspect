@@ -1,0 +1,4 @@
+New: Aspect now supports using the free surface in models with 
+melt migration, and with the iterated IMPES scheme.
+<br>
+(Juliane Dannberg, 2017/05/19)

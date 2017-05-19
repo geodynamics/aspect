@@ -1,0 +1,126 @@
+# Test for free surface topography due to a rising blob
+# with melt transport = on, but zero porosity. 
+# This test is the same as free_surface_blob (except for
+# the melt transport) and tests that results are approximately
+# the same. 
+
+set Dimension = 2
+set CFL number                             = 0.5
+set End time                               = 1e9
+set Output directory                       = output
+set Resume computation                     = false
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Pressure normalization                 = no
+set Linear solver tolerance                = 1.e-7
+set Number of cheap Stokes solver steps    = 0 
+set Timing output frequency                = 5
+set Use years in output instead of seconds = true
+
+subsection Boundary temperature model
+  set Model name = constant
+  subsection Constant
+    set Boundary indicator to temperature mappings = 0:0,1:0,2:0,3:0
+  end
+end
+
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+  set Temperature polynomial degree           = 2
+  set Use locally conservative discretization = false
+  subsection Stabilization parameters
+    set alpha = 2
+    set beta  = 0.078
+    set cR    = 0.5   # default: 0.11
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 500.e3 
+    set Y extent = 200.e3
+    set X repetitions = 5
+    set Y repetitions = 2
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function 
+    set Variable names      = x,y
+    set Function expression =  if( sqrt( (x-250.e3)^2 + (y-100.e3)^2 ) < 25.e3, 200.0, 0.0)
+  end
+end
+
+
+subsection Material model
+  set Model name = melt free surface
+  subsection Simple model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 0.0
+    set Thermal conductivity          = 4.7
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1.e21
+  end
+end
+
+
+subsection Mesh refinement
+  set Additional refinement times        =
+  set Initial adaptive refinement        = 1                       # default: 2
+  set Initial global refinement          = 3                      # default: 2
+  set Refinement fraction                = 0.3
+  set Coarsening fraction                = 0.00
+  set Strategy                           = temperature
+  set Time steps between mesh refinement = 0                     # default: 10
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 2,3
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 0,1
+  set Zero velocity boundary indicators       = 2
+  set Free surface boundary indicators = 3
+
+  set Include melt transport                  = true
+end
+
+subsection Free surface
+  set Free surface stabilization theta = 0.5
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = porosity
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Function expression = 0.0
+  end
+end
+
+subsection Termination criteria
+  set Termination criteria = end step
+  set End step = 10
+end
+
+subsection Postprocess
+  set List of postprocessors = topography,velocity statistics, basic statistics, 
+end

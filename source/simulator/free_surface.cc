@@ -22,6 +22,8 @@
 #include <aspect/simulator.h>
 #include <aspect/free_surface.h>
 #include <aspect/global.h>
+#include <aspect/simulator/assemblers/interface.h>
+#include <aspect/melt.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
