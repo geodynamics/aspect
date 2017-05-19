@@ -26,6 +26,7 @@
 #include <aspect/adiabatic_conditions/interface.h>
 #include <deal.II/base/point.h>
 
+#include <deal.II/base/parsed_function.h>
 
 namespace aspect
 {
@@ -34,13 +35,14 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A simple class that calculates adiabatic conditions. This
-     * implementation calculates a simple profile at model start time and does
-     * not update it over time. It utilizes the initial condition for
-     * compositional fields at a reference point (a generic point in the
-     * current depth) to calculate the material parameters. The gravity is
-     * assumed to be directly downward, i.e. radial in spherical models and
-     * vertical in box-shaped models.
+     * A model in which the adiabatic profile is
+     * calculated once at the start of the model run.
+     * The gravity is assumed to be in depth direction
+     * and the composition is either given by the initial
+     * composition at reference points or computed
+     * as a reference depth-function.
+     * All material parameters are computed by the
+     * material model plugin.
      */
     template <int dim>
     class InitialProfile : public Interface<dim>
@@ -94,6 +96,14 @@ namespace aspect
         virtual
         double density_derivative (const Point<dim> &p) const;
 
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+
       private:
 
         /**
@@ -123,6 +133,27 @@ namespace aspect
          * with regard to the depth coordinate.
          */
         double delta_z;
+
+        /**
+         * An enum describing the different options to compute the reference
+         * profile for composition.
+         */
+        enum CompositionProfile
+        {
+          initial_composition,
+          reference_function
+        };
+
+        /**
+         * Selected option to compute the reference profile for composition.
+         */
+        CompositionProfile reference_composition;
+
+        /**
+         * Function object that computes the reference composition profile
+         * if the reference_composition variable is set to function.
+         */
+        std_cxx11::unique_ptr<Functions::ParsedFunction<1> > composition_function;
 
         /**
          * Internal helper function. Returns the reference property at a

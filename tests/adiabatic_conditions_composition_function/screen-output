@@ -1,0 +1,39 @@
+
+Number of active cells: 3,072 (on 6 levels)
+Number of degrees of freedom: 53,381 (25,090+3,201+12,545+12,545)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Skipping C_1 composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 46+0 iterations.
+
+   Postprocessing:
+
+     Model domain depth (m):                        2.89e+06
+     Temperature contrast across model domain (K):  0
+     Reference depth (m):                           0
+     Reference temperature (K):                     1613
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     9.81
+     Reference density (kg/m^3):                    3300
+     Reference thermal expansion coefficient (1/K): 2e-05
+     Reference specific heat capacity (J/(K*kg)):   1250
+     Reference thermal conductivity (W/(m*K)):      1e-06
+     Reference viscosity (Pa*s):                    1
+     Reference thermal diffusivity (m^2/s):         2.42424e-13
+     Rayleigh number:                               0
+
+     Writing graphical output:           output-adiabatic_conditions_composition_function/solution/solution-00000
+     RMS, max velocity:                  2.13e+06 m/s, 1.52e+07 m/s
+     Temperature min/avg/max:            1613 K, 1613 K, 1613 K
+     Heat fluxes through boundary parts: 1.323e-17 W, 1.865e-17 W, 9.33e-18 W, 5.623e-18 W
+     Writing depth average:              output-adiabatic_conditions_composition_function/depth_average.gnuplot
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
