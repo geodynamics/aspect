@@ -287,7 +287,7 @@ namespace aspect
         /**
          * Pointer to an output object
          */
-        std_cxx11::unique_ptr<Output::Interface<dim> > output;
+        std::vector<std_cxx11::shared_ptr<Output::Interface<dim> > > output;
 
         /**
          * Set of particles currently in the local domain, organized by

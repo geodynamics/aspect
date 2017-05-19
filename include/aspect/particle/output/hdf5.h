@@ -38,13 +38,11 @@ namespace aspect
        * @ingroup ParticleOutput
        */
       template <int dim>
-      class HDF5Output : public Interface<dim>,
-        public SimulatorAccess<dim>
+      class HDF5Output : public Interface<dim>
       {
         public:
           /**
            * Constructor.
-           *
            */
           HDF5Output();
 
@@ -73,7 +71,7 @@ namespace aspect
            * output writers do not need to know the units in which time is
            * described.
            *
-           * @return The name of the file that was written, or any other
+           * @return The name of the file extension that was written, or any other
            * information that describes what output was produced if for example
            * multiple files were created.
            */
@@ -88,28 +86,31 @@ namespace aspect
            * Read or write the data of this object for serialization
            */
           template <class Archive>
-          void serialize(Archive &ar, const unsigned int version);
+          void
+          serialize(Archive &ar, const unsigned int version);
 
           /**
            * Save the state of the object.
            */
           virtual
           void
-          save (std::ostringstream &os) const;
+          save (std::map<std::string, std::string> &status_strings) const;
 
           /**
            * Restore the state of the object.
            */
           virtual
           void
-          load (std::istringstream &is);
+          load (std::map<std::string, std::string> &status_strings);
+
+          /**
+           * Returns a constructed filename.
+           */
+          virtual
+          std::string
+          get_file_name () const;
 
         private:
-          /**
-           * Internal index of file output number.
-           */
-          unsigned int file_index;
-
           /**
            * Vector of so far created xdmf_entries (one per written output
            * file).

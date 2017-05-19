@@ -37,15 +37,9 @@ namespace aspect
        * @ingroup ParticleOutput
        */
       template <int dim>
-      class ASCIIOutput : public Interface<dim>,
-        public SimulatorAccess<dim>
+      class ASCIIOutput : public Interface<dim>
       {
         public:
-          /**
-           * Constructor.
-           */
-          ASCIIOutput();
-
           /**
            * Initialization function. This function is called once at the
            * beginning of the program after parse_parameters is run and after the
@@ -71,7 +65,7 @@ namespace aspect
            * output writers do not need to know the units in which time is
            * described.
            *
-           * @return The name of the file that was written, or any other
+           * @return The name of the file extension that was written, or any other
            * information that describes what output was produced if for example
            * multiple files were created.
            */
@@ -81,31 +75,27 @@ namespace aspect
                                const Property::ParticlePropertyInformation &property_information,
                                const double current_time);
 
+
           /**
            * Read or write the data of this object for serialization
            */
           template <class Archive>
-          void serialize(Archive &ar, const unsigned int version);
+          void
+          serialize(Archive &ar, const unsigned int version);
 
           /**
-           * Save the state of the object.
-           */
+          * Save the state of the object.
+          */
           virtual
           void
-          save (std::ostringstream &os) const;
+          save (std::map<std::string, std::string> &status_strings) const;
 
           /**
            * Restore the state of the object.
            */
           virtual
           void
-          load (std::istringstream &is);
-
-        private:
-          /**
-           * Internal index of file output number.
-           */
-          unsigned int    file_index;
+          load (std::map<std::string, std::string> &status_strings);
       };
     }
   }
