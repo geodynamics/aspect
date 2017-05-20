@@ -32,15 +32,15 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A material model which is intended for use with multiple compositional
-     * fields. Each compositional field is meant to be of Drucker Prager
-     * rheology with friction coefficient calculated from slip - weakening
-     * law. If the sum of the compositional field volume fractions is less
-     * than one, then the remainder of the volume is assumed to be ``background mantle''.
-     * If the sum of the compositional
-     * field volume fractions is greater than one, then they are renormalized
-     * to sum to one and there is no background mantle.
-     *
+     * This model is for use with an arbitrary number of compositional fields, where each field 
+     * represents a rock type which can have completely different properties from the others.
+     * Each rock type itself has constant material properties, with the exception of viscosity 
+     * which is modified according to a Drucker-Prager yield criterion. Unlike the drucker prager 
+     * or visco plastic material models, the angle of internal friction is a function of velocity. 
+     * This relationship is similar to rate-and-state friction constitutive relationships, which 
+     * are applicable to the strength of rocks during earthquakes. The formulation used here is 
+     * derived from van Dinther et al. 2013, JGR. 
+    
      * For each material parameter the user supplies a comma delimited list of
      * length N+1, static friction of coefficient, dynamic friction of coefficient,
      * cohesions and background viscosity (to calculate viscous stresses )where N
