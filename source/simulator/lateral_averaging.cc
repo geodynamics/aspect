@@ -18,12 +18,13 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <deal.II/fe/fe_values.h>
-#include <deal.II/base/quadrature_lib.h>
-
 #include <aspect/lateral_averaging.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/gravity_model/interface.h>
+
+#include <deal.II/fe/fe_values.h>
+#include <deal.II/base/quadrature_lib.h>
+
 
 
 namespace aspect

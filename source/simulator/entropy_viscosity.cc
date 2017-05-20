@@ -22,7 +22,9 @@
 #include <aspect/assembly.h>
 #include <aspect/melt.h>
 
+#include <deal.II/base/signaling_nan.h>
 #include <deal.II/fe/fe_values.h>
+
 
 namespace aspect
 {
@@ -39,7 +41,7 @@ namespace aspect
     // variation. otherwise return something that's obviously
     // nonsensical
     if (parameters.stabilization_alpha != 2)
-      return std::numeric_limits<double>::quiet_NaN();
+      return numbers::signaling_nan<double>();
 
     // record maximal entropy on Gauss quadrature
     // points

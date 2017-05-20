@@ -188,7 +188,7 @@ namespace aspect
     prescribed_stokes_solution (PrescribedStokesSolution::create_prescribed_stokes_solution<dim>(prm)),
     adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
 
-    time (std::numeric_limits<double>::quiet_NaN()),
+    time (numbers::signaling_nan<double>()),
     time_step (0),
     old_time_step (0),
     timestep_number (0),

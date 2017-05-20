@@ -21,6 +21,7 @@
 
 #include <aspect/melt.h>
 #include <aspect/simulator.h>
+
 #include <deal.II/base/signaling_nan.h>
 
 #include <deal.II/dofs/dof_tools.h>
@@ -280,12 +281,12 @@ namespace aspect
                               ?
                               scratch.material_model_outputs.viscosities[q]
                               :
-                              std::numeric_limits<double>::quiet_NaN());
+                              numbers::signaling_nan<double>());
           const double eta_two_thirds = (rebuild_stokes_matrix
                                          ?
                                          scratch.material_model_outputs.viscosities[q] * 2.0 / 3.0
                                          :
-                                         std::numeric_limits<double>::quiet_NaN());
+                                         numbers::signaling_nan<double>());
           const Tensor<1,dim>
           gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
           const SymmetricTensor<4,dim> &stress_strain_director =
@@ -297,7 +298,7 @@ namespace aspect
                ?
                scratch.material_model_outputs.compressibilities[q]
                :
-               std::numeric_limits<double>::quiet_NaN() );
+               numbers::signaling_nan<double>() );
 
           const double density_s = scratch.material_model_outputs.densities[q]; // density of the solid
 
