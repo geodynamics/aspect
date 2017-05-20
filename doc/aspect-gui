@@ -39,10 +39,12 @@ if [ ! -f $PARAMETER_GUI_EXECUTABLE ]; then
 fi
 
 if [ "$1" == "" ]; then
-  echo " " |  $ASPECT_DIR/aspect --output-xml -- > temp.xml
+  OUTPUT_FILE=temp.xml
+  echo " " |  $ASPECT_DIR/aspect --output-xml -- > $OUTPUT_FILE
 else
-  $ASPECT_DIR/aspect --output-xml $1 > temp.xml
+  OUTPUT_FILE=`echo $1 | sed -e 's/\.prm/\.xml/g'`
+  $ASPECT_DIR/aspect --output-xml $1 > $OUTPUT_FILE
 fi
 
-$PARAMETER_GUI_EXECUTABLE temp.xml
-rm temp.xml
+$PARAMETER_GUI_EXECUTABLE $OUTPUT_FILE
+rm $OUTPUT_FILE
