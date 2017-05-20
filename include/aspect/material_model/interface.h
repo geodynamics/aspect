@@ -725,16 +725,9 @@ namespace aspect
      * parameters such as the viscosity, density, etc, typically as a function
      * of position, temperature and pressure at that location.
      *
-     * There are two ways to implement a material model and they can not be
-     * mixed: Option one is to override all the virtual functions like
-     * viscosity(), density(), etc. but not change evaluate().
-     *
-     * Option two only requires you to override evaluate() and fill the output
+     * Implementing a material model requires you to override evaluate() and fill the output
      * argument struct instead of implementing the functions viscosity(),
      * density(), etc.. In this case, all other functions are being ignored.
-     *
-     * The second option is more efficient in general, but it is okay to use
-     * option one for simple material models.
      *
      * In all cases, model_dependence values, is_compressible(), reference_viscosity()
      * need to be implemented.
@@ -839,9 +832,9 @@ namespace aspect
          * inputs in @p in. If MaterialModelInputs.strain_rate has the length
          * 0, then the viscosity does not need to be computed.
          */
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const = 0;
-
+        virtual
+        void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+                       MaterialModel::MaterialModelOutputs<dim> &out) const = 0;
         /**
          * @name Functions used in dealing with run-time parameters
          * @{
@@ -896,187 +889,6 @@ namespace aspect
          */
         NonlinearDependence::ModelDependence model_dependence;
     };
-
-
-    /**
-     * This class allows material models written in the past to be used
-     * without adapting them to the new interface that requires implementing a
-     * function evaluate() for the physical properties. Derive from this
-     * helper class instead of Interface and implement the virtual functions
-     * viscosity(), etc..
-     *
-     * Note: do not use this class for new material models, but derive from
-     * Interface instead.
-     */
-    template <int dim>
-    class InterfaceCompatibility: public Interface<dim>
-    {
-      public:
-        /**
-         * Return the viscosity $\eta$ of the model as a function of
-         * temperature, pressure, composition, strain rate, and position.
-         *
-         * @note The strain rate given as the third argument of this function
-         * is computed as $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u +
-         * \nabla \mathbf u^T)$, regardless of whether the model is
-         * compressible or not. This is relevant since in some other contexts,
-         * the strain rate in the compressible case is computed as
-         * $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u + \nabla \mathbf
-         * u^T) - \frac 13 \nabla \cdot \mathbf u \mathbf 1$.
-         */
-        virtual double viscosity (const double                  temperature,
-                                  const double                  pressure,
-                                  const std::vector<double>    &compositional_fields,
-                                  const SymmetricTensor<2,dim> &strain_rate,
-                                  const Point<dim>             &position) const=0;
-
-
-        /**
-         * Return the density $\rho$ of the model as a function of
-         * temperature, pressure and position.
-         */
-        virtual double density (const double      temperature,
-                                const double      pressure,
-                                const std::vector<double> &compositional_fields,
-                                const Point<dim> &position) const=0;
-
-        /**
-         * Return the compressibility coefficient $\frac 1\rho
-         * \frac{\partial\rho}{\partial p}$ of the model as a function of
-         * temperature, pressure and position.
-         *
-         * The compressibility can equivalently be computed as $-\frac 1V
-         * \frac{\partial V}{\partial p}$. Note the difference in sign.
-         */
-        virtual double compressibility (const double temperature,
-                                        const double pressure,
-                                        const std::vector<double> &compositional_fields,
-                                        const Point<dim> &position) const=0;
-
-        /**
-         * Return the specific heat $C_p$ of the model as a function of
-         * temperature, pressure and position.
-         */
-        virtual double specific_heat (const double      temperature,
-                                      const double      pressure,
-                                      const std::vector<double> &compositional_fields,
-                                      const Point<dim> &position) const=0;
-
-        /**
-         * Return the thermal expansion coefficient $\alpha$ of the model,
-         * possibly as a function of temperature, pressure and position. The
-         * thermal expansion coefficient is defined as $\alpha=-\frac{1}{\rho}
-         * \frac{d\rho}{dT}$. Since the density <i>decreases</i> with
-         * temperature for almost all models, $\alpha$ is usually positive.
-         *
-         * The thermal expansion coefficient can equivalently be computed as
-         * $\frac 1V \frac{\partial V}{\partial T}$. Note the difference in
-         * sign.
-         */
-        virtual double thermal_expansion_coefficient (const double      temperature,
-                                                      const double      pressure,
-                                                      const std::vector<double> &compositional_fields,
-                                                      const Point<dim> &position) const=0;
-
-        /**
-         * Return the product of the change in entropy across phase
-         * transitions, the pressure derivative of the phase function (if this
-         * is the pressure derivative) or the product of the former two and
-         * the Clapeyron slope (if this is the temperature derivative). The
-         * entropy change across a phase transition can be calculated as
-         * $\frac{\gamma \Delta\rho}{\rho_\text{light} \rho_\text{heavy}}$.
-         * $\gamma$ is the Clapeyron slope of the phase transition,
-         * $\Delta\rho$ is the density jump across the phase transition,
-         * $\rho_\text{light}$ is the density of the light material (above the
-         * phase transition) and $\rho_\text{heavy}$ the density of the heavy
-         * material (below the phase transition). The phase function hat
-         * values ranging from 0 to 1 indicating which percentage of the
-         * material has already undergone the phase transition. Its argument
-         * is usually the excess pressure $\pi = p - p_0 - \gamma T$, where
-         * $p_0$ is the zero-degree transition pressure.
-         *
-         * This function has a default implementation that sets the entropy
-         * gradient to zero (assuming no phase changes).
-         */
-        virtual double entropy_derivative (const double      temperature,
-                                           const double      pressure,
-                                           const std::vector<double> &compositional_fields,
-                                           const Point<dim> &position,
-                                           const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return the change in the compositional field compositional_variable
-         * due to reactions between different compositional fields. It is
-         * assumed that there is always an equilibrium between the
-         * compositional fields (because the time scale of reactions is
-         * normally much shorter than that of convection), so the quantity
-         * returned by this function is an actual change in the amount of
-         * material, which is added to or subtracted from the current value of
-         * the compositional field, and NOT a reaction rate. The idea is, that
-         * in dependence of temperature, pressure, position and the
-         * compositional fields themselves an equilibrium can be calculated,
-         * and the difference between the current value and the equilibrium
-         * can be added to the respective compositional field.
-         *
-         * For mass conservation it should ALWAYS be checked that what is
-         * subtracted from one field is added to another field (and the other
-         * way round) and that one never subtracts more than the actual value
-         * of a field (so it does not get negative).
-         *
-         * This function has a default implementation that sets the reaction
-         * term to zero (assuming no reactions).
-         *
-         * @note In cases where one has slow chemical reactions (or cases
-         * where compositional fields are used to track quantities different
-         * than actual compositions, for example accumulated strains in damage
-         * models), models are formulated as differential equations with right
-         * hand sides, not as instantaneous equations. In such cases, the
-         * reaction terms (i.e., the incremental additions to the previous
-         * state) are usually of the form reaction rate times time step size.
-         * To implement something like this, derive your material model from
-         * SimulatorAccess so you can query the time step used by the
-         * simulator in order to compute the reaction increment.
-         */
-        virtual double reaction_term (const double      temperature,
-                                      const double      pressure,
-                                      const std::vector<double> &compositional_fields,
-                                      const Point<dim> &position,
-                                      const unsigned int compositional_variable) const;
-
-        /**
-         * Return the thermal conductivity $k$ of the model as a function of
-         * temperature, pressure and position. The units of $k$ are
-         * $\textrm{W} / \textrm{m} / \textrm{K}$ in 3d, and $\textrm{W} /
-         * \textrm{K}$ in 2d. This is easily see by considering that $k$ is
-         * the heat flux density (i.e., Watts per unit area perpendicular to
-         * the heat flux direction) per unit temperature gradient (i.e.,
-         * Kelvin per meter). The unit area has units $m^2$ in 3d, but only
-         * $m$ in 2d, yielding the stated units for $k$.
-         *
-         * Note that the thermal <i>conductivity</i> $k$ is related to the
-         * thermal <i>diffusivity</i> $\kappa$ as $k = \kappa \rho c_p$. In
-         * essence, the conductivity relates to the question of how thermal
-         * energy diffuses whereas the diffusivity relates to the question of
-         * how the temperature diffuses. $\kappa$ has units
-         * $\textrm{m}^2/\textrm{s}$.
-         */
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const std::vector<double> &compositional_fields,
-                                             const Point<dim> &position) const=0;
-
-
-        /**
-         * The evaluate() function is implemented to call the individual
-         * functions in this class, so there is no need to implement this in
-         * your material model derived from InterfaceCompatibility.
-         * @param in
-         * @param out
-         */
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const;
-    };
-
 
     /**
      * Register a material model so that it can be selected from the parameter
