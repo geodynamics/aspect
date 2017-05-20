@@ -1,7 +1,7 @@
 
 
 
-Exception on processing: 
+Exception 'ExcMessage ("ASPECT can only be run in 2d and 3d but a " "different space dimension is given in the parameter file.")' on rank 0 on processing: 
 
 An error occurred in file <main.cc> in function
 (line in output replaced by default.sh script)

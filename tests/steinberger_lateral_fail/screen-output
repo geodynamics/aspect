@@ -7,7 +7,7 @@ In computing depth averages, there is at least one depth band that does not have
  Consider reducing number of depth layers for  averaging
 
 
-Exception on processing: 
+Exception 'ExcMessage("In computing depth averages, there is at" " least one depth band that does not have" " any quadrature points in it." " Consider reducing number of depth layers" " for averaging specified in the parameter" " file.(Number lateral average bands)")' on rank 0 on processing: 
 
 An error occurred in file <steinberger.cc> in function
 (line in output replaced by default.sh script)

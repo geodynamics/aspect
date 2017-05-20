@@ -1,7 +1,7 @@
 
 
 
-Exception on processing: 
+Exception 'ExcMessage("The list of strings for the parameter " "'Postprocess/Visualization/List of output variables' contains entries more than once. " "This is not allowed. Please check your parameter file.")' on rank 0 on processing: 
 
 An error occurred in file <visualization.cc> in function
 (line in output replaced by default.sh script)
