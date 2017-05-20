@@ -1,0 +1,6 @@
+New: There is a new initial composition plugin called 'porosity' that initializes
+the porosity to the equilibrium melt fraction if the material model provides one.
+Other fields are left unchanged, and the plugin does not work if there is no
+equilibrium melt fraction provided by the material model.
+<br>
+(Rene Gassmoeller, 2017/05/19)

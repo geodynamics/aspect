@@ -1,0 +1,28 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Visualization file name
+# 16: Minimal value for composition porosity
+# 17: Maximal value for composition porosity
+# 18: Global mass for composition porosity
+# 19: Minimal value for composition peridotite
+# 20: Maximal value for composition peridotite
+# 21: Global mass for composition peridotite
+# 22: RMS velocity (m/year)
+# 23: Max. velocity (m/year)
+# 24: Minimal temperature (K)
+# 25: Average temperature (K)
+# 26: Maximal temperature (K)
+# 27: Average nondimensional temperature (K)
+0 0.000000000000e+00 0.000000000000e+00 192 1891 833 450 8 0 0 0 230 1375 714 output-initial_porosity/solution/solution-00000 0.00000000e+00 2.72115500e-01 8.93941934e+10 0.00000000e+00 0.00000000e+00 0.00000000e+00 2.78635426e-01 1.38285314e+00 2.93000000e+02 2.13574874e+03 4.20000000e+03 5.40871366e-01 
