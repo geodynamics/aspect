@@ -1,0 +1,91 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.0.0-pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 256 (on 4 levels)
+Number of degrees of freedom: 4,717 (2,210+297+1,105+1,105)
+
+Number of free surface degrees of freedom: 594
+*** Timestep 0:  t=0 years
+   Solving mesh velocity system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+17 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 1
+
+
+   Postprocessing:
+     RMS, max velocity: 0.00687 m/year, 0.01 m/year
+
+Number of active cells: 964 (on 5 levels)
+Number of degrees of freedom: 17,169 (8,062+1,045+4,031+4,031)
+
+Number of free surface degrees of freedom: 2090
+*** Timestep 0:  t=0 years
+   Solving mesh velocity system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+18 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 1
+
+
+   Postprocessing:
+     RMS, max velocity: 0.00687 m/year, 0.01 m/year
+
+Number of active cells: 946 (on 5 levels)
+Number of degrees of freedom: 16,913 (7,942+1,029+3,971+3,971)
+
+Number of free surface degrees of freedom: 2058
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      5.84s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         2 |     0.226s |       3.9% |
+| Assemble composition system     |         2 |     0.219s |       3.8% |
+| Assemble temperature system     |         2 |     0.493s |       8.4% |
+| Build Stokes preconditioner     |         2 |     0.439s |       7.5% |
+| Build composition preconditioner|         2 |    0.0255s |      0.44% |
+| Solve Stokes system             |         2 |     0.562s |       9.6% |
+| Solve composition system        |         2 |   0.00133s |         0% |
+| Free surface                    |         2 |       1.1s |        19% |
+| Initialization                  |         1 |     0.692s |        12% |
+| Postprocessing                  |         2 |      0.02s |      0.34% |
+| Refine mesh structure, part 1   |         2 |     0.107s |       1.8% |
+| Refine mesh structure, part 2   |         2 |    0.0344s |      0.59% |
+| Setup dof systems               |         3 |      1.23s |        21% |
+| Setup initial conditions        |         2 |     0.218s |       3.7% |
++---------------------------------+-----------+------------+------------+
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      5.84s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         2 |     0.226s |       3.9% |
+| Assemble composition system     |         2 |     0.219s |       3.8% |
+| Assemble temperature system     |         2 |     0.493s |       8.4% |
+| Build Stokes preconditioner     |         2 |     0.439s |       7.5% |
+| Build composition preconditioner|         2 |    0.0255s |      0.44% |
+| Solve Stokes system             |         2 |     0.562s |       9.6% |
+| Solve composition system        |         2 |   0.00133s |         0% |
+| Free surface                    |         2 |       1.1s |        19% |
+| Initialization                  |         1 |     0.692s |        12% |
+| Postprocessing                  |         2 |      0.02s |      0.34% |
+| Refine mesh structure, part 1   |         2 |     0.107s |       1.8% |
+| Refine mesh structure, part 2   |         2 |    0.0344s |      0.59% |
+| Setup dof systems               |         3 |      1.23s |        21% |
+| Setup initial conditions        |         2 |     0.218s |       3.7% |
++---------------------------------+-----------+------------+------------+
+
