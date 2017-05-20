@@ -1626,6 +1626,15 @@ namespace aspect
 
     namespace
     {
+      /**
+       * Given a string @p filename_and_path that contains exactly one
+       * <code>%s</code> and one <code>%d</code> code (possibly modified
+       * by flag, field, and length modifiers as discussed in the man
+       * pages of the <code>printf()</code> family of functions),
+       * return the expanded string where the <code>%s</code> code is
+       * replaced by @p boundary_name, and <code>%d</code> is replaced
+       * by @p filenumber.
+       */
       std::string replace_placeholders(const std::string &filename_and_path,
                                        const std::string &boundary_name,
                                        const int filenumber)
