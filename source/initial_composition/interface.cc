@@ -126,7 +126,7 @@ namespace aspect
           Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
                                                   model_names.size(),
                                                   "List of model operators");
-        model_operators = Utilities::Operator::create_model_operator_list(model_operator_names);
+        model_operators = Utilities::create_model_operator_list(model_operator_names);
 
       }
       prm.leave_subsection ();
@@ -169,36 +169,7 @@ namespace aspect
            initial_composition_object != initial_composition_objects.end();
            ++initial_composition_object)
         {
-          switch (model_operators[i])
-            {
-              case Utilities::Operator::add:
-              {
-                composition += (*initial_composition_object)->initial_composition(position,  n_comp);
-                break;
-              }
-              case Utilities::Operator::subtract:
-              {
-                composition -= (*initial_composition_object)->initial_composition(position, n_comp);
-                break;
-              }
-              case Utilities::Operator::minimum:
-              {
-                composition = std::min (composition, (*initial_composition_object)->initial_composition(position, n_comp));
-                break;
-              }
-              case Utilities::Operator::maximum:
-              {
-                composition = std::max (composition, (*initial_composition_object)->initial_composition(position, n_comp));
-                break;
-              }
-              default:
-              {
-                Assert ( false, ExcMessage ("Initial composition interface only accepts the following operators: "
-                                            "add, subtract, minimum and maximum. Please check your parameter file.") );
-                break;
-              }
-            }
-
+          composition = model_operators[i](composition,(*initial_composition_object)->initial_composition(position,  n_comp));
           i++;
         }
 

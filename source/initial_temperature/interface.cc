@@ -123,7 +123,7 @@ namespace aspect
           Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
                                                   model_names.size(),
                                                   "List of model operators");
-        model_operators = Utilities::Operator::create_model_operator_list(model_operator_names);
+        model_operators = Utilities::create_model_operator_list(model_operator_names);
       }
       prm.leave_subsection ();
 
@@ -157,36 +157,7 @@ namespace aspect
            initial_temperature_object != initial_temperature_objects.end();
            ++initial_temperature_object)
         {
-          switch (model_operators[i])
-            {
-              case Utilities::Operator::add:
-              {
-                temperature += (*initial_temperature_object)->initial_temperature(position);
-                break;
-              }
-              case Utilities::Operator::subtract:
-              {
-                temperature -= (*initial_temperature_object)->initial_temperature(position);
-                break;
-              }
-              case Utilities::Operator::minimum:
-              {
-                temperature = std::min (temperature, (*initial_temperature_object)->initial_temperature(position));
-                break;
-              }
-              case Utilities::Operator::maximum:
-              {
-                temperature = std::max (temperature, (*initial_temperature_object)->initial_temperature(position));
-                break;
-              }
-              default:
-              {
-                Assert ( false, ExcMessage ("Initial temperature interface only accepts the following operators: "
-                                            "add, subtract, minimum and maximum. Please check your parameter file.") );
-                break;
-              }
-            }
-
+          temperature = model_operators[i](temperature,(*initial_temperature_object)->initial_temperature(position));
           i++;
         }
       return temperature;

@@ -956,22 +956,64 @@ namespace aspect
                               const SymmetricTensor<2,dim> &dviscosities_dstrain_rate,
                               const double safety_factor);
 
-    namespace Operator
+    /**
+     * A class that represents a binary operator between two doubles. The type of
+     * operation is specified on construction time, and can be checked later
+     * by using the operator ==. The operator () executes the operation on two
+     * double parameters and returns the result. This class is helpful for
+     * user specified operations that are not know at compile time.
+     */
+    class Operator
     {
-      /**
-       * An enum of operators which match the allowed
-       * model operator names which can be given in the parameter file.
-       */
-      enum operation
-      {
-        add,
-        subtract,
-        minimum,
-        maximum
-      };
+      public:
+        /**
+         * An enum of operators which match the allowed
+         * model operator names which can be given in the parameter file.
+         */
+        enum operation
+        {
+          add,
+          subtract,
+          minimum,
+          maximum,
+          uninitialized
+        };
 
-      std::vector<operation> create_model_operator_list(const std::vector<std::string> &operator_names);
-    }
+        /**
+         * The default constructor creates an invalid operation that will fail
+         * if ever executed.
+         */
+        Operator();
+
+        /**
+         * Construct the selected operator.
+         */
+        Operator(const operation op);
+
+        /**
+         * Execute the selected operation with the given parameters and
+         * return the result.
+         */
+        double operator() (double x, double y) const;
+
+        /**
+         * Return the comparison result between the current operation and
+         * the one provided as argument.
+         */
+        bool operator== (const operation op) const;
+
+      private:
+        /**
+         * The selected operation of this object.
+         */
+        const operation op;
+    };
+
+    /**
+     * Create a vector of operator objects out of a list of strings. Each
+     * entry in the list must match one of the allowed operations.
+     */
+    std::vector<Operator> create_model_operator_list(const std::vector<std::string> &operator_names);
 
     /**
      * This function computes a factor which can be used to make sure that the

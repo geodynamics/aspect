@@ -214,7 +214,7 @@ namespace aspect
          * field with the values from the current plugin. The operators should be
          * one of: add, subtract, minimum and maximum.
          */
-        std::vector<aspect::Utilities::Operator::operation> model_operators;
+        std::vector<aspect::Utilities::Operator> model_operators;
     };
 
 
