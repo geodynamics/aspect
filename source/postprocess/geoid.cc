@@ -851,10 +851,9 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(Geoid,
                                   "geoid",
-                                  "A postprocessor that computes a measure of geoid anomaly based on the density anomaly determined "
-                                  "from the temperature field in the mantle, and the dynamic topography at the surface and core mantle "
-                                  "boundary(CMB). The geoid is computed from the spherical harmonics expansion, so the geometry of the "
-                                  "domain needs to be a 3D spherical shell.")
+                                  "A postprocessor that computes a measure of geoid based on the density structure in the mantle, "
+                                  "and the dynamic topography at the surface and core mantle boundary (CMB). The geoid is computed "
+                                  "from spherical harmonic expansion, so the geometry of the domain must be a 3D spherical shell.")
 
   }
 }
