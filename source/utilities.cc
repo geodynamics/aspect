@@ -19,6 +19,7 @@
 */
 #include <aspect/global.h>
 #include <aspect/utilities.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/std_cxx11/array.h>
 #include <deal.II/base/point.h>
@@ -2362,6 +2363,34 @@ namespace aspect
             return std::max(0.0,safety_factor*alpha);
         }
     }
+
+    namespace Operator
+    {
+      std::vector<Operator::operation> create_model_operator_list(const std::vector<std::string> &operator_names)
+      {
+        std::vector<Operator::operation> operator_list(operator_names.size());
+        for (unsigned int i=0; i<operator_names.size(); ++i)
+          {
+            // create operator list
+            if (operator_names[i] == "add")
+              operator_list[i] = Operator::add;
+            else if (operator_names[i] == "subtract")
+              operator_list[i] = Operator::subtract;
+            else if (operator_names[i] == "minimum")
+              operator_list[i] = Operator::minimum;
+            else if (operator_names[i] == "maximum")
+              operator_list[i] = Operator::maximum;
+            else
+              AssertThrow(false,
+                          ExcMessage ("ASPECT only accepts the following operators: "
+                                      "add, subtract, minimum and maximum. But your parameter file "
+                                      "contains: " + operator_names[i] + ". Please check your parameter file.") );
+          }
+
+        return operator_list;
+      }
+    }
+
 
 
 

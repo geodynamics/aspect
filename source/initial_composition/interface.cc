@@ -121,9 +121,12 @@ namespace aspect
         if (!(model_name == "unspecified"))
           model_names.push_back(model_name);
 
-        model_operator_names = Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
-                                                                       model_names.size(),
-                                                                       "List of model operators");
+        // create operator list
+        std::vector<std::string> model_operator_names =
+          Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
+                                                  model_names.size(),
+                                                  "List of model operators");
+        model_operators = Utilities::Operator::create_model_operator_list(model_operator_names);
 
       }
       prm.leave_subsection ();
@@ -149,20 +152,6 @@ namespace aspect
 
           initial_composition_objects.back()->parse_parameters (prm);
           initial_composition_objects.back()->initialize ();
-
-          // create operator list
-          if (model_operator_names[i] == "add")
-            model_operators.push_back(add);
-          else if (model_operator_names[i] == "subtract")
-            model_operators.push_back(subtract);
-          else if (model_operator_names[i] == "minimum")
-            model_operators.push_back(minimum);
-          else if (model_operator_names[i] == "maximum")
-            model_operators.push_back(maximum);
-          else
-            AssertThrow( false,
-                         ExcMessage ("Initial composition interface only accepts the following operators: "
-                                     "add, subtract, minimum and maximum. Please check your parameter file.") );
         }
     }
 
@@ -182,22 +171,22 @@ namespace aspect
         {
           switch (model_operators[i])
             {
-              case add:
+              case Utilities::Operator::add:
               {
                 composition += (*initial_composition_object)->initial_composition(position,  n_comp);
                 break;
               }
-              case subtract:
+              case Utilities::Operator::subtract:
               {
                 composition -= (*initial_composition_object)->initial_composition(position, n_comp);
                 break;
               }
-              case minimum:
+              case Utilities::Operator::minimum:
               {
                 composition = std::min (composition, (*initial_composition_object)->initial_composition(position, n_comp));
                 break;
               }
-              case maximum:
+              case Utilities::Operator::maximum:
               {
                 composition = std::max (composition, (*initial_composition_object)->initial_composition(position, n_comp));
                 break;

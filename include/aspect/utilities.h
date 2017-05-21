@@ -32,12 +32,13 @@
 #include <deal.II/base/function_lib.h>
 
 #include <aspect/geometry_model/interface.h>
-#include <aspect/simulator_access.h>
 
 
 
 namespace aspect
 {
+  template <int dim> class SimulatorAccess;
+
   /**
    * A namespace for utility functions that might be used in many different
    * places to prevent code duplication.
@@ -931,6 +932,47 @@ namespace aspect
                                              const std::vector<double> &values,
                                              const std::vector<T> &derivatives,
                                              const double p);
+    /**
+     * This function computes a factor which can be used to make sure that the
+     * Jacobian remains positive definite.
+     *
+     * The goal of this function is to find a factor $\alpha$ so that
+     * $2\eta(\varepsilon(\bm u)) I \otimes I +  \alpha\left[a \otimes b + b \otimes a\right]$ remains a
+     * positive definite matrix. Here, $a=\varepsilon(\bm u)$ is the @p strain_rate
+     * and $b=\frac{\partial\eta(\varepsilon(\bm u),p)}{\partial \varepsilon}$ is the derivative of the viscosity
+     * with respect to the strain rate and is given by @p dviscosities_dstrain_rate. Since the viscosity $\eta$
+     * must be positive, there is always a value of $\alpha$ (possibly small) so that the result is a positive
+     * definite matrix. In the best case, we want to choose $\alpha=1$ because that corresponds to the full Newton step,
+     * and so the function never returns anything larger than one.
+     *
+     * The factor is defined by:
+     * $\frac{2\eta(\varepsilon(\bm u))}{\left[1-\frac{b:a}{\|a\| \|b\|} \right]^2\|a\|\|b\|}$. Alpha is
+     * reset to a maximum of one, and if it is smaller then one, a safety_factor scales the alpha to make
+     * sure that the 1-alpha won't get to close to zero.
+     */
+    template<int dim>
+    double compute_spd_factor(const double eta,
+                              const SymmetricTensor<2,dim> &strain_rate,
+                              const SymmetricTensor<2,dim> &dviscosities_dstrain_rate,
+                              const double safety_factor);
+
+    namespace Operator
+    {
+      /**
+       * An enum of operators which match the allowed
+       * model operator names which can be given in the parameter file.
+       */
+      enum operation
+      {
+        add,
+        subtract,
+        minimum,
+        maximum
+      };
+
+      std::vector<operation> create_model_operator_list(const std::vector<std::string> &operator_names);
+    }
+
     /**
      * This function computes a factor which can be used to make sure that the
      * Jacobian remains positive definite.

@@ -20,7 +20,6 @@
 
 
 #include <aspect/global.h>
-#include <aspect/utilities.h>
 #include <aspect/initial_temperature/interface.h>
 
 #include <deal.II/base/exceptions.h>
@@ -119,11 +118,12 @@ namespace aspect
         if (!(model_name == "unspecified"))
           model_names.push_back(model_name);
 
-
-        model_operator_names = Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
-                                                                       model_names.size(),
-                                                                       "List of model operators");
-
+        // create operator list
+        std::vector<std::string> model_operator_names =
+          Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
+                                                  model_names.size(),
+                                                  "List of model operators");
+        model_operators = Utilities::Operator::create_model_operator_list(model_operator_names);
       }
       prm.leave_subsection ();
 
@@ -142,20 +142,6 @@ namespace aspect
 
           initial_temperature_objects.back()->parse_parameters (prm);
           initial_temperature_objects.back()->initialize ();
-
-          // create operator list
-          if (model_operator_names[i] == "add")
-            model_operators.push_back(add);
-          else if (model_operator_names[i] == "subtract")
-            model_operators.push_back(subtract);
-          else if (model_operator_names[i] == "minimum")
-            model_operators.push_back(minimum);
-          else if (model_operator_names[i] == "maximum")
-            model_operators.push_back(maximum);
-          else
-            AssertThrow( false,
-                         ExcMessage ("Initial temperature interface only accepts the following operators: "
-                                     "add, subtract, minimum and maximum. Please check your parameter file.") );
         }
     }
 
@@ -173,22 +159,22 @@ namespace aspect
         {
           switch (model_operators[i])
             {
-              case add:
+              case Utilities::Operator::add:
               {
                 temperature += (*initial_temperature_object)->initial_temperature(position);
                 break;
               }
-              case subtract:
+              case Utilities::Operator::subtract:
               {
                 temperature -= (*initial_temperature_object)->initial_temperature(position);
                 break;
               }
-              case minimum:
+              case Utilities::Operator::minimum:
               {
                 temperature = std::min (temperature, (*initial_temperature_object)->initial_temperature(position));
                 break;
               }
-              case maximum:
+              case Utilities::Operator::maximum:
               {
                 temperature = std::max (temperature, (*initial_temperature_object)->initial_temperature(position));
                 break;
