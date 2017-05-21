@@ -236,16 +236,17 @@ namespace aspect
 
               // focus on the boundary cell's upper face if on the top boundary and lower face if on the bottom boundary
               fe_face_values.reinit(cell, face_idx);
+
+              // Dynamic topography is evaluated at each quadrature point on every top/bottom cell's boundary face.
+              // The reason to do this is that later in the spherical harmonic expansion, we will calculate
+              // sin(theta)*d_theta*d_phi by infinitesimal_area/radius^2. The accuracy of this transfer is improved
+              // as infinitesimal_area is closer to zero, so using every boundary quadrature point's associated area
+              // of each top/bottom cell will lead to better accuracy in spherical harmonic expansion, especially in the coarse mesh.
               fe_face_values[this->introspection().extractors.temperature].get_function_values(topo_vector, topo_values);
 
               // if the cell at top boundary, add its contributions dynamic topography storage vector
               if (face_idx != numbers::invalid_unsigned_int && at_upper_surface)
                 {
-                  // Although we calculate the average dynamic topography of the cell's boundary face, we store this same dynamic topography with every
-                  // surface quadrature point's associated area into the storage vector. The reason to do this is that later in the spherical
-                  // harmonic expansion, we will calculate sin(theta)*d_theta*d_phi by infinitesimal_area/radius^2. The accuracy of this relation
-                  // is improved as infinitesimal_area is closer to zero, so using every surface quadrature point's associated area of each
-                  // surface cell will lead to better accuracy in spherical harmonic expansion, especially in the coarse mesh.
                   for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                     surface_stored_values.push_back (std::make_pair(fe_face_values.quadrature_point(q), std::make_pair(fe_face_values.JxW(q), topo_values[q])));
                 }
@@ -253,11 +254,6 @@ namespace aspect
               // if the cell at bottom boundary, add its contributions dynamic topography storage vector
               if (face_idx != numbers::invalid_unsigned_int && !at_upper_surface)
                 {
-                  // Although we calculate the average dynamic topography of the cell's boundary face, we store this same dynamic topography with every
-                  // bottom quadrature point's associated area into the storage vector. The reason to do this is that later in the spherical
-                  // harmonic expansion, we will calculate sin(theta)*d_theta*d_phi by infinitesimal_area/radius^2. The accuracy of this relation
-                  // is improved as infinitesimal_area is closer to zero, so using every bottom quadrature point's associated area of each
-                  // bottom cell will lead to better accuracy in spherical harmonic expansion, especially in the coarse mesh.
                   for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                     CMB_stored_values.push_back (std::make_pair(fe_face_values.quadrature_point(q), std::make_pair(fe_face_values.JxW(q), topo_values[q])));
                 }
