@@ -42,7 +42,7 @@ if [ "$1" == "" ]; then
   OUTPUT_FILE=temp.xml
   echo " " |  $ASPECT_DIR/aspect --output-xml -- > $OUTPUT_FILE
 else
-  OUTPUT_FILE=`echo $1 | sed -e 's/\.prm/\.xml/g'`
+  OUTPUT_FILE=`echo $1 | sed -e 's/\.prm$/\.xml/'`
   $ASPECT_DIR/aspect --output-xml $1 > $OUTPUT_FILE
 fi
 
