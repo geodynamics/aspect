@@ -237,11 +237,20 @@ namespace aspect
               // focus on the boundary cell's upper face if on the top boundary and lower face if on the bottom boundary
               fe_face_values.reinit(cell, face_idx);
 
-              // Dynamic topography is evaluated at each quadrature point on every top/bottom cell's boundary face.
-              // The reason to do this is that later in the spherical harmonic expansion, we will calculate
-              // sin(theta)*d_theta*d_phi by infinitesimal_area/radius^2. The accuracy of this transfer is improved
-              // as infinitesimal_area is closer to zero, so using every boundary quadrature point's associated area
-              // of each top/bottom cell will lead to better accuracy in spherical harmonic expansion, especially in the coarse mesh.
+              // Dynamic topography is evaluated at each quadrature
+              // point on every top/bottom cell's boundary face.  The
+              // reason to do this -- as opposed to using a single
+              // value per boundary face -- is that later in the
+              // spherical harmonic expansion, we will calculate
+              // sin(theta)*d_theta*d_phi by
+              // infinitesimal_area/radius^2. The accuracy of this
+              // transfer gets better as infinitesimal_area gets
+              // closer to zero, so using every boundary quadrature
+              // point's associated area (in the form of
+              // FEFaceValues::JxW) will lead to better accuracy in
+              // spherical harmonic expansion compared to using just
+              // one average value per face, especially in the coarse
+              // meshes.
               fe_face_values[this->introspection().extractors.temperature].get_function_values(topo_vector, topo_values);
 
               // if the cell at top boundary, add its contributions dynamic topography storage vector
@@ -851,9 +860,11 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(Geoid,
                                   "geoid",
-                                  "A postprocessor that computes a measure of geoid based on the density structure in the mantle, "
-                                  "and the dynamic topography at the surface and core mantle boundary (CMB). The geoid is computed "
-                                  "from spherical harmonic expansion, so the geometry of the domain must be a 3D spherical shell.")
-
+                                  "A postprocessor that computes a representation of "
+                                  "the geoid based on the density structure in the mantle, "
+                                  "as well as the dynamic topography at the surface and "
+                                  "core mantle boundary (CMB). The geoid is computed "
+                                  "from a spherical harmonic expansion, so the geometry "
+                                  "of the domain must be a 3D spherical shell.")
   }
 }
