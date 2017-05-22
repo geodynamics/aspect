@@ -92,6 +92,7 @@ RUN conda install --quiet --yes \
     'h5py=2.6*' \
     'vincent=0.4.*' \
     'beautifulsoup4=4.5.*' \
+    'pytables' \
     'xlrd'  && \
     conda remove --quiet --yes --force qt pyqt && \
     conda clean -tipsy
@@ -120,4 +121,11 @@ COPY demo.ipynb /home/$NB_USER/
 RUN chown $NB_USER:users /home/$NB_USER/demo.ipynb
 
 WORKDIR /home/$USER/
+
 USER $USER
+
+RUN jupyter trust /home/$USER/*.ipynb
+
+# enable widgets:
+RUN jupyter nbextension enable --py --sys-prefix widgetsnbextension
+
