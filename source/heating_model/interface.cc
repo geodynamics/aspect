@@ -268,6 +268,7 @@ namespace aspect
         {
           heating_model_outputs.heating_source_terms[q] = 0.0;
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
+          heating_model_outputs.heating_reaction_terms[q] = 0.0;
         }
 
       HeatingModel::HeatingModelOutputs individual_heating_outputs(material_model_inputs.position.size(),
@@ -282,6 +283,7 @@ namespace aspect
             {
               heating_model_outputs.heating_source_terms[q] += individual_heating_outputs.heating_source_terms[q];
               heating_model_outputs.lhs_latent_heat_terms[q] += individual_heating_outputs.lhs_latent_heat_terms[q];
+              heating_model_outputs.heating_reaction_terms[q] += individual_heating_outputs.heating_reaction_terms[q];
             }
         }
     }
