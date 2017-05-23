@@ -26,7 +26,7 @@
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/multithread_info.h>
 #include <deal.II/base/revision.h>
-
+#include <csignal>
 #include <string>
 
 #ifdef DEBUG
@@ -408,6 +408,29 @@ void print_version_information(Stream &stream)
 }
 
 
+// hook into SIGABRT and kill off the program
+void signal_handler(int signal)
+{
+  if (signal == SIGABRT)
+    {
+      std::cerr << "SIGABRT received\n";
+    }
+  else
+    {
+      std::cerr << "Unexpected signal " << signal << " received\n";
+    }
+#if DEAL_II_USE_CXX11
+  // Kill the program without performing any other cleanup, which is likely to
+  // lead to a deadlock
+  std::_Exit(EXIT_FAILURE);
+#else
+  // Kill the program, or at least try to. The problem when we get here is
+  // that calling std::exit invokes at_exit() functions that may still hang
+  // the MPI system
+  std::exit(1);
+#endif
+}
+
 int main (int argc, char *argv[])
 {
   using namespace dealii;
@@ -433,6 +456,14 @@ int main (int argc, char *argv[])
 
       std::string prm_name = "";
       bool output_xml = false;
+
+      // We hook into the abort handler on ranks != 0 to avoid an MPI
+      // deadlock. The deal.II library will call std::abort() when an Assert
+      // is triggered, which can lead to a deadlock. We work around this by
+      // immediately calling _Exit and thus aborting the program. This is only
+      // necessary on rank != 0 for some reason.
+      if (!i_am_proc_0)
+        std::signal(SIGABRT, signal_handler);
 
       // Loop over all command line arguments. Handle a number of special ones
       // starting with a dash, and then take the first non-special one as the
@@ -631,12 +662,30 @@ int main (int argc, char *argv[])
                                     "different space dimension is given in the parameter file."));
         }
     }
+  catch (ExceptionBase &exc)
+    {
+      // report name of the deal.II exception:
+      std::cerr << std::endl << std::endl
+                << "----------------------------------------------------"
+                << std::endl;
+      std::cerr << "Exception '" << exc.get_exc_name() << "'"
+                << " on rank " << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                << " on processing: " << std::endl
+                << exc.what() << std::endl
+                << "Aborting!" << std::endl
+                << "----------------------------------------------------"
+                << std::endl;
+
+      return 1;
+    }
   catch (std::exception &exc)
     {
       std::cerr << std::endl << std::endl
                 << "----------------------------------------------------"
                 << std::endl;
-      std::cerr << "Exception on processing: " << std::endl
+      std::cerr << "Exception"
+                << " on rank " << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                << " on processing: " << std::endl
                 << exc.what() << std::endl
                 << "Aborting!" << std::endl
                 << "----------------------------------------------------"
