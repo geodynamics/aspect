@@ -1,4 +1,4 @@
-New: Aspect can now initialise the compositional field by supplying 
+New: Aspect can now initialize the compositional field by supplying
 a list of plugins and operators determining how each plugin modifies the
 field. The operators are specified as a new input file parameter
 'List of model operators', which takes a comma-separated list 
