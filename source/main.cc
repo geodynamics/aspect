@@ -419,7 +419,16 @@ void signal_handler(int signal)
     {
       std::cerr << "Unexpected signal " << signal << " received\n";
     }
+#if DEAL_II_USE_CXX11
+  // Kill the program without performing any other cleanup, which is likely to
+  // lead to a deadlock
   std::_Exit(EXIT_FAILURE);
+#else
+  // Kill the program, or at least try to. The problem when we get here is
+  // that calling std::exit invokes at_exit() functions that may still hang
+  // the MPI system
+  std::exit(1);
+#endif
 }
 
 int main (int argc, char *argv[])
@@ -448,7 +457,11 @@ int main (int argc, char *argv[])
       std::string prm_name = "";
       bool output_xml = false;
 
-      // hook into the abort handler on ranks != 0 to avoid deadlock.
+      // We hook into the abort handler on ranks != 0 to avoid an MPI
+      // deadlock. The deal.II library will call std::abort() when an Assert
+      // is triggered, which can lead to a deadlock. We work around this by
+      // immediately calling _Exit and thus aborting the program. This is only
+      // necessary on rank != 0 for some reason.
       if (!i_am_proc_0)
         std::signal(SIGABRT, signal_handler);
 
