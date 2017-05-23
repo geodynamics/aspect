@@ -408,12 +408,16 @@ void print_version_information(Stream &stream)
 }
 
 
-// hook into SIGABRT and kill off the program
+// hook into SIGABRT/SIGFPE and kill off the program
 void signal_handler(int signal)
 {
   if (signal == SIGABRT)
     {
       std::cerr << "SIGABRT received\n";
+    }
+  else if (signal == SIGFPE)
+    {
+      std::cerr << "SIGFPE received\n";
     }
   else
     {
@@ -458,12 +462,22 @@ int main (int argc, char *argv[])
       bool output_xml = false;
 
       // We hook into the abort handler on ranks != 0 to avoid an MPI
-      // deadlock. The deal.II library will call std::abort() when an Assert
-      // is triggered, which can lead to a deadlock. We work around this by
-      // immediately calling _Exit and thus aborting the program. This is only
-      // necessary on rank != 0 for some reason.
+      // deadlock. The deal.II library will call std::abort() when an
+      // Assert is triggered, which can lead to a deadlock because it
+      // runs the things that are associated with atexit() which may
+      // itself trigger MPI communication. The same happens for other
+      // signals we may trigger, such as floating point exceptions
+      // (SIGFPE).
+      //
+      // We work around this by immediately calling _Exit in the
+      // signal handler and thus aborting the program without running
+      // cleanup functions set via atexit(). This is only necessary on
+      // rank != 0 for some reason.
       if (!i_am_proc_0)
-        std::signal(SIGABRT, signal_handler);
+        {
+          std::signal(SIGABRT, signal_handler);
+          std::signal(SIGFPE, signal_handler);
+        }
 
       // Loop over all command line arguments. Handle a number of special ones
       // starting with a dash, and then take the first non-special one as the
