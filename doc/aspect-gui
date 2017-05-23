@@ -43,6 +43,13 @@ if [ "$1" == "" ]; then
   echo " " |  $ASPECT_DIR/aspect --output-xml -- > $OUTPUT_FILE
 else
   OUTPUT_FILE=`echo $1 | sed -e 's/\.prm$/\.xml/'`
+
+  if [ "$OUTPUT_FILE" == "$1" ]; then
+    # The input file has an unusual file ending. Append .xml instead of
+    # trying to replace
+    OUTPUT_FILE=${1}.xml
+  fi
+
   $ASPECT_DIR/aspect --output-xml $1 > $OUTPUT_FILE
 fi
 
