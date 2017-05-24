@@ -492,8 +492,9 @@ namespace aspect
                  const unsigned int component) const;
 
         /**
-         * Returns the computed data (velocity, temperature, etc. - according
-         * to the used plugin) in Cartesian coordinates.
+         * Returns the gradient of the function based on the bilinear
+         * interpolation of the data (velocity, temperature, etc. - according
+         * to the used plugin) in Cartesian coordinates. TOOD Cartesian??
          *
          * @param position The current position to compute the data (velocity,
          * temperature, etc.)
@@ -606,7 +607,6 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
-
         /**
          * Directory in which the data files are present.
          */
@@ -671,9 +671,9 @@ namespace aspect
          * Return the gradients of the parameters from the parameter file.
          */
         Tensor<1,dim-1>
-        vector_gradient(const types::boundary_id             boundary_indicator,
-                        const Point<dim> &p,
-                        const unsigned int                   component) const;
+        vector_gradient(const types::boundary_id boundary_indicator,
+                        const Point<dim>        &p,
+                        const unsigned int       component) const;
 
         /**
          * Declare the parameters all derived classes take from input files.
