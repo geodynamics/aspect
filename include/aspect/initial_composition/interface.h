@@ -23,6 +23,7 @@
 #define _aspect_initial_composition_interface_h
 
 #include <aspect/plugins.h>
+#include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 
 #include <deal.II/base/point.h>
@@ -210,32 +211,12 @@ namespace aspect
         std::vector<std::string> model_names;
 
         /**
-         * A list of names of initial composition operator strings that have been
-         * requested in the parameter file. Either one operator is given
-         * (in which case it will be used for all models), or each name is associated
-         * with a model_name, in which case each is used to modify the composition
-         * field with the values from the current plugin. The operators should be
-         * one of: add, subtract, minimum and maximum.
+         * A list of enums of initial composition operators that have been
+         * requested in the parameter file. Each entry is used to modify the
+         * initial compositional field with the values from the associated plugin
+         * in model_names.
          */
-        std::vector<std::string> model_operator_names;
-
-        /**
-         * An enum of operators which match the allowed
-         * model operator names which can be given in the parameter file.
-         */
-        enum Operator
-        {
-          add,
-          subtract,
-          minimum,
-          maximum
-        };
-
-        /**
-         * A vector of enums corresponding to the list
-         * of plugin operators given in the parameter file.
-         */
-        std::vector<Operator> model_operators;
+        std::vector<aspect::Utilities::Operator> model_operators;
     };
 
 

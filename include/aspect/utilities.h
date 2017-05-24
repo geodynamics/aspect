@@ -27,17 +27,19 @@
 #include <deal.II/base/std_cxx11/array.h>
 #include <deal.II/base/point.h>
 #include <deal.II/base/conditional_ostream.h>
-
 #include <deal.II/base/table_indices.h>
 #include <deal.II/base/function_lib.h>
+#include <deal.II/dofs/dof_handler.h>
+#include <deal.II/fe/component_mask.h>
 
 #include <aspect/geometry_model/interface.h>
-#include <aspect/simulator_access.h>
 
 
 
 namespace aspect
 {
+  template <int dim> class SimulatorAccess;
+
   /**
    * A namespace for utility functions that might be used in many different
    * places to prevent code duplication.
@@ -955,6 +957,63 @@ namespace aspect
                               const SymmetricTensor<2,dim> &dviscosities_dstrain_rate,
                               const double safety_factor);
 
+    /**
+     * A class that represents a binary operator between two doubles. The type of
+     * operation is specified on construction time, and can be checked later
+     * by using the operator ==. The operator () executes the operation on two
+     * double parameters and returns the result. This class is helpful for
+     * user specified operations that are not known at compile time.
+     */
+    class Operator
+    {
+      public:
+        /**
+         * An enum of supported operations.
+         */
+        enum operation
+        {
+          uninitialized,
+          add,
+          subtract,
+          minimum,
+          maximum
+        };
+
+        /**
+         * The default constructor creates an invalid operation that will fail
+         * if ever executed.
+         */
+        Operator();
+
+        /**
+         * Construct the selected operator.
+         */
+        Operator(const operation op);
+
+        /**
+         * Execute the selected operation with the given parameters and
+         * return the result.
+         */
+        double operator() (const double x, const double y) const;
+
+        /**
+         * Return the comparison result between the current operation and
+         * the one provided as argument.
+         */
+        bool operator== (const operation op) const;
+
+      private:
+        /**
+         * The selected operation of this object.
+         */
+        operation op;
+    };
+
+    /**
+     * Create a vector of operator objects out of a list of strings. Each
+     * entry in the list must match one of the allowed operations.
+     */
+    std::vector<Operator> create_model_operator_list(const std::vector<std::string> &operator_names);
   }
 }
 

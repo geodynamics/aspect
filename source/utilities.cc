@@ -19,6 +19,7 @@
 */
 #include <aspect/global.h>
 #include <aspect/utilities.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/std_cxx11/array.h>
 #include <deal.II/base/point.h>
@@ -2362,6 +2363,86 @@ namespace aspect
             return std::max(0.0,safety_factor*alpha);
         }
     }
+
+
+
+    Operator::Operator()
+      :
+      op(uninitialized)
+    {}
+
+
+
+    Operator::Operator(const operation _op)
+      :
+      op(_op)
+    {}
+
+
+
+    double
+    Operator::operator() (const double x, const double y) const
+    {
+      switch (op)
+        {
+          case Utilities::Operator::add:
+          {
+            return x + y;
+          }
+          case Utilities::Operator::subtract:
+          {
+            return x - y;
+          }
+          case Utilities::Operator::minimum:
+          {
+            return std::min(x,y);
+          }
+          case Utilities::Operator::maximum:
+          {
+            return std::max(x,y);
+          }
+          default:
+          {
+            Assert (false, ExcInternalError());
+          }
+        }
+      return numbers::signaling_nan<double>();
+    }
+
+
+
+    bool
+    Operator::operator== (const operation other_op) const
+    {
+      return other_op == op;
+    }
+
+
+
+    std::vector<Operator> create_model_operator_list(const std::vector<std::string> &operator_names)
+    {
+      std::vector<Operator> operator_list(operator_names.size());
+      for (unsigned int i=0; i<operator_names.size(); ++i)
+        {
+          // create operator list
+          if (operator_names[i] == "add")
+            operator_list[i] = Operator(Operator::add);
+          else if (operator_names[i] == "subtract")
+            operator_list[i] = Operator(Operator::subtract);
+          else if (operator_names[i] == "minimum")
+            operator_list[i] = Operator(Operator::minimum);
+          else if (operator_names[i] == "maximum")
+            operator_list[i] = Operator(Operator::maximum);
+          else
+            AssertThrow(false,
+                        ExcMessage ("ASPECT only accepts the following operators: "
+                                    "add, subtract, minimum and maximum. But your parameter file "
+                                    "contains: " + operator_names[i] + ". Please check your parameter file.") );
+        }
+
+      return operator_list;
+    }
+
 
 
 
