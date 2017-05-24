@@ -138,9 +138,19 @@ namespace aspect
         virtual
         double height_above_reference_surface(const Point<dim> &position) const;
 
+       /**
+        * Whereas the depth function returns the depth with respect
+        * to the unperturbed surface, this function
+        * returns the depth with respect to the surface 
+        * including the initial topography. For models without
+        * initial topography, the result will be the same. 
+        *
+        * Note that the perturbed surface only considers the 
+        * initially prescribed topography, not any perturbations
+        * due to a displacement of the free surface.
+        */
         virtual
         double depth_wrt_topo(const Point<dim> &position) const;
-
 
 
         virtual
@@ -307,35 +317,66 @@ namespace aspect
             ChunkGeometry(const ChunkGeometry &other);
 
             /*
-             * An initialization function necessary for to make sure that the
+             * An initialization function necessary to make sure that the
              * manifold has access to the topography plugins.
              */
             void
             initialize(const InitialTopographyModel::Interface<dim> *topography);
 
+            /**
+             * This function receives a point in cartesian coordinates x, y and z, 
+             * including initial prescribed topography and returns
+             * radius, longitude, latitude without topography.
+             */
             virtual
             Point<dim>
             pull_back(const Point<dim> &space_point) const;
 
+            /**
+             * This function receives a point in spherical coordinates 
+             * radius, longitude, latitude and returns cartesian
+             * coordinates x, y and z, including any initially prescribed 
+             * topography.
+             */
             virtual
             Point<dim>
             push_forward(const Point<dim> &chart_point) const;
 
+           /**
+            * This function provides the derivatives of the push_forward
+            * function to the spherical coordinates, which are needed
+            * in the computation of vectors tangential to the domain boundaries.
+            */
             virtual
             DerivativeForm<1, dim, dim>
             push_forward_gradient(const Point<dim> &chart_point) const;
 
+            /**
+             * This function receives a point in cartesian coordinates x, y and z, 
+             * and returns radius, longitude, latitude.
+             */
             virtual
             Point<dim>
             pull_back_sphere(const Point<dim> &space_point) const;
 
+            /**
+             * This function receives a point in spherical coordinates 
+             * radius, longitude, latitude and returns cartesian
+             * coordinates x, y and z. 
+             */
             virtual
             Point<dim>
             push_forward_sphere(const Point<dim> &chart_point) const;
 
+           /**
+            * This function computes the outer radius of the domain
+            * at the longitude (and latitude) of the given point 
+            * (given in cartesian coordinates), i.e. the unperturbed
+            * outer radius + the topography. 
+            */
             virtual
             double
-            get_radius(const Point<dim> &chart_point) const;
+            get_radius(const Point<dim> &space_point) const;
 
             virtual
             void
@@ -366,10 +407,20 @@ namespace aspect
 
             double max_depth;
 
+            /**
+             * This function removes the initial topography from a
+             * given point in spherical coordinates R+topo, lon, lat.
+             * I.e. it returns R, lon, lat.
+             */
             virtual
             Point<dim>
             pull_back_topo(const Point<dim> &space_point) const;
 
+            /**
+             * This function adds the initial topography to a
+             * given point in spherical coordinates R, lon, lat.
+             * I.e. it returns R+topo, lon, lat.
+             */
             virtual
             Point<dim>
             push_forward_topo(const Point<dim> &chart_point) const;

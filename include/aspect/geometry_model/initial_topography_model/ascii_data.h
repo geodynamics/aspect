@@ -75,7 +75,7 @@ namespace aspect
         double max_topography () const;
 
         /**
-         * Return the gradient of the surface topography for a given position along
+         * Return the gradient of the surface topography for a given position
          * along the surface.
          */
         Tensor<1,dim-1>
