@@ -134,7 +134,7 @@ namespace aspect
       AssertThrow(this->has_boundary_temperature(),
                   ExcMessage("This initial condition can only be used with a prescribed boundary temperature."));
 
-      T_min=(this->get_boundary_temperature()).minimal_temperature();
+      T_min=(this->get_boundary_temperature_manager()).minimal_temperature();
 
       // In case of spherical shell calculate spherical coordinates
       const Tensor<1,dim> scoord = spherical_surface_coordinates(position);

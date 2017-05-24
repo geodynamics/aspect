@@ -1283,7 +1283,7 @@ namespace aspect
       const IntermediaryConstructorAction                                     post_geometry_model_creation_action;
       const std_cxx11::unique_ptr<MaterialModel::Interface<dim> >             material_model;
       const std_cxx11::unique_ptr<GravityModel::Interface<dim> >              gravity_model;
-      const std_cxx11::unique_ptr<BoundaryTemperature::Interface<dim> >       boundary_temperature;
+      BoundaryTemperature::Manager<dim>                                       boundary_temperature_manager;
       const std_cxx11::unique_ptr<BoundaryComposition::Interface<dim> >       boundary_composition;
       const std_cxx11::unique_ptr<PrescribedStokesSolution::Interface<dim> >  prescribed_stokes_solution;
       InitialComposition::Manager<dim>                                        initial_composition_manager;

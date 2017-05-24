@@ -118,14 +118,14 @@ namespace aspect
                             global_max_temperature);
       if ((this->get_fixed_temperature_boundary_indicators().size() > 0)
           &&
-          (this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
+          (this->get_boundary_temperature_manager().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
            !=
-           this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators())))
+           this->get_boundary_temperature_manager().minimal_temperature(this->get_fixed_temperature_boundary_indicators())))
         statistics.add_value ("Average nondimensional temperature (K)",
                               (global_mean_temperature - global_min_temperature) /
-                              (this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
+                              (this->get_boundary_temperature_manager().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
                                -
-                               this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators())));
+                               this->get_boundary_temperature_manager().minimal_temperature(this->get_fixed_temperature_boundary_indicators())));
 
       // also make sure that the other columns filled by the this object
       // all show up with sufficient accuracy and in scientific notation
@@ -142,9 +142,9 @@ namespace aspect
 
         if ((this->get_fixed_temperature_boundary_indicators().size() > 0)
             &&
-            (this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
+            (this->get_boundary_temperature_manager().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
              !=
-             this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators())))
+             this->get_boundary_temperature_manager().minimal_temperature(this->get_fixed_temperature_boundary_indicators())))
           {
             statistics.set_precision ("Average nondimensional temperature (K)", 8);
             statistics.set_scientific ("Average nondimensional temperature (K)", true);

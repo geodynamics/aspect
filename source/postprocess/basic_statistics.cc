@@ -47,8 +47,8 @@ namespace aspect
           // temperature contrast is only meaningful if boundary temperatures are prescribed, otherwise it is 0
           const double temperature_contrast = (this->has_boundary_temperature()
                                                ?
-                                               this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
-                                               - this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators())
+                                               this->get_boundary_temperature_manager().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
+                                               - this->get_boundary_temperature_manager().minimal_temperature(this->get_fixed_temperature_boundary_indicators())
                                                :
                                                0);
 

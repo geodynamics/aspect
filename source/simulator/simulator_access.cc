@@ -391,18 +391,29 @@ namespace aspect
   bool
   SimulatorAccess<dim>::has_boundary_temperature () const
   {
-    return (simulator->boundary_temperature.get() != 0);
+    return (get_boundary_temperature_manager().get_active_boundary_temperature_conditions().size() > 0);
   }
+
 
 
   template <int dim>
   const BoundaryTemperature::Interface<dim> &
   SimulatorAccess<dim>::get_boundary_temperature () const
   {
-    AssertThrow (simulator->boundary_temperature.get() != 0,
-                 ExcMessage("You can not call this function if no such model is actually available."));
-    return *simulator->boundary_temperature.get();
+    Assert (get_boundary_temperature_manager().get_active_boundary_temperature_conditions().size() == 1,
+            ExcMessage("You can only call this function if exactly one boundary temperature plugin is active."));
+    return *(get_boundary_temperature_manager().get_active_boundary_temperature_conditions().front());
   }
+
+
+
+  template <int dim>
+  const BoundaryTemperature::Manager<dim> &
+  SimulatorAccess<dim>::get_boundary_temperature_manager () const
+  {
+    return simulator->boundary_temperature_manager;
+  }
+
 
 
   template <int dim>

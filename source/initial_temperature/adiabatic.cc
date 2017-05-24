@@ -60,13 +60,13 @@ namespace aspect
       // at the surface and maximal_temperature() the value at the bottom.
       const double T_surface = (this->has_boundary_temperature()
                                 ?
-                                this->get_boundary_temperature().minimal_temperature(
+                                this->get_boundary_temperature_manager().minimal_temperature(
                                   this->get_fixed_temperature_boundary_indicators())
                                 :
                                 adiabatic_surface_temperature);
       const double T_bottom = (this->has_boundary_temperature()
                                ?
-                               this->get_boundary_temperature().maximal_temperature(
+                               this->get_boundary_temperature_manager().maximal_temperature(
                                  this->get_fixed_temperature_boundary_indicators())
                                :
                                adiabatic_bottom_temperature);
