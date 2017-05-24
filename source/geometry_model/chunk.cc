@@ -456,7 +456,7 @@ namespace aspect
                   ExcMessage("Only with deal.II 9 or higher, an initial topography model can be used."));
 #endif
       AssertThrow(dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != 0 ||
-                  dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0
+                  dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
                   ExcMessage("At the moment, only the Zero or AsciiData initial topography model can be used."));
       manifold.initialize(&(this->get_initial_topography_model()));
     }
