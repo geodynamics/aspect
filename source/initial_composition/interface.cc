@@ -122,7 +122,7 @@ namespace aspect
           model_names.push_back(model_name);
 
         // create operator list
-        std::vector<std::string> model_operator_names =
+        const std::vector<std::string> model_operator_names =
           Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
                                                   model_names.size(),
                                                   "List of model operators");
@@ -169,7 +169,8 @@ namespace aspect
            initial_composition_object != initial_composition_objects.end();
            ++initial_composition_object)
         {
-          composition = model_operators[i](composition,(*initial_composition_object)->initial_composition(position,  n_comp));
+          composition = model_operators[i](composition,
+                                           (*initial_composition_object)->initial_composition(position,n_comp));
           i++;
         }
 

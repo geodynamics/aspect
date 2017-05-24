@@ -2364,58 +2364,60 @@ namespace aspect
         }
     }
 
+
+
     Operator::Operator()
-    :
-        op(uninitialized)
+      :
+      op(uninitialized)
     {}
 
 
-      Operator::Operator(const operation _op)
+
+    Operator::Operator(const operation _op)
       :
-          op(_op)
-      {}
+      op(_op)
+    {}
 
 
-      double
-      Operator::operator() (double x, double y) const
-      {
-        switch (op)
-          {
-            case Utilities::Operator::add:
-            {
-              return x + y;
-              break;
-            }
-            case Utilities::Operator::subtract:
-            {
-              return x - y;
-              break;
-            }
-            case Utilities::Operator::minimum:
-            {
-              return std::min(x,y);
-              break;
-            }
-            case Utilities::Operator::maximum:
-            {
-              return std::max(x,y);
-              break;
-            }
-            default:
-            {
-              Assert ( false, ExcMessage ("ASPECT's operator class only supports the following operators: "
-                                          "add, subtract, minimum and maximum. Please check your parameter file.") );
-              break;
-            }
-          }
-        return numbers::signaling_nan<double>();
-      }
 
-      bool
-      Operator::operator== (const operation other_op) const
+    double
+    Operator::operator() (const double x, const double y) const
     {
-        return other_op == op;
+      switch (op)
+        {
+          case Utilities::Operator::add:
+          {
+            return x + y;
+          }
+          case Utilities::Operator::subtract:
+          {
+            return x - y;
+          }
+          case Utilities::Operator::minimum:
+          {
+            return std::min(x,y);
+          }
+          case Utilities::Operator::maximum:
+          {
+            return std::max(x,y);
+          }
+          default:
+          {
+            Assert (false, ExcInternalError());
+          }
+        }
+      return numbers::signaling_nan<double>();
     }
+
+
+
+    bool
+    Operator::operator== (const operation other_op) const
+    {
+      return other_op == op;
+    }
+
+
 
     std::vector<Operator> create_model_operator_list(const std::vector<std::string> &operator_names)
     {

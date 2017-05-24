@@ -119,7 +119,7 @@ namespace aspect
           model_names.push_back(model_name);
 
         // create operator list
-        std::vector<std::string> model_operator_names =
+        const std::vector<std::string> model_operator_names =
           Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
                                                   model_names.size(),
                                                   "List of model operators");
@@ -157,7 +157,8 @@ namespace aspect
            initial_temperature_object != initial_temperature_objects.end();
            ++initial_temperature_object)
         {
-          temperature = model_operators[i](temperature,(*initial_temperature_object)->initial_temperature(position));
+          temperature = model_operators[i](temperature,
+                                           (*initial_temperature_object)->initial_temperature(position));
           i++;
         }
       return temperature;

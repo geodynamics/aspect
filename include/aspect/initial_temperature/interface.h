@@ -208,11 +208,10 @@ namespace aspect
         std::vector<std::string> model_names;
 
         /**
-         * A list of enums of initial temperature operator strings that have been
-         * requested in the parameter file. Each name is associated
-         * with a model_name, and is used to modify the temperature
-         * field with the values from the current plugin. The operators should be
-         * one of: add, subtract, minimum and maximum.
+         * A list of enums of initial temperature operators that have been
+         * requested in the parameter file. Each entry is used to modify the
+         * initial temperature field with the values from the associated plugin
+         * in model_names.
          */
         std::vector<aspect::Utilities::Operator> model_operators;
     };
