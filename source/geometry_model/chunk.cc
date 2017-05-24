@@ -95,8 +95,7 @@ namespace aspect
         }
 
       return DX;
-#endif
-
+#else
       // The initial topography derivatives (dtopo/dphi and dtopo/dtheta)
       const InitialTopographyModel::AsciiData<dim> *itm = dynamic_cast<const InitialTopographyModel::AsciiData<dim> *> (topo);
       const Tensor<1,dim-1> topo_derivatives = itm->vector_gradient(push_forward_sphere(chart_point));
@@ -216,6 +215,7 @@ namespace aspect
         }
 
       return Dtotal;
+#endif
 
     }
 
@@ -226,8 +226,9 @@ namespace aspect
     {
 #if !DEAL_II_VERSION_GTE(9,0,0)
       return push_forward_sphere(r_phi_theta);
-#endif
+#else
       return push_forward_sphere(push_forward_topo(r_phi_theta));
+#endif
     }
 
     template <int dim>
@@ -237,8 +238,9 @@ namespace aspect
     {
 #if !DEAL_II_VERSION_GTE(9,0,0)
       return pull_back_sphere(x_y_z);
-#endif
+#else
       return pull_back_topo(pull_back_sphere(x_y_z));
+#endif
     }
 
     template <int dim>
@@ -360,7 +362,6 @@ namespace aspect
       // the radius of the point with topography
       const double topo_radius = topor_phi_theta[0];
 
-      double topography = 0;
       // Grab lon,lat coordinates
       Point<dim-1> surface_point;
       for (unsigned int d=0; d<dim-1; d++)
@@ -368,7 +369,7 @@ namespace aspect
       // Convert latitude to colatitude
       if (dim == 3)
         surface_point[1] = 0.5*numbers::PI - surface_point[1];
-      topography = topo->value(surface_point);
+      const double topography = topo->value(surface_point);
 
       // remove the topography (which scales with radius)
       const double radius = std::max(inner_radius,(topo_radius*max_depth+inner_radius*topography)/(max_depth+topography));
@@ -425,8 +426,9 @@ namespace aspect
       AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
                   ExcMessage("Only with deal.II 9 or higher, an initial topography model can be used."));
 #endif
-      AssertThrow(dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != 0,
-                  ExcMessage("At the moment, only the AsciiData initial topography model can be used."));
+      AssertThrow(dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != 0 ||
+                  dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0
+                  ExcMessage("At the moment, only the Zero or AsciiData initial topography model can be used."));
       manifold.initialize(&(this->get_initial_topography_model()));
     }
 
@@ -542,7 +544,6 @@ namespace aspect
         }
 
       // Attach shell boundary objects to the curved inner and outer boundaries
-      // TODO is this boundary still correct for a displaced mesh?
       static const HyperShellBoundary<dim> boundary_shell;
       coarse_grid.set_boundary (0, boundary_shell);
       coarse_grid.set_boundary (1, boundary_shell);
@@ -673,6 +674,7 @@ namespace aspect
       // depth is therefore always positive
       const double outer_radius = manifold.get_radius(position);
       const Point<dim> rtopo_phi_theta = manifold.pull_back_sphere(position);
+      Assert (rtopo_phi_theta[0] <= outer_radius, ExcMessage("The radius is bigger than the maximum radius."));
       return std::max(0.0, outer_radius - rtopo_phi_theta[0]);
     }
 
