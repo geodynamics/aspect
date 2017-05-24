@@ -1,4 +1,9 @@
-# Listing of Parameters
+# This is a simple benchmark setup in a spherical shell that is
+# used to test ASPECT's performance. In particular it includes
+# only expensive Stokes solver steps, an initial temperature
+# perturbation, a moderate viscosity-dependence of viscosity
+# and one constant compositional field. The model is terminated
+# after the first timestep (two Stokes solves).
 
 set Dimension                              = 3
 set Timing output frequency                = 1
@@ -81,10 +86,7 @@ subsection Material model
 end
 
 subsection Model settings
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
-
-  set Tangential velocity boundary indicators = 0,1
+  set Tangential velocity boundary indicators = bottom,top
 end
 
 subsection Postprocess
