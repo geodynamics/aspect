@@ -90,8 +90,8 @@ namespace aspect
          * Nusselt number indicating heat flux.
          */
         virtual
-        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids =
-                                      std::set<types::boundary_id>()) const = 0;
+        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids
+                                    = std::set<types::boundary_id>()) const = 0;
 
         /**
          * Return the maximal temperature on that part of the boundary on
@@ -101,8 +101,8 @@ namespace aspect
          * Nusselt number indicating heat flux.
          */
         virtual
-        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids =
-                                      std::set<types::boundary_id>()) const = 0;
+        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids
+                                    = std::set<types::boundary_id>()) const = 0;
 
         /**
          * A function that is called at the beginning of each time step. The
@@ -198,15 +198,15 @@ namespace aspect
          * Return the minimal temperature of all selected plugins on that
          * part of the boundary on which Dirichlet conditions are posed.
          */
-        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids =
-                                      std::set<types::boundary_id>()) const;
+        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids
+                                    = std::set<types::boundary_id>()) const;
 
         /**
          * Return the maximal temperature of all selected plugins on that
          * part of the boundary on which Dirichlet conditions are posed.
          */
-        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids =
-                                      std::set<types::boundary_id>()) const;
+        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids
+                                    = std::set<types::boundary_id>()) const;
 
         /**
          * A function that is used to register boundary temperature objects in such

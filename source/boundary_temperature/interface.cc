@@ -202,10 +202,10 @@ namespace aspect
     Manager<dim>::minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
       double temperature = std::numeric_limits<double>::max();
-      const Utilities::Operator op(Utilities::Operator::minimum);
 
       for (unsigned int i=0; i<boundary_temperature_objects.size(); ++i)
-        temperature = op(temperature,boundary_temperature_objects[i]->minimal_temperature(fixed_boundary_ids));
+        temperature = std::min(temperature,
+                               boundary_temperature_objects[i]->minimal_temperature(fixed_boundary_ids));
 
       return temperature;
     }
@@ -217,10 +217,10 @@ namespace aspect
     Manager<dim>::maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
       double temperature = 0.0;
-      const Utilities::Operator op(Utilities::Operator::maximum);
 
       for (unsigned int i=0; i<boundary_temperature_objects.size(); ++i)
-        temperature = op(temperature,boundary_temperature_objects[i]->maximal_temperature(fixed_boundary_ids));
+        temperature = std::max(temperature,
+                               boundary_temperature_objects[i]->maximal_temperature(fixed_boundary_ids));
 
       return temperature;
     }
