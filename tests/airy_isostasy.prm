@@ -33,7 +33,7 @@ end
 
 # Temperature is zero everywhere
 subsection Boundary temperature model
- set Model name = initial temperature
+ set List of model names = initial temperature
 end
 
 subsection Initial temperature model

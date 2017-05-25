@@ -83,7 +83,7 @@ end
 
 # The (potential) temperature is set to zero at the outer boundary.
 subsection Boundary temperature model
-  set Model name = spherical constant
+  set List of model names = spherical constant
   subsection Spherical constant
     set Inner temperature = 0.8
     set Outer temperature = 0

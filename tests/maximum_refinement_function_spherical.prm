@@ -36,7 +36,7 @@ subsection Boundary temperature model
   # 
   # `box': A model in which the temperature is chosen constant on all the
   # sides of a box.
-  set Model name = initial temperature
+  set List of model names = initial temperature
 
   subsection Initial temperature
     # Temperature at the inner boundary (core mantle boundary). Units: K.

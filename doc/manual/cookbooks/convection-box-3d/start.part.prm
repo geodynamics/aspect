@@ -11,7 +11,7 @@ subsection Geometry model
 end
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 
   subsection Box
     set Bottom temperature = 1

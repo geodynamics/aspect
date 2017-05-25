@@ -14,7 +14,7 @@ set Nonlinear solver scheme                = IMPES
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Left temperature = 0
   end

@@ -11,7 +11,7 @@ set Switch step = 5
 
 
 subsection Boundary temperature model
-  set Model name = constant
+  set List of model names = constant
   subsection Constant
     set Boundary indicator to temperature mappings = 0:0,1:0,2:10,3:0
   end

@@ -50,7 +50,7 @@ end
 
 
 subsection Boundary temperature model
-  set Model name = function
+  set List of model names = function
   subsection Function
     set Coordinate system = spherical
     set Function constants = pi=3.1415926536

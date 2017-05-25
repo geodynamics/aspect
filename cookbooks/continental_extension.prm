@@ -104,7 +104,7 @@ end
 # not used as the sides are not specified "Fixed temperature boundaries".  Rather,
 # these boundaries are insulating (zero net heat flux).
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Bottom temperature = 1573
     set Top temperature    =  273

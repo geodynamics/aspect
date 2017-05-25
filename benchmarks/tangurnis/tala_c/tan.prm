@@ -46,7 +46,7 @@ end
 # temperature according to the prescibed temperature of the Tan & Gurnis
 # benchmark. 
 subsection Boundary temperature model
-  set Model name = Tan Gurnis
+  set List of model names = Tan Gurnis
 end
 
 

@@ -17,7 +17,7 @@ set Nonlinear solver scheme                = IMPES
 # with additional boundary indicators 
 # as prescribed by the geometry model
 subsection Boundary temperature model
-  set Model name = box with lithosphere boundary indicators
+  set List of model names = box with lithosphere boundary indicators
   subsection Box with lithosphere boundary indicators
     set Left temperature = 0
   end

@@ -13,7 +13,7 @@ set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = IMPES
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Top temperature = 0.0
     set Bottom temperature = 0.0

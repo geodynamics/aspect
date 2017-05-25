@@ -30,7 +30,7 @@ set Nonlinear solver scheme                = IMPES
 
 
 subsection Boundary temperature model
-  set Model name = time_dep_box
+  set List of model names = time_dep_box
 
   subsection Time_Dep_Box
     set Bottom temperature = 0

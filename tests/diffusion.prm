@@ -108,7 +108,7 @@ subsection Boundary temperature model
   # `spherical constant': A model in which the temperature is chosen constant
   # on the inner and outer boundaries of a spherical shell. Parameters are
   # read from subsection 'Sherical constant'.
-  set Model name = box
+  set List of model names = box
 
   subsection Box
     set Bottom temperature = 0

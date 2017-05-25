@@ -15,7 +15,7 @@ set Use years in output instead of seconds = false
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Bottom temperature = 1
     set Left temperature   = 0

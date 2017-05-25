@@ -27,7 +27,7 @@ set Start time                             = 0
 set Use years in output instead of seconds = true
 
 subsection Boundary temperature model
-  set Model name = initial temperature
+  set List of model names = initial temperature
 
   subsection Initial temperature
     set Minimal temperature = 293 # default: 6000

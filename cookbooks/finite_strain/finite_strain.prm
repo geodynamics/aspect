@@ -15,7 +15,7 @@ set Output directory                       = output-finite_strain
 
 
 subsection Boundary temperature model
-  set Model name = initial temperature
+  set List of model names = initial temperature
 
   subsection Initial temperature
     set Minimal temperature = 293
