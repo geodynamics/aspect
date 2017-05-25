@@ -923,8 +923,8 @@ namespace aspect
                                    "Chunk (inner || outer) radius: Radii at bottom and top of chunk"
                                    "(Longitude || Latitude || Radius) repetitions: "
                                    "number of cells in each coordinate direction."
-								   "It is also possible to add initial topography to the chunk geometry, "
-								   "based on an ascii data file. ")
+                                   "It is also possible to add initial topography to the chunk geometry, "
+                                   "based on an ascii data file. ")
   }
 }
 
