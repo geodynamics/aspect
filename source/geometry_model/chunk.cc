@@ -359,8 +359,6 @@ namespace aspect
       // the radius of the current point without topography
       const double radius = r_phi_theta[0];
 
-      double topography = 0;
-
       // Grab lon,lat coordinates
       Point<dim-1> surface_point;
       for (unsigned int d=0; d<dim-1; d++)
@@ -368,19 +366,17 @@ namespace aspect
       // Convert latitude to colatitude
       if (dim == 3)
         surface_point[1] = 0.5*numbers::PI - surface_point[1];
-      topography = topo->value(surface_point);
+      const double topography = topo->value(surface_point);
 
       // adjust the radius based on the radius of the point
       // through a linear interpolation between 0 at max depth and
       // "topography" at the surface
       const double topo_radius = std::max(inner_radius,radius + (radius-inner_radius)/max_depth*topography);
 
-
       // return the point with adjusted radius
       Point<dim> topor_phi_theta = r_phi_theta;
       topor_phi_theta[0] = topo_radius;
       return topor_phi_theta;
-//      return r_phi_theta;
     }
 
     template <int dim>
@@ -407,7 +403,6 @@ namespace aspect
       Point<dim> r_phi_theta = topor_phi_theta;
       r_phi_theta[0] = radius;
       return r_phi_theta;
-//      return topor_phi_theta;
     }
 
     template <int dim>
@@ -623,6 +618,13 @@ namespace aspect
       {
         this->set_manifold_ids(tria);
       });
+      // Connect the manifold id functions to the signals
+      //signals.pre_compute_no_normal_flux_constraints.connect (std_cxx11::bind (&Chunk<dim>::clear_manifold_ids,
+      //                                                                         std_cxx11::ref(*this),
+      //                                                                         std_cxx11::_1));
+      //signals.post_compute_no_normal_flux_constraints.connect (std_cxx11::bind (&Chunk<dim>::set_manifold_ids,
+      //                                                                          std_cxx11::ref(*this),
+      //                                                                          std_cxx11::_1));
     }
 #endif
 
@@ -1050,7 +1052,9 @@ namespace aspect
                                    "the velocity in direction of the cylinder axes is zero. "
                                    "This is consistent with the definition of what we consider "
                                    "the two-dimension case given in "
-                                   "Section~\\ref{sec:meaning-of-2d}.")
+                                   "Section~\\ref{sec:meaning-of-2d}."
+		                   "It is also possible to add initial topography to the chunk geometry, "
+				   "based on an ascii data file. ")
   }
 }
 
