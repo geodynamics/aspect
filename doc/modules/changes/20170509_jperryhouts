@@ -1,0 +1,5 @@
+New: 'nearest neighbor' particle interpolator: gets properties from
+the nearest particle in the same cell. If the cell is empty it gets
+properties from the nearest particle in the nearest cell.
+<br>
+(Jonathan Perry-Houts, 2017/05/09)
