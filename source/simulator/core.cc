@@ -178,13 +178,6 @@ namespace aspect
                                                           std_cxx11::cref(*geometry_model))),
     material_model (MaterialModel::create_material_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
-    // create a boundary temperature model, but only if we actually need
-    // it. otherwise, allow the user to simply specify nothing at all
-    boundary_temperature (parameters.fixed_temperature_boundary_indicators.empty()
-                          ?
-                          0
-                          :
-                          BoundaryTemperature::create_boundary_temperature<dim>(prm)),
     // create a boundary composition model, but only if we actually need
     // it. otherwise, allow the user to simply specify nothing at all
     boundary_composition (parameters.fixed_composition_boundary_indicators.empty()
@@ -485,12 +478,12 @@ namespace aspect
     initial_composition_manager.initialize_simulator(*this);
     initial_composition_manager.parse_parameters (prm);
 
-    if (boundary_temperature.get())
+    // create a boundary temperature manager, but only if we actually need
+    // it. otherwise, allow the user to simply specify nothing at all
+    if (!parameters.fixed_temperature_boundary_indicators.empty())
       {
-        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_temperature.get()))
-          sim->initialize_simulator (*this);
-        boundary_temperature->parse_parameters (prm);
-        boundary_temperature->initialize ();
+        boundary_temperature_manager.initialize_simulator (*this);
+        boundary_temperature_manager.parse_parameters (prm);
       }
 
     if (boundary_composition.get())
@@ -916,8 +909,7 @@ namespace aspect
 
     // If there is a fixed boundary temperature,
     // update the temperature boundary condition.
-    if (boundary_temperature.get())
-      boundary_temperature->update();
+    boundary_temperature_manager.update();
 
     // if using continuous temperature FE, do the same for the temperature variable:
     // evaluate the current boundary temperature and add these constraints as well
@@ -935,8 +927,8 @@ namespace aspect
             VectorTools::interpolate_boundary_values (*mapping,
                                                       dof_handler,
                                                       *p,
-                                                      VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryTemperature::Interface<dim>::boundary_temperature,
-                                                          std_cxx11::cref(*boundary_temperature),
+                                                      VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryTemperature::Manager<dim>::boundary_temperature,
+                                                          std_cxx11::cref(boundary_temperature_manager),
                                                           *p,
                                                           std_cxx11::_1),
                                                           introspection.component_masks.temperature.first_selected_component(),

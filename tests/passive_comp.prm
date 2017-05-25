@@ -48,7 +48,7 @@ subsection Boundary temperature model
   #
   # `box': A model in which the temperature is chosen constant on
   # the left and right sides of a box.
-  set Model name = spherical constant
+  set List of model names = spherical constant
 
 
   subsection Spherical constant

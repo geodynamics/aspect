@@ -15,7 +15,7 @@ set Linear solver tolerance                = 1e-15
 set Pressure normalization                 = no
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Top temperature = 0
     set Bottom temperature = 2

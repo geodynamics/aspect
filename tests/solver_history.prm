@@ -9,7 +9,7 @@ set Nonlinear solver scheme                = IMPES
 set Number of cheap Stokes solver steps    = 30
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 

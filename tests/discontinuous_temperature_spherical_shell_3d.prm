@@ -26,7 +26,7 @@ end
 # the domain. Here we set the temperature to be constant.
 # Alternatively it could be set to the initial condition.
 subsection Boundary temperature model
-  set Model name = spherical constant
+  set List of model names = spherical constant
   subsection Spherical constant
     set Inner temperature = 1600
     set Outer temperature = 1600

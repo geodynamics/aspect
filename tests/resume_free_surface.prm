@@ -10,7 +10,7 @@ set Linear solver tolerance                = 1.e-7
 set Use years in output instead of seconds = true
 
 subsection Boundary temperature model
-  set Model name = constant
+  set List of model names = constant
   subsection Constant
     set Boundary indicator to temperature mappings = 0:200,1:200,2:200,3:200
   end

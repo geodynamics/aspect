@@ -170,7 +170,7 @@ end
 # and the (nondimensional) temperature change across the boundary 
 # is set to 1.
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 
   subsection Box
     set Top temperature    = 0.091

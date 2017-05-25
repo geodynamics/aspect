@@ -6,7 +6,7 @@ set CFL number                             = 1.0
 set End time                               = 0
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 

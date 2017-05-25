@@ -27,7 +27,7 @@ set Use years in output instead of seconds = true
 # We let the boundaries be zero temperature, as we are just
 # modelling a single rising blob
 subsection Boundary temperature model
-  set Model name = constant
+  set List of model names = constant
   subsection Constant
     set Boundary indicator to temperature mappings = 0:0,1:0,2:0,3:0
   end

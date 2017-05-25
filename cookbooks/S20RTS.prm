@@ -37,7 +37,7 @@ end
 # but different from the reference temperature to approximate
 # boundary layers.
 subsection Boundary temperature model
-  set Model name = spherical constant
+  set List of model names = spherical constant
   subsection Spherical constant
     set Inner temperature = 2000
     set Outer temperature = 1000
@@ -118,7 +118,6 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, heat flux map, heat flux statistics, dynamic topography, visualization, basic statistics
 
   subsection Dynamic Topography
-    set Subtract mean of dynamic topography = true
   end
 
   subsection Visualization
@@ -128,7 +127,6 @@ subsection Postprocess
     set Number of grouped files       = 1 
    
     subsection Dynamic Topography
-      set Subtract mean of dynamic topography = true
     end
   end
 end

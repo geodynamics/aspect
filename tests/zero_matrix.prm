@@ -27,7 +27,7 @@ subsection Compositional fields
 end
 
 subsection Boundary temperature model
-  set Model name = constant
+  set List of model names = constant
   subsection Constant
     set Boundary indicator to temperature mappings = left:0, right:0, bottom:0, top:0
   end

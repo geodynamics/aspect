@@ -35,7 +35,7 @@ end
 
 # Temperature boundary conditions
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Bottom temperature = 1543
     set Top temperature    =  273

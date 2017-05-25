@@ -17,6 +17,17 @@ s/Compositional initial conditions/Initial composition model/g
 # Rename initial (temperature) conditions
 s/Initial conditions/Initial temperature model/g
 
+# Replace the 'model name' parameter by 'List of model names'
+# in all subsections that now use the new parameter.
+# Note that this command only works if the parameter is set
+# before the next 'end', which is not necessarily the one that
+# belongs to the opening subsection (i.e. if the parameter is set
+# after a subsection nested inside the 'Boundary temperature model'
+# subsection the following will simply do nothing).
+/subsection Boundary temperature model/,/\<end\>/ {
+     s/set Model name/set List of model names/g
+}
+
 # Rename tracers to particles
 s/tracer/particle/g
 s/Tracer/Particle/g

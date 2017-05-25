@@ -1,0 +1,5 @@
+New: Boundary temperatures can now be prescribed as a combination of several
+plugins in the same way it is possible for initial temperatures. Operators
+to combine the models are also available.
+<br>
+(Rene Gassmoeller, 2017/05/24)

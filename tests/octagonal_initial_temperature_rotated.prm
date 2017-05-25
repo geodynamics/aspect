@@ -13,7 +13,7 @@ set Nonlinear solver scheme                = IMPES
 
 
 subsection Boundary temperature model
-  set Model name = spherical constant
+  set List of model names = spherical constant
 
   subsection Spherical constant
     set Inner temperature = 1

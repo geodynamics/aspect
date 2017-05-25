@@ -80,7 +80,7 @@ subsection Initial composition model
 end
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Bottom temperature = 1746.794  # 1350°C adiabat
   end

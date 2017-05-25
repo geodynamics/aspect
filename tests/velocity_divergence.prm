@@ -43,7 +43,7 @@ end
 
 
 subsection Boundary temperature model
-  set Model name = initial temperature
+  set List of model names = initial temperature
 
   subsection Box
     set Top temperature = 293 # default: 6000

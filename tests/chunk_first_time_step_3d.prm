@@ -46,7 +46,7 @@ subsection Initial temperature model
 end
 
 subsection Boundary temperature model
-  set Model name = function
+  set List of model names = function
   subsection Function
     set Function expression = 1613.0
   end

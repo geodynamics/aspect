@@ -84,7 +84,7 @@ end
 # We set the temperature to zero, as it is not important.
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Left temperature = 0
   end

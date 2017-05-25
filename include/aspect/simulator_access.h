@@ -68,6 +68,12 @@ namespace aspect
     template <int dim> class Interface;
   }
 
+  namespace BoundaryTemperature
+  {
+    template <int dim> class Manager;
+    template <int dim> class Interface;
+  }
+
   namespace InitialComposition
   {
     template <int dim> class Manager;
@@ -504,9 +510,20 @@ namespace aspect
       /**
        * Return a reference to the object that describes the temperature
        * boundary values.
+       *
+       * @deprecated: Use get_boundary_temperature_manager() instead.
        */
       const BoundaryTemperature::Interface<dim> &
-      get_boundary_temperature () const;
+      get_boundary_temperature () const DEAL_II_DEPRECATED;
+
+      /**
+       * Return an reference to the manager of the initial temperature models.
+       * This can then i.e. be used to get the names of the initial temperature
+       * models used in a computation, or to compute the initial temperature
+       * for a given position.
+       */
+      const BoundaryTemperature::Manager<dim> &
+      get_boundary_temperature_manager () const;
 
       /**
        * Return whether the current model has a boundary composition object
@@ -542,7 +559,7 @@ namespace aspect
       get_initial_temperature () const DEAL_II_DEPRECATED;
 
       /**
-       * Return a pointer to the manager of the initial temperature models.
+       * Return a reference to the manager of the initial temperature models.
        * This can then i.e. be used to get the names of the initial temperature
        * models used in a computation, or to compute the initial temperature
        * for a given position.

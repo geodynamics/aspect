@@ -17,7 +17,7 @@ set Max nonlinear iterations               = 5
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 
@@ -84,7 +84,7 @@ subsection Model settings
 end
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Bottom temperature = 0
   end

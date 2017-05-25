@@ -113,9 +113,9 @@ namespace aspect
                            +
                            0.2 * s * (1-s) * std::sin(angular_mode*phi +(90 + 2*rotation_offset)*numbers::PI/180 ) * scale;
 
-      return (this->get_boundary_temperature().maximal_temperature()*(s_mod)
+      return (this->get_boundary_temperature_manager().maximal_temperature()*(s_mod)
               +
-              this->get_boundary_temperature().minimal_temperature()*(1-s_mod));
+              this->get_boundary_temperature_manager().minimal_temperature()*(1-s_mod));
     }
 
 
@@ -248,10 +248,10 @@ namespace aspect
           R1 = numbers::signaling_nan<double>();
         }
 
-      const double dT = this->get_boundary_temperature().maximal_temperature()
-                        - this->get_boundary_temperature().minimal_temperature();
-      const double T0 = this->get_boundary_temperature().maximal_temperature()/dT;
-      const double T1 = this->get_boundary_temperature().minimal_temperature()/dT;
+      const double dT = this->get_boundary_temperature_manager().maximal_temperature()
+                        - this->get_boundary_temperature_manager().minimal_temperature();
+      const double T0 = this->get_boundary_temperature_manager().maximal_temperature()/dT;
+      const double T1 = this->get_boundary_temperature_manager().minimal_temperature()/dT;
       const double h = R1-R0;
 
       // s = fraction of the way from
