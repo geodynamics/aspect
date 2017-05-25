@@ -972,6 +972,11 @@ namespace aspect
       }
 
 
+    if (parameters.include_melt_transport)
+      {
+        melt_handler->add_current_constraints (current_constraints);
+      }
+
     // let plugins add more constraints if they so choose, then close the
     // constraints object
     signals.post_constraints_creation(*this, current_constraints);
@@ -1170,6 +1175,10 @@ namespace aspect
         coupling[introspection.variable("fluid pressure").first_component_index]
         [introspection.variable("fluid pressure").first_component_index] = DoFTools::always;
         coupling[introspection.variable("compaction pressure").first_component_index]
+        [introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
+        coupling[introspection.variable("compaction pressure").first_component_index]
+        [introspection.variable("fluid pressure").first_component_index] = DoFTools::always;
+        coupling[introspection.variable("fluid pressure").first_component_index]
         [introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
       }
     else
@@ -1998,6 +2007,9 @@ namespace aspect
               // need to update the Stokes preconditioner.
               if (stokes_matrix_depends_on_solution() == true)
                 rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+
+              // hack
+              compute_current_constraints ();
 
               assemble_stokes_system();
               build_stokes_preconditioner();

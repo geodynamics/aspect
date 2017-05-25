@@ -323,6 +323,11 @@ namespace aspect
       bool is_porosity (const typename Simulator<dim>::AdvectionField &advection_field) const;
 
       /**
+       *
+       */
+      void add_current_constraints(ConstraintMatrix &constraints);
+
+      /**
        * The porosity limit for melt migration. For smaller porosities, the equations
        * reduce to the Stokes equations and neglect melt transport. In practice, this
        * means that all terms in the assembly related to the migration of melt are set
