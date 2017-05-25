@@ -89,7 +89,7 @@ namespace aspect
       // In later timesteps, we still need to care about cases of very small
       // strain rates. We expect the viscosity to approach the maximum_viscosity
       // in these cases. This check prevents a division-by-zero.
-      for (int i = 0; i <= mu_s.size(); i++)
+      for (unsigned int i = 0; i <= mu_s.size(); i++)
         {
           std::vector<double> mu( mu_s.size());
           std::vector<double> phi( mu_s.size());
