@@ -89,12 +89,11 @@ namespace aspect
       // In later timesteps, we still need to care about cases of very small
       // strain rates. We expect the viscosity to approach the maximum_viscosity
       // in these cases. This check prevents a division-by-zero.
-      for (unsigned int i = 0; i <= mu_s.size(); i++)
+      for (unsigned int i = 0; i < mu_s.size(); i++)
         {
           std::vector<double> mu( mu_s.size());
           std::vector<double> phi( mu_s.size());
           std::vector<double> strength( mu_s.size());
-          //std::vector<double> eta( mu_s.size());
           std::vector<double> viscous_stress( mu_s.size());
 
           // Calculate viscous stress
@@ -120,21 +119,12 @@ namespace aspect
                           :
                           cohesions[i] * std::cos(phi[i]) + std::max(pressure,0.0) * std::sin(phi[i]) );
 
-          if ( viscous_stress[i] >= strength[i]  )
-            {
-              viscosities[i] = strength[i] / (2.0 * edot_ii);
-            }
-          else
-            {
-              viscosities[i] = background_viscosities[i];
-            }
-
           // Rescale the viscosity back onto the yield surface
           viscosities[i] = strength[i] / ( 2.0 * std::sqrt(strain_rate_dev_inv2) );
 
           // Cut off the viscosity between a minimum and maximum value to avoid
           // a numerically unfavourable large viscosity range.
-          //viscosities[i] = 1.0 / ( ( 1.0 / ( eta[i] + minimum_viscosity ) ) + ( 1.0 / maximum_viscosity ) );
+          viscosities[i] = 1.0 / ( ( 1.0 / ( viscosities[i] + minimum_viscosity ) ) + ( 1.0 / maximum_viscosity ) );
 
         }
       return viscosities;
