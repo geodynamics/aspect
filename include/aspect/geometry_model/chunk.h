@@ -324,7 +324,7 @@ namespace aspect
             initialize(const InitialTopographyModel::Interface<dim> *topography);
 
             /**
-             * This function receives a point in cartesian coordinates x, y and z, 
+             * This function receives a point in cartesian coordinates x, y and z,
              * including initial prescribed topography and returns
              * radius, longitude, latitude without topography.
              */
@@ -333,26 +333,26 @@ namespace aspect
             pull_back(const Point<dim> &space_point) const;
 
             /**
-             * This function receives a point in spherical coordinates 
+             * This function receives a point in spherical coordinates
              * radius, longitude, latitude and returns cartesian
-             * coordinates x, y and z, including any initially prescribed 
+             * coordinates x, y and z, including any initially prescribed
              * topography.
              */
             virtual
             Point<dim>
             push_forward(const Point<dim> &chart_point) const;
 
-           /**
-            * This function provides the derivatives of the push_forward
-            * function to the spherical coordinates, which are needed
-            * in the computation of vectors tangential to the domain boundaries.
-            */
+            /**
+             * This function provides the derivatives of the push_forward
+             * function to the spherical coordinates, which are needed
+             * in the computation of vectors tangential to the domain boundaries.
+             */
             virtual
             DerivativeForm<1, dim, dim>
             push_forward_gradient(const Point<dim> &chart_point) const;
 
             /**
-             * This function receives a point in cartesian coordinates x, y and z, 
+             * This function receives a point in cartesian coordinates x, y and z,
              * and returns radius, longitude, latitude.
              */
             virtual
@@ -360,20 +360,20 @@ namespace aspect
             pull_back_sphere(const Point<dim> &space_point) const;
 
             /**
-             * This function receives a point in spherical coordinates 
+             * This function receives a point in spherical coordinates
              * radius, longitude, latitude and returns cartesian
-             * coordinates x, y and z. 
+             * coordinates x, y and z.
              */
             virtual
             Point<dim>
             push_forward_sphere(const Point<dim> &chart_point) const;
 
-           /**
-            * This function computes the outer radius of the domain
-            * at the longitude (and latitude) of the given point 
-            * (given in cartesian coordinates), i.e. the unperturbed
-            * outer radius + the topography. 
-            */
+            /**
+             * This function computes the outer radius of the domain
+             * at the longitude (and latitude) of the given point
+             * (given in cartesian coordinates), i.e. the unperturbed
+             * outer radius + the topography.
+             */
             virtual
             double
             get_radius(const Point<dim> &space_point) const;
