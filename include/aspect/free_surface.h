@@ -23,12 +23,30 @@
 #define _aspect_free_surface_h
 
 #include <aspect/simulator.h>
+#include <aspect/simulator/assemblers/interface.h>
 
 namespace aspect
 {
   using namespace dealii;
 
-  template <int dim>
+  namespace Assemblers
+  {
+    /**
+     * Apply stabilization to a cell of the system matrix.  The
+     * stabilization is only added to cells on a free surface.  The
+     * scheme is based on that of Kaus et. al., 2010.  Called during
+     * assembly of the system matrix.
+     */
+    template <int dim>
+    class ApplyStabilization: public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
+    {
+        void execute (internal::Assembly::Scratch::ScratchBase<dim>       &scratch,
+                      internal::Assembly::CopyData::CopyDataBase<dim>      &data) const;
+    };
+  }
+
+  template<int dim>
   class FreeSurfaceHandler
   {
     public:
@@ -61,16 +79,6 @@ namespace aspect
       void setup_dofs();
 
       /**
-       * Apply stabilization to a cell of the system matrix.  The
-       * stabilization is only added to cells on a free surface.  The
-       * scheme is based on that of Kaus et. al., 2010.  Called during
-       * assembly of the system matrix.
-       */
-      void apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
-                                internal::Assembly::CopyData::StokesSystem<dim>      &data);
-
-      /**
        * Declare parameters for the free surface handling.
        */
       static
@@ -80,6 +88,14 @@ namespace aspect
        * Parse parameters for the free surface handling.
        */
       void parse_parameters (ParameterHandler &prm);
+
+
+      /**
+       * Return the chosen stabilization term. See
+       * Kaus et al 2010 for details on the meaning of
+       * this term.
+       */
+      double get_stabilization_term () const;
 
     private:
       /**
@@ -206,19 +222,6 @@ namespace aspect
        * the parameter file.
        */
       std::set<types::boundary_id> tangential_mesh_boundary_indicators;
-
-      /**
-       * A handle on the connection that connects the Stokes assembler
-       * signal of the main simulator object to the apply_stabilization()
-       * function. We keep track of this connection because we need to
-       * break it once the current free surface handler object goes out
-       * of scope.
-       *
-       * With the current variable, the connection is broken once the
-       * scoped_connection goes out of scope, i.e., when the surrounding
-       * class is destroyed.
-       */
-      boost::signals2::scoped_connection assembler_connection;
 
       friend class Simulator<dim>;
       friend class SimulatorAccess<dim>;

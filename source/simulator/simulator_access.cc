@@ -370,13 +370,6 @@ namespace aspect
   }
 
 
-  template <int dim>
-  void
-  SimulatorAccess<dim>::create_additional_material_model_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
-  {
-    simulator->create_additional_material_model_outputs(out);
-  }
-
 
   template <int dim>
   const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryTraction::Interface<dim> > > &
@@ -564,6 +557,15 @@ namespace aspect
     Assert (simulator->newton_handler.get() != 0,
             ExcMessage("You can not call this function if the Newton solver is not enabled."));
     return *(simulator->newton_handler);
+  }
+
+  template <int dim>
+  const FreeSurfaceHandler<dim> &
+  SimulatorAccess<dim>::get_free_surface_handler () const
+  {
+    Assert (simulator->free_surface.get() != 0,
+            ExcMessage("You can not call this function if the free surface is not enabled."));
+    return *(simulator->free_surface);
   }
 
   template <int dim>

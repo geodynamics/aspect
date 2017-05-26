@@ -2,7 +2,7 @@
 #include <deal.II/grid/tria.h>
 #include <aspect/material_model/simple.h>
 #include <aspect/simulator_access.h>
-#include <aspect/assembly.h>
+#include <aspect/simulator/assemblers/interface.h>
 
 #include <deal.II/fe/fe_dgq.h>
 #include <iostream>

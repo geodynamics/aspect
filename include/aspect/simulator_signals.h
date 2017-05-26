@@ -33,19 +33,13 @@
 
 namespace aspect
 {
-  namespace internal
+  namespace Assemblers
   {
-    namespace Assembly
-    {
-      namespace Assemblers
-      {
-        template <int dim>
-        class AssemblerBase;
-      }
+    template <int dim>
+    class Manager;
 
-      template <int dim>
-      struct AssemblerLists;
-    }
+    template <int dim>
+    class Interface;
   }
 
   /**
@@ -263,8 +257,7 @@ namespace aspect
      * allows modification of the assembly objects active in this simulation.
      */
     boost::signals2::signal<void (const SimulatorAccess<dim> &,
-                                  aspect::internal::Assembly::AssemblerLists<dim> &,
-                                  std::vector<std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > > &)>
+                                  aspect::Assemblers::Manager<dim> &)>
     set_assemblers;
   };
 

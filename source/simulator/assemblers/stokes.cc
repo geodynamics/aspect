@@ -18,10 +18,9 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <aspect/simulator/assemblers/stokes.h>
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
-#include <aspect/assembly.h>
-#include <aspect/simulator_access.h>
 
 #include <deal.II/base/signaling_nan.h>
 
@@ -31,35 +30,18 @@ namespace aspect
   {
     template <int dim>
     void
-    StokesAssembler<dim>::
-    create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
+    StokesPreconditioner<dim>::
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+             internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
-      const unsigned int n_points = outputs.viscosities.size();
+      internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>& > (scratch_base);
+      internal::Assembly::CopyData::StokesPreconditioner<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesPreconditioner<dim>& > (data_base);
 
-      if (this->get_parameters().enable_additional_stokes_rhs
-          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == NULL)
-        {
-          outputs.additional_outputs.push_back(
-            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >
-            (new MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> (n_points)));
-        }
-      Assert(!this->get_parameters().enable_additional_stokes_rhs
-             ||
-             outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >()->rhs_u.size()
-             == n_points, ExcInternalError());
-    }
-
-    template <int dim>
-    void
-    StokesAssembler<dim>::
-    preconditioner (const double                                             pressure_scaling,
-                    internal::Assembly::Scratch::StokesPreconditioner<dim>  &scratch,
-                    internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const
-    {
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points           = scratch.finite_element_values.n_quadrature_points;
+      const double pressure_scaling = scratch.pressure_scaling;
 
       // First loop over all dofs and find those that are in the Stokes system
       // save the component (pressure and dim velocities) each belongs to.
@@ -114,8 +96,8 @@ namespace aspect
                                                            * scratch.grads_phi_u[j]))
                                             + one_over_eta * pressure_scaling
                                             * pressure_scaling
-                                            * (scratch.phi_p[i] * scratch
-                                               .phi_p[j]))
+                                            * (scratch.phi_p[i]
+                                               * scratch.phi_p[j]))
                                            * JxW;
         }
     }
@@ -124,11 +106,13 @@ namespace aspect
 
     template <int dim>
     void
-    StokesAssembler<dim>::
-    compressible_preconditioner (const double                                             /*pressure_scaling*/,
-                                 internal::Assembly::Scratch::StokesPreconditioner<dim>  &scratch,
-                                 internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const
+    StokesCompressiblePreconditioner<dim>::
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+             internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
+      internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>& > (scratch_base);
+      internal::Assembly::CopyData::StokesPreconditioner<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesPreconditioner<dim>& > (data_base);
+
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
@@ -188,16 +172,18 @@ namespace aspect
 
     template <int dim>
     void
-    StokesAssembler<dim>::
-    incompressible_terms (const double                                     pressure_scaling,
-                          const bool                                       rebuild_stokes_matrix,
-                          internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                          internal::Assembly::CopyData::StokesSystem<dim> &data) const
+    StokesIncompressibleTerms<dim>::
+    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+             internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+      const double pressure_scaling = scratch.pressure_scaling;
 
       const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
       *force = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >();
@@ -210,7 +196,7 @@ namespace aspect
                 {
                   scratch.phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].value (i,q);
                   scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection.extractors.pressure].value (i, q);
-                  if (rebuild_stokes_matrix)
+                  if (scratch.rebuild_stokes_matrix)
                     {
                       scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
                       scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
@@ -222,7 +208,7 @@ namespace aspect
 
 
           // Viscosity scalar
-          const double eta = (rebuild_stokes_matrix
+          const double eta = (scratch.rebuild_stokes_matrix
                               ?
                               scratch.material_model_outputs.viscosities[q]
                               :
@@ -248,7 +234,7 @@ namespace aspect
                                       + pressure_scaling * force->rhs_p[q] * scratch.phi_p[i])
                                      * JxW;
 
-              if (rebuild_stokes_matrix)
+              if (scratch.rebuild_stokes_matrix)
                 for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                   {
                     data.local_matrix(i,j) += ( (use_tensor ?
@@ -273,13 +259,36 @@ namespace aspect
 
     template <int dim>
     void
-    StokesAssembler<dim>::
-    compressible_strain_rate_viscosity_term (const double                                     /*pressure_scaling*/,
-                                             const bool                                       rebuild_stokes_matrix,
-                                             internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                             internal::Assembly::CopyData::StokesSystem<dim> &data) const
+    StokesIncompressibleTerms<dim>::
+    create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
-      if (!rebuild_stokes_matrix)
+      const unsigned int n_points = outputs.viscosities.size();
+
+      if (this->get_parameters().enable_additional_stokes_rhs
+          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == NULL)
+        {
+          outputs.additional_outputs.push_back(
+            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >
+            (new MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> (n_points)));
+        }
+      Assert(!this->get_parameters().enable_additional_stokes_rhs
+             ||
+             outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >()->rhs_u.size()
+             == n_points, ExcInternalError());
+    }
+
+
+
+    template <int dim>
+    void
+    StokesCompressibleStrainRateViscosityTerm<dim>::
+    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+             internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
+    {
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+
+      if (!scratch.rebuild_stokes_matrix)
         return;
 
       const Introspection<dim> &introspection = this->introspection();
@@ -327,17 +336,16 @@ namespace aspect
 
     template <int dim>
     void
-    StokesAssembler<dim>::
-    reference_density_compressibility_term (const double                                     pressure_scaling,
-                                            const bool                                       /*rebuild_stokes_matrix*/,
-                                            internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                            internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                            const Parameters<dim>                           &parameters) const
+    StokesReferenceDensityCompressibilityTerm<dim>::
+    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+             internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+
       // assemble RHS of:
       //  - div u = 1/rho * drho/dz g/||g||* u
-      (void)parameters;
-      Assert(parameters.formulation_mass_conservation ==
+      Assert(this->get_parameters().formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::reference_density_profile,
              ExcInternalError());
 
@@ -345,6 +353,7 @@ namespace aspect
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+      const double pressure_scaling = scratch.pressure_scaling;
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -376,27 +385,27 @@ namespace aspect
 
     template <int dim>
     void
-    StokesAssembler<dim>::
-    implicit_reference_density_compressibility_term (const double                                     pressure_scaling,
-                                                     const bool                                       rebuild_stokes_matrix,
-                                                     internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                                     internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                                     const Parameters<dim>                           &parameters) const
+    StokesImplicitReferenceDensityCompressibilityTerm<dim>::
+    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+             internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+
       // assemble compressibility term of:
       //  - div u - 1/rho * drho/dz g/||g||* u = 0
-      (void)parameters;
-      Assert(parameters.formulation_mass_conservation ==
+      Assert(this->get_parameters().formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile,
              ExcInternalError());
 
-      if (!rebuild_stokes_matrix)
+      if (!scratch.rebuild_stokes_matrix)
         return;
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+      const double pressure_scaling = scratch.pressure_scaling;
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -430,17 +439,16 @@ namespace aspect
 
     template <int dim>
     void
-    StokesAssembler<dim>::
-    isothermal_compression_term (const double                                     pressure_scaling,
-                                 const bool                                       /*rebuild_stokes_matrix*/,
-                                 internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                 internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                 const Parameters<dim>                           &parameters) const
+    StokesIsothermalCompressionTerm<dim>::
+    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+             internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+
       // assemble RHS of:
       //  - div u = 1/rho * drho/dp rho * g * u
-      (void)parameters;
-      Assert(parameters.formulation_mass_conservation ==
+      Assert(this->get_parameters().formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::isothermal_compression,
              ExcInternalError());
 
@@ -448,6 +456,7 @@ namespace aspect
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+      const double pressure_scaling = scratch.pressure_scaling;
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -484,6 +493,85 @@ namespace aspect
                                  * JxW;
         }
     }
+
+
+    template <int dim>
+    void
+    StokesPressureRHSCompatibilityModification<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+                                                              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
+    {
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = scratch.finite_element_values.get_fe();
+
+      const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
+      const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+
+      for (unsigned int q=0; q<n_q_points; ++q)
+        for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+          {
+            if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+              {
+                scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection.extractors.pressure].value (i, q);
+                data.local_pressure_shape_function_integrals(i_stokes) += scratch.phi_p[i_stokes] * scratch.finite_element_values.JxW(q);
+                ++i_stokes;
+              }
+            ++i;
+          }
+    }
+
+
+
+    template <int dim>
+    void
+    StokesBoundaryTraction<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>       &scratch_base,
+                                          internal::Assembly::CopyData::CopyDataBase<dim>      &data_base) const
+    {
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = scratch.finite_element_values.get_fe();
+
+      // see if any of the faces are traction boundaries for which
+      // we need to assemble force terms for the right hand side
+      const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
+
+      const typename DoFHandler<dim>::face_iterator face = scratch.cell->face(scratch.face_number);
+
+      if (this->get_boundary_traction()
+          .find (face->boundary_id())
+          !=
+          this->get_boundary_traction().end())
+        {
+          scratch.face_finite_element_values.reinit (scratch.cell, scratch.face_number);
+
+          for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
+            {
+              const Tensor<1,dim> traction
+                = this->get_boundary_traction().find(
+                    face->boundary_id()
+                  )->second
+                  ->boundary_traction (face->boundary_id(),
+                                       scratch.face_finite_element_values.quadrature_point(q),
+                                       scratch.face_finite_element_values.normal_vector(q));
+
+              for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+                {
+                  if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                    {
+                      data.local_rhs(i_stokes) += scratch.face_finite_element_values[introspection.extractors.velocities].value(i,q) *
+                                                  traction *
+                                                  scratch.face_finite_element_values.JxW(q);
+                      ++i_stokes;
+                    }
+                  ++i;
+                }
+            }
+        }
+    }
   }
 } // namespace aspect
 
@@ -493,8 +581,15 @@ namespace aspect
   namespace Assemblers
   {
 #define INSTANTIATE(dim) \
-  template class \
-  StokesAssembler<dim>;
+  template class StokesPreconditioner<dim>; \
+  template class StokesCompressiblePreconditioner<dim>; \
+  template class StokesIncompressibleTerms<dim>; \
+  template class StokesCompressibleStrainRateViscosityTerm<dim>; \
+  template class StokesReferenceDensityCompressibilityTerm<dim>; \
+  template class StokesImplicitReferenceDensityCompressibilityTerm<dim>; \
+  template class StokesIsothermalCompressionTerm<dim>; \
+  template class StokesPressureRHSCompatibilityModification<dim>; \
+  template class StokesBoundaryTraction<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

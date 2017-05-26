@@ -99,6 +99,7 @@ namespace aspect
   }
 
   template <int dim> class MeltHandler;
+  template <int dim> class FreeSurfaceHandler;
 
   template <int dim> class NewtonHandler;
 
@@ -480,13 +481,6 @@ namespace aspect
                                            MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const;
 
       /**
-       * This function simply calls Simulator<dim>::create_additional_material_model_outputs()
-       * with the given arguments.
-       */
-      void
-      create_additional_material_model_outputs (MaterialModel::MaterialModelOutputs<dim> &) const;
-
-      /**
        * Return a pointer to the gravity model description.
        */
       const GravityModel::Interface<dim> &
@@ -644,6 +638,13 @@ namespace aspect
        */
       const NewtonHandler<dim> &
       get_newton_handler () const;
+
+      /**
+       * Return a set of boundary indicators that describes which of the
+       * boundaries have a free surface boundary condition
+       */
+      const FreeSurfaceHandler<dim> &
+      get_free_surface_handler () const;
 
       /**
        * Return a reference to the lateral averaging object owned

@@ -62,3 +62,11 @@ s/tracer particle/particle/g
 s/tracer/particle/g
 s/Tracer/Particle/g
 s/TRACER/PARTICLE/g
+
+# Rename assembler base class
+s/internal::Assembly::AssemblerLists<dim>/Assemblers::AssemblerLists<dim>/g
+s/internal::Assembly::Assemblers/Assemblers/g
+s/struct AssemblerLists/class Manager/g
+s/AssemblerLists/Manager/g
+s/AssemblerBase/Interface/g
+s:assembly.h:simulator/assemblers/interface.h:g

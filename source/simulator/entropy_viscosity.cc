@@ -19,7 +19,7 @@
 */
 
 #include <aspect/simulator.h>
-#include <aspect/assembly.h>
+#include <aspect/simulator/assemblers/interface.h>
 #include <aspect/melt.h>
 
 #include <deal.II/base/signaling_nan.h>
@@ -128,9 +128,15 @@ namespace aspect
     if (advection_field.is_discontinuous(introspection))
       return 0.;
 
-    std::vector<double> residual = assemblers->compute_advection_system_residual(scratch.material_model_inputs.current_cell,
-                                                                                 advection_field,
-                                                                                 scratch);
+    std::vector<double> residual = assemblers->advection_system_residual[0]->execute(scratch);
+
+    for (unsigned int i=1; i<assemblers->advection_system_residual.size(); ++i)
+      {
+        std::vector<double> new_residual = assemblers->advection_system_residual[i]->execute(scratch);
+        for (unsigned int i=0; i<residual.size(); ++i)
+          residual[i] += new_residual[i];
+      }
+
 
     double max_residual = 0;
     double max_velocity = 0;
@@ -274,7 +280,8 @@ namespace aspect
                                   Quadrature<dim-1> (),
                                   update_flags,
                                   face_update_flags,
-                                  introspection.n_compositional_fields);
+                                  introspection.n_compositional_fields,
+                                  advection_field);
 
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
     for (; cell<dof_handler.end(); ++cell)
@@ -387,7 +394,9 @@ namespace aspect
             scratch.material_model_inputs.strain_rate[q] = (scratch.old_strain_rates[q] + scratch.old_old_strain_rates[q]) / 2;
           }
         scratch.material_model_inputs.current_cell = cell;
-        create_additional_material_model_outputs(scratch.material_model_outputs);
+
+        for (unsigned int i=0; i<assemblers->advection_system_residual.size(); ++i)
+          assemblers->advection_system_residual[i]->create_additional_material_model_outputs(scratch.material_model_outputs);
 
         material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
 
