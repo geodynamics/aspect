@@ -29,7 +29,7 @@ namespace aspect
     Property::MaterialProperty
     Compositing<dim>::parse_property_name(const std::string &s)
     {
-      AssertThrow (Property::property_map.count(s) == 0,
+      AssertThrow (Property::property_map.count(s) > 0,
                    ExcMessage ("The value <" + s + "> for a material "
                                "property is not one of the valid values."));
       return Property::property_map.at(s);
@@ -132,7 +132,6 @@ namespace aspect
               else
                 model_property_map[prop] = std::distance(model_names.begin(), model_position);
             }
-          models.resize(model_names.size());
 
         }
         prm.leave_subsection();
@@ -142,10 +141,11 @@ namespace aspect
       // create the models and initialize their SimulatorAccess base
       // After parsing the parameters for averaging, it is essential to parse
       // parameters related to the base models
+      models.resize(model_names.size());
       for (unsigned int i=0; i<model_names.size(); ++i)
         {
-          models.at(i).reset(create_material_model<dim>(model_names[i]));
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(models.at(i).get()))
+          models[i].reset(create_material_model<dim>(model_names[i]));
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(models[i].get()))
             sim->initialize_simulator (this->get_simulator());
           models[i]->parse_parameters(prm);
           // All models will need to compute all quantities, so do so
