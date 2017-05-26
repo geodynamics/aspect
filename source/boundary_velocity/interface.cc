@@ -21,6 +21,7 @@
 
 #include <aspect/global.h>
 #include <aspect/boundary_velocity/interface.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/std_cxx11/tuple.h>
@@ -149,6 +150,16 @@ namespace aspect
     {
       std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
     }
+
+
+
+    template <int dim>
+    void
+    write_plugin_graph (std::ostream &out)
+    {
+      std_cxx11::get<dim>(registered_plugins).write_plugin_graph ("Boundary velocity interface",
+                                                                  out);
+    }
   }
 }
 
@@ -183,6 +194,10 @@ namespace aspect
   template  \
   void \
   declare_parameters<dim> (ParameterHandler &); \
+  \
+  template \
+  void \
+  write_plugin_graph<dim> (std::ostream &); \
   \
   template  \
   std::string \

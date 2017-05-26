@@ -538,6 +538,17 @@ namespace aspect
                                                                  declare_parameters_function,
                                                                  factory_function);
       }
+
+
+
+      template <int dim>
+      void
+      Manager<dim>::write_plugin_graph (std::ostream &out)
+      {
+        std_cxx11::get<dim>(registered_plugins).write_plugin_graph ("Particle property interface",
+                                                                    out);
+      }
+
     }
   }
 }

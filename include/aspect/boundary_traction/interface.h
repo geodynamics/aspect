@@ -188,6 +188,20 @@ namespace aspect
     declare_parameters (ParameterHandler &prm);
 
 
+    /**
+     * For the current plugin subsystem, write a connection graph of all of the
+     * plugins we know about, in the format that the
+     * programs dot and neato understand. This allows for a visualization of
+     * how all of the plugins that ASPECT knows about are interconnected, and
+     * connect to other parts of the ASPECT code.
+     *
+     * @param output_stream The stream to write the output to.
+     */
+    template <int dim>
+    void
+    write_plugin_graph (std::ostream &out);
+
+
 
     /**
      * Given a class name, a name, and a description for the parameter file

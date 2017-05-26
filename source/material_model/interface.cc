@@ -139,6 +139,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     Interface<dim> *
     create_material_model (ParameterHandler &prm)
@@ -222,6 +223,16 @@ namespace aspect
       prm.leave_subsection ();
 
       std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+    }
+
+
+
+    template <int dim>
+    void
+    write_plugin_graph (std::ostream &out)
+    {
+      std_cxx11::get<dim>(registered_plugins).write_plugin_graph ("Material model interface",
+                                                                  out);
     }
 
 
@@ -790,6 +801,10 @@ namespace aspect
   template \
   Interface<dim> * \
   create_material_model<dim> (const std::string &model_name); \
+  \
+  template \
+  void \
+  write_plugin_graph<dim> (std::ostream &); \
   \
   template \
   Interface<dim> * \

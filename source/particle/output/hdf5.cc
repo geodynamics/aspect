@@ -50,8 +50,13 @@ namespace aspect
       HDF5Output<dim>::HDF5Output()
         :
         file_index(0)
-      {
+      {}
 
+
+
+      template <int dim>
+      void HDF5Output<dim>::initialize ()
+      {
 #ifndef DEAL_II_WITH_HDF5
         AssertThrow (false,
                      ExcMessage ("deal.ii was not compiled with HDF5 support, "
@@ -60,15 +65,12 @@ namespace aspect
                                  "or select a different particle output format."));
 #endif
 
-      }
-
-      template <int dim>
-      void HDF5Output<dim>::initialize ()
-      {
         aspect::Utilities::create_directory (this->get_output_directory() + "particles/",
                                              this->get_mpi_communicator(),
                                              true);
       }
+
+
 
       template <int dim>
       std::string

@@ -374,6 +374,8 @@ void print_help()
             << std::endl
             << "       --output-xml           (print parameters in xml format to standard output and exit)"
             << std::endl
+            << "       --output-plugin-graph  (write a representation of all plugins to standard output and exit)"
+            << std::endl
             << std::endl;
 }
 
@@ -459,7 +461,8 @@ int main (int argc, char *argv[])
       const bool i_am_proc_0 = (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0);
 
       std::string prm_name = "";
-      bool output_xml = false;
+      bool output_xml          = false;
+      bool output_plugin_graph = false;
 
       // We hook into the abort handler on ranks != 0 to avoid an MPI
       // deadlock. The deal.II library will call std::abort() when an
@@ -491,6 +494,10 @@ int main (int argc, char *argv[])
           if (arg == "--output-xml")
             {
               output_xml = true;
+            }
+          else if (arg == "--output-plugin-graph")
+            {
+              output_plugin_graph = true;
             }
           else if (arg=="-h" || arg =="--help")
             {
@@ -542,7 +549,7 @@ int main (int argc, char *argv[])
         }
 
       // Print header
-      if (i_am_proc_0 && !output_xml)
+      if (i_am_proc_0 && !output_xml && !output_plugin_graph)
         {
           print_aspect_header(std::cout);
         }
@@ -643,6 +650,12 @@ int main (int argc, char *argv[])
                 if (i_am_proc_0)
                   prm.print_parameters(std::cout, ParameterHandler::XML);
               }
+            else if (output_plugin_graph)
+              {
+                aspect::Simulator<2> flow_problem(MPI_COMM_WORLD, prm);
+                if (i_am_proc_0)
+                  flow_problem.write_plugin_graph (std::cout);
+              }
             else
               {
                 aspect::Simulator<2> flow_problem(MPI_COMM_WORLD, prm);
@@ -660,6 +673,12 @@ int main (int argc, char *argv[])
               {
                 if (i_am_proc_0)
                   prm.print_parameters(std::cout, ParameterHandler::XML);
+              }
+            else if (output_plugin_graph)
+              {
+                aspect::Simulator<3> flow_problem(MPI_COMM_WORLD, prm);
+                if (i_am_proc_0)
+                  flow_problem.write_plugin_graph (std::cout);
               }
             else
               {

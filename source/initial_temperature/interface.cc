@@ -227,11 +227,22 @@ namespace aspect
     }
 
 
+
     template <int dim>
     std::string
     get_valid_model_names_pattern ()
     {
       return std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+    }
+
+
+
+    template <int dim>
+    void
+    Manager<dim>::write_plugin_graph (std::ostream &out)
+    {
+      std_cxx11::get<dim>(registered_plugins).write_plugin_graph ("Initial temperature interface",
+                                                                  out);
     }
   }
 }
