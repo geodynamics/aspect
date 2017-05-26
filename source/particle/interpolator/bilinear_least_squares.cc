@@ -19,10 +19,14 @@
  */
 
 #include <aspect/particle/interpolator/bilinear_least_squares.h>
+#include <aspect/postprocess/particles.h>
+#include <aspect/simulator.h>
 
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/full_matrix.templates.h>
+
+#include <boost/lexical_cast.hpp>
 
 namespace aspect
 {
@@ -50,6 +54,7 @@ namespace aspect
 
         AssertThrow(selected_properties.n_selected_components(n_particle_properties) == 1,
                     ExcNotImplemented("Interpolation of multiple components is not supported."));
+
 
         const Point<dim> approximated_cell_midpoint = std::accumulate (positions.begin(), positions.end(), Point<dim>())
                                                       / static_cast<double> (positions.size());
@@ -98,11 +103,6 @@ namespace aspect
         Vector<double> r(n_particles);
         r = 0;
 
-        // Keep track of the local min and max in order to correct
-        // overshoot and undershoot of the interpolated particle property.
-        double max_value_for_particle_property = (particle_range.first)->second.get_properties()[property_index];
-        double min_value_for_particle_property = (particle_range.first)->second.get_properties()[property_index];
-
         unsigned int index = 0;
         const double cell_diameter = found_cell->diameter();
         for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator particle = particle_range.first;
@@ -116,15 +116,9 @@ namespace aspect
             A(index,1) = (position[0] - approximated_cell_midpoint[0])/cell_diameter;
             A(index,2) = (position[1] - approximated_cell_midpoint[1])/cell_diameter;
             A(index,3) = (position[0] - approximated_cell_midpoint[0]) * (position[1] - approximated_cell_midpoint[1])/std::pow(cell_diameter,2);
-
-            if (min_value_for_particle_property > particle_property_value)
-              min_value_for_particle_property = particle_property_value;
-            if (max_value_for_particle_property < particle_property_value)
-              max_value_for_particle_property = particle_property_value;
           }
 
         dealii::LAPACKFullMatrix<double> B(matrix_dimension, matrix_dimension);
-        dealii::LAPACKFullMatrix<double> B_inverse(B);
 
         Vector<double> c_ATr(matrix_dimension);
         Vector<double> c(matrix_dimension);
@@ -137,6 +131,8 @@ namespace aspect
         // decomposition (SVD).
         A.Tmmult(B, A, false);
         A.Tvmult(c_ATr,r);
+
+        dealii::LAPACKFullMatrix<double> B_inverse(B);
         B_inverse.compute_inverse_svd(threshold);
         B_inverse.vmult(c, c_ATr);
 
@@ -148,15 +144,96 @@ namespace aspect
                                         c[2]*(support_point[1] - approximated_cell_midpoint[1])/cell_diameter +
                                         c[3]*(support_point[0] - approximated_cell_midpoint[0])*(support_point[1] - approximated_cell_midpoint[1])/std::pow(cell_diameter,2);
 
-            cell_properties[index_positions][property_index] = interpolated_value;
-
             // Overshoot and undershoot correction of interpolated particle property.
-            if (interpolated_value > max_value_for_particle_property)
-              interpolated_value = max_value_for_particle_property;
-            else if (interpolated_value < min_value_for_particle_property)
-              interpolated_value = min_value_for_particle_property;
+            if (use_global_valued_limiter)
+              {
+                interpolated_value = std::min(interpolated_value, global_maximum_particle_properties[property_index]);
+                interpolated_value = std::max(interpolated_value, global_minimum_particle_properties[property_index]);
+              }
+
+            cell_properties[index_positions][property_index] = interpolated_value;
           }
         return cell_properties;
+      }
+
+      template <int dim>
+      void
+      BilinearLeastSquares<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Particles");
+          {
+            prm.enter_subsection("Interpolator");
+            {
+              prm.enter_subsection("Bilinear least squares");
+              {
+                prm.declare_entry ("Global particle property maximum",
+                                   boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
+                                   Patterns::List(Patterns::Double ()),
+                                   "The maximum global particle property values that will be used as a "
+                                   "limiter for the bilinear least squares interpolation. The number of the input "
+                                   "'Global particle property maximum' values separated by ',' has to be "
+                                   "the same as the number of particle properties.");
+                prm.declare_entry ("Global particle property minimum",
+                                   boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+                                   Patterns::List(Patterns::Double ()),
+                                   "The minimum global particle property that will be used as a "
+                                   "limiter for the bilinear least squares interpolation. The number of the input "
+                                   "'Global particle property minimum' values separated by ',' has to be "
+                                   "the same as the number of particle properties.");
+                prm.declare_entry("Use limiter", "false",
+                                  Patterns::Bool (),
+                                  "Whether to apply a global particle property limiting scheme to the interpolated "
+                                  "particle properties.");
+
+              }
+              prm.leave_subsection();
+            }
+            prm.leave_subsection();
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
+      }
+
+      template <int dim>
+      void
+      BilinearLeastSquares<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Particles");
+          {
+            prm.enter_subsection("Interpolator");
+            {
+              prm.enter_subsection("Bilinear least squares");
+              {
+                use_global_valued_limiter = prm.get_bool("Use limiter");
+                if (use_global_valued_limiter)
+                  {
+                    global_maximum_particle_properties = Utilities::string_to_double(Utilities::split_string_list(prm.get("Global particle property maximum")));
+                    global_minimum_particle_properties = Utilities::string_to_double(Utilities::split_string_list(prm.get("Global particle property minimum")));
+
+                    const Postprocess::Particles<dim> *particle_postprocessor = this->template find_postprocessor<Postprocess::Particles<dim> >();
+                    const unsigned int n_property_components = particle_postprocessor->get_particle_world().get_property_manager().get_n_property_components();
+
+                    AssertThrow(global_minimum_particle_properties.size() == n_property_components,
+                                ExcMessage("Make sure that the size of list 'Global minimum particle property' "
+                                           "is equivalent to the number of particle properties."));
+
+                    AssertThrow(global_maximum_particle_properties.size() == n_property_components,
+                                ExcMessage("Make sure that the size of list 'Global maximum particle property' "
+                                           "is equivalent to the number of particle properties."));
+                  }
+              }
+              prm.leave_subsection();
+            }
+            prm.leave_subsection();
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
       }
     }
   }
