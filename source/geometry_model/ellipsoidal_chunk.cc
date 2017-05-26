@@ -40,13 +40,11 @@ namespace aspect
 {
   namespace GeometryModel
   {
-    using namespace dealii;
-
-    /**
+    /*
      * the EllipsoidalChunkGeometry class
      */
 
-// constructor
+    // constructor
     template <int dim>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::EllipsoidalChunkGeometry()
       :

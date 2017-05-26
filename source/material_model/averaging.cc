@@ -23,7 +23,6 @@
 #include <utility>
 #include <limits>
 
-using namespace dealii;
 
 namespace aspect
 {

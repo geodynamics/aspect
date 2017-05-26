@@ -41,8 +41,6 @@ namespace aspect
 {
   namespace internal
   {
-    using namespace dealii;
-
     /**
      * Implement multiplication with Stokes part of system matrix. In essence, this
      * object represents a 2x2 block matrix that corresponds to the top left

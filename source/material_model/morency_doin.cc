@@ -21,7 +21,6 @@
 
 #include <aspect/material_model/morency_doin.h>
 
-using namespace dealii;
 
 namespace aspect
 {

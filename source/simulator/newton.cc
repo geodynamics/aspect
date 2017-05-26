@@ -22,7 +22,6 @@
 #include <aspect/newton.h>
 #include <aspect/simulator.h>
 
-using namespace dealii;
 
 
 namespace aspect

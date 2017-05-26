@@ -21,7 +21,6 @@
 
 #include <aspect/material_model/ascii_reference_profile.h>
 
-using namespace dealii;
 
 namespace aspect
 {

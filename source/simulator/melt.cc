@@ -31,7 +31,6 @@
 #include <deal.II/fe/fe_dgp.h>
 #include <deal.II/fe/fe_values.h>
 
-using namespace dealii;
 
 
 namespace aspect

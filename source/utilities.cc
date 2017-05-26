@@ -53,8 +53,6 @@ namespace aspect
    */
   namespace Utilities
   {
-    using namespace dealii;
-
     /**
      * Split the set of DoFs (typically locally owned or relevant) in @p whole_set into blocks
      * given by the @p dofs_per_block structure.

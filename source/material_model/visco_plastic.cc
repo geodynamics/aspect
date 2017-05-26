@@ -21,7 +21,6 @@
 #include <aspect/material_model/visco_plastic.h>
 #include <aspect/utilities.h>
 #include <deal.II/fe/fe_values.h>
-using namespace dealii;
 
 namespace aspect
 {
