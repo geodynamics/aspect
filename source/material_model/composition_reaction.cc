@@ -21,7 +21,6 @@
 
 #include <aspect/material_model/composition_reaction.h>
 
-using namespace dealii;
 
 namespace aspect
 {

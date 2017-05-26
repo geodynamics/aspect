@@ -21,7 +21,6 @@
 #include <aspect/material_model/diffusion_dislocation.h>
 #include <aspect/utilities.h>
 
-using namespace dealii;
 
 namespace aspect
 {

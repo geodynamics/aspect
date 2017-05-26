@@ -26,8 +26,6 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    using namespace dealii;
-
     template <>
     double
     AdiabaticBoundary<2>::get_isotherm_depth(const double,

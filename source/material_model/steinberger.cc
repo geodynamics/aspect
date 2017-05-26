@@ -27,7 +27,6 @@
 #include <fstream>
 #include <iostream>
 
-using namespace dealii;
 
 namespace aspect
 {

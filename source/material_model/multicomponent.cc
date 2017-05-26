@@ -25,7 +25,6 @@
 
 #include <numeric>
 
-using namespace dealii;
 
 namespace aspect
 {

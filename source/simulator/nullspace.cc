@@ -41,9 +41,6 @@ namespace aspect
 {
   namespace internal
   {
-    using namespace dealii;
-
-
 
     /**
      * A class we use when setting up the data structures for nullspace removal

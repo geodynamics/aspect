@@ -20,7 +20,6 @@
 
 #include <aspect/material_model/simple_compressible.h>
 
-using namespace dealii;
 
 namespace aspect
 {

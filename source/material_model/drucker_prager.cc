@@ -23,7 +23,6 @@
 #include <aspect/utilities.h>
 #include <aspect/newton.h>
 
-using namespace dealii;
 
 namespace aspect
 {

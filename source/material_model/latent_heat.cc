@@ -21,7 +21,6 @@
 
 #include <aspect/material_model/latent_heat.h>
 
-using namespace dealii;
 
 namespace aspect
 {

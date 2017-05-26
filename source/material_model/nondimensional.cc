@@ -21,7 +21,6 @@
 
 #include <aspect/material_model/nondimensional.h>
 
-using namespace dealii;
 
 namespace aspect
 {

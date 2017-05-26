@@ -62,7 +62,6 @@
 #include <string>
 
 
-using namespace dealii;
 
 
 namespace aspect
