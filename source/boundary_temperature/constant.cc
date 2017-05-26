@@ -20,7 +20,10 @@
 
 
 #include <aspect/boundary_temperature/constant.h>
+
 #include <deal.II/base/utilities.h>
+#include <deal.II/base/signaling_nan.h>
+
 #include <limits>
 
 
@@ -45,7 +48,7 @@ namespace aspect
                   ExcMessage ("Unknown boundary indicator with number <" + Utilities::int_to_string(boundary_indicator) + ">. "
                               "You may not have specified the temperature for this boundary indicator "
                               "in the input file."));
-          return std::numeric_limits<double>::quiet_NaN();
+          return numbers::signaling_nan<double>();
         }
     }
 

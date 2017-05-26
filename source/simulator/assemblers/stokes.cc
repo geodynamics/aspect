@@ -22,6 +22,7 @@
 #include <aspect/utilities.h>
 #include <aspect/assembly.h>
 #include <aspect/simulator_access.h>
+
 #include <deal.II/base/signaling_nan.h>
 
 namespace aspect
@@ -161,7 +162,7 @@ namespace aspect
                               ?
                               scratch.material_model_outputs.viscosities[q]
                               :
-                              std::numeric_limits<double>::quiet_NaN());
+                              numbers::signaling_nan<double>());
 
           const SymmetricTensor<4,dim> &stress_strain_director =
             scratch.material_model_outputs.stress_strain_directors[q];
