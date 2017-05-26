@@ -20,6 +20,8 @@
 
 
 #include <aspect/postprocess/visualization/heating.h>
+#include <aspect/heating_model/interface.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <deal.II/base/utilities.h>
 #include <deal.II/grid/grid_tools.h>
 

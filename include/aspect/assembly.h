@@ -24,6 +24,7 @@
 
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
+#include <aspect/heating_model/interface.h>
 
 #include <deal.II/fe/fe_values.h>
 

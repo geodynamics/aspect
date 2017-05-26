@@ -20,6 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/gravity.h>
+#include <aspect/gravity_model/interface.h>
 
 
 

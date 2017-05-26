@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/composition_reaction.h>
+#include <aspect/geometry_model/interface.h>
 
 
 namespace aspect

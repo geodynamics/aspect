@@ -20,6 +20,7 @@
 
 
 #include <aspect/initial_temperature/S40RTS_perturbation.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/utilities.h>
 #include <fstream>
 #include <iostream>

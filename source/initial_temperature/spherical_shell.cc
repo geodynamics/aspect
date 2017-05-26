@@ -20,6 +20,7 @@
 
 #include <deal.II/base/signaling_nan.h>
 #include <aspect/initial_temperature/spherical_shell.h>
+#include <aspect/boundary_temperature/interface.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/chunk.h>

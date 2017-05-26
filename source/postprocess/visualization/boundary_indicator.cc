@@ -20,7 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/boundary_indicator.h>
-
+#include <aspect/geometry_model/interface.h>
 
 
 

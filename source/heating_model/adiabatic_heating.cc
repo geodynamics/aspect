@@ -20,6 +20,7 @@
 
 
 #include <aspect/heating_model/adiabatic_heating.h>
+#include <aspect/gravity_model/interface.h>
 
 
 namespace aspect

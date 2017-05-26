@@ -20,6 +20,7 @@
 
 
 #include <aspect/gravity_model/radial.h>
+#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/tensor.h>
 

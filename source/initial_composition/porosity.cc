@@ -20,6 +20,8 @@
 
 
 #include <aspect/initial_composition/porosity.h>
+#include <aspect/initial_temperature/interface.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/melt.h>
 

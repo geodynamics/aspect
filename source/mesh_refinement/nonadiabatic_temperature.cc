@@ -20,6 +20,7 @@
 
 
 #include <aspect/mesh_refinement/nonadiabatic_temperature.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/dofs/dof_tools.h>

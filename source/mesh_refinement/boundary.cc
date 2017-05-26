@@ -20,6 +20,7 @@
 
 
 #include <aspect/mesh_refinement/boundary.h>
+#include <aspect/geometry_model/interface.h>
 
 namespace aspect
 {

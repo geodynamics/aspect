@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/steinberger.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/utilities.h>
 #include <aspect/lateral_averaging.h>
 

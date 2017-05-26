@@ -20,6 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/maximum_horizontal_compressive_stress.h>
+#include <aspect/gravity_model/interface.h>
 #include <aspect/utilities.h>
 
 

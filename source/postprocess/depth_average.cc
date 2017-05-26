@@ -20,6 +20,7 @@
 
 
 #include <aspect/postprocess/depth_average.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/lateral_averaging.h>
 #include <aspect/global.h>
 #include <aspect/utilities.h>

@@ -21,6 +21,10 @@
 
 #include <aspect/postprocess/basic_statistics.h>
 #include <aspect/material_model/simple.h>
+#include <aspect/geometry_model/interface.h>
+#include <aspect/gravity_model/interface.h>
+#include <aspect/boundary_temperature/interface.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/global.h>
 
 

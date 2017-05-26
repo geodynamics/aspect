@@ -20,7 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/vertical_heat_flux.h>
-
+#include <aspect/gravity_model/interface.h>
 
 
 namespace aspect

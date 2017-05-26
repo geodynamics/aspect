@@ -19,6 +19,8 @@
  */
 
 #include <aspect/particle/property/pT_path.h>
+#include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/initial_temperature/interface.h>
 
 namespace aspect
 {

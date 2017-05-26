@@ -20,6 +20,7 @@
 
 
 #include <aspect/postprocess/temperature_statistics.h>
+#include <aspect/boundary_temperature/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>

@@ -20,6 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/depth.h>
+#include <aspect/geometry_model/interface.h>
 
 
 
