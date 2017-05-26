@@ -1,10 +1,5 @@
-# Duplicate of the simple incompressible model with using the
-# composite model instead
-
-# This is a relatively realistic compressible model setup.
-# There is no simple analytical solution to it, it is rather
-# intended to serve as a comparison for more complicated
-# material models, which should be able to reproduce it.
+# Duplicate of simple incompressible test using a compositing model to
+# select all material properties from the simple incompressible model.
 
 set CFL number                             = 1.0
 set End time                               = 1e5
