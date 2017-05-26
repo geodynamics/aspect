@@ -1174,21 +1174,7 @@ namespace aspect
     BoundaryFluidPressure::declare_parameters<dim> (prm);
   }
 
-  template <int dim>
-  MeltHandler<dim>::MeltHandler (ParameterHandler &prm)
-  {
-    parse_parameters(prm);
-  }
 
-  template <int dim>
-  void
-  MeltHandler<dim>::initialize_simulator (const Simulator<dim> &simulator_object)
-  {
-    this->SimulatorAccess<dim>::initialize_simulator(simulator_object);
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_fluid_pressure.get()))
-      sim->initialize_simulator (simulator_object);
-    boundary_fluid_pressure->initialize ();
-  }
 
   template <int dim>
   void
@@ -1202,9 +1188,33 @@ namespace aspect
     }
     prm.leave_subsection();
 
+    AssertThrow( !this->get_parameters().use_discontinuous_temperature_discretization &&
+                 !this->get_parameters().use_discontinuous_composition_discretization,
+                 ExcMessage("Melt transport can not be used with discontinuous elements.") );
+    AssertThrow( !this->get_parameters().free_surface_enabled,
+                 ExcMessage("Melt transport together with a free surface has not been tested.") );
+
     boundary_fluid_pressure.reset(BoundaryFluidPressure::create_boundary_fluid_pressure<dim>(prm));
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_fluid_pressure.get()))
+      sim->initialize_simulator (this->get_simulator());
     boundary_fluid_pressure->parse_parameters (prm);
+    boundary_fluid_pressure->initialize ();
   }
+
+
+
+  template <int dim>
+  void
+  MeltHandler<dim>::
+  initialize ()
+  {
+    this->get_signals().set_assemblers.connect (std_cxx11::bind(&MeltHandler<dim>::set_melt_assemblers,
+                                                                std_cxx11::ref(*this),
+                                                                std_cxx11::_1,
+                                                                std_cxx11::_2,
+                                                                std_cxx11::_3));
+  }
+
 
 
   template <int dim>
@@ -1221,10 +1231,83 @@ namespace aspect
       std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
       (new MaterialModel::MeltOutputs<dim> (n_points, n_comp)));
   }
+
+
+
+  template <int dim>
+  void
+  MeltHandler<dim>::set_melt_assemblers(const SimulatorAccess<dim> &simulator_access,
+                                        internal::Assembly::AssemblerLists<dim> &assemblers,
+                                        std::vector<dealii::std_cxx11::shared_ptr<
+                                        internal::Assembly::Assemblers::AssemblerBase<dim> > > &assembler_objects)
+  {
+    if (!simulator_access.get_parameters().include_melt_transport)
+      return;
+
+    std_cxx11::shared_ptr<Assemblers::MeltEquations<dim> > melt_equation_assembler
+    (new Assemblers::MeltEquations<dim>());
+    assembler_objects.push_back (melt_equation_assembler);
+
+    assemblers.local_assemble_stokes_preconditioner.disconnect_all_slots();
+    assemblers.local_assemble_stokes_preconditioner
+    .connect (std_cxx11::bind(&aspect::Assemblers::MeltEquations<dim>::local_assemble_stokes_preconditioner_melt,
+                              std_cxx11::cref (*melt_equation_assembler),
+                              std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
+
+    assemblers.local_assemble_stokes_system.disconnect_all_slots();
+    assemblers.local_assemble_stokes_system
+    .connect (std_cxx11::bind(&aspect::Assemblers::MeltEquations<dim>::local_assemble_stokes_system_melt,
+                              std_cxx11::cref (*melt_equation_assembler),
+                              std_cxx11::_1,
+                              std_cxx11::_2,
+                              std_cxx11::_3,
+                              std_cxx11::_4,
+                              std_cxx11::_5));
+
+    if (this->do_pressure_rhs_compatibility_modification())
+      assemblers.local_assemble_stokes_system
+      .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::pressure_rhs_compatibility_modification_melt<dim>,
+                                simulator_access,
+                                // discard cell,
+                                // discard pressure_scaling,
+                                // discard rebuild_stokes_matrix,
+                                std_cxx11::_4,
+                                std_cxx11::_5));
+
+    // add the boundary integral for melt migration
+    assemblers.stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data = true;
+    assemblers.stokes_system_assembler_on_boundary_face_properties.needed_update_flags = (update_values  | update_quadrature_points |
+        update_normal_vectors | update_gradients |
+        update_JxW_values);
+    assemblers.local_assemble_stokes_system_on_boundary_face
+    .connect (std_cxx11::bind(&aspect::Assemblers::MeltEquations<dim>::local_assemble_stokes_system_melt_boundary,
+                              std_cxx11::cref (*melt_equation_assembler),
+                              std_cxx11::_1,
+                              std_cxx11::_2,
+                              std_cxx11::_3,
+                              // discard rebuild_stokes_matrix,
+                              std_cxx11::_5,
+                              std_cxx11::_6));
+
+    assemblers.local_assemble_advection_system.disconnect_all_slots();
+    assemblers.local_assemble_advection_system
+    .connect (std_cxx11::bind(&aspect::Assemblers::MeltEquations<dim>::local_assemble_advection_system_melt,
+                              std_cxx11::cref (*melt_equation_assembler),
+                              // discard cell,
+                              std_cxx11::_2,
+                              std_cxx11::_3,
+                              std_cxx11::_4,
+                              std_cxx11::_5));
+
+    assemblers.compute_advection_system_residual.disconnect_all_slots();
+    assemblers.compute_advection_system_residual
+    .connect (std_cxx11::bind(&aspect::Assemblers::MeltEquations<dim>::compute_advection_system_residual_melt,
+                              std_cxx11::cref (*melt_equation_assembler),
+                              // discard cell,
+                              std_cxx11::_2,
+                              std_cxx11::_3));
+  }
 }
-
-
-
 
 // explicit instantiation of the functions we implement in this file
 namespace aspect

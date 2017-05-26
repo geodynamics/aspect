@@ -149,7 +149,7 @@ namespace aspect
     :
     assemblers (new internal::Assembly::AssemblerLists<dim>()),
     parameters (prm, mpi_communicator_),
-    melt_handler (parameters.include_melt_transport ? new MeltHandler<dim> (prm) : NULL),
+    melt_handler (parameters.include_melt_transport ? new MeltHandler<dim> () : NULL),
     post_signal_creation(
       std_cxx11::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
                        std_cxx11::ref(signals))),
@@ -544,12 +544,9 @@ namespace aspect
     // Initialize the melt handler
     if (parameters.include_melt_transport)
       {
-        AssertThrow( !parameters.use_discontinuous_temperature_discretization &&
-                     !parameters.use_discontinuous_composition_discretization,
-                     ExcMessage("Melt transport can not be used with discontinuous elements.") );
-        AssertThrow( !parameters.free_surface_enabled,
-                     ExcMessage("Melt transport together with a free surface has not been tested.") );
         melt_handler->initialize_simulator (*this);
+        melt_handler->parse_parameters(prm);
+        melt_handler->initialize();
       }
 
     postprocess_manager.initialize_simulator (*this);

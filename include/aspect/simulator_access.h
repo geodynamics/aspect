@@ -305,6 +305,15 @@ namespace aspect
       convert_output_to_years () const;
 
       /**
+       * Return whether or not we do the correction of
+       * the Stokes right hand side vector to ensure that the average
+       * divergence is zero. This is necessary for compressible models, but
+       * only if there are no in/outflow boundaries.
+       */
+      bool
+      do_pressure_rhs_compatibility_modification () const;
+
+      /**
        * Return the number of the current pre refinement step.
        * This can be useful for plugins that want to function differently in
        * the initial adaptive refinements and later on.

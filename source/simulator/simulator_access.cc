@@ -186,6 +186,16 @@ namespace aspect
   }
 
 
+
+  template <int dim>
+  bool
+  SimulatorAccess<dim>::do_pressure_rhs_compatibility_modification () const
+  {
+    return simulator->do_pressure_rhs_compatibility_modification;
+  }
+
+
+
   template <int dim>
   unsigned int
   SimulatorAccess<dim>::get_pre_refinement_step () const
