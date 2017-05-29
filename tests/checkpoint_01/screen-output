@@ -1,12 +1,13 @@
 -----------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.4.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
 -----------------------------------------------------------------------------
 
 Loading shared library <./libcheckpoint_01.so>
 * starting from beginning:
+Executing the following command:
+cd output-checkpoint_01 ; (cat ASPECT_DIR/tests/checkpoint_01.prm  ;  echo 'set Output directory = output1.tmp'  ;  rm -rf output1.tmp ; mkdir output1.tmp ) | ../../aspect -- > /dev/null
+Executing the following command:
+cd output-checkpoint_01 ;  rm -rf output2.tmp ; mkdir output2.tmp ;  cp output1.tmp/restart* output2.tmp/
 * now resuming:
+Executing the following command:
+cd output-checkpoint_01 ; (cat ASPECT_DIR/tests/checkpoint_01.prm  ;  echo 'set Output directory = output2.tmp'  ;  echo 'set Resume computation = true' ) | ../../aspect -- > /dev/null
 * now comparing:
