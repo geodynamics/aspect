@@ -1,0 +1,4 @@
+New: Adds a Compositing material model to allow selecting material properties
+as generated from a number of other material models.
+<br>
+(Jonathan Robey, 2017/05/26)
