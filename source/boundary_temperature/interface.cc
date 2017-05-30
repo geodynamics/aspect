@@ -21,6 +21,7 @@
 
 #include <aspect/global.h>
 #include <aspect/boundary_temperature/interface.h>
+#include <aspect/simulator_access.h>
 
 #include <aspect/utilities.h>
 
@@ -286,6 +287,16 @@ namespace aspect
       prm.leave_subsection ();
 
       std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+    }
+
+
+
+    template <int dim>
+    void
+    Manager<dim>::write_plugin_graph (std::ostream &out)
+    {
+      std_cxx11::get<dim>(registered_plugins).write_plugin_graph ("Boundary temperature interface",
+                                                                  out);
     }
   }
 }

@@ -162,6 +162,19 @@ namespace aspect
        */
       void run ();
 
+      /**
+       * Write a connection graph of all of the plugins we know about, in the
+       * format that the programs dot and neato understand. This allows for a
+       * visualization of how all of the plugins that ASPECT knows about are
+       * interconnected, and connect to other parts of the ASPECT code.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       *
+       * @param output_stream The stream to write the output to.
+       */
+      void
+      write_plugin_graph (std::ostream &out) const;
 
       /**
        * Import Nonlinear Solver type.

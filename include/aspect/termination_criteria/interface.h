@@ -231,6 +231,19 @@ namespace aspect
                                         Interface<dim> *(*factory_function) ());
 
         /**
+         * For the current plugin subsystem, write a connection graph of all of the
+         * plugins we know about, in the format that the
+         * programs dot and neato understand. This allows for a visualization of
+         * how all of the plugins that ASPECT knows about are interconnected, and
+         * connect to other parts of the ASPECT code.
+         *
+         * @param output_stream The stream to write the output to.
+         */
+        static
+        void
+        write_plugin_graph (std::ostream &out);
+
+        /**
          * Exception.
          */
         DeclException1 (ExcTerminationCriteriaNameNotFound,

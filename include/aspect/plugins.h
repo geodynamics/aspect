@@ -22,7 +22,9 @@
 #ifndef _aspect_plugins_h
 #define _aspect_plugins_h
 
+#include <aspect/global.h>
 
+#include <deal.II/base/utilities.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/std_cxx11/tuple.h>
 
@@ -30,10 +32,15 @@
 #include <list>
 #include <set>
 #include <map>
+#include <iostream>
+#include <typeinfo>
 
 
 namespace aspect
 {
+  template <int dim> class SimulatorAccess;
+
+
   namespace internal
   {
     /**
@@ -198,6 +205,33 @@ namespace aspect
                        ParameterHandler &prm);
 
         /**
+         * For the current plugin subsystem, write a connection graph of all of the
+         * plugins we know about, in the format that the
+         * programs dot and neato understand. This allows for a visualization of
+         * how all of the plugins that ASPECT knows about are interconnected, and
+         * connect to other parts of the ASPECT code.
+         *
+         * @param plugin_system_name The name to be used for the current
+         *   plugin system. This name will be used for the "Interface"
+         *   class to which all plugins connect.
+         * @param output_stream The stream to write the output to.
+         * @param attachment_point The point to which a plugin subsystem
+         *   feeds information. By default, this is the Simulator class,
+         *   but some plugin systems (most notably the visualization
+         *   postprocessors, which feeds to one of the postprocessor
+         *   classes) hook into other places. If other than the
+         *   "Simulator" default, the attachment point should be of
+         *   the form <code>typeid(ClassName).name()</code> as this is
+         *   the form used by this function to identify nodes in the
+         *   plugin graph.
+         */
+        static
+        void
+        write_plugin_graph (const std::string &plugin_system_name,
+                            std::ostream      &output_stream,
+                            const std::string &attachment_point = "Simulator");
+
+        /**
          * Exception.
          */
         DeclException1 (ExcUnknownPlugin,
@@ -219,6 +253,8 @@ namespace aspect
           delete plugins;
         plugins = 0;
       }
+
+
 
       template <typename InterfaceClass>
       void
@@ -397,6 +433,91 @@ namespace aspect
         return i;
       }
 
+
+
+      template <typename InterfaceClass>
+      void
+      PluginList<InterfaceClass>::
+      write_plugin_graph (const std::string &plugin_system_name,
+                          std::ostream      &output_stream,
+                          const std::string &attachment_point)
+      {
+        // first output a list of the graph nodes, which in this case
+        // are the interface class (as the central hub, plotted as a square)
+        // followed by the plugin names (plotted as circles)
+        //
+        // we use the typeid name of the interface class to label
+        // nodes within this plugin system, as they are unique among
+        // all other plugin systems
+        output_stream << std::string(typeid(InterfaceClass).name())
+                      << " [label=\""
+                      << plugin_system_name
+                      << "\", height=.8,width=.8,shape=\"rect\",fillcolor=\"green\"]"
+                      << std::endl;
+
+        for (typename std::list<PluginInfo>::const_iterator p = plugins->begin();
+             p != plugins->end(); ++p)
+          {
+            // take the name of the plugin and split it into strings of
+            // 15 characters at most; then combine them
+            // again using \n to make dot/neato show these parts of
+            // the name on separate lines
+            const std::vector<std::string> plugin_label_parts
+              = Utilities::break_text_into_lines(std_cxx11::get<0>(*p), 15);
+            Assert (plugin_label_parts.size()>0, ExcInternalError());
+            std::string plugin_name = plugin_label_parts[0];
+            for (unsigned int i=1; i<plugin_label_parts.size(); ++i)
+              plugin_name += "\n" + plugin_label_parts[i];
+
+            // next create a (symbolic) node name for this plugin. because
+            // each plugin corresponds to a particular class, use the mangled
+            // name of the class
+            std_cxx11::unique_ptr<InterfaceClass> instance (create_plugin (std_cxx11::get<0>(*p), ""));
+            const std::string node_name = typeid(*instance).name();
+
+            // then output the whole shebang describing this node
+            output_stream << node_name
+                          << " [label=\""
+                          << plugin_name
+                          << "\", height=.8,width=.8,shape=\"circle\",fillcolor=\"lightblue\"];"
+                          << std::endl;
+
+            // next build connections from this plugin to the
+            // interface class
+            output_stream << node_name
+                          << " -> "
+                          << std::string(typeid(InterfaceClass).name())
+                          << " [len=3, weight=50]"
+                          << ';'
+                          << std::endl;
+
+            // finally see if this plugin is derived from
+            // SimulatorAccess; if so, draw an arrow from SimulatorAccess
+            // also to the plugin's name
+            if (dynamic_cast<const SimulatorAccess<2>*>(instance.get()) != NULL
+                ||
+                dynamic_cast<const SimulatorAccess<3>*>(instance.get()) != NULL)
+              output_stream << "SimulatorAccess"
+                            << " -> "
+                            << node_name
+                            << " [style=\"dashed\", arrowhead=\"empty\", constraint=false, color=\"gray\", len=20, weight=0.1];"
+                            << std::endl;
+          }
+
+        // as a last step, also draw a connection from the interface class
+        // to the Simulator class, or whatever the calling function indicates
+        // as the attachment point
+        output_stream << std::string(typeid(InterfaceClass).name())
+                      << " -> "
+                      << attachment_point
+                      << " [len=15, weight=50]"
+                      << ';'
+                      << std::endl;
+
+        // end it with an empty line to make things easier to
+        // read when looking over stuff visually
+        output_stream << std::endl;
+      }
     }
   }
 }

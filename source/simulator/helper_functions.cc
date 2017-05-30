@@ -23,7 +23,15 @@
 #include <aspect/melt.h>
 #include <aspect/global.h>
 
+#include <aspect/geometry_model/interface.h>
+#include <aspect/heating_model/interface.h>
 #include <aspect/heating_model/adiabatic_heating.h>
+#include <aspect/material_model/interface.h>
+#include <aspect/particle/generator/interface.h>
+#include <aspect/particle/integrator/interface.h>
+#include <aspect/particle/interpolator/interface.h>
+#include <aspect/particle/output/interface.h>
+#include <aspect/postprocess/visualization.h>
 
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
@@ -213,6 +221,71 @@ namespace aspect
       delete copy_of_table;
     }
   }
+
+
+
+  template <int dim>
+  void Simulator<dim>::write_plugin_graph (std::ostream &out) const
+  {
+    // write the preamble
+    out << "digraph Plugins\n"
+        "{\n"
+        "  splines=line;\n"
+        "  splines=true;\n"
+        "  overlap=false;\n"
+        "  edge [fontname=\"FreeSans\",\n"
+        "        fontsize=\"10\",\n"
+        "        labelfontname=\"FreeSans\",\n"
+        "        labelfontsize=\"10\",\n"
+        "        color=\"black\",\n"
+        "        style=\"solid\"];\n"
+        "  node [fontname=\"FreeSans\",\n"
+        "        fontsize=\"10\",\n"
+        "        shape=\"rectangle\",\n"
+        "        height=0.2,\n"
+        "        width=0.4,\n"
+        "        color=\"black\",\n"
+        "        fillcolor=\"white\",\n"
+        "        style=\"filled\"];\n"
+        "\n";
+
+    // then also write nodes for the Simulator and SimulatorAccess classes,
+    // and an arrow from the former to the latter to indicate flow of
+    // information
+    out << "  Simulator [height=1.5,width=2,shape=\"octagon\",fillcolor=\"yellow\"];\n";
+    out << "  SimulatorAccess [height=1.2,width=1.2,shape=\"rect\",fillcolor=\"yellow\"];\n";
+    out << "  Simulator -> SimulatorAccess [len=1, weight=100];\n";
+
+    // then go through all plugin systems and output everything we have
+    AdiabaticConditions::write_plugin_graph<dim>(out);
+    BoundaryComposition::write_plugin_graph<dim>(out);
+    BoundaryFluidPressure::write_plugin_graph<dim>(out);
+    BoundaryTemperature::Manager<dim>::write_plugin_graph(out);
+    BoundaryTraction::write_plugin_graph<dim>(out);
+    BoundaryVelocity::write_plugin_graph<dim>(out);
+    InitialTopographyModel::write_plugin_graph<dim>(out);
+    GeometryModel::write_plugin_graph<dim>(out);
+    GravityModel::write_plugin_graph<dim>(out);
+    HeatingModel::Manager<dim>::write_plugin_graph(out);
+    InitialComposition::Manager<dim>::write_plugin_graph(out);
+    InitialTemperature::Manager<dim>::write_plugin_graph(out);
+    MaterialModel::write_plugin_graph<dim>(out);
+    MeshRefinement::Manager<dim>::write_plugin_graph(out);
+    Particle::Generator::write_plugin_graph<dim>(out);
+    Particle::Integrator::write_plugin_graph<dim>(out);
+    Particle::Interpolator::write_plugin_graph<dim>(out);
+    Particle::Output::write_plugin_graph<dim>(out);
+    Particle::Property::Manager<dim>::write_plugin_graph(out);
+    Postprocess::Manager<dim>::write_plugin_graph(out);
+    Postprocess::Visualization<dim>::write_plugin_graph(out);
+    PrescribedStokesSolution::write_plugin_graph<dim>(out);
+    TerminationCriteria::Manager<dim>::write_plugin_graph(out);
+
+    // end the graph
+    out << "}"
+        << std::endl;
+  }
+
 
 
   template <int dim>
@@ -1519,6 +1592,7 @@ namespace aspect
   template double Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::output_statistics(); \
+  template void Simulator<dim>::write_plugin_graph(std::ostream &) const; \
   template double Simulator<dim>::compute_initial_stokes_residual(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
