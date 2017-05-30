@@ -101,7 +101,7 @@ subsection Postprocess
 
   subsection Visualization
     set Output format                 = vtu
-    set List of output variables      = dynamic topography, density, viscosity, gravity
+    set List of output variables      = geoid, dynamic topography, density, viscosity, gravity
     set Number of grouped files       = 1 
   end
 end
