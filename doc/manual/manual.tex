@@ -7103,13 +7103,14 @@ reality.
 
 \subsubsection{Postprocessing spherical 3D convection}
 \label{sec:cookbooks-shell_3d_postprocess.prm}
-\textit{This section was contributed by Jacqueline Austermann, Ian Rose and Shangxin Liu}
+\textit{This section was contributed by Jacqueline Austermann, Ian Rose, and Shangxin Liu}
 
 
-There are several postprocessors that can be used to turn the the velocity 
+There are several postprocessors that can be used to turn the velocity 
 and pressure solution into quantities that can be compared to surface 
-observations. In this cookbook we introduce two postprocessors: dynamic 
-topography and the geoid. We initialize the model with a harmonic 
+observations. In this cookbook (\url{cookbooks/shell_3d_postprocess.prm}) 
+we introduce two postprocessors: dynamic topography and the geoid.
+We initialize the model with a harmonic 
 perturbation of degree 4 and order 2 and calculate the
 instantaneous solution. Analogous to the previous setup we use a spherical
 shell geometry model and a simple material model. 
@@ -7133,14 +7134,15 @@ the surface is balanced by excess (or deficit) topography. We use the
 consistent boundary flux (CBF) method to calculate the radial stress 
 at the surface \cite{ZGH93}. For the 
 bottom surface we define positive values as up (out)
-and negative values are in (down), analogous to the deformation of the upper 
+and negative values are down (in), analogous to the deformation of the upper 
 surface. Dynamic topography can be outputted in text format (which writes the 
 Euclidean coordinates followed by the corresponding topography value) or as 
 part of the visualization. The upwelling and downwelling flow along the 
 equator causes alternating topography high and lows at the top and
 bottom surface (Figure~\ref{fig:pp}). 
 In Figure~\ref{fig:pp} c, d we have subtracted the mean dynamic topography from
-the output field. Since mass is conserved within the Earth, the mean dynamic topography
+the output field as a postproceesing step outside of Aspect. Since mass is 
+conserved within the Earth, the mean dynamic topography
 should always be zero, however, the outputted values might not fullfill this 
 constraint if the resolution of the model is not high enough to provide an
 accurate solution. This cookbook only uses a refinement of 2, which is relatively
@@ -7149,10 +7151,12 @@ low resolution.
 \paragraph{Geoid anomalies.}
 Geoid anomalies are perturbations of the gravitational equipotential surface that 
 are due to density variations within the mantle as well as deflections of the 
-surface and core mantle boundary. The geoid postprocessor subtracts the mean
-dynamic topography at the top and bottom surface when evaluating its contribution
-to the gravity field. 
-In this model, downwellings coincide with lows in dynamic topography. That 
+surface and core mantle boundary. The geoid anomalies are calculated using a spherical
+harmonic expansion of the respective fields. The user has the option to specify the 
+minimum and maximum degree of this expansion. By default, the minimum degree is
+2, which conserves the mass of the Earth (by removing degree 0) and chooses the
+Earth's center of mass as reference frame (by removing degree 1). 
+In this model, downwellings coincide with lows in the geoid anomaly. That 
 means the mass deficit caused by the depression at the surface is not 
 fully compensated by the high density material below the depression that 
 drags the surface down. The geoid postprocessor uses a spherical harmonic 
@@ -7164,7 +7168,9 @@ expansion and can therefore only be used with the 3D spherical shell geometry mo
   \hfill
   \caption{\it Panel (a) shows an equatorial cross section of the temperature distribution and 
   resulting flow from a harmonic perturbation. Panel (b) shows the resulting geoid, and panels
-  (c) and (d) show the resulting surface and bottom topography. 
+  (c) and (d) show the resulting surface and bottom topography. Note that we have subtracted
+  the mean surface and bottom topography in the respective panels (c and d) as a postprocessing
+  step outside of Aspect.
   }
   \label{fig:pp}
 \end{figure}
@@ -7265,8 +7271,11 @@ In this cookbook we calculate the instantaneous solution to examine the flow
 field. Figures~\ref{fig:ic-1} and \ref{fig:ic-2} show some of the output 
 for a resolution of 2 global refinement steps (\ref{fig:ic-1}c and 
 \ref{fig:ic-2}a, c, e) as used in the cookbook, as well as 4 global 
-refinement steps (other panels in these figures). Figure~\ref{fig:ic-1}a 
-and b shows the density variation 
+refinement steps (other panels in these figures). Computations with 4 global 
+refinements are expensive, and consequently this is not the 
+default for this cookbook. For example, as of 2017, it takes 64 cores approximately
+2 hours of walltime to finish this cookbook with 4 global refinements. 
+Figure~\ref{fig:ic-1}a and b shows the density variation 
 that has been obtained from scaling S20RTS in the way described above.
 One can see the two large low shear wave velocity provinces
 underneath Africa and the Pacific that lead to upwelling if they are assumed to 
@@ -7278,7 +7287,7 @@ Figure~\ref{fig:ic-1}c and d shows the heat flux density at the surface for
 with upper mantle features such as high heat flow at mid ocean ridges and low
 heat flow at cratons is correctly initialized by the tomography model. 
 The mantle flow and bouyancy variations produce dynamic topography on the 
-top and bottomw surface, which is shown for 2 refinement steps (\ref{fig:ic-2}a and c, respectively) 
+top and bottom surface, which is shown for 2 refinement steps (\ref{fig:ic-2}a and c, respectively) 
 and 4 refinement steps (\ref{fig:ic-2}b and d, respectively). 
 One can see that subduction zones are visible as depressed surface topography 
 due to the downward flow, while regions such as Iceland, Hawaii, or mid ocean 
@@ -7305,9 +7314,8 @@ dynamic topography is closer to zero than the mean top dynamic topography. This 
 likely due to the larger magnitude of dynamic topography at the surface and the
 difference in resolution between the top and bottom domain
 (for a given refinement, the resolution at the core mantle boundary is
-higher than the resolution at the surface). The geoid postprocessor removes the
-average top and bottom surface when evaluating its contribution
-to the gravity field. The average geoid height is therefore zero. 
+higher than the resolution at the surface). The average geoid height is zero since
+the minimum degree in the geoid anomaly expansion is set to 2. 
 
 This model uses a highly simplified material model that is incompressible and 
 isoviscous and does therefore not represent real mantle flow. More realistic 

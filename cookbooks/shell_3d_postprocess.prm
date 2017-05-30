@@ -1,6 +1,6 @@
 # A description of convection in a 3d spherical shell with 
-# a prescribed initial condition based on the shear wave
-# velocity model S20RTS.
+# a prescribed initial condition based on a harmonic
+# perturbation
 
 # Define the number of space dimensions we would like to 
 # work in:
@@ -11,10 +11,9 @@ set Dimension                              = 3
 # the instantaneous solution.
 set End time                               = 0
 set Use years in output instead of seconds = true
-set Output directory                       = output_s2
+set Output directory                       = output-shell_3d_postprocess
 
-# The following variables describe the tolerance of
-# the linear solver as well as how the pressure should
+# The following variables describe how the pressure should
 # be normalized. Here, we choose a zero average pressure
 # at the surface of the domain 
 set Pressure normalization                 = surface
@@ -90,8 +89,8 @@ end
 
 # We assume fixed temperatures and free slip at the inner and outer boundary
 subsection Model settings
-  set Fixed temperature boundary indicators   = 0,1
-  set Tangential velocity boundary indicators = 0,1
+  set Fixed temperature boundary indicators   = bottom,top
+  set Tangential velocity boundary indicators = bottom,top
 end
 
 
