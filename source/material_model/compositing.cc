@@ -158,7 +158,12 @@ namespace aspect
               AssertThrow(model_name != "compositing",
                           ExcMessage("You may not use ``compositing'' as the base model for the "
                                      + prop_it->first +" property of a compositing material model."));
-              std::vector<std::string>::iterator model_position = std::find(model_names.begin(), model_names.end(), model_name);
+
+              // see if we've encountered this base model before. If not,
+              // otherwise put it into a new slot. otherwise
+              // record its number for the current coefficient.
+              std::vector<std::string>::iterator model_position
+                = std::find(model_names.begin(), model_names.end(), model_name);
               if ( model_position == model_names.end() )
                 {
                   model_property_map[prop] = model_names.size();
@@ -225,9 +230,21 @@ namespace aspect
                                    "compositing",
                                    "The ``compositing'' Material model selects material model properties from a "
                                    "given set of other material models, and is intended to make mixing different "
-                                   "material models easier. However, the implementation is somewhat expensive, "
-                                   "and it is therefore likely to be preferred that a separate implementation be "
-                                   "used if computing speed is critical."
+                                   "material models easier."
+                                   "\n\n"
+                                   "Specifically, this material model works by allowing to specify "
+                                   "the name of another material model for each coefficient that material "
+                                   "models are asked for (such as the viscosity, density, etc.). Whenever "
+                                   "the material model is asked for the values of coefficients, it then "
+                                   "evaluates all of the ``base models'' that were listed for the various "
+                                   "coefficients, and copies the values returned by these base models "
+                                   "into the output structure."
+                                   "\n\n"
+                                   "The implementation of this material model is somewhat expensive "
+                                   "because it has to evaluate all material coefficients of all underlying "
+                                   "material models. Consequently, if performance of assembly and postprocessing "
+                                   "is important, then implementing a separate separate material model is "
+                                   "a better choice than using this material model."
                                   )
   }
 }
