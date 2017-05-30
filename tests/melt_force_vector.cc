@@ -1,6 +1,8 @@
 #include <aspect/melt.h>
 #include <aspect/boundary_fluid_pressure/interface.h>
 #include <aspect/boundary_velocity/interface.h>
+#include <aspect/postprocess/interface.h>
+#include <aspect/gravity_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <deal.II/dofs/dof_tools.h>
