@@ -29,7 +29,7 @@
 
 /**
  * This geometry model implements an (3d) ellipsoidal chunk geometry where two of the axis have
- * the same length. The ellipsoidal chunk can be non-coordinate parallel part of the ellipsoid.
+ * the same length. The ellipsoidal chunk can be a non-coordinate parallel part of the ellipsoid.
  * @author This plugin is a joined effort of Menno Fraters, D Sarah Stamps and Wolfgang Bangerth
  */
 
@@ -58,7 +58,7 @@ namespace aspect
             EllipsoidalChunkGeometry();
 
             /**
-             * An initialization function necessary for to make sure that the
+             * An initialization function necessary to make sure that the
              * manifold has access to the topography plugins.
              */
             void
@@ -76,7 +76,7 @@ namespace aspect
 
             /**
              * The deal.ii pull back function in 3d. This function receives
-             * cartesian points x,y and z and return spherical/ellipsoidal
+             * cartesian points x,y and z and returns spherical/ellipsoidal
              * coordinates phi, theta and depth, also accounting for the
              * topography.
              */
@@ -93,7 +93,7 @@ namespace aspect
             pull_back(const Point<2> &space_point) const;
 
             /**
-             * The deal.ii pull back function in 3d. This function receives
+             * The deal.ii push forward function in 3d. This function receives
              * spherical/ellipsoidal coordinates phi, theta and depth and
              * returns cartesian points x,y and z, also accounting for the
              * topography.
@@ -106,25 +106,25 @@ namespace aspect
           private:
             /**
              * This function does the actual push forward to the ellipsoid.
-             * For the equation details, please see deal.iii step 53.
+             * For the equation details, please see deal.ii step 53.
              */
             Point<3> push_forward_ellipsoid (const Point<3> &phi_theta_d, const double semi_major_axis_a, const double eccentricity) const;
 
             /**
              * This function does the actual pull back from the ellipsoid.
-             * For the equation details, please see deal.iii step 53.
+             * For the equation details, please see deal.ii step 53.
              */
             Point<3> pull_back_ellipsoid (const Point<3> &x, const double semi_major_axis_a, const double eccentricity) const;
 
             /**
-             * This function add topography to the cartesian coordinates.
-             * For the equation details, please see deal.iii step 53.
+             * This function adds topography to the cartesian coordinates.
+             * For the equation details, please see deal.ii step 53.
              */
             Point<3> push_forward_topography (const Point<3> &phi_theta_d_hat) const;
 
             /**
              * This function removes topography from the cartesian coordinates.
-             * For the equation details, please see deal.iii step 53.
+             * For the equation details, please see deal.ii step 53.
              */
             Point<3> pull_back_topography (const Point<3> &phi_theta_d) const;
 
@@ -155,8 +155,6 @@ namespace aspect
         /**
          * Return the typical length scale one would expect of features in this geometry,
          * assuming realistic parameters.
-         *
-         * We return 1/20th of the distance from the two endpoints (vertex_0 and vertex_7) of the cell.
          */
         virtual
         double

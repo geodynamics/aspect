@@ -90,7 +90,7 @@ namespace aspect
 
       private:
         /**
-         * Temperatures at the inner and outer boundaries.
+         * Temperatures at the boundaries.
          */
         std::map<types::boundary_id, double> boundary_temperatures;
     };
