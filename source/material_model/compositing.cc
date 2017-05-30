@@ -24,16 +24,45 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    namespace Property
+    {
+      namespace
+      {
+        const std::pair<std::string, MaterialProperty> property_map_pairs[]
+        =
+        {
+          {"Viscosity", viscosity},
+          {"Density", density},
+          {"Thermal expansion coefficient", thermal_expansion_coefficient},
+          {"Specific heat", specific_heat},
+          {"Thermal conductivity", thermal_conductivity},
+          {"Compressibility", compressibility},
+          {"Entropy derivative pressure", entropy_derivative_pressure},
+          {"Entropy derivative temperature", entropy_derivative_temperature},
+          {"Reaction terms", reaction_terms}
+        };
+
+
+        const std::map<std::string, MaterialProperty>
+        property_map (&property_map_pairs[0],
+                      &property_map_pairs[0] +
+                      sizeof(property_map_pairs)/sizeof(property_map_pairs[0]));
+      }
+    }
+
+
     // Parse property names
     template <int dim>
     Property::MaterialProperty
     Compositing<dim>::parse_property_name(const std::string &s)
     {
-      AssertThrow (Property::property_map.count(s) > 0,
+      AssertThrow (Property::property_map.find(s) != Property::property_map.end(),
                    ExcMessage ("The value <" + s + "> for a material "
                                "property is not one of the valid values."));
-      return Property::property_map.at(s);
+      return Property::property_map.find(s)->second;
     }
+
+
 
     template <int dim>
     void
@@ -41,25 +70,27 @@ namespace aspect
                                                const typename Interface<dim>::MaterialModelOutputs &base_output,
                                                typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      if (model_property_map.at(Property::viscosity) == model_index)
+      if (model_property_map.find(Property::viscosity)->second == model_index)
         out.viscosities = base_output.viscosities;
-      if (model_property_map.at(Property::density) == model_index)
+      if (model_property_map.find(Property::density)->second == model_index)
         out.densities = base_output.densities;
-      if (model_property_map.at(Property::thermal_expansion_coefficient) == model_index)
+      if (model_property_map.find(Property::thermal_expansion_coefficient)->second == model_index)
         out.thermal_expansion_coefficients = base_output.thermal_expansion_coefficients;
-      if (model_property_map.at(Property::specific_heat) == model_index)
+      if (model_property_map.find(Property::specific_heat)->second == model_index)
         out.specific_heat = base_output.specific_heat;
-      if (model_property_map.at(Property::thermal_conductivity) == model_index)
+      if (model_property_map.find(Property::thermal_conductivity)->second == model_index)
         out.thermal_conductivities = base_output.thermal_conductivities;
-      if (model_property_map.at(Property::compressibility) == model_index)
+      if (model_property_map.find(Property::compressibility)->second == model_index)
         out.compressibilities = base_output.compressibilities;
-      if (model_property_map.at(Property::entropy_derivative_pressure) == model_index)
+      if (model_property_map.find(Property::entropy_derivative_pressure)->second == model_index)
         out.entropy_derivative_pressure = base_output.entropy_derivative_pressure;
-      if (model_property_map.at(Property::entropy_derivative_temperature) == model_index)
+      if (model_property_map.find(Property::entropy_derivative_temperature)->second == model_index)
         out.entropy_derivative_temperature = base_output.entropy_derivative_temperature;
-      if (model_property_map.at(Property::reaction_terms) == model_index)
+      if (model_property_map.find(Property::reaction_terms)->second == model_index)
         out.reaction_terms = base_output.reaction_terms;
     }
+
+
 
     template <int dim>
     void
@@ -75,6 +106,8 @@ namespace aspect
           copy_required_properties(i, base_output, out);
         }
     }
+
+
 
     template <int dim>
     void
@@ -101,6 +134,8 @@ namespace aspect
       }
       prm.leave_subsection();
     }
+
+
 
     template <int dim>
     void
@@ -157,14 +192,18 @@ namespace aspect
         }
     }
 
+
+
     template <int dim>
     bool
     Compositing<dim>::
     is_compressible () const
     {
-      const unsigned int ind = model_property_map.at(Property::compressibility);
+      const unsigned int ind = model_property_map.find(Property::compressibility)->second;
       return models[ind]->is_compressible();
     }
+
+
 
     template <int dim>
     double
