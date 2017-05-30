@@ -100,16 +100,6 @@ namespace aspect
 
       private:
         /**
-         * Parse a string representing one of the components provided
-         * by the material models, and return the resulting
-         * MaterialProperty value.
-         *
-         * @param s String with name of property
-         */
-        Property::MaterialProperty
-        parse_property_name(const std::string &s);
-
-        /**
          * Copy desired properties from material model outputs
          * produced by another material model,
          *
