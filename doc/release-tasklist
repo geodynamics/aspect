@@ -6,8 +6,8 @@
       are up to date in the manual
     . update the used deal.II version for the Docker container in docker/Dockerfile
       and in the manual
-    . check that readme.html is okay and the links to the mailinglists are
-      working (also in manual.pdf)
+    . check that README.md and http://aspect.dealii.org/ReadMe.html are okay
+      and the links to the mailinglists are working (also in manual.pdf)
     . run (and be patient):
       cd benchmarks && ./check.sh BUILDDIR
       cd cookbooks && ./check.sh BUILDDIR
