@@ -427,44 +427,6 @@ namespace aspect
       return std::vector<T> ();
     }
 
-    template <int dim>
-    std::vector<std::string>
-    expand_dimensional_variable_names (const std::vector<std::string> &var_declarations)
-    {
-      std::vector<std::string> dim_names = {"x", "y", "z"};
-      char fn_split = "(", fn_end = ")";
-      std::vector<std::string> var_name_list;
-      for (auto const var_decl : var_decls)
-        {
-
-          if (var_decl.find(fn_split) != std::string::npos&&var_decl[var_decl.length()-1]==fn_end)
-            {
-              std::string fn_name = var_decl.substr(0, var_decl.find(fn_split));
-              std::string var_name = var_decl.substr(var_decl.find(fn_split), var_decl.length()-2-var_decl.find(fn_split));
-              if (fn_name == "vector")
-                {
-                  for (int i=0; i<dim; ++i)
-                    var_name_list.push_back(var_name+"_"+dim_names[i]);
-                }
-              else if (fn_name == "tensor")
-                {
-                  for (int i=0; i<dim; ++i)
-                    for (int j=0; j< dim; ++j)
-                      var_name_list.push_back(var_name+"_"+dim_names[i]+dim_names[j]);
-                }
-              else
-                {
-                  var_name_list.push_back(var_decl);
-                }
-            }
-          else
-            {
-              var_name_list.push_back(var_decl);
-            }
-        }
-      return var_name_list;
-    }
-
     /**
      * Replace the string <tt>\$ASPECT_SOURCE_DIR</tt> in @p location by the current
      * source directory of ASPECT and return the resulting string.
