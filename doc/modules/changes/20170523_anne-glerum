@@ -1,0 +1,4 @@
+New: The viscoplastic material model now outputs the cohesion and friction angles
+which can depend on the strain.
+<br>
+(Anne Glerum, 2017/05/23)

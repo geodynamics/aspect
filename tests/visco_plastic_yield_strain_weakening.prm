@@ -66,12 +66,12 @@ subsection Compositional fields
   set Names of fields = eii
 end
 
-# All compositional fields have an initial value of 0
+# We prescribe some initial strain at the center of the domain
 subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y
-    set Function expression = 0;
+    set Function expression = if(x>=45e3&x<=55e3&y>=45.3e3&y<=55.e3,0.2,0);
   end
 end
 
@@ -110,6 +110,11 @@ subsection Gravity model
 end
 
 # Post processing
+# named additional outputs includes the weakened cohesions and friction angles
 subsection Postprocess
-  set List of postprocessors = velocity statistics, mass flux statistics
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization
+  subsection Visualization
+    set List of output variables = viscosity, strain rate, named additional outputs
+    set Output format            = gnuplot
+  end
 end
