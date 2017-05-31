@@ -1,0 +1,28 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libwrite_plugin_graph.so>
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+found digraph Plugins
+found label="TestMaterial"
+found N6aspect12TestMaterialILi2EEE -> N6aspect13MaterialModel9InterfaceILi2EEE
+found label="simpler"
+found Simulator -> SimulatorAccess
+found N6aspect19BoundaryComposition9AsciiDataILi2EEE [label="ascii data"
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+
+   Postprocessing:
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
