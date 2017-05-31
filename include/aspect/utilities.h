@@ -68,6 +68,22 @@ namespace aspect
                                  const unsigned int N,
                                  const std::string &id_text);
 
+    /**
+     * Given a vector @p var_declarations expand any entries of the form
+     * vector(str) or tensor(str) to sublists with component names of the form
+     * str_x, str_y, str_z or str_xx, str_xy... for the correct dimension
+     * value.
+     *
+     * This function is to be used for expanding lists of variable names where
+     * one or more such variable is actually intended to be a list of
+     * components.
+     *
+     * Returns the generated list of variable names
+     */
+    template <int dim>
+    std::vector<std::string>
+    expand_dimensional_variable_names (const std::vector<std::string> &var_declarations);
+
 
     /**
      * Split the set of DoFs (typically locally owned or relevant) in @p whole_set into blocks

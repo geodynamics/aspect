@@ -73,6 +73,53 @@ namespace aspect
         }
     }
 
+    template <int dim>
+    std::vector<std::string>
+    expand_dimensional_variable_names (const std::vector<std::string> &var_declarations)
+    {
+      std::string dim_names[3] = {"x", "y", "z"};
+      char fn_split = '(', fn_end = ')';
+      std::vector<std::string> var_name_list;
+
+      for (std::vector<std::string>::const_iterator var_decl_iterator = var_declarations.begin();
+           var_decl_iterator != var_declarations.end();
+           ++var_decl_iterator)
+        {
+          const std::string &var_decl = *var_decl_iterator;
+          if (var_decl.find(fn_split) != std::string::npos && var_decl[var_decl.length()-1]==fn_end)
+            {
+              const std::string fn_name = var_decl.substr(0, var_decl.find(fn_split));
+
+              // Cannot be const because will be manipulated to strip whitespace
+              std::string var_name = var_decl.substr(var_decl.find(fn_split)+1, var_decl.length()-2-var_decl.find(fn_split));
+              while ((var_name.length() != 0) && (var_name[0] == ' '))
+                var_name.erase(0, 1);
+              while ((var_name.length() != 0) && (var_name[var_name.length()-1] == ' '))
+                var_name.erase(var_name.length()-1, 1);
+              if (fn_name == "vector")
+                {
+                  for (int i=0; i<dim; ++i)
+                    var_name_list.push_back(var_name+"_"+dim_names[i]);
+                }
+              else if (fn_name == "tensor")
+                {
+                  for (int i=0; i<dim; ++i)
+                    for (int j=0; j< dim; ++j)
+                      var_name_list.push_back(var_name+"_"+dim_names[i]+dim_names[j]);
+                }
+              else
+                {
+                  var_name_list.push_back(var_decl);
+                }
+            }
+          else
+            {
+              var_name_list.push_back(var_decl);
+            }
+        }
+      return var_name_list;
+    }
+
 
     /**
     * This is an internal deal.II function stolen from dof_tools.cc
@@ -2449,7 +2496,10 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template \
   IndexSet extract_locally_active_dofs_with_component(const DoFHandler<dim> &, \
-                                                      const ComponentMask &);
+                                                      const ComponentMask &); \
+  template \
+  std::vector<std::string> \
+  expand_dimensional_variable_names<dim> (const std::vector<std::string> &var_declarations);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
 
