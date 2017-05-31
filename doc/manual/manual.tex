@@ -9695,9 +9695,26 @@ and magnitude of the gravity vector $\mathbf g$; or change the initial and
 boundary conditions.
 
 To make this as simple as possible, all of these parts of the program (and some more) have
-been separated into modules that can be replaced quickly and where it is
-simple to add a new implementation and make it available to the rest of the
-program and the input parameter file. The way this is achieved is through the
+been separated into what we call \textit{plugins} that can be replaced quickly
+and where it is simple to add a new implementation and make it available to the rest of the
+program and the input parameter file. There are \textit{a lot} of plugins
+already, see Fig.~\ref{fig:plugins}, that will often be useful starting points
+and examples if you want to implement plugins yourself.
+
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=0.95\textwidth]{plugin_graph}
+  \caption{\it The graph of all current plugins of \aspect{}. The yellow
+  octagon and square represent the \texttt{Simulator} and
+  \texttt{SimulatorAccess} classes. The green boxes are interface classes for
+  everything that can be changed by plugins. Blue circles correspond to plugins
+  that implement particular behavior. The graph is of course too large to allow
+  reading individual plugin names (unless you zoom far into the page), but is
+  intended to illustrate the architecture of \aspect{}.}
+  \label{fig:plugins}
+\end{figure}
+
+The way this is achieved is through the
 following two steps:
 \begin{itemize}
 \item The core of \aspect{} really only communicates with material models,
@@ -9877,10 +9894,10 @@ through the interface they themselves provide to the core.
 
 Using this class, if a plugin class \texttt{MyPostprocess} is then not only
 derived from the corresponding \texttt{Interface} class but \textit{also}
-from the \href{doc/doxygen/classaspect_1_1SimulatorAccess.html}{SimulatorAccess} class, then you can write a member
-function of the following kind (a nonsensical but instructive example; see
-Section~\ref{sec:postprocessors} for more details on what postprocessors do
-and how they are implemented):%
+from the \href{doc/doxygen/classaspect_1_1SimulatorAccess.html}{SimulatorAccess}
+class (as indeed most plugins are, see the dashed arrows in
+Fig.~\ref{fig:plugins}), then you can write a member function of the following
+kind (a nonsensical but instructive example; see Section~\ref{sec:postprocessors} for more details on what postprocessors do and how they are implemented):%
 \footnote{For complicated, technical reasons, in the code below we need to
   access elements of the \href{doc/doxygen/classaspect_1_1SimulatorAccess.html}{SimulatorAccess} class using the notation
   \texttt{this->get\_solution()}, etc. This is due to the fact that both the
