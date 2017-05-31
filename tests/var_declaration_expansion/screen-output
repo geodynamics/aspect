@@ -1,0 +1,24 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libvar_declaration_expansion.so>
+Dimension 2:
+	vec_x
+	vec_y
+	ten_xx
+	ten_xy
+	ten_yx
+	ten_yy
+Dimension 3:
+	vec_x
+	vec_y
+	vec_z
+	ten_xx
+	ten_xy
+	ten_xz
+	ten_yx
+	ten_yy
+	ten_yz
+	ten_zx
+	ten_zy
+	ten_zz
