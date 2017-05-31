@@ -20,6 +20,7 @@
 
 
 #include <aspect/initial_temperature/harmonic_perturbation.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/chunk.h>

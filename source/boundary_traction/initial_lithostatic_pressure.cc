@@ -20,6 +20,9 @@
 
 
 #include <aspect/boundary_traction/initial_lithostatic_pressure.h>
+#include <aspect/initial_temperature/interface.h>
+#include <aspect/initial_composition/interface.h>
+#include <aspect/gravity_model/interface.h>
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 #include <deal.II/base/std_cxx11/array.h>

@@ -20,6 +20,8 @@
 
 
 #include <aspect/material_model/nondimensional.h>
+#include <aspect/geometry_model/interface.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 
 namespace aspect

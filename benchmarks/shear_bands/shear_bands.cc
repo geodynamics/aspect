@@ -1,5 +1,7 @@
 #include <aspect/initial_composition/interface.h>
 #include <aspect/geometry_model/box.h>
+#include <aspect/postprocess/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <aspect/melt.h>

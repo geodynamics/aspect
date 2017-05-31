@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/latent_heat_melt.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 
 namespace aspect

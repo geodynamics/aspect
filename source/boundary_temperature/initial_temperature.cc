@@ -20,6 +20,7 @@
 
 
 #include <aspect/boundary_temperature/initial_temperature.h>
+#include <aspect/initial_temperature/interface.h>
 
 
 namespace aspect

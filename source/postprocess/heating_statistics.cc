@@ -21,6 +21,8 @@
 
 
 #include <aspect/postprocess/heating_statistics.h>
+#include <aspect/heating_model/interface.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>

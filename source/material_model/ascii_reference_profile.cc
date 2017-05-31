@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/ascii_reference_profile.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 
 namespace aspect

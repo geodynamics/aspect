@@ -20,6 +20,8 @@
 
 
 #include <aspect/boundary_composition/initial_composition.h>
+#include <aspect/initial_composition/interface.h>
+
 
 namespace aspect
 {

@@ -1,4 +1,5 @@
 #include <aspect/boundary_fluid_pressure/interface.h>
+#include <aspect/gravity_model/interface.h>
 #include <aspect/material_model/melt_global.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>

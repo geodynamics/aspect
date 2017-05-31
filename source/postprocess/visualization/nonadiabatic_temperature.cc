@@ -20,7 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/nonadiabatic_temperature.h>
-
+#include <aspect/adiabatic_conditions/interface.h>
 
 
 namespace aspect

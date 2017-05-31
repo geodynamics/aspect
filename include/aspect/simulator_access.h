@@ -22,6 +22,11 @@
 #ifndef _aspect_simulator_access_h
 #define _aspect_simulator_access_h
 
+#include <aspect/global.h>
+#include <aspect/parameters.h>
+#include <aspect/introspection.h>
+
+#include <deal.II/base/table_handler.h>
 #include <deal.II/base/timer.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/distributed/tria.h>
@@ -29,23 +34,6 @@
 #include <deal.II/fe/fe.h>
 #include <deal.II/fe/mapping_q.h>
 
-#include <aspect/global.h>
-#include <aspect/parameters.h>
-#include <aspect/introspection.h>
-#include <aspect/material_model/interface.h>
-#include <aspect/geometry_model/initial_topography_model/interface.h>
-#include <aspect/geometry_model/interface.h>
-#include <aspect/gravity_model/interface.h>
-#include <aspect/boundary_temperature/interface.h>
-#include <aspect/boundary_composition/interface.h>
-#include <aspect/initial_temperature/interface.h>
-#include <aspect/initial_composition/interface.h>
-#include <aspect/boundary_velocity/interface.h>
-#include <aspect/boundary_traction/interface.h>
-#include <aspect/mesh_refinement/interface.h>
-#include <aspect/postprocess/interface.h>
-#include <aspect/heating_model/interface.h>
-#include <aspect/adiabatic_conditions/interface.h>
 
 
 namespace aspect
@@ -56,6 +44,11 @@ namespace aspect
   template <int dim> class Simulator;
   template <int dim> struct SimulatorSignals;
   template <int dim> class LateralAveraging;
+
+  namespace GravityModel
+  {
+    template <int dim> class Interface;
+  }
 
   namespace HeatingModel
   {
@@ -74,9 +67,29 @@ namespace aspect
     template <int dim> class Interface;
   }
 
+  namespace BoundaryComposition
+  {
+    template <int dim> class Interface;
+  }
+
+  namespace BoundaryTraction
+  {
+    template <int dim> class Interface;
+  }
+
+  namespace BoundaryVelocity
+  {
+    template <int dim> class Interface;
+  }
+
   namespace InitialComposition
   {
     template <int dim> class Manager;
+    template <int dim> class Interface;
+  }
+
+  namespace InitialTopographyModel
+  {
     template <int dim> class Interface;
   }
 
@@ -88,7 +101,7 @@ namespace aspect
   template <int dim> class MeltHandler;
 
   /**
-   * SimulatorAccess is base class for different plugins like postprocessors.
+   * SimulatorAccess is a base class for different plugins like postprocessors.
    * It provides access to the various variables of the main class that
    * plugins may want to use in their evaluations, such as solution vectors,
    * the current time, time step sizes, material models, or the triangulations

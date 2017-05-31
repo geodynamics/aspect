@@ -20,6 +20,7 @@
 
 
 #include <aspect/particle/property/composition.h>
+#include <aspect/initial_composition/interface.h>
 
 namespace aspect
 {

@@ -21,6 +21,8 @@
 
 #include <aspect/global.h>
 #include <aspect/adiabatic_conditions/initial_profile.h>
+#include <aspect/gravity_model/interface.h>
+#include <aspect/initial_composition/interface.h>
 
 #include <deal.II/base/signaling_nan.h>
 

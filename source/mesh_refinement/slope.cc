@@ -19,10 +19,12 @@
 */
 
 
+#include <aspect/mesh_refinement/slope.h>
+#include <aspect/gravity_model/interface.h>
+
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 
-#include <aspect/mesh_refinement/slope.h>
 
 namespace aspect
 {

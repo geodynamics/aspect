@@ -19,6 +19,7 @@
 */
 
 #include <aspect/material_model/simple_compressible.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 
 namespace aspect

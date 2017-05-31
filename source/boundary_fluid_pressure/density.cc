@@ -20,6 +20,7 @@
 
 
 #include <aspect/boundary_fluid_pressure/density.h>
+#include <aspect/gravity_model/interface.h>
 #include <aspect/melt.h>
 #include <utility>
 #include <limits>

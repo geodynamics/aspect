@@ -20,6 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/adiabat.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 
 namespace aspect

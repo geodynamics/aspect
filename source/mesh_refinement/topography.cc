@@ -20,6 +20,7 @@
 
 
 #include <aspect/mesh_refinement/topography.h>
+#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/numerics/error_estimator.h>

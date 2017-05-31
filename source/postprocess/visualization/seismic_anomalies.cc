@@ -20,6 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/seismic_anomalies.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/lateral_averaging.h>
 #include <aspect/utilities.h>
 
