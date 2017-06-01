@@ -247,6 +247,7 @@ namespace aspect
         "        color=\"black\",\n"
         "        fillcolor=\"white\",\n"
         "        style=\"filled\"];\n"
+        "  layout=neato;\n"
         "\n";
 
     // then also write nodes for the Simulator and SimulatorAccess classes,
