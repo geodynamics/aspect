@@ -174,7 +174,7 @@ namespace aspect
        * @param output_stream The stream to write the output to.
        */
       void
-      write_plugin_graph (std::ostream &out) const;
+      write_plugin_graph (std::ostream &output_stream) const;
 
       /**
        * Import Nonlinear Solver type.

@@ -377,7 +377,7 @@ namespace aspect
      */
     template <int dim>
     void
-    write_plugin_graph (std::ostream &out);
+    write_plugin_graph (std::ostream &output_stream);
 
 
 

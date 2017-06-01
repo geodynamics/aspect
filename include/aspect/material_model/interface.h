@@ -208,7 +208,7 @@ namespace aspect
        * @param cell The currently active cell for the fe_values object.
        * @param introspection A reference to the simulator introspection object.
        * @param solution_vector The finite element vector from which to construct the inputs.
-       * @param use_strain_rate Whether to compute the strain rates.
+       * @param use_strain_rates Whether to compute the strain rates.
        */
       MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
                           const typename DoFHandler<dim>::active_cell_iterator *cell,
@@ -976,7 +976,7 @@ namespace aspect
      */
     template <int dim>
     void
-    write_plugin_graph (std::ostream &out);
+    write_plugin_graph (std::ostream &output_stream);
 
 
 

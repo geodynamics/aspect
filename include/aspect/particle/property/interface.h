@@ -631,7 +631,7 @@ namespace aspect
            */
           static
           void
-          write_plugin_graph (std::ostream &out);
+          write_plugin_graph (std::ostream &output_stream);
 
         private:
 
