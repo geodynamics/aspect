@@ -442,9 +442,8 @@ namespace aspect
                           std::ostream      &output_stream,
                           const std::string &attachment_point)
       {
-        // first output a list of the graph nodes, which in this case
-        // are the interface class (as the central hub, plotted as a square)
-        // followed by the plugin names (plotted as circles)
+        // first output a graph node for the interface class as the central
+        // hub of this plugin system, plotted as a square.
         //
         // we use the typeid name of the interface class to label
         // nodes within this plugin system, as they are unique among
@@ -455,15 +454,32 @@ namespace aspect
                       << "\", height=.8,width=.8,shape=\"rect\",fillcolor=\"green\"]"
                       << std::endl;
 
+        // then output the graph nodes for each plugin, with links to the
+        // interface class and, as appropriate, from the SimulatorAccess class
+        //
+        // we would like to establish a predictable order of output here, but
+        // plugins self-register via static global variables, and their
+        // initialization order is not deterministic. consequently, let us
+        // loop over all plugins first and put pointers to them into a
+        // map with deterministic keys. as key, we use the declared name
+        // of the plugin by which it is referred in the .prm file
+        std::map<std::string, typename std::list<PluginInfo>::const_iterator>
+        plugin_map;
         for (typename std::list<PluginInfo>::const_iterator p = plugins->begin();
              p != plugins->end(); ++p)
+          plugin_map[std_cxx11::get<0>(*p)] = p;
+
+        // now output the information sorted by the plugin names
+        for (typename std::map<std::string, typename std::list<PluginInfo>::const_iterator>::const_iterator
+             p = plugin_map.begin();
+             p != plugin_map.end(); ++p)
           {
             // take the name of the plugin and split it into strings of
             // 15 characters at most; then combine them
             // again using \n to make dot/neato show these parts of
             // the name on separate lines
             const std::vector<std::string> plugin_label_parts
-              = Utilities::break_text_into_lines(std_cxx11::get<0>(*p), 15);
+              = Utilities::break_text_into_lines(p->first, 15);
             Assert (plugin_label_parts.size()>0, ExcInternalError());
             std::string plugin_name = plugin_label_parts[0];
             for (unsigned int i=1; i<plugin_label_parts.size(); ++i)
@@ -472,7 +488,7 @@ namespace aspect
             // next create a (symbolic) node name for this plugin. because
             // each plugin corresponds to a particular class, use the mangled
             // name of the class
-            std_cxx11::unique_ptr<InterfaceClass> instance (create_plugin (std_cxx11::get<0>(*p), ""));
+            std_cxx11::unique_ptr<InterfaceClass> instance (create_plugin (p->first, ""));
             const std::string node_name = typeid(*instance).name();
 
             // then output the whole shebang describing this node
