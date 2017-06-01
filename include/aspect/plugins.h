@@ -442,9 +442,8 @@ namespace aspect
                           std::ostream      &output_stream,
                           const std::string &attachment_point)
       {
-        // first output a list of the graph nodes, which in this case
-        // are the interface class (as the central hub, plotted as a square)
-        // followed by the plugin names (plotted as circles)
+        // first output a graph node for the interface class as the central
+        // hub of this plugin system, plotted as a square.
         //
         // we use the typeid name of the interface class to label
         // nodes within this plugin system, as they are unique among
@@ -455,6 +454,8 @@ namespace aspect
                       << "\", height=.8,width=.8,shape=\"rect\",fillcolor=\"green\"]"
                       << std::endl;
 
+        // then output the graph nodes for each plugin, with links to the
+        // interface class and, as appropriate, from the SimulatorAccess class
         for (typename std::list<PluginInfo>::const_iterator p = plugins->begin();
              p != plugins->end(); ++p)
           {
