@@ -467,7 +467,7 @@ namespace aspect
             Assert (plugin_label_parts.size()>0, ExcInternalError());
             std::string plugin_name = plugin_label_parts[0];
             for (unsigned int i=1; i<plugin_label_parts.size(); ++i)
-              plugin_name += "\n" + plugin_label_parts[i];
+              plugin_name += "\\n" + plugin_label_parts[i];
 
             // next create a (symbolic) node name for this plugin. because
             // each plugin corresponds to a particular class, use the mangled
@@ -500,7 +500,7 @@ namespace aspect
               output_stream << "SimulatorAccess"
                             << " -> "
                             << node_name
-                            << " [style=\"dashed\", arrowhead=\"empty\", constraint=false, color=\"gray\", len=20, weight=0.1];"
+                            << " [style=\"dotted\", arrowhead=\"empty\", constraint=false, color=\"gray\", len=20, weight=0.1];"
                             << std::endl;
           }
 
