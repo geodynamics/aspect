@@ -109,8 +109,10 @@ namespace aspect
       return DX;
 #else
       // The initial topography derivatives (dtopo/dphi and dtopo/dtheta)
-      const InitialTopographyModel::AsciiData<dim> *itm = dynamic_cast<const InitialTopographyModel::AsciiData<dim> *> (topo);
-      const Tensor<1,dim-1> topo_derivatives = itm->vector_gradient(push_forward_sphere(chart_point));
+      // They are zero for the ZeroTopography model
+      Tensor<1,dim-1> topo_derivatives;
+      if (const InitialTopographyModel::AsciiData<dim> *itm = dynamic_cast<const InitialTopographyModel::AsciiData<dim> *> (topo))
+       topo_derivatives = itm->vector_gradient(push_forward_sphere(chart_point));
 
       // Construct surface point in lon(,lat) coordinates
       Point<dim-1> surface_point;
@@ -139,12 +141,14 @@ namespace aspect
         {
           case 2:
           {
+        	// R_topo = R + topo(phi) * ((R-R_0)/(R_1-R_0))
+        	// phi_topo = phi
             //dR_topo/dR
             Dtopo[0][0] = (d_topo / max_depth) + 1.;
             //dR_topo/dphi
             Dtopo[0][1] = (R-inner_radius)/max_depth * topo_derivatives[0];
             //dphi_topo/dR
-            Dtopo[1][0] = 1.;
+            Dtopo[1][0] = 0.;
             //dphi_topo/dphi
             Dtopo[1][1] = 1.;
 
@@ -169,6 +173,9 @@ namespace aspect
           }
           case 3:
           {
+          	// R_topo = R + topo(phi,theta) * ((R-R_0)/(R_1-R_0))
+          	// phi_topo = phi
+        	// theta_topo = theta
             //dR_topo/dR
             Dtopo[0][0] = (d_topo / max_depth) + 1.;
             //dR_topo/dphi
@@ -176,15 +183,15 @@ namespace aspect
             //dR_topo/dtheta
             Dtopo[0][2] = (R - inner_radius) / max_depth * topo_derivatives[1];
             //dphi_topo/dR
-            Dtopo[1][0] = 1.;
+            Dtopo[1][0] = 0.;
             //dphi_topo/dphi
             Dtopo[1][1] = 1.;
             //dphi_topo/dtheta
-            Dtopo[1][2] = 1.;
+            Dtopo[1][2] = 0.;
             //dtheta_topo/dR
-            Dtopo[2][0] = 1.;
+            Dtopo[2][0] = 0.;
             //dtheta_topo/dphi
-            Dtopo[2][1] = 1.;
+            Dtopo[2][1] = 0.;
             //dtheta_topo/dtheta
             Dtopo[2][2] = 1.;
 
