@@ -6109,6 +6109,12 @@ The user must specify a ``Base model'' from which material properties are derive
 
 NWD stands for Normalized Weighed Distance. The models with this in front of their name work with a weighed average, which means each quadrature point requires an individual weight. The weight is determined by the distance, where the exact relation is determined by a bell shaped curve. A bell shaped curve is a continuous function which is one at its maximum and exactly zero at and beyond its limit. This bell shaped curve is spanned around each quadrature point to determine the weighting map for each quadrature point. The used bell shape comes from Lucy (1977). The distance is normalized so the largest distance becomes one. This means that if variable ''Bell shape limit'' is exactly one, the farthest quadrature point is just on the limit and its weight will be exactly zero. In this plugin it is not implemented as larger and equal than the limit, but larger than, to ensure the the quadrature point at distance zero is always included.
 
+`compositing': The ``compositing'' Material model selects material model properties from a given set of other material models, and is intended to make mixing different material models easier.
+
+Specifically, this material model works by allowing to specify the name of another material model for each coefficient that material models are asked for (such as the viscosity, density, etc.). Whenever the material model is asked for the values of coefficients, it then evaluates all of the ``base models'' that were listed for the various coefficients, and copies the values returned by these base models into the output structure.
+
+The implementation of this material model is somewhat expensive because it has to evaluate all material coefficients of all underlying material models. Consequently, if performance of assembly and postprocessing is important, then implementing a separate separate material model is a better choice than using this material model.
+
 `composition reaction': A material model that behaves in the same way as the simple material model, but includes two compositional fields and a reaction between them. Above a depth given in the input file, the first fields gets converted to the second field. 
 
 `depth dependent': The ``depth dependent'' Material model applies a depth-dependent scaling to any of the other available material models. In other words, it is a ``compositing material model''.
@@ -6205,7 +6211,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 Plasticity limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3D is  $\sigma_y = \frac{6*C*\cos(\phi) + 2*P*\sin(\phi)} {\sqrt(3)*(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2D. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2D form is equivalent to the Mohr Coulomb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion). When the viscous stress ($2v{\varepsilon}_{ii}$) the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
 
-The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain magnitude. The finite strain invariant or full strain tensor is calculated through compositional fields within the material model. This implementation is identical to the compositional field finite strain plugin and cookbook described in the manual (author: Gassmoeller, Dannberg). If the user selects to track the finite strain invariant ($e_ii$), a single compositional field tracks the value derived from $e_ii^t = (e_ii)^(t-1) + edot_ii*dt, where $t$ and $t-1$ are the current and prior time steps, $edot_ii$ is the second invariant of the strain rate tensor and $dt$ is the time step size. In the case of the full strain tensor $F$, the finite strain magnitude is derived from the second invariant of the symmetric stretching tensor $L$, where $L = F * [F]^T$. The user must specify a single compositional field for the finite strain invariant or multiple fields (4 in 2D, 9 in 3D) for the finite strain tensor. These field(s) must be the first lised compositional fields in the parameter file. Note that one or more of the finite strain tensor components must be assigned a non-zero value intially. This value can be be quite small (ex: 1.e-8), but still non-zero. While the option to track and use the full finite strain tensor exists, tracking the associated compositional is computationally expensive in 3D. Similarly, the finite strain magnitudes may in fact decrease if the orientation of the deformation field switches through time. Consequently, the ideal solution is track the finite strain invariant (single compositional) field within the material and track the full finite strain tensor through tracers.
+The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain magnitude. The finite strain invariant or full strain tensor is calculated through compositional fields within the material model. This implementation is identical to the compositional field finite strain plugin and cookbook described in the manual (author: Gassmoeller, Dannberg). If the user selects to track the finite strain invariant ($e_{ii}$), a single compositional field tracks the value derived from $e_{ii}^t = (e_{ii})^(t-1) + \dot{e}_{ii}*dt$, where $t$ and $t-1$ are the current and prior time steps, $\dot{e}_{ii}$ is the second invariant of the strain rate tensor and $dt$ is the time step size. In the case of the full strain tensor $F$, the finite strain magnitude is derived from the second invariant of the symmetric stretching tensor $L$, where $L = F * [F]^T$. The user must specify a single compositional field for the finite strain invariant or multiple fields (4 in 2D, 9 in 3D) for the finite strain tensor. These field(s) must be the first lised compositional fields in the parameter file. Note that one or more of the finite strain tensor components must be assigned a non-zero value intially. This value can be be quite small (ex: 1.e-8), but still non-zero. While the option to track and use the full finite strain tensor exists, tracking the associated compositional is computationally expensive in 3D. Similarly, the finite strain magnitudes may in fact decrease if the orientation of the deformation field switches through time. Consequently, the ideal solution is track the finite strain invariant (single compositional) field within the material and track the full finite strain tensor through tracers.
 
 Viscous stress may also be limited by a non-linear stress limiter that has a form similar to the Peierls creep mechanism. This stress limiter assigns an effective viscosity $\sigma_eff = \frac{\tau_y}{2*\varepsilon_y} {\frac{\varepsilon_ii}{\varepsilon_y}}^{\frac{1}{n_y}-1}$ Above $\tau_y$ is a yield stress, $\varepsilon_y$ is the reference strain rate, $\varepsilon_{ii}$ is the strain rate and $n_y$ is the stress limiter exponent.  The yield stress, $\tau_y$, is defined through the Drucker Prager yield criterion formulation. This method of limiting viscous stress has been used in various forms within the geodynamic literature, including Christensen (1992), JGR, 97(B2), pp. 2015-2036; Cizkova and Bina (2013), EPSL, 379, pp. 95-103; Cizkova and Bina (2015), EPSL, 430, pp. 408-415. When $n_y$ is 1, it essentially becomes a linear viscosity model, and in the limit $n_y\rightarrow \infty$ it converges to the standard viscosity rescaling method (concretely, values $n_y>20$ are large enough).
 
@@ -6216,7 +6222,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
  The value for the components of this formula and additional parameters are read from the parameter file in subsection  'Material model/Visco Plastic'.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \end{itemize}
 
 
@@ -6414,7 +6420,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} The name of a material model that will be modified by an averaging operation. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic
+{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic
 \item {\it Parameter name:} {\tt Bell shape limit}
 \phantomsection\label{parameters:Material model/Averaging/Bell shape limit}
 
@@ -6431,6 +6437,156 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\end{itemize}
+
+\subsection{Parameters in section \tt Material model/Compositing}
+\label{parameters:Material_20model/Compositing}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Compressibility}
+\phantomsection\label{parameters:Material model/Compositing/Compressibility}
+
+
+\index[prmindex]{Compressibility}
+\index[prmindexfull]{Material model!Compositing!Compressibility}
+{\it Value:} unspecified
+
+
+{\it Default:} unspecified
+
+
+{\it Description:} Material model to use for Compressibility. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
+
+
+{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+\item {\it Parameter name:} {\tt Density}
+\phantomsection\label{parameters:Material model/Compositing/Density}
+
+
+\index[prmindex]{Density}
+\index[prmindexfull]{Material model!Compositing!Density}
+{\it Value:} unspecified
+
+
+{\it Default:} unspecified
+
+
+{\it Description:} Material model to use for Density. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
+
+
+{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+\item {\it Parameter name:} {\tt Entropy derivative pressure}
+\phantomsection\label{parameters:Material model/Compositing/Entropy derivative pressure}
+
+
+\index[prmindex]{Entropy derivative pressure}
+\index[prmindexfull]{Material model!Compositing!Entropy derivative pressure}
+{\it Value:} unspecified
+
+
+{\it Default:} unspecified
+
+
+{\it Description:} Material model to use for Entropy derivative pressure. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
+
+
+{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+\item {\it Parameter name:} {\tt Entropy derivative temperature}
+\phantomsection\label{parameters:Material model/Compositing/Entropy derivative temperature}
+
+
+\index[prmindex]{Entropy derivative temperature}
+\index[prmindexfull]{Material model!Compositing!Entropy derivative temperature}
+{\it Value:} unspecified
+
+
+{\it Default:} unspecified
+
+
+{\it Description:} Material model to use for Entropy derivative temperature. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
+
+
+{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+\item {\it Parameter name:} {\tt Reaction terms}
+\phantomsection\label{parameters:Material model/Compositing/Reaction terms}
+
+
+\index[prmindex]{Reaction terms}
+\index[prmindexfull]{Material model!Compositing!Reaction terms}
+{\it Value:} unspecified
+
+
+{\it Default:} unspecified
+
+
+{\it Description:} Material model to use for Reaction terms. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
+
+
+{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+\item {\it Parameter name:} {\tt Specific heat}
+\phantomsection\label{parameters:Material model/Compositing/Specific heat}
+
+
+\index[prmindex]{Specific heat}
+\index[prmindexfull]{Material model!Compositing!Specific heat}
+{\it Value:} unspecified
+
+
+{\it Default:} unspecified
+
+
+{\it Description:} Material model to use for Specific heat. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
+
+
+{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+\item {\it Parameter name:} {\tt Thermal conductivity}
+\phantomsection\label{parameters:Material model/Compositing/Thermal conductivity}
+
+
+\index[prmindex]{Thermal conductivity}
+\index[prmindexfull]{Material model!Compositing!Thermal conductivity}
+{\it Value:} unspecified
+
+
+{\it Default:} unspecified
+
+
+{\it Description:} Material model to use for Thermal conductivity. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
+
+
+{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+\item {\it Parameter name:} {\tt Thermal expansion coefficient}
+\phantomsection\label{parameters:Material model/Compositing/Thermal expansion coefficient}
+
+
+\index[prmindex]{Thermal expansion coefficient}
+\index[prmindexfull]{Material model!Compositing!Thermal expansion coefficient}
+{\it Value:} unspecified
+
+
+{\it Default:} unspecified
+
+
+{\it Description:} Material model to use for Thermal expansion coefficient. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
+
+
+{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+\item {\it Parameter name:} {\tt Viscosity}
+\phantomsection\label{parameters:Material model/Compositing/Viscosity}
+
+
+\index[prmindex]{Viscosity}
+\index[prmindexfull]{Material model!Compositing!Viscosity}
+{\it Value:} unspecified
+
+
+{\it Default:} unspecified
+
+
+{\it Description:} Material model to use for Viscosity. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
+
+
+{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \end{itemize}
 
 \subsection{Parameters in section \tt Material model/Composition reaction model}
@@ -6650,7 +6806,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} The name of a material model that will be modified by a depth dependent viscosity. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic
+{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic
 \item {\it Parameter name:} {\tt Data directory}
 \phantomsection\label{parameters:Material model/Depth dependent model/Data directory}
 
@@ -14146,7 +14302,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 0.001
 
 
-{\it Description:} This threshold tells the AMG setup how the coarsening should be performed. In the AMG used by ML, all points that strongly couple with the tentative coarse-level point form one aggregate. The term strong coupling is controlled by the variable aggregation_threshold, meaning that all elements that are not smaller than aggregation_threshold times the diagonal element do couple strongly. The default is strongly recommended. There are indications that for the Newton solver a different value might be better. For extensive benchmarking of various settings of the AMG parameters in this secton for the Stokes problem and others, see https://github.com/geodynamics/aspect/pull/234.
+{\it Description:} This threshold tells the AMG setup how the coarsening should be performed. In the AMG used by ML, all points that strongly couple with the tentative coarse-level point form one aggregate. The term strong coupling is controlled by the variable aggregation\_threshold, meaning that all elements that are not smaller than aggregation\_threshold times the diagonal element do couple strongly. The default is strongly recommended. There are indications that for the Newton solver a different value might be better. For extensive benchmarking of various settings of the AMG parameters in this secton for the Stokes problem and others, see https://github.com/geodynamics/aspect/pull/234.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 1$
@@ -14178,7 +14334,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 2
 
 
-{\it Description:} Determines how many sweeps of the smoother should be performed. When the flag elliptic is set to true, (which is true for ASPECT), the polynomial degree of the Chebyshev smoother is set to smoother_sweeps. The term sweeps refers to the number of matrix-vector products performed in the Chebyshev case. In the non-elliptic case, smoother_sweeps sets the number of SSOR relaxation sweeps for post-smoothing to be performed. The default is strongly recommended. There are indications that for the Newton solver a different value might be better. For extensive benchmarking of various settings of the AMG parameters in this secton for the Stokes problem and others, see https://github.com/geodynamics/aspect/pull/234.
+{\it Description:} Determines how many sweeps of the smoother should be performed. When the flag elliptic is set to true, (which is true for ASPECT), the polynomial degree of the Chebyshev smoother is set to this value. The term sweeps refers to the number of matrix-vector products performed in the Chebyshev case. In the non-elliptic case, this parameter sets the number of SSOR relaxation sweeps for post-smoothing to be performed. The default is strongly recommended. There are indications that for the Newton solver a different value might be better. For extensive benchmarking of various settings of the AMG parameters in this secton for the Stokes problem and others, see https://github.com/geodynamics/aspect/pull/234.
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
