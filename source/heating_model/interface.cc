@@ -36,25 +36,6 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    template <int dim>
-    Interface<dim>::~Interface ()
-    {}
-
-
-    template <int dim>
-    void
-    Interface<dim>::initialize ()
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::update ()
-    {}
-
-
-
     DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
     template <int dim>
     void
@@ -88,19 +69,6 @@ namespace aspect
              ExcMessage ("There is no 'evaluate()' or 'specific_heating_rate()' function implemented in the heating model!"));
       return 0.0;
     }
-
-
-    template <int dim>
-    void
-    Interface<dim>::
-    declare_parameters (dealii::ParameterHandler &)
-    {}
-
-
-    template <int dim>
-    void
-    Interface<dim>::parse_parameters (dealii::ParameterHandler &)
-    {}
 
 
     template <int dim>
