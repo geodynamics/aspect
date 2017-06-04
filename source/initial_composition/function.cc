@@ -106,6 +106,15 @@ namespace aspect
     void
     Function<dim>::parse_parameters (ParameterHandler &prm)
     {
+      // we need to get at the number of compositional fields here to
+      // initialize the function parser. unfortunately, we can't get it
+      // via SimulatorAccess from the simulator itself because at the
+      // current point the SimulatorAccess hasn't been initialized
+      // yet. so get it from the parameter file directly.
+      prm.enter_subsection ("Compositional fields");
+      const unsigned int n_compositional_fields = prm.get_integer ("Number of fields");
+      prm.leave_subsection ();
+ 
       prm.enter_subsection("Initial composition model");
       {
         prm.enter_subsection("Function");
@@ -115,7 +124,7 @@ namespace aspect
 
         try
           {
-            function.reset (new Functions::ParsedFunction<dim>(this->n_compositional_fields()));
+            function.reset (new Functions::ParsedFunction<dim>(n_compositional_fields));
             function->parse_parameters (prm);
           }
         catch (...)
