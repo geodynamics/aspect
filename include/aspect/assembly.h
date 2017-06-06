@@ -619,7 +619,7 @@ namespace aspect
           Properties ();
 
           /**
-           * Whether or not at least one of the the assembler slots in
+           * Whether or not at least one of the assembler slots in
            * a signal requires the initialization and re-computation of
            * a MaterialModelOutputs object for each face. This
            * property is only relevant to assemblers that operate on

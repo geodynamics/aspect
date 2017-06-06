@@ -465,7 +465,7 @@ namespace aspect
       void assemble_advection_system (const AdvectionField &advection_field);
 
       /**
-       * Solve one block of the the temperature/composition linear system.
+       * Solve one block of the temperature/composition linear system.
        * Return the initial nonlinear residual, i.e., if the linear system to
        * be solved is $Ax=b$, then return $\|Ax_0-b\|$ where $x_0$ is the
        * initial guess for the solution variable and is taken from the

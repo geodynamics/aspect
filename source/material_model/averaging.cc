@@ -458,7 +458,7 @@ namespace aspect
                                    "This means that if variable ''Bell shape limit'' is exactly one, the farthest "
                                    "quadrature point is just on the limit and its weight will be exactly zero. In "
                                    "this plugin it is not implemented as larger and equal than the limit, but larger "
-                                   "than, to ensure the the quadrature point at distance zero is always included."
+                                   "than, to ensure the quadrature point at distance zero is always included."
                                   )
   }
 }
