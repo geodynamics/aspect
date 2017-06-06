@@ -265,7 +265,11 @@ namespace aspect
   class MeltHandler: public SimulatorAccess<dim>
   {
     public:
-      MeltHandler(ParameterHandler &prm);
+      void
+      /**
+       * Connect all slots to signals.
+       */
+      initialize();
 
       /**
        * Declare additional parameters that are needed in models with
@@ -299,11 +303,6 @@ namespace aspect
        */
       void edit_finite_element_variables(const Parameters<dim> &parameters,
                                          std::vector<VariableDeclaration<dim> > &variables);
-
-      /**
-       * Setup SimulatorAccess for the plugins related to melt transport.
-       */
-      void initialize_simulator (const Simulator<dim> &simulator_object);
 
       /**
        * Compute fluid velocity and solid pressure in this ghosted solution vector.
@@ -349,8 +348,17 @@ namespace aspect
        * transport.
        */
       std_cxx11::unique_ptr<BoundaryFluidPressure::Interface<dim> > boundary_fluid_pressure;
-  };
 
+    private:
+
+      /**
+       * Connect all assemblers that are used for melt models.
+       */
+      void set_melt_assemblers(const SimulatorAccess<dim> &simulator_access,
+                               internal::Assembly::AssemblerLists<dim> &assemblers,
+                               std::vector<dealii::std_cxx11::shared_ptr<
+                               internal::Assembly::Assemblers::AssemblerBase<dim> > > &assembler_objects);
+  };
 }
 
 #endif
