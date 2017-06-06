@@ -32,7 +32,7 @@ DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 #  include <deal.II/lac/petsc_parallel_block_sparse_matrix.h>
 #  include <deal.II/lac/petsc_precondition.h>
 #else
-#  include <deal.II/lac/trilinos_block_vector.h>
+#  include <deal.II/lac/trilinos_parallel_block_vector.h>
 #  include <deal.II/lac/trilinos_block_sparse_matrix.h>
 #  include <deal.II/lac/trilinos_precondition.h>
 #endif
