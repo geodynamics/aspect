@@ -328,7 +328,7 @@ namespace aspect
       else
         this->strain_rate.resize(0);
 
-      // Vectors for evaluating the the compositional field parts of the finite element solution
+      // Vectors for evaluating the compositional field parts of the finite element solution
       std::vector<std::vector<double> > composition_values (introspection.n_compositional_fields, std::vector<double> (fe_values.n_quadrature_points));
       for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
         {

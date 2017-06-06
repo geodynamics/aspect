@@ -1,7 +1,7 @@
 # A testcase that demonstrates melt transport with a compactible matrix,
 # and incompressible matrix and fluid. Boundary conditions for the 
 # velocity and fluid pressure as well as porosity initial conditions 
-# are applied as described by the the derived analytical solution,
+# are applied as described by the derived analytical solution,
 # which can be found in the manuscript on compressible melt transport 
 # in Aspect.
 # We compute these material properties in a new material model, which

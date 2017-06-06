@@ -324,7 +324,7 @@ namespace aspect
       {
         prm.declare_entry ("Nonlinear Newton solver switch tolerance", "1e-5",
                            Patterns::Double(0,1),
-                           "A relative tolerance with respect to the the residual of the first "
+                           "A relative tolerance with respect to the residual of the first "
                            "iteration, up to which the nonlinear Picard solver will iterate, "
                            "before changing to the newton solver.");
 

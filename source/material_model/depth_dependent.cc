@@ -329,7 +329,7 @@ namespace aspect
                                    "\\begin{equation}"
                                    "\\eta(z,p,T,X,...) = \\eta(z) \\eta_b(p,T,X,..)/\\eta_{rb}"
                                    "\\end{equation}"
-                                   "where $\\eta(z)$ is the the depth-dependence specified by the depth dependent "
+                                   "where $\\eta(z)$ is the depth-dependence specified by the depth dependent "
                                    "model, $\\eta_b(p,T,X,...)$ is the viscosity calculated from the base model, "
                                    "and $\\eta_{rb}$ is the reference viscosity of the ``Base model''. "
                                    "In addition to the specification of the ``Base model'', the user must specify "

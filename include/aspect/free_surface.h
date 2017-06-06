@@ -95,7 +95,7 @@ namespace aspect
       void make_constraints ();
 
       /**
-       * Project the the Stokes velocity solution onto the
+       * Project the Stokes velocity solution onto the
        * free surface. Called by make_constraints()
        */
       void project_velocity_onto_boundary (LinearAlgebra::Vector &output);
