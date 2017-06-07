@@ -208,6 +208,8 @@ namespace aspect
     last_pressure_normalization_adjustment (numbers::signaling_nan<double>()),
 
     rebuild_stokes_matrix (true),
+    assemble_newton_stokes_matrix (true),
+    assemble_newton_stokes_system (false),
     rebuild_stokes_preconditioner (true)
   {
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
