@@ -150,6 +150,8 @@ namespace aspect
 
       protected:
 
+        bool use_geodynamic_strain_rate_invariant;
+
         double reference_T;
 
         double min_strain_rate;

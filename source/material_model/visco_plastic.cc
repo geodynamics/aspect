@@ -178,16 +178,26 @@ namespace aspect
       // This function calculates viscosities assuming that all the compositional fields
       // experience the same strain rate (isostrain).
 
-      // Calculate the square root of the second moment invariant for the deviatoric strain rate tensor.
+      // Calculate the square root of the second invariant for the deviatoric strain rate tensor.
       // The first time this function is called (first iteration of first time step)
       // a specified "reference" strain rate is used as the returned value would
       // otherwise be zero.
-      const double edot_ii = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
-                               ?
-                               ref_strain_rate
-                               :
-                               std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
-                                        min_strain_rate) );
+      double edot_ii = 0;
+      if (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
+        {
+          edot_ii = ref_strain_rate;
+        }
+      else
+        {
+          if (use_geodynamic_strain_rate_invariant == true)
+            {
+              edot_ii = std::max(std::sqrt(0.5*(deviator(strain_rate))*(deviator(strain_rate))),min_strain_rate);
+            }
+          else
+            {
+              edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),min_strain_rate);
+            }
+        }
 
       // Calculate viscosities for each of the individual compositional phases
       std::vector<double> composition_viscosities(volume_fractions.size());
@@ -547,6 +557,14 @@ namespace aspect
       {
         prm.enter_subsection ("Visco Plastic");
         {
+
+          // Strain rate invariant equation parameter
+          prm.declare_entry ("Use geodynamic strain rate invariant", "false",
+                             Patterns::Bool (),
+                             "Calculate the strain rate invariant in the manner commonly "
+                             "used in geodynamics studies in replace of the deal.II second "
+                             "invariant function.  Units: None");
+
           // Reference and minimum/maximum values
           prm.declare_entry ("Reference temperature", "293", Patterns::Double(0),
                              "For calculating density by thermal expansivity. Units: $K$");
@@ -642,7 +660,7 @@ namespace aspect
                              "and stress limiter options.");
 
           // Diffusion creep parameters
-          prm.declare_entry ("Prefactors for diffusion creep", "1.5e-15",
+          prm.declare_entry ("Prefactors for diffusion creep", "5.0e-23",
                              Patterns::List(Patterns::Double(0)),
                              "List of viscosity prefactors, $A$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
@@ -653,40 +671,40 @@ namespace aspect
                              "List of stress exponents, $n_diffusion$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value.  Units: None");
-          prm.declare_entry ("Grain size exponents for diffusion creep", "3",
+          prm.declare_entry ("Grain size exponents for diffusion creep", "0",
                              Patterns::List(Patterns::Double(0)),
                              "List of grain size exponents, $m_diffusion$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value.  Units: None");
-          prm.declare_entry ("Activation energies for diffusion creep", "375e3",
+          prm.declare_entry ("Activation energies for diffusion creep", "0",
                              Patterns::List(Patterns::Double(0)),
                              "List of activation energies, $E_a$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value.  Units: $J / mol$");
-          prm.declare_entry ("Activation volumes for diffusion creep", "6e-6",
+          prm.declare_entry ("Activation volumes for diffusion creep", "0",
                              Patterns::List(Patterns::Double(0)),
                              "List of activation volumes, $V_a$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value.  Units: $m^3 / mol$");
 
           // Dislocation creep parameters
-          prm.declare_entry ("Prefactors for dislocation creep", "1.1e-16",
+          prm.declare_entry ("Prefactors for dislocation creep", "5.0e-23",
                              Patterns::List(Patterns::Double(0)),
                              "List of viscosity prefactors, $A$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. "
                              "Units: $Pa^{-n_{dislocation}} m^{n_{dislocation}/m_{dislocation}} s^{-1}$");
-          prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
+          prm.declare_entry ("Stress exponents for dislocation creep", "1.0",
                              Patterns::List(Patterns::Double(0)),
                              "List of stress exponents, $n_dislocation$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value.  Units: None");
-          prm.declare_entry ("Activation energies for dislocation creep", "530e3",
+          prm.declare_entry ("Activation energies for dislocation creep", "0.0",
                              Patterns::List(Patterns::Double(0)),
                              "List of activation energies, $E_a$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value.  Units: $J / mol$");
-          prm.declare_entry ("Activation volumes for dislocation creep", "1.4e-5",
+          prm.declare_entry ("Activation volumes for dislocation creep", "0.0",
                              Patterns::List(Patterns::Double(0)),
                              "List of activation volumes, $V_a$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
@@ -738,6 +756,9 @@ namespace aspect
       {
         prm.enter_subsection ("Visco Plastic");
         {
+
+          // Strain rate invariant equation parameter
+          use_geodynamic_strain_rate_invariant  = prm.get_bool ("Use geodynamic strain rate invariant");
 
           // Reference and minimum/maximum values
           reference_T = prm.get_double("Reference temperature");
@@ -907,16 +928,27 @@ namespace aspect
                                    "DiffusionDislocation (Bob Myhill) and DruckerPrager "
                                    "(Anne Glerum) material models. "
                                    "\n\n "
+                                   "Both the viscous and plastic constitutive models require an "
+                                   "invariant measure of the deviatoric strain rate tensor "
+                                   "(\\dot{\\varepsilon}_{ii}).  The default option uses the square "
+                                   "root of the second invariant (deal.II second_invariant function): "
+                                   "\\[dot{\\varepsilon}_{ii} = \\sqrt(\\dot{\\varepsilon}_{00} * "
+                                   "\\dot{\\varepsilon}_{11} - \\dot{\\varepsilon}_{01} * "
+                                   "\\dot{\\varepsilon}_{01})\\], where ${00}$, ${11}$ and {01} are "
+                                   "tensor indices.  Alternatively, one can select an invariant "
+                                   "measure commonly used in geodynamic numerical simulations: "
+                                   "\\[\\dot{\\varepsilon}_{ii}) = \\sqrt(0.5*(\\dot{\\varepsilon}_{00}^{2} "
+                                   "+ \\dot{\\varepsilon}_{11}^{2}) + \\dot{\\varepsilon}_{01}^{2})\\]"
+                                   "\n\n"
                                    "The viscosity for dislocation or diffusion creep is defined as "
                                    "\\[v = 0.5 * A^{-\\frac{1}{n}} * d^{\\frac{m}{n}} * "
                                    "\\dot{\\varepsilon}_{ii}^{\\frac{1-n}{n}} * "
                                    "\\exp\\left(\\frac{E + PV}{nRT}\\right)\\] "
                                    "where $A$ is the prefactor, $n$ is the stress exponent, "
-                                   "$\\dot{\\varepsilon}_{ii}$ is the square root of the deviatoric "
-                                   "strain rate tensor second invariant, $d$ is grain size, "
-                                   "$m$ is the grain size exponent, $E$ is activation energy, "
-                                   "$V$ is activation volume, $P$ is pressure, $R$ is the gas "
-                                   "exponent and $T$ is temperature. "
+                                   "$\\dot{\\varepsilon}_{ii}$ is the strain rate invariant, "
+                                   "$d$ is grain size, $m$ is the grain size exponent, $E$ is "
+                                   "activation energy, $V$ is activation volume, $P$ is pressure, "
+                                   "$R$ is the gas exponent and $T$ is temperature. "
                                    "This form of the viscosity equation is commonly used in "
                                    "geodynamic simulations.  See, for example, Billen and Hirth "
                                    "(2007), G3, 8, Q08012."
