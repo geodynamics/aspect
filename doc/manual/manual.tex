@@ -11464,55 +11464,109 @@ available as a package so this is not a severe limitation.
 While it is possible to use Diff, Numdiff is preferred due to being able to
 more accurately identify whether a variation in numerical output is
 significant.
-The test suite is run using ctest, which comes with cmake, and should therefore
-be available on all systems that have compiled \aspect{}.
+The test suite is run using the \texttt{ctest} program that comes with
+\texttt{cmake}, and should therefore be available on all systems that have
+compiled \aspect{}.
 
-By default, only a small suite of tests are run.
-To set up the full test suite, run
-
-\begin{verbatim}
+After running \texttt{cmake} and then compiling \aspect{}, you can run the
+testsuite by saying \texttt{ctest}. By default, this will only run a small
+subset of all tests given that both setting up all tests (several hundred) and
+running them takes a non-trivial amount of time. To set up the full test suite,
+you can run
+\begin{lstlisting}[frame=single,language=ksh]
     make setup_tests
-\end{verbatim}
-
-To run a set of tests, go to the build directory and execute 
-
-\begin{verbatim}
+\end{lstlisting}
+ in the build directory. To run the entire set of tests, then execute
+\begin{lstlisting}[frame=single,language=ksh]
     ctest
-\end{verbatim}
+\end{lstlisting}
+Unless you have a very fast machine with lots of processors, running the entire
+testsuite will take hours, though it can be made substantially faster if you use
+\begin{lstlisting}[frame=single,language=ksh]
+    ctest -j <N>
+\end{lstlisting}
+where \texttt{<N>} is the number of tests you want \texttt{ctest} to run
+in parallel; you may want to choose \texttt{<N>} equal to or slightly smaller
+than the number of processors you have. Alternatively, you can run only a subset
+of all tests by saying \begin{lstlisting}[frame=single,language=ksh] ctest -R <regex>
+\end{lstlisting}
+where \texttt{<regex>} is a regular expression and the only tests that will be
+run are those whose names match the expression.
 
-This will run all of the existing tests. To only part of the test suite, it is
-possible to supply a regex that will select the names of the desired tests as
-follows
+When \texttt{ctest} runs a test, it will ultimately output results of the form
+\begin{lstlisting}[frame=single,language=ksh]
+build> ctest -R additional_outputs
+Test project /home/fac/f/bangerth/p/deal.II/1/projects/build
+    Start 1: additional_outputs
+1/3 Test #1: additional_outputs ...............   Passed    2.03 sec
+    Start 2: additional_outputs_02
+2/3 Test #2: additional_outputs_02 ............   Passed    1.84 sec
+    Start 3: additional_outputs_03
+3/3 Test #3: additional_outputs_03 ............   Passed    1.91 sec
 
-\begin{verbatim}
-    ctest -R <regex>
-\end{verbatim}
+100% tests passed, 0 tests failed out of 3
+
+Total Test time (real) =   5.88 sec
+\end{lstlisting}
+While the small default subset of tests should work on almost all platforms, you
+will find that some of the tests fail on your machine when you run the entire
+testsuite. This is because success of failure of a test is determined by looking
+at whether its output matches the one saved at the time when the test was
+written to the last digit, both as far as numerical output in floating point
+precision is concerned (e.g., for heat fluxes or other things we compute via
+postprocessors) as well as for integers such as the number of iterations that
+is printed in the screen output.%
+\footnote{This is not actually completely true. Rather, if \texttt{cmake} finds
+a program called \texttt{numdiff} on your system, it uses \texttt{numdiff} to compare the
+output of a test run against the saved output, and calls two files the same if
+all numbers differ by no more than some tolerance.}
+Unfortunately, systems almost always differ by compiler version, processor type
+and version, system libraries, etc, that can all lead to small changes in output
+-- generally (and hopefully!) not large enough to produce \textit{qualitatively}
+different results, but \textit{quantitatively} large enough to change the number
+of iterations necessary to reach a specific tolerance, or to change the computed
+heat flux by one part in a million. This leads to \texttt{ctest} reporting that
+a test failed, when in reality it produced output that is qualitatively correct.
+
+Given that some tests are expected to fail on any given system raises the
+question why it makes sense to have tests at all? The answer is that there is
+\textit{one} system on which all tests are supposed to succeed: This system is a
+machine that churns through all tests every time someone proposes a change to
+the \aspect{} code base via the \aspect{} GitHub page.%
+\footnote{This is again not completely true: The test machine will only go to
+work for pull requests by a set of trusted maintainers since the test machine
+will execute code that is proposed as part of the pull request -- posing a
+security risk if anyone's patches were allowed to run on that system. For pull
+requests by others, one of the trusted maintainers has to specifically request a
+test run, and this will usually happen
+as soon as the patch developer indicates the patch is ready for review.}
+Upon completion of the test suite, both the general summary (pass/fail) and a
+full verbose log will available from the GitHub page.
 
 
 \subsubsection{Writing tests}
 \label{sec:writing_tests}
 
 To write a test for a new feature, take one of the existing parameter files in
-the tests/ directory, modify it to use the new feature, check that the new
-feature does what it is supposed to do, and then just add the parameter file to
+the \texttt{tests/} directory, modify it to use the new feature, check that the
+new feature does what it is supposed to do, and then just add the parameter file to
 the tests directory. You will then need to add another folder to that directory
 that is named like the parameter file, and add the model output files that
-prove that the feature is working (rename log.txt to screen-output for
-historical reasons). The test and output files should be as small and quick to
-run as possible.
+prove that the feature is working (rename \texttt{log.txt} to
+\texttt{screen-output} for historical reasons). The test and output files should
+be as small and quick to run as possible.
 
-Permission to run the test suite for a particular pull request on
-Github is restricted to a set of trusted maintainers, and will usually be
-given as soon as the patch developer indicates the patch is ready for review.
-Once permission has been given, the full test suite will be run, and any errors
-recorded.
-Upon completion of the test suite, both the general summary (pass/fail) and a
-full verbose log will available.
-The reference machine may produce slightly different results than user machines
-due to differing libraries, operating systems, etc. If this has been confirmed
-to be the source of a failed test run, the diff file (git patch) that is always
-generated by the reference machine can be used to modify the created test
-results to match those of the reference machine.
+When you make a new test part of a pull request on GitHub, then as explained
+above that will lead to a run of all tests -- including your new one -- on a
+``reference machine''. The reference machine that runs the tests may of course
+produce slightly different results than the machine on which a pull request was
+developed and from which the output was taken. If this has been confirmed to be
+the source of a failed test run, a file that contains the differences between
+the patch content and the tester output will be available from the GitHub page
+and can be applied to the patch to make it pass the tester. On the other hand,
+if a change leads to even a single \textit{existing} test failing on that
+system, then we know that some more investigation as to the causes is necessary.
+
 
 
 \section{Future plans for \aspect}
