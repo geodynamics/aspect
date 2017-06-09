@@ -19,11 +19,11 @@
 */
 
 
-#include <aspect/initial_temperature/random_perturbation.h>
+#include <aspect/initial_composition/random_perturbation.h>
 
 namespace aspect
 {
-  namespace InitialTemperature
+  namespace InitialComposition
   {
     template <int dim>
     RandomPerturbation<dim>::
@@ -36,10 +36,11 @@ namespace aspect
     template <int dim>
     double
     RandomPerturbation<dim>::
-    initial_temperature (const Point<dim> &/*position*/) const
+    initial_composition (const Point<dim> &/*position*/,
+                         const unsigned int /*compositional_index*/) const
     {
       // Uniform distribution on the interval [0,1]. This
-      // will be used to generate the random temperature perturbation.
+      // will be used to generate the random composition perturbation.
       boost::uniform_01<double> uniform_distribution_01;
 
       return magnitude * 2.0 * (uniform_distribution_01(random_number_generator) - 0.5);
@@ -49,7 +50,7 @@ namespace aspect
     void
     RandomPerturbation<dim>::declare_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection ("Initial temperature model");
+      prm.enter_subsection ("Initial composition model");
       {
         prm.enter_subsection("Random perturbation");
         {
@@ -67,7 +68,7 @@ namespace aspect
     void
     RandomPerturbation<dim>::parse_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection ("Initial temperature model");
+      prm.enter_subsection ("Initial composition model");
       {
         prm.enter_subsection("Random perturbation");
         {
@@ -83,11 +84,11 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace InitialTemperature
+  namespace InitialComposition
   {
-    ASPECT_REGISTER_INITIAL_TEMPERATURE_MODEL(RandomPerturbation,
+    ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL(RandomPerturbation,
                                               "random perturbation",
-                                              "An initial tempeature anomaly that perturbs the temperature "
+                                              "An initial composition anomaly that perturbs the composition "
                                               "following a random noise with uniform distribution and user "
                                               "specified magnitude.")
   }

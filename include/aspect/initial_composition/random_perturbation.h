@@ -19,10 +19,10 @@
 */
 
 
-#ifndef _aspect_initial_temperature_random_perturbation_h
-#define _aspect_initial_temperature_random_perturbation_h
+#ifndef _aspect_initial_composition_random_perturbation_h
+#define _aspect_initial_composition_random_perturbation_h
 
-#include <aspect/initial_temperature/interface.h>
+#include <aspect/initial_composition/interface.h>
 
 DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 #include <boost/random.hpp>
@@ -30,16 +30,16 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 namespace aspect
 {
-  namespace InitialTemperature
+  namespace InitialComposition
   {
     using namespace dealii;
 
     /**
-     * A class that describes a perturbation for the initial temperature field
+     * A class that describes a perturbation for the initial composition fields
      * for any geometry model or dimension. The perturbation follows
      * a random noise of a prescribed magnitude.
      *
-     * @ingroup InitialTemperatures
+     * @ingroup InitialCompositions
      */
     template <int dim>
     class RandomPerturbation : public Interface<dim>
@@ -54,7 +54,8 @@ namespace aspect
          * Return the initial temperature as a function of position.
          */
         virtual
-        double initial_temperature (const Point<dim> &position) const;
+        double initial_composition (const Point<dim> &position,
+                                    const unsigned int compositional_index) const;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -81,8 +82,6 @@ namespace aspect
          * Random number generator.
          */
         mutable boost::mt19937 random_number_generator;
-
-
     };
   }
 }
