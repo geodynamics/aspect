@@ -1,0 +1,4 @@
+New: A new initial temperature condition was added that adds a random
+noise of user prescribed magnitude to the initial temperature field.
+<br>
+(Rene Gassmoeller, 2017/06/19)
