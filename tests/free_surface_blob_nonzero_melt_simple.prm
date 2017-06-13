@@ -1,0 +1,154 @@
+# Test for free surface topography due to a rising blob
+# with melt transport = on and nonzero porosity.
+# The test is the same as free_surface_blob_melt, except that melt
+# has a nonzero initial condition. 
+# We test if the boundary coditions for melt are set correctly
+# (no melt flowing in/out at the free surface) by checking if the
+# mass of the porosity field is conserved.
+
+set Dimension = 2
+set CFL number                             = 0.5
+set End time                               = 0 #2e5
+set Output directory                       = output
+set Resume computation                     = false
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Pressure normalization                 = surface
+set Linear solver tolerance                = 1.e-7
+set Number of cheap Stokes solver steps    = 0 
+set Timing output frequency                = 5
+set Use years in output instead of seconds = true
+set Maximum time step                      = 1e4
+
+subsection Boundary temperature model
+  set Model name = constant
+  subsection Constant
+    set Boundary indicator to temperature mappings = 0:0,1:0,2:0,3:0
+  end
+end
+
+subsection Boundary fluid pressure model
+  set Plugin name = density
+  subsection Density
+    set Density formulation = fluid density
+  end
+end
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+  set Temperature polynomial degree           = 2
+  set Use locally conservative discretization = false
+  subsection Stabilization parameters
+    set alpha = 2
+    set beta  = 0.078
+    set cR    = 0.5   # default: 0.11
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 500.e3 
+    set Y extent = 200.e3
+    set X repetitions = 5
+    set Y repetitions = 2
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function 
+    set Variable names      = x,y
+    set Function expression =  if( sqrt( (x-250.e3)^2 + (y-100.e3)^2 ) < 25.e3, 200.0, 0.0)
+  end
+end
+
+
+subsection Material model
+  set Model name = melt free surface
+  subsection Simple model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 0.0
+    set Thermal conductivity          = 4.7
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1.e21
+  end
+end
+
+
+subsection Mesh refinement
+  set Additional refinement times        =
+  set Initial adaptive refinement        = 0                       # default: 2
+  set Initial global refinement          = 3                      # default: 2
+  set Refinement fraction                = 0.3
+  set Coarsening fraction                = 0.00
+  set Strategy                           = temperature
+  set Time steps between mesh refinement = 0                     # default: 10
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 2,3
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 0,1,3
+  set Zero velocity boundary indicators       = 2
+  set Free surface boundary indicators = 
+
+  set Include melt transport                  = true
+end
+
+subsection Melt settings
+  set Melt transport threshold                = 0
+end
+
+subsection Free surface
+  set Free surface stabilization theta = 0.5
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = porosity
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+   # set Function expression = 0.02 * (sin (3.141*x/5.e5) * sin (2*3.141*y/5.e5)) * (sin (3.141*x/5.e5) * sin (2*3.141*y/5.e5))
+    set Function expression = 0.02 * y/2.e5
+  end
+end
+
+#subsection Termination criteria
+#  set Termination criteria = end step
+#  set End step = 10
+#end
+
+subsection Postprocess
+  set List of postprocessors = topography,velocity statistics, visualization, composition statistics
+
+  subsection Visualization
+    set List of output variables =  melt material properties, material properties
+    set Time between graphical output = 0
+
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity, reaction terms
+    end
+
+    subsection Melt material properties
+      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
+    end
+  end
+end
