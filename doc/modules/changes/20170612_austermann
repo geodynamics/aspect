@@ -1,0 +1,5 @@
+New: Added a cookbook that uses the dynamic topography and geoid postprocessor in a simple
+spherical shell harmonic perturbation model run. Added the geoid output and lower boundary
+dynamic topography output to the existing 'S20RTS initial condition' cookbook. 
+<br>
+(Jacky Austermann, 2017/06/12)

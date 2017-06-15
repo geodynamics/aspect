@@ -1,6 +1,6 @@
 # A description of convection in a 3d spherical shell with 
-# a prescribed initial condition based on the shear wave
-# velocity model S20RTS.
+# a prescribed initial condition based on a harmonic
+# perturbation
 
 # Define the number of space dimensions we would like to 
 # work in:
@@ -11,13 +11,11 @@ set Dimension                              = 3
 # the instantaneous solution.
 set End time                               = 0
 set Use years in output instead of seconds = true
-set Output directory                       = output-S20RTS
+set Output directory                       = output-shell_3d_postprocess
 
-# The following variables describe the tolerance of
-# the linear solver as well as how the pressure should
+# The following variables describe how the pressure should
 # be normalized. Here, we choose a zero average pressure
 # at the surface of the domain 
-set Linear solver tolerance                = 1e-4
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 
@@ -37,7 +35,7 @@ end
 # but different from the reference temperature to approximate
 # boundary layers.
 subsection Boundary temperature model
-  set List of model names = spherical constant
+  set Model name = spherical constant
   subsection Spherical constant
     set Inner temperature = 2000
     set Outer temperature = 1000
@@ -55,30 +53,15 @@ subsection Gravity model
 end
 
 # This section prescribes the initial condition in the temperature
-# field, which is chosen as a scaled version of the S20RTS shear
-# wave velocity model (Ritsema et al., 2000). S20RTS is defined
-# by spherical harmonics up to degree 20 that are radially interpolated
-# with a cubic spline. 
+# field, which is chosen as a degree n=4, l=2 perturbation
 subsection Initial temperature model
-  set Model name = S40RTS perturbation
-    subsection S40RTS perturbation
+  set Model name = harmonic perturbation
 
-# The two input options here are S20RTS or the higher resolution
-# S40RTS (Ritsema et al., 2011). One can choose to remove the 
-# degree 0 from these files so that the depth average value
-# is zero. 
-    set Initial condition file name       = S20RTS.sph
-    set Remove degree 0 from perturbation = false
-
-# The following parameters determine the scaling from shear wave 
-# velocity perturbation to temperature differences. We chose the
-# scaling to density perturbation as 0.15
-    set Vs to density scaling             = 0.15
-    set Thermal expansion coefficient in initial temperature scaling = 3e-5
-
-# This specifies the background temperature to which we add the 
-# temperature difference.
-    set Reference temperature             = 1600
+  subsection Harmonic perturbation
+    set Lateral wave number one     = 4
+    set Lateral wave number two     = 2
+    set Magnitude                   = 500
+    set Reference temperature       = 1600
   end
 end
 
@@ -106,20 +89,18 @@ end
 
 # We assume fixed temperatures and free slip at the inner and outer boundary
 subsection Model settings
-  set Fixed temperature boundary indicators   = top, bottom
-  set Tangential velocity boundary indicators = top, bottom
+  set Fixed temperature boundary indicators   = bottom,top
+  set Tangential velocity boundary indicators = bottom,top
 end
 
 
-# We output the density, velocity, dynamic topography, geoid and heat flux density
-# for plotting. 
+# We output the density, velocity, dynamic topography and geoid anomalies
 subsection Postprocess
-  set List of postprocessors = geoid, velocity statistics, heat flux map, heat flux statistics, dynamic topography, visualization, basic statistics
+  set List of postprocessors = velocity statistics, dynamic topography, visualization, basic statistics, geoid
 
   subsection Visualization
     set Output format                 = vtu
-    set List of output variables      = geoid, dynamic topography, heat flux map, density,viscosity, gravity
-    set Time between graphical output = 0
+    set List of output variables      = geoid, dynamic topography, density, viscosity, gravity
     set Number of grouped files       = 1 
   end
 end
