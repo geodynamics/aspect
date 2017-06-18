@@ -47,22 +47,6 @@ namespace aspect
         property_map (&property_map_pairs[0],
                       &property_map_pairs[0] +
                       sizeof(property_map_pairs)/sizeof(property_map_pairs[0]));
-
-        /**
-         * Parse a string representing one of the components provided
-         * by the material models, and return the resulting
-         * MaterialProperty value.
-         *
-         * @param s String with name of property
-         */
-        MaterialProperty
-        parse_property_name(const std::string &s)
-        {
-          AssertThrow (property_map.find(s) != property_map.end(),
-                       ExcMessage ("The value <" + s + "> for a material "
-                                   "property is not one of the valid values."));
-          return property_map.find(s)->second;
-        }
       }
     }
 
