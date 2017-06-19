@@ -3692,7 +3692,7 @@ requires us to solve a linear system of the form $Ax=b$ which we do through
 iterative solvers, i.e., we try to find a sequence of approximations $x^{(k)}$
 where $x^{(k)}\rightarrow x=A^{-1}b$. This iteration is terminated at iteration
 $k$ if the approximation is ``close enough'' to the exact solution. The solvers
-we use this determine this by testing after every iteration whether the
+we use determine this by testing after every iteration whether the
 \textit{residual}, $r^{(k)}=A(x-x^{(k)})=b-Ax^{(k)}$, satisfies
 $\|r^{(k)}\|\le\varepsilon\|r^{(0)}\|$ where $\varepsilon$ is called the
 (relative) \textit{tolerance}.
