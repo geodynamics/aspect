@@ -56,6 +56,12 @@ namespace aspect
          * the current object.
          */
         std::vector<double> friction_angles;
+
+        /**
+         * The area where the viscous stress exceeds the plastic yield strenght,
+         * and viscosity is rescaled back to the yield envelope.
+         */
+        std::vector<double> yielding;
     };
 
     /**
@@ -206,7 +212,7 @@ namespace aspect
                               const std::vector<double> &parameter_values,
                               const averaging_scheme &average_type) const;
 
-        std::vector<double>
+        std::pair<std::vector<double>, std::vector<double> >
         calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
                                           const double &pressure,
                                           const double &temperature,
@@ -221,16 +227,86 @@ namespace aspect
          * compositional field.
          */
         std::pair<double, double>
-        calculate_weakening ( const double strain_ii,
-                              const unsigned int j ) const;
+        calculate_plastic_weakening ( const double strain_ii,
+                                      const unsigned int j ) const;
 
+        /**
+         * A function that computes the strain weakened values
+         * of the diffusion and dislocation prefactors for a given
+         * compositional field.
+         */
+        double
+        calculate_viscous_weakening ( const double strain_ii,
+                                      const unsigned int j ) const;
+
+        /**
+         * Whether to use the accumulated strain to weaken
+         * plastic parameters cohesion and friction angle
+         * and viscous parameters diffusion and dislocation prefactor.
+         */
         bool use_strain_weakening;
+        /**
+         * Whether to use the accumulated plastic strain to weaken
+         * plastic parameters cohesion and friction angle.
+         * When both use_plastic_strain_weakening and
+         * use_viscous_strain_weakening are true, it is assumed
+         * the first 2 compositional fields are tracking the
+         * plastic and viscous strain respectively.
+         * TODO: add check for fields named plastic_strain and
+         * viscous_strain?
+         */
+        bool use_plastic_strain_weakening;
+        /**
+         * Whether to use the accumulated viscous strain to weaken
+         * the viscous parameters diffusion and dislocation prefactor.
+         * When both use_plastic_strain_weakening and
+         * use_viscous_strain_weakening are true, it is assumed
+         * the first 2 compositional fields are tracking the
+         * plastic and viscous strain respectively.
+         * TODO: add check for fields named plastic_strain and
+         * viscous_strain?
+         */
+        bool use_viscous_strain_weakening;
+
         bool use_finite_strain_tensor;
-        std::vector<double> start_strain_weakening_intervals;
-        std::vector<double> end_strain_weakening_intervals;
-        std::vector<double> viscous_strain_weakening_factors;
+
+        /**
+         * The start of the strain interval (plastic or total strain)
+         * within which cohesion and angle of friction should be weakened.
+         */
+        std::vector<double> start_plastic_strain_weakening_intervals;
+        /**
+         * The end of the strain interval (plastic or total strain)
+         * within which cohesion and angle of friction should be weakened.
+         */
+        std::vector<double> end_plastic_strain_weakening_intervals;
+        /**
+          * The factor specifying the amount of weakening of the
+          * cohesion over the prescribed strain interval (plastic or total strain).
+          */
         std::vector<double> cohesion_strain_weakening_factors;
+        /**
+          * The factor specifying the amount of weakening of the
+          * internal friction angles over the prescribed strain interval
+          * (plastic or total strain).
+          */
         std::vector<double> friction_strain_weakening_factors;
+        /**
+         * The start of the strain interval (viscous or total strain)
+         * within which cohesion and angle of friction should be weakened.
+         */
+        std::vector<double> start_viscous_strain_weakening_intervals;
+        /**
+         * The end of the strain interval (viscous or total strain)
+         * within which cohesion and angle of friction should be weakened.
+         */
+        std::vector<double> end_viscous_strain_weakening_intervals;
+        /**
+         * The factor specifying the amount of weakening over
+         * the prescribed strain interval (viscous or total strain).
+         */
+        std::vector<double> viscous_strain_weakening_factors;
+
 
         std::vector<double> prefactors_diffusion;
         std::vector<double> grain_size_exponents_diffusion;
