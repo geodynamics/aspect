@@ -71,6 +71,22 @@ namespace aspect
        * Newton solver.
        */
       static void create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output);
+
+      /**
+       * Gets the Newton derivative scaling factor used for scaling the
+       * derivative part of the Newton Stokes solver in the assembly.
+       */
+      double get_newton_derivative_scaling_factor() const;
+
+      /**
+       * Sets the Newton derivative scaling factor used for scaling the
+       * derivative part of the Newton Stokes solver in the assembly.
+       */
+      void set_newton_derivative_scaling_factor(const double newton_derivative_scaling_factor);
+
+
+    private:
+      double newton_derivative_scaling_factor;
   };
 
   namespace Assemblers
