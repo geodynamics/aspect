@@ -129,6 +129,14 @@ namespace aspect
       };
 
 
+      // template function
+      template <int dim>
+      template <class Archive>
+      void Interface<dim>::serialize (Archive &, const unsigned int)
+      {}
+
+
+
       /**
        * Register a particle output so that it can be selected from
        * the parameter file.

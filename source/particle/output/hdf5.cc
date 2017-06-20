@@ -305,6 +305,8 @@ namespace aspect
       void HDF5Output<dim>::serialize (Archive &ar, const unsigned int)
       {
         // invoke serialization of the base class
+        ar &static_cast<Interface<dim> &>(*this);
+
         ar &file_index
         &xdmf_entries
         ;
