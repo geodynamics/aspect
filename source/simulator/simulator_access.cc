@@ -558,6 +558,15 @@ namespace aspect
   }
 
   template <int dim>
+  const NewtonHandler<dim> &
+  SimulatorAccess<dim>::get_newton_handler () const
+  {
+    Assert (simulator->newton_handler.get() != 0,
+            ExcMessage("You can not call this function if the Newton solver is not enabled."));
+    return *(simulator->newton_handler);
+  }
+
+  template <int dim>
   void
   SimulatorAccess<dim>::get_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
                                                            const unsigned int                      q,
