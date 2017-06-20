@@ -21,18 +21,12 @@
 
 #include <aspect/initial_temperature/random_perturbation.h>
 
+#include <time.h>
+
 namespace aspect
 {
   namespace InitialTemperature
   {
-    template <int dim>
-    RandomPerturbation<dim>::
-    RandomPerturbation ()
-      :
-      random_number_generator(5432)
-    {
-    }
-
     template <int dim>
     double
     RandomPerturbation<dim>::
@@ -56,6 +50,19 @@ namespace aspect
           prm.declare_entry ("Magnitude", "1.0",
                              Patterns::Double (0),
                              "The magnitude of the random perturbation.");
+          prm.declare_entry ("Use random seed", "false",
+                             Patterns::Bool(),
+                             "Whether to use a random seed for the random "
+                             "number generator. This parameter controls whether "
+                             "this plugin generates different or identical "
+                             "perturbations for different model runs.");
+          prm.declare_entry ("Random seed", "5432",
+                             Patterns::Integer(0),
+                             "The initial seed for the random perturbation. If "
+                             "'Use random seed' is set to 'false' model runs "
+                             "with identical seed will lead to identical "
+                             "perturbations, while model runs with different "
+                             "seeds will generate different perturbations.");
         }
         prm.leave_subsection ();
       }
@@ -72,6 +79,11 @@ namespace aspect
         prm.enter_subsection("Random perturbation");
         {
           magnitude = prm.get_double ("Magnitude");
+
+          if (prm.get_bool("Use random seed"))
+            random_number_generator.seed(time(NULL));
+          else
+            random_number_generator.seed(prm.get_integer("Random seed"));
         }
         prm.leave_subsection ();
       }

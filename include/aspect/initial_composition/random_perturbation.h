@@ -46,11 +46,6 @@ namespace aspect
     {
       public:
         /**
-         * Constructor.
-         */
-        RandomPerturbation();
-
-        /**
          * Return the initial temperature as a function of position.
          */
         virtual
