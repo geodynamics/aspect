@@ -1220,6 +1220,12 @@ namespace aspect
       check_consistency_of_formulation ();
 
       /**
+       * Computes the initial Newton residual.
+       */
+      double
+      compute_initial_newton_residual (LinearAlgebra::BlockVector &linearized_stokes_initial_guess);
+
+      /**
        * This function is called at the end of each time step and writes the
        * statistics object that contains data like the current time, the
        * number of linear solver iterations, and whatever the postprocessors

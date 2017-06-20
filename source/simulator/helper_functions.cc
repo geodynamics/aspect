@@ -1796,6 +1796,37 @@ namespace aspect
                                "Please check the consistency of your input file."));
       }
   }
+
+
+
+  template <int dim>
+  double
+  Simulator<dim>::compute_initial_newton_residual(LinearAlgebra::BlockVector &linearized_stokes_initial_guess)
+  {
+    LinearAlgebra::BlockVector temp_linearization_point = current_linearization_point;
+    const unsigned int block_vel = introspection.block_indices.velocities;
+    temp_linearization_point.block(introspection.block_indices.velocities) = 0;
+    linearized_stokes_initial_guess.block (block_vel) = 0;
+
+    rebuild_stokes_matrix = assemble_newton_stokes_system = assemble_newton_stokes_matrix = true;
+    rebuild_stokes_preconditioner = false;
+
+    denormalize_pressure (last_pressure_normalization_adjustment,
+                          linearized_stokes_initial_guess,
+                          temp_linearization_point);
+
+    compute_current_constraints ();
+    assemble_stokes_system();
+
+    last_pressure_normalization_adjustment = normalize_pressure(temp_linearization_point);
+
+    const double initial_newton_residual_velo = system_rhs.block(introspection.block_indices.velocities).l2_norm();
+    const double initial_newton_residual_pres = system_rhs.block(introspection.block_indices.pressure).l2_norm();
+    const double initial_newton_residual = std::sqrt(initial_newton_residual_velo * initial_newton_residual_velo + initial_newton_residual_pres * initial_newton_residual_pres);
+
+    pcout << "   Initial Newton Stokes residual = " << initial_newton_residual << ", v = " << initial_newton_residual_velo << ", p = " << initial_newton_residual_pres << std::endl << std::endl;
+    return initial_newton_residual;
+  }
 }
 // explicit instantiation of the functions we implement in this file
 namespace aspect
@@ -1821,7 +1852,8 @@ namespace aspect
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
   template void Simulator<dim>::compute_reactions(); \
-  template void Simulator<dim>::check_consistency_of_formulation();
+  template void Simulator<dim>::check_consistency_of_formulation(); \
+  template double Simulator<dim>::compute_initial_newton_residual(LinearAlgebra::BlockVector &linearized_stokes_initial_guess);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }
