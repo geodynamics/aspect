@@ -46,11 +46,6 @@ namespace aspect
     {
       public:
         /**
-         * Constructor.
-         */
-        RandomPerturbation();
-
-        /**
          * Return the initial temperature as a function of position.
          */
         virtual
@@ -81,8 +76,6 @@ namespace aspect
          * Random number generator.
          */
         mutable boost::mt19937 random_number_generator;
-
-
     };
   }
 }
