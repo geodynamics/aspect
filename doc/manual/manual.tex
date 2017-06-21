@@ -60,6 +60,7 @@
 \newcommand{\dealii}{{\textsc{deal.II}}}
 \newcommand{\pfrst}{{\normalfont\textsc{p4est}}}
 \newcommand{\trilinos}{{\textsc{Trilinos}}}
+\newcommand{\petsc}{{\textsc{PETSc}}}
 \newcommand{\aspect}{\textsc{ASPECT}}
 
 \begin{document}
@@ -2625,23 +2626,29 @@ your model parameters.
 
 \subsection{Local installation}
 
-This is a brief explanation of how to compile and install all the required software and
+This is a brief explanation of how to compile and install the required dependencies and
 \aspect{} itself. This installation procedure guarantees fastest runtimes, and largest flexibility,
-but might reveal incompatibilities with existing system libraries.
+but usually requires more work than the options mentioned in the previous sections. 
+While it is possible to install ASPECT's dependencies in particular \pfrst{}, \trilinos{}, 
+and \dealii{} manually, we recommend to use the 
+\texttt{candi} software (see \url{https://github.com/dealii/candi}). \texttt{candi} was written
+as an installation program for deal.II, and includes a number of system specific instructions
+that will be listed when starting the program. It can be flexibly configured to allow for
+non-default compilers or libraries (e.g. Intel's MKL instead of LAPACK) by changing entries
+in the configuration file \texttt{candi.cfg}, or by providing platform specific installation files.
 
 \subsubsection{System prerequisites}
 
-In order to install \aspect{} and its dependencies, you should
-have your system set up to be able to compile and link programs. Additionally,
-\aspect{} needs a number of widely used libraries that are available
-for most operating systems. Therefore, you will need compilers for C, C++ and
+\texttt{candi} will show system specific instructions on startup, but its prerequisites
+are relatively widely used and packaged
+for most operating systems. You will need compilers for C, C++ and
 Fortran, the GNU make system, the CMake build system, and the libraries and
 header files of BLAS, LAPACK and zlib, which is used for compressing
 the output data. To use more than one process for your computations
 you will need to install a MPI library, its headers and the
 necessary executables to run MPI programs. There are some optional packages
 for additional features, like the HDF5 libraries for additional output formats,
-PETSC for alternative solvers, and Numdiff for checking \aspect{}'s test
+\petsc{} for alternative solvers, and Numdiff for checking \aspect{}'s test
 results with reasonable accuracy, but these are not strictly required, and in
 some operating systems they are not available as packages but need to be
 compiled from scratch.
@@ -2664,82 +2671,57 @@ sudo apt-get install build-essential \
                      zlib1g-dev
 \end{verbatim}
 
-\subsubsection{Software prerequisites}
+\subsubsection{Using candi to compile dependencies}
 
-\aspect{} builds on a few other libraries that are widely used in the
-computational science area and that provide most of the lower-level
-functionality such as finite element descriptions or parallel linear
-algebra. Specifically, it builds on \dealii{} which in turn uses Trilinos and
-\pfrst{}. These need to be installed first before you can compile and run
-\aspect{}. All of these libraries can readily be installed in a user's home
-directory, without the need to modify the overall system directories.
+In its default configuration \texttt{candi} downloads and
+compiles a \dealii{} configuration that is able to run \aspect, but it
+also contains a number of packages that are not required (and that can
+be safely disabled if problems occur during the
+installation). We require at least the packages \pfrst{}, \trilinos{} 
+(or as an experimental alternative \petsc{}), and finally \dealii{}.
+ 
+At the time of this writing \texttt{candi} will install \pfrst{} 2.0,
+\trilinos{} 12.10.1,  \petsc{} 3.6.4, and \dealii{} 8.5.0. 
+We strive to keep the development version of \aspect{} compatible with 
+the latest release of \dealii{} and the current \dealii{} development 
+version at any time, and we usually support several older versions of
+\pfrst{}, \trilinos{}, and \petsc{}.
 
-The following steps should guide you through the installation of these
-prerequisites:
 \begin{enumerate}
-\item \textit{Trilinos:} Trilinos can be downloaded from
-  \href{http://trilinos.org/download/}{http://trilinos.org/download/}. At
-  the current time we recommend Trilinos Version 11.4.x.%
-  \footnote{Other versions of Trilinos like 10.6.x
-  and 10.8.x have bugs that make these versions unusable for our purpose. The
-  \dealii{} ReadMe file provides a list of versions that are known to work
-  without bugs with \dealii{}.} For installation instructions see
-  \href{https://www.dealii.org/developer/external-libs/trilinos.html}{the deal.II README file on installing Trilinos}. Note that you have
-  to configure with MPI by using
-\begin{verbatim}
- -DTPL_ENABLE_MPI:BOOL=ON
-\end{verbatim}
-  in the call to cmake. After that, run {\tt{make install}}.
+\item \textit{Obtaining candi:} Download \texttt{candi} by running 
+    \begin{verbatim}
+    git clone https://github.com/dealii/candi
+    \end{verbatim} 
+    in a directory of your choice. 
 
-\item \textit{\pfrst{}:} Download and install \pfrst{} as described in the
-  \href{https://www.dealii.org/developer/external-libs/p4est.html}{deal.II
-    p4est installation instructions}. This is done using the
-  {\tt{p4est-setup.sh}}; do not use the \pfrst{} stand-alone installation
-  instructions.
+\item \textit{Installing \dealii{} and its dependencies:} Execute \texttt {candi} by running
+    \begin{verbatim}
+    cd candi
+    ./candi.sh -p INSTALL_PATH
+    \end{verbatim} 
+    (here we assume you replace \texttt{INSTALL\_PATH} by the path were
+    you want to install all dependencies and \dealii{}, typically a directory inside
+    \texttt{\$HOME/bin} or a similar place). 
+    This step might take a long time, but can be parallelized by adding 
+    \texttt{-jN}, where 
+    \texttt{N} is the number of CPU cores available on your computer. Further configuration options 
+    and parameters are listed at \url{https://github.com/dealii/candi}.
 
-\item \textit{\dealii{}:}
-  The current version of \aspect{} requires \dealii{} version 8.4.0 or later.
-  This version can be downloaded and installed from
-  \url{https://www.dealii.org/download.html}.
-
-\item \textit{Configuring and compiling \dealii:} Now it is time to configure
-  \dealii.
-  To this end, follow the \dealii{}
-  \href{https://www.dealii.org/developer/readme.html}{installation
-    instructions}. Note that \dealii{} recently made the switch to cmake,
-    so the configuration changed. Make sure you enable MPI.
-    A typical command line would look like this:
-\begin{verbatim}
-mkdir build
-cd build
-cmake -DDEAL_II_WITH_MPI=ON \
-      -DCMAKE_INSTALL_PREFIX=/u/username/deal-installed/ \
-      -DTRILINOS_DIR=/u/username/trilinos-11.4.1/ \
-      -DP4EST_DIR=/u/username/p4est-0.3.4.1/ \
-      ../deal.II
-\end{verbatim}
-  if the Trilinos and \pfrst{} packages have been installed in the
-  subdirectory \texttt{/u/username/}.
-  Make sure the configuration succeeds and detects the MPI compilers
-  correctly. For more information see the documentation of \dealii.
-
-  Now you are ready to compile \dealii{} by running {\tt{make install}}. If you
-  have multiple processor cores, feel free to do {\tt{make install -jN}} where
-  \texttt{N} is the number of processors in your machine to accelerate the
-  process.
+\item You may now want to configure your environment to make it aware of the newly installed
+    packages. This can be achieved by adding the line 
+    \texttt{source INSTALL\_PATH/configuration/enable.sh} to the file responsible for setting
+    up your shell environment\footnote{For bash this would be the file \texttt{\~{}/.bashrc}.} 
+    (again we assume you replace \texttt{INSTALL\_PATH} by the patch chosen in the previous step).
+    Then close the terminal and open it again to activate the change.
 
 \item \textit{Testing your installation:} Test that your installation works
-  by running the {\tt{step-32}} example that you can find in
-  {\tt{\$DEAL\_II\_DIR/examples/step-32}}. Compile by running {\tt{make}} and run
-  with {\tt{mpirun -n 2 ./step-32}}.
-
-\item  You may now want to set the environment variable\footnote{For bash
-    this would be adding the line {\tt{export DEAL\_II\_DIR=/path/to/deal-installed/}} to
-    the file {\tt{\~{}/.bashrc}}. Then close the terminal and open it again to activate the change.}
-{\tt{DEAL\_II\_DIR}} to the directory where you \textit{installed} \dealii.
+  by compiling the {\texttt{step-32}} example that you can find in
+  {\texttt{\$DEAL\_II\_DIR/examples/step-32}}. Prepare and compile by running {\texttt{cmake . \&\& make}} 
+  and run with {\texttt{mpirun -n 2 ./step-32}}.
 
 \end{enumerate}
 
+Congratulations, you are now set up for compiling \aspect{} itself.
 
 \subsubsection{Obtaining \aspect{} and initial configuration}
 
@@ -2747,22 +2729,22 @@ The development version of \aspect{} can be downloaded by executing the command
 \begin{verbatim}
  git clone https://github.com/geodynamics/aspect.git
 \end{verbatim}
-If {\tt{\$DEAL\_II\_DIR}} points to your \dealii{} installation, you can configure
+If {\texttt{\$DEAL\_II\_DIR}} points to your \dealii{} installation, you can configure
 \aspect{} by running
 \begin{verbatim}
  cmake .
 \end{verbatim}
-in the {\tt{aspect}} directory created by the {\tt{git clone}} command above.
-If you did not set {\tt{\$DEAL\_II\_DIR}} you have to supply cmake with the location:
+in the \aspect{} directory created by the {\texttt{git clone}} command above.
+If you did not set {\texttt{\$DEAL\_II\_DIR}} you have to supply cmake with the location:
 \begin{verbatim}
  cmake -DDEAL_II_DIR=/u/username/deal-installed/ .
 \end{verbatim}
 
-An alternative would be to configure \aspect{} as an out-of-source build. Similar to
-the configuration of \dealii{}, you would need to create a build directory and
-specify an install directory using -DCMAKE\_INSTALL\_PREFIX. The
-instructions in the following sections assume an in-source build, so you need
-to adapt the location of the \aspect{} binary.
+An alternative would be to configure \aspect{} as an out-of-source build. 
+You would need to create a separate build directory and
+specify \aspect{}'s source directory using \texttt{cmake PATH\_TO\_ASPECT\_SOURCE}
+from within the build directory. The
+instructions in the following sections assume an in-source build.
 
 \subsubsection{Compiling \aspect{} and generating documentation}
 \label{sec:compiling}
