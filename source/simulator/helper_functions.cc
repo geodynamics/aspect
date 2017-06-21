@@ -1827,6 +1827,59 @@ namespace aspect
     pcout << "   Initial Newton Stokes residual = " << initial_newton_residual << ", v = " << initial_newton_residual_velo << ", p = " << initial_newton_residual_pres << std::endl << std::endl;
     return initial_newton_residual;
   }
+
+
+
+  template <int dim>
+  double
+  Simulator<dim>::compute_Eisenstat_Walker_linear_tolerance(const bool EisenstatWalkerChoiceOne,
+                                                            const double maximum_linear_stokes_solver_tolerance,
+                                                            const double linear_stokes_solver_tolerance,
+                                                            const double stokes_residual,
+                                                            const double newton_residual,
+                                                            const double newton_residual_old)
+  {
+    /**
+       * The Eisenstat and Walker (1996) method is used for determining the linear tolerance of
+       * the iteration after the first iteration. The paper gives two preferred choices of computing
+       * this tolerance. Both choices are implemented here with the suggested parameter values and
+       * safeguards.
+     */
+    double new_linear_stokes_solver_tolerance = linear_stokes_solver_tolerance;
+    if (EisenstatWalkerChoiceOne)
+      {
+        // This is the preferred value for this parameter in the paper.
+        // A value of 2 for the power-term might also work fine.
+        const double powerterm = (1+std::sqrt(5))*0.5;
+        if (std::pow(linear_stokes_solver_tolerance,powerterm) <= 0.1)
+          {
+            new_linear_stokes_solver_tolerance = std::min(maximum_linear_stokes_solver_tolerance,
+                                                          std::fabs(newton_residual-stokes_residual)/(newton_residual_old));
+          }
+        else
+          {
+            new_linear_stokes_solver_tolerance = std::min(maximum_linear_stokes_solver_tolerance,
+                                                          std::max(std::fabs(newton_residual-stokes_residual)/newton_residual_old,
+                                                                   std::pow(linear_stokes_solver_tolerance,powerterm)));
+          }
+      }
+    else
+      {
+        if (0.9*linear_stokes_solver_tolerance * linear_stokes_solver_tolerance <= 0.1)
+          {
+            new_linear_stokes_solver_tolerance =  std::min(maximum_linear_stokes_solver_tolerance,
+                                                           0.9 * std::fabs(newton_residual * newton_residual) /
+                                                           (newton_residual_old * newton_residual_old));
+          }
+        else
+          {
+            new_linear_stokes_solver_tolerance = std::min(parameters.maximum_linear_stokes_solver_tolerance,
+                                                          std::max(0.9 * std::fabs(newton_residual*newton_residual) / (newton_residual_old*newton_residual_old),
+                                                                   0.9*linear_stokes_solver_tolerance*linear_stokes_solver_tolerance));
+          }
+      }
+    return new_linear_stokes_solver_tolerance;
+  }
 }
 // explicit instantiation of the functions we implement in this file
 namespace aspect
@@ -1853,7 +1906,13 @@ namespace aspect
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
   template void Simulator<dim>::compute_reactions(); \
   template void Simulator<dim>::check_consistency_of_formulation(); \
-  template double Simulator<dim>::compute_initial_newton_residual(LinearAlgebra::BlockVector &linearized_stokes_initial_guess);
+  template double Simulator<dim>::compute_initial_newton_residual(LinearAlgebra::BlockVector &linearized_stokes_initial_guess); \
+  template double Simulator<dim>::compute_Eisenstat_Walker_linear_tolerance(const bool EisenstatWalkerChoiceOne, \
+                                                                            const double maximum_linear_stokes_solver_tolerance, \
+                                                                            const double linear_stokes_solver_tolerance, \
+                                                                            const double stokes_residual, \
+                                                                            const double newton_residual, \
+                                                                            const double newton_residual_old);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

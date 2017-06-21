@@ -1226,6 +1226,21 @@ namespace aspect
       compute_initial_newton_residual (LinearAlgebra::BlockVector &linearized_stokes_initial_guess);
 
       /**
+       * This function computes the Eisenstat Walker linear tolerance used for the Newton Stokes solver.
+       * The Eisenstat and Walker (1996) method is used for determining the linear tolerance of
+       * the iteration after the first iteration. The paper gives two preferred choices of computing
+       * this tolerance. Both choices are implemented here with the suggested parameter values and
+       * safeguards.
+       */
+      double
+      compute_Eisenstat_Walker_linear_tolerance(const bool EisenstatWalkerChoiceOne,
+                                                const double maximum_linear_stokes_solver_tolerance,
+                                                const double linear_stokes_solver_tolerance,
+                                                const double stokes_residual,
+                                                const double newton_residual,
+                                                const double newton_residual_old);
+
+      /**
        * This function is called at the end of each time step and writes the
        * statistics object that contains data like the current time, the
        * number of linear solver iterations, and whatever the postprocessors
