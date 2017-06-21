@@ -33,11 +33,34 @@ namespace aspect
         std_cxx11::shared_ptr<MaterialModel::Interface<dim> > base_model;
 
         /**
-         * Parameters determining the initial decay rate.
+         * Parameter determining the decay rate.
          */
         double half_life;
     };
+  }
 
+  namespace HeatingModel
+  {
+    using namespace dealii;
+
+    template <int dim>
+    class ExponentialDecayHeating : public HeatingModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    {
+      public:
+        virtual
+        void
+        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
+        static void declare_parameters (ParameterHandler &prm);
+        virtual void parse_parameters (ParameterHandler &prm);
+
+      private:
+        /**
+         * Parameter determining the decay rate.
+         */
+        double half_life;
+    };
   }
 }
 
@@ -86,7 +109,7 @@ namespace aspect
         {
           for (unsigned int q=0; q < in.position.size(); ++q)
             {
-              // dx/dt = alpha * x + beta * x * y
+              // dC/dt = - lambda * C
               const double decay_constant = half_life > 0.0 ? log(2.0) / half_life : 0.0;
               reaction_out->reaction_rates[0][q] = - decay_constant / time_scale * in.composition[q][0];
             }
@@ -155,23 +178,86 @@ namespace aspect
   }
   
   
+
+  namespace HeatingModel
+  {
+    template <int dim>
+    void
+    ExponentialDecayHeating<dim>::
+    evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+              const MaterialModel::MaterialModelOutputs<dim> & /*out*/,
+              HeatingModel::HeatingModelOutputs &heating_model_outputs) const
+    {
+      Assert(heating_model_outputs.heating_source_terms.size() == in.position.size(),
+             ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
+
+      const double time_scale = this->convert_output_to_years() ? year_in_seconds : 1.0;
+
+      for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
+        {
+          // dC/dt = - lambda * C
+          const double decay_constant = half_life > 0.0 ? log(2.0) / half_life : 0.0;
+          heating_model_outputs.heating_reaction_terms[q] = - decay_constant / time_scale * in.composition[q][0];
+
+          heating_model_outputs.heating_source_terms[q] = 0.0;
+          heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
+        }
+    }
+
+
+    template <int dim>
+    void
+    ExponentialDecayHeating<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Heating model");
+      {
+        prm.enter_subsection("Exponential decay heating");
+        {
+          prm.declare_entry ("Half life", "0",
+                             Patterns::Double (0),
+                             "Time required for the temperature to reduce to half of its "
+                             "initial value. Units: Years if the "
+                             "'Use years in output instead of seconds' parameter is set; "
+                             "seconds otherwise.");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+    }
+
+
+
+    template <int dim>
+    void
+    ExponentialDecayHeating<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Heating model");
+      {
+        prm.enter_subsection("Exponential decay heating");
+        {
+          half_life              = prm.get_double ("Half life");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+    }
+  }
+
+
   
   template <int dim>
   class RefFunction : public Function<dim>
   {
     public:
       RefFunction () : Function<dim>(dim+2) {}
-      virtual void vector_value (const Point< dim >   &p,
+      virtual void vector_value (const Point< dim > &/*position*/,
                                  Vector< double >   &values) const
       {
-        double x = p(0);
-        double z = p(1);
-
         values[0] = 0.0; // velocity x
         values[1] = 0.0; // velocity z
         values[2] = 0.0; // pressure
-        values[3] = 0.0; // temperature
-        values[4] = exp(-log(2.0)/10.0*this->get_time());
+        values[3] = exp(-log(2.0)/10.0*this->get_time()); // temperature
+        values[4] = exp(-log(2.0)/10.0*this->get_time()); // composition
       }
   };
   
@@ -195,12 +281,14 @@ namespace aspect
        execute (TableHandler &statistics);
        
        double max_error;
+       double max_error_T;
    };
    
    template<int dim>
    ExponentialDecayPostprocessor<dim>::ExponentialDecayPostprocessor ()
    {
      max_error = 0.0;
+     max_error_T = 0.0;
    }
 
    template <int dim>
@@ -215,8 +303,10 @@ namespace aspect
      const unsigned int n_total_comp = this->introspection().n_components;
 
      Vector<float> cellwise_errors_composition (this->get_triangulation().n_active_cells());
+     Vector<float> cellwise_errors_temperature (this->get_triangulation().n_active_cells());
 
      ComponentSelectFunction<dim> comp_C(dim+2, n_total_comp);
+     ComponentSelectFunction<dim> comp_T(dim+1, n_total_comp);
 
      VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                         this->get_solution(),
@@ -225,9 +315,19 @@ namespace aspect
                                         quadrature_formula,
                                         VectorTools::L2_norm,
                                         &comp_C);
+     VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+                                        this->get_solution(),
+                                        ref_func,
+                                        cellwise_errors_temperature,
+                                        quadrature_formula,
+                                        VectorTools::L2_norm,
+                                        &comp_T);
      
      const double current_error = std::sqrt(Utilities::MPI::sum(cellwise_errors_composition.norm_sqr(),MPI_COMM_WORLD));
      max_error = std::max(max_error, current_error);
+
+     const double current_error_T = std::sqrt(Utilities::MPI::sum(cellwise_errors_temperature.norm_sqr(),MPI_COMM_WORLD));
+     max_error_T = std::max(max_error_T, current_error_T);
 
      std::ostringstream os;
      os << std::scientific
@@ -235,6 +335,8 @@ namespace aspect
         << " ndofs= " << this->get_solution().size()
         << " C_L2_current= " << current_error
         << " C_L2_max= " << max_error
+        << " T_L2_current= " << current_error_T
+        << " T_L2_max= " << max_error_T
        ;
 
      return std::make_pair("Errors", os.str());
@@ -253,6 +355,16 @@ namespace aspect
                                    "function that can be chosen as an input parameter "
                                    "(units: 1/s or 1/yr).")
                                    
+  }
+  namespace HeatingModel
+  {
+    ASPECT_REGISTER_HEATING_MODEL(ExponentialDecayHeating,
+                                  "exponential decay heating",
+                                  "A heating model that can be derived from any of the other "
+                                  "material model and that will replace the reaction rate by a "
+                                  "function that can be chosen as an input parameter "
+                                  "(units: 1/s or 1/yr).")
+
   }
    ASPECT_REGISTER_POSTPROCESSOR(ExponentialDecayPostprocessor,
                                  "ExponentialDecayPostprocessor",

@@ -2,7 +2,9 @@
 
 # Number of processors to run on
 NP=1
-
+filename="output_exponential_decay"
+rm $filename
+echo "# Time DoFs composition_error temperature_error" >> $filename
 
 # advection time step:
 echo "----Advection time step----"
@@ -13,7 +15,8 @@ do
   echo "set Output directory = output/advection$time" >> temp.prm
   echo "set Reaction time step = 0.0005" >> temp.prm
   echo "set Maximum time step = $time" >> temp.prm
-  mpirun -n $NP ./aspect temp.prm | grep "time=1.000000e+02"
+  printf "%s ", $time | sed 's/,//g' >> $filename
+  mpirun -n $NP ./aspect temp.prm | gawk '/time\=1\.000000e\+02/ {printf "%s %s %s \n", $4, $6, $10}' | sed 's/,//g' >> $filename
   rm -f temp.prm
 done
 
@@ -26,6 +29,9 @@ do
   echo "set Output directory = output/reaction$time" >> temp.prm
   echo "set Reaction time step = $time" >> temp.prm
   echo "set Maximum time step = 10" >> temp.prm
-  mpirun -n $NP ./aspect temp.prm | grep "time=1.000000e+02"
+  printf "%s ", $time | sed 's/,//g' >> $filename
+  mpirun -n $NP ./aspect temp.prm | gawk '/time\=1\.000000e\+02/ {printf "%s %s %s \n", $4, $6, $10}' | sed 's/,//g' >> $filename
   rm -f temp.prm
 done
+
+python ./plot_convergence.py
