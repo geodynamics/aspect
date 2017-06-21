@@ -48,7 +48,7 @@ s/\@ingroup CompositionalInitialConditionsModels/\@ingroup InitialCompositions/g
 
 # Rename initial (temperature) conditions
 s/initial_conditions_model/initial_temperature/g
-s/initial_conditions[^\.][^c]/initial_temperature/g
+s/initial_conditions\([^\.][^c]\)/initial_temperature\1/g
 s/initial-conditions\//initial-temperature\//g
 s/initial_condition[^s]/initial_temperature/g
 s/InitialConditionsModels/InitialTemperatures/g
