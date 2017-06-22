@@ -111,10 +111,21 @@ WRITE_BASIC_PACKAGE_VERSION_FILE(
 
 # Configure a cmake fragment that plugins can use to
 # set up compiler flags, include paths, etc to compile an
-# Aspect plugin
+# Aspect plugin.
+# Config for the build dir:
+SET(CONFIG_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/include")
+SET(CONFIG_DIR "${CMAKE_BINARY_DIR}")
 CONFIGURE_FILE(
   ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
   ${CMAKE_BINARY_DIR}/AspectConfig.cmake
+  @ONLY
+)
+# Config for the install dir:
+SET(CONFIG_INCLUDE_DIRS "${CMAKE_INSTALL_PREFIX}/include")
+SET(CONFIG_DIR "${CMAKE_INSTALL_PREFIX}/bin")
+CONFIGURE_FILE(
+  ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
+  ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake
   @ONLY
 )
 
@@ -345,7 +356,31 @@ ELSE()
   ${CMAKE_BINARY_DIR}/aspect-gui
   @ONLY
   )
+INSTALL(FILES ${CMAKE_BINARY_DIR}/aspect-gui
+	DESTINATION bin
+	PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+		GROUP_READ GROUP_EXECUTE
+		WORLD_READ WORLD_EXECUTE)
 ENDIF()
+
+#
+## installation
+#
+# binary:
+INSTALL(TARGETS aspect
+  RUNTIME DESTINATION bin
+  COMPONENT runtime)
+
+# make sure we have the rpath to our dependencies set:
+SET_PROPERTY(TARGET aspect PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+# headers:
+INSTALL(DIRECTORY include/ DESTINATION include
+  COMPONENT includes)
+
+# cmake stuff:
+INSTALL(FILES ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake ${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake
+	DESTINATION "lib/cmake/Aspect/")
 
 MESSAGE(STATUS "Writing config into detailed.log...")
 INCLUDE(cmake/write_config)
