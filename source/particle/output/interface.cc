@@ -48,11 +48,6 @@ namespace aspect
       {}
 
       template <int dim>
-      template <class Archive>
-      void Interface<dim>::serialize (Archive &ar, const unsigned int)
-      {}
-
-      template <int dim>
       void
       Interface<dim>::save (std::ostringstream &) const
       {}

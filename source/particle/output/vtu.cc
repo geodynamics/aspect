@@ -253,6 +253,8 @@ namespace aspect
       void VTUOutput<dim>::serialize (Archive &ar, const unsigned int)
       {
         // invoke serialization of the base class
+        ar &static_cast<Interface<dim> &>(*this);
+
         ar &file_index
         & times_and_pvtu_file_names
         & times_and_vtu_file_names
