@@ -448,6 +448,10 @@ int main (int argc, char *argv[])
 
 #ifdef DEBUG
 #ifdef ASPECT_USE_FP_EXCEPTIONS
+  // Some implementations seem to not initialize the floating point exception
+  // bits to zero. Make sure we start from a clean state.
+  feclearexcept(FE_DIVBYZERO|FE_INVALID);
+
   // enable floating point exceptions
   feenableexcept(FE_DIVBYZERO|FE_INVALID);
 #endif
