@@ -502,7 +502,11 @@ namespace aspect
               ExcInternalError());
       const bool cell_has_periodic_neighbor = cell->has_periodic_neighbor (face_no);
 
-      if (!(face->has_children()))
+      if ((!face->at_boundary() && !face->has_children())
+          ||
+          (face->at_boundary() && cell->periodic_neighbor_is_coarser(face_no))
+          ||
+          (face->at_boundary() && neighbor->level () == cell->level () && neighbor->active()))
         {
           if (neighbor->level () == cell->level () &&
               neighbor->active() &&
@@ -821,8 +825,12 @@ namespace aspect
              :
              cell->neighbor_face_no(face_no));
 
+          // TODO: need to consider subfaces on periodic neighbors of a coarsen cell
+          // as in such case, the face of current active cell is on the boundary and face->number_of_children()==1
+
           // loop over subfaces
-          for (unsigned int subface_no=0; subface_no<face->number_of_children(); ++subface_no)
+          typename DoFHandler<dim>::face_iterator neighbor_face=neighbor->face(neighbor2);
+          for (unsigned int subface_no=0; subface_no<neighbor_face->number_of_children(); ++subface_no)
             {
               const typename DoFHandler<dim>::active_cell_iterator neighbor_child
                 = ( cell_has_periodic_neighbor
