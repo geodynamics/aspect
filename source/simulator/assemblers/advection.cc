@@ -126,11 +126,12 @@ namespace aspect
              :
              0.0);
 
-          const double reaction_term = ((advection_field_is_temperature)
-                                        ?
-                                        0.0
-                                        :
-                                        scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
+          const double reaction_term =
+            ((advection_field_is_temperature)
+             ?
+             0.0
+             :
+             scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
 
           const double field_term_for_rhs
             = (use_bdf2_scheme ?

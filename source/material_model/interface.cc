@@ -777,9 +777,9 @@ namespace aspect
     template<int dim>
     ReactionRateOutputs<dim>::ReactionRateOutputs (const unsigned int n_points,
                                                    const unsigned int n_comp)
-    :
-    NamedAdditionalMaterialOutputs<dim>(make_reaction_additional_outputs_names(n_comp)),
-    reaction_rates(n_comp, std::vector<double>(n_points, numbers::signaling_nan<double>()))
+      :
+      NamedAdditionalMaterialOutputs<dim>(make_reaction_additional_outputs_names(n_comp)),
+      reaction_rates(n_comp, std::vector<double>(n_points, numbers::signaling_nan<double>()))
     {}
 
 

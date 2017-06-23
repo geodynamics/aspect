@@ -176,8 +176,8 @@ namespace aspect
       this->model_dependence = base_model->get_model_dependence();
     }
   }
-  
-  
+
+
 
   namespace HeatingModel
   {
@@ -244,7 +244,7 @@ namespace aspect
   }
 
 
-  
+
   template <int dim>
   class RefFunction : public Function<dim>
   {
@@ -260,87 +260,87 @@ namespace aspect
         values[4] = exp(-log(2.0)/10.0*this->get_time()); // composition
       }
   };
-  
-  
-  
+
+
+
   /**
      * A postprocessor that evaluates the accuracy of the solution
      * by using the L2 norm.
      */
-   template <int dim>
-   class ExponentialDecayPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
-   {
-     public:
-       ExponentialDecayPostprocessor();
-     
-       /**
-        * Generate graphical output from the current solution.
-        */
-       virtual
-       std::pair<std::string,std::string>
-       execute (TableHandler &statistics);
-       
-       double max_error;
-       double max_error_T;
-   };
-   
-   template<int dim>
-   ExponentialDecayPostprocessor<dim>::ExponentialDecayPostprocessor ()
-   {
-     max_error = 0.0;
-     max_error_T = 0.0;
-   }
+  template <int dim>
+  class ExponentialDecayPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+  {
+    public:
+      ExponentialDecayPostprocessor();
 
-   template <int dim>
-   std::pair<std::string,std::string>
-   ExponentialDecayPostprocessor<dim>::execute (TableHandler & /*statistics*/)
-   {
-     RefFunction<dim> ref_func;
-     ref_func.set_time(this->get_time());
-     
-     const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
+      /**
+       * Generate graphical output from the current solution.
+       */
+      virtual
+      std::pair<std::string,std::string>
+      execute (TableHandler &statistics);
 
-     const unsigned int n_total_comp = this->introspection().n_components;
+      double max_error;
+      double max_error_T;
+  };
 
-     Vector<float> cellwise_errors_composition (this->get_triangulation().n_active_cells());
-     Vector<float> cellwise_errors_temperature (this->get_triangulation().n_active_cells());
+  template<int dim>
+  ExponentialDecayPostprocessor<dim>::ExponentialDecayPostprocessor ()
+  {
+    max_error = 0.0;
+    max_error_T = 0.0;
+  }
 
-     ComponentSelectFunction<dim> comp_C(dim+2, n_total_comp);
-     ComponentSelectFunction<dim> comp_T(dim+1, n_total_comp);
+  template <int dim>
+  std::pair<std::string,std::string>
+  ExponentialDecayPostprocessor<dim>::execute (TableHandler & /*statistics*/)
+  {
+    RefFunction<dim> ref_func;
+    ref_func.set_time(this->get_time());
 
-     VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
-                                        this->get_solution(),
-                                        ref_func,
-                                        cellwise_errors_composition,
-                                        quadrature_formula,
-                                        VectorTools::L2_norm,
-                                        &comp_C);
-     VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
-                                        this->get_solution(),
-                                        ref_func,
-                                        cellwise_errors_temperature,
-                                        quadrature_formula,
-                                        VectorTools::L2_norm,
-                                        &comp_T);
-     
-     const double current_error = std::sqrt(Utilities::MPI::sum(cellwise_errors_composition.norm_sqr(),MPI_COMM_WORLD));
-     max_error = std::max(max_error, current_error);
+    const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
 
-     const double current_error_T = std::sqrt(Utilities::MPI::sum(cellwise_errors_temperature.norm_sqr(),MPI_COMM_WORLD));
-     max_error_T = std::max(max_error_T, current_error_T);
+    const unsigned int n_total_comp = this->introspection().n_components;
 
-     std::ostringstream os;
-     os << std::scientific
-        << "time=" << this->get_time()
-        << " ndofs= " << this->get_solution().size()
-        << " C_L2_current= " << current_error
-        << " C_L2_max= " << max_error
-        << " T_L2_current= " << current_error_T
-        << " T_L2_max= " << max_error_T
+    Vector<float> cellwise_errors_composition (this->get_triangulation().n_active_cells());
+    Vector<float> cellwise_errors_temperature (this->get_triangulation().n_active_cells());
+
+    ComponentSelectFunction<dim> comp_C(dim+2, n_total_comp);
+    ComponentSelectFunction<dim> comp_T(dim+1, n_total_comp);
+
+    VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+                                       this->get_solution(),
+                                       ref_func,
+                                       cellwise_errors_composition,
+                                       quadrature_formula,
+                                       VectorTools::L2_norm,
+                                       &comp_C);
+    VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+                                       this->get_solution(),
+                                       ref_func,
+                                       cellwise_errors_temperature,
+                                       quadrature_formula,
+                                       VectorTools::L2_norm,
+                                       &comp_T);
+
+    const double current_error = std::sqrt(Utilities::MPI::sum(cellwise_errors_composition.norm_sqr(),MPI_COMM_WORLD));
+    max_error = std::max(max_error, current_error);
+
+    const double current_error_T = std::sqrt(Utilities::MPI::sum(cellwise_errors_temperature.norm_sqr(),MPI_COMM_WORLD));
+    max_error_T = std::max(max_error_T, current_error_T);
+
+    std::ostringstream os;
+    os << std::scientific
+       << "time=" << this->get_time()
+       << " ndofs= " << this->get_solution().size()
+       << " C_L2_current= " << current_error
+       << " C_L2_max= " << max_error
+       << " T_L2_current= " << current_error_T
+       << " T_L2_max= " << max_error_T
        ;
 
-     return std::make_pair("Errors", os.str());
-   }
+    return std::make_pair("Errors", os.str());
+  }
 }
 
 // explicit instantiations
@@ -354,7 +354,7 @@ namespace aspect
                                    "material model and that will replace the reaction rate by a "
                                    "function that models exponential decay. The half life can be "
                                    "chosen as an input parameter.")
-                                   
+
   }
   namespace HeatingModel
   {
@@ -365,9 +365,9 @@ namespace aspect
                                   "input parameter.")
 
   }
-   ASPECT_REGISTER_POSTPROCESSOR(ExponentialDecayPostprocessor,
-                                 "ExponentialDecayPostprocessor",
-                                 "A postprocessor that compares the solution "
-                                 "to the analytical solution for exponential decay.")
+  ASPECT_REGISTER_POSTPROCESSOR(ExponentialDecayPostprocessor,
+                                "ExponentialDecayPostprocessor",
+                                "A postprocessor that compares the solution "
+                                "to the analytical solution for exponential decay.")
 }
 

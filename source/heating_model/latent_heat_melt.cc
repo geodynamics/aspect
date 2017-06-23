@@ -44,7 +44,7 @@ namespace aspect
               const double porosity_idx = this->introspection().compositional_index_for_name("porosity");
               const double latent_heat = melting_entropy_change * material_model_outputs.reaction_terms[q][porosity_idx];
               heating_model_outputs.heating_reaction_terms[q] = latent_heat
-                                                              * material_model_inputs.temperature[q];
+                                                                * material_model_inputs.temperature[q];
 
               // without melt migration, the reaction term is a constant value in terms of volume,
               // and we have to scale it to the correct units

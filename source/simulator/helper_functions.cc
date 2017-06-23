@@ -1486,7 +1486,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::compute_reactions ()
   {
-    if(time_step == 0)
+    if (time_step == 0)
       return;
 
     LinearAlgebra::BlockVector distributed_vector (introspection.index_sets.system_partitioning,
@@ -1512,9 +1512,9 @@ namespace aspect
     const Quadrature<dim> quadrature_C(dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).get_unit_support_points());
 
     FEValues<dim> fe_values_C (*mapping,
-                             dof_handler.get_fe(),
-                             quadrature_C,
-                             update_quadrature_points | update_values | update_gradients);
+                               dof_handler.get_fe(),
+                               quadrature_C,
+                               update_quadrature_points | update_values | update_gradients);
 
     std::vector<types::global_dof_index> local_dof_indices (dof_handler.get_fe().dofs_per_cell);
     MaterialModel::MaterialModelInputs<dim> in_C(quadrature_C.size(), introspection.n_compositional_fields);
@@ -1525,9 +1525,9 @@ namespace aspect
     const Quadrature<dim> quadrature_T(dof_handler.get_fe().base_element(introspection.base_elements.temperature).get_unit_support_points());
 
     FEValues<dim> fe_values_T (*mapping,
-                             dof_handler.get_fe(),
-                             quadrature_T,
-                             update_quadrature_points | update_values | update_gradients);
+                               dof_handler.get_fe(),
+                               quadrature_T,
+                               update_quadrature_points | update_values | update_gradients);
 
     MaterialModel::MaterialModelInputs<dim> in_T(quadrature_T.size(), introspection.n_compositional_fields);
     MaterialModel::MaterialModelOutputs<dim> out_T(quadrature_T.size(), introspection.n_compositional_fields);
@@ -1574,15 +1574,15 @@ namespace aspect
 
               for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).dofs_per_cell; ++j)
                 {
-                for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-                  {
-                    // simple forward euler
-                    in_C.composition[j][c] = in_C.composition[j][c]
-                                           + reaction_time_step_size * reaction_rate_outputs_C->reaction_rates[c][j];
-                    accumulated_reactions_C[j][c] += reaction_time_step_size * reaction_rate_outputs_C->reaction_rates[c][j];
-                  }
-                in_C.temperature[j] = in_C.temperature[j]
-                                       + reaction_time_step_size * heating_model_outputs_C.heating_reaction_terms[j];
+                  for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+                    {
+                      // simple forward euler
+                      in_C.composition[j][c] = in_C.composition[j][c]
+                                               + reaction_time_step_size * reaction_rate_outputs_C->reaction_rates[c][j];
+                      accumulated_reactions_C[j][c] += reaction_time_step_size * reaction_rate_outputs_C->reaction_rates[c][j];
+                    }
+                  in_C.temperature[j] = in_C.temperature[j]
+                                        + reaction_time_step_size * heating_model_outputs_C.heating_reaction_terms[j];
                 }
 
               // loop over temperature element
@@ -1597,12 +1597,12 @@ namespace aspect
                 {
                   // simple forward euler
                   in_T.temperature[j] = in_T.temperature[j]
-                                         + reaction_time_step_size * heating_model_outputs_T.heating_reaction_terms[j];
+                                        + reaction_time_step_size * heating_model_outputs_T.heating_reaction_terms[j];
                   accumulated_reactions_T[j] += reaction_time_step_size * heating_model_outputs_T.heating_reaction_terms[j];
 
                   for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                     in_T.composition[j][c] = in_T.composition[j][c]
-                                           + reaction_time_step_size * reaction_rate_outputs_T->reaction_rates[c][j];
+                                             + reaction_time_step_size * reaction_rate_outputs_T->reaction_rates[c][j];
                 }
             }
 
@@ -1612,7 +1612,7 @@ namespace aspect
               {
                 const unsigned int composition_idx
                   = dof_handler.get_fe().component_to_system_index(introspection.component_indices.compositional_fields[c],
-                                                             /*dof index within component=*/ j);
+                                                                   /*dof index within component=*/ j);
 
                 // skip entries that are not locally owned:
                 if (!dof_handler.locally_owned_dofs().is_element(local_dof_indices[composition_idx]))
@@ -1628,7 +1628,7 @@ namespace aspect
               {
                 const unsigned int temperature_idx
                   = dof_handler.get_fe().component_to_system_index(introspection.component_indices.temperature,
-                                                             /*dof index within component=*/ j);
+                                                                   /*dof index within component=*/ j);
 
                 // skip entries that are not locally owned:
                 if (!dof_handler.locally_owned_dofs().is_element(local_dof_indices[temperature_idx]))

@@ -177,8 +177,8 @@ namespace aspect
       this->model_dependence = base_model->get_model_dependence();
     }
   }
-  
-  
+
+
   namespace HeatingModel
   {
     template <int dim>
@@ -244,7 +244,7 @@ namespace aspect
     }
   }
 
-  
+
   template <int dim>
   class RefFunction : public Function<dim>
   {
@@ -264,9 +264,9 @@ namespace aspect
         values[4] = sin(2*numbers::PI*(x-t*0.01))*exp(-log(2.0)/10.0*z*t); // composition
       }
   };
-  
-  
-  
+
+
+
   template <int dim>
   class ExponentialDecayBoundary : public BoundaryComposition::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
@@ -359,87 +359,87 @@ namespace aspect
      * A postprocessor that evaluates the accuracy of the solution
      * by using the L2 norm.
      */
-   template <int dim>
-   class ExponentialDecayPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
-   {
-     public:
-       ExponentialDecayPostprocessor();
+  template <int dim>
+  class ExponentialDecayPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+  {
+    public:
+      ExponentialDecayPostprocessor();
 
-       /**
-        * Generate graphical output from the current solution.
-        */
-       virtual
-       std::pair<std::string,std::string>
-       execute (TableHandler &statistics);
+      /**
+       * Generate graphical output from the current solution.
+       */
+      virtual
+      std::pair<std::string,std::string>
+      execute (TableHandler &statistics);
 
-       double max_error;
-       double max_error_T;
-   };
+      double max_error;
+      double max_error_T;
+  };
 
-   template<int dim>
-   ExponentialDecayPostprocessor<dim>::ExponentialDecayPostprocessor ()
-   {
-     max_error = 0.0;
-     max_error_T = 0.0;
-   }
+  template<int dim>
+  ExponentialDecayPostprocessor<dim>::ExponentialDecayPostprocessor ()
+  {
+    max_error = 0.0;
+    max_error_T = 0.0;
+  }
 
-   template <int dim>
-   std::pair<std::string,std::string>
-   ExponentialDecayPostprocessor<dim>::execute (TableHandler & /*statistics*/)
-   {
-     RefFunction<dim> ref_func;
-     ref_func.set_time(this->get_time());
+  template <int dim>
+  std::pair<std::string,std::string>
+  ExponentialDecayPostprocessor<dim>::execute (TableHandler & /*statistics*/)
+  {
+    RefFunction<dim> ref_func;
+    ref_func.set_time(this->get_time());
 
-     const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
+    const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
 
-     const unsigned int n_total_comp = this->introspection().n_components;
+    const unsigned int n_total_comp = this->introspection().n_components;
 
-     Vector<float> cellwise_errors_composition (this->get_triangulation().n_active_cells());
-     Vector<float> cellwise_errors_temperature (this->get_triangulation().n_active_cells());
+    Vector<float> cellwise_errors_composition (this->get_triangulation().n_active_cells());
+    Vector<float> cellwise_errors_temperature (this->get_triangulation().n_active_cells());
 
-     ComponentSelectFunction<dim> comp_C(dim+2, n_total_comp);
-     ComponentSelectFunction<dim> comp_T(dim+1, n_total_comp);
+    ComponentSelectFunction<dim> comp_C(dim+2, n_total_comp);
+    ComponentSelectFunction<dim> comp_T(dim+1, n_total_comp);
 
-     VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
-                                        this->get_solution(),
-                                        ref_func,
-                                        cellwise_errors_composition,
-                                        quadrature_formula,
-                                        VectorTools::L2_norm,
-                                        &comp_C);
-     VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
-                                        this->get_solution(),
-                                        ref_func,
-                                        cellwise_errors_temperature,
-                                        quadrature_formula,
-                                        VectorTools::L2_norm,
-                                        &comp_T);
+    VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+                                       this->get_solution(),
+                                       ref_func,
+                                       cellwise_errors_composition,
+                                       quadrature_formula,
+                                       VectorTools::L2_norm,
+                                       &comp_C);
+    VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+                                       this->get_solution(),
+                                       ref_func,
+                                       cellwise_errors_temperature,
+                                       quadrature_formula,
+                                       VectorTools::L2_norm,
+                                       &comp_T);
 
-     const double current_error = std::sqrt(Utilities::MPI::sum(cellwise_errors_composition.norm_sqr(),MPI_COMM_WORLD));
-     max_error = std::max(max_error, current_error);
+    const double current_error = std::sqrt(Utilities::MPI::sum(cellwise_errors_composition.norm_sqr(),MPI_COMM_WORLD));
+    max_error = std::max(max_error, current_error);
 
-     const double current_error_T = std::sqrt(Utilities::MPI::sum(cellwise_errors_temperature.norm_sqr(),MPI_COMM_WORLD));
-     max_error_T = std::max(max_error_T, current_error_T);
+    const double current_error_T = std::sqrt(Utilities::MPI::sum(cellwise_errors_temperature.norm_sqr(),MPI_COMM_WORLD));
+    max_error_T = std::max(max_error_T, current_error_T);
 
-     std::ostringstream os;
-     os << std::scientific
-        << "time=" << this->get_time()
-        << " ndofs= " << this->get_solution().size()
-        << " C_L2_current= " << current_error
-        << " C_L2_max= " << max_error
-        << " T_L2_current= " << current_error_T
-        << " T_L2_max= " << max_error_T
+    std::ostringstream os;
+    os << std::scientific
+       << "time=" << this->get_time()
+       << " ndofs= " << this->get_solution().size()
+       << " C_L2_current= " << current_error
+       << " C_L2_max= " << max_error
+       << " T_L2_current= " << current_error_T
+       << " T_L2_max= " << max_error_T
        ;
 
-     return std::make_pair("Errors", os.str());
-   }
+    return std::make_pair("Errors", os.str());
+  }
 }
 
 // explicit instantiations
 namespace aspect
 {
   namespace MaterialModel
-  namespace MaterialModel
+    namespace MaterialModel
   {
     ASPECT_REGISTER_MATERIAL_MODEL(ExponentialDecay,
                                    "exponential decay",
@@ -459,20 +459,20 @@ namespace aspect
 
   }
   ASPECT_REGISTER_BOUNDARY_COMPOSITION_MODEL(ExponentialDecayBoundary,
-                                "ExponentialDecayBoundary",
-                                "A boundary composition model that prescribes the analytical "
-                                "solution for an initially sinusoidal field that is advected "
-                                "and decays over time.")
+                                             "ExponentialDecayBoundary",
+                                             "A boundary composition model that prescribes the analytical "
+                                             "solution for an initially sinusoidal field that is advected "
+                                             "and decays over time.")
 
   ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(ExponentialDecayBoundaryTemperature,
-                                "ExponentialDecayBoundary",
-                                "A boundary composition model that prescribes the analytical "
-                                "solution for an initially sinusoidal field that is advected "
-                                "and decays over time.")
+                                             "ExponentialDecayBoundary",
+                                             "A boundary composition model that prescribes the analytical "
+                                             "solution for an initially sinusoidal field that is advected "
+                                             "and decays over time.")
 
-   ASPECT_REGISTER_POSTPROCESSOR(ExponentialDecayPostprocessor,
-                                 "ExponentialDecayPostprocessor",
-                                 "A postprocessor that compares the solution "
-                                 "to the analytical solution for exponential decay.")
+  ASPECT_REGISTER_POSTPROCESSOR(ExponentialDecayPostprocessor,
+                                "ExponentialDecayPostprocessor",
+                                "A postprocessor that compares the solution "
+                                "to the analytical solution for exponential decay.")
 }
 

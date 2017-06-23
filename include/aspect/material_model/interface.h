@@ -681,9 +681,9 @@ namespace aspect
 
         virtual const std::vector<double> &get_nth_output(const unsigned int idx) const;
 
-      /**
-       * Reaction rates.
-       */
+        /**
+         * Reaction rates.
+         */
         std::vector<std::vector<double> > reaction_rates;
     };
 

@@ -173,7 +173,9 @@ namespace aspect
                        "the temperature; mostly useful for Stokes benchmarks). The 'Advection only' "
                        "scheme only solves the temperature and other advection systems and instead "
                        "of solving for the Stokes system, a prescribed velocity and pressure is "
-                       "used.");
+                       "used. The 'Operator splitting' scheme works like the IMPES scheme, only "
+                       "that advection and reactions of compositional fields and temperature are "
+                       "solved separately, and can use different time steps.");
 
     prm.declare_entry ("Nonlinear solver tolerance", "1e-5",
                        Patterns::Double(0,1),
