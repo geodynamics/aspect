@@ -10,7 +10,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.3001/0.6984/0.4938 // -0.2/0.1996/-0.01184
+     Compositions min/max/mass: 0.3002/0.6997/0.5069 // -0.199/0.1999/-0.007404
 
 Termination requested by criterion: end time
 
