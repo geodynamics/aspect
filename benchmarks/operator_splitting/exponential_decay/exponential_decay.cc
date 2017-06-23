@@ -352,18 +352,17 @@ namespace aspect
                                    "exponential decay",
                                    "A material model that can be derived from any of the other "
                                    "material model and that will replace the reaction rate by a "
-                                   "function that can be chosen as an input parameter "
-                                   "(units: 1/s or 1/yr).")
+                                   "function that models exponential decay. The half life can be "
+                                   "chosen as an input parameter.")
                                    
   }
   namespace HeatingModel
   {
     ASPECT_REGISTER_HEATING_MODEL(ExponentialDecayHeating,
                                   "exponential decay heating",
-                                  "A heating model that can be derived from any of the other "
-                                  "material model and that will replace the reaction rate by a "
-                                  "function that can be chosen as an input parameter "
-                                  "(units: 1/s or 1/yr).")
+                                  "A heating model that will use a model for exponential decay as "
+                                  "the heating reaction rate. The half life can be chosen as an "
+                                  "input parameter.")
 
   }
    ASPECT_REGISTER_POSTPROCESSOR(ExponentialDecayPostprocessor,

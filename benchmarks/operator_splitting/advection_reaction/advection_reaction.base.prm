@@ -1,8 +1,13 @@
 #########################################################
-# This is a variation of the composition_active.prm
-# parameter file, with the exception that we use the
-# material model composition reaction that accounts for
-# reactions between the two compositional fields. 
+# This is a benchmark case that tests the operator split 
+# solver scheme, which can use a different time step to
+# compute reactions between compositional fields than 
+# the time step used for advection.  
+# In comparison to the example 'exponential_decay', the
+# initial comosition depends on x, and there is a constant 
+# horizontal velocity. The composition decays over time, 
+# following the equations for exponetial decay with a decay 
+# rate that depends on y. 
 
 set Additional shared libraries = ./libadvection_reaction.so
 
@@ -25,6 +30,14 @@ set Nonlinear solver scheme                = Operator splitting
 # parameter. We will vary both parameters in different model runs.
 set Reaction time step                     = 0.0005
 set Maximum time step                      = 1
+
+
+subsection Discretization
+  subsection Stabilization parameters
+    set beta  = 0.0
+    set cR = 0.0
+  end
+end
 
 
 subsection Geometry model

@@ -1,8 +1,12 @@
 #########################################################
-# This is a variation of the composition_active.prm
-# parameter file, with the exception that we use the
-# material model composition reaction that accounts for
-# reactions between the two compositional fields. 
+# This is a benchmark case that tests the operator split 
+# solver scheme, which can use a different time step to
+# compute reactions between compositional fields than 
+# the time step used for advection.  
+# In this test case, there is no advection, and we start
+# from a composition (and temperature) that is 1 everywhere
+# in the domain and then decays over time, following the
+# equations for exponetial decay. 
 
 # We use a plugin that implements the reactions for exponential
 # decay. 

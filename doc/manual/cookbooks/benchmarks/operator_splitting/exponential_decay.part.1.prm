@@ -1,0 +1,11 @@
+set Additional shared libraries = ./libexponential_decay.so
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 100
+
+# We use a new solver scheme that enables the operator split. 
+set Nonlinear solver scheme                = Operator splitting
+
+set Reaction time step                     = 0.0005
+set Maximum time step                      = 10
