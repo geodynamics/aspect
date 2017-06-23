@@ -73,9 +73,13 @@ namespace aspect
         double magnitude;
 
         /**
-         * Random number generator.
+         * Whether to use a random seed for the random
+         * number generator. This parameter controls whether
+         * this plugin generates different or identical
+         * perturbations for subsequent model runs of
+         * the same setup.
          */
-        mutable boost::mt19937 random_number_generator;
+        bool use_random_seed;
     };
   }
 }

@@ -1,4 +1,4 @@
-New: A new initial temperature condition was added that adds a random
+New: A new initial temperature condition was added that adds random
 noise of user prescribed magnitude to the initial temperature field.
 The same type of plugin was added for initial compositions.
 <br>

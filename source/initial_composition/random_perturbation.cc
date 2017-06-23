@@ -21,23 +21,44 @@
 
 #include <aspect/initial_composition/random_perturbation.h>
 
+#include <boost/functional/hash.hpp>
 #include <time.h>
 
 namespace aspect
 {
   namespace InitialComposition
   {
+    namespace
+    {
+      template<int dim>
+      std::size_t point_hash(const Point<dim> &position)
+      {
+        std::size_t hash;
+
+        for (unsigned int i = 0; i < dim; ++i)
+          boost::hash_combine(hash,position[i]);
+
+        return hash;
+      }
+    }
+
     template <int dim>
     double
     RandomPerturbation<dim>::
-    initial_composition (const Point<dim> &/*position*/,
-                         const unsigned int /*compositional_index*/) const
+    initial_composition (const Point<dim> &position,
+                         const unsigned int compositional_index) const
     {
-      // Uniform distribution on the interval [0,1]. This
-      // will be used to generate the random composition perturbation.
-      boost::uniform_01<double> uniform_distribution_01;
+      std::size_t seed = point_hash(position);
+      boost::hash_combine(seed,compositional_index);
+      if (use_random_seed)
+        boost::hash_combine(seed,time(NULL));
 
-      return magnitude * 2.0 * (uniform_distribution_01(random_number_generator) - 0.5);
+      boost::mt19937 random_number_generator(seed);
+
+      // Uniform distribution on the interval [-magnitude,magnitude). This
+      // will be used to generate the random composition perturbation.
+      boost::random::uniform_real_distribution<double> uniform_distribution(-magnitude,magnitude);
+      return uniform_distribution(random_number_generator);
     }
 
     template <int dim>
@@ -56,14 +77,8 @@ namespace aspect
                              "Whether to use a random seed for the random "
                              "number generator. This parameter controls whether "
                              "this plugin generates different or identical "
-                             "perturbations for different model runs.");
-          prm.declare_entry ("Random seed", "5432",
-                             Patterns::Integer(0),
-                             "The initial seed for the random perturbation. If "
-                             "'Use random seed' is set to 'false' model runs "
-                             "with identical seed will lead to identical "
-                             "perturbations, while model runs with different "
-                             "seeds will generate different perturbations.");
+                             "perturbations for subsequent model runs of"
+                             "the same setup.");
         }
         prm.leave_subsection ();
       }
@@ -80,11 +95,7 @@ namespace aspect
         prm.enter_subsection("Random perturbation");
         {
           magnitude = prm.get_double ("Magnitude");
-
-          if (prm.get_bool("Use random seed"))
-            random_number_generator.seed(time(NULL));
-          else
-            random_number_generator.seed(prm.get_integer("Random seed"));
+          use_random_seed = prm.get_bool("Use random seed");
         }
         prm.leave_subsection ();
       }
