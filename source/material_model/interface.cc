@@ -159,7 +159,7 @@ namespace aspect
       // errors because the value obviously does not conform to the Pattern.
       AssertThrow(model_name != "unspecified",
                   ExcMessage("You need to select a material model "
-                             "('set Model name' in 'subsection Material model')."));
+                             "(`set Model name' in `subsection Material model')."));
 
       return create_material_model<dim> (model_name);
     }

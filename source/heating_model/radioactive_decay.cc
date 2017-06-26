@@ -97,7 +97,7 @@ namespace aspect
           prm.declare_entry("Half decay times","",
                             Patterns::List (Patterns::Double (0)),
                             "Half decay times. Units: (Seconds), or "
-                            "(Years) if set 'use years instead of seconds'.");
+                            "(Years) if set `use years instead of seconds'.");
           prm.declare_entry("Initial concentrations crust","",
                             Patterns::List (Patterns::Double (0)),
                             "Initial concentrations of different elements (ppm)");

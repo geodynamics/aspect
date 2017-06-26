@@ -245,8 +245,8 @@ namespace aspect
                              "boundary layer temperature will be used.");
           prm.declare_entry ("Position", "center",
                              Patterns::Selection ("center"),
-                             "Where the initial temperature perturbation should be placed. If 'center' is "
-                             "given, then the perturbation will be centered along a 'midpoint' of some "
+                             "Where the initial temperature perturbation should be placed. If `center' is "
+                             "given, then the perturbation will be centered along a `midpoint' of some "
                              "sort of the bottom boundary. For example, in the case of a box geometry, "
                              "this is the center of the bottom face; in the case of a spherical shell "
                              "geometry, it is along the inner surface halfway between the bounding "

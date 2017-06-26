@@ -925,7 +925,7 @@ namespace aspect
                                    "dislocation ($v_{disl}$, $n>1$, $m=0$) or composite "
                                    "$\\frac{v_{diff}*v_{disl}}{v_{diff}+v_{disl}}$ equation form. "
                                    "\n\n "
-                                   "Viscosity is limited through one of two different 'yielding' mechanisms. "
+                                   "Viscosity is limited through one of two different `yielding' mechanisms. "
                                    "\n\n"
                                    "Plasticity limits viscous stress through a Drucker Prager "
                                    "yield criterion, where the yield stress in 3D is  "

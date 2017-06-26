@@ -50,7 +50,7 @@ namespace aspect
                                "called without a specified component to interpolate."));
 
         AssertThrow(dim == 2,
-                    ExcMessage("Currently, the particle interpolator 'bilinear' is only supported for 2D models."));
+                    ExcMessage("Currently, the particle interpolator `bilinear' is only supported for 2D models."));
 
         AssertThrow(selected_properties.n_selected_components(n_particle_properties) == 1,
                     ExcNotImplemented("Interpolation of multiple components is not supported."));
@@ -91,7 +91,7 @@ namespace aspect
         const unsigned int n_particles = std::distance(particle_range.first,particle_range.second);
 
         AssertThrow(n_particles != 0,
-                    ExcMessage("At least one cell contained no particles. The 'bilinear'"
+                    ExcMessage("At least one cell contained no particles. The `bilinear'"
                                "interpolation scheme does not support this case. "));
 
 

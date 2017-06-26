@@ -140,7 +140,7 @@ namespace aspect
         }
 
       AssertThrow (f, ExcMessage("Writing data to <" + filename +
-                                 "> did not succeed in the 'point values' "
+                                 "> did not succeed in the `point values' "
                                  "postprocessor."));
 
       // return what should be printed to the screen. note that we had
@@ -272,6 +272,6 @@ namespace aspect
                                   "points is relatively small. If you need a very large number of "
                                   "evaluation points, you should consider extracting this "
                                   "information from the visualization program you use to display "
-                                  "the output of the 'visualization' postprocessor.}")
+                                  "the output of the `visualization' postprocessor.}")
   }
 }

@@ -748,7 +748,7 @@ namespace aspect
                              Patterns::Bool(),
                              "File operations can potentially take a long time, blocking the "
                              "progress of the rest of the model run. Setting this variable to "
-                             "'true' moves this process into a background thread, while the "
+                             "`true' moves this process into a background thread, while the "
                              "rest of the model continues.");
 
           prm.declare_entry ("Temporary output location", "",

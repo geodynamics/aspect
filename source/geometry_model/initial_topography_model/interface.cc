@@ -105,7 +105,7 @@ namespace aspect
       // errors because the value obviously does not conform to the Pattern.
       AssertThrow(model_name != "unspecified",
                   ExcMessage("You need to select a Initial topography model "
-                             "('set Model name' in 'subsection Initial topography model')."));
+                             "(`set Model name' in `subsection Initial topography model')."));
 
       return std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
                                                                     "Initial topography model::model name",

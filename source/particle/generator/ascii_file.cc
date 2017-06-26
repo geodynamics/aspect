@@ -83,7 +83,7 @@ namespace aspect
                                    "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
                                    "in which the ASPECT source files were located when ASPECT was "
                                    "compiled. This interpretation allows, for example, to reference "
-                                   "files located in the 'data/' subdirectory of ASPECT. ");
+                                   "files located in the `data/' subdirectory of ASPECT. ");
                 prm.declare_entry ("Data file name", "particle.dat",
                                    Patterns::Anything (),
                                    "The name of the particle file.");

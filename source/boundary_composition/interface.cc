@@ -57,8 +57,8 @@ namespace aspect
                                           const unsigned int       /*compositional_field*/) const
     {
       AssertThrow(false,
-                  ExcMessage("The boundary composition plugin has to implement a function called 'composition' "
-                             "with four arguments or a function 'boundary_composition' with three arguments. "
+                  ExcMessage("The boundary composition plugin has to implement a function called `composition' "
+                             "with four arguments or a function `boundary_composition' with three arguments. "
                              "The function with four arguments is deprecated and will "
                              "be removed in a later version of ASPECT."));
       return numbers::signaling_nan<double>();
@@ -126,7 +126,7 @@ namespace aspect
       // errors because the value obviously does not conform to the Pattern.
       AssertThrow(model_name != "unspecified",
                   ExcMessage("You need to select a boundary model for the composition "
-                             "('set Model name' in 'subsection Boundary composition model')."));
+                             "(`set Model name' in `subsection Boundary composition model')."));
 
       return std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
                                                                     "Boundary composition model::Model name");

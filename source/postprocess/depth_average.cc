@@ -245,7 +245,7 @@ namespace aspect
               data_out_stack.write (f, output_format);
 
               AssertThrow (f, ExcMessage("Writing data to <" + filename +
-                                         "> did not succeed in the 'point values' "
+                                         "> did not succeed in the `point values' "
                                          "postprocessor."));
             }
           else
@@ -277,7 +277,7 @@ namespace aspect
                 }
 
               AssertThrow (f, ExcMessage("Writing data to <" + filename +
-                                         "> did not succeed in the 'point values' "
+                                         "> did not succeed in the `point values' "
                                          "postprocessor."));
             }
         }

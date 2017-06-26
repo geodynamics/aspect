@@ -57,8 +57,8 @@ namespace aspect
                                           const Point<dim>        &/*position*/) const
     {
       AssertThrow(false,
-                  ExcMessage("The boundary temperature plugin has to implement a function called 'temperature' "
-                             "with three arguments or a function 'boundary_temperature' with two arguments. "
+                  ExcMessage("The boundary temperature plugin has to implement a function called `temperature' "
+                             "with three arguments or a function `boundary_temperature' with two arguments. "
                              "The function with three arguments is deprecated and will "
                              "be removed in a later version of ASPECT."));
       return numbers::signaling_nan<double>();

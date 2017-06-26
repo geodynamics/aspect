@@ -107,7 +107,7 @@ namespace aspect
       // errors because the value obviously does not conform to the Pattern.
       AssertThrow(model_name != "unspecified",
                   ExcMessage("You need to select a Gravity model "
-                             "('set Model name' in 'subsection Gravity model')."));
+                             "(`set Model name' in `subsection Gravity model')."));
 
       return std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
                                                                     "Gravity model::Model name");

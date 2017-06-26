@@ -93,7 +93,7 @@ namespace aspect
                                                   "$\\eta \\varepsilon(\\mathbf u):\\varepsilon(\\mathbf u)$ "
                                                   "where $\\eta$ is itself a function of temperature, "
                                                   "pressure and strain rate. In the compressible case, "
-                                                  "the quantity that's computed is "
+                                                  "the quantity that is computed is "
                                                   "$\\eta [\\varepsilon(\\mathbf u)-\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u))\\mathbf I]:"
                                                   "[\\varepsilon(\\mathbf u)-\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u))\\mathbf I]$.")
     }

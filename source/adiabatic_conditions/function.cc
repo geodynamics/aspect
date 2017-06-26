@@ -94,7 +94,7 @@ namespace aspect
                           Patterns::Anything(),
                           "Expression for the adiabatic pressure, "
                           "temperature, and density separated by "
-                          "semicolons as a function of 'depth'.");
+                          "semicolons as a function of `depth'.");
         prm.declare_entry("Variable names","depth");
         prm.leave_subsection();
       }
