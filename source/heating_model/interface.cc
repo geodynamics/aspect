@@ -85,7 +85,7 @@ namespace aspect
                                            const Point<dim> &) const
     {
       Assert(false,
-             ExcMessage ("There is no 'evaluate()' or 'specific_heating_rate()' function implemented in the heating model!"));
+             ExcMessage ("There is no `evaluate()' or `specific_heating_rate()' function implemented in the heating model!"));
       return 0.0;
     }
 
@@ -344,7 +344,7 @@ namespace aspect
                            "physical viewpoint, shear heating should always be used but may "
                            "be undesirable when comparing results with known benchmarks that "
                            "do not include this term in the temperature equation.\n\n"
-                           "Warning: deprecated! Add 'shear heating' to the 'List of model "
+                           "Warning: deprecated! Add `shear heating' to the 'List of model "
                            "names' instead.");
         prm.declare_entry ("Include adiabatic heating", "false",
                            Patterns::Bool (),
@@ -352,7 +352,7 @@ namespace aspect
                            "physical viewpoint, adiabatic heating should always be used but may "
                            "be undesirable when comparing results with known benchmarks that "
                            "do not include this term in the temperature equation.\n\n"
-                           "Warning: deprecated! Add 'adiabatic heating' to the 'List of model "
+                           "Warning: deprecated! Add `adiabatic heating' to the 'List of model "
                            "names' instead.");
         prm.declare_entry ("Include latent heat", "false",
                            Patterns::Bool (),
@@ -361,7 +361,7 @@ namespace aspect
                            "always be used but may be undesirable when comparing results with known "
                            "benchmarks that do not include this term in the temperature equation "
                            "or when dealing with a model without phase transitions.\n\n"
-                           "Warning: deprecated! Add 'latent heat' to the 'List of model "
+                           "Warning: deprecated! Add `latent heat' to the 'List of model "
                            "names' instead.");
       }
       prm.leave_subsection ();

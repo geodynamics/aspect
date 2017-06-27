@@ -121,7 +121,7 @@ namespace aspect
                                               "\n\n"
                                               "To use this refinement criterion, you may want to combine "
                                               "it with other refinement criteria, setting the 'Normalize "
-                                              "individual refinement criteria' flag and using the 'max' "
+                                              "individual refinement criteria' flag and using the `max' "
                                               "setting for 'Refinement criteria merge operation'.")
   }
 }

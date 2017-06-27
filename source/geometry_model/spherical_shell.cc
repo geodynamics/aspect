@@ -432,8 +432,8 @@ namespace aspect
                                    "and one, and if the opening angle set in the input file "
                                    "is less than 360, then left and right boundaries are "
                                    "assigned indicators two and three. These boundaries can "
-                                   "also be referenced using the symbolic names 'inner', 'outer' "
-                                   "and (if applicable) 'left', 'right'."
+                                   "also be referenced using the symbolic names `inner', `outer' "
+                                   "and (if applicable) `left', `right'."
                                    "\n\n"
                                    "In 3d, inner and "
                                    "outer indicators are treated as in 2d. If the opening "
@@ -441,7 +441,7 @@ namespace aspect
                                    "intersection of a spherical shell and the first octant, "
                                    "then indicator 2 is at the face $x=0$, 3 at $y=0$, "
                                    "and 4 at $z=0$. These last three boundaries can then also "
-                                   "be referred to as 'east', 'west' and 'south' symbolically "
+                                   "be referred to as `east', `west' and `south' symbolically "
                                    "in input files.")
   }
 }

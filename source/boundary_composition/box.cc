@@ -145,7 +145,7 @@ namespace aspect
       // has the requisite number of elements
       for (unsigned int f=0; f<2*dim; ++f)
         AssertThrow (composition_values[f].size() == this->n_compositional_fields(),
-                     ExcMessage (std::string("The specification of boundary composition values for the 'box' model "
+                     ExcMessage (std::string("The specification of boundary composition values for the `box' model "
                                              "requires as many values on each face of the box as there are compositional "
                                              "fields. However, for face ")
                                  +

@@ -37,8 +37,8 @@ namespace aspect
                          const unsigned int compositional_index) const
     {
       AssertThrow(this->introspection().compositional_name_exists("porosity"),
-                  ExcMessage("The initial composition plugin 'porosity' did not find a "
-                             "compositional field called 'porosity' to initialize. Please add a "
+                  ExcMessage("The initial composition plugin `porosity' did not find a "
+                             "compositional field called `porosity' to initialize. Please add a "
                              "compositional field with this name."));
 
       const MaterialModel::MeltFractionModel<dim> *material_model =
@@ -46,7 +46,7 @@ namespace aspect
       AssertThrow(material_model != NULL,
                   ExcMessage("The used material model is not derived from the 'MeltFractionModel' class, "
                              "and therefore does not support computing equilibrium melt fractions. "
-                             "This is incompatible with the 'porosity' "
+                             "This is incompatible with the `porosity' "
                              "initial composition plugin, which needs to compute these melt fractions."));
 
       const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity");
@@ -90,10 +90,10 @@ namespace aspect
                                               "A class that implements initial conditions for the porosity field "
                                               "by computing the equilibrium melt fraction for the given initial "
                                               "condition and reference pressure profile. Note that this plugin only "
-                                              "works if there is a compositional field called 'porosity', and the "
+                                              "works if there is a compositional field called `porosity', and the "
                                               "used material model implements the 'MeltFractionModel' interface. "
                                               "For all compositional fields except porosity this plugin returns 0.0, "
-                                              "and they are therefore not changed as long as the default 'add' "
+                                              "and they are therefore not changed as long as the default `add' "
                                               "operator is selected for this plugin.")
   }
 }

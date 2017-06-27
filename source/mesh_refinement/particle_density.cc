@@ -35,8 +35,8 @@ namespace aspect
       const Postprocess::Particles<dim> *particle_postprocessor = this->template find_postprocessor<Postprocess::Particles<dim> >();
 
       AssertThrow(particle_postprocessor != 0,
-                  ExcMessage("The mesh refinement plugin 'particle density' requires the "
-                             "postprocessor plugin 'particles' to be selected. Please activate the "
+                  ExcMessage("The mesh refinement plugin `particle density' requires the "
+                             "postprocessor plugin `particles' to be selected. Please activate the "
                              "particles or deactivate this mesh refinement plugin."));
 
       const std::multimap<Particle::types::LevelInd, Particle::Particle<dim> > *particles = &particle_postprocessor->get_particle_world().get_particles();

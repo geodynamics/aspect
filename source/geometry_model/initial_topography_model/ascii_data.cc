@@ -146,8 +146,8 @@ namespace aspect
                                              "contain the number of grid points in each dimension as "
                                              "for example '# POINTS: 3 3'. "
                                              "The order of the data columns "
-                                             "has to be 'x', 'Topography [m]' in a 2d model and "
-                                             " 'x', 'y', 'Topography [m]' in a 3d model, which means that "
+                                             "has to be `x', 'Topography [m]' in a 2d model and "
+                                             " `x', `y', 'Topography [m]' in a 3d model, which means that "
                                              "there has to be a single column "
                                              "containing the topography. "
                                              "Note that the data in the input "
@@ -158,12 +158,12 @@ namespace aspect
                                              "If you use a spherical model, "
                                              "then the data will still be handled as Cartesian, "
                                              "however the assumed grid changes. "
-                                             "'x' will be replaced by the azimuth angle in radians "
-                                             " and 'y' by the polar angle in radians measured "
+                                             "`x' will be replaced by the azimuth angle in radians "
+                                             " and `y' by the polar angle in radians measured "
                                              "positive from the north pole. The grid will be assumed to be "
                                              "a longitude-colatitude grid. Note that the order "
-                                             "of spherical coordinates is 'phi', 'theta' "
-                                             "and not 'theta', 'phi', since this allows "
+                                             "of spherical coordinates is `phi', `theta' "
+                                             "and not `theta', `phi', since this allows "
                                              "for dimension independent expressions.")
   }
 }

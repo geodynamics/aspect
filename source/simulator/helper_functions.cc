@@ -1524,14 +1524,14 @@ namespace aspect
       {
         AssertThrow(heating_model_manager.adiabatic_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
-                               "The 'isothermal compression' formulation expects adiabatic heating to be enabled, "
-                               "but the 'adiabatic heating' plugin has not been selected in the input file. "
+                               "The `isothermal compression' formulation expects adiabatic heating to be enabled, "
+                               "but the `adiabatic heating' plugin has not been selected in the input file. "
                                "Please check the consistency of your input file."));
 
         AssertThrow(heating_model_manager.shear_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
-                               "The 'isothermal compression' formulation expects shear heating to be enabled, "
-                               "but the 'shear heating' plugin has not been selected in the input file. "
+                               "The `isothermal compression' formulation expects shear heating to be enabled, "
+                               "but the `shear heating' plugin has not been selected in the input file. "
                                "Please check the consistency of your input file."));
       }
     else if (parameters.formulation == Parameters<dim>::Formulation::boussinesq_approximation)
@@ -1539,27 +1539,27 @@ namespace aspect
         AssertThrow(!heating_model_manager.adiabatic_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
                                "The 'Boussinesq approximation' formulation expects adiabatic heating to be disabled, "
-                               "but the 'adiabatic heating' plugin has been selected in the input file. "
+                               "but the `adiabatic heating' plugin has been selected in the input file. "
                                "Please check the consistency of your input file."));
 
         AssertThrow(!heating_model_manager.shear_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
                                "The 'Boussinesq approximation' formulation expects shear heating to be disabled, "
-                               "but the 'shear heating' plugin has been selected in the input file. "
+                               "but the `shear heating' plugin has been selected in the input file. "
                                "Please check the consistency of your input file."));
       }
     else if (parameters.formulation == Parameters<dim>::Formulation::anelastic_liquid_approximation)
       {
         AssertThrow(heating_model_manager.adiabatic_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
-                               "The 'anelastic liquid approximation' formulation expects adiabatic heating to be enabled, "
-                               "but the 'adiabatic heating' plugin has not been selected in the input file. "
+                               "The `anelastic liquid approximation' formulation expects adiabatic heating to be enabled, "
+                               "but the `adiabatic heating' plugin has not been selected in the input file. "
                                "Please check the consistency of your input file."));
 
         AssertThrow(heating_model_manager.shear_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
-                               "The 'anelastic liquid approximation' formulation expects shear heating to be enabled, "
-                               "but the 'shear heating' plugin has not been selected in the input file. "
+                               "The `anelastic liquid approximation' formulation expects shear heating to be enabled, "
+                               "but the `shear heating' plugin has not been selected in the input file. "
                                "Please check the consistency of your input file."));
 
         const bool use_simplified_adiabatic_heating =
@@ -1568,7 +1568,7 @@ namespace aspect
 
         AssertThrow(use_simplified_adiabatic_heating == true,
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
-                               "The 'anelastic liquid approximation' formulation expects adiabatic heating to use "
+                               "The `anelastic liquid approximation' formulation expects adiabatic heating to use "
                                "a simplified heating term that neglects dynamic pressure influences, "
                                "but the adiabatic heating plugin does not report to simplify this term. "
                                "Please check the consistency of your input file."));

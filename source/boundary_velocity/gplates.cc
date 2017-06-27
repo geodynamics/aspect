@@ -792,7 +792,7 @@ namespace aspect
                              "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
                              "in which the ASPECT source files were located when ASPECT was "
                              "compiled. This interpretation allows, for example, to reference "
-                             "files located in the 'data/' subdirectory of ASPECT. ");
+                             "files located in the `data/' subdirectory of ASPECT. ");
           prm.declare_entry ("Velocity file name", "phi.%d",
                              Patterns::Anything (),
                              "The file name of the material data. Provide file in format: "
@@ -830,10 +830,10 @@ namespace aspect
                              "plate reconstruction.");
           prm.declare_entry ("Point one", "1.570796,0.0",
                              Patterns::Anything (),
-                             "Point that determines the plane in which a 2D model lies in. Has to be in the format 'a,b' where a and b are theta (polar angle)  and phi in radians.");
+                             "Point that determines the plane in which a 2D model lies in. Has to be in the format `a,b' where a and b are theta (polar angle)  and phi in radians.");
           prm.declare_entry ("Point two", "1.570796,1.570796",
                              Patterns::Anything (),
-                             "Point that determines the plane in which a 2D model lies in. Has to be in the format 'a,b' where a and b are theta (polar angle)  and phi in radians.");
+                             "Point that determines the plane in which a 2D model lies in. Has to be in the format `a,b' where a and b are theta (polar angle)  and phi in radians.");
           prm.declare_entry ("Lithosphere thickness", "100000",
                              Patterns::Double (0),
                              "Determines the depth of the lithosphere, so that the GPlates velocities can be applied at the sides of the model "

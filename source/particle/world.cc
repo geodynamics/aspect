@@ -1498,7 +1498,7 @@ namespace aspect
                              "Weight that is associated with the computational load of "
                              "a single particle. The sum of particle weights will be added "
                              "to the sum of cell weights to determine the partitioning of "
-                             "the mesh if the 'repartition' particle load balancing strategy "
+                             "the mesh if the `repartition' particle load balancing strategy "
                              "is selected. The optimal weight depends on the used "
                              "integrator and particle properties. In general for a more "
                              "expensive integrator and more expensive properties a larger "
@@ -1581,7 +1581,7 @@ namespace aspect
                 {
                   particle_load_balancing = ParticleLoadBalancing::no_balancing;
                   AssertThrow(strategies.size() == 1,
-                              ExcMessage("The particle load balancing strategy 'none' is not compatible "
+                              ExcMessage("The particle load balancing strategy `none' is not compatible "
                                          "with any other strategy, yet it seems another is selected as well. "
                                          "Please check the parameter file."));
                 }

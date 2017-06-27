@@ -794,7 +794,7 @@ namespace aspect
                              "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
                              "in which the ASPECT source files were located when ASPECT was "
                              "compiled. This interpretation allows, for example, to reference "
-                             "files located in the 'data/' subdirectory of ASPECT. ");
+                             "files located in the `data/' subdirectory of ASPECT. ");
           prm.declare_entry ("Material file names", "pyr-ringwood88.txt",
                              Patterns::List (Patterns::Anything()),
                              "The file names of the material data (material "
@@ -805,7 +805,7 @@ namespace aspect
                              "for the whole model domain, and compositional fields "
                              "are ignored. 2. If there is one more file name than the "
                              "number of compositional fields, then the first file is "
-                             "assumed to define a 'background composition' that is "
+                             "assumed to define a `background composition' that is "
                              "modified by the compositional fields. If there are "
                              "exactly as many files as compositional fields, the fields are "
                              "assumed to represent the fractions of different materials "

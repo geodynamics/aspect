@@ -125,7 +125,7 @@ namespace aspect
             prm.declare_entry ("Data output format", "vtu",
                                Patterns::Selection (pattern_of_names + "|none"),
                                "File format to output raw particle data in. "
-                               "If you select 'none' no output will be "
+                               "If you select `none' no output will be "
                                "written."
                                "Select one of the following models:\n\n"
                                +

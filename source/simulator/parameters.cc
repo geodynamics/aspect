@@ -109,8 +109,8 @@ namespace aspect
                        "terms of meters per year (or, sometimes, centimeters per year). "
                        "On the other hand, for non-dimensional computations, one wants "
                        "results in their natural unit system as used inside the code. "
-                       "If this flag is set to 'true' conversion to years happens; if "
-                       "it is 'false', no such conversion happens. Note that when 'true', "
+                       "If this flag is set to `true' conversion to years happens; if "
+                       "it is `false', no such conversion happens. Note that when `true', "
                        "some input such as prescribed velocities should also use years "
                        "instead of seconds.");
 
@@ -155,9 +155,9 @@ namespace aspect
                        "The kind of scheme used to resolve the nonlinearity in the system. "
                        "'IMPES' is the classical IMplicit Pressure Explicit Saturation scheme "
                        "in which ones solves the temperatures and Stokes equations exactly "
-                       "once per time step, one after the other. The 'iterated IMPES' scheme "
+                       "once per time step, one after the other. The `iterated IMPES' scheme "
                        "iterates this decoupled approach by alternating the solution of the "
-                       "temperature and Stokes systems. The 'iterated Stokes' scheme solves "
+                       "temperature and Stokes systems. The `iterated Stokes' scheme solves "
                        "the temperature equation once at the beginning of each time step "
                        "and then iterates out the solution of the Stokes equation. The 'Stokes only' "
                        "scheme only solves the Stokes system and ignores compositions and the "
@@ -171,8 +171,8 @@ namespace aspect
                        Patterns::Double(0,1),
                        "A relative tolerance up to which the nonlinear solver "
                        "will iterate. This parameter is only relevant if "
-                       "Nonlinear solver scheme is set to 'iterated Stokes' or "
-                       "'iterated IMPES'.");
+                       "Nonlinear solver scheme is set to `iterated Stokes' or "
+                       "`iterated IMPES'.");
 
     prm.declare_entry ("Pressure normalization", "surface",
                        Patterns::Selection ("surface|volume|no"),
@@ -309,13 +309,13 @@ namespace aspect
     prm.declare_entry ("Temperature solver tolerance", "1e-12",
                        Patterns::Double(0,1),
                        "The relative tolerance up to which the linear system for "
-                       "the temperature system gets solved. See 'linear solver "
+                       "the temperature system gets solved. See `linear solver "
                        "tolerance' for more details.");
 
     prm.declare_entry ("Composition solver tolerance", "1e-12",
                        Patterns::Double(0,1),
                        "The relative tolerance up to which the linear system for "
-                       "the composition system gets solved. See 'linear solver "
+                       "the composition system gets solved. See `linear solver "
                        "tolerance' for more details.");
 
     prm.enter_subsection ("Solver parameters");
@@ -441,7 +441,7 @@ namespace aspect
                          "is set to true, two additional pressures (the fluid pressure and the "
                          "compaction pressure) will be added to the finite element. "
                          "Including melt transport in the simulation also requires that there is "
-                         "one compositional field that has the name 'porosity'. This field will "
+                         "one compositional field that has the name `porosity'. This field will "
                          "be used for computing the additional pressures and the melt velocity, "
                          "and has a different advection equation than other compositional fields, "
                          "as it is effectively advected with the melt velocity.");
@@ -547,9 +547,9 @@ namespace aspect
                          "provided for this part of the boundary) "
                          "and each value must be one of the currently implemented boundary "
                          "velocity models. ``selector'' is an optional string given as a subset "
-                         "of the letters 'xyz' that allows you to apply the boundary conditions "
+                         "of the letters `xyz' that allows you to apply the boundary conditions "
                          "only to the components listed. As an example, '1 y: function' applies "
-                         "the type 'function' to the y component on boundary 1. Without a selector "
+                         "the type `function' to the y component on boundary 1. Without a selector "
                          "it will affect all components of the velocity."
                          "\n\n"
                          "Note that the no-slip boundary condition is "
@@ -581,9 +581,9 @@ namespace aspect
                          "provided for this part of the boundary) "
                          "and each value must be one of the currently implemented boundary "
                          "traction models. ``selector'' is an optional string given as a subset "
-                         "of the letters 'xyz' that allows you to apply the boundary conditions "
+                         "of the letters `xyz' that allows you to apply the boundary conditions "
                          "only to the components listed. As an example, '1 y: function' applies "
-                         "the type 'function' to the y component on boundary 1. Without a selector "
+                         "the type `function' to the y component on boundary 1. Without a selector "
                          "it will affect all components of the traction.");
       prm.declare_entry ("Remove nullspace", "",
                          Patterns::MultipleSelection("net rotation|angular momentum|"
@@ -1063,12 +1063,12 @@ namespace aspect
         check_file.close();
       }
     else
-      AssertThrow (false, ExcMessage ("Resume computation parameter must be either 'true', 'false', or 'auto'."));
+      AssertThrow (false, ExcMessage ("Resume computation parameter must be either `true', `false', or `auto'."));
 #ifndef DEAL_II_WITH_ZLIB
     AssertThrow (resume_computation == false,
-                 ExcMessage ("You need to have deal.II configured with the 'libz' "
+                 ExcMessage ("You need to have deal.II configured with the `libz' "
                              "option if you want to resume a computation from a checkpoint, but deal.II "
-                             "did not detect its presence when you called 'cmake'."));
+                             "did not detect its presence when you called `cmake'."));
 #endif
 
     surface_pressure                = prm.get_double ("Surface pressure");
@@ -1224,9 +1224,9 @@ namespace aspect
       AssertThrow ((checkpoint_time_secs == 0)
                    &&
                    (checkpoint_steps == 0),
-                   ExcMessage ("You need to have deal.II configured with the 'libz' "
+                   ExcMessage ("You need to have deal.II configured with the `libz' "
                                "option if you want to generate checkpoints, but deal.II "
-                               "did not detect its presence when you called 'cmake'."));
+                               "did not detect its presence when you called `cmake'."));
 #endif
     }
     prm.leave_subsection ();
@@ -1340,7 +1340,7 @@ namespace aspect
         {
           AssertThrow (false, ExcMessage ("If melt transport is included in the model, "
                                           "there has to be at least one compositional field "
-                                          "with the name 'porosity'."));
+                                          "with the name `porosity'."));
         }
 
       const std::vector<int> n_normalized_fields = Utilities::string_to_int

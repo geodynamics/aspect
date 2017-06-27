@@ -575,7 +575,7 @@ namespace aspect
                                   "dynamic topography",
                                   "A postprocessor that computes a measure of dynamic topography "
                                   "based on the stress at the surface and bottom. The data is written into text "
-                                  "files named 'dynamic\\_topography.NNNNN' in the output directory, "
+                                  "files named `dynamic\\_topography.NNNNN' in the output directory, "
                                   "where NNNNN is the number of the time step."
                                   "\n\n"
                                   "The exact approach works as follows: At the centers of all cells "

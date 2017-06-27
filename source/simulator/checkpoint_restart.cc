@@ -169,9 +169,9 @@ namespace aspect
         }
 #else
       AssertThrow (false,
-                   ExcMessage ("You need to have deal.II configured with the 'libz' "
+                   ExcMessage ("You need to have deal.II configured with the `libz' "
                                "option to support checkpoint/restart, but deal.II "
-                               "did not detect its presence when you called 'cmake'."));
+                               "did not detect its presence when you called `cmake'."));
 #endif
 
     }
@@ -300,9 +300,9 @@ namespace aspect
         }
 #else
         AssertThrow (false,
-                     ExcMessage ("You need to have deal.II configured with the 'libz' "
+                     ExcMessage ("You need to have deal.II configured with the `libz' "
                                  "option to support checkpoint/restart, but deal.II "
-                                 "did not detect its presence when you called 'cmake'."));
+                                 "did not detect its presence when you called `cmake'."));
 #endif
         signals.post_resume_load_user_data(triangulation);
       }

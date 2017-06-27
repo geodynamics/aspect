@@ -681,7 +681,7 @@ namespace aspect
                                    "material parameters required for the modelling of melt transport, "
                                    "including a source term for the porosity according to the melting "
                                    "model for dry peridotite of \\cite{KSL2003}. This also includes a "
-                                   "computation of the latent heat of melting (if the 'latent heat' "
+                                   "computation of the latent heat of melting (if the `latent heat' "
                                    "heating model is active)."
                                    "\n\n"
                                    "Most of the material properties are constant, except for the shear, "
