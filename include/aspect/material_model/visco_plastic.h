@@ -35,7 +35,7 @@ namespace aspect
      * by strain to be added to the MaterialModel::MaterialModelOutputs structure
      * and filled in the MaterialModel::Interface::evaluate() function.
      */
-    template<int dim>
+    template <int dim>
     class PlasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
       public:

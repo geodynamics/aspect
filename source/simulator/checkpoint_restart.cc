@@ -330,7 +330,7 @@ namespace aspect
 {
 
   template <int dim>
-  template<class Archive>
+  template <class Archive>
   void Simulator<dim>::serialize (Archive &ar, const unsigned int)
   {
     ar &time;

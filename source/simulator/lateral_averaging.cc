@@ -35,7 +35,7 @@ namespace aspect
 {
 
   template <int dim>
-  template<class FUNCTOR>
+  template <class FUNCTOR>
   void LateralAveraging<dim>::compute_lateral_average(std::vector<double> &values,
                                                       FUNCTOR &fctr) const
   {

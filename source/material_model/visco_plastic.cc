@@ -39,7 +39,7 @@ namespace aspect
       }
     }
 
-    template<int dim>
+    template <int dim>
     PlasticAdditionalOutputs<dim>::PlasticAdditionalOutputs (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
@@ -48,7 +48,7 @@ namespace aspect
     {}
 
 
-    template<int dim>
+    template <int dim>
     const std::vector<double> &
     PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
     {

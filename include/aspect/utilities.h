@@ -943,7 +943,7 @@ namespace aspect
      * average (p = 0), arithmetic average (p = 1), and maximum (p >= 1000) ) is, except for the harmonic
      * average even more tolerant of negative values, because they only require the sum of weights to be non-zero.
      */
-    template<typename T>
+    template <typename T>
     T derivative_of_weighted_p_norm_average (const double averaged_parameter,
                                              const std::vector<double> &weights,
                                              const std::vector<double> &values,
@@ -967,7 +967,7 @@ namespace aspect
      * reset to a maximum of one, and if it is smaller then one, a safety_factor scales the alpha to make
      * sure that the 1-alpha won't get to close to zero.
      */
-    template<int dim>
+    template <int dim>
     double compute_spd_factor(const double eta,
                               const SymmetricTensor<2,dim> &strain_rate,
                               const SymmetricTensor<2,dim> &dviscosities_dstrain_rate,

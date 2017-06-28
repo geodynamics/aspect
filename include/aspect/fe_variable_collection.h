@@ -112,7 +112,7 @@ namespace aspect
    * from an instance of VariableDeclaration<dim> but contains additional
    * information that can be queried.
    */
-  template<int dim>
+  template <int dim>
   struct FEVariable: public VariableDeclaration<dim>
   {
       /**

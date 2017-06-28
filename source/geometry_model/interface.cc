@@ -41,7 +41,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     std::map<std::string,types::boundary_id>
     Interface<dim>::get_symbolic_boundary_names_map() const
     {
@@ -51,7 +51,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int > >
     Interface<dim>::get_periodic_boundary_pairs() const
     {
