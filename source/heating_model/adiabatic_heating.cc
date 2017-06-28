@@ -27,7 +27,7 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    template<int dim>
+    template <int dim>
     bool
     AdiabaticHeating<dim>::use_simplified_adiabatic_heating() const
     {

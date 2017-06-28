@@ -568,7 +568,7 @@ namespace aspect
      * The format of the additional quantities defined in derived classes
      * should be the same as for MaterialModel::MaterialModelOutputs.
      */
-    template<int dim>
+    template <int dim>
     class AdditionalMaterialOutputs
     {
       public:
@@ -603,7 +603,7 @@ namespace aspect
      * This class is then this base class for additional named material model outputs
      * to be added to the MaterialModel::MaterialModelOutputs structure.
      */
-    template<int dim>
+    template <int dim>
     class NamedAdditionalMaterialOutputs : public AdditionalMaterialOutputs<dim>
     {
       public:
@@ -649,7 +649,7 @@ namespace aspect
      * the MaterialModel::MaterialModelOutputs structure and filled in the
      * MaterialModel::Interface::evaluate() function.
      */
-    template<int dim>
+    template <int dim>
     class SeismicAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
@@ -679,7 +679,7 @@ namespace aspect
      * MaterialModel::MaterialModelOutputs structure and filled in the
      * MaterialModel::Interface::evaluate() function.
      */
-    template<int dim>
+    template <int dim>
     class AdditionalMaterialOutputsStokesRHS: public AdditionalMaterialOutputs<dim>
     {
       public:

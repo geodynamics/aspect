@@ -413,12 +413,12 @@ namespace aspect
          * It takes an iterator range of vectors and returns the element-wise
          * sum of the values.
          */
-        template<typename VectorType>
+        template <typename VectorType>
         struct ResidualWeightSum
         {
           typedef VectorType result_type;
 
-          template<typename InputIterator>
+          template <typename InputIterator>
           VectorType operator()(InputIterator first, InputIterator last) const
           {
             // If there are no slots to call, just return the

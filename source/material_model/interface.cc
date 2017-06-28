@@ -690,7 +690,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     NamedAdditionalMaterialOutputs<dim>::
     NamedAdditionalMaterialOutputs(const std::vector<std::string> &output_names)
       :
@@ -699,14 +699,14 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     NamedAdditionalMaterialOutputs<dim>::
     ~NamedAdditionalMaterialOutputs()
     {}
 
 
 
-    template<int dim>
+    template <int dim>
     const std::vector<std::string> &
     NamedAdditionalMaterialOutputs<dim>::get_names() const
     {
@@ -728,7 +728,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     SeismicAdditionalOutputs<dim>::SeismicAdditionalOutputs (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(make_seismic_additional_outputs_names()),
@@ -738,7 +738,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     const std::vector<double> &
     SeismicAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
     {

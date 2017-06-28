@@ -217,7 +217,7 @@ namespace aspect
 
   namespace
   {
-    template<int dim>
+    template <int dim>
     std::vector<ComponentMask>
     make_component_mask_sequence(const FEVariable<dim> &variable)
     {

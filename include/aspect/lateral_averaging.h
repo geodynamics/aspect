@@ -175,7 +175,7 @@ namespace aspect
        * depth slices.
        * @param fctr Instance of a class satisfying the signature above.
        */
-      template<class FUNCTOR>
+      template <class FUNCTOR>
       void compute_lateral_average(std::vector<double> &values,
                                    FUNCTOR &fctr) const;
 

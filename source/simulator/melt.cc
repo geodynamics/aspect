@@ -63,7 +63,7 @@ namespace aspect
   {
     namespace
     {
-      template<int dim>
+      template <int dim>
       bool
       is_velocity_or_pressures (const Introspection<dim> &introspection,
                                 const unsigned int p_c_component_index,

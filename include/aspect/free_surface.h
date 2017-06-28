@@ -28,7 +28,7 @@ namespace aspect
 {
   using namespace dealii;
 
-  template<int dim>
+  template <int dim>
   class FreeSurfaceHandler
   {
     public:
