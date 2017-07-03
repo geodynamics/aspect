@@ -30,7 +30,7 @@ set Resume computation                     = false
 set Start time                             = 0
 
 set Use years in output instead of seconds = true
-
+set Use conduction timestep                = false
 
 subsection Boundary temperature model
   # Select one of the following models:

@@ -15,7 +15,7 @@ set Temperature solver tolerance           = 1e-15
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
-
+set Use conduction timestep 		   = false
 
 subsection Geometry model
   set Model name = box

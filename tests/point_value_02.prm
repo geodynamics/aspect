@@ -10,7 +10,7 @@ set Use years in output instead of seconds = true
 
 set Linear solver tolerance                = 1e-7
 set Pressure normalization                 = volume
-
+set Use conduction timestep		   = false
 
 subsection Geometry model
   set Model name = box

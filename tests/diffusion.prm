@@ -38,6 +38,7 @@ set Dimension = 2
 # particular, one can choose $c>1$) though a CFL number significantly larger
 # than one will yield rather diffusive solutions. Units: None.
 set CFL number                             = 0.01
+set Use conduction timestep                = false
 
 # The end time of the simulation. Units: years if the 'Use years in output
 # instead of seconds' parameter is set; seconds otherwise.
