@@ -100,7 +100,7 @@ namespace aspect
           /**
            * The number of radial layers of particles that will be generated.
            * In particular this parameter determines the radial spacing between
-           * particle layers as Pmax[0] - P_min[0] / radial$_$layers.
+           * particle layers as Pmax[0] - P_min[0] / radial_layers.
            */
           unsigned int radial_layers;
 
