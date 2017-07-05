@@ -49,7 +49,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::vector<double> &
+    const std::vector<double>
     PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
       AssertIndexRange (idx, 2);

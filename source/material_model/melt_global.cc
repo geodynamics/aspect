@@ -110,6 +110,8 @@ namespace aspect
     {
       std::vector<double> old_porosity(in.position.size());
 
+      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
+
       // we want to get the porosity field from the old solution here,
       // because we need a field that is not updated in the nonlinear iterations
       if (this->include_melt_transport() && in.cell
@@ -183,6 +185,21 @@ namespace aspect
                                                * out.densities[i]  / this->get_timestep();
                   else
                     out.reaction_terms[i][c] = 0.0;
+
+                  // fill reaction rate outputs if the model uses operator splitting
+                  if(this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::operator_splitting)
+                    {
+                      if(reaction_rate_out != NULL)
+                        {
+                          if (c == peridotite_idx && this->get_timestep_number() > 0)
+                            reaction_rate_out->reaction_rates[i][c] = out.reaction_terms[i][c] / this->get_timestep() ;
+                          else if (c == porosity_idx && this->get_timestep_number() > 0)
+                            reaction_rate_out->reaction_rates[i][c] = melting_rate / this->get_timestep();
+                          else
+                            reaction_rate_out->reaction_rates[i][c] = 0.0;
+                        }
+                      out.reaction_terms[i][c] = 0.0;
+                    }
                 }
 
               const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
@@ -348,11 +365,6 @@ namespace aspect
                              "The linear solidus temperature change with pressure. For positive "
                              "values, the solidus gets increased for positive pressures. "
                              "Units: $1/Pa$.");
-          prm.declare_entry ("Peridotite melting entropy change", "-300",
-                             Patterns::Double (),
-                             "The entropy change for the phase transition "
-                             "from solid to melt of peridotite. "
-                             "Units: $J/(kg K)$.");
           prm.declare_entry ("Solid compressibility", "0.0",
                              Patterns::Double (0),
                              "The value of the compressibility of the solid matrix. "
@@ -404,7 +416,6 @@ namespace aspect
           surface_solidus                   = prm.get_double ("Surface solidus");
           depletion_solidus_change          = prm.get_double ("Depletion solidus change");
           pressure_solidus_change           = prm.get_double ("Pressure solidus change");
-          peridotite_melting_entropy_change = prm.get_double ("Peridotite melting entropy change");
           compressibility                   = prm.get_double ("Solid compressibility");
           melt_compressibility              = prm.get_double ("Melt compressibility");
           include_melting_and_freezing      = prm.get_bool ("Include melting and freezing");
@@ -417,6 +428,20 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+    }
+
+
+    template <int dim>
+    void
+    MeltGlobal<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      if (out.template get_additional_output<ReactionRateOutputs<dim> >() == NULL)
+        {
+          const unsigned int n_points = out.viscosities.size();
+          out.additional_outputs.push_back(
+            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            (new MaterialModel::ReactionRateOutputs<dim> (n_points, this->n_compositional_fields())));
+        }
     }
   }
 }

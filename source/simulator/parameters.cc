@@ -144,9 +144,9 @@ namespace aspect
 
     prm.declare_entry ("Reaction time step", "1000.0",
                        Patterns::Double (0),
-                       "Set a time step size reactions of compositional fields and the "
+                       "Set a time step size for computing reactions of compositional fields and the "
                        "temperature field in case operator splitting is used. This is only used "
-                       "when the nonlinear solver scheme ``operator splitting'' is used. "
+                       "when the nonlinear solver scheme ``operator splitting'' is selected. "
                        "Units: Years or seconds, depending on the ``Use years "
                        "in output instead of seconds'' parameter.");
 
@@ -175,7 +175,9 @@ namespace aspect
                        "of solving for the Stokes system, a prescribed velocity and pressure is "
                        "used. The 'Operator splitting' scheme works like the IMPES scheme, only "
                        "that advection and reactions of compositional fields and temperature are "
-                       "solved separately, and can use different time steps.");
+                       "solved separately, and can use different time steps. Note that this will "
+                       "only work if the material/heating model fills the reaction_rates/"
+                       "heating_reaction_rates structures.");
 
     prm.declare_entry ("Nonlinear solver tolerance", "1e-5",
                        Patterns::Double(0,1),

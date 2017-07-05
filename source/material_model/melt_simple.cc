@@ -195,6 +195,8 @@ namespace aspect
       std::vector<double> maximum_melt_fractions(in.position.size());
       std::vector<double> old_porosity(in.position.size());
 
+      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
+
       // we want to get the peridotite field from the old solution here,
       // because it tells us how much of the material was already molten
       if (this->include_melt_transport() && in.cell
@@ -301,6 +303,21 @@ namespace aspect
                                                * out.densities[i] / this->get_timestep();
                   else
                     out.reaction_terms[i][c] = 0.0;
+
+                  // fill reaction rate outputs if the model uses operator splitting
+                  if(this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::operator_splitting)
+                    {
+                      if(reaction_rate_out != NULL)
+                        {
+                          if (c == peridotite_idx && this->get_timestep_number() > 0)
+                            reaction_rate_out->reaction_rates[i][c] = out.reaction_terms[i][c] / this->get_timestep() ;
+                          else if (c == porosity_idx && this->get_timestep_number() > 0)
+                            reaction_rate_out->reaction_rates[i][c] = melting_rate / this->get_timestep();
+                          else
+                            reaction_rate_out->reaction_rates[i][c] = 0.0;
+                        }
+                      out.reaction_terms[i][c] = 0.0;
+                    }
                 }
 
               const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
@@ -666,6 +683,20 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+    }
+
+
+    template <int dim>
+    void
+    MeltSimple<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      if (out.template get_additional_output<ReactionRateOutputs<dim> >() == NULL)
+        {
+          const unsigned int n_points = out.viscosities.size();
+          out.additional_outputs.push_back(
+            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            (new MaterialModel::ReactionRateOutputs<dim> (n_points, this->n_compositional_fields())));
+        }
     }
   }
 }

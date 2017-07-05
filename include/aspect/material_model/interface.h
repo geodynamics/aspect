@@ -632,7 +632,7 @@ namespace aspect
          * Given an index as input argument, return a reference the to vector of
          * values of the additional output with that index.
          */
-        virtual const std::vector<double> &get_nth_output(const unsigned int idx) const = 0;
+        virtual const std::vector<double> get_nth_output(const unsigned int idx) const = 0;
 
         virtual void average (const MaterialAveraging::AveragingOperation /*operation*/,
                               const FullMatrix<double>  &/*projection_matrix*/,
@@ -655,7 +655,7 @@ namespace aspect
       public:
         SeismicAdditionalOutputs(const unsigned int n_points);
 
-        virtual const std::vector<double> &get_nth_output(const unsigned int idx) const;
+        virtual const std::vector<double> get_nth_output(const unsigned int idx) const;
 
         /**
          * Seismic s-wave velocities at the evaluation points passed to
@@ -672,6 +672,24 @@ namespace aspect
         std::vector<double> vp;
     };
 
+
+    /**
+     * Additional output fields for reaction rates to be added to
+     * the MaterialModel::MaterialModelOutputs structure and filled in the
+     * MaterialModel::Interface::evaluate() function.
+     *
+     * These reaction rates are only used in the operator_splitting nonlinear
+     * solver scheme, which allows it to solve reactions between compositional
+     * fields decoupled from the advection, and using a different time step size.
+     * In this case, they are used in addition to (and independent from) any
+     * reaction_terms that a material model defines, which are assembled as usual.
+     * For any other solver scheme, these values are ignored.
+     *
+     * In contrast to the reaction_terms, which are actual changes in composition
+     * rather than reaction rates, and assume equilibrium between the compositional
+     * fields, the reacion_rates defined here allow for reaction processes that are
+     * on shorter time scales than the advection, and disequilibrium reactions.
+     */
     template <int dim>
     class ReactionRateOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
@@ -679,10 +697,12 @@ namespace aspect
         ReactionRateOutputs (const unsigned int n_points,
                              const unsigned int n_comp);
 
-        virtual const std::vector<double> &get_nth_output(const unsigned int idx) const;
+        virtual const std::vector<double> get_nth_output(const unsigned int idx) const;
 
         /**
-         * Reaction rates.
+         * Reaction rates at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
          */
         std::vector<std::vector<double> > reaction_rates;
     };

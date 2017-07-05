@@ -268,7 +268,7 @@ namespace aspect
         {
           heating_model_outputs.heating_source_terms[q] = 0.0;
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
-          heating_model_outputs.heating_reaction_terms[q] = 0.0;
+          heating_model_outputs.rates_of_temperature_change[q] = 0.0;
         }
 
       HeatingModel::HeatingModelOutputs individual_heating_outputs(material_model_inputs.position.size(),
@@ -283,7 +283,7 @@ namespace aspect
             {
               heating_model_outputs.heating_source_terms[q] += individual_heating_outputs.heating_source_terms[q];
               heating_model_outputs.lhs_latent_heat_terms[q] += individual_heating_outputs.lhs_latent_heat_terms[q];
-              heating_model_outputs.heating_reaction_terms[q] += individual_heating_outputs.heating_reaction_terms[q];
+              heating_model_outputs.rates_of_temperature_change[q] += individual_heating_outputs.rates_of_temperature_change[q];
             }
         }
     }
@@ -389,9 +389,8 @@ namespace aspect
       heating_source_terms(n_points,numbers::signaling_nan<double>()),
       // initialize the reaction terms with zeroes because they are not filled
       // in all heating models
-      heating_reaction_terms(n_points,0.0),
+      rates_of_temperature_change(n_points,0.0),
       lhs_latent_heat_terms(n_points,numbers::signaling_nan<double>())
-
     {
     }
 

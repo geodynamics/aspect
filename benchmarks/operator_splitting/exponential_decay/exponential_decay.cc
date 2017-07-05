@@ -1,5 +1,6 @@
 #include <deal.II/base/function_lib.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/melt.h>
 #include <deal.II/base/parameter_handler.h>
@@ -24,6 +25,8 @@ namespace aspect
 
         virtual bool is_compressible () const;
         virtual double reference_viscosity () const;
+
+        virtual void create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
 
       private:
 
@@ -92,7 +95,7 @@ namespace aspect
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       AssertThrow(this->introspection().n_compositional_fields == 1,
-                  ExcMessage("Exponential decay model needs exactly one compositiona field."));
+                  ExcMessage("Exponential decay model needs exactly one compositional field."));
 
       // Fill material model outputs using the base model.
       base_model->evaluate(in,out);
@@ -111,7 +114,7 @@ namespace aspect
             {
               // dC/dt = - lambda * C
               const double decay_constant = half_life > 0.0 ? log(2.0) / half_life : 0.0;
-              reaction_out->reaction_rates[0][q] = - decay_constant / time_scale * in.composition[q][0];
+              reaction_out->reaction_rates[q][0] = - decay_constant / time_scale * in.composition[q][0];
             }
         }
     }
@@ -175,6 +178,20 @@ namespace aspect
       base_model->parse_parameters(prm);
       this->model_dependence = base_model->get_model_dependence();
     }
+
+
+    template <int dim>
+    void
+    ExponentialDecay<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      if (out.template get_additional_output<ReactionRateOutputs<dim> >() == NULL)
+        {
+          const unsigned int n_points = out.viscosities.size();
+          out.additional_outputs.push_back(
+            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            (new MaterialModel::ReactionRateOutputs<dim> (n_points, this->n_compositional_fields())));
+        }
+    }
   }
 
 
@@ -197,7 +214,7 @@ namespace aspect
         {
           // dC/dt = - lambda * C
           const double decay_constant = half_life > 0.0 ? log(2.0) / half_life : 0.0;
-          heating_model_outputs.heating_reaction_terms[q] = - decay_constant / time_scale * in.composition[q][0];
+          heating_model_outputs.rates_of_temperature_change[q] = - decay_constant / time_scale * in.composition[q][0];
 
           heating_model_outputs.heating_source_terms[q] = 0.0;
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;

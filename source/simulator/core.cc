@@ -2251,7 +2251,7 @@ namespace aspect
             current_linearization_point.block(introspection.block_indices.compositional_fields[c])
               = solution.block(introspection.block_indices.compositional_fields[c]);
 
-          // then we compute the reaction of compositional fields and temperature
+          // then we compute the reactions of compositional fields and temperature
           compute_reactions ();
 
           // the Stokes matrix depends on the viscosity. if the viscosity
@@ -2262,6 +2262,7 @@ namespace aspect
           if (stokes_matrix_depends_on_solution() == true)
             rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
+          // finally, we solve the Stokes system
           assemble_stokes_system();
           build_stokes_preconditioner();
           solve_stokes();

@@ -6,7 +6,7 @@
 # In this test case, there is no advection, and we start
 # from a composition (and temperature) that is 1 everywhere
 # in the domain and then decays over time, following the
-# equations for exponetial decay. 
+# equations for exponential decay. 
 
 # We use a plugin that implements the reactions for exponential
 # decay. 

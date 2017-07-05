@@ -6,7 +6,7 @@
 # In comparison to the example 'exponential_decay', the
 # initial comosition depends on x, and there is a constant 
 # horizontal velocity. The composition decays over time, 
-# following the equations for exponetial decay with a decay 
+# following the equations for exponential decay with a decay 
 # rate that depends on y. 
 
 set Additional shared libraries = ./libadvection_reaction.so

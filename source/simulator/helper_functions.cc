@@ -1489,12 +1489,16 @@ namespace aspect
     if (time_step == 0)
       return;
 
+    // we need some temporary vectors to store our updates to composition and temperature in
+    // while we do the time stepping, before we copy them over to the solution vector in the end
     LinearAlgebra::BlockVector distributed_vector (introspection.index_sets.system_partitioning,
                                                    mpi_communicator);
 
     LinearAlgebra::BlockVector distributed_reaction_vector (introspection.index_sets.system_partitioning,
                                                             mpi_communicator);
 
+    // we use a different (potentially smaller) time step than in the advection scheme,
+    // and we want all of our reaction time steps (within one advection step) to have the same size
     const int number_of_reaction_steps = parameters.reaction_time_step < time_step
                                          ?
                                          (int) (time_step / parameters.reaction_time_step)
@@ -1534,15 +1538,25 @@ namespace aspect
     HeatingModel::HeatingModelOutputs heating_model_outputs_T(quadrature_T.size(), introspection.n_compositional_fields);
 
     // add reaction rate outputs
-    out_C.additional_outputs.push_back(
-      std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-      (new MaterialModel::ReactionRateOutputs<dim> (quadrature_C.size(),introspection.n_compositional_fields)));
+    material_model->create_additional_named_outputs(out_C);
+    material_model->create_additional_named_outputs(out_T);
 
-    out_T.additional_outputs.push_back(
-      std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-      (new MaterialModel::ReactionRateOutputs<dim> (quadrature_T.size(),introspection.n_compositional_fields)));
+    MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs_C
+      = out_C.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
 
+    MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs_T
+      = out_T.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
 
+    AssertThrow(reaction_rate_outputs_C != NULL,
+                ExcMessage("You are trying to use the operator splitting solver scheme, "
+                           "but the material model you use does not support operator splitting "
+                           "(it does not create ReactionRateOutputs, which are required for this "
+                           "solver scheme)."));
+
+    // Make a loop first over all cells, than over all reaction time steps, and then over
+    // all degrees of freedom in each element to compute the reactions. This is possible
+    // because the reactions only depend on the temperature and composition values at a given
+    // degree of freedom (and are independent of the solution in other points).
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
                                                    endc = dof_handler.end();
     for (; cell!=endc; ++cell)
@@ -1559,16 +1573,16 @@ namespace aspect
           std::vector<std::vector<double> > accumulated_reactions_C (quadrature_C.size(),std::vector<double> (introspection.n_compositional_fields));
           std::vector<double> accumulated_reactions_T (quadrature_T.size());
 
-          // make the reaction time steps: we have to update the values of compositional fields and the temperature
-          // because temperature and composition might use different finite elements, we loop through their elements
-          // separately, and fill the temperature and the composition material models input for both
+          // Make the reaction time steps: We have to update the values of compositional fields and the temperature.
+          // Because temperature and composition might use different finite elements, we loop through their elements
+          // separately, and update the temperature and the compositions for both.
+          // We can reuse the same material model inputs and outputs structure for each reaction time step.
+          // We store the computed updates to temperature and composition in a separate (accumulated_reactions) vector,
+          // so that we can later copy it over to the solution vector.
           for (unsigned int i=0; i<number_of_reaction_steps; ++i)
             {
-              // loop over composition element
+              // Loop over composition element
               material_model->evaluate(in_C, out_C);
-
-              MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs_C
-                = out_C.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
 
               heating_model_manager.evaluate(in_C, out_C, heating_model_outputs_C);
 
@@ -1578,18 +1592,15 @@ namespace aspect
                     {
                       // simple forward euler
                       in_C.composition[j][c] = in_C.composition[j][c]
-                                               + reaction_time_step_size * reaction_rate_outputs_C->reaction_rates[c][j];
-                      accumulated_reactions_C[j][c] += reaction_time_step_size * reaction_rate_outputs_C->reaction_rates[c][j];
+                                               + reaction_time_step_size * reaction_rate_outputs_C->reaction_rates[j][c];
+                      accumulated_reactions_C[j][c] += reaction_time_step_size * reaction_rate_outputs_C->reaction_rates[j][c];
                     }
                   in_C.temperature[j] = in_C.temperature[j]
-                                        + reaction_time_step_size * heating_model_outputs_C.heating_reaction_terms[j];
+                                        + reaction_time_step_size * heating_model_outputs_C.rates_of_temperature_change[j];
                 }
 
               // loop over temperature element
               material_model->evaluate(in_T, out_T);
-
-              MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs_T
-                = out_T.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
 
               heating_model_manager.evaluate(in_T, out_T, heating_model_outputs_T);
 
@@ -1597,12 +1608,12 @@ namespace aspect
                 {
                   // simple forward euler
                   in_T.temperature[j] = in_T.temperature[j]
-                                        + reaction_time_step_size * heating_model_outputs_T.heating_reaction_terms[j];
-                  accumulated_reactions_T[j] += reaction_time_step_size * heating_model_outputs_T.heating_reaction_terms[j];
+                                        + reaction_time_step_size * heating_model_outputs_T.rates_of_temperature_change[j];
+                  accumulated_reactions_T[j] += reaction_time_step_size * heating_model_outputs_T.rates_of_temperature_change[j];
 
                   for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                     in_T.composition[j][c] = in_T.composition[j][c]
-                                             + reaction_time_step_size * reaction_rate_outputs_T->reaction_rates[c][j];
+                                             + reaction_time_step_size * reaction_rate_outputs_T->reaction_rates[j][c];
                 }
             }
 

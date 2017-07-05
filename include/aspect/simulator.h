@@ -926,7 +926,21 @@ namespace aspect
 
 
       /**
-       * Compute the reactions in case of operator splitting.
+       * Compute the reactions in case of operator splitting:
+       * Using the current solution vector, this function makes a number of time
+       * steps determined by the size of the reaction time step, and solves a
+       * system of coupled ordinary differential equations for the reactions between
+       * compositional fields and temperature in each of them. To do that, is uses
+       * the reaction rates outputs from the material and heating models used in
+       * the computation. The solution vector is then updated with the new values
+       * of temperature and composition after the reactions.
+       *
+       * As the ordinary differential equation in any given point is independent
+       * from the solution at all other points, we do not have to assemble a matrix,
+       * but just need to loop over all points and compute the update to the solution.
+       *
+       * The function also updates the old solution with the reaction update so that
+       * the advection scheme will have the correct time stepping in the next step.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.

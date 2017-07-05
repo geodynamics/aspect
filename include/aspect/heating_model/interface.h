@@ -74,11 +74,24 @@ namespace aspect
 
       /**
        * The source terms of the temperature equation that represent
-       * instantaneous changes in temperature, for example due to reactions,
-       * at the given position. This includes for example latent heat of
-       * melt.
+       * fast changes in temperature (compared to the advection time
+       * scale), for example due to reactions, at the given position.
+       * On the advection time scale, these reactions might look like
+       * instantaneous changes in temperatures. This includes for example
+       * latent heat of melt.
+       *
+       * These reaction rates are only used in the operator_splitting nonlinear
+       * solver scheme, which allows it to solve reactions of compositional
+       * fields and temperature decoupled from the advection, and using a
+       * different time step size.
+       * In this case, they are used in addition to (and independent from) any
+       * heating_source_terms that a heating model defines, which are assembled
+       * as usual. For any other solver scheme, these values are ignored.
+       *
+       * In contrast to the heating source terms, these terms are actual changes
+       * in temperature (units K/s or K/yr) rather than changes in energy.
        */
-      std::vector<double> heating_reaction_terms;
+      std::vector<double> rates_of_temperature_change;
 
       /**
        * Left hand side contribution of latent heat; this is added to the
