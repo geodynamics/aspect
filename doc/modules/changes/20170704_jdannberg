@@ -1,0 +1,9 @@
+New: Aspect now supports operator splitting as a new solver scheme. 
+This allows it to decouple advection and reactions between 
+compositional fields, and can also be used for temperature changes
+related to these reactions. As part of this scheme, material models 
+now have an optional additional output that computes reaction rates, 
+and heating models have a new output that compute the corresponding 
+rate of change in temperature. An example is given in a new cookbook. 
+<br>
+(Juliane Dannberg, 2017/07/04)

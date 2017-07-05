@@ -95,7 +95,7 @@ namespace aspect
 
               // Fill reaction rate outputs instead of the reaction terms if we use operator splitting
               // (and then set the latter to zero).
-              if(this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::operator_splitting)
+              if (this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::operator_splitting)
                 {
                   if (reaction_rate_out != NULL)
                     reaction_rate_out->reaction_rates[i][c] = (this->get_timestep_number() > 0

@@ -53,7 +53,7 @@ namespace aspect
               const double porosity_idx = this->introspection().compositional_index_for_name("porosity");
               double melting_rate = 0.0;
 
-              if(!use_operator_split)
+              if (!use_operator_split)
                 {
                   // with melt migration the reaction term is a mass reaction rate,
                   // without melt migration, the reaction term is a constant value in terms of volume,

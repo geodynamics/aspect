@@ -187,9 +187,9 @@ namespace aspect
                     out.reaction_terms[i][c] = 0.0;
 
                   // fill reaction rate outputs if the model uses operator splitting
-                  if(this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::operator_splitting)
+                  if (this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::operator_splitting)
                     {
-                      if(reaction_rate_out != NULL)
+                      if (reaction_rate_out != NULL)
                         {
                           if (c == peridotite_idx && this->get_timestep_number() > 0)
                             reaction_rate_out->reaction_rates[i][c] = out.reaction_terms[i][c] / this->get_timestep() ;
