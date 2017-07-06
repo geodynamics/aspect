@@ -1,4 +1,5 @@
 subsection Model settings
+  set Fixed composition boundary indicators   = bottom
   set Fixed temperature boundary indicators   = bottom, top
   set Prescribed velocity boundary indicators = left x: function, right x:function, bottom y:function
   set Free surface boundary indicators        = top

@@ -44,10 +44,12 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
-# Boundary classifications and adiabatic/shear heating specification
+# Boundary classifications
+# Composition: fixed on bottom, free on sides and top
 # Velocity: free surface on top, outflow on sides, inflow at base
 # Temperature: fixed at top and bottom, insulating sides
 subsection Model settings
+  set Fixed composition boundary indicators   = bottom
   set Fixed temperature boundary indicators   = bottom, top
   set Prescribed velocity boundary indicators = left x: function, right x:function, bottom y:function
   set Free surface boundary indicators        = top
@@ -98,6 +100,11 @@ subsection Initial composition model
   end
 end
 
+# Composition boundary conditions
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
 # Temperature boundary conditions
 # Top and bottom (fixed) temperatures are consistent with the initial temperature field
 # Note that while temperatures are specified for the model sides, these values are
@@ -142,21 +149,12 @@ subsection Initial temperature model
   end
 end
 
-# Internal heating (only internal heating for crust)
-# Assuming a very large decay time, the heat production (W/m^3) is effectively:
-#   radioactive_heating_rate (W/kg) * density (kg/m^3)
-# For a reference crustal density of 2800 kg/m^3 and 1.5e-6 W/m^3 heating production,
-# the heating rate (assuming a single element) is 1.5e-6/2800. = 5.357142857e-10 ~= 5.357e-10
+# Constant internal heat production values (W/m^3) for background material
+# and compositional fields.
 subsection Heating model
-  set Model name = radioactive decay
-  subsection Radioactive decay
-    set Number of elements    = 1
-    set Heating rates                 = 5.357e-10
-    set Half decay times              = 1.e20
-    set Initial concentrations mantle = 0.0
-    set Initial concentrations crust  = 1.0
-    set Crust defined by composition  = true
-    set Crust composition number      = 0
+  set List of model names = compositional heating
+  subsection Compositional heating
+    set Compositional heating values = 0., 1.5e-6, 0., 0., 0.
   end
 end
 
