@@ -48,6 +48,7 @@ namespace aspect
     initial_temperature (const Point<dim> &position) const
     {
       std::size_t seed = point_hash(position);
+      boost::hash_combine(seed,0);
 
       if (use_random_seed)
         boost::hash_combine(seed,time(NULL));
@@ -109,7 +110,7 @@ namespace aspect
   {
     ASPECT_REGISTER_INITIAL_TEMPERATURE_MODEL(RandomPerturbation,
                                               "random perturbation",
-                                              "An initial tempeature anomaly that perturbs the temperature "
+                                              "An initial temperature anomaly that perturbs the temperature "
                                               "following a random noise with uniform distribution and user "
                                               "specified magnitude.")
   }
