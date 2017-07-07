@@ -109,11 +109,11 @@ Currently Loaded Modules:
 mkdir $HOME/Downloads/ 
 \end{lstlisting} 
 Download a copy of trilinos from \url{http://www.trilinos.org}. When creating this document we used 
- trilinos-11.12.1-Source.tar because it's a known working version for the dealii-8.2.1 
+ trilinos-11.12.1-Source.tar.gz because it's a known working version for the dealii-8.2.1 
  version we install. You can use other trilinos versions, but doing so requires updating 
  the script aspect-setup.sh with the version you choose.
 \begin{lstlisting}[frame=single,language=ksh]
- scp trilinos-11.12.1-Source.tar  login@stampede.tacc.utexas.edu:/work/02668/login/Downloads/ 
+ scp trilinos-11.12.1-Source.tar.gz  login@stampede.tacc.utexas.edu:/work/02668/login/Downloads/ 
 \end{lstlisting} 
  
  \item Obtain and run currently working script for installing trilinos, p4est, and \dealii{}  aspect-setup\_stampede.sh 

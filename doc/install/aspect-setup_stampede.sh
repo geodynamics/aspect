@@ -4,8 +4,6 @@
 # at 2015 ASPECT Hackathon. Refer to stampede.pdf for
 # further information.
 
-set -x
-
 if [ "$TRILINOS_DIR" == "" ]; then
     export TRILINOS_DIR=$HOME/packages/trilinos
     mkdir -p $TRILINOS_DIR
@@ -31,12 +29,12 @@ case $1 in
 
     "trilinos")
         # Build Trilinos
-     if [ ! -f $HOME/Downloads/trilinos-11.12.1-Source.tar ]; then
-            echo "You need trilinos-11.12.1-Source.tar in ~/Downloads"
+     if [ ! -f $HOME/Downloads/trilinos-11.12.1-Source.tar.gz ]; then
+            echo "You need trilinos-11.12.1-Source.tar.gz in ~/Downloads"
             exit 1
         fi
         echo "Building Trilinos"
-        tar -C /tmp -xf $HOME/Downloads/trilinos-11.12.1-Source.tar
+        tar -C /tmp -xf $HOME/Downloads/trilinos-11.12.1-Source.tar.gz
         cd /tmp/trilinos-11.12.1-Source
         mkdir build ; cd build
         cmake -D Trilinos_ENABLE_Sacado=ON \
@@ -55,10 +53,11 @@ case $1 in
               -D CMAKE_CXX_COMPILER=`which mpicxx` \
               -D CMAKE_Fortran_COMPILER=`which mpif90` \
               -D MPI_EXEC=`which mpiexec` \
-              -D MPI_Fortran_COMPILER=`which mpif90` \
-              -D TPL_LAPACK_LIBRARIES:STRING="/opt/apps/intel/13/composer_xe_2013.2.146/mkl/lib/intel64" \
-              -D TPL_BLAS_LIBRARIES:STRING="/opt/apps/intel/13/composer_xe_2013.2.146/mkl/lib/intel64" \
-              .. 
+              -D LAPACK_LIBRARY_DIRS="/opt/apps/intel/13/composer_xe_2013.2.146/mkl/lib/intel64" \
+              -D BLAS_LIBRARY_DIRS="/opt/apps/intel/13/composer_xe_2013.2.146/mkl/lib/intel64" \
+              -D BLAS_LIBRARY_NAMES:STRING="mkl_intel_lp64" \
+              -D LAPACK_LIBRARY_NAMES:STRING="mkl_intel_lp64" \
+              ..
         make install -j7
         cd ../../ ; rm -rf trilinos-11.12.1-Source*
         ;;
@@ -84,6 +83,7 @@ case $1 in
         fi
         cd $HOME/packages/build/deal.II
         git fetch origin; git pull
+        git checkout dealii-8.2 # switch to 8.2.1 release, comment out for dev version
         mkdir /tmp/deal.II-build ; cd /tmp/deal.II-build
         cmake -DDEAL_II_WITH_MPI=ON \
             -DCMAKE_INSTALL_PREFIX=$DEAL_II_DIR \
