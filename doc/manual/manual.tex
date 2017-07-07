@@ -10225,20 +10225,6 @@ Specifically, your new class needs to implement the following interface:
         virtual double reference_viscosity () const = 0;
 
 
-        // Auxiliary material properties used for postprocessing
-        virtual double
-        seismic_Vp (const double      temperature,
-                    const double      pressure,
-                    const std::vector<double> &compositional_fields,
-                    const Point<dim> &position) const;
-
-        virtual double
-        seismic_Vs (const double      temperature,
-                    const double      pressure,
-                    const std::vector<double> &compositional_fields,
-                    const Point<dim> &position) const;
-
-
         // Functions used in dealing with run-time parameters
         static void
         declare_parameters (ParameterHandler &prm);
@@ -10315,10 +10301,11 @@ packaged material models declare their dependencies in the
 parse\textunderscore parameters() function and can be used as a
 starting point for implementations of new material models.
 
-Older versions of \aspect{} used to have individual functions like viscosity()
-instead of the evaluate() function discussed above. They are now a deprecated
-way of implementing a material model. You can get your old model working
-by deriving from InterfaceCompatibility instead of Interface.
+Older versions of \aspect{} used to have individual functions like
+\texttt{viscosity()} instead of the \texttt{evaluate()} function discussed
+above. This old interface is no longer supported, restructure your plugin to
+implement \texttt{evaluate()} instead (even if this function only calls the old
+functions).
 
 \subsubsection{Heating models}
 \label{sec:heating-models}
