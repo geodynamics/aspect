@@ -11603,7 +11603,9 @@ testsuite will take hours, though it can be made substantially faster if you use
 where \texttt{<N>} is the number of tests you want \texttt{ctest} to run
 in parallel; you may want to choose \texttt{<N>} equal to or slightly smaller
 than the number of processors you have. Alternatively, you can run only a subset
-of all tests by saying \begin{lstlisting}[frame=single,language=ksh] ctest -R <regex>
+of all tests by saying 
+\begin{lstlisting}[frame=single,language=ksh] 
+    ctest -R <regex>
 \end{lstlisting}
 where \texttt{<regex>} is a regular expression and the only tests that will be
 run are those whose names match the expression.
