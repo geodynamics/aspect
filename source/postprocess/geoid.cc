@@ -82,7 +82,7 @@ namespace aspect
     std::pair<std::vector<double>,std::vector<double> >
     Geoid<dim>::density_contribution (const double &outer_radius) const
     {
-      const unsigned int quadrature_degree = this->introspection().polynomial_degree.velocities;
+      const unsigned int quadrature_degree = this->introspection().polynomial_degree.temperature;
       // need to evaluate density contribution of each volume quadrature point
       const QGauss<dim> quadrature_formula(quadrature_degree);
 
@@ -178,7 +178,7 @@ namespace aspect
       const double bottom_layer_average_density = boundary_densities->density_at_bottom();
 
 
-      const unsigned int quadrature_degree = this->introspection().polynomial_degree.velocities;
+      const unsigned int quadrature_degree = this->introspection().polynomial_degree.temperature;
       const QGauss<dim-1> quadrature_formula_face(quadrature_degree); // need to grab the infinitesimal area of each quadrature points on every boundary face here
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
