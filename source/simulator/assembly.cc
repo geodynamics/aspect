@@ -465,9 +465,9 @@ namespace aspect
 
     /*  The stabilization term for the free surface (Kaus et. al., 2010)
      *  makes changes to the system matrix which are of the same form as
-     *  boundary stresses. If these stresses are not also added to the
-     *  system_preconditioner_matrix, then it fails to be very good as a
-     *  preconditioner. Instead, we just pass the system_matrix to the
+     *  boundary stresses.  If these stresses are not also added to the
+     *  system_preconditioner_matrix, then  if fails to be very good as a
+     *  preconditioner.  Instead, we just pass the system_matrix to the
      *  AMG precondition initialization so that it builds the preconditioner
      *  directly from that. However, we still need the mass matrix for the
      *  pressure block which is assembled in the preconditioner matrix.
