@@ -7,9 +7,11 @@ participating!
 ## Getting started with git and GitHub
 If you are new to using git or the GitHub platform you may find it
 helpful to review [video lecture
-32.8](http://www.math.tamu.edu/~bangerth/videos.676.32.8.html), which
+32.8](http://www.math.colostate.edu/~bangerth/videos.676.32.8.html), which
 should be enough to help you get started with using GitHub or possibly
-contributing to ASPECT itself. 
+contributing to ASPECT itself. Alternatively, GitHub provides a helpful
+guide on the process of contributing to an open-source project
+[here](https://opensource.guide/how-to-contribute/).
 
 ## Asking and answering questions about ASPECT
 The ASPECT community maintains an active mailing list hosted by CIG
@@ -31,7 +33,7 @@ code by opening a *pull request*. This will give a chance for others
 to review your code. While this seems very formal, keeping all of the
 code review in one place makes it easier to coordinate changes to the
 code (and there are usually several people making changes to the code
-at once). This process is described at length in the deal.II video [lecture 32.8](http://www.math.tamu.edu/~bangerth/videos.676.32.8.html). Please do not hesitate to ask questions about the workflow on the mailing list if you are not sure what to do.
+at once). This process is described at length in the deal.II video [lecture 32.8](http://www.math.colostate.edu/~bangerth/videos.676.32.8.html). Please do not hesitate to ask questions about the workflow on the mailing list if you are not sure what to do.
 
 Since ASPECT is a fairly large project with lots of contributors we
 use a set of [coding
