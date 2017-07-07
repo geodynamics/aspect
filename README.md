@@ -24,6 +24,19 @@ Instructions on how to run and extend, as well as on how to interpret the output
 
 
 
+Contributing to ASPECT
+----------------------
+
+ASPECT is a community project that lives by the participation of its
+members — i.e., including you! It is our goal to build an inclusive
+and participatory community so we are happy that you are interested in
+participating! We have collected a set of guidelines and advice on how
+to get involved in the community and keep them in the 
+[CONTRIBUTING.md](CONTRIBUTING.md)
+file in ASPECT's repository.
+
+
+
 More information
 ----------------
 
