@@ -19,7 +19,8 @@ set End time                               = 100
 set Use years in output instead of seconds = false
 
 # We use a new solver scheme that enables the operator split. 
-set Nonlinear solver scheme                = Operator splitting
+set Nonlinear solver scheme                = IMPES
+set Use operator splitting                 = true
 
 # As we split the time-stepping of advection and reactions, 
 # there are now two different time steps in the model:
@@ -28,7 +29,11 @@ set Nonlinear solver scheme                = Operator splitting
 # low velocities, we can not use the CFL number), and the reaction
 # time step using the 'Reaction time step' parameter. 
 # We will vary both parameters in different model runs.
-set Reaction time step                     = 0.032
+subsection Solver parameters
+  subsection Operator splitting parameters
+    set Reaction time step                 = 0.032
+  end
+end
 set Maximum time step                      = 10
 
 

@@ -13,7 +13,11 @@ do
   echo "Advection time step $time:"
   cp advection_reaction.base.prm temp.prm
   echo "set Output directory = output/advection$time" >> temp.prm
+  echo "subsection Solver parameters" >> temp.prm
+  echo "subsection Operator splitting parameters" >> temp.prm
   echo "set Reaction time step = 0.001953125" >> temp.prm
+  echo "end" >> temp.prm
+  echo "end" >> temp.prm
   echo "set Maximum time step = $time" >> temp.prm
   printf "%s ", $time | sed 's/,//g' >> $filename
   mpirun -n $NP ./aspect temp.prm | gawk '/time\=1\.000000e\+00/ {printf "%s %s %s \n", $4, $6, $10}' | sed 's/,//g' >> $filename
@@ -28,7 +32,11 @@ do
   echo "Reaction time step $time:"
   cp advection_reaction.base.prm temp.prm
   echo "set Output directory = output/reaction$time" >> temp.prm
+  echo "subsection Solver parameters" >> temp.prm
+  echo "subsection Operator splitting parameters" >> temp.prm
   echo "set Reaction time step = $time" >> temp.prm
+  echo "end" >> temp.prm
+  echo "end" >> temp.prm
   advection_time="$(echo $time*$factor | bc)"
   echo "set Maximum time step = $advection_time" >> temp.prm
   printf "%s ", $time | sed 's/,//g' >> $filename

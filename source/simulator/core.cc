@@ -1820,6 +1820,10 @@ namespace aspect
           if (parameters.free_surface_enabled)
             free_surface->execute ();
 
+          // then we compute the reactions of compositional fields and temperature in case of operator splitting
+          if (parameters.use_operator_splitting)
+            compute_reactions ();
+
           assemble_advection_system (AdvectionField::temperature());
           solve_advection(AdvectionField::temperature());
 
@@ -1933,6 +1937,10 @@ namespace aspect
           double initial_temperature_residual = 0;
           double initial_stokes_residual      = 0;
           std::vector<double> initial_composition_residual (introspection.n_compositional_fields,0);
+
+          // compute the reactions of compositional fields and temperature in case of operator splitting
+          if (parameters.use_operator_splitting)
+            compute_reactions ();
 
           do
             {
@@ -2065,6 +2073,10 @@ namespace aspect
           if (parameters.free_surface_enabled)
             free_surface->execute ();
 
+          // then we compute the reactions of compositional fields and temperature in case of operator splitting
+          if (parameters.use_operator_splitting)
+            compute_reactions ();
+
           // solve the temperature and composition systems once...
           assemble_advection_system (AdvectionField::temperature());
           solve_advection(AdvectionField::temperature());
@@ -2153,6 +2165,10 @@ namespace aspect
           if (parameters.free_surface_enabled)
             free_surface->execute ();
 
+          // then we compute the reactions of compositional fields and temperature in case of operator splitting
+          if (parameters.use_operator_splitting)
+            compute_reactions ();
+
           LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
 
           VectorFunctionFromVectorFunctionObject<dim> func(std_cxx1x::bind (&PrescribedStokesSolution::Interface<dim>::stokes_solution,
@@ -2204,68 +2220,6 @@ namespace aspect
           for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
             current_linearization_point.block(introspection.block_indices.compositional_fields[c])
               = solution.block(introspection.block_indices.compositional_fields[c]);
-
-          if (parameters.run_postprocessors_on_nonlinear_iterations)
-            postprocess ();
-
-          break;
-        }
-
-        case NonlinearSolver::operator_splitting:
-        {
-          // We do the free surface execution at the beginning of the timestep for a specific reason.
-          // The time step size is calculated AFTER the whole solve_timestep() function.  If we call
-          // free_surface_execute() after the Stokes solve, it will be before we know what the appropriate
-          // time step to take is, and we will timestep the boundary incorrectly.
-          if (parameters.free_surface_enabled)
-            free_surface->execute ();
-
-          // first, we solve the advection equations for temperature and compositional fields
-          assemble_advection_system (AdvectionField::temperature());
-          solve_advection(AdvectionField::temperature());
-
-          current_linearization_point.block(introspection.block_indices.temperature)
-            = solution.block(introspection.block_indices.temperature);
-
-          for (unsigned int c=0; c < parameters.n_compositional_fields; ++c)
-            {
-              const AdvectionField adv_field (AdvectionField::composition(c));
-              const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
-              switch (method)
-                {
-                  case Parameters<dim>::AdvectionFieldMethod::fem_field:
-                    assemble_advection_system (adv_field);
-                    solve_advection(adv_field);
-                    break;
-
-                  case Parameters<dim>::AdvectionFieldMethod::particles:
-                    interpolate_particle_properties(adv_field);
-                    break;
-
-                  default:
-                    AssertThrow(false,ExcNotImplemented());
-                }
-            }
-
-          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-            current_linearization_point.block(introspection.block_indices.compositional_fields[c])
-              = solution.block(introspection.block_indices.compositional_fields[c]);
-
-          // then we compute the reactions of compositional fields and temperature
-          compute_reactions ();
-
-          // the Stokes matrix depends on the viscosity. if the viscosity
-          // depends on other solution variables, then after we need to
-          // update the Stokes matrix in every time step and so need to set
-          // the following flag. if we change the Stokes matrix we also
-          // need to update the Stokes preconditioner.
-          if (stokes_matrix_depends_on_solution() == true)
-            rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
-
-          // finally, we solve the Stokes system
-          assemble_stokes_system();
-          build_stokes_preconditioner();
-          solve_stokes();
 
           if (parameters.run_postprocessors_on_nonlinear_iterations)
             postprocess ();

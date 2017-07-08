@@ -305,7 +305,7 @@ namespace aspect
                     out.reaction_terms[i][c] = 0.0;
 
                   // fill reaction rate outputs if the model uses operator splitting
-                  if (this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::operator_splitting)
+                  if (this->get_parameters().use_operator_splitting)
                     {
                       if (reaction_rate_out != NULL)
                         {

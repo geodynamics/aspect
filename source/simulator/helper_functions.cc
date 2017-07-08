@@ -1499,13 +1499,10 @@ namespace aspect
 
     // we use a different (potentially smaller) time step than in the advection scheme,
     // and we want all of our reaction time steps (within one advection step) to have the same size
-    const int number_of_reaction_steps = parameters.reaction_time_step < time_step
-                                         ?
-                                         (int) (time_step / parameters.reaction_time_step)
-                                         :
-                                         1;
-    const double reaction_time_step_size = time_step / ((double) number_of_reaction_steps);
+    const int number_of_reaction_steps = std::max((int) (time_step / parameters.reaction_time_step),
+                                                  std::max(parameters.reaction_steps_per_advection_step,1));
 
+    const double reaction_time_step_size = time_step / ((double) number_of_reaction_steps);
 
     pcout << "   Solving composition reactions in "
           << number_of_reaction_steps
@@ -1665,6 +1662,10 @@ namespace aspect
         distributed_vector.block(block_c) = old_solution.block(block_c);
         distributed_vector.block(block_c) +=  distributed_reaction_vector.block(block_c);
         old_solution.block(block_c) = distributed_vector.block(block_c);
+
+        distributed_vector.block(block_c) = old_old_solution.block(block_c);
+        distributed_vector.block(block_c) +=  distributed_reaction_vector.block(block_c);
+        old_old_solution.block(block_c) = distributed_vector.block(block_c);
       }
 
     const unsigned int block_T = introspection.block_indices.temperature;
@@ -1679,6 +1680,12 @@ namespace aspect
     distributed_vector.block(block_T) = old_solution.block(block_T);
     distributed_vector.block(block_T) +=  distributed_reaction_vector.block(block_T);
     old_solution.block(block_T) = distributed_vector.block(block_T);
+
+    distributed_vector.block(block_T) = old_old_solution.block(block_T);
+    distributed_vector.block(block_T) +=  distributed_reaction_vector.block(block_T);
+    old_old_solution.block(block_T) = distributed_vector.block(block_T);
+
+    current_linearization_point = old_solution;
   }
 
 

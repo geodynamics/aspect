@@ -142,14 +142,6 @@ namespace aspect
                        "Units: Years or seconds, depending on the ``Use years "
                        "in output instead of seconds'' parameter.");
 
-    prm.declare_entry ("Reaction time step", "1000.0",
-                       Patterns::Double (0),
-                       "Set a time step size for computing reactions of compositional fields and the "
-                       "temperature field in case operator splitting is used. This is only used "
-                       "when the nonlinear solver scheme ``operator splitting'' is selected. "
-                       "Units: Years or seconds, depending on the ``Use years "
-                       "in output instead of seconds'' parameter.");
-
     prm.declare_entry ("Use conduction timestep", "false",
                        Patterns::Bool (),
                        "Mantle convection simulations are often focused on convection "
@@ -159,7 +151,7 @@ namespace aspect
                        "heat conduction in determining the length of each time step.");
 
     prm.declare_entry ("Nonlinear solver scheme", "IMPES",
-                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes|Stokes only|Advection only|Operator splitting"),
+                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes|Stokes only|Advection only"),
                        "The kind of scheme used to resolve the nonlinearity in the system. "
                        "'IMPES' is the classical IMplicit Pressure Explicit Saturation scheme "
                        "in which ones solves the temperatures and Stokes equations exactly "
@@ -173,11 +165,7 @@ namespace aspect
                        "the temperature; mostly useful for Stokes benchmarks). The 'Advection only' "
                        "scheme only solves the temperature and other advection systems and instead "
                        "of solving for the Stokes system, a prescribed velocity and pressure is "
-                       "used. The 'Operator splitting' scheme works like the IMPES scheme, only "
-                       "that advection and reactions of compositional fields and temperature are "
-                       "solved separately, and can use different time steps. Note that this will "
-                       "only work if the material/heating model fills the reaction_rates/"
-                       "heating_reaction_rates structures.");
+                       "used.");
 
     prm.declare_entry ("Nonlinear solver tolerance", "1e-5",
                        Patterns::Double(0,1),
@@ -330,6 +318,14 @@ namespace aspect
                        "the composition system gets solved. See `linear solver "
                        "tolerance' for more details.");
 
+    prm.declare_entry ("Use operator splitting", "false",
+                       Patterns::Bool(),
+                       "If set to true, the advection and reactions of compositional fields and "
+                       "temperature are solved separately, and can use different time steps. Note that "
+                       "this will only work if the material/heating model fills the reaction_rates/"
+                       "heating_reaction_rates structures. Operator splitting can be used with any "
+                       "existing solver schemes that solve the temperature/composition equations.");
+
     prm.enter_subsection ("Solver parameters");
     {
       prm.enter_subsection ("Newton solver parameters");
@@ -391,6 +387,27 @@ namespace aspect
         prm.declare_entry ("AMG output details", "false",
                            Patterns::Bool(),
                            "Turns on extra information on the AMG solver. Note that this will generate much more output.");
+      }
+      prm.leave_subsection ();
+      prm.enter_subsection ("Operator splitting parameters");
+      {
+        prm.declare_entry ("Reaction time step", "1000.0",
+                           Patterns::Double (0),
+                           "Set a time step size for computing reactions of compositional fields and the "
+                           "temperature field in case operator splitting is used. This is only used "
+                           "when the nonlinear solver scheme ``operator splitting'' is selected. "
+                           "Units: Years or seconds, depending on the ``Use years "
+                           "in output instead of seconds'' parameter.");
+
+        prm.declare_entry ("Reaction time steps per advection step", "0",
+                           Patterns::Integer (0),
+                           "The number of reaction time steps done within one advection time step"
+                           "in case operator splitting is used. This is only used if the nonlinear "
+                           "solver scheme ``operator splitting'' is selected. If set to zero, this "
+                           "parameter is ignored. Otherwise the reaction is chosen accordning to "
+                           "this criterion and the ``Reaction time step'', whichever yields the "
+                           "smaller time step. "
+                           "Units: none.");
       }
       prm.leave_subsection ();
     }
@@ -1012,10 +1029,6 @@ namespace aspect
     if (convert_to_years == true)
       maximum_time_step *= year_in_seconds;
 
-    reaction_time_step       = prm.get_double("Reaction time step");
-    if (convert_to_years == true)
-      reaction_time_step *= year_in_seconds;
-
     if (prm.get ("Nonlinear solver scheme") == "IMPES")
       nonlinear_solver = NonlinearSolver::IMPES;
     else if (prm.get ("Nonlinear solver scheme") == "iterated IMPES")
@@ -1026,8 +1039,6 @@ namespace aspect
       nonlinear_solver = NonlinearSolver::Stokes_only;
     else if (prm.get ("Nonlinear solver scheme") == "Advection only")
       nonlinear_solver = NonlinearSolver::Advection_only;
-    else if (prm.get ("Nonlinear solver scheme") == "Operator splitting")
-      nonlinear_solver = NonlinearSolver::operator_splitting;
     else
       AssertThrow (false, ExcNotImplemented());
 
@@ -1046,6 +1057,14 @@ namespace aspect
         AMG_smoother_sweeps                    = prm.get_integer ("AMG smoother sweeps");
         AMG_aggregation_threshold              = prm.get_double ("AMG aggregation threshold");
         AMG_output_details                     = prm.get_bool ("AMG output details");
+      }
+      prm.leave_subsection ();
+      prm.enter_subsection ("Operator splitting parameters");
+      {
+        reaction_time_step       = prm.get_double("Reaction time step");
+        if (convert_to_years == true)
+          reaction_time_step *= year_in_seconds;
+        reaction_steps_per_advection_step = prm.get_integer ("Reaction time steps per advection step");
       }
       prm.leave_subsection ();
     }
@@ -1101,6 +1120,7 @@ namespace aspect
     n_expensive_stokes_solver_steps = prm.get_integer ("Maximum number of expensive Stokes solver steps");
     temperature_solver_tolerance    = prm.get_double ("Temperature solver tolerance");
     composition_solver_tolerance    = prm.get_double ("Composition solver tolerance");
+    use_operator_splitting          = prm.get_bool("Use operator splitting");
 
     prm.enter_subsection ("Mesh refinement");
     {

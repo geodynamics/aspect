@@ -18,10 +18,10 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Errors                     time=0.000000e+00 ndofs= 1237 C_L2_current= 1.083745e-16 C_L2_max= 1.083745e-16 T_L2_current= 1.083745e-16 T_L2_max= 1.083745e-16
 
 *** Timestep 1:  t=10 seconds
+   Solving composition reactions in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving composition reactions in 312 substep(s).
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.4996/0.4996/0.4996
@@ -29,9 +29,9 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Errors                     time=1.000000e+01 ndofs= 1237 C_L2_current= 3.854009e-04 C_L2_max= 3.854009e-04 T_L2_current= 3.854009e-04 T_L2_max= 3.854009e-04
 
 *** Timestep 2:  t=20 seconds
+   Solving composition reactions in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving composition reactions in 312 substep(s).
    Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
@@ -40,9 +40,9 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Errors                     time=2.000000e+01 ndofs= 1237 C_L2_current= 3.852524e-04 C_L2_max= 3.854009e-04 T_L2_current= 3.852524e-04 T_L2_max= 3.854009e-04
 
 *** Timestep 3:  t=30 seconds
+   Solving composition reactions in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving composition reactions in 312 substep(s).
    Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
@@ -51,9 +51,9 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Errors                     time=3.000000e+01 ndofs= 1237 C_L2_current= 2.888279e-04 C_L2_max= 3.854009e-04 T_L2_current= 2.888279e-04 T_L2_max= 3.854009e-04
 
 *** Timestep 4:  t=40 seconds
+   Solving composition reactions in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving composition reactions in 312 substep(s).
    Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
@@ -62,9 +62,9 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Errors                     time=4.000000e+01 ndofs= 1237 C_L2_current= 1.924778e-04 C_L2_max= 3.854009e-04 T_L2_current= 1.924778e-04 T_L2_max= 3.854009e-04
 
 *** Timestep 5:  t=50 seconds
+   Solving composition reactions in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving composition reactions in 312 substep(s).
    Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
@@ -73,10 +73,10 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Errors                     time=5.000000e+01 ndofs= 1237 C_L2_current= 1.202523e-04 C_L2_max= 3.854009e-04 T_L2_current= 1.202523e-04 T_L2_max= 3.854009e-04
 
 *** Timestep 6:  t=60 seconds
+   Solving composition reactions in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving composition reactions in 312 substep(s).
-   Solving Stokes system... 3+0 iterations.
+   Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.01555/0.01555/0.01555
@@ -84,9 +84,9 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Errors                     time=6.000000e+01 ndofs= 1237 C_L2_current= 7.212356e-05 C_L2_max= 3.854009e-04 T_L2_current= 7.212356e-05 T_L2_max= 3.854009e-04
 
 *** Timestep 7:  t=70 seconds
+   Solving composition reactions in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving composition reactions in 312 substep(s).
    Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
@@ -95,10 +95,10 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Errors                     time=7.000000e+01 ndofs= 1237 C_L2_current= 4.205588e-05 C_L2_max= 3.854009e-04 T_L2_current= 4.205588e-05 T_L2_max= 3.854009e-04
 
 *** Timestep 8:  t=80 seconds
+   Solving composition reactions in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving composition reactions in 312 substep(s).
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.003882/0.003882/0.003882
@@ -106,10 +106,10 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Errors                     time=8.000000e+01 ndofs= 1237 C_L2_current= 2.402267e-05 C_L2_max= 3.854009e-04 T_L2_current= 2.402267e-05 T_L2_max= 3.854009e-04
 
 *** Timestep 9:  t=90 seconds
+   Solving composition reactions in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving composition reactions in 312 substep(s).
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.00194/0.00194/0.00194
@@ -117,9 +117,9 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Errors                     time=9.000000e+01 ndofs= 1237 C_L2_current= 1.350755e-05 C_L2_max= 3.854009e-04 T_L2_current= 1.350755e-05 T_L2_max= 3.854009e-04
 
 *** Timestep 10:  t=100 seconds
+   Solving composition reactions in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving composition reactions in 312 substep(s).
    Solving Stokes system... 3+0 iterations.
 
    Postprocessing:

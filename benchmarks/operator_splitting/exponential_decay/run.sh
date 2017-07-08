@@ -13,7 +13,11 @@ do
   echo "Advection time step $time:"
   cp exponential_decay.base.prm temp.prm
   echo "set Output directory = output/advection$time" >> temp.prm
+  echo "subsection Solver parameters" >> temp.prm
+  echo "subsection Operator splitting parameters" >> temp.prm
   echo "set Reaction time step = 0.0005" >> temp.prm
+  echo "end" >> temp.prm
+  echo "end" >> temp.prm
   echo "set Maximum time step = $time" >> temp.prm
   printf "%s ", $time | sed 's/,//g' >> $filename
   mpirun -n $NP ./aspect temp.prm | gawk '/time\=1\.000000e\+02/ {printf "%s %s %s \n", $4, $6, $10}' | sed 's/,//g' >> $filename
@@ -27,7 +31,11 @@ do
   echo "Reaction time step $time:"
   cp exponential_decay.base.prm temp.prm
   echo "set Output directory = output/reaction$time" >> temp.prm
+  echo "subsection Solver parameters" >> temp.prm
+  echo "subsection Operator splitting parameters" >> temp.prm
   echo "set Reaction time step = $time" >> temp.prm
+  echo "end" >> temp.prm
+  echo "end" >> temp.prm
   echo "set Maximum time step = 10" >> temp.prm
   printf "%s ", $time | sed 's/,//g' >> $filename
   mpirun -n $NP ./aspect temp.prm | gawk '/time\=1\.000000e\+02/ {printf "%s %s %s \n", $4, $6, $10}' | sed 's/,//g' >> $filename

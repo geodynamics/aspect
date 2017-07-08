@@ -36,8 +36,7 @@ namespace aspect
       Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.position.size(),
              ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
 
-      const bool use_operator_split = (this->get_parameters().nonlinear_solver
-                                       == Parameters<dim>::NonlinearSolver::operator_splitting);
+      const bool use_operator_split = (this->get_parameters().use_operator_splitting);
 
       const MaterialModel::ReactionRateOutputs<dim> *reaction_rate_out
         = material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
