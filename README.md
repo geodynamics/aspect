@@ -59,6 +59,6 @@ For more information see:
 License
 -------
 
-ASPECT is published under [GPL v2 or newer](doc/COPYING).
+ASPECT is published under [GPL v2 or newer](LICENSE).
 
 
