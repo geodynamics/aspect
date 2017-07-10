@@ -1,0 +1,47 @@
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 3,556 (2,178+289+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+      Relative nonlinear residuals: 1.83065e-16, 1
+      Total relative residual after nonlinear iteration 1: 1
+
+
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 0+4 iterations.
+      Relative nonlinear residuals: 1.83065e-16, 7.13168e-08
+      Total relative residual after nonlinear iteration 2: 7.13168e-08
+
+
+
+   Postprocessing:
+     Writing graphical output:           output-stokes_residual_cheap/solution/solution-00000
+     RMS, max velocity:                  1.24e-08 m/s, 4.85e-08 m/s
+     Temperature min/avg/max:            0 K, 1.03 K, 1.1 K
+     Heat fluxes through boundary parts: 1.672e-07 W, 4.017e-05 W, 2.408e-07 W, 2.408e-07 W
+     Writing stokes residuals            output-stokes_residual_cheap/stokes_residuals.txt
+
+*** Timestep 1:  t=0.1 seconds
+   Solving temperature system... 4 iterations.
+   Solving Stokes system... 0+3 iterations.
+      Relative nonlinear residuals: 1.44841e-08, 2.42786e-07
+      Total relative residual after nonlinear iteration 1: 2.42786e-07
+
+
+
+   Postprocessing:
+     RMS, max velocity:                  1.24e-08 m/s, 4.85e-08 m/s
+     Temperature min/avg/max:            0 K, 1.03 K, 1.1 K
+     Heat fluxes through boundary parts: 1.672e-07 W, 4.017e-05 W, 2.408e-07 W, 2.408e-07 W
+     Writing stokes residuals            output-stokes_residual_cheap/stokes_residuals.txt
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
