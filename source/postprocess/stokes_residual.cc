@@ -92,7 +92,9 @@ namespace aspect
       data_point.time = this->get_time();
       data_point.solve_index = current_solve_index;
 
-      data_point.values = solver_control_cheap.get_history_data();
+      // If there were cheap iterations add them.
+      if (solver_control_cheap.last_step() > 0)
+        data_point.values = solver_control_cheap.get_history_data();
 
 #if !DEAL_II_VERSION_GTE(9,0,0)
       // Pre deal.II 9.0 history_data contained 0 for all iterations
@@ -104,11 +106,13 @@ namespace aspect
       data_point.values.erase(zero_value,data_point.values.end());
 #endif
 
-      // If there were expensive iterations add them after a signalling -1.
-      if ((solver_control_cheap.last_check() == dealii::SolverControl::failure)
-          && (solver_control_cheap.last_step() == solver_control_cheap.max_steps()))
+      // If there were expensive iterations add them.
+      if (solver_control_expensive.last_step() > 0)
         {
-          data_point.values.push_back(-1.0);
+          // If there were cheap iterations add the expensive iterations after a signalling -1.
+          if (data_point.values.size() > 0)
+            data_point.values.push_back(-1.0);
+
           data_point.values.insert(data_point.values.end(),
                                    solver_control_expensive.get_history_data().begin(),
                                    solver_control_expensive.get_history_data().end());
