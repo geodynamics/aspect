@@ -1250,6 +1250,8 @@ namespace aspect
           const unsigned int pc_component_index = this->introspection().variable("compaction pressure").first_component_index;
 
 
+	  // TODO: assert(is melt material model)
+	  
           const double ref_K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->reference_darcy_coefficient();
           /*
                     const unsigned int dofs_per_cell = scratch.finite_element.dofs_per_cell;
