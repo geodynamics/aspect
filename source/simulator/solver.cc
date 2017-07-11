@@ -887,7 +887,9 @@ namespace aspect
 
         // print the number of iterations to screen
         pcout << solver_control_cheap.last_step() << '+'
-              << solver_control_expensive.last_step() << " iterations.";
+              << solver_control_expensive.last_step() << " iterations."
+              << " sumA: " << preconditioner_cheap.n_iterations_A() + preconditioner_expensive.n_iterations_A()
+              << " sumS: " << preconditioner_cheap.n_iterations_S() + preconditioner_expensive.n_iterations_S();
         pcout << std::endl;
       }
 
