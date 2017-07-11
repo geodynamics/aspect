@@ -148,7 +148,7 @@ namespace aspect
       {
 	//	double permeability = pow(exp(-0.50e2 * pow(z / 0.100000e6 - exp(-x / 0.100000e6) - 0.1e1, 0.2e1)), 0.3e1) * pow(cos(pi * y / 0.200000e6), 0.3e1) / 0.1250000000000e13;
 
-        return 0.01;
+        return 1;//0.01;
       }
       
       virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,

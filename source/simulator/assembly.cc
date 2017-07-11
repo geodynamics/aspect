@@ -1069,7 +1069,8 @@ namespace aspect
       Amg_data.coarse_type = "Gauss-Seidel";// "Amesos-KLU";
       //Amg_data.output_details = true;
 #endif
-      Mp_preconditioner->initialize (system_preconditioner_matrix.block(1,1), Amg_data);
+      //      Mp_preconditioner->initialize (system_preconditioner_matrix.block(1,1), Amg_data);
+      Mp_preconditioner->initialize (system_preconditioner_matrix.block(1,1));
     }
     if (parameters.free_surface_enabled || parameters.include_melt_transport)
       Amg_preconditioner->initialize (system_matrix.block(0,0),

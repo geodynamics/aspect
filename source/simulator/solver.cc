@@ -283,7 +283,7 @@ namespace aspect
       // as a mass matrix with the inverse of the viscosity
       {
         aspect::SolverControl solver_control(1000, src.block(1).l2_norm() * S_block_tolerance, true);
-        solver_control.enable_history_data();
+        //solver_control.enable_history_data();
 //        std::cout << src.block(1).l2_norm()
 //                  << " -> "
 //                  << src.block(1).l2_norm() * S_block_tolerance
@@ -293,14 +293,14 @@ namespace aspect
 #ifdef ASPECT_USE_PETSC
         SolverGMRES<LinearAlgebra::Vector> solver(solver_control);
 #else
-        //TrilinosWrappers::SolverCG solver(solver_control);
+        TrilinosWrappers::SolverCG solver(solver_control);
         //TrilinosWrappers::SolverGMRES solver(solver_control);
         //TrilinosWrappers::SolverBicgstab solver(solver_control);
         //SolverFGMRES<LinearAlgebra::Vector> solver(solver_control);
         //SolverCG<LinearAlgebra::Vector> solver(solver_control);
 
-        SolverFGMRES<LinearAlgebra::Vector> solver(solver_control,
-                                                   SolverFGMRES<LinearAlgebra::Vector>::AdditionalData(100));
+        //SolverFGMRES<LinearAlgebra::Vector> solver(solver_control,
+        //                                         SolverFGMRES<LinearAlgebra::Vector>::AdditionalData(100));
 #endif
         // Trilinos reports a breakdown
         // in case src=dst=0, even
@@ -327,16 +327,17 @@ namespace aspect
 
                 if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
                   {
-                    {
-                      std::ofstream f("solver_history_S.txt");
-                      f << std::setprecision(16);
+                    if (false)
+                      {
+                        std::ofstream f("solver_history_S.txt");
+                        f << std::setprecision(16);
 
-                      for (unsigned int i=0; i<solver_control.get_history_data().size(); ++i)
-                        f << i << " " << solver_control.get_history_data()[i] << "\n";
+                        for (unsigned int i=0; i<solver_control.get_history_data().size(); ++i)
+                          f << i << " " << solver_control.get_history_data()[i] << "\n";
 
-                      f << "\n";
-                      std::cout << "SEE solver_history_S.txt" << std::endl;
-                    }
+                        f << "\n";
+                        std::cout << "SEE solver_history_S.txt" << std::endl;
+                      }
 
                     AssertThrow (false,
                                  ExcMessage (std::string("The iterative (bottom right) solver in BlockSchurPreconditioner::vmult "
