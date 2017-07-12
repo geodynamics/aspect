@@ -200,7 +200,7 @@ namespace aspect
       // we want to get the peridotite field from the old solution here,
       // because it tells us how much of the material was already molten
       if (this->include_melt_transport() && in.cell
-          && this->get_timestep_number() > 0)
+          && this->get_timestep_number() > 0 && !this->get_parameters().use_operator_splitting)
         {
           // Prepare the field function
           Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
@@ -225,6 +225,14 @@ namespace aspect
                               old_porosity,
                               this->introspection().component_indices.compositional_fields[porosity_idx]);
         }
+      else if (this->get_parameters().use_operator_splitting)
+        for (unsigned int i=0; i<in.position.size(); ++i)
+          {
+            const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+            const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
+            old_porosity[i] = in.composition[i][porosity_idx];
+            maximum_melt_fractions[i] = in.composition[i][peridotite_idx];
+          }
 
       for (unsigned int i=0; i<in.position.size(); ++i)
         {

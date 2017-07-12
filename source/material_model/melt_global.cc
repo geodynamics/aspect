@@ -115,7 +115,7 @@ namespace aspect
       // we want to get the porosity field from the old solution here,
       // because we need a field that is not updated in the nonlinear iterations
       if (this->include_melt_transport() && in.cell
-          && this->get_timestep_number() > 0)
+          && this->get_timestep_number() > 0 && !this->get_parameters().use_operator_splitting)
         {
           // Prepare the field function
           Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
@@ -131,6 +131,12 @@ namespace aspect
                               old_porosity,
                               this->introspection().component_indices.compositional_fields[porosity_idx]);
         }
+      else if (this->get_parameters().use_operator_splitting)
+        for (unsigned int i=0; i<in.position.size(); ++i)
+          {
+            const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+            old_porosity[i] = in.composition[i][porosity_idx];
+          }
 
       for (unsigned int i=0; i<in.position.size(); ++i)
         {
