@@ -81,22 +81,43 @@ namespace aspect
 
     template <int dim>
     double
-    DepthDependent<dim>::calculate_depth_dependent_prefactor(const double &depth) const
+    DepthDependent<dim>::calculate_depth_dependent_prefactor(const Point<dim> &position) const
     {
       /* The depth dependent prefactor is the multiplicative factor by which the
        * viscosity computed by the base model's evaluate method will be scaled */
+      const double depth = this->get_geometry_model().depth(position);
       const double reference_viscosity = base_model->reference_viscosity();
       if ( viscosity_source == File )
         {
           return viscosity_from_file(depth)/reference_viscosity;
         }
       else if ( viscosity_source == Function )
-        {
-          const Point<1> dpoint(depth);
-          const double viscosity_depth_prefactor = viscosity_function.value(dpoint);
-          Assert (viscosity_depth_prefactor > 0.0, ExcMessage("Viscosity depth function should be larger than zero"));
-          return viscosity_depth_prefactor/reference_viscosity;
-        }
+	{
+	  if (coordinate_system == Utilities::Coordinates::depth)   
+	    {
+	      Point<1> dpoint(depth);
+	      const double viscosity_depth_prefactor = viscosity_function1d.value(dpoint);
+	      Assert (viscosity_depth_prefactor > 0.0, ExcMessage("Viscosity depth function should be larger than zero"));
+	      return viscosity_depth_prefactor/reference_viscosity;
+	    }
+	  else if( coordinate_system == Utilities::Coordinates::cartesian)
+	    {
+	      const double viscosity_depth_prefactor = viscosity_function.value(position);
+	      Assert (viscosity_depth_prefactor > 0.0, ExcMessage("Viscosity depth function should be larger than zero"));
+	      return viscosity_depth_prefactor/reference_viscosity;
+	    }
+	  else if( coordinate_system == Utilities::Coordinates::spherical)
+	    {
+	      const std_cxx11::array<double,dim> spherical_coordinates =
+		aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
+	      Point<dim> point;
+	      for (unsigned int d=0; d<dim; ++d)
+		point[d] = spherical_coordinates[d];
+	      const double viscosity_depth_prefactor = viscosity_function.value(point);
+	      Assert (viscosity_depth_prefactor > 0.0, ExcMessage("Viscosity depth function should be larger than zero"));
+	      return viscosity_depth_prefactor/reference_viscosity;	      
+	    }
+	}
       else if (viscosity_source == List)
         {
           return viscosity_from_list(depth)/reference_viscosity;
@@ -105,11 +126,10 @@ namespace aspect
         {
           return 1.0;
         }
-      else
-        {
-          Assert( false, ExcMessage("Invalid method for viscosity depth dependence") );
-          return 0.0;
-        }
+      
+      
+      Assert( false, ExcMessage("Invalid method for viscosity depth dependence") );
+      return 0.0;
     }
 
 
@@ -125,8 +145,9 @@ namespace aspect
           // Scale the base model viscosity value by the depth dependent prefactor
           for (unsigned int i=0; i < out.n_evaluation_points(); ++i)
             {
-              const double depth = this->get_geometry_model().depth(in.position[i]);
-              out.viscosities[i] *= calculate_depth_dependent_prefactor( depth );
+              //const double depth = this->get_geometry_model().depth(in.position[i]);
+	      
+              out.viscosities[i] *= calculate_depth_dependent_prefactor( in.position[i] );
             }
         }
     }
@@ -172,7 +193,17 @@ namespace aspect
 
           prm.enter_subsection("Viscosity depth function");
           {
-            Functions::ParsedFunction<1>::declare_parameters(prm,1);
+	     prm.declare_entry ("Coordinate system", "depth",
+                             Patterns::Selection ("cartesian|spherical|depth"),
+                             "A selection that determines the assumed coordinate "
+                             "system for the function variables. Allowed values "
+                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
+                             "are interpreted as r,phi or r,phi,theta in 2D/3D "
+                             "respectively with theta being the polar angle. `depth' "
+                             "will create a function, in which only the first "
+                             "parameter is non-zero, which is interpreted to "
+                             "be the depth of the point.");
+            Functions::ParsedFunction<1>::declare_parameters(prm,dim);
             prm.declare_entry("Function expression","1.0e21");
           }
           prm.leave_subsection();
@@ -235,9 +266,19 @@ namespace aspect
 
           prm.enter_subsection("Viscosity depth function");
           {
+	    {
+	      coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+	    }
             try
               {
-                viscosity_function.parse_parameters(prm);
+		if( coordinate_system == Utilities::Coordinates::depth )
+		  {
+		    viscosity_function1d.parse_parameters(prm);
+		  }
+		else
+		  {
+		    viscosity_function.parse_parameters(prm);
+		  }
               }
             catch (...)
               {
@@ -287,7 +328,8 @@ namespace aspect
        * model should be representative of the product of the depth dependent contribution
        * and the base model contribution to the total viscosity */
       const double mean_depth = 0.5*this->get_geometry_model().maximal_depth();
-      return calculate_depth_dependent_prefactor( mean_depth )*base_model->reference_viscosity();
+      const Point<dim> representative_point = this->get_geometry_model().representative_point( mean_depth );
+      return calculate_depth_dependent_prefactor( representative_point )*base_model->reference_viscosity();
     }
   }
 }

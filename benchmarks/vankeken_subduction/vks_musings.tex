@@ -1,0 +1,126 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{fullpage}
+\usepackage{verbatim}
+\begin{document}
+
+\section{Description of benchmark}
+The van Keken et al. 2008 subduction benchmark was designed to test the ability of various numerical codes used in subduction zone models to reproduce a steady-state temperature solution in the mantle wedge. The benchmark features a kinematically prescribed, rigidly translating downgoing plate and a kinematically prescribed stationary overriding plate. Flow in the wedge is driven exclusively by the kinematic downgoing plate - buoyancy does not contribute to flow.
+
+\section{Key challenges}
+The VK08 subduction benchamrk is challenging primarily because of 1) the discontinuity in velocities between the downgoing and over-riding plate (i.e. the subduction interface) and 2) the (integrable) singularity in the pressure field at the tip of the wedge. The benchmark primarily involves a comparison of the steady-state wedge thermal structure (an average temperature over the wedge and a point value along the slab-wedge interface downdip of the corner), but it is also useful to compare the velocity and pressure fields with values obtained using other codes, because any errors in the velocity solution will have a strong influence on the pressure solution.
+
+\section{Approach with ASPECT}
+The solution of the VK08 subduction benchmark with ASPECT is somewhat tricky because of the internally prescribed velocities. To prescribe velocities within the domain, we use the \texttt{cookbooks/prescribed\_velocity} cookbook. We modified this cookbook to allow prescribed velocities for elements using a Discontinuous Galerkin formulation for the pressure variable (DGP). Of the codes that participated in the VK08 subduction benchmark, the only code using quadrilateral elements similar to ASPECT was ConMan (contributed by Scott King), which uses Q1-P0 elements but a different solution strategy from ASPECT. As described in VK08 ``A Q1-P0 element is used for the Stokes equation. A penalty function method is used to eliminate pressure from the discretized set of equations for the Stokes equation which can then be solved by efficient Cholesky factorization.'' It is noted that the mesh resolution near the tip of the wedge is 1 km.
+
+The mesh is set up such that square elements are used, with 66 repetitions in the x-direction and 60 repetitions in the y-direction. The dip angle of the prescribed slab is 45 degrees, so the nodes of the elements lie along the slab. The x- and y- dimensions of each cell are 10 km. The over-riding plate thickness is 50 km, so the base of the over-riding plate also lies along element boundaries. The corner of the wedge is located at (x,y) = (50 km, 550 km). For tests shown here, an initial global refinement of 2 is used, so the mesh consists of a regular grid of 264x240 elements.
+
+\section{Case 1}
+With ASPECT, I initially tried to reproduce the benchmark while prescribing only the velocities and using the default element (Q2-P1). The input file for this case is \texttt{vankeken\_subduction\_case1.prm}. The solution appears to be completely wrong. There is not much more to say about it. Note that for an otherwise identical model setup with initial global refinement level of 0, the linear solver will fail to converge, and regardless of resolution, the direct solver will not converge.
+
+\begin{figure}
+\includegraphics[width=6.5 in]{figures/output_case1_aspect_solution.eps}
+\caption{x-velocity, y-velocity, temperature, and pressure (with streamlines) for the zeroth timestep of Case 1.}
+\end{figure}
+
+\section{Case 2}
+Motivated by the successful use of Q1-P0 elements in the VK08 benchmark paper, we extended the prescribed velocity plugin so that it can be used with DGP elements.
+\begin{verbatim}
+diff vankeken_subduction_case1.prm vankeken_subduction_case2.prm
+2c2
+< set Output directory = output_case1
+---
+> set Output directory = output_case2
+10,11c10,11
+<   set Stokes velocity polynomial degree = 2
+<   set Use locally conservative discretization = false
+---
+>   set Stokes velocity polynomial degree = 1
+>   set Use locally conservative discretization = true
+
+\end{verbatim}
+
+The solution here exhibits very significant checkerboarding in the pressure solution. However, the streamlines are closer to the correct solution, as are the x- and y- velocities. However, for any calculation that makes use of the pressure field (i.e. for melt production or nonlinear rheology), this solution is essentially useless. Upon close examination of the streamlines, the checkerboarding affects the velocity field as well
+
+\begin{figure}
+\includegraphics[width=6.5 in]{figures/output_case2_aspect_solution.eps}\\
+\includegraphics[width=6.5 in]{figures/output_case2_aspect_vankeken_difference.eps}
+\caption{x-velocity, y-velocity, temperature, and pressure (with streamlines) for the zeroth timestep of Case 2. Second row: difference between calculated x-velocity, y-velocity, and temperature for the zeroth timestep (relative to benchmark values provided by PvK). Note that agreement should not be expected for the temperature field since the calculation was not run to steady state.}
+\end{figure}
+
+\section{Case 3}
+Here, we prescribe presure in the over-riding and downgoing plates and use the standard Q2-P1 discretization in ASPECT with one additional change - pressure is prescribed (constant, equal to zero) in both the over-riding plate and the slab. This choice was motivated by the observation in previous experiments that numerical instabilities develop in the pressure solution along the slab-wedge interface. I suspect that this is related somehow to the fact that the prescribed velocity field varies discontinuously across the interface, and it is possible that continuity is violated by the prescribed velocities, leading to huge spurious pressures. 
+\begin{verbatim}
+diff vankeken_subduction_case1.prm vankeken_subduction_case3.prm
+2c2
+< set Output directory = output_case1
+---
+> set Output directory = output_case3
+111c111
+< set Prescribe internal pressure  =  false
+---
+> set Prescribe internal pressure  =  true
+115c115
+<   set Use x velocity indicator for pressure indicator = false
+---
+>   set Use x velocity indicator for pressure indicator = true
+\end{verbatim}
+
+The pressure field and streamlines in this case appear initially to be more reasonable but when examined closely, the streamlines are not parallel to the interface between the overriding plate and the wedge or the downgoing plate and the wedge. These boundaries between the kinematically prescribed region and the wedge are effectively no-slip, and streamlines should remain parallel to them. If this calculation is run to thermal steady state, the results will not agree with benchmark values because of this ``leakage'' across the boundaries. Note that there are subtle disagreements in the velocity field as  well.
+
+\begin{figure}[h]
+\includegraphics[width=6.5 in]{figures/output_case3_aspect_solution.eps}\\
+\includegraphics[width=6.5 in]{figures/output_case3_aspect_vankeken_difference.eps}
+\caption{x-velocity, y-velocity, temperature, and pressure (with streamlines) for the zeroth timestep of Case 3. Second row: difference between calculated x-velocity, y-velocity, and temperature for the zeroth timestep (relative to benchmark values provided by PvK). Note that agreement should not be expected for the temperature field since the calculation was not run to steady state.}
+\end{figure}
+
+\section{Case 4}
+In this case, I use the default Q2-P1 element but prescribe the pressure. The pressure here is prescribed automatically in only the elements for which \emph{all} velocity DOFs are constrained. The pressure and velocity fields suffer the same problems as Case 3.
+
+\begin{verbatim}
+diff vankeken_subduction_case1.prm vankeken_subduction_case4.prm
+2c2
+< set Output directory = output_case1
+---
+> set Output directory = output_case4
+111c111
+< set Prescribe internal pressure  =  false
+---
+> set Prescribe internal pressure  =  true
+\end{verbatim}
+
+\begin{figure}[h]
+\includegraphics[width=6.5 in]{figures/output_case4_aspect_solution.eps}\\
+\includegraphics[width=6.5 in]{figures/output_case4_aspect_vankeken_difference.eps}
+\caption{x-velocity, y-velocity, temperature, and pressure (with streamlines) for the zeroth timestep of Case 4. Second row: difference between calculated x-velocity, y-velocity, and temperature for the zeroth timestep (relative to benchmark values provided by PvK). Note that agreement should not be expected for the temperature field since the calculation was not run to steady state.}
+\end{figure}
+
+\section{Case 5}
+\begin{verbatim}
+diff vankeken_subduction_case1.prm vankeken_subduction_case5.prm
+2c2
+< set Output directory = output_case1
+---
+> set Output directory = output_case5
+10,11c10,11
+<   set Stokes velocity polynomial degree = 2
+<   set Use locally conservative discretization = false
+---
+>   set Stokes velocity polynomial degree = 1
+>   set Use locally conservative discretization = true
+111c111
+< set Prescribe internal pressure  =  false
+---
+> set Prescribe internal pressure  =  true
+\end{verbatim}
+\begin{figure}[h]
+\includegraphics[width=6.5 in]{figures/output_case5_aspect_solution.eps}\\
+\includegraphics[width=6.5 in]{figures/output_case5_aspect_vankeken_difference.eps}
+\caption{x-velocity, y-velocity, temperature, and pressure (with streamlines) for the zeroth timestep of Case 5. Second row: difference between calculated x-velocity, y-velocity, and temperature for the zeroth timestep (relative to benchmark values provided by PvK). Note that agreement should not be expected for the temperature field since the calculation was not run to steady state.}
+\end{figure}
+
+\end{document}

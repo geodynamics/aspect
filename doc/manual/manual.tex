@@ -7190,12 +7190,75 @@ and
 
 We use bisection to determine $Ra_c$ for specific choices of the domain geometry, keeping the depth $b$ constant and varying the domain width $\lambda$. If the vertical velocity increases from the first to the second timestep, the system is unstable to convection. Otherwise, it is stable and convection will not occur. Each calculation is terminated after the second timestep. Fig.~\ref{fig:onset-1} shows the numerically-determined threshold for the onset of convection, which can be compared directly with the theoretical prediction (green curve) and Fig.~6.39 of \cite{TS14}. The relative error between the numerically-determined value of $Ra_c$ and the analytic solution are shown in the right panel of Fig.~\ref{fig:onset-1}.
 
-\begin{figure}
- \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/onset-of-convection/doc/racr.png}
+\begin{figure}[h]
+ \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/onset-of-convection/racr.png}
  \hfill
  \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/onset-of-convection/doc/racr_error.png}
  \caption{\it Left: Comparison of numerically-determined and theoretical values for $Ra_c$. Red circles indicate numerical simulations unstable to convection, black circles indicate simulations that are stable. The green dashed curve indicates the theoretical prediction. Right: Relative error in determination of $Ra_c$. The dashed red line indicates the error tolerance used in bisection procedure.}
  \label{fig:onset-1}
+\end{figure}
+
+\subsubsection{The van Keken kinematic corner flow benchmark}
+\label{sec:benchmark-van-keken-subduction}
+\textit{This section is a co-production of Max Rudolph and Jonathan Perry-Houts.}
+
+This benchmark involves a solution to a kinematic corner flow problem that approximates some aspects
+of flow in the mantle wedge. The specific case considered here is `Case 1C' from van Keken et al. \cite{VK08}.
+The flow in this model is driven by a kinematically-prescribed downgoing plate and a kinematically fixed over-riding
+plate. The dip angle of the downgoing plate is 45$^\circ$ and the rate of convergence is 5 cm/yr. The thermal structure of
+the subducing plate is initially described by a halfspace-cooling solution for a plate age of 50 Myr. The over-riding plate is
+50 km thick and has a conductive temperature profile along the right boundary. The top boundary is isothermal. The right boundary and the bottom-right
+corner of the bottom boundary have the natural (stress-free) mechanical boundary condition. Incoming material on the right boundary is isothermal.
+
+In order to treat the kinematically-prescribed regions within the domain, we use a modified version of the `prescribed-velocity'
+plugin. Because of the discontinuity in velocity at the interface between the downgoing and over-riding plate, it is
+necessary to prescribe the pressure within the kinematically-prescribed region in order to obtain convergence.
+
+The flow that arises in this benchmark is purely kinematic - buoyancy is neglected.
+Thus, the velocity field is steady and the benchmark need only be run until the temperature field reaches steady state.
+The participants in the original benchmark paper by van Keken et al. \cite{VK08} were asked to supply the steady temperature
+values on a regular grid with 6 km spacing. The benchmark values from \cite{VK08} were provided by Peter van Keken (email
+communication) to Max Rudolph. For benchmark purposes, three quantities are computed from the temperature field:
+1) the value of the temperature at a point 60 km landward from the trench and at a depth of 60 km ($T_{11,11}$), i.e.
+10 km down-dip from the tip of the mantle wedge, 2) a norm of temperature values along the slab-wedge interface ($||T_{slab}||$), and
+3) a norm of temperature values within the mantle wedge ($||T_{wedge}||$). The temperature along the slab-wedge interface is
+challenging to resolve accurately and requires very fine mesh resolution in the vicinity of the tip of the mantle wedge.
+The calculation shown in Figs.~\ref{fig:vks-1}-\ref{fig:vks-2} begin with an initial grid resolution of 66x60 elements,
+proving uniform lateral and depth resolution of 10 km. Additional mesh refinements occur after the simulation starts, reaching
+a final refinement level of 7, corresponding to 78~m grid resolution on the finest mesh. The results obtained using \aspect{}
+are uniformly colder than the values reported by any of the other codes that participated in \cite{VK08}, but results obtained
+using successively finer meshes appear to be converging towards the range of values in \cite{VK08}. 
+
+\begin{table}[htb]
+        \center
+        \begin{tabular}{|c|cccc|}
+                \hline
+                Case & Code & $T_{11,11}$ & $||T_{slab}||$ & $||T_{wedge}||$ \\
+                \hline
+                1c & LDEO      & 397.55 & 505.70 & 850.50 \\
+                1c & NTU       & 391.57 & 511.09 & 852.43 \\
+                1c & PGC       & 387.78 & 503.10 & 852.97 \\
+                1c & UM        & 387.84 & 503.13 & 852.92 \\
+                1c & VT        & 389.39 & 503.04 & 851.68 \\
+                1c & WHOI      & 388.73 & 504.03 & 854.99 \\
+                1c & \aspect{} & 383.55 & 484.16 & 845.96 \\
+                \hline
+        \end{tabular}
+        \label{table:vks-1}
+        \caption{Benchmark values from codes that participated in \cite{VK08} and \aspect{}.}
+\end{table}
+
+
+\begin{figure}[h]
+  \label{fig:vks-1}
+  \includegraphics[width=0.9\textwidth]{cookbooks/benchmarks/van-keken-subduction/benchmark_quantities.png}
+  \caption{Values of the benchmark quantities $T_{wedge}$ (left panel), $T_{slab}$ (center panel) and $T_{11,11}$ (right panel). Red and blue dashed lines indicate maximum and mimum values from the other codes in Table~\ref{table:vks-1}. The number of cells is shown for reference in the left panel.}
+\end{figure}
+
+\begin{figure}[h]
+  \label{fig:vks-2}
+  \includegraphics[width=0.9\textwidth]{cookbooks/benchmarks/van-keken-subduction/aspect_vankeken_difference.png}
+  \caption{Difference between values calculated using \aspect{} and values provided by Peter van Keken for x-velocity (left), y-velocity (center), and temperature (right).}
 \end{figure}
 
 \subsubsection{The van Keken thermochemical composition benchmark}
