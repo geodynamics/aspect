@@ -53,7 +53,7 @@ namespace aspect
         {
           // we have to create a long vector, because that is the only way to extract the velocities
           // from the solution vector
-          std::vector<std::vector<double> > melt_velocitiy_vector (dim, std::vector<double>(material_model_inputs.position.size()));
+          std::vector<std::vector<double> > melt_velocity_vector (dim, std::vector<double>(material_model_inputs.position.size()));
           // Prepare the field function
           Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
           fe_value(this->get_dof_handler(), this->get_solution(), this->get_mapping());
@@ -62,12 +62,12 @@ namespace aspect
 
           for (unsigned int d=0; d<dim; ++d)
             fe_value.value_list(material_model_inputs.position,
-                                melt_velocitiy_vector[d],
+                                melt_velocity_vector[d],
                                 this->introspection().variable("fluid velocity").first_component_index+d);
 
           for (unsigned int i=0; i<material_model_inputs.position.size(); ++i)
             for (unsigned int d=0; d<dim; ++d)
-              melt_velocity[i][d] = melt_velocitiy_vector[d][i];
+              melt_velocity[i][d] = melt_velocity_vector[d][i];
         }
 
       const MaterialModel::MeltOutputs<dim> *melt_outputs = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();

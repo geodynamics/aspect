@@ -138,10 +138,27 @@ namespace aspect
     double max_specific_heat = (advection_field.is_temperature()) ? 0.0 : 1.0;
     double max_conductivity = 0;
 
+    std::vector<Tensor<1,dim> > old_fluid_velocity_values(scratch.finite_element_values.n_quadrature_points);
+    std::vector<Tensor<1,dim> > old_old_fluid_velocity_values(scratch.finite_element_values.n_quadrature_points);
+    if (parameters.include_melt_transport)
+      {
+        const FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
+        scratch.finite_element_values[ex_u_f].get_function_values (old_solution,old_fluid_velocity_values);
+        scratch.finite_element_values[ex_u_f].get_function_values (old_old_solution,old_old_fluid_velocity_values);
+      }
+
     for (unsigned int q=0; q < scratch.finite_element_values.n_quadrature_points; ++q)
       {
         const Tensor<1,dim> velocity = (scratch.old_velocity_values[q] +
                                         scratch.old_old_velocity_values[q]) / 2;
+        double velocity_norm = velocity.norm();
+
+        if (parameters.include_melt_transport)
+          {
+            const Tensor<1,dim> fluid_velocity = (old_fluid_velocity_values[q] +
+                                                  old_old_fluid_velocity_values[q]) / 2;
+            velocity_norm = std::max (fluid_velocity.norm(), velocity_norm);
+          }
 
         const double strain_rate = ((scratch.old_strain_rates[q]
                                      + scratch.old_old_strain_rates[q]) / 2).norm();
@@ -153,7 +170,7 @@ namespace aspect
           }
 
         max_residual = std::max (residual[q],     max_residual);
-        max_velocity = std::max (velocity.norm()
+        max_velocity = std::max (velocity_norm
                                  + parameters.stabilization_gamma * strain_rate * cell_diameter,
                                  max_velocity);
 
