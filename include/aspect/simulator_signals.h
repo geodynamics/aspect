@@ -101,7 +101,8 @@ namespace aspect
 
     /**
      * A signal that is called at the end of setting up the
-     * constraints for the current time step. This allows to add
+     * constraints for the current time step and prior to the initialization
+     * of the linear system. This allows to add
      * more constraints on degrees of freedom, for example to fix
      * the velocity at certain points.
      *

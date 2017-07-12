@@ -1395,6 +1395,8 @@ namespace aspect
                                                        constraints,
                                                        *mapping);
     }
+    // allow user constraints that will potentially modify sparsity pattern
+    signals.post_constraints_creation(*this, constraints);
     constraints.close();
     signals.post_compute_no_normal_flux_constraints(triangulation);
 
