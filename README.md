@@ -5,15 +5,18 @@ ASPECT - Advanced Solver for Problems in Earth's ConvecTion
 About
 -----
 
-ASPECT is a code to simulate problems in thermal convection. The project is
-supported by CIG (http://geodynamics.org).
+ASPECT is a code to simulate convection in Earth's mantle and elsewhere.
+It has grown from a pure mantle-convection code into a tool for many
+geodynamic applications including applications for inner core convection,
+lithospheric scale deformation, two-phase flow, and numerical methods development.
+The project is supported by CIG (http://geodynamics.org).
 
 
 
 Installation instructions
 -------------------------
 
-The steps to install the necessary dependencies and ASPECT itself is described in the Installation instructions section of the ASPECT [manual](http://www.math.clemson.edu/~heister/manual.pdf).
+The steps to install the necessary dependencies and ASPECT itself are described in the Installation instructions section of the ASPECT [manual](http://www.math.clemson.edu/~heister/manual.pdf).
 
 
 
