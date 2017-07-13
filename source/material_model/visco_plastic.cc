@@ -966,7 +966,7 @@ namespace aspect
                                    "may in fact decrease if the orientation of the deformation field switches "
                                    "through time. Consequently, the ideal solution is track the finite strain "
                                    "invariant (single compositional) field within the material and track "
-                                   "the full finite strain tensor through tracers."
+                                   "the full finite strain tensor through particles."
                                    ""
                                    "\n\n"
                                    "Viscous stress may also be limited by a non-linear stress limiter "
