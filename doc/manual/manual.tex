@@ -8159,23 +8159,23 @@ Here we use \aspect{} to numerically reproduce the results of a linear stability
 The linear stability analysis for the onset of convection appears in Turcotte and Schubert \cite{TS14} (section 6.19). The linear stability analysis assumes the Boussinesq approximation and makes predictions for the growth rate (vertical velocity) of instabilities and the critical Rayleigh number $Ra_{cr}$ above which convection will occur. $Ra_{cr}$ depends only on the dimensionless wavelength of the perturbation, which is assumed to be equal to the width of the domain. The domain has height $b$ and width $\lambda$ and the perturbation is described by
 \begin{align*}
 T'(x,y) = T_0'\cos\left(\frac{2\pi x}{\lambda}\right)\sin\left(\frac{\pi y}{b} \right),
-\end{align}
+\end{align*}
 where $T_0'$ is the amplitude of the perturbation. Note that because we place the bottom boundary of the domain at $y=0$ and the top at $y=b$, the perturbation vanishes at the top and bottom boundaries. This departs slightly from the setup in \cite{TS14}, where the top and bottom boundaries of the domain are at $y=\pm b/2$. The analytic expression for the critical Rayleigh number, $Ra_{cr}$ is given in Turcotte and Schubert \cite{TS14} equation (6.319):
 \begin{align*}
 Ra_{cr}=\frac{\left(\pi^2+\frac{4\pi^2 b^2}{\lambda^2}\right)^3}{\frac{4\pi^2 b^2}{\lambda^2}}.
-\end{align}
+\end{align*}
 The linear stability analysis also makes a prediction for the dimensionless growth rate of the instability $\alpha'$ (Turcotte and Schubert \cite{TS14}, equation (6.315)). The maximum vertical velocity is given by
 \begin{align*}
 v_{y,max} = \frac{2\pi}{\lambda}\phi_0' e^{\alpha' t},
-\end{align}
+\end{align*}
 where
 \begin{align*}
 \phi_0' = -\frac{2\pi}{\lambda}\frac{\rho_0 g \alpha T_0'}{\mu}\left(\frac{4\pi^2}{\lambda^2}+\frac{\pi^2}{b^2} \right)^{-2},
-\end{align}
+\end{align*}
 and
 \begin{align*}
 \alpha'=\frac{\kappa}{b^2}\left[\frac{\rho_0 g \alpha b^3 \Delta T}{\mu \kappa}\left(\frac{\frac{4\pi^2 b^2}{\lambda^2}}{\left(\frac{4\pi^2 b^2}{\lambda^2}+\pi^2\right)^2}\right) -\left(\pi^2+\frac{4\pi^2b^2}{\lambda^2}\right)\right].
-\end{align}
+\end{align*}
 
 We use bisection to determine $Ra_{cr}$ for specific choices of the domain geometry, keeping the depth $b$ constant and varying the domain width $\lambda$. If the vertical velocity increases from the first to the second timetsp, the system is unstable to convection. Otherwise, it is stable and convection will not occur. Each calculation is terminated after the second timestep. Fig.~\ref{fig:onset-1} shows the numerically-determined threshold for the onset of convection, which can be compared directly with the theoretical prediction (green curve) and Fig.~6.39 of \cite{TS14}. The relative error between the numerically-determined value of $Ra_{cr}$ and the analytic solution are shown in the right panel of Fig.~\ref{fig:onset-1}.
 
@@ -10327,9 +10327,107 @@ functions).
 \subsubsection{Heating models}
 \label{sec:heating-models}
 
+\index[prmindex]{Model name}
+\index[prmindexfull]{Heating model!Model name}
+The heating model is responsible for describing the various terms in the energy
+equation \eqref{eq:temperature}, using the coefficients provided by the material model. 
+These can be source terms such as radiogenic heat production or shear heating, they can
+be terms on the left-hand side of the equation, such as part of the latent heating terms, 
+or they can be heating processes related to reactions. 
+When the equations are assembled and solved, the heating terms from all heating models 
+used in the computation are added. This means that each heating model usually only 
+implements the terms for one specific heating process, so that the users can decide 
+which heating processes should be included in the computation by selecting a list of 
+heating models in the input file. 
 
-\marginpar{To be written}
+To implement a new heating model, you need to overload the
+\href{doc/doxygen/classaspect_1_1HeatingModel_1_1Interface.html}{aspect::HeatingModel::Interface}
+class and use
+the \texttt{ASPECT\_REGISTER\_HEATING\_MODEL} macro to register your new
+class. The implementation of the new class should be in namespace
+\texttt{aspect::HeatingModel}.
 
+Specifically, your new class needs to implement the following basic interface:
+\begin{lstlisting}[frame=single,language=C++]
+    template <int dim>
+    class aspect::HeatingModel::Interface
+    {
+      public:
+        // compute heating terms used in the energy equation
+        virtual
+        void
+        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
+
+        // All the following functions are optional:
+        virtual
+        void
+        initialize ();
+        
+        virtual
+        void
+        update ();
+
+        // Functions used in dealing with run-time parameters
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+        
+        // Allow the heating model to attach additional material model outputs in case it needs
+        // them to compute the heating terms
+        virtual
+        void
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
+    };
+\end{lstlisting}
+The main properties of the material are computed in the function \texttt{evaluate()} that takes structs of type
+\texttt{MaterialModelInputs} and \texttt{MaterialModelOutputs} and is supposed to fill a 
+\texttt{HeatingModelOutputs} structure. As in the material model, this function is handling lookups at an 
+arbitrary number of positions, so for each heating term (for example the heating source terms), a std::vector 
+is returned. The following members of \texttt{HeatingModelOutputs} need to be filled:
+\begin{lstlisting}[frame=single,language=C++]
+struct HeatingModelOutputs
+{
+       std::vector<double> heating_source_terms;
+       std::vector<double> lhs_latent_heat_terms;
+       
+       // optional:
+       std::vector<double> rates_of_temperature_change;
+}
+\end{lstlisting}
+Heating source terms are terms on the right-hand side of the equations, such as the adiabatic heating
+$\alpha T \left( \mathbf u \cdot \nabla p \right)$ in equation \eqref{eq:temperature}. 
+An example for a left-hand side heating term is the temperature-derivative term 
+$\rho T \Delta S \frac{\partial X}{\partial T}$ that is part of latent heat production 
+(see equation \eqref{eq:temperature-reformulated}). 
+Rates of temperature change are used when the heating term is related to a reaction process, happening 
+on a faster time scale than the temperature advection. 
+All of these terms can depend on any of the material model inputs or outputs. 
+Implementations of \texttt{evaluate()} may of course choose to ignore dependencies on any
+of these arguments.
+
+The remaining functions are used in postprocessing as well as
+handling run-time parameters. The exact meaning of these member functions is
+documented in the
+\href{doc/doxygen/classaspect_1_1HeatingModel_1_1Interface.html}{aspect::HeatingModel::Interface
+class documentation}. Note that some of the functions listed above have a
+default implementation, as discussed on the documentation page just
+mentioned.
+
+As for the material model, the functions \texttt{initialize()} and \texttt{update()} can be 
+implemented if desired (the default implementation does
+nothing) and are useful if the heating model has an internal state. The function \texttt{initialize()} is called once during
+the initialization of \aspect{} and can be used to allocate memory, initialize state, or read information from
+an external file. The function update() is called at the beginning of every time step.
+
+Older versions of \aspect{} used to have individual functions like \texttt{specific\_heating\_rate()} 
+instead of the \texttt{evaluate()} function discussed above. This old interface is no longer supported, 
+so restructure your plugin to implement \texttt{evaluate()} instead (even if this function only calls the old functions).
 
 \subsubsection{Geometry models}
 \label{sec:geometry-models}
