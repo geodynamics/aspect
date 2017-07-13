@@ -11,7 +11,7 @@ Number of degrees of freedom: 6,890 (2,178+578+2,178+289+1,089+289+289)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 28+0 iterations.
    Solving for u_f in 1 iterations.
-      Relative nonlinear residuals: 1.78845e-16, 2.44479e-16, 0, 0.0526341
+      Relative nonlinear residuals: 1.80371e-16, 2.44479e-16, 0, 0.0526341
       Total relative residual after nonlinear iteration 1: 0.0526341
 
 
@@ -21,8 +21,8 @@ Number of degrees of freedom: 6,890 (2,178+578+2,178+289+1,089+289+289)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 1 iterations.
-      Relative nonlinear residuals: 1.78845e-16, 2.44479e-16, 0, 7.06801e-13
-      Total relative residual after nonlinear iteration 2: 7.06801e-13
+      Relative nonlinear residuals: 1.80371e-16, 2.44479e-16, 0, 7.06438e-13
+      Total relative residual after nonlinear iteration 2: 7.06438e-13
 
 
 
@@ -32,70 +32,110 @@ Number of degrees of freedom: 6,890 (2,178+578+2,178+289+1,089+289+289)
      Writing graphical output:      output-heat_advection_by_melt/solution/solution-00000
 
 *** Timestep 1:  t=0.03125 seconds
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 0.000399056, 9.21806e-14, 0, 7.06436e-13
+      Total relative residual after nonlinear iteration 1: 0.000399056
+
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 1 iterations.
-      Relative nonlinear residuals: 5.96675e-14, 9.23249e-14, 0, 7.06798e-13
-      Total relative residual after nonlinear iteration 1: 7.06798e-13
+      Relative nonlinear residuals: 1.52836e-13, 9.21806e-14, 0, 7.06436e-13
+      Total relative residual after nonlinear iteration 2: 7.06436e-13
 
 
 
    Postprocessing:
-     Temperature min/avg/max:       1 K, 1.5 K, 2 K
+     Temperature min/avg/max:       1 K, 1.5 K, 1.991 K
      Heating rate (average/total):  0.05 W/kg, 0.1 W
      Writing graphical output:      output-heat_advection_by_melt/solution/solution-00001
 
 *** Timestep 2:  t=0.0625 seconds
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 0.000179105, 6.14168e-14, 0, 7.06436e-13
+      Total relative residual after nonlinear iteration 1: 0.000179105
+
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 1 iterations.
-      Relative nonlinear residuals: 3.9808e-14, 6.15423e-14, 0, 7.06798e-13
-      Total relative residual after nonlinear iteration 1: 7.06798e-13
+      Relative nonlinear residuals: 4.13915e-13, 6.14168e-14, 0, 7.06436e-13
+      Total relative residual after nonlinear iteration 2: 7.06436e-13
 
 
 
    Postprocessing:
-     Temperature min/avg/max:       1 K, 1.5 K, 2 K
+     Temperature min/avg/max:       1 K, 1.5 K, 1.987 K
      Heating rate (average/total):  0.05 W/kg, 0.1 W
      Writing graphical output:      output-heat_advection_by_melt/solution/solution-00002
 
 *** Timestep 3:  t=0.09375 seconds
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 0.000100345, 6.14168e-14, 0, 7.06436e-13
+      Total relative residual after nonlinear iteration 1: 0.000100345
+
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 1 iterations.
-      Relative nonlinear residuals: 3.9808e-14, 6.15423e-14, 0, 7.06798e-13
-      Total relative residual after nonlinear iteration 1: 7.06798e-13
+      Relative nonlinear residuals: 1.39953e-13, 6.14168e-14, 0, 7.06436e-13
+      Total relative residual after nonlinear iteration 2: 7.06436e-13
 
 
 
    Postprocessing:
-     Temperature min/avg/max:       1 K, 1.5 K, 2 K
+     Temperature min/avg/max:       1 K, 1.5 K, 1.986 K
      Heating rate (average/total):  0.05 W/kg, 0.1 W
      Writing graphical output:      output-heat_advection_by_melt/solution/solution-00003
 
 *** Timestep 4:  t=0.1 seconds
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals: 1.70704e-05, 1.58087e-14, 0, 7.06323e-13
+      Total relative residual after nonlinear iteration 1: 1.70704e-05
+
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 1 iterations.
-      Relative nonlinear residuals: 1.02356e-14, 1.5827e-14, 0, 7.07149e-13
-      Total relative residual after nonlinear iteration 1: 7.07149e-13
+      Relative nonlinear residuals: 3.30006e-13, 1.58087e-14, 0, 7.06323e-13
+      Total relative residual after nonlinear iteration 2: 7.06323e-13
 
 
 
    Postprocessing:
-     Temperature min/avg/max:       1 K, 1.5 K, 2 K
+     Temperature min/avg/max:       1 K, 1.5 K, 1.986 K
      Heating rate (average/total):  0.05 W/kg, 0.1 W
      Writing graphical output:      output-heat_advection_by_melt/solution/solution-00004
 

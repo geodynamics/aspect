@@ -809,7 +809,10 @@ namespace aspect
         prm.declare_entry ("cR", "0.33",
                            Patterns::Double (0),
                            "The $c_R$ factor in the entropy viscosity "
-                           "stabilization. (For historical reasons, the name used here is different "
+                           "stabilization. This parameter controls the part of the entropy viscosity "
+                           "that depends on the solution field itself and its residual in addition "
+                           "to the cell diameter and the maximum velocity in the cell. "
+                           "(For historical reasons, the name used here is different "
                            "from the one used in the 2012 paper by Kronbichler, "
                            "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
                            "This parameter corresponds "
@@ -819,8 +822,11 @@ namespace aspect
         prm.declare_entry ("beta", "0.078",
                            Patterns::Double (0),
                            "The $\\beta$ factor in the artificial viscosity "
-                           "stabilization. An appropriate value for 2d is 0.078 "
-                           "and 0.117 for 3d. (For historical reasons, the name used here is different "
+                           "stabilization. This parameter controls the maximum dissipation of the "
+                           "entropy viscosity, which is the part that only scales with the cell diameter "
+                           "and the maximum velocity in the cell, but does not depend on the solution "
+                           "field itself or its residual. An appropriate value for 2d is 0.078 and "
+                           "0.117 for 3d. (For historical reasons, the name used here is different "
                            "from the one used in the 2012 paper by Kronbichler, "
                            "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
                            "This parameter corresponds "

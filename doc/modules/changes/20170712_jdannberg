@@ -1,0 +1,5 @@
+Changed: In models with melt transport, the stabilization now 
+uses the maximum of solid and melt velocity, instead of using 
+the melt velocity alone.
+<br>
+(Juliane Dannberg, 2017/07/12)
