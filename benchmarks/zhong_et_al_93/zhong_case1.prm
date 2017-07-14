@@ -95,7 +95,7 @@ subsection Postprocess
     set Number of grouped files       = 0
   end
 
-  subsection Dynamic Topography
+  subsection Dynamic topography
     set Density above			    = 0
   end
 

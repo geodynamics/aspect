@@ -100,7 +100,7 @@ subsection Postprocess
     set Also output the spherical harmonic coefficients of density anomaly contribution = false
   end
 
-  subsection Dynamic Topography
+  subsection Dynamic topography
     set Density above = 0.
     set Density below = 2.0
     set Output surface = false

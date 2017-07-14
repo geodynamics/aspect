@@ -51,3 +51,6 @@ s/boussinesq/Boussinesq/g
 
 # Remove all instances of `Subtract mean of dynamic topography`
 /Subtract mean of dynamic topography/d
+
+# Rename Dynamic topography subsection
+s/subsection Dynamic Topography/subsection Dynamic topography/g
