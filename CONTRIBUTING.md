@@ -19,11 +19,11 @@ The ASPECT community maintains an active mailing list hosted by CIG
 mailing list is for questions about ASPECT at all levels.
 
 ## Bug reports
-It is a great help to the community if you report any bugs in the code that you
+It is a great help to the community if you report any bugs that you
 may find. We keep track of all open issues related to ASPECT
 [here](https://github.com/geodynamics/aspect/issues). 
 
-Please follow some simple instructions before opening a new bug report:
+Please follow these simple instructions before opening a new bug report:
 
 - Do a quick search in the list of open and closed issues for a duplicate of
   your issue.
@@ -40,19 +40,18 @@ problem in as much detail as possible.
     how to reproduce it.
 
 ## Making ASPECT better
-As mentioned ASPECT is a community project, and we are encouraging all kinds of
-contributions. Obvious candidates for
-such contributions are implementations of new plugins as discussed in
+ASPECT is a community project, and we are encouraging all kinds of
+contributions. Obvious candidates are implementations of new plugins as discussed in
 the manual, since they are typically self-contained and do not
 require much knowledge of the details of the remaining code. Other much
 appreciated contributions are new examples (cookbooks, tests, or benchmarks),
 extended documentation (every paragraph helps), and in particular fixing typos
-or updating outdated documentation. Obviously, however, we also encourage
+or updating outdated documentation. Obviously, we also encourage
 contributions to the core functionality in any form! If you consider making a
 larger contribution to the core functionality, please open a new
 [issue](https://github.com/geodynamics/aspect/issues/new) first, to discuss
 your idea with one of the maintainers. This allows us to give you early
-advice and prevents you from spending much time on a project that might already be
+feedback and prevents you from spending much time on a project that might already be
 planned, or that conflicts with other plans.
 
 To make a change to ASPECT you should:
@@ -62,9 +61,9 @@ the code base.
 - Create a separate
 [branch](https://guides.github.com/introduction/flow/) (sometimes called a
 feature branch) on which you do your modifications.
-- You can propose that your branch be combined with the rest of
+- You can propose that your branch be merged into the ASPECT
 code by opening a [pull request](https://guides.github.com/introduction/flow/).
-This will give a chance for others to review your code. 
+This will give others a chance to review your code. 
 
 We follow the philosophy that no pull request (independent of the author) is
 merged without a review from one other member of the community, and approval of
@@ -89,9 +88,9 @@ conventions](https://www.dealii.org/developer/doxygen/deal.II/CodingConventions.
 equal to those used by <a href="http://www.dealii.org">deal.II</a>
 upon which ASPECT is based, so as to keep the style of the source code
 consistent. This convention essentially consists of using
-[astyle](http://astyle.sourceforge.net/astyle.html) v.2.04 with the included
-[options](doc/astyle.rc) for indentation, camel case for classes and
-namespaces, and lower case letters with underscores for everything else. If you
+[astyle](http://astyle.sourceforge.net/astyle.html) v.2.04 with a
+[style file](doc/astyle.rc) for indentation, CamelCase for classes and
+namespaces, and lower_case_names_with_underscores for everything else. If you
 are new to the project then we will work with you to ensure your contributions
 are formatted with this style, so please do not think of it as a road block if
 you would like to contribute some code.
