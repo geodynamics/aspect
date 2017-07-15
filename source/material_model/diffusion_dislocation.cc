@@ -125,7 +125,7 @@ namespace aspect
       // Otherwise, calculate the square-root of the norm of the second invariant of the deviatoric-
       // strain rate (often simplified as epsilondot_ii)
       const double edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
-                                      min_strain_rate * min_strain_rate);
+                                      min_strain_rate);
 
 
       // Find effective viscosities for each of the individual phases
@@ -138,23 +138,27 @@ namespace aspect
           // where ii indicates the square root of the second invariant and
           // i corresponds to diffusion or dislocation creep
 
-
           // For diffusion creep, viscosity is grain size dependent
-          double prefactor_stress_diffusion = prefactors_diffusion[j] *
-                                              std::pow(grain_size, -grain_size_exponents_diffusion[j]) *
-                                              std::exp(-(activation_energies_diffusion[j] + pressure*activation_volumes_diffusion[j])/
-                                                       (constants::gas_constant*temperature));
+          const double prefactor_stress_diffusion = prefactors_diffusion[j] *
+                                                    std::pow(grain_size, -grain_size_exponents_diffusion[j]) *
+                                                    std::exp(-(std::max(activation_energies_diffusion[j] + pressure*activation_volumes_diffusion[j],0.0))/
+                                                             (constants::gas_constant*temperature));
 
           // For dislocation creep, viscosity is grain size independent (m=0)
-          double prefactor_stress_dislocation = prefactors_dislocation[j] *
-                                                std::exp(-(activation_energies_dislocation[j] + pressure*activation_volumes_dislocation[j])/
-                                                         (constants::gas_constant*temperature));
-
+          const double prefactor_stress_dislocation = prefactors_dislocation[j] *
+                                                      std::exp(-(std::max(activation_energies_dislocation[j] + pressure*activation_volumes_dislocation[j],0.0))/
+                                                               (constants::gas_constant*temperature));
 
           // Because the ratios of the diffusion and dislocation strain rates are not known, stress is also unknown
           // We use Newton's method to find the second invariant of the stress tensor.
           // Start with the assumption that all strain is accommodated by diffusion creep:
-          double stress_ii = edot_ii/prefactor_stress_diffusion;
+          // If the diffusion creep prefactor is very small, that means that the diffusion viscosity is very large.
+          // In this case, use the maximum viscosity instead to compute the starting guess.
+          double stress_ii = (prefactor_stress_diffusion > (0.5 / max_visc)
+                              ?
+                              edot_ii/prefactor_stress_diffusion
+                              :
+                              0.5 / max_visc);
           double strain_rate_residual = 2*strain_rate_residual_threshold;
           double strain_rate_deriv = 0;
           unsigned int stress_iteration = 0;
@@ -173,8 +177,60 @@ namespace aspect
                                   prefactor_stress_dislocation *
                                   std::pow(stress_ii, stress_exponents_dislocation[j]-1);
 
-              stress_ii -= strain_rate_residual/strain_rate_deriv;
+              // If the strain rate derivative is zero, we catch it below.
+              if (strain_rate_deriv>std::numeric_limits<double>::min())
+                stress_ii -= strain_rate_residual/strain_rate_deriv;
               stress_iteration += 1;
+
+              // In case the Newton iteration does not succeed, we do a fixpoint iteration to see
+              // where the problem is and what the viscosities should be.
+              // Check if anything that would be used in the next iteration is not finite.
+              const bool abort_newton_iteration = !numbers::is_finite(stress_ii)
+                                                  || !numbers::is_finite(strain_rate_residual)
+                                                  || !numbers::is_finite(strain_rate_deriv)
+                                                  || strain_rate_deriv < std::numeric_limits<double>::min()
+                                                  || !numbers::is_finite(std::pow(stress_ii, stress_exponents_diffusion[j]-1))
+                                                  || !numbers::is_finite(std::pow(stress_ii, stress_exponents_dislocation[j]-1))
+                                                  || stress_iteration == stress_max_iteration_number;
+              if (abort_newton_iteration)
+                {
+                  double diffusion_strain_rate = edot_ii;
+                  double dislocation_strain_rate = min_strain_rate;
+                  stress_iteration = 0;
+
+                  do
+                    {
+                      const double old_diffusion_strain_rate = diffusion_strain_rate;
+
+                      const double diffusion_viscosity = std::min(std::max(0.5 * std::pow(prefactors_diffusion[j],-1.0/stress_exponents_diffusion[j])
+                                                                           * std::pow(grain_size, grain_size_exponents_diffusion[j]/stress_exponents_diffusion[j])
+                                                                           * std::pow(diffusion_strain_rate, (1.-stress_exponents_diffusion[j])/stress_exponents_diffusion[j])
+                                                                           * std::exp(std::max(activation_energies_diffusion[j] + pressure*activation_volumes_diffusion[j],0.0)/
+                                                                                      (constants::gas_constant*temperature)), min_visc), max_visc);
+                      const double dislocation_viscosity = std::min(std::max(0.5 * std::pow(prefactors_dislocation[j],-1.0/stress_exponents_dislocation[j])
+                                                                             * std::pow(dislocation_strain_rate, (1.-stress_exponents_dislocation[j])/stress_exponents_dislocation[j])
+                                                                             * std::exp(std::max(activation_energies_dislocation[j] + pressure*activation_volumes_dislocation[j],0.0)/
+                                                                                        (stress_exponents_dislocation[j]*constants::gas_constant*temperature)), min_visc), max_visc);
+
+                      diffusion_strain_rate = dislocation_viscosity / (diffusion_viscosity + dislocation_viscosity) * edot_ii;
+                      dislocation_strain_rate = diffusion_viscosity / (diffusion_viscosity + dislocation_viscosity) * edot_ii;
+
+                      stress_iteration++;
+                      AssertThrow(stress_iteration < stress_max_iteration_number,
+                                  ExcMessage("No convergence has been reached in the loop that determines "
+                                             "the ratio of diffusion/dislocation viscosity. Aborting! "
+                                             "Residual is " + Utilities::to_string(strain_rate_residual) +
+                                             " after " + Utilities::to_string(stress_iteration) + " iterations. "
+                                             "You can increase the number of iterations by adapting the "
+                                             "parameter 'Maximum strain rate ratio iterations'."));
+
+                      strain_rate_residual = std::abs((diffusion_strain_rate-old_diffusion_strain_rate) / diffusion_strain_rate);
+                      stress_ii = 2.0 * edot_ii * 1./(1./diffusion_viscosity + 1./dislocation_viscosity);
+                    }
+                  while (strain_rate_residual > strain_rate_residual_threshold);
+
+                  break;
+                }
             }
 
           // The effective viscosity, with minimum and maximum bounds
@@ -492,10 +548,10 @@ namespace aspect
                                    " activation energies, reference densities, thermal expansivities,"
                                    " and stress exponents. The effective viscosity is defined as"
                                    " \n\n"
-                                   " \\[v_\\text{eff} = \\left(\\frac{1}{v_\\text{eff}^\\text{diff}}+"
-                                   " \\frac{1}{v_\\text{eff}^\\text{dis}}\\right)^{-1}\\]"
+                                   " \\[\\eta_\\text{eff} = \\left(\\frac{1}{\\eta_\\text{eff}^\\text{diff}}+"
+                                   " \\frac{1}{\\eta_\\text{eff}^\\text{dis}}\\right)^{-1}\\]"
                                    " where"
-                                   " \\[v_\\text{i} = 0.5 * A^{-\\frac{1}{n_i}} d^\\frac{m_i}{n_i}"
+                                   " \\[\\eta_\\text{i} = 0.5 A^{-\\frac{1}{n_i}} d^\\frac{m_i}{n_i}"
                                    " \\dot{\\varepsilon_i}^{\\frac{1-n_i}{n_i}}"
                                    " \\exp\\left(\\frac{E_i^* + PV_i^*}{n_iRT}\\right)\\]"
                                    " \n\n"
