@@ -36,7 +36,7 @@ namespace aspect
     void
     MeltViscoPlastic<dim>::initialize ()
     {
-      DiffusionDislocation<dim>::initialize();
+      base_model->initialize();
 
       // check if the applicable compositional fields exist
       AssertThrow(this->introspection().compositional_name_exists("peridotite"),
@@ -57,16 +57,24 @@ namespace aspect
     MeltViscoPlastic<dim>::
     reference_viscosity () const
     {
-      return DiffusionDislocation<dim>::reference_viscosity();
+      return base_model->reference_viscosity();
     }
 
+    template <int dim>
+    double
+    MeltViscoPlastic<dim>::
+    reference_darcy_coefficient () const
+    {
+      // 0.01 = 1% melt
+      return reference_permeability * std::pow(0.01,3.0) / eta_f;
+    }
 
     template <int dim>
     bool
     MeltViscoPlastic<dim>::
     is_compressible () const
     {
-      return DiffusionDislocation<dim>::is_compressible();
+      return base_model->is_compressible();
     }
 
     template <int dim>
@@ -78,7 +86,7 @@ namespace aspect
       double sum_composition = 0.0;
 
       std::vector<double> x_comp = compositional_fields;
-      for ( unsigned int i=0; i < x_comp.size(); ++i)
+      for (unsigned int i=0; i < x_comp.size(); ++i)
         {
           // The first element represents the background mantle, which is
           // not included in x_comp
@@ -167,10 +175,10 @@ namespace aspect
       // 1) Get the background viscosities
 
       // get all material properties from the visco-plastic model
-      DiffusionDislocation<dim>::evaluate(in, out);
+      base_model->evaluate(in, out);
 
-      // Modify viscosity if not using DiffusionDislocation viscosity
-      if ( use_linear_viscosities == true)
+      // Modify viscosity if not using viscosity values from the base model
+      if (use_linear_viscosities == true)
         {
           for (unsigned int i=0; i<in.position.size(); ++i)
             {
@@ -474,12 +482,17 @@ namespace aspect
     void
     MeltViscoPlastic<dim>::declare_parameters (ParameterHandler &prm)
     {
-      DiffusionDislocation<dim>::declare_parameters(prm);
-
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Melt visco plastic");
         {
+          prm.declare_entry("Base model","diffusion dislocation",
+                            Patterns::Selection(MaterialModel::get_valid_model_names_pattern<dim>()),
+                            "The name of a material model that will be modified by a visco-plastic  "
+                            "rheology and melt migration outputs. Valid values for this parameter "
+                            "are the names of models that are also valid for the "
+                            "``Material models/Model name'' parameter. See the documentation for "
+                            "that for more information.");
           prm.declare_entry ("Melt density change", "-500",
                              Patterns::Double (),
                              "Difference between solid density $\\rho_{s}$ and melt/fluid$\\rho_{f}$. "
@@ -520,11 +533,12 @@ namespace aspect
                              "List of linear viscosities for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "The values can be used instead of the viscosities derived from the "
-                             "DiffusionDislocation material model. Units Pa s.");
+                             "base material model. Units: Pa s.");
           prm.declare_entry ("Use linear viscosities", "false",
                              Patterns::Bool (),
                              "Use user-specified linear visocsity values in replace of viscosity "
-                             "values derived from the DiffusionDislocation material mdoel.  Units: None");
+                             "values derived from the DiffusionDislocation material model. "
+                             "Units: None");
 
           prm.declare_entry ("A1", "1085.7",
                              Patterns::Double (),
@@ -694,8 +708,6 @@ namespace aspect
     void
     MeltViscoPlastic<dim>::parse_parameters (ParameterHandler &prm)
     {
-      DiffusionDislocation<dim>::parse_parameters(prm);
-
       //increment by one for background:
       const unsigned int n_fields = this->n_compositional_fields() + 1;
 
@@ -703,6 +715,17 @@ namespace aspect
       {
         prm.enter_subsection("Melt visco plastic");
         {
+          AssertThrow( prm.get("Base model") != "melt visco plastic",
+                       ExcMessage("You may not use ``melt visco plastic'' itself as the base model for "
+                                  "the melt visco plastic model.") );
+
+          // create the base model and initialize its SimulatorAccess base
+          // class; it will get a chance to read its parameters below after we
+          // leave the current section
+          base_model.reset(create_material_model<dim>(prm.get("Base model")));
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
+            sim->initialize_simulator (this->get_simulator());
+
           melt_density_change        = prm.get_double ("Melt density change");
           xi_0                       = prm.get_double ("Reference bulk viscosity");
           eta_f                      = prm.get_double ("Reference melt viscosity");
@@ -779,7 +802,10 @@ namespace aspect
       }
       prm.leave_subsection();
 
-      this->model_dependence = DiffusionDislocation<dim>::get_model_dependence();
+      /* After parsing the parameters for depth dependent, it is essential to parse
+      parameters related to the base model. */
+      base_model->parse_parameters(prm);
+      this->model_dependence = base_model->get_model_dependence();
     }
   }
 }

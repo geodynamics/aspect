@@ -49,9 +49,9 @@ namespace aspect
   {
     template <int dim>
     MeltingRateFunction<dim>::MeltingRateFunction ()
-    :
-    function (1)
-  {}
+      :
+      function (1)
+    {}
 
 
     template <int dim>
@@ -96,7 +96,7 @@ namespace aspect
                     out.reaction_terms[q][c] = 0.0;
                 }
               out.viscosities[q] *= (1.0 - in.composition[q][porosity_idx]);
-          }
+            }
         }
 
       // fill melt outputs if they exist
@@ -146,48 +146,48 @@ namespace aspect
     {
       prm.enter_subsection("Material model");
       {
-          prm.enter_subsection("Melting rate function");
-          {
-              AssertThrow( prm.get("Base model") != "melting rate function",
-                           ExcMessage("You may not use ``depth dependent'' as the base model for "
-                                      "a depth-dependent model.") );
+        prm.enter_subsection("Melting rate function");
+        {
+          AssertThrow( prm.get("Base model") != "melting rate function",
+                       ExcMessage("You may not use ``depth dependent'' as the base model for "
+                                  "a depth-dependent model.") );
 
-              // create the base model and initialize its SimulatorAccess base
-              // class; it will get a chance to read its parameters below after we
-              // leave the current section
-              base_model.reset(create_material_model<dim>(prm.get("Base model")));
-              if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
-                sim->initialize_simulator (this->get_simulator());
+          // create the base model and initialize its SimulatorAccess base
+          // class; it will get a chance to read its parameters below after we
+          // leave the current section
+          base_model.reset(create_material_model<dim>(prm.get("Base model")));
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
+            sim->initialize_simulator (this->get_simulator());
 
-              prm.enter_subsection("Function");
-              try
-                {
-                  function.parse_parameters (prm);
-                }
-              catch (...)
-                {
-                  std::cerr << "ERROR: FunctionParser failed to parse\n"
-                            << "\t'Material model.Melting rate function.Function'\n"
-                            << "with expression\n"
-                            << "\t'" << prm.get("Function expression") << "'"
-                            << "More information about the cause of the parse error \n"
-                            << "is shown below.\n";
-                  throw;
-                }
-              prm.leave_subsection();
-          }
+          prm.enter_subsection("Function");
+          try
+            {
+              function.parse_parameters (prm);
+            }
+          catch (...)
+            {
+              std::cerr << "ERROR: FunctionParser failed to parse\n"
+                        << "\t'Material model.Melting rate function.Function'\n"
+                        << "with expression\n"
+                        << "\t'" << prm.get("Function expression") << "'"
+                        << "More information about the cause of the parse error \n"
+                        << "is shown below.\n";
+              throw;
+            }
           prm.leave_subsection();
         }
         prm.leave_subsection();
+      }
+      prm.leave_subsection();
 
-        /* After parsing the parameters for depth dependent, it is essential to parse
-        parameters related to the base model. */
-        base_model->parse_parameters(prm);
-        this->model_dependence = base_model->get_model_dependence();
+      /* After parsing the parameters for depth dependent, it is essential to parse
+      parameters related to the base model. */
+      base_model->parse_parameters(prm);
+      this->model_dependence = base_model->get_model_dependence();
 
-        AssertThrow(this->introspection().compositional_name_exists("porosity"),
-                    ExcMessage("Material model melting rate function only "
-                               "works if there is a compositional field called porosity."));
+      AssertThrow(this->introspection().compositional_name_exists("porosity"),
+                  ExcMessage("Material model melting rate function only "
+                             "works if there is a compositional field called porosity."));
     }
   }
 }

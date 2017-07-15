@@ -22,7 +22,6 @@
 #define _aspect_material_model_melt_visco_plastic_h
 
 #include <aspect/material_model/interface.h>
-#include <aspect/material_model/diffusion_dislocation.h>
 #include <aspect/postprocess/melt_statistics.h>
 #include <aspect/melt.h>
 #include <aspect/elastic.h>
@@ -53,7 +52,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class MeltViscoPlastic : public MaterialModel::DiffusionDislocation<dim>, public MaterialModel::MeltFractionModel<dim>
+    class MeltViscoPlastic : public MaterialModel::MeltFractionModel<dim>, public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -80,6 +79,8 @@ namespace aspect
          * @{
          */
         virtual double reference_viscosity () const;
+
+        virtual double reference_darcy_coefficient () const;
 
         virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                               typename Interface<dim>::MaterialModelOutputs &out) const;
@@ -187,6 +188,12 @@ namespace aspect
         double
         melt_fraction (const double temperature,
                        const double pressure) const;
+
+
+        /**
+         * Pointer to the material model used as the base model
+         */
+        std_cxx11::shared_ptr<MaterialModel::Interface<dim> > base_model;
     };
 
   }

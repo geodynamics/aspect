@@ -38,7 +38,7 @@ namespace aspect
     {
       public:
         ElasticOutputs (const unsigned int n_points,
-                     const unsigned int /*n_comp*/)
+                        const unsigned int /*n_comp*/)
         {
           elastic_viscosities.resize(n_points);
           elastic_evolutions.resize(n_points);
@@ -62,10 +62,10 @@ namespace aspect
          * The projection matrix argument is only used if the operation
          * chosen is project_to_Q1.
          */
-       /** void average (const MaterialAveraging::AveragingOperation operation,
-        *              const FullMatrix<double>  &projection_matrix,
-        *             const FullMatrix<double>  &expansion_matrix);
-        */
+        /** void average (const MaterialAveraging::AveragingOperation operation,
+         *              const FullMatrix<double>  &projection_matrix,
+         *             const FullMatrix<double>  &expansion_matrix);
+         */
     };
 
   }
