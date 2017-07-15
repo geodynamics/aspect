@@ -102,7 +102,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, AnnulusPostprocessor, depth average, memory statistics
-  subsection Dynamic Topography
+  subsection Dynamic topography
     set Density above = 0
     set Density below = 0
   end
