@@ -27,11 +27,13 @@ Please follow these simple instructions before opening a new bug report:
 
 - Do a quick search in the list of open and closed issues for a duplicate of
   your issue.
-- Do a quick search in the archived discussions on the mailing list for a
-  duplicate of your issue.
+- Do a google search in the archived mailing list discussions for a
+  duplicate of your issue by searching for 
+
+  `your search term site:http://lists.geodynamics.org/pipermail/aspect-devel/`
 - If you did not find an answer, open a new
   [issue](https://github.com/geodynamics/aspect/issues/new) and explain your
-problem in as much detail as possible.
+  problem in as much detail as possible.
 - Attach as much as possible of the following information to your issue:
   - a minimal parameter file that reproduces the issue,
   - the `log.txt` file that was created during the model run,
