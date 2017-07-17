@@ -10445,9 +10445,6 @@ the initialization of \aspect{} and can be used to allocate memory for
 the heating model, initialize state, or read information from
 an external file. The function \texttt{update()} is called at the beginning of every time step.
 
-Older versions of \aspect{} used to have individual functions like \texttt{specific\_heating\_rate()} 
-instead of the \texttt{evaluate()} function discussed above. This old interface is no longer supported, 
-so restructure your plugin to implement \texttt{evaluate()} instead (even if this function only calls the old functions).
 
 \subsubsection{Geometry models}
 \label{sec:geometry-models}
