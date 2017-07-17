@@ -27,6 +27,8 @@ Please follow these simple instructions before opening a new bug report:
 
 - Do a quick search in the list of open and closed issues for a duplicate of
   your issue.
+- Do a quick search in the archived discussions on the mailing list for a
+  duplicate of your issue.
 - If you did not find an answer, open a new
   [issue](https://github.com/geodynamics/aspect/issues/new) and explain your
 problem in as much detail as possible.
