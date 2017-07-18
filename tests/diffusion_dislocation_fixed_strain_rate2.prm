@@ -1,0 +1,97 @@
+# This is a modification of the diffusion_dislocation_fixed_strain_rate
+# test, where only the temperature and the strain rate are different. 
+# It tests if the diffusion dislocation model also works correctly if 
+# material model inputs are slightly outside the range of what is usually 
+# encountered in the mantle. 
+
+set Dimension = 2
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X periodic  = true 
+    set X extent    = 500e3
+    set Y extent    = 500e3
+  end
+end
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = bottom, top
+  set Prescribed velocity boundary indicators = bottom:function, top:function
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names = x,y
+    set Function expression = if(y<250e3,1,-1); 0
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 160
+  end
+end
+
+subsection Material model
+  set Model name = diffusion dislocation
+
+  subsection Diffusion dislocation
+    set Reference temperature = 293
+    set Minimum strain rate = 5e-19
+    set Minimum viscosity = 1e1
+    set Maximum viscosity = 1e28
+    set Effective viscosity coefficient = 1.0
+    set Reference viscosity = 1e22
+
+    set Thermal diffusivity = 0.8e-6
+    set Heat capacity = 1.25e3
+    set Densities = 3300
+    set Thermal expansivities = 2e-5
+
+    set Viscosity averaging scheme = harmonic
+
+    set Grain size = 1e-3
+    set Prefactors for diffusion creep = 1.5e-15
+    set Stress exponents for diffusion creep = 1
+    set Grain size exponents for diffusion creep = 3
+    set Activation energies for diffusion creep = 3.75e5
+    set Activation volumes for diffusion creep = 6e-6
+
+    set Prefactors for dislocation creep = 1.1e-16
+    set Stress exponents for dislocation creep = 3.5
+    set Activation energies for dislocation creep = 5.3e4
+    set Activation volumes for dislocation creep = 1.4e-5
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = initial temperature
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                 = 5
+  set Initial adaptive refinement               = 0
+end
+
+subsection Termination criteria
+  set Termination criteria = end step
+  set End step = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, basic statistics, temperature statistics, depth average
+end

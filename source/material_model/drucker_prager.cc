@@ -103,8 +103,8 @@ namespace aspect
                   // plasticity
                   const double sin_phi = std::sin(angle_of_internal_friction);
                   const double cos_phi = std::cos(angle_of_internal_friction);
-                  const double strain_rate_effective_inv = 1/(2*std::sqrt(strain_rate_effective));
-                  const double strength_inv_part = 1/(sqrt3*(3.0+sin_phi));
+                  const double strain_rate_effective_inv = 1./(2.*std::sqrt(strain_rate_effective));
+                  const double strength_inv_part = 1./(sqrt3*(3.0+sin_phi));
 
                   const double strength = ( (dim==3)
                                             ?
@@ -141,11 +141,11 @@ namespace aspect
                       derivatives->viscosity_derivative_wrt_pressure[i] = effective_viscosity_pressure_derivatives;
 
                       Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_pressure[i]),
-                             ExcMessage ("Error: Averaged dviscosities_dpressure is not finite."));
+                             ExcMessage ("Error: Averaged viscosity_derivative_wrt_pressure is not finite."));
                       for (int x = 0; x < dim; x++)
                         for (int y = 0; y < dim; y++)
                           Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_strain_rate[i][x][y]),
-                                 ExcMessage ("Error: Averaged dviscosities_dstrain_rate is not finite."));
+                                 ExcMessage ("Error: Averaged viscosity_derivative_wrt_strain_rate is not finite."));
 
                     }
                 }

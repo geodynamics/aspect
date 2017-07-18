@@ -182,9 +182,14 @@ namespace aspect
                 stress_ii -= strain_rate_residual/strain_rate_deriv;
               stress_iteration += 1;
 
-              // In case the Newton iteration does not succeed, we do a fixpoint iteration to see
-              // where the problem is and what the viscosities should be.
-              // Check if anything that would be used in the next iteration is not finite.
+              // In case the Newton iteration does not succeed, we do a fixpoint iteration.
+              // This allows us to bound both the diffusion and dislocation viscosity
+              // between a minimum and maximum value, so that we can compute the correct
+              // viscosity values even if the parameters lead to one or both of the
+              // viscosities being essentially zero or infinity.
+              // If anything that would be used in the next iteration is not finite, the
+              // Newton iteration would trigger an exception and we want to do the fixpoint
+              // iteration instead.
               const bool abort_newton_iteration = !numbers::is_finite(stress_ii)
                                                   || !numbers::is_finite(strain_rate_residual)
                                                   || !numbers::is_finite(strain_rate_deriv)
@@ -202,15 +207,24 @@ namespace aspect
                     {
                       const double old_diffusion_strain_rate = diffusion_strain_rate;
 
-                      const double diffusion_viscosity = std::min(std::max(0.5 * std::pow(prefactors_diffusion[j],-1.0/stress_exponents_diffusion[j])
-                                                                           * std::pow(grain_size, grain_size_exponents_diffusion[j]/stress_exponents_diffusion[j])
-                                                                           * std::pow(diffusion_strain_rate, (1.-stress_exponents_diffusion[j])/stress_exponents_diffusion[j])
-                                                                           * std::exp(std::max(activation_energies_diffusion[j] + pressure*activation_volumes_diffusion[j],0.0)/
-                                                                                      (constants::gas_constant*temperature)), min_visc), max_visc);
-                      const double dislocation_viscosity = std::min(std::max(0.5 * std::pow(prefactors_dislocation[j],-1.0/stress_exponents_dislocation[j])
-                                                                             * std::pow(dislocation_strain_rate, (1.-stress_exponents_dislocation[j])/stress_exponents_dislocation[j])
-                                                                             * std::exp(std::max(activation_energies_dislocation[j] + pressure*activation_volumes_dislocation[j],0.0)/
-                                                                                        (stress_exponents_dislocation[j]*constants::gas_constant*temperature)), min_visc), max_visc);
+                      const double diffusion_prefactor = 0.5 * std::pow(prefactors_diffusion[j],-1.0/stress_exponents_diffusion[j]);
+                      const double diffusion_grain_size_dependence = std::pow(grain_size, grain_size_exponents_diffusion[j]/stress_exponents_diffusion[j]);
+                      const double diffusion_strain_rate_dependence = std::pow(diffusion_strain_rate, (1.-stress_exponents_diffusion[j])/stress_exponents_diffusion[j]);
+                      const double diffusion_T_and_P_dependence = std::exp(std::max(activation_energies_diffusion[j] + pressure*activation_volumes_diffusion[j],0.0)/
+                                                                           (constants::gas_constant*temperature));
+
+                      const double diffusion_viscosity = std::min(std::max(diffusion_prefactor * diffusion_grain_size_dependence
+                                                                           * diffusion_strain_rate_dependence * diffusion_T_and_P_dependence,
+                                                                           min_visc), max_visc);
+
+                      const double dislocation_prefactor = 0.5 * std::pow(prefactors_dislocation[j],-1.0/stress_exponents_dislocation[j]);
+                      const double dislocation_strain_rate_dependence = std::pow(dislocation_strain_rate, (1.-stress_exponents_dislocation[j])/stress_exponents_dislocation[j]);
+                      const double dislocation_T_and_P_dependence = std::exp(std::max(activation_energies_dislocation[j] + pressure*activation_volumes_dislocation[j],0.0)/
+                                                                             (stress_exponents_dislocation[j]*constants::gas_constant*temperature));
+
+                      const double dislocation_viscosity = std::min(std::max(dislocation_prefactor * dislocation_strain_rate_dependence
+                                                                             * dislocation_T_and_P_dependence,
+                                                                             min_visc), max_visc);
 
                       diffusion_strain_rate = dislocation_viscosity / (diffusion_viscosity + dislocation_viscosity) * edot_ii;
                       dislocation_strain_rate = diffusion_viscosity / (diffusion_viscosity + dislocation_viscosity) * edot_ii;
