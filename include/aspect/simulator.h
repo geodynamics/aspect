@@ -937,10 +937,12 @@ namespace aspect
        *
        * As the ordinary differential equation in any given point is independent
        * from the solution at all other points, we do not have to assemble a matrix,
-       * but just need to loop over all points and compute the update to the solution.
+       * but just need to loop over all node locations for the temperature and
+       * compositional fields and compute the update to the solution.
        *
-       * The function also updates the old solution with the reaction update so that
-       * the advection scheme will have the correct time stepping in the next step.
+       * The function also updates the old solution vectors with the reaction update
+       * so that the advection time stepping scheme will have the correct field terms
+       * for the right-hand side when assembling the advection system.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.

@@ -632,7 +632,7 @@ namespace aspect
          * Given an index as input argument, return a reference the to vector of
          * values of the additional output with that index.
          */
-        virtual const std::vector<double> get_nth_output(const unsigned int idx) const = 0;
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const = 0;
 
         virtual void average (const MaterialAveraging::AveragingOperation /*operation*/,
                               const FullMatrix<double>  &/*projection_matrix*/,
@@ -655,7 +655,7 @@ namespace aspect
       public:
         SeismicAdditionalOutputs(const unsigned int n_points);
 
-        virtual const std::vector<double> get_nth_output(const unsigned int idx) const;
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
 
         /**
          * Seismic s-wave velocities at the evaluation points passed to
@@ -697,7 +697,7 @@ namespace aspect
         ReactionRateOutputs (const unsigned int n_points,
                              const unsigned int n_comp);
 
-        virtual const std::vector<double> get_nth_output(const unsigned int idx) const;
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
 
         /**
          * Reaction rates at the evaluation points passed to

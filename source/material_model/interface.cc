@@ -739,7 +739,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::vector<double>
+    std::vector<double>
     SeismicAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
       AssertIndexRange (idx, 2);
@@ -785,7 +785,7 @@ namespace aspect
 
 
     template<int dim>
-    const std::vector<double>
+    std::vector<double>
     ReactionRateOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
       // we have to extract the reaction rate outputs for one particular compositional

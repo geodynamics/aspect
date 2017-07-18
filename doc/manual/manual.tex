@@ -9700,33 +9700,33 @@ Hence, \aspect{} has the option to decouple the advection from reactions between
 
 Instead of solving the coupled equation
 \begin{align}
-  \frac{\partial c(t)}{\partial t} + \mathbf u\cdot\nabla c(t)
+  \frac{\partial \mathfrak{c}(t)}{\partial t} + \mathbf u\cdot\nabla \mathfrak{c}(t)
   &=
-  q(c(t)),
+  q(\mathfrak{c}(t)),
 \end{align}
-and directly obtaining the composition value $c(t^{n+1})$ for the time step $n+1$ from the value $c(t^{n})$ from the previous time step $n$, we do a first-order operator split, first solving the advection problem
+and directly obtaining the composition value $\mathfrak{c}(t^{n+1})$ for the time step $n+1$ from the value $\mathfrak{c}(t^{n})$ from the previous time step $n$, we do a first-order operator split, first solving the advection problem
 \begin{align}
-  \frac{\partial c(t)}{\partial t} + \mathbf u\cdot\nabla c(t)
+  \frac{\partial \mathfrak{c}(t)}{\partial t} + \mathbf u\cdot\nabla \mathfrak{c}(t)
   &=
   0,
   &
-  \text{obtaining } \Delta c_A(t^{n+1}) \text{ from } c(t^{n}),
+  \text{obtaining } \Delta \mathfrak{c}_A(t^{n+1}) \text{ from } \mathfrak{c}(t^{n}),
 \end{align}
 using the advection time step $\Delta t_A = t^{n+1} - t^{n}$.
 Then we solve the reactions as a series of coupled ordinary differential equations 
 \begin{align}
-  \frac{\partial \Delta c_R(t)}{\partial t} 
+  \frac{\partial \Delta \mathfrak{c}_R(t)}{\partial t} 
   &=
-  q(c(t^n))+\Delta c_A(t^{n+1})+\Delta c_R(t),
+  q(\mathfrak{c}(t^n))+\Delta \mathfrak{c}_A(t^{n+1})+\Delta \mathfrak{c}_R(t),
   &
-  \text{obtaining } \Delta c_R(t^{n+1}) \text{ from } c(t^n)+\Delta c_A(t^{n+1}).
+  \text{obtaining } \Delta \mathfrak{c}_R(t^{n+1}) \text{ from } \mathfrak{c}(t^n)+\Delta \mathfrak{c}_A(t^{n+1}).
 \end{align}
 This can be done in several iterations, choosing a different, smaller time step size $\Delta t_R \leq \Delta t_A$ for the time discretization. 
 The updated value of the compositional field after the overall (advection + reaction) time step is then obtained as
 \begin{align}
-  c(t^{n+1}) 
+  \mathfrak{c}(t^{n+1}) 
   &=
-  c(t^{n}) + \Delta c_A(t^{n+1})+\Delta c_R(t^{n+1}).
+  \mathfrak{c}(t^{n}) + \Delta \mathfrak{c}_A(t^{n+1})+\Delta \mathfrak{c}_R(t^{n+1}).
 \end{align}
 
 This is very useful if the time scales of reactions are different from the time scales of convection. 
@@ -9734,11 +9734,11 @@ The same scheme can also be used for the temperature: If we want to model latent
 
 We here illustrate the way this operator splitting works using the simple example of exponential decay in a stationary advection field. We will start with a model that has a constant initial temperature and composition and no advection. The reactions for exponential decay 
 \begin{align}
-  c(t) 
+  \mathfrak{c}(t) 
   &=
-  c_0 e^{\lambda t} \text{ with } \lambda = - \log(2)/t_{1/2}, 
+  \mathfrak{c}_0 e^{\lambda t} \text{ with } \lambda = - \log(2)/t_{1/2}, 
 \end{align}
-where $c_0$ is the initial composition and $t_{1/2}$ is the half life, are implemented in a shared library
+where $\mathfrak{c}_0$ is the initial composition and $t_{1/2}$ is the half life, are implemented in a shared library
 (\url{benchmarks/operator_splitting/exponential_decay/exponential_decay.cc}). 
 As we split the time-stepping of advection and reactions, there are now two different time steps in the model:
 We control the advection time step using the `Maximum time step' parameter (as the velocity is essentially 0, 
@@ -9746,7 +9746,7 @@ we can not use the CFL number), and we set the reaction time step using the `Rea
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/operator_splitting/exponential_decay.part.1.prm.out}
 To illustrate convergence, we will vary both parameters in different model runs. 
 
-In our example, we choose $c_0=1$, and specify this as initial condition using the \texttt{function} plugin for both composition and temperature. We also set $t_{1/2}=10$, which is implemented as a parameter in the \texttt{exponential decay} material model and the \texttt{exponential decay heating} model. 
+In our example, we choose $\mathfrak{c}_0=1$, and specify this as initial condition using the \texttt{function} plugin for both composition and temperature. We also set $t_{1/2}=10$, which is implemented as a parameter in the \texttt{exponential decay} material model and the \texttt{exponential decay heating} model. 
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/operator_splitting/exponential_decay.part.2.prm.out}
 The complete parameter file for this setup can be found in \url{benchmarks/operator_splitting/exponential_decay/exponential_decay.base.prm}.
 
@@ -9763,9 +9763,9 @@ Errors are the same for both composition and temperature, as both fields have id
 For the second benchmark case, we want to see the effect of advection on convergence. 
 In order to do this, we choose an initial temperature and composition that depends on x (in this case a sine), a decay rate that linearly depends on z, and we apply a constant velocity in x-direction on all boundaries. Our new analytical solution for the evolution of composition is now
  \begin{align}
-  c(t) 
+  \mathfrak{c}(t) 
   &=
-  \sin (2\pi(x-t v_0)) \, c_0 e^{\lambda z t}.
+  \sin (2\pi(x-t v_0)) \, \mathfrak{c}_0 e^{\lambda z t}.
 \end{align}
 $v_0$ is the constant velocity, which we set to 0.01 m/s. 
 The parameter file for this setup can be found in \url{benchmarks/operator_splitting/advection_reaction/advection_reaction.base.prm}. 

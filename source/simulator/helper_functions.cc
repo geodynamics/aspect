@@ -1486,6 +1486,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::compute_reactions ()
   {
+    // if the time step has a length of zero, there are no reactions
     if (time_step == 0)
       return;
 
@@ -1564,7 +1565,6 @@ namespace aspect
           in_C.reinit(fe_values_C, &cell, introspection, solution);
 
           fe_values_T.reinit (cell);
-          cell->get_dof_indices (local_dof_indices);
           in_T.reinit(fe_values_T, &cell, introspection, solution);
 
           std::vector<std::vector<double> > accumulated_reactions_C (quadrature_C.size(),std::vector<double> (introspection.n_compositional_fields));
@@ -1623,11 +1623,11 @@ namespace aspect
                                                                    /*dof index within component=*/ j);
 
                 // skip entries that are not locally owned:
-                if (!dof_handler.locally_owned_dofs().is_element(local_dof_indices[composition_idx]))
-                  continue;
-
-                distributed_vector(local_dof_indices[composition_idx]) = in_C.composition[j][c];
-                distributed_reaction_vector(local_dof_indices[composition_idx]) = accumulated_reactions_C[j][c];
+                if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[composition_idx]))
+                  {
+                    distributed_vector(local_dof_indices[composition_idx]) = in_C.composition[j][c];
+                    distributed_reaction_vector(local_dof_indices[composition_idx]) = accumulated_reactions_C[j][c];
+                  }
               }
 
           // copy reaction rates and new values for the temperature field
@@ -1639,11 +1639,11 @@ namespace aspect
                                                                    /*dof index within component=*/ j);
 
                 // skip entries that are not locally owned:
-                if (!dof_handler.locally_owned_dofs().is_element(local_dof_indices[temperature_idx]))
-                  continue;
-
-                distributed_vector(local_dof_indices[temperature_idx]) = in_T.temperature[j];
-                distributed_reaction_vector(local_dof_indices[temperature_idx]) = accumulated_reactions_T[j];
+                if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[temperature_idx]))
+                  {
+                    distributed_vector(local_dof_indices[temperature_idx]) = in_T.temperature[j];
+                    distributed_reaction_vector(local_dof_indices[temperature_idx]) = accumulated_reactions_T[j];
+                  }
               }
         }
 
