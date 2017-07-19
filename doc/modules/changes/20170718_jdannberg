@@ -1,0 +1,7 @@
+Fixed: The diffusion dislocation and drucker prager material models
+can now better handle cases where parameters or material model inputs
+are slightly outside the range of what is expected for the mantle, 
+and in these cases they now compute reasonable viscosities instead 
+of triggering floating point exceptions.
+<br>
+(Juliane Dannberg, 2017/07/18)
