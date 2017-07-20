@@ -65,6 +65,10 @@ namespace aspect
         virtual
         double temperature (const double depth) const;
 
+        virtual
+        double temperature (const double depth,
+                            const std::vector<double> thicknesses) const;
+
         /**
          * Declare the parameters this class takes through input files.
          */
