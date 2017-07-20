@@ -1115,7 +1115,7 @@ namespace aspect
 
         DoFTools::make_flux_sparsity_pattern (dof_handler,
                                               sp,
-                                              constraints, false,
+                                              current_constraints, false,
                                               coupling,
                                               face_coupling,
                                               Utilities::MPI::
@@ -1124,7 +1124,7 @@ namespace aspect
     else
       DoFTools::make_sparsity_pattern (dof_handler,
                                        coupling, sp,
-                                       constraints, false,
+                                       current_constraints, false,
                                        Utilities::MPI::
                                        this_mpi_process(mpi_communicator));
 
@@ -1246,7 +1246,7 @@ namespace aspect
 
         DoFTools::make_flux_sparsity_pattern (dof_handler,
                                               sp,
-                                              constraints, false,
+                                              current_constraints, false,
                                               coupling,
                                               face_coupling,
                                               Utilities::MPI::
@@ -1255,7 +1255,7 @@ namespace aspect
     else
       DoFTools::make_sparsity_pattern (dof_handler,
                                        coupling, sp,
-                                       constraints, false,
+                                       current_constraints, false,
                                        Utilities::MPI::
                                        this_mpi_process(mpi_communicator));
 
@@ -1395,9 +1395,9 @@ namespace aspect
                                                        constraints,
                                                        *mapping);
     }
-    // allow user constraints that will potentially modify sparsity pattern
-    signals.post_constraints_creation(*this, constraints);
+
     constraints.close();
+    compute_current_constraints();
     signals.post_compute_no_normal_flux_constraints(triangulation);
 
     // finally initialize vectors, matrices, etc.
