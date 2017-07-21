@@ -1555,6 +1555,19 @@ namespace aspect
     // all degrees of freedom in each element to compute the reactions. This is possible
     // because the reactions only depend on the temperature and composition values at a given
     // degree of freedom (and are independent of the solution in other points).
+
+    // Note that the values for some degrees of freedom are set more than once in the loop
+    // below where we assign the new values to distributed_vector (if they are located on the
+    // interface between cells), as we loop over all cells, and then over all degrees of freedom
+    // on each cell. Although this means we do some additional work, the results are still
+    // correct, as we never read from distributed_vector inside the loop over all cells.
+    // We initialize the material model inputs objects in_T and in_C using the solution vector
+    // on every cell, compute the update, and then on every cell put the result into the
+    // distributed_vector vector. Only after the loop over all cells do we copy distributed_vector
+    // back onto the solution vector.
+    // So even though we touch some DoF twice, we always start from the same value, compute the
+    // same value, and then overwrite the same value in distributed_vector.
+    // TODO: make this more effective
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
                                                    endc = dof_handler.end();
     for (; cell!=endc; ++cell)
