@@ -1568,7 +1568,12 @@ namespace aspect
       prm.leave_subsection ();
 
       Generator::declare_parameters<dim>(prm);
+
+      // Output of particle related data has been moved to deal.II from version 9.0 on
+      // The relevant code now lives in postprocess/particles.cc
+#if !DEAL_II_VERSION_GTE(9,0,0)
       Output::declare_parameters<dim>(prm);
+#endif
       Integrator::declare_parameters<dim>(prm);
       Interpolator::declare_parameters<dim>(prm);
       Property::Manager<dim>::declare_parameters(prm);
@@ -1656,6 +1661,9 @@ namespace aspect
       generator->parse_parameters(prm);
       generator->initialize();
 
+      // Output of particle related data has been moved to deal.II from version 9.0 on
+      // The relevant code now lives in postprocess/particles.cc
+#if !DEAL_II_VERSION_GTE(9,0,0)
       // Create an output object depending on what the parameters specify
       output.reset(Output::create_particle_output<dim>
                    (prm));
@@ -1669,6 +1677,7 @@ namespace aspect
           output->parse_parameters(prm);
           output->initialize();
         }
+#endif
 
       // Create an integrator object depending on the specified parameter
       integrator.reset(Integrator::create_particle_integrator<dim> (prm));
