@@ -1505,6 +1505,9 @@ namespace aspect
 
     const double reaction_time_step_size = time_step / ((double) number_of_reaction_steps);
 
+    Assert (reaction_time_step_size > 0,
+            ExcMessage("Reaction time step must be greater than 0."));
+
     pcout << "   Solving composition reactions in "
           << number_of_reaction_steps
           << " substep(s)."
@@ -1545,7 +1548,7 @@ namespace aspect
     MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs_T
       = out_T.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
 
-    AssertThrow(reaction_rate_outputs_C != NULL,
+    AssertThrow(reaction_rate_outputs_C != NULL && reaction_rate_outputs_T != NULL,
                 ExcMessage("You are trying to use the operator splitting solver scheme, "
                            "but the material model you use does not support operator splitting "
                            "(it does not create ReactionRateOutputs, which are required for this "

@@ -72,7 +72,7 @@ namespace aspect
                   // if operator splitting is used in the model, we have to use the reaction rates from the
                   // material model outputs instead of the reaction terms
                   AssertThrow (std::isfinite(reaction_rate_out->reaction_rates[q][porosity_idx]),
-                               ExcMessage ("You are trying to use reaction rate outputs from the material"
+                               ExcMessage ("You are trying to use reaction rate outputs from the material "
                                            "model to compute the latent heat of melt in an operator splitting solver scheme, "
                                            "but the material model you use does not actually fill these reaction rate outputs."));
 

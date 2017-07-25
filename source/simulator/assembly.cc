@@ -1508,13 +1508,12 @@ namespace aspect
         if (reaction_rate_outputs != NULL)
           for (unsigned int q=0; q<n_q_points; ++q)
             for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-              Assert(!numbers::is_finite(reaction_rate_outputs->reaction_rates[q][c])
-                     || reaction_rate_outputs->reaction_rates[q][c] == 0.0,
+              Assert(!numbers::is_finite(reaction_rate_outputs->reaction_rates[q][c]),
                      ExcMessage("You are using a material model where the reaction rate outputs "
                                 "are filled even though the operator splitting solver option is "
                                 "not used in the model, this is not supported! "
-                                "If operator splitting is disabled, the reaction_rates have to be zero "
-                                "(or not to be created and or filled at all). If you want to run a model "
+                                "If operator splitting is disabled, the reaction_rates either should "
+                                "not be created or not be filled at all. If you want to run a model "
                                 "where reactions are much faster than the advection, which is what the "
                                 "reaction rate outputs are designed for, you should enable operator "
                                 "splitting."));

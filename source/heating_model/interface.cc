@@ -283,6 +283,11 @@ namespace aspect
             {
               heating_model_outputs.heating_source_terms[q] += individual_heating_outputs.heating_source_terms[q];
               heating_model_outputs.lhs_latent_heat_terms[q] += individual_heating_outputs.lhs_latent_heat_terms[q];
+
+              if (!this->get_parameters().use_operator_splitting)
+                Assert(individual_heating_outputs.rates_of_temperature_change[q] == 0.0,
+                       ExcMessage("Rates of temperature change heating model outputs have to be zero "
+                                  "if the model does not use operatir splitting."));
               heating_model_outputs.rates_of_temperature_change[q] += individual_heating_outputs.rates_of_temperature_change[q];
             }
         }

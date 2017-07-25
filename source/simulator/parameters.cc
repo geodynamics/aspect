@@ -396,15 +396,21 @@ namespace aspect
                            "Set a time step size for computing reactions of compositional fields and the "
                            "temperature field in case operator splitting is used. This is only used "
                            "when the nonlinear solver scheme ``operator splitting'' is selected. "
+                           "The reaction time step must be greater than 0. "
+                           "If you want to prescribe the reaction time step only as a relative value "
+                           "compared to the advection time step as opposed to as an absolute value, you "
+                           "should use the parameter ``Reaction time steps per advection step'' and set "
+                           "this parameter to the same (or larger) value as the ``Maximum time step'' "
+                           "(which is 5.69e+300 by default). "
                            "Units: Years or seconds, depending on the ``Use years "
                            "in output instead of seconds'' parameter.");
 
         prm.declare_entry ("Reaction time steps per advection step", "0",
                            Patterns::Integer (0),
-                           "The number of reaction time steps done within one advection time step"
+                           "The number of reaction time steps done within one advection time step "
                            "in case operator splitting is used. This is only used if the nonlinear "
                            "solver scheme ``operator splitting'' is selected. If set to zero, this "
-                           "parameter is ignored. Otherwise the reaction is chosen accordning to "
+                           "parameter is ignored. Otherwise, the reaction time step size is chosen according to "
                            "this criterion and the ``Reaction time step'', whichever yields the "
                            "smaller time step. "
                            "Units: none.");
@@ -1062,6 +1068,8 @@ namespace aspect
       prm.enter_subsection ("Operator splitting parameters");
       {
         reaction_time_step       = prm.get_double("Reaction time step");
+        AssertThrow (reaction_time_step > 0,
+                     ExcMessage("Reaction time step must be greater than 0."));
         if (convert_to_years == true)
           reaction_time_step *= year_in_seconds;
         reaction_steps_per_advection_step = prm.get_integer ("Reaction time steps per advection step");

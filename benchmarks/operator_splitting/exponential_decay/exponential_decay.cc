@@ -173,8 +173,8 @@ namespace aspect
       }
       prm.leave_subsection();
 
-      /* After parsing the parameters for depth dependent, it is essential to parse
-      parameters related to the base model. */
+      // After parsing the parameters for the exponetial decay material model,
+      // also parse the parameters related to the base model.
       base_model->parse_parameters(prm);
       this->model_dependence = base_model->get_model_dependence();
     }
