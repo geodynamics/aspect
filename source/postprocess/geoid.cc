@@ -801,7 +801,7 @@ namespace aspect
           prm.declare_entry("Density above","0",
                             Patterns::Double (0),
                             "The density value above the surface boundary.");
-          prm.declare_entry("Density below","8000",
+          prm.declare_entry("Density below","9900",
                             Patterns::Double (0),
                             "The density value below the CMB boundary.");
           prm.declare_entry("Also output the spherical harmonic coefficients of geoid anomaly", "false",
