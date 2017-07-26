@@ -1496,6 +1496,7 @@ namespace aspect
           }
       }
 
+#ifdef DEBUG
     // make sure that if the model does not use operator splitting,
     // the material model outputs do not fill the reaction_rates (because the reaction_terms are used instead)
     if (!parameters.use_operator_splitting)
@@ -1518,6 +1519,7 @@ namespace aspect
                                 "reaction rate outputs are designed for, you should enable operator "
                                 "splitting."));
       }
+#endif
 
     MaterialModel::MaterialAveraging::average (parameters.material_averaging,
                                                cell,
