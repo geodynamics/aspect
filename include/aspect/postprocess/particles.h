@@ -34,6 +34,7 @@ namespace aspect
 {
   namespace Postprocess
   {
+#if DEAL_II_VERSION_GTE(9,0,0)
     namespace internal
     {
       /**
@@ -48,11 +49,6 @@ namespace aspect
       {
         public:
           /**
-           * Destructor. Releases the memory that stores the output information.
-           */
-          virtual ~ParticleOutput();
-
-          /**
            * This function prepares the data for writing. It reads the data from @p particles and their
            * property information from @p property_information, and builds a list of patches that is stored
            * internally until the destructor is called. This function needs to be called before one of the
@@ -60,7 +56,6 @@ namespace aspect
            */
           void build_patches(const std::multimap<aspect::Particle::types::LevelInd, aspect::Particle::Particle<dim> > &particles,
                              const aspect::Particle::Property::ParticlePropertyInformation &property_information);
-
 
         private:
           /**
@@ -99,6 +94,7 @@ namespace aspect
           std::vector<std_cxx11::tuple<unsigned int, unsigned int, std::string> > vector_datasets;
       };
     }
+#endif
 
     /**
      * A Postprocessor that creates particles, which follow the
@@ -228,6 +224,17 @@ namespace aspect
         double last_output_time;
 
         /**
+         * Set the time output was supposed to be written. In the simplest
+         * case, this is the previous last output time plus the interval, but
+         * in general we'd like to ensure that it is the largest supposed
+         * output time, which is smaller than the current time, to avoid
+         * falling behind with last_output_time and having to catch up once
+         * the time step becomes larger. This is done after every output.
+         */
+        void set_last_output_time (const double current_time);
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+        /**
          * Consecutively counted number indicating the how-manyth time we will
          * create output the next time we get to it.
          */
@@ -237,16 +244,6 @@ namespace aspect
          * Graphical output format.
          */
         std::string output_format;
-
-        /**
-         * Set the time output was supposed to be written. In the simplest
-         * case, this is the previous last output time plus the interval, but
-         * in general we'd like to ensure that it is the largest supposed
-         * output time, which is smaller than the current time, to avoid
-         * falling behind with last_output_time and having to catch up once
-         * the time step becomes larger. This is done after every output.
-         */
-        void set_last_output_time (const double current_time);
 
         /**
          * A list of pairs (time, pvtu_filename) that have so far been written
@@ -342,6 +339,7 @@ namespace aspect
         void write_master_files (const internal::ParticleOutput<dim> &data_out,
                                  const std::string &solution_file_prefix,
                                  const std::vector<std::string> &filenames);
+#endif
     };
   }
 }

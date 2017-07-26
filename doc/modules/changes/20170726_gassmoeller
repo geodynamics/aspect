@@ -1,0 +1,7 @@
+New: With a recent developer version of deal.II (9.0.0.pre) ASPECT can now
+output particle data using deal.II functionality. This allows compressed vtu
+output, and the same MPI I/O grouping options that are already available for
+the visualization postprocessor. The ascii particle output format no longer 
+exists and instead generates (nearly identically formatted) gnuplot output.
+<br>
+(Rene Gassmoeller, 2017/07/26)
