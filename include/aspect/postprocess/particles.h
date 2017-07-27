@@ -243,7 +243,7 @@ namespace aspect
         /**
          * Graphical output format.
          */
-        std::string output_format;
+        std::vector<std::string> output_format;
 
         /**
          * A list of pairs (time, pvtu_filename) that have so far been written

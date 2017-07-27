@@ -610,8 +610,9 @@ namespace aspect
           // in deal.II was implemented. It is nearly identical to the gnuplot format, thus
           // we now simply replace "ascii" by "gnuplot" should it be selected.
           prm.declare_entry ("Data output format", "vtu",
-                             Patterns::Selection (DataOutBase::get_output_format_names ()+"|ascii"),
-                             "The file format to be used for graphical output.");
+                             Patterns::MultipleSelection (DataOutBase::get_output_format_names ()+"|ascii"),
+                             "A comma seperated list of file formats to be used for graphical "
+                             "output.");
 
           prm.declare_entry ("Number of grouped files", "16",
                              Patterns::Integer(0),
@@ -664,7 +665,11 @@ namespace aspect
                                  "particles is currently not supported."));
 
 #if DEAL_II_VERSION_GTE(9,0,0)
-          output_format   = prm.get ("Data output format");
+          output_format   = Utilities::split_string_list(prm.get ("Data output format"));
+        AssertThrow(Utilities::has_unique_entries(output_format),
+                    ExcMessage("The list of strings for the parameter "
+                               "'Particles/Data output format' contains entries more than once. "
+                               "This is not allowed. Please check your parameter file."));
 
           if (output_format != "none")
             aspect::Utilities::create_directory (this->get_output_directory() + "particles/",
@@ -674,8 +679,11 @@ namespace aspect
           // Note: "ascii" is a legacy format used by ASPECT before particle output
           // in deal.II was implemented. It is nearly identical to the gnuplot format, thus
           // we simply replace "ascii" by "gnuplot" should it be selected.
-          if (output_format == "ascii")
-            output_format = "gnuplot";
+          std::vector<std::string> >::iterator itr =  std::find (output_format.begin(),
+                                                                 output_format.end(),
+                                                                 "ascii");
+          if (itr != output_format.end())
+            *itr = "gnuplot";
 
           group_files     = prm.get_integer("Number of grouped files");
           write_in_background_thread = prm.get_bool("Write in background thread");
