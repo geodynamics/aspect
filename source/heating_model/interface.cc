@@ -274,6 +274,9 @@ namespace aspect
       HeatingModel::HeatingModelOutputs individual_heating_outputs(material_model_inputs.position.size(),
                                                                    this->n_compositional_fields());
 
+      const MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs
+        = material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
+
       for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
            heating_model = heating_model_objects.begin();
            heating_model != heating_model_objects.end(); ++heating_model)
@@ -287,8 +290,14 @@ namespace aspect
               if (!this->get_parameters().use_operator_splitting)
                 Assert(individual_heating_outputs.rates_of_temperature_change[q] == 0.0,
                        ExcMessage("Rates of temperature change heating model outputs have to be zero "
-                                  "if the model does not use operatir splitting."));
+                                  "if the model does not use operator splitting."));
               heating_model_outputs.rates_of_temperature_change[q] += individual_heating_outputs.rates_of_temperature_change[q];
+
+              // If the heating model does not get the reaction rate outputs, it can not correctly compute
+              // the rates of temperature change. To make sure these (incorrect) values are never used anywhere,
+              // overwrite them with signaling_NaNs.
+              if (reaction_rate_outputs == NULL)
+                heating_model_outputs.rates_of_temperature_change[q] = numbers::signaling_nan<double>();
             }
         }
     }
