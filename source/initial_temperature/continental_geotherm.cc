@@ -69,7 +69,8 @@ namespace aspect
     ContinentalGeotherm<dim>::
     temperature (const double depth) const
     {
-      // Compute some constants
+      // Compute some constants to calculate the temperatures T1 and T2 at the interfaces
+      // between the layers.
       const double a = 0.5*densities[0]*heat_productivities[0]*thicknesses[0] + 0.5*densities[1]*heat_productivities[1]*thicknesses[1] + conductivities[0]/thicknesses[0]*T0;
       const double b = 1./(conductivities[0]/thicknesses[0]+conductivities[1]/thicknesses[1]);
       const double c = 0.5*densities[1]*heat_productivities[1]*thicknesses[1] + conductivities[2]/thicknesses[2]*LAB_isotherm;
@@ -81,13 +82,13 @@ namespace aspect
       const double T2 = (c + conductivities[1]/thicknesses[1]*T1) * d;
 
       // Temperature in layer 1
-      if(depth < thicknesses[0])
+      if(depth <= thicknesses[0])
           return -0.5*densities[0]*heat_productivities[0]/conductivities[0]*std::pow(depth,2) + (0.5*densities[0]*heat_productivities[0]*thicknesses[0]/conductivities[0] + (T1-T0)/thicknesses[0])*depth + T0;
       // Temperature in layer 2
-      else if (depth < thicknesses[0]+thicknesses[1])
+      else if (depth <= thicknesses[0]+thicknesses[1])
           return -0.5*densities[1]*heat_productivities[1]/conductivities[1]*std::pow(depth-thicknesses[0],2.) + (0.5*densities[1]*heat_productivities[1]*thicknesses[1]/conductivities[1] + (T2-T1)/thicknesses[1])*(depth-thicknesses[0]) + T1;
       // Temperature in layer 3
-      else if (depth < thicknesses[0]+thicknesses[1]+thicknesses[2])
+      else if (depth <= thicknesses[0]+thicknesses[1]+thicknesses[2])
           return (LAB_isotherm-T2)/thicknesses[2] *(depth-thicknesses[0]-thicknesses[1]) + T2;
       // Return a constant sublithospheric temperature of 10*LAB_isotherm.
       // This way we can combine the continental geotherm with an adiabatic profile from the input file
@@ -238,11 +239,10 @@ namespace aspect
 
           // Thermal diffusivity kappa = k/(rho*cp), so thermal conducitivity k = kappa*rho*cp
           conductivities.push_back(temp_thermal_diffusivities[id_upper+1] * densities[0] * temp_heat_capacities[id_upper+1]);
-          conductivities.push_back(temp_thermal_diffusivities[id_lower+1] * densities[0] * temp_heat_capacities[id_lower+1]);
-          conductivities.push_back(temp_thermal_diffusivities[id_mantle_L+1] * densities[0] * temp_heat_capacities[id_mantle_L+1]);
+          conductivities.push_back(temp_thermal_diffusivities[id_lower+1] * densities[1] * temp_heat_capacities[id_lower+1]);
+          conductivities.push_back(temp_thermal_diffusivities[id_mantle_L+1] * densities[2] * temp_heat_capacities[id_mantle_L+1]);
 
           // To obtain the radioactive heating rate in W/kg, we divide the volumetric heating rate by density
-          // TODO: does this work?
           AssertThrow(heat_productivities.size() == 3 && densities.size() == 3 && conductivities.size() == 3,
                       ExcMessage("The entries for density, conductivity and heat production do not match with the expected number of layers (3)."))
 
