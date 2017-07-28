@@ -354,18 +354,17 @@ namespace aspect
                                                this->get_time() / year_in_seconds :
                                                this->get_time());
 
-      for (std::vector<std::string>::iterator itr_output_format = output_formats.begin();
-           itr_output_format != output_formats.end();
-           itr_output_format++)
+      for (std::vector<std::string>::iterator output_format = output_formats.begin();
+           output_format != output_formats.end();
+           output_format++)
         {
-          std::string output_format = *itr_output_format;
-          if (output_format=="none")
+          if (*output_format=="none")
             {
               // If we do not write output return early with the number of advected particles
               return std::make_pair("Number of advected particles:",
                                     Utilities::int_to_string(world.n_global_particles()));
             }
-          else if (output_format=="hdf5")
+          else if (*output_format=="hdf5")
             {
               const std::string particle_file_name = "particles/" + particle_file_prefix + ".h5";
               const std::string xdmf_filename = "particles.xdmf";
@@ -386,7 +385,7 @@ namespace aspect
               data_out.write_xdmf_file(xdmf_entries, this->get_output_directory() + xdmf_filename,
                                        this->get_mpi_communicator());
             }
-          else if (output_format=="vtu")
+          else if (*output_format=="vtu")
             {
               // Write master files (.pvtu,.pvd,.visit) on the master process
               const int my_id = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
@@ -435,7 +434,7 @@ namespace aspect
                   {
                     std::ostringstream tmp;
 
-                    data_out.write (tmp, DataOutBase::parse_output_format(output_format));
+                    data_out.write (tmp, DataOutBase::parse_output_format(*output_format));
                     file_contents = new std::string (tmp.str());
                   }
 
@@ -486,14 +485,14 @@ namespace aspect
                                            + "."
                                            +  Utilities::int_to_string (myid, 4)
                                            + DataOutBase::default_suffix
-                                           (DataOutBase::parse_output_format(output_format));
+                                           (DataOutBase::parse_output_format(*output_format));
 
               std::ofstream out (filename.c_str());
 
               AssertThrow(out,
                           ExcMessage("Unable to open file for writing: " + filename +"."));
 
-              data_out.write (out, DataOutBase::parse_output_format(output_format));
+              data_out.write (out, DataOutBase::parse_output_format(*output_format));
             }
         }
 
@@ -695,11 +694,11 @@ namespace aspect
           // Note: "ascii" is a legacy format used by ASPECT before particle output
           // in deal.II was implemented. It is nearly identical to the gnuplot format, thus
           // we simply replace "ascii" by "gnuplot" should it be selected.
-          std::vector<std::string>::iterator itr =  std::find (output_formats.begin(),
-                                                               output_formats.end(),
-                                                               "ascii");
-          if (itr != output_formats.end())
-            *itr = "gnuplot";
+          std::vector<std::string>::iterator output_format =  std::find (output_formats.begin(),
+                                                                         output_formats.end(),
+                                                                         "ascii");
+          if (output_format != output_formats.end())
+            *output_format = "gnuplot";
 
           group_files     = prm.get_integer("Number of grouped files");
           write_in_background_thread = prm.get_bool("Write in background thread");
