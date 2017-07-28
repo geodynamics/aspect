@@ -89,6 +89,13 @@ namespace aspect
                                                                          * material_model_inputs.temperature[q]
                                                                          / material_model_outputs.specific_heat[q];
                 }
+              else if (use_operator_split && reaction_rate_out == NULL)
+                {
+                  // if operator plit is used, but the reaction rate outputs are not there,
+                  // fill the rates of temperature change with NaNs, so that an error is thrown
+                  // if they are used anywhere
+                  heating_model_outputs.rates_of_temperature_change[q] = std::numeric_limits<double>::quiet_NaN();
+                }
             }
         }
     }
