@@ -48,7 +48,7 @@ namespace aspect
           {
             const unsigned n_components = property_information.get_components_by_field_index(field_index);
             const std::string field_name = property_information.get_field_name_by_index(field_index);
-            // If it is a 1D element, or a vector, print just the name, otherwise use []
+            // If it is a 1D element, or a vector, print just the name, otherwise append the index after an underscore
             if ((n_components == 1) || (n_components == dim))
               for (unsigned int component_index=0; component_index<n_components; ++component_index)
                 dataset_names.push_back(field_name);
@@ -356,9 +356,9 @@ namespace aspect
 
       for (std::vector<std::string>::iterator output_format = output_formats.begin();
            output_format != output_formats.end();
-           output_format++)
+           ++output_format)
         {
-          if (*output_format=="none")
+          if (*output_format == "none")
             {
               // If we do not write output return early with the number of advected particles
               return std::make_pair("Number of advected particles:",
@@ -385,7 +385,7 @@ namespace aspect
               data_out.write_xdmf_file(xdmf_entries, this->get_output_directory() + xdmf_filename,
                                        this->get_mpi_communicator());
             }
-          else if (*output_format=="vtu")
+          else if (*output_format == "vtu")
             {
               // Write master files (.pvtu,.pvd,.visit) on the master process
               const int my_id = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());

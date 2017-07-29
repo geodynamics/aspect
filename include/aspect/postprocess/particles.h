@@ -59,19 +59,19 @@ namespace aspect
 
         private:
           /**
-           * Implementation of the base class. See there for information.
+           * Implementation of the corresponding function of the base class.
            */
           virtual const std::vector<DataOutBase::Patch<0,dim> > &
           get_patches () const;
 
           /**
-           * Implementation of the base class. See there for information.
+           * Implementation of the corresponding function of the base class.
            */
           virtual std::vector< std::string >
           get_dataset_names () const;
 
           /**
-           * Implementation of the base class. See there for information.
+           * Implementation of the corresponding function of the base class.
            */
           virtual
           std::vector<std::tuple<unsigned int, unsigned int, std::string> >
