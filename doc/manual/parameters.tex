@@ -551,7 +551,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 0.0; 0.0; 1.0
 
 
-{\it Description:} Expression for the adiabatic pressure, temperature, and density separated by semicolons as a function of `depth'.
+{\it Description:} Expression for the adiabatic temperature, pressure, and density separated by semicolons as a function of `depth'.
 
 
 {\it Possible values:} Any string
@@ -2688,7 +2688,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 0.078
 
 
-{\it Description:} The $\beta$ factor in the artificial viscosity stabilization. An appropriate value for 2d is 0.078 and 0.117 for 3d. (For historical reasons, the name used here is different from the one used in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see \cite{KHB12}. This parameter corresponds to the factor $\alpha_\text {max}$ in the formulas following equation (15) of the paper. After further experiments, we have also chosen to use a different value than described there: It can be chosen as stated there for uniformly refined meshes, but it needs to be chosen larger if the mesh has cells that are not squares or cubes.) Units: None.
+{\it Description:} The $\beta$ factor in the artificial viscosity stabilization. This parameter controls the maximum dissipation of the entropy viscosity, which is the part that only scales with the cell diameter and the maximum velocity in the cell, but does not depend on the solution field itself or its residual. An appropriate value for 2d is 0.078 and 0.117 for 3d. (For historical reasons, the name used here is different from the one used in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see \cite{KHB12}. This parameter corresponds to the factor $\alpha_\text {max}$ in the formulas following equation (15) of the paper. After further experiments, we have also chosen to use a different value than described there: It can be chosen as stated there for uniformly refined meshes, but it needs to be chosen larger if the mesh has cells that are not squares or cubes.) Units: None.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -2704,7 +2704,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 0.33
 
 
-{\it Description:} The $c_R$ factor in the entropy viscosity stabilization. (For historical reasons, the name used here is different from the one used in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see \cite{KHB12}. This parameter corresponds to the factor $\alpha_E$ in the formulas following equation (15) of the paper. After further experiments, we have also chosen to use a different value than described there.) Units: None.
+{\it Description:} The $c_R$ factor in the entropy viscosity stabilization. This parameter controls the part of the entropy viscosity that depends on the solution field itself and its residual in addition to the cell diameter and the maximum velocity in the cell. (For historical reasons, the name used here is different from the one used in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see \cite{KHB12}. This parameter corresponds to the factor $\alpha_E$ in the formulas following equation (15) of the paper. After further experiments, we have also chosen to use a different value than described there.) Units: None.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -6133,13 +6133,13 @@ Viscosity is interpolated from this file using linear interpolation. ``None'': n
 
 `diffusion dislocation':  An implementation of a viscous rheology including diffusion and dislocation creep. Compositional fields can each be assigned individual activation energies, reference densities, thermal expansivities, and stress exponents. The effective viscosity is defined as 
 
- \[v_\text{eff} = \left(\frac{1}{v_\text{eff}^\text{diff}}+ \frac{1}{v_\text{eff}^\text{dis}}\right)^{-1}\] where \[v_\text{i} = 0.5 * A^{-\frac{1}{n_i}} d^\frac{m_i}{n_i} \dot{\varepsilon_i}^{\frac{1-n_i}{n_i}} \exp\left(\frac{E_i^* + PV_i^*}{n_iRT}\right)\] 
+ \[\eta_\text{eff} = \left(\frac{1}{\eta_\text{eff}^\text{diff}}+ \frac{1}{\eta_\text{eff}^\text{dis}}\right)^{-1}\] where \[\eta_\text{i} = 0.5 A^{-\frac{1}{n_i}} d^\frac{m_i}{n_i} \dot{\varepsilon_i}^{\frac{1-n_i}{n_i}} \exp\left(\frac{E_i^* + PV_i^*}{n_iRT}\right)\] 
 
  where $d$ is grain size, $i$ corresponds to diffusion or dislocation creep, $\dot{\varepsilon}$ is the square root of the second invariant of the strain rate tensor, $R$ is the gas constant, $T$ is temperature,  and $P$ is pressure. $A_i$ are prefactors, $n_i$ and $m_i$ are stress and grain size exponents $E_i$ are the activation energies and $V_i$ are the activation volumes. 
 
  The ratio of diffusion to dislocation strain rate is found by Newton's method, iterating to find the stress which satisfies the above equations. The value for the components of this formula and additional parameters are read from the parameter file in subsection 'Material model/DiffusionDislocation'.
 
-`drucker prager': A material model that has constant values for all coefficients but the density and viscosity. The defaults for all coefficients are chosen to be similar to what is believed to be correct for Earth's mantle. All of the values that define this model are read from a section ``Material model/Drucker Prager'' in the input file, see Section~\ref{parameters:Material_20model/Drucker_20Prager}.Note that the model does not take into account any dependencies of material properties on compositional fields. 
+`drucker prager': A material model that has constant values for all coefficients but the density and viscosity. The defaults for all coefficients are chosen to be similar to what is believed to be correct for Earth's mantle. All of the values that define this model are read from a section ``Material model/Drucker Prager'' in the input file, see Section~\ref{parameters:Material_20model/Drucker_20Prager}. Note that the model does not take into account any dependencies of material properties on compositional fields. 
 
 The viscosity is computed according to the Drucker Prager frictional plasticity criterion (non-associative) based on a user-defined internal friction angle $\phi$ and cohesion $C$. In 3D:  $\sigma_y = \frac{6 C \cos(\phi)}{\sqrt(3) (3+\sin(\phi))} + \frac{2 P \sin(\phi)}{\sqrt(3) (3+\sin(\phi))}$, where $P$ is the pressure. See for example Zienkiewicz, O. C., Humpheson, C. and Lewis, R. W. (1975), G\'{e}otechnique 25, No. 4, 671-689. With this formulation we circumscribe instead of inscribe the Mohr Coulomb yield surface. In 2D the Drucker Prager yield surface is the same as the Mohr Coulomb surface:  $\sigma_y = P \sin(\phi) + C \cos(\phi)$. Note that in 2D for $\phi=0$, these criteria revert to the von Mises criterion (no pressure dependence). See for example Thieulot, C. (2011), PEPI 188, 47-68. 
 
@@ -6211,7 +6211,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 Plasticity limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3D is  $\sigma_y = \frac{6*C*\cos(\phi) + 2*P*\sin(\phi)} {\sqrt(3)*(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2D. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2D form is equivalent to the Mohr Coulomb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion). When the viscous stress ($2v{\varepsilon}_{ii}$) the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
 
-The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain magnitude. The finite strain invariant or full strain tensor is calculated through compositional fields within the material model. This implementation is identical to the compositional field finite strain plugin and cookbook described in the manual (author: Gassmoeller, Dannberg). If the user selects to track the finite strain invariant ($e_{ii}$), a single compositional field tracks the value derived from $e_{ii}^t = (e_{ii})^(t-1) + \dot{e}_{ii}*dt$, where $t$ and $t-1$ are the current and prior time steps, $\dot{e}_{ii}$ is the second invariant of the strain rate tensor and $dt$ is the time step size. In the case of the full strain tensor $F$, the finite strain magnitude is derived from the second invariant of the symmetric stretching tensor $L$, where $L = F * [F]^T$. The user must specify a single compositional field for the finite strain invariant or multiple fields (4 in 2D, 9 in 3D) for the finite strain tensor. These field(s) must be the first lised compositional fields in the parameter file. Note that one or more of the finite strain tensor components must be assigned a non-zero value intially. This value can be be quite small (ex: 1.e-8), but still non-zero. While the option to track and use the full finite strain tensor exists, tracking the associated compositional is computationally expensive in 3D. Similarly, the finite strain magnitudes may in fact decrease if the orientation of the deformation field switches through time. Consequently, the ideal solution is track the finite strain invariant (single compositional) field within the material and track the full finite strain tensor through tracers.
+The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain magnitude. The finite strain invariant or full strain tensor is calculated through compositional fields within the material model. This implementation is identical to the compositional field finite strain plugin and cookbook described in the manual (author: Gassmoeller, Dannberg). If the user selects to track the finite strain invariant ($e_{ii}$), a single compositional field tracks the value derived from $e_{ii}^t = (e_{ii})^(t-1) + \dot{e}_{ii}*dt$, where $t$ and $t-1$ are the current and prior time steps, $\dot{e}_{ii}$ is the second invariant of the strain rate tensor and $dt$ is the time step size. In the case of the full strain tensor $F$, the finite strain magnitude is derived from the second invariant of the symmetric stretching tensor $L$, where $L = F * [F]^T$. The user must specify a single compositional field for the finite strain invariant or multiple fields (4 in 2D, 9 in 3D) for the finite strain tensor. These field(s) must be the first lised compositional fields in the parameter file. Note that one or more of the finite strain tensor components must be assigned a non-zero value intially. This value can be be quite small (ex: 1.e-8), but still non-zero. While the option to track and use the full finite strain tensor exists, tracking the associated compositional is computationally expensive in 3D. Similarly, the finite strain magnitudes may in fact decrease if the orientation of the deformation field switches through time. Consequently, the ideal solution is track the finite strain invariant (single compositional) field within the material and track the full finite strain tensor through particles.
 
 Viscous stress may also be limited by a non-linear stress limiter that has a form similar to the Peierls creep mechanism. This stress limiter assigns an effective viscosity $\sigma_eff = \frac{\tau_y}{2*\varepsilon_y} {\frac{\varepsilon_ii}{\varepsilon_y}}^{\frac{1}{n_y}-1}$ Above $\tau_y$ is a yield stress, $\varepsilon_y$ is the reference strain rate, $\varepsilon_{ii}$ is the strain rate and $n_y$ is the stress limiter exponent.  The yield stress, $\tau_y$, is defined through the Drucker Prager yield criterion formulation. This method of limiting viscous stress has been used in various forms within the geodynamic literature, including Christensen (1992), JGR, 97(B2), pp. 2015-2036; Cizkova and Bina (2013), EPSL, 379, pp. 95-103; Cizkova and Bina (2015), EPSL, 430, pp. 408-415. When $n_y$ is 1, it essentially becomes a linear viscosity model, and in the limit $n_y\rightarrow \infty$ it converges to the standard viscosity rescaling method (concretely, values $n_y>20$ are large enough).
 
@@ -12322,16 +12322,16 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \end{itemize}
 
-\subsection{Parameters in section \tt Postprocess/Dynamic Topography}
-\label{parameters:Postprocess/Dynamic_20Topography}
+\subsection{Parameters in section \tt Postprocess/Dynamic topography}
+\label{parameters:Postprocess/Dynamic_20topography}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Density above}
-\phantomsection\label{parameters:Postprocess/Dynamic Topography/Density above}
+\phantomsection\label{parameters:Postprocess/Dynamic topography/Density above}
 
 
 \index[prmindex]{Density above}
-\index[prmindexfull]{Postprocess!Dynamic Topography!Density above}
+\index[prmindexfull]{Postprocess!Dynamic topography!Density above}
 {\it Value:} 0
 
 
@@ -12343,11 +12343,11 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Density below}
-\phantomsection\label{parameters:Postprocess/Dynamic Topography/Density below}
+\phantomsection\label{parameters:Postprocess/Dynamic topography/Density below}
 
 
 \index[prmindex]{Density below}
-\index[prmindexfull]{Postprocess!Dynamic Topography!Density below}
+\index[prmindexfull]{Postprocess!Dynamic topography!Density below}
 {\it Value:} 9900
 
 
@@ -12359,11 +12359,11 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Output bottom}
-\phantomsection\label{parameters:Postprocess/Dynamic Topography/Output bottom}
+\phantomsection\label{parameters:Postprocess/Dynamic topography/Output bottom}
 
 
 \index[prmindex]{Output bottom}
-\index[prmindexfull]{Postprocess!Dynamic Topography!Output bottom}
+\index[prmindexfull]{Postprocess!Dynamic topography!Output bottom}
 {\it Value:} true
 
 
@@ -12375,11 +12375,11 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 {\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Output surface}
-\phantomsection\label{parameters:Postprocess/Dynamic Topography/Output surface}
+\phantomsection\label{parameters:Postprocess/Dynamic topography/Output surface}
 
 
 \index[prmindex]{Output surface}
-\index[prmindexfull]{Postprocess!Dynamic Topography!Output surface}
+\index[prmindexfull]{Postprocess!Dynamic topography!Output surface}
 {\it Value:} true
 
 
@@ -12482,10 +12482,10 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Density below}
 \index[prmindexfull]{Postprocess!Geoid!Density below}
-{\it Value:} 8000
+{\it Value:} 9900
 
 
-{\it Default:} 8000
+{\it Default:} 9900
 
 
 {\it Description:} The density value below the CMB boundary.
