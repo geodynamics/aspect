@@ -1430,6 +1430,7 @@ namespace aspect
 //TODO: use n_compositional_field separate preconditioners
       std_cxx11::shared_ptr<LinearAlgebra::PreconditionILU>     C_preconditioner;
 
+      bool                                                      rebuild_sparsity_and_matrices;
       bool                                                      rebuild_stokes_matrix;
       bool                                                      assemble_newton_stokes_matrix;
       bool                                                      assemble_newton_stokes_system;

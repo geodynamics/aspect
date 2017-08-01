@@ -596,6 +596,12 @@ namespace aspect
     return (simulator != NULL);
   }
 
+  template <int dim>
+  double
+  SimulatorAccess<dim>::get_pressure_scaling () const
+  {
+    return (simulator->pressure_scaling);
+  }
 }
 
 
