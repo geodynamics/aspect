@@ -1,0 +1,68 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libpressure_constraint.so>
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+adding constraint idx= 162 to value= 2 with pressure_scaling= 50
+*** Timestep 0:  t=0 seconds
+adding constraint idx= 162 to value= 2 with pressure_scaling= 50
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 41+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.183 m/s, 0.249 m/s
+     Pressure min/avg/max:               96 Pa, 98 Pa, 100 Pa
+     Mass fluxes through boundary parts: -0.1667 kg/s, 0.1667 kg/s, 0 kg/s, 0 kg/s
+                                         
+Total system matrix memory consumption: 0.06 MB.
+Total system matrix nnz: 4,098
+system matrix nnz by block: 
+       2,180         570           0
+         570           1           0
+           0           0         777
+
+Total system preconditioner matrix memory consumption: 0.04 MB.
+Total system preconditioner matrix nnz: 2,062
+system preconditioner matrix nnz by block: 
+       1,122           0           0
+           0         163           0
+           0           0         777
+
+
+*** Timestep 1:  t=0.1 seconds
+adding constraint idx= 162 to value= 2 with pressure_scaling= 50
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.183 m/s, 0.249 m/s
+     Pressure min/avg/max:               96 Pa, 98 Pa, 100 Pa
+     Mass fluxes through boundary parts: -0.1667 kg/s, 0.1667 kg/s, 0 kg/s, 0 kg/s
+                                         
+Total system matrix memory consumption: 0.06 MB.
+Total system matrix nnz: 4,098
+system matrix nnz by block: 
+       2,180         570           0
+         570           1           0
+           0           0         777
+
+Total system preconditioner matrix memory consumption: 0.04 MB.
+Total system preconditioner matrix nnz: 2,062
+system preconditioner matrix nnz by block: 
+       1,122           0           0
+           0         163           0
+           0           0         777
+
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

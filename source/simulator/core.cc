@@ -807,6 +807,16 @@ namespace aspect
     // into current_constraints and then add to current_constraints
     compute_current_constraints ();
 
+    // If needed, construct sparsity patterns and matrices with the current
+    // constraints. Of course we need to force assembly too.
+    if (rebuild_sparsity_and_matrices)
+      {
+        rebuild_sparsity_and_matrices = false;
+        setup_system_matrix (introspection.index_sets.system_partitioning);
+        setup_system_preconditioner (introspection.index_sets.system_partitioning);
+        rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+      }
+
 
     // TODO: do this in a more efficient way (TH)? we really only need
     // to make sure that the time dependent velocity boundary conditions
@@ -1115,7 +1125,7 @@ namespace aspect
 
         DoFTools::make_flux_sparsity_pattern (dof_handler,
                                               sp,
-                                              constraints, false,
+                                              current_constraints, false,
                                               coupling,
                                               face_coupling,
                                               Utilities::MPI::
@@ -1124,7 +1134,7 @@ namespace aspect
     else
       DoFTools::make_sparsity_pattern (dof_handler,
                                        coupling, sp,
-                                       constraints, false,
+                                       current_constraints, false,
                                        Utilities::MPI::
                                        this_mpi_process(mpi_communicator));
 
@@ -1246,7 +1256,7 @@ namespace aspect
 
         DoFTools::make_flux_sparsity_pattern (dof_handler,
                                               sp,
-                                              constraints, false,
+                                              current_constraints, false,
                                               coupling,
                                               face_coupling,
                                               Utilities::MPI::
@@ -1255,7 +1265,7 @@ namespace aspect
     else
       DoFTools::make_sparsity_pattern (dof_handler,
                                        coupling, sp,
-                                       constraints, false,
+                                       current_constraints, false,
                                        Utilities::MPI::
                                        this_mpi_process(mpi_communicator));
 
@@ -1398,10 +1408,9 @@ namespace aspect
     constraints.close();
     signals.post_compute_no_normal_flux_constraints(triangulation);
 
-    // finally initialize vectors, matrices, etc.
-
-    setup_system_matrix (introspection.index_sets.system_partitioning);
-    setup_system_preconditioner (introspection.index_sets.system_partitioning);
+    // Finally initialize vectors. We delay construction of the sparsity
+    // patterns and matrices until we have current_constraints.
+    rebuild_sparsity_and_matrices = true;
 
     system_rhs.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
     solution.reinit(introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);

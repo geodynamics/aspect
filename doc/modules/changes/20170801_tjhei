@@ -1,0 +1,5 @@
+New: Sparsity patterns of the system matrix now use the current_constraints
+instead of the static constraints. This allows new kind of constraints in the
+system and reduces the number of nonzero entries in the system matrix.
+<br>
+(Timo Heister, 2017/08/01)
