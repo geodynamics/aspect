@@ -658,6 +658,13 @@ namespace aspect
       bool simulator_is_initialized () const;
 
       /**
+       * Return the value used for rescaling the pressure in the linear
+       * solver.
+       */
+      double
+      get_pressure_scaling () const;
+
+      /**
        * A convenience function that copies the values of the compositional
        * fields at the quadrature point q given as input parameter to the
        * output vector composition_values_at_q_point.
