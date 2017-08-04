@@ -1405,7 +1405,9 @@ namespace aspect
                                                        constraints,
                                                        *mapping);
     }
+
     constraints.close();
+    compute_current_constraints();
     signals.post_compute_no_normal_flux_constraints(triangulation);
 
     // Finally initialize vectors. We delay construction of the sparsity
