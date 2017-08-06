@@ -2641,6 +2641,7 @@ non-default compilers or libraries (e.g. Intel's MKL instead of LAPACK) by chang
 in the configuration file \texttt{candi.cfg}, or by providing platform specific installation files.
 
 \subsubsection{System prerequisites}
+\label{subsubsec:system_prerequisites}
 
 \texttt{candi} will show system specific instructions on startup, but its prerequisites
 are relatively widely used and packaged
@@ -2675,6 +2676,7 @@ sudo apt-get install build-essential \
 \end{verbatim}
 
 \subsubsection{Using candi to compile dependencies}
+\label{subsubsec:candi_dependencies}
 
 In its default configuration \texttt{candi} downloads and
 compiles a \dealii{} configuration that is able to run \aspect, but it
@@ -2684,7 +2686,7 @@ installation). We require at least the packages \pfrst{}, \trilinos{}
 (or as an experimental alternative \petsc{}), and finally \dealii{}.
  
 At the time of this writing \texttt{candi} will install \pfrst{} 2.0,
-\trilinos{} 12.10.1,  \petsc{} 3.6.4, and \dealii{} 8.5.0. 
+\trilinos{} 12.10.1,  \petsc{} 3.7.6, and \dealii{} 8.5.0. 
 We strive to keep the development version of \aspect{} compatible with 
 the latest release of \dealii{} and the current \dealii{} development 
 version at any time, and we usually support several older versions of
@@ -2771,20 +2773,126 @@ installed. Most Linux distributions have packages for \texttt{doxygen}. The
 result will be the file \url{doc/doxygen/index.html} that is the starting
 point for exploring the documentation.
 
-\subsubsection{Compiling a static \aspect{} executable}
-\aspect{} defaults to a dynamically linked executable, which saves disk space and build time. In some circumstances however, it is preferred to generate a statically linked executable that incorporates all used libraries. This need may arise on large clusters on which libraries and loaded modules/variables on login nodes may be different from the ones available on compute nodes. The general build procedure in such a case equals the above explained instructions with the following differences:
+\subsubsection{Special cases}
+
+\paragraph{Installation without internet access:}
+
+\texttt{candi} relies on the fact that it can download packages from known
+internet locations. Some cluster systems might prevent internet access or
+disallow certain SSL certificates. In these cases please install \texttt{candi}
+and \dealii{} on a different system (e.g. a desktop system) and then copy the
+downloaded packages to your cluster. \texttt{candi} will recognize the
+existence of the packages and skip the download phase. The packages should be
+placed in the following folder: 
+
+\begin{verbatim} 
+INSTALL_PATH/tmp/src
+\end{verbatim}
+
+where \texttt{INSTALL\_PATH} is the installation path that you provide to candi
+in step 2 of Subsection \ref{subsubsec:candi_dependencies}.
+
+\paragraph{Installation without git:}
+
+In case \texttt{git} is not available on your system you can replace the
+instructions to obtain \texttt{candi} in step 1 of Subsection
+\ref{subsubsec:candi_dependencies} by the following:
+
+\begin{verbatim}
+ wget https://github.com/dealii/candi/archive/master.tar.gz
+ tar -xzf master.tar.gz
+ cd candi-master
+\end{verbatim}
+
+Since \texttt{git} is required for the installation of \dealii{} and \aspect{}
+you can then utilize \texttt{candi} to install it. In order to do this,
+uncomment the following line in the \texttt{candi.cfg} file in the
+\texttt{candi} directory:
+
+\begin{verbatim}
+#PACKAGES="${PACKAGES} once:git"
+\end{verbatim}
+
+\paragraph{Installing missing prerequisites:}
+
+As described in the last paragraph \texttt{candi} is able to install some of
+the prerequisites mentioned in Subsection \ref{subsubsec:system_prerequisites},
+if they are not available or packaged for your system. This can be especially
+useful on cluster systems. For a list of available packages see the
+\texttt{candi.cfg} file in the \texttt{candi} directory and uncomment the
+missing packages.
+
+\paragraph{Using custom compiler and linker flags:}
+
+If your system requires custom compiler or linker flags (e.g. \texttt{-lmpi} to
+link to the MPI libraries), you can set the common environment variables
+(\texttt{CFLAGS,CPPFLAGS,LDFLAGS}) in your terminal, or include the
+corresponding commands into the \texttt{candi.cfg} file in the \texttt{candi}
+directory to make sure they are set whenever \texttt{candi} is run.
+
+\paragraph{Installation using Intel's MKL as BLAS/LAPACK:}
+
+A common obstacle during installation is that many cluster systems utilize
+Intel's MKL library as an implementation of the BLAS/LAPACK routines.
+\texttt{candi} can automatically configure the packages that depend on this
+implementation, if it is told to do so. To this purpose modify the
+corresponding section of the \texttt{candi.cfg} file in the \texttt{candi}
+directory. It should contain the following lines:
+
+\begin{verbatim}
+MKL=ON
+MKL_DIR=${MKLROOT}/lib/intel64
+\end{verbatim}
+
+Note that the value of \texttt{MKL\_DIR} needs to point to your mkl
+implementation, i.e. the folder that contains the libraries (like
+``libmkl\_core.so'' and others). The value \texttt{\${MKLROOT}/lib/intel64} is
+simply a common place for the installation, and might be different on your
+system (consult you cluster's documentation or contact technical support).
+
+\paragraph{Installation without support for C++11:}
+
+The C++ programming language has received a major update in 2011 introducing
+the C++11 standard. Compilers compatible with this new version were released
+shortly afterwards and have been available for some time (e.g.
+GCC-4.8.0, the first GCC version considered to have full C++11 support, was
+released in 2013, other compatible compilers are Clang 3.3, and Intel 15 or
+newer).
+
+We are aware that some clusters without regular support might not provide C++11
+support and have therefore kept \aspect{} compatible to older compilers in line
+with the implementations of deal.II (see also
+\url{https://github.com/dealii/dealii/wiki/Frequently-Asked-Questions#does-dealii-require-c11-support}).
+Note however, that \trilinos{} and \dealii{} already dropped support for
+non-C++11 compilers in their newest releases and development version
+respectively. Therefore, you will have to use specific versions of \trilinos{}
+and \dealii{} to compile \aspect{} with a non-C++11 conform compiler. We
+recommend using \trilinos{} 11.10.1, and \dealii 8.5.0 that both support older
+compilers.
+
+Note that following \dealii{}, \aspect{} will also drop support for non-C++11
+compilers after the release of \aspect{} 2.0. 
+
+\paragraph{Compiling a static \aspect{} executable:}
+\aspect{} defaults to a dynamically linked executable, which saves disk space
+and build time. In some circumstances however, it is preferred to generate a
+statically linked executable that incorporates all used libraries. This need
+may arise on large clusters on which libraries and loaded modules/variables on
+login nodes may be different from the ones available on compute nodes. The
+general build procedure in such a case equals the above explained instructions
+with the following differences:
 \begin{enumerate}
-\item \textit{Trilinos}: Add the following lines to your cmake call:
+\item \textit{\trilinos{} and \dealii{}}: Add the following lines to your
+\texttt{candi.cfg} file:
 \begin{verbatim}
- -DBUILD_SHARED_LIBS=OFF
- -DTPL_FIND_SHARED_LIBS=OFF
+ TRILINOS_CONFOPTS="-DBUILD_SHARED_LIBS=OFF -DTPL_FIND_SHARED_LIBS=OFF"
+ DEAL_CONFOPTS="-DDEAL_II_STATIC_EXECUTABLE=ON"
 \end{verbatim}
-\item \textit{\pfrst{}:} Change items "--enable-shared" to "--enable-static" in p4est-setup.sh lines 83 and 97.
-\item \textit{\dealii{}:} Add the following lines to your call to cmake:
-\begin{verbatim}
- -DDEAL_II_STATIC_EXECUTABLE=ON
-\end{verbatim}
-\item \textit{\aspect{}:} If everything above is set up correctly, there is no need for any configuration change to \aspect{}'s build procedure. You should see the following cmake output from \aspect{}:
+\item \textit{\pfrst{}:} Change items "--enable-shared" to "--enable-static" in
+\texttt{candi/deal.II-toolchain/packages/p4est.package} lines 68 and 82.
+\item \textit{\aspect{}:} If everything above is set up correctly, there is no
+need for any configuration change to \aspect{}'s build procedure. You should
+see the following cmake output from \aspect{}:
 \begin{verbatim}
 -- Creating a statically linked executable
 -- Disabling dynamic loading of plugins from the input file
