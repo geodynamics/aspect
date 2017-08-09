@@ -1,0 +1,167 @@
+#########################################################
+# This is a benchmark case that tests the operator split 
+# solver scheme, which can use a different time step to
+# compute reactions between compositional fields than 
+# the time step used for advection.  
+# In comparison to the example 'exponential_decay', the
+# initial comosition depends on x, and there is a constant 
+# horizontal velocity. The composition decays over time, 
+# following the equations for exponential decay with a decay 
+# rate that depends on y. 
+
+set Additional shared libraries = ./libadvection_reaction.so
+
+
+############### Global parameters
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 1
+set Use years in output instead of seconds = false
+
+# We use a new solver scheme option that enables the operator split. 
+set Nonlinear solver scheme                = IMPES
+set Use operator splitting                 = true
+
+# As we split the time-stepping of advection and reactions, 
+# there are now two different time steps in the model:
+# We control the advection time step using the 'Maximum time step'
+# parameter (for easy comparison with the exponential decay test 
+# case), and the reaction time step using the 'Reaction time step' 
+# parameter. We will vary both parameters in different model runs.
+subsection Solver parameters
+  subsection Operator splitting parameters
+    set Reaction time step                 = 0.0005
+  end
+end
+set Maximum time step                      = 1
+
+
+subsection Discretization
+  subsection Stabilization parameters
+    set beta  = 0.0
+    set cR = 0.0
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0
+  set Fixed composition boundary indicators   = 0
+  set Zero velocity boundary indicators       = 
+  set Tangential velocity boundary indicators = 
+  set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function
+end
+
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+
+# The velocity on all boundaries is prescribed to a constant
+# value, leading to horizontal flow from left to right. 
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,z,t
+    set Function constants  = 
+    set Function expression = 0.01;0.0
+  end
+end
+
+
+# We then choose a vertical gravity model and describe the
+# initial temperature with a vertical gradient. The default
+# strength for gravity is one. The material model is the
+# same as before.
+subsection Gravity model
+  set Model name = vertical
+end
+
+
+# For this model, we choose a sinusoidal initial temperature
+# and composition, so that we can see how the field changes 
+# over time as it is advected and decays over time. 
+subsection Initial temperature model
+  set Model name = function
+  
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.1415926
+    set Function expression = sin(2*pi*x)
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+  
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.1415926
+    set Function expression = sin(2*pi*x)
+  end
+end
+
+
+subsection Boundary temperature model
+  set Model name = ExponentialDecayBoundary
+end
+
+subsection Boundary composition model
+  set Model name = ExponentialDecayBoundary
+end
+
+
+# We choose material and heating models that let temperature
+# and composition decay over time, and that is implemented in
+# a plugin.  
+subsection Heating model
+  set Model name = exponential decay heating
+
+  subsection Exponential decay heating
+    set Half life = 10
+  end
+end
+
+subsection Material model
+  set Model name = exponential decay
+
+  subsection Exponential decay
+    set Half life = 10
+  end
+
+  subsection Composition reaction model
+    set Thermal conductivity          = 0
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 1e5
+    set Density differential for compositional field 1 = 0
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = composition statistics, visualization, ExponentialDecayPostprocessor
+
+  subsection Visualization
+    set Time between graphical output = 0
+  end
+end
+
+

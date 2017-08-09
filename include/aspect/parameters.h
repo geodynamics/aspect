@@ -307,6 +307,8 @@ namespace aspect
     double                         start_time;
     double                         CFL_number;
     double                         maximum_time_step;
+    double                         reaction_time_step;
+    int                            reaction_steps_per_advection_step;
     bool                           use_artificial_viscosity_smoothing;
     bool                           use_conduction_timestep;
     bool                           convert_to_years;
@@ -328,6 +330,7 @@ namespace aspect
     unsigned int                   n_expensive_stokes_solver_steps;
     double                         temperature_solver_tolerance;
     double                         composition_solver_tolerance;
+    bool                           use_operator_splitting;
     unsigned int                   max_pre_newton_nonlinear_iterations;
     unsigned int                   max_newton_line_search_iterations;
     double                         switch_initial_newton_residual;

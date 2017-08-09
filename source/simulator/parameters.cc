@@ -318,6 +318,14 @@ namespace aspect
                        "the composition system gets solved. See `linear solver "
                        "tolerance' for more details.");
 
+    prm.declare_entry ("Use operator splitting", "false",
+                       Patterns::Bool(),
+                       "If set to true, the advection and reactions of compositional fields and "
+                       "temperature are solved separately, and can use different time steps. Note that "
+                       "this will only work if the material/heating model fills the reaction_rates/"
+                       "heating_reaction_rates structures. Operator splitting can be used with any "
+                       "existing solver schemes that solve the temperature/composition equations.");
+
     prm.enter_subsection ("Solver parameters");
     {
       prm.enter_subsection ("Newton solver parameters");
@@ -379,6 +387,33 @@ namespace aspect
         prm.declare_entry ("AMG output details", "false",
                            Patterns::Bool(),
                            "Turns on extra information on the AMG solver. Note that this will generate much more output.");
+      }
+      prm.leave_subsection ();
+      prm.enter_subsection ("Operator splitting parameters");
+      {
+        prm.declare_entry ("Reaction time step", "1000.0",
+                           Patterns::Double (0),
+                           "Set a time step size for computing reactions of compositional fields and the "
+                           "temperature field in case operator splitting is used. This is only used "
+                           "when the nonlinear solver scheme ``operator splitting'' is selected. "
+                           "The reaction time step must be greater than 0. "
+                           "If you want to prescribe the reaction time step only as a relative value "
+                           "compared to the advection time step as opposed to as an absolute value, you "
+                           "should use the parameter ``Reaction time steps per advection step'' and set "
+                           "this parameter to the same (or larger) value as the ``Maximum time step'' "
+                           "(which is 5.69e+300 by default). "
+                           "Units: Years or seconds, depending on the ``Use years "
+                           "in output instead of seconds'' parameter.");
+
+        prm.declare_entry ("Reaction time steps per advection step", "0",
+                           Patterns::Integer (0),
+                           "The number of reaction time steps done within one advection time step "
+                           "in case operator splitting is used. This is only used if the nonlinear "
+                           "solver scheme ``operator splitting'' is selected. If set to zero, this "
+                           "parameter is ignored. Otherwise, the reaction time step size is chosen according to "
+                           "this criterion and the ``Reaction time step'', whichever yields the "
+                           "smaller time step. "
+                           "Units: none.");
       }
       prm.leave_subsection ();
     }
@@ -1036,6 +1071,16 @@ namespace aspect
         AMG_output_details                     = prm.get_bool ("AMG output details");
       }
       prm.leave_subsection ();
+      prm.enter_subsection ("Operator splitting parameters");
+      {
+        reaction_time_step       = prm.get_double("Reaction time step");
+        AssertThrow (reaction_time_step > 0,
+                     ExcMessage("Reaction time step must be greater than 0."));
+        if (convert_to_years == true)
+          reaction_time_step *= year_in_seconds;
+        reaction_steps_per_advection_step = prm.get_integer ("Reaction time steps per advection step");
+      }
+      prm.leave_subsection ();
     }
     prm.leave_subsection ();
 
@@ -1089,6 +1134,7 @@ namespace aspect
     n_expensive_stokes_solver_steps = prm.get_integer ("Maximum number of expensive Stokes solver steps");
     temperature_solver_tolerance    = prm.get_double ("Temperature solver tolerance");
     composition_solver_tolerance    = prm.get_double ("Composition solver tolerance");
+    use_operator_splitting          = prm.get_bool("Use operator splitting");
 
     prm.enter_subsection ("Mesh refinement");
     {

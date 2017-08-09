@@ -632,7 +632,7 @@ namespace aspect
          * Given an index as input argument, return a reference the to vector of
          * values of the additional output with that index.
          */
-        virtual const std::vector<double> &get_nth_output(const unsigned int idx) const = 0;
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const = 0;
 
         virtual void average (const MaterialAveraging::AveragingOperation /*operation*/,
                               const FullMatrix<double>  &/*projection_matrix*/,
@@ -655,7 +655,7 @@ namespace aspect
       public:
         SeismicAdditionalOutputs(const unsigned int n_points);
 
-        virtual const std::vector<double> &get_nth_output(const unsigned int idx) const;
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
 
         /**
          * Seismic s-wave velocities at the evaluation points passed to
@@ -670,6 +670,46 @@ namespace aspect
          * the current object.
          */
         std::vector<double> vp;
+    };
+
+
+    /**
+     * Additional output fields for reaction rates to be added to
+     * the MaterialModel::MaterialModelOutputs structure and filled in the
+     * MaterialModel::Interface::evaluate() function.
+     *
+     * These reaction rates are only used if the "operator splitting" solver scheme
+     * option is enabled, which decouples the reactions between compositional
+     * fields from the advection, so that different time step sizes can be used.
+     * In this case, the reaction rates are used in addition to (and independent
+     * from) any reaction_terms that a material model defines, which are assembled
+     * as usual.
+     * By default, the reaction rates are initialized with quiet_NaNs, and if
+     * "operator splitting" is not enabled, these values are not used, and they
+     * are expected to either remain at that value, or to not be created at all.
+     *
+     * In contrast to the reaction_terms, which are actual changes in composition
+     * rather than reaction rates, and assume equilibrium between the compositional
+     * fields, the reacion_rates defined here allow for reaction processes that
+     * happen on shorter time scales than the advection, and disequilibrium reactions.
+     */
+    template <int dim>
+    class ReactionRateOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        ReactionRateOutputs (const unsigned int n_points,
+                             const unsigned int n_comp);
+
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+
+        /**
+         * Reaction rates for all compositional fields at the evaluation points
+         * that are passed to the instance of MaterialModel::Interface::evaluate()
+         * that fills the current object.
+         * reaction_rates[q][c] is the reaction rate at the evaluation point q
+         * for the compositional field with the index c.
+         */
+        std::vector<std::vector<double> > reaction_rates;
     };
 
 

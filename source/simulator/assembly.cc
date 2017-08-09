@@ -907,7 +907,6 @@ namespace aspect
                                   // discard cell,
                                   std_cxx11::_2,
                                   std_cxx11::_3));
-
       }
 
     if (parameters.use_discontinuous_temperature_discretization ||
@@ -1496,6 +1495,26 @@ namespace aspect
             scratch.material_model_outputs.densities[q] = adiabatic_conditions->density(scratch.material_model_inputs.position[q]);
           }
       }
+
+#ifdef DEBUG
+    // make sure that if the model does not use operator splitting,
+    // the material model outputs do not fill the reaction_rates (because the reaction_terms are used instead)
+    if (!parameters.use_operator_splitting)
+      {
+        material_model->create_additional_named_outputs(scratch.material_model_outputs);
+        MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs
+          = scratch.material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
+
+        Assert(reaction_rate_outputs == NULL,
+               ExcMessage("You are using a material model where the reaction rate outputs "
+                          "are created even though the operator splitting solver option is "
+                          "not used in the model, this is not supported! "
+                          "If operator splitting is disabled, the reaction_rates should not "
+                          "be created at all. If you want to run a model where reactions are "
+                          "much faster than the advection, which is what the reaction rate "
+                          "outputs are designed for, you should enable operator splitting."));
+      }
+#endif
 
     MaterialModel::MaterialAveraging::average (parameters.material_averaging,
                                                cell,

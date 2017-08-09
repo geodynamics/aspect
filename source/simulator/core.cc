@@ -1829,6 +1829,10 @@ namespace aspect
           if (parameters.free_surface_enabled)
             free_surface->execute ();
 
+          // then we compute the reactions of compositional fields and temperature in case of operator splitting
+          if (parameters.use_operator_splitting)
+            compute_reactions ();
+
           assemble_advection_system (AdvectionField::temperature());
           solve_advection(AdvectionField::temperature());
 
@@ -1942,6 +1946,10 @@ namespace aspect
           double initial_temperature_residual = 0;
           double initial_stokes_residual      = 0;
           std::vector<double> initial_composition_residual (introspection.n_compositional_fields,0);
+
+          // compute the reactions of compositional fields and temperature in case of operator splitting
+          if (parameters.use_operator_splitting)
+            compute_reactions ();
 
           do
             {
@@ -2074,6 +2082,10 @@ namespace aspect
           if (parameters.free_surface_enabled)
             free_surface->execute ();
 
+          // then we compute the reactions of compositional fields and temperature in case of operator splitting
+          if (parameters.use_operator_splitting)
+            compute_reactions ();
+
           // solve the temperature and composition systems once...
           assemble_advection_system (AdvectionField::temperature());
           solve_advection(AdvectionField::temperature());
@@ -2161,6 +2173,10 @@ namespace aspect
           // Identical to IMPES except does not solve Stokes equation
           if (parameters.free_surface_enabled)
             free_surface->execute ();
+
+          // then we compute the reactions of compositional fields and temperature in case of operator splitting
+          if (parameters.use_operator_splitting)
+            compute_reactions ();
 
           LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
 

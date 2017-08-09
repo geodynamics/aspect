@@ -1,0 +1,166 @@
+#########################################################
+# This is a model setup to test the latent heat generation. 
+# Melt flows in from the bottom and crosses a phase 
+# transition, where it freezes and energy is released and 
+# the temperature increases.  
+# The crucial property of the test is the equilibrium
+# temperature at the top of the domain. This test is the
+# same as the "latent heat melt" test, except that is uses
+# the operator split solver scheme, and that active melt 
+# transport is enabled. 
+
+set Dimension = 2
+
+set Start time                             = 0
+set End time                               = 4e16
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = iterated IMPES
+set Use operator splitting                     = true
+subsection Solver parameters
+  subsection Operator splitting parameters
+    set Reaction time step                     = 4e14
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1000000
+    set Y extent = 1000000
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, peridotite
+end
+
+subsection Initial composition model
+  set Model name = function
+  
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = if(z<500000.0,1,0);if(z>500000.,0,1)    
+  end
+end
+
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+subsection Heating model
+  set List of model names = latent heat melt
+  subsection Latent heat melt
+    set Melting entropy change = -300.0
+  end
+end
+
+subsection Model settings
+  # We only fix the temperature at the upper boundary, the other boundaries
+  # are isolating. To guarantuee a steady downward flow, we fix the velocity
+  # at the top and bottom, and set it to free slip on the sides. 
+  set Fixed composition boundary indicators   = 2
+  set Fixed temperature boundary indicators   = 2
+  set Prescribed velocity boundary indicators = 2:function, 3:function
+  set Tangential velocity boundary indicators = 0, 1
+
+  set Include melt transport                  = true
+end
+
+
+############### Boundary conditions
+# We set the top temperature to T1=1000K. 
+subsection Boundary temperature model
+  set List of model names = box
+  subsection Box
+    set Top temperature = 1000
+    set Bottom temperature = 1000
+  end
+end
+
+# We prescribe a constant downward flow.
+subsection Boundary velocity model
+  subsection Function
+    set Function expression = 0;2.1422e-11
+    set Variable names      = x,y
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1000.0
+    set Variable names      = x,y
+  end
+end
+
+
+subsection Material model
+  set Model name = melt global
+
+  subsection Melt global
+    set Reference solid density       = 3300
+    set Reference melt density        = 3299.9
+    set Thermal conductivity          = 0.0
+    set Thermal expansion coefficient = 0.0
+    set Reference shear viscosity     = 8.44e21
+    set Reference specific heat       = 1000.0
+    set Depletion solidus change      = 0.0
+    set Surface solidus               = 2500
+    set Pressure solidus change       = -1e-7
+    set Exponential melt weakening factor = 0.0
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0 
+  set Initial global refinement          = 3 
+  set Time steps between mesh refinement = 0
+
+end
+
+
+subsection Discretization
+  subsection Stabilization parameters
+    # The exponent $\alpha$ in the entropy viscosity stabilization. Units:
+    # None.
+    set alpha = 2
+
+    # The $\beta$ factor in the artificial viscosity stabilization. An
+    # appropriate value for 2d is 0.052 and 0.078 for 3d. Units: None.
+    set beta  = 0.078
+
+    # The $c_R$ factor in the entropy viscosity stabilization. Units: None.
+    set cR    = 0.5   # default: 0.11
+  end
+end
+
+
+subsection Postprocess
+
+  set List of postprocessors = temperature statistics, visualization
+
+  subsection Visualization
+
+    set List of output variables      = material properties, nonadiabatic temperature, named additional outputs
+
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity, reaction terms, specific heat
+    end
+
+    set Number of grouped files       = 0
+    set Interpolate output            = false
+    set Output format                 = vtu
+    set Time between graphical output = 2500                                                                               # default: 1e8
+  end
+end

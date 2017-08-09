@@ -924,6 +924,32 @@ namespace aspect
        */
       void apply_limiter_to_dg_solutions (const AdvectionField &advection_field);
 
+
+      /**
+       * Compute the reactions in case of operator splitting:
+       * Using the current solution vector, this function makes a number of time
+       * steps determined by the size of the reaction time step, and solves a
+       * system of coupled ordinary differential equations for the reactions between
+       * compositional fields and temperature in each of them. To do that, is uses
+       * the reaction rates outputs from the material and heating models used in
+       * the computation. The solution vector is then updated with the new values
+       * of temperature and composition after the reactions.
+       *
+       * As the ordinary differential equation in any given point is independent
+       * from the solution at all other points, we do not have to assemble a matrix,
+       * but just need to loop over all node locations for the temperature and
+       * compositional fields and compute the update to the solution.
+       *
+       * The function also updates the old solution vectors with the reaction update
+       * so that the advection time stepping scheme will have the correct field terms
+       * for the right-hand side when assembling the advection system.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void compute_reactions ();
+
+
       /**
        * Interpolate the given function onto the velocity FE space and write
        * it into the given vector.

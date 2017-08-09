@@ -41,7 +41,7 @@ namespace aspect
       public:
         PlasticAdditionalOutputs(const unsigned int n_points);
 
-        virtual const std::vector<double> &get_nth_output(const unsigned int idx) const;
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
 
         /**
          * Cohesions at the evaluation points passed to
