@@ -114,6 +114,34 @@ namespace aspect
     }
 
     template <int dim>
+    typename World<dim>::particle_iterator
+    World<dim>::begin() const
+    {
+      return particle_iterator(particles,(const_cast<World<dim> *> (this))->particles.begin());
+    }
+
+    template <int dim>
+    typename World<dim>::particle_iterator
+    World<dim>::begin()
+    {
+      return World<dim>::particle_iterator(particles,particles.begin());
+    }
+
+    template <int dim>
+    typename World<dim>::particle_iterator
+    World<dim>::end() const
+    {
+      return (const_cast<World<dim> *> (this))->end();
+    }
+
+    template <int dim>
+    typename World<dim>::particle_iterator
+    World<dim>::end()
+    {
+      return World<dim>::particle_iterator(particles,particles.end());
+    }
+
+    template <int dim>
     const Property::Manager<dim> &
     World<dim>::get_property_manager() const
     {
@@ -192,11 +220,8 @@ namespace aspect
     World<dim>::update_next_free_particle_index()
     {
       types::particle_index locally_highest_index = 0;
-      typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator it = particles.begin();
-      for (; it!=particles.end(); ++it)
-        {
-          locally_highest_index = std::max(locally_highest_index,it->second.get_id());
-        }
+      for (particle_iterator particle = begin(); particle != end(); ++particle)
+        locally_highest_index = std::max(locally_highest_index,particle->get_id());
 
       next_free_particle_index = dealii::Utilities::MPI::max (locally_highest_index, this->get_mpi_communicator()) + 1;
     }

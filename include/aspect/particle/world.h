@@ -23,6 +23,8 @@
 
 #include <aspect/global.h>
 #include <aspect/particle/particle.h>
+#include <aspect/particle/particle_accessor.h>
+#include <aspect/particle/particle_iterator.h>
 
 #include <aspect/particle/generator/interface.h>
 #include <aspect/particle/integrator/interface.h>
@@ -59,6 +61,11 @@ namespace aspect
     {
       public:
         /**
+         * A type that can be used to iterate over all particles in the domain.
+         */
+        typedef ParticleIterator<dim> particle_iterator;
+
+        /**
          * Default World constructor.
          */
         World();
@@ -72,6 +79,26 @@ namespace aspect
          * Initialize the particle world.
          */
         void initialize();
+
+        /**
+         * Return an iterator to the first particle.
+         */
+        particle_iterator begin() const;
+
+        /**
+         * Return an iterator to the first particle.
+         */
+        particle_iterator begin();
+
+        /**
+         * Return an iterator past the end of the particles.
+         */
+        particle_iterator end() const;
+
+        /**
+         * Return an iterator past the end of the particles.
+         */
+        particle_iterator end();
 
         /**
          * Get the particle property manager for this particle world.
