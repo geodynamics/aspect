@@ -108,7 +108,7 @@ namespace aspect
 
                   const double strength = ( (dim==3)
                                             ?
-                                            ( 6.0 * cohesion * cos_phi + 2.0 * pressure * sin_phi) * strength_inv_part
+                                            ( 6.0 * cohesion * cos_phi + 6.0 * pressure * sin_phi) * strength_inv_part
                                             :
                                             cohesion * cos_phi + pressure * sin_phi );
 

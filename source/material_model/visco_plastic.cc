@@ -278,7 +278,7 @@ namespace aspect
           // Calculate Drucker Prager yield strength (i.e. yield stress)
           double yield_strength = ( (dim==3)
                                     ?
-                                    ( 6.0 * coh * std::cos(phi) + 2.0 * std::max(pressure,0.0) * std::sin(phi) )
+                                    ( 6.0 * coh * std::cos(phi) + 6.0 * std::max(pressure,0.0) * std::sin(phi) )
                                     / ( std::sqrt(3.0) * (3.0 + std::sin(phi) ) )
                                     :
                                     coh * std::cos(phi) + std::max(pressure,0.0) * std::sin(phi) );
