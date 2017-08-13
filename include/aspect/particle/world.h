@@ -25,6 +25,7 @@
 #include <aspect/particle/particle.h>
 #include <aspect/particle/particle_accessor.h>
 #include <aspect/particle/particle_iterator.h>
+#include <aspect/particle/particle_handler.h>
 
 #include <aspect/particle/generator/interface.h>
 #include <aspect/particle/integrator/interface.h>
@@ -81,32 +82,20 @@ namespace aspect
         void initialize();
 
         /**
-         * Return an iterator to the first particle.
-         */
-        particle_iterator begin() const;
-
-        /**
-         * Return an iterator to the first particle.
-         */
-        particle_iterator begin();
-
-        /**
-         * Return an iterator past the end of the particles.
-         */
-        particle_iterator end() const;
-
-        /**
-         * Return an iterator past the end of the particles.
-         */
-        particle_iterator end();
-
-        /**
          * Get the particle property manager for this particle world.
          *
          * @return The property manager for this world.
          */
         const Property::Manager<dim> &
         get_property_manager() const;
+
+        /**
+         * Get the particle handler for this particle world.
+         *
+         * @return The particle handler for this world.
+         */
+        const ParticleHandler<dim> &
+        get_particle_handler() const;
 
         /**
          * Do initial logic for handling pre-refinement steps
@@ -317,10 +306,10 @@ namespace aspect
         std_cxx11::unique_ptr<Output::Interface<dim> > output;
 
         /**
-         * Set of particles currently in the local domain, organized by
-         * the level/index of the cell they are in.
+         * Particle handler object that is responsible for storing and
+         * managing the internal particle structures.
          */
-        std::multimap<types::LevelInd, Particle<dim> > particles;
+        std_cxx11::unique_ptr<ParticleHandler<dim> > particle_handler;
 
         /**
          * Set of particles currently in the ghost cells of the local domain,
@@ -328,28 +317,6 @@ namespace aspect
          * particles are marked read-only.
          */
         std::multimap<types::LevelInd, Particle<dim> > ghost_particles;
-
-        /**
-         * This variable stores how many particles are stored globally. It is
-         * calculated by update_n_global_particles().
-         */
-        types::particle_index global_number_of_particles;
-
-        /**
-         * The maximum number of particles per cell in the global domain. This
-         * variable is important to store and load particle data during
-         * repartition and serialization of the solution. Note that the
-         * variable is only updated when it is needed, e.g. before or after
-         * serialization (before/after mesh refinement, before creating a
-         * checkpoint and after resuming from a checkpoint).
-         */
-        unsigned int global_max_particles_per_cell;
-
-        /**
-         * This variable stores the next free particle index that is available
-         * globally in case new particles need to be generated.
-         */
-        types::particle_index next_free_particle_index;
 
         /**
          * This variable is set by the register_store_callback_function()
@@ -408,32 +375,6 @@ namespace aspect
          * whether this transport is happening.
          */
         bool update_ghost_particles;
-
-        /**
-         * Calculates the number of particles in the global model domain.
-         */
-        void
-        update_n_global_particles();
-
-        /**
-         * Calculates and stores the number of particles in the cell that
-         * contains the most particles in the global model (stored in the
-         * member variable global_max_particles_per_cell). This variable is a
-         * state variable, because it is needed to serialize and deserialize
-         * the particle data correctly in parallel (it determines the size of
-         * the data chunks per cell that are stored and read). Before accessing
-         * the variable this function has to be called, unless the state was
-         * read from another source (e.g. after resuming from a checkpoint).
-         */
-        void
-        update_global_max_particles_per_cell();
-
-        /**
-         * Calculates the next free particle index in the global model domain.
-         * This equals one plus the highest particle index currently active.
-         */
-        void
-        update_next_free_particle_index();
 
         /**
          * Get a map between subdomain id and the neighbor index. In other words
@@ -562,8 +503,8 @@ namespace aspect
     template <class Archive>
     void World<dim>::serialize (Archive &ar, const unsigned int)
     {
-      ar &global_max_particles_per_cell
-      &next_free_particle_index
+      ar
+      &particle_handler
       ;
     }
   }

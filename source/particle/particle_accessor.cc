@@ -144,6 +144,21 @@ namespace aspect
 
 
     template <int dim, int spacedim>
+    typename parallel::distributed::Triangulation<dim,spacedim>::cell_iterator
+    ParticleAccessor<dim,spacedim>::get_surrounding_cell (const parallel::distributed::Triangulation<dim,spacedim> &triangulation) const
+    {
+      Assert(particle != map->end(),
+             ExcInternalError());
+
+      const typename parallel::distributed::Triangulation<dim,spacedim>::cell_iterator cell (&triangulation,
+          particle->first.first,
+          particle->first.second);
+      return cell;
+    }
+
+
+
+    template <int dim, int spacedim>
     const ArrayView<double>
     ParticleAccessor<dim,spacedim>::get_properties ()
     {
@@ -161,6 +176,16 @@ namespace aspect
     {
       Assert (particle != map->end(),ExcInternalError());
       ++particle;
+    }
+
+
+
+    template <int dim, int spacedim>
+    void
+    ParticleAccessor<dim,spacedim>::decrease ()
+    {
+      Assert (particle != map->begin(),ExcInternalError());
+      --particle;
     }
 
 

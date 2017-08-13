@@ -319,6 +319,7 @@ namespace aspect
     void Particle<dim,spacedim>::serialize (Archive &ar, const unsigned int)
     {
       ar &location
+      & reference_location
       & id
       & properties
       ;

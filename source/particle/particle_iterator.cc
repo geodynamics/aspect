@@ -106,6 +106,28 @@ namespace aspect
 
       return tmp;
     }
+
+
+
+    template <int dim, int spacedim>
+    ParticleIterator<dim,spacedim> &
+    ParticleIterator<dim,spacedim>::operator--()
+    {
+      accessor.decrease();
+      return *this;
+    }
+
+
+
+    template <int dim, int spacedim>
+    ParticleIterator<dim,spacedim>
+    ParticleIterator<dim,spacedim>::operator--(int)
+    {
+      ParticleIterator tmp(*this);
+      operator-- ();
+
+      return tmp;
+    }
   }
 }
 

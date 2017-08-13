@@ -25,6 +25,7 @@
 #include <aspect/particle/particle.h>
 
 #include <deal.II/base/array_view.h>
+#include <deal.II/distributed/tria.h>
 
 namespace aspect
 {
@@ -33,6 +34,7 @@ namespace aspect
     using namespace dealii;
 
     template <int, int> class ParticleIterator;
+    template <int, int> class ParticleHandler;
 
     template<int dim, int spacedim=dim>
     class ParticleAccessor
@@ -135,6 +137,12 @@ namespace aspect
         get_properties () const;
 
         /**
+         * Get a cell iterator to the cell surrounding the current particle.
+         */
+        typename parallel::distributed::Triangulation<dim,spacedim>::cell_iterator
+        get_surrounding_cell (const parallel::distributed::Triangulation<dim,spacedim> &triangulation) const;
+
+        /**
          * Serialize the contents of this class.
          */
         template <class Archive>
@@ -144,6 +152,11 @@ namespace aspect
          * Advance the ParticleAccessor to the next particle.
          */
         void advance ();
+
+        /**
+         * Move the ParticleAccessor to the previous particle.
+         */
+        void decrease ();
 
         /**
          * Inequality operator.
@@ -181,6 +194,7 @@ namespace aspect
          * Make ParticleIterator a friend to allow it constructing ParticleAccessors.
          */
         template <int, int> friend class ParticleIterator;
+        template <int, int> friend class ParticleHandler;
     };
   }
 }

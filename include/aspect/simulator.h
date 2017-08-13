@@ -1298,7 +1298,6 @@ namespace aspect
        */
       TableHandler                        statistics;
 
-      Postprocess::Manager<dim>           postprocess_manager;
       mutable TimerOutput                 computing_timer;
 
       /**
@@ -1376,6 +1375,7 @@ namespace aspect
 
       MeshRefinement::Manager<dim>                              mesh_refinement_manager;
       HeatingModel::Manager<dim>                                heating_model_manager;
+      Postprocess::Manager<dim>                                 postprocess_manager;
 
       /**
        * Pointer to the Mapping object used by the finite elements when

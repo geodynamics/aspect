@@ -35,7 +35,7 @@ namespace aspect
      * of the particle class and the particle container.
      */
     template<int dim, int spacedim=dim>
-    class ParticleIterator
+    class ParticleIterator: public std::iterator<std::bidirectional_iterator_tag,ParticleAccessor<dim,spacedim> >
     {
       public:
         /**
@@ -92,6 +92,20 @@ namespace aspect
          * previously pointed to.
          */
         ParticleIterator operator ++ (int);
+
+        /**
+         * Prefix <tt>--</tt> operator: <tt>--iterator</tt>. This operator moves
+         * the iterator to the previous element and returns a reference to
+         * <tt>*this</tt>.
+         */
+        ParticleIterator &operator -- ();
+
+        /**
+         * Postfix <tt>--</tt> operator: <tt>iterator--</tt>. This operator moves
+         * the iterator to the previous element, but returns an iterator to the element
+         * previously pointed to.
+         */
+        ParticleIterator operator -- (int);
 
       private:
         /**
