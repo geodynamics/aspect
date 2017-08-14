@@ -682,7 +682,7 @@ namespace aspect
           if (cell->is_locally_owned())
             for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
               if (cell->at_boundary(f))
-                if(cell->face(f)->boundary_indicator() == CMB_id)
+                if(cell->face(f)->boundary_id() == CMB_id)
               {
                 fe_face_values.reinit (cell, f);
                 fe_face_values[this->introspection().extractors.temperature].get_function_gradients (this->get_solution(),
@@ -725,9 +725,9 @@ namespace aspect
                     const double alpha = out.thermal_expansion_coefficients[q];
                     const double cp = out.specific_heat[0];
                     const double gravity = this->get_gravity_model().gravity_vector(in.position[q]).norm();
-                    if(cell->face(f)->boundary_indicator()==0)
+                    if(cell->face(f)->boundary_id()==0)
                       adiabatic_flux = - alpha * gravity / cp;
-                    else if(cell->face(f)->boundary_indicator()==1)
+                    else if(cell->face(f)->boundary_id()==1)
                       adiabatic_flux = alpha * gravity / cp;
                   }
 
