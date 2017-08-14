@@ -1,0 +1,6 @@
+New: There is now a new cookbook that describes how to use melt 
+transport in a convection model. This change also includes a new
+postprocessor that visualizes the melt fraction material property 
+that is computed by some material models.
+<br>
+(Juliane Dannberg, 2017/08/14)

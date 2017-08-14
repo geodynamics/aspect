@@ -1,0 +1,12 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 4096 37507 16641 0 30 31 90 output-melt_fraction_postprocessor/solution/solution-00000 
