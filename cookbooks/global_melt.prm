@@ -30,8 +30,8 @@ set Number of cheap Stokes solver steps    = 100
 # of melt (and temperature) and the melting process itself. To do that, 
 # we use the operator splitting scheme, and define that for every 
 # advection time step, we want to do at least 50 reaction time step, 
-# and if these time steps would be larger than 100,000 years, we will do 
-# more reaction time steps. 
+# and in addition, we limit the maximum reaction time step size to 
+# 500,000 years. 
 set Use operator splitting                     = true
 subsection Solver parameters
   subsection Operator splitting parameters
@@ -67,6 +67,11 @@ end
 # velocity than the solid, and the system of equations will revert to the
 # usual Stokes equations. Only for porosity larger then the threshold, 
 # the two-phase flow equations apply. 
+# We set the threshold to zero, so the two-phase flow equations are solved 
+# everywhere in the domain. For the limit of the porosity going to zero, 
+# these equations revert to the Stokes equations, and setting the limit to
+# zero has the advantage that there is no sharp boundary between the 
+# region where melt is present and the regions where no melt is present.
 subsection Melt settings
   set Melt transport threshold                = 0.0
 end
@@ -74,10 +79,10 @@ end
 # In models with melt transport, we always need a compositional field with
 # the name 'porosity'. Only the field with that name will be advected with
 # the melt velocity, all other compositional fields will continue to work
-# as before. Material model will typically query for the field with the 
+# as before. Material models will typically query for the field with the 
 # name porosity to compute all melt material properties. 
-# In addition, the 'melt global' model also requires a field with the name
-# 'peridotite'. This field is used to track how much material has been 
+# In addition, the 'melt global' material model also requires a field with the
+# name 'peridotite'. This field is used to track how much material has been 
 # molten at each point of the model, so it tracks the information how the
 # composition of the rock changes due to partial melting events (sometimes
 # also called depletion). This is important, because usually less melt is
@@ -181,7 +186,7 @@ end
 # flow in and out of the model (even if the solid can not flow out) according to
 # the dynamic fluid pressure in the model. Conversely, if we choose the 
 # fluid pressure gradient = fluid density * gravity, melt will flow in or out
-# with the same velocity as the solid (so for a closer boundary, no melt will
+# with the same velocity as the solid (so for a closed boundary, no melt will
 # flow in or out). This is what we choose as our boundary condition here. 
 subsection Boundary fluid pressure model
   set Plugin name = density
@@ -261,9 +266,8 @@ subsection Material model
     # In dependence of how much melt is present, we also weaken the shear
     # viscosity: The more melt is present, the weaker the rock gets. 
     # This scaling is exponential, following the relation
-    # viscosity ~ exp(-alpha * DeltaT),
-    # where alpha is the parameter given here, and DeltaT is the deviation from the 
-    # reference temperature.  
+    # viscosity ~ exp(-alpha * phi),
+    # where alpha is the parameter given here, and phi is the porosity.  
     set Exponential melt weakening factor = 10
     
     # In the same way the shear viscosity is reduced with increasing temperature, 
@@ -325,7 +329,9 @@ subsection Mesh refinement
 end
 
 # As the model is compressible and has an adiabatic temperature profile, we include 
-# adiabatic heating in the list of heating models.   
+# adiabatic heating in the list of heating models. 
+# To make this model as simple as possible, we do not include shear heating (although
+# usually, adiabatic heating and shear heating should always be used together).  
 subsection Heating model
   set List of model names = adiabatic heating
 end 

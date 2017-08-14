@@ -144,7 +144,9 @@ subsection Mesh refinement
 end
 
 # As the model is compressible and has an adiabatic temperature profile, we include 
-# adiabatic heating in the list of heating models.   
+# adiabatic heating in the list of heating models. 
+# To make this model as simple as possible, we do not include shear heating (although
+# usually, adiabatic heating and shear heating should always be used together).   
 subsection Heating model
   set List of model names = adiabatic heating
 end 
