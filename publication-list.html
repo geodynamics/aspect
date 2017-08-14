@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script type="text/javascript">
 <!--
-// QuickSearch script for JabRef HTML export (no Abstract/BibTeX)
+// QuickSearch script for JabRef HTML export 
 // Version: 3.0
 //
 // Copyright (c) 2006-2011, Mark Schenk
@@ -23,6 +23,9 @@
 //
 
 // Search settings
+var searchAbstract = true;	// search in abstract
+var searchReview = true;	// search in review
+
 var noSquiggles = true; 	// ignore diacritics when searching
 var searchRegExp = false; 	// enable RegExp searches
 
@@ -63,10 +66,10 @@ function loadTableData() {
 	var allRows = searchTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
 	// split all rows into entryRows and infoRows (e.g. abstract, review, bibtex)
-	entryRows = new Array();
+	entryRows = new Array(); infoRows = new Array(); absRows = new Array(); revRows = new Array();
 
 	// get data from each row
-	entryRowsData = new Array();
+	entryRowsData = new Array(); absRowsData = new Array(); revRowsData = new Array(); 
 	
 	BibTeXKeys = new Array();
 	
@@ -76,10 +79,23 @@ function loadTableData() {
 			entryRowsData[j] = stripDiacritics(getTextContent(allRows[i]));
 			allRows[i].id ? BibTeXKeys[j] = allRows[i].id : allRows[i].id = 'autokey_'+j;
 			j ++;
+		} else {
+			infoRows[k++] = allRows[i];
+			// check for abstract/review
+			if (allRows[i].className.match(/abstract/)) {
+				absRows.push(allRows[i]);
+				absRowsData[j-1] = stripDiacritics(getTextContent(allRows[i]));
+			} else if (allRows[i].className.match(/review/)) {
+				revRows.push(allRows[i]);
+				revRowsData[j-1] = stripDiacritics(getTextContent(allRows[i]));
+			}
 		}
 	}
 	//number of entries and rows
 	numEntries = entryRows.length;
+	numInfo = infoRows.length;
+	numAbs = absRows.length;
+	numRev = revRows.length;
 }
 
 function quickSearch(){
@@ -99,6 +115,7 @@ function quickSearch(){
 		// only search for valid RegExp
 		try {
 			textRegExp = new RegExp(t,"i");
+			closeAllInfo();
 			qsfield.className = '';
 		}
 			catch(err) {
@@ -120,6 +137,13 @@ function quickSearch(){
 
 			if (entryRowsData[i].search(textRegExp) != -1 || BibTeXKeys[i].search(textRegExp) != -1){ 
 				found = true;
+			} else {
+				if(searchAbstract && absRowsData[i]!=undefined) {
+					if (absRowsData[i].search(textRegExp) != -1){ found=true; } 
+				}
+				if(searchReview && revRowsData[i]!=undefined) {
+					if (revRowsData[i].search(textRegExp) != -1){ found=true; } 
+				}
 			}
 			
 			if (found){
@@ -184,6 +208,48 @@ function escapeRegExp(str) {
   return str.replace(/[-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }
 
+function toggleInfo(articleid,info) {
+
+	var entry = document.getElementById(articleid);
+	var abs = document.getElementById('abs_'+articleid);
+	var rev = document.getElementById('rev_'+articleid);
+	var bib = document.getElementById('bib_'+articleid);
+	
+	if (abs && info == 'abstract') {
+		abs.className.indexOf('noshow') == -1?abs.className = 'abstract noshow':abs.className = 'abstract show';
+	} else if (rev && info == 'review') {
+		rev.className.indexOf('noshow') == -1?rev.className = 'review noshow':rev.className = 'review show';
+	} else if (bib && info == 'bibtex') {
+		bib.className.indexOf('noshow') == -1?bib.className = 'bibtex noshow':bib.className = 'bibtex show';
+	} else { 
+		return;
+	}
+
+	// check if one or the other is available
+	var revshow; var absshow; var bibshow;
+	(abs && abs.className.indexOf('noshow') == -1)? absshow = true: absshow = false;
+	(rev && rev.className.indexOf('noshow') == -1)? revshow = true: revshow = false;	
+	(bib && bib.className.indexOf('noshow') == -1)? bibshow = true: bibshow = false;
+	
+	// highlight original entry
+	if(entry) {
+		if (revshow || absshow || bibshow) {
+		entry.className = 'entry highlight show';
+		} else {
+		entry.className = 'entry show';
+		}
+	}
+	
+	// When there's a combination of abstract/review/bibtex showing, need to add class for correct styling
+	if(absshow) {
+		(revshow||bibshow)?abs.className = 'abstract nextshow':abs.className = 'abstract';
+	} 
+	if (revshow) {
+		bibshow?rev.className = 'review nextshow': rev.className = 'review';
+	}	
+	
+}
+
 function setStatistics (hits) {
 	if(hits < 0) { hits=numEntries; }
 	if(stats) { stats.firstChild.data = hits + '/' + numEntries}
@@ -206,7 +272,16 @@ function getTextContent(node) {
 }
 
 function showAll(){
+	closeAllInfo();
 	for (var i = 0; i < numEntries; i++){ entryRows[i].className = 'entry show'; }
+}
+
+function closeAllInfo(){
+	for (var i=0; i < numInfo; i++){
+		if (infoRows[i].className.indexOf('noshow') ==-1) {
+			infoRows[i].className = infoRows[i].className + ' noshow';
+		}
+	}
 }
 
 function clearQS() {
@@ -225,6 +300,14 @@ function updateSetting(obj){
 
 	switch(option)
 	 {
+	 case "opt_searchAbs":
+	   searchAbstract=!searchAbstract;
+	   redoQS();
+	   break;
+	 case "opt_searchRev":
+	   searchReview=!searchReview;
+	   redoQS();
+	   break;
 	 case "opt_useRegExp":
 	   searchRegExp=!searchRegExp;
 	   redoQS();
@@ -238,8 +321,13 @@ function updateSetting(obj){
 }
 
 function initPreferences(){
+	if(searchAbstract){document.getElementById("opt_searchAbs").checked = true;}
+	if(searchReview){document.getElementById("opt_searchRev").checked = true;}
 	if(noSquiggles){document.getElementById("opt_noAccents").checked = true;}
 	if(searchRegExp){document.getElementById("opt_useRegExp").checked = true;}
+	
+	if(numAbs==0) {document.getElementById("opt_searchAbs").parentNode.style.display = 'none';}
+	if(numRev==0) {document.getElementById("opt_searchRev").parentNode.style.display = 'none';}	
 }
 
 function toggleSettings(){
@@ -260,7 +348,7 @@ function toggleSettings(){
 -->
 </script>
 <style type="text/css">
-body { background-color: white; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.2; padding: 1em; color: #2E2E2E; margin: auto 2em; }
+body { background-color: white; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.2; padding: 1em; color: #2E2E2E; width: 50em; margin: auto auto; }
 
 form#quicksearch { width: auto; border-style: solid; border-color: gray; border-width: 1px 0px; padding: 0.7em 0.5em; display:none; position:relative; }
 span#searchstat {padding-left: 1em;}
@@ -279,10 +367,8 @@ div#settings.hidden {display:none;}
 .invalidsearch { background-color: red; }
 input[type="button"] { background-color: #efefef; border: 1px #2E2E2E solid;}
 
-table { width: 100%; empty-cells: show; border-spacing: 0em 0.2em; margin: 1em 0em; border-style: none; }
-th, td { border: 1px gray solid; border-width: 1px 1px; padding: 0.5em; vertical-align: top; text-align: left; }
-th { background-color: #efefef; }
-td + td, th + th { border-left: none; }
+table { border: 1px gray none; width: 100%; empty-cells: show; border-spacing: 0em 0.1em; margin: 1em 0em; }
+th, td { border: none; padding: 0.5em; vertical-align: top; text-align: justify; }
 
 td a { color: navy; text-decoration: none; }
 td a:hover  { text-decoration: underline; }
@@ -290,7 +376,7 @@ td a:hover  { text-decoration: underline; }
 tr.noshow { display: none;}
 tr.highlight td { background-color: #EFEFEF; border-top: 2px #2E2E2E solid; font-weight: bold; }
 tr.abstract td, tr.review td, tr.bibtex td { background-color: #EFEFEF; text-align: justify; border-bottom: 2px #2E2E2E solid; }
-tr.nextshow td { border-bottom: 1px gray solid; }
+tr.nextshow td { border-bottom-style: none; }
 
 tr.bibtex pre { width: 100%; overflow: auto; white-space: pre-wrap;}
 p.infolinks { margin: 0.3em 0em 0em 0em; padding: 0px; }
@@ -309,196 +395,420 @@ p.infolinks { margin: 0.3em 0em 0em 0em; padding: 0px; }
 <div id="showsettings" onclick="toggleSettings()">settings...</div>
 <div id="settings" class="hidden">
 <ul>
+<li><input type="checkbox" class="search_setting" id="opt_searchAbs" onchange="updateSetting(this)"><label for="opt_searchAbs"> include abstract</label></li>
+<li><input type="checkbox" class="search_setting" id="opt_searchRev" onchange="updateSetting(this)"><label for="opt_searchRev"> include review</label></li>
 <li><input type="checkbox" class="search_setting" id="opt_useRegExp" onchange="updateSetting(this)"><label for="opt_useRegExp"> use RegExp</label></li>
 <li><input type="checkbox" class="search_setting" id="opt_noAccents" onchange="updateSetting(this)"><label for="opt_noAccents"> ignore accents</label></li>
 </ul>
 </div>
 </form>
 <table id="qs_table" border="1">
-<thead><tr><th width="20%">Author</th><th width="30%">Title</th><th width="5%">Year</th><th width="30%">Journal/Proceedings</th><th width="10%">Reftype</th><th width="5%">DOI/URL</th></tr></thead>
-<tbody><tr id="Austermann2017" class="entry">
-	<td>Austermann, J., Mitrovica, J.X., Huybers, P. and Rovere, A.</td>
-	<td>Detection of a dynamic topography signal in last interglacial sea-level records</td>
-	<td>2017</td>
-	<td>Science Advances<br/>Vol. 3(7), pp. e1700457&nbsp;</td>
-	<td>article</td>
-	<td><a href="http://dx.doi.org/10.1126/sciadv.1700457">DOI</a> <a href="http://advances.sciencemag.org/lookup/doi/10.1126/sciadv.1700457">URL</a>&nbsp;</td>
+<tbody>
+<tr id="Austermann2017" class="entry">
+	<td>Austermann J, Mitrovica JX, Huybers P and Rovere A (2017), <i>"Detection of a dynamic topography signal in last interglacial sea-level records"</i>, Science Advances., jul, 2017.  Vol. 3(7), pp. e1700457.
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Austermann2017','bibtex')">BibTeX</a>] [<a href="http://dx.doi.org/10.1126/sciadv.1700457" target="_blank">DOI</a>] [<a href="http://advances.sciencemag.org/lookup/doi/10.1126/sciadv.1700457" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Austermann2017" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Austermann2017,
+  author = {Austermann, Jacqueline and Mitrovica, Jerry X. and Huybers, Peter and Rovere, Alessio},
+  title = {Detection of a dynamic topography signal in last interglacial sea-level records},
+  journal = {Science Advances},
+  year = {2017},
+  volume = {3},
+  number = {7},
+  pages = {e1700457},
+  url = {http://advances.sciencemag.org/lookup/doi/10.1126/sciadv.1700457},
+  doi = {10.1126/sciadv.1700457}
+}
+</pre></td>
 </tr>
 <tr id="Austermann2015" class="entry">
-	<td>Austermann, J., Pollard, D., Mitrovica, J.X., Moucha, R., Forte, A.M., DeConto, R.M., Rowley, D.B. and Raymo, M.E.</td>
-	<td>The impact of dynamic topography change on Antarctic ice sheet stability during the mid-Pliocene warm period</td>
-	<td>2015</td>
-	<td>Geology<br/>Vol. 43(10), pp. 927-930&nbsp;</td>
-	<td>article</td>
-	<td><a href="http://dx.doi.org/10.1130/G36988.1">DOI</a> <a href="https://pubs.geoscienceworld.org/geology/article/43/10/927-930/131756">URL</a>&nbsp;</td>
+	<td>Austermann J, Pollard D, Mitrovica JX, Moucha R, Forte AM, DeConto RM, Rowley DB and Raymo ME (2015), <i>"The impact of dynamic topography change on Antarctic ice sheet stability during the mid-Pliocene warm period"</i>, Geology., oct, 2015.  Vol. 43(10), pp. 927-930.
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Austermann2015','bibtex')">BibTeX</a>] [<a href="http://dx.doi.org/10.1130/G36988.1" target="_blank">DOI</a>] [<a href="https://pubs.geoscienceworld.org/geology/article/43/10/927-930/131756" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Austermann2015" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Austermann2015,
+  author = {Austermann, Jacqueline and Pollard, David and Mitrovica, Jerry X. and Moucha, Robert and Forte, Alessandro M. and DeConto, Robert M. and Rowley, David B. and Raymo, Maureen E.},
+  title = {The impact of dynamic topography change on Antarctic ice sheet stability during the mid-Pliocene warm period},
+  journal = {Geology},
+  year = {2015},
+  volume = {43},
+  number = {10},
+  pages = {927--930},
+  url = {https://pubs.geoscienceworld.org/geology/article/43/10/927-930/131756},
+  doi = {10.1130/G36988.1}
+}
+</pre></td>
 </tr>
 <tr id="Bangerth2017" class="entry">
-	<td>Bangerth, W., Dannberg, J., Gassmoeller, R., Heister, T. and Others</td>
-	<td>Aspect V1.5.0</td>
-	<td>2017</td>
-	<td>&nbsp;</td>
-	<td>article</td>
-	<td><a href="http://dx.doi.org/10.5281/ZENODO.344623">DOI</a> &nbsp;</td>
+	<td>Bangerth W, Dannberg J, Gassmoeller R, Heister T and Others (2017), <i>"Aspect V1.5.0"</i>, jan, 2017. 
+	<p class="infolinks">[<a href="javascript:toggleInfo('Bangerth2017','abstract')">Abstract</a>] [<a href="javascript:toggleInfo('Bangerth2017','bibtex')">BibTeX</a>] [<a href="http://dx.doi.org/10.5281/ZENODO.344623" target="_blank">DOI</a>]</p>
+	</td>
+</tr>
+<tr id="abs_Bangerth2017" class="abstract noshow">
+	<td><b>Abstract</b>: This release includes the following changes:<p>New: Choice between different formulations for the governing equations including Boussinesq and anelastic liquid approximation. New: Melt transport (two-phase flow). Particles: new generators, ghost exchange, performance improvements, interpolation to fields. New: Nondimensional material model for incompressible (using the Boussinesq approximation) and compressible computations (with ALA or TALA) for nondimensionalized problems. This can be used for benchmark problems like Blankenbach, King, etc.. New: Optional DG method for temperature/composition. Adiabatic conditions: rework, now includes a reference density profile Free surface: overhaul. New cookbooks: continental extension, finite strain. New benchmarks: TanGurnis, Blankenbach, King. New: viscoplastic material model. Material model interface cleanup. Assembly performance improvements. New: memory statistics postprocessor. New: initial topography plugins. Many other fixes and small improvements.<br></td>
+</tr>
+<tr id="bib_Bangerth2017" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Bangerth2017,
+  author = {Bangerth, Wolfgang and Dannberg, Juliane and Gassmoeller, Rene and Heister, Timo and Others},
+  title = {Aspect V1.5.0},
+  year = {2017},
+  doi = {10.5281/ZENODO.344623}
+}
+</pre></td>
 </tr>
 <tr id="Bangerth2017a" class="entry">
-	<td>Bangerth, W., Dannberg, J., Gassmoeller, R., Heister, T. and Others</td>
-	<td>ASPECT: Advanced Solver for Problems in Earth's ConvecTion, User Manual</td>
-	<td>2017</td>
-	<td>&nbsp;</td>
-	<td>article</td>
-	<td><a href="http://dx.doi.org/10.6084/M9.FIGSHARE.4865333">DOI</a> &nbsp;</td>
+	<td>Bangerth W, Dannberg J, Gassmoeller R, Heister T and Others (2017), <i>"ASPECT: Advanced Solver for Problems in Earth's ConvecTion, User Manual"</i>, jan, 2017. 
+	<p class="infolinks">[<a href="javascript:toggleInfo('Bangerth2017a','abstract')">Abstract</a>] [<a href="javascript:toggleInfo('Bangerth2017a','bibtex')">BibTeX</a>] [<a href="http://dx.doi.org/10.6084/M9.FIGSHARE.4865333" target="_blank">DOI</a>]</p>
+	</td>
+</tr>
+<tr id="abs_Bangerth2017a" class="abstract noshow">
+	<td><b>Abstract</b>: This is the manual of the ASPECT mantle convection code</td>
+</tr>
+<tr id="bib_Bangerth2017a" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Bangerth2017a,
+  author = {Bangerth, Wolfgang and Dannberg, Juliane and Gassmoeller, Rene and Heister, Timo and Others},
+  title = {ASPECT: Advanced Solver for Problems in Earth's ConvecTion, User Manual},
+  year = {2017},
+  doi = {10.6084/M9.FIGSHARE.4865333}
+}
+</pre></td>
 </tr>
 <tr id="Blom2016" class="entry">
-	<td>Blom, C.</td>
-	<td>State of the art numerical subduction modelling with ASPECT; thermo-mechanically coupled viscoplastic compressible rheology, free surface, phase changes, latent</td>
-	<td>2016</td>
-	<td>&nbsp;</td>
-	<td>article</td>
-	<td><a href="https://dspace.library.uu.nl/handle/1874/348133">URL</a>&nbsp;</td>
+	<td>Blom C (2016), <i>"State of the art numerical subduction modelling with ASPECT; thermo-mechanically coupled viscoplastic compressible rheology, free surface, phase changes, latent"</i> 
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Blom2016','bibtex')">BibTeX</a>] [<a href="https://dspace.library.uu.nl/handle/1874/348133" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Blom2016" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Blom2016,
+  author = {Blom, CAH},
+  title = {State of the art numerical subduction modelling with ASPECT; thermo-mechanically coupled viscoplastic compressible rheology, free surface, phase changes, latent},
+  year = {2016},
+  url = {https://dspace.library.uu.nl/handle/1874/348133}
+}
+</pre></td>
 </tr>
 <tr id="Bredow2017" class="entry">
-	<td>Bredow, E., Steinberger, B., Gassm&ouml;ller, R. and Dannberg, J.</td>
-	<td>How plume-ridge interaction shapes the crustal thickness pattern of the R&eacute;union hotspot track</td>
-	<td>2017</td>
-	<td>Geochemistry, Geophysics, Geosystems&nbsp;</td>
-	<td>article</td>
-	<td><a href="http://dx.doi.org/10.1002/2017GC006875">DOI</a> <a href="http://doi.wiley.com/10.1002/2017GC006875">URL</a>&nbsp;</td>
+	<td>Bredow E, Steinberger B, Gassm&ouml;ller R and Dannberg J (2017), <i>"How plume-ridge interaction shapes the crustal thickness pattern of the R&eacute;union hotspot track"</i>, Geochemistry, Geophysics, Geosystems., aug, 2017. 
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Bredow2017','bibtex')">BibTeX</a>] [<a href="http://dx.doi.org/10.1002/2017GC006875" target="_blank">DOI</a>] [<a href="http://doi.wiley.com/10.1002/2017GC006875" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Bredow2017" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Bredow2017,
+  author = {Bredow, Eva and Steinberger, Bernhard and Gassm&ouml;ller, Rene and Dannberg, Juliane},
+  title = {How plume-ridge interaction shapes the crustal thickness pattern of the R&eacute;union hotspot track},
+  journal = {Geochemistry, Geophysics, Geosystems},
+  year = {2017},
+  url = {http://doi.wiley.com/10.1002/2017GC006875},
+  doi = {10.1002/2017GC006875}
+}
+</pre></td>
 </tr>
 <tr id="Cox2017" class="entry">
-	<td>Cox, S.</td>
-	<td>Adaptive large-scale mantle convection simulations</td>
-	<td>2017</td>
-	<td>&nbsp;</td>
-	<td>article</td>
-	<td><a href="http://ethos.bl.uk/OrderDetails.do?uin=uk.bl.ethos.713350">URL</a>&nbsp;</td>
+	<td>Cox S (2017), <i>"Adaptive large-scale mantle convection simulations"</i> 
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Cox2017','bibtex')">BibTeX</a>] [<a href="http://ethos.bl.uk/OrderDetails.do?uin=uk.bl.ethos.713350" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Cox2017" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Cox2017,
+  author = {Cox, SP},
+  title = {Adaptive large-scale mantle convection simulations},
+  year = {2017},
+  url = {http://ethos.bl.uk/OrderDetails.do?uin=uk.bl.ethos.713350}
+}
+</pre></td>
 </tr>
 <tr id="Dannberg2016a" class="entry">
-	<td>Dannberg, J.</td>
-	<td>Dynamics of Mantle Plumes: Linking Scales and Coupling Physics</td>
-	<td>2016</td>
-	<td>&nbsp;</td>
-	<td>article</td>
-	<td><a href="https://scholar.google.com/scholar?q=dannberg+Dynamics+of+mantle+plumes{\%}3A+Linking+scales+and+coupling+physics{\&}btnG={\&}hl=en{\&}as{\_}sdt=0{\%}2C6">URL</a>&nbsp;</td>
+	<td>Dannberg J (2016), <i>"Dynamics of Mantle Plumes: Linking Scales and Coupling Physics"</i> 
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Dannberg2016a','bibtex')">BibTeX</a>] [<a href="https://scholar.google.com/scholar?q=dannberg+Dynamics+of+mantle+plumes{\%}3A+Linking+scales+and+coupling+physics{\&}btnG={\&}hl=en{\&}as{\_}sdt=0{\%}2C6" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Dannberg2016a" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Dannberg2016a,
+  author = {Dannberg, J},
+  title = {Dynamics of Mantle Plumes: Linking Scales and Coupling Physics},
+  year = {2016},
+  url = {https://scholar.google.com/scholar?q=dannberg+Dynamics+of+mantle+plumes%3A+Linking+scales+and+coupling+physics&amp;btnG=&amp;hl=en&amp;assdt=0%2C6}
+}
+</pre></td>
 </tr>
 <tr id="Dannberg2017" class="entry">
-	<td>Dannberg, J., Eilon, Z., Faul, U., Gassm&ouml;ller, R., Moulik, P. and Myhill, R.</td>
-	<td>The importance of grain size to mantle dynamics and seismological observations</td>
-	<td>2017</td>
-	<td>Geochemistry, Geophysics, Geosystems&nbsp;</td>
-	<td>article</td>
-	<td><a href="http://dx.doi.org/10.1002/2017GC006944">DOI</a> <a href="http://doi.wiley.com/10.1002/2017GC006944">URL</a>&nbsp;</td>
+	<td>Dannberg J, Eilon Z, Faul U, Gassm&ouml;ller R, Moulik P and Myhill R (2017), <i>"The importance of grain size to mantle dynamics and seismological observations"</i>, Geochemistry, Geophysics, Geosystems., aug, 2017. 
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Dannberg2017','bibtex')">BibTeX</a>] [<a href="http://dx.doi.org/10.1002/2017GC006944" target="_blank">DOI</a>] [<a href="http://doi.wiley.com/10.1002/2017GC006944" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Dannberg2017" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Dannberg2017,
+  author = {Dannberg, J. and Eilon, Z. and Faul, Ulrich and Gassm&ouml;ller, Rene and Moulik, Pritwiraj and Myhill, Robert},
+  title = {The importance of grain size to mantle dynamics and seismological observations},
+  journal = {Geochemistry, Geophysics, Geosystems},
+  year = {2017},
+  url = {http://doi.wiley.com/10.1002/2017GC006944},
+  doi = {10.1002/2017GC006944}
+}
+</pre></td>
 </tr>
 <tr id="Dannberg2016" class="entry">
-	<td>Dannberg, J. and Heister, T.</td>
-	<td>Compressible magma/mantle dynamics: 3-D, adaptive simulations in ASPECT</td>
-	<td>2016</td>
-	<td>Geophysical Journal International<br/>Vol. 207(3), pp. 1343-1366&nbsp;</td>
-	<td>article</td>
-	<td><a href="http://dx.doi.org/10.1093/gji/ggw329">DOI</a> <a href="https://academic.oup.com/gji/article-lookup/doi/10.1093/gji/ggw329">URL</a>&nbsp;</td>
+	<td>Dannberg J and Heister T (2016), <i>"Compressible magma/mantle dynamics: 3-D, adaptive simulations in ASPECT"</i>, Geophysical Journal International., dec, 2016.  Vol. 207(3), pp. 1343-1366.
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Dannberg2016','bibtex')">BibTeX</a>] [<a href="http://dx.doi.org/10.1093/gji/ggw329" target="_blank">DOI</a>] [<a href="https://academic.oup.com/gji/article-lookup/doi/10.1093/gji/ggw329" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Dannberg2016" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Dannberg2016,
+  author = {Dannberg, Juliane and Heister, Timo},
+  title = {Compressible magma/mantle dynamics: 3-D, adaptive simulations in ASPECT},
+  journal = {Geophysical Journal International},
+  year = {2016},
+  volume = {207},
+  number = {3},
+  pages = {1343--1366},
+  url = {https://academic.oup.com/gji/article-lookup/doi/10.1093/gji/ggw329},
+  doi = {10.1093/gji/ggw329}
+}
+</pre></td>
 </tr>
 <tr id="Fraters2014" class="entry">
-	<td>Fraters, M.</td>
-	<td>Thermo-mechanically coupled subductionmodelling with ASPECT.</td>
-	<td>2014</td>
-	<td>&nbsp;</td>
-	<td>article</td>
-	<td><a href="https://dspace.library.uu.nl/handle/1874/297347">URL</a>&nbsp;</td>
+	<td>Fraters M (2014), <i>"Thermo-mechanically coupled subductionmodelling with ASPECT."</i> 
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Fraters2014','bibtex')">BibTeX</a>] [<a href="https://dspace.library.uu.nl/handle/1874/297347" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Fraters2014" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Fraters2014,
+  author = {Fraters, MRT},
+  title = {Thermo-mechanically coupled subductionmodelling with ASPECT.},
+  year = {2014},
+  url = {https://dspace.library.uu.nl/handle/1874/297347}
+}
+</pre></td>
 </tr>
 <tr id="Gassmoller2016a" class="entry">
-	<td>Gassm&ouml;ller, R., Dannberg, J., Bredow, E., Steinberger, B. and Torsvik, T.H.</td>
-	<td>Major influence of plume-ridge interaction, lithosphere thickness variations, and global mantle flow on hotspot volcanism-The example of Tristan</td>
-	<td>2016</td>
-	<td>Geochemistry, Geophysics, Geosystems<br/>Vol. 17(4), pp. 1454-1479&nbsp;</td>
-	<td>article</td>
-	<td><a href="http://dx.doi.org/10.1002/2015GC006177">DOI</a> <a href="http://doi.wiley.com/10.1002/2015GC006177">URL</a>&nbsp;</td>
+	<td>Gassm&ouml;ller R, Dannberg J, Bredow E, Steinberger B and Torsvik TH (2016), <i>"Major influence of plume-ridge interaction, lithosphere thickness variations, and global mantle flow on hotspot volcanism-The example of Tristan"</i>, Geochemistry, Geophysics, Geosystems., apr, 2016.  Vol. 17(4), pp. 1454-1479.
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Gassmoller2016a','bibtex')">BibTeX</a>] [<a href="http://dx.doi.org/10.1002/2015GC006177" target="_blank">DOI</a>] [<a href="http://doi.wiley.com/10.1002/2015GC006177" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Gassmoller2016a" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Gassmoller2016a,
+  author = {Gassm&ouml;ller, Rene and Dannberg, Juliane and Bredow, Eva and Steinberger, Bernhard and Torsvik, Trond H.},
+  title = {Major influence of plume-ridge interaction, lithosphere thickness variations, and global mantle flow on hotspot volcanism-The example of Tristan},
+  journal = {Geochemistry, Geophysics, Geosystems},
+  year = {2016},
+  volume = {17},
+  number = {4},
+  pages = {1454--1479},
+  url = {http://doi.wiley.com/10.1002/2015GC006177},
+  doi = {10.1002/2015GC006177}
+}
+</pre></td>
 </tr>
 <tr id="Gassmoller2016" class="entry">
-	<td>Gassm&ouml;ller, R., Heien, E. and Puckett, E.</td>
-	<td>Flexible and scalable particle-in-cell methods for massively parallel computations</td>
-	<td>2016</td>
-	<td>arXiv preprint arXiv:&nbsp;</td>
-	<td>article</td>
-	<td><a href="https://arxiv.org/abs/1612.03369">URL</a>&nbsp;</td>
+	<td>Gassm&ouml;ller R, Heien E and Puckett E (2016), <i>"Flexible and scalable particle-in-cell methods for massively parallel computations"</i>, arXiv preprint arXiv:. 
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Gassmoller2016','bibtex')">BibTeX</a>] [<a href="https://arxiv.org/abs/1612.03369" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Gassmoller2016" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Gassmoller2016,
+  author = {Gassm&ouml;ller, R and Heien, E and Puckett, EG},
+  title = {Flexible and scalable particle-in-cell methods for massively parallel computations},
+  journal = {arXiv preprint arXiv:},
+  year = {2016},
+  url = {https://arxiv.org/abs/1612.03369}
+}
+</pre></td>
 </tr>
 <tr id="Glerum2017" class="entry">
-	<td>Glerum, A., Thieulot, C., Fraters, M., Blom, C. and Spakman, W.</td>
-	<td>Implementing nonlinear viscoplasticity in ASPECT: benchmarking and applications to 3D subduction modeling</td>
-	<td>2017</td>
-	<td>submitted&nbsp;</td>
-	<td>article</td>
-	<td>&nbsp;</td>
+	<td>Glerum A, Thieulot C, Fraters M, Blom C and Spakman W (2017), <i>"Implementing nonlinear viscoplasticity in ASPECT: benchmarking and applications to 3D subduction modeling"</i>, submitted. 
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Glerum2017','bibtex')">BibTeX</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Glerum2017" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Glerum2017,
+  author = {Glerum, A. and Thieulot, C. and Fraters, M. and Blom, C. and Spakman, W.},
+  title = {Implementing nonlinear viscoplasticity in ASPECT: benchmarking and applications to 3D subduction modeling},
+  journal = {submitted},
+  year = {2017}
+}
+</pre></td>
 </tr>
 <tr id="He2017" class="entry">
-	<td>He, Y., Puckett, E. and Billen, M.</td>
-	<td>A discontinuous Galerkin method with a bound preserving limiter for the advection of non-diffusive fields in solid Earth geodynamics</td>
-	<td>2017</td>
-	<td>Physics of the Earth and Planetary Interiors&nbsp;</td>
-	<td>article</td>
-	<td><a href="http://www.sciencedirect.com/science/article/pii/S0031920116300747">URL</a>&nbsp;</td>
+	<td>He Y, Puckett E and Billen M (2017), <i>"A discontinuous Galerkin method with a bound preserving limiter for the advection of non-diffusive fields in solid Earth geodynamics"</i>, Physics of the Earth and Planetary Interiors. 
+	<p class="infolinks"> [<a href="javascript:toggleInfo('He2017','bibtex')">BibTeX</a>] [<a href="http://www.sciencedirect.com/science/article/pii/S0031920116300747" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_He2017" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{He2017,
+  author = {He, Y and Puckett, EG and Billen, MI},
+  title = {A discontinuous Galerkin method with a bound preserving limiter for the advection of non-diffusive fields in solid Earth geodynamics},
+  journal = {Physics of the Earth and Planetary Interiors},
+  year = {2017},
+  url = {http://www.sciencedirect.com/science/article/pii/S0031920116300747}
+}
+</pre></td>
 </tr>
 <tr id="Heister2017" class="entry">
-	<td>Heister, T., Dannberg, J., Gassm&ouml;ller, R. and Bangerth, W.</td>
-	<td>High accuracy mantle convection simulation through modern numerical methods – II: realistic models and problems</td>
-	<td>2017</td>
-	<td>Geophysical Journal International<br/>Vol. 210(2), pp. 833-851&nbsp;</td>
-	<td>article</td>
-	<td><a href="http://dx.doi.org/10.1093/gji/ggx195">DOI</a> <a href="https://academic.oup.com/gji/article-lookup/doi/10.1093/gji/ggx195">URL</a>&nbsp;</td>
+	<td>Heister T, Dannberg J, Gassm&ouml;ller R and Bangerth W (2017), <i>"High accuracy mantle convection simulation through modern numerical methods – II: realistic models and problems"</i>, Geophysical Journal International., aug, 2017.  Vol. 210(2), pp. 833-851.
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Heister2017','bibtex')">BibTeX</a>] [<a href="http://dx.doi.org/10.1093/gji/ggx195" target="_blank">DOI</a>] [<a href="https://academic.oup.com/gji/article-lookup/doi/10.1093/gji/ggx195" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Heister2017" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Heister2017,
+  author = {Heister, Timo and Dannberg, Juliane and Gassm&ouml;ller, Rene and Bangerth, Wolfgang},
+  title = {High accuracy mantle convection simulation through modern numerical methods – II: realistic models and problems},
+  journal = {Geophysical Journal International},
+  year = {2017},
+  volume = {210},
+  number = {2},
+  pages = {833--851},
+  url = {https://academic.oup.com/gji/article-lookup/doi/10.1093/gji/ggx195},
+  doi = {10.1093/gji/ggx195}
+}
+</pre></td>
 </tr>
 <tr id="Rose2016" class="entry">
-	<td>Rose, I.</td>
-	<td>True polar wander on convecting planets</td>
-	<td>2016</td>
-	<td>&nbsp;</td>
-	<td>article</td>
-	<td><a href="http://search.proquest.com/openview/568c88d99c60e9313f66f19aa54e764c/1?pq-origsite=gscholar{\&}cbl=18750{\&}diss=y">URL</a>&nbsp;</td>
+	<td>Rose I (2016), <i>"True polar wander on convecting planets"</i> 
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Rose2016','bibtex')">BibTeX</a>] [<a href="http://search.proquest.com/openview/568c88d99c60e9313f66f19aa54e764c/1?pq-origsite=gscholar{\&}cbl=18750{\&}diss=y" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Rose2016" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Rose2016,
+  author = {Rose, IR},
+  title = {True polar wander on convecting planets},
+  year = {2016},
+  url = {http://search.proquest.com/openview/568c88d99c60e9313f66f19aa54e764c/1?pq-origsite=gscholar&amp;cbl=18750&amp;diss=y}
+}
+</pre></td>
 </tr>
 <tr id="Rose2017" class="entry">
-	<td>Rose, I., Buffett, B. and Heister, T.</td>
-	<td>Stability and accuracy of free surface time integration in viscous flows</td>
-	<td>2017</td>
-	<td>Physics of the Earth and Planetary Interiors<br/>Vol. 262, pp. 90-100&nbsp;</td>
-	<td>article</td>
-	<td><a href="http://dx.doi.org/10.1016/j.pepi.2016.11.007">DOI</a> <a href="http://linkinghub.elsevier.com/retrieve/pii/S0031920116300954">URL</a>&nbsp;</td>
+	<td>Rose I, Buffett B and Heister T (2017), <i>"Stability and accuracy of free surface time integration in viscous flows"</i>, Physics of the Earth and Planetary Interiors., jan, 2017.  Vol. 262, pp. 90-100.
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Rose2017','bibtex')">BibTeX</a>] [<a href="http://dx.doi.org/10.1016/j.pepi.2016.11.007" target="_blank">DOI</a>] [<a href="http://linkinghub.elsevier.com/retrieve/pii/S0031920116300954" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Rose2017" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Rose2017,
+  author = {Rose, Ian and Buffett, Bruce and Heister, Timo},
+  title = {Stability and accuracy of free surface time integration in viscous flows},
+  journal = {Physics of the Earth and Planetary Interiors},
+  year = {2017},
+  volume = {262},
+  pages = {90--100},
+  url = {http://linkinghub.elsevier.com/retrieve/pii/S0031920116300954},
+  doi = {10.1016/j.pepi.2016.11.007}
+}
+</pre></td>
 </tr>
 <tr id="Takeyama2017" class="entry">
-	<td>Takeyama, K., Saitoh, T. and Makino, J.</td>
-	<td>Variable inertia method: A novel numerical method for mantle convection simulation</td>
-	<td>2017</td>
-	<td>New Astronomy&nbsp;</td>
-	<td>article</td>
-	<td><a href="http://www.sciencedirect.com/science/article/pii/S138410761630046X">URL</a>&nbsp;</td>
+	<td>Takeyama K, Saitoh T and Makino J (2017), <i>"Variable inertia method: A novel numerical method for mantle convection simulation"</i>, New Astronomy. 
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Takeyama2017','bibtex')">BibTeX</a>] [<a href="http://www.sciencedirect.com/science/article/pii/S138410761630046X" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Takeyama2017" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Takeyama2017,
+  author = {Takeyama, K and Saitoh, TR and Makino, J},
+  title = {Variable inertia method: A novel numerical method for mantle convection simulation},
+  journal = {New Astronomy},
+  year = {2017},
+  url = {http://www.sciencedirect.com/science/article/pii/S138410761630046X}
+}
+</pre></td>
 </tr>
 <tr id="Tosi2015" class="entry">
-	<td>Tosi, N., Stein, C., Noack, L., H&uuml;ttig, C., Maierov&aacute;, P., Samuel, H., Davies, D.R., Wilson, C.R., Kramer, S.C., Thieulot, C., Glerum, A., Fraters, M., Spakman, W., Rozel, A. and Tackley, P.J.</td>
-	<td>A community benchmark for viscoplastic thermal convection in a 2-D square box</td>
-	<td>2015</td>
-	<td>Geochemistry, Geophysics, Geosystems<br/>Vol. 16(7), pp. 2175-2196&nbsp;</td>
-	<td>article</td>
-	<td><a href="http://dx.doi.org/10.1002/2015GC005807">DOI</a> <a href="http://doi.wiley.com/10.1002/2015GC005807">URL</a>&nbsp;</td>
+	<td>Tosi N, Stein C, Noack L, H&uuml;ttig C, Maierov&aacute; P, Samuel H, Davies DR, Wilson CR, Kramer SC, Thieulot C, Glerum A, Fraters M, Spakman W, Rozel A and Tackley PJ (2015), <i>"A community benchmark for viscoplastic thermal convection in a 2-D square box"</i>, Geochemistry, Geophysics, Geosystems., jul, 2015.  Vol. 16(7), pp. 2175-2196.
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Tosi2015','bibtex')">BibTeX</a>] [<a href="http://dx.doi.org/10.1002/2015GC005807" target="_blank">DOI</a>] [<a href="http://doi.wiley.com/10.1002/2015GC005807" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Tosi2015" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Tosi2015,
+  author = {Tosi, N. and Stein, C. and Noack, L. and H&uuml;ttig, C. and Maierov&aacute;, P. and Samuel, H. and Davies, D. R. and Wilson, C. R. and Kramer, S. C. and Thieulot, C. and Glerum, A. and Fraters, M. and Spakman, W. and Rozel, A. and Tackley, P. J.},
+  title = {A community benchmark for viscoplastic thermal convection in a 2-D square box},
+  journal = {Geochemistry, Geophysics, Geosystems},
+  year = {2015},
+  volume = {16},
+  number = {7},
+  pages = {2175--2196},
+  url = {http://doi.wiley.com/10.1002/2015GC005807},
+  doi = {10.1002/2015GC005807}
+}
+</pre></td>
 </tr>
 <tr id="Zelst2015" class="entry">
-	<td>Zelst, I.</td>
-	<td>Mantle dynamics on Venus: insights from numerical modelling</td>
-	<td>2015</td>
-	<td>&nbsp;</td>
-	<td>article</td>
-	<td><a href="https://dspace.library.uu.nl/handle/1874/316227">URL</a>&nbsp;</td>
+	<td>Zelst I (2015), <i>"Mantle dynamics on Venus: insights from numerical modelling"</i> 
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Zelst2015','bibtex')">BibTeX</a>] [<a href="https://dspace.library.uu.nl/handle/1874/316227" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Zelst2015" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Zelst2015,
+  author = {Zelst, I},
+  title = {Mantle dynamics on Venus: insights from numerical modelling},
+  year = {2015},
+  url = {https://dspace.library.uu.nl/handle/1874/316227}
+}
+</pre></td>
 </tr>
 <tr id="Zhang2016" class="entry">
-	<td>Zhang, S. and O'Neill, C.</td>
-	<td>The early geodynamic evolution of Mars-type planets</td>
-	<td>2016</td>
-	<td>Icarus&nbsp;</td>
-	<td>article</td>
-	<td><a href="http://www.sciencedirect.com/science/article/pii/S0019103515004856">URL</a>&nbsp;</td>
+	<td>Zhang S and O'Neill C (2016), <i>"The early geodynamic evolution of Mars-type planets"</i>, Icarus. 
+	<p class="infolinks"> [<a href="javascript:toggleInfo('Zhang2016','bibtex')">BibTeX</a>] [<a href="http://www.sciencedirect.com/science/article/pii/S0019103515004856" target="_blank">URL</a>]</p>
+	</td>
+</tr>
+<tr id="bib_Zhang2016" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@article{Zhang2016,
+  author = {Zhang, S and O'Neill, C},
+  title = {The early geodynamic evolution of Mars-type planets},
+  journal = {Icarus},
+  year = {2016},
+  url = {http://www.sciencedirect.com/science/article/pii/S0019103515004856}
+}
+</pre></td>
 </tr>
 </tbody>
 </table>
 <footer>
  <small>Created by <a href="http://jabref.sourceforge.net">JabRef</a> on 14/08/2017.</small>
 </footer>
-
 <!-- file generated by JabRef -->
-
 </body>
 </html>
