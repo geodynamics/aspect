@@ -318,10 +318,10 @@ namespace aspect
     template <class Archive>
     void Particle<dim,spacedim>::serialize (Archive &ar, const unsigned int)
     {
-      ar &location
+      ar & location
       & reference_location
       & id
-      & properties
+      & (*properties)
       ;
     }
   }

@@ -32,6 +32,8 @@
 #include <deal.II/base/array_view.h>
 #include <deal.II/base/smartpointer.h>
 
+#include <boost/serialization/map.hpp>
+
 namespace aspect
 {
   namespace Particle

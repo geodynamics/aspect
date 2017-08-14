@@ -40,6 +40,8 @@
 #include <deal.II/base/timer.h>
 #include <deal.II/base/array_view.h>
 
+#include <boost/serialization/unique_ptr.hpp>
+
 namespace aspect
 {
   namespace Particle
