@@ -1,0 +1,314 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>The ASPECT mantle convection code</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="icon" href="/favicon.ico"/>
+    <link rel="apple-touch-icon" href="/pictures/clover57.png"/>
+    <meta name="author" content="the deal.II authors"/>
+    <meta name="keywords" content="mantle convection, dealii, finite elements, finite element method, fem, finite element software, open source, adaptive, finite element method, finite element modeling, finite element modelling, finite element methods, numerical analysis, numerical analysis software, computational fluid dynamics software"/>
+    <meta name="robots" content="index, follow">
+
+    <!-- Include stylesheets -->
+    <link href="css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
+    <link href="css/global.less" type="text/less" rel="stylesheet"/>
+    <link href="css/index.less" type="text/less" rel="stylesheet"/>
+
+    <!-- LESS needs to come after the stylesheets -->
+    <script src="js/less-1.4.1.min.js"></script>
+  </head>
+
+  <body>
+
+    <!--#include file="header.include" -->
+
+
+    <div class="bs-header">
+      <div class="container">
+	<h2>
+        <b><abbr>ASPECT</abbr>:</b>
+	<b style="color: #50B0F0">A</b>dvanced
+	<b style="color: #50B0F0">S</b>olver for
+	<b style="color: #50B0F0">P</b>roblems in
+	<b style="color: #50B0F0">E</b>arth's
+	<b style="color: #50B0F0">C</b>onvec<b style="color: #50B0F0">T</b>ion
+	</h2>
+
+	<table>
+	  <tr valign="top">
+	    <td width="10%"><b>What it is:</b></td>
+	    <td>
+	      An extensible code written in C++ to support research
+	      in simulating convection in the Earth mantle and elsewhere. 
+	    </td>
+	  </tr>
+	  <tr valign="top">
+	    <td><b>Mission:</b></td>
+	    <td>
+	      To provide the geosciences with a well-documented and extensible
+	      code base for their research needs.
+	    </td>
+	  </tr>
+	  <tr valign="top">
+	    <td><b>Vision:</b></td>
+	    <td>
+	      To create an open,
+	      inclusive, participatory
+	      community providing
+	      users and developers with a state-of-the-art, comprehensive
+	      software that performs well while being simple to extend.
+	    </td>
+	  </tr>
+	</table>
+      </div>
+    </div>
+
+    <div id="content" class="container">
+      <div class="row">
+        <div class="col-xs-12 col-sm-9">
+          <div class="well">
+	    <table>
+	      <tr>
+		<td style="vertical-align:top;height:4em">
+		  <a class="btn btn-success" style="width:100%" href="download.html">Download!
+		    &raquo;</a>
+		</td>
+		<td>&nbsp;&nbsp;</td>
+		<td style="vertical-align:top">
+		  <p>
+		    <i>
+		      <abbr>ASPECT</abbr> is <a href="doc/COPYING">open source</a> and available for
+		      free!
+		    </i>
+		  </p>
+		</td>
+	      </tr>
+
+	      <tr>
+		<td style="vertical-align:top;height:4em">
+		  <a class="btn btn-success" style="width:100%" href="http://www.math.clemson.edu/~heister/manual.pdf">Help! &raquo;</a>
+		</td>
+		<td></td>
+		<td style="vertical-align:top">
+		  <i>
+		    The manual explains most of what you may want to know
+		    about <abbr>ASPECT</abbr>. See the <i>Info</i> tab
+		    above for more resources.
+		  </i>
+		</td>
+	      </tr>
+
+	      <tr>
+		<td style="vertical-align:top;height:4em">
+		  <a class="btn btn-success" href="ReadMe.html#mailinglists">Participate! &raquo;</a>
+		</td>
+		<td></td>
+		<td style="vertical-align:top">
+		  <i>
+		    <abbr>ASPECT</abbr> is a community project. We
+		    welcome all who want to participate in any way!
+		  </i>
+		</td>
+	      </tr>
+	    </table>
+	  </div>
+
+          <div class="well">
+	    <p align="center">
+	      <img src="mesh-2d-small.png" alt="logo" />
+	    </p>
+
+	    <p>
+	      <abbr>ASPECT</abbr> is a code to simulate problems in
+	      thermal convection. Its primary focus is on the simulation of
+	      processes in the earth's mantle, but its design is more general
+	      than that. The primary aims developing <abbr>ASPECT</abbr>
+	      are:
+	      <ul>
+		<li> <b>Usability and extensibility:</b> Simulating mantle convection is a
+		  difficult problem characterized not only by complicated and nonlinear
+		  material models but, more generally, by a lack of understanding which parts
+		  of a much more complicated model are really necessary to simulate the
+		  defining features of the problem. This uncertainty requires a code
+		  that is easy to extend by users to support the community in determining what
+		  the essential features of convection in the earth's mantle are.
+
+		<li> <b>Modern numerical methods:</b> We build <abbr>ASPECT</abbr> on numerical
+		  methods that are at the forefront of research in all areas -- adaptive mesh
+		  refinement, linear and nonlinear solvers, stabilization of
+		  transport-dominated processes. This implies complexity in our algorithms,
+		  but also guarantees highly accurate solutions while remaining efficient in
+		  the number of unknowns and with CPU and memory resources.
+
+		<li> <b>Parallelism:</b> Many convection processes of interest are
+		  characterized by small features in large domains -- for example, mantle
+		  plumes of a few tens of kilometers diameter in a mantle almost 3,000 km
+		  deep. Such problems require
+		  hundreds or thousands of processors to work together. <abbr>ASPECT</abbr> is designed
+		  from the start to support this level of parallelism.
+
+		<li> <b>Building on others' work:</b> Building a code that satisfies above
+		  criteria from scratch would likely require several 100,000 lines of
+		  code. This is outside what any one group can achieve on academic time
+		  scales. Fortunately, most of the functionality we need is already available
+		  in the form of widely used, actively maintained, and well tested and
+		  documented libraries. Thus, <abbr>ASPECT</abbr> builds immediately
+		  on top of the <a href="http://www.dealii.org/"
+				   target="_top"><abbr>deal.II library</abbr></a> for
+		  everything that has to do with finite elements, geometries, meshes, etc.;
+		  and, through <abbr>deal.II</abbr> on <a href="http://trilinos.sandia.gov/" target="_top">Trilinos</a>
+		  for parallel linear algebra and on
+		  <a href="http://www.p4est.org/" target="_top">p4est</a> for parallel
+		  mesh handling.
+
+		<li> <b>Community:</b> We believe that a large project like <abbr>ASPECT</abbr> can
+		  only be successful as a community project. Every contribution is welcome and
+		  we want to help you so we can improve <abbr>ASPECT</abbr> together.
+	      </ul>
+	    </p>
+
+	    <p> <abbr>ASPECT</abbr> is published under the <a href="doc/COPYING">GNU GPL v2 or newer license.</a>
+	    </p>
+
+	  </div>
+
+
+
+	  <div class="well">
+	    <h2>Contact</h2>
+
+	    <p>
+	      The primary means of communicating with
+	      <abbr>ASPECT</abbr> developers and users is by email:
+	    </p>
+
+	    <p>
+	      The <a href="ReadMe.html#mailinglists">ASPECT mailing list</a> is used by developers to
+	      announce new features and by users to ask questions about how to do
+	      things. This is also the forum to
+	      post bug reports.
+	    </p>
+
+	    <p>
+	      Send email
+	      to <a href="mailto:bangerth@math.colostate.edu">Wolfgang
+		Bangerth</a> or <a href="mailto:heister@clemson.edu">Timo
+		Heister</a> if
+	      you have questions that are not appropriate for a public and
+	      archived mailing list.
+	    </p>
+
+	    <p>
+	      We appreciate comments and suggestions on <abbr>ASPECT</abbr>. They
+	      can  be addressed to either of the addresses above, depending on their
+	      public or private nature.
+	    </p>
+
+	  </div>
+
+
+
+	  <div class="well">
+	    <p>
+	      <b>Legal Notice:</b>
+	      Some countries' laws require us to post this
+	      <a href="http://www.dealii.org/blabla.html">legal
+	      notice</a>. Please write to the responsible 
+	      federal judges if you find this silly.
+	    </p>
+
+          </div>
+        </div>
+
+        <div class="hidden-xs col-sm-3">
+          <div class="well">
+
+	    <h4>News</h4>
+
+	    <p>
+	      2017/02/28: 
+	      <a href="https://github.com/geodynamics/aspect/releases/tag/v1.5.0"><abbr>ASPECT</abbr> 1.5 released</a>
+	    </p>
+
+	    <p>
+	      2016/05/15: 
+	      <a href="https://github.com/geodynamics/aspect/releases/tag/v1.4.0"><abbr>ASPECT</abbr> 1.4 released</a>
+	    </p>
+
+	    <p>
+	      2015/05/18: 
+	      <a href="https://github.com/geodynamics/aspect/releases/tag/v1.3"><abbr>ASPECT</abbr> 1.3 released</a>
+	    </p>
+
+	    <p>
+	      2015/01/25: 
+	      <a href="https://lists.geodynamics.org/pipermail/aspect-devel/2015-January/000767.html"><abbr>ASPECT</abbr> 1.2 released</a>
+	    </p>
+
+	    <p>
+	      2014/06/01: 
+	      <a href="https://lists.geodynamics.org/pipermail/aspect-devel/2014-June/000595.html"><abbr>ASPECT</abbr> 1.1 released</a>
+	    </p>
+
+	    <p>
+	      2014/04/16: 
+	      <a href="https://lists.geodynamics.org/pipermail/aspect-devel/2014-April/000525.html"><abbr>ASPECT</abbr>
+	      1.0 released</a>
+	    </p>
+	  </div>
+
+          <div class="well">
+	    <h4>Upcoming tutorials</h4>
+
+	    <p>
+	      Short course at the University of the Chinese Academy of Sciences,
+	      June 20-28, 2017, Beijing, China
+            </p>
+
+	    <h4>Past tutorials</h4>
+
+	    <p>
+	      CIG All Hands Meeting, June 20-22, 2016,
+	      Davis, California, USA
+	    <br>
+	    <p>
+	    <a href="http://www.deep-earth.org/summer14.shtml">CIDER, June 22 to
+	      August 1, 2014, Santa Barbara, California, USA </a>
+	    <br>
+	    <br>
+	    <a href="http://old.elsi.jp/en/activity/elsi-summer-school/">ELSI
+	      Summer School, August 1-2, 2014, Tokyo, Japan</a>
+	    <br>
+	    <br>
+	    <a href="http://geomod2014.gfz-potsdam.de/short-courses/">GeoMod,
+	      September 4-5, 2014, Potsdam, Germany</a>
+	    </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bs-footer">
+      <div class="container">
+	<div style="text-align: right">
+	  <p>
+	    Hosted at <a href="http://www.uni-heidelberg.de/" target="_top"><img
+									       style="border:0;height:31px"
+									       src="pictures/UniLogo4.png"
+									       alt="Universität Heidelberg">
+	    </a>
+	  </p>
+	</div>
+
+      </div>
+    </div>
+  </body>
+
+  <!-- Some JQuery needs to come after the body -->
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/accordion.js"></script>
+</html>
+

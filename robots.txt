@@ -1,0 +1,4 @@
+User-Agent: *
+Disallow: /websvn/
+Disallow: /download/
+Allow: /download/index.html
