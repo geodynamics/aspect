@@ -76,9 +76,13 @@ namespace aspect
         ~ParticleHandler();
 
         /**
-         * Initialize the particle world.
+         * Initialize the particle handler. This function does not clear the
+         * internal data structures, it just sets the connections to the
+         * MPI communicator and the triangulation. This is useful after de-
+         * serialization of a particle handler.
          */
-        void initialize();
+        void initialize(const parallel::distributed::Triangulation<dim,spacedim> &tria,
+                        MPI_Comm mpi_communicator);
 
         /**
          * Clear all particle related data.

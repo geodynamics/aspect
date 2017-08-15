@@ -110,7 +110,16 @@ namespace aspect
                                                                               std_cxx11::_1,
                                                                               std_cxx11::_2));
 
-      particle_handler.reset(new ParticleHandler<dim>(this->get_triangulation(),this->get_mpi_communicator()));
+      // Normally create a particle handler that stores the future particles.
+      // If we restarted from a checkpoint we already have constructed a
+      // particle handler. In that case only reinitialize the connections to the
+      // triangulation and the MPI communicator.
+      if (!particle_handler)
+        particle_handler.reset(new ParticleHandler<dim>(this->get_triangulation(),this->get_mpi_communicator()));
+      else
+        {
+          particle_handler->initialize(this->get_triangulation(),this->get_mpi_communicator());
+        }
     }
 
     template <int dim>
@@ -1457,7 +1466,9 @@ namespace aspect
     {
       aspect::oarchive oa (os);
       oa << (*this);
+#if !DEAL_II_VERSION_GTE(9,0,0)
       output->save(os);
+#endif
     }
 
     template <int dim>
@@ -1466,7 +1477,9 @@ namespace aspect
     {
       aspect::iarchive ia (is);
       ia >> (*this);
+#if !DEAL_II_VERSION_GTE(9,0,0)
       output->load(is);
+#endif
     }
 
     template <int dim>

@@ -32,7 +32,9 @@ namespace aspect
       global_number_of_particles(0),
       global_max_particles_per_cell(0),
       next_free_particle_index(0)
-    {}
+    {
+      std::cout << "Default constructor";
+    }
 
     template <int dim,int spacedim>
     ParticleHandler<dim,spacedim>::ParticleHandler(const parallel::distributed::Triangulation<dim,spacedim> &triangulation,
@@ -43,11 +45,22 @@ namespace aspect
       global_number_of_particles(0),
       global_max_particles_per_cell(0),
       next_free_particle_index(0)
-    {}
+    {
+      std::cout << "Standard constructor";
+    }
 
     template <int dim,int spacedim>
     ParticleHandler<dim,spacedim>::~ParticleHandler()
     {}
+
+    template <int dim,int spacedim>
+    void
+    ParticleHandler<dim,spacedim>::initialize(const parallel::distributed::Triangulation<dim,spacedim> &tria,
+                                              MPI_Comm communicator)
+    {
+      triangulation = &tria;
+      mpi_communicator = communicator;
+    }
 
     template <int dim,int spacedim>
     void

@@ -277,10 +277,20 @@ namespace aspect
         get_properties () const;
 
         /**
-         * Serialize the contents of this class.
+         * Write the data of this object to a stream for the purpose of
+         * serialization.
          */
         template <class Archive>
-        void serialize (Archive &ar, const unsigned int version);
+        void save (Archive &ar, const unsigned int version) const;
+
+        /**
+         * Read the data of this object from a stream for the purpose of
+         * serialization.
+         */
+        template <class Archive>
+        void load (Archive &ar, const unsigned int version);
+
+        BOOST_SERIALIZATION_SPLIT_MEMBER()
 
       private:
         /**
@@ -316,13 +326,38 @@ namespace aspect
 
     template <int dim, int spacedim>
     template <class Archive>
-    void Particle<dim,spacedim>::serialize (Archive &ar, const unsigned int)
+    void Particle<dim,spacedim>::load (Archive &ar, const unsigned int)
     {
-      ar & location
-      & reference_location
-      & id
-      & (*properties)
-      ;
+        unsigned int n_properties = 0;
+
+        ar & location
+        & reference_location
+        & id
+        & n_properties;
+
+        if (n_properties > 0)
+          {
+            properties = new double[n_properties];
+            ar & boost::serialization::make_array(properties, n_properties);
+          }
+    }
+
+    template <int dim, int spacedim>
+    template <class Archive>
+    void Particle<dim,spacedim>::save (Archive &ar, const unsigned int) const
+    {
+        unsigned int n_properties = 0;
+        if ((property_pool != NULL) && (properties != PropertyPool::invalid_handle))
+          n_properties = get_properties().size();
+
+        ar & location
+        & reference_location
+        & id
+        & n_properties;
+
+        if (n_properties > 0)
+          ar & boost::serialization::make_array(properties, n_properties);
+
     }
   }
 }

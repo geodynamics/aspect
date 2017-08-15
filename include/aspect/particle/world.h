@@ -508,6 +508,11 @@ namespace aspect
       ar
       &particle_handler
       ;
+
+      // Note that initialize is not necessary when saving the particle handler,
+      // but it does not harm either. When loading the triangulation we need to
+      // recreate the links to the triangulation and the MPI communicator.
+      particle_handler->initialize(this->get_triangulation(),this->get_mpi_communicator());
     }
   }
 }
