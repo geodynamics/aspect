@@ -122,9 +122,9 @@ namespace aspect
          * in the coordinate system of the reference cell.
          * @param[in] id Globally unique ID number of particle.
          */
-        Particle (const Point<spacedim> &new_location,
-                  const Point<dim> &new_reference_location,
-                  const types::particle_index new_id);
+        Particle (const Point<spacedim> &location,
+                  const Point<dim> &reference_location,
+                  const types::particle_index id);
 
         /**
          * Copy-Constructor for Particle, creates a particle with exactly the
@@ -152,7 +152,7 @@ namespace aspect
          * by @p property_pool.
          */
         Particle (const void *&begin_data,
-                  PropertyPool &new_property_pool);
+                  PropertyPool &property_pool);
 
 #ifdef DEAL_II_WITH_CXX11
         /**

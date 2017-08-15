@@ -37,13 +37,13 @@ namespace aspect
 
 
     template <int dim, int spacedim>
-    Particle<dim,spacedim>::Particle (const Point<spacedim> &new_location,
-                                      const Point<dim> &new_reference_location,
-                                      const types::particle_index new_id)
+    Particle<dim,spacedim>::Particle (const Point<spacedim> &location,
+                                      const Point<dim> &reference_location,
+                                      const types::particle_index id)
       :
-      location (new_location),
-      reference_location (new_reference_location),
-      id (new_id),
+      location (location),
+      reference_location (reference_location),
+      id (id),
       property_pool(NULL),
       properties (PropertyPool::invalid_handle)
     {
