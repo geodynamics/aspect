@@ -2640,6 +2640,11 @@ that will be listed when starting the program. It can be flexibly configured to 
 non-default compilers or libraries (e.g. Intel's MKL instead of LAPACK) by changing entries
 in the configuration file \texttt{candi.cfg}, or by providing platform specific installation files.
 
+In case you encounter problems during the installation, please consult our wiki
+(\url{https://github.com/geodynamics/aspect/wiki}) for frequently asked
+questions and special instructions for MacOS users, before posting your
+questions on the mailing list.
+
 \subsubsection{System prerequisites}
 
 \texttt{candi} will show system specific instructions on startup, but its prerequisites
@@ -2770,169 +2775,6 @@ which assumes that you have the \texttt{doxygen} documentation generation tool
 installed. Most Linux distributions have packages for \texttt{doxygen}. The
 result will be the file \url{doc/doxygen/index.html} that is the starting
 point for exploring the documentation.
-
-\subsubsection{Compiling a static \aspect{} executable}
-\aspect{} defaults to a dynamically linked executable, which saves disk space and build time. In some circumstances however, it is preferred to generate a statically linked executable that incorporates all used libraries. This need may arise on large clusters on which libraries and loaded modules/variables on login nodes may be different from the ones available on compute nodes. The general build procedure in such a case equals the above explained instructions with the following differences:
-\begin{enumerate}
-\item \textit{Trilinos}: Add the following lines to your cmake call:
-\begin{verbatim}
- -DBUILD_SHARED_LIBS=OFF
- -DTPL_FIND_SHARED_LIBS=OFF
-\end{verbatim}
-\item \textit{\pfrst{}:} Change items "--enable-shared" to "--enable-static" in p4est-setup.sh lines 83 and 97.
-\item \textit{\dealii{}:} Add the following lines to your call to cmake:
-\begin{verbatim}
- -DDEAL_II_STATIC_EXECUTABLE=ON
-\end{verbatim}
-\item \textit{\aspect{}:} If everything above is set up correctly, there is no need for any configuration change to \aspect{}'s build procedure. You should see the following cmake output from \aspect{}:
-\begin{verbatim}
--- Creating a statically linked executable
--- Disabling dynamic loading of plugins from the input file
-\end{verbatim}
-\end{enumerate}
-
-The here mentioned build was tested on a Cray XC30 cluster, which was set up for default static compiling and linking. On machines that default to dynamic linking additional compiler and/or linker flags may be required (e.g. "-fPIC" / "--static"). In case of questions send an email to the mailing list.
-
-\subsubsection{Installing and running \aspect{} on Mac OS X}
-OS X has some eccentricities which can complicate installation of \aspect{}. Currently the easiest and most reliable way to run \aspect{} under Mac OS X Mavericks (10.9), Yosemite (10.10) and El Capitan (10.11) is to install and run the binary package for \dealii{}. The step-by-step process is described in detail, with screenshots, here: \url{https://wiki.geodynamics.org/_media/software:aspect:aspect_yosemite_20150529.pdf}
-
-\begin{enumerate}
-\item Install Xcode from the app store. You might need to install the command line tools. Open a terminal and make sure ``clang'' does not report ``command not found''. You might need to run
-\begin{verbatim}
-  xcode-select --install
-\end{verbatim}
-to install the tools.
-
-\item Install Cmake.
-
-CMake is a cross-platform, open-source build system that can be downloaded from \url{http://www.cmake.org}.  After installation of CMake.app, the terminal command for cmake will be
-\begin{verbatim}
-  /Applications/CMake.app/Contents/bin/cmake
-\end{verbatim}
-
-\item Download and install the parallel \dealii{}. This is the binary package for Mac OS .dmg file.
-\begin{verbatim}
-  open  https://github.com/dealii/dealii/releases/download/v8.4.1/dealii-8.4.1.dmg
-\end{verbatim}
-
-Open the downloaded disk image, and drag \dealii{}.app into the Applications folder.
- To start the \dealii{} app, double click the icon in the Applications folder or use the open command:
-\begin{verbatim}
-  open /Applications/deal.II.app
-\end{verbatim}
-\dealii{} app opens a terminal window and displays a \dealii{} message.   \dealii{}.app will install all required libraries for \aspect{} (p4est, parMeTiS, and Trilinos) and will include the environment variables needed to use these libraries.
-
-To ensure the correct compilers are picked up when configuring \aspect{}, add the following lines to your \texttt{\textasciitilde/.profile} or \texttt{\textasciitilde/.bash\_profile}:
-
-\begin{verbatim}
-  export OMPI_CXX=clang++
-  export OMPI_CC=clang
-\end{verbatim}
-
-\item Download  the  \aspect{} source from the git repository.
-
-\begin{verbatim}
-  cd $HOME/src
-  git clone https://github.com/geodynamics/aspect.git
-\end{verbatim}
-
-If you wish to use Xcode as your IDE it is recommended to skip to step 7 below. Otherwise, proceed with steps 5 and 6 below.
-
-\item Build \aspect{}
-
-Note: if you are not using Xcode (see step 7 below), you {\bf MUST} \underline{build} and \underline{run} \aspect{} in the terminal window started by \dealii{}, rather than in the Terminal app.
-
-\begin{enumerate}
-\item Go to the  directory where you wish to install \aspect{}  and run the following commands:
-
-{\footnotesize
-\begin{verbatim}
-  cmake .
-\end{verbatim}}
-
-This should display something like:
-
-{\footnotesize
-\begin{verbatim}
-  Project aspect set up with  deal.II-8.4.1  found at /Applications/deal.II.app/Contents/Resources
-\end{verbatim}}
-
-\item Run make:
-
-{\footnotesize
-\begin{verbatim}
-  bash-3.2$ make
-  Scanning dependencies of target aspect
-  [  0%] Building CXX object CMakeFiles/aspect.dir/source/adiabatic_conditions/initial_profile.cc.o
-  [  0%] Building CXX object CMakeFiles/aspect.dir/source/adiabatic_conditions/interface.cc.o
-  ...
-  Linking CXX executable aspect
-  [100%] Built target aspect
-  bash-3.2$ ls -l aspect
-  -rwxr-xr-x  1 <name>  staff  19131292 May  7 15:02 aspect
-\end{verbatim}
-}
-There may be  warnings from the compiler, but if the \aspect{} target is created then it was successful.
-
-\item By default,  \aspect{}  compiles the debug version of the code.
-To compile the optimized version:
-{\footnotesize\begin{verbatim}
-  make release 
-\end{verbatim}}
-
-\item Run make test
-
-{\footnotesize
-\begin{verbatim}
-  make test
-\end{verbatim}}
-
-
-\end {enumerate}
-
-
-
-\item Run \aspect{}.
-
-A reminder: you {\bf must} run  \aspect{}  on the terminal window which is opened by \dealii{}.app.
-
-To start \aspect{} using MPI for parallelization, from the directory where you installed \aspect{}:
-\begin{verbatim}
-  mpirun -np <# of processes> ./aspect <parameter file>
-\end{verbatim}
-
-To check quickly whether you are running  \aspect{} on the  \dealii{}.app terminal, check the location of the \verb|mpirun| command:
-\begin{verbatim}
-  bash-3.2$ which mpirun
-  /Applications/deal.II.app/Contents/Resources/opt/openmpi-1.6.5/bin/mpirun
-\end{verbatim}
-
-\item Build \aspect{} as an Xcode project.
-
-After completing step 4 above, do the following:
-\begin{enumerate}
-\item Go to the directory where you wish to install \aspect{} and run the following command:
-
-\begin{verbatim}
-  cmake -G Xcode .
-\end{verbatim}
-
-Now open the resulting \texttt{aspect.xcodeproj} in Xcode.
-
-\item Open Product\textgreater Scheme\textgreater Manage Schemes, then select ``aspect'' and click ``Edit''. Go to Run\textgreater Arguments, and under "Arguments Passed On Launch" add the filepath to the desired parameter file. Click "Close" then select Product\textgreater Run to run \aspect{} with this parameter file.
-
-\item If you want to run in parallel in Xcode, the easiest way is to create a new scheme. Open Product\textgreater Scheme\textgreater Manage Schemes, select ``aspect'' then select the gear icon, then ``Duplicate scheme''. Rename the new scheme to ``aspect parallel''. Go to Run\textgreater Info, and in Executable choose ``Other...''. Navigate to 
-\begin{verbatim}
-  /Applications/deal.II.app/Contents/Resources/opt/openmpi-1.10.2/bin
-\end{verbatim}
-and select ``orterun'', then click ``Choose''.
-
-\item Now go to the Arguments tab, and add 3 arguments: first, add \texttt{-np4} (for 4 processors -- you may use however many your machine has). Then add a path to your aspect executable -- this should be within your aspect folder, or the subfolders Debug or Release. Finally, ensure you have a path to your parameter file as above. Ensure these are in the correct order, or reorder them if necessary. Click ``Close'' then select Product\textgreater Run to run \aspect{} in parallel with this parameter file.
-\end{enumerate}
-
-
-
-\end{enumerate}
 
 
 %%%%%%%%%%%%%%%%%%%%%%

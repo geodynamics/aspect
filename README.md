@@ -16,14 +16,23 @@ The project is supported by CIG (http://geodynamics.org).
 Installation instructions
 -------------------------
 
-The steps to install the necessary dependencies and ASPECT itself are described in the Installation instructions section of the ASPECT [manual](http://www.math.clemson.edu/~heister/manual.pdf).
+The steps to install the necessary dependencies and ASPECT itself are described
+in the Installation instructions section of the ASPECT
+[manual](http://www.math.clemson.edu/~heister/manual.pdf). If you encounter
+problems during the installation, please consult our
+[wiki](https://github.com/geodynamics/aspect/wiki) for typical installation
+problems or specific instructions for MacOS users, before asking your question
+on the mailing list.
 
 
 
 Running and extending ASPECT
 ----------------------------
 
-Instructions on how to run and extend, as well as on how to interpret the output of ASPECT can also be found in the ASPECT [manual](http://www.math.clemson.edu/~heister/manual.pdf). This manual also discusses the structure of the source code. 
+Instructions on how to run and extend, as well as on how to interpret the
+output of ASPECT can also be found in the ASPECT
+[manual](http://www.math.clemson.edu/~heister/manual.pdf). This manual also
+discusses the structure of the source code.
 
 
 
