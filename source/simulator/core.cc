@@ -92,7 +92,7 @@ namespace aspect
     template <int dim>
     std::vector<VariableDeclaration<dim> > construct_variables(const Parameters<dim> &parameters,
                                                                SimulatorSignals<dim> &signals,
-                                                               std_cxx11::shared_ptr<MeltHandler<dim> > &melt_handler)
+                                                               std_cxx11::unique_ptr<MeltHandler<dim> > &melt_handler)
     {
       std::vector<VariableDeclaration<dim> > variables
         = construct_default_variables (parameters);
