@@ -91,8 +91,6 @@ namespace aspect
     template <int dim>
     World<dim>::World()
       :
-      global_number_of_particles(0),
-      next_free_particle_index(0),
       data_offset(numbers::invalid_unsigned_int)
     {}
 
@@ -111,34 +109,17 @@ namespace aspect
                                                                               std_cxx11::ref(*this),
                                                                               std_cxx11::_1,
                                                                               std_cxx11::_2));
-    }
 
-    template <int dim>
-    typename World<dim>::particle_iterator
-    World<dim>::begin() const
-    {
-      return particle_iterator(particles,(const_cast<World<dim> *> (this))->particles.begin());
-    }
-
-    template <int dim>
-    typename World<dim>::particle_iterator
-    World<dim>::begin()
-    {
-      return World<dim>::particle_iterator(particles,particles.begin());
-    }
-
-    template <int dim>
-    typename World<dim>::particle_iterator
-    World<dim>::end() const
-    {
-      return (const_cast<World<dim> *> (this))->end();
-    }
-
-    template <int dim>
-    typename World<dim>::particle_iterator
-    World<dim>::end()
-    {
-      return World<dim>::particle_iterator(particles,particles.end());
+      // Normally create a particle handler that stores the future particles.
+      // If we restarted from a checkpoint we already have constructed a
+      // particle handler. In that case only reinitialize the connections to the
+      // triangulation and the MPI communicator.
+      if (!particle_handler)
+        particle_handler.reset(new ParticleHandler<dim>(this->get_triangulation(),this->get_mpi_communicator()));
+      else
+        {
+          particle_handler->initialize(this->get_triangulation(),this->get_mpi_communicator());
+        }
     }
 
     template <int dim>
@@ -146,6 +127,13 @@ namespace aspect
     World<dim>::get_property_manager() const
     {
       return *property_manager;
+    }
+
+    template <int dim>
+    const ParticleHandler<dim> &
+    World<dim>::get_particle_handler() const
+    {
+      return *particle_handler.get();
     }
 
     template <int dim>
@@ -159,14 +147,14 @@ namespace aspect
     std::multimap<types::LevelInd, Particle<dim> > &
     World<dim>::get_particles()
     {
-      return particles;
+      return particle_handler->get_particles();
     }
 
     template <int dim>
     const std::multimap<types::LevelInd, Particle<dim> > &
     World<dim>::get_particles() const
     {
-      return particles;
+      return particle_handler->get_particles();
     }
 
     template <int dim>
@@ -194,7 +182,7 @@ namespace aspect
                                   this->get_time() / year_in_seconds :
                                   this->get_time());
 
-      const std::string filename = output->output_particle_data(particles,
+      const std::string filename = output->output_particle_data(particle_handler->get_particles(),
                                                                 property_manager->get_data_info(),
                                                                 output_time);
 
@@ -205,44 +193,9 @@ namespace aspect
     types::particle_index
     World<dim>::n_global_particles() const
     {
-      return global_number_of_particles;
+      return particle_handler->n_global_particles();
     }
 
-    template <int dim>
-    void
-    World<dim>::update_n_global_particles()
-    {
-      global_number_of_particles = dealii::Utilities::MPI::sum (particles.size(), this->get_mpi_communicator());
-    }
-
-    template <int dim>
-    void
-    World<dim>::update_next_free_particle_index()
-    {
-      types::particle_index locally_highest_index = 0;
-      for (particle_iterator particle = begin(); particle != end(); ++particle)
-        locally_highest_index = std::max(locally_highest_index,particle->get_id());
-
-      next_free_particle_index = dealii::Utilities::MPI::max (locally_highest_index, this->get_mpi_communicator()) + 1;
-    }
-
-    template <int dim>
-    void
-    World<dim>::update_global_max_particles_per_cell()
-    {
-      unsigned int local_max_particles_per_cell(0);
-      typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell = this->get_triangulation().begin_active();
-      for (; cell!=this->get_triangulation().end(); ++cell)
-        if (cell->is_locally_owned())
-          {
-            const types::LevelInd found_cell = std::make_pair<int, int> (cell->level(),cell->index());
-            const unsigned int particles_in_cell = particles.count(found_cell);
-            local_max_particles_per_cell = std::max(local_max_particles_per_cell,
-                                                    particles_in_cell);
-          }
-
-      global_max_particles_per_cell = dealii::Utilities::MPI::max(local_max_particles_per_cell,this->get_mpi_communicator());
-    }
 
     template <int dim>
     void
@@ -280,9 +233,9 @@ namespace aspect
       // Only save and load particles if there are any, we might get here for
       // example before the particle generation in timestep 0, or if somebody
       // selected the particle postprocessor but generated 0 particles
-      update_global_max_particles_per_cell();
+      particle_handler->update_global_max_particles_per_cell();
 
-      if (global_max_particles_per_cell > 0)
+      if (particle_handler->global_max_particles_per_cell > 0)
         {
           const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
                                          const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
@@ -298,7 +251,7 @@ namespace aspect
           // space for the data in case a cell is coarsened and all particles
           // of the children have to be stored in the parent cell.
           const std::size_t transfer_size_per_cell = sizeof (unsigned int) +
-                                                     (property_manager->get_particle_size() * global_max_particles_per_cell) *
+                                                     (property_manager->get_particle_size() * particle_handler->global_max_particles_per_cell) *
                                                      (serialization ?
                                                       1
                                                       :
@@ -317,13 +270,13 @@ namespace aspect
 
       // All particles have been stored, when we reach this point. Empty the
       // map and fill with new particles.
-      particles.clear();
+      particle_handler->get_particles().clear();
 
       // If we are resuming from a checkpoint, we first have to register the
       // store function again, to set the triangulation in the same state as
       // before the serialization. Only by this it knows how to deserialize the
       // data correctly. Only do this if something was actually stored.
-      if (serialization && (global_max_particles_per_cell > 0))
+      if (serialization && (particle_handler->global_max_particles_per_cell > 0))
         {
           const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
                                          const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
@@ -337,7 +290,7 @@ namespace aspect
           // the particle data itself and we need to provide 2^dim times the
           // space for the data in case a cell is coarsened
           const std::size_t transfer_size_per_cell = sizeof (unsigned int) +
-                                                     (property_manager->get_particle_size() * global_max_particles_per_cell);
+                                                     (property_manager->get_particle_size() * particle_handler->global_max_particles_per_cell);
           data_offset = triangulation.register_data_attach(transfer_size_per_cell,callback_function);
         }
 
@@ -360,7 +313,7 @@ namespace aspect
           // Reset offset and update global number of particles. The number
           // can change because of discarded or newly generated particles
           data_offset = numbers::invalid_unsigned_int;
-          update_n_global_particles();
+          particle_handler->update_n_global_particles();
 
           if (update_ghost_particles)
             exchange_ghost_particles();
@@ -379,7 +332,7 @@ namespace aspect
           // generate so that they are globally unique.
           // Ensure this by communicating the number of particles that every
           // process is going to generate.
-          types::particle_index local_next_particle_index = next_free_particle_index;
+          types::particle_index local_next_particle_index = particle_handler->next_free_particle_index;
           if (particle_load_balancing & ParticleLoadBalancing::add_particles)
             {
               types::particle_index particles_to_add_locally = 0;
@@ -392,8 +345,7 @@ namespace aspect
               for (; cell!=endc; ++cell)
                 if (cell->is_locally_owned())
                   {
-                    const types::LevelInd found_cell(cell->level(),cell->index());
-                    const unsigned int particles_in_cell = particles.count(found_cell);
+                    const unsigned int particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
                     if (particles_in_cell < min_particles_per_cell)
                       particles_to_add_locally += static_cast<types::particle_index> (min_particles_per_cell - particles_in_cell);
@@ -412,13 +364,14 @@ namespace aspect
               const types::particle_index globally_generated_particles =
                 dealii::Utilities::MPI::sum(particles_to_add_locally,this->get_mpi_communicator());
 
-              AssertThrow (next_free_particle_index <= std::numeric_limits<types::particle_index>::max() - globally_generated_particles,
+              AssertThrow (particle_handler->next_free_particle_index
+                           <= std::numeric_limits<types::particle_index>::max() - globally_generated_particles,
                            ExcMessage("There is no free particle index left to generate a new particle id. Please check if your "
                                       "model generates unusually many new particles (by repeatedly deleting and regenerating particles), or "
                                       "recompile deal.II with the DEAL_II_WITH_64BIT_INDICES option enabled, to use 64-bit integers for "
                                       "particle ids."));
 
-              next_free_particle_index += globally_generated_particles;
+              particle_handler->next_free_particle_index += globally_generated_particles;
             }
 
           boost::mt19937 random_number_generator;
@@ -432,7 +385,7 @@ namespace aspect
             if (cell->is_locally_owned())
               {
                 const types::LevelInd found_cell(cell->level(),cell->index());
-                const unsigned int n_particles_in_cell = particles.count(found_cell);
+                const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
                 // Add particles if necessary
                 if ((particle_load_balancing & ParticleLoadBalancing::add_particles) &&
@@ -442,11 +395,11 @@ namespace aspect
                       {
                         std::pair<aspect::Particle::types::LevelInd,Particle<dim> > new_particle = generator->generate_particle(cell,local_next_particle_index);
                         property_manager->initialize_late_particle(new_particle.second,
-                                                                   particles,
+                                                                   particle_handler->get_particles(),
                                                                    *interpolator,
                                                                    cell);
 
-                        particles.insert(new_particle);
+                        particle_handler->get_particles().insert(new_particle);
                       }
                   }
 
@@ -454,8 +407,8 @@ namespace aspect
                 else if ((particle_load_balancing & ParticleLoadBalancing::remove_particles) &&
                          (n_particles_in_cell > max_particles_per_cell))
                   {
-                    const std::pair<typename std::multimap<types::LevelInd, Particle<dim> >::iterator, typename std::multimap<types::LevelInd, Particle<dim> >::iterator>
-                    particles_in_cell = particles.equal_range(found_cell);
+                    const boost::iterator_range<typename ParticleHandler<dim>::particle_iterator> particles_in_cell
+                      = particle_handler->particle_range_in_cell(cell);
 
                     const unsigned int n_particles_to_remove = n_particles_in_cell - max_particles_per_cell;
 
@@ -463,21 +416,21 @@ namespace aspect
                     while (particle_ids_to_remove.size() < n_particles_to_remove)
                       particle_ids_to_remove.insert(random_number_generator() % n_particles_in_cell);
 
-                    std::list<typename std::multimap<types::LevelInd, Particle<dim> >::iterator> particles_to_remove;
+                    std::list<typename ParticleHandler<dim>::particle_iterator> particles_to_remove;
 
                     for (std::set<unsigned int>::const_iterator id = particle_ids_to_remove.begin();
                          id != particle_ids_to_remove.end(); ++id)
                       {
-                        typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_remove = particles_in_cell.first;
+                        typename ParticleHandler<dim>::particle_iterator particle_to_remove = particles_in_cell.begin();
                         std::advance(particle_to_remove,*id);
 
                         particles_to_remove.push_back(particle_to_remove);
                       }
 
-                    for (typename std::list<typename std::multimap<types::LevelInd, Particle<dim> >::iterator>::iterator particle = particles_to_remove.begin();
+                    for (typename std::list<typename ParticleHandler<dim>::particle_iterator>::iterator particle = particles_to_remove.begin();
                          particle != particles_to_remove.end(); ++particle)
                       {
-                        particles.erase(*particle);
+                        particle_handler->remove_particle(*particle);
                       }
                   }
               }
@@ -495,8 +448,7 @@ namespace aspect
       if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST
           || status == parallel::distributed::Triangulation<dim>::CELL_REFINE)
         {
-          const types::LevelInd found_cell = std::make_pair<int, int> (cell->level(),cell->index());
-          const unsigned int n_particles_in_cell = particles.count(found_cell);
+          const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
           return n_particles_in_cell * particle_weight;
         }
       else if (status == parallel::distributed::Triangulation<dim>::CELL_COARSEN)
@@ -504,11 +456,8 @@ namespace aspect
           unsigned int n_particles_in_cell = 0;
 
           for (unsigned int child_index = 0; child_index < GeometryInfo<dim>::max_children_per_cell; ++child_index)
-            {
-              const typename parallel::distributed::Triangulation<dim>::cell_iterator child = cell->child(child_index);
-              const types::LevelInd found_cell = std::make_pair<int, int> (child->level(),child->index());
-              n_particles_in_cell += particles.count(found_cell);
-            }
+            n_particles_in_cell += particle_handler->n_particles_in_cell(cell->child(child_index));
+
           return n_particles_in_cell * particle_weight;
         }
 
@@ -528,35 +477,28 @@ namespace aspect
       if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST
           || status == parallel::distributed::Triangulation<dim>::CELL_REFINE)
         {
-          const types::LevelInd found_cell = std::make_pair<int, int> (cell->level(),cell->index());
-          const std::pair<typename std::multimap<types::LevelInd, Particle<dim> >::iterator, typename std::multimap<types::LevelInd, Particle<dim> >::iterator> particles_in_cell
-            = particles.equal_range(found_cell);
-          n_particles_in_cell = std::distance(particles_in_cell.first,particles_in_cell.second);
+          const boost::iterator_range<typename ParticleHandler<dim>::particle_iterator> particles_in_cell
+            = particle_handler->particle_range_in_cell(cell);
+          n_particles_in_cell = std::distance(particles_in_cell.begin(),particles_in_cell.end());
 
           unsigned int *ndata = static_cast<unsigned int *> (data);
           *ndata = n_particles_in_cell;
           data = static_cast<void *> (ndata + 1);
 
-          for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle = particles_in_cell.first;
-               particle != particles_in_cell.second; ++particle)
+          for (typename ParticleHandler<dim>::particle_iterator particle = particles_in_cell.begin();
+               particle != particles_in_cell.end(); ++particle)
             {
-              particle->second.write_data(data);
+              particle->write_data(data);
             }
         }
       // If this cell is the parent of children that will be coarsened, collect
       // the particles of all children.
-      // First check if the maximum number of particles per cell is exceeded for
-      // the new cell, and if that is the case, only store every 2^dim 'th
-      // particle.
       else if (status == parallel::distributed::Triangulation<dim>::CELL_COARSEN)
         {
           for (unsigned int child_index = 0; child_index < GeometryInfo<dim>::max_children_per_cell; ++child_index)
             {
               const typename parallel::distributed::Triangulation<dim>::cell_iterator child = cell->child(child_index);
-              const types::LevelInd found_cell = std::make_pair<int, int> (child->level(),child->index());
-              const std::pair<typename std::multimap<types::LevelInd, Particle<dim> >::iterator, typename std::multimap<types::LevelInd, Particle<dim> >::iterator> particles_in_cell
-                = particles.equal_range(found_cell);
-              n_particles_in_cell += std::distance(particles_in_cell.first,particles_in_cell.second);
+              n_particles_in_cell += particle_handler->n_particles_in_cell(child);
             }
 
           unsigned int *ndata = static_cast<unsigned int *> (data);
@@ -567,14 +509,13 @@ namespace aspect
           for (unsigned int child_index = 0; child_index < GeometryInfo<dim>::max_children_per_cell; ++child_index)
             {
               const typename parallel::distributed::Triangulation<dim>::cell_iterator child = cell->child(child_index);
-              const types::LevelInd found_cell = std::make_pair<int, int> (child->level(),child->index());
-              const std::pair<typename std::multimap<types::LevelInd, Particle<dim> >::iterator, typename std::multimap<types::LevelInd, Particle<dim> >::iterator>
-              particles_in_cell = particles.equal_range(found_cell);
+              const boost::iterator_range<typename ParticleHandler<dim>::particle_iterator> particles_in_cell
+                = particle_handler->particle_range_in_cell(child);
 
-              for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle = particles_in_cell.first;
-                   particle != particles_in_cell.second; ++particle)
+              for (typename ParticleHandler<dim>::particle_iterator particle = particles_in_cell.begin();
+                   particle != particles_in_cell.end(); ++particle)
                 {
-                  particle->second.write_data(data);
+                  particle->write_data(data);
                 }
             }
         }
@@ -599,7 +540,7 @@ namespace aspect
       // particle map.
       if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST)
         {
-          typename std::multimap<types::LevelInd,Particle<dim> >::iterator position_hint = particles.end();
+          typename std::multimap<types::LevelInd,Particle<dim> >::iterator position_hint = particle_handler->get_particles().end();
           for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
             {
               // Use std::multimap::emplace_hint to speed up insertion of
@@ -607,13 +548,13 @@ namespace aspect
               // that report a -std=c++11 (like gcc 4.6) implement it, so
               // require C++14 instead.
 #ifdef DEAL_II_WITH_CXX14
-              position_hint = particles.emplace_hint(position_hint,
-                                                     std::make_pair(cell->level(),cell->index()),
-                                                     Particle<dim>(pdata,property_manager->get_property_pool()));
+              position_hint = particle_handler->get_particles().emplace_hint(position_hint,
+                                                                             std::make_pair(cell->level(),cell->index()),
+                                                                             Particle<dim>(pdata,property_manager->get_property_pool()));
 #else
-              position_hint = particles.insert(position_hint,
-                                               std::make_pair(std::make_pair(cell->level(),cell->index()),
-                                                              Particle<dim>(pdata,property_manager->get_property_pool())));
+              position_hint = particle_handler->get_particles().insert(position_hint,
+                                                                       std::make_pair(std::make_pair(cell->level(),cell->index()),
+                                                                                      Particle<dim>(pdata,property_manager->get_property_pool())));
 #endif
               ++position_hint;
             }
@@ -621,7 +562,7 @@ namespace aspect
 
       else if (status == parallel::distributed::Triangulation<dim>::CELL_COARSEN)
         {
-          typename std::multimap<types::LevelInd,Particle<dim> >::iterator position_hint = particles.end();
+          typename std::multimap<types::LevelInd,Particle<dim> >::iterator position_hint = this->get_particles().end();
           for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
             {
               // Use std::multimap::emplace_hint to speed up insertion of
@@ -629,13 +570,13 @@ namespace aspect
               // that report a -std=c++11 (like gcc 4.6) implement it, so
               // require C++14 instead.
 #ifdef DEAL_II_WITH_CXX14
-              position_hint = particles.emplace_hint(position_hint,
-                                                     std::make_pair(cell->level(),cell->index()),
-                                                     Particle<dim>(pdata,property_manager->get_property_pool()));
+              position_hint = particle_handler->get_particles().emplace_hint(position_hint,
+                                                                             std::make_pair(cell->level(),cell->index()),
+                                                                             Particle<dim>(pdata,property_manager->get_property_pool()));
 #else
-              position_hint = particles.insert(position_hint,
-                                               std::make_pair(std::make_pair(cell->level(),cell->index()),
-                                                              Particle<dim>(pdata,property_manager->get_property_pool())));
+              position_hint = particle_handler->get_particles().insert(position_hint,
+                                                                       std::make_pair(std::make_pair(cell->level(),cell->index()),
+                                                                                      Particle<dim>(pdata,property_manager->get_property_pool())));
 #endif
               const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(cell, position_hint->second.get_location());
               position_hint->second.set_reference_location(p_unit);
@@ -648,7 +589,7 @@ namespace aspect
           for (unsigned int child_index=0; child_index<GeometryInfo<dim>::max_children_per_cell; ++child_index)
             {
               const typename parallel::distributed::Triangulation<dim>::cell_iterator child = cell->child(child_index);
-              position_hints[child_index] = particles.upper_bound(std::make_pair(child->level(),child->index()));
+              position_hints[child_index] = this->get_particles().upper_bound(std::make_pair(child->level(),child->index()));
             }
 
           for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
@@ -671,13 +612,13 @@ namespace aspect
                           // that report a -std=c++11 (like gcc 4.6) implement it, so
                           // require C++14 instead.
 #ifdef DEAL_II_WITH_CXX14
-                          position_hints[child_index] = particles.emplace_hint(position_hints[child_index],
-                                                                               std::make_pair(child->level(),child->index()),
-                                                                               std::move(p));
+                          position_hints[child_index] = particle_handler->get_particles().emplace_hint(position_hints[child_index],
+                                                                                                       std::make_pair(child->level(),child->index()),
+                                                                                                       std::move(p));
 #else
-                          position_hints[child_index] = particles.insert(position_hints[child_index],
-                                                                         std::make_pair(std::make_pair(child->level(),child->index()),
-                                                                                        p));
+                          position_hints[child_index] = particle_handler->get_particles().insert(position_hints[child_index],
+                                                                                                 std::make_pair(std::make_pair(child->level(),child->index()),
+                                                                                                     p));
 #endif
                           ++position_hints[child_index];
                           break;
@@ -745,7 +686,7 @@ namespace aspect
                 {
                   const std::pair< const typename std::multimap<types::LevelInd,Particle <dim> >::iterator,
                         const typename std::multimap<types::LevelInd,Particle <dim> >::iterator>
-                        particle_range_in_cell = particles.equal_range(std::make_pair(cell->level(),cell->index()));
+                        particle_range_in_cell = particle_handler->get_particles().equal_range(std::make_pair(cell->level(),cell->index()));
 
                   for (std::set<types::subdomain_id>::const_iterator domain=cell_to_neighbor_subdomain.begin();
                        domain != cell_to_neighbor_subdomain.end(); ++domain)
@@ -957,7 +898,7 @@ namespace aspect
       const std::multimap<types::LevelInd,Particle <dim> > sorted_particles_map(sorted_particles.begin(),
                                                                                 sorted_particles.end());
 
-      particles.insert(sorted_particles_map.begin(),sorted_particles_map.end());
+      particle_handler->get_particles().insert(sorted_particles_map.begin(),sorted_particles_map.end());
     }
 
     template <int dim>
@@ -1335,7 +1276,7 @@ namespace aspect
                   // Also make sure we do not invalidate the iterator we are increasing.
                   const typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_delete = it;
                   it++;
-                  particles.erase(particle_to_delete);
+                  particle_handler->get_particles().erase(particle_to_delete);
                 }
             }
           catch (typename Mapping<dim>::ExcTransformationFailed &)
@@ -1347,7 +1288,7 @@ namespace aspect
               // Also make sure we do not invalidate the iterator we are increasing.
               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_delete = it;
               it++;
-              particles.erase(particle_to_delete);
+              particle_handler->get_particles().erase(particle_to_delete);
             }
         }
     }
@@ -1371,10 +1312,10 @@ namespace aspect
     {
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Generate");
 
-      generator->generate_particles(particles);
+      generator->generate_particles(particle_handler->get_particles());
 
-      update_n_global_particles();
-      update_next_free_particle_index();
+      particle_handler->update_n_global_particles();
+      particle_handler->update_next_free_particle_index();
     }
 
     template <int dim>
@@ -1384,10 +1325,8 @@ namespace aspect
       // Initialize the particle's access to the property_pool. This is necessary
       // even if the Particle do not carry properties, because they need a
       // way to determine the number of properties they carry.
-      typename std::multimap<types::LevelInd,Particle <dim> >::iterator particle = particles.begin(),
-                                                                        end_particle = particles.end();
-      for (; particle!=end_particle; ++particle)
-        particle->second.set_property_pool(property_manager->get_property_pool());
+      for (ParticleIterator<dim> particle = particle_handler->begin(); particle!=particle_handler->end(); ++particle)
+        particle->set_property_pool(property_manager->get_property_pool());
 
 
       // TODO: Change this loop over all cells to use the WorkStream interface
@@ -1395,7 +1334,7 @@ namespace aspect
         {
           TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Initialize properties");
 
-          property_manager->get_property_pool().reserve(2 * particles.size());
+          property_manager->get_property_pool().reserve(2 * particle_handler->n_locally_owned_particles());
 
           // Loop over all cells and initialize the particles cell-wise
           typename DoFHandler<dim>::active_cell_iterator
@@ -1407,7 +1346,7 @@ namespace aspect
               {
                 std::pair< const typename std::multimap<types::LevelInd,Particle <dim> >::iterator,
                     const typename std::multimap<types::LevelInd,Particle <dim> >::iterator>
-                    particle_range_in_cell = particles.equal_range(std::make_pair(cell->level(),cell->index()));
+                    particle_range_in_cell = particle_handler->get_particles().equal_range(std::make_pair(cell->level(),cell->index()));
 
                 // Only initialize particles, if there are any in this cell
                 if (particle_range_in_cell.first != particle_range_in_cell.second)
@@ -1439,7 +1378,7 @@ namespace aspect
               {
                 const std::pair< const typename std::multimap<types::LevelInd,Particle <dim> >::iterator,
                       const typename std::multimap<types::LevelInd,Particle <dim> >::iterator>
-                      particle_range_in_cell = particles.equal_range(std::make_pair(cell->level(),cell->index()));
+                      particle_range_in_cell = particle_handler->get_particles().equal_range(std::make_pair(cell->level(),cell->index()));
 
                 // Only update particles, if there are any in this cell
                 if (particle_range_in_cell.first != particle_range_in_cell.second)
@@ -1455,7 +1394,7 @@ namespace aspect
     World<dim>::advect_particles()
     {
       std::vector<std::pair<types::LevelInd,Particle <dim> > > particles_out_of_cell;
-      particles_out_of_cell.reserve(particles.size());
+      particles_out_of_cell.reserve(particle_handler->n_locally_owned_particles());
 
       {
         // TODO: Change this loop over all cells to use the WorkStream interface
@@ -1471,7 +1410,7 @@ namespace aspect
             {
               const std::pair< const typename std::multimap<types::LevelInd,Particle <dim> >::iterator,
                     const typename std::multimap<types::LevelInd,Particle <dim> >::iterator>
-                    particle_range_in_cell = particles.equal_range(std::make_pair(cell->level(),cell->index()));
+                    particle_range_in_cell = particle_handler->get_particles().equal_range(std::make_pair(cell->level(),cell->index()));
 
               // Only advect particles, if there are any in this cell
               if (particle_range_in_cell.first != particle_range_in_cell.second)
@@ -1504,7 +1443,7 @@ namespace aspect
         update_particles();
 
       // Update the number of global particles if some have left the domain
-      update_n_global_particles();
+      particle_handler->update_n_global_particles();
 
       // Now that all particle information was updated, exchange the new
       // ghost particles.
@@ -1518,7 +1457,9 @@ namespace aspect
     {
       aspect::oarchive oa (os);
       oa << (*this);
+#if !DEAL_II_VERSION_GTE(9,0,0)
       output->save(os);
+#endif
     }
 
     template <int dim>
@@ -1527,7 +1468,9 @@ namespace aspect
     {
       aspect::iarchive ia (is);
       ia >> (*this);
+#if !DEAL_II_VERSION_GTE(9,0,0)
       output->load(is);
+#endif
     }
 
     template <int dim>

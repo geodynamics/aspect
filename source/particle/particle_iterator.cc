@@ -91,7 +91,7 @@ namespace aspect
     ParticleIterator<dim,spacedim> &
     ParticleIterator<dim,spacedim>::operator++()
     {
-      accessor.advance();
+      accessor.next();
       return *this;
     }
 
@@ -103,6 +103,28 @@ namespace aspect
     {
       ParticleIterator tmp(*this);
       operator++ ();
+
+      return tmp;
+    }
+
+
+
+    template <int dim, int spacedim>
+    ParticleIterator<dim,spacedim> &
+    ParticleIterator<dim,spacedim>::operator--()
+    {
+      accessor.prev();
+      return *this;
+    }
+
+
+
+    template <int dim, int spacedim>
+    ParticleIterator<dim,spacedim>
+    ParticleIterator<dim,spacedim>::operator--(int)
+    {
+      ParticleIterator tmp(*this);
+      operator-- ();
 
       return tmp;
     }
