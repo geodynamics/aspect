@@ -18,7 +18,7 @@ set Additional shared libraries = ./libplugin.so
 
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 20000
+set End time                               = 200000
 set Use years in output instead of seconds = true
 set Use direct solver for Stokes system    = false
 set Adiabatic surface temperature          = 1600 
@@ -159,7 +159,7 @@ subsection Postprocess
 
   subsection Visualization
 
-    set List of output variables      = density, viscosity, thermal expansivity, melt material properties
+    set List of output variables      = density, viscosity, thermal expansivity, melt material properties, volumetric strain rate
 
     subsection Melt material properties
       set List of properties = permeability, fluid density, compaction viscosity, fluid viscosity, p_c

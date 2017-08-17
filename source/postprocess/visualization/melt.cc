@@ -115,6 +115,9 @@ namespace aspect
         AssertThrow(melt_outputs != NULL,
                     ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
 
+        const double ref_K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->reference_darcy_coefficient();
+        const double K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->darcy_coefficient(out);
+        const double p_c_scale = std::sqrt(K_D / ref_K_D);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
@@ -137,6 +140,15 @@ namespace aspect
                       }
                     --output_index;
                   }
+                else if (property_names[i] == "p_c")
+                  {
+                    const unsigned int pc_comp_idx = this->introspection().variable("compaction pressure").first_component_index;
+                    const double p_c_bar = input_data.solution_values[q][pc_comp_idx];
+
+                    computed_quantities[q][output_index] = p_c_scale * p_c_bar;
+
+
+                  }
                 else
                   AssertThrow(false, ExcNotImplemented());
               }
@@ -155,10 +167,10 @@ namespace aspect
             {
               const std::string pattern_of_names
                 = "compaction viscosity|fluid viscosity|permeability|"
-                  "fluid density|fluid density gradient";
+                  "fluid density|fluid density gradient|p_c";
 
               prm.declare_entry("List of properties",
-                                "compaction viscosity,permeability",
+                                "compaction viscosity,permeability,p_c",
                                 Patterns::MultipleSelection(pattern_of_names),
                                 "A comma separated list of melt properties that should be "
                                 "written whenever writing graphical output. "

@@ -710,6 +710,12 @@ namespace aspect
                                                   linearized_stokes_initial_guess,
                                                   system_rhs);
 
+        for (unsigned int b=0; b<2; ++b)
+          std::cout << "residual " << b << " " << distributed_stokes_solution.block(b).l2_norm() << std::endl;
+
+        // ignore pressure residual
+        initial_residual = distributed_stokes_solution.block(0).l2_norm();
+
         // Note: the residual is computed with a zero velocity, effectively computing
         // || B^T p - g ||, which we are going to use for our solver tolerance.
         // We do not use the current velocity for the initial residual because

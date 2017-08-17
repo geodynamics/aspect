@@ -119,6 +119,12 @@ namespace aspect
           * permeability divided by fluid viscosity. Units: m^2/Pa/s.
           */
         virtual double reference_darcy_coefficient () const = 0;
+
+        /**
+         *
+         * returns the cell-averaged and cut-off darcy coefficient
+         */
+        double darcy_coefficient (const MaterialModel::MaterialModelOutputs<dim> &outputs) const;
     };
 
 
@@ -208,7 +214,8 @@ namespace aspect
         compute_fluid_pressure_rhs(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                    MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                                    MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                                   const unsigned int q_point) const;
+                                   const unsigned int q_point,
+                                   const double K_D) const;
 
         /**
          * Compute the right-hand side for the porosity system. This function

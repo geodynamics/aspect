@@ -60,7 +60,7 @@ namespace aspect
             const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
             for (unsigned int i=0; i<in.position.size(); ++i)
               {
-                const double porosity = in.composition[i][porosity_idx];
+                const double porosity = std::max(0.0, in.composition[i][porosity_idx]);
 
                 melt_out->compaction_viscosities[i] = 5e20 * 0.05/std::max(porosity,0.00025);
                 melt_out->fluid_viscosities[i]= 10.0;
