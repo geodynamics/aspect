@@ -2193,8 +2193,6 @@ namespace aspect
           if (parameters.free_surface_enabled)
             free_surface->execute ();
 
-          double initial_temperature_residual = 0;
-          double initial_stokes_residual      = 0;
           std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
 
           double initial_residual = 0;
@@ -2206,7 +2204,6 @@ namespace aspect
 
           double switch_initial_residual = 1;
           double newton_residual_for_derivative_scaling_factor = 1;
-          double newton_derivative_scaling_factor = 0;
 
           bool use_picard = true;
 
@@ -2228,10 +2225,7 @@ namespace aspect
               build_advection_preconditioner(AdvectionField::temperature(),
                                              T_preconditioner);
 
-              if (nonlinear_iteration == 0)
-                initial_temperature_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
-
-              const double temperature_residual = solve_advection(AdvectionField::temperature());
+              solve_advection(AdvectionField::temperature());
 
               current_linearization_point.block(introspection.block_indices.temperature)
                 = solution.block(introspection.block_indices.temperature);
