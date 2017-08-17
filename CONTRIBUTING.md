@@ -105,7 +105,7 @@ ways how your contribution will be acknowledged by the ASPECT community:
   issue/pull request.
 - If you contributed significant functionality to the source code we will ask
   you to provide an entry into our
-  [changelog](http://aspect.dealii.org/doc/doxygen/changes_current.html) by
+  [changelog](http://aspect.geodynamics.org/doc/doxygen/changes_current.html) by
   placing a file into the [doc/modules/changes/](doc/modules/changes/) folder.
   This changelog is used to generate our release notes, and remains available
   for all previous releases of ASPECT.
