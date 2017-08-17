@@ -188,74 +188,66 @@ namespace aspect
                                  * JxW;
 
           // and then the matrix, if necessary
-          if (derivative_scaling_factor == 0)
-            {
-              for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                {
-                  if (assemble_newton_stokes_matrix)
+          if (assemble_newton_stokes_matrix)
+            if (derivative_scaling_factor == 0)
+              {
+                for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                  for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                     {
-                      for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-                        {
-                          data.local_matrix(i,j) += (
-                                                      eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j])
-                                                      // assemble \nabla p as -(p, div v):
-                                                      - (pressure_scaling *
-                                                         scratch.div_phi_u[i] * scratch.phi_p[j])
-                                                      // assemble the term -div(u) as -(div u, q).
-                                                      // Note the negative sign to make this
-                                                      // operator adjoint to the grad p term:
-                                                      - (pressure_scaling *
-                                                         scratch.phi_p[i] * scratch.div_phi_u[j]))
-                                                    * JxW;
-                        }
+                      data.local_matrix(i,j) += (
+                                                  eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j])
+                                                  // assemble \nabla p as -(p, div v):
+                                                  - (pressure_scaling *
+                                                     scratch.div_phi_u[i] * scratch.phi_p[j])
+                                                  // assemble the term -div(u) as -(div u, q).
+                                                  // Note the negative sign to make this
+                                                  // operator adjoint to the grad p term:
+                                                  - (pressure_scaling *
+                                                     scratch.phi_p[i] * scratch.div_phi_u[j]))
+                                                * JxW;
                     }
-                }
-            }
-          else
-            {
-              const MaterialModel::MaterialModelDerivatives<dim> *derivatives
-                = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+              }
+            else
+              {
+                const MaterialModel::MaterialModelDerivatives<dim> *derivatives
+                  = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
 
-              // This one is only available in debug mode, because normally
-              // the AssertTrow in the preconditioner should already have
-              // caught the problem.
-              Assert(derivatives != NULL,
-                     ExcMessage ("Error: The Newton method requires the material to "
-                                 "compute derivatives."));
+                // This one is only available in debug mode, because normally
+                // the AssertTrow in the preconditioner should already have
+                // caught the problem.
+                Assert(derivatives != NULL,
+                       ExcMessage ("Error: The Newton method requires the material to "
+                                   "compute derivatives."));
 
-              const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
-              const double viscosity_derivative_wrt_pressure = derivatives->viscosity_derivative_wrt_pressure[q];
+                const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
+                const double viscosity_derivative_wrt_pressure = derivatives->viscosity_derivative_wrt_pressure[q];
 
-              // todo: make this 0.9 into a global input parameter
-              const double alpha  = Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, 0.9);
+                // todo: make this 0.9 into a global input parameter
+                const double alpha  = Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, 0.9);
 
-              for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                {
-                  if (assemble_newton_stokes_matrix)
-                    for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-                      {
-                        data.local_matrix(i,j) += ( (eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                                    + derivative_scaling_factor * alpha * 2.0 * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate)
-                                                    + derivative_scaling_factor * pressure_scaling * scratch.grads_phi_u[i] * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * strain_rate
-                                                    // assemble \nabla p as -(p, div v):
-                                                    - (pressure_scaling *
-                                                       scratch.div_phi_u[i] * scratch.phi_p[j])
-                                                    // assemble the term -div(u) as -(div u, q).
-                                                    // Note the negative sign to make this
-                                                    // operator adjoint to the grad p term:
-                                                    - (pressure_scaling *
-                                                       scratch.phi_p[i] * scratch.div_phi_u[j]))
-                                                  * JxW;
+                for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                  for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                    {
+                      data.local_matrix(i,j) += ( (eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                                                  + derivative_scaling_factor * alpha * 2.0 * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate)
+                                                  + derivative_scaling_factor * pressure_scaling * scratch.grads_phi_u[i] * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * strain_rate
+                                                  // assemble \nabla p as -(p, div v):
+                                                  - (pressure_scaling *
+                                                     scratch.div_phi_u[i] * scratch.phi_p[j])
+                                                  // assemble the term -div(u) as -(div u, q).
+                                                  // Note the negative sign to make this
+                                                  // operator adjoint to the grad p term:
+                                                  - (pressure_scaling *
+                                                     scratch.phi_p[i] * scratch.div_phi_u[j]))
+                                                * JxW;
 
-                        Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),
-                               ExcMessage ("Error: Assembly matrix is not finite." +
-                                           Utilities::to_string(data.local_matrix(i,j)) +
-                                           " = " + Utilities::to_string(eta)));
-                      }
-                }
+                      Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),
+                             ExcMessage ("Error: Assembly matrix is not finite." +
+                                         Utilities::to_string(data.local_matrix(i,j)) +
+                                         " = " + Utilities::to_string(eta)));
+                    }
 #if DEBUG
-              // Testing whether the Jacobian is Symmetric Positive Definite (SPD)
-              if (assemble_newton_stokes_matrix)
+                // Testing whether the Jacobian is Symmetric Positive Definite (SPD)
                 {
                   bool testing = true;
                   for (unsigned int sample = 0; sample < 10; ++sample)
@@ -297,7 +289,7 @@ namespace aspect
                     std::cout << std::endl;
                 }
 #endif
-            }
+              }
         }
     }
 
