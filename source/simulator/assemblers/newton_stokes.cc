@@ -189,110 +189,108 @@ namespace aspect
 
           // and then the matrix, if necessary
           if (assemble_newton_stokes_matrix)
-            if (derivative_scaling_factor == 0)
-              {
-                for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                  for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-                    {
-                      data.local_matrix(i,j) += (
-                                                  eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j])
-                                                  // assemble \nabla p as -(p, div v):
-                                                  - (pressure_scaling *
-                                                     scratch.div_phi_u[i] * scratch.phi_p[j])
-                                                  // assemble the term -div(u) as -(div u, q).
-                                                  // Note the negative sign to make this
-                                                  // operator adjoint to the grad p term:
-                                                  - (pressure_scaling *
-                                                     scratch.phi_p[i] * scratch.div_phi_u[j]))
-                                                * JxW;
-                    }
-              }
-            else
-              {
-                const MaterialModel::MaterialModelDerivatives<dim> *derivatives
-                  = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+            {
+              // always compute the common terms in the Newton matrix
+              for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                  {
+                    data.local_matrix(i,j) += (
+                                                eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j])
+                                                // assemble \nabla p as -(p, div v):
+                                                - (pressure_scaling *
+                                                   scratch.div_phi_u[i] * scratch.phi_p[j])
+                                                // assemble the term -div(u) as -(div u, q).
+                                                // Note the negative sign to make this
+                                                // operator adjoint to the grad p term:
+                                                - (pressure_scaling *
+                                                   scratch.phi_p[i] * scratch.div_phi_u[j]))
+                                              * JxW;
+                  }
 
-                // This one is only available in debug mode, because normally
-                // the AssertTrow in the preconditioner should already have
-                // caught the problem.
-                Assert(derivatives != NULL,
-                       ExcMessage ("Error: The Newton method requires the material to "
-                                   "compute derivatives."));
-
-                const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
-                const double viscosity_derivative_wrt_pressure = derivatives->viscosity_derivative_wrt_pressure[q];
-
-                // todo: make this 0.9 into a global input parameter
-                const double alpha  = Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, 0.9);
-
-                for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                  for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-                    {
-                      data.local_matrix(i,j) += ( (eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                                  + derivative_scaling_factor * alpha * 2.0 * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate)
-                                                  + derivative_scaling_factor * pressure_scaling * scratch.grads_phi_u[i] * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * strain_rate
-                                                  // assemble \nabla p as -(p, div v):
-                                                  - (pressure_scaling *
-                                                     scratch.div_phi_u[i] * scratch.phi_p[j])
-                                                  // assemble the term -div(u) as -(div u, q).
-                                                  // Note the negative sign to make this
-                                                  // operator adjoint to the grad p term:
-                                                  - (pressure_scaling *
-                                                     scratch.phi_p[i] * scratch.div_phi_u[j]))
-                                                * JxW;
-
-                      Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),
-                             ExcMessage ("Error: Assembly matrix is not finite." +
-                                         Utilities::to_string(data.local_matrix(i,j)) +
-                                         " = " + Utilities::to_string(eta)));
-                    }
-#if DEBUG
-                // Testing whether the Jacobian is Symmetric Positive Definite (SPD)
+              // then also see whether we have to add terms due to the
+              // Newton linearization
+              if (derivative_scaling_factor == 0)
                 {
-                  bool testing = true;
-                  for (unsigned int sample = 0; sample < 10; ++sample)
-                    {
-                      Vector<double> tmp (stokes_dofs_per_cell);
+                  const MaterialModel::MaterialModelDerivatives<dim> *derivatives
+                    = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
 
-                      for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                        if (scratch.finite_element_values.get_fe().system_to_component_index(i).first < dim)
-                          tmp[i] = Utilities::generate_normal_random_number (0, 1);
+                  // This one is only available in debug mode, because normally
+                  // the AssertTrow in the preconditioner should already have
+                  // caught the problem.
+                  Assert(derivatives != NULL,
+                         ExcMessage ("Error: The Newton method requires the material to "
+                                     "compute derivatives."));
 
-                      const double abc =  data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp);
-                      if (abc < -1e-12*data.local_matrix.frobenius_norm())
-                        {
-                          testing = false;
-                          std::cout << sample << " Not SPD: " << abc << "; " << std::endl;
+                  const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
+                  const double viscosity_derivative_wrt_pressure = derivatives->viscosity_derivative_wrt_pressure[q];
 
-                          for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                            {
-                              for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-                                std::cout << std::setprecision(1)  << data.local_matrix(i,j) << "," << std::flush;
-                              std::cout << "},{" << std::endl;
-                            }
-                          std::cout << std::endl;
-                          std::cout << std::setprecision(6) << std::endl;
+                  // todo: make this 0.9 into a global input parameter
+                  const double alpha  = Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, 0.9);
 
-                          Assert(testing,ExcMessage ("Error: Assembly not SPD!."));
+                  for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                    for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                      {
+                        data.local_matrix(i,j) += ( derivative_scaling_factor * alpha * 2.0 * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate)
+                                                    + derivative_scaling_factor * pressure_scaling * scratch.grads_phi_u[i] * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * strain_rate )
+                                                  * JxW;
 
-                          // Testing whether all entries are finite.
-                          for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                            {
-                              for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-                                {
-                                  Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),ExcMessage ("Error: Assembly matrix is not finite."));
-                                }
-                            }
-                        }
-                    }
-                  if (testing == false)
-                    std::cout << std::endl;
+                        Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),
+                               ExcMessage ("Error: Assembly matrix is not finite." +
+                                           Utilities::to_string(data.local_matrix(i,j)) +
+                                           " = " + Utilities::to_string(eta)));
+                      }
                 }
-#endif
+#if DEBUG
+              // regardless of whether we do or do not add the Newton
+              // linearization terms, we ought to test whether the top-left
+              // block of the matrix is Symmetric Positive Definite (SPD).
+              //
+              // the reason why this is not entirely obvious is described in
+              // the paper that discusses the Newton implementation
+              {
+                bool testing = true;
+                for (unsigned int sample = 0; sample < 10; ++sample)
+                  {
+                    Vector<double> tmp (stokes_dofs_per_cell);
+
+                    for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                      if (scratch.finite_element_values.get_fe().system_to_component_index(i).first < dim)
+                        tmp[i] = Utilities::generate_normal_random_number (0, 1);
+
+                    const double abc =  data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp);
+                    if (abc < -1e-12*data.local_matrix.frobenius_norm())
+                      {
+                        testing = false;
+                        std::cout << sample << " Not SPD: " << abc << "; " << std::endl;
+
+                        for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                          {
+                            for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                              std::cout << std::setprecision(1)  << data.local_matrix(i,j) << "," << std::flush;
+                            std::cout << "},{" << std::endl;
+                          }
+                        std::cout << std::endl;
+                        std::cout << std::setprecision(6) << std::endl;
+
+                        Assert(testing,ExcMessage ("Error: Assembly not SPD!."));
+
+                        // Testing whether all entries are finite.
+                        for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                          {
+                            for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                              {
+                                Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),ExcMessage ("Error: Assembly matrix is not finite."));
+                              }
+                          }
+                      }
+                  }
+                if (testing == false)
+                  std::cout << std::endl;
               }
+#endif
+            }
         }
     }
-
 
 
     template <int dim>
