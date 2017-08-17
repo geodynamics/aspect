@@ -73,19 +73,40 @@ namespace aspect
       static void create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output);
 
       /**
-       * Gets the Newton derivative scaling factor used for scaling the
+       * Return the Newton derivative scaling factor used for scaling the
        * derivative part of the Newton Stokes solver in the assembly.
+       *
+       * The exact Newton matrix consists of the Stokes matrix plus a term
+       * that results from the linearization of the material coefficients.
+       * The scaling factor multiplies these additional terms. In a full
+       * Newton method, it would be equal to one, but it can be chosen
+       * smaller in cases where the resulting linear system has undesirable
+       * properties.
+       *
+       * If the scaling factor is zero, the resulting matrix is simply the
+       * Stokes matrix, and the resulting scheme is a defect correction
+       * (i.e., Picard iteration).
        */
       double get_newton_derivative_scaling_factor() const;
 
       /**
-       * Sets the Newton derivative scaling factor used for scaling the
+       * Set the Newton derivative scaling factor used for scaling the
        * derivative part of the Newton Stokes solver in the assembly.
+       *
+       * See the get_newton_derivative_scaling_factor() function for an
+       * explanation of the purpose of this factor.
        */
       void set_newton_derivative_scaling_factor(const double newton_derivative_scaling_factor);
 
 
     private:
+      /**
+       * A scaling factor for those terms of the Newton matrix that
+       * result from the linearization of the viscosity.
+       *
+       * See the get_newton_derivative_scaling_factor() function for an
+       * explanation of the purpose of this factor.
+       */
       double newton_derivative_scaling_factor;
   };
 
