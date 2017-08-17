@@ -91,7 +91,7 @@ namespace aspect
     ParticleIterator<dim,spacedim> &
     ParticleIterator<dim,spacedim>::operator++()
     {
-      accessor.advance();
+      accessor.next();
       return *this;
     }
 
@@ -113,7 +113,7 @@ namespace aspect
     ParticleIterator<dim,spacedim> &
     ParticleIterator<dim,spacedim>::operator--()
     {
-      accessor.decrease();
+      accessor.prev();
       return *this;
     }
 

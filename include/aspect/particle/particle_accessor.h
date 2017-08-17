@@ -138,6 +138,9 @@ namespace aspect
 
         /**
          * Get a cell iterator to the cell surrounding the current particle.
+         * As particles are organized in the structure of a triangulation,
+         * but the triangulation itself is not stored in the particle this
+         * operation requires a reference to the triangulation.
          */
         typename parallel::distributed::Triangulation<dim,spacedim>::cell_iterator
         get_surrounding_cell (const parallel::distributed::Triangulation<dim,spacedim> &triangulation) const;
@@ -151,12 +154,12 @@ namespace aspect
         /**
          * Advance the ParticleAccessor to the next particle.
          */
-        void advance ();
+        void next ();
 
         /**
          * Move the ParticleAccessor to the previous particle.
          */
-        void decrease ();
+        void prev ();
 
         /**
          * Inequality operator.

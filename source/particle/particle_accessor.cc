@@ -172,7 +172,7 @@ namespace aspect
 
     template <int dim, int spacedim>
     void
-    ParticleAccessor<dim,spacedim>::advance ()
+    ParticleAccessor<dim,spacedim>::next ()
     {
       Assert (particle != map->end(),ExcInternalError());
       ++particle;
@@ -182,7 +182,7 @@ namespace aspect
 
     template <int dim, int spacedim>
     void
-    ParticleAccessor<dim,spacedim>::decrease ()
+    ParticleAccessor<dim,spacedim>::prev ()
     {
       Assert (particle != map->begin(),ExcInternalError());
       --particle;

@@ -32,35 +32,39 @@ namespace aspect
       global_number_of_particles(0),
       global_max_particles_per_cell(0),
       next_free_particle_index(0)
-    {
-      std::cout << "Default constructor";
-    }
+    {}
+
+
 
     template <int dim,int spacedim>
     ParticleHandler<dim,spacedim>::ParticleHandler(const parallel::distributed::Triangulation<dim,spacedim> &triangulation,
-                                                   MPI_Comm mpi_communicator)
+                                                   const MPI_Comm mpi_communicator)
       :
       triangulation(&triangulation, typeid(*this).name()),
       mpi_communicator(mpi_communicator),
       global_number_of_particles(0),
       global_max_particles_per_cell(0),
       next_free_particle_index(0)
-    {
-      std::cout << "Standard constructor";
-    }
+    {}
+
+
 
     template <int dim,int spacedim>
     ParticleHandler<dim,spacedim>::~ParticleHandler()
     {}
 
+
+
     template <int dim,int spacedim>
     void
     ParticleHandler<dim,spacedim>::initialize(const parallel::distributed::Triangulation<dim,spacedim> &tria,
-                                              MPI_Comm communicator)
+                                              const MPI_Comm communicator)
     {
       triangulation = &tria;
       mpi_communicator = communicator;
     }
+
+
 
     template <int dim,int spacedim>
     void
@@ -72,12 +76,16 @@ namespace aspect
       global_max_particles_per_cell = 0;
     }
 
+
+
     template <int dim,int spacedim>
     typename ParticleHandler<dim,spacedim>::particle_iterator
     ParticleHandler<dim,spacedim>::begin() const
     {
       return particle_iterator(particles,(const_cast<ParticleHandler<dim,spacedim> *> (this))->particles.begin());
     }
+
+
 
     template <int dim,int spacedim>
     typename ParticleHandler<dim,spacedim>::particle_iterator
@@ -86,12 +94,16 @@ namespace aspect
       return ParticleHandler<dim,spacedim>::particle_iterator(particles,particles.begin());
     }
 
+
+
     template <int dim,int spacedim>
     typename ParticleHandler<dim,spacedim>::particle_iterator
     ParticleHandler<dim,spacedim>::end() const
     {
       return (const_cast<ParticleHandler<dim,spacedim> *> (this))->end();
     }
+
+
 
     template <int dim,int spacedim>
     typename ParticleHandler<dim,spacedim>::particle_iterator
@@ -100,8 +112,10 @@ namespace aspect
       return ParticleHandler<dim,spacedim>::particle_iterator(particles,particles.end());
     }
 
+
+
     template <int dim,int spacedim>
-    std::pair<typename ParticleHandler<dim,spacedim>::particle_iterator,typename ParticleHandler<dim,spacedim>::particle_iterator>
+    boost::iterator_range<typename ParticleHandler<dim,spacedim>::particle_iterator>
     ParticleHandler<dim,spacedim>::particle_range_in_cell(const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell)
     {
       const types::LevelInd level_index = std::make_pair<int, int> (cell->level(),cell->index());
@@ -109,9 +123,11 @@ namespace aspect
             typename std::multimap<types::LevelInd, Particle<dim> >::iterator> particles_in_cell
             = particles.equal_range(level_index);
 
-      return std::make_pair(particle_iterator(particles,particles_in_cell.first),
-                            particle_iterator(particles,particles_in_cell.second));
+      return boost::make_iterator_range(particle_iterator(particles,particles_in_cell.first),
+                                        particle_iterator(particles,particles_in_cell.second));
     }
+
+
 
     template <int dim,int spacedim>
     void
@@ -120,12 +136,16 @@ namespace aspect
       particles.erase(particle->particle);
     }
 
+
+
     template <int dim,int spacedim>
     std::multimap<types::LevelInd, Particle<dim,spacedim> > &
     ParticleHandler<dim,spacedim>::get_particles()
     {
       return particles;
     }
+
+
 
     template <int dim,int spacedim>
     const std::multimap<types::LevelInd, Particle<dim,spacedim> > &
@@ -134,12 +154,16 @@ namespace aspect
       return particles;
     }
 
+
+
     template <int dim,int spacedim>
     types::particle_index
     ParticleHandler<dim,spacedim>::n_global_particles() const
     {
       return global_number_of_particles;
     }
+
+
 
     template <int dim,int spacedim>
     types::particle_index
@@ -148,12 +172,16 @@ namespace aspect
       return particles.size();
     }
 
+
+
     template <int dim,int spacedim>
     void
     ParticleHandler<dim,spacedim>::update_n_global_particles()
     {
       global_number_of_particles = dealii::Utilities::MPI::sum (particles.size(), mpi_communicator);
     }
+
+
 
     template <int dim,int spacedim>
     unsigned int
@@ -162,6 +190,8 @@ namespace aspect
       const types::LevelInd found_cell = std::make_pair<int, int> (cell->level(),cell->index());
       return particles.count(found_cell);
     }
+
+
 
     template <int dim,int spacedim>
     void
@@ -173,6 +203,8 @@ namespace aspect
 
       next_free_particle_index = dealii::Utilities::MPI::max (locally_highest_index, mpi_communicator) + 1;
     }
+
+
 
     template <int dim,int spacedim>
     void

@@ -33,6 +33,7 @@
 #include <deal.II/base/smartpointer.h>
 
 #include <boost/serialization/map.hpp>
+#include <boost/range/iterator_range.hpp>
 
 namespace aspect
 {
@@ -65,13 +66,16 @@ namespace aspect
         ParticleHandler();
 
         /**
-         * Default constructor.
+         * Constructor that initializes the particle handler with respect to
+         * a given triangulation and MPI communicator. Pointers to the
+         * triangulation and the communicator are stored inside of the particle
+         *
          */
         ParticleHandler(const parallel::distributed::Triangulation<dim,spacedim> &tria,
-                        MPI_Comm mpi_communicator);
+                        const MPI_Comm mpi_communicator);
 
         /**
-         * Default destructor.
+         * Destructor.
          */
         ~ParticleHandler();
 
@@ -82,7 +86,7 @@ namespace aspect
          * serialization of a particle handler.
          */
         void initialize(const parallel::distributed::Triangulation<dim,spacedim> &tria,
-                        MPI_Comm mpi_communicator);
+                        const MPI_Comm mpi_communicator);
 
         /**
          * Clear all particle related data.
@@ -97,61 +101,37 @@ namespace aspect
         /**
          * Return an iterator to the first particle.
          */
-        ParticleHandler<dim,spacedim>::particle_iterator begin();
+        particle_iterator begin();
 
         /**
          * Return an iterator past the end of the particles.
          */
-        ParticleHandler<dim,spacedim>::particle_iterator end() const;
+        particle_iterator end() const;
 
         /**
          * Return an iterator past the end of the particles.
          */
-        ParticleHandler<dim,spacedim>::particle_iterator end();
+        particle_iterator end();
 
         /**
          * Return a pair of particle iterators that mark the begin and end of
          * the particles in a particular cell. The last iterator is the first
-         * particle that is not longer in the cell.
+         * particle that is no longer in the cell.
          */
-        std::pair<ParticleHandler<dim,spacedim>::particle_iterator,ParticleHandler<dim,spacedim>::particle_iterator>
-        particle_range_in_cell(const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const;
-
-        /**
-         * Return an iterator past the end of the particles.
-         */
-        std::pair<ParticleHandler<dim,spacedim>::particle_iterator,ParticleHandler<dim,spacedim>::particle_iterator>
+        boost::iterator_range<particle_iterator>
         particle_range_in_cell(const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell);
 
         /**
          * Remove a particle pointed to by the iterator.
          */
         void
-        remove_particle(const typename ParticleHandler<dim,spacedim>::particle_iterator &particle);
+        remove_particle(const particle_iterator &particle);
 
         /**
-         * Access to particles in this handler.
-         * TODO: This function eventually needs to go, to not expose internal structure.
-         * This can only be done once World no longer uses this function.
-         */
-        std::multimap<types::LevelInd, Particle<dim,spacedim> > &
-        get_particles();
-
-        /**
-         * Const access to particles in this world.
-         * TODO: This function needs to go to not expose internal structure.
-         * This can only be done once World no longer uses this function.
-         */
-        const std::multimap<types::LevelInd, Particle<dim,spacedim> > &
-        get_particles() const;
-
-        /**
-         * Return the total number of particles in the simulation. Note that
-         * this function does
-         * not compute the number of particles, because that is an expensive
-         * global MPI operation. Instead it returns the number, which is
-         * updated internally every time it might change by a call to
-         * update_n_global_particles().
+         * Return the total number of particles that were managed by this class
+         * the last time the update_n_global_particles() function was called.
+         * The actual number of particles may have changed since then if
+         * particles have been added or removed.
          *
          * @return Total number of particles in simulation.
          */
@@ -173,6 +153,23 @@ namespace aspect
          */
         template <class Archive>
         void serialize (Archive &ar, const unsigned int version);
+
+      protected:
+        /**
+         * Access to particles in this handler.
+         * TODO: This function eventually needs to go, to not expose internal structure.
+         * This can only be done once World no longer uses this function.
+         */
+        std::multimap<types::LevelInd, Particle<dim,spacedim> > &
+        get_particles();
+
+        /**
+         * Const access to particles in this world.
+         * TODO: This function needs to go to not expose internal structure.
+         * This can only be done once World no longer uses this function.
+         */
+        const std::multimap<types::LevelInd, Particle<dim,spacedim> > &
+        get_particles() const;
 
       private:
         /**
@@ -201,9 +198,9 @@ namespace aspect
          * The maximum number of particles per cell in the global domain. This
          * variable is important to store and load particle data during
          * repartition and serialization of the solution. Note that the
-         * variable is only updated when it is needed, e.g. before or after
-         * serialization (before/after mesh refinement, before creating a
-         * checkpoint and after resuming from a checkpoint).
+         * variable is only updated when it is needed, e.g. after particle
+         * movement, before/after mesh refinement, before creating a
+         * checkpoint and after resuming from a checkpoint.
          */
         unsigned int global_max_particles_per_cell;
 
@@ -253,7 +250,11 @@ namespace aspect
     template <class Archive>
     void ParticleHandler<dim,spacedim>::serialize (Archive &ar, const unsigned int)
     {
-      ar &particles
+      // Note that we do not serialize the particle data itself. Instead we
+      // use the serialization functionality of the triangulation class, because
+      // this guarantees that data is immediately shipped to new processes if
+      // the domain is distributed differently after resuming from a checkpoint.
+      ar //&particles
       &global_number_of_particles
       &global_max_particles_per_cell
       &next_free_particle_index;

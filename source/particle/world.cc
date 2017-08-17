@@ -270,7 +270,7 @@ namespace aspect
 
       // All particles have been stored, when we reach this point. Empty the
       // map and fill with new particles.
-      particle_handler->clear();
+      particle_handler->get_particles().clear();
 
       // If we are resuming from a checkpoint, we first have to register the
       // store function again, to set the triangulation in the same state as
@@ -407,9 +407,8 @@ namespace aspect
                 else if ((particle_load_balancing & ParticleLoadBalancing::remove_particles) &&
                          (n_particles_in_cell > max_particles_per_cell))
                   {
-                    const std::pair<typename ParticleHandler<dim>::particle_iterator,
-                          typename ParticleHandler<dim>::particle_iterator> particles_in_cell
-                          = particle_handler->particle_range_in_cell(cell);
+                    const boost::iterator_range<typename ParticleHandler<dim>::particle_iterator> particles_in_cell
+                      = particle_handler->particle_range_in_cell(cell);
 
                     const unsigned int n_particles_to_remove = n_particles_in_cell - max_particles_per_cell;
 
@@ -422,7 +421,7 @@ namespace aspect
                     for (std::set<unsigned int>::const_iterator id = particle_ids_to_remove.begin();
                          id != particle_ids_to_remove.end(); ++id)
                       {
-                        typename ParticleHandler<dim>::particle_iterator particle_to_remove = particles_in_cell.first;
+                        typename ParticleHandler<dim>::particle_iterator particle_to_remove = particles_in_cell.begin();
                         std::advance(particle_to_remove,*id);
 
                         particles_to_remove.push_back(particle_to_remove);
@@ -478,35 +477,28 @@ namespace aspect
       if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST
           || status == parallel::distributed::Triangulation<dim>::CELL_REFINE)
         {
-          const std::pair<typename ParticleHandler<dim>::particle_iterator,
-                typename ParticleHandler<dim>::particle_iterator> particles_in_cell
-                = particle_handler->particle_range_in_cell(cell);
-          n_particles_in_cell = std::distance(particles_in_cell.first,particles_in_cell.second);
+          const boost::iterator_range<typename ParticleHandler<dim>::particle_iterator> particles_in_cell
+            = particle_handler->particle_range_in_cell(cell);
+          n_particles_in_cell = std::distance(particles_in_cell.begin(),particles_in_cell.end());
 
           unsigned int *ndata = static_cast<unsigned int *> (data);
           *ndata = n_particles_in_cell;
           data = static_cast<void *> (ndata + 1);
 
-          for (typename ParticleHandler<dim>::particle_iterator particle = particles_in_cell.first;
-               particle != particles_in_cell.second; ++particle)
+          for (typename ParticleHandler<dim>::particle_iterator particle = particles_in_cell.begin();
+               particle != particles_in_cell.end(); ++particle)
             {
               particle->write_data(data);
             }
         }
       // If this cell is the parent of children that will be coarsened, collect
       // the particles of all children.
-      // First check if the maximum number of particles per cell is exceeded for
-      // the new cell, and if that is the case, only store every 2^dim 'th
-      // particle.
       else if (status == parallel::distributed::Triangulation<dim>::CELL_COARSEN)
         {
           for (unsigned int child_index = 0; child_index < GeometryInfo<dim>::max_children_per_cell; ++child_index)
             {
               const typename parallel::distributed::Triangulation<dim>::cell_iterator child = cell->child(child_index);
-              const std::pair<typename ParticleHandler<dim>::particle_iterator,
-                    typename ParticleHandler<dim>::particle_iterator> particles_in_cell
-                    = particle_handler->particle_range_in_cell(cell);
-              n_particles_in_cell += std::distance(particles_in_cell.first,particles_in_cell.second);
+              n_particles_in_cell += particle_handler->n_particles_in_cell(child);
             }
 
           unsigned int *ndata = static_cast<unsigned int *> (data);
@@ -517,12 +509,11 @@ namespace aspect
           for (unsigned int child_index = 0; child_index < GeometryInfo<dim>::max_children_per_cell; ++child_index)
             {
               const typename parallel::distributed::Triangulation<dim>::cell_iterator child = cell->child(child_index);
-              const std::pair<typename ParticleHandler<dim>::particle_iterator,
-                    typename ParticleHandler<dim>::particle_iterator> particles_in_cell
-                    = particle_handler->particle_range_in_cell(cell);
+              const boost::iterator_range<typename ParticleHandler<dim>::particle_iterator> particles_in_cell
+                = particle_handler->particle_range_in_cell(child);
 
-              for (typename ParticleHandler<dim>::particle_iterator particle = particles_in_cell.first;
-                   particle != particles_in_cell.second; ++particle)
+              for (typename ParticleHandler<dim>::particle_iterator particle = particles_in_cell.begin();
+                   particle != particles_in_cell.end(); ++particle)
                 {
                   particle->write_data(data);
                 }
