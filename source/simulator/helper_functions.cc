@@ -1500,10 +1500,10 @@ namespace aspect
 
     // we use a different (potentially smaller) time step than in the advection scheme,
     // and we want all of our reaction time steps (within one advection step) to have the same size
-    const int number_of_reaction_steps = std::max((int) (time_step / parameters.reaction_time_step),
-                                                  std::max(parameters.reaction_steps_per_advection_step,1));
+    const unsigned int number_of_reaction_steps = std::max(static_cast<unsigned int>(time_step / parameters.reaction_time_step),
+                                                           std::max(parameters.reaction_steps_per_advection_step,1U));
 
-    const double reaction_time_step_size = time_step / ((double) number_of_reaction_steps);
+    const double reaction_time_step_size = time_step / static_cast<double>(number_of_reaction_steps);
 
     Assert (reaction_time_step_size > 0,
             ExcMessage("Reaction time step must be greater than 0."));
