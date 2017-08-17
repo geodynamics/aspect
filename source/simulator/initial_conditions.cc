@@ -331,31 +331,32 @@ namespace aspect
         LinearAlgebra::BlockVector system_tmp;
         system_tmp.reinit (system_rhs);
 
+        // First grab the correct pressure to work on:
+        const FEVariable<dim> &pressure_variable
+          = parameters.include_melt_transport ?
+            introspection.variable("fluid pressure")
+            : introspection.variable("pressure");
+        const unsigned int pressure_comp = pressure_variable.first_component_index;
+        const ComponentMask pressure_component_mask = pressure_variable.component_mask;
+
         // interpolate the pressure given by the adiabatic conditions
         // object onto the solution space. note that interpolate
         // wants a function that represents all components of the
         // solution vector, so create such a function object
         // that is simply zero for all velocity components
-        const unsigned int pressure_comp =
-          parameters.include_melt_transport ?
-          introspection.variable("fluid pressure").first_component_index
-          :
-          introspection.component_indices.pressure;
-
         VectorTools::interpolate (*mapping, dof_handler,
                                   VectorFunctionFromScalarFunctionObject<dim> (std_cxx11::bind (&AdiabaticConditions::Interface<dim>::pressure,
                                                                                std_cxx11::cref (*adiabatic_conditions),
                                                                                std_cxx11::_1),
                                                                                pressure_comp,
                                                                                introspection.n_components),
-                                  system_tmp);
+                                  system_tmp,
+                                  pressure_component_mask);
 
         // we may have hanging nodes, so apply constraints
         constraints.distribute (system_tmp);
 
-        const unsigned int pressure_block = (parameters.include_melt_transport ?
-                                             introspection.variable("fluid pressure").block_index
-                                             : introspection.block_indices.pressure);
+        const unsigned int pressure_block = pressure_variable.block_index;
         old_solution.block(pressure_block) = system_tmp.block(pressure_block);
       }
     else
