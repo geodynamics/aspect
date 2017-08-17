@@ -51,14 +51,11 @@ namespace aspect
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             // extract the velocity gradients
-            double div_u = 0.0;
             Tensor<2,dim> grad_u;
             for (unsigned int d=0; d<dim; ++d)
-              {
-                grad_u[d] = input_data.solution_gradients[q][d];
-                div_u += grad_u[d][d];
-              }
+              grad_u[d] = input_data.solution_gradients[q][d];
 
+            const double div_u = trace(grad_u);
             computed_quantities[q](0) = div_u;
           }
       }
@@ -79,8 +76,9 @@ namespace aspect
                                                   "volumetric strain rate",
                                                   "A visualization output object that generates output "
                                                   "for the volumetric strain rate, i.e., for the quantity "
-                                                  "$\\nabla\\mathbf u$. "
-                                                  "This should be zero (up to the solver tolerance) in incompressible "
+                                                  "$\\nabla\\cdot\\mathbf u = \\textrm{div}\\; \\mathbf u = "
+                                                  "\\textrm{trace}\\; \\varepsilon(\\mathbf u)$. "
+                                                  "This should be zero (in some average sense) in incompressible "
                                                   "convection models, but can be non-zero in compressible models and "
                                                   "models with melt transport.")
     }

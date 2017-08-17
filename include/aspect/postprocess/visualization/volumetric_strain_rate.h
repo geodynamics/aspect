@@ -35,8 +35,9 @@ namespace aspect
       /**
        * A class derived from DataPostprocessor that takes an output vector
        * and computes a variable that represents the volumetric strain rate at every
-       * point. The volumetric strain rate is defined as $\nabla \mathbf u$
-       * (or the trace of the strain rate tensor).
+       * point. The volumetric strain rate is defined as the divergence of the velocity
+       * (or the trace of the strain rate tensor):
+       * $\nabla\cdot\mathbf u = \textrm{div}\; \mathbf u = \textrm{trace}\; \varepsilon(\mathbf u)$.
        *
        * The member functions are all implementations of those declared in the
        * base class. See there for their meaning.
