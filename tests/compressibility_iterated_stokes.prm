@@ -108,11 +108,11 @@ subsection Boundary velocity model
 end
 
 subsection Postprocess
-  set List of postprocessors = compressibility
+  set List of postprocessors = compressibility, visualization
 
   subsection Visualization
 
-    set List of output variables      = density
+    set List of output variables      = density, volumetric strain rate
     set Number of grouped files       = 0
     set Output format                 = vtu
     set Time between graphical output = 0                                                                                # default: 1e8
