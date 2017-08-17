@@ -189,6 +189,22 @@ namespace aspect
     }
 
     template <int dim, int spacedim>
+    std::size_t
+    Particle<dim,spacedim>::serialized_size_in_bytes () const
+    {
+      std::size_t size = sizeof(types::particle_index)
+                         + sizeof(location)
+                         + sizeof(reference_location);
+
+      if (has_properties())
+        {
+          const ArrayView<double> particle_properties = property_pool->get_properties(properties);
+          size += sizeof(double) * particle_properties.size();
+        }
+      return size;
+    }
+
+    template <int dim, int spacedim>
     void
     Particle<dim,spacedim>::set_location (const Point<spacedim> &new_loc)
     {
@@ -239,7 +255,14 @@ namespace aspect
 
       const ArrayView<double> old_properties = property_pool->get_properties(properties);
 
-      std::copy(new_properties.begin(),new_properties.end(),&old_properties[0]);
+      Assert (new_properties.size() == old_properties.size(),
+              ExcMessage(std::string("You are trying to assign properties with an incompatible length. ")
+                         + "The particle has space to store " + Utilities::to_string(old_properties.size()) + " properties, "
+                         + "and this function tries to assign" + Utilities::to_string(new_properties.size()) + " properties. "
+                         + "This is not allowed."));
+
+      if (old_properties.size() > 0)
+        std::copy(new_properties.begin(),new_properties.end(),&old_properties[0]);
     }
 
     template <int dim, int spacedim>
@@ -261,6 +284,14 @@ namespace aspect
              ExcInternalError());
 
       return property_pool->get_properties(properties);
+    }
+
+    template <int dim, int spacedim>
+    bool
+    Particle<dim,spacedim>::has_properties () const
+    {
+      return (property_pool != NULL)
+             && (properties != PropertyPool::invalid_handle);
     }
   }
 }

@@ -88,7 +88,7 @@ namespace aspect
               {
                 const ArrayView<const double> &particle_properties = particle->second.get_properties();
 
-                for (unsigned int i = 0; i < n_particle_properties; ++i)
+                for (unsigned int i = 0; i < particle_properties.size(); ++i)
                   if (selected_properties[i])
                     cell_properties[i] += particle_properties[i];
               }

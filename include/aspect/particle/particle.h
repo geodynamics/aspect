@@ -277,6 +277,14 @@ namespace aspect
         get_properties () const;
 
         /**
+         * Returns the size in bytes this particle occupies if all of its data is
+         * serialized (i.e. the number of bytes that is written by the write_data
+         * function of this class).
+         */
+        std::size_t
+        serialized_size_in_bytes() const;
+
+        /**
          * Write the data of this object to a stream for the purpose of
          * serialization.
          */

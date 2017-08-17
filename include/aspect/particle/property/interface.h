@@ -22,6 +22,7 @@
 #define _aspect_particle_property_interface_h
 
 #include <aspect/particle/particle.h>
+#include <aspect/particle/particle_handler.h>
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/property_pool.h>
 
@@ -493,8 +494,8 @@ namespace aspect
            * collection that were created later than the initial particle
            * generation.
            */
-          void
-          initialize_late_particle (Particle<dim> &particle,
+          std::vector<double>
+          initialize_late_particle (const Point<dim> &particle_location,
                                     const std::multimap<types::LevelInd, Particle<dim> > &particles,
                                     const Interpolator::Interface<dim> &interpolator,
                                     const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
@@ -560,15 +561,6 @@ namespace aspect
            */
           const ParticlePropertyInformation &
           get_data_info() const;
-
-          /**
-           * Get a reference to the property pool that own all particle
-           * properties, and organizes them physically.
-           *
-           * @return A reference to the property_pool object.
-           */
-          PropertyPool &
-          get_property_pool() const;
 
           /**
            * Get the position of the property specified by name in the property
@@ -646,12 +638,6 @@ namespace aspect
            * their association with property plugins and their storage pattern.
            */
           ParticlePropertyInformation property_information;
-
-          /**
-           * This object owns and organizes the memory for all particle
-           * properties.
-           */
-          std_cxx11::unique_ptr<PropertyPool> property_pool;
       };
 
 

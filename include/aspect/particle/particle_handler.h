@@ -31,9 +31,12 @@
 #include <deal.II/base/subscriptor.h>
 #include <deal.II/base/array_view.h>
 #include <deal.II/base/smartpointer.h>
+#include <deal.II/fe/mapping.h>
 
 #include <boost/serialization/map.hpp>
 #include <boost/range/iterator_range.hpp>
+
+#include <deal.II/base/std_cxx11/function.h>
 
 namespace aspect
 {
@@ -61,6 +64,11 @@ namespace aspect
         typedef ParticleIterator<dim,spacedim> particle_iterator;
 
         /**
+         * A type that represents a range of particles.
+         */
+        typedef boost::iterator_range<particle_iterator> particle_iterator_range;
+
+        /**
          * Default constructor.
          */
         ParticleHandler();
@@ -72,7 +80,9 @@ namespace aspect
          *
          */
         ParticleHandler(const parallel::distributed::Triangulation<dim,spacedim> &tria,
-                        const MPI_Comm mpi_communicator);
+                        const Mapping<dim,spacedim> &mapping,
+                        const MPI_Comm mpi_communicator,
+                        const unsigned int n_properties = 0);
 
         /**
          * Destructor.
@@ -86,7 +96,9 @@ namespace aspect
          * serialization of a particle handler.
          */
         void initialize(const parallel::distributed::Triangulation<dim,spacedim> &tria,
-                        const MPI_Comm mpi_communicator);
+                        const Mapping<dim,spacedim> &mapping,
+                        const MPI_Comm mpi_communicator,
+                        const unsigned int n_properties = 0);
 
         /**
          * Clear all particle related data.
@@ -118,14 +130,57 @@ namespace aspect
          * the particles in a particular cell. The last iterator is the first
          * particle that is no longer in the cell.
          */
-        boost::iterator_range<particle_iterator>
-        particle_range_in_cell(const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell);
+        particle_iterator_range
+        particle_range_in_cell(const typename parallel::distributed::Triangulation<dim,spacedim>::active_cell_iterator &cell);
 
         /**
          * Remove a particle pointed to by the iterator.
          */
         void
         remove_particle(const particle_iterator &particle);
+
+        /**
+         * Insert a particle into the collection of particles. Return an iterator
+         * to the new position of the particle. This function involves a copy of
+         * the particle and its properties. Note that this function is of NlogN
+         * complexity for N particles.
+         */
+        particle_iterator
+        insert_particle(const Particle<dim,spacedim> &particle,
+                        const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell);
+
+        /**
+         * This function allows to register three additional functions that are
+         * called every time a particle is transferred to another process
+         * (i.e. during sorting into cells, during ghost particle transfer, or
+         * during serialization of all particles).
+         *
+         * @param size_callback A function that is called when serializing
+         * particle data. The function gets no arguments and is expected to
+         * return the size of the additional data that is serialized per
+         * particle. Note that this currently implies the data size has to be
+         * the same for every particle.
+         * @param store_callback A function that is called once per particle
+         * when serializing particle data. Arguments to the function are a
+         * particle iterator that identifies the current particle and a void
+         * pointer that points to a data block of size size_callback() in which
+         * the function can store additional data. The function is expected to
+         * return a void pointer pointing to a position right after its data
+         * block.
+         * @param load_callback A function that is called once per particle
+         * when deserializing particle data. Arguments to the function are a
+         * particle iterator that identifies the current particle and a void
+         * pointer that points to a data block of size size_callback() in which
+         * additional data was stored by the store_callback function. The
+         * function is expected to return a void pointer pointing to a position
+         * right after its data block.
+         */
+        void
+        register_additional_store_load_functions(const std_cxx11::function<std::size_t ()> &size_callback,
+                                                 const std_cxx11::function<void *(const particle_iterator &,
+                                                                                  void *)> &store_callback,
+                                                 const std_cxx11::function<const void *(const particle_iterator &,
+                                                                                        const void *)> &load_callback);
 
         /**
          * Return the total number of particles that were managed by this class
@@ -144,9 +199,50 @@ namespace aspect
         types::particle_index n_locally_owned_particles() const;
 
         /**
+         * Return a reference to the property pool that owns all particle
+         * properties, and organizes them physically.
+         */
+        PropertyPool &
+        get_property_pool() const;
+
+        /**
          * Return the number of particles in the given cell.
          */
-        unsigned int n_particles_in_cell(const typename Triangulation<dim>::active_cell_iterator &cell) const;
+        unsigned int
+        n_particles_in_cell(const typename Triangulation<dim,spacedim>::active_cell_iterator &cell) const;
+
+        /**
+         * Returns a vector that contains a tensor for every vertex-cell
+         * combination of the output of dealii::GridTools::vertex_to_cell_map()
+         * (which is expected as input parameter for this function).
+         * Each tensor represents a geometric vector from the vertex to the
+         * respective cell center.
+         */
+        std::vector<std::vector<Tensor<1,spacedim> > >
+        vertex_to_cell_centers_directions(const std::vector<std::set<typename parallel::distributed::Triangulation<dim,spacedim>::active_cell_iterator> > &vertex_to_cells) const;
+
+        /**
+         * Finds the cells containing each particle for all locally owned
+         * particles. If particles moved out of the local subdomain
+         * they will be sent to their new process and inserted there.
+         * After this function call every particle is either on its current
+         * process and in its current cell, or deleted (if it could not find
+         * its new process or cell).
+         *
+         * TODO: Extend this to allow keeping particles on other processes
+         * around (with an invalid cell).
+         */
+        void
+        sort_particles_into_subdomains_and_cells();
+
+
+        /**
+         * Exchanges all particles that live in cells that are ghost cells to
+         * other processes. Clears and re-populates the ghost_neighbors
+         * member variable.
+         */
+        void
+        exchange_ghost_particles();
 
         /**
          * Serialize the contents of this class.
@@ -171,11 +267,30 @@ namespace aspect
         const std::multimap<types::LevelInd, Particle<dim,spacedim> > &
         get_particles() const;
 
+        /**
+         * Const access to particles in this world.
+         * TODO: This function needs to go to not expose internal structure.
+         * This can only be done once World no longer uses this function.
+         */
+        const std::multimap<types::LevelInd, Particle<dim,spacedim> > &
+        get_ghost_particles() const;
+
       private:
+        /**
+         * A private typedef for cell iterator that makes the code of this class
+         * easier to read.
+         */
+        typedef typename parallel::distributed::Triangulation<dim,spacedim>::active_cell_iterator active_cell_it;
+
         /**
          * Address of the triangulation to work on.
          */
         SmartPointer<const parallel::distributed::Triangulation<dim,spacedim>,ParticleHandler<dim,spacedim> > triangulation;
+
+        /**
+         * Address of the mapping to work on.
+         */
+        SmartPointer<const Mapping<dim,spacedim>,ParticleHandler<dim,spacedim> > mapping;
 
         /**
          * MPI communicator.
@@ -187,6 +302,13 @@ namespace aspect
          * the level/index of the cell they are in.
          */
         std::multimap<types::LevelInd, Particle<dim,spacedim> > particles;
+
+        /**
+         * Set of particles currently in the ghost cells of the local domain,
+         * organized by the level/index of the cell they are in. These
+         * particles are marked read-only.
+         */
+        std::multimap<types::LevelInd, Particle<dim,spacedim> > ghost_particles;
 
         /**
          * This variable stores how many particles are stored globally. It is
@@ -209,6 +331,51 @@ namespace aspect
          * globally in case new particles need to be generated.
          */
         types::particle_index next_free_particle_index;
+
+        /**
+         * This object owns and organizes the memory for all particle
+         * properties.
+         */
+        std_cxx11::unique_ptr<PropertyPool> property_pool;
+
+        /**
+         * A function that can be registered by calling
+         * register_additional_store_load_functions. It is called when serializing
+         * particle data. The function gets no arguments and is expected to
+         * return the size of the additional data that is serialized per
+         * particle. Note that this currently implies the data size has to be
+         * the same for every particle, but it does not have to be the same for
+         * every serialization process (e.g. a serialization during particle
+         * movement might include temporary data, while a serialization after
+         * movement was finished does not need to transfer this data).
+         */
+        std_cxx11::function<std::size_t ()> size_callback;
+
+        /**
+         * A function that can be registered by calling
+         * register_additional_store_load_functions. It is called once per
+         * particle when serializing particle data. Arguments to the function
+         * are a particle iterator that identifies the current particle and a void
+         * pointer that points to a data block of size size_callback() in which
+         * the function can store additional data. The function is expected to
+         * return a void pointer pointing to a position right after its data
+         * block.
+         */
+        std_cxx11::function<void *(const particle_iterator &,
+                                   void *)> store_callback;
+
+        /**
+         * A function that is called once per particle
+         * when deserializing particle data. Arguments to the function are a
+         * particle iterator that identifies the current particle and a void
+         * pointer that points to a data block of size size_callback() from
+         * which the function can load additional data. This block was filled
+         * by the store_callback function during serialization. This function
+         * is expected to return a void pointer pointing to a position right
+         * after its data block.
+         */
+        std_cxx11::function<const void *(const particle_iterator &,
+                                         const void *)> load_callback;
 
         /**
          * Calculates the number of particles in the global model domain.
@@ -235,6 +402,60 @@ namespace aspect
          */
         void
         update_next_free_particle_index();
+
+        /**
+         * Transfer particles that have crossed subdomain boundaries to other
+         * processors.
+         * All received particles and their new cells will be appended to the
+         * @p received_particles vector.
+         *
+         * @param [in] particles_to_send All particles that should be sent and
+         * their new subdomain_ids are in this map.
+         *
+         * @param [in,out] received_particles Vector that stores all received
+         * particles. Note that it is not required nor checked that the list
+         * is empty, received particles are simply attached to the end of
+         * the vector.
+         *
+         * @param [in] Optional vector of cell iterators with the same structure
+         * as @p particles_to_send. If this parameter is given it should contain
+         * the cell iterator for every particle to be send in which the particle
+         * belongs. This parameter is necessary if the cell information of the
+         * particle iterator is outdated (e.g. after particle movement).
+         */
+        void
+        send_recv_particles(const std::vector<std::vector<particle_iterator> > &particles_to_send,
+                            std::multimap<types::LevelInd,Particle <dim> >     &received_particles,
+                            const std::vector<std::vector<active_cell_it> >    &new_cells_for_particles = std::vector<std::vector<active_cell_it> > ());
+
+
+        /**
+         * Called by listener functions from Triangulation for every cell
+         * before a refinement step. All particles have to be attached to their
+         * cell to be sent around to the new processes.
+         */
+        void
+        store_particles(const typename parallel::distributed::Triangulation<dim,spacedim>::cell_iterator &cell,
+                        const typename parallel::distributed::Triangulation<dim,spacedim>::CellStatus status,
+                        void *data);
+
+        /**
+         * Called by listener functions after a refinement step. The local map
+         * of particles has to be read from the triangulation user_pointer.
+         */
+        void
+        load_particles(const typename parallel::distributed::Triangulation<dim,spacedim>::cell_iterator &cell,
+                       const typename parallel::distributed::Triangulation<dim,spacedim>::CellStatus status,
+                       const void *data);
+
+        /**
+         * Get a map between subdomain id and a contiguous
+         * number from 0 to n_neighbors, which is interpreted as the neighbor index.
+         * In other words the returned map answers the question: Given a subdomain id, which
+         * neighbor of the current processor's domain owns this subdomain?
+         */
+        std::map<types::subdomain_id, unsigned int>
+        get_subdomain_id_to_neighbor_map() const;
 
         /**
          * Make World a friend to access private functions while we transition

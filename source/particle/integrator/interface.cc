@@ -51,7 +51,7 @@ namespace aspect
       }
 
       template <int dim>
-      unsigned int
+      std::size_t
       Interface<dim>::get_data_size() const
       {
         return 0;
@@ -59,16 +59,16 @@ namespace aspect
 
       template <int dim>
       const void *
-      Interface<dim>::read_data(const void *data,
-                                const types::particle_index /*id*/)
+      Interface<dim>::read_data(const typename ParticleHandler<dim>::particle_iterator &/*particle*/,
+                                const void *data)
       {
         return data;
       }
 
       template <int dim>
       void *
-      Interface<dim>::write_data(void *data,
-                                 const types::particle_index /*id*/) const
+      Interface<dim>::write_data(const typename ParticleHandler<dim>::particle_iterator &/*particle*/,
+                                 void *data) const
       {
         return data;
       }

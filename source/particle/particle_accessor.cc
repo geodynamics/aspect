@@ -171,6 +171,18 @@ namespace aspect
 
 
     template <int dim, int spacedim>
+    std::size_t
+    ParticleAccessor<dim,spacedim>::serialized_size_in_bytes () const
+    {
+      Assert(particle != map->end(),
+             ExcInternalError());
+
+      return particle->second.serialized_size_in_bytes();
+    }
+
+
+
+    template <int dim, int spacedim>
     void
     ParticleAccessor<dim,spacedim>::next ()
     {
