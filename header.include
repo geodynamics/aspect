@@ -14,10 +14,6 @@
           <ul class="nav navbar-nav">
 
             <li class="active">
-              <a href="ReadMe.html">ReadMe</a>
-            </li>
-
-            <li class="active">
               <a href="download.html">Download</a>
             </li>
 
@@ -29,9 +25,12 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Info<b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="http://www.math.clemson.edu/~heister/manual.pdf">Manual</a></li>
-                <li><a href="ReadMe.html#mailinglists">Mailing lists</a></li>
+                <li><a href="http://lists.geodynamics.org/cgi-bin/mailman/listinfo/aspect-devel">Mailing lists</a></li>
                 <li><a href="publications.html">Publications</a></li>
-                <li><a href="../doc/COPYING">License</a></li>
+                <li><a href="https://github.com/geodynamics/aspect/blob/master/LICENSE">License</a></li>
+                <li><a href="https://github.com/geodynamics/aspect/wiki">Installation Instructions</a></li>
+                <li><a href="https://github.com/geodynamics/aspect#more-information">Help!</a></li>
+                <li><a href="https://github.com/geodynamics/aspect/blob/master/CONTRIBUTING.md">Participate</a></li>
               </ul>
             </li>
 
