@@ -305,6 +305,11 @@ namespace aspect
             out.entropy_derivative_pressure[i] = entropy_gradient_pressure;
             out.entropy_derivative_temperature[i] = entropy_gradient_temperature;
           }
+
+         // Assign reaction terms
+         for (unsigned int c=0; c<in.composition[i].size(); ++c)
+           out.reaction_terms[i][c] = 0.0;
+
         }
     }
 
