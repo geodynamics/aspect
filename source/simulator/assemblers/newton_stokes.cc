@@ -209,7 +209,7 @@ namespace aspect
 
               // then also see whether we have to add terms due to the
               // Newton linearization
-              if (derivative_scaling_factor == 0)
+              if (derivative_scaling_factor != 0)
                 {
                   const MaterialModel::MaterialModelDerivatives<dim> *derivatives
                     = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
