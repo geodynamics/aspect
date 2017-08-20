@@ -1,0 +1,64 @@
+    <div id="content" class="container">
+      <div class="row">
+          <div class="well">
+
+            <h1>
+              Publications on and with <abbr>ASPECT</abbr>
+            </h1>
+
+            <h3>
+              Referencing <abbr>ASPECT</abbr>
+            </h3>
+
+            <p>
+              As with all scientific work, funding agencies have a reasonable expectation
+              that if we ask for continued funding for this work, we need to demonstrate
+              relevance. To this end, we ask that if you publish results that were obtained
+              to some part using <abbr>ASPECT</abbr>, you cite the following, canonical reference for
+              this software:
+
+	      
+              <pre><code>
+@Article{heister_aspect_methods2,
+  Title                    = {High Accuracy Mantle Convection Simulation through Modern Numerical Methods. {II}: {R}ealistic Models and Problems},
+  Author                   = {Heister, Timo and Dannberg, Juliane and Gassm{\"o}ller, Rene and Bangerth, Wolfgang},
+  Journal                  = {Geophysical Journal International},
+  Year                     = {2017},
+  Number                   = {2},
+  Pages                    = {833-851},
+  Volume                   = {210},
+
+  Doi                      = {10.1093/gji/ggx195},
+  Url                      = {https://doi.org/10.1093/gji/ggx195}
+}              
+              </code></pre>
+	      The most recent release of ASPECT (v1.5.0) can be cited as:
+              <pre><code>
+@misc{aspect-doi-v1.5.0,
+  author       = {Wolfgang Bangerth and
+                  Juliane Dannberg and
+                  Rene Gassmoeller and
+                  Timo Heister and
+                  others},
+  title        = {{ASPECT} v1.5.0},
+  month        = {mar},
+  year         = {2017},
+  doi          = {10.5281/zenodo.344623},
+  note         = {doi:10.5281/zenodo.344623},
+  url          = {https://doi.org/10.5281/zenodo.344623}
+}
+              </code></pre>
+              The manual's proper reference is this:
+              <pre><code>
+@Article{aspectmanual,
+  Title         = {{\textsc{ASPECT}: Advanced Solver for Problems in Earth's ConvecTion, User Manual}},
+  Author        = {W. Bangerth and J. Dannberg and R. Gassm{\"o}ller and T. Heister and others},
+  Year          = {2017},
+  Month         = {4},
+  DOI           = {10.6084/m9.figshare.4865333},
+  Note          = {doi:10.6084/m9.figshare.4865333},
+  URL           = {https://doi.org/10.6084/m9.figshare.4865333}
+}
+              </code></pre>
+            </p>
+          </div>
