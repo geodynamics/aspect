@@ -1,0 +1,174 @@
+#########################################################
+# This is a model setup to test the latent heat generation
+# with a single compostional field. The compositional field
+# is vertically stratified across the midpoint. 
+# Material flows in from the top and crosses phases 
+# transitions. In one of these transitions energy is released 
+# and the temperature increases.  
+
+set Dimension = 2
+
+set Start time                             = 0
+set End time                               = 1e15
+set Use years in output instead of seconds = false
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1000000
+    set Y extent = 1000000
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+
+subsection Model settings
+  # We only fix the temperature at the upper boundary, the other boundaries
+  # are isolating. Likewise, composition is only fixed along the upper boundary 
+  # where there is inlfow. To guarantuee a steady downward flow, we fix the 
+  # velocity at the top and bottom, and set it to free slip on the sides. 
+  set Fixed temperature boundary indicators   = 3
+  set Fixed composition boundary indicators   = 3
+  set Prescribed velocity boundary indicators = 2:function, 3:function
+  set Tangential velocity boundary indicators = 0, 1
+end
+
+
+############### Boundary conditions
+# We set the top temperature to T1=1000K. 
+subsection Boundary temperature model
+  set List of model names = box
+  subsection Box
+    set Top temperature = 1000
+  end
+end
+
+# Boundary compostion derived from initial conditions
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+# We prescribe a constant downward flow.
+subsection Boundary velocity model
+  subsection Function
+    set Function expression = 0;-2.1422e-11
+    set Variable names      = x,y
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1000.0
+    set Variable names      = x,y
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = if(y>=500000, 1, 0);
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+
+subsection Material model
+  set Model name = latent heat
+  subsection Latent heat
+
+    # The change of density across the phase transitions. Together with the
+    # Clapeyron slope, this is what determines the entropy change. Phase 0 
+    # and 1 are reflective of the compositional field values, which are used
+    # to scale density jumps across each the phase transitions. Specifically,
+    # at each point "i" in the model the density jumps are scaled by 
+    # (1-composition[i]) (phase 0) or composition[i] (phase 1). 
+    set Phase transition density jumps                 = 115.6,115.6
+    set Corresponding phase for density jump           = 0,1
+
+    # No chemical (i.e. not phase transition-related) density change 
+    # associated with compositional field
+    set Density differential for compositional field 1 = 0
+
+    # If the temperature is equal to the phase transition temperature, the 
+    # phase transition will occur at the phase transition depth. However, 
+    # if the temperature deviates from this value, the Clapeyron slope 
+    # determines how much the pressure (and depth) of the phase boundary
+    # changes. Here, the phase transitions will be at 1/4 or 1/2 of the 
+    # model depth and temperature T=T1. Given that the composition is 0
+    # above 50 km depth and the Clapeyron slope is 0, the first phase 
+    # transition should not have any effect.
+    set Phase transition depths                        = 250000, 50000
+    set Phase transition temperatures                  = 1000, 1000
+    set Phase transition Clapeyron slopes              = 0, 1e7
+
+    # We set the width of the phase transition to 20 km. You may want to 
+    # change this parameter to see how latent heating depends on the width
+    # of the phase transition. 
+    set Phase transition widths                        = 20000, 20000
+
+    set Reference density                              = 3400
+    set Reference specific heat                        = 1000
+    set Reference temperature                          = 1000
+    set Thermal conductivity                           = 2.38
+
+    # We set the thermal expansion amd the compressibility to zero, so that 
+    # all temperature (and density) changes are caused by advection, diffusion 
+    # and latent heating. 
+    set Thermal expansion coefficient                  = 0.0
+    set Compressibility                                = 0.0
+
+    # Viscosity is constant. 
+    set Thermal viscosity exponent                     = 0.0
+    set Viscosity                                      = 8.44e21
+    set Viscosity prefactors                           = 1.0, 1.0, 1.0
+    set Composition viscosity prefactor                = 1.0
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0 
+  set Initial global refinement          = 4 
+  set Time steps between mesh refinement = 0
+
+end
+
+
+subsection Discretization
+  subsection Stabilization parameters
+    # The exponent $\alpha$ in the entropy viscosity stabilization. Units:
+    # None.
+    set alpha = 2
+
+    # The $\beta$ factor in the artificial viscosity stabilization. An
+    # appropriate value for 2d is 0.052 and 0.078 for 3d. Units: None.
+    set beta  = 0.078
+
+    # The $c_R$ factor in the entropy viscosity stabilization. Units: None.
+    set cR    = 0.5   # default: 0.11
+  end
+end
+
+
+subsection Postprocess
+
+  set List of postprocessors = temperature statistics
+end
+
+subsection Heating model
+  set List of model names =  latent heat
+end
