@@ -1,0 +1,5 @@
+Fixed: Visualization postprocessors now get the current cell, and output
+material properties that the material model computes using information 
+related to the current cell correctly.
+<br>
+(Juliane Dannberg, 2017/08/21)

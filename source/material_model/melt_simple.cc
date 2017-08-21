@@ -199,7 +199,7 @@ namespace aspect
 
       // we want to get the peridotite field from the old solution here,
       // because it tells us how much of the material was already molten
-      if (this->include_melt_transport() && in.cell
+      if (this->include_melt_transport() && in.current_cell.state() == IteratorState::valid
           && this->get_timestep_number() > 0 && !this->get_parameters().use_operator_splitting)
         {
           // Prepare the field function
@@ -216,7 +216,7 @@ namespace aspect
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
           const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
 
-          fe_value.set_active_cell(*in.cell);
+          fe_value.set_active_cell(in.current_cell);
           fe_value.value_list(in.position,
                               maximum_melt_fractions,
                               this->introspection().component_indices.compositional_fields[peridotite_idx]);

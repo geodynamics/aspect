@@ -236,7 +236,9 @@ namespace aspect
     }
 
 
-
+    // We still use the cell reference in the different constructors, although it is deprecated.
+    // Make sure we don't get any compiler warnings.
+    DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
     template <int dim>
     MaterialModelInputs<dim>::MaterialModelInputs(const unsigned int n_points,
                                                   const unsigned int n_comp)
@@ -248,7 +250,8 @@ namespace aspect
       velocity(n_points, numbers::signaling_nan<Tensor<1,dim> >()),
       composition(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>())),
       strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
-      cell (NULL)
+      cell (NULL),
+      current_cell()
     {}
 
     template <int dim>
@@ -263,7 +266,8 @@ namespace aspect
       velocity(input_data.solution_values.size(), numbers::signaling_nan<Tensor<1,dim> >()),
       composition(input_data.solution_values.size(), std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
       strain_rate(input_data.solution_values.size(), numbers::signaling_nan<SymmetricTensor<2,dim> >()),
-      cell(NULL)
+      cell(&current_cell),
+      current_cell(input_data.template get_cell<DoFHandler<dim> >())
     {
       for (unsigned int q=0; q<input_data.solution_values.size(); ++q)
         {
@@ -288,7 +292,6 @@ namespace aspect
         }
     }
 
-
     template <int dim>
     MaterialModelInputs<dim>::MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
                                                   const typename DoFHandler<dim>::active_cell_iterator *cell_x,
@@ -303,11 +306,27 @@ namespace aspect
       velocity(fe_values.n_quadrature_points, numbers::signaling_nan<Tensor<1,dim> >()),
       composition(fe_values.n_quadrature_points, std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
       strain_rate(fe_values.n_quadrature_points, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
-      cell(cell_x)
+      cell(cell_x == NULL ? NULL : &current_cell),
+      current_cell(cell_x == NULL ? typename DoFHandler<dim>::active_cell_iterator() : *cell_x)
     {
       // Call the function reinit to populate the new arrays.
       this->reinit(fe_values, cell, introspection, solution_vector, use_strain_rate);
     }
+
+    template <int dim>
+    MaterialModelInputs<dim>::MaterialModelInputs(const MaterialModelInputs &material)
+      :
+      position(material.position),
+      temperature(material.temperature),
+      pressure(material.pressure),
+      pressure_gradient(material.pressure_gradient),
+      velocity(material.velocity),
+      composition(material.composition),
+      strain_rate(material.strain_rate),
+      cell(material.cell),
+      current_cell(material.current_cell)
+    {}
+    DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 
     template <int dim>
@@ -342,7 +361,11 @@ namespace aspect
             this->composition[i][c] = composition_values[c][i];
         }
 
+      DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
       this->cell = cell_x;
+      DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
+
+      this->current_cell = (cell_x == NULL ? typename DoFHandler<dim>::active_cell_iterator() : *cell_x);
     }
 
     template <int dim>

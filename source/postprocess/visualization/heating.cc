@@ -110,7 +110,7 @@ namespace aspect
 
         typename DoFHandler<dim>::active_cell_iterator cell;
         cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_dof_handler(), mid_point)).first;
-        in.cell = &cell;
+        in.current_cell = cell;
 
         for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
              heating_model = heating_model_objects.begin();
