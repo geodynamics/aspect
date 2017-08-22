@@ -71,25 +71,49 @@ namespace aspect
 
 
     template <int dim>
-    Tensor<1,dim>
-    Interface<dim>::cartesian_to_natural_coordinates(const Point<dim> &) const
+    Tensor<1,2>
+    Interface<dim>::cartesian_to_natural_coordinates(const Point<2> &) const
     {
       Assert (false,
               ExcMessage ("The cartesian_to_natural_coordinates function has "
                           "not been implemented in this geometry model."));
-      return Tensor<1,dim>();
+      return Tensor<1,2>();
     }
 
 
 
     template <int dim>
-    Point<dim>
-    Interface<dim>::natural_to_cartesian_coordinates(const Tensor<1,dim> &) const
+    Tensor<1,3>
+    Interface<dim>::cartesian_to_natural_coordinates(const Point<3> &) const
+    {
+      Assert (false,
+              ExcMessage ("The cartesian_to_natural_coordinates function has "
+                          "not been implemented in this geometry model."));
+      return Tensor<1,3>();
+    }
+
+
+
+    template <int dim>
+    Point<2>
+    Interface<dim>::natural_to_cartesian_coordinates(const Tensor<1,2> &) const
     {
       Assert (false,
               ExcMessage ("The natural_to_cartesian_coordinates function has "
                           "not been implemented in this geometry model."));
-      return Point<dim>();
+      return Point<2>();
+    }
+
+
+
+    template <int dim>
+    Point<3>
+    Interface<dim>::natural_to_cartesian_coordinates(const Tensor<1,3> &) const
+    {
+      Assert (false,
+              ExcMessage ("The natural_to_cartesian_coordinates function has "
+                          "not been implemented in this geometry model."));
+      return Point<3>();
     }
 
 
