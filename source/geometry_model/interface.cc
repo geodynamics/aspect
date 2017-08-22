@@ -71,20 +71,20 @@ namespace aspect
 
 
     template <int dim>
-    std_cxx11::array<double,dim>
+    Tensor<1,dim>
     Interface<dim>::cartesian_to_natural_coordinates(const Point<dim> &) const
     {
       Assert (false,
               ExcMessage ("The cartesian_to_natural_coordinates function has "
                           "not been implemented in this geometry model."));
-      return std_cxx11::array<double,dim>();
+      return Tensor<1,dim>();
     }
 
 
 
     template <int dim>
     Point<dim>
-    Interface<dim>::natural_to_cartesian_coordinates(const std_cxx11::array<double,dim> &) const
+    Interface<dim>::natural_to_cartesian_coordinates(const Tensor<1,dim> &) const
     {
       Assert (false,
               ExcMessage ("The natural_to_cartesian_coordinates function has "
