@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -41,7 +41,7 @@ namespace aspect
 
     template <int dim>
     double
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     boundary_temperature (const types::boundary_id            boundary_indicator,
                           const Point<dim>                    &location) const
     {
@@ -69,7 +69,7 @@ namespace aspect
 
     template <int dim>
     double
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
       return std::min (inner_temperature, outer_temperature);
@@ -79,7 +79,7 @@ namespace aspect
 
     template <int dim>
     double
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
       return std::max (inner_temperature, outer_temperature);
@@ -89,7 +89,7 @@ namespace aspect
 
     template <int dim>
     void
-    Dynamic_core<dim>::declare_parameters (ParameterHandler &prm)
+    DynamicCore<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary temperature model");
       {
@@ -161,19 +161,19 @@ namespace aspect
           {
               prm.declare_entry ("Tm0","1695",
                                  Patterns::Double (0),
-                                 "Melting cure (Nimmo et al. [2004] eq. (40)) parameter Tm0. Unit: K");
+                                 "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm0. Unit: K");
               prm.declare_entry ("Tm1","10.9",
                                  Patterns::Double (),
-                                 "Melting cure (Nimmo et al. [2004] eq. (40)) parameter Tm1. Unit: 1/Tpa");
+                                 "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm1. Unit: 1/Tpa");
               prm.declare_entry ("Tm2","-8.0",
                                  Patterns::Double (),
-                                 "Melting cure (Nimmo et al. [2004] eq. (40)) parameter Tm2. Unit: 1/TPa^2");
+                                 "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm2. Unit: 1/TPa^2");
               prm.declare_entry ("Theta","0.11",
                                  Patterns::Double (),
-                                 "Melting cure (Nimmo et al. [2004] eq. (40)) parameter Theta.");
+                                 "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Theta.");
               prm.declare_entry ("Composition dependency","true",
                                  Patterns::Bool (),
-                                 "If melting cure dependent on composition.");
+                                 "If melting curve dependent on composition.");
               prm.declare_entry ("Use BW11","false",
                                  Patterns::Bool (),
                                  "If using the Fe-FeS system solidus from Buono & Walker (2011) instead.");
@@ -202,7 +202,10 @@ namespace aspect
             prm.declare_entry ("File name","",
                                Patterns::Anything(),
                                "Data file name for other energy source into the core. "
-                               "Formate [Time(Gyr)   Energy rate(W)]");
+                               "The 'other energy source' is used for external core energy source."
+                               "For example if someone want to test the early lunar core powered by precession "
+                               "(Dwyer, C. A., et al. (2011). A long-lived lunar dynamo driven by continuous mechanical stirring. Nature 479(7372): 212-214.)"
+                               "Format [Time(Gyr)   Energy rate(W)]");
           }
           prm.leave_subsection ();
 
@@ -215,7 +218,7 @@ namespace aspect
 
     template <int dim>
     void
-    Dynamic_core<dim>::parse_parameters (ParameterHandler &prm)
+    DynamicCore<dim>::parse_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary temperature model");
       {
@@ -286,8 +289,8 @@ namespace aspect
           }
           prm.leave_subsection ();
 
-          L=sqrt(3*K0*(log(Rho_cen/Rho_0)+1)/(2*M_PI*G*Rho_0*Rho_cen));
-          D=sqrt(3*Cp/(2*M_PI*Alpha*Rho_cen*G));
+          L=sqrt(3*K0*(log(Rho_cen/Rho_0)+1)/(2*M_PI*constants::big_g*Rho_0*Rho_cen));
+          D=sqrt(3*Cp/(2*M_PI*Alpha*Rho_cen*constants::big_g));
 
         }
         prm.leave_subsection ();
@@ -297,7 +300,7 @@ namespace aspect
 
     template <int dim>
     void
-    Dynamic_core<dim>::read_data_OES()
+    DynamicCore<dim>::read_data_OES()
     {
       data_OES.clear();
       FILE *fp=fopen(name_OES.c_str(),"r");
@@ -312,15 +315,12 @@ namespace aspect
         fclose(fp);
       }
       if(data_OES.size()!=0)
-      {
-        const ConditionalOStream &pcout=this->get_pcout();
-        pcout<<"Other energy source is in use ( "<<data_OES.size()<<" data points is read)."<<std::endl;
-      }
+        this->get_pcout()<<"Other energy source is in use ( "<<data_OES.size()<<" data points is read)."<<std::endl;
     }
 
     template <int dim>
     double
-    Dynamic_core<dim>::get_OES(double t) const
+    DynamicCore<dim>::get_OES(double t) const
     {
       t/=1.e9*year_in_seconds;
       double w=0.;
@@ -328,7 +328,9 @@ namespace aspect
       {
         if(t>=data_OES[i-1].t && t<data_OES[i].t )
         {
-          w=data_OES[i-1].w+(t-data_OES[i-1].t)/(data_OES[i].t-data_OES[i-1].t)*(data_OES[i].w-data_OES[i-1].w);
+          w = data_OES[i-1].w + ( t - data_OES[i-1].t)
+             /(data_OES[i].t - data_OES[i-1].t) 
+             *(data_OES[i].w - data_OES[i-1].w);
           break;
         }
       }
@@ -339,17 +341,15 @@ namespace aspect
     }
     
     template <int dim>
-    Dynamic_core<dim>::Dynamic_core():
-    //Parameters
-    G(6.67221937e-11)
+    DynamicCore<dim>::DynamicCore()
     {
-        is_first_call = true;
-        core_data.is_initialized = false;
+      is_first_call = true;
+      core_data.is_initialized = false;
     }
 
     template <int dim>
     double
-    Dynamic_core<dim>::get_initial_Ri(double T) 
+    DynamicCore<dim>::get_initial_Ri(double T) 
     {
       double r0=0.,
              r1=Rc;
@@ -379,7 +379,7 @@ namespace aspect
       if(dT0>0 && dT1<0)
       {
         // Snowing core 
-        AssertThrow(false, ExcMessage("[Dyanmic core] You had a 'Snowing Core', "
+        AssertThrow(false, ExcMessage("[Dynamic core] You had a 'Snowing Core' (i.e., core is freezing from CMB), "
               "the treatment is not available at the moment."));
       }
       return (r0+r1)/2.;
@@ -387,7 +387,7 @@ namespace aspect
 
     template <int dim>
     bool
-    Dynamic_core<dim>::solve_time_step(double &X, double &T, double &R)
+    DynamicCore<dim>::solve_time_step(double &X, double &T, double &R)
     {
       // Well solving the change in core-mantle boundary temperature T, inner core radius R, and 
       //    light component (e.g. S, O, Si) composition X, the following relations has to be respected:
@@ -404,10 +404,9 @@ namespace aspect
       // This becomes a small nonliner problem. Directly iterate through the above three system doesn't 
       // converge well. Alternatively we solve the inner core radius by bisection method.
 
-      const ConditionalOStream &pcout=this->get_pcout();  
       int steps=1;
       double R_0,R_1,R_2;
-      // dT is the temperature differenc between adiabatic and solidus at 
+      // dT is the temperature difference between adiabatic and solidus at 
       // inner-outer core boundary. If dT=0 then we found our solution.
       double dT0,dT1,dT2;
       R_0 = 0.;
@@ -434,12 +433,11 @@ namespace aspect
           // If solution is out of the interval, then something is wrong. 
           if(dT0*dT2>0)
           {
-            pcout<<"Step: "<<steps<<std::endl
-                 <<" R=["<<R_0/1e3<<","<<R_2/1e3<<"]"<<"(km)"
-                 <<" dT0="<<dT0<<", dT2="<<dT2
-                 <<std::endl;
-            pcout<<"Q_CMB="<<core_data.Q<<std::endl;
-            pcout<<"Warning: Solution for inner core radius can not be found! Mid-point is used."<<std::endl;
+            this->get_pcout()<<"Step: "<<steps<<std::endl
+                             <<" R=["<<R_0/1e3<<","<<R_2/1e3<<"]"<<"(km)"
+                             <<" dT0="<<dT0<<", dT2="<<dT2<<std::endl
+                             <<"Q_CMB="<<core_data.Q<<std::endl
+                             <<"Warning: Solution for inner core radius can not be found! Mid-point is used."<<std::endl;
             AssertThrow(dT0*dT2<=0,ExcMessage("No single solution for inner core!"));
           }
           else if(dT0*dT1<0.)
@@ -461,11 +459,7 @@ namespace aspect
         R = R_1;
         T = get_Tc(R);
         X = get_X(R);
-        pcout<<"[Dynamic core] Solved in "<<steps<<" steps with dT="<<dT1<<std::endl
-             <<std::setprecision(10)<<"R="<<R_1<<", T="<<T<<", X="<<X<<std::endl;
             
-
-
         if(dT0<0. && dT2>0.)
         {
           // Normal solution          
@@ -479,18 +473,17 @@ namespace aspect
         else
         {
           // No solution found.
-          pcout<<"[Dynamic core] Step: "<<steps<<std::endl
-               <<" R=["<<R_0/1e3<<","<<R_2/1e3<<"]"<<"(km)"
-               <<" dT0="<<dT0<<", dT2="<<dT2
-               <<std::endl;
-          pcout<<"Q_CMB="<<core_data.Q<<std::endl;
+          this->get_pcout()<<"[Dynamic core] Step: "<<steps<<std::endl
+                           <<" R=["<<R_0/1e3<<","<<R_2/1e3<<"]"<<"(km)"
+                           <<" dT0="<<dT0<<", dT2="<<dT2<<std::endl
+                           <<"Q_CMB="<<core_data.Q<<std::endl;
           AssertThrow(false, ExcMessage("[Dynamic core] No inner core radius solution found!"));
         }
     }
 
     template <int dim>
     double
-    Dynamic_core<dim>::get_Tc(double r) const
+    DynamicCore<dim>::get_Tc(double r) const
     {
       // Using all Q values from last step.
       // Qs & Qr is constant, while Qg & Ql depends on inner core raidus Ri
@@ -502,7 +495,7 @@ namespace aspect
 
     template <int dim>
     double
-    Dynamic_core<dim>::get_Ts(double r) const
+    DynamicCore<dim>::get_Ts(double r) const
     {
       return get_solidus(get_X(r),get_Pressure(r));
     }
@@ -510,14 +503,14 @@ namespace aspect
     
     template <int dim>
     double
-    Dynamic_core<dim>::get_dT(double r) const
+    DynamicCore<dim>::get_dT(double r) const
     {
       return get_T(get_Tc(r),r) - get_Ts(r);
     }
 
     template <int dim>
     void
-    Dynamic_core<dim>::update_core_data()
+    DynamicCore<dim>::update_core_data()
     {
         get_specific_heating(core_data.Ti,core_data.Qs,core_data.Es);
         get_radio_heating(core_data.Ti,core_data.Qr,core_data.Er);
@@ -528,15 +521,15 @@ namespace aspect
     }
 
     template <int dim>
-    struct _Core_Data
-    Dynamic_core<dim>::get_core_data() const
+    struct internal::CoreData
+    DynamicCore<dim>::get_core_data() const
     {
       return core_data;
     }
 
     template <int dim>
     double
-    Dynamic_core<dim>::get_solidus(double X,double p) const
+    DynamicCore<dim>::get_solidus(double X,double p) const
     {
       if(use_bw11)
       {
@@ -567,7 +560,7 @@ namespace aspect
 
     template <int dim>
     double
-    Dynamic_core<dim>::get_X(double r) const
+    DynamicCore<dim>::get_X(double r) const
     {
         double xi_3=pow(r/Rc,3);
         return X_init/(1-xi_3+Delta*xi_3);
@@ -575,32 +568,36 @@ namespace aspect
 
     template <int dim>
     void
-    Dynamic_core<dim>::update()
+    DynamicCore<dim>::update()
     {
-      const Postprocess::CoreStatistics<dim> * core_statistics
-        = this->template find_postprocessor<const Postprocess::CoreStatistics<dim> >();
-      AssertThrow(core_statistics!=NULL,
-          ExcMessage ("Dynamic core boundary condition has to work with dynamic core statistics postprocessor."));
       core_data.dt    = this->get_timestep();
       core_data.H     = get_radioheating_rate();
-        
-      // The restart data is stored in 'core statistics' postprocessor.
-      // If restart from checkpoint, extract data from there.
-      if(!core_data.is_initialized)
-        core_data = core_statistics->get_core_data();
 
+      // It's a bit tricky here.
+      // Didn't use the initialize() function instead because the postprocess is initialized after boundary temperature.
+      // It is not available at the time initialize() function of boundary temperature is called.
       if(is_first_call==true)
       {
+        const Postprocess::CoreStatistics<dim> * core_statistics
+            = this->template find_postprocessor<const Postprocess::CoreStatistics<dim> >();
+        AssertThrow(core_statistics!=NULL,
+                ExcMessage ("Dynamic core boundary condition has to work with dynamic core statistics postprocessor."));
+        // The restart data is stored in 'core statistics' postprocessor.
+        // If restart from checkpoint, extract data from there.
+        core_data = core_statistics->get_core_data();
+        
+        // Read data of other energy source
         read_data_OES();
+
         const GeometryModel::SphericalShell<dim>* spherical_shell_geometry =
           dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&(this->get_geometry_model()));
         AssertThrow (spherical_shell_geometry != NULL,
-            ExcMessage ("This boundary model is only implemented if the geometry is "
-                        "in fact a spherical shell."));
+                     ExcMessage ("This boundary model is only implemented if the geometry is "
+                                 "in fact a spherical shell."));
         Rc=spherical_shell_geometry->inner_radius();
         Mc=get_Mass(Rc);
         P_Core=get_Pressure(0);
-
+        
         // If the material model is incompressible, we have to get correction for the real core temperature
         if(this->get_adiabatic_conditions().is_initialized() && !this->get_material_model().is_compressible())
         {
@@ -629,18 +626,19 @@ namespace aspect
           core_data.dX_dt=init_dX_dt;
           update_core_data();
           core_data.is_initialized = true;
-          const ConditionalOStream &pcout=this->get_pcout();
-          pcout<<std::setiosflags(std::ios::left);
-          pcout<<"   Dynamic core initialized as:"<<std::endl;
-          pcout<<"     "<<std::setw(15)<<"Tc(K)"<<std::setw(15)<<"Ri(km)"<<std::setw(15)<<"Xi"
-               <<std::setw(15)<<"dT/dt(K/year)"<<std::setw(15)<<"dR/dt(km/year)"<<std::setw(15)<<"dX/dt(1/year)"<<std::endl;
-          pcout<<"     "<<std::setprecision(6)<<std::setw(15)<<inner_temperature<<std::setw(15)<<core_data.Ri/1.e3<<std::setw(15)<<core_data.Xi
-               <<std::setw(15)<<core_data.dT_dt*year_in_seconds<<std::setw(15)<<core_data.dR_dt/1.e3*year_in_seconds
-               <<std::setw(15)<<core_data.dX_dt*year_in_seconds<<std::endl;
+          std::stringstream output;
+          output<<std::setiosflags(std::ios::left)
+                <<"   Dynamic core initialized as:"<<std::endl
+                <<"     "<<std::setw(15)<<"Tc(K)"<<std::setw(15)<<"Ri(km)"<<std::setw(15)<<"Xi"
+                <<std::setw(15)<<"dT/dt(K/year)"<<std::setw(15)<<"dR/dt(km/year)"<<std::setw(15)<<"dX/dt(1/year)"<<std::endl
+                <<"     "<<std::setprecision(6)<<std::setw(15)<<inner_temperature<<std::setw(15)<<core_data.Ri/1.e3<<std::setw(15)<<core_data.Xi
+                <<std::setw(15)<<core_data.dT_dt*year_in_seconds<<std::setw(15)<<core_data.dR_dt/1.e3*year_in_seconds
+                <<std::setw(15)<<core_data.dX_dt*year_in_seconds<<std::endl;
+          this->get_pcout() << output.str();
         }
-        is_first_call=false;
-      }      
-
+        is_first_call = false;
+      }
+        
       // Calculate core mantle boundary heat flow
       {
         const QGauss<dim-1> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
@@ -774,27 +772,27 @@ namespace aspect
         core_data.Xi=X1;
         core_data.Ri=R1;
         core_data.Ti=T1;
-        std::cout<<"Ti="<<core_data.Ti<<std::endl;
       }
         
       inner_temperature = core_data.Ti - dTa;
       update_core_data();
       if(core_data.Q!=0.)
       {
-        const ConditionalOStream &pcout=this->get_pcout();
-        pcout<<std::setiosflags(std::ios::left);
-        pcout<<"   Dynamic core data updated."<<std::endl;
-        pcout<<"     "<<std::setw(15)<<"Tc(K)"<<std::setw(15)<<"Ri(km)"<<std::setw(15)<<"Xi"
-             <<std::setw(15)<<"dT/dt(K/year)"<<std::setw(15)<<"dR/dt(km/year)"<<std::setw(15)<<"dX/dt(1/year)"<<std::endl;
-        pcout<<"     "<<std::setprecision(6)<<std::setw(15)<<inner_temperature<<std::setw(15)<<core_data.Ri/1.e3<<std::setw(15)<<core_data.Xi
-             <<std::setw(15)<<core_data.dT_dt*year_in_seconds<<std::setw(15)<<core_data.dR_dt/1.e3*year_in_seconds
-             <<std::setw(15)<<core_data.dX_dt*year_in_seconds<<std::endl;
+        std::stringstream output;
+        output<<std::setiosflags(std::ios::left)
+              <<"   Dynamic core data updated."<<std::endl
+              <<"     "<<std::setw(15)<<"Tc(K)"<<std::setw(15)<<"Ri(km)"<<std::setw(15)<<"Xi"
+              <<std::setw(15)<<"dT/dt(K/year)"<<std::setw(15)<<"dR/dt(km/year)"<<std::setw(15)<<"dX/dt(1/year)"<<std::endl
+              <<"     "<<std::setprecision(6)<<std::setw(15)<<inner_temperature<<std::setw(15)<<core_data.Ri/1.e3<<std::setw(15)<<core_data.Xi
+              <<std::setw(15)<<core_data.dT_dt*year_in_seconds<<std::setw(15)<<core_data.dR_dt/1.e3*year_in_seconds
+              <<std::setw(15)<<core_data.dX_dt*year_in_seconds<<std::endl;
+        this->get_pcout() << output.str();
       }
     }
 
     template <int dim>
     double
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     get_Mass(double r) const
     {
         return 4.*M_PI*Rho_cen*(-pow(L,2)/2.*r*exp(-pow(r/L,2))+pow(L,3)/4.*sqrt(M_PI)*erf(r/L));
@@ -802,7 +800,7 @@ namespace aspect
 
     template <int dim>
     double
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     fun_Sn(double B,double R,double n) const
     {
         double S=R/(2.*sqrt(M_PI));
@@ -813,15 +811,17 @@ namespace aspect
 
     template <int dim>
     double
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     get_Pressure(double r) const
     {
-        return P_CMB-(4*M_PI*G*pow(Rho_cen,2))/3*((3*pow(r,2)/10.-pow(L,2)/5)*exp(-pow(r/L,2))-(3*pow(Rc,2)/10-pow(L,2)/5)*exp(-pow(Rc/L,2)));
+        return P_CMB-(4*M_PI*constants::big_g*pow(Rho_cen,2))/3
+          *((3*pow(r,2)/10.-pow(L,2)/5)*exp(-pow(r/L,2))
+              -(3*pow(Rc,2)/10-pow(L,2)/5)*exp(-pow(Rc/L,2)));
     }
 
     template <int dim>
     double
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     get_Rho(double r) const
     {
         return Rho_cen*exp(-pow(r/L,2));
@@ -829,15 +829,15 @@ namespace aspect
 
     template <int dim>
     double
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     get_g(double r) const
     {
-        return (4*M_PI/3)*G*Rho_cen*r*(1-3*pow(r,2)/(5*pow(L,2)));
+        return (4*M_PI/3)*constants::big_g*Rho_cen*r*(1-3*pow(r,2)/(5*pow(L,2)));
     }
 
     template <int dim>
     double
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     get_T(double Tc,double r) const
     {
         return Tc*exp((pow(Rc,2)-pow(r,2))/pow(D,2));
@@ -845,15 +845,16 @@ namespace aspect
 
     template <int dim>
     double
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     get_gravity_potential(double r) const
     {
-        return 2./3.*M_PI*G*Rho_cen*(pow(r,2)*(1.-3.*pow(r,2)/(10.*pow(L,2)))-pow(Rc,2)*(1.-3.*pow(Rc,2)/(10.*pow(L,2))));
+        return 2./3.*M_PI*constants::big_g*Rho_cen*(pow(r,2)*(1.-3.*pow(r,2)
+              /(10.*pow(L,2)))-pow(Rc,2)*(1.-3.*pow(Rc,2)/(10.*pow(L,2))));
     }
 
     template <int dim>
     void
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     get_specific_heating(double Tc, double &Qs,double &Es)
     {
         double A=sqrt(1./(pow(L,-2)+pow(D,-2)));
@@ -865,7 +866,7 @@ namespace aspect
 
     template <int dim>
     void
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     get_radio_heating(double Tc, double &Qr, double &Er)
     {
         double B,It;
@@ -886,7 +887,7 @@ namespace aspect
 
     template <int dim>
     void
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     get_heat_solution(double Tc, double r, double X,double &Eh)
     {
       double B,It;
@@ -908,7 +909,7 @@ namespace aspect
     
     template <int dim>
     void
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     get_gravity_heating(double Tc, double r,double X,double &Qg,double &Eg)
     {
         double Cc=4*M_PI*pow(r,2)*get_Rho(r)*X/(Mc-get_Mass(r));
@@ -916,7 +917,7 @@ namespace aspect
         if(r==Rc)
           Qg=0.;
         else
-          Qg=(8./3.*pow(M_PI*Rho_cen,2)*G*(
+          Qg=(8./3.*pow(M_PI*Rho_cen,2)*constants::big_g*(
                     ((3./20.*pow(Rc,5)-pow(L,2)*pow(Rc,3)/8.-C_2*pow(L,2)*Rc)*exp(-pow(Rc/L,2))
                        +C_2/2.*pow(L,3)*sqrt(M_PI)*erf(Rc/L))
                    -((3./20.*pow(r,5)-pow(L,2)*pow(r,3)/8.-C_2*pow(L,2)*r)*exp(-pow(r/L,2))
@@ -928,7 +929,7 @@ namespace aspect
 
     template <int dim>
     void
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     get_adiabatic_heating(double Tc, double &Ek, double &Qk)
     {
         Ek=16*M_PI*k_c*pow(Rc,5)/5/pow(D,4);
@@ -936,7 +937,7 @@ namespace aspect
     }
     template <int dim>
     void
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     get_latent_heating(double Tc, double r, double &El, double &Ql)
     {
         Ql=4.*M_PI*pow(r,2)*Lh*get_Rho(r);
@@ -945,7 +946,7 @@ namespace aspect
   
     template <int dim>
     double
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     get_radioheating_rate() const
     {
       double time=this->get_time()+0.5*this->get_timestep();
@@ -957,7 +958,7 @@ namespace aspect
 
     template <int dim>
     bool
-    Dynamic_core<dim>::
+    DynamicCore<dim>::
     is_OES_used() const
     {
       if(data_OES.size()>0)
@@ -975,17 +976,18 @@ namespace aspect
 {
   namespace BoundaryTemperature
   {
-    ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(Dynamic_core,
+    ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(DynamicCore,
                                                "Dynamic core",
                                                "This is a boundary temperature model working only with spherical "
-                                               "shell geometry. The temperature at the top is constant, and the "
-                                               "core mantle boundary temperature is dynamically evolving through "
-                                               "time by calculating the heat flux into the core and solving the "
-                                               "core energy balance. The formulation is mainly following Nimmo et "
-                                               "al. [2004], and the plugin is used in Zhang et al. [2016]. The energy of "
-                                               " core cooling and freeing of the inner core is included in the plugin. "
-                                               "However, current plugin can not deal with the energy balance if the core is "
-                                               "in the 'snowing core' regime (i.e. core solidifies form top instead of bottom)"
+                                               "shell geometry and core statistics postprocessor. The temperature "
+                                               "at the top is constant, and the core mantle boundary temperature "
+                                               "is dynamically evolving through time by calculating the heat flux "
+                                               "into the core and solving the core energy balance. The formulation "
+                                               "is mainly following Nimmo et al. [2004], and the plugin is used in "
+                                               "Zhang et al. [2016]. The energy of core cooling and freeing of the "
+                                               "inner core is included in the plugin. However, current plugin can not "
+                                               "deal with the energy balance if the core is in the 'snowing core' regime "
+                                               "(i.e. core solidifies from top instead of bottom)"
                                                )
   }
 }

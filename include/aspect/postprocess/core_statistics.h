@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -17,11 +17,10 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: heat_flux_statistics.h 1433 2012-12-08 08:24:55Z bangerth $  */
 
 
-#ifndef __aspect__postprocess_core_statistics_h
-#define __aspect__postprocess_core_statistics_h
+#ifndef _aspect_postprocess_core_statistics_h
+#define _aspect_postprocess_core_statistics_h
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
@@ -66,7 +65,7 @@ namespace aspect
          * temperature doesn't allowed to store restart data there. So we store the data needed
          * for restart here and exported to boundary temperature object if required.
          */
-        struct  BoundaryTemperature::_Core_Data 
+        struct  BoundaryTemperature::internal::CoreData 
         get_core_data() const;
 
         /**
@@ -90,14 +89,16 @@ namespace aspect
 
       private:
         /**
-         * Controls whether output the total excess entropy or the individual entropy terms
+         * Controls whether output the total excess entropy or the individual entropy terms 
+         * (i.e. entropy for specific heat, radioactive heating, gravitational contribution,
+         * and adiabatic contribution).
          */
         bool   excess_entropy_only;
 
         /**
          * Stores the core data from boundary temperature.
          */
-        struct  BoundaryTemperature::_Core_Data core_data;
+        struct  BoundaryTemperature::internal::CoreData core_data;
     };
   }
 }

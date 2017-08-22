@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,8 +20,8 @@
 
 
 
-#ifndef __aspect__boundary_temperature_dynamic_core_h
-#define __aspect__boundary_temperature_dynamic_core_h
+#ifndef _aspect_boundary_temperature_dynamic_core_h
+#define _aspect_boundary_temperature_dynamic_core_h
 
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/simulator_access.h>
@@ -34,17 +34,22 @@ namespace aspect
     /**
      * Data structure for core energy balance calculation
      */
-    struct _Core_Data
+    namespace internal
     {
+      struct CoreData
+      {
         /**
          * Energy for specific heat, radioactive heating, gravitational contribution, 
-         * adiabatic contribution, and latent heat.
+         * adiabatic contribution, and latent heat. These variables are updated each time step.
          */
         double Qs,Qr,Qg,Qk,Ql;
 
         /**
          * Entropy for specific heat, radioactive heating, gravitational contribution, 
-         * adiabatic contribution, latent heat, and heat solution.
+         * adiabatic contribution, latent heat, and heat solution. These entropy terms are not 
+         * used for solving the core evolution. However, the total excess entropy 
+         * (dE = Es*dT/dt+Er+El*dR/dt+Eg*dR/dt+Eh*dR/dt-Ek) is useful to determin the core is active or not.
+         * For dE>0, the core is likely to be active and generating magnetic field. These varialbes are updated each time step as well. 
          */
         double Es,Er,Eg,Ek,El,Eh;
 
@@ -78,12 +83,13 @@ namespace aspect
         double Q_OES;
 
         bool is_initialized;
-    };
+      };
+    }
     
     
     /**
      * A class that implements a temperature boundary condition for a spherical
-     * shell geometry in which the temperature at the outter surfaces are constant
+     * shell geometry in which the temperature at the outer surfaces are constant
      * and the core-mantle boundaries (CMB) temperature is calculated by core energy balance.
      * The formulation of core energy balance are from: 
      * Nimmo et al., The influence of potassium on core and geodynamo evolution. 
@@ -91,22 +97,19 @@ namespace aspect
      * @ingroup BoundaryTemperatures
      */
     template <int dim>
-    class Dynamic_core : public Interface<dim>, public aspect::SimulatorAccess<dim>
+    class DynamicCore : public Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
-        /** 
-         * Construstor
+        /**
+         * Construstor 
          */
-        Dynamic_core();
+        DynamicCore();
         
         /**
          * Return the temperature that is to hold at a particular location on the
          * boundary of the domain. This function returns the temperatures
          * at the inner and outer boundaries.
          *
-         * @param geometry_model The geometry model that describes the domain. This may
-         *   be used to determine whether the boundary temperature model is implemented
-         *   for this geometry.
          * @param boundary_indicator The boundary indicator of the part of the boundary
          *   of the domain on which the point is located at which we are requesting the
          *   temperature.
@@ -117,7 +120,7 @@ namespace aspect
                                       const Point<dim>                    &location) const;
 
         /**
-         * Return the minimal the temperature on that part of the boundary
+         * Return the minimal temperature on that part of the boundary
          * on which Dirichlet conditions are posed.
          *
          * This value is used in computing dimensionless numbers such as the
@@ -127,7 +130,7 @@ namespace aspect
         double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
         /**
-         * Return the maximal the temperature on that part of the boundary
+         * Return the maximal temperature on that part of the boundary
          * on which Dirichlet conditions are posed.
          *
          * This value is used in computing dimensionless numbers such as the
@@ -161,10 +164,12 @@ namespace aspect
         /**
          * Pass core data to other modules
          */
-        struct _Core_Data get_core_data() const;
+        struct internal::CoreData get_core_data() const;
 
         /**
-         * Check if other energy source in core is in use
+         * Check if other energy source in the core is in use. The 'other energy source' is used for external core energy source. 
+         * For example if someone want to test the early lunar core powered by precession 
+         * (Dwyer, C. A., et al. (2011). "A long-lived lunar dynamo driven by continuous mechanical stirring." Nature 479(7372): 212-214.) 
          */
         bool is_OES_used() const;
 
@@ -175,7 +180,7 @@ namespace aspect
          * Data for core energy balance
          * it get updated each time step.
          */
-        struct _Core_Data core_data;
+        struct internal::CoreData core_data;
 
         /**
          * Temperatures at the inner boundaries.
@@ -206,11 +211,6 @@ namespace aspect
          * Flag for determining the initial call for update().
          */
         bool is_first_call;
-        
-        /**
-         * Gravitation constant
-         */
-        const double G;
         
         /**
          * Core radius
@@ -369,9 +369,9 @@ namespace aspect
 
         /**
          * Solve core energy balance for each time step.
-         * Well solving the change in core-mantle boundary temperature T, inner core radius R, and 
+         * When solving the change in core-mantle boundary temperature T, inner core radius R, and 
          *    light component (e.g. S, O, Si) composition X, the following relations has to be respected:
-         * 1. At the inner core boundary the adiabatic temperature should be equal to solidu temperature
+         * 1. At the inner core boundary the adiabatic temperature should be equal to solidus temperature
          * 2. The following energy production rate should be balanced in core:
          *    Heat flux at core-mantle boundary         Q
          *    Specific heat                             Qs*dT/dt
@@ -383,6 +383,14 @@ namespace aspect
          *    and core solidus may dependent on X as well.
          *    This becomes a small nonliner problem. Directly iterate through the above three equations doesn't
          *    converge well. Alternatively we solve the inner core radius by bisection method.
+         *    A sigle solution between fully liquid and fully solid core is expacted. Otherwise this function will throw exception and terminate.
+         *    
+         *    At Earth core condition, a inner core is forming at the center of the Earth and surrended by a liquid outter core. 
+         *    However, the core solidus is influnced by light components (e.g. S) and its slope is very closed to core adiabatic. So there is an alternative 
+         *    scenario that the crystialization happens first at the core mantle boundary instead of at the center, which is called a 'snowing core' 
+         *    (Stewart, A. J., et al. (2007). "Mars: a new core-crystallization regime." Science 316(5829): 1323-1325.). This also 
+         *    provides a valid solution for the slover. So the returning bool is set to true for normal core, and false for 'snowing core'.
+         *    TODO: The current code is only able to treat normal core scenario, treating 'snowing core' scenario may be possible and could be added.
          */
         bool solve_time_step(double &X, double &T, double &R);
         
@@ -415,13 +423,13 @@ namespace aspect
         double get_initial_Ri(double T);
         
         /**
-         * Get the light composition concentration in the outter core from given
+         * Get the light composition concentration in the outer core from given
          * inner core radius r
          */
         double get_X(double r) const;
         
         /**
-         * Compute the mass inside certain radius with in the core_data.
+         * Compute the mass inside certain radius within the core_data.
          */
         double get_Mass(double r) const;
         

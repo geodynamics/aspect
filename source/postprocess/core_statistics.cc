@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: heat_flux_statistics.cc 1790 2013-06-16 22:14:04Z bangerth $  */
 
 
 #include <aspect/postprocess/core_statistics.h>
@@ -46,8 +45,8 @@ namespace aspect
       // now add all of the computed heat fluxes to the statistics object
       // and create a single string that can be output to the screen
       std::ostringstream screen_text;
-      const BoundaryTemperature::Dynamic_core<dim>* dynamic_core =
-        dynamic_cast<const BoundaryTemperature::Dynamic_core<dim>*> (&(SimulatorAccess<dim>::get_boundary_temperature()));
+      const BoundaryTemperature::DynamicCore<dim>* dynamic_core =
+        dynamic_cast<const BoundaryTemperature::DynamicCore<dim>*> (&(SimulatorAccess<dim>::get_boundary_temperature()));
       AssertThrow (dynamic_core != NULL
           !=0,
           ExcMessage ("Core statistics has to be working with dynamic core boundary conditions."));
@@ -179,7 +178,7 @@ namespace aspect
     }
 
     template <int dim>
-    struct BoundaryTemperature::_Core_Data
+    struct BoundaryTemperature::internal::CoreData
     CoreStatistics<dim>::get_core_data() const
     {
       return core_data;
@@ -233,6 +232,6 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(CoreStatistics,
                                   "core statistics",
                                   "A postprocessor that computes some statistics about "
-                                  "the core evolution. (Working with dynamic core boundary condition)")
+                                  "the core evolution. (Working only with dynamic core boundary temperature plugin)")
   }
 }
