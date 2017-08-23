@@ -1,5 +1,7 @@
-# A simple setup for convection in a quarter of a 2d shell. See the
-# manual for more information.
+# A simple setup for Earth convection model in a 2d shell 
+# with the core mantle boundary (CMB) temperature dyanmically evolves through time. 
+# The 'dynamic core' boundary temperature plugin and 'core statistics' postprocessor 
+# are used to solving and tracing the core evolution.
 
 
 set Dimension                              = 2
@@ -99,6 +101,5 @@ subsection Postprocess
   end
 end
 subsection Termination criteria
-  set Checkpoint on termination = true
   set Termination criteria      = user request
 end

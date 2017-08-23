@@ -159,19 +159,23 @@ namespace aspect
          * This function update the core-mantle boundary (CMB) temperature by
          * the core energy balance solver using the core-mantle boundary heat flux.
          */
-        virtual void update();
+        virtual 
+        void 
+        update();
 
         /**
          * Pass core data to other modules
          */
-        struct internal::CoreData get_core_data() const;
+        internal::CoreData 
+        get_core_data() const;
 
         /**
          * Check if other energy source in the core is in use. The 'other energy source' is used for external core energy source.
          * For example if someone want to test the early lunar core powered by precession
          * (Dwyer, C. A., et al. (2011). "A long-lived lunar dynamo driven by continuous mechanical stirring." Nature 479(7372): 212-214.)
          */
-        bool is_OES_used() const;
+        bool 
+        is_OES_used() const;
 
 
       private:
@@ -180,10 +184,10 @@ namespace aspect
          * Data for core energy balance
          * it get updated each time step.
          */
-        struct internal::CoreData core_data;
+        internal::CoreData core_data;
 
         /**
-         * Temperatures at the inner boundaries.
+         * Temperature at the inner boundary.
          */
         double inner_temperature;
 
