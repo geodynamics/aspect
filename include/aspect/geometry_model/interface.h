@@ -138,7 +138,10 @@ namespace aspect
          * latitude) in 3d.
          */
         virtual
-        std_cxx11::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const;
+        Tensor<1,2> cartesian_to_natural_coordinates(const Point<2> &position) const;
+
+        virtual
+        Tensor<1,3> cartesian_to_natural_coordinates(const Point<3> &position) const;
 
         /**
          * Undoes the action of cartesian_to_natural_coordinates, and turns the
@@ -146,7 +149,10 @@ namespace aspect
          * Cartesian coordinates.
          */
         virtual
-        Point<dim> natural_to_cartesian_coordinates(const std_cxx11::array<double,dim> &position) const;
+        Point<2> natural_to_cartesian_coordinates(const Tensor<1,2> &position) const;
+
+        virtual
+        Point<3> natural_to_cartesian_coordinates(const Tensor<1,3> &position) const;
 
         /**
          * Returns a representative point for a given depth. Such a point must
