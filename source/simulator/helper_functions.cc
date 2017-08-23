@@ -554,7 +554,7 @@ namespace aspect
           if (parameters.use_conduction_timestep)
             {
               in.reinit(fe_values,
-                        &cell,
+                        cell,
                         introspection,
                         solution);
 
@@ -1578,10 +1578,10 @@ namespace aspect
         {
           fe_values_C.reinit (cell);
           cell->get_dof_indices (local_dof_indices);
-          in_C.reinit(fe_values_C, &cell, introspection, solution);
+          in_C.reinit(fe_values_C, cell, introspection, solution);
 
           fe_values_T.reinit (cell);
-          in_T.reinit(fe_values_T, &cell, introspection, solution);
+          in_T.reinit(fe_values_T, cell, introspection, solution);
 
           std::vector<std::vector<double> > accumulated_reactions_C (quadrature_C.size(),std::vector<double> (introspection.n_compositional_fields));
           std::vector<double> accumulated_reactions_T (quadrature_T.size());

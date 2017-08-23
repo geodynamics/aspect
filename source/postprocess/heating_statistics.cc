@@ -80,7 +80,7 @@ namespace aspect
           {
 
             fe_values.reinit (cell);
-            in.reinit(fe_values, &cell, this->introspection(), this->get_solution());
+            in.reinit(fe_values, cell, this->introspection(), this->get_solution());
 
             for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
                  heating_model = heating_model_objects.begin();

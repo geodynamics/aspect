@@ -974,7 +974,7 @@ namespace aspect
 
 
             in.reinit(fe_values,
-                      &cell,
+                      cell,
                       this->introspection(),
                       this->get_solution());
 

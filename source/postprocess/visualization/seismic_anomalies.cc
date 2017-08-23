@@ -81,7 +81,7 @@ namespace aspect
                     // Get the pressure, temperature and composition in the cell
                     fe_values.reinit (cell);
 
-                    in.reinit(fe_values, &cell, this->introspection(), this->get_solution(), false);
+                    in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
 
                     out.additional_outputs.push_back(
                       std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
@@ -248,7 +248,7 @@ namespace aspect
                     // Get the pressure, temperature and composition in the cell
                     fe_values.reinit (cell);
 
-                    in.reinit(fe_values, &cell, this->introspection(), this->get_solution(), false);
+                    in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
 
                     out.additional_outputs.push_back(
                       std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >

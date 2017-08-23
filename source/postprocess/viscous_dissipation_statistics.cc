@@ -70,7 +70,7 @@ namespace aspect
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);
-            in.reinit(fe_values, &cell, this->introspection(), this->get_solution());
+            in.reinit(fe_values, cell, this->introspection(), this->get_solution());
 
             // get the viscosity from the material model
             this->get_material_model().evaluate(in, out);

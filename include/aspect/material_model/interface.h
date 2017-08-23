@@ -211,7 +211,7 @@ namespace aspect
          * @param use_strain_rates Whether to compute the strain rates.
          */
         MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
-                            const typename DoFHandler<dim>::active_cell_iterator *cell,
+                            const typename DoFHandler<dim>::active_cell_iterator &cell,
                             const Introspection<dim> &introspection,
                             const LinearAlgebra::BlockVector &solution_vector,
                             const bool use_strain_rates = true);
@@ -226,7 +226,7 @@ namespace aspect
          * created by the constructor MaterialModelInputs.
          */
         void reinit(const FEValuesBase<dim,dim> &fe_values,
-                    const typename DoFHandler<dim>::active_cell_iterator *cell,
+                    const typename DoFHandler<dim>::active_cell_iterator &cell,
                     const Introspection<dim> &introspection,
                     const LinearAlgebra::BlockVector &solution_vector,
                     const bool use_strain_rates = true);

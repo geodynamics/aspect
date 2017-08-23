@@ -82,7 +82,7 @@ namespace aspect
 
               // get the density at each quadrature point if necessary
               in.reinit(fe_values,
-                        &cell,
+                        cell,
                         this->introspection(),
                         this->get_solution());
 
