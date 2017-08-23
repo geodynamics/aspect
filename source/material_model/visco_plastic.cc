@@ -477,7 +477,8 @@ namespace aspect
 
       // We need the velocity gradient for the finite strain (they are not included in material model inputs),
       // so we get them from the finite element.
-      if (in.cell && use_strain_weakening == true && use_finite_strain_tensor == true && this->get_timestep_number() > 0)
+      if (in.current_cell.state() == IteratorState::valid && use_strain_weakening == true
+          && use_finite_strain_tensor == true && this->get_timestep_number() > 0)
         {
           const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+1);
           FEValues<dim> fe_values (this->get_mapping(),
@@ -487,7 +488,7 @@ namespace aspect
 
           std::vector<Tensor<2,dim> > velocity_gradients (quadrature_formula.size(), Tensor<2,dim>());
 
-          fe_values.reinit (*in.cell);
+          fe_values.reinit (in.current_cell);
           fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_solution(),
                                                                                          velocity_gradients);
 

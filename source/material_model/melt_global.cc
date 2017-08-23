@@ -114,7 +114,7 @@ namespace aspect
 
       // we want to get the porosity field from the old solution here,
       // because we need a field that is not updated in the nonlinear iterations
-      if (this->include_melt_transport() && in.cell
+      if (this->include_melt_transport() && in.current_cell.state() == IteratorState::valid
           && this->get_timestep_number() > 0 && !this->get_parameters().use_operator_splitting)
         {
           // Prepare the field function
@@ -126,7 +126,7 @@ namespace aspect
                                  "works if there is a compositional field called porosity."));
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-          fe_value.set_active_cell(*in.cell);
+          fe_value.set_active_cell(in.current_cell);
           fe_value.value_list(in.position,
                               old_porosity,
                               this->introspection().component_indices.compositional_fields[porosity_idx]);

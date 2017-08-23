@@ -82,21 +82,17 @@ int f(double parameter)
 
   bool Error = false;
 
-  MaterialModelInputs<dim> in_dviscositydpressure(5,3);
-  in_dviscositydpressure = in_base;
+  MaterialModelInputs<dim> in_dviscositydpressure(in_base);
   in_dviscositydpressure.pressure[0] *= finite_difference_factor;
   in_dviscositydpressure.pressure[1] *= finite_difference_factor;
   in_dviscositydpressure.pressure[2] *= finite_difference_factor;
   in_dviscositydpressure.pressure[3] *= finite_difference_factor;
   in_dviscositydpressure.pressure[4] *= finite_difference_factor;
 
-  MaterialModelInputs<dim> in_dviscositydstrainrate_zerozero(5,3);
-  MaterialModelInputs<dim> in_dviscositydstrainrate_onezero(5,3);
-  MaterialModelInputs<dim> in_dviscositydstrainrate_oneone(5,3);
+  MaterialModelInputs<dim> in_dviscositydstrainrate_zerozero(in_base);
+  MaterialModelInputs<dim> in_dviscositydstrainrate_onezero(in_base);
+  MaterialModelInputs<dim> in_dviscositydstrainrate_oneone(in_base);
 
-  in_dviscositydstrainrate_zerozero = in_base;
-  in_dviscositydstrainrate_onezero = in_base;
-  in_dviscositydstrainrate_oneone = in_base;
   in_dviscositydstrainrate_zerozero.strain_rate[0] += std::fabs(in_dviscositydstrainrate_zerozero.strain_rate[0][0][0]) * finite_difference_accuracy * zerozero;
   in_dviscositydstrainrate_zerozero.strain_rate[1] += std::fabs(in_dviscositydstrainrate_zerozero.strain_rate[1][0][0]) * finite_difference_accuracy * zerozero;
   in_dviscositydstrainrate_zerozero.strain_rate[2] += std::fabs(in_dviscositydstrainrate_zerozero.strain_rate[2][0][0]) * finite_difference_accuracy * zerozero;
@@ -113,8 +109,7 @@ int f(double parameter)
   in_dviscositydstrainrate_oneone.strain_rate[3]   += std::fabs(in_dviscositydstrainrate_oneone.strain_rate[3][1][1]) * finite_difference_accuracy * oneone;
   in_dviscositydstrainrate_oneone.strain_rate[4]   += std::fabs(in_dviscositydstrainrate_oneone.strain_rate[4][1][1]) * finite_difference_accuracy * oneone;
 
-  MaterialModelInputs<dim> in_dviscositydtemperature(5,3);
-  in_dviscositydtemperature = in_base;
+  MaterialModelInputs<dim> in_dviscositydtemperature(in_base);
   in_dviscositydtemperature.temperature[0] *= 1.0000000001;
   in_dviscositydtemperature.temperature[1] *= 1.0000000001;
   in_dviscositydtemperature.temperature[2] *= 1.0000000001;

@@ -69,7 +69,6 @@ namespace aspect
               in.composition[0][i] = 0.0;
 
           in.strain_rate[0] = SymmetricTensor<2,dim>();
-          in.cell = NULL;
 
           std::vector<double> melt_fraction(1);
           material_model->melt_fractions(in,melt_fraction);

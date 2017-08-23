@@ -44,7 +44,8 @@ namespace aspect
       // get the melt velocity from the solution vector
       std::vector<Tensor<1,dim> > melt_velocity (material_model_inputs.position.size());
 
-      if (material_model_inputs.cell && this->get_timestep_number() > 0)
+      if (material_model_inputs.current_cell.state() == IteratorState::valid
+          && this->get_timestep_number() > 0)
         {
           // we have to create a long vector, because that is the only way to extract the velocities
           // from the solution vector
@@ -53,7 +54,7 @@ namespace aspect
           Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
           fe_value(this->get_dof_handler(), this->get_solution(), this->get_mapping());
 
-          fe_value.set_active_cell(*material_model_inputs.cell);
+          fe_value.set_active_cell(material_model_inputs.current_cell);
 
           for (unsigned int d=0; d<dim; ++d)
             fe_value.value_list(material_model_inputs.position,

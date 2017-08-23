@@ -172,124 +172,153 @@ namespace aspect
     template <int dim>
     struct MaterialModelInputs
     {
-      /**
-       * Constructor. Initialize the various arrays of this structure with the
-       * given number of quadrature points and (finite element) components.
-       *
-       * @param n_points The number of quadrature points for which input
-       * quantities will be provided.
-       * @param n_comp The number of vector quantities (in the order in which
-       * the Introspection class reports them) for which input will be
-       * provided.
-       */
-      MaterialModelInputs(const unsigned int n_points,
-                          const unsigned int n_comp);
+        /**
+         * Constructor. Initialize the various arrays of this structure with the
+         * given number of quadrature points and (finite element) components.
+         *
+         * @param n_points The number of quadrature points for which input
+         * quantities will be provided.
+         * @param n_comp The number of vector quantities (in the order in which
+         * the Introspection class reports them) for which input will be
+         * provided.
+         */
+        MaterialModelInputs(const unsigned int n_points,
+                            const unsigned int n_comp);
 
-      /**
-       * Constructor. Initialize the arrays of the structure with the number
-       * of points in the `input_data` structure, and fills them appropriately.
-       *
-       * @param input_data The data used to populate the material model input quantities.
-       * @param introspection A reference to the simulator introspection object.
-       * @param use_strain_rate Whether to compute the strain rates.
-       */
-      MaterialModelInputs(const DataPostprocessorInputs::Vector<dim> &input_data,
-                          const Introspection<dim> &introspection,
-                          const bool use_strain_rate = true);
-
-
-      /**
-       * Constructor. Initializes the various arrays of this
-       * structure with the FEValues and introspection objects and
-       * the solution_vector. This constructor calls the function
-       * reinit to populate the newly created arrays.
-       *
-       * @param fe_values An FEValuesBase object used to evaluate the finite elements.
-       * @param cell The currently active cell for the fe_values object.
-       * @param introspection A reference to the simulator introspection object.
-       * @param solution_vector The finite element vector from which to construct the inputs.
-       * @param use_strain_rates Whether to compute the strain rates.
-       */
-      MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
-                          const typename DoFHandler<dim>::active_cell_iterator *cell,
-                          const Introspection<dim> &introspection,
-                          const LinearAlgebra::BlockVector &solution_vector,
-                          const bool use_strain_rates = true);
-
-      /**
-       * Function to re-initialize and populate the pre-existing arrays
-       * created by the constructor MaterialModelInputs.
-       */
-      void reinit(const FEValuesBase<dim,dim> &fe_values,
-                  const typename DoFHandler<dim>::active_cell_iterator *cell,
-                  const Introspection<dim> &introspection,
-                  const LinearAlgebra::BlockVector &solution_vector,
-                  const bool use_strain_rates = true);
+        /**
+         * Constructor. Initialize the arrays of the structure with the number
+         * of points in the `input_data` structure, and fills them appropriately.
+         *
+         * @param input_data The data used to populate the material model input quantities.
+         * @param introspection A reference to the simulator introspection object.
+         * @param use_strain_rate Whether to compute the strain rates.
+         */
+        MaterialModelInputs(const DataPostprocessorInputs::Vector<dim> &input_data,
+                            const Introspection<dim> &introspection,
+                            const bool use_strain_rate = true);
 
 
-      /**
-       * Vector with global positions where the material has to be evaluated
-       * in evaluate().
-       */
-      std::vector<Point<dim> > position;
+        /**
+         * Constructor. Initializes the various arrays of this
+         * structure with the FEValues and introspection objects and
+         * the solution_vector. This constructor calls the function
+         * reinit to populate the newly created arrays.
+         *
+         * @param fe_values An FEValuesBase object used to evaluate the finite elements.
+         * @param cell The currently active cell for the fe_values object.
+         * @param introspection A reference to the simulator introspection object.
+         * @param solution_vector The finite element vector from which to construct the inputs.
+         * @param use_strain_rates Whether to compute the strain rates.
+         */
+        MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
+                            const typename DoFHandler<dim>::active_cell_iterator *cell,
+                            const Introspection<dim> &introspection,
+                            const LinearAlgebra::BlockVector &solution_vector,
+                            const bool use_strain_rates = true);
 
-      /**
-       * Temperature values at the points given in the #position vector.
-       */
-      std::vector<double> temperature;
+        /**
+         * Copy Constructor.
+         */
+        MaterialModelInputs(const MaterialModelInputs<dim> &material);
 
-      /**
-       * Pressure values at the points given in the #position vector.
-       */
-      std::vector<double> pressure;
+        /**
+         * Function to re-initialize and populate the pre-existing arrays
+         * created by the constructor MaterialModelInputs.
+         */
+        void reinit(const FEValuesBase<dim,dim> &fe_values,
+                    const typename DoFHandler<dim>::active_cell_iterator *cell,
+                    const Introspection<dim> &introspection,
+                    const LinearAlgebra::BlockVector &solution_vector,
+                    const bool use_strain_rates = true);
 
-      /**
-       * Pressure gradients at the points given in the #position vector.
-       * This is important for the heating models.
-       */
-      std::vector<Tensor<1,dim> > pressure_gradient;
 
-      /**
-       * Velocity values at the points given in the #position vector.
-       * This value is mostly important in the case of determining
-       * whether material crossed a certain region (e.g. a phase boundary).
-       * The timestep that is needed for this check can be requested from
-       * SimulatorAccess.
-       */
-      std::vector<Tensor<1,dim> > velocity;
+        /**
+         * Vector with global positions where the material has to be evaluated
+         * in evaluate().
+         */
+        std::vector<Point<dim> > position;
 
-      /**
-       * Values of the compositional fields at the points given in the
-       * #position vector: composition[i][c] is the compositional field c at
-       * point i.
-       */
-      std::vector<std::vector<double> > composition;
+        /**
+         * Temperature values at the points given in the #position vector.
+         */
+        std::vector<double> temperature;
 
-      /**
-       * Strain rate at the points given in the #position vector. Only the
-       * viscosity may depend on these values. This std::vector can be set to
-       * size 0 if the viscosity is not needed.
-       *
-       * @note The strain rate is computed as $\varepsilon(\mathbf u)=\frac 12
-       * (\nabla \mathbf u + \nabla \mathbf u^T)$, regardless of whether the
-       * model is compressible or not. This is relevant since in some other
-       * contexts, the strain rate in the compressible case is computed as
-       * $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u + \nabla \mathbf
-       * u^T) - \frac 13 \nabla \cdot \mathbf u \mathbf 1$.
-       */
-      std::vector<SymmetricTensor<2,dim> > strain_rate;
+        /**
+         * Pressure values at the points given in the #position vector.
+         */
+        std::vector<double> pressure;
 
-      /**
-       * Optional reference to the cell that contains these quadrature
-       * points. This allows for evaluating properties at the cell vertices
-       * and interpolating to the quadrature points, or to query the cell for
-       * material ids, neighbors, or other information that is not available
-       * solely from the locations. Note that not all calling functions can set
-       * this reference. In these cases it will be a NULL pointer, so make sure
-       * that your material model either fails with a proper error message
-       * or provide an alternative calculation for these cases.
-       */
-      const typename DoFHandler<dim>::active_cell_iterator *cell;
+        /**
+         * Pressure gradients at the points given in the #position vector.
+         * This is important for the heating models.
+         */
+        std::vector<Tensor<1,dim> > pressure_gradient;
+
+        /**
+         * Velocity values at the points given in the #position vector.
+         * This value is mostly important in the case of determining
+         * whether material crossed a certain region (e.g. a phase boundary).
+         * The timestep that is needed for this check can be requested from
+         * SimulatorAccess.
+         */
+        std::vector<Tensor<1,dim> > velocity;
+
+        /**
+         * Values of the compositional fields at the points given in the
+         * #position vector: composition[i][c] is the compositional field c at
+         * point i.
+         */
+        std::vector<std::vector<double> > composition;
+
+        /**
+         * Strain rate at the points given in the #position vector. Only the
+         * viscosity may depend on these values. This std::vector can be set to
+         * size 0 if the viscosity is not needed.
+         *
+         * @note The strain rate is computed as $\varepsilon(\mathbf u)=\frac 12
+         * (\nabla \mathbf u + \nabla \mathbf u^T)$, regardless of whether the
+         * model is compressible or not. This is relevant since in some other
+         * contexts, the strain rate in the compressible case is computed as
+         * $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u + \nabla \mathbf
+         * u^T) - \frac 13 \nabla \cdot \mathbf u \mathbf 1$.
+         */
+        std::vector<SymmetricTensor<2,dim> > strain_rate;
+
+        /**
+         * Optional reference to the cell that contains these quadrature
+         * points. This allows for evaluating properties at the cell vertices
+         * and interpolating to the quadrature points, or to query the cell for
+         * material ids, neighbors, or other information that is not available
+         * solely from the locations. Note that not all calling functions can set
+         * this reference. In these cases it will be a NULL pointer, so make sure
+         * that your material model either fails with a proper error message
+         * or provide an alternative calculation for these cases.
+         *
+         * @deprecated Use DoFHandler<dim>::active_cell_iterator current_cell instead.
+         */
+        const typename DoFHandler<dim>::active_cell_iterator *cell DEAL_II_DEPRECATED;
+
+        /**
+         * Optional cell object that contains these quadrature
+         * points. This allows for evaluating properties at the cell vertices
+         * and interpolating to the quadrature points, or to query the cell for
+         * material ids, neighbors, or other information that is not available
+         * solely from the locations. Note that not all calling functions can set
+         * this reference. In these cases it will be a cell constructed with a
+         * default constructor, so make sure that your material model either fails
+         * with a proper error message or provide an alternative calculation for
+         * these cases.
+         */
+        typename DoFHandler<dim>::active_cell_iterator current_cell;
+
+      private:
+        /**
+         * Assignment operator. It is forbidden to copy this object, because this
+         * would be too expensive. Hence, this function is private and no
+         * implementation is provided, so that trying to use it will throw an
+         * error indicating where the problem is.
+         */
+        MaterialModelInputs &operator=(const MaterialModelInputs &material);
     };
 
 

@@ -167,7 +167,7 @@ namespace aspect
                         for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                           in.composition[i][c] = composition_values[c][i];
                       }
-                    in.cell = &cell;
+                    in.current_cell = cell;
 
                     out.additional_outputs.push_back(
                       std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
@@ -332,7 +332,7 @@ namespace aspect
                         for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                           in.composition[i][c] = composition_values[c][i];
                       }
-                    in.cell = &cell;
+                    in.current_cell = cell;
 
                     out.additional_outputs.push_back(
                       std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >

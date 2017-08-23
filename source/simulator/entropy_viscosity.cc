@@ -128,7 +128,7 @@ namespace aspect
     if (advection_field.is_discontinuous(introspection))
       return 0.;
 
-    std::vector<double> residual = assemblers->compute_advection_system_residual(*scratch.material_model_inputs.cell,
+    std::vector<double> residual = assemblers->compute_advection_system_residual(scratch.material_model_inputs.current_cell,
                                                                                  advection_field,
                                                                                  scratch);
 
@@ -386,7 +386,7 @@ namespace aspect
               scratch.material_model_inputs.composition[q][c] = (scratch.old_composition_values[c][q] + scratch.old_old_composition_values[c][q]) / 2;
             scratch.material_model_inputs.strain_rate[q] = (scratch.old_strain_rates[q] + scratch.old_old_strain_rates[q]) / 2;
           }
-        scratch.material_model_inputs.cell = &cell;
+        scratch.material_model_inputs.current_cell = cell;
         create_additional_material_model_outputs(scratch.material_model_outputs);
 
         material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
