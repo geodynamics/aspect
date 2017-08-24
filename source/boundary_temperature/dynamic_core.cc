@@ -532,30 +532,30 @@ namespace aspect
     DynamicCore<dim>::get_solidus(double X,double p) const
     {
       if (use_bw11)
-      {
-        // Change from weight percent to mole percent.
-        double x,x0=32./88.;
-        if (X<x0)
-          x=56.*X/(32.*(1.-X));
-        else
-          x=1.;
-        // Change from Pa to GPa
-        p*=1e-9;
-        // Fe-FeS system solidus by Buono & Walker (2011)
-        return (-2.4724*p*p*p*p + 28.025*p*p*p + 9.1404*p*p + 581.71*p + 3394.8) * x*x*x*x
-               +( 1.7978*p*p*p*p - 6.7881*p*p*p - 197.69*p*p - 271.69*p - 8219.5) * x*x*x
-               +(-0.1702*p*p*p*p - 9.3959*p*p*p + 163.53*p*p - 319.35*p + 5698.6) * x*x
-               +(-0.2308*p*p*p*p + 7.1000*p*p*p - 64.118*p*p + 105.98*p - 1621.9) * x
-               +( 0.2302*p*p*p*p - 5.3688*p*p*p + 38.124*p*p - 46.681*p + 1813.8);
+        {
+          // Change from weight percent to mole percent.
+          double x,x0=32./88.;
+          if (X<x0)
+            x=56.*X/(32.*(1.-X));
+          else
+            x=1.;
+          // Change from Pa to GPa
+          p*=1e-9;
+          // Fe-FeS system solidus by Buono & Walker (2011)
+          return (-2.4724*p*p*p*p + 28.025*p*p*p + 9.1404*p*p + 581.71*p + 3394.8) * x*x*x*x
+                 +( 1.7978*p*p*p*p - 6.7881*p*p*p - 197.69*p*p - 271.69*p - 8219.5) * x*x*x
+                 +(-0.1702*p*p*p*p - 9.3959*p*p*p + 163.53*p*p - 319.35*p + 5698.6) * x*x
+                 +(-0.2308*p*p*p*p + 7.1000*p*p*p - 64.118*p*p + 105.98*p - 1621.9) * x
+                 +( 0.2302*p*p*p*p - 5.3688*p*p*p + 38.124*p*p - 46.681*p + 1813.8);
 
-      }
+        }
       else
-      {
-        if (composition_dependency)
-          return (Tm0*(1-Theta*X)*(1+Tm1*p+Tm2*pow(p,2)));
-        else
-          return (Tm0*(1-Theta)*(1+Tm1*p+Tm2*pow(p,2)));
-      }
+        {
+          if (composition_dependency)
+            return (Tm0*(1-Theta*X)*(1+Tm1*p+Tm2*pow(p,2)));
+          else
+            return (Tm0*(1-Theta)*(1+Tm1*p+Tm2*pow(p,2)));
+        }
     }
 
     template <int dim>

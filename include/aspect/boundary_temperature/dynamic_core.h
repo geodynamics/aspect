@@ -159,8 +159,8 @@ namespace aspect
          * This function update the core-mantle boundary (CMB) temperature by
          * the core energy balance solver using the core-mantle boundary heat flux.
          */
-        virtual 
-        void 
+        virtual
+        void
         update();
 
         /**
@@ -174,7 +174,7 @@ namespace aspect
          * For example if someone want to test the early lunar core powered by precession
          * (Dwyer, C. A., et al. (2011). "A long-lived lunar dynamo driven by continuous mechanical stirring." Nature 479(7372): 212-214.)
          */
-        bool 
+        bool
         is_OES_used() const;
 
 
