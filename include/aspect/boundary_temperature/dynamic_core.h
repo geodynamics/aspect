@@ -166,7 +166,7 @@ namespace aspect
         /**
          * Pass core data to other modules
          */
-        internal::CoreData 
+        const internal::CoreData &
         get_core_data() const;
 
         /**

@@ -178,8 +178,8 @@ namespace aspect
     }
 
     template <int dim>
-    struct BoundaryTemperature::internal::CoreData
-  CoreStatistics<dim>::get_core_data() const
+    const BoundaryTemperature::internal::CoreData &
+    CoreStatistics<dim>::get_core_data() const
     {
       return core_data;
     }

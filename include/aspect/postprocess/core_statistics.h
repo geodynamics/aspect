@@ -65,8 +65,8 @@ namespace aspect
          * temperature doesn't allowed to store restart data there. So we store the data needed
          * for restart here and exported to boundary temperature object if required.
          */
-        struct  BoundaryTemperature::internal::CoreData
-      get_core_data() const;
+        const BoundaryTemperature::internal::CoreData &
+        get_core_data() const;
 
         /**
          * Serialize the contents of this class as far as they are not read
