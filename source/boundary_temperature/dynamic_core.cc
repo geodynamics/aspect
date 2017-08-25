@@ -303,16 +303,19 @@ namespace aspect
     DynamicCore<dim>::read_data_OES()
     {
       data_OES.clear();
-      FILE *fp=fopen(name_OES.c_str(),"r");
-      if (fp!=NULL)
+      if (name_OES.size()==0) return;
+      std::istringstream in(Utilities::read_and_distribute_file_content(name_OES.c_str(), this->get_mpi_communicator()));
+      if (in.good())
         {
-          struct str_data_OES data_read;
-          while (!feof(fp))
+          str_data_OES data_read;
+          const int buff_size = 1024;
+          char *line = new char [buff_size];
+          while (!in.eof())
             {
-              if (fscanf(fp,"%le\t%le\n",&(data_read.t),&(data_read.w))==2)
+              in.getline(line, buff_size);
+              if (sscanf(line,"%le\t%le\n",&(data_read.t),&(data_read.w))==2)
                 data_OES.push_back(data_read);
             }
-          fclose(fp);
         }
       if (data_OES.size()!=0)
         this->get_pcout()<<"Other energy source is in use ( "<<data_OES.size()<<" data points is read)."<<std::endl;
@@ -322,6 +325,7 @@ namespace aspect
     double
     DynamicCore<dim>::get_OES(double t) const
     {
+      // The core evolution is quite slow, so the time units used here is billion years.
       t/=1.e9*year_in_seconds;
       double w=0.;
       for (unsigned i=1; i<data_OES.size(); i++)
@@ -334,10 +338,7 @@ namespace aspect
               break;
             }
         }
-      if (w==0.)
-        return 0.;
-      else
-        return pow(10,w);
+      return w;
     }
 
     template <int dim>
@@ -488,7 +489,7 @@ namespace aspect
       // Using all Q values from last step.
       // Qs & Qr is constant, while Qg & Ql depends on inner core raidus Ri
       // TODO: Use mid-point value for Q values.
-      return core_data.Ti - ( (core_data.Q + core_data.Qr) * core_data.dt
+      return core_data.Ti - ( (core_data.Q + core_data.Qr + core_data.Q_OES) * core_data.dt
                               + (core_data.Qg + core_data.Ql)*(r-core_data.Ri)
                             ) / core_data.Qs;
     }
@@ -751,9 +752,8 @@ namespace aspect
       }
 
       core_data.Q_OES = get_OES(this->get_time());
-      core_data.Q    -= core_data.Q_OES;
 
-      if (core_data.Q * core_data.dt!=0.)
+      if ((core_data.Q + core_data.Q_OES) * core_data.dt!=0.)
         {
           double X1,R1=core_data.Ri,T1;
           solve_time_step(X1,T1,R1);
@@ -776,7 +776,7 @@ namespace aspect
 
       inner_temperature = core_data.Ti - dTa;
       update_core_data();
-      if (core_data.Q!=0.)
+      if ((core_data.Q + core_data.Q_OES + core_data.Qr) * core_data.dt!=0.)
         {
           std::stringstream output;
           output<<std::setiosflags(std::ios::left)

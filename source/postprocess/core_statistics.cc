@@ -54,8 +54,8 @@ namespace aspect
 
       // now add core mantle boundary heat flux to the statistics object
       // and create a single string that can be output to the screen
-      const std::string name = "CMB heat flux into the core (TW)";
-      statistics.add_value (name, core_data.Q/1e12);
+      const std::string name = "CMB heat flux out of the core (TW)";
+      statistics.add_value (name, -core_data.Q/1e12);
 
       // also make sure that the other columns filled by the this object
       // all show up with sufficient accuracy and in scientific notation
@@ -64,7 +64,7 @@ namespace aspect
 
       // finally have something for the screen
       screen_text.precision(3);
-      screen_text << core_data.Q/1e12 << " TW,";
+      screen_text << -core_data.Q/1e12 << " TW,";
 
 
       const std::string name1 = "CMB Temperature (K)";
@@ -141,7 +141,7 @@ namespace aspect
           statistics.set_scientific (name11, true);
         }
 
-      return std::pair<std::string, std::string> ("CMB heat flux into the core",
+      return std::pair<std::string, std::string> ("CMB heat flux out of the core",
                                                   screen_text.str());
     }
 

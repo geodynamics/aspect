@@ -6,35 +6,32 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
      Tc(K)          Ri(km)         Xi             dT/dt(K/year)  dR/dt(km/year) dX/dt(1/year)  
      4100           2019.44        0.0465437      0              0              0              
 *** Timestep 0:  t=0 years
-   Dynamic core data updated.
-     Tc(K)          Ri(km)         Xi             dT/dt(K/year)  dR/dt(km/year) dX/dt(1/year)  
-     4100           2019.44        0.0465437      0              0              0              
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 61+0 iterations.
 
    Postprocessing:
-     CMB heat flux into the core -0.953 TW,
+     CMB heat flux out of the core 0.953 TW,
 
 *** Timestep 1:  t=958932 years
    Dynamic core data updated.
      Tc(K)          Ri(km)         Xi             dT/dt(K/year)  dR/dt(km/year) dX/dt(1/year)  
-     4100           2019.47        0.0465439      -4.62364e-09   3.27461e-08    2.44951e-13    
+     4100.03        2019.2         0.0465419      3.4811e-08     -2.46564e-07   -1.84405e-12   
    Solving temperature system... 12 iterations.
    Solving Stokes system... 59+0 iterations.
 
    Postprocessing:
-     CMB heat flux into the core -0.953 TW,
+     CMB heat flux out of the core 0.953 TW,
 
 *** Timestep 2:  t=1e+06 years
    Dynamic core data updated.
      Tc(K)          Ri(km)         Xi             dT/dt(K/year)  dR/dt(km/year) dX/dt(1/year)  
-     4100           2019.47        0.0465439      -4.6269e-09    3.27134e-08    2.44712e-13    
+     4100.03        2019.19        0.0465418      3.47783e-08    -2.464e-07     -1.84253e-12   
    Solving temperature system... 8 iterations.
    Solving Stokes system... 43+0 iterations.
 
    Postprocessing:
-     CMB heat flux into the core -0.952 TW,
+     CMB heat flux out of the core 0.952 TW,
 
 Termination requested by criterion: end time
 

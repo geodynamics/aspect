@@ -70,7 +70,7 @@ subsection Boundary temperature model
       set Number of radioactive heating elements = 1
       set Heating rates                          = 2.92e-5
       set Half life times                        = 1.25       #Unit: Gyr
-      set Initial concentrations                 = 0 #0.01 #0.1442962  #0.28859245
+      set Initial concentrations                 = 0.1442962  
     end
   end  
 end
