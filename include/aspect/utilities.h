@@ -974,6 +974,18 @@ namespace aspect
                               const double safety_factor);
 
     /**
+     * Converts an array of size dim to a Point of size dim.
+     */
+    template <int dim>
+    Point<dim> convert_array_to_point(const std_cxx11::array<double,dim> &array);
+
+    /**
+     * Converts a Point of size dim to an array of size dim.
+     */
+    template <int dim>
+    std_cxx11::array<double,dim> convert_point_to_array(const Point<dim> &point);
+
+    /**
      * A class that represents a binary operator between two doubles. The type of
      * operation is specified on construction time, and can be checked later
      * by using the operator ==. The operator () executes the operation on two
