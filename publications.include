@@ -1,4 +1,3 @@
-    <div id="content" class="container">
       <div class="row">
           <div class="well">
 
@@ -61,4 +60,5 @@
 }
               </code></pre>
             </p>
+          </div>
           </div>

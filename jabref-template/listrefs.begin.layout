@@ -406,10 +406,10 @@ p.infolinks { margin: 0.3em 0em 0em 0em; padding: 0px; }
 <body>
     <!--#include file="header.include" -->
 
+    <div id="content" class="container">
 
     <!--#include file="publications.include" -->
 
-    <div id="content" class="container">
       <div class="row">
           <div class="well">
             <h2>Publications using ASPECT</h2>
