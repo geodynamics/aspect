@@ -855,8 +855,14 @@ namespace aspect
         solution.block(block_p) = distributed_stokes_solution.block(block_p);
 
         // print the number of iterations to screen
-        pcout << solver_control_cheap.last_step() << '+'
-              << solver_control_expensive.last_step() << " iterations.";
+        pcout << (solver_control_cheap.last_step() != numbers::invalid_unsigned_int ?
+                  solver_control_cheap.last_step():
+                  0)
+              << '+'
+              << (solver_control_expensive.last_step() != numbers::invalid_unsigned_int ?
+                  solver_control_expensive.last_step():
+                  0)
+              << " iterations.";
         pcout << std::endl;
       }
 
