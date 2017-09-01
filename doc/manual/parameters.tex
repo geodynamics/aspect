@@ -413,6 +413,22 @@ For more information, see the section in the manual that discusses the general m
 
 
 {\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Use operator splitting}
+\phantomsection\label{parameters:Use operator splitting}
+
+
+\index[prmindex]{Use operator splitting}
+\index[prmindexfull]{Use operator splitting}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} If set to true, the advection and reactions of compositional fields and temperature are solved separately, and can use different time steps. Note that this will only work if the material/heating model fills the reaction\_rates/heating\_reaction\_rates structures. Operator splitting can be used with any existing solver schemes that solve the temperature/composition equations.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Use years in output instead of seconds}
 \phantomsection\label{parameters:Use years in output instead of seconds}
 
@@ -3862,7 +3878,7 @@ In either case, this parameter is ignored unless the opening angle of the domain
 {\it Default:} 360
 
 
-{\it Description:} Opening angle in degrees of the section of the shell that we want to build. Units: degrees.
+{\it Description:} Opening angle in degrees of the section of the shell that we want to build. The only opening angles that are allowed for this geometry are 90, 180, and 360 in 2d; and 90 and 360 in 3d. Units: degrees.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 360$
@@ -8722,22 +8738,6 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Peridotite melting entropy change}
-\phantomsection\label{parameters:Material model/Melt global/Peridotite melting entropy change}
-
-
-\index[prmindex]{Peridotite melting entropy change}
-\index[prmindexfull]{Material model!Melt global!Peridotite melting entropy change}
-{\it Value:} -300
-
-
-{\it Default:} -300
-
-
-{\it Description:} The entropy change for the phase transition from solid to melt of peridotite. Units: $J/(kg K)$.
-
-
-{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Pressure solidus change}
 \phantomsection\label{parameters:Material model/Melt global/Pressure solidus change}
 
@@ -13466,7 +13466,7 @@ Fig.~\ref{fig:max-horizontal-compressive-stress} shows a simple example for this
 
 \begin{figure}  \includegraphics[width=0.3\textwidth]    {viz/plugins/maximum_horizontal_compressive_stress/temperature.png}  \hfill  \includegraphics[width=0.3\textwidth]    {viz/plugins/maximum_horizontal_compressive_stress/velocity.png}  \hfill  \includegraphics[width=0.3\textwidth]    {viz/plugins/maximum_horizontal_compressive_stress/horizontal-stress.png}  \caption{\it Illustration of the `maximum horizontal     compressive stress' visualization plugin. The left     figure shows a ridge-like temperature anomaly. Together     with no-slip boundary along all six boundaries, this     results in two convection rolls (center). The maximal     horizontal compressive strength at the bottom center     of the domain is perpendicular to the ridge because     the flow comes together there from the left and right,     yielding a compressive force in left-right direction.     At the top of the model, the flow separates outward,     leading to a \textit{negative} compressive stress     in left-right direction; because there is no flow     in front-back direction, the compressive strength     in front-back direction is zero, making the along-ridge     direction the dominant one. At the center of the     convection rolls, both horizontal directions yield     the same stress; the plugin therefore chooses an     essentially arbitrary horizontal vector, but then     uses a zero magnitude given that the difference     between the maximal and minimal horizontal stress     is zero at these points.}  \label{fig:max-horizontal-compressive-stress}\end{figure}
 
-`melt fraction': A visualization output object that generates output for the melt fraction at the temperature and pressure of the current point (batch melting). Does not take into account latent heat. If there are no compositional fields, this postprocessor will visualize the melt fraction of peridotite (calculated using the anhydrous model of Katz, 2003). If there is at least one compositional field, the postprocessor assumes that the  first compositional field is the content of pyroxenite, and will visualize the melt fraction for a mixture of peridotite and pyroxenite (using the melting model of Sobolev, 2011 for pyroxenite). All the parameters that were used in these calculations can be changed in the input file, the most relevant maybe being the mass fraction of Cpx in peridotite in the Katz melting model (Mass fraction cpx), which right now has a default of 15\%. The corresponding p-T-diagrams can be generated by running the tests melt\_postprocessor\_peridotite and melt\_postprocessor\_pyroxenite.
+`melt fraction': A visualization output object that generates output for the melt fraction at the temperature and pressure of the current point. If the material model computes a melt fraction, this is the quantity that will be visualized. Otherwise, a specific parametrization for batch melting (as described in the following) will be used. It does not take into account latent heat. If there are no compositional fields, this postprocessor will visualize the melt fraction of peridotite (calculated using the anhydrous model of Katz, 2003). If there is at least one compositional field, the postprocessor assumes that the  first compositional field is the content of pyroxenite, and will visualize the melt fraction for a mixture of peridotite and pyroxenite (using the melting model of Sobolev, 2011 for pyroxenite). All the parameters that were used in these calculations can be changed in the input file, the most relevant maybe being the mass fraction of Cpx in peridotite in the Katz melting model (Mass fraction cpx), which right now has a default of 15\%. The corresponding p-T-diagrams can be generated by running the tests melt\_postprocessor\_peridotite and melt\_postprocessor\_pyroxenite.
 
 `melt material properties': A visualization output object that generates output for melt related properties of the material model.
 
@@ -13502,8 +13502,10 @@ This visualization postprocessor outputs whatever quantities the material model 
 
 `viscosity': A visualization output object that generates output for the viscosity.
 
+`volumetric strain rate': A visualization output object that generates output for the volumetric strain rate, i.e., for the quantity $\nabla\cdot\mathbf u = \textrm{div}\; \mathbf u = \textrm{trace}\; \varepsilon(\mathbf u)$. This should be zero (in some average sense) in incompressible convection models, but can be non-zero in compressible models and models with melt transport.
 
-{\it Possible values:} A comma-separated list of any of Vp anomaly, Vs anomaly, adiabat, artificial viscosity, artificial viscosity composition, boundary indicators, compositional vector, density, depth, dynamic topography, error indicator, friction heating, geoid, gravity, heat flux map, heating, material properties, maximum horizontal compressive stress, melt fraction, melt material properties, named additional outputs, nonadiabatic pressure, nonadiabatic temperature, particle count, partition, shear stress, spd factor, specific heat, strain rate, stress, thermal conductivity, thermal diffusivity, thermal expansivity, vertical heat flux, viscosity
+
+{\it Possible values:} A comma-separated list of any of Vp anomaly, Vs anomaly, adiabat, artificial viscosity, artificial viscosity composition, boundary indicators, compositional vector, density, depth, dynamic topography, error indicator, friction heating, geoid, gravity, heat flux map, heating, material properties, maximum horizontal compressive stress, melt fraction, melt material properties, named additional outputs, nonadiabatic pressure, nonadiabatic temperature, particle count, partition, shear stress, spd factor, specific heat, strain rate, stress, thermal conductivity, thermal diffusivity, thermal expansivity, vertical heat flux, viscosity, volumetric strain rate
 \item {\it Parameter name:} {\tt Number of grouped files}
 \phantomsection\label{parameters:Postprocess/Visualization/Number of grouped files}
 
@@ -13682,10 +13684,10 @@ This visualization postprocessor outputs whatever quantities the material model 
 
 {\it Description:} A comma separated list of material properties that should be written whenever writing graphical output. By default, the material properties will always contain the density, thermal expansivity, specific heat and viscosity. The following material properties are available:
 
-viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal diffusivity|compressibility|entropy derivative temperature|entropy derivative pressure|reaction terms
+viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal diffusivity|compressibility|entropy derivative temperature|entropy derivative pressure|reaction terms|melt fraction
 
 
-{\it Possible values:} A comma-separated list of any of viscosity, density, thermal expansivity, specific heat, thermal conductivity, thermal diffusivity, compressibility, entropy derivative temperature, entropy derivative pressure, reaction terms
+{\it Possible values:} A comma-separated list of any of viscosity, density, thermal expansivity, specific heat, thermal conductivity, thermal diffusivity, compressibility, entropy derivative temperature, entropy derivative pressure, reaction terms, melt fraction
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Visualization/Melt fraction}
@@ -14408,6 +14410,44 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 1$
+\end{itemize}
+
+\subsection{Parameters in section \tt Solver parameters/Operator splitting parameters}
+\label{parameters:Solver_20parameters/Operator_20splitting_20parameters}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Reaction time step}
+\phantomsection\label{parameters:Solver parameters/Operator splitting parameters/Reaction time step}
+
+
+\index[prmindex]{Reaction time step}
+\index[prmindexfull]{Solver parameters!Operator splitting parameters!Reaction time step}
+{\it Value:} 1000.0
+
+
+{\it Default:} 1000.0
+
+
+{\it Description:} Set a time step size for computing reactions of compositional fields and the temperature field in case operator splitting is used. This is only used when the nonlinear solver scheme ``operator splitting'' is selected. The reaction time step must be greater than 0. If you want to prescribe the reaction time step only as a relative value compared to the advection time step as opposed to as an absolute value, you should use the parameter ``Reaction time steps per advection step'' and set this parameter to the same (or larger) value as the ``Maximum time step'' (which is 5.69e+300 by default). Units: Years or seconds, depending on the ``Use years in output instead of seconds'' parameter.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Reaction time steps per advection step}
+\phantomsection\label{parameters:Solver parameters/Operator splitting parameters/Reaction time steps per advection step}
+
+
+\index[prmindex]{Reaction time steps per advection step}
+\index[prmindexfull]{Solver parameters!Operator splitting parameters!Reaction time steps per advection step}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The number of reaction time steps done within one advection time step in case operator splitting is used. This is only used if the nonlinear solver scheme ``operator splitting'' is selected. If set to zero, this parameter is ignored. Otherwise, the reaction time step size is chosen according to this criterion and the ``Reaction time step'', whichever yields the smaller time step. Units: none.
+
+
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \end{itemize}
 
 \subsection{Parameters in section \tt Termination criteria}

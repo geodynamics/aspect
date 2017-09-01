@@ -649,6 +649,9 @@ SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors16VerticalH
 N6aspect11Postprocess27VisualizationPostprocessors9ViscosityILi2EEE [label="viscosity", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess27VisualizationPostprocessors9ViscosityILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors9ViscosityILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect11Postprocess27VisualizationPostprocessors20VolumetricStrainRateILi2EEE [label="volumetric\nstrain rate", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect11Postprocess27VisualizationPostprocessors20VolumetricStrainRateILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors20VolumetricStrainRateILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE -> N6aspect11Postprocess13VisualizationILi2EEE [len=15, weight=50];
 
 N6aspect24PrescribedStokesSolution9InterfaceILi2EEE [label="Prescribed Stokes solution interface", height=.8,width=.8,shape="rect",fillcolor="green"]
