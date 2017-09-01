@@ -393,7 +393,7 @@ namespace aspect
           if ( ! use_constant_density)
             {
               // Set use_strain_rates to false since we don't need viscosity
-              in.reinit(fe, &cell, introspection, solution, false);
+              in.reinit(fe, cell, introspection, solution, false);
               material_model->evaluate(in, out);
             }
 

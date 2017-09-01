@@ -71,7 +71,7 @@ namespace aspect
           {
             // fill material model inputs
             fe_values.reinit (cell);
-            in.reinit(fe_values, &cell, this->introspection(), this->get_solution());
+            in.reinit(fe_values, cell, this->introspection(), this->get_solution());
 
             // we can only postprocess melt fractions if the material model that is used
             // in the simulation has implemented them

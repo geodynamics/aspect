@@ -294,7 +294,7 @@ namespace aspect
 
     template <int dim>
     MaterialModelInputs<dim>::MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
-                                                  const typename DoFHandler<dim>::active_cell_iterator *cell_x,
+                                                  const typename DoFHandler<dim>::active_cell_iterator &cell_x,
                                                   const Introspection<dim> &introspection,
                                                   const LinearAlgebra::BlockVector &solution_vector,
                                                   const bool use_strain_rate)
@@ -306,11 +306,15 @@ namespace aspect
       velocity(fe_values.n_quadrature_points, numbers::signaling_nan<Tensor<1,dim> >()),
       composition(fe_values.n_quadrature_points, std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
       strain_rate(fe_values.n_quadrature_points, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
-      cell(cell_x == NULL ? NULL : &current_cell),
-      current_cell(cell_x == NULL ? typename DoFHandler<dim>::active_cell_iterator() : *cell_x)
+      cell(cell_x.state() == IteratorState::valid ? &current_cell : NULL),
+#if DEAL_II_VERSION_GTE(9,0,0)
+      current_cell (cell_x)
+#else
+      current_cell(cell_x.state() == IteratorState::valid ? cell_x : typename DoFHandler<dim>::active_cell_iterator())
+#endif
     {
       // Call the function reinit to populate the new arrays.
-      this->reinit(fe_values, cell, introspection, solution_vector, use_strain_rate);
+      this->reinit(fe_values, current_cell, introspection, solution_vector, use_strain_rate);
     }
 
     template <int dim>
@@ -332,7 +336,7 @@ namespace aspect
     template <int dim>
     void
     MaterialModelInputs<dim>::reinit(const FEValuesBase<dim,dim> &fe_values,
-                                     const typename DoFHandler<dim>::active_cell_iterator *cell_x,
+                                     const typename DoFHandler<dim>::active_cell_iterator &cell_x,
                                      const Introspection<dim> &introspection,
                                      const LinearAlgebra::BlockVector &solution_vector,
                                      const bool use_strain_rate)
@@ -362,10 +366,15 @@ namespace aspect
         }
 
       DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
-      this->cell = cell_x;
+      this->cell = cell_x.state() == IteratorState::valid ? &cell_x : NULL;
       DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
-      this->current_cell = (cell_x == NULL ? typename DoFHandler<dim>::active_cell_iterator() : *cell_x);
+#if DEAL_II_VERSION_GTE(9,0,0)
+      this->current_cell = cell_x;
+#else
+      this->current_cell = (cell_x.state() == IteratorState::valid ? cell_x : typename DoFHandler<dim>::active_cell_iterator());
+#endif
+
     }
 
     template <int dim>

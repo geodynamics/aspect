@@ -152,12 +152,12 @@ namespace aspect
               local_mass_matrix = 0.;
 
               // Evaluate the material model in the cell volume.
-              MaterialModel::MaterialModelInputs<dim> in_volume(fe_volume_values, &cell, this->introspection(), this->get_solution());
+              MaterialModel::MaterialModelInputs<dim> in_volume(fe_volume_values, cell, this->introspection(), this->get_solution());
               MaterialModel::MaterialModelOutputs<dim> out_volume(fe_volume_values.n_quadrature_points, this->n_compositional_fields());
               this->get_material_model().evaluate(in_volume, out_volume);
 
               // Evaluate the material model on the cell face.
-              MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, &cell, this->introspection(), this->get_solution());
+              MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, cell, this->introspection(), this->get_solution());
               MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, this->n_compositional_fields());
               this->get_material_model().evaluate(in_face, out_face);
 
@@ -290,7 +290,7 @@ namespace aspect
               fe_support_values.reinit (cell, face_idx);
 
               // Evaluate the material model on the cell face.
-              MaterialModel::MaterialModelInputs<dim> in_support(fe_support_values, &cell, this->introspection(), this->get_solution());
+              MaterialModel::MaterialModelInputs<dim> in_support(fe_support_values, cell, this->introspection(), this->get_solution());
               MaterialModel::MaterialModelOutputs<dim> out_support(fe_support_values.n_quadrature_points, this->n_compositional_fields());
               this->get_material_model().evaluate(in_support, out_support);
 
@@ -334,7 +334,7 @@ namespace aspect
               fe_output_values.reinit(cell, face_idx);
 
               // Evaluate the material model on the cell face.
-              MaterialModel::MaterialModelInputs<dim> in_output(fe_output_values, &cell, this->introspection(), this->get_solution());
+              MaterialModel::MaterialModelInputs<dim> in_output(fe_output_values, cell, this->introspection(), this->get_solution());
               MaterialModel::MaterialModelOutputs<dim> out_output(fe_output_values.n_quadrature_points, this->n_compositional_fields());
               this->get_material_model().evaluate(in_output, out_output);
 
