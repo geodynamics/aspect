@@ -2411,6 +2411,30 @@ namespace aspect
 
 
 
+    template <int dim>
+    Point<dim> convert_array_to_point(const std_cxx11::array<double,dim> &array)
+    {
+      Point<dim> point;
+      for (unsigned int i = 0; i < dim; i++)
+        point[i] = array[i];
+
+      return point;
+    }
+
+
+
+    template <int dim>
+    std_cxx11::array<double,dim> convert_point_to_array(const Point<dim> &point)
+    {
+      std_cxx11::array<double,dim> array;
+      for (unsigned int i = 0; i < dim; i++)
+        array[i] = point[i];
+
+      return array;
+    }
+
+
+
     Operator::Operator()
       :
       op(uninitialized)
