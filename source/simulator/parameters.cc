@@ -322,8 +322,8 @@ namespace aspect
                        Patterns::Bool(),
                        "If set to true, the advection and reactions of compositional fields and "
                        "temperature are solved separately, and can use different time steps. Note that "
-                       "this will only work if the material/heating model fills the reaction_rates/"
-                       "heating_reaction_rates structures. Operator splitting can be used with any "
+                       "this will only work if the material/heating model fills the reaction\\_rates/"
+                       "heating\\_reaction\\_rates structures. Operator splitting can be used with any "
                        "existing solver schemes that solve the temperature/composition equations.");
 
     prm.enter_subsection ("Solver parameters");
