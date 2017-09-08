@@ -208,7 +208,7 @@ namespace aspect
           prm.declare_entry ("Thermal diffusivity", "0.8e-6", Patterns::Double(0), "Units: $m^2/s$");
           prm.declare_entry ("Heat capacity", "1.25e3", Patterns::Double(0), "Units: $J/kg/K$");
           prm.declare_entry ("Activation volume", "6.4e-6", Patterns::Double(0), "($V_a$). Units: $m^3 / mol$");
-          prm.declare_entry ("Reference strain rate", "6.4e-16", Patterns::Double(0), "($\\dot{\\epsilon}_{ref}$). Units: $1 / s$");
+          prm.declare_entry ("Reference strain rate", "6.4e-16", Patterns::Double(0), "($\\dot{\\epsilon}_\\text{ref}$). Units: $1 / s$");
           prm.declare_entry ("Preexponential constant for viscous rheology law", "1.24e14", Patterns::Double(0), "($B$). Units: None");
           prm.declare_entry ("Coefficient of yield stress increase with depth", "0.25", Patterns::Double(0), "($\\gamma$). Units: None");
           prm.declare_entry ("Cohesive strength of rocks at the surface", "117", Patterns::Double(0), "($\\tau_0$). Units: $Pa$");
@@ -313,33 +313,30 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(MorencyDoin,
                                    "Morency and Doin",
-                                   "An implementation of the visco-plastic rheology described by (Morency "
-                                   "and Doin, 2004). Compositional fields can each be assigned individual "
+                                   "An implementation of the visco-plastic rheology described by Morency "
+                                   "and Doin in \\cite{MD04}. Compositional fields can each be assigned individual "
                                    "activation energies, reference densities, thermal expansivities, and "
                                    "stress exponents. The effective viscosity is defined as "
-                                   "\\[v_{eff} = \\left(\\frac{1}{v_{eff}^v}+\\frac{1}{v_{eff}^p}\\right)^{-1}\\] "
+                                   "\\[v_\\text{eff} = \\left(\\frac{1}{v_\\text{eff}^v}+\\frac{1}{v_\\text{eff}^p}\\right)^{-1}\\] "
                                    "where "
-                                   "\\[v_{eff}^v = B \\left(\\frac{\\dot{\\epsilon}}{\\dot{\\epsilon}_{ref}} "
+                                   "\\[v_\\text{eff}^v = B \\left(\\frac{\\dot{\\epsilon}}{\\dot{\\epsilon}_\\text{ref}} "
                                    "\\right)^{-1+1/n_v} exp\\left(\\frac{E_a +V_a \\rho_m g z}{n_v R T}\\right) \\] "
-                                   "\\[v_{eff}^p = (\\tau_0 + \\gamma \\rho_m g z) \\left( \\frac{\\dot{\\epsilon}^{-1+1/n_p}} "
-                                   "{\\dot{\\epsilon}_{ref}^{1/n_p}} \\right) \\] "
+                                   "\\[v_\\text{eff}^p = (\\tau_0 + \\gamma \\rho_m g z) \\left( \\frac{\\dot{\\epsilon}^{-1+1/n_p}} "
+                                   "{\\dot{\\epsilon}_\\text{ref}^{1/n_p}} \\right) \\] "
                                    "where $B$ is a scaling constant; $\\dot{\\epsilon}$ is defined as "
                                    "the quadratic sum of the second invariant of the strain rate tensor and "
-                                   "a minimum strain rate, $\\dot{\\epsilon}_0$; $\\dot{\\epsilon}_{ref}$ "
+                                   "a minimum strain rate, $\\dot{\\epsilon}_0$; $\\dot{\\epsilon}_\\text{ref}$ "
                                    "is a reference strain rate; $n_v$, and $n_p$ are stress exponents; $E_a$ "
                                    "is the activation energy; $V_a$ is the activation volume; $\\rho_m$ is the "
                                    "mantle density; $R$ is the gas constant; $T$ is temperature; $\\tau_0$ is "
                                    "the cohesive strength of rocks at the surface; $\\gamma$ is a coefficient "
                                    "of yield stress increase with depth; and $z$ is depth. "
                                    "\n\n"
-                                   "Note: (Morency and Doin, 2004) defines the second invariant of the strain "
-                                   "rate in a nonstandard way. The formulation in the paper is given as "
+                                   "\\note{Morency and Doin define the second invariant of the strain "
+                                   "rate in a nonstandard way (see \\cite{MD04}. The formulation in the paper is given as "
                                    "$\\epsilon_{II} = \\sqrt{\\frac{1}{2} (\\epsilon_{11}^2 +"
                                    "\\epsilon_{12}^2)}$ where $\\epsilon$ is the strain rate tensor. "
-                                   "For consistency, that is also the formulation implemented in this material model."
-                                   "\n\n"
-                                   "Morency, C., and M‐P. Doin. \"Numerical simulations of the mantle lithosphere delamination.\" "
-                                   "Journal of Geophysical Research: Solid Earth (1978–2012) 109.B3 (2004)."
+                                   "For consistency, that is also the formulation implemented in this material model.}"
                                    "\n\n"
                                    "The value for the components of this formula and additional parameters are "
                                    "read from the parameter file in subsection 'Material model/Morency and Doin'.")
