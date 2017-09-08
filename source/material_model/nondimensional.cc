@@ -215,7 +215,7 @@ namespace aspect
                                    "\n\n"
                                    "The density is defined as \\[\\rho = \\exp(\\text{Di}/\\gamma \\cdot z) "
                                    " (1.0 - \\alpha T' + \\text{Di} \\gamma p'),\\] where "
-                                   "$\\alpha=\text{Di}$ is the thermal expansion coefficient, "
+                                   "$\\alpha=\\text{Di}$ is the thermal expansion coefficient, "
                                    "$\\gamma$ is the Grueneisen parameter, and $p'$ is "
                                    "the pressure variation from the adiabatic "
                                    "pressure. The pressure dependent term is not present "
