@@ -212,8 +212,9 @@ namespace aspect
     /**
      * Given a vector @p v in @p dim dimensional space, return a set
      * of (dim-1) vectors that are orthogonal to @p v and to each
-     * other. The lengths of these vectors equals that of the original
-     * vector @p v to ensure a well-conditioned basis.
+     * other. The length of each of these vectors equals that of the original
+     * vector @p v to ensure that the resulting set of vectors
+     * represents a well-conditioned basis.
      */
     template <int dim>
     std_cxx11::array<Tensor<1,dim>,dim-1>
