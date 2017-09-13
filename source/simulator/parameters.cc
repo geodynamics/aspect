@@ -1560,6 +1560,13 @@ namespace aspect
     // plugin mechanism, declare their parameters if they have subscribed
     // to the relevant signals
     SimulatorSignals<dim>::parse_additional_parameters (*this, prm);
+
+    AssertThrow((!use_direct_stokes_solver) || (nullspace_removal == NullspaceRemoval::none),
+                ExcMessage("Because of the difference in system partitioning, nullspace removal is "
+                           "currently not compatible with the direct solver. "
+                           "Please turn off one or both of the options 'Model settings/Remove nullspace', "
+                           "or 'Use direct solver for Stokes system', or contribute code to enable "
+                           "this feature combination."));
   }
 
 
