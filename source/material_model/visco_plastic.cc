@@ -951,7 +951,7 @@ namespace aspect
                                    "identical to the compositional field finite strain plugin and cookbook "
                                    "described in the manual (author: Gassmoeller, Dannberg). If the user selects to track "
                                    "the finite strain invariant ($e_{ii}$), a single compositional field tracks "
-                                   "the value derived from $e_{ii}^t = (e_{ii})^{(t-1)} + \\dot{e}_{ii}\; dt$, where $t$ and $t-1$ "
+                                   "the value derived from $e_{ii}^t = (e_{ii})^{(t-1)} + \\dot{e}_{ii}\\; dt$, where $t$ and $t-1$ "
                                    "are the current and prior time steps, $\\dot{e}_{ii}$ is the second invariant of the "
                                    "strain rate tensor and $dt$ is the time step size. In the case of the "
                                    "full strain tensor $F$, the finite strain magnitude is derived from the "
