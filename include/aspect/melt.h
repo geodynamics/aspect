@@ -251,6 +251,17 @@ namespace aspect
       pressure_rhs_compatibility_modification_melt (const SimulatorAccess<dim>                      &simulator_access,
                                                     internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                                     internal::Assembly::CopyData::StokesSystem<dim> &data);
+
+      /**
+       * Assemble traction boundary condition terms for models with melt.
+       */
+      template <int dim>
+      void
+      boundary_traction_melt (const SimulatorAccess<dim>                           &simulator_access,
+                              const typename DoFHandler<dim>::active_cell_iterator &cell,
+                              const unsigned int                                    face_no,
+                              internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
+                              internal::Assembly::CopyData::StokesSystem<dim>      &data);
     }
   }
 

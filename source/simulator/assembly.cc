@@ -843,15 +843,30 @@ namespace aspect
       }
 
     // add the terms for traction boundary conditions
-    assemblers->local_assemble_stokes_system_on_boundary_face
-    .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::boundary_traction<dim>,
-                              SimulatorAccess<dim>(*this),
-                              std_cxx11::_1,
-                              std_cxx11::_2,
-                              // discard pressure_scaling,
-                              // discard rebuild_stokes_matrix,
-                              std_cxx11::_5,
-                              std_cxx11::_6));
+    if (parameters.include_melt_transport)
+      {
+        assemblers->local_assemble_stokes_system_on_boundary_face
+        .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::boundary_traction_melt<dim>,
+                                  SimulatorAccess<dim>(*this),
+                                  std_cxx11::_1,
+                                  std_cxx11::_2,
+                                  // discard pressure_scaling,
+                                  // discard rebuild_stokes_matrix,
+                                  std_cxx11::_5,
+                                  std_cxx11::_6));
+      }
+    else
+      {
+        assemblers->local_assemble_stokes_system_on_boundary_face
+        .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::boundary_traction<dim>,
+                                  SimulatorAccess<dim>(*this),
+                                  std_cxx11::_1,
+                                  std_cxx11::_2,
+                                  // discard pressure_scaling,
+                                  // discard rebuild_stokes_matrix,
+                                  std_cxx11::_5,
+                                  std_cxx11::_6));
+      }
 
     // add the terms necessary to normalize the pressure
     if (do_pressure_rhs_compatibility_modification)
