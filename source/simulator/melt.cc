@@ -858,6 +858,57 @@ namespace aspect
               ++i;
             }
       }
+
+      template <int dim>
+      void
+      boundary_traction_melt (const SimulatorAccess<dim>                           &simulator_access,
+                              const typename DoFHandler<dim>::active_cell_iterator &cell,
+                              const unsigned int                                    face_no,
+                              internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
+                              internal::Assembly::CopyData::StokesSystem<dim>      &data)
+      {
+        const Introspection<dim> &introspection = simulator_access.introspection();
+        const FiniteElement<dim> &fe = scratch.finite_element_values.get_fe();
+
+        // see if any of the faces are traction boundaries for which
+        // we need to assemble force terms for the right hand side
+        const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
+        const unsigned int p_f_component_index = introspection.variable("fluid pressure").first_component_index;
+        const unsigned int p_c_component_index = introspection.variable("compaction pressure").first_component_index;
+
+        if (simulator_access.get_boundary_traction()
+            .find (cell->face(face_no)->boundary_id())
+            !=
+            simulator_access.get_boundary_traction().end())
+          {
+            scratch.face_finite_element_values.reinit (cell, face_no);
+
+            for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
+              {
+                const Tensor<1,dim> traction
+                  = simulator_access.get_boundary_traction().find(
+                      cell->face(face_no)->boundary_id()
+                    )->second
+                    ->boundary_traction (cell->face(face_no)->boundary_id(),
+                                         scratch.face_finite_element_values.quadrature_point(q),
+                                         scratch.face_finite_element_values.normal_vector(q));
+
+                for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+                  {
+                    const unsigned int component_index_i = fe.system_to_component_index(i).first;
+
+                    if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
+                      {
+                        data.local_rhs(i_stokes) += scratch.face_finite_element_values[introspection.extractors.velocities].value(i,q) *
+                                                    traction *
+                                                    scratch.face_finite_element_values.JxW(q);
+                        ++i_stokes;
+                      }
+                    ++i;
+                  }
+              }
+          }
+      }
     }
   }
 
@@ -1247,6 +1298,11 @@ namespace aspect
       template void pressure_rhs_compatibility_modification_melt<dim> (const SimulatorAccess<dim>                      &simulator_access, \
                                                                        internal::Assembly::Scratch::StokesSystem<dim>  &scratch, \
                                                                        internal::Assembly::CopyData::StokesSystem<dim> &data); \
+      template void boundary_traction_melt (const SimulatorAccess<dim>                           &simulator_access, \
+                                            const typename DoFHandler<dim>::active_cell_iterator &cell, \
+                                            const unsigned int                                    face_no, \
+                                            internal::Assembly::Scratch::StokesSystem<dim>       &scratch, \
+                                            internal::Assembly::CopyData::StokesSystem<dim>      &data); \
     } \
   } \
    
