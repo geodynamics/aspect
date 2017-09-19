@@ -100,6 +100,9 @@ you would like to contribute some code.
 ## Acknowledgment of contributions
 While we are grateful for every contribution, there are also several official
 ways how your contribution will be acknowledged by the ASPECT community:
+- Every commit that was merged into the ASPECT repository will make you part of
+  the growing group of ASPECT
+  [contributors](https://github.com/geodynamics/aspect/graphs/contributors).
 - Our biweekly mailing list newsletter mentions all raised issues and proposed
   and merged pull requests including an acknowledgment of the author of the
   issue/pull request.
@@ -112,9 +115,20 @@ ways how your contribution will be acknowledged by the ASPECT community:
 - If you contributed a significant part of the manual (such as a new cookbook,
   benchmark, or subsection), you will be listed as one of the contributing
   authors of the manual.
-- Every commit that was merged into the ASPECT repository will make you part of
-  the growing group of ASPECT
-  [contributors](https://github.com/geodynamics/aspect/graphs/contributors).
+- Regularly, the Principal Developers of ASPECT come together and discuss based
+  on the contributions of the last years who should be invited to join the
+  group of Principal Developers. Criteria that *Principal Developers* should
+  match are:
+
+  - A profound understanding of ASPECT's structure and vision,
+  - A proven willingness to further the project's goals and help other users,
+  - Significant contributions to ASPECT (not necessarily only source code,
+    also mailing list advice, documentation, benchmarks, tutorials),
+  - Regular and active contributions to ASPECT for more than one year,
+    not restricted to user meetings.
+
+  The group of current Principal Developers is listed in the [AUTHORS](AUTHORS)
+  file in the main repository.
 
 ## License
 ASPECT is published under the [GPL v2 or newer](LICENSE); while you
