@@ -250,9 +250,6 @@ namespace aspect
 
         // Initialize our property information
         property_information = ParticlePropertyInformation(info);
-
-        // Create the memory pool that will store all particle properties
-        property_pool.reset(new PropertyPool(property_information.n_components()));
       }
 
       template <int dim>
@@ -282,16 +279,14 @@ namespace aspect
       }
 
       template <int dim>
-      void
-      Manager<dim>::initialize_late_particle (Particle<dim> &particle,
+      std::vector<double>
+      Manager<dim>::initialize_late_particle (const Point<dim> &particle_location,
                                               const std::multimap<types::LevelInd, Particle<dim> > &particles,
                                               const Interpolator::Interface<dim> &interpolator,
                                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
-        particle.set_property_pool(*property_pool);
-
         if (property_information.n_components() == 0)
-          return;
+          return std::vector<double>();
 
         std::vector<double> particle_properties;
         particle_properties.reserve(property_information.n_components());
@@ -311,7 +306,7 @@ namespace aspect
 
                 case aspect::Particle::Property::initialize:
                 {
-                  (*p)->initialize_one_particle_property(particle.get_location(),
+                  (*p)->initialize_one_particle_property(particle_location,
                                                          particle_properties);
                   break;
                 }
@@ -324,13 +319,13 @@ namespace aspect
                     {
                       found_cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(),
                                                                                 this->get_triangulation(),
-                                                                                particle.get_location())).first;
+                                                                                particle_location)).first;
                     }
                   else
                     found_cell = cell;
 
                   const std::vector<std::vector<double> > interpolated_properties = interpolator.properties_at_points(particles,
-                                                                                    std::vector<Point<dim> > (1,particle.get_location()),
+                                                                                    std::vector<Point<dim> > (1,particle_location),
                                                                                     ComponentMask(property_information.n_components(),true),
                                                                                     found_cell);
                   for (unsigned int property_component = 0; property_component < property_information.get_components_by_plugin_index(property_index); ++property_component)
@@ -345,7 +340,7 @@ namespace aspect
 
         Assert (particle_properties.size() == property_information.n_components(), ExcInternalError());
 
-        particle.set_properties(particle_properties);
+        return particle_properties;
       }
 
       template <int dim>
@@ -412,13 +407,6 @@ namespace aspect
       Manager<dim>::get_data_info () const
       {
         return property_information;
-      }
-
-      template <int dim>
-      PropertyPool &
-      Manager<dim>::get_property_pool () const
-      {
-        return *property_pool;
       }
 
       template <int dim>

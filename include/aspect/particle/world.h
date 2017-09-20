@@ -204,25 +204,6 @@ namespace aspect
                     const typename parallel::distributed::Triangulation<dim>::CellStatus status);
 
         /**
-         * Called by listener functions from Triangulation for every cell
-         * before a refinement step. All particles have to be attached to their
-         * element to be sent around to the new cell/processes.
-         */
-        void
-        store_particles(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                        const typename parallel::distributed::Triangulation<dim>::CellStatus status,
-                        void *data);
-
-        /**
-         * Called by listener functions after a refinement step. The local map
-         * of particles has to be read from the triangulation user_pointer.
-         */
-        void
-        load_particles(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                       const typename parallel::distributed::Triangulation<dim>::CellStatus status,
-                       const void *data);
-
-        /**
          * Update the particle properties if necessary.
          */
         void update_particles();
@@ -314,13 +295,6 @@ namespace aspect
         std_cxx11::unique_ptr<ParticleHandler<dim> > particle_handler;
 
         /**
-         * Set of particles currently in the ghost cells of the local domain,
-         * organized by the level/index of the cell they are in. These
-         * particles are marked read-only.
-         */
-        std::multimap<types::LevelInd, Particle<dim> > ghost_particles;
-
-        /**
          * This variable is set by the register_store_callback_function()
          * function and used by the register_load_callback_function() function
          * to check where the particle data was stored.
@@ -388,39 +362,6 @@ namespace aspect
         get_subdomain_id_to_neighbor_map() const;
 
         /**
-         * Exchanges all particles that live in cells adjacent to ghost cells
-         * (i.e. cells that are ghosts to other processes) with the neighboring
-         * domains. Clears and re-populates the ghost_neighbors member variable.
-         */
-        void
-        exchange_ghost_particles();
-
-        /**
-         * Returns a vector that contains a tensor for every vertex-cell
-         * combination of the output of dealii::GridTools::vertex_to_cell_map()
-         * (which is expected as input parameter for this function).
-         * Each tensor represents a geometric vector from the vertex to the
-         * respective cell center.
-         */
-        std::vector<std::vector<Tensor<1,dim> > >
-        vertex_to_cell_centers_directions(const std::vector<std::set<typename parallel::distributed::Triangulation<dim>::active_cell_iterator> > &vertex_to_cells) const;
-
-        /**
-         * Finds the cells containing each particle for all particles in
-         * @p particles_to_sort. If particles moved out of the local subdomain
-         * they will be sent to their new process and inserted there.
-         * After this function call every particle is either on its current
-         * process and in its current cell, or deleted (if it could not find
-         * its new process or cell).
-         *
-         * @param [in] particles_to_sort Vector containing all pairs of
-         * particles and their old cells that will be sorted into the
-         * 'particles' member variable in this function.
-         */
-        void
-        sort_particles_in_subdomains_and_cells(const std::vector<std::pair<types::LevelInd, Particle<dim> > > &particles_to_sort);
-
-        /**
          * Apply the bounds for the maximum and minimum number of particles
          * per cell, if the appropriate @p particle_load_balancing strategy
          * has been selected.
@@ -436,32 +377,7 @@ namespace aspect
          * that can not be found are discarded.
          */
         void
-        move_particles_back_into_mesh(const std::vector<std::pair<types::LevelInd, Particle<dim> > >         &lost_particles,
-                                      std::vector<std::pair<types::LevelInd, Particle<dim> > >               &moved_particles_cell,
-                                      std::vector<std::vector<std::pair<types::LevelInd, Particle<dim> > > > &moved_particles_domain);
-
-        /**
-         * Transfer particles that have crossed subdomain boundaries to other
-         * processors. The transfer occurs in two steps. As a first step all
-         * processes notify their neighbor processes how many particles will
-         * be sent to them. Because neighbor processes are defined as the owner
-         * of ghost cells of the current process, this also handles
-         * periodic boundaries correctly. Afterwards the transfer is done in the
-         * same way as local communication between neighbor processes.
-         * All received particles and their new cells will be appended to the
-         * @p received_particles vector.
-         *
-         * @param [in] sent_particles All particles that should be sent and
-         * their new subdomain_ids are in this map.
-         *
-         * @param [in,out] received_particles Vector that stores all received
-         * particles. Note that it is not required nor checked that the list
-         * is empty, received particles are simply attached to the end of
-         * the vector.
-         */
-        void
-        send_recv_particles(const std::vector<std::vector<std::pair<types::LevelInd,Particle <dim> > > > &sent_particles,
-                            std::vector<std::pair<types::LevelInd, Particle<dim> > >                     &received_particles);
+        move_particles_back_into_mesh();
 
         /**
          * Advect the particle positions by one integration step. Needs to be
@@ -495,8 +411,7 @@ namespace aspect
         void
         local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
                                const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle,
-                               std::vector<std::pair<types::LevelInd, Particle <dim> > >               &particles_out_of_cell);
+                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle);
     };
 
     /* -------------------------- inline and template functions ---------------------- */
@@ -512,7 +427,7 @@ namespace aspect
       // Note that initialize is not necessary when saving the particle handler,
       // but it does not harm either. When loading the triangulation we need to
       // recreate the links to the triangulation and the MPI communicator.
-      particle_handler->initialize(this->get_triangulation(),this->get_mpi_communicator());
+      particle_handler->initialize(this->get_triangulation(),this->get_mapping(),this->get_mpi_communicator());
     }
   }
 }

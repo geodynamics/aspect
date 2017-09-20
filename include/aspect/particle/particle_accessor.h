@@ -137,6 +137,14 @@ namespace aspect
         get_properties () const;
 
         /**
+         * Returns the size in bytes this particle occupies if all of its data is
+         * serialized (i.e. the number of bytes that is written by the write_data
+         * function of this class).
+         */
+        std::size_t
+        serialized_size_in_bytes() const;
+
+        /**
          * Get a cell iterator to the cell surrounding the current particle.
          * As particles are organized in the structure of a triangulation,
          * but the triangulation itself is not stored in the particle this

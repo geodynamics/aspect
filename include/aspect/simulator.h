@@ -1375,7 +1375,6 @@ namespace aspect
 
       MeshRefinement::Manager<dim>                              mesh_refinement_manager;
       HeatingModel::Manager<dim>                                heating_model_manager;
-      Postprocess::Manager<dim>                                 postprocess_manager;
 
       /**
        * Pointer to the Mapping object used by the finite elements when
@@ -1390,6 +1389,8 @@ namespace aspect
       const FESystem<dim>                                       finite_element;
 
       DoFHandler<dim>                                           dof_handler;
+
+      Postprocess::Manager<dim>                                 postprocess_manager;
 
       /**
        * Constraint objects. The first of these describes all constraints that

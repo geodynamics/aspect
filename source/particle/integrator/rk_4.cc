@@ -107,7 +107,7 @@ namespace aspect
       }
 
       template <int dim>
-      unsigned int
+      std::size_t
       RK4<dim>::get_data_size() const
       {
         // If integration is finished, we do not need to transfer integrator
@@ -121,8 +121,8 @@ namespace aspect
 
       template <int dim>
       const void *
-      RK4<dim>::read_data(const void *data,
-                          const types::particle_index particle_id)
+      RK4<dim>::read_data(const typename ParticleHandler<dim>::particle_iterator &particle,
+                          const void *data)
       {
         // If integration is finished, we do not need to transfer integrator
         // data to other processors, because it will be deleted soon anyway.
@@ -134,25 +134,25 @@ namespace aspect
 
         // Read location data
         for (unsigned int i=0; i<dim; ++i)
-          loc0[particle_id](i) = *integrator_data++;
+          loc0[particle->get_id()](i) = *integrator_data++;
 
         // Read k1, k2 and k3
         for (unsigned int i=0; i<dim; ++i)
-          k1[particle_id][i] = *integrator_data++;
+          k1[particle->get_id()][i] = *integrator_data++;
 
         for (unsigned int i=0; i<dim; ++i)
-          k2[particle_id][i] = *integrator_data++;
+          k2[particle->get_id()][i] = *integrator_data++;
 
         for (unsigned int i=0; i<dim; ++i)
-          k3[particle_id][i] = *integrator_data++;
+          k3[particle->get_id()][i] = *integrator_data++;
 
         return static_cast<const void *> (integrator_data);
       }
 
       template <int dim>
       void *
-      RK4<dim>::write_data(void *data,
-                           const types::particle_index particle_id) const
+      RK4<dim>::write_data(const typename ParticleHandler<dim>::particle_iterator &particle,
+                           void *data) const
       {
         // If integration is finished, we do not need to transfer integrator
         // data to other processors, because it will be deleted soon anyway.
@@ -163,20 +163,20 @@ namespace aspect
         double *integrator_data = static_cast<double *> (data);
 
         // Write location data
-        typename std::map<types::particle_index, Point<dim> >::const_iterator it = loc0.find(particle_id);
+        typename std::map<types::particle_index, Point<dim> >::const_iterator it = loc0.find(particle->get_id());
         for (unsigned int i=0; i<dim; ++i,++integrator_data)
           *integrator_data = it->second(i);
 
         // Write k1, k2 and k3
-        typename std::map<types::particle_index, Tensor<1,dim> >::const_iterator it_k = k1.find(particle_id);
+        typename std::map<types::particle_index, Tensor<1,dim> >::const_iterator it_k = k1.find(particle->get_id());
         for (unsigned int i=0; i<dim; ++i,++integrator_data)
           *integrator_data = it_k->second[i];
 
-        it_k = k2.find(particle_id);
+        it_k = k2.find(particle->get_id());
         for (unsigned int i=0; i<dim; ++i,++integrator_data)
           *integrator_data = it_k->second[i];
 
-        it_k = k3.find(particle_id);
+        it_k = k3.find(particle->get_id());
         for (unsigned int i=0; i<dim; ++i,++integrator_data)
           *integrator_data = it_k->second[i];
 

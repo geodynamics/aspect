@@ -90,10 +90,12 @@ namespace aspect
 
             patches[i].data(0,0) = particle->second.get_id();
 
-            const ArrayView<const double> properties = particle->second.get_properties();
-
-            for (unsigned int property_index = 0; property_index < properties.size(); ++property_index)
-              patches[i].data(property_index+1,0) = properties[property_index];
+            if (particle->second.has_properties())
+              {
+                const ArrayView<const double> properties = particle->second.get_properties();
+                for (unsigned int property_index = 0; property_index < properties.size(); ++property_index)
+                  patches[i].data(property_index+1,0) = properties[property_index];
+              }
           }
       }
 

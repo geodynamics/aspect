@@ -22,6 +22,7 @@
 #define _aspect_particle_integrator_interface_h
 
 #include <aspect/particle/particle.h>
+#include <aspect/particle/particle_handler.h>
 #include <aspect/plugins.h>
 #include <aspect/global.h>
 
@@ -102,7 +103,7 @@ namespace aspect
            * @return The number of bytes required to store the relevant
            * integrator data for one particle.
            */
-          virtual unsigned int get_data_size() const;
+          virtual std::size_t get_data_size() const;
 
           /**
            * Read integration related data for a particle specified by particle_id
@@ -118,8 +119,8 @@ namespace aspect
            */
           virtual
           const void *
-          read_data(const void *data,
-                    const types::particle_index particle_id);
+          read_data(const typename ParticleHandler<dim>::particle_iterator &,
+                    const void *);
 
           /**
            * Write integration related data to a vector for a particle
@@ -135,8 +136,8 @@ namespace aspect
            */
           virtual
           void *
-          write_data(void *data,
-                     const types::particle_index particle_id) const;
+          write_data(const typename ParticleHandler<dim>::particle_iterator &,
+                     void *) const;
 
 
           /**
