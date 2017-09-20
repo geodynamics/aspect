@@ -138,7 +138,7 @@ namespace aspect
          * particle that is no longer in the cell.
          */
         particle_iterator_range
-        particle_range_in_cell(const typename parallel::distributed::Triangulation<dim,spacedim>::active_cell_iterator &cell);
+        particles_in_cell(const typename parallel::distributed::Triangulation<dim,spacedim>::active_cell_iterator &cell);
 
 
         /**
@@ -147,7 +147,7 @@ namespace aspect
          * particle that is no longer in the cell.
          */
         particle_iterator_range
-        particle_range_in_cell(const typename parallel::distributed::Triangulation<dim,spacedim>::active_cell_iterator &cell) const;
+        particles_in_cell(const typename parallel::distributed::Triangulation<dim,spacedim>::active_cell_iterator &cell) const;
 
         /**
          * Remove a particle pointed to by the iterator.
@@ -158,7 +158,7 @@ namespace aspect
         /**
          * Insert a particle into the collection of particles. Return an iterator
          * to the new position of the particle. This function involves a copy of
-         * the particle and its properties. Note that this function is of O(NlogN)
+         * the particle and its properties. Note that this function is of O(N \log N)
          * complexity for N particles.
          */
         particle_iterator
@@ -168,7 +168,7 @@ namespace aspect
         /**
          * Insert a number of particle into the collection of particles.
          * This function involves a copy of the particles and their properties.
-         * Note that this function is of O(N) complexity.
+         * Note that this function is of O(n_existing_particles + n_particles) complexity.
          */
         void
         insert_particles(const std::multimap<types::LevelInd, Particle<dim,spacedim> > &particles);
@@ -278,31 +278,6 @@ namespace aspect
          */
         template <class Archive>
         void serialize (Archive &ar, const unsigned int version);
-
-      protected:
-        /**
-         * Access to particles in this handler.
-         * TODO: This function eventually needs to go, to not expose internal structure.
-         * This can only be done once World no longer uses this function.
-         */
-        std::multimap<types::LevelInd, Particle<dim,spacedim> > &
-        get_particles();
-
-        /**
-         * Const access to particles in this world.
-         * TODO: This function needs to go to not expose internal structure.
-         * This can only be done once World no longer uses this function.
-         */
-        const std::multimap<types::LevelInd, Particle<dim,spacedim> > &
-        get_particles() const;
-
-        /**
-         * Const access to particles in this world.
-         * TODO: This function needs to go to not expose internal structure.
-         * This can only be done once World no longer uses this function.
-         */
-        const std::multimap<types::LevelInd, Particle<dim,spacedim> > &
-        get_ghost_particles() const;
 
       private:
         /**

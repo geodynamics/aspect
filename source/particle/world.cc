@@ -113,31 +113,6 @@ namespace aspect
     }
 
     template <int dim>
-    std::multimap<types::LevelInd, Particle<dim> > &
-    World<dim>::get_particles()
-    {
-      return particle_handler->get_particles();
-    }
-
-    template <int dim>
-    const std::multimap<types::LevelInd, Particle<dim> > &
-    World<dim>::get_particles() const
-    {
-      return particle_handler->get_particles();
-    }
-
-    template <int dim>
-    const std::multimap<types::LevelInd, Particle<dim> > &
-    World<dim>::get_ghost_particles() const
-    {
-      AssertThrow(update_ghost_particles == true,
-                  ExcMessage("A part of the model has requested access to the ghost "
-                             "particles, but the parameter 'Update ghost particles' has not "
-                             "been set, therefore no ghost particles are available."));
-      return particle_handler->get_ghost_particles();
-    }
-
-    template <int dim>
     std::string
     World<dim>::generate_output() const
     {
@@ -387,7 +362,7 @@ namespace aspect
                          (n_particles_in_cell > max_particles_per_cell))
                   {
                     const boost::iterator_range<typename ParticleHandler<dim>::particle_iterator> particles_in_cell
-                      = particle_handler->particle_range_in_cell(cell);
+                      = particle_handler->particles_in_cell(cell);
 
                     const unsigned int n_particles_to_remove = n_particles_in_cell - max_particles_per_cell;
 
@@ -718,12 +693,12 @@ namespace aspect
             if (cell->is_locally_owned())
               {
                 typename ParticleHandler<dim>::particle_iterator_range
-                particle_range_in_cell = particle_handler->particle_range_in_cell(cell);
+                particles_in_cell = particle_handler->particles_in_cell(cell);
 
                 // Only initialize particles, if there are any in this cell
-                if (particle_range_in_cell.begin() != particle_range_in_cell.end())
-                  local_initialize_particles(particle_range_in_cell.begin(),
-                                             particle_range_in_cell.end());
+                if (particles_in_cell.begin() != particles_in_cell.end())
+                  local_initialize_particles(particles_in_cell.begin(),
+                                             particles_in_cell.end());
               }
           if (update_ghost_particles &&
               dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
@@ -753,13 +728,13 @@ namespace aspect
             if (cell->is_locally_owned())
               {
                 typename ParticleHandler<dim>::particle_iterator_range
-                particle_range_in_cell = particle_handler->particle_range_in_cell(cell);
+                particles_in_cell = particle_handler->particles_in_cell(cell);
 
                 // Only update particles, if there are any in this cell
-                if (particle_range_in_cell.begin() != particle_range_in_cell.end())
+                if (particles_in_cell.begin() != particles_in_cell.end())
                   local_update_particles(cell,
-                                         particle_range_in_cell.begin(),
-                                         particle_range_in_cell.end());
+                                         particles_in_cell.begin(),
+                                         particles_in_cell.end());
               }
         }
     }
@@ -781,13 +756,13 @@ namespace aspect
           if (cell->is_locally_owned())
             {
               const typename ParticleHandler<dim>::particle_iterator_range
-              particle_range_in_cell = particle_handler->particle_range_in_cell(cell);
+              particles_in_cell = particle_handler->particles_in_cell(cell);
 
               // Only advect particles, if there are any in this cell
-              if (particle_range_in_cell.begin() != particle_range_in_cell.end())
+              if (particles_in_cell.begin() != particles_in_cell.end())
                 local_advect_particles(cell,
-                                       particle_range_in_cell.begin(),
-                                       particle_range_in_cell.end());
+                                       particles_in_cell.begin(),
+                                       particles_in_cell.end());
             }
 
         // If particles fell out of the mesh, put them back in if they have crossed

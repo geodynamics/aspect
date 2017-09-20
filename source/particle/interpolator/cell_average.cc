@@ -61,7 +61,7 @@ namespace aspect
           found_cell = cell;
 
         const typename ParticleHandler<dim>::particle_iterator_range particle_range =
-          particle_handler.particle_range_in_cell(found_cell);
+          particle_handler.particles_in_cell(found_cell);
 
         const unsigned int n_particles = std::distance(particle_range.begin(),particle_range.end());
         const unsigned int n_particle_properties = particle_handler.n_properties_per_particle();

@@ -122,26 +122,6 @@ namespace aspect
         void initialize_particles();
 
         /**
-         * Access to particles in this world.
-         */
-        std::multimap<types::LevelInd, Particle<dim> > &
-        get_particles();
-
-        /**
-         * Const access to particles in this world.
-         */
-        const std::multimap<types::LevelInd, Particle<dim> > &
-        get_particles() const;
-
-        /**
-         * Const access to ghost particles in this world.
-         * Ghost particles are all particles that are owned by another process
-         * and live in one of the ghost cells of the local subdomain.
-         */
-        const std::multimap<types::LevelInd, Particle<dim> > &
-        get_ghost_particles() const;
-
-        /**
          * Advance particles by the old timestep using the current
          * integration scheme. This accounts for the fact that the particles
          * are actually still at their old positions and the current timestep

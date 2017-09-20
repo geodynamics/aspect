@@ -80,7 +80,7 @@ namespace aspect
           found_cell = cell;
 
         const typename ParticleHandler<dim>::particle_iterator_range particle_range =
-          particle_handler.particle_range_in_cell(found_cell);
+          particle_handler.particles_in_cell(found_cell);
 
 
         std::vector<std::vector<double> > cell_properties(positions.size(),
