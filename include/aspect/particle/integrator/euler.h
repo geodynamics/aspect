@@ -60,8 +60,8 @@ namespace aspect
            */
           virtual
           void
-          local_integrate_step(const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle,
+          local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                               const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                const std::vector<Tensor<1,dim> > &old_velocities,
                                const std::vector<Tensor<1,dim> > &velocities,
                                const double dt);

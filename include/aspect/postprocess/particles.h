@@ -49,12 +49,12 @@ namespace aspect
       {
         public:
           /**
-           * This function prepares the data for writing. It reads the data from @p particles and their
+           * This function prepares the data for writing. It reads the data from @p particle_hander and their
            * property information from @p property_information, and builds a list of patches that is stored
            * internally until the destructor is called. This function needs to be called before one of the
            * write function of the base class can be called to write the output data.
            */
-          void build_patches(const std::multimap<aspect::Particle::types::LevelInd, aspect::Particle::Particle<dim> > &particles,
+          void build_patches(const Particle::ParticleHandler<dim> &particle_handler,
                              const aspect::Particle::Property::ParticlePropertyInformation &property_information);
 
         private:

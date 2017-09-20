@@ -106,6 +106,13 @@ namespace aspect
         void clear();
 
         /**
+         * Only clear particle data, but keep cache information about number
+         * of particles. This is useful during reorganization of particle data
+         * between processes.
+         */
+        void clear_particles();
+
+        /**
          * Return an iterator to the first particle.
          */
         ParticleHandler<dim,spacedim>::particle_iterator begin() const;
@@ -133,6 +140,15 @@ namespace aspect
         particle_iterator_range
         particle_range_in_cell(const typename parallel::distributed::Triangulation<dim,spacedim>::active_cell_iterator &cell);
 
+
+        /**
+         * Return a pair of particle iterators that mark the begin and end of
+         * the particles in a particular cell. The last iterator is the first
+         * particle that is no longer in the cell.
+         */
+        particle_iterator_range
+        particle_range_in_cell(const typename parallel::distributed::Triangulation<dim,spacedim>::active_cell_iterator &cell) const;
+
         /**
          * Remove a particle pointed to by the iterator.
          */
@@ -142,12 +158,20 @@ namespace aspect
         /**
          * Insert a particle into the collection of particles. Return an iterator
          * to the new position of the particle. This function involves a copy of
-         * the particle and its properties. Note that this function is of NlogN
+         * the particle and its properties. Note that this function is of O(NlogN)
          * complexity for N particles.
          */
         particle_iterator
         insert_particle(const Particle<dim,spacedim> &particle,
                         const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell);
+
+        /**
+         * Insert a number of particle into the collection of particles.
+         * This function involves a copy of the particles and their properties.
+         * Note that this function is of O(N) complexity.
+         */
+        void
+        insert_particles(const std::multimap<types::LevelInd, Particle<dim,spacedim> > &particles);
 
         /**
          * This function allows to register three additional functions that are
@@ -197,6 +221,11 @@ namespace aspect
          * triangulation.
          */
         types::particle_index n_locally_owned_particles() const;
+
+        /**
+         * Return the number of properties each particle has.
+         */
+        unsigned int n_properties_per_particle() const;
 
         /**
          * Return a reference to the property pool that owns all particle

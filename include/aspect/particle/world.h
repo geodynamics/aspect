@@ -389,16 +389,16 @@ namespace aspect
          * Initialize the particle properties of one cell.
          */
         void
-        local_initialize_particles(const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                                   const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle);
+        local_initialize_particles(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                   const typename ParticleHandler<dim>::particle_iterator &end_particle);
 
         /**
          * Update the particle properties of one cell.
          */
         void
         local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle);
+                               const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                               const typename ParticleHandler<dim>::particle_iterator &end_particle);
 
         /**
          * Advect the particles of one cell. Performs only one step for
@@ -410,8 +410,8 @@ namespace aspect
          */
         void
         local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle);
+                               const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                               const typename ParticleHandler<dim>::particle_iterator &end_particle);
     };
 
     /* -------------------------- inline and template functions ---------------------- */

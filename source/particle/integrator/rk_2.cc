@@ -34,8 +34,8 @@ namespace aspect
 
       template <int dim>
       void
-      RK2<dim>::local_integrate_step(const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                                     const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle,
+      RK2<dim>::local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                     const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                      const std::vector<Tensor<1,dim> > &old_velocities,
                                      const std::vector<Tensor<1,dim> > &velocities,
                                      const double dt)
@@ -53,19 +53,19 @@ namespace aspect
         typename std::vector<Tensor<1,dim> >::const_iterator old_velocity = old_velocities.begin();
         typename std::vector<Tensor<1,dim> >::const_iterator velocity = velocities.begin();
 
-        for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
+        for (typename ParticleHandler<dim>::particle_iterator it = begin_particle;
              it != end_particle; ++it, ++velocity, ++old_velocity)
           {
-            const types::particle_index particle_id = it->second.get_id();
-            const Point<dim> loc = it->second.get_location();
+            const types::particle_index particle_id = it->get_id();
+            const Point<dim> loc = it->get_location();
             if (integrator_substep == 0)
               {
                 loc0[particle_id] = loc;
-                it->second.set_location(loc + 0.5 * dt * (*old_velocity));
+                it->set_location(loc + 0.5 * dt * (*old_velocity));
               }
             else if (integrator_substep == 1)
               {
-                it->second.set_location(loc0[particle_id] + dt * (*old_velocity + *velocity) / 2.0);
+                it->set_location(loc0[particle_id] + dt * (*old_velocity + *velocity) / 2.0);
               }
             else
               {

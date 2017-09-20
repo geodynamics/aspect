@@ -43,8 +43,8 @@ namespace aspect
                                "active postprocessors. You need to select this postprocessor to "
                                "be able to select the <particle count> visualization plugin."));
 
-        const std::multimap<aspect::Particle::types::LevelInd, aspect::Particle::Particle<dim> > &particles =
-          particle_postprocessor->get_particle_world().get_particles();
+        const Particle::ParticleHandler<dim> &particle_handler =
+          particle_postprocessor->get_particle_world().get_particle_handler();
 
         std::pair<std::string, Vector<float> *>
         return_value ("particles_per_cell",
@@ -59,9 +59,7 @@ namespace aspect
         for (; cell!=endc; ++cell,++cell_index)
           if (cell->is_locally_owned())
             {
-              const aspect::Particle::types::LevelInd current_cell (cell->level(),cell->index());
-
-              (*return_value.second)(cell_index) = static_cast<float> (particles.count(current_cell));
+              (*return_value.second)(cell_index) = static_cast<float> (particle_handler.n_particles_in_cell(cell));
             }
 
         return return_value;

@@ -151,7 +151,7 @@ namespace aspect
                                   this->get_time() / year_in_seconds :
                                   this->get_time());
 
-      const std::string filename = output->output_particle_data(particle_handler->get_particles(),
+      const std::string filename = output->output_particle_data(*particle_handler,
                                                                 property_manager->get_data_info(),
                                                                 output_time);
 
@@ -238,8 +238,8 @@ namespace aspect
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Refine mesh, load");
 
       // All particles have been stored, when we reach this point. Empty the
-      // map and fill with new particles.
-      particle_handler->get_particles().clear();
+      // particle data.
+      particle_handler->clear_particles();
 
       // If we are resuming from a checkpoint, we first have to register the
       // store function again, to set the triangulation in the same state as
@@ -370,7 +370,7 @@ namespace aspect
 
                         const std::vector<double> particle_properties =
                           property_manager->initialize_late_particle(new_particle.second.get_location(),
-                                                                     particle_handler->get_particles(),
+                                                                     *particle_handler,
                                                                      *interpolator,
                                                                      cell);
 
@@ -508,18 +508,18 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::local_initialize_particles(const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                                           const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle)
+    World<dim>::local_initialize_particles(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                           const typename ParticleHandler<dim>::particle_iterator &end_particle)
     {
-      for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle; it!=end_particle; ++it)
-        property_manager->initialize_one_particle(it->second);
+      for (typename ParticleHandler<dim>::particle_iterator it = begin_particle; it!=end_particle; ++it)
+        property_manager->initialize_one_particle(it);
     }
 
     template <int dim>
     void
     World<dim>::local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                       const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                                       const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle)
+                                       const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                       const typename ParticleHandler<dim>::particle_iterator &end_particle)
     {
       const unsigned int particles_in_cell = std::distance(begin_particle,end_particle);
       const unsigned int solution_components = this->introspection().n_components;
@@ -531,10 +531,10 @@ namespace aspect
       std::vector<std::vector<Tensor<1,dim> > > gradients(particles_in_cell,gradient);
       std::vector<Point<dim> >                  positions(particles_in_cell);
 
-      typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
+      typename ParticleHandler<dim>::particle_iterator it = begin_particle;
       for (unsigned int i = 0; it!=end_particle; ++it,++i)
         {
-          positions[i] = it->second.get_reference_location();
+          positions[i] = it->get_reference_location();
         }
 
       const Quadrature<dim> quadrature_formula(positions);
@@ -555,7 +555,7 @@ namespace aspect
       it = begin_particle;
       for (unsigned int i = 0; it!=end_particle; ++it,++i)
         {
-          property_manager->update_one_particle(it->second,
+          property_manager->update_one_particle(it,
                                                 values[i],
                                                 gradients[i]);
         }
@@ -564,8 +564,8 @@ namespace aspect
     template <int dim>
     void
     World<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                       const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                                       const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle)
+                                       const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                       const typename ParticleHandler<dim>::particle_iterator &end_particle)
     {
       const unsigned int particles_in_cell = std::distance(begin_particle,end_particle);
 
@@ -604,9 +604,9 @@ namespace aspect
           const unsigned int melt_property_index = property_manager->get_data_info()
                                                    .get_position_by_field_name("melt_presence");
 
-          typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
+          typename ParticleHandler<dim>::particle_iterator it = begin_particle;
           for (unsigned int particle_index = 0; it!=end_particle; ++it,++particle_index)
-            if (it->second.get_properties()[melt_property_index] == 1.0)
+            if (it->get_properties()[melt_property_index] == 1.0)
               use_fluid_velocity[particle_index] = true;
         }
 
@@ -638,11 +638,11 @@ namespace aspect
                 old_fluid_velocity_at_support_point[dir] = this->get_old_solution()[cell_dof_indices[support_point_index]];
               }
 
-          typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
+          typename ParticleHandler<dim>::particle_iterator it = begin_particle;
           for (unsigned int particle_index = 0; it!=end_particle; ++it,++particle_index)
             {
               // melt FE uses the same FE so the shape value is the same
-              const double shape_value = velocity_fe.shape_value(j,it->second.get_reference_location());
+              const double shape_value = velocity_fe.shape_value(j,it->get_reference_location());
 
               if (compute_fluid_velocity && use_fluid_velocity[particle_index])
                 {
@@ -683,7 +683,9 @@ namespace aspect
     {
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Generate");
 
-      generator->generate_particles(particle_handler->get_particles());
+      std::multimap<types::LevelInd, Particle<dim> > particles;
+      generator->generate_particles(particles);
+      particle_handler->insert_particles(particles);
 
       particle_handler->update_n_global_particles();
       particle_handler->update_next_free_particle_index();
@@ -715,14 +717,13 @@ namespace aspect
           for (; cell!=endc; ++cell)
             if (cell->is_locally_owned())
               {
-                std::pair< const typename std::multimap<types::LevelInd,Particle <dim> >::iterator,
-                    const typename std::multimap<types::LevelInd,Particle <dim> >::iterator>
-                    particle_range_in_cell = particle_handler->get_particles().equal_range(std::make_pair(cell->level(),cell->index()));
+                typename ParticleHandler<dim>::particle_iterator_range
+                particle_range_in_cell = particle_handler->particle_range_in_cell(cell);
 
                 // Only initialize particles, if there are any in this cell
-                if (particle_range_in_cell.first != particle_range_in_cell.second)
-                  local_initialize_particles(particle_range_in_cell.first,
-                                             particle_range_in_cell.second);
+                if (particle_range_in_cell.begin() != particle_range_in_cell.end())
+                  local_initialize_particles(particle_range_in_cell.begin(),
+                                             particle_range_in_cell.end());
               }
           if (update_ghost_particles &&
               dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
@@ -751,15 +752,14 @@ namespace aspect
           for (; cell!=endc; ++cell)
             if (cell->is_locally_owned())
               {
-                const std::pair< const typename std::multimap<types::LevelInd,Particle <dim> >::iterator,
-                      const typename std::multimap<types::LevelInd,Particle <dim> >::iterator>
-                      particle_range_in_cell = particle_handler->get_particles().equal_range(std::make_pair(cell->level(),cell->index()));
+                typename ParticleHandler<dim>::particle_iterator_range
+                particle_range_in_cell = particle_handler->particle_range_in_cell(cell);
 
                 // Only update particles, if there are any in this cell
-                if (particle_range_in_cell.first != particle_range_in_cell.second)
+                if (particle_range_in_cell.begin() != particle_range_in_cell.end())
                   local_update_particles(cell,
-                                         particle_range_in_cell.first,
-                                         particle_range_in_cell.second);
+                                         particle_range_in_cell.begin(),
+                                         particle_range_in_cell.end());
               }
         }
     }
@@ -780,15 +780,14 @@ namespace aspect
         for (; cell!=endc; ++cell)
           if (cell->is_locally_owned())
             {
-              const std::pair< const typename std::multimap<types::LevelInd,Particle <dim> >::iterator,
-                    const typename std::multimap<types::LevelInd,Particle <dim> >::iterator>
-                    particle_range_in_cell = particle_handler->get_particles().equal_range(std::make_pair(cell->level(),cell->index()));
+              const typename ParticleHandler<dim>::particle_iterator_range
+              particle_range_in_cell = particle_handler->particle_range_in_cell(cell);
 
               // Only advect particles, if there are any in this cell
-              if (particle_range_in_cell.first != particle_range_in_cell.second)
+              if (particle_range_in_cell.begin() != particle_range_in_cell.end())
                 local_advect_particles(cell,
-                                       particle_range_in_cell.first,
-                                       particle_range_in_cell.second);
+                                       particle_range_in_cell.begin(),
+                                       particle_range_in_cell.end());
             }
 
         // If particles fell out of the mesh, put them back in if they have crossed

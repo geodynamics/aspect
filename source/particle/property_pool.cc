@@ -63,5 +63,11 @@ namespace aspect
     {
       (void)size;
     }
+
+    unsigned int
+    PropertyPool::n_properties_per_slot() const
+    {
+      return n_properties;
+    }
   }
 }

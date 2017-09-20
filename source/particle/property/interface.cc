@@ -254,7 +254,7 @@ namespace aspect
 
       template <int dim>
       void
-      Manager<dim>::initialize_one_particle (Particle<dim> &particle) const
+      Manager<dim>::initialize_one_particle (typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         if (property_information.n_components() == 0)
           return;
@@ -265,7 +265,7 @@ namespace aspect
         for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
-            (*p)->initialize_one_particle_property(particle.get_location(),
+            (*p)->initialize_one_particle_property(particle->get_location(),
                                                    particle_properties);
           }
 
@@ -275,13 +275,13 @@ namespace aspect
                           "the property plugins. Check the selected property plugins for "
                           "consistency between reported size and actually set properties."));
 
-        particle.set_properties(particle_properties);
+        particle->set_properties(particle_properties);
       }
 
       template <int dim>
       std::vector<double>
       Manager<dim>::initialize_late_particle (const Point<dim> &particle_location,
-                                              const std::multimap<types::LevelInd, Particle<dim> > &particles,
+                                              const ParticleHandler<dim> &particle_handler,
                                               const Interpolator::Interface<dim> &interpolator,
                                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
@@ -324,7 +324,7 @@ namespace aspect
                   else
                     found_cell = cell;
 
-                  const std::vector<std::vector<double> > interpolated_properties = interpolator.properties_at_points(particles,
+                  const std::vector<std::vector<double> > interpolated_properties = interpolator.properties_at_points(particle_handler,
                                                                                     std::vector<Point<dim> > (1,particle_location),
                                                                                     ComponentMask(property_information.n_components(),true),
                                                                                     found_cell);
@@ -345,7 +345,7 @@ namespace aspect
 
       template <int dim>
       void
-      Manager<dim>::update_one_particle (Particle<dim> &particle,
+      Manager<dim>::update_one_particle (typename ParticleHandler<dim>::particle_iterator &particle,
                                          const Vector<double> &solution,
                                          const std::vector<Tensor<1,dim> > &gradients) const
       {
@@ -354,10 +354,10 @@ namespace aspect
              p = property_list.begin(); p!=property_list.end(); ++p,++plugin_index)
           {
             (*p)->update_one_particle_property(property_information.get_position_by_plugin_index(plugin_index),
-                                               particle.get_location(),
+                                               particle->get_location(),
                                                solution,
                                                gradients,
-                                               particle.get_properties());
+                                               particle->get_properties());
           }
       }
 

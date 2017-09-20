@@ -181,6 +181,11 @@ namespace aspect
 
       protected:
         /**
+         * Construct an invalid accessor. Such an object is not usable.
+         */
+        ParticleAccessor ();
+
+        /**
          * Construct an accessor from a reference to a map and an iterator to the map.
          * This constructor is protected so that it can only be accessed by friend
          * classes.

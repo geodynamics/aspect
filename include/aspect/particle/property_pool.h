@@ -83,6 +83,11 @@ namespace aspect
          */
         void reserve(const std::size_t size);
 
+        /**
+         * Returns how many properties are stored per slot in the pool.
+         */
+        unsigned int n_properties_per_slot() const;
+
       private:
         /**
          * The number of properties that are reserved per particle.

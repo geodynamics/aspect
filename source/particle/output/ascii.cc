@@ -44,7 +44,7 @@ namespace aspect
 
       template <int dim>
       std::string
-      ASCIIOutput<dim>::output_particle_data(const std::multimap<types::LevelInd, Particle<dim> > &particles,
+      ASCIIOutput<dim>::output_particle_data(const ParticleHandler<dim> &particle_handler,
                                              const Property::ParticlePropertyInformation &property_information,
                                              const double /*time*/)
       {
@@ -89,15 +89,15 @@ namespace aspect
         output << "\n";
 
         // And print the data for each particle
-        for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator it=particles.begin(); it!=particles.end(); ++it)
+        for (typename ParticleHandler<dim>::particle_iterator it=particle_handler.begin(); it!=particle_handler.end(); ++it)
           {
 
-            output << it->second.get_location();
-            output << ' ' << it->second.get_id();
+            output << it->get_location();
+            output << ' ' << it->get_id();
 
             if (property_information.n_fields() > 0)
               {
-                const ArrayView<const double> properties = it->second.get_properties();
+                const ArrayView<const double> properties = it->get_properties();
 
                 for (unsigned int i = 0; i < properties.size(); ++i)
                   output << ' ' << properties[i];

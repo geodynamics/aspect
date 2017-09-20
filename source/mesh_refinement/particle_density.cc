@@ -39,7 +39,7 @@ namespace aspect
                              "postprocessor plugin `particles' to be selected. Please activate the "
                              "particles or deactivate this mesh refinement plugin."));
 
-      const std::multimap<Particle::types::LevelInd, Particle::Particle<dim> > *particles = &particle_postprocessor->get_particle_world().get_particles();
+      const Particle::ParticleHandler<dim> &particle_handler = particle_postprocessor->get_particle_world().get_particle_handler();
 
       unsigned int i = 0;
       typename DoFHandler<dim>::active_cell_iterator
@@ -48,14 +48,11 @@ namespace aspect
       for (; cell!=endc; ++cell,++i)
         if (cell->is_locally_owned())
           {
-            const Particle::types::LevelInd cell_index (cell->level(),cell->index());
-            const unsigned int n_particles = particles->count(cell_index);
-
             // Note  that this refinement indicator will level out the number
             // of particles per cell, therefore creating fine cells in regions
             // of high particle density and coarse cells in low particle
             // density regions.
-            indicators(i) = static_cast<float>(n_particles);
+            indicators(i) = static_cast<float>(particle_handler.n_particles_in_cell(cell));
           }
       return;
     }
