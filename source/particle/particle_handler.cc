@@ -82,10 +82,19 @@ namespace aspect
     void
     ParticleHandler<dim,spacedim>::clear()
     {
-      particles.clear();
+      clear_particles();
       global_number_of_particles = 0;
       next_free_particle_index = 0;
       global_max_particles_per_cell = 0;
+    }
+
+
+
+    template <int dim,int spacedim>
+    void
+    ParticleHandler<dim,spacedim>::clear_particles()
+    {
+      particles.clear();
     }
 
 
@@ -128,12 +137,26 @@ namespace aspect
 
     template <int dim,int spacedim>
     typename ParticleHandler<dim,spacedim>::particle_iterator_range
-    ParticleHandler<dim,spacedim>::particle_range_in_cell(const active_cell_it &cell)
+    ParticleHandler<dim,spacedim>::particles_in_cell(const active_cell_it &cell) const
+    {
+      return (const_cast<ParticleHandler<dim,spacedim> *> (this))->particles_in_cell(cell);
+    }
+
+
+
+    template <int dim,int spacedim>
+    typename ParticleHandler<dim,spacedim>::particle_iterator_range
+    ParticleHandler<dim,spacedim>::particles_in_cell(const active_cell_it &cell)
     {
       const types::LevelInd level_index = std::make_pair<int, int> (cell->level(),cell->index());
-      const std::pair<typename std::multimap<types::LevelInd, Particle<dim,spacedim> >::iterator,
-            typename std::multimap<types::LevelInd, Particle<dim,spacedim> >::iterator> particles_in_cell
-            = particles.equal_range(level_index);
+
+      std::pair<typename std::multimap<types::LevelInd, Particle<dim,spacedim> >::iterator,
+          typename std::multimap<types::LevelInd, Particle<dim,spacedim> >::iterator> particles_in_cell;
+
+      if (!cell->is_ghost())
+        particles_in_cell = particles.equal_range(level_index);
+      else
+        particles_in_cell = ghost_particles.equal_range(level_index);
 
       return boost::make_iterator_range(particle_iterator(particles,particles_in_cell.first),
                                         particle_iterator(particles,particles_in_cell.second));
@@ -171,28 +194,10 @@ namespace aspect
 
 
     template <int dim,int spacedim>
-    std::multimap<types::LevelInd, Particle<dim,spacedim> > &
-    ParticleHandler<dim,spacedim>::get_particles()
+    void
+    ParticleHandler<dim,spacedim>::insert_particles(const std::multimap<types::LevelInd, Particle<dim,spacedim> > &new_particles)
     {
-      return particles;
-    }
-
-
-
-    template <int dim,int spacedim>
-    const std::multimap<types::LevelInd, Particle<dim,spacedim> > &
-    ParticleHandler<dim,spacedim>::get_particles() const
-    {
-      return particles;
-    }
-
-
-
-    template <int dim,int spacedim>
-    const std::multimap<types::LevelInd, Particle<dim,spacedim> > &
-    ParticleHandler<dim,spacedim>::get_ghost_particles() const
-    {
-      return ghost_particles;
+      particles.insert(new_particles.begin(),new_particles.end());
     }
 
 
@@ -216,6 +221,15 @@ namespace aspect
 
 
     template <int dim,int spacedim>
+    unsigned int
+    ParticleHandler<dim,spacedim>::n_properties_per_particle() const
+    {
+      return property_pool->n_properties_per_slot();
+    }
+
+
+
+    template <int dim,int spacedim>
     void
     ParticleHandler<dim,spacedim>::update_n_global_particles()
     {
@@ -229,7 +243,15 @@ namespace aspect
     ParticleHandler<dim,spacedim>::n_particles_in_cell(const typename Triangulation<dim,spacedim>::active_cell_iterator &cell) const
     {
       const types::LevelInd found_cell = std::make_pair<int, int> (cell->level(),cell->index());
-      return particles.count(found_cell);
+
+      if (cell->is_locally_owned())
+        return particles.count(found_cell);
+      else if (cell->is_ghost())
+        return ghost_particles.count(found_cell);
+      else if (cell->is_artificial())
+        AssertThrow(false,ExcInternalError());
+
+      return 0;
     }
 
 
@@ -603,14 +625,14 @@ namespace aspect
 
               if (cell_to_neighbor_subdomain.size() > 0)
                 {
-                  const particle_iterator_range particles_in_cell = particle_range_in_cell(cell);
+                  const particle_iterator_range particle_range = particles_in_cell(cell);
 
                   for (std::set<types::subdomain_id>::const_iterator domain=cell_to_neighbor_subdomain.begin();
                        domain != cell_to_neighbor_subdomain.end(); ++domain)
                     {
                       const unsigned int neighbor_id = subdomain_to_neighbor_map.find(*domain)->second;
 
-                      for (typename particle_iterator_range::iterator particle = particles_in_cell.begin(); particle != particles_in_cell.end(); ++particle)
+                      for (typename particle_iterator_range::iterator particle = particle_range.begin(); particle != particle_range.end(); ++particle)
                         ghost_particles_by_domain[neighbor_id].push_back(particle);
                     }
                 }
@@ -789,16 +811,16 @@ namespace aspect
       if (status == parallel::distributed::Triangulation<dim,spacedim>::CELL_PERSIST
           || status == parallel::distributed::Triangulation<dim,spacedim>::CELL_REFINE)
         {
-          const boost::iterator_range<particle_iterator> particles_in_cell
-            = particle_range_in_cell(cell);
-          n_particles = std::distance(particles_in_cell.begin(),particles_in_cell.end());
+          const boost::iterator_range<particle_iterator> particle_range
+            = particles_in_cell(cell);
+          n_particles = std::distance(particle_range.begin(),particle_range.end());
 
           unsigned int *ndata = static_cast<unsigned int *> (data);
           *ndata = n_particles;
           data = static_cast<void *> (ndata + 1);
 
-          for (particle_iterator particle = particles_in_cell.begin();
-               particle != particles_in_cell.end(); ++particle)
+          for (particle_iterator particle = particle_range.begin();
+               particle != particle_range.end(); ++particle)
             {
               particle->write_data(data);
             }
@@ -821,11 +843,11 @@ namespace aspect
           for (unsigned int child_index = 0; child_index < GeometryInfo<dim>::max_children_per_cell; ++child_index)
             {
               const typename parallel::distributed::Triangulation<dim,spacedim>::cell_iterator child = cell->child(child_index);
-              const boost::iterator_range<particle_iterator> particles_in_cell
-                = particle_range_in_cell(child);
+              const boost::iterator_range<particle_iterator> particle_range
+                = particles_in_cell(child);
 
-              for (particle_iterator particle = particles_in_cell.begin();
-                   particle != particles_in_cell.end(); ++particle)
+              for (particle_iterator particle = particle_range.begin();
+                   particle != particle_range.end(); ++particle)
                 {
                   particle->write_data(data);
                 }
@@ -901,7 +923,7 @@ namespace aspect
           for (unsigned int child_index=0; child_index<GeometryInfo<dim>::max_children_per_cell; ++child_index)
             {
               const typename parallel::distributed::Triangulation<dim,spacedim>::cell_iterator child = cell->child(child_index);
-              position_hints[child_index] = this->get_particles().upper_bound(std::make_pair(child->level(),child->index()));
+              position_hints[child_index] = particles.upper_bound(std::make_pair(child->level(),child->index()));
             }
 
           for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)

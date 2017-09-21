@@ -32,8 +32,8 @@ namespace aspect
        */
       template <int dim>
       void
-      Euler<dim>::local_integrate_step(const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                                       const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle,
+      Euler<dim>::local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                       const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                        const std::vector<Tensor<1,dim> > &old_velocities,
                                        const std::vector<Tensor<1,dim> > &,
                                        const double dt)
@@ -45,11 +45,11 @@ namespace aspect
 
         typename std::vector<Tensor<1,dim> >::const_iterator old_velocity = old_velocities.begin();
 
-        for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
+        for (typename ParticleHandler<dim>::particle_iterator it = begin_particle;
              it != end_particle; ++it, ++old_velocity)
           {
-            const Point<dim> loc = it->second.get_location();
-            it->second.set_location(loc + dt * (*old_velocity));
+            const Point<dim> loc = it->get_location();
+            it->set_location(loc + dt * (*old_velocity));
           }
       }
     }

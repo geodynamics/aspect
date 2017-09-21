@@ -37,7 +37,7 @@ namespace aspect
     {
       template<int dim>
       void
-      ParticleOutput<dim>::build_patches(const std::multimap<aspect::Particle::types::LevelInd, aspect::Particle::Particle<dim> > &particles,
+      ParticleOutput<dim>::build_patches(const Particle::ParticleHandler<dim> &particle_handler,
                                          const aspect::Particle::Property::ParticlePropertyInformation &property_information)
       {
         // First store the names of the data fields
@@ -77,22 +77,22 @@ namespace aspect
 
 
         // Third build the actual patch data
-        patches.resize(particles.size());
+        patches.resize(particle_handler.n_locally_owned_particles());
 
-        typename std::multimap<aspect::Particle::types::LevelInd, aspect::Particle::Particle<dim> >::const_iterator particle = particles.begin();
+        typename ParticleHandler<dim>::particle_iterator particle = particle_handler.begin();
 
-        for (unsigned int i=0; particle != particles.end(); ++particle, ++i)
+        for (unsigned int i=0; particle != particle_handler.end(); ++particle, ++i)
           {
-            patches[i].vertices[0] = particle->second.get_location();
+            patches[i].vertices[0] = particle->get_location();
             patches[i].patch_index = i;
             patches[i].n_subdivisions = 1;
             patches[i].data.reinit(property_information.n_components()+1,1);
 
-            patches[i].data(0,0) = particle->second.get_id();
+            patches[i].data(0,0) = particle->get_id();
 
-            if (particle->second.has_properties())
+            if (particle->has_properties())
               {
-                const ArrayView<const double> properties = particle->second.get_properties();
+                const ArrayView<const double> properties = particle->get_properties();
                 for (unsigned int property_index = 0; property_index < properties.size(); ++property_index)
                   patches[i].data(property_index+1,0) = properties[property_index];
               }
@@ -346,7 +346,7 @@ namespace aspect
 
       // Create the particle output
       internal::ParticleOutput<dim> data_out;
-      data_out.build_patches(world.get_particles(),
+      data_out.build_patches(world.get_particle_handler(),
                              world.get_property_manager().get_data_info());
 
       // Now prepare everything for writing the output and choose output format

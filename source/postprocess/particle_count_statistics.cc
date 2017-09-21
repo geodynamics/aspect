@@ -47,8 +47,8 @@ namespace aspect
                              "active postprocessors. You need to select this postprocessor to "
                              "be able to select the <particle count> visualization plugin."));
 
-      const std::multimap<aspect::Particle::types::LevelInd, aspect::Particle::Particle<dim> > &particles =
-        particle_postprocessor->get_particle_world().get_particles();
+      const Particle::ParticleHandler<dim> &particle_handler =
+        particle_postprocessor->get_particle_world().get_particle_handler();
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
@@ -62,9 +62,7 @@ namespace aspect
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
           {
-            const aspect::Particle::types::LevelInd current_cell (cell->level(),cell->index());
-
-            const unsigned int particles_in_cell = particles.count(current_cell);
+            const unsigned int particles_in_cell = particle_handler.n_particles_in_cell(cell);
             local_min_particles = std::min(local_min_particles,particles_in_cell);
             local_max_particles = std::max(local_max_particles,particles_in_cell);
           }

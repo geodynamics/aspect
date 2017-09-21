@@ -62,8 +62,8 @@ namespace aspect
            * to a file. If possible, encode the current simulation time
            * into this file using the data provided in the last argument.
            *
-           * @param[in] particles The set of particles to generate a graphical
-           * representation for.
+           * @param[in] particle_handler The particle handler that allows access
+           * to the collection of particles.
            *
            * @param [in] property_information Information object containing names and number
            * of components of each property.
@@ -79,7 +79,7 @@ namespace aspect
            */
           virtual
           std::string
-          output_particle_data(const std::multimap<types::LevelInd, Particle<dim> >     &particles,
+          output_particle_data(const ParticleHandler<dim> &particle_handler,
                                const Property::ParticlePropertyInformation &property_information,
                                const double current_time);
 

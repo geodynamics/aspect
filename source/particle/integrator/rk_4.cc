@@ -34,8 +34,8 @@ namespace aspect
 
       template <int dim>
       void
-      RK4<dim>::local_integrate_step(const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                                     const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle,
+      RK4<dim>::local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                     const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                      const std::vector<Tensor<1,dim> > &old_velocities,
                                      const std::vector<Tensor<1,dim> > &velocities,
                                      const double dt)
@@ -55,30 +55,30 @@ namespace aspect
         typename std::vector<Tensor<1,dim> >::const_iterator old_velocity = old_velocities.begin();
         typename std::vector<Tensor<1,dim> >::const_iterator velocity = velocities.begin();
 
-        for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
+        for (typename ParticleHandler<dim>::particle_iterator it = begin_particle;
              it != end_particle; ++it, ++velocity, ++old_velocity)
           {
-            const types::particle_index particle_id = it->second.get_id();
+            const types::particle_index particle_id = it->get_id();
             if (integrator_substep == 0)
               {
-                loc0[particle_id] = it->second.get_location();
+                loc0[particle_id] = it->get_location();
                 k1[particle_id] = dt * (*old_velocity);
-                it->second.set_location(it->second.get_location() + 0.5*k1[particle_id]);
+                it->set_location(it->get_location() + 0.5*k1[particle_id]);
               }
             else if (integrator_substep == 1)
               {
                 k2[particle_id] = dt * (*old_velocity + *velocity) / 2.0;
-                it->second.set_location(loc0[particle_id] + 0.5*k2[particle_id]);
+                it->set_location(loc0[particle_id] + 0.5*k2[particle_id]);
               }
             else if (integrator_substep == 2)
               {
                 k3[particle_id] = dt * (*old_velocity + *velocity) / 2.0;
-                it->second.set_location(loc0[particle_id] + k3[particle_id]);
+                it->set_location(loc0[particle_id] + k3[particle_id]);
               }
             else if (integrator_substep == 3)
               {
                 const Tensor<1,dim> k4 = dt * (*velocity);
-                it->second.set_location(loc0[particle_id] + (k1[particle_id] + 2.0*k2[particle_id] + 2.0*k3[particle_id] + k4)/6.0);
+                it->set_location(loc0[particle_id] + (k1[particle_id] + 2.0*k2[particle_id] + 2.0*k3[particle_id] + k4)/6.0);
               }
             else
               {

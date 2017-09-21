@@ -74,7 +74,7 @@ namespace aspect
 
       template <int dim>
       std::string
-      HDF5Output<dim>::output_particle_data(const std::multimap<types::LevelInd, Particle<dim> > &particles,
+      HDF5Output<dim>::output_particle_data(const ParticleHandler<dim> &particle_handler,
                                             const Property::ParticlePropertyInformation &property_information,
                                             const double current_time)
       {
@@ -88,8 +88,8 @@ namespace aspect
         const std::string h5_filename = output_path_prefix+".h5";
 
         // Create the hdf5 output size information
-        types::particle_index n_local_particles = particles.size();
-        const types::particle_index n_global_particles = Utilities::MPI::sum(n_local_particles,this->get_mpi_communicator());
+        types::particle_index n_local_particles = particle_handler.n_locally_owned_particles();
+        const types::particle_index n_global_particles = particle_handler.n_global_particles();
 
         hsize_t global_dataset_size[2];
         global_dataset_size[0] = n_global_particles;
@@ -125,15 +125,15 @@ namespace aspect
           }
 
         // Write into the output vectors
-        typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator it = particles.begin();
-        for (unsigned int i = 0; it != particles.end(); ++i, ++it)
+        typename ParticleHandler<dim>::particle_iterator it = particle_handler.begin();
+        for (unsigned int i = 0; it != particle_handler.end(); ++i, ++it)
           {
             for (unsigned int d = 0; d < dim; ++d)
-              position_data[i*3+d] = it->second.get_location()(d);
+              position_data[i*3+d] = it->get_location()(d);
 
-            index_data[i] = it->second.get_id();
+            index_data[i] = it->get_id();
 
-            const ArrayView<const double> properties = it->second.get_properties();
+            const ArrayView<const double> properties = it->get_properties();
 
             unsigned int particle_property_index = 0;
 

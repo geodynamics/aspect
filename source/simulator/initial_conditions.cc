@@ -219,7 +219,6 @@ namespace aspect
     AssertThrow(particle_postprocessor != 0,
                 ExcMessage("Did not find the <particles> postprocessor when trying to interpolate particle properties."));
 
-    const std::multimap<aspect::Particle::types::LevelInd, Particle::Particle<dim> > *particles = &particle_postprocessor->get_particle_world().get_particles();
     const Particle::Interpolator::Interface<dim> *particle_interpolator = &particle_postprocessor->get_particle_world().get_interpolator();
     const Particle::Property::Manager<dim> *particle_property_manager = &particle_postprocessor->get_particle_world().get_property_manager();
 
@@ -272,7 +271,10 @@ namespace aspect
           property_mask.set(particle_property,true);
 
           const std::vector<std::vector<double> > particle_properties =
-            particle_interpolator->properties_at_points(*particles,quadrature_points,property_mask,cell);
+            particle_interpolator->properties_at_points(particle_postprocessor->get_particle_world().get_particle_handler(),
+                                                        quadrature_points,
+                                                        property_mask,
+                                                        cell);
 
           // go through the composition dofs and set their global values
           // to the particle field interpolated at these points

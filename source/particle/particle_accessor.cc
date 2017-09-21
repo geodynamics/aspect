@@ -25,6 +25,15 @@ namespace aspect
   namespace Particle
   {
     template <int dim, int spacedim>
+    ParticleAccessor<dim,spacedim>::ParticleAccessor ()
+      :
+      map (NULL),
+      particle ()
+    {}
+
+
+
+    template <int dim, int spacedim>
     ParticleAccessor<dim,spacedim>::ParticleAccessor (const std::multimap<types::LevelInd, Particle<dim,spacedim> > &map,
                                                       const typename std::multimap<types::LevelInd, Particle<dim,spacedim> >::iterator &particle)
       :

@@ -486,7 +486,7 @@ namespace aspect
            * collection after it was created.
            */
           void
-          initialize_one_particle (Particle<dim> &particle) const;
+          initialize_one_particle (typename ParticleHandler<dim>::particle_iterator &particle) const;
 
           /**
            * Initialization function for particle properties. This function is
@@ -496,7 +496,7 @@ namespace aspect
            */
           std::vector<double>
           initialize_late_particle (const Point<dim> &particle_location,
-                                    const std::multimap<types::LevelInd, Particle<dim> > &particles,
+                                    const ParticleHandler<dim> &particle_handler,
                                     const Interpolator::Interface<dim> &interpolator,
                                     const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
 
@@ -505,7 +505,7 @@ namespace aspect
            * called once every time step for every particle.
            */
           void
-          update_one_particle (Particle<dim> &particle,
+          update_one_particle (typename ParticleHandler<dim>::particle_iterator &particle,
                                const Vector<double> &solution,
                                const std::vector<Tensor<1,dim> > &gradients) const;
 

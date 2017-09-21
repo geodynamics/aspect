@@ -122,26 +122,6 @@ namespace aspect
         void initialize_particles();
 
         /**
-         * Access to particles in this world.
-         */
-        std::multimap<types::LevelInd, Particle<dim> > &
-        get_particles();
-
-        /**
-         * Const access to particles in this world.
-         */
-        const std::multimap<types::LevelInd, Particle<dim> > &
-        get_particles() const;
-
-        /**
-         * Const access to ghost particles in this world.
-         * Ghost particles are all particles that are owned by another process
-         * and live in one of the ghost cells of the local subdomain.
-         */
-        const std::multimap<types::LevelInd, Particle<dim> > &
-        get_ghost_particles() const;
-
-        /**
          * Advance particles by the old timestep using the current
          * integration scheme. This accounts for the fact that the particles
          * are actually still at their old positions and the current timestep
@@ -389,16 +369,16 @@ namespace aspect
          * Initialize the particle properties of one cell.
          */
         void
-        local_initialize_particles(const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                                   const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle);
+        local_initialize_particles(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                   const typename ParticleHandler<dim>::particle_iterator &end_particle);
 
         /**
          * Update the particle properties of one cell.
          */
         void
         local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle);
+                               const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                               const typename ParticleHandler<dim>::particle_iterator &end_particle);
 
         /**
          * Advect the particles of one cell. Performs only one step for
@@ -410,8 +390,8 @@ namespace aspect
          */
         void
         local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle);
+                               const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                               const typename ParticleHandler<dim>::particle_iterator &end_particle);
     };
 
     /* -------------------------- inline and template functions ---------------------- */
