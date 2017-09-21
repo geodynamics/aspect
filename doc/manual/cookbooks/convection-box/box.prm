@@ -79,13 +79,10 @@ subsection Boundary temperature model
 end
 
 
-# We then also have to prescribe several other parts of the model
-# such as which boundaries actually carry a prescribed boundary
-# temperature (as described in the documentation of the `box'
-# geometry, boundaries 2 and 3 are the bottom and top boundaries)
-# whereas all other parts of the boundary are insulated (i.e.,
-# no heat flux through these boundaries; this is also often used
-# to specify symmetry boundaries).
+# We then also have to prescribe several other parts of the model such as
+# which boundaries actually carry a prescribed boundary temperature, whereas
+# all other parts of the boundary are insulated (i.e., no heat flux through
+# these boundaries; this is also often used to specify symmetry boundaries).
 subsection Model settings
   set Fixed temperature boundary indicators   = bottom, top
 
@@ -109,22 +106,30 @@ subsection Gravity model
   set Model name = vertical
 
   subsection Vertical
-    set Magnitude = 1e14   # = Ra / Thermal expansion coefficient
+    set Magnitude = 1e4   # = Ra 
   end
 end
 
 
 subsection Material model
-  set Model name = simple # default:
+  set Model name = simple
 
   subsection Simple model
     set Reference density             = 1
     set Reference specific heat       = 1
     set Reference temperature         = 0
     set Thermal conductivity          = 1
-    set Thermal expansion coefficient = 1e-10
+    set Thermal expansion coefficient = 1
     set Viscosity                     = 1
   end
+end
+
+
+# We also have to specify that we want to use the Boussinesq
+# approximation (assuming the density in the temperature
+# equation to be constant, and incompressibility).
+subsection Formulation
+  set Formulation = Boussinesq approximation
 end
 
 

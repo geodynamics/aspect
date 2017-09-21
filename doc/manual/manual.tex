@@ -4212,7 +4212,7 @@ temperature. This leads to the following set of equations:
   & \qquad
   & \textrm{in $\Omega$},
   \\
-  \rho_0 (1-\alpha (T-T_0)) C_p \left(\frac{\partial T}{\partial t} + \mathbf
+  \rho_0 C_p \left(\frac{\partial T}{\partial t} + \mathbf
   u\cdot\nabla T\right) - \nabla\cdot k\nabla T
   &=
   0
@@ -4229,24 +4229,18 @@ setting coefficients in the following way:
   \rho_0=C_p=\kappa=\alpha=\eta=h=\Delta T=1, \qquad T_0=0, \qquad g=Ra,
 \end{align*}
 where $\mathbf g=-g \mathbf e_z$ is the gravity vector in negative
-$z$-direction. While this would be a valid description of the problem, it is not
-what one typically finds in the literature because there the density in the
-temperature equation is chosen as reference density $\rho_0$ rather than the 
-full density $\rho(1-\alpha(T-T_0))$
-as used by \aspect{}. However, we can mimic this by choosing a very small value
-for $\alpha$ -- small enough to ensure that for all reasonable temperatures,
-the density used here is equal to $\rho_0$ for all practical purposes --, and
-instead making $g$ correspondingly larger.
-Consequently, in this cookbook we will use the following set of parameters:
-\begin{align*}
-  \rho_0=C_p=\kappa=\eta=h=\Delta T=1, \qquad T_0=0, \qquad \alpha=10^{-10}, \qquad
-  g=10^{10} Ra.
-\end{align*}
+$z$-direction. 
 We will see all of these values again in the input file discussed below.
+One point to note is that for the Boussinesq approximation, as described above, the density 
+in the temperature equation is chosen as the reference density $\rho_0$ rather than the 
+full density $\rho(1-\alpha(T-T_0))$ as we see it in the buoyancy term on the right hand 
+side of the momentum equation. As \aspect{} is able to handle different approximations 
+of the equations (see Section \ref{sec:approximate-equations}), we also have to 
+specify in the input file that we want to use the Boussinesq approximation.
 The problem is completed by stating the velocity boundary conditions: tangential
 flow along all four of the boundaries of the box.
 
-This situation describes a well-known benchmark problems for which a lot is
+This situation describes a well-known benchmark problem for which a lot is
 known and against which we can compare our results. For example, the following
 is well understood:
 \begin{itemize}
@@ -4294,35 +4288,37 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+5 iterations.
+   Solving Stokes system... 31+0 iterations.
 
 [... ...]
 
-*** Timestep 1077:  t=0.499901 seconds
-   Solving temperature system... 9 iterations.
+*** Timestep 1085:  t=0.5 seconds
+   Solving temperature system... 0 iterations.
    Solving Stokes system... 5 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  43.1 m/s, 69.8 m/s
+     RMS, max velocity:                  43.5 m/s, 70.3 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 0.02056 W, -0.02061 W, -4.931 W, 4.931 W
+     Heat fluxes through boundary parts: 0.01977 W, -0.01977 W, -4.787 W, 4.787 W
 
+Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |       454s |            |
+| Total wallclock time elapsed since start    |      66.5s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |      1078 |      19.2s |       4.2% |
-| Assemble temperature system     |      1078 |       329s |        72% |
-| Build Stokes preconditioner     |         1 |    0.0995s |     0.022% |
-| Build temperature preconditioner|      1078 |      5.84s |       1.3% |
-| Solve Stokes system             |      1078 |      15.6s |       3.4% |
-| Solve temperature system        |      1078 |      3.72s |      0.82% |
-| Initialization                  |         2 |    0.0474s |      0.01% |
-| Postprocessing                  |      1078 |      61.9s |        14% |
-| Setup dof systems               |         1 |     0.221s |     0.049% |
+| Assemble Stokes system          |      1086 |      8.63s |        13% |
+| Assemble temperature system     |      1086 |        32s |        48% |
+| Build Stokes preconditioner     |         1 |    0.0225s |         0% |
+| Build temperature preconditioner|      1086 |      1.52s |       2.3% |
+| Solve Stokes system             |      1086 |       7.7s |        12% |
+| Solve temperature system        |      1086 |     0.729s |       1.1% |
+| Initialization                  |         1 |    0.0316s |         0% |
+| Postprocessing                  |      1086 |      7.76s |        12% |
+| Setup dof systems               |         1 |    0.0104s |         0% |
+| Setup initial conditions        |         1 |   0.00621s |         0% |
 +---------------------------------+-----------+------------+------------+
 \end{lstlisting}
 
@@ -4334,23 +4330,24 @@ time steps and at the end of the program:
 
 \begin{lstlisting}[frame=single,language=ksh]
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      48.3s |            |
+| Total wallclock time elapsed since start    |      25.8s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |      1078 |      1.68s |       3.5% |
-| Assemble temperature system     |      1078 |      26.3s |        54% |
-| Build Stokes preconditioner     |         1 |    0.0401s |     0.083% |
-| Build temperature preconditioner|      1078 |      4.87s |        10% |
-| Solve Stokes system             |      1078 |      6.76s |        14% |
-| Solve temperature system        |      1078 |      1.76s |       3.7% |
-| Initialization                  |         2 |    0.0241s |      0.05% |
-| Postprocessing                  |      1078 |      4.99s |        10% |
-| Setup dof systems               |         1 |    0.0394s |     0.082% |
+| Assemble Stokes system          |      1086 |      2.51s |       9.7% |
+| Assemble temperature system     |      1086 |      9.88s |        38% |
+| Build Stokes preconditioner     |         1 |    0.0271s |      0.11% |
+| Build temperature preconditioner|      1086 |      1.58s |       6.1% |
+| Solve Stokes system             |      1086 |      6.38s |        25% |
+| Solve temperature system        |      1086 |     0.542s |       2.1% |
+| Initialization                  |         1 |     0.219s |      0.85% |
+| Postprocessing                  |      1086 |      2.79s |        11% |
+| Setup dof systems               |         1 |      0.23s |      0.89% |
+| Setup initial conditions        |         1 |     0.107s |      0.41% |
 +---------------------------------+-----------+------------+------------+
 \end{lstlisting}
 
-In other words, the program ran about 10 times faster than before. Not all
+In other words, the program ran more than 2 times faster than before. Not all
 operations became faster to the same degree: assembly, for example, is an area
 that traverses a lot of code both in \aspect{} and in \dealii{} and so
 encounters a lot of verification code in debug mode. On the other hand, solving
@@ -4373,7 +4370,8 @@ discussion in Section~\ref{sec:viz} and use the default VTU output format to
 visualize using the Visit program.
 
 In the parameter file we have specified that graphical output should be
-generated every 0.01 time units. Looking through these output files, we find
+generated every 0.01 time units. Looking through these output files (which can
+be found in the folder \texttt{output-convection-box}, as specified in the input file), we find
 that the flow and temperature fields quickly converge to a stationary state.
 Fig.~\ref{fig:convection-box-fields} shows the initial and final states of this
 simulation.
@@ -4401,33 +4399,35 @@ looks like this for the current input file:
 \begin{lstlisting}[frame=single,language=prmfile]
 # 1: Time step number
 # 2: Time (seconds)
-# 3: Number of mesh cells
-# 4: Number of Stokes degrees of freedom
-# 5: Number of temperature degrees of freedom
-# 6: Iterations for temperature solver
-# 7: Iterations for Stokes solver
-# 8: Time step size (seconds)
-# 9: RMS velocity (m/s)
-# 10: Max. velocity (m/s)
-# 11: Minimal temperature (K)
-# 12: Average temperature (K)
-# 13: Maximal temperature (K)
-# 14: Average nondimensional temperature (K)
-# 15: Outward heat flux through boundary with indicator 0 (W)
-# 16: Outward heat flux through boundary with indicator 1 (W)
-# 17: Outward heat flux through boundary with indicator 2 (W)
-# 18: Outward heat flux through boundary with indicator 3 (W)
-# 19: Visualization file name
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: RMS velocity (m/s)
+# 12: Max. velocity (m/s)
+# 13: Minimal temperature (K)
+# 14: Average temperature (K)
+# 15: Maximal temperature (K)
+# 16: Average nondimensional temperature (K)
+# 17: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 18: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 19: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 20: Outward heat flux through boundary with indicator 3 ("top") (W)
+# 21: Visualization file name
 ... lots of numbers arranged in columns ...
 \end{lstlisting}
 
 Fig.~\ref{fig:convection-box-stats} shows the results of visualizing the data
-that can be found in columns 2 (the time) plotted against columns 9 and 10
+that can be found in columns 2 (the time) plotted against columns 11 and 12
 (root mean square and maximal velocities). Plots of this kind can be generated with
 \texttt{Gnuplot} by typing (see Section~\ref{sec:viz-stat} for a more thorough
 discussion):
 \begin{verbatim}
-  plot "output/statistics" using 2:9 with lines
+  plot "output-convection-box/statistics" using 2:11 with lines
 \end{verbatim}
 Fig.~\ref{fig:convection-box-stats} shows clearly that the simulation
 enters a steady state after about $t\approx 0.1$ and then changes very little. This can also be observed using the
@@ -4441,8 +4441,8 @@ $t\approx 0.2$, the fluxes differ by only $5\cdot 10^{-5}$, i.e., by less than
 0.001\% of their magnitude.%
 \footnote{This difference is far smaller than the numerical error in the heat
 flux on the mesh this data is computed on.}
-The flux we get at the last time step, 4.931, is less than 1\% away from the
-value reported in \cite{BBC89} although we compute on a $16\times 16$ mesh and
+The flux we get at the last time step, 4.787, is less than 2\% away from the
+value reported in \cite{BBC89} ($\approx$4.88) although we compute on a $16\times 16$ mesh and
 the values reported by Blankenbach are extrapolated from meshes of size up to
 $72\times 72$. This shows the accuracy that can be obtained using a higher order
 finite element. Secondly, the fluxes through the left and right boundary are not
@@ -4500,10 +4500,10 @@ pattern. On the other hand, for values $Ra<Ra_c\approx 780$, any movement of
 the fluid dies down exponentially and we end up with a situation where the fluid
 doesn't move and heat is transported from the bottom to the top only through
 heat conduction. This can be explained by considering that the Rayleigh number
-in a box of unit extent is defined as $Ra=\frac{g\alpha}{\eta k}$. A small
+in a box of unit extent is defined as $Ra=\frac{\rho_0 g\alpha\Delta T}{\eta k}$. A small
 Rayleigh number means that the viscosity is too large (i.e., the buoyancy given
-by the product of the magnitude of gravity times the thermal expansion
-coefficient is not strong enough to overcome friction forces within the fluid).
+by the product of the magnitude of gravity times the density anomalies caused by temperature
+-- $\rho_0 \alpha \Delta T$ -- is not strong enough to overcome friction forces within the fluid).
 
 On the other hand, if the Rayleigh number is large (i.e., the viscosity is
 small or the buoyancy large) then the fluid develops an unsteady convection
@@ -4550,8 +4550,8 @@ computation with $Ra=10^6$; it is obvious here that the flow no longer settles
 into a steady state but has a periodic behavior. This can also be seen by
 looking at movies of the solution.
 
-To generate these results, remember that we have chosen $\alpha=10^{-10}$ and
-$g=10^{10}Ra$ in our input file. In other words, changing the input file to
+To generate these results, remember that we have chosen 
+$g=Ra$ in our input file. In other words, changing the input file to
 contain the parameter setting
 %
 \lstinputlisting[language=prmfile]{cookbooks/convection-box/gravity.part.prm.out}
@@ -4562,7 +4562,7 @@ will achieve the desired effect of computing with $Ra=10^6$.
 \paragraph{Play time 2: Thinking about finer meshes.}
 In our computations for $Ra=10^4$ we used a $16\times 16$ mesh and obtained a
 value for the heat flux that differed from the generally accepted value from
-Blankenbach \textit{et al.} \cite{BBC89} by less than 1\%. However, it may be
+Blankenbach \textit{et al.} \cite{BBC89} by less than 2\%. However, it may be
 interesting to think about computing even more accurately. This is easily done
 by using a finer mesh, for example. In the parameter file above, we have chosen
 the mesh setting as follows:
@@ -4631,19 +4631,19 @@ indicating that the mesh before this refinement step may already have been fine
 enough to resolve the majority of the dynamics.
 
 In any case, we can compare the heat fluxes we obtain at the end of these
-computations: With a globally four times refined mesh, we get a value of 4.931
-(an error of approximately 1\% against the accepted value from Blankenbach,
-$4.884409\pm 0.00001$). With a globally five times refined mesh we get 4.914 (an
-error of 0.6\%) and with the mesh generated using the procedure above we get
-4.895 with the four digits printed on the screen%
+computations: With a globally four times refined mesh, we get a value of 4.787
+(an error of approximately 2\% against the accepted value from Blankenbach,
+$4.884409\pm 0.00001$). With a globally five times refined mesh we get 4.879, 
+and with a globally six times refined mesh we get 4.89 (an error of almost 0.1\%).
+With the mesh generated using the procedure above we also get
+4.89 with the digits printed on the screen%
 \footnote{The statistics file gives this
-value to more digits: 4.89488768. However, these are clearly more digits than
+value to more digits: 4.89008498. However, these are clearly more digits than
 the result is accurate.}
-(corresponding to an error of 0.2\%). In other words, our
-simple procedure of refining the mesh during the simulation run yields an
-accuracy of three times smaller than using the globally refined approach even
-though the compute time is not much larger than that necessary for the 5 times
-globally refined mesh.
+(also corresponding to an error of almost 0.1\%). In other words, our
+simple procedure of refining the mesh during the simulation run yields the same 
+accuracy as using the mesh that is globally refined in the beginning of the 
+simulation, while needing a much lower compute time.  
 
 
 \paragraph{Play time 3: Changing the finite element in use.}
@@ -4689,48 +4689,53 @@ Number of degrees of freedom: 4,868 (2,178+289+2,401)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+5 iterations.
+   Solving Stokes system... 30+0 iterations.
 
 [... ...]
 
-*** Timestep 1619:  t=0.499807 seconds
-   Solving temperature system... 8 iterations.
-   Solving Stokes system... 5 iterations.
+*** Timestep 1621:  t=0.5 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  42.9 m/s, 69.5 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: -0.004622 W, 0.004624 W, -4.878 W, 4.878 W
+     Heat fluxes through boundary parts: -0.004602 W, 0.004602 W, -4.849 W, 4.849 W
+
+Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |       127s |            |
+| Total wallclock time elapsed since start    |      53.6s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |      1620 |      3.03s |       2.4% |
-| Assemble temperature system     |      1620 |      75.7s |        60% |
-| Build Stokes preconditioner     |         1 |    0.0422s |     0.033% |
-| Build temperature preconditioner|      1620 |      21.7s |        17% |
-| Solve Stokes system             |      1620 |      10.3s |       8.1% |
-| Solve temperature system        |      1620 |       4.9s |       3.8% |
-| Initialization                  |         2 |    0.0246s |     0.019% |
-| Postprocessing                  |      1620 |      8.05s |       6.3% |
-| Setup dof systems               |         1 |    0.0438s |     0.034% |
+| Assemble Stokes system          |      1622 |      4.04s |       7.5% |
+| Assemble temperature system     |      1622 |      24.4s |        46% |
+| Build Stokes preconditioner     |         1 |    0.0121s |         0% |
+| Build temperature preconditioner|      1622 |      8.05s |        15% |
+| Solve Stokes system             |      1622 |      8.92s |        17% |
+| Solve temperature system        |      1622 |      1.67s |       3.1% |
+| Initialization                  |         1 |    0.0327s |         0% |
+| Postprocessing                  |      1622 |      4.27s |         8% |
+| Setup dof systems               |         1 |   0.00418s |         0% |
+| Setup initial conditions        |         1 |   0.00236s |         0% |
 +---------------------------------+-----------+------------+------------+
+
 \end{lstlisting}
 
-Note here that the heat flux through the top and bottom boundaries is now
-computed as 4.878, an error of 0.13\%. This is 4 times more accurate than the
+The heat flux through the top and bottom boundaries is now computed as 4.878.
+Using the five times globally refined mesh, it is 4.8837 (an error of 0.015\%). 
+This is 6 times more accurate than the 
 once more globally refined mesh with the original quadratic elements, at a cost
 significantly smaller. Furthermore, we can of course combine this with the mesh
 that is gradually refined as simulation time progresses, and we then get a heat
-flux that is equal to 4.8843, only 0.002\% away from the accepted value!
+flux that is equal to 4.884446, also only 0.01\% away from the accepted value!
 
 As a final remark, to test our hypothesis that it was indeed the temperature
 polynomial degree that was the limiting factor, we can increase the Stokes
 polynomial degree to 3 while leaving the temperature polynomial degree at 2. A
-quick computation shows that in that case we get a heat flux of 4.931 -- exactly
+quick computation shows that in that case we get a heat flux of 4.747 -- almost 
 the same value as we got initially with the lower order Stokes element. In other
 words, at least for this testcase, it really was the temperature variable that
 limits the accuracy.
