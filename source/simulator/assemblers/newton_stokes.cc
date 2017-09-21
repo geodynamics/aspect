@@ -153,6 +153,12 @@ namespace aspect
                   scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
                   scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
 
+#if debug
+                  // This is needed to test the velocity part of the matrix for
+                  // being symmetric positive-definite.
+                  scratch.dof_component_indices[i_stokes] = fe.system_to_component_index(i).first;
+#endif
+
                   ++i_stokes;
                 }
               ++i;
@@ -254,12 +260,13 @@ namespace aspect
           // the paper that discusses the Newton implementation
           {
             bool testing = true;
+
             for (unsigned int sample = 0; sample < 10; ++sample)
               {
                 Vector<double> tmp (stokes_dofs_per_cell);
 
                 for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                  if (scratch.finite_element_values.get_fe().system_to_component_index(i).first < dim)
+                  if (scratch.dof_component_indices[i] < dim)
                     tmp[i] = Utilities::generate_normal_random_number (0, 1);
 
                 const double abc =  data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp);
