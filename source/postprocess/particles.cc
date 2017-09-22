@@ -79,7 +79,7 @@ namespace aspect
         // Third build the actual patch data
         patches.resize(particle_handler.n_locally_owned_particles());
 
-        typename ParticleHandler<dim>::particle_iterator particle = particle_handler.begin();
+        typename Particle::ParticleHandler<dim>::particle_iterator particle = particle_handler.begin();
 
         for (unsigned int i=0; particle != particle_handler.end(); ++particle, ++i)
           {
