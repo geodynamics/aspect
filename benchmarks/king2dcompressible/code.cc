@@ -3,6 +3,7 @@
 #include <aspect/postprocess/interface.h>
 #include <aspect/material_model/simple.h>
 #include <aspect/boundary_temperature/interface.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <aspect/geometry_model/box.h>

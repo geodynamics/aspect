@@ -227,15 +227,12 @@ end
 
 subsection Material model
   #set Model name = simple compressible # default:
-  set Model name = Material
-  subsection Tan Gurnis model
+  set Model name = king material
+  subsection King model
     set Reference density             = 1
 
     # The value of the specific heat $cp$. Units: $J/kg/K$. => H
     set Reference specific heat       = 1   # ??
-
-    # The reference temperature $T_0$. Units: $K$.
-    set Reference temperature         = 0
 
     # The value of the constant viscosity. Units: $kg/m/s$.
     set Ra                     = 1e4
