@@ -30,7 +30,7 @@ namespace aspect
     {
       template <int dim>
       void
-      QuadraturePoints<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
+      QuadraturePoints<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles)
       {
         const QGauss<dim> quadrature_formula(this->get_parameters().stokes_velocity_degree + 1);
 
@@ -43,8 +43,11 @@ namespace aspect
                                 quadrature_formula,
                                 update_quadrature_points);
 
-
+#if DEAL_II_VERSION_GTE(9,0,0)
+        MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+#else
         MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, ASPECT_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+#endif
 
         particle_index = prefix_sum - n_particles_to_generate;
 
@@ -59,7 +62,7 @@ namespace aspect
                 for (unsigned int i = 0; i < quadrature_formula.size(); i++)
                   {
                     const Particle<dim> particle(fe_values.get_quadrature_points()[i], quadrature_formula.get_points()[i], particle_index);
-                    const types::LevelInd cell_index(cell->level(), cell->index());
+                    const Particles::internal::LevelInd cell_index(cell->level(), cell->index());
                     particles.insert(std::make_pair(cell_index, particle));
                     ++particle_index;
                   }

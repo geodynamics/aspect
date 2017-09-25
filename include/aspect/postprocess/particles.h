@@ -25,7 +25,12 @@
 #include <aspect/particle/world.h>
 
 #include <aspect/simulator_access.h>
+
+#if !DEAL_II_VERSION_GTE(9,0,0)
 #include <aspect/particle/particle.h>
+#else
+#include <deal.II/particles/particle_handler.h>
+#endif
 
 #include <deal.II/base/data_out_base.h>
 #include <tuple>

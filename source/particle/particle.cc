@@ -20,6 +20,8 @@
 
 #include <aspect/particle/particle.h>
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
+
 namespace aspect
 {
   namespace Particle
@@ -308,3 +310,4 @@ namespace aspect
   }
 }
 
+#endif

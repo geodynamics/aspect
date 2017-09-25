@@ -38,6 +38,8 @@
 
 #include <functional>
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
+
 namespace aspect
 {
   namespace Particle
@@ -81,7 +83,6 @@ namespace aspect
          */
         ParticleHandler(const parallel::distributed::Triangulation<dim,spacedim> &tria,
                         const Mapping<dim,spacedim> &mapping,
-                        const MPI_Comm mpi_communicator,
                         const unsigned int n_properties = 0);
 
         /**
@@ -96,7 +97,6 @@ namespace aspect
          */
         void initialize(const parallel::distributed::Triangulation<dim,spacedim> &tria,
                         const Mapping<dim,spacedim> &mapping,
-                        const MPI_Comm mpi_communicator,
                         const unsigned int n_properties = 0);
 
         /**
@@ -170,7 +170,16 @@ namespace aspect
          * Note that this function is of O(n_existing_particles + n_particles) complexity.
          */
         void
-        insert_particles(const std::multimap<types::LevelInd, Particle<dim,spacedim> > &particles);
+        insert_particles(const std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> > &particles);
+
+        /**
+         * Insert a number of particles into the collection of particles.
+         * This function involves a copy of the particles and their properties.
+         * Note that this function is of O(n_existing_particles + n_particles) complexity.
+         */
+        void
+        insert_particles(const std::multimap<typename Triangulation<dim,spacedim>::active_cell_iterator,
+                         Particle<dim,spacedim> > &particles);
 
         /**
          * This function allows to register three additional functions that are
@@ -222,9 +231,34 @@ namespace aspect
         types::particle_index n_locally_owned_particles() const;
 
         /**
+         * Return the number of particles in that cell of the global
+         * domain that has the highest number of particles.
+         */
+        unsigned int n_global_max_particles_per_cell() const;
+
+        /**
+         * Return the number of particles in the local part of the
+         * triangulation.
+         */
+        types::particle_index get_next_free_particle_index() const;
+
+        /**
          * Return the number of properties each particle has.
          */
         unsigned int n_properties_per_particle() const;
+
+        /**
+         * This functions updates all cached numbers, e.g. the ones
+         * returned by the n_... functions. These numbers need to be
+         * updated every time the particle organization has changed.
+         * Since the update involves communication it is only done
+         * automatically by every function that acts on the whole particle
+         * collection after finishing. Functions that act on individual particles
+         * like insert_particle and remove_particle do not call this function
+         * and therefore the user is responsible for calling this function
+         * after finishing the operation.
+         */
+        void update_cached_numbers();
 
         /**
          * Return a reference to the property pool that owns all particle
@@ -296,22 +330,17 @@ namespace aspect
         SmartPointer<const Mapping<dim,spacedim>,ParticleHandler<dim,spacedim> > mapping;
 
         /**
-         * MPI communicator.
-         */
-        MPI_Comm mpi_communicator;
-
-        /**
          * Set of particles currently in the local domain, organized by
          * the level/index of the cell they are in.
          */
-        std::multimap<types::LevelInd, Particle<dim,spacedim> > particles;
+        std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> > particles;
 
         /**
          * Set of particles currently in the ghost cells of the local domain,
          * organized by the level/index of the cell they are in. These
          * particles are marked read-only.
          */
-        std::multimap<types::LevelInd, Particle<dim,spacedim> > ghost_particles;
+        std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> > ghost_particles;
 
         /**
          * This variable stores how many particles are stored globally. It is
@@ -436,10 +465,8 @@ namespace aspect
          */
         void
         send_recv_particles(const std::vector<std::vector<particle_iterator> > &particles_to_send,
-                            std::multimap<types::LevelInd,Particle <dim> >     &received_particles,
+                            std::multimap<Particles::internal::LevelInd,Particle <dim> >     &received_particles,
                             const std::vector<std::vector<active_cell_it> >    &new_cells_for_particles = std::vector<std::vector<active_cell_it> > ());
-
-
 
         /**
          * Callback function that should be called before every
@@ -511,4 +538,5 @@ namespace aspect
   }
 }
 
+#endif
 #endif

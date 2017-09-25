@@ -48,7 +48,7 @@ namespace aspect
       }
 
       template <int dim>
-      std::pair<types::LevelInd,Particle<dim> >
+      std::pair<Particles::internal::LevelInd,Particle<dim> >
       Interface<dim>::generate_particle(const Point<dim> &position,
                                         const types::particle_index id) const
       {
@@ -66,7 +66,7 @@ namespace aspect
                         ExcParticlePointNotInDomain());
 
             const Particle<dim> particle(position, it.second, id);
-            const types::LevelInd cell(it.first->level(), it.first->index());
+            const Particles::internal::LevelInd cell(it.first->level(), it.first->index());
             return std::make_pair(cell,particle);
           }
         catch (GridTools::ExcPointNotFound<dim> &)
@@ -76,11 +76,11 @@ namespace aspect
           }
 
         // Avoid warnings about missing return
-        return std::pair<types::LevelInd,Particle<dim> >();
+        return std::pair<Particles::internal::LevelInd,Particle<dim> >();
       }
 
       template <int dim>
-      std::pair<types::LevelInd,Particle<dim> >
+      std::pair<Particles::internal::LevelInd,Particle<dim> >
       Interface<dim>::generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
                                          const types::particle_index id)
       {
@@ -124,7 +124,7 @@ namespace aspect
                   {
                     // Add the generated particle to the set
                     const Particle<dim> new_particle(particle_position, p_unit, id);
-                    const types::LevelInd cellid(cell->level(), cell->index());
+                    const Particles::internal::LevelInd cellid(cell->level(), cell->index());
                     return std::make_pair(cellid,new_particle);
                   }
               }
@@ -140,7 +140,7 @@ namespace aspect
                                  "generated and the actual cell volume is approximately: " +
                                  boost::lexical_cast<std::string>(cell->measure() / (max_bounds-min_bounds).norm_square())));
 
-        return std::make_pair(types::LevelInd(),Particle<dim>());
+        return std::make_pair(Particles::internal::LevelInd(),Particle<dim>());
       }
 
       template <int dim>

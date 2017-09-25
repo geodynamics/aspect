@@ -31,7 +31,7 @@ namespace aspect
     {
       template <int dim>
       void
-      UniformRadial<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
+      UniformRadial<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles)
       {
         // Create the array of shell to deal with
         const double radial_spacing = (P_max[0] - P_min[0]) / fmax(radial_layers-1,1);

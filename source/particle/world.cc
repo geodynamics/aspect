@@ -63,7 +63,6 @@ namespace aspect
       // later with its serialized variables and stored particles
       particle_handler = std_cxx14::make_unique<ParticleHandler<dim>>(this->get_triangulation(),
                                                                       this->get_mapping(),
-                                                                      this->get_mpi_communicator(),
                                                                       property_manager->get_n_property_components());
 
       auto size_callback_function
@@ -115,6 +114,7 @@ namespace aspect
       return *interpolator;
     }
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
     template <int dim>
     std::string
     World<dim>::generate_output() const
@@ -135,6 +135,7 @@ namespace aspect
 
       return filename;
     }
+#endif
 
     template <int dim>
     types::particle_index
@@ -157,7 +158,11 @@ namespace aspect
       signals.pre_refinement_store_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
       {
+#if !DEAL_II_VERSION_GTE(9,1,0)
         particle_handler->register_store_callback_function(false);
+#else
+        particle_handler->register_store_callback_function();
+#endif
       });
 
       signals.post_refinement_load_user_data.connect(
@@ -169,7 +174,11 @@ namespace aspect
       signals.pre_checkpoint_store_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
       {
-        particle_handler->register_store_callback_function(true);
+#if !DEAL_II_VERSION_GTE(9,1,0)
+        particle_handler->register_store_callback_function(false);
+#else
+        particle_handler->register_store_callback_function();
+#endif
       });
 
       signals.post_resume_load_user_data.connect(
@@ -216,7 +225,8 @@ namespace aspect
           // generate so that they are globally unique.
           // Ensure this by communicating the number of particles that every
           // process is going to generate.
-          types::particle_index local_next_particle_index = particle_handler->next_free_particle_index;
+          particle_handler->update_cached_numbers();
+          types::particle_index local_next_particle_index = particle_handler->get_next_free_particle_index();
           if (particle_load_balancing & ParticleLoadBalancing::add_particles)
             {
               types::particle_index particles_to_add_locally = 0;
@@ -241,21 +251,25 @@ namespace aspect
               // processes with a lower rank.
 
               types::particle_index local_start_index = 0.0;
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+              MPI_Scan(&particles_to_add_locally, &local_start_index, 1, PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+#else
               MPI_Scan(&particles_to_add_locally, &local_start_index, 1, ASPECT_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+#endif
+
               local_start_index -= particles_to_add_locally;
               local_next_particle_index += local_start_index;
 
               const types::particle_index globally_generated_particles =
                 dealii::Utilities::MPI::sum(particles_to_add_locally,this->get_mpi_communicator());
 
-              AssertThrow (particle_handler->next_free_particle_index
+              AssertThrow (particle_handler->get_next_free_particle_index()
                            <= std::numeric_limits<types::particle_index>::max() - globally_generated_particles,
                            ExcMessage("There is no free particle index left to generate a new particle id. Please check if your "
                                       "model generates unusually many new particles (by repeatedly deleting and regenerating particles), or "
                                       "recompile deal.II with the DEAL_II_WITH_64BIT_INDICES option enabled, to use 64-bit integers for "
                                       "particle ids."));
-
-              particle_handler->next_free_particle_index += globally_generated_particles;
             }
 
           boost::mt19937 random_number_generator;
@@ -276,7 +290,7 @@ namespace aspect
                   {
                     for (unsigned int i = n_particles_in_cell; i < min_particles_per_cell; ++i,++local_next_particle_index)
                       {
-                        std::pair<aspect::Particle::types::LevelInd,Particle<dim> > new_particle = generator->generate_particle(cell,local_next_particle_index);
+                        std::pair<aspect::Particles::internal::LevelInd,Particle<dim> > new_particle = generator->generate_particle(cell,local_next_particle_index);
 
                         const std::vector<double> particle_properties =
                           property_manager->initialize_late_particle(new_particle.second.get_location(),
@@ -324,7 +338,7 @@ namespace aspect
                   }
               }
 
-          particle_handler->update_n_global_particles();
+          particle_handler->update_cached_numbers();
         }
     }
 
@@ -585,12 +599,19 @@ namespace aspect
     {
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Generate");
 
-      std::multimap<types::LevelInd, Particle<dim> > particles;
+      std::multimap<Particles::internal::LevelInd, Particle<dim> > particles;
       generator->generate_particles(particles);
-      particle_handler->insert_particles(particles);
 
-      particle_handler->update_n_global_particles();
-      particle_handler->update_next_free_particle_index();
+      std::multimap<typename Triangulation<dim>::active_cell_iterator, Particle<dim> > new_particles;
+
+      for (typename std::multimap<Particles::internal::LevelInd, Particle<dim> >::const_iterator particle = particles.begin();
+           particle != particles.end(); ++particle)
+        new_particles.insert(new_particles.end(),
+                             std::make_pair(typename Triangulation<dim>::active_cell_iterator(&this->get_triangulation(),
+                                            particle->first.first,particle->first.second),
+                                            particle->second));
+
+      particle_handler->insert_particles(new_particles);
     }
 
     template <int dim>
@@ -722,9 +743,6 @@ namespace aspect
       // Update particle properties
       if (property_manager->need_update() == Property::update_time_step)
         update_particles();
-
-      // Update the number of global particles if some have left the domain
-      particle_handler->update_n_global_particles();
 
       // Now that all particle information was updated, exchange the new
       // ghost particles.

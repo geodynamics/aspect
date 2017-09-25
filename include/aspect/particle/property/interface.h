@@ -21,13 +21,22 @@
 #ifndef _aspect_particle_property_interface_h
 #define _aspect_particle_property_interface_h
 
+#include <aspect/global.h>
+#include <aspect/plugins.h>
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+#include <deal.II/particles/particle.h>
+#include <deal.II/particles/particle_handler.h>
+#include <deal.II/particles/property_pool.h>
+#else
 #include <aspect/particle/particle.h>
 #include <aspect/particle/particle_handler.h>
-#include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/property_pool.h>
+#endif
+
+#include <aspect/particle/interpolator/interface.h>
 
 #include <aspect/simulator_access.h>
-#include <aspect/plugins.h>
 
 #include <memory>
 #include <deal.II/fe/fe_update_flags.h>
@@ -38,6 +47,10 @@ namespace aspect
   {
     namespace Property
     {
+#if DEAL_II_VERSION_GTE(9,0,0)
+      using namespace dealii::Particles;
+#endif
+
       /**
        * This class is used to store all the necessary information to translate
        * between the data structure of the particle properties (a flat vector of

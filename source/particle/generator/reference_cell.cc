@@ -30,14 +30,18 @@ namespace aspect
     {
       template <int dim>
       void
-      ReferenceCell<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
+      ReferenceCell<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles)
       {
         const std::vector<Point<dim> > particles_in_unit_cell = generate_particle_positions_in_unit_cell();
 
         types::particle_index n_particles_to_generate = this->get_triangulation().n_locally_owned_active_cells() * particles_in_unit_cell.size();
         types::particle_index prefix_sum = 0;
 
+#if DEAL_II_VERSION_GTE(9,0,0)
+        MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+#else
         MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, ASPECT_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+#endif
 
         types::particle_index particle_index = prefix_sum - n_particles_to_generate;
 
@@ -55,7 +59,7 @@ namespace aspect
                     const Point<dim> position_real = this->get_mapping().transform_unit_to_real_cell(cell,
                                                      *itr_particles_in_unit_cell);
                     const Particle<dim> particle(position_real, *itr_particles_in_unit_cell, particle_index);
-                    const types::LevelInd cell_index(cell->level(), cell->index());
+                    const Particles::internal::LevelInd cell_index(cell->level(), cell->index());
                     particles.insert(std::make_pair(cell_index, particle));
                     ++particle_index;
                   }

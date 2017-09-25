@@ -18,11 +18,14 @@
  <http://www.gnu.org/licenses/>.
  */
 
+
 #include <aspect/particle/output/hdf5.h>
 #include <aspect/utilities.h>
 
 #include <deal.II/numerics/data_out.h>
 #include <deal.II/base/utilities.h>
+
+#if !DEAL_II_VERSION_GTE(9,0,0)
 
 #ifdef DEAL_II_WITH_HDF5
 #include <hdf5.h>
@@ -348,3 +351,4 @@ namespace aspect
   }
 }
 
+#endif

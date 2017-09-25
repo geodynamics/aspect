@@ -86,7 +86,7 @@ namespace aspect
            */
           virtual
           void
-          generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles);
+          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles);
 
           /**
            * Declare the parameters this class takes through input files.
@@ -155,7 +155,7 @@ namespace aspect
           generate_particles_in_subdomain (const std::vector<unsigned int> &particles_per_cell,
                                            const types::particle_index local_start_id,
                                            const types::particle_index n_local_particles,
-                                           std::multimap<types::LevelInd, Particle<dim> > &particles);
+                                           std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles);
 
           /**
            * This function loops over all active cells in the local subdomain
