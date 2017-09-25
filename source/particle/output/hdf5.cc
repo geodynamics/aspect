@@ -293,7 +293,7 @@ namespace aspect
         return output_path_prefix;
 #else
         (void) property_information;
-        (void) particles;
+        (void) particle_handler;
         (void) current_time;
         return "";
 #endif
