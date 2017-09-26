@@ -129,6 +129,7 @@ namespace aspect
           grads_phi_u (stokes_dofs_per_cell, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
           div_phi_u (stokes_dofs_per_cell, numbers::signaling_nan<double>()),
           velocity_values (quadrature.size(), numbers::signaling_nan<Tensor<1,dim> >()),
+          velocity_divergence (quadrature.size(), numbers::signaling_nan<double>()),
           face_material_model_inputs(face_quadrature.size(), n_compositional_fields),
           face_material_model_outputs(face_quadrature.size(), n_compositional_fields),
           reference_densities(use_reference_density_profile ? quadrature.size() : 0, numbers::signaling_nan<double>()),
@@ -152,6 +153,7 @@ namespace aspect
           grads_phi_u (scratch.grads_phi_u),
           div_phi_u (scratch.div_phi_u),
           velocity_values (scratch.velocity_values),
+          velocity_divergence (scratch.velocity_divergence),
           face_material_model_inputs(scratch.face_material_model_inputs),
           face_material_model_outputs(scratch.face_material_model_outputs),
           reference_densities(scratch.reference_densities),
@@ -663,8 +665,7 @@ namespace aspect
                                 std_cxx11::cref (*newton_stokes_assembler),
                                 std_cxx11::_1,
                                 std_cxx11::_2,
-                                std_cxx11::_3,
-                                std_cxx11::cref (this->parameters)));
+                                std_cxx11::_3));
     else
       assemblers->local_assemble_stokes_preconditioner
       .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::preconditioner,
@@ -691,8 +692,7 @@ namespace aspect
                                   std_cxx11::_2,
                                   std_cxx11::_3,
                                   std_cxx11::_4,
-                                  std_cxx11::_5,
-                                  std_cxx11::cref (this->parameters)));
+                                  std_cxx11::_5));
 
         if (material_model->is_compressible())
           assemblers->local_assemble_stokes_system
@@ -702,8 +702,7 @@ namespace aspect
                                     std_cxx11::_2,
                                     std_cxx11::_3,
                                     std_cxx11::_4,
-                                    std_cxx11::_5,
-                                    std_cxx11::cref (this->parameters)));
+                                    std_cxx11::_5));
 
         if (parameters.formulation_mass_conservation ==
             Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
@@ -1207,6 +1206,8 @@ namespace aspect
 
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.velocity_values);
+    if (assemble_newton_stokes_system)
+      scratch.finite_element_values[introspection.extractors.velocities].get_function_divergences(current_linearization_point,scratch.velocity_divergence);
 
     const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile)
                                                || (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile);
@@ -1219,9 +1220,11 @@ namespace aspect
           }
       }
 
+
     // trigger the invocation of the various functions that actually do
     // all of the assembling
-    assemblers->local_assemble_stokes_system(cell, pressure_scaling, rebuild_stokes_matrix,
+    assemblers->local_assemble_stokes_system(cell, pressure_scaling,
+                                             (!assemble_newton_stokes_system && rebuild_stokes_matrix) || (assemble_newton_stokes_system && assemble_newton_stokes_matrix),
                                              scratch, data);
 
     // then also work on possible face terms. if necessary, initialize
@@ -1262,7 +1265,8 @@ namespace aspect
             }
 
           assemblers->local_assemble_stokes_system_on_boundary_face(cell, face_no,
-                                                                    pressure_scaling, rebuild_stokes_matrix,
+                                                                    pressure_scaling,
+                                                                    (!assemble_newton_stokes_system && rebuild_stokes_matrix) || (assemble_newton_stokes_system && assemble_newton_stokes_matrix),
                                                                     scratch, data);
         }
   }
@@ -1300,7 +1304,7 @@ namespace aspect
       computing_timer.enter_section ("   Assemble Stokes system");
     else if (assemble_newton_stokes_matrix)
       {
-        if (parameters.newton_theta == 0)
+        if (newton_handler->get_newton_derivative_scaling_factor() == 0)
           computing_timer.enter_section ("   Assemble Stokes system picard");
         else
           computing_timer.enter_section ("   Assemble Stokes system newton");

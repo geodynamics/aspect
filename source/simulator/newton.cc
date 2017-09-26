@@ -40,7 +40,6 @@ namespace aspect
   }
 
 
-
   template <int dim>
   void
   NewtonHandler<dim>::
@@ -53,6 +52,24 @@ namespace aspect
     output.additional_outputs.push_back(
       std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
       (new MaterialModel::MaterialModelDerivatives<dim> (n_points)));
+  }
+
+
+  template <int dim>
+  double
+  NewtonHandler<dim>::
+  get_newton_derivative_scaling_factor() const
+  {
+    return newton_derivative_scaling_factor;
+  }
+
+
+  template <int dim>
+  void
+  NewtonHandler<dim>::
+  set_newton_derivative_scaling_factor(const double set_newton_derivative_scaling_factor)
+  {
+    newton_derivative_scaling_factor = set_newton_derivative_scaling_factor;
   }
 }
 

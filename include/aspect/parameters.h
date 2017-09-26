@@ -68,6 +68,7 @@ namespace aspect
         iterated_IMPES,
         iterated_Stokes,
         Stokes_only,
+        Newton_Stokes,
         Advection_only
       };
     };
@@ -333,12 +334,9 @@ namespace aspect
     bool                           use_operator_splitting;
     unsigned int                   max_pre_newton_nonlinear_iterations;
     unsigned int                   max_newton_line_search_iterations;
-    double                         switch_initial_newton_residual;
-    double                         minimum_linear_stokes_solver_tolerance;
+    bool                           use_newton_residual_scaling_method;
+    double                         maximum_linear_stokes_solver_tolerance;
 
-    // possibly find a better place for these variables
-    double                         newton_theta;
-    double                         newton_residual;
     /**
      * @}
      */

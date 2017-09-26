@@ -105,6 +105,7 @@ namespace aspect
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
           std::vector<double>                  div_phi_u;
           std::vector<Tensor<1,dim> >          velocity_values;
+          std::vector<double>                  velocity_divergence;
 
           /**
            * Material model inputs and outputs computed at the current

@@ -77,6 +77,9 @@ namespace aspect
   class MeltHandler;
 
   template <int dim>
+  class NewtonHandler;
+
+  template <int dim>
   class FreeSurfaceHandler;
 
   namespace internal
@@ -1220,6 +1223,27 @@ namespace aspect
       check_consistency_of_formulation ();
 
       /**
+       * Computes the initial Newton residual.
+       */
+      double
+      compute_initial_newton_residual (LinearAlgebra::BlockVector &linearized_stokes_initial_guess);
+
+      /**
+       * This function computes the Eisenstat Walker linear tolerance used for the Newton Stokes solver.
+       * The Eisenstat and Walker (1996) method is used for determining the linear tolerance of
+       * the iteration after the first iteration. The paper gives two preferred choices of computing
+       * this tolerance. Both choices are implemented here with the suggested parameter values and
+       * safeguards.
+       */
+      double
+      compute_Eisenstat_Walker_linear_tolerance(const bool EisenstatWalkerChoiceOne,
+                                                const double maximum_linear_stokes_solver_tolerance,
+                                                const double linear_stokes_solver_tolerance,
+                                                const double stokes_residual,
+                                                const double newton_residual,
+                                                const double newton_residual_old);
+
+      /**
        * This function is called at the end of each time step and writes the
        * statistics object that contains data like the current time, the
        * number of linear solver iterations, and whatever the postprocessors
@@ -1261,6 +1285,13 @@ namespace aspect
        * not even allocate it.
        */
       std_cxx11::unique_ptr<MeltHandler<dim> > melt_handler;
+
+      /**
+       * Unique pointer for an instance of the NewtonHandler. This way,
+       * if we do not need the machinery for doing Newton stuff, we do
+       * not even allocate it.
+       */
+      std_cxx11::unique_ptr<NewtonHandler<dim> > newton_handler;
 
       SimulatorSignals<dim>               signals;
       const IntermediaryConstructorAction post_signal_creation;

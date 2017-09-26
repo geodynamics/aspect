@@ -71,6 +71,43 @@ namespace aspect
        * Newton solver.
        */
       static void create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output);
+
+      /**
+       * Return the Newton derivative scaling factor used for scaling the
+       * derivative part of the Newton Stokes solver in the assembly.
+       *
+       * The exact Newton matrix consists of the Stokes matrix plus a term
+       * that results from the linearization of the material coefficients.
+       * The scaling factor multiplies these additional terms. In a full
+       * Newton method, it would be equal to one, but it can be chosen
+       * smaller in cases where the resulting linear system has undesirable
+       * properties.
+       *
+       * If the scaling factor is zero, the resulting matrix is simply the
+       * Stokes matrix, and the resulting scheme is a defect correction
+       * (i.e., Picard iteration).
+       */
+      double get_newton_derivative_scaling_factor() const;
+
+      /**
+       * Set the Newton derivative scaling factor used for scaling the
+       * derivative part of the Newton Stokes solver in the assembly.
+       *
+       * See the get_newton_derivative_scaling_factor() function for an
+       * explanation of the purpose of this factor.
+       */
+      void set_newton_derivative_scaling_factor(const double newton_derivative_scaling_factor);
+
+
+    private:
+      /**
+       * A scaling factor for those terms of the Newton matrix that
+       * result from the linearization of the viscosity.
+       *
+       * See the get_newton_derivative_scaling_factor() function for an
+       * explanation of the purpose of this factor.
+       */
+      double newton_derivative_scaling_factor;
   };
 
   namespace Assemblers
@@ -89,8 +126,7 @@ namespace aspect
         void
         preconditioner (const double                                             pressure_scaling,
                         internal::Assembly::Scratch::StokesPreconditioner<dim>  &scratch,
-                        internal::Assembly::CopyData::StokesPreconditioner<dim> &data,
-                        const Parameters<dim> &parameters) const;
+                        internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const;
 
         /**
          * This function assembles the terms for the matrix and right-hand-side of the incompressible
@@ -100,8 +136,7 @@ namespace aspect
         incompressible_terms (const double                                     pressure_scaling,
                               const bool                                       rebuild_stokes_matrix,
                               internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                              internal::Assembly::CopyData::StokesSystem<dim> &data,
-                              const Parameters<dim> &parameters) const;
+                              internal::Assembly::CopyData::StokesSystem<dim> &data) const;
 
         /**
          * This function assembles the term that arises in the viscosity term of Newton Stokes matrix for
@@ -111,8 +146,7 @@ namespace aspect
         compressible_strain_rate_viscosity_term (const double                                     pressure_scaling,
                                                  const bool                                       rebuild_stokes_matrix,
                                                  internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                                 internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                                 const Parameters<dim> &parameters) const;
+                                                 internal::Assembly::CopyData::StokesSystem<dim> &data) const;
 
         /**
          * This function assembles the right-hand-side term of the Newton Stokes system
