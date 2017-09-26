@@ -639,7 +639,8 @@ namespace aspect
       get_melt_handler () const;
 
       /**
-       * Return a reference to the newton handler.
+       * Return a reference to the Newton handler that controls the Newton
+       * iteration to resolve nonlinearities.
        */
       const NewtonHandler<dim> &
       get_newton_handler () const;
