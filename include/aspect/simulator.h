@@ -1260,7 +1260,7 @@ namespace aspect
        * if we do not need the machinery for doing melt stuff, we do
        * not even allocate it.
        */
-      std_cxx11::shared_ptr<MeltHandler<dim> > melt_handler;
+      std_cxx11::unique_ptr<MeltHandler<dim> > melt_handler;
 
       SimulatorSignals<dim>               signals;
       const IntermediaryConstructorAction post_signal_creation;
