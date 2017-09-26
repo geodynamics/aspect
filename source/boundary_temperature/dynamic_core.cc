@@ -43,7 +43,7 @@ namespace aspect
     double
     DynamicCore<dim>::
     boundary_temperature (const types::boundary_id            boundary_indicator,
-                          const Point<dim>                    &location) const
+                          const Point<dim>                    &/*location*/) const
     {
       const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
       // verify that the geometry is in fact a spherical shell since only
@@ -70,7 +70,7 @@ namespace aspect
     template <int dim>
     double
     DynamicCore<dim>::
-    minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
+    minimal_temperature (const std::set<types::boundary_id> &/*fixed_boundary_ids*/) const
     {
       return std::min (inner_temperature, outer_temperature);
     }
@@ -80,7 +80,7 @@ namespace aspect
     template <int dim>
     double
     DynamicCore<dim>::
-    maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
+    maximal_temperature (const std::set<types::boundary_id> &/*fixed_boundary_ids*/) const
     {
       return std::max (inner_temperature, outer_temperature);
     }
@@ -480,6 +480,8 @@ namespace aspect
                            <<"Q_CMB="<<core_data.Q<<std::endl;
           AssertThrow(false, ExcMessage("[Dynamic core] No inner core radius solution found!"));
         }
+
+      return false;
     }
 
     template <int dim>

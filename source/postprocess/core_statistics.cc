@@ -45,11 +45,14 @@ namespace aspect
       // now add all of the computed heat fluxes to the statistics object
       // and create a single string that can be output to the screen
       std::ostringstream screen_text;
+
       const BoundaryTemperature::DynamicCore<dim> *dynamic_core =
-        dynamic_cast<const BoundaryTemperature::DynamicCore<dim>*> (&(SimulatorAccess<dim>::get_boundary_temperature()));
-      AssertThrow (dynamic_core != NULL
-                   !=0,
-                   ExcMessage ("Core statistics has to be working with dynamic core boundary conditions."));
+        this->get_boundary_temperature_manager().template find_boundary_temperature_model<BoundaryTemperature::DynamicCore<dim> >();
+
+      AssertThrow(dynamic_core != NULL,
+                  ExcMessage("Could not find the dynamic core temperature boundary conditions. "
+                             "Perhaps you forgot to include it?"));
+
       core_data = dynamic_core->get_core_data();
 
       // now add core mantle boundary heat flux to the statistics object
