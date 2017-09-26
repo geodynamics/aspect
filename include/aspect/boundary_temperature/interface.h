@@ -310,7 +310,7 @@ namespace aspect
     BoundaryTemperatureType *
     Manager<dim>::find_boundary_temperature_model () const
     {
-      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            p = boundary_temperature_objects.begin();
            p != boundary_temperature_objects.end(); ++p)
         if (BoundaryTemperatureType *x = dynamic_cast<BoundaryTemperatureType *> ( (*p).get()) )
