@@ -2308,7 +2308,8 @@ namespace aspect
                                     linearized_stokes_initial_guess,
                                     current_linearization_point);
 
-              compute_current_constraints ();
+              if (nonlinear_iteration <= 1)
+                compute_current_constraints ();
 
               // the Stokes matrix depends on the viscosity. if the viscosity
               // depends on other solution variables, then after we need to
