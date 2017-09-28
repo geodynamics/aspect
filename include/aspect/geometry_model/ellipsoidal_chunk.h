@@ -239,6 +239,31 @@ namespace aspect
         virtual std::map<std::string,types::boundary_id>
         get_symbolic_boundary_names_map() const;
 
+        /*
+         * Returns what the natural coordinate system for this geometry model is,
+         * which for a Ellipsoidal chunk is Ellisoidal.
+         */
+        virtual
+        aspect::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const;
+
+        /**
+         * Takes the Cartesian points (x,z or x,y,z) and returns standardized
+         * coordinates which are most 'natural' to the geometry model. For a
+         * ellispoidal chunk this is (radius, longitude) in 2d and (radius,
+         * longitude, latitude) in 3d. Note that internally the coordinates are
+         * stored in longitude, latitude, depth.
+         */
+        virtual
+        std_cxx11::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const;
+
+        /**
+         * Undoes the action of cartesian_to_natural_coordinates, and turns the
+         * coordinate system which is most 'natural' to the geometry model into
+         * Cartesian coordinates.
+         */
+        virtual
+        Point<dim> natural_to_cartesian_coordinates(const std_cxx11::array<double,dim> &position) const;
+
         /**
          * Declare the parameters this class takes through input files.
          */
