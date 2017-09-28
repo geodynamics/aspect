@@ -266,8 +266,16 @@ namespace aspect
                 Vector<double> tmp (stokes_dofs_per_cell);
 
                 for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                  if (scratch.dof_component_indices[i] < dim)
-                    tmp[i] = Utilities::generate_normal_random_number (0, 1);
+                  if (i > 18)
+                    {
+                      if (scratch.dof_component_indices[i] < dim)
+                        tmp[i] = Utilities::generate_normal_random_number (0, 1);
+                    }
+                  else
+                    {
+                      if (scratch.dof_component_indices[i] < dim)
+                        tmp[i] = 0;
+                    }
 
                 const double abc =  data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp);
                 if (abc < -1e-12*data.local_matrix.frobenius_norm())
