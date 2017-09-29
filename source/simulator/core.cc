@@ -2195,7 +2195,7 @@ namespace aspect
 
           std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
 
-          double initial_residual = 0;
+          double initial_residual = 1;
 
           double velocity_residual = 0;
           double pressure_residual = 0;
@@ -2251,7 +2251,7 @@ namespace aspect
                 current_linearization_point.block(introspection.block_indices.compositional_fields[c])
                   = solution.block(introspection.block_indices.compositional_fields[c]);
 
-              if (use_picard == true && (residual <= parameters.nonlinear_switch_tolerance ||
+              if (use_picard == true && (residual/initial_residual <= parameters.nonlinear_switch_tolerance ||
                                          nonlinear_iteration >= parameters.max_pre_newton_nonlinear_iterations))
                 {
                   use_picard = false;
