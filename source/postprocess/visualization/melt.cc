@@ -107,6 +107,9 @@ namespace aspect
         // Set use_strain_rates to false since we have no need for viscosity.
         MaterialModel::MaterialModelInputs<dim> in(input_data,
                                                    this->introspection(), false);
+        typename DoFHandler<dim>::active_cell_iterator cell = input_data.template get_cell<DoFHandler<dim> >();
+        in.cell = &cell;
+
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
         MeltHandler<dim>::create_material_model_outputs(out);
 
@@ -116,7 +119,8 @@ namespace aspect
                     ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
 
         const double ref_K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->reference_darcy_coefficient();
-        const double K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->darcy_coefficient(out);
+        const double K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->darcy_coefficient(in, out, this->get_melt_handler(), true);
+        const double K_D_no_cut = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->darcy_coefficient(in, out, this->get_melt_handler(), false);
         const double p_c_scale = std::sqrt(K_D / ref_K_D);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
@@ -146,8 +150,18 @@ namespace aspect
                     const double p_c_bar = input_data.solution_values[q][pc_comp_idx];
 
                     computed_quantities[q][output_index] = p_c_scale * p_c_bar;
-
-
+                  }
+                else if (property_names[i] == "darcy coefficient")
+                  {
+                    computed_quantities[q][output_index] = K_D;
+                  }
+                else if (property_names[i] == "darcy coefficient no cutoff")
+                  {
+                    computed_quantities[q][output_index] = K_D_no_cut;
+                  }
+                else if (property_names[i] == "is melt cell")
+                  {
+                    computed_quantities[q][output_index] = this->get_melt_handler().is_melt_cell(cell)? 1.0 : 0.0;
                   }
                 else
                   AssertThrow(false, ExcNotImplemented());
@@ -167,7 +181,8 @@ namespace aspect
             {
               const std::string pattern_of_names
                 = "compaction viscosity|fluid viscosity|permeability|"
-                  "fluid density|fluid density gradient|p_c";
+                  "fluid density|fluid density gradient|p_c|is melt cell|"
+                  "darcy coefficient|darcy coefficient no cutoff";
 
               prm.declare_entry("List of properties",
                                 "compaction viscosity,permeability,p_c",
