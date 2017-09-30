@@ -1,6 +1,3 @@
-// note: with new formulation this test no longer makes sense, because
-// it has div u != 0, even though K_d=0, so we enforce (incorrectly) p_c = 0
-
 #include <aspect/melt.h>
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/boundary_fluid_pressure/interface.h>
@@ -14,7 +11,9 @@
 #include <deal.II/base/function_lib.h>
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/vector_tools.h>
+
 double g = 100.0;
+
 namespace aspect
 {
     template <int dim>
@@ -164,7 +163,7 @@ namespace aspect
           {
             const double porosity = in.composition[i][porosity_idx];
             const double x = in.position[i](0);
-            const double z = in.position[i](1);
+            const double y = in.position[i](1);
             out.viscosities[i] = 1.0;//exp(c*porosity);
             out.thermal_expansion_coefficients[i] = 0.0;
             out.specific_heat[i] = 1.0;
@@ -180,9 +179,9 @@ namespace aspect
         out.reaction_terms[i][porosity_idx] = reactionterm;
 //**********
 // copy and paste here (add "out.")
-//out.force_vector[i][0] = cos(z) - cos(x + z) + cos(x * z) * z;
-//out.force_vector[i][1] = sin(x) - cos(x + z) + cos(x * z) * x;
-//out.force_vector[i][2] = 0;
+//out.force_vector[i][0] = cos(z) - cos(x + z) + cos(x * z) * z;  // u
+//out.force_vector[i][1] = sin(x) - cos(x + z) + cos(x * z) * x;  // v
+//out.force_vector[i][2] = 0; // p_f
 //old //out.force_vector[i][3] = -0.10e2 * sin(x + z) / (0.1e1 + exp(-0.20e2 * x * x - 0.20e2 * z * z + 0.1e1));
 //out.force_vector[i][3] = -0.1e1 / g * sin(x + z);
 
@@ -192,9 +191,11 @@ namespace aspect
 //out.force_vector[i][3] = -0.1e1 / g * sin(x + z);
 	if (force)
 	  {
+	    using numbers::PI;
+	    double nu = 1.0;
+	    force->rhs_u[i][0] = -nu*2.0*PI*PI*PI*(-2.0*sin(PI*x)*sin(PI*x)+cos(2.*PI*x))*sin(2.0*PI*y)-PI*sin(PI*x)*sin(PI*y);
 	    
-force->rhs_u[i][0] = cos(z) - cos(x + z) + sin(z);
-force->rhs_u[i][1] = sin(x) - cos(x + z) + x * cos(z);
+force->rhs_u[i][1] = nu*2.0*PI*PI*PI*(2.0*cos(2.0*PI*y)-1)*sin(2.0*PI*x)+PI*cos(PI*x)*cos(PI*y);
 force->rhs_p[i] = 0;
 force->rhs_melt_pc[i] = 0;
 	  }
@@ -257,7 +258,7 @@ gravity[1] = 0.0;
                                      Vector< double >   &values) const
           {
             double x = p(0);
-            double z = p(1);
+            double y = p(1);
 //**********
 // copy and paste here (add "out.")
 //values[0] = cos(z);
@@ -270,15 +271,17 @@ gravity[1] = 0.0;
 //values[7] = 0;
 //values[8] = 0.1000000000e-1 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.20e1 * z, 0.2e1));
 
-values[0] = cos(z);
-values[1] = sin(x);
-values[2] = -0.2e1 * sin(x + z) + x * sin(z);
-values[3] = sin(x + z);
-values[4] = 1;
-values[5] = 1;
-values[6] = x * sin(z);
+// ux, uy, pf, pc, ufx, ufy. ps, T, porosity
+	    using numbers::PI;
+values[0] = PI*sin(PI*x)*sin(PI*x)*sin(2.0*PI*y);
+values[1] = -PI*sin(PI*y)*sin(PI*y)*sin(2.0*PI*x);
+values[2] = cos(PI*x)*sin(PI*y);
+values[3] = 0.0;
+values[4] = values[0];
+ values[5] = values[1];
+values[6] = cos(PI*x)*sin(PI*y);
 values[7] = 0;
- values[8] = 0.1000000000e-1 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.20e1 * z, 0.2e1));// phi;
+ values[8] = 0.1000000000e-1 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.20e1 * y, 0.2e1));// phi;
 //**********
           }
       };
