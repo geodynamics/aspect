@@ -51,7 +51,8 @@ namespace aspect
          */
         virtual
         double boundary_composition (const types::boundary_id boundary_indicator,
-                                     const Point<dim> &position, const unsigned int n_comp) const;
+                                     const Point<dim> &position,
+                                     const unsigned int compositional_field) const;
         /**
          * A function that is called at the beginning of each time step to
          * indicate what the model time is for which the boundary values will
@@ -61,24 +62,6 @@ namespace aspect
         virtual
         void
         update ();
-
-        /**
-         * Return the minimal composition on that part of the boundary on
-         * which Dirichlet conditions are posed. Note: This is left over from
-         * temperature formulations, and may need to be removed later if its
-         * efficacy is not proven.
-         */
-        virtual
-        double minimal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const;
-
-        /**
-         * Return the maximal composition on that part of the boundary on
-         * which Dirichlet conditions are posed. Note: This is left over from
-         * temperature formulations, and may need to be removed later if its
-         * efficacy is not proven.
-         */
-        virtual
-        double maximal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -105,12 +88,6 @@ namespace aspect
          * A function object representing the compositional fields.
          */
         std_cxx11::unique_ptr<Functions::ParsedFunction<dim> > function;
-
-        /**
-         * Composition at the inner and outer boundaries.
-         */
-        double min_composition;
-        double max_composition;
 
         /**
          * The coordinate representation to evaluate the function. Possible

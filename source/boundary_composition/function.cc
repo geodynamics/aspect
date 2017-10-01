@@ -34,11 +34,11 @@ namespace aspect
     Function<dim>::
     boundary_composition (const types::boundary_id /*boundary_indicator*/,
                           const Point<dim> &position,
-                          const unsigned int n_compositional_field) const
+                          const unsigned int compositional_field) const
     {
       if (coordinate_system == ::aspect::Utilities::Coordinates::cartesian)
         {
-          return function->value(position,n_compositional_field);
+          return function->value(position,compositional_field);
         }
       else if (coordinate_system == ::aspect::Utilities::Coordinates::spherical)
         {
@@ -49,20 +49,22 @@ namespace aspect
           for (unsigned int i = 0; i<dim; ++i)
             point[i] = spherical_coordinates[i];
 
-          return function->value(point,n_compositional_field);
+          return function->value(point,compositional_field);
         }
       else if (coordinate_system == Utilities::Coordinates::depth)
         {
           const double depth = this->get_geometry_model().depth(position);
           Point<dim> point;
           point(0) = depth;
-          return function->value(point,n_compositional_field);
+          return function->value(point,compositional_field);
         }
       else
         {
           AssertThrow(false, ExcNotImplemented());
           return numbers::signaling_nan<double>();
         }
+
+      return numbers::signaling_nan<double>();
     }
 
 
@@ -78,25 +80,6 @@ namespace aspect
         function->set_time (this->get_time());
     }
 
-
-
-    template <int dim>
-    double
-    Function<dim>::
-    minimal_composition (const std::set<types::boundary_id> &) const
-    {
-      return min_composition;
-    }
-
-
-
-    template <int dim>
-    double
-    Function<dim>::
-    maximal_composition (const std::set<types::boundary_id> &) const
-    {
-      return max_composition;
-    }
 
 
     template <int dim>
@@ -120,13 +103,6 @@ namespace aspect
                              "the point.");
 
           Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
-
-          prm.declare_entry ("Minimal composition", "0",
-                             Patterns::Double (),
-                             "Minimal composition. Units: none.");
-          prm.declare_entry ("Maximal composition", "1",
-                             Patterns::Double (),
-                             "Maximal composition. Units: none.");
         }
         prm.leave_subsection();
       }
@@ -159,8 +135,6 @@ namespace aspect
                         << "is shown below.\n";
               throw;
             }
-          min_composition = prm.get_double ("Minimal composition");
-          max_composition = prm.get_double ("Maximal composition");
         }
         prm.leave_subsection();
       }
@@ -189,16 +163,6 @@ namespace aspect
                                                "years in output instead of seconds'' is set, in "
                                                "which case we interpret the formula expressions "
                                                "as having units year."
-                                               "\n\n"
-                                               "Because this class simply takes what the "
-                                               "function calculates, this class can not "
-                                               "know certain pieces of information such as the "
-                                               "minimal and maximal composition on the boundary. "
-                                               "For operations that require this, for example in "
-                                               "post-processing, this boundary composition model "
-                                               "must therefore be told what the minimal and "
-                                               "maximal values on the boundary are. This is done "
-                                               "using parameters set in section ``Boundary composition model/Initial composition''."
                                                "\n\n"
                                                "The format of these "
                                                "functions follows the syntax understood by the "

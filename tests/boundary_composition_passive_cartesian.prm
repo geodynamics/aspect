@@ -8,11 +8,8 @@
 
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 20
+set End time                               = 0
 set Use years in output instead of seconds = false
-set Output directory                       = output-boundary_composition-passive_cartesian
-
-
 
 subsection Geometry model
   set Model name = box
@@ -29,7 +26,7 @@ subsection Model settings
   set Zero velocity boundary indicators       =
   set Tangential velocity boundary indicators = left, right, bottom
   set Prescribed velocity boundary indicators = top: function
-  set Fixed composition boundary indicators   = top, bottom
+  set Fixed composition boundary indicators   = top, bottom, left, right
 end
 
 
@@ -80,7 +77,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 5
+  set Initial global refinement          = 3
   set Time steps between mesh refinement = 0
 end
 
