@@ -46,10 +46,6 @@ namespace aspect
     {
       public:
         /**
-         * Constructor.
-         */
-
-        /**
          * Return the initial composition as a function of position and number
          * of compositional field.
          */
