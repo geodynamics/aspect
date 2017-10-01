@@ -72,14 +72,14 @@ namespace aspect
         = std_cxx11::bind(&aspect::Particle::Integrator::Interface<dim>::get_data_size,
                           std_cxx11::ref(*integrator));
 
-      const std_cxx11::function<void *(const particle_iterator &,
+      const std_cxx11::function<void *(const typename ParticleHandler<dim>::particle_iterator &,
                                        void *)> store_callback_function
         = std_cxx11::bind(&aspect::Particle::Integrator::Interface<dim>::write_data,
                           std_cxx11::ref(*integrator),
                           std_cxx11::_1,
                           std_cxx11::_2);
 
-      const std_cxx11::function<const void *(const particle_iterator &,
+      const std_cxx11::function<const void *(const typename ParticleHandler<dim>::particle_iterator &,
                                              const void *)> load_callback_function
         = std_cxx11::bind(&aspect::Particle::Integrator::Interface<dim>::read_data,
                           std_cxx11::ref(*integrator),
@@ -184,7 +184,7 @@ namespace aspect
           const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
                                          const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
             = std_cxx11::bind(&aspect::Particle::ParticleHandler<dim>::store_particles,
-                              std_cxx11::ref(*particle_handler),
+                              std_cxx11::cref(*particle_handler),
                               std_cxx11::_1,
                               std_cxx11::_2,
                               std_cxx11::_3);
@@ -225,7 +225,7 @@ namespace aspect
           const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
                                          const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
             = std_cxx11::bind(&aspect::Particle::ParticleHandler<dim>::store_particles,
-                              std_cxx11::ref(*particle_handler),
+                              std_cxx11::cref(*particle_handler),
                               std_cxx11::_1,
                               std_cxx11::_2,
                               std_cxx11::_3);
@@ -829,6 +829,10 @@ namespace aspect
 #if !DEAL_II_VERSION_GTE(9,0,0)
       output->load(is);
 #endif
+
+      // When loading the triangulation we need to
+      // recreate the pointers to the triangulation and the MPI communicator.
+      particle_handler->initialize(this->get_triangulation(),this->get_mapping(),this->get_mpi_communicator(),property_manager->get_n_property_components());
     }
 
     template <int dim>
