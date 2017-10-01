@@ -278,9 +278,8 @@ namespace aspect
       for (; cell!=triangulation->end(); ++cell)
         if (cell->is_locally_owned())
           {
-            const unsigned int particles_in_cell = n_particles_in_cell(cell);
             local_max_particles_per_cell = std::max(local_max_particles_per_cell,
-                                                    particles_in_cell);
+                                                    n_particles_in_cell(cell));
           }
 
       global_max_particles_per_cell = dealii::Utilities::MPI::max(local_max_particles_per_cell,mpi_communicator);
@@ -803,7 +802,7 @@ namespace aspect
     void
     ParticleHandler<dim,spacedim>::store_particles(const typename parallel::distributed::Triangulation<dim,spacedim>::cell_iterator &cell,
                                                    const typename parallel::distributed::Triangulation<dim,spacedim>::CellStatus status,
-                                                   void *data)
+                                                   void *data) const
     {
       unsigned int n_particles(0);
 

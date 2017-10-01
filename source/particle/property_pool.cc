@@ -38,7 +38,10 @@ namespace aspect
     PropertyPool::Handle
     PropertyPool::allocate_properties_array ()
     {
-      return new double[n_properties];
+      if (n_properties > 0)
+        return new double[n_properties];
+
+      return invalid_handle;
     }
 
 

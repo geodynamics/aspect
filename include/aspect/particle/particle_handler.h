@@ -441,7 +441,7 @@ namespace aspect
         void
         store_particles(const typename parallel::distributed::Triangulation<dim,spacedim>::cell_iterator &cell,
                         const typename parallel::distributed::Triangulation<dim,spacedim>::CellStatus status,
-                        void *data);
+                        void *data) const;
 
         /**
          * Called by listener functions after a refinement step. The local map
