@@ -96,38 +96,20 @@ namespace aspect
           virtual std::size_t get_data_size() const;
 
           /**
-           * Read integration related data for a particle specified by particle_id
-           * from the data array. This function is called after transferring
-           * a particle to the local domain during an integration step.
-           *
-           * @param [in] data A pointer into the data array. The pointer
-           * marks the position where this function starts reading.
-           * @param [in] particle_id The id number of the particle to read the data
-           * for.
-           * @return The updated position of the pointer into the data array.
-           * The return value is @p data advanced by get_data_size() bytes.
+           * @copydoc Interface::read_data()
            */
           virtual
           const void *
-          read_data(const typename ParticleHandler<dim>::particle_iterator &,
-                    const void *);
+          read_data(const typename ParticleHandler<dim>::particle_iterator &particle,
+                    const void *data);
 
           /**
-           * Write integration related data to a vector for a particle
-           * specified by particle_id. This function is called in cases where
-           * particles leave the local domain during an integration step to
-           * transfer this data to another process.
-           *
-           * @param [in] data A pointer into the array of integrator data.
-           * @param [in] particle_id The id number of the particle to write the data
-           * for.
-           * @return The updated position of the pointer into the data array.
-           * The return value is @p data advanced by get_data_size() bytes.
+           * @copydoc Interface::write_data()
            */
           virtual
           void *
-          write_data(const typename ParticleHandler<dim>::particle_iterator &,
-                     void *) const;
+          write_data(const typename ParticleHandler<dim>::particle_iterator &particle,
+                     void *data) const;
 
         private:
           /**
