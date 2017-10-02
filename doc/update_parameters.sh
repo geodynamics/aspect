@@ -67,8 +67,7 @@ $ASPECT --output-plugin-graph doc/manual/empty.prm >plugin_graph.dot 2>/dev/null
     || (echo "Running ASPECT for the plugin graph failed" ; exit 1)
 neato plugin_graph.dot -Tpdf -o plugin_graph.pdf \
     || (echo "Can't run neato" ; exit 1)
-cp plugin_graph.* doc/manual || echo "ERROR: could not copy plugin_graph.*"
-
+mv plugin_graph.pdf plugin_graph.dot doc/manual/ || echo "ERROR: could not copy plugin_graph.*"
 
 popd
 echo done
