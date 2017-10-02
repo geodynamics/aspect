@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,15 +14,15 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
+  along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
-#ifndef _aspect_initial_composition_function_h
-#define _aspect_initial_composition_function_h
+#ifndef _aspect_boundary_composition_function_h
+#define _aspect_boundary_composition_function_h
 
-#include <aspect/initial_composition/interface.h>
+#include <aspect/boundary_composition/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
 
@@ -30,27 +30,38 @@
 
 namespace aspect
 {
-  namespace InitialComposition
+  namespace BoundaryComposition
   {
     using namespace dealii;
 
     /**
-     * A class that implements initial conditions for the compositional fields
-     * based on a functional description provided in the input file.
+     * A class that implements boundary composition based on a functional
+     * description provided in the input file.
      *
-     * @ingroup InitialCompositionModels
+     * @ingroup BoundaryCompositions
      */
     template <int dim>
-    class Function : public Interface<dim>,
-      public SimulatorAccess<dim>
+    class Function : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
-         * Return the initial composition as a function of position and number
-         * of compositional field.
+         * Return the boundary composition as a function of position and time.
+         *
+         * @copydoc aspect::BoundaryComposition::Interface::boundary_composition()
          */
         virtual
-        double initial_composition (const Point<dim> &position, const unsigned int n_comp) const;
+        double boundary_composition (const types::boundary_id boundary_indicator,
+                                     const Point<dim> &position,
+                                     const unsigned int compositional_field) const;
+        /**
+         * A function that is called at the beginning of each time step to
+         * indicate what the model time is for which the boundary values will
+         * next be evaluated. For the current class, the function passes to
+         * the parsed function what the current time is.
+         */
+        virtual
+        void
+        update ();
 
         /**
          * Declare the parameters this class takes through input files. The

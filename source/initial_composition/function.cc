@@ -29,9 +29,6 @@ namespace aspect
 {
   namespace InitialComposition
   {
-//    template <int dim>
-//    Function<dim>::Function ()
-//    {}
 
     template <int dim>
     double
