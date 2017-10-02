@@ -350,8 +350,8 @@ namespace aspect
         prm.declare_entry ("Use Newton residual scaling method", "false",
                            Patterns::Bool (),
                            "This method allows to slowly introduce the derivatives based on the improvement "
-                           "of the residual. If we do not use it, we just set it so the newton_derivative_scaling_factor "
-                           "goes from zero to one when switching on the Newton solver.");
+                           "of the residual. If set to false, the scaling factor for the Newton derivatives "
+                           "is set to one immediately when switching on the Newton solver.");
 
         prm.declare_entry ("Maximum linear Stokes solver tolerance", "0.9",
                            Patterns::Double (0,1),
