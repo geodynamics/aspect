@@ -37,8 +37,6 @@ namespace aspect
   {
     template <int dim>
     World<dim>::World()
-      :
-      data_offset(numbers::invalid_unsigned_int)
     {}
 
     template <int dim>
@@ -49,24 +47,19 @@ namespace aspect
     void
     World<dim>::initialize()
     {
-      connect_to_signals(this->get_signals());
-
       if (particle_load_balancing & ParticleLoadBalancing::repartition)
         this->get_triangulation().signals.cell_weight.connect(std_cxx11::bind(&aspect::Particle::World<dim>::cell_weight,
                                                                               std_cxx11::ref(*this),
                                                                               std_cxx11::_1,
                                                                               std_cxx11::_2));
 
-      // Normally create a particle handler that stores the future particles.
-      // If we restarted from a checkpoint we already have constructed a
-      // particle handler. In that case only reinitialize the connections to the
-      // triangulation and the MPI communicator.
-      if (!particle_handler)
-        particle_handler.reset(new ParticleHandler<dim>(this->get_triangulation(),this->get_mapping(),this->get_mpi_communicator(),property_manager->get_n_property_components()));
-      else
-        {
-          particle_handler->initialize(this->get_triangulation(),this->get_mapping(),this->get_mpi_communicator(),property_manager->get_n_property_components());
-        }
+      // Create a particle handler that stores the future particles.
+      // If we restarted from a checkpoint we will fill this particle handler
+      // later with its serialized variables and stored particles
+      particle_handler.reset(new ParticleHandler<dim>(this->get_triangulation(),
+                                                      this->get_mapping(),
+                                                      this->get_mpi_communicator(),
+                                                      property_manager->get_n_property_components()));
 
       const std_cxx11::function<std::size_t ()> size_callback_function
         = std_cxx11::bind(&aspect::Particle::Integrator::Interface<dim>::get_data_size,
@@ -89,6 +82,8 @@ namespace aspect
       particle_handler->register_additional_store_load_functions(size_callback_function,
                                                                  store_callback_function,
                                                                  load_callback_function);
+
+      connect_to_signals(this->get_signals());
     }
 
     template <int dim>
@@ -148,125 +143,38 @@ namespace aspect
       signals.post_set_initial_state.connect(std_cxx11::bind(&World<dim>::setup_initial_state,
                                                              std_cxx11::ref(*this)));
 
-      signals.pre_refinement_store_user_data.connect(std_cxx11::bind(&World<dim>::register_store_callback_function,
-                                                                     std_cxx11::ref(*this),
-                                                                     false,
-                                                                     std_cxx11::_1));
-      signals.pre_checkpoint_store_user_data.connect(std_cxx11::bind(&World<dim>::register_store_callback_function,
-                                                                     std_cxx11::ref(*this),
-                                                                     true,
-                                                                     std_cxx11::_1));
+      signals.pre_refinement_store_user_data.connect(std_cxx11::bind(&ParticleHandler<dim>::register_store_callback_function,
+                                                                     std_cxx11::ref(*particle_handler),
+                                                                     false));
 
-      signals.post_refinement_load_user_data.connect(std_cxx11::bind(&World<dim>::register_load_callback_function,
-                                                                     std_cxx11::ref(*this),
-                                                                     false,
-                                                                     std_cxx11::_1));
-      signals.post_resume_load_user_data.connect(std_cxx11::bind(&World<dim>::register_load_callback_function,
-                                                                 std_cxx11::ref(*this),
-                                                                 true,
-                                                                 std_cxx11::_1));
-    }
+      signals.post_refinement_load_user_data.connect(std_cxx11::bind(&ParticleHandler<dim>::register_load_callback_function,
+                                                                     std_cxx11::ref(*particle_handler),
+                                                                     false));
 
-    template <int dim>
-    void
-    World<dim>::register_store_callback_function(const bool serialization,
-                                                 typename parallel::distributed::Triangulation<dim> &triangulation)
-    {
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Refine mesh, store");
+      signals.pre_checkpoint_store_user_data.connect(std_cxx11::bind(&ParticleHandler<dim>::register_store_callback_function,
+                                                                     std_cxx11::ref(*particle_handler),
+                                                                     true));
 
-      // Only save and load particles if there are any, we might get here for
-      // example before the particle generation in timestep 0, or if somebody
-      // selected the particle postprocessor but generated 0 particles
-      particle_handler->update_global_max_particles_per_cell();
+      signals.post_resume_load_user_data.connect(std_cxx11::bind(&ParticleHandler<dim>::register_load_callback_function,
+                                                                 std_cxx11::ref(*particle_handler),
+                                                                 true));
 
-      if (particle_handler->global_max_particles_per_cell > 0)
+      signals.post_refinement_load_user_data.connect(std_cxx11::bind(&World<dim>::apply_particle_per_cell_bounds,
+                                                                     std_cxx11::ref(*this)));
+      signals.post_resume_load_user_data.connect(std_cxx11::bind(&World<dim>::apply_particle_per_cell_bounds,
+                                                                 std_cxx11::ref(*this)));
+
+      if (update_ghost_particles &&
+          dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
         {
-          const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
-                                         const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
-            = std_cxx11::bind(&aspect::Particle::ParticleHandler<dim>::store_particles,
-                              std_cxx11::cref(*particle_handler),
-                              std_cxx11::_1,
-                              std_cxx11::_2,
-                              std_cxx11::_3);
-
-          // We need to transfer the number of particles for this cell and
-          // the particle data itself. If we are in the process of refinement
-          // (i.e. not in serialization) we need to provide 2^dim times the
-          // space for the data in case a cell is coarsened and all particles
-          // of the children have to be stored in the parent cell.
-          const std::size_t transfer_size_per_cell = sizeof (unsigned int) +
-                                                     (property_manager->get_particle_size() * particle_handler->global_max_particles_per_cell) *
-                                                     (serialization ?
-                                                      1
-                                                      :
-                                                      std::pow(2,dim));
-
-          data_offset = triangulation.register_data_attach(transfer_size_per_cell,callback_function);
+          signals.post_refinement_load_user_data.connect(std_cxx11::bind(&ParticleHandler<dim>::exchange_ghost_particles,
+                                                                         std_cxx11::ref(*particle_handler)));
+          signals.post_resume_load_user_data.connect(std_cxx11::bind(&ParticleHandler<dim>::exchange_ghost_particles,
+                                                                     std_cxx11::ref(*particle_handler)));
         }
     }
 
-    template <int dim>
-    void
-    World<dim>::register_load_callback_function(const bool serialization,
-                                                typename parallel::distributed::Triangulation<dim> &triangulation)
-    {
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Refine mesh, load");
 
-      // All particles have been stored, when we reach this point. Empty the
-      // particle data.
-      particle_handler->clear_particles();
-
-      // If we are resuming from a checkpoint, we first have to register the
-      // store function again, to set the triangulation in the same state as
-      // before the serialization. Only by this it knows how to deserialize the
-      // data correctly. Only do this if something was actually stored.
-      if (serialization && (particle_handler->global_max_particles_per_cell > 0))
-        {
-          const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
-                                         const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
-            = std_cxx11::bind(&aspect::Particle::ParticleHandler<dim>::store_particles,
-                              std_cxx11::cref(*particle_handler),
-                              std_cxx11::_1,
-                              std_cxx11::_2,
-                              std_cxx11::_3);
-
-          // We need to transfer the number of particles for this cell and
-          // the particle data itself and we need to provide 2^dim times the
-          // space for the data in case a cell is coarsened
-          const std::size_t transfer_size_per_cell = sizeof (unsigned int) +
-                                                     (property_manager->get_particle_size() * particle_handler->global_max_particles_per_cell);
-          data_offset = triangulation.register_data_attach(transfer_size_per_cell,callback_function);
-        }
-
-      // Check if something was stored and load it
-      if (data_offset != numbers::invalid_unsigned_int)
-        {
-          const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
-                                         const typename parallel::distributed::Triangulation<dim>::CellStatus,
-                                         const void *) > callback_function
-            = std_cxx11::bind(&aspect::Particle::ParticleHandler<dim>::load_particles,
-                              std_cxx11::ref(*particle_handler),
-                              std_cxx11::_1,
-                              std_cxx11::_2,
-                              std_cxx11::_3);
-
-          triangulation.notify_ready_to_unpack(data_offset,callback_function);
-
-          apply_particle_per_cell_bounds();
-
-          // Reset offset and update global number of particles. The number
-          // can change because of discarded or newly generated particles
-          data_offset = numbers::invalid_unsigned_int;
-          particle_handler->update_n_global_particles();
-
-          if (update_ghost_particles &&
-              dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
-            {
-              TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Exchange ghosts");
-              particle_handler->exchange_ghost_particles();
-            }
-        }
-    }
 
     template <int dim>
     void
@@ -388,6 +296,8 @@ namespace aspect
                       }
                   }
               }
+
+          particle_handler->update_n_global_particles();
         }
     }
 
@@ -829,10 +739,6 @@ namespace aspect
 #if !DEAL_II_VERSION_GTE(9,0,0)
       output->load(is);
 #endif
-
-      // When loading the triangulation we need to
-      // recreate the pointers to the triangulation and the MPI communicator.
-      particle_handler->initialize(this->get_triangulation(),this->get_mapping(),this->get_mpi_communicator(),property_manager->get_n_property_components());
     }
 
     template <int dim>

@@ -31,9 +31,16 @@ namespace aspect
       :
       triangulation(),
       mpi_communicator(),
+      particles(),
+      ghost_particles(),
       global_number_of_particles(0),
       global_max_particles_per_cell(0),
-      next_free_particle_index(0)
+      next_free_particle_index(0),
+      property_pool(new PropertyPool(0)),
+      size_callback(),
+      store_callback(),
+      load_callback(),
+      data_offset(numbers::invalid_unsigned_int)
     {}
 
 
@@ -47,10 +54,16 @@ namespace aspect
       triangulation(&triangulation, typeid(*this).name()),
       mapping(&mapping, typeid(*this).name()),
       mpi_communicator(mpi_communicator),
+      particles(),
+      ghost_particles(),
       global_number_of_particles(0),
       global_max_particles_per_cell(0),
       next_free_particle_index(0),
-      property_pool(new PropertyPool(n_properties))
+      property_pool(new PropertyPool(n_properties)),
+      size_callback(),
+      store_callback(),
+      load_callback(),
+      data_offset(numbers::invalid_unsigned_int)
     {}
 
 
@@ -796,6 +809,122 @@ namespace aspect
       store_callback = store_callb;
       load_callback = load_callb;
     }
+
+
+
+    template <int dim, int spacedim>
+    void
+    ParticleHandler<dim,spacedim>::register_store_callback_function(const bool serialization)
+    {
+      parallel::distributed::Triangulation<dim,spacedim> *non_const_triangulation =
+        const_cast<parallel::distributed::Triangulation<dim,spacedim> *> (&(*triangulation));
+
+      // Only save and load particles if there are any, we might get here for
+      // example if somebody created a ParticleHandler but generated 0 particles.
+      update_global_max_particles_per_cell();
+
+      if (global_max_particles_per_cell > 0)
+        {
+          const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
+                                         const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
+            = std_cxx11::bind(&ParticleHandler<dim>::store_particles,
+                              std_cxx11::cref(*this),
+                              std_cxx11::_1,
+                              std_cxx11::_2,
+                              std_cxx11::_3);
+
+          // Compute the size per serialized particle. This is simple if we own
+          // particles, simply ask one of them. Otherwise create a temporary particle,
+          // ask it for its size and add the size of its properties.
+          const std::size_t size_per_particle = (particles.size() > 0)
+                                                ?
+                                                begin()->serialized_size_in_bytes()
+                                                :
+                                                Particle<dim,spacedim>().serialized_size_in_bytes()
+                                                + property_pool->n_properties_per_slot() * sizeof(double);
+
+          // We need to transfer the number of particles for this cell and
+          // the particle data itself. If we are in the process of refinement
+          // (i.e. not in serialization) we need to provide 2^dim times the
+          // space for the data in case a cell is coarsened and all particles
+          // of the children have to be stored in the parent cell.
+          const std::size_t transfer_size_per_cell = sizeof (unsigned int) +
+                                                     (size_per_particle * global_max_particles_per_cell) *
+                                                     (serialization ?
+                                                      1
+                                                      :
+                                                      std::pow(2,dim));
+
+          data_offset = non_const_triangulation->register_data_attach(transfer_size_per_cell,callback_function);
+        }
+    }
+
+
+
+    template <int dim, int spacedim>
+    void
+    ParticleHandler<dim,spacedim>::register_load_callback_function(const bool serialization)
+    {
+      // All particles have been stored, when we reach this point. Empty the
+      // particle data.
+      clear_particles();
+
+      parallel::distributed::Triangulation<dim,spacedim> *non_const_triangulation =
+        const_cast<parallel::distributed::Triangulation<dim,spacedim> *> (&(*triangulation));
+
+      // If we are resuming from a checkpoint, we first have to register the
+      // store function again, to set the triangulation in the same state as
+      // before the serialization. Only by this it knows how to deserialize the
+      // data correctly. Only do this if something was actually stored.
+      if (serialization && (global_max_particles_per_cell > 0))
+        {
+          const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
+                                         const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
+            = std_cxx11::bind(&ParticleHandler<dim>::store_particles,
+                              std_cxx11::cref(*this),
+                              std_cxx11::_1,
+                              std_cxx11::_2,
+                              std_cxx11::_3);
+
+          // Compute the size per serialized particle. This is simple if we own
+          // particles, simply ask one of them. Otherwise create a temporary particle,
+          // ask it for its size and add the size of its properties.
+          const std::size_t size_per_particle = (particles.size() > 0)
+                                                ?
+                                                begin()->serialized_size_in_bytes()
+                                                :
+                                                Particle<dim,spacedim>().serialized_size_in_bytes()
+                                                + property_pool->n_properties_per_slot() * sizeof(double);
+
+          // We need to transfer the number of particles for this cell and
+          // the particle data itself and we need to provide 2^dim times the
+          // space for the data in case a cell is coarsened
+          const std::size_t transfer_size_per_cell = sizeof (unsigned int) +
+                                                     (size_per_particle * global_max_particles_per_cell);
+          data_offset = non_const_triangulation->register_data_attach(transfer_size_per_cell,callback_function);
+        }
+
+      // Check if something was stored and load it
+      if (data_offset != numbers::invalid_unsigned_int)
+        {
+          const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
+                                         const typename parallel::distributed::Triangulation<dim>::CellStatus,
+                                         const void *) > callback_function
+            = std_cxx11::bind(&ParticleHandler<dim>::load_particles,
+                              std_cxx11::ref(*this),
+                              std_cxx11::_1,
+                              std_cxx11::_2,
+                              std_cxx11::_3);
+
+          non_const_triangulation->notify_ready_to_unpack(data_offset,callback_function);
+
+          // Reset offset and update global number of particles. The number
+          // can change because of discarded or newly generated particles
+          data_offset = numbers::invalid_unsigned_int;
+          update_n_global_particles();
+        }
+    }
+
 
 
     template <int dim, int spacedim>
