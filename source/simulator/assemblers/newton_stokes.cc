@@ -95,7 +95,7 @@ namespace aspect
                 for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
                   if (scratch.dof_component_indices[i] ==
                       scratch.dof_component_indices[j])
-                    data.local_matrix(i, j) += ((eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                    data.local_matrix(i, j) += ((2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
                                                 + one_over_eta * pressure_scaling * pressure_scaling
                                                 * (scratch.phi_p[i] * scratch.phi_p[j]))
                                                * JxW;
@@ -118,7 +118,7 @@ namespace aspect
                   if (scratch.dof_component_indices[i] ==
                       scratch.dof_component_indices[j])
                     {
-                      data.local_matrix(i, j) += ((eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                      data.local_matrix(i, j) += ((2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
                                                   + derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate
                                                                                          + scratch.grads_phi_u[j] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate)
                                                   + one_over_eta * pressure_scaling
