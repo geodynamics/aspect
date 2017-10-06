@@ -1,0 +1,15 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libnatural_coordinates_conversion.so>
+
+2D:
+Box 2D ok:                   point = 25000 50000, inter point = 25000, 50000, new_point = 25000 50000
+Two merged boxes 2d ok:      point = 25000 50000, inter point = 25000, 50000, new_point = 25000 50000
+Chunk 2D ok:                 point = 25000 50000, inter point = 55901.7, 1.10715, new_point = 25000 50000
+
+3D:
+Box 3D ok:                   point = 25000 25000 50000, inter point = 25000, 25000, 50000, new_point = 25000 25000 50000
+Two merged boxes 3d ok:      point = 25000 25000 50000, inter point = 25000, 25000, 50000, new_point = 25000 25000 50000
+Chunk 3D ok:                 point = 25000 25000 50000, inter point = 61237.2, 0.785398, new_point = 25000 25000 50000
+Ellipsoidal 3d chunk failed: point = 25000 25000 50000, inter point = 101768, 1.21599, 0.785398, new_point = 25000 25000 55272.2
