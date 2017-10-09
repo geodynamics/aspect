@@ -2593,5 +2593,11 @@ namespace aspect
                                        const SymmetricTensor<2,3> &dviscosities_dstrain_rate,
                                        const double safety_factor);
 
+    template Point<2> convert_array_to_point<2>(const std_cxx11::array<double,2> &array);
+    template Point<3> convert_array_to_point<3>(const std_cxx11::array<double,3> &array);
+
+    template std_cxx11::array<double,2> convert_point_to_array<2>(const Point<2> &point);
+    template std_cxx11::array<double,3> convert_point_to_array<3>(const Point<3> &point);
+
   }
 }
