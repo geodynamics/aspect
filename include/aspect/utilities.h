@@ -533,6 +533,11 @@ namespace aspect
         std::string
         get_column_name_from_index(const unsigned int column_index) const;
 
+        /**
+         * Return the maximum value of the component values.
+         */
+        double get_maximum_component_value(const unsigned int component) const;
+
       private:
         /**
          * The number of data components read in (=columns in the data file).
@@ -557,6 +562,11 @@ namespace aspect
          * The coordinate values in each direction as specified in the data file.
          */
         std_cxx11::array<std::vector<double>,dim> coordinate_values;
+
+        /**
+         * The maximum value of each component
+         */
+        std::vector<double> maximum_component_value;
 
         /**
          * The min and max of the coordinates in the data file.
@@ -670,6 +680,13 @@ namespace aspect
         get_data_component (const types::boundary_id             boundary_indicator,
                             const Point<dim>                    &position,
                             const unsigned int                   component) const;
+
+        /**
+         * Returns the maximum value of the given data component.
+         */
+        double
+        get_maximum_component_value (const types::boundary_id boundary_indicator,
+                                     const unsigned int       component) const;
 
         /**
          * Declare the parameters all derived classes take from input files.

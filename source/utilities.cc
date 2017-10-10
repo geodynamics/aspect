@@ -1175,6 +1175,7 @@ namespace aspect
       :
       components(components),
       data(components),
+      maximum_component_value(components),
       scale_factor(scale_factor)
     {}
 
@@ -1183,6 +1184,7 @@ namespace aspect
       :
       components(numbers::invalid_unsigned_int),
       data(),
+      maximum_component_value(),
       scale_factor(scale_factor)
     {}
 
@@ -1218,6 +1220,13 @@ namespace aspect
                              + Utilities::to_string(data_component_names.size()) + " named columns."));
 
       return data_component_names[column_index];
+    }
+
+    template <int dim>
+    double
+    AsciiDataLookup<dim>::get_maximum_component_value(const unsigned int component) const
+    {
+      return maximum_component_value[component];
     }
 
     template <int dim>
@@ -1327,6 +1336,7 @@ namespace aspect
        * argument.
        */
       data.resize(components);
+      maximum_component_value.resize(components,-std::numeric_limits<double>::max());
       Table<dim,double> data_table;
       data_table.TableBase<dim,double>::reinit(table_points);
       std::vector<Table<dim,double> > data_tables(components+dim,data_table);
@@ -1338,7 +1348,10 @@ namespace aspect
           const unsigned int column_num = field_index%(components+dim);
 
           if (column_num >= dim)
-            temp_data *= scale_factor;
+            {
+              temp_data *= scale_factor;
+              maximum_component_value[column_num-dim] = std::max(maximum_component_value[column_num-dim], temp_data);
+            }
 
           data_tables[column_num](compute_table_indices(field_index)) = temp_data;
 
@@ -1408,6 +1421,7 @@ namespace aspect
 
               // Set the coordinate value
               coordinate_values[i].push_back(new_temp_coord);
+
               temp_coord = new_temp_coord;
             }
 
@@ -1892,6 +1906,14 @@ namespace aspect
         }
       else
         return 0.0;
+    }
+
+
+    template <int dim>
+    double
+    AsciiDataBoundary<dim>::get_maximum_component_value (const types::boundary_id boundary_indicator, const unsigned int component) const
+    {
+      return lookups.find(boundary_indicator)->second->get_maximum_component_value(component);
     }
 
 
