@@ -34,6 +34,14 @@ namespace aspect
       // return a zero value regardless of position
       return 0.0;
     }
+
+    template <int dim>
+    double
+    ZeroTopography<dim>::
+    max_topography () const
+    {
+      return 0;
+    }
   }
 }
 
