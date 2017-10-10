@@ -97,6 +97,14 @@ namespace aspect
 
 
     template <int dim>
+    double
+    AsciiData<dim>::max_topography () const
+    {
+      return Utilities::AsciiDataBoundary<dim>::get_maximum_component_value(surface_boundary_id,0);
+    }
+
+
+    template <int dim>
     void
     AsciiData<dim>::declare_parameters (ParameterHandler &prm)
     {
