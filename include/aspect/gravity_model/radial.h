@@ -38,7 +38,7 @@ namespace aspect
      * @ingroup GravityModels
      */
     template <int dim>
-    class RadialConstant : public Interface<dim>
+    class RadialConstant : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -82,13 +82,20 @@ namespace aspect
      * @ingroup GravityModels
      */
     template <int dim>
-    class RadialEarthLike : public Interface<dim>
+    class RadialEarthLike : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
          * Return the gravity vector as a function of position.
          */
         virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const;
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
     };
 
 
@@ -101,7 +108,7 @@ namespace aspect
      * @ingroup GravityModels
      */
     template <int dim>
-    class RadialLinear : public Interface<dim>, public virtual SimulatorAccess<dim>
+    class RadialLinear : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
