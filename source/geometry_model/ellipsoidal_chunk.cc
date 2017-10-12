@@ -21,7 +21,6 @@
 
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/utilities.h>
-#include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/grid/tria_boundary_lib.h>
 #include <deal.II/grid/tria_accessor.h>
@@ -687,9 +686,6 @@ namespace aspect
       AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
                   this->get_timestep_number() == 0,
                   ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
-
-      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
-                  ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       // dim = 3
       const Point<dim> ellipsoidal_point = manifold.pull_back(point);
