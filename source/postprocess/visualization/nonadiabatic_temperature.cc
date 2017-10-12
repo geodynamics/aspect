@@ -72,7 +72,7 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(NonadiabaticTemperature,
                                                   "nonadiabatic temperature",
                                                   "A visualization output object that generates output "
-                                                  "for the non-adiabatic component of the pressure.")
+                                                  "for the non-adiabatic component of the temperature.")
     }
   }
 }
