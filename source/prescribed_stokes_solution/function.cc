@@ -98,7 +98,7 @@ namespace aspect
         catch (...)
           {
             std::cerr << "ERROR: FunctionParser failed to parse\n"
-                      << "\t'Initial conditions.Function.Velocity function'\n"
+                      << "\t'Prescribed Stokes solution.Function.Velocity function'\n"
                       << "with expression\n"
                       << "\t'" << prm.get("Function expression") << "'"
                       << "More information about the cause of the parse error \n"
@@ -114,7 +114,7 @@ namespace aspect
         catch (...)
           {
             std::cerr << "ERROR: FunctionParser failed to parse\n"
-                      << "\t'Initial conditions.Function.Pressure function'\n"
+                      << "\t'Prescribed Stokes solution.Function.Pressure function'\n"
                       << "with expression\n"
                       << "\t'" << prm.get("Function expression") << "'"
                       << "More information about the cause of the parse error \n"
