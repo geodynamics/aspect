@@ -26,9 +26,9 @@ subsection Adiabatic conditions model
 end
 
 subsection Gravity model
-  set Model name = radial constant
+  set Model name = vertical
 
-  subsection Radial constant
+  subsection Vertical
     set Magnitude = 9.81
   end
 end
