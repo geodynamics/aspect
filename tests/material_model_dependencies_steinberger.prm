@@ -72,8 +72,7 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical
-
+  set Model name = radial earth-like
 end
 
 
