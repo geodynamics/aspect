@@ -104,7 +104,7 @@ namespace aspect
 
         AssertThrow(Utilities::has_unique_entries(model_names),
                     ExcMessage("The list of strings for the parameter "
-                               "'Initial conditions/List of model names' contains entries more than once. "
+                               "'Initial temperature model/List of model names' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
 
         const std::string model_name = prm.get ("Model name");
@@ -135,7 +135,7 @@ namespace aspect
           initial_temperature_objects.push_back (std_cxx11::shared_ptr<Interface<dim> >
                                                  (std_cxx11::get<dim>(registered_plugins)
                                                   .create_plugin (model_names[i],
-                                                                  "Initial conditions::Model names")));
+                                                                  "Initial temperature model::Model names")));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_temperature_objects.back()))
             sim->initialize_simulator (this->get_simulator());
