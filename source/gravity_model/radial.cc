@@ -21,6 +21,9 @@
 
 #include <aspect/gravity_model/radial.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
+#include <aspect/geometry_model/sphere.h>
 
 #include <deal.II/base/tensor.h>
 
@@ -33,6 +36,9 @@ namespace aspect
     Tensor<1,dim>
     RadialConstant<dim>::gravity_vector (const Point<dim> &p) const
     {
+      if (p.norm() == 0.0)
+        return Tensor<1,dim>();
+
       const double r = p.norm();
       return -magnitude * p/r;
     }
@@ -71,6 +77,11 @@ namespace aspect
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
+      Assert (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == 0,
+              ExcMessage ("Gravity model 'radial constant' should not be used with geometry model 'box'."));
+      Assert (dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*> (&this->get_geometry_model()) == 0,
+              ExcMessage ("Gravity model 'radial constant' should not be used with geometry model 'box with "
+                          "lithosphere boundary indicators'."));
     }
 
 // ------------------------------ RadialEarthLike -------------------
@@ -81,6 +92,20 @@ namespace aspect
     {
       const double r = p.norm();
       return -(1.245e-6 * r + 7.714e13/r/r) * p / r;
+    }
+
+    template <int dim>
+    void
+    RadialEarthLike<dim>::parse_parameters (ParameterHandler & /*prm*/)
+    {
+      Assert (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == 0,
+              ExcMessage ("Gravity model 'radial earth-like constant' should not be used with geometry model 'box'."));
+      Assert (dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*> (&this->get_geometry_model()) == 0,
+              ExcMessage ("Gravity model 'radial earth-like constant' should not be used with geometry model 'box "
+                          "with lithosphere boundary indicators'."));
+      Assert (dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) == 0,
+              ExcMessage ("Gravity model 'radial earth-like constant' should not be used with geometry model 'sphere', "
+                          "because this gravity model is only valid for the mantle."));
     }
 
 
@@ -132,6 +157,12 @@ namespace aspect
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
+      Assert (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == 0,
+              ExcMessage ("Gravity model 'radial linear' should not be used with geometry model 'box'."));
+      Assert (dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*> (&this->get_geometry_model()) == 0,
+              ExcMessage ("Gravity model 'radial linear' should not be used with geometry model 'box with "
+                          "lithosphere boundary indicators'."));
+
     }
 
   }

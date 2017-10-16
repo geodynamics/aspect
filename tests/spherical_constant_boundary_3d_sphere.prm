@@ -32,8 +32,8 @@ subsection Geometry model
 end
 
 subsection Gravity model
-  set Model name = vertical 
-  subsection Vertical
+  set Model name = radial constant 
+  subsection Radial constant
     set Magnitude = 9.81 
   end
 end

@@ -1,3 +1,5 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 Loading shared library <./libmaterial_model_dependencies_steinberger.so>
 
@@ -9,17 +11,23 @@ Number of degrees of freedom: 740 (450+65+225)
    Solving Stokes system... 21+0 iterations.
       Relative Stokes residual after nonlinear iteration 1: 1
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 21+0 iterations.
-      Relative Stokes residual after nonlinear iteration 2: 0.01554
+   Solving Stokes system... 18+0 iterations.
+      Relative Stokes residual after nonlinear iteration 2: 1.35577
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
-      Relative Stokes residual after nonlinear iteration 3: 0.00415676
+   Solving Stokes system... 14+0 iterations.
+      Relative Stokes residual after nonlinear iteration 3: 0.0195071
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
-      Relative Stokes residual after nonlinear iteration 4: 1.07771e-05
+   Solving Stokes system... 11+0 iterations.
+      Relative Stokes residual after nonlinear iteration 4: 0.0060626
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative Stokes residual after nonlinear iteration 5: 2.3391e-07
+   Solving Stokes system... 9+0 iterations.
+      Relative Stokes residual after nonlinear iteration 5: 0.000110869
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+      Relative Stokes residual after nonlinear iteration 6: 2.76543e-05
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+      Relative Stokes residual after nonlinear iteration 7: 5.77419e-07
 
    Postprocessing:
 viscosity depends on temperature
