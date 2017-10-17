@@ -481,8 +481,13 @@ namespace aspect
           const std::string h5_solution_file_name = "solution/" + solution_file_prefix + ".h5";
           const std::string xdmf_filename = "solution.xdmf";
 
-          // Filter redundant values
-          DataOutBase::DataOutFilter data_filter(DataOutBase::DataOutFilterFlags(true, true));
+          // Filter redundant values if all elements are continuous, for discontinuous
+          // elements the averaging at cell vertices distorts the solution
+          const bool filter_duplicate_vertices = ! (this->get_parameters().use_locally_conservative_discretization
+                                                    || this->get_parameters().use_discontinuous_temperature_discretization
+                                                    || this->get_parameters().use_discontinuous_composition_discretization);
+
+          DataOutBase::DataOutFilter data_filter(DataOutBase::DataOutFilterFlags(filter_duplicate_vertices, true));
 
           // If the mesh changed since the last output, make a new mesh file
           const std::string mesh_file_prefix = "mesh-" + Utilities::int_to_string (output_file_number, 5);
