@@ -201,9 +201,9 @@ namespace aspect
           // Note: values of A, d, m, E, V and n are distinct for diffusion & dislocation creep
 
           // Diffusion creep: viscosity is grain size dependent (m!=0) and strain-rate independent (n=1)
-          double viscosity_diffusion = 0.5 * std::pow(prefactors_diffusion[j],-1/stress_exponents_diffusion[j]) *
+          double viscosity_diffusion = 0.5 / prefactors_diffusion[j] *
                                        std::exp((activation_energies_diffusion[j] + pressure*activation_volumes_diffusion[j])/
-                                                (constants::gas_constant*temperature*stress_exponents_diffusion[j])) *
+                                                (constants::gas_constant*temperature)) *
                                        std::pow(grain_size, grain_size_exponents_diffusion[j]);
 
           // For dislocation creep, viscosity is grain size independent (m=0) and strain-rate dependent (n>1)
@@ -825,9 +825,6 @@ namespace aspect
           prefactors_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactors for diffusion creep"))),
                                                                          n_fields,
                                                                          "Prefactors for diffusion creep");
-          stress_exponents_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress exponents for diffusion creep"))),
-                                                                               n_fields,
-                                                                               "Stress exponents for diffusion creep");
           grain_size_exponents_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Grain size exponents for diffusion creep"))),
                                                                                    n_fields,
                                                                                    "Grain size exponents for diffusion creep");
