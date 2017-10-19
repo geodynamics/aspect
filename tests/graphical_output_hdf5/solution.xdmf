@@ -6,7 +6,7 @@
       <Grid Name="mesh" GridType="Uniform">
         <Time Value="0"/>
         <Geometry GeometryType="XY">
-          <DataItem Dimensions="25 2" NumberType="Float" Precision="8" Format="HDF">
+          <DataItem Dimensions="64 2" NumberType="Float" Precision="8" Format="HDF">
             solution/mesh-00000.h5:/nodes
           </DataItem>
         </Geometry>
@@ -16,27 +16,27 @@
           </DataItem>
         </Topology>
         <Attribute Name="T" AttributeType="Scalar" Center="Node">
-          <DataItem Dimensions="25 1" NumberType="Float" Precision="8" Format="HDF">
+          <DataItem Dimensions="64 1" NumberType="Float" Precision="8" Format="HDF">
             solution/solution-00000.h5:/T
           </DataItem>
         </Attribute>
         <Attribute Name="nonadiabatic_pressure" AttributeType="Scalar" Center="Node">
-          <DataItem Dimensions="25 1" NumberType="Float" Precision="8" Format="HDF">
+          <DataItem Dimensions="64 1" NumberType="Float" Precision="8" Format="HDF">
             solution/solution-00000.h5:/nonadiabatic_pressure
           </DataItem>
         </Attribute>
         <Attribute Name="p" AttributeType="Scalar" Center="Node">
-          <DataItem Dimensions="25 1" NumberType="Float" Precision="8" Format="HDF">
+          <DataItem Dimensions="64 1" NumberType="Float" Precision="8" Format="HDF">
             solution/solution-00000.h5:/p
           </DataItem>
         </Attribute>
         <Attribute Name="velocity" AttributeType="Vector" Center="Node">
-          <DataItem Dimensions="25 3" NumberType="Float" Precision="8" Format="HDF">
+          <DataItem Dimensions="64 3" NumberType="Float" Precision="8" Format="HDF">
             solution/solution-00000.h5:/velocity
           </DataItem>
         </Attribute>
         <Attribute Name="viscosity" AttributeType="Scalar" Center="Node">
-          <DataItem Dimensions="25 1" NumberType="Float" Precision="8" Format="HDF">
+          <DataItem Dimensions="64 1" NumberType="Float" Precision="8" Format="HDF">
             solution/solution-00000.h5:/viscosity
           </DataItem>
         </Attribute>

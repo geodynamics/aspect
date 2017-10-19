@@ -425,6 +425,15 @@ namespace aspect
         bool interpolate_output;
 
         /**
+         * deal.II offers the possibility to filter duplicate vertices in HDF5
+         * output files. This merges the vertices of adjacent cells and
+         * therefore saves disk space, but misrepresents discontinuous
+         * output properties. Activating this function reduces the disk space
+         * by about a factor of $2^{dim}$ for hdf5 output.
+         */
+        bool filter_output;
+
+        /**
          * For free surface computations Aspect uses an Arbitrary-Lagrangian-
          * Eulerian formulation to handle deforming the domain, so the mesh
          * has its own velocity field.  This may be written as an output field
