@@ -306,8 +306,7 @@ namespace aspect
             {
               case stress_limiter:
               {
-                // viscosity_yield = std::min(viscosity_limiter, viscosity_pre_yield);
-                viscosity_yield = viscosity_limiter;
+                viscosity_yield = 1. / ( 1./viscosity_limiter + 1./viscosity_pre_yield);
                 break;
               }
               case drucker_prager:
