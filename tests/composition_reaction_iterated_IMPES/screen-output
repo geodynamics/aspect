@@ -19,6 +19,7 @@ Number of degrees of freedom: 26,439 (8,450+1,089+4,225+4,225+4,225+4,225)
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 40+0 iterations.
       Relative nonlinear residuals: 1.72329e-16, 0, 5.7186e-13, 0, 0.00772709
       Total relative residual after nonlinear iteration 2: 0.00772709
@@ -28,6 +29,7 @@ Number of degrees of freedom: 26,439 (8,450+1,089+4,225+4,225+4,225+4,225)
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
       Relative nonlinear residuals: 1.82797e-16, 0, 5.7186e-13, 0, 8.29714e-08
       Total relative residual after nonlinear iteration 3: 8.29714e-08
@@ -53,6 +55,7 @@ Number of degrees of freedom: 26,439 (8,450+1,089+4,225+4,225+4,225+4,225)
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 40+0 iterations.
       Relative nonlinear residuals: 1.89051e-07, 0.5, 9.41726e-13, 0.5, 0.00783271
       Total relative residual after nonlinear iteration 2: 0.5
@@ -62,6 +65,7 @@ Number of degrees of freedom: 26,439 (8,450+1,089+4,225+4,225+4,225+4,225)
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
       Relative nonlinear residuals: 1.40557e-07, 9.41813e-13, 9.41721e-13, 9.41813e-13, 8.42599e-08
       Total relative residual after nonlinear iteration 3: 1.40557e-07

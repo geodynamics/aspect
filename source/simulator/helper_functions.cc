@@ -1236,15 +1236,17 @@ namespace aspect
   bool
   Simulator<dim>::stokes_matrix_depends_on_solution() const
   {
-    // currently, the only coefficient that really appears on the
-    // left hand side of the Stokes equation is the viscosity. note
-    // that our implementation of compressible materials makes sure
-    // that the density does not appear on the LHS.
-    // if melt transport is included in the simulation, we have an
+    // Currently, the only coefficient that really appears on the
+    // left hand side of the Stokes equation is the viscosity and possibly
+    // the density in the case of the implicit reference density profile
+    // approximation.
+    // If melt transport is included in the simulation, we have an
     // additional equation with more coefficients on the left hand
     // side.
 
     return (material_model->get_model_dependence().viscosity != MaterialModel::NonlinearDependence::none)
+           || (parameters.formulation_mass_conservation ==
+               Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
            || parameters.include_melt_transport;
   }
 
