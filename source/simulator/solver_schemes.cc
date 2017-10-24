@@ -32,7 +32,7 @@ namespace aspect
   namespace
   {
     /**
-     * Converts a function with a certain number of components into a Function@dim@
+     * Converts a function with a certain number of components into a Function@<dim@>
      * with optionally having additional zero components.
      **/
     template <int dim>
@@ -69,6 +69,8 @@ namespace aspect
                   ExcMessage ("Number of objects components needs to be less than number of total components"));
         }
 
+
+
         double
         value (const Point<dim> &p,
                const unsigned int component) const
@@ -88,6 +90,8 @@ namespace aspect
             }
         }
 
+
+
         void
         vector_value (const Point<dim>   &p,
                       Vector<double>     &values) const
@@ -103,6 +107,8 @@ namespace aspect
               values(first_component + i) = temp(i);
             }
         }
+
+
 
       private:
         /**
@@ -135,7 +141,7 @@ namespace aspect
 
     if (compute_initial_residual)
       {
-        Assert(initial_residual != NULL, ExcNotImplemented());
+        Assert(initial_residual != NULL, ExcInternalError());
         *initial_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
       }
 
@@ -149,6 +155,8 @@ namespace aspect
     return 0.0;
   }
 
+
+
   template <int dim>
   std::vector<double> Simulator<dim>::assemble_and_solve_composition (const bool compute_initial_residual,
                                                                       std::vector<double> *initial_residual)
@@ -156,7 +164,10 @@ namespace aspect
     std::vector<double> current_residual(introspection.n_compositional_fields,0.0);
 
     if (compute_initial_residual)
-      Assert(initial_residual->size() == introspection.n_compositional_fields, ExcNotImplemented());
+      {
+        Assert(initial_residual != NULL, ExcInternalError());
+        Assert(initial_residual->size() == introspection.n_compositional_fields, ExcInternalError());
+      }
 
     for (unsigned int c=0; c < introspection.n_compositional_fields; ++c)
       {
@@ -209,7 +220,7 @@ namespace aspect
 
     if (compute_initial_residual)
       {
-        Assert(initial_residual != NULL, ExcNotImplemented());
+        Assert(initial_residual != NULL, ExcInternalError());
         *initial_residual = compute_initial_stokes_residual();
       }
 
@@ -264,7 +275,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_Stokes_only ()
+  void Simulator<dim>::solve_stokes_only ()
   {
     double initial_stokes_residual = 0.0;
 
@@ -303,6 +314,7 @@ namespace aspect
 
     return;
   }
+
 
 
   template <int dim>
@@ -389,7 +401,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_iterated_Stokes ()
+  void Simulator<dim>::solve_iterated_stokes ()
   {
     // solve the temperature and composition systems once...
     assemble_and_solve_temperature();
@@ -440,8 +452,9 @@ namespace aspect
   }
 
 
+
   template <int dim>
-  void Simulator<dim>::solve_Newton_Stokes ()
+  void Simulator<dim>::solve_newton_stokes ()
   {
     std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
 
@@ -734,10 +747,10 @@ namespace aspect
   template std::vector<double> Simulator<dim>::assemble_and_solve_composition(const bool, std::vector<double> *); \
   template double Simulator<dim>::assemble_and_solve_stokes(const bool, double*); \
   template void Simulator<dim>::solve_IMPES(); \
-  template void Simulator<dim>::solve_Stokes_only(); \
+  template void Simulator<dim>::solve_stokes_only(); \
   template void Simulator<dim>::solve_iterated_IMPES(); \
-  template void Simulator<dim>::solve_iterated_Stokes(); \
-  template void Simulator<dim>::solve_Newton_Stokes(); \
+  template void Simulator<dim>::solve_iterated_stokes(); \
+  template void Simulator<dim>::solve_newton_stokes(); \
   template void Simulator<dim>::solve_advection_only();
 
   ASPECT_INSTANTIATE(INSTANTIATE)

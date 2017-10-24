@@ -1747,7 +1747,7 @@ namespace aspect
         current_linearization_point = distr_solution;
       }
 
-    // The free surface scheme is currently not build to work inside a nonlinear solver.
+    // The free surface scheme is currently not built to work inside a nonlinear solver.
     // We do the free surface execution at the beginning of the timestep for a specific reason.
     // The time step size is calculated AFTER the whole solve_timestep() function.  If we call
     // free_surface_execute() after the Stokes solve, it will be before we know what the appropriate
@@ -1769,7 +1769,7 @@ namespace aspect
 
         case NonlinearSolver::Stokes_only:
         {
-          solve_Stokes_only();
+          solve_stokes_only();
           break;
         }
 
@@ -1781,13 +1781,13 @@ namespace aspect
 
         case NonlinearSolver::iterated_Stokes:
         {
-          solve_iterated_Stokes();
+          solve_iterated_stokes();
           break;
         }
 
         case NonlinearSolver::Newton_Stokes:
         {
-          solve_Newton_Stokes();
+          solve_newton_stokes();
           break;
         }
 

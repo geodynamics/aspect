@@ -456,7 +456,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_Stokes_only ();
+      void solve_stokes_only ();
 
       /**
        * This function implements one scheme for the various
@@ -484,22 +484,23 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_iterated_Stokes ();
+      void solve_iterated_stokes ();
 
       /**
-       * Do the various steps necessary to assemble and solve the things
-       * necessary in each time step.
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
        *
-       * 'Newton Stokes' solves the temperature and composition equations
-       * once and then iterates over the Stokes equation until convergence
-       * is reached. It begins this iteration with Picard iterations and
-       * can change to Newton iterations after a certain tolerance or
-       * number of iterations is reached.
+       * 'Newton Stokes' iterates over solving the temperature, composition,
+       * and Stokes equations just like 'iterated IMPES', but for the
+       * Stokes system it is able to switch from a defect correction form of
+       * Picard iterations to Newton iterations after a certain tolerance or
+       * number of iterations is reached. This can greatly improve the
+       * convergence rate for particularly nonlinear viscosities.
        *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_Newton_Stokes ();
+      void solve_newton_stokes ();
 
       /**
        * This function implements one scheme for the various
