@@ -73,6 +73,12 @@ namespace aspect
         double value (const Point<dim-1> &p) const = 0;
 
         /**
+         * Return the maximum value of the elevation.
+         */
+        virtual
+        double max_topography () const = 0;
+
+        /**
          * Declare the parameters this class takes through input files. The
          * default implementation of this function does not describe any
          * parameters. Consequently, derived classes do not have to overload

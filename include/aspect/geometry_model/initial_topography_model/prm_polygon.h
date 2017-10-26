@@ -46,6 +46,12 @@ namespace aspect
         virtual
         double value (const Point<dim-1> &p) const;
 
+        /**
+         * Return the maximum value of the elevation.
+         */
+        virtual
+        double max_topography () const;
+
 
         /**
          * Declare the parameters this class takes through input files.
@@ -66,6 +72,11 @@ namespace aspect
          * The values of the topography are stored in a vector.
          */
         std::vector<double> topography_values;
+
+        /**
+         * The maximum topography in this model
+         */
+        double maximum_topography;
 
         /**
          * The polygons and their points are stored in this vector.
