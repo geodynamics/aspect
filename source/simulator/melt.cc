@@ -198,7 +198,7 @@ namespace aspect
                                             :
                                             eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j]))
                                            +
-                                           (one_over_eta *
+                                           (one_over_eta/2.0 *
                                             pressure_scaling *
                                             pressure_scaling)
                                            * scratch.phi_p[i] * scratch.phi_p[j]
@@ -209,7 +209,7 @@ namespace aspect
                                            scratch.grad_phi_p[i] *
                                            scratch.grad_phi_p[j]
                                            +
-                                           (1./eta + 1./viscosity_c) *
+                                           (1./(2.0*eta) + 1./viscosity_c) *
                                            pressure_scaling *
                                            pressure_scaling *
                                            (scratch.phi_p_c[i] * scratch.phi_p_c[j])
