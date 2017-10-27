@@ -215,6 +215,14 @@ namespace aspect
   double Simulator<dim>::assemble_and_solve_stokes (const bool compute_initial_residual,
                                                     double *initial_residual)
   {
+    // If the Stokes matrix depends on the solution, or the boundary conditions
+    // for the Stokes system have changed rebuild the matrix and preconditioner
+    // before solving.
+    if (stokes_matrix_depends_on_solution()
+        ||
+        (parameters.prescribed_velocity_boundary_indicators.size() > 0))
+      rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+
     assemble_stokes_system ();
     build_stokes_preconditioner();
 
@@ -256,14 +264,6 @@ namespace aspect
   {
     assemble_and_solve_temperature();
     assemble_and_solve_composition();
-
-    // the Stokes matrix depends on the viscosity. if the viscosity
-    // depends on other solution variables, then after we need to
-    // update the Stokes matrix in every time step and so need to set
-    // the following flag. if we change the Stokes matrix we also
-    // need to update the Stokes preconditioner.
-    if (stokes_matrix_depends_on_solution() == true)
-      rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
     assemble_and_solve_stokes();
 
     if (parameters.run_postprocessors_on_nonlinear_iterations)
@@ -288,13 +288,6 @@ namespace aspect
       parameters.max_nonlinear_iterations;
     do
       {
-        if ((stokes_matrix_depends_on_solution() == true)
-            ||
-            (parameters.prescribed_velocity_boundary_indicators.size() > 0))
-          rebuild_stokes_matrix = true;
-        if (stokes_matrix_depends_on_solution() == true)
-          rebuild_stokes_preconditioner = true;
-
         const double relative_stokes_residual =
           assemble_and_solve_stokes(nonlinear_iteration == 0, &initial_stokes_residual);
 
@@ -339,19 +332,6 @@ namespace aspect
 
         const std::vector<double>  relative_composition_residual =
           assemble_and_solve_composition(nonlinear_iteration == 0, &initial_composition_residual);
-
-        // TODO: This is a leftover from early history and we keep it for now
-        // to keep test results unchanged. Unify the setting of these
-        // variables between all nonlinear solver schemes, by moving them into
-        // assemble_and_solve_stokes().
-        rebuild_stokes_matrix = true;
-        // the Stokes matrix depends on the viscosity. if the viscosity
-        // depends on other solution variables, then after we need to
-        // update the Stokes matrix in every time step and so need to set
-        // the following flag. if we change the Stokes matrix we also
-        // need to update the Stokes preconditioner.
-        if (stokes_matrix_depends_on_solution() == true)
-          rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
         const double relative_stokes_residual =
           assemble_and_solve_stokes(nonlinear_iteration == 0, &initial_stokes_residual);
@@ -421,13 +401,6 @@ namespace aspect
 
     do
       {
-        // rebuild the matrix if it actually depends on the solution
-        // of the previous iteration.
-        if ((stokes_matrix_depends_on_solution() == true)
-            ||
-            (parameters.prescribed_velocity_boundary_indicators.size() > 0))
-          rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
-
         const double relative_stokes_residual =
           assemble_and_solve_stokes(nonlinear_iteration == 0, &initial_stokes_residual);
 

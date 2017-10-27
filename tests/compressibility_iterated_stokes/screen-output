@@ -8,12 +8,16 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 33+0 iterations.
       Relative Stokes residual after nonlinear iteration 1: 1
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 28+0 iterations.
       Relative Stokes residual after nonlinear iteration 2: 0.0138303
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 19+0 iterations.
       Relative Stokes residual after nonlinear iteration 3: 0.000750098
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 11+0 iterations.
       Relative Stokes residual after nonlinear iteration 4: 2.71234e-05
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 5+0 iterations.
       Relative Stokes residual after nonlinear iteration 5: 6.8004e-07
 
