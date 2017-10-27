@@ -431,6 +431,91 @@ namespace aspect
       void solve_timestep ();
 
       /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
+       * 'IMPES' is the classical IMplicit
+       * Pressure Explicit Saturation scheme in which ones solves
+       * the temperatures and Stokes equations exactly
+       * once per time step, one after the other.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_IMPES ();
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
+       * The 'Stokes only' scheme only solves the Stokes system and ignores
+       * compositions and the temperature equation (careful, the material
+       * model must not depend on the temperature; mostly useful for
+       * Stokes benchmarks).
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_stokes_only ();
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
+       * The `iterated IMPES' scheme iterates the decoupled IMPES approach
+       * by alternating the solution of the temperature and Stokes systems.
+       * This is essentially a type of Picard iterations for the whole
+       * system of equations.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_iterated_IMPES ();
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
+       * The `iterated Stokes' scheme solves the temperature and composition
+       * equations once at the beginning of each time step
+       * and then iterates out the solution of the Stokes equation using
+       * Picard iterations.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_iterated_stokes ();
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
+       * 'Newton Stokes' iterates over solving the temperature, composition,
+       * and Stokes equations just like 'iterated IMPES', but for the
+       * Stokes system it is able to switch from a defect correction form of
+       * Picard iterations to Newton iterations after a certain tolerance or
+       * number of iterations is reached. This can greatly improve the
+       * convergence rate for particularly nonlinear viscosities.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_newton_stokes ();
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
+       * The 'Advection only' scheme only solves the temperature and other
+       * advection systems and instead of solving for the Stokes system,
+       * a prescribed velocity and pressure is used."
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_advection_only ();
+
+      /**
        * Initiate the assembly of the Stokes preconditioner matrix via
        * assemble_stokes_preconditoner(), then set up the data structures to
        * actually build a preconditioner from this matrix.
@@ -457,6 +542,45 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       void assemble_stokes_system ();
+
+      /**
+       * Assemble and solve the temperature equation.
+       * This function returns the residual after solving
+       * and can optionally compute and store an initial
+       * residual before solving the equation.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      double assemble_and_solve_temperature (const bool compute_initial_residual = false,
+                                             double *initial_residual = NULL);
+
+      /**
+       * Solve the composition equations with whatever method is selected
+       * (fields or particles). This function returns the residuals for
+       * all fields after solving
+       * and can optionally compute and store the initial
+       * residuals before solving the equation. For lack of a definition
+       * the residuals of all compositional fields that are advected
+       * using particles are considered zero.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      std::vector<double> assemble_and_solve_composition (const bool compute_initial_residual = false,
+                                                          std::vector<double> *initial_residual = NULL);
+
+      /**
+       * Assemble and solve the Stokes equation.
+       * This function returns the residual after solving
+       * and can optionally compute and store an initial
+       * residual before solving the equation.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      double assemble_and_solve_stokes (const bool compute_initial_residual = false,
+                                        double *initial_residual = NULL);
 
       /**
        * Initiate the assembly of one advection matrix and right hand side and
