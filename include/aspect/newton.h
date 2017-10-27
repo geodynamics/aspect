@@ -105,6 +105,17 @@ namespace aspect
        */
       void set_newton_derivative_scaling_factor(const double newton_derivative_scaling_factor);
 
+      /**
+       * Gets the Newton derivative scaling factor used for scaling the
+       * derivative part of the Newton Stokes solver in the assembly.
+       */
+      bool get_use_spd_factor() const;
+
+      /**
+       * Sets the Newton derivative scaling factor used for scaling the
+       * derivative part of the Newton Stokes solver in the assembly.
+       */
+      void set_use_spd_factor(const bool set_spd_factor);
 
     private:
       /**
@@ -115,6 +126,7 @@ namespace aspect
        * explanation of the purpose of this factor.
        */
       double newton_derivative_scaling_factor;
+      bool use_spd_factor;
   };
 
   namespace Assemblers

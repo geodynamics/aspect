@@ -161,6 +161,23 @@ namespace aspect
   {
     newton_derivative_scaling_factor = set_newton_derivative_scaling_factor;
   }
+
+  template <int dim>
+  bool
+  NewtonHandler<dim>::
+  get_use_spd_factor() const
+  {
+    return use_spd_factor;
+  }
+
+
+  template <int dim>
+  void
+  NewtonHandler<dim>::
+  set_use_spd_factor(const bool set_use_spd_factor)
+  {
+    use_spd_factor = set_use_spd_factor;
+  }
 }
 
 
