@@ -9,7 +9,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
@@ -21,7 +21,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving temperature system... 53 iterations.
    Solving C_1 system ... 27 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1.01 m/year
@@ -33,7 +33,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18+0 iterations.
+   Solving Stokes system... 14+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
@@ -45,7 +45,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18+0 iterations.
+   Solving Stokes system... 14+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
@@ -57,19 +57,19 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18+0 iterations.
+   Solving Stokes system... 13+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            0 K, 1261 K, 1697 K
-     Heat fluxes through boundary parts: 0.3519 W, 70.85 W, 4.728e+04 W, 4.276e+04 W
+     Heat fluxes through boundary parts: 0.3527 W, 70.85 W, 4.728e+04 W, 4.276e+04 W
      Compositions min/max/mass:          0.2161/0.9183/2.734e+11
 
 *** Timestep 5:  t=410950 years
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system... 13+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
@@ -81,7 +81,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system... 13+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
@@ -93,7 +93,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
@@ -105,7 +105,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
@@ -117,43 +117,43 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system... 13+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            0 K, 1039 K, 1562 K
-     Heat fluxes through boundary parts: 7.801 W, 27.88 W, 2.851e+04 W, 2.67e+04 W
+     Heat fluxes through boundary parts: 7.802 W, 27.88 W, 2.851e+04 W, 2.67e+04 W
      Compositions min/max/mass:          0.3383/0.6785/2.159e+11
 
 *** Timestep 10:  t=823003 years
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system... 13+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            0 K, 1021 K, 1526 K
-     Heat fluxes through boundary parts: 3.303 W, 106.8 W, 2.693e+04 W, 2.519e+04 W
+     Heat fluxes through boundary parts: 3.305 W, 106.8 W, 2.693e+04 W, 2.519e+04 W
      Compositions min/max/mass:          0.356/0.6382/2.143e+11
 
 *** Timestep 11:  t=905468 years
    Solving temperature system... 14 iterations.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system... 13+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            0 K, 1010 K, 1489 K
-     Heat fluxes through boundary parts: -3.092 W, 117.9 W, 2.557e+04 W, 2.42e+04 W
+     Heat fluxes through boundary parts: -3.091 W, 117.9 W, 2.557e+04 W, 2.42e+04 W
      Compositions min/max/mass:          0.37/0.611/2.141e+11
 
 *** Timestep 12:  t=987954 years
    Solving temperature system... 15 iterations.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
@@ -165,7 +165,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving temperature system... 7 iterations.
    Solving C_1 system ... 7 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system... 10+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year

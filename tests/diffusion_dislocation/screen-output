@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,237 (578+81+289+289)
@@ -8,7 +6,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving temperature system... 0 iterations.
    Solving depleted_lithosphere system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system... 10+0 iterations.
       Relative nonlinear residuals: 2.04449e-16, 1.05609e-16, 1
       Total relative residual after nonlinear iteration 1: 1
 
@@ -16,17 +14,17 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving temperature system... 0 iterations.
    Solving depleted_lithosphere system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals: 2.04449e-16, 1.05609e-16, 0.000712074
-      Total relative residual after nonlinear iteration 2: 0.000712074
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residuals: 2.04449e-16, 1.05609e-16, 0.000712092
+      Total relative residual after nonlinear iteration 2: 0.000712092
 
 
    Solving temperature system... 0 iterations.
    Solving depleted_lithosphere system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals: 2.04449e-16, 1.05609e-16, 1.47658e-07
-      Total relative residual after nonlinear iteration 3: 1.47658e-07
+   Solving Stokes system... 3+0 iterations.
+      Relative nonlinear residuals: 2.04449e-16, 1.05609e-16, 1.47593e-07
+      Total relative residual after nonlinear iteration 3: 1.47593e-07
 
 
 

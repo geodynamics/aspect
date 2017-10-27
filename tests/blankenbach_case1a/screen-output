@@ -5,7 +5,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 31+0 iterations.
+   Solving Stokes system... 33+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-blankenbach_case1a/solution/solution-00000
@@ -17,7 +17,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 1:  t=0.00616847 seconds
    Solving temperature system... 58 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 29+0 iterations.
+   Solving Stokes system... 32+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  21.1 m/s, 30.8 m/s
@@ -28,7 +28,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 2:  t=0.011235 seconds
    Solving temperature system... 44 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system... 31+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  26.5 m/s, 39.4 m/s
@@ -39,7 +39,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 3:  t=0.0152015 seconds
    Solving temperature system... 43 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system... 31+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  33.7 m/s, 49.7 m/s
@@ -50,7 +50,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 4:  t=0.0183426 seconds
    Solving temperature system... 41 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27+0 iterations.
+   Solving Stokes system... 30+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  41.1 m/s, 61.3 m/s
@@ -61,7 +61,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 5:  t=0.02 seconds
    Solving temperature system... 28 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  45.4 m/s, 68.7 m/s

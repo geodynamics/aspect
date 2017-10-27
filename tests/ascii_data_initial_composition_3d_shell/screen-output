@@ -9,7 +9,7 @@ Number of degrees of freedom: 1,582 (915+57+305+305)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 193+0 iterations.
+   Solving Stokes system... 98+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1.15 m/year, 2.05 m/year
@@ -20,7 +20,7 @@ Number of degrees of freedom: 1,582 (915+57+305+305)
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 98+0 iterations.
+   Solving Stokes system... 88+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1.15 m/year, 2.08 m/year

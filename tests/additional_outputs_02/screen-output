@@ -54,7 +54,7 @@ Number of degrees of freedom: 84 (50+9+25)
 * create_additional_material_model_outputs() called
 * evaluate called with additional outputs!
 
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 11+0 iterations.
 
    Postprocessing:
 * evaluate called without additional outputs!

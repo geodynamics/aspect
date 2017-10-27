@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libwrite_plugin_graph.so>
 
@@ -15,7 +13,7 @@ found N6aspect19BoundaryComposition9AsciiDataILi2EEE [label="ascii data"
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system... 13+0 iterations.
 
    Postprocessing:
 
