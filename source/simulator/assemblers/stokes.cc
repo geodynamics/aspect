@@ -92,7 +92,7 @@ namespace aspect
             }
 
           const double eta = scratch.material_model_outputs.viscosities[q];
-          const double one_over_eta = 1. / eta;
+          const double one_over_eta = 1. / (2.0 * eta);
 
           const SymmetricTensor<4, dim> &stress_strain_director = scratch
                                                                   .material_model_outputs.stress_strain_directors[q];
