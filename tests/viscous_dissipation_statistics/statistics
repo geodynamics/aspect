@@ -13,4 +13,4 @@
 # 13: Visualization file name
 # 14: RMS velocity (m/s)
 # 15: Max. velocity (m/s)
-0 0.000000000000e+00 0.000000000000e+00 155 5979 1894 1894 0 0 30 31 149 output-viscous_dissipation_statistics/solution/solution-00000 7.20248253e-11 1.09330027e-09 
+0 0.000000000000e+00 0.000000000000e+00 148 5693 1803 1803 0 0 33 34 165 output-viscous_dissipation_statistics/solution/solution-00000 7.05651923e-11 1.06985836e-09 

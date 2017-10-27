@@ -7,7 +7,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-always_refine/solution/solution-00000
@@ -22,7 +22,7 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
    Solving C_1 system ... 9 iterations.
    Solving C_2 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-always_refine/solution/solution-00001
@@ -37,7 +37,7 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 23+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-always_refine/solution/solution-00002
@@ -52,7 +52,7 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 23+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-always_refine/solution/solution-00003
@@ -67,7 +67,7 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-always_refine/solution/solution-00004
@@ -82,7 +82,7 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
    Solving C_1 system ... 9 iterations.
    Solving C_2 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-always_refine/solution/solution-00005

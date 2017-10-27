@@ -6,16 +6,16 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26+0 iterations.
+   Solving Stokes system... 32+0 iterations.
       Relative Stokes residual after nonlinear iteration 1: 1
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system... 25+0 iterations.
       Relative Stokes residual after nonlinear iteration 2: 0.0245986
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system... 18+0 iterations.
       Relative Stokes residual after nonlinear iteration 3: 0.00132971
-   Solving Stokes system... 11+0 iterations.
-      Relative Stokes residual after nonlinear iteration 4: 4.77177e-05
+   Solving Stokes system... 12+0 iterations.
+      Relative Stokes residual after nonlinear iteration 4: 4.7718e-05
    Solving Stokes system... 5+0 iterations.
-      Relative Stokes residual after nonlinear iteration 5: 1.1743e-06
+      Relative Stokes residual after nonlinear iteration 5: 1.17448e-06
 
    Postprocessing:
 
@@ -38,8 +38,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 1:  t=0.0284091 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1.02389e-07
+   Solving Stokes system... 0+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 9.49754e-08
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -47,8 +47,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 2:  t=0.0568182 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1.01722e-07
+   Solving Stokes system... 0+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 9.49754e-08
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -57,7 +57,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 3:  t=0.0852272 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 9.09435e-08
+      Relative Stokes residual after nonlinear iteration 1: 9.49754e-08
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -65,8 +65,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 4:  t=0.113636 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1.67135e-07
+   Solving Stokes system... 0+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 9.49754e-08
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -75,7 +75,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 5:  t=0.142045 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 9.41443e-08
+      Relative Stokes residual after nonlinear iteration 1: 9.49754e-08
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -83,8 +83,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 6:  t=0.170454 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1.83104e-07
+   Solving Stokes system... 0+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 9.49754e-08
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -92,8 +92,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 7:  t=0.198864 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1.64641e-07
+   Solving Stokes system... 0+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 9.49754e-08
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -101,8 +101,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 8:  t=0.227273 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1.14814e-07
+   Solving Stokes system... 0+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 9.49754e-08
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -110,8 +110,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 9:  t=0.255682 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1.81399e-07
+   Solving Stokes system... 0+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 9.49754e-08
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -120,7 +120,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 10:  t=0.284091 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 9.32674e-08
+      Relative Stokes residual after nonlinear iteration 1: 9.49754e-08
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -132,7 +132,7 @@ Number of degrees of freedom: 948 (578+81+289)
 *** Timestep 11:  t=0.3125 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 3+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 7.06759e-06
+      Relative Stokes residual after nonlinear iteration 1: 7.06681e-06
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -140,8 +140,8 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 12:  t=0.369318 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1.43633e-06
+   Solving Stokes system... 4+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 1.19729e-06
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -149,8 +149,8 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 13:  t=0.426136 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 2.67638e-07
+   Solving Stokes system... 2+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 2.1148e-07
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -158,8 +158,8 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 14:  t=0.482954 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1.06694e-07
+   Solving Stokes system... 3+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 1.80032e-07
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -167,8 +167,8 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 15:  t=0.539772 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1.6185e-07
+   Solving Stokes system... 0+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 8.34258e-08
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -176,8 +176,8 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 16:  t=0.59659 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 8.26501e-08
+   Solving Stokes system... 3+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 1.66975e-07
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -185,8 +185,8 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 17:  t=0.653409 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1.61514e-07
+   Solving Stokes system... 0+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 8.68351e-08
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -194,8 +194,8 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 18:  t=0.710227 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 8.94958e-08
+   Solving Stokes system... 3+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 1.70486e-07
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -203,8 +203,8 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 19:  t=0.767045 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1.71033e-07
+   Solving Stokes system... 0+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 8.72332e-08
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -212,8 +212,8 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 20:  t=0.823863 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1.00444e-07
+   Solving Stokes system... 3+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 1.73222e-07
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -224,10 +224,10 @@ Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 21:  t=0.880681 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 2.98292e-05
-   Solving Stokes system... 2+0 iterations.
-      Relative Stokes residual after nonlinear iteration 2: 1.25305e-07
+   Solving Stokes system... 3+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 2.98496e-05
+   Solving Stokes system... 3+0 iterations.
+      Relative Stokes residual after nonlinear iteration 2: 1.35729e-07
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -235,8 +235,8 @@ Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 22:  t=0.994317 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 7.03547e-06
+   Solving Stokes system... 3+0 iterations.
+      Relative Stokes residual after nonlinear iteration 1: 7.0853e-06
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
@@ -245,7 +245,7 @@ Number of degrees of freedom: 268 (162+25+81)
 *** Timestep 23:  t=1 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 2.2235e-07
+      Relative Stokes residual after nonlinear iteration 1: 2.15897e-07
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K

@@ -6,7 +6,7 @@ Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 11+0 iterations.
       Relative Stokes residual after nonlinear iteration 1: 1
    Solving Stokes system... 10+0 iterations.
       Relative Stokes residual after nonlinear iteration 2: 20.4416
@@ -20,12 +20,12 @@ Number of degrees of freedom: 268 (162+25+81)
       Relative Stokes residual after nonlinear iteration 6: 1.55029
    Solving Stokes system... 9+0 iterations.
       Relative Stokes residual after nonlinear iteration 7: 0.862482
-   Solving Stokes system... 9+0 iterations.
-      Relative Stokes residual after nonlinear iteration 8: 0.487243
+   Solving Stokes system... 8+0 iterations.
+      Relative Stokes residual after nonlinear iteration 8: 0.487247
    Solving Stokes system... 7+0 iterations.
-      Relative Stokes residual after nonlinear iteration 9: 0.278384
+      Relative Stokes residual after nonlinear iteration 9: 0.27839
    Solving Stokes system... 7+0 iterations.
-      Relative Stokes residual after nonlinear iteration 10: 0.160352
+      Relative Stokes residual after nonlinear iteration 10: 0.160363
 
    Postprocessing:
 viscosity depends on

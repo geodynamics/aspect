@@ -107,11 +107,11 @@ namespace aspect
                   scratch.dof_component_indices[j])
                 data.local_matrix(i, j) += ((
                                               use_tensor ?
-                                              eta * (scratch.grads_phi_u[i]
-                                                     * stress_strain_director
-                                                     * scratch.grads_phi_u[j]) :
-                                              eta * (scratch.grads_phi_u[i]
-                                                     * scratch.grads_phi_u[j]))
+                                              2.0 * eta * (scratch.grads_phi_u[i]
+                                                           * stress_strain_director
+                                                           * scratch.grads_phi_u[j]) :
+                                              2.0 * eta * (scratch.grads_phi_u[i]
+                                                           * scratch.grads_phi_u[j]))
                                             + one_over_eta * pressure_scaling
                                             * pressure_scaling
                                             * (scratch.phi_p[i] * scratch

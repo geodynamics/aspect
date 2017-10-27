@@ -11,7 +11,7 @@ Number of degrees of freedom: 10,090 (2,178+289+1,089+1,089+1,089+1,089+1,089+1,
    Solving vec2x system ... 0 iterations.
    Solving vec2y system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 29+0 iterations.
+   Solving Stokes system... 31+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-compositional_vectors/solution/solution-00000
