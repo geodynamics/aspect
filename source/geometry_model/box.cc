@@ -207,8 +207,15 @@ namespace aspect
     double
     Box<dim>::depth(const Point<dim> &position) const
     {
-      // this depth does not take topography into consideration
-      const double d = maximal_depth()-(position(dim-1)-box_origin[dim-1]);
+      // Get the surface x (,y) point
+      Point<dim-1> surface_point;
+      for (unsigned int d=0; d<dim-1; ++d)
+        surface_point[d] = position[d];
+
+      // Get the surface topography at this point
+      const double topo = topo_model->value(surface_point);
+
+      const double d = extents[dim-1] + topo - (position(dim-1)-box_origin[dim-1]);
       return std::min (std::max (d, 0.), maximal_depth());
     }
 
@@ -234,7 +241,7 @@ namespace aspect
     double
     Box<dim>::maximal_depth() const
     {
-      return extents[dim-1];
+      return extents[dim-1] + topo_model->max_topography();
     }
 
     template <int dim>

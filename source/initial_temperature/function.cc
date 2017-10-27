@@ -122,7 +122,7 @@ namespace aspect
         catch (...)
           {
             std::cerr << "ERROR: FunctionParser failed to parse\n"
-                      << "\t'Initial conditions.Function'\n"
+                      << "\t'Initial temperature model.Function'\n"
                       << "with expression\n"
                       << "\t'" << prm.get("Function expression") << "'"
                       << "More information about the cause of the parse error \n"

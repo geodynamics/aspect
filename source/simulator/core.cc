@@ -2569,6 +2569,10 @@ namespace aspect
       }
     else
       {
+        time                      = parameters.start_time;
+        timestep_number           = 0;
+        time_step = old_time_step = 0;
+
         // Instead of calling global_refine(n) we flag all cells for
         // refinement and then allow the mesh refinement plugins to unflag
         // the cells if desired. This procedure is repeated n times. If there
@@ -2584,10 +2588,6 @@ namespace aspect
             mesh_refinement_manager.tag_additional_cells ();
             triangulation.execute_coarsening_and_refinement();
           }
-
-        time                      = parameters.start_time;
-        timestep_number           = 0;
-        time_step = old_time_step = 0;
 
         setup_dofs();
 

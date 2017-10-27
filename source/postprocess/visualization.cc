@@ -481,8 +481,8 @@ namespace aspect
           const std::string h5_solution_file_name = "solution/" + solution_file_prefix + ".h5";
           const std::string xdmf_filename = "solution.xdmf";
 
-          // Filter redundant values
-          DataOutBase::DataOutFilter data_filter(DataOutBase::DataOutFilterFlags(true, true));
+          // Filter redundant values if requested in the input file
+          DataOutBase::DataOutFilter data_filter(DataOutBase::DataOutFilterFlags(filter_output, true));
 
           // If the mesh changed since the last output, make a new mesh file
           const std::string mesh_file_prefix = "mesh-" + Utilities::int_to_string (output_file_number, 5);
@@ -797,6 +797,24 @@ namespace aspect
                              "and a factor of 8 in 3d, when using quadratic elements for the velocity, "
                              "and correspondingly more for even higher order elements.");
 
+          prm.declare_entry ("Filter output", "false",
+                             Patterns::Bool(),
+                             "deal.II offers the possibility to filter duplicate vertices for HDF5 "
+                             "output files. This merges the vertices of adjacent cells and "
+                             "therefore saves disk space, but misrepresents discontinuous "
+                             "output properties. Activating this function reduces the disk space "
+                             "by about a factor of $2^{dim}$ for HDF5 output, and currently has no "
+                             "effect on other output formats. "
+                             "\\note{\\textbf{Warning:} Setting this flag to true will result in "
+                             "visualization output that does not accurately represent discontinuous "
+                             "fields. This may be because you are using a discontinuous finite "
+                             "element for the pressure, temperature, or compositional variables, "
+                             "or because you use a visualization postprocessor that outputs "
+                             "quantities as discontinuous fields (e.g., the strain rate, viscosity, "
+                             "etc.). These will then all be visualized as \\textit{continuous} "
+                             "quantities even though, internally, \\aspect{} considers them as "
+                             "discontinuous fields.}");
+
           prm.declare_entry ("Output mesh velocity", "false",
                              Patterns::Bool(),
                              "For free surface computations Aspect uses an Arbitrary-Lagrangian-"
@@ -887,6 +905,7 @@ namespace aspect
             }
 
           interpolate_output = prm.get_bool("Interpolate output");
+          filter_output = prm.get_bool("Filter output");
           output_mesh_velocity = prm.get_bool("Output mesh velocity");
 
           // now also see which derived quantities we are to compute

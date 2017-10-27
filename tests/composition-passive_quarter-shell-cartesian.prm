@@ -50,8 +50,8 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical
-  subsection Vertical
+  set Model name = radial constant
+  subsection Radial constant
     set Magnitude = 10
   end
 end
