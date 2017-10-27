@@ -138,49 +138,28 @@ namespace aspect
         //
         // the reason why this is not entirely obvious is described in
         // the paper that discusses the Newton implementation
-        {
-          bool testing = true;
+        Vector<double> tmp (stokes_dofs_per_cell);
+        for (unsigned int sample = 0; sample < 100; ++sample)
+          {
+            // fill a vector with random numbers for the Stokes DoFs
+            for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+              if (scratch.dof_component_indices[i] < dim)
+                tmp[i] = Utilities::generate_normal_random_number (0, 1);
+              else
+                tmp[i] = 0;
 
-          for (unsigned int sample = 0; sample < 100; ++sample)
-            {
-              Vector<double> tmp (stokes_dofs_per_cell);
-
-              for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                if (scratch.dof_component_indices[i] < dim)
-                  tmp[i] = Utilities::generate_normal_random_number (0, 1);
-                else
-                  tmp[i] = 0;
-
-              const double abc =  data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp);
-              if (abc < -1e-12*data.local_matrix.frobenius_norm())
-                {
-                  testing = false;
-                  std::cout << sample << " Not SPD: " << abc << "; " << std::endl;
-
-                  for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                    {
-                      for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-                        std::cout << std::setprecision(1)  << data.local_matrix(i,j) << "," << std::flush;
-                      std::cout << "},{" << std::endl;
-                    }
-                  std::cout << std::endl;
-                  std::cout << std::setprecision(6) << std::endl;
-
-                  Assert(testing,ExcMessage ("Error: Assembly not SPD!."));
-
-                  // Testing whether all entries are finite.
-                  for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                    {
-                      for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-                        {
-                          Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),ExcMessage ("Error: Assembly matrix is not finite."));
-                        }
-                    }
-                }
-            }
-          if (testing == false)
-            std::cout << std::endl;
-        }
+            // then verify that the product tmp*(A*tmp) -- which by construction
+            // of the vector tmp only covers the top-left block of the matrix A
+            // -- is indeed positive (or nearly so)
+            Assert (data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp)
+                    >=
+                    -1e-12*data.local_matrix.frobenius_norm(),
+                    ExcMessage ("The top left block of the local Newton-Stokes "
+                                "matrix is not positive definite but has an "
+                                "eigenvalue less than "
+                                + Utilities::to_string (data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp))
+                                + " < 0. This should not happen."));
+          }
       }
 #endif
     }
@@ -318,49 +297,28 @@ namespace aspect
           //
           // the reason why this is not entirely obvious is described in
           // the paper that discusses the Newton implementation
-          {
-            bool testing = true;
+          Vector<double> tmp (stokes_dofs_per_cell);
+          for (unsigned int sample = 0; sample < 100; ++sample)
+            {
+              // fill a vector with random numbers for the Stokes DoFs
+              for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                if (scratch.dof_component_indices[i] < dim)
+                  tmp[i] = Utilities::generate_normal_random_number (0, 1);
+                else
+                  tmp[i] = 0;
 
-            for (unsigned int sample = 0; sample < 100; ++sample)
-              {
-                Vector<double> tmp (stokes_dofs_per_cell);
-
-                for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                  if (scratch.dof_component_indices[i] < dim)
-                    tmp[i] = Utilities::generate_normal_random_number (0, 1);
-                  else
-                    tmp[i] = 0;
-
-                const double abc =  data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp);
-                if (abc < -1e-12*data.local_matrix.frobenius_norm())
-                  {
-                    testing = false;
-                    std::cout << sample << " Not SPD: " << abc << "; " << std::endl;
-
-                    for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                      {
-                        for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-                          std::cout << std::setprecision(1)  << data.local_matrix(i,j) << "," << std::flush;
-                        std::cout << "},{" << std::endl;
-                      }
-                    std::cout << std::endl;
-                    std::cout << std::setprecision(6) << std::endl;
-
-                    Assert(testing,ExcMessage ("Error: Assembly not SPD!."));
-
-                    // Testing whether all entries are finite.
-                    for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                      {
-                        for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-                          {
-                            Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),ExcMessage ("Error: Assembly matrix is not finite."));
-                          }
-                      }
-                  }
-              }
-            if (testing == false)
-              std::cout << std::endl;
-          }
+              // then verify that the product tmp*(A*tmp) -- which by construction
+              // of the vector tmp only covers the top-left block of the matrix A
+              // -- is indeed positive (or nearly so)
+              Assert (data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp)
+                      >=
+                      -1e-12*data.local_matrix.frobenius_norm(),
+                      ExcMessage ("The top left block of the local Newton-Stokes "
+                                  "matrix is not positive definite but has an "
+                                  "eigenvalue less than "
+                                  + Utilities::to_string (data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp))
+                                  + " < 0. This should not happen."));
+            }
         }
 #endif
     }
