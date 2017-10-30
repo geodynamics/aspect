@@ -1036,30 +1036,40 @@ namespace aspect
             Assert(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the melt variables."));
             const FEValuesExtractors::Vector fluid_velocity_extractor = this->introspection().variable("fluid velocity").extractor_vector();
 
+            std::vector<Tensor<1,dim> > phi_u_f(dofs_per_cell);
+
             for (unsigned int q=0; q<n_q_points; ++q)
-              for (unsigned int i=0; i<dofs_per_cell; ++i)
-                {
-                  for (unsigned int j=0; j<dofs_per_cell; ++j)
-                    cell_matrix(i,j) += fe_values[fluid_velocity_extractor].value(j,q) *
-                                        fe_values[fluid_velocity_extractor].value(i,q) *
-                                        fe_values.JxW(q);
+              {
+                for (unsigned int i=0; i<dofs_per_cell; ++i)
+                  {
+                    phi_u_f[i] = fe_values[fluid_velocity_extractor].value(i,q);
+                  }
 
-                  const double phi = std::max(0.0, porosity_values[q]);
+                const Tensor<1,dim>  gravity = this->get_gravity_model().gravity_vector(in.position[q]);
+                const double JxW = fe_values.JxW(q);
+                const double phi = std::max(0.0, porosity_values[q]);
 
-                  // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
-                  if (phi > this->get_melt_handler().melt_transport_threshold)
-                    {
-                      const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
-                      const Tensor<1,dim>  gravity = this->get_gravity_model().gravity_vector(in.position[q]);
-                      cell_vector(i) += (u_s_values[q] - K_D * (grad_p_f_values[q] - melt_outputs->fluid_densities[q]*gravity) / phi)
-                                        * fe_values[fluid_velocity_extractor].value(i,q)
-                                        * fe_values.JxW(q);
-                    }
+                for (unsigned int i=0; i<dofs_per_cell; ++i)
+                  {
+                    for (unsigned int j=0; j<dofs_per_cell; ++j)
+                      cell_matrix(i,j) += phi_u_f[j] * phi_u_f[i] *
+                                          JxW;
 
-                }
 
-            this->get_current_constraints().distribute_local_to_global (cell_matrix, cell_vector,
-                                                                        cell_dof_indices, matrix, rhs, false);
+                    // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
+                    if (phi > this->get_melt_handler().melt_transport_threshold)
+                      {
+                        const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
+                        cell_vector(i) += (u_s_values[q] - K_D * (grad_p_f_values[q] - melt_outputs->fluid_densities[q]*gravity) / phi)
+                                          * phi_u_f[i]
+                                          * fe_values.JxW(q);
+                      }
+
+                  }
+
+                this->get_current_constraints().distribute_local_to_global (cell_matrix, cell_vector,
+                                                                            cell_dof_indices, matrix, rhs, false);
+              }
           }
 
       rhs.compress (VectorOperation::add);
