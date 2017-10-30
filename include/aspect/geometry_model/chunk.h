@@ -133,6 +133,13 @@ namespace aspect
         virtual
         double depth(const Point<dim> &position) const;
 
+        /**
+             * Return the height of the given position relative to
+             * the outer radius.
+             */
+        virtual
+        double height_above_reference_surface(const Point<dim> &position) const;
+
         virtual
         Point<dim> representative_point(const double depth) const;
 

@@ -221,6 +221,14 @@ namespace aspect
 
 
     template <int dim>
+    double
+    Box<dim>::height_above_reference_surface(const Point<dim> &position) const
+    {
+      return (position(dim-1)-box_origin[dim-1]) - extents[dim-1];
+    }
+
+
+    template <int dim>
     Point<dim>
     Box<dim>::representative_point(const double depth) const
     {

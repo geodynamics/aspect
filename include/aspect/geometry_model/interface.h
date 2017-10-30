@@ -131,6 +131,18 @@ namespace aspect
         double depth(const Point<dim> &position) const = 0;
 
         /**
+          * Return the height of the given position relative to
+          * the reference surface of the model. Positive returned value
+        * means that the point is above (i.e., farther from the center
+        * of the model) the reference surface, negative value means that
+        * the point is below the the reference surface.
+          *
+          * Same limitations as for the depth function, apply here.
+        */
+        virtual
+        double height_above_reference_surface(const Point<dim> &position) const = 0;
+
+        /**
          * Takes the Cartesian points (x,z or x,y,z) and returns standardized
          * coordinates which are most 'natural' to the geometry model. For a box
          * this will  be (x,z) in 2d or (x,y,z) in 3d, and for a spheroid geometry
