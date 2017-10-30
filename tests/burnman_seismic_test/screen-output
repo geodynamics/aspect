@@ -25,7 +25,7 @@ Number of degrees of freedom: 41,280 (25,344+3,264+12,672)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 146+0 iterations.
+   Solving Stokes system... 138+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-burnman_seismic_test/solution/solution-00000
