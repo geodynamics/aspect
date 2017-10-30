@@ -983,18 +983,25 @@ namespace aspect
       distributed_solution.reinit(this->introspection().index_sets.system_partitioning, this->get_mpi_communicator());
 
       const QGauss<dim> quadrature(this->get_parameters().stokes_velocity_degree+1);
+      const FiniteElement<dim> &fe = this->get_fe();
 
       FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
+                               fe,
                                quadrature,
                                update_quadrature_points | update_values | update_gradients | update_JxW_values);
 
       const unsigned int dofs_per_cell = fe_values.dofs_per_cell,
                          n_q_points    = fe_values.n_quadrature_points;
 
+      const FEVariable<dim> &u_f_variable = this->introspection().variable("fluid velocity");
+      const unsigned int fluid_velocity_dofs_per_cell = fe.element_multiplicity(u_f_variable.base_index) *
+                                                        fe.base_element(u_f_variable.base_index).dofs_per_cell;
+
       std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
-      Vector<double> cell_vector (dofs_per_cell);
-      FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
+      std::vector<types::global_dof_index> cell_u_f_dof_indices (fluid_velocity_dofs_per_cell);
+
+      Vector<double> cell_vector (fluid_velocity_dofs_per_cell);
+      FullMatrix<double> cell_matrix (fluid_velocity_dofs_per_cell, fluid_velocity_dofs_per_cell);
 
       std::vector<double> porosity_values(quadrature.size());
       std::vector<Tensor<1,dim> > grad_p_f_values(quadrature.size());
@@ -1012,8 +1019,20 @@ namespace aspect
           {
             cell_vector = 0;
             cell_matrix = 0;
-            cell->get_dof_indices (cell_dof_indices);
             fe_values.reinit (cell);
+
+            cell->get_dof_indices (cell_dof_indices);
+
+            // Extract the dofs of this cell that are actually fluid velocity dofs
+            for (unsigned int i=0, i_u_f=0; i_u_f<fluid_velocity_dofs_per_cell; /*increment at end of loop*/)
+              {
+                if (u_f_variable.component_mask[fe.system_to_component_index(i).first])
+                  {
+                    cell_u_f_dof_indices[i_u_f] = cell_dof_indices[i];
+                    ++i_u_f;
+                  }
+                ++i;
+              }
 
             fe_values[this->introspection().extractors.compositional_fields[por_idx]].get_function_values (
               solution, porosity_values);
@@ -1036,40 +1055,45 @@ namespace aspect
             Assert(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the melt variables."));
             const FEValuesExtractors::Vector fluid_velocity_extractor = this->introspection().variable("fluid velocity").extractor_vector();
 
-            std::vector<Tensor<1,dim> > phi_u_f(dofs_per_cell);
+            std::vector<Tensor<1,dim> > phi_u_f(fluid_velocity_dofs_per_cell);
 
             for (unsigned int q=0; q<n_q_points; ++q)
               {
-                for (unsigned int i=0; i<dofs_per_cell; ++i)
+                for (unsigned int i = 0, i_u_f = 0; i_u_f < fluid_velocity_dofs_per_cell; /*increment at end of loop*/)
                   {
-                    phi_u_f[i] = fe_values[fluid_velocity_extractor].value(i,q);
+                    if (u_f_variable.component_mask[fe.system_to_component_index(i).first])
+                      {
+                        phi_u_f[i_u_f] = fe_values[fluid_velocity_extractor].value(i,q);
+                        ++i_u_f;
+                      }
+                    ++i;
                   }
 
-                const Tensor<1,dim>  gravity = this->get_gravity_model().gravity_vector(in.position[q]);
                 const double JxW = fe_values.JxW(q);
+
+                for (unsigned int i=0; i<fluid_velocity_dofs_per_cell; ++i)
+                  for (unsigned int j=0; j<fluid_velocity_dofs_per_cell; ++j)
+                    cell_matrix(i,j) += phi_u_f[j] * phi_u_f[i] *
+                                        JxW;
+
                 const double phi = std::max(0.0, porosity_values[q]);
 
-                for (unsigned int i=0; i<dofs_per_cell; ++i)
+                // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
+                if (phi > this->get_melt_handler().melt_transport_threshold)
                   {
-                    for (unsigned int j=0; j<dofs_per_cell; ++j)
-                      cell_matrix(i,j) += phi_u_f[j] * phi_u_f[i] *
-                                          JxW;
+                    const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(in.position[q]);
+                    const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
 
-
-                    // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
-                    if (phi > this->get_melt_handler().melt_transport_threshold)
-                      {
-                        const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
-                        cell_vector(i) += (u_s_values[q] - K_D * (grad_p_f_values[q] - melt_outputs->fluid_densities[q]*gravity) / phi)
-                                          * phi_u_f[i]
-                                          * fe_values.JxW(q);
-                      }
-
+                    for (unsigned int i=0; i<fluid_velocity_dofs_per_cell; ++i)
+                      cell_vector(i) += (u_s_values[q] - K_D * (grad_p_f_values[q] - melt_outputs->fluid_densities[q]*gravity) / phi)
+                                        * phi_u_f[i]
+                                        * JxW;
                   }
 
-                this->get_current_constraints().distribute_local_to_global (cell_matrix, cell_vector,
-                                                                            cell_dof_indices, matrix, rhs, false);
               }
+
+            this->get_current_constraints().distribute_local_to_global (cell_matrix, cell_vector,
+                                                                        cell_u_f_dof_indices, matrix, rhs, false);
           }
 
       rhs.compress (VectorOperation::add);
