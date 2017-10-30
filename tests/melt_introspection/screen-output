@@ -20,7 +20,7 @@ Number of degrees of freedom: 302 (50+18+50+9+25+100+25+25)
    Skipping porosity composition solve because RHS is zero.
    Skipping B composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system... 10+0 iterations.
    Solving for u_f in 0 iterations.
 
    Postprocessing:

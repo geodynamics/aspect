@@ -9,7 +9,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving C_1 system ... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+14 iterations.
+   Solving Stokes system... 0+15 iterations.
    Solving for u_f in 0 iterations.
 
    Postprocessing:
@@ -21,14 +21,14 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving C_1 system ... 5 iterations.
    Solving porosity system ... 6 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+13 iterations.
+   Solving Stokes system... 0+12 iterations.
    Solving for u_f in 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5011 K, 1 K
-     Compositions min/max/mass: -0.03081/1.029/0.375 // -2.474e-08/2.965e-08/-1.005e-18
+     Compositions min/max/mass: -0.03081/1.029/0.375 // -1.69e-08/1.763e-08/-3.669e-18
 
-*** Timestep 2:  t=0.101786 seconds
+*** Timestep 2:  t=0.101567 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 5 iterations.
@@ -38,9 +38,9 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5018 K, 1 K
-     Compositions min/max/mass: -0.03795/1.045/0.375 // -1.683e-08/1.854e-08/-9.612e-19
+     Compositions min/max/mass: -0.03791/1.045/0.375 // -1.213e-08/1.011e-08/-4.573e-18
 
-*** Timestep 3:  t=0.146595 seconds
+*** Timestep 3:  t=0.13697 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 5 iterations.
@@ -49,10 +49,10 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving for u_f in 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:   0 K, 0.5027 K, 1 K
-     Compositions min/max/mass: -0.04419/1.063/0.375 // -1.953e-08/2.129e-08/1.676e-18
+     Temperature min/avg/max:   0 K, 0.5025 K, 1 K
+     Compositions min/max/mass: -0.04292/1.059/0.375 // -1.401e-08/1.431e-08/-4.094e-18
 
-*** Timestep 4:  t=0.204006 seconds
+*** Timestep 4:  t=0.192351 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 6 iterations.
@@ -61,10 +61,22 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving for u_f in 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:   0 K, 0.5033 K, 1 K
-     Compositions min/max/mass: -0.04771/1.079/0.375 // -2.812e-08/2.685e-08/-5.716e-20
+     Temperature min/avg/max:   0 K, 0.5031 K, 1 K
+     Compositions min/max/mass: -0.04675/1.076/0.375 // -2.237e-08/2.508e-08/-3.607e-18
 
-*** Timestep 5:  t=0.24557 seconds
+*** Timestep 5:  t=0.239085 seconds
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 4 iterations.
+   Solving porosity system ... 5 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+14 iterations.
+   Solving for u_f in 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5035 K, 1 K
+     Compositions min/max/mass: -0.0484/1.086/0.375 // -2.954e-08/2.073e-08/-2.483e-18
+
+*** Timestep 6:  t=0.28617 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 5 iterations.
@@ -73,10 +85,10 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving for u_f in 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:   0 K, 0.5037 K, 1 K
-     Compositions min/max/mass: -0.04904/1.088/0.375 // -1.751e-08/2.067e-08/1.755e-18
+     Temperature min/avg/max:   0 K, 0.5038 K, 1 K
+     Compositions min/max/mass: -0.04896/1.094/0.375 // -1.276e-08/1.142e-08/-1.487e-18
 
-*** Timestep 6:  t=0.28516 seconds
+*** Timestep 7:  t=0.334786 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 6 iterations.
@@ -85,22 +97,10 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving for u_f in 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:   0 K, 0.5041 K, 1 K
-     Compositions min/max/mass: -0.04989/1.094/0.375 // -2.198e-08/2.467e-08/2.337e-18
+     Temperature min/avg/max:   0 K, 0.5042 K, 1 K
+     Compositions min/max/mass: -0.04927/1.099/0.375 // -1.565e-08/1.795e-08/-2.478e-18
 
-*** Timestep 7:  t=0.333045 seconds
-   Solving temperature system... 8 iterations.
-   Solving C_1 system ... 4 iterations.
-   Solving porosity system ... 6 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+11 iterations.
-   Solving for u_f in 1 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max:   0 K, 0.5043 K, 1 K
-     Compositions min/max/mass: -0.0499/1.099/0.375 // -2.207e-08/1.845e-08/2.702e-18
-
-*** Timestep 8:  t=0.382602 seconds
+*** Timestep 8:  t=0.383839 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 5 iterations.
@@ -110,9 +110,21 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5044 K, 1 K
-     Compositions min/max/mass: -0.04928/1.101/0.375 // -1.403e-08/1.594e-08/1.233e-18
+     Compositions min/max/mass: -0.0492/1.102/0.375 // -3.572e-08/3.135e-08/-4.84e-18
 
-*** Timestep 9:  t=0.444728 seconds
+*** Timestep 9:  t=0.43042 seconds
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 4 iterations.
+   Solving porosity system ... 5 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+   Solving for u_f in 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5044 K, 1 K
+     Compositions min/max/mass: -0.0488/1.102/0.375 // -2.227e-08/1.574e-08/-3.133e-18
+
+*** Timestep 10:  t=0.477724 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 6 iterations.
@@ -121,24 +133,12 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving for u_f in 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:   0 K, 0.5045 K, 1 K
-     Compositions min/max/mass: -0.04818/1.101/0.375 // -2.39e-08/2.022e-08/1.388e-18
+     Temperature min/avg/max:   0 K, 0.5046 K, 1 K
+     Compositions min/max/mass: -0.04829/1.101/0.375 // -3.823e-08/1.749e-08/-3.244e-18
 
-*** Timestep 10:  t=0.489234 seconds
+*** Timestep 11:  t=0.520808 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 4 iterations.
-   Solving porosity system ... 5 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
-   Solving for u_f in 1 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max:   0 K, 0.5046 K, 1 K
-     Compositions min/max/mass: -0.04736/1.1/0.375 // -3.091e-08/2.281e-08/3.095e-18
-
-*** Timestep 11:  t=0.523216 seconds
-   Solving temperature system... 8 iterations.
-   Solving C_1 system ... 3 iterations.
    Solving porosity system ... 5 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+11 iterations.
@@ -146,9 +146,9 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5047 K, 1 K
-     Compositions min/max/mass: -0.04661/1.098/0.375 // -1.415e-08/8.336e-09/3.726e-18
+     Compositions min/max/mass: -0.04662/1.099/0.375 // -2.226e-08/1.31e-08/-3.926e-18
 
-*** Timestep 12:  t=0.572871 seconds
+*** Timestep 12:  t=0.559823 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 5 iterations.
@@ -157,10 +157,10 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving for u_f in 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:   0 K, 0.5049 K, 1 K
-     Compositions min/max/mass: -0.04525/1.094/0.375 // -1.635e-08/8.602e-09/2.004e-18
+     Temperature min/avg/max:   0 K, 0.5048 K, 1 K
+     Compositions min/max/mass: -0.04471/1.097/0.375 // -1.557e-08/8.81e-09/-4.136e-18
 
-*** Timestep 13:  t=0.629354 seconds
+*** Timestep 13:  t=0.602694 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 5 iterations.
@@ -169,22 +169,22 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving for u_f in 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:   0 K, 0.5054 K, 1 K
-     Compositions min/max/mass: -0.04389/1.087/0.375 // -1.429e-08/2.135e-08/4.968e-18
+     Temperature min/avg/max:   0 K, 0.5052 K, 1 K
+     Compositions min/max/mass: -0.04279/1.093/0.375 // -2.508e-08/1.358e-08/-4.285e-18
 
-*** Timestep 14:  t=0.673534 seconds
+*** Timestep 14:  t=0.644534 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 5 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+10 iterations.
+   Solving Stokes system... 0+11 iterations.
    Solving for u_f in 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:   0 K, 0.5059 K, 1 K
-     Compositions min/max/mass: -0.04291/1.081/0.375 // -1.567e-08/7.531e-09/4.023e-18
+     Temperature min/avg/max:   0 K, 0.5057 K, 1 K
+     Compositions min/max/mass: -0.04138/1.088/0.375 // -1.067e-08/8.417e-09/-6.259e-18
 
-*** Timestep 15:  t=0.733731 seconds
+*** Timestep 15:  t=0.689547 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 5 iterations.
@@ -193,22 +193,22 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving for u_f in 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:   0 K, 0.5067 K, 1 K
-     Compositions min/max/mass: -0.04155/1.072/0.375 // -1.715e-08/1.381e-08/1.83e-18
+     Temperature min/avg/max:   0 K, 0.5063 K, 1 K
+     Compositions min/max/mass: -0.04/1.081/0.375 // -1.177e-08/7.64e-09/-7.634e-18
 
-*** Timestep 16:  t=0.779353 seconds
+*** Timestep 16:  t=0.738547 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 5 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+14 iterations.
+   Solving Stokes system... 0+15 iterations.
    Solving for u_f in 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:   0 K, 0.5074 K, 1 K
-     Compositions min/max/mass: -0.04062/1.063/0.375 // -1.605e-08/2.051e-08/7.243e-19
+     Temperature min/avg/max:   0 K, 0.5072 K, 1 K
+     Compositions min/max/mass: -0.0384/1.073/0.375 // -1.269e-08/1.519e-08/-1.068e-17
 
-*** Timestep 17:  t=0.826319 seconds
+*** Timestep 17:  t=0.792571 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 5 iterations.
@@ -218,9 +218,9 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.508 K, 1 K
-     Compositions min/max/mass: -0.03967/1.054/0.375 // -1.866e-08/1.557e-08/6.406e-19
+     Compositions min/max/mass: -0.03676/1.063/0.375 // -1.243e-08/1.293e-08/-8.075e-18
 
-*** Timestep 18:  t=0.876253 seconds
+*** Timestep 18:  t=0.841478 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 5 iterations.
@@ -229,36 +229,24 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving for u_f in 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:   0 K, 0.5084 K, 1 K
-     Compositions min/max/mass: -0.03875/1.044/0.375 // -1.384e-08/1.112e-08/3.214e-19
+     Temperature min/avg/max:   0 K, 0.5085 K, 1 K
+     Compositions min/max/mass: -0.03548/1.054/0.375 // -1.262e-08/1.082e-08/-7.592e-18
 
-*** Timestep 19:  t=0.918764 seconds
+*** Timestep 19:  t=0.889525 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 5 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+10 iterations.
+   Solving Stokes system... 0+11 iterations.
    Solving for u_f in 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:   0 K, 0.5087 K, 1 K
-     Compositions min/max/mass: -0.03805/1.034/0.375 // -1.418e-08/1.074e-08/1.704e-18
+     Temperature min/avg/max:   0 K, 0.5089 K, 1 K
+     Compositions min/max/mass: -0.03443/1.044/0.375 // -1.237e-08/8.926e-09/-9.645e-18
 
-*** Timestep 20:  t=0.968061 seconds
+*** Timestep 20:  t=0.929762 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 4 iterations.
-   Solving porosity system ... 5 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+10 iterations.
-   Solving for u_f in 1 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max:   0 K, 0.509 K, 1 K
-     Compositions min/max/mass: -0.03736/1.023/0.375 // -1.553e-08/1.163e-08/1.735e-18
-
-*** Timestep 21:  t=1 seconds
-   Solving temperature system... 8 iterations.
-   Solving C_1 system ... 3 iterations.
    Solving porosity system ... 5 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+10 iterations.
@@ -266,7 +254,31 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5091 K, 1 K
-     Compositions min/max/mass: -0.037/1.016/0.375 // -1.762e-08/9.53e-09/1.668e-18
+     Compositions min/max/mass: -0.03396/1.034/0.375 // -1.305e-08/8.167e-09/-1.105e-17
+
+*** Timestep 21:  t=0.975124 seconds
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 4 iterations.
+   Solving porosity system ... 5 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+10 iterations.
+   Solving for u_f in 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5093 K, 1 K
+     Compositions min/max/mass: -0.03374/1.024/0.375 // -2.243e-08/1.529e-08/-1.114e-17
+
+*** Timestep 22:  t=1 seconds
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving porosity system ... 4 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+10 iterations.
+   Solving for u_f in 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5094 K, 1 K
+     Compositions min/max/mass: -0.03375/1.018/0.375 // -2.54e-08/1.745e-08/-1.243e-17
 
 Termination requested by criterion: end time
 
