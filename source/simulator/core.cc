@@ -907,7 +907,7 @@ namespace aspect
                 mask[i]=introspection.component_masks.velocities[i];
             }
 
-          if (!assemble_newton_stokes_system || (assemble_newton_stokes_system && nonlinear_iteration == 0))
+          if (!assemble_newton_stokes_system || (assemble_newton_stokes_system && nonlinear_iteration == 0 && timestep_number == 0))
             {
               VectorTools::interpolate_boundary_values (*mapping,
                                                         dof_handler,
