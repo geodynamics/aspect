@@ -129,6 +129,12 @@ namespace aspect
          */
         double R;
 
+#if DEAL_II_VERSION_GTE(9,0,0)
+        /**
+         * The manifold that describes the geometry.
+         */
+        const SphericalManifold<dim> spherical_manifold;
+#endif
     };
   }
 }
