@@ -291,8 +291,9 @@ namespace aspect
         const double relative_stokes_residual =
           assemble_and_solve_stokes(nonlinear_iteration == 0, &initial_stokes_residual);
 
-        pcout << "      Relative Stokes residual after nonlinear iteration " << nonlinear_iteration+1
+        pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
               << ": " << relative_stokes_residual
+              << std::endl
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
@@ -337,7 +338,7 @@ namespace aspect
           assemble_and_solve_stokes(nonlinear_iteration == 0, &initial_stokes_residual);
 
         // write the residual output in the same order as the solutions
-        pcout << "      Relative nonlinear residuals: " << relative_temperature_residual;
+        pcout << "      Relative nonlinear residuals (temperature, compositional fields, Stokes system): " << relative_temperature_residual;
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
           pcout << ", " << relative_composition_residual[c];
         pcout << ", " << relative_stokes_residual;
@@ -361,8 +362,9 @@ namespace aspect
 
         max = std::max(relative_stokes_residual, max);
         max = std::max(relative_temperature_residual, max);
-        pcout << "      Total relative residual after nonlinear iteration " << nonlinear_iteration+1 << ": " << max << std::endl;
-        pcout << std::endl
+        pcout << "      Relative nonlinear residual (total system) after nonlinear iteration " << nonlinear_iteration+1
+              << ": " << max
+              << std::endl
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
@@ -404,8 +406,9 @@ namespace aspect
         const double relative_stokes_residual =
           assemble_and_solve_stokes(nonlinear_iteration == 0, &initial_stokes_residual);
 
-        pcout << "      Relative Stokes residual after nonlinear iteration " << nonlinear_iteration+1
+        pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
               << ": " << relative_stokes_residual
+              << std::endl
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
@@ -414,8 +417,6 @@ namespace aspect
         // if reached convergence, exit nonlinear iterations.
         if (relative_stokes_residual < parameters.nonlinear_tolerance)
           break;
-
-        pcout << std::endl;
 
         ++nonlinear_iteration;
       }
@@ -612,7 +613,7 @@ namespace aspect
                 ||
                 use_picard)
               {
-                pcout << "      Total relative residual after nonlinear iteration " << nonlinear_iteration+1
+                pcout << "      Relative nonlinear residual (total Newton system) after nonlinear iteration " << nonlinear_iteration+1
                       << ": " << residual/initial_residual << ", norm of the rhs: " << test_residual
                       << ", newton_derivative_scaling_factor: " << newton_handler->get_newton_derivative_scaling_factor() << std::endl;
                 break;
