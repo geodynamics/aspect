@@ -673,11 +673,10 @@ namespace aspect
                                   std_cxx11::cref (*stokes_assembler),
                                   std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
 
-        if (material_model->is_compressible())
-          assemblers->local_assemble_stokes_preconditioner
-          .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::compressible_preconditioner,
-                                    std_cxx11::cref (*stokes_assembler),
-                                    std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
+        assemblers->local_assemble_stokes_preconditioner
+        .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::compressible_preconditioner,
+                                  std_cxx11::cref (*stokes_assembler),
+                                  std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
       }
 
 
