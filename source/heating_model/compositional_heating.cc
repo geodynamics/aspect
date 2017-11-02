@@ -112,7 +112,7 @@ namespace aspect
                             "List of heat production per unit volume values for "
                             "background and compositional fields, for a total of "
                             "N+1 values, where N is the number of compositional fields. "
-                            "Units: W/m3.");
+                            "Units: $W/m^3$.");
           prm.declare_entry ("Use compositional field for heat production averaging", "1",
                              Patterns::List(Patterns::Integer(0,1)),
                              "List of integers, detailing for each compositional field if it should be included in the "
