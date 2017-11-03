@@ -107,7 +107,11 @@ namespace aspect
 #endif
 
       // If there were expensive iterations add them.
-      if (solver_control_expensive.last_step() > 0)
+#if DEAL_II_VERSION_GTE(9,0,0)
+      if (solver_control_expensive.last_step() != numbers::invalid_unsigned_int)
+#else
+      if (solver_control_expensive.last_step() != 0)
+#endif
         {
           // If there were cheap iterations add the expensive iterations after a signalling -1.
           if (data_point.values.size() > 0)
