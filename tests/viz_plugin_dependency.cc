@@ -28,12 +28,8 @@ namespace aspect
 
           virtual
           void
-          compute_derived_quantities_vector (const std::vector<Vector<double> > &,
-                                             const std::vector<std::vector<Tensor<1,dim> > > &,
-                                             const std::vector<std::vector<Tensor<2,dim> > > &,
-                                             const std::vector<Point<dim> > &,
-                                             const std::vector<Point<dim> > &,
-                                             std::vector<Vector<double> >                    &computed_quantities) const
+          evaluate_vector_field (const DataPostprocessorInputs::Vector<dim> &input_data,
+                                 std::vector<Vector<double> >               &computed_quantities) const
           {
             Assert (computed_quantities[0].size() == 1, ExcInternalError());
 
