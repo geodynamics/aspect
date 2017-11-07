@@ -1587,10 +1587,11 @@ namespace aspect
             :
             current_file_number + 1;
 
-          this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                            << create_filename (current_file_number,*boundary_id) << "." << std::endl << std::endl;
-
           const std::string filename (create_filename (current_file_number,*boundary_id));
+
+          this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
+                            << filename << "." << std::endl << std::endl;
+
           if (Utilities::fexists(filename))
             lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
           else
@@ -1605,7 +1606,7 @@ namespace aspect
           // immediately. If not, also load the second file for interpolation.
           // This catches the case that many files are present, but the
           // parameter file requests a single file.
-          if (create_filename (current_file_number,*boundary_id) == create_filename (current_file_number+1,*boundary_id))
+          if (filename == create_filename (current_file_number+1,*boundary_id))
             {
               end_time_dependence ();
             }
@@ -1744,10 +1745,10 @@ namespace aspect
 
       if (!fexists(result) && fexists(compatible_result))
         {
-          std::cout << "WARNING: Filename convention concerning geometry boundary "
-                    "names changed. Please rename '" << compatible_result << "'"
-                    << " to '" << result << "'"
-                    << std::endl;
+          this->get_pcout() << "WARNING: Filename convention concerning geometry boundary "
+                            "names changed. Please rename '" << compatible_result << "'"
+                            << " to '" << result << "'"
+                            << std::endl;
           return compatible_result;
         }
 
