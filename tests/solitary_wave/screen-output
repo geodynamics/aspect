@@ -9,7 +9,7 @@ Number of degrees of freedom: 19,749 (5,778+1,610+5,778+805+2,889+2,889)
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+24 iterations.
+   Solving Stokes system... 0+23 iterations.
    Solving for u_f in 9 iterations.
       Relative nonlinear residuals: 0, 1.61e-16, 0.9994
       Total relative residual after nonlinear iteration 1: 0.9994
@@ -20,8 +20,8 @@ Number of degrees of freedom: 19,749 (5,778+1,610+5,778+805+2,889+2,889)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 9 iterations.
-      Relative nonlinear residuals: 0, 1.61e-16, 5.59393e-11
-      Total relative residual after nonlinear iteration 2: 5.59393e-11
+      Relative nonlinear residuals: 0, 1.61e-16, 8.24116e-11
+      Total relative residual after nonlinear iteration 2: 8.24116e-11
 
 
 
@@ -29,7 +29,7 @@ Number of degrees of freedom: 19,749 (5,778+1,610+5,778+805+2,889+2,889)
      Writing graphical output:    output-solitary_wave/solution/solution-00000
      Compositions min/max/mass:   0.001/0.01/13.3
      RMS, max velocity:           0.000166 m/year, 0.000167 m/year
-     Errors e_f, e_p, e_c, delta: 2.027221e-04, 8.793269e-02, 0.000000e+00, 3.221824e-16
+     Errors e_f, e_p, e_c, delta: 2.027221e-04, 8.793270e-02, 0.000000e+00, 3.221824e-16
 
 *** Timestep 1:  t=2000 years
    Skipping temperature solve because RHS is zero.
@@ -45,7 +45,7 @@ Number of degrees of freedom: 19,749 (5,778+1,610+5,778+805+2,889+2,889)
    Postprocessing:
      Compositions min/max/mass:   0.001/0.01/13.3
      RMS, max velocity:           0.000166 m/year, 0.000167 m/year
-     Errors e_f, e_p, e_c, delta: 6.007180e-04, 8.787966e-02, 1.424092e-02, 4.718700e-03
+     Errors e_f, e_p, e_c, delta: 6.007180e-04, 8.787968e-02, 1.424092e-02, 4.718700e-03
 
 Termination requested by criterion: end time
 

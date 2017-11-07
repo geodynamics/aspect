@@ -1,22 +1,29 @@
 # Like the poiseuille_2d.prm test and based on the nonlinear channel 
-# flow benchmark, but instead of prescribing the velocity at the left 
-# and right ends, prescribe the horizontal component of the traction. 
-# At the same time, set the vertical component of the velocity to zero. 
-# This should yield the same answer.
+# flow benchmark. This is used to test the velocity boundary conditions 
+# of the Newton Stokes solver.
 
 set Dimension = 2
 set CFL number                             = 1.0
-set End time                               = 0
+set Maximum time step                      = 1
+set End time                               = 2
 set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
-set Nonlinear solver scheme = iterated IMPES
+set Nonlinear solver scheme = iterated IMPES 
 set Max nonlinear iterations = 100 
-set Nonlinear solver tolerance = 1e-8
-set Linear solver tolerance = 1e-8
+set Nonlinear solver tolerance = 1e-10
+set Linear solver tolerance = 1e-10
 set Additional shared libraries = ../benchmarks/nonlinear_channel_flow/libsimple_nonlinear.so
 
+subsection Solver parameters
+  subsection Newton solver parameters
+    set Max pre-Newton nonlinear iterations = 3
+    set Nonlinear Newton solver switch tolerance = 1e-20 
+    set Max Newton line search iterations = 5
+    set Maximum linear Stokes solver tolerance = 1e-1
+  end
+end
 
 subsection Boundary temperature model
   set Model name = box
@@ -52,7 +59,6 @@ subsection Geometry model
   end
 end
 
-
 subsection Material model
   set Model name = simple nonlinear
 
@@ -63,15 +69,6 @@ subsection Material model
     set Viscosity averaging p = 10000
     set Viscosity prefactor = 1e-37 
     set Reference viscosity = 1e5
-  end
-
-  subsection Simple model
-    set Reference density             = 1
-    set Reference specific heat       = 1
-    set Reference temperature         = 1
-    set Thermal conductivity          = 0
-    set Thermal expansion coefficient = 0
-    set Viscosity                     = 1
   end
 end
 
@@ -84,12 +81,11 @@ end
 
 subsection Model settings
   set Fixed temperature boundary indicators   = 2, 3
-  # Prescribe a horizontal traction on the vertical boundaries
-  set Prescribed traction boundary indicators = 2 y: function, 3 y: function
+  set Prescribed traction boundary indicators = 2 y: function, 3 y: function # pressure bc: Prescribe a horizontal traction on the vertical boundaries
   set Tangential velocity boundary indicators = 
   set Zero velocity boundary indicators       = 0, 1
-  # Prescribe a zero vertical velocity component on the vertical boundaries
-  set Prescribed velocity boundary indicators = 2 x: function, 3 x: function 
+  set Prescribed velocity boundary indicators = 2 x: function, 3 x: function # pressure bc: Prescribe a zero vertical velocity component on the vertical boundaries 
+#  set Prescribed velocity boundary indicators = 2: function, 3: function # velocity bc
 end
 
 
@@ -115,14 +111,22 @@ subsection Boundary velocity model
   subsection Function
     set Function constants = n = 3
     set Variable names = x,z
-    set Function expression = 0;0; #for traction boundary conditions
-   # set Function expression = 0;(1e-37/(n+1))*((1e9/8e3)^n)*(((5e3)^(n+1))-(x-(5e3)^(n+1))); #for velocity boundary conditions 
+    # For velocity boundary conditions both are used, for pressure boundary conditions only the first (x) component 
+    set Function expression = 0;(1e-37/(n+1))*((1e9/8e3)^n)*(((5e3)^(n+1))-((x-(5e3))^(n+1)));  
   end
 end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, pressure statistics, mass flux statistics 
+  set List of postprocessors = velocity statistics, pressure statistics, mass flux statistics, visualization #, depth average
+  subsection Depth average
+    set List of output variables = viscosity
+  end
+  subsection Visualization
+    set List of output variables = material properties,strain rate, spd factor
+    set Output format = gnuplot
+    set Time between graphical output = 2
+  end
 end
 
 

@@ -64,6 +64,7 @@ namespace aspect
           local_dof_indices (finite_element.dofs_per_cell),
           dof_component_indices(stokes_dofs_per_cell),
           grads_phi_u (stokes_dofs_per_cell, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
+          div_phi_u (stokes_dofs_per_cell, numbers::signaling_nan<double>()),
           phi_p (stokes_dofs_per_cell, numbers::signaling_nan<double>()),
           phi_p_c (add_compaction_pressure ? stokes_dofs_per_cell : 0, numbers::signaling_nan<double>()),
           grad_phi_p (add_compaction_pressure ? stokes_dofs_per_cell : 0, numbers::signaling_nan<Tensor<1,dim> >()),
@@ -84,6 +85,7 @@ namespace aspect
           local_dof_indices (scratch.local_dof_indices),
           dof_component_indices( scratch.dof_component_indices),
           grads_phi_u (scratch.grads_phi_u),
+          div_phi_u (scratch.div_phi_u),
           phi_p (scratch.phi_p),
           phi_p_c (scratch.phi_p_c),
           grad_phi_p(scratch.grad_phi_p),
@@ -127,7 +129,6 @@ namespace aspect
 
           phi_u (stokes_dofs_per_cell, numbers::signaling_nan<Tensor<1,dim> >()),
           grads_phi_u (stokes_dofs_per_cell, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
-          div_phi_u (stokes_dofs_per_cell, numbers::signaling_nan<double>()),
           velocity_values (quadrature.size(), numbers::signaling_nan<Tensor<1,dim> >()),
           velocity_divergence (quadrature.size(), numbers::signaling_nan<double>()),
           face_material_model_inputs(face_quadrature.size(), n_compositional_fields),
@@ -151,7 +152,6 @@ namespace aspect
 
           phi_u (scratch.phi_u),
           grads_phi_u (scratch.grads_phi_u),
-          div_phi_u (scratch.div_phi_u),
           velocity_values (scratch.velocity_values),
           velocity_divergence (scratch.velocity_divergence),
           face_material_model_inputs(scratch.face_material_model_inputs),
@@ -667,10 +667,18 @@ namespace aspect
                                 std_cxx11::_2,
                                 std_cxx11::_3));
     else
-      assemblers->local_assemble_stokes_preconditioner
-      .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::preconditioner,
-                                std_cxx11::cref (*stokes_assembler),
-                                std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
+      {
+        assemblers->local_assemble_stokes_preconditioner
+        .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::preconditioner,
+                                  std_cxx11::cref (*stokes_assembler),
+                                  std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
+
+        if (material_model->is_compressible())
+          assemblers->local_assemble_stokes_preconditioner
+          .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::compressible_preconditioner,
+                                    std_cxx11::cref (*stokes_assembler),
+                                    std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
+      }
 
 
     if (parameters.include_melt_transport)

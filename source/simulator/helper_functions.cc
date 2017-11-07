@@ -1805,26 +1805,35 @@ namespace aspect
   double
   Simulator<dim>::compute_initial_newton_residual(LinearAlgebra::BlockVector &linearized_stokes_initial_guess)
   {
+    // Store the values of the current_linearization_point and linearized_stokes_initial_guess so we can reset them again.
     LinearAlgebra::BlockVector temp_linearization_point = current_linearization_point;
+    LinearAlgebra::BlockVector temp_linearized_stokes_initial_guess = linearized_stokes_initial_guess;
     const unsigned int block_vel = introspection.block_indices.velocities;
-    temp_linearization_point.block(introspection.block_indices.velocities) = 0;
-    linearized_stokes_initial_guess.block (block_vel) = 0;
 
-    rebuild_stokes_matrix = assemble_newton_stokes_system = assemble_newton_stokes_matrix = true;
-    rebuild_stokes_preconditioner = false;
+    // Set the velocity initial guess to zero, but we use the initial guess for the pressure.
+    current_linearization_point.block(introspection.block_indices.velocities) = 0;
+    linearized_stokes_initial_guess.block (block_vel) = 0;
 
     denormalize_pressure (last_pressure_normalization_adjustment,
                           linearized_stokes_initial_guess,
-                          temp_linearization_point);
+                          current_linearization_point);
+
+    // rebuild the whole system to compute the rhs.
+    rebuild_stokes_matrix = assemble_newton_stokes_system = assemble_newton_stokes_matrix = true;
+    rebuild_stokes_preconditioner = false;
 
     compute_current_constraints ();
+
     assemble_stokes_system();
 
-    last_pressure_normalization_adjustment = normalize_pressure(temp_linearization_point);
+    last_pressure_normalization_adjustment = normalize_pressure(current_linearization_point);
 
     const double initial_newton_residual_velo = system_rhs.block(introspection.block_indices.velocities).l2_norm();
     const double initial_newton_residual_pres = system_rhs.block(introspection.block_indices.pressure).l2_norm();
     const double initial_newton_residual = std::sqrt(initial_newton_residual_velo * initial_newton_residual_velo + initial_newton_residual_pres * initial_newton_residual_pres);
+
+    current_linearization_point = temp_linearization_point;
+    linearized_stokes_initial_guess = temp_linearized_stokes_initial_guess;
 
     pcout << "   Initial Newton Stokes residual = " << initial_newton_residual << ", v = " << initial_newton_residual_velo << ", p = " << initial_newton_residual_pres << std::endl << std::endl;
     return initial_newton_residual;

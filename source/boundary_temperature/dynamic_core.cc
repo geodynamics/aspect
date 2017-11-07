@@ -101,21 +101,21 @@ namespace aspect
                              Patterns::Double (),
                              "Temperature at the inner boundary (core mantle boundary) at the "
                              "beginning. Units: K.");
-          prm.declare_entry ("dT_dt", "0",
+          prm.declare_entry ("dT over dt", "0",
                              Patterns::Double (),
                              "Initial CMB temperature changing rate. Units: K/year");
-          prm.declare_entry ("dR_dt", "0",
+          prm.declare_entry ("dR over dt", "0",
                              Patterns::Double (),
                              "Initial inner core radius changing rate. Units: km/year");
-          prm.declare_entry ("dX_dt", "0",
+          prm.declare_entry ("dX over dt", "0",
                              Patterns::Double (),
                              "Initial light composition changing rate. Units: 1/year");
           prm.declare_entry ("Core density", "12.5e3",
                              Patterns::Double (),
-                             "Density of the core. Units: kg/m^3");
+                             "Density of the core. Units: $kg/m^3$");
           prm.declare_entry ("Gravity acceleration", "9.8",
                              Patterns::Double (),
-                             "Gravitation acceleration at CMB. Units: m/s^2.");
+                             "Gravitation acceleration at CMB. Units: $m/s^2$.");
           prm.declare_entry ("CMB pressure", "0.14e12",
                              Patterns::Double (),
                              "Pressure at CMB. Units: Pa.");
@@ -128,14 +128,14 @@ namespace aspect
                              "The max iterations for nonliner core energy solver.");
           prm.declare_entry ("Core heat capacity", "840",
                              Patterns::Double (0),
-                             "Heat capacity of the core. Unit: J/kg/K");
+                             "Heat capacity of the core. Units: $J/kg/K$");
           prm.declare_entry ("K0", "4.111e11",
                              Patterns::Double (0),
                              "Core compressibility at zero pressure. "
-                             "Referring to Nimmo et al. (2004) for more detials.");
-          prm.declare_entry ("Rho_0", "7.019e3",
+                             "Referring to Nimmo et al. (2004) for more details.");
+          prm.declare_entry ("Rho0", "7.019e3",
                              Patterns::Double (0),
-                             "Core density at zero pressure. Unit: kg/m^3"
+                             "Core density at zero pressure. Units: $kg/m^3$. "
                              "Referring to Nimmo et al. (2004) for more details.");
           prm.declare_entry ("Alpha", "1.35e-5",
                              Patterns::Double (0),
@@ -146,16 +146,16 @@ namespace aspect
           prm.declare_entry ("Rh","-27.7e6",
                              Patterns::Double (),
                              "The heat of reaction. Unit: J/kg");
-          prm.declare_entry ("Beta_c", "1.1",
+          prm.declare_entry ("Beta composition", "1.1",
                              Patterns::Double (0),
-                             "Compositional expansion coefficient."
+                             "Compositional expansion coefficient $Beta_c$. "
                              "Referring to Nimmo et al. (2004) for more details.");
           prm.declare_entry ("Delta","0.5",
                              Patterns::Double (0,1),
                              "Partition coefficient of the light element.");
-          prm.declare_entry ("k_c", "60",
+          prm.declare_entry ("Core conductivity", "60",
                              Patterns::Double (0),
-                             "Core heat conductivity. Unit: W/m/K");
+                             "Core heat conductivity $k_c$. Unit: W/m/K");
           prm.enter_subsection("Geotherm parameters");
           {
             prm.declare_entry ("Tm0","1695",
@@ -163,10 +163,10 @@ namespace aspect
                                "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm0. Unit: K");
             prm.declare_entry ("Tm1","10.9",
                                Patterns::Double (),
-                               "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm1. Unit: 1/Tpa");
+                               "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm1. Unit: $1/Tpa$");
             prm.declare_entry ("Tm2","-8.0",
                                Patterns::Double (),
-                               "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm2. Unit: 1/TPa^2");
+                               "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm2. Unit: $1/TPa^2$");
             prm.declare_entry ("Theta","0.11",
                                Patterns::Double (),
                                "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Theta.");
@@ -175,7 +175,7 @@ namespace aspect
                                "If melting curve dependent on composition.");
             prm.declare_entry ("Use BW11","false",
                                Patterns::Bool (),
-                               "If using the Fe-FeS system solidus from Buono & Walker (2011) instead.");
+                               "If using the Fe-FeS system solidus from Buono \\& Walker (2011) instead.");
           }
           prm.leave_subsection ();
 
@@ -225,9 +225,9 @@ namespace aspect
         {
           inner_temperature = prm.get_double ("Inner temperature");
           outer_temperature = prm.get_double ("Outer temperature");
-          init_dT_dt        = prm.get_double ("dT_dt") / year_in_seconds;
-          init_dR_dt        = prm.get_double ("dR_dt") / year_in_seconds * 1.e3;
-          init_dX_dt        = prm.get_double ("dX_dt") / year_in_seconds;
+          init_dT_dt        = prm.get_double ("dT over dt") / year_in_seconds;
+          init_dR_dt        = prm.get_double ("dR over dt") / year_in_seconds * 1.e3;
+          init_dX_dt        = prm.get_double ("dX over dt") / year_in_seconds;
           Rho_cen           = prm.get_double ("Core density");
           g                 = prm.get_double ("Gravity acceleration");
           P_CMB             = prm.get_double ("CMB pressure");
@@ -239,10 +239,10 @@ namespace aspect
           //Nimmo et al. [2004]
           K0                = prm.get_double ("K0");
           Alpha             = prm.get_double ("Alpha");
-          Rho_0             = prm.get_double ("Rho_0");
+          Rho_0             = prm.get_double ("Rho0");
           Lh                = prm.get_double ("Lh");
-          Beta_c            = prm.get_double ("Beta_c");
-          k_c               = prm.get_double ("k_c");
+          Beta_c            = prm.get_double ("Beta composition");
+          k_c               = prm.get_double ("Core conductivity");
           Delta             = prm.get_double ("Delta");
           Rh                = prm.get_double ("Rh");
 

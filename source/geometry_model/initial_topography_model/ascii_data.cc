@@ -148,7 +148,9 @@ namespace aspect
                                              "ascii data",
                                              "Implementation of a model in which the surface "
                                              "topography is derived from a file containing data "
-                                             "in ascii format. Note the required format of the "
+                                             "in ascii format. The following geometry models "
+                                             "are currently supported: box, chunk, shperical shell. "
+                                             "Note the required format of the "
                                              "input data: The first lines may contain any number of comments "
                                              "if they begin with '#', but one of these lines needs to "
                                              "contain the number of grid points in each dimension as "
