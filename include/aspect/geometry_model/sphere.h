@@ -20,6 +20,7 @@
 #ifndef _aspect_geometry_model_sphere_h
 #define _aspect_geometry_model_sphere_h
 
+#include <deal.II/grid/manifold_lib.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
 
