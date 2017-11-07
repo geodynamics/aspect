@@ -8,7 +8,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 26+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00000.0000
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0000
@@ -18,10 +19,10 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Pressure at top/bottom of domain: -1.98e-19 Pa, 9.531 Pa
      Computing dynamic topography      
 
-
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 22+0 iterations.
-      Relative Stokes residual after nonlinear iteration 2: 0.0245986
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0245986
+
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00000.0001
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0001
@@ -31,10 +32,10 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Pressure at top/bottom of domain: 8.674e-16 Pa, 9.652 Pa
      Computing dynamic topography      
 
-
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 16+0 iterations.
-      Relative Stokes residual after nonlinear iteration 3: 0.00133812
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00133812
+
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00000.0002
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0002
@@ -44,10 +45,10 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Pressure at top/bottom of domain: 1.214e-15 Pa, 9.544 Pa
      Computing dynamic topography      
 
-
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative Stokes residual after nonlinear iteration 4: 4.59661e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 4.59661e-05
+
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00000.0003
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0003
@@ -57,10 +58,10 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Pressure at top/bottom of domain: 1.013e-15 Pa, 9.532 Pa
      Computing dynamic topography      
 
-
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5+0 iterations.
-      Relative Stokes residual after nonlinear iteration 5: 2.11124e-06
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 2.11124e-06
+
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00000.0004
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0004
@@ -75,7 +76,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 17 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 2.14941e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.14941e-07
+
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00001.0000
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00001.0000
@@ -90,7 +92,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 2.01605e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.01605e-07
+
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00002.0000
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00002.0000
@@ -105,7 +108,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 3+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 2.27322e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.27322e-07
+
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00003.0000
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00003.0000
@@ -120,7 +124,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 13 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 8.39909e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 8.39909e-08
+
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00004.0000
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00004.0000

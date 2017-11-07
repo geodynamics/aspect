@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Number of active cells: 100 (on 1 levels)
 Number of degrees of freedom: 3,208 (882+121+441+441+441+441+441)
@@ -12,7 +10,7 @@ Number of degrees of freedom: 3,208 (882+121+441+441+441+441+441)
    Solving s22 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+2 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
    Postprocessing:
@@ -34,7 +32,8 @@ Number of degrees of freedom: 3,208 (882+121+441+441+441+441+441)
    Solving s22 system ... 6 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 6.8928e-15
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.51217e-15
+
 
    Postprocessing:
      RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
