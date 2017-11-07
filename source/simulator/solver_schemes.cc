@@ -430,6 +430,10 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::solve_newton_stokes ()
   {
+    // Now store the linear_tolerance we started out with, because we might change
+    // it within this timestep.
+    double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
+
     std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
 
     double initial_residual = 1;
@@ -452,16 +456,12 @@ namespace aspect
       :
       parameters.max_nonlinear_iterations;
 
+    // Now iterate out the nonlinearities.
     double stokes_residual = 0;
     for (nonlinear_iteration = 0; nonlinear_iteration < max_nonlinear_iterations; ++nonlinear_iteration)
       {
         assemble_and_solve_temperature();
         assemble_and_solve_composition();
-
-        assemble_newton_stokes_system = true;
-
-        solution.block(introspection.block_indices.pressure) = 0;
-        solution.block(introspection.block_indices.velocities) = 0;
 
         if (use_picard == true && (residual/initial_residual <= parameters.nonlinear_switch_tolerance ||
                                    nonlinear_iteration >= parameters.max_pre_newton_nonlinear_iterations))
@@ -502,10 +502,9 @@ namespace aspect
         // create a completely distributed vector that will be used for
         // the scaled and denormalized solution and later used as a
         // starting guess for the linear solver
-        LinearAlgebra::BlockVector linearized_stokes_initial_guess (introspection.index_sets.stokes_partitioning, mpi_communicator);
-
-        linearized_stokes_initial_guess.block (block_vel) = current_linearization_point.block (block_vel);
-        linearized_stokes_initial_guess.block (block_p) = current_linearization_point.block (block_p);
+        LinearAlgebra::BlockVector linearized_stokes_initial_guess(introspection.index_sets.stokes_partitioning, mpi_communicator);
+        linearized_stokes_initial_guess.block(block_vel) = current_linearization_point.block(block_vel);
+        linearized_stokes_initial_guess.block(block_p) = current_linearization_point.block(block_p);
 
         if (nonlinear_iteration == 0)
           {
@@ -516,12 +515,23 @@ namespace aspect
 
         assemble_newton_stokes_system = assemble_newton_stokes_matrix = true;
 
-        denormalize_pressure (last_pressure_normalization_adjustment,
-                              linearized_stokes_initial_guess,
-                              current_linearization_point);
+        if (nonlinear_iteration == 0)
+          {
+            assemble_newton_stokes_system = assemble_newton_stokes_matrix = false;
+          }
+        else
+          {
+            denormalize_pressure (last_pressure_normalization_adjustment,
+                                  linearized_stokes_initial_guess,
+                                  current_linearization_point);
+          }
 
         if (nonlinear_iteration <= 1)
-          compute_current_constraints ();
+          {
+            assemblers.reset (new internal::Assembly::AssemblerLists<dim>());
+            set_assemblers();
+            compute_current_constraints ();
+          }
 
         // the Stokes matrix depends on the viscosity. if the viscosity
         // depends on other solution variables, then after we need to
@@ -537,7 +547,6 @@ namespace aspect
          */
         if (nonlinear_iteration > 1)
           {
-            residual_old = residual;
             velocity_residual = system_rhs.block(introspection.block_indices.velocities).l2_norm();
             pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
             residual = std::sqrt(velocity_residual * velocity_residual + pressure_residual * pressure_residual);
@@ -564,86 +573,112 @@ namespace aspect
         pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
         residual = std::sqrt(velocity_residual * velocity_residual + pressure_residual * pressure_residual);
 
-        /**
-         * We may need to do a line search if the solution update doesn't decrease the norm of the rhs enough.
-         * This is done by adding the solution update to the current linearization point and then assembling
-         * the Newton right hand side. If the Newton residual has decreased enough by using the this update,
-         * then we continue, otherwise we reset the current linearization point with the help of the backup and
-         * add each iteration an increasingly smaller solution update until the decreasing residual condition
-         * is met, or the line search iteration limit is reached.
-         */
-        LinearAlgebra::BlockVector backup_linearization_point = current_linearization_point;
-
-        double test_residual = 0;
-        double test_velocity_residual = 0;
-        double test_pressure_residual = 0;
-        double lambda = 1;
-        double alpha = 1e-4;
-        unsigned int line_search_iteration = 0;
-
-        /**
-         * Do the loop for the line search. Even when we
-         * don't do a line search we go into this loop
-         */
-        do
+        double test_residual = residual;
+        if (nonlinear_iteration == 0)
           {
-            current_linearization_point = backup_linearization_point;
+            /**
+             * The first nonlinear iteration we are computing the whole system in a non-defect corrected Picard way,
+             * to make sure that the boundary conditions are correct in combination with correct initial guesses.
+             */
+            current_linearization_point.block(introspection.block_indices.velocities) = solution.block(introspection.block_indices.velocities);
+            current_linearization_point.block(introspection.block_indices.pressure) = solution.block(introspection.block_indices.pressure);
 
-            LinearAlgebra::BlockVector search_direction = solution;
+            residual = stokes_residual;
 
-            search_direction *= lambda;
+            pcout << "      Relative nonlinear residual (total Newton system) after nonlinear iteration " << nonlinear_iteration+1
+                  << ": " << stokes_residual/initial_residual << ", norm of the rhs: " << stokes_residual << std::endl;
 
-
-            current_linearization_point.block(introspection.block_indices.pressure) += search_direction.block(introspection.block_indices.pressure);
-            current_linearization_point.block(introspection.block_indices.velocities) += search_direction.block(introspection.block_indices.velocities);
-
-            assemble_newton_stokes_matrix = rebuild_stokes_preconditioner = false;
-            rebuild_stokes_matrix = true;
-
-            assemble_stokes_system();
-
-            test_velocity_residual = system_rhs.block(introspection.block_indices.velocities).l2_norm();
-            test_pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
-            test_residual = std::sqrt(test_velocity_residual * test_velocity_residual
-                                      + test_pressure_residual * test_pressure_residual);
-
-            if (test_residual < (1.0 - alpha * lambda) * residual
-                ||
-                line_search_iteration >= parameters.max_newton_line_search_iterations
-                ||
-                use_picard)
-              {
-                pcout << "      Relative nonlinear residual (total Newton system) after nonlinear iteration " << nonlinear_iteration+1
-                      << ": " << residual/initial_residual << ", norm of the rhs: " << test_residual
-                      << ", newton_derivative_scaling_factor: " << newton_handler->get_newton_derivative_scaling_factor() << std::endl;
-                break;
-              }
-            else
-              {
-
-                pcout << "   Line search iteration " << line_search_iteration << ", with norm of the rhs "
-                      << test_residual << " and going to " << (1.0 - alpha * lambda) * residual
-                      << ", relative residual: " << residual/initial_residual << std::endl;
-
-                /**
-                 * The line search step was not sufficient to decrease the residual
-                 * enough, so we take a smaller step to see if it improves the residual.
-                 */
-                lambda *= (2.0/3.0);// TODO: make a parameter out of this.
-              }
-
-            line_search_iteration++;
-            Assert(line_search_iteration <= parameters.max_newton_line_search_iterations,
-                   ExcMessage ("This tests the while condition. This condition should "
-                               "actually never be false, because the break statement "
-                               "above should have caught it."));
           }
-        while (line_search_iteration <= parameters.max_newton_line_search_iterations);
-        // The while condition should actually never be false, because the break statement above should have caught it.
+        else
+          {
+            /**
+             * We may need to do a line search if the solution update doesn't decrease the norm of the rhs enough.
+             * This is done by adding the solution update to the current linearization point and then assembling
+             * the Newton right hand side. If the Newton residual has decreased enough by using this update,
+             * then we continue, otherwise we reset the current linearization point with the help of the backup and
+             * add each iteration an increasingly smaller solution update until the decreasing residual condition
+             * is met, or the line search iteration limit is reached.
+             */
+            LinearAlgebra::BlockVector backup_linearization_point(introspection.index_sets.stokes_partitioning, mpi_communicator);
+            backup_linearization_point.block(introspection.block_indices.pressure) = current_linearization_point.block(introspection.block_indices.pressure);
+            backup_linearization_point.block(introspection.block_indices.velocities) = current_linearization_point.block(introspection.block_indices.velocities);
+
+
+            double test_velocity_residual = 0;
+            double test_pressure_residual = 0;
+            double lambda = 1;
+            double alpha = 1e-4;
+            unsigned int line_search_iteration = 0;
+
+
+            /**
+             * Do the loop for the line search. Even when we
+             * don't do a line search we go into this loop
+             */
+            do
+              {
+                // Reset the current linearization point and the search direction
+                current_linearization_point.block(introspection.block_indices.pressure) = backup_linearization_point.block(introspection.block_indices.pressure);
+                current_linearization_point.block(introspection.block_indices.velocities) = backup_linearization_point.block(introspection.block_indices.velocities);
+
+                current_linearization_point.block(introspection.block_indices.pressure).add(lambda,solution.block(introspection.block_indices.pressure));
+                current_linearization_point.block(introspection.block_indices.velocities).add(lambda,solution.block(introspection.block_indices.velocities));
+
+                // Rebuild the rhs to determine the new residual.
+                assemble_newton_stokes_matrix = rebuild_stokes_preconditioner = false;
+                rebuild_stokes_matrix = true;
+
+                assemble_stokes_system();
+
+                test_velocity_residual = system_rhs.block(introspection.block_indices.velocities).l2_norm();
+                test_pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
+                test_residual = std::sqrt(test_velocity_residual * test_velocity_residual
+                                          + test_pressure_residual * test_pressure_residual);
+
+                // Determine if the decrease is sufficient.
+                if (test_residual < (1.0 - alpha * lambda) * residual
+                    ||
+                    line_search_iteration >= parameters.max_newton_line_search_iterations
+                    ||
+                    use_picard)
+                  {
+                    pcout << "      Relative nonlinear residual (total Newton system) after nonlinear iteration " << nonlinear_iteration+1
+                          << ": " << test_residual/initial_residual << ", norm of the rhs: " << test_residual
+                          << ", newton_derivative_scaling_factor: " << newton_handler->get_newton_derivative_scaling_factor() << std::endl;
+                    residual = test_residual;
+                    break;
+                  }
+                else
+                  {
+
+                    pcout << "   Line search iteration " << line_search_iteration << ", with norm of the rhs "
+                          << test_residual << " and going to " << (1.0 - alpha * lambda) * residual
+                          << ", relative residual: " << test_residual/initial_residual << std::endl;
+
+                    /**
+                     * The line search step was not sufficient to decrease the residual
+                     * enough, so we take a smaller step to see if it improves the residual.
+                     */
+                    lambda *= (2.0/3.0);// TODO: make a parameter out of this.
+                  }
+
+                line_search_iteration++;
+                Assert(line_search_iteration <= parameters.max_newton_line_search_iterations,
+                       ExcMessage ("This tests the while condition. This condition should "
+                                   "actually never be false, because the break statement "
+                                   "above should have caught it."));
+              }
+            while (line_search_iteration <= parameters.max_newton_line_search_iterations);
+            // The while condition should actually never be false, because the break statement above should have caught it.
+          }
 
 
         if (use_picard == true)
           {
+            // When we are using (defect corrected) Picard, keep the
+            // newton_derivative_scaling_factor at zero. The newton_derivative_scaling_factor
+            // is calculated above as std::max(0.0, (1.0-(
+            // newton_residual_for_derivative_scaling_factor/switch_initial_residual)))
             switch_initial_residual = residual;
             newton_residual_for_derivative_scaling_factor = residual;
           }
@@ -663,14 +698,20 @@ namespace aspect
         residual_old = residual;
 
         pcout << std::endl;
-        last_pressure_normalization_adjustment = normalize_pressure(current_linearization_point);
+        if (nonlinear_iteration != 0)
+          last_pressure_normalization_adjustment = normalize_pressure(current_linearization_point);
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
           postprocess ();
 
         if (residual/initial_residual < parameters.nonlinear_tolerance)
-          break;
+          {
+            break;
+          }
       }
+
+    // Reset the linear tolerance to what it was at the beginning of the time step.
+    parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
 
     // When we are finished iterating, we need to set the final solution to the current linearization point,
     // because the solution vector is used in the postprocess.
