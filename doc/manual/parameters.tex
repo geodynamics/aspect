@@ -684,6 +684,12 @@ If the function you are describing represents a vector-valued function with mult
 
 `box with lithosphere boundary indicators': A model in which the composition is chosen constant on all the sides of a box. Additional boundary indicators are added to the lithospheric parts of the vertical boundaries. This model is to be used with the 'Two Merged Boxes' Geometry Model.
 
+`function': Implementation of a model in which the boundary composition is given in terms of an explicit formula that is elaborated in the parameters in section ``Boundary composition model|Function''. 
+
+Since the symbol $t$ indicating time may appear in the formulas for the prescribed composition, it is interpreted as having units seconds unless the global input parameter ``Use years in output instead of seconds'' is set, in which case we interpret the formula expressions as having units year.
+
+The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+
 `initial composition': A model in which the composition at the boundary is chosen to be the same as given in the initial conditions.
 
 Because this class simply takes what the initial composition had described, this class can not know certain pieces of information such as the minimal and maximal composition on the boundary. For operations that require this, for example in post-processing, this boundary composition model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section ``Boundary composition model/Initial composition''.
@@ -691,7 +697,7 @@ Because this class simply takes what the initial composition had described, this
 `spherical constant': A model in which the composition is chosen constant on the inner and outer boundaries of a surface, spherical shell, chunk or ellipsoidal chunk. Parameters are read from subsection 'Spherical constant'.
 
 
-{\it Possible values:} Any one of ascii data, box, box with lithosphere boundary indicators, initial composition, spherical constant, unspecified
+{\it Possible values:} Any one of ascii data, box, box with lithosphere boundary indicators, function, initial composition, spherical constant, unspecified
 \end{itemize}
 
 
@@ -986,6 +992,80 @@ Because this class simply takes what the initial composition had described, this
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
 \end{itemize}
 
+\subsection{Parameters in section \tt Boundary composition model/Function}
+\label{parameters:Boundary_20composition_20model/Function}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Coordinate system}
+\phantomsection\label{parameters:Boundary composition model/Function/Coordinate system}
+
+
+\index[prmindex]{Coordinate system}
+\index[prmindexfull]{Boundary composition model!Function!Coordinate system}
+{\it Value:} cartesian
+
+
+{\it Default:} cartesian
+
+
+{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are 'cartesian', 'spherical', and 'depth'. 'spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle. 'depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+
+
+{\it Possible values:} Any one of cartesian, spherical, depth
+\item {\it Parameter name:} {\tt Function constants}
+\phantomsection\label{parameters:Boundary composition model/Function/Function constants}
+
+
+\index[prmindex]{Function constants}
+\index[prmindexfull]{Boundary composition model!Function!Function constants}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Function expression}
+\phantomsection\label{parameters:Boundary composition model/Function/Function expression}
+
+
+\index[prmindex]{Function expression}
+\index[prmindexfull]{Boundary composition model!Function!Function expression}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Variable names}
+\phantomsection\label{parameters:Boundary composition model/Function/Variable names}
+
+
+\index[prmindex]{Variable names}
+\index[prmindexfull]{Boundary composition model!Function!Variable names}
+{\it Value:} x,y,t
+
+
+{\it Default:} x,y,t
+
+
+{\it Description:} The name of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated is `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+
+
+{\it Possible values:} Any string
+\end{itemize}
+
 \subsection{Parameters in section \tt Boundary composition model/Initial composition}
 \label{parameters:Boundary_20composition_20model/Initial_20composition}
 
@@ -1134,6 +1214,8 @@ Because this class simply takes what the initial composition had described, this
 
 The following boundary temperature models are available:
 
+`Dynamic core': This is a boundary temperature model working only with spherical shell geometry and core statistics postprocessor. The temperature at the top is constant, and the core mantle boundary temperature is dynamically evolving through time by calculating the heat flux into the core and solving the core energy balance. The formulation is mainly following Nimmo et al. [2004], and the plugin is used in Zhang et al. [2016]. The energy of core cooling and freeing of the inner core is included in the plugin. However, current plugin can not deal with the energy balance if the core is in the 'snowing core' regime (i.e. core solidifies from top instead of bottom)
+
 `ascii data': Implementation of a model in which the boundary data is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. The order of the data columns has to be `x', 'Temperature [K]' in a 2d model and  `x', `y', 'Temperature [K]' in a 3d model, which means that there has to be a single column containing the temperature. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the data will still be handled as Cartesian, however the assumed grid changes. `x' will be replaced by the radial distance of the point to the bottom of the model, `y' by the azimuth angle and `z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r', `phi', `theta' and not `r', `theta', `phi', since this allows for dimension independent expressions.
 
 `box': A model in which the temperature is chosen constant on the sides of a box which are selected by the parameters Left/Right/Top/Bottom/Front/Back temperature
@@ -1157,7 +1239,7 @@ Because this class simply takes what the initial temperature had described, this
 `spherical constant': A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell, ellipsoidal chunk or chunk. Parameters are read from subsection 'Spherical constant'.
 
 
-{\it Possible values:} A comma-separated list of any of ascii data, box, box with lithosphere boundary indicators, constant, function, initial temperature, spherical constant
+{\it Possible values:} A comma-separated list of any of Dynamic core, ascii data, box, box with lithosphere boundary indicators, constant, function, initial temperature, spherical constant
 \item {\it Parameter name:} {\tt List of model operators}
 \phantomsection\label{parameters:Boundary temperature model/List of model operators}
 
@@ -1188,6 +1270,8 @@ Because this class simply takes what the initial temperature had described, this
 
 {\it Description:} Select one of the following models:
 
+`Dynamic core': This is a boundary temperature model working only with spherical shell geometry and core statistics postprocessor. The temperature at the top is constant, and the core mantle boundary temperature is dynamically evolving through time by calculating the heat flux into the core and solving the core energy balance. The formulation is mainly following Nimmo et al. [2004], and the plugin is used in Zhang et al. [2016]. The energy of core cooling and freeing of the inner core is included in the plugin. However, current plugin can not deal with the energy balance if the core is in the 'snowing core' regime (i.e. core solidifies from top instead of bottom)
+
 `ascii data': Implementation of a model in which the boundary data is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. The order of the data columns has to be `x', 'Temperature [K]' in a 2d model and  `x', `y', 'Temperature [K]' in a 3d model, which means that there has to be a single column containing the temperature. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the data will still be handled as Cartesian, however the assumed grid changes. `x' will be replaced by the radial distance of the point to the bottom of the model, `y' by the azimuth angle and `z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r', `phi', `theta' and not `r', `theta', `phi', since this allows for dimension independent expressions.
 
 `box': A model in which the temperature is chosen constant on the sides of a box which are selected by the parameters Left/Right/Top/Bottom/Front/Back temperature
@@ -1213,7 +1297,7 @@ Because this class simply takes what the initial temperature had described, this
 \textbf{Warning}: This parameter provides an old and deprecated way of specifying boundary temperature models and shouldn't be used. Please use 'List of model names' instead.
 
 
-{\it Possible values:} Any one of ascii data, box, box with lithosphere boundary indicators, constant, function, initial temperature, spherical constant, unspecified
+{\it Possible values:} Any one of Dynamic core, ascii data, box, box with lithosphere boundary indicators, constant, function, initial temperature, spherical constant, unspecified
 \end{itemize}
 
 
@@ -1528,6 +1612,512 @@ Because this class simply takes what the initial temperature had described, this
 
 
 {\it Possible values:} A key-value map of 0 to 4294967295 elements  where each key is [Any string] and each value is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
+\end{itemize}
+
+\subsection{Parameters in section \tt Boundary temperature model/Dynamic core}
+\label{parameters:Boundary_20temperature_20model/Dynamic_20core}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Alpha}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Alpha}
+
+
+\index[prmindex]{Alpha}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Alpha}
+{\it Value:} 1.35e-5
+
+
+{\it Default:} 1.35e-5
+
+
+{\it Description:} Core thermal expansivity. Unit: 1/K
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Beta composition}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Beta composition}
+
+
+\index[prmindex]{Beta composition}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Beta composition}
+{\it Value:} 1.1
+
+
+{\it Default:} 1.1
+
+
+{\it Description:} Compositional expansion coefficient $Beta_c$. Referring to Nimmo et al. (2004) for more details.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt CMB pressure}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/CMB pressure}
+
+
+\index[prmindex]{CMB pressure}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!CMB pressure}
+{\it Value:} 0.14e12
+
+
+{\it Default:} 0.14e12
+
+
+{\it Description:} Pressure at CMB. Units: Pa.
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Core conductivity}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Core conductivity}
+
+
+\index[prmindex]{Core conductivity}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Core conductivity}
+{\it Value:} 60
+
+
+{\it Default:} 60
+
+
+{\it Description:} Core heat conductivity $k_c$. Unit: W/m/K
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Core density}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Core density}
+
+
+\index[prmindex]{Core density}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Core density}
+{\it Value:} 12.5e3
+
+
+{\it Default:} 12.5e3
+
+
+{\it Description:} Density of the core. Units: $kg/m^3$
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Core heat capacity}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Core heat capacity}
+
+
+\index[prmindex]{Core heat capacity}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Core heat capacity}
+{\it Value:} 840
+
+
+{\it Default:} 840
+
+
+{\it Description:} Heat capacity of the core. Units: $J/kg/K$
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Delta}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Delta}
+
+
+\index[prmindex]{Delta}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Delta}
+{\it Value:} 0.5
+
+
+{\it Default:} 0.5
+
+
+{\it Description:} Partition coefficient of the light element.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 1$
+\item {\it Parameter name:} {\tt Gravity acceleration}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Gravity acceleration}
+
+
+\index[prmindex]{Gravity acceleration}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Gravity acceleration}
+{\it Value:} 9.8
+
+
+{\it Default:} 9.8
+
+
+{\it Description:} Gravitation acceleration at CMB. Units: $m/s^2$.
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Initial light composition}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Initial light composition}
+
+
+\index[prmindex]{Initial light composition}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Initial light composition}
+{\it Value:} 0.01
+
+
+{\it Default:} 0.01
+
+
+{\it Description:} Initial light composition (eg. S,O) concentration in weight fraction.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Inner temperature}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Inner temperature}
+
+
+\index[prmindex]{Inner temperature}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Inner temperature}
+{\it Value:} 6000
+
+
+{\it Default:} 6000
+
+
+{\it Description:} Temperature at the inner boundary (core mantle boundary) at the beginning. Units: K.
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt K0}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/K0}
+
+
+\index[prmindex]{K0}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!K0}
+{\it Value:} 4.111e11
+
+
+{\it Default:} 4.111e11
+
+
+{\it Description:} Core compressibility at zero pressure. Referring to Nimmo et al. (2004) for more details.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Lh}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Lh}
+
+
+\index[prmindex]{Lh}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Lh}
+{\it Value:} 750e3
+
+
+{\it Default:} 750e3
+
+
+{\it Description:} The latent heat of core freeze. Unit: J/kg
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Max iteration}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Max iteration}
+
+
+\index[prmindex]{Max iteration}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Max iteration}
+{\it Value:} 30000
+
+
+{\it Default:} 30000
+
+
+{\it Description:} The max iterations for nonliner core energy solver.
+
+
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Outer temperature}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Outer temperature}
+
+
+\index[prmindex]{Outer temperature}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Outer temperature}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Temperature at the outer boundary (lithosphere water/air). Units: K.
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Rh}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Rh}
+
+
+\index[prmindex]{Rh}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Rh}
+{\it Value:} -27.7e6
+
+
+{\it Default:} -27.7e6
+
+
+{\it Description:} The heat of reaction. Unit: J/kg
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Rho0}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Rho0}
+
+
+\index[prmindex]{Rho0}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Rho0}
+{\it Value:} 7.019e3
+
+
+{\it Default:} 7.019e3
+
+
+{\it Description:} Core density at zero pressure. Units: $kg/m^3$. Referring to Nimmo et al. (2004) for more details.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt dR over dt}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/dR over dt}
+
+
+\index[prmindex]{dR over dt}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!dR over dt}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Initial inner core radius changing rate. Units: km/year
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt dT over dt}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/dT over dt}
+
+
+\index[prmindex]{dT over dt}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!dT over dt}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Initial CMB temperature changing rate. Units: K/year
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt dX over dt}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/dX over dt}
+
+
+\index[prmindex]{dX over dt}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!dX over dt}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Initial light composition changing rate. Units: 1/year
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\end{itemize}
+
+
+
+\subsection{Parameters in section \tt Boundary temperature model/Dynamic core/Geotherm parameters}
+\label{parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Composition dependency}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Geotherm parameters/Composition dependency}
+
+
+\index[prmindex]{Composition dependency}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Geotherm parameters/Composition dependency}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} If melting curve dependent on composition.
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Theta}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Geotherm parameters/Theta}
+
+
+\index[prmindex]{Theta}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Geotherm parameters/Theta}
+{\it Value:} 0.11
+
+
+{\it Default:} 0.11
+
+
+{\it Description:} Melting curve (Nimmo et al. [2004] eq. (40)) parameter Theta.
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Tm0}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Geotherm parameters/Tm0}
+
+
+\index[prmindex]{Tm0}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Geotherm parameters/Tm0}
+{\it Value:} 1695
+
+
+{\it Default:} 1695
+
+
+{\it Description:} Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm0. Unit: K
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Tm1}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Geotherm parameters/Tm1}
+
+
+\index[prmindex]{Tm1}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Geotherm parameters/Tm1}
+{\it Value:} 10.9
+
+
+{\it Default:} 10.9
+
+
+{\it Description:} Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm1. Unit: $1/Tpa$
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Tm2}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Geotherm parameters/Tm2}
+
+
+\index[prmindex]{Tm2}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Geotherm parameters/Tm2}
+{\it Value:} -8.0
+
+
+{\it Default:} -8.0
+
+
+{\it Description:} Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm2. Unit: $1/TPa^2$
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Use BW11}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Geotherm parameters/Use BW11}
+
+
+\index[prmindex]{Use BW11}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Geotherm parameters/Use BW11}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} If using the Fe-FeS system solidus from Buono \& Walker (2011) instead.
+
+
+{\it Possible values:} A boolean value (true or false)
+\end{itemize}
+
+\subsection{Parameters in section \tt Boundary temperature model/Dynamic core/Other energy source}
+\label{parameters:Boundary_20temperature_20model/Dynamic_20core/Other_20energy_20source}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt File name}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Other energy source/File name}
+
+
+\index[prmindex]{File name}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Other energy source/File name}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Data file name for other energy source into the core. The 'other energy source' is used for external core energy source.For example if someone want to test the early lunar core powered by precession (Dwyer, C. A., et al. (2011). A long-lived lunar dynamo driven by continuous mechanical stirring. Nature 479(7372): 212-214.)Format [Time(Gyr)   Energy rate(W)]
+
+
+{\it Possible values:} Any string
+\end{itemize}
+
+\subsection{Parameters in section \tt Boundary temperature model/Dynamic core/Radioactive heat source}
+\label{parameters:Boundary_20temperature_20model/Dynamic_20core/Radioactive_20heat_20source}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Half life times}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Radioactive heat source/Half life times}
+
+
+\index[prmindex]{Half life times}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Radioactive heat source/Half life times}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Half decay times of different elements (Ga)
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Heating rates}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Radioactive heat source/Heating rates}
+
+
+\index[prmindex]{Heating rates}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Radioactive heat source/Heating rates}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Heating rates of different elements (W/kg)
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Initial concentrations}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Radioactive heat source/Initial concentrations}
+
+
+\index[prmindex]{Initial concentrations}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Radioactive heat source/Initial concentrations}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Initial concentrations of different elements (ppm)
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Number of radioactive heating elements}
+\phantomsection\label{parameters:Boundary temperature model/Dynamic core/Radioactive heat source/Number of radioactive heating elements}
+
+
+\index[prmindex]{Number of radioactive heating elements}
+\index[prmindexfull]{Boundary temperature model!Dynamic core!Radioactive heat source/Number of radioactive heating elements}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Number of different radioactive heating elements in core
+
+
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \end{itemize}
 
 \subsection{Parameters in section \tt Boundary temperature model/Function}
@@ -4280,7 +4870,7 @@ The formula is interpreted as having units W/kg.
 {\it Default:} 0
 
 
-{\it Description:} List of heat production per unit volume values for background and compositional fields, for a total of N+1 values, where N is the number of compositional fields. Units: W/m3.
+{\it Description:} List of heat production per unit volume values for background and compositional fields, for a total of N+1 values, where N is the number of compositional fields. Units: $W/m^3$.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -6223,9 +6813,9 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
  Viscosity is limited through one of two different `yielding' mechanisms. 
 
-Plasticity limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3D is  $\sigma_y = \frac{6*C*\cos(\phi) + 2*P*\sin(\phi)} {\sqrt(3)*(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2D. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2D form is equivalent to the Mohr Coulomb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion). When the viscous stress ($2v{\varepsilon}_{ii}$) the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models. See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
+Plasticity limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3D is  $\sigma_y = \frac{6*C*\cos(\phi) + 2*P*\sin(\phi)} {\sqrt(3)*(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2D. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2D form is equivalent to the Mohr Coulomb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion). When the viscous stress ($2v{\varepsilon}_{ii}$) exceeds the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models. See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
 
-The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain magnitude. The finite strain invariant or full strain tensor is calculated through compositional fields within the material model. This implementation is identical to the compositional field finite strain plugin and cookbook described in the manual (author: Gassmoeller, Dannberg). If the user selects to track the finite strain invariant ($e_{ii}$), a single compositional field tracks the value derived from $e_{ii}^t = (e_{ii})^{(t-1)} + \dot{e}_{ii}\; dt$, where $t$ and $t-1$ are the current and prior time steps, $\dot{e}_{ii}$ is the second invariant of the strain rate tensor and $dt$ is the time step size. In the case of the full strain tensor $F$, the finite strain magnitude is derived from the second invariant of the symmetric stretching tensor $L$, where $L = F [F]^T$. The user must specify a single compositional field for the finite strain invariant or multiple fields (4 in 2D, 9 in 3D) for the finite strain tensor. These field(s) must be the first lised compositional fields in the parameter file. Note that one or more of the finite strain tensor components must be assigned a non-zero value intially. This value can be be quite small (e.g., 1.e-8), but still non-zero. While the option to track and use the full finite strain tensor exists, tracking the associated compositional is computationally expensive in 3D. Similarly, the finite strain magnitudes may in fact decrease if the orientation of the deformation field switches through time. Consequently, the ideal solution is track the finite strain invariant (single compositional) field within the material and track the full finite strain tensor through particles.
+The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain magnitude. The finite strain invariant or full strain tensor is calculated through compositional fields within the material model. This implementation is identical to the compositional field finite strain plugin and cookbook described in the manual (author: Gassmoeller, Dannberg). If the user selects to track the finite strain invariant ($e_{ii}$), a single compositional field tracks the value derived from $e_{ii}^t = (e_{ii})^{(t-1)} + \dot{e}_{ii}\; dt$, where $t$ and $t-1$ are the current and prior time steps, $\dot{e}_{ii}$ is the second invariant of the strain rate tensor and $dt$ is the time step size. In the case of the full strain tensor $F$, the finite strain magnitude is derived from the second invariant of the symmetric stretching tensor $L$, where $L = F [F]^T$. The user must specify a single compositional field for the finite strain invariant or multiple fields (4 in 2D, 9 in 3D) for the finite strain tensor. These field(s) must be the first listed compositional fields in the parameter file. Note that one or more of the finite strain tensor components must be assigned a non-zero value initially. This value can be be quite small (e.g., 1.e-8), but still non-zero. While the option to track and use the full finite strain tensor exists, tracking the associated compositional fields is computationally expensive in 3D. Similarly, the finite strain magnitudes may in fact decrease if the orientation of the deformation field switches through time. Consequently, the ideal solution is track the finite strain invariant (single compositional) field within the material and track the full finite strain tensor through particles.
 
 Viscous stress may also be limited by a non-linear stress limiter that has a form similar to the Peierls creep mechanism. This stress limiter assigns an effective viscosity $\sigma_\text{eff} = \frac{\tau_y}{2\varepsilon_y} {\frac{\varepsilon_{ii}}{\varepsilon_y}}^{\frac{1}{n_y}-1}$ Above $\tau_y$ is a yield stress, $\varepsilon_y$ is the reference strain rate, $\varepsilon_{ii}$ is the strain rate and $n_y$ is the stress limiter exponent.  The yield stress, $\tau_y$, is defined through the Drucker Prager yield criterion formulation. This method of limiting viscous stress has been used in various forms within the geodynamic literature, including Christensen (1992), JGR, 97(B2), pp. 2015-2036; Cizkova and Bina (2013), EPSL, 379, pp. 95-103; Cizkova and Bina (2015), EPSL, 430, pp. 408-415. When $n_y$ is 1, it essentially becomes a linear viscosity model, and in the limit $n_y\rightarrow \infty$ it converges to the standard viscosity rescaling method (concretely, values $n_y>20$ are large enough).
 
@@ -12100,6 +12690,8 @@ The following postprocessors are available:
 
 `composition statistics': A postprocessor that computes some statistics about the compositional fields, if present in this simulation. In particular, it computes maximal and minimal values of each field, as well as the total mass contained in this field as defined by the integral $m_i(t) = \int_\Omega c_i(\mathbf x,t) \; dx$.
 
+`core statistics': A postprocessor that computes some statistics about the core evolution. (Working only with dynamic core boundary temperature plugin)
+
 `depth average': A postprocessor that computes depth averaged quantities and writes them into a file $<$depth\_average.ext$>$ in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section \texttt{Postprocess/Depth average} in the input file.
 
 In the output files, the $x$-value of each data point corresponds to the depth, whereas the $y$-value corresponds to the simulation time. The time is provided in seconds or, if the global ``Use years in output instead of seconds'' parameter is set, in years.
@@ -12172,7 +12764,7 @@ The information produced by this postprocessor is a subset of what is generated 
 `visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
 
 
-{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, command, composition statistics, depth average, dynamic topography, geoid, global statistics, heat flux densities, heat flux map, heat flux statistics, heating statistics, mass flux statistics, matrix statistics, melt statistics, memory statistics, particle count statistics, particles, point values, pressure statistics, spherical velocity statistics, temperature statistics, topography, velocity boundary statistics, velocity statistics, viscous dissipation statistics, visualization
+{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, command, composition statistics, core statistics, depth average, dynamic topography, geoid, global statistics, heat flux densities, heat flux map, heat flux statistics, heating statistics, mass flux statistics, matrix statistics, melt statistics, memory statistics, particle count statistics, particles, point values, pressure statistics, spherical velocity statistics, temperature statistics, topography, velocity boundary statistics, velocity statistics, viscous dissipation statistics, visualization
 \item {\it Parameter name:} {\tt Run postprocessors on nonlinear iterations}
 \phantomsection\label{parameters:Postprocess/Run postprocessors on nonlinear iterations}
 
@@ -12318,6 +12910,28 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Dynamic core statistics}
+\label{parameters:Postprocess/Dynamic_20core_20statistics}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Excess entropy only}
+\phantomsection\label{parameters:Postprocess/Dynamic core statistics/Excess entropy only}
+
+
+\index[prmindex]{Excess entropy only}
+\index[prmindexfull]{Postprocess!Dynamic core statistics!Excess entropy only}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Output the excess entropy only instead the each entropy terms.
+
+
+{\it Possible values:} A boolean value (true or false)
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Dynamic topography}
@@ -12634,10 +13248,12 @@ Select one of the following models:
 
 `cell average': Return the average of all particle properties in the given cell.
 
+`harmonic average': Return the harmonic average of all particle properties in the given cell. If the cell contains no particles, return the harmonic average of the properties in the neighboring cells.
+
 `nearest neighbor': Return the properties of the nearest neighboring particle in the current cell, or nearest particle in nearest neighboring cell if current cell is empty.
 
 
-{\it Possible values:} Any one of bilinear least squares, cell average, nearest neighbor
+{\it Possible values:} Any one of bilinear least squares, cell average, harmonic average, nearest neighbor
 \item {\it Parameter name:} {\tt List of particle properties}
 \phantomsection\label{parameters:Postprocess/Particles/List of particle properties}
 
@@ -13372,6 +13988,22 @@ If the function you are describing represents a vector-valued function with mult
 \label{parameters:Postprocess/Visualization}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Filter output}
+\phantomsection\label{parameters:Postprocess/Visualization/Filter output}
+
+
+\index[prmindex]{Filter output}
+\index[prmindexfull]{Postprocess!Visualization!Filter output}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} deal.II offers the possibility to filter duplicate vertices for HDF5 output files. This merges the vertices of adjacent cells and therefore saves disk space, but misrepresents discontinuous output properties. Activating this function reduces the disk space by about a factor of $2^{dim}$ for HDF5 output, and currently has no effect on other output formats. \note{\textbf{Warning:} Setting this flag to true will result in visualization output that does not accurately represent discontinuous fields. This may be because you are using a discontinuous finite element for the pressure, temperature, or compositional variables, or because you use a visualization postprocessor that outputs quantities as discontinuous fields (e.g., the strain rate, viscosity, etc.). These will then all be visualized as \textit{continuous} quantities even though, internally, \aspect{} considers them as discontinuous fields.}
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Interpolate output}
 \phantomsection\label{parameters:Postprocess/Visualization/Interpolate output}
 
@@ -13474,7 +14106,7 @@ This visualization postprocessor outputs whatever quantities the material model 
 
 `nonadiabatic pressure': A visualization output object that generates output for the non-adiabatic component of the pressure.
 
-`nonadiabatic temperature': A visualization output object that generates output for the non-adiabatic component of the pressure.
+`nonadiabatic temperature': A visualization output object that generates output for the non-adiabatic component of the temperature.
 
 `particle count': A visualization output object that generates output about the number of particles per cell.
 
