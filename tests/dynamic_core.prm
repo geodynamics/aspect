@@ -57,7 +57,7 @@ subsection Boundary temperature model
     set Core heat capacity                = 840
     set K0                                = 4.111e11
     set Alpha                             = 1.35e-5 # Themal expensivity for the core
-    set k_c                               = 50      # Themal conductivity for the core
+    set Core conductivity                 = 50
     subsection Geotherm parameters
         set Tm0=1695
         set Tm1=10.9e-12

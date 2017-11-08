@@ -6,7 +6,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 49+0 iterations.
+   Solving Stokes system... 43+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00000
@@ -16,7 +16,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 16 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 86+0 iterations.
+   Solving Stokes system... 85+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00001
@@ -26,7 +26,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 90+0 iterations.
+   Solving Stokes system... 83+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00002
@@ -36,7 +36,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 89+0 iterations.
+   Solving Stokes system... 86+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00003
@@ -46,7 +46,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 85+0 iterations.
+   Solving Stokes system... 81+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00004
@@ -66,7 +66,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 47+0 iterations.
+   Solving Stokes system... 43+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00006
@@ -76,7 +76,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 84+0 iterations.
+   Solving Stokes system... 83+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00007
@@ -86,7 +86,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 85+0 iterations.
+   Solving Stokes system... 82+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00008
@@ -96,7 +96,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 95+0 iterations.
+   Solving Stokes system... 90+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00009
@@ -106,7 +106,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 96+0 iterations.
+   Solving Stokes system... 93+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00010
@@ -119,7 +119,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system... 30+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00011
@@ -129,7 +129,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system... 30+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00012
@@ -139,7 +139,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 66+0 iterations.
+   Solving Stokes system... 41+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00013
@@ -149,7 +149,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 70+0 iterations.
+   Solving Stokes system... 40+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00014
@@ -159,7 +159,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 48+0 iterations.
+   Solving Stokes system... 37+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00015
@@ -169,7 +169,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system... 31+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00016
@@ -179,7 +179,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00017
@@ -189,7 +189,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system... 27+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00018
@@ -199,7 +199,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system... 26+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00019
@@ -209,7 +209,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 34+0 iterations.
+   Solving Stokes system... 26+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00020
@@ -222,7 +222,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system... 24+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00021
@@ -232,7 +232,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 32+0 iterations.
+   Solving Stokes system... 23+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00022
@@ -242,7 +242,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 98 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system... 24+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00023
@@ -252,7 +252,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00024
@@ -262,27 +262,27 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 7 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 29+0 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00025
      Writing point values:     output-point_value_02/point_values.txt
 
-*** Timestep 26:  t=5.71429e-05 years
+*** Timestep 26:  t=5.7143e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 6 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00026
      Writing point values:     output-point_value_02/point_values.txt
 
-*** Timestep 27:  t=7.54302e-05 years
+*** Timestep 27:  t=7.54303e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 6 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00027
@@ -292,17 +292,17 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 6 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 29+0 iterations.
+   Solving Stokes system... 21+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00028
      Writing point values:     output-point_value_02/point_values.txt
 
-*** Timestep 29:  t=0.000163953 years
+*** Timestep 29:  t=0.000163954 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system... 21+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00029
@@ -312,7 +312,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00030
@@ -321,11 +321,11 @@ Number of degrees of freedom: 349 (162+25+81+81)
 Number of active cells: 4 (on 2 levels)
 Number of degrees of freedom: 109 (50+9+25+25)
 
-*** Timestep 31:  t=0.000243806 years
+*** Timestep 31:  t=0.000243808 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 10+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00031
@@ -335,7 +335,7 @@ Number of degrees of freedom: 109 (50+9+25+25)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 49 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 14+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00032

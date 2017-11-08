@@ -8,7 +8,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving crust system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+11 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
    Postprocessing:

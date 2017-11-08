@@ -5,7 +5,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 61+0 iterations.
+   Solving Stokes system... 67+0 iterations.
 
    Postprocessing:
      Number of advected particles:        2500
@@ -29,7 +29,7 @@ Number of degrees of freedom: 12,463 (5,852+759+2,926+2,926)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 59+0 iterations.
+   Solving Stokes system... 60+0 iterations.
 
    Postprocessing:
      Number of advected particles:        3213
@@ -49,7 +49,7 @@ Number of degrees of freedom: 17,743 (8,336+1,071+4,168+4,168)
 
 *** Timestep 1:  t=7e+09 years
    Solving temperature system... 255 iterations.
-   Solving Stokes system... 59+0 iterations.
+   Solving Stokes system... 60+0 iterations.
 
    Postprocessing:
      Number of advected particles:        3389

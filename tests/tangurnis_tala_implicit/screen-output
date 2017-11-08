@@ -6,10 +6,13 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 33+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1
+   Solving Stokes system... 32+0 iterations.
+      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 2: 5.47434e-08
+      Relative  nonlinear residual (Stokes system) after nonlinear iteration 2: 5.71643e-08
+
 
    Postprocessing:
      writing:                       output.csv
@@ -17,8 +20,10 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heating rate (average/total):  4.234e-05 W/kg, 5.493e-05 W
 
 *** Timestep 1:  t=0.0001 seconds
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 7.7177e-08
+      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 8.05901e-08
+
 
    Postprocessing:
      writing:                       output.csv

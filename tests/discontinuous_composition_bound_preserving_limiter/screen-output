@@ -7,7 +7,7 @@ Number of degrees of freedom: 8,164 (2,178+289+1,089+2,304+2,304)
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system... 32+0 iterations.
 
 Number of active cells: 157 (on 6 levels)
 Number of degrees of freedom: 5,244 (1,482+195+741+1,413+1,413)
@@ -17,7 +17,7 @@ Number of degrees of freedom: 5,244 (1,482+195+741+1,413+1,413)
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 19+0 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.00884 m/year, 0.0198 m/year
@@ -31,7 +31,7 @@ Number of degrees of freedom: 5,936 (1,676+218+838+1,602+1,602)
    Solving C_1 system ... 4 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18+0 iterations.
+   Solving Stokes system... 14+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.0089 m/year, 0.02 m/year
@@ -45,7 +45,7 @@ Number of degrees of freedom: 6,280 (1,788+232+894+1,683+1,683)
    Solving C_1 system ... 4 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system... 13+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.00895 m/year, 0.0201 m/year
@@ -59,7 +59,7 @@ Number of degrees of freedom: 6,944 (1,964+254+982+1,872+1,872)
    Solving C_1 system ... 4 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system... 13+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.00901 m/year, 0.0203 m/year
@@ -73,7 +73,7 @@ Number of degrees of freedom: 7,037 (1,988+257+994+1,899+1,899)
    Solving C_1 system ... 4 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
+   Solving Stokes system... 13+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.00907 m/year, 0.0205 m/year
@@ -87,7 +87,7 @@ Number of degrees of freedom: 7,037 (1,988+257+994+1,899+1,899)
    Solving C_1 system ... 4 iterations.
    Solving C_2 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
+   Solving Stokes system... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.00912 m/year, 0.0206 m/year
@@ -101,7 +101,7 @@ Number of degrees of freedom: 7,037 (1,988+257+994+1,899+1,899)
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 3 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system... 10+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.00913 m/year, 0.0207 m/year

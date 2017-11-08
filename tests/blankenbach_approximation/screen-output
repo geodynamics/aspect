@@ -5,7 +5,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system... 37+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-blankenbach_approximation/solution/solution-00000
@@ -16,7 +16,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 1:  t=0.00061685 seconds
    Solving temperature system... 29 iterations.
-   Solving Stokes system... 29+0 iterations.
+   Solving Stokes system... 32+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-blankenbach_approximation/solution/solution-00001
@@ -27,7 +27,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 2:  t=0.00122985 seconds
    Solving temperature system... 21 iterations.
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system... 29+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-blankenbach_approximation/solution/solution-00002
@@ -38,7 +38,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 3:  t=0.00183784 seconds
    Solving temperature system... 21 iterations.
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system... 29+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-blankenbach_approximation/solution/solution-00003
@@ -49,7 +49,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 4:  t=0.002 seconds
    Solving temperature system... 10 iterations.
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 25+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-blankenbach_approximation/solution/solution-00004

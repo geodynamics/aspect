@@ -7,7 +7,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system... 50+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.2262/1.01/0.9695 // -0.03313/1.223/0.02968
@@ -17,7 +17,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 29+0 iterations.
+   Solving Stokes system... 31+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.03882/1.044/0.969 // -0.02427/1.008/0.03015
@@ -27,7 +27,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system... 47+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.05886/1.072/0.9599 // -0.0235/0.9932/0.03923
@@ -37,7 +37,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system... 45+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.06562/1.075/0.9541 // -0.02755/0.9625/0.04511
@@ -47,7 +47,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system... 43+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.06213/1.074/0.9462 // -0.03071/0.9694/0.05291
@@ -57,7 +57,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system... 46+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.05479/1.069/0.9396 // -0.01049/0.9688/0.05953
@@ -67,7 +67,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 37+0 iterations.
+   Solving Stokes system... 42+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.04743/1.058/0.9331 // -0.007101/0.964/0.06609
@@ -77,7 +77,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.0407/1.041/0.9263 // -0.004693/0.9683/0.07278
@@ -87,7 +87,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system... 42+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.03539/1.021/0.9202 // -0.002974/0.9638/0.07891
@@ -97,7 +97,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.03189/1.019/0.9152 // -0.002547/0.9598/0.08392
@@ -107,7 +107,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system... 46+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.03066/1.019/0.9108 // -0.001729/0.9705/0.08826

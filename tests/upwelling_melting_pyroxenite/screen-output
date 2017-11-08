@@ -15,7 +15,7 @@ Number of degrees of freedom: 23,277 (10,914+1,449+5,457+5,457)
    Solving temperature system... 16 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
+   Solving Stokes system... 8+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 1448 K, 1597 K, 1747 K
@@ -24,7 +24,7 @@ Number of degrees of freedom: 23,277 (10,914+1,449+5,457+5,457)
    Solving temperature system... 17 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system... 9+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 1448 K, 1597 K, 1747 K
@@ -33,7 +33,7 @@ Number of degrees of freedom: 23,277 (10,914+1,449+5,457+5,457)
    Solving temperature system... 17 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 1449 K, 1597 K, 1747 K
@@ -42,7 +42,7 @@ Number of degrees of freedom: 23,277 (10,914+1,449+5,457+5,457)
    Solving temperature system... 16 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 5+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 1449 K, 1597 K, 1747 K
@@ -51,7 +51,7 @@ Number of degrees of freedom: 23,277 (10,914+1,449+5,457+5,457)
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 1449 K, 1597 K, 1747 K

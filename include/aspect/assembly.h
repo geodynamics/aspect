@@ -63,6 +63,7 @@ namespace aspect
           std::vector<types::global_dof_index> local_dof_indices;
           std::vector<unsigned int>            dof_component_indices;
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
+          std::vector<double>                  div_phi_u;
           std::vector<double>                  phi_p;
           std::vector<double>                  phi_p_c;
           std::vector<Tensor<1,dim> >          grad_phi_p;
@@ -103,7 +104,6 @@ namespace aspect
 
           std::vector<Tensor<1,dim> >          phi_u;
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
-          std::vector<double>                  div_phi_u;
           std::vector<Tensor<1,dim> >          velocity_values;
           std::vector<double>                  velocity_divergence;
 
@@ -735,6 +735,14 @@ namespace aspect
         preconditioner (const double                                             pressure_scaling,
                         internal::Assembly::Scratch::StokesPreconditioner<dim>  &scratch,
                         internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const;
+
+        /**
+         * This function assembles the terms of the Stokes preconditioner matrix for the current cell.
+         */
+        void
+        compressible_preconditioner (const double                                             pressure_scaling,
+                                     internal::Assembly::Scratch::StokesPreconditioner<dim>  &scratch,
+                                     internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const;
 
         /**
          * This function assembles the terms for the matrix and right-hand-side of the incompressible

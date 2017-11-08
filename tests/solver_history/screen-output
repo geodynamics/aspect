@@ -10,7 +10,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 
 post_stokes_solver:
-30+8 iterations.
+30+7 iterations.
 
    Postprocessing:
      Writing graphical output:           output-solver_history/solution/solution-00000
@@ -23,7 +23,7 @@ post_stokes_solver:
    Solving temperature system... 4 iterations.
    Solving Stokes system... 
 post_stokes_solver:
-9+0 iterations.
+8+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  9e-09 m/s, 3.23e-08 m/s

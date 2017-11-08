@@ -5,11 +5,11 @@ Number of degrees of freedom: 3,041 (2,187+125+729)
 *** Timestep 0:  t=0 seconds
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 45+0 iterations.
+   Solving Stokes system... 38+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.0826 m/s, 0.147 m/s
-     Pressure min/avg/max:               -2 Pa, -3.964e-09 Pa, 2 Pa
+     Pressure min/avg/max:               -2 Pa, -2.269e-09 Pa, 2 Pa
      Mass fluxes through boundary parts: -0.07024 kg/s, 0.07024 kg/s, 0 kg/s, 0 kg/s, 0 kg/s, 0 kg/s
 
 Termination requested by criterion: end time

@@ -107,15 +107,79 @@ namespace aspect
                   scratch.dof_component_indices[j])
                 data.local_matrix(i, j) += ((
                                               use_tensor ?
-                                              eta * (scratch.grads_phi_u[i]
-                                                     * stress_strain_director
-                                                     * scratch.grads_phi_u[j]) :
-                                              eta * (scratch.grads_phi_u[i]
-                                                     * scratch.grads_phi_u[j]))
+                                              2.0 * eta * (scratch.grads_phi_u[i]
+                                                           * stress_strain_director
+                                                           * scratch.grads_phi_u[j]) :
+                                              2.0 * eta * (scratch.grads_phi_u[i]
+                                                           * scratch.grads_phi_u[j]))
                                             + one_over_eta * pressure_scaling
                                             * pressure_scaling
                                             * (scratch.phi_p[i] * scratch
                                                .phi_p[j]))
+                                           * JxW;
+        }
+    }
+
+
+
+    template <int dim>
+    void
+    StokesAssembler<dim>::
+    compressible_preconditioner (const double                                             /*pressure_scaling*/,
+                                 internal::Assembly::Scratch::StokesPreconditioner<dim>  &scratch,
+                                 internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const
+    {
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
+      const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
+      const unsigned int n_q_points           = scratch.finite_element_values.n_quadrature_points;
+
+      // First loop over all dofs and find those that are in the Stokes system
+      // save the component (pressure and dim velocities) each belongs to.
+      for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
+        {
+          if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+            {
+              scratch.dof_component_indices[i_stokes] = fe.system_to_component_index(i).first;
+              ++i_stokes;
+            }
+          ++i;
+        }
+
+      // Loop over all quadrature points and assemble their contributions to
+      // the preconditioner matrix
+      for (unsigned int q = 0; q < n_q_points; ++q)
+        {
+          for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
+            {
+              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                {
+                  scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
+                  scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
+
+                  ++i_stokes;
+                }
+              ++i;
+            }
+
+          const double eta_two_thirds = scratch.material_model_outputs.viscosities[q] * 2.0 / 3.0;
+
+          const SymmetricTensor<4, dim> &stress_strain_director = scratch
+                                                                  .material_model_outputs.stress_strain_directors[q];
+          const bool use_tensor = (stress_strain_director
+                                   != dealii::identity_tensor<dim>());
+
+          const double JxW = scratch.finite_element_values.JxW(q);
+
+          for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
+            for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
+              if (scratch.dof_component_indices[i] ==
+                  scratch.dof_component_indices[j])
+                data.local_matrix(i, j) += (- (use_tensor ?
+                                               eta_two_thirds * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
+                                               :
+                                               eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
+                                              ))
                                            * JxW;
         }
     }

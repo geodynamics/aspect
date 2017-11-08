@@ -5,14 +5,14 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 *** Timestep 0:  t=0 seconds
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system... 36+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
 
 *** Timestep 1:  t=1 seconds
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system... 29+0 iterations.
+   Solving Stokes system... 34+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K

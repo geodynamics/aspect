@@ -7,17 +7,23 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 32+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1
+      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
    Solving Stokes system... 26+0 iterations.
-      Relative Stokes residual after nonlinear iteration 2: 1.41808
-   Solving Stokes system... 22+0 iterations.
-      Relative Stokes residual after nonlinear iteration 3: 0.0680109
-   Solving Stokes system... 16+0 iterations.
-      Relative Stokes residual after nonlinear iteration 4: 0.00197737
+      Relative  nonlinear residual (Stokes system) after nonlinear iteration 2: 1.41808
+
+   Solving Stokes system... 21+0 iterations.
+      Relative  nonlinear residual (Stokes system) after nonlinear iteration 3: 0.068011
+
+   Solving Stokes system... 15+0 iterations.
+      Relative  nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00197734
+
    Solving Stokes system... 11+0 iterations.
-      Relative Stokes residual after nonlinear iteration 5: 0.000153847
-   Solving Stokes system... 6+0 iterations.
-      Relative Stokes residual after nonlinear iteration 6: 7.5358e-06
+      Relative  nonlinear residual (Stokes system) after nonlinear iteration 5: 0.000153853
+
+   Solving Stokes system... 5+0 iterations.
+      Relative  nonlinear residual (Stokes system) after nonlinear iteration 6: 7.53277e-06
+
 
    Postprocessing:
      writing:                       output.csv
@@ -26,7 +32,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 1:  t=0.0001 seconds
    Solving Stokes system... 2+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 2.22179e-07
+      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 2.41668e-07
+
 
    Postprocessing:
      writing:                       output.csv

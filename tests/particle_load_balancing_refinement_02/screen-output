@@ -6,7 +6,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24+0 iterations.
+   Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particle-00000
@@ -18,7 +18,7 @@ Number of degrees of freedom: 554 (258+38+129+129)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particle-00001
@@ -30,7 +30,7 @@ Number of degrees of freedom: 246 (114+18+57+57)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24+0 iterations.
+   Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particle-00002
@@ -42,7 +42,7 @@ Number of degrees of freedom: 391 (182+27+91+91)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24+0 iterations.
+   Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particle-00003
@@ -54,7 +54,7 @@ Number of degrees of freedom: 246 (114+18+57+57)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particle-00004
@@ -66,7 +66,7 @@ Number of degrees of freedom: 246 (114+18+57+57)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 23+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particle-00005
