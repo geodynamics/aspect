@@ -48,8 +48,8 @@ namespace aspect
 
       virtual
       void
-      execute (internal::Assembly::Scratch::ScratchBase<dim>       &scratch_base,
-               internal::Assembly::CopyData::CopyDataBase<dim>      &data_base) const
+      execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+               internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
       {
         internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
         internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);

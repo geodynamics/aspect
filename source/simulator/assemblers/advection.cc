@@ -52,7 +52,7 @@ namespace aspect
 
     template <int dim>
     void
-    AdvectionSystem<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+    AdvectionSystem<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                    internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
@@ -245,7 +245,7 @@ namespace aspect
 
     template <int dim>
     void
-    AdvectionSystemBoundaryFace<dim>::execute(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base,
+    AdvectionSystemBoundaryFace<dim>::execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                               internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
@@ -456,7 +456,7 @@ namespace aspect
 
     template <int dim>
     void
-    AdvectionSystemInteriorFace<dim>::execute(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base,
+    AdvectionSystemInteriorFace<dim>::execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                               internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);

@@ -41,8 +41,8 @@ namespace aspect
     class ApplyStabilization: public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
-        void execute (internal::Assembly::Scratch::ScratchBase<dim>       &scratch,
-                      internal::Assembly::CopyData::CopyDataBase<dim>      &data) const;
+        void execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
+                      internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
     };
   }
 

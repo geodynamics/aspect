@@ -41,7 +41,7 @@ namespace aspect
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points           = scratch.finite_element_values.n_quadrature_points;
-      const double pressure_scaling = scratch.pressure_scaling;
+      const double pressure_scaling = this->get_pressure_scaling();
 
       // First loop over all dofs and find those that are in the Stokes system
       // save the component (pressure and dim velocities) each belongs to.
@@ -173,7 +173,7 @@ namespace aspect
     template <int dim>
     void
     StokesIncompressibleTerms<dim>::
-    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
@@ -183,7 +183,7 @@ namespace aspect
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
-      const double pressure_scaling = scratch.pressure_scaling;
+      const double pressure_scaling = this->get_pressure_scaling();
 
       const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
       *force = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >();
@@ -282,7 +282,7 @@ namespace aspect
     template <int dim>
     void
     StokesCompressibleStrainRateViscosityTerm<dim>::
-    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
@@ -337,7 +337,7 @@ namespace aspect
     template <int dim>
     void
     StokesReferenceDensityCompressibilityTerm<dim>::
-    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
@@ -353,7 +353,7 @@ namespace aspect
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
-      const double pressure_scaling = scratch.pressure_scaling;
+      const double pressure_scaling = this->get_pressure_scaling();
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -386,7 +386,7 @@ namespace aspect
     template <int dim>
     void
     StokesImplicitReferenceDensityCompressibilityTerm<dim>::
-    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
@@ -405,7 +405,7 @@ namespace aspect
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
-      const double pressure_scaling = scratch.pressure_scaling;
+      const double pressure_scaling = this->get_pressure_scaling();
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -440,7 +440,7 @@ namespace aspect
     template <int dim>
     void
     StokesIsothermalCompressionTerm<dim>::
-    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
@@ -456,7 +456,7 @@ namespace aspect
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
-      const double pressure_scaling = scratch.pressure_scaling;
+      const double pressure_scaling = this->get_pressure_scaling();
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -497,7 +497,7 @@ namespace aspect
 
     template <int dim>
     void
-    StokesPressureRHSCompatibilityModification<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+    StokesPressureRHSCompatibilityModification<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                                               internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
@@ -526,8 +526,8 @@ namespace aspect
 
     template <int dim>
     void
-    StokesBoundaryTraction<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>       &scratch_base,
-                                          internal::Assembly::CopyData::CopyDataBase<dim>      &data_base) const
+    StokesBoundaryTraction<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                                          internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);

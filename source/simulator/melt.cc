@@ -110,7 +110,7 @@ namespace aspect
     template <int dim>
     void
     MeltStokesPreconditioner<dim>::
-    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>& > (scratch_base);
@@ -120,7 +120,7 @@ namespace aspect
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int   stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int   n_q_points      = scratch.finite_element_values.n_quadrature_points;
-      const double pressure_scaling = scratch.pressure_scaling;
+      const double pressure_scaling = this->get_pressure_scaling();
 
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
@@ -291,7 +291,7 @@ namespace aspect
     template <int dim>
     void
     MeltStokesSystem<dim>::
-    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
@@ -315,7 +315,7 @@ namespace aspect
       Assert(dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model()) !=
              NULL, ExcMessage("Error: The current material model needs to be derived from MeltInterface to use melt transport."));
 
-      const double pressure_scaling = scratch.pressure_scaling;
+      const double pressure_scaling = this->get_pressure_scaling();
 
       for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
         {
@@ -471,8 +471,8 @@ namespace aspect
     template <int dim>
     void
     MeltStokesSystemBoundary<dim>::
-    execute (internal::Assembly::Scratch::ScratchBase<dim>       &scratch_base,
-             internal::Assembly::CopyData::CopyDataBase<dim>      &data_base) const
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+             internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
@@ -525,7 +525,7 @@ namespace aspect
                 {
                   // apply the fluid pressure boundary condition
                   data.local_rhs(i_stokes) += (scratch.face_finite_element_values[ex_p_f].value(i, q)
-                                               * scratch.pressure_scaling * K_D *
+                                               * this->get_pressure_scaling() * K_D *
                                                (density_f
                                                 * (scratch.face_finite_element_values.normal_vector(q) * gravity)
                                                 - grad_p_f[q])
@@ -585,7 +585,7 @@ namespace aspect
     template <int dim>
     void
     MeltAdvectionSystem<dim>::
-    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
@@ -881,7 +881,7 @@ namespace aspect
     template <int dim>
     void
     MeltPressureRHSCompatibilityModification<dim>::
-    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);

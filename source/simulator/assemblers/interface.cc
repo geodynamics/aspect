@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 by the authors of the ASPECT code.
+  Copyright (C) 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -44,6 +44,8 @@ namespace aspect
                               const bool                add_compaction_pressure,
                               const bool                rebuild_matrix)
           :
+                              ScratchBase<dim>(),
+
           finite_element_values (mapping, finite_element, quadrature,
                                  update_flags),
           local_dof_indices (finite_element.dofs_per_cell),
@@ -53,7 +55,6 @@ namespace aspect
           phi_p (stokes_dofs_per_cell, numbers::signaling_nan<double>()),
           phi_p_c (add_compaction_pressure ? stokes_dofs_per_cell : 0, numbers::signaling_nan<double>()),
           grad_phi_p (add_compaction_pressure ? stokes_dofs_per_cell : 0, numbers::signaling_nan<Tensor<1,dim> >()),
-          pressure_scaling(numbers::signaling_nan<double>()),
           material_model_inputs(quadrature.size(), n_compositional_fields),
           material_model_outputs(quadrature.size(), n_compositional_fields),
           rebuild_stokes_matrix(rebuild_matrix)
@@ -65,10 +66,13 @@ namespace aspect
         StokesPreconditioner<dim>::
         StokesPreconditioner (const StokesPreconditioner &scratch)
           :
+        ScratchBase<dim>(scratch),
+
           finite_element_values (scratch.finite_element_values.get_mapping(),
                                  scratch.finite_element_values.get_fe(),
                                  scratch.finite_element_values.get_quadrature(),
                                  scratch.finite_element_values.get_update_flags()),
+
           local_dof_indices (scratch.local_dof_indices),
           dof_component_indices( scratch.dof_component_indices),
           grads_phi_u (scratch.grads_phi_u),
@@ -76,7 +80,6 @@ namespace aspect
           phi_p (scratch.phi_p),
           phi_p_c (scratch.phi_p_c),
           grad_phi_p(scratch.grad_phi_p),
-          pressure_scaling(scratch.pressure_scaling),
           material_model_inputs(scratch.material_model_inputs),
           material_model_outputs(scratch.material_model_outputs),
           rebuild_stokes_matrix(scratch.rebuild_stokes_matrix)
@@ -166,6 +169,8 @@ namespace aspect
                          const unsigned int        n_compositional_fields,
                          const typename Simulator<dim>::AdvectionField &field)
           :
+                         ScratchBase<dim>(),
+
           finite_element_values (mapping,
                                  finite_element, quadrature,
                                  update_flags),
@@ -250,6 +255,8 @@ namespace aspect
         AdvectionSystem<dim>::
         AdvectionSystem (const AdvectionSystem &scratch)
           :
+        ScratchBase<dim>(scratch),
+
           finite_element_values (scratch.finite_element_values.get_mapping(),
                                  scratch.finite_element_values.get_fe(),
                                  scratch.finite_element_values.get_quadrature(),

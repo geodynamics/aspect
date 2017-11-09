@@ -37,7 +37,7 @@ namespace aspect
     template <int dim>
     void
     NewtonStokesPreconditioner<dim>::
-    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>& > (scratch_base);
@@ -105,7 +105,7 @@ namespace aspect
                   if (scratch.dof_component_indices[i] ==
                       scratch.dof_component_indices[j])
                     data.local_matrix(i, j) += ((2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                                + one_over_eta * scratch.pressure_scaling * scratch.pressure_scaling
+                                                + one_over_eta * this->get_pressure_scaling() * this->get_pressure_scaling()
                                                 * (scratch.phi_p[i] * scratch.phi_p[j]))
                                                * JxW;
             }
@@ -130,8 +130,8 @@ namespace aspect
                       data.local_matrix(i, j) += ((2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
                                                   + derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate
                                                                                          + scratch.grads_phi_u[j] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate)
-                                                  + one_over_eta * scratch.pressure_scaling
-                                                  * scratch.pressure_scaling
+                                                  + one_over_eta * this->get_pressure_scaling()
+                                                  * this->get_pressure_scaling()
                                                   * (scratch.phi_p[i] * scratch.phi_p[j]))
                                                  * JxW;
                     }
@@ -177,7 +177,7 @@ namespace aspect
     template <int dim>
     void
     NewtonStokesIncompressibleTerms<dim>::
-    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
@@ -236,7 +236,7 @@ namespace aspect
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             data.local_rhs(i) -= (eta * 2.0 * (scratch.grads_phi_u[i] * strain_rate)
                                   - (scratch.div_phi_u[i] * pressure)
-                                  - (scratch.pressure_scaling * scratch.phi_p[i] * velocity_divergence)
+                                  - (this->get_pressure_scaling() * scratch.phi_p[i] * velocity_divergence)
                                   -(density * gravity * scratch.phi_u[i]))
                                  * JxW;
 
@@ -250,12 +250,12 @@ namespace aspect
                     data.local_matrix(i,j) += (
                                                 eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j])
                                                 // assemble \nabla p as -(p, div v):
-                                                - (scratch.pressure_scaling *
+                                                - (this->get_pressure_scaling() *
                                                    scratch.div_phi_u[i] * scratch.phi_p[j])
                                                 // assemble the term -div(u) as -(div u, q).
                                                 // Note the negative sign to make this
                                                 // operator adjoint to the grad p term:
-                                                - (scratch.pressure_scaling *
+                                                - (this->get_pressure_scaling() *
                                                    scratch.phi_p[i] * scratch.div_phi_u[j]))
                                               * JxW;
                   }
@@ -285,7 +285,7 @@ namespace aspect
                       {
                         data.local_matrix(i,j) += ( derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate
                                                                                          + scratch.grads_phi_u[j] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate)
-                                                    + derivative_scaling_factor * scratch.pressure_scaling * scratch.grads_phi_u[i] * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * strain_rate )
+                                                    + derivative_scaling_factor * this->get_pressure_scaling() * scratch.grads_phi_u[i] * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * strain_rate )
                                                   * JxW;
 
                         Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),
@@ -336,7 +336,7 @@ namespace aspect
     template <int dim>
     void
     NewtonStokesCompressibleStrainRateViscosityTerm<dim>::
-    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
@@ -422,7 +422,7 @@ namespace aspect
     template <int dim>
     void
     NewtonStokesReferenceDensityCompressibilityTerm<dim>::
-    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
@@ -459,7 +459,7 @@ namespace aspect
           const double JxW = scratch.finite_element_values.JxW(q);
 
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-            data.local_rhs(i) += (scratch.pressure_scaling *
+            data.local_rhs(i) += (this->get_pressure_scaling() *
                                   one_over_rho * drho_dz_u * scratch.phi_p[i])
                                  * JxW;
         }
@@ -470,7 +470,7 @@ namespace aspect
     template <int dim>
     void
     NewtonStokesImplicitReferenceDensityCompressibilityTerm<dim>::
-    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
@@ -512,7 +512,7 @@ namespace aspect
 
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-              data.local_matrix(i,j) += (scratch.pressure_scaling *
+              data.local_matrix(i,j) += (this->get_pressure_scaling() *
                                          one_over_rho * drho_dz * scratch.phi_u[j] * scratch.phi_p[i])
                                         * JxW;
         }
@@ -523,7 +523,7 @@ namespace aspect
     template <int dim>
     void
     NewtonStokesIsothermalCompressionTerm<dim>::
-    execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
@@ -567,7 +567,7 @@ namespace aspect
                                    // to the manual, this term seems to have the wrong sign, but this
                                    // is because we negate the entire equation to make sure we get
                                    // -div(u) as the adjoint operator of grad(p)
-                                   (scratch.pressure_scaling *
+                                   (this->get_pressure_scaling() *
                                     compressibility * density *
                                     (scratch.velocity_values[q] * gravity) *
                                     scratch.phi_p[i])

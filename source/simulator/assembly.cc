@@ -104,6 +104,9 @@ namespace aspect
 
   namespace
   {
+    // This function initializes the simulator access for all assemblers
+    // inside of the assemblers parameter. This is just a shortcut to save some
+    // lines in set_assemblers(), where this operation appears multiple times.
     template <int dim, class AssemblerType>
     void
     initialize_simulator(Simulator<dim> &simulator,
@@ -400,9 +403,6 @@ namespace aspect
     // Prepare the data structures for assembly
     scratch.finite_element_values.reinit (cell);
     scratch.cell = cell;
-    scratch.pressure_scaling = material_model->reference_viscosity()
-                               / geometry_model->length_scale();
-
     data.local_matrix = 0;
 
     compute_material_model_input_values (current_linearization_point,
@@ -593,8 +593,6 @@ namespace aspect
     // Prepare the data structures for assembly
     scratch.finite_element_values.reinit (cell);
     scratch.cell = cell;
-    scratch.pressure_scaling = material_model->reference_viscosity()
-                               / geometry_model->length_scale();
 
     if (rebuild_stokes_matrix)
       data.local_matrix = 0;

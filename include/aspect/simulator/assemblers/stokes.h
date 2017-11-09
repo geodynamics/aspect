@@ -102,10 +102,13 @@ namespace aspect
     };
 
     /**
-     * This class assembles the right-hand-side term of the Stokes equation
+     * This class assembles the compressibility term of the Stokes equation
      * that is caused by the compressibility in the mass conservation equation.
+     * It uses an approximation that involves the reference density profile, and
+     * includes this term explicitly in the right-hand side vector to preserve
+     * the symmetry of the matrix.
      * This class approximates this term as
-     * $- \nabla \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u}$
+     * $- \nabla \mathbf{u} = \frac{1}{\rho^{\ast}} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u}$
      */
     template <int dim>
     class StokesReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>,
@@ -123,10 +126,11 @@ namespace aspect
     /**
      * This class assembles the compressibility term of the Stokes equation
      * that is caused by the compressibility in the mass conservation equation.
-     * It includes this term implicitly in the matrix,
+     * It uses an approximation that involves the reference density profile, and
+     * includes this term implicitly in the matrix,
      * which is therefore not longer symmetric.
      * This class approximates this term as
-     * $ - \nabla \mathbf{u} - \frac{1}{\rho} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u} = 0$
+     * $ - \nabla \mathbf{u} - \frac{1}{\rho^{\ast}} * \frac{\partial rho{^\ast}}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u} = 0$
      */
     template <int dim>
     class StokesImplicitReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>,
@@ -145,7 +149,10 @@ namespace aspect
      * This class assembles the right-hand-side term of the Stokes equation
      * that is caused by the compressibility in the mass conservation equation.
      * This class approximates this term as
-     * $ - \nabla \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial p} \rho \mathbf{g} \cdot \mathbf{u}$
+     * $ - \nabla \mathbf{u} = \kappa \rho \mathbf{g} \cdot \mathbf{u}$
+     * where $\kappa$ is the compressibility provided by the material model,
+     * which is frequently computed as
+     * $\kappa = \frac{1}{\rho} * \frac{\partial rho}{\partial p}$.
      */
     template <int dim>
     class StokesIsothermalCompressionTerm : public Assemblers::Interface<dim>,
@@ -161,10 +168,8 @@ namespace aspect
     };
 
     /**
-     * This class assembles the right-hand-side term of the Stokes equation
-     * that is caused by the compressibility in the mass conservation equation.
-     * This class approximates this term as
-     * $ - \nabla \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial p} \rho \mathbf{g} \cdot \mathbf{u}$
+     * This class assembles the right-hand-side terms that are used to weakly
+     * prescribe the boundary tractions.
      */
     template <int dim>
     class StokesBoundaryTraction : public Assemblers::Interface<dim>,
@@ -180,10 +185,11 @@ namespace aspect
     };
 
     /**
-     * This class assembles the right-hand-side term of the Stokes equation
-     * that is caused by the compressibility in the mass conservation equation.
-     * This class approximates this term as
-     * $ - \nabla \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial p} \rho \mathbf{g} \cdot \mathbf{u}$
+     * This class computes the local pressure shape function integrals that
+     * are later used to make the Stokes equations compatible to its right hand
+     * side. For more information why this is necessary see Section 3.2.2 of
+     * Heister et al. (2017), "High Accuracy Mantle Convection Simulation
+     * through Modern Numerical Methods. II: Realistic Models and Problems."
      */
     template <int dim>
     class StokesPressureRHSCompatibilityModification : public Assemblers::Interface<dim>,

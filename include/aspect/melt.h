@@ -170,7 +170,7 @@ namespace aspect
 
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
     };
 
@@ -186,7 +186,7 @@ namespace aspect
 
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
     };
 
@@ -204,7 +204,7 @@ namespace aspect
 
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
     };
 
@@ -220,7 +220,7 @@ namespace aspect
 
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
     };
 
@@ -237,7 +237,7 @@ namespace aspect
 
         virtual
         std::vector<double>
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim> &scratch) const;
 
         /**
          * Attach melt outputs.
@@ -260,7 +260,7 @@ namespace aspect
 
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
     };
 
@@ -275,7 +275,7 @@ namespace aspect
 
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
     };
   }

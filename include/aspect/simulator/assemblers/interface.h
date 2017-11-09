@@ -49,10 +49,26 @@ namespace aspect
     {
       namespace Scratch
       {
+        /**
+         * Scratch objects are used to store information about a cell that is
+         * necessary for assembling matrix and right hand side terms for this
+         * cell. The ScratchBase class acts as a empty base class for
+         * individual scratch objects for the different equations.
+         */
         template <int dim>
         struct ScratchBase
         {
-          ScratchBase() {};
+          ScratchBase()
+          :
+            cell(),
+            face_number(numbers::invalid_unsigned_int)
+          {};
+
+          ScratchBase(const ScratchBase &scratch)
+          :
+            cell(scratch.cell),
+            face_number(scratch.face_number)
+          {};
 
           virtual ~ScratchBase () {};
 
@@ -64,11 +80,16 @@ namespace aspect
           /**
            * The number of the face object with respect to the current
            * cell on which we operate. If we currently
-           * operate on a cell, this is not meaningful.
+           * operate on a cell, this member is set to
+           * numbers::invalid_unsigned_int.
            */
           unsigned face_number;
         };
 
+        /**
+         * A scratch object to store all necessary information to assemble
+         * the Stokes preconditioner terms.
+         */
         template <int dim>
         struct StokesPreconditioner: public ScratchBase<dim>
         {
@@ -80,11 +101,11 @@ namespace aspect
                                 const unsigned int        stokes_dofs_per_cell,
                                 const bool                add_compaction_pressure,
                                 const bool                rebuild_stokes_matrix);
-          StokesPreconditioner (const StokesPreconditioner &data);
+          StokesPreconditioner (const StokesPreconditioner &scratch);
 
           virtual ~StokesPreconditioner ();
 
-          FEValues<dim>               finite_element_values;
+          FEValues<dim> finite_element_values;
 
           std::vector<types::global_dof_index> local_dof_indices;
           std::vector<unsigned int>            dof_component_indices;
@@ -93,8 +114,6 @@ namespace aspect
           std::vector<double>                  phi_p;
           std::vector<double>                  phi_p_c;
           std::vector<Tensor<1,dim> >          grad_phi_p;
-
-          double pressure_scaling;
 
           /**
            * Material model inputs and outputs computed at the current
@@ -111,14 +130,16 @@ namespace aspect
           const bool rebuild_stokes_matrix;
         };
 
-
-
-        // We derive the StokesSystem scratch array from the
-        // StokesPreconditioner array. We do this because all the objects that
-        // are necessary for the assembly of the preconditioner are also
-        // needed for the actual system matrix and right hand side, plus some
-        // extra data that we need for the time stepping and traction boundaries
-        // on the right hand side.
+        /**
+         * A scratch object to store all necessary information to assemble
+         * the terms in the Stokes equations.
+         * We derive the StokesSystem scratch class from the
+         * StokesPreconditioner class, because all the objects that
+         * are necessary for the assembly of the preconditioner are also
+         * needed for the actual system matrix and right hand side, plus some
+         * extra data that we need for the time stepping and traction boundaries
+         * on the right hand side.
+         */
         template <int dim>
         struct StokesSystem : public StokesPreconditioner<dim>
         {
@@ -137,7 +158,7 @@ namespace aspect
 
           StokesSystem (const StokesSystem<dim> &data);
 
-          FEFaceValues<dim>               face_finite_element_values;
+          FEFaceValues<dim> face_finite_element_values;
 
           std::vector<Tensor<1,dim> >          phi_u;
           std::vector<Tensor<1,dim> >          velocity_values;
@@ -174,8 +195,10 @@ namespace aspect
           const bool rebuild_newton_stokes_matrix;
         };
 
-
-
+        /**
+         * A scratch object to store all necessary information to assemble
+         * the terms in the advection equations.
+         */
         template <int dim>
         struct AdvectionSystem: public ScratchBase<dim>
         {
@@ -190,11 +213,11 @@ namespace aspect
                            const typename Simulator<dim>::AdvectionField     &advection_field);
           AdvectionSystem (const AdvectionSystem &data);
 
-          FEValues<dim>               finite_element_values;
+          FEValues<dim> finite_element_values;
 
-          std_cxx11::shared_ptr<FEFaceValues<dim> >           face_finite_element_values;
-          std_cxx11::shared_ptr<FEFaceValues<dim> >           neighbor_face_finite_element_values;
-          std_cxx11::shared_ptr<FESubfaceValues<dim> >        subface_finite_element_values;
+          std_cxx11::shared_ptr<FEFaceValues<dim> >    face_finite_element_values;
+          std_cxx11::shared_ptr<FEFaceValues<dim> >    neighbor_face_finite_element_values;
+          std_cxx11::shared_ptr<FESubfaceValues<dim> > subface_finite_element_values;
 
           std::vector<types::global_dof_index>   local_dof_indices;
 
@@ -203,8 +226,8 @@ namespace aspect
            * shape functions at the quadrature points, as they are
            * used in the advection assembly function. note that the sizes
            * of these arrays are equal to the number of shape functions
-           * corresponding to the advected field (and not of the overall
-           * field!), and that they are also correspondingly indexed.
+           * corresponding to the currently advected field (and not all of the
+           * existing fields), and that they are also correspondingly indexed.
            */
           std::vector<double>         phi_field;
           std::vector<Tensor<1,dim> > grad_phi_field;
@@ -271,24 +294,42 @@ namespace aspect
           HeatingModel::HeatingModelOutputs face_heating_model_outputs;
           HeatingModel::HeatingModelOutputs neighbor_face_heating_model_outputs;
 
+          /**
+           * This pointer contains a struct that can be used to identify the
+           * advection field that is currently assembled. It can be used to
+           * determine between temperature and the available compositional
+           * fields. See the documentation of the AdvectionField class for
+           * more details.
+           */
           const typename Simulator<dim>::AdvectionField *advection_field;
+
+          /**
+           * The amount of entropy viscosity that should be applied to the
+           * current cell to stabilize the solution of the advection system.
+           */
           double artificial_viscosity;
         };
-
-
-
       }
 
-
-      // The CopyData arrays are similar to the
-      // Scratch arrays. They provide a
-      // constructor, a copy operation, and
-      // some arrays for local matrix, local
-      // vectors and the relation between local
-      // and global degrees of freedom (a.k.a.
-      // <code>local_dof_indices</code>).
+      /**
+       * The CopyData arrays are similar to the Scratch arrays except they are
+       * meant as containers for the output of assembler objects. They provide a
+       * constructor and some data objects for local matrix, local vectors and
+       * the relation between local and global degrees of freedom (a.k.a.
+       * <code>local_dof_indices</code>). After all assemblers are finished
+       * the objects contain the local contributions of a particular cell to
+       * the global matrix and right hand side. This copy data object is then
+       * handed over to one of the <code>copy_local_to_global...</code>
+       * functions in assembly.cc that copy their content to the global matrix
+       * and right hand side vector.
+       */
       namespace CopyData
       {
+        /**
+         * The base class is empty and only allows us to hand over pointers
+         * or references of a generic type and later cast them to their actual
+         * derived class.
+         */
         template <int dim>
         struct CopyDataBase
         {
@@ -297,16 +338,22 @@ namespace aspect
           virtual ~CopyDataBase () {};
         };
 
+        /**
+         * The Stokes preconditioner object only requires the bare minimum of
+         * copy data objects. Matrix contributions and degrees of freedom this
+         * cell corresponds to.
+         */
         template <int dim>
         struct StokesPreconditioner: public CopyDataBase<dim>
         {
           StokesPreconditioner (const unsigned int stokes_dofs_per_cell);
+
           StokesPreconditioner (const StokesPreconditioner &data);
 
           virtual ~StokesPreconditioner ();
 
-          FullMatrix<double>          local_matrix;
-          std::vector<types::global_dof_index>   local_dof_indices;
+          FullMatrix<double> local_matrix;
+          std::vector<types::global_dof_index> local_dof_indices;
 
           /**
            * Extract the values listed in @p all_dof_indices only if
@@ -315,11 +362,14 @@ namespace aspect
           */
           void extract_stokes_dof_indices(const std::vector<types::global_dof_index> &all_dof_indices,
                                           const Introspection<dim>                   &introspection,
-                                          const FiniteElement<dim>           &finite_element);
+                                          const FiniteElement<dim>                   &finite_element);
         };
 
-
-
+        /**
+         * Similar to the scratch object the Stokes system requires all
+         * data from the Stokes preconditioner copy data class, plus some
+         * extras like the right hand side contribution.
+         */
         template <int dim>
         struct StokesSystem : public StokesPreconditioner<dim>
         {
@@ -331,8 +381,11 @@ namespace aspect
           Vector<double> local_pressure_shape_function_integrals;
         };
 
-
-
+        /**
+         * Additionally to the Stokes system the Advection system copy data
+         * object also needs to keep track of contributions across faces
+         * (mostly for discontinuous elements that contain DG terms).
+         */
         template <int dim>
         struct AdvectionSystem: public CopyDataBase<dim>
         {
@@ -395,7 +448,9 @@ namespace aspect
            * any other variable outside the block we are currently considering)
            */
           std::vector<types::global_dof_index>   local_dof_indices;
-          /** Indices of the degrees of freedom corresponding to the temperature
+
+          /**
+           * Indices of the degrees of freedom corresponding to the temperature
            * or composition field on all possible neighboring cells. This is used
            * in the discontinuous Galerkin method. The outer std::vector has
            * length GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell,
@@ -419,9 +474,13 @@ namespace aspect
      *
      * The point of this class is primarily so that we can store
      * pointers to such objects in a list. The objects are created
-     * in Simulator::set_assemblers() (which is the only place where
-     * we know their actual type) and destroyed in the destructor of
-     * the Simulator object.
+     * in Simulator::set_assemblers() and destroyed in the destructor of
+     * the Simulator object. Derived classes of this base class usually
+     * handle groups of terms in the equations that are
+     * logically connected (such as all terms in the Stokes equations that
+     * appear independent on the selected compressibility formulation). This
+     * way selecting a certain set of assembler objects effectively controls
+     * which equation is solved.
      */
     template <int dim>
     class Interface
@@ -429,10 +488,23 @@ namespace aspect
       public:
         virtual ~Interface () {}
 
+        /**
+         * Execute this assembler object. This function performs the primary work
+         * of an assembler. More precisely, it uses information for the current
+         * cell that is stored in @p scratch (like the material properties on
+         * this cell and the position of quadrature points) and computes the
+         * matrix and right hand side contributions for a set of terms for
+         * the given cell. These contributions are stored in @p data. Note, that
+         * the data in @p scratch and @p data is shared between all active
+         * assemblers so that each assembler should only add contributions to
+         * @p data, not overwrite entries in the matrix. After all assemblers
+         * have finished, the final content of @p data is distributed into the
+         * global matrix and right hand side vector.
+         */
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim> &,
-                internal::Assembly::CopyData::CopyDataBase<dim> &) const =0;
+        execute(internal::Assembly::Scratch::ScratchBase<dim> &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const =0;
 
         /**
          * This function gets called if a MaterialModelOutputs is created
@@ -440,19 +512,51 @@ namespace aspect
          * function might be called more than once for a
          * MaterialModelOutput, so it is recommended to check if
          * get_additional_output() returns an instance before adding a new
-         * one to the additional_outputs vector.
+         * one to the additional_outputs vector. By default this function does
+         * not create additional outputs.
+         *
+         * Material models, through functions derived from
+         * MaterialModel::Interface::evaluate(), put their computed material
+         * parameters into a structure of type MaterialModel::MaterialModelOutputs.
+         * By default, material models will compute those parameters that
+         * correspond to the member variables of that structure. However,
+         * there are situations where parts of the simulator need additional
+         * pieces of information; a typical example would be the use of a
+         * Newton scheme that also requires the computation of <i>derivatives</i>
+         * of material parameters with respect to pressure, temperature, and
+         * possibly other variables.
+         *
+         * The computation of such additional information is controlled by
+         * the presence of a collection of pointers in
+         * MaterialModel::MaterialModelOutputs that point to additional
+         * objects. Whether or not one needs these additional objects depends
+         * on what assemblers are selected, or what postprocessing one
+         * wants to compute. For the purpose of assembly, the current
+         * function creates the additional objects (such as the one that stores
+         * derivatives) and adds pointers to them to the collection, based on
+         * what this assembler class requires. This function is always called
+         * before the material model is evaluated and execute() is called.
+         * This ensures the additional material model output is available when
+         * execute() is called.
          */
         virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const {}
     };
 
     /**
-     * A base class for objects that implement assembly
-     * operations.
+     * A base class for objects that implement the computation of residuals
+     * for the advection equation. Just like the assemblers itself, the residual
+     * that we use to compute the necessary entropy viscosity depend on the
+     * equation (i.e. which terms are actually included in the
+     * equation). Thus different objects compute different residuals (i.e.
+     * the residual for a melt advection equation looks different from the
+     * residual for a passive compositional field).
+     * The interface of this class differs from the AssemblerBase class, because
+     * it currently returns a vector of residuals, instead of filling a copy
+     * data object. TODO: This could be easily changed. Is it useful?
      *
-     * The point of this class is primarily so that we can store
-     * pointers to such objects in a list. The objects are created
-     * in Simulator::set_assemblers() (which is the only place where
-     * we know their actual type) and destroyed in the destructor of
+     * The point of this class is primarily to be able to store
+     * pointers to base objects in a vector. The objects are usually created
+     * in Simulator::set_assemblers() and destroyed in the destructor of
      * the Simulator object.
      */
     template <int dim>
@@ -513,16 +617,18 @@ namespace aspect
         std::vector<std_cxx11::unique_ptr<Assemblers::Interface<dim> > > stokes_preconditioner;
 
         /**
-         * A vector of pointers containing all assemblers for the Stokes system.
+         * A vector of pointers containing all assemblers that compute
+         * cell contributions for the Stokes system.
          * These assemblers are called once per cell.
          */
         std::vector<std_cxx11::unique_ptr<Assemblers::Interface<dim> > > stokes_system;
 
         /**
-         * A vector of pointers containing all assemblers for the Stokes system. These assemblers
-         * are called once per boundary face with the properly initialized inputs,
-         * therefore they allow terms that only exist on boundary faces (e.g. traction boundary
-         * conditions).
+         * A vector of pointers containing all assemblers that compute face
+         * contributions for the Stokes system. These assemblers are called
+         * once per face at a boundary with the properly initialized inputs,
+         * therefore they allow terms that only exist on boundary faces (e.g.
+         * traction boundary conditions).
          */
         std::vector<std_cxx11::unique_ptr<Assemblers::Interface<dim> > > stokes_system_on_boundary_face;
 
@@ -533,24 +639,28 @@ namespace aspect
         std::vector<std_cxx11::unique_ptr<Assemblers::Interface<dim> > > advection_system;
 
         /**
-         * A vector of pointers containing all assemblers for the Advection system. These assemblers
+         * A vector of pointers containing all assemblers for the Advection
+         * systems that compute face contributions at boundaries. These assemblers
          * are called once per boundary face with the properly initialized inputs,
-         * therefore they allow terms that only exist on boundary faces (e.g. flux boundary
-         * conditions).
+         * therefore they allow terms that only exist on boundary faces (e.g.
+         * flux boundary conditions).
          */
         std::vector<std_cxx11::unique_ptr<Assemblers::Interface<dim> > > advection_system_on_boundary_face;
 
         /**
-         * A vector of pointers containing all assemblers for the Advection system. These assemblers
-         * are called once per interior face with the properly initialized inputs,
-         * therefore they allow terms that only exist on interior faces (e.g. DG penalty terms).
+         * A vector of pointers containing all assemblers for the Advection
+         * systems that compute face contributions on faces between cells.
+         * These assemblers are called once per interior face with the properly
+         * initialized inputs, therefore they allow terms that only exist on
+         * interior faces (e.g. DG penalty terms).
          */
         std::vector<std_cxx11::unique_ptr<Assemblers::Interface<dim> > > advection_system_on_interior_face;
 
         /**
-         * A vector of pointers containing all assemblers for the advection system residual.
-         * These assemblers are called once per cell, and are currently only used to compute the
-         * artificial viscosity stabilization.
+         * A vector of pointers containing all assemblers that compute the
+         * advection system residual.
+         * These assemblers are called once per cell, and are currently only
+         * used to compute the artificial viscosity stabilization.
          */
         std::vector<std_cxx11::unique_ptr<Assemblers::ComputeResidualBase<dim> > > advection_system_residual;
 
@@ -562,7 +672,7 @@ namespace aspect
          * assumed to be needed. For example, the Stokes and advection
          * assemblers will always need to have access to the material
          * model outputs. But the Stokes assembler may or may not need
-         * access to material model output for quadrature points on faces.
+         * access to material model outputs for quadrature points on faces.
          *
          * These properties are all preset in a conservative way
          * (i.e., disabled) in the constructor of this class, but can
@@ -582,23 +692,26 @@ namespace aspect
           Properties ();
 
           /**
-           * Whether or not at least one of the assembler slots in
-           * a signal requires the initialization and re-computation of
-           * a MaterialModelOutputs object for each face. This
+           * Whether or not at least one of the active assembler objects for
+           * a certain equation requires the initialization and re-computation
+           * of a MaterialModelOutputs object for each face. This
            * property is only relevant to assemblers that operate on
-           * boundary faces.
+           * faces.
            */
           bool need_face_material_model_data;
 
           /**
-           * Whether or not at least one of the assembler slots in a
-           * signal requires the evaluation of the FEFaceValues object.
+           * Whether or not at least one of the active assembler objects for
+           * a certain equation requires the evaluation of the FEFaceValues
+           * object. This is different from need_face_material_model_data,
+           * because an assembler might assemble terms that do not require
+           * material model outputs.
            */
           bool need_face_finite_element_evaluation;
 
           /**
-           * Whether or not at least one of the assembler slots in a
-           * signal requires the computation of the viscosity.
+           * Whether or not at least one of the active assembler objects for
+           * a certain equation requires the computation of the viscosity.
            */
           bool need_viscosity;
 
@@ -612,9 +725,10 @@ namespace aspect
         };
 
         /**
-         * A list of properties of the various types of assemblers.
+         * Lists of properties for the various equations we want to assemble.
          * These property lists are set in Simulator::set_assemblers()
-         * where we add individual functions to the signals above.
+         * where we add individual functions to the vectors of assembler
+         * objects above.
          */
         Properties stokes_preconditioner_assembler_properties;
         Properties stokes_system_assembler_properties;
