@@ -59,13 +59,13 @@ namespace aspect
         struct ScratchBase
         {
           ScratchBase()
-          :
+            :
             cell(),
             face_number(numbers::invalid_unsigned_int)
           {};
 
           ScratchBase(const ScratchBase &scratch)
-          :
+            :
             cell(scratch.cell),
             face_number(scratch.face_number)
           {};

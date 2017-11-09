@@ -44,7 +44,7 @@ namespace aspect
                               const bool                add_compaction_pressure,
                               const bool                rebuild_matrix)
           :
-                              ScratchBase<dim>(),
+          ScratchBase<dim>(),
 
           finite_element_values (mapping, finite_element, quadrature,
                                  update_flags),
@@ -66,7 +66,7 @@ namespace aspect
         StokesPreconditioner<dim>::
         StokesPreconditioner (const StokesPreconditioner &scratch)
           :
-        ScratchBase<dim>(scratch),
+          ScratchBase<dim>(scratch),
 
           finite_element_values (scratch.finite_element_values.get_mapping(),
                                  scratch.finite_element_values.get_fe(),
@@ -169,7 +169,7 @@ namespace aspect
                          const unsigned int        n_compositional_fields,
                          const typename Simulator<dim>::AdvectionField &field)
           :
-                         ScratchBase<dim>(),
+          ScratchBase<dim>(),
 
           finite_element_values (mapping,
                                  finite_element, quadrature,
@@ -255,7 +255,7 @@ namespace aspect
         AdvectionSystem<dim>::
         AdvectionSystem (const AdvectionSystem &scratch)
           :
-        ScratchBase<dim>(scratch),
+          ScratchBase<dim>(scratch),
 
           finite_element_values (scratch.finite_element_values.get_mapping(),
                                  scratch.finite_element_values.get_fe(),
