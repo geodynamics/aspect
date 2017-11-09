@@ -2532,6 +2532,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     SymmetricTensor<2,dim>
     nth_basis_for_symmetric_tensors (const unsigned int k)
@@ -2545,6 +2546,98 @@ namespace aspect
       result[indices_ij] = 1;
 
       return symmetrize(result);
+    }
+
+    template <int dim>
+    NaturalCoordinate<dim>::NaturalCoordinate(Point<dim> &position,
+                                              const GeometryModel::Interface<dim> &geometry_model)
+    {
+      coordinate_system = geometry_model.natural_coordinate_system();
+      coordinates = geometry_model.cartesian_to_natural_coordinates(position);
+    }
+
+    template <int dim>
+    std_cxx11::array<double,dim> &NaturalCoordinate<dim>::get_coordinates()
+    {
+      return coordinates;
+    }
+
+    template <>
+    std_cxx11::array<double,1> NaturalCoordinate<2>::get_surface_coordinates() const
+    {
+      std_cxx11::array<double,1> coordinate;
+
+      switch (coordinate_system)
+        {
+          case Coordinates::CoordinateSystem::cartesian:
+            coordinate[0] = coordinates[0];
+            break;
+
+          case Coordinates::CoordinateSystem::spherical:
+            coordinate[0] = coordinates[1];
+            break;
+
+          case Coordinates::CoordinateSystem::ellipsoidal:
+            coordinate[0] = coordinates[1];
+            break;
+
+          default:
+            coordinate[0] = 0;
+            Assert (false, ExcNotImplemented());
+            break;
+        }
+
+      return coordinate;
+    }
+
+    template <>
+    std_cxx11::array<double,2> NaturalCoordinate<3>::get_surface_coordinates() const
+    {
+      std_cxx11::array<double,2> coordinate;
+
+      switch (coordinate_system)
+        {
+          case Coordinates::CoordinateSystem::cartesian:
+            coordinate[0] = coordinates[0];
+            coordinate[1] = coordinates[1];
+            break;
+
+          case Coordinates::CoordinateSystem::spherical:
+            coordinate[0] = coordinates[1];
+            coordinate[1] = coordinates[2];
+            break;
+
+          case Coordinates::CoordinateSystem::ellipsoidal:
+            coordinate[0] = coordinates[1];
+            coordinate[1] = coordinates[2];
+            break;
+
+          default:
+            Assert (false, ExcNotImplemented());
+        }
+
+      return coordinate;
+    }
+
+    template <int dim>
+    double NaturalCoordinate<dim>::get_depth_coordinate() const
+    {
+      switch (coordinate_system)
+        {
+          case Coordinates::CoordinateSystem::cartesian:
+            return coordinates[dim-1];
+
+          case Coordinates::CoordinateSystem::spherical:
+            return coordinates[0];
+
+          case Coordinates::CoordinateSystem::ellipsoidal:
+            return coordinates[0];
+
+          default:
+            Assert (false, ExcNotImplemented());
+        }
+
+      return 0;
     }
 
 
@@ -2635,5 +2728,7 @@ namespace aspect
     template SymmetricTensor<2,2> nth_basis_for_symmetric_tensors (const unsigned int k);
     template SymmetricTensor<2,3> nth_basis_for_symmetric_tensors (const unsigned int k);
 
+    template class NaturalCoordinate<2>;
+    template class NaturalCoordinate<3>;
   }
 }
