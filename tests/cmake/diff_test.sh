@@ -6,7 +6,7 @@
 # command that failed, which will be really long and ugly. This way, only the
 # line executing this script will show up.
 
-# Call this script with 5 parameters:
+# Call this script with 4 parameters:
 
 # 1. name/path of diff executable
 DIFF_EXE=$1
@@ -20,8 +20,6 @@ CMAKE_CURRENT_SOURCE_DIR=$3
 # 4. absolute cmake binary directory
 CMAKE_CURRENT_BINARY_DIR=$4
 
-# 5. when "ON" also compare the results, otherwise just run the tests
-FULL_COMPARISON=$5
 
 # Grab ASPECT_GENERATE_REFERENCE_OUTPUT from the environment. If set to
 # something (not ""), do not run tests normally but generate reference output
@@ -59,20 +57,15 @@ ORIGINAL_GEN_FULL_PATH=${CMAKE_CURRENT_BINARY_DIR}/output-${PRETTY_TEST_AND_FILE
 
 rm -f ${DIFF_OUTPUT}.failed ${DIFF_OUTPUT}
 
-if [ "${FULL_COMPARISON}" == "ON" ]; then
-  case ${DIFF_EXE} in
-      *numdiff)
+case ${DIFF_EXE} in
+    *numdiff)
 	${DIFF_EXE} -V -a 1e-6 -r 1e-8 -s ' \t\n:<>=,;' \
-	${REF_FILE} ${GEN_FILE} > ${DIFF_OUTPUT}.tmp
+	    ${REF_FILE} ${GEN_FILE} > ${DIFF_OUTPUT}.tmp
 	;;
-      *)
+    *)
 	"${DIFF_EXE}" \
 	    ${REF_FILE} ${GEN_FILE} > ${DIFF_OUTPUT}.tmp
-  esac
-else
-  rm -f ${DIFF_OUTPUT}.tmp
-  touch ${DIFF_OUTPUT}.tmp
-fi
+esac
 
 if [ $? -ne 0 ]; then
 
