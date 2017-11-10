@@ -284,6 +284,8 @@ namespace aspect
                                         :
                                         1;
 
+                  if(use_spd_factor)
+                  {
                   for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
                     for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                       {
@@ -297,12 +299,28 @@ namespace aspect
                                            Utilities::to_string(data.local_matrix(i,j)) +
                                            " = " + Utilities::to_string(eta)));
                       }
+                  }
+                  else
+                  {
+                      for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                        for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                          {
+                            data.local_matrix(i,j) += ( derivative_scaling_factor * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate)
+                                                        + derivative_scaling_factor * pressure_scaling * scratch.grads_phi_u[i] * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * strain_rate )
+                                                      * JxW;
+
+                            Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),
+                                   ExcMessage ("Error: Assembly matrix is not finite." +
+                                               Utilities::to_string(data.local_matrix(i,j)) +
+                                               " = " + Utilities::to_string(eta)));
+                          }
+                  }
                 }
             }
         }
 
 #if DEBUG
-      if (scratch.rebuild_newton_stokes_matrix)
+      /*if (assemble_newton_stokes_matrix)
         {
           // regardless of whether we do or do not add the Newton
           // linearization terms, we ought to test whether the top-left
@@ -332,7 +350,7 @@ namespace aspect
                                   + Utilities::to_string (data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp))
                                   + " < 0. This should not happen."));
             }
-        }
+        }*/
 #endif
     }
 
