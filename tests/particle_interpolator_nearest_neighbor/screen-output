@@ -43,7 +43,7 @@ Number of degrees of freedom: 21,589 (4,684+604+2,342+4,653+4,653+4,653)
    Postprocessing:
      RMS, max velocity:            0.000265 m/s, 0.000437 m/s
      Compositions min/max/mass:    -0.3062/1.234/0.602 // 0/0/0 // 0/0/0
-     Number of advected particles: 6051
+     Number of advected particles: 6049
 
 Number of active cells: 532 (on 7 levels)
 Number of degrees of freedom: 22,189 (4,804+619+2,402+4,788+4,788+4,788)
@@ -57,7 +57,7 @@ Number of degrees of freedom: 22,189 (4,804+619+2,402+4,788+4,788+4,788)
    Postprocessing:
      RMS, max velocity:            0.00017 m/s, 0.00028 m/s
      Compositions min/max/mass:    -0.4669/1.366/0.602 // 0/0/0 // 0/0/0
-     Number of advected particles: 6470
+     Number of advected particles: 6430
 
 Number of active cells: 541 (on 7 levels)
 Number of degrees of freedom: 22,546 (4,874+628+2,437+4,869+4,869+4,869)
@@ -71,7 +71,7 @@ Number of degrees of freedom: 22,546 (4,874+628+2,437+4,869+4,869+4,869)
    Postprocessing:
      RMS, max velocity:            0.000111 m/s, 0.000183 m/s
      Compositions min/max/mass:    -0.514/1.424/0.602 // 0/0/0 // 0/0/0
-     Number of advected particles: 6763
+     Number of advected particles: 6730
 
 Number of active cells: 556 (on 7 levels)
 Number of degrees of freedom: 23,156 (5,000+644+2,500+5,004+5,004+5,004)
@@ -85,7 +85,7 @@ Number of degrees of freedom: 23,156 (5,000+644+2,500+5,004+5,004+5,004)
    Postprocessing:
      RMS, max velocity:            6.38e-05 m/s, 0.000106 m/s
      Compositions min/max/mass:    -0.5134/1.43/0.602 // 0/0/0 // 0/0/0
-     Number of advected particles: 7092
+     Number of advected particles: 7064
 
 Number of active cells: 562 (on 7 levels)
 Number of degrees of freedom: 23,383 (5,040+649+2,520+5,058+5,058+5,058)
@@ -99,7 +99,7 @@ Number of degrees of freedom: 23,383 (5,040+649+2,520+5,058+5,058+5,058)
    Postprocessing:
      RMS, max velocity:            6.02e-05 m/s, 9.96e-05 m/s
      Compositions min/max/mass:    -0.4985/1.494/0.6021 // 0/0/0 // 0/0/0
-     Number of advected particles: 7438
+     Number of advected particles: 7417
 
 Number of active cells: 562 (on 7 levels)
 Number of degrees of freedom: 23,383 (5,040+649+2,520+5,058+5,058+5,058)
@@ -113,7 +113,7 @@ Number of degrees of freedom: 23,383 (5,040+649+2,520+5,058+5,058+5,058)
    Postprocessing:
      RMS, max velocity:            3.29e-05 m/s, 7.9e-05 m/s
      Compositions min/max/mass:    -0.5122/1.527/0.6021 // 0/0/0 // 0/0/0
-     Number of advected particles: 7547
+     Number of advected particles: 7520
 
 Number of active cells: 544 (on 7 levels)
 Number of degrees of freedom: 22,682 (4,908+632+2,454+4,896+4,896+4,896)
@@ -127,7 +127,7 @@ Number of degrees of freedom: 22,682 (4,908+632+2,454+4,896+4,896+4,896)
    Postprocessing:
      RMS, max velocity:            0.00016 m/s, 0.000311 m/s
      Compositions min/max/mass:    -0.2226/1.119/0.6021 // 0/0/0 // 0/0/0
-     Number of advected particles: 7936
+     Number of advected particles: 7899
 
 Number of active cells: 553 (on 7 levels)
 Number of degrees of freedom: 23,003 (4,956+638+2,478+4,977+4,977+4,977)
@@ -141,7 +141,7 @@ Number of degrees of freedom: 23,003 (4,956+638+2,478+4,977+4,977+4,977)
    Postprocessing:
      RMS, max velocity:            4.92e-05 m/s, 9.55e-05 m/s
      Compositions min/max/mass:    -0.2156/1.119/0.6021 // 0/0/0 // 0/0/0
-     Number of advected particles: 8102
+     Number of advected particles: 8058
 
 Number of active cells: 532 (on 7 levels)
 Number of degrees of freedom: 22,143 (4,776+615+2,388+4,788+4,788+4,788)
@@ -155,7 +155,7 @@ Number of degrees of freedom: 22,143 (4,776+615+2,388+4,788+4,788+4,788)
    Postprocessing:
      RMS, max velocity:            0.000318 m/s, 0.00061 m/s
      Compositions min/max/mass:    -0.2152/1.104/0.6022 // 0/0/0 // 0/0/0
-     Number of advected particles: 8605
+     Number of advected particles: 8559
 
 Number of active cells: 499 (on 7 levels)
 Number of degrees of freedom: 20,764 (4,476+577+2,238+4,491+4,491+4,491)
@@ -169,7 +169,7 @@ Number of degrees of freedom: 20,764 (4,476+577+2,238+4,491+4,491+4,491)
    Postprocessing:
      RMS, max velocity:            0.000204 m/s, 0.000386 m/s
      Compositions min/max/mass:    -0.1551/1.102/0.6022 // 0/0/0 // 0/0/0
-     Number of advected particles: 8736
+     Number of advected particles: 8683
 
 Number of active cells: 490 (on 7 levels)
 Number of degrees of freedom: 20,404 (4,404+568+2,202+4,410+4,410+4,410)
@@ -183,7 +183,7 @@ Number of degrees of freedom: 20,404 (4,404+568+2,202+4,410+4,410+4,410)
    Postprocessing:
      RMS, max velocity:            0.000125 m/s, 0.000239 m/s
      Compositions min/max/mass:    -0.1418/1.094/0.6022 // 0/0/0 // 0/0/0
-     Number of advected particles: 8851
+     Number of advected particles: 8796
 
 Number of active cells: 502 (on 7 levels)
 Number of degrees of freedom: 20,877 (4,496+579+2,248+4,518+4,518+4,518)
@@ -197,7 +197,7 @@ Number of degrees of freedom: 20,877 (4,496+579+2,248+4,518+4,518+4,518)
    Postprocessing:
      RMS, max velocity:            7.83e-05 m/s, 0.000156 m/s
      Compositions min/max/mass:    -0.1468/1.087/0.6022 // 0/0/0 // 0/0/0
-     Number of advected particles: 9011
+     Number of advected particles: 8954
 
 Number of active cells: 535 (on 7 levels)
 Number of degrees of freedom: 22,243 (4,788+616+2,394+4,815+4,815+4,815)
@@ -211,7 +211,7 @@ Number of degrees of freedom: 22,243 (4,788+616+2,394+4,815+4,815+4,815)
    Postprocessing:
      RMS, max velocity:            4.75e-05 m/s, 0.000104 m/s
      Compositions min/max/mass:    -0.1503/1.076/0.6022 // 0/0/0 // 0/0/0
-     Number of advected particles: 9231
+     Number of advected particles: 9167
 
 Number of active cells: 565 (on 7 levels)
 Number of degrees of freedom: 23,467 (5,042+649+2,521+5,085+5,085+5,085)
@@ -225,7 +225,7 @@ Number of degrees of freedom: 23,467 (5,042+649+2,521+5,085+5,085+5,085)
    Postprocessing:
      RMS, max velocity:            2.69e-05 m/s, 5.69e-05 m/s
      Compositions min/max/mass:    -0.1455/1.071/0.6022 // 0/0/0 // 0/0/0
-     Number of advected particles: 9461
+     Number of advected particles: 9395
 
 Number of active cells: 574 (on 7 levels)
 Number of degrees of freedom: 23,814 (5,106+657+2,553+5,166+5,166+5,166)

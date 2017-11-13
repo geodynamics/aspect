@@ -67,6 +67,13 @@ namespace aspect
       {
         public:
           /**
+           * Initialization function for the random number generator.
+           */
+          virtual
+          void
+          initialize ();
+
+          /**
            * Generate a set of particles in the current
            * particle world. The particle density is set by an analytically
            * prescribed density function that is set as an input parameter.
@@ -110,6 +117,22 @@ namespace aspect
            * Number of particles to create
            */
           types::particle_index n_particles;
+
+          /**
+           * If true, particle numbers per cell are calculated randomly
+           * according to their respective probability density. If false,
+           * first determine how many particles each cell should have based
+           * on the integral of the density over each of the cells, and then
+           * once we know how many particles we want on each cell, choose their
+           * locations randomly within each cell.
+           */
+          bool random_cell_selection;
+
+          /**
+           * The seed for the random number generator that controls the
+           * particle generation.
+           */
+          unsigned int random_number_seed;
 
           /**
            * A function object representing the particle location probability

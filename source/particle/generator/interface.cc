@@ -33,8 +33,6 @@ namespace aspect
     {
       template <int dim>
       Interface<dim>::Interface()
-        :
-        random_number_generator(5432)
       {}
 
       template <int dim>
@@ -44,7 +42,10 @@ namespace aspect
       template <int dim>
       void
       Interface<dim>::initialize ()
-      {}
+      {
+        const unsigned int my_rank = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+        random_number_generator.seed(5432+my_rank);
+      }
 
       template <int dim>
       std::pair<types::LevelInd,Particle<dim> >
