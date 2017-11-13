@@ -621,8 +621,11 @@ namespace aspect
                 current_linearization_point.block(introspection.block_indices.pressure) = backup_linearization_point.block(introspection.block_indices.pressure);
                 current_linearization_point.block(introspection.block_indices.velocities) = backup_linearization_point.block(introspection.block_indices.velocities);
 
-                current_linearization_point.block(introspection.block_indices.pressure).add(lambda,solution.block(introspection.block_indices.pressure));
-                current_linearization_point.block(introspection.block_indices.velocities).add(lambda,solution.block(introspection.block_indices.velocities));
+                LinearAlgebra::BlockVector search_direction = solution;
+                search_direction *= lambda;
+
+                current_linearization_point.block(introspection.block_indices.pressure) += search_direction.block(introspection.block_indices.pressure);
+                current_linearization_point.block(introspection.block_indices.velocities) += search_direction.block(introspection.block_indices.velocities);
 
                 // Rebuild the rhs to determine the new residual.
                 assemble_newton_stokes_matrix = rebuild_stokes_preconditioner = false;
