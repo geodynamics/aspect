@@ -163,20 +163,20 @@ namespace aspect
   }
 
   template <int dim>
-  bool
+  std::pair<std::string,std::string>
   NewtonHandler<dim>::
-  get_use_spd_factor() const
+  get_Newton_stabilisation() const
   {
-    return use_spd_factor;
+    return Newton_stabilisation;
   }
 
 
   template <int dim>
   void
   NewtonHandler<dim>::
-  set_use_spd_factor(const bool set_use_spd_factor)
+  set_Newton_stabilisation(const std::string use_Newton_stabilisation_preconditioner,const std::string use_Newton_stabilisation_A_block)
   {
-    use_spd_factor = set_use_spd_factor;
+    Newton_stabilisation = std::make_pair(use_Newton_stabilisation_preconditioner,use_Newton_stabilisation_A_block);
   }
 }
 

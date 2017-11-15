@@ -96,6 +96,7 @@ namespace aspect
 
           const double JxW = scratch.finite_element_values.JxW(q);
 
+
           // TODO: Find out why in this version of ASPECT adding the derivative to the preconditioning
           // is way worse than the normal preconditioning
           if (derivative_scaling_factor == 0)
@@ -119,55 +120,83 @@ namespace aspect
               const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
               const SymmetricTensor<2,dim> strain_rate = scratch.material_model_inputs.strain_rate[q];
 
+              const std::pair<std::string,std::string> Newton_stabilisation = this->get_newton_handler().get_Newton_stabilisation();
               // In the preconditioning, the S.P.D. factor should always be used.
               // todo: make this 0.9 into a global input parameter
-              const double alpha = Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, 0.9);
+              const double alpha = Newton_stabilisation.first =="SPD" || Newton_stabilisation.first =="PD" ?
+                                   Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, 0.9)
+                                   :
+                                   1;
 
-              for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
-                for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
-                  if (scratch.dof_component_indices[i] ==
-                      scratch.dof_component_indices[j])
-                    {
-                      data.local_matrix(i, j) += ((2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                                  + derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate
-                                                                                         + scratch.grads_phi_u[j] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate)
-                                                  + one_over_eta * this->get_pressure_scaling()
-                                                  * this->get_pressure_scaling()
-                                                  * (scratch.phi_p[i] * scratch.phi_p[j]))
-                                                 * JxW;
-                    }
+              if (Newton_stabilisation.first == "SPD" || Newton_stabilisation.first == "symmetric")
+                {
+                  for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
+                    for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
+                      if (scratch.dof_component_indices[i] ==
+                          scratch.dof_component_indices[j])
+                        {
+                          data.local_matrix(i, j) += ((2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                                                      + derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate
+                                                                                             + scratch.grads_phi_u[j] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate)
+                                                      + one_over_eta * pressure_scaling
+                                                      * pressure_scaling
+                                                      * (scratch.phi_p[i] * scratch
+                                                         .phi_p[j]))
+                                                     * JxW;
+                        }
+                }
+              else
+                {
+                  for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
+                    for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
+                      if (scratch.dof_component_indices[i] ==
+                          scratch.dof_component_indices[j])
+                        {
+                          data.local_matrix(i, j) += ((2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                                                      + derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate)
+                                                      + one_over_eta * pressure_scaling
+                                                      * pressure_scaling
+                                                      * (scratch.phi_p[i] * scratch
+                                                         .phi_p[j]))
+                                                     * JxW;
+                        }
+                }
+
 
             }
         }
 #if DEBUG
       {
-        // regardless of whether we do or do not add the Newton
-        // linearization terms, we ought to test whether the top-left
-        // block of the matrix is Symmetric Positive Definite (SPD).
-        //
-        // the reason why this is not entirely obvious is described in
-        // the paper that discusses the Newton implementation
-        Vector<double> tmp (stokes_dofs_per_cell);
-        for (unsigned int sample = 0; sample < 100; ++sample)
+        if (this->get_newton_handler().get_Newton_stabilisation().first == "SPD")
           {
-            // fill a vector with random numbers for the Stokes DoFs
-            for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-              if (scratch.dof_component_indices[i] < dim)
-                tmp[i] = Utilities::generate_normal_random_number (0, 1);
-              else
-                tmp[i] = 0;
+            // regardless of whether we do or do not add the Newton
+            // linearization terms, we ought to test whether the top-left
+            // block of the matrix is Symmetric Positive Definite (SPD).
+            //
+            // the reason why this is not entirely obvious is described in
+            // the paper that discusses the Newton implementation
+            Vector<double> tmp (stokes_dofs_per_cell);
+            for (unsigned int sample = 0; sample < 100; ++sample)
+              {
+                // fill a vector with random numbers for the Stokes DoFs
+                for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                  if (scratch.dof_component_indices[i] < dim)
+                    tmp[i] = Utilities::generate_normal_random_number (0, 1);
+                  else
+                    tmp[i] = 0;
 
-            // then verify that the product tmp*(A*tmp) -- which by construction
-            // of the vector tmp only covers the top-left block of the matrix A
-            // -- is indeed positive (or nearly so)
-            Assert (data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp)
-                    >=
-                    -1e-12*data.local_matrix.frobenius_norm(),
-                    ExcMessage ("The top left block of the local Newton-Stokes "
-                                "matrix is not positive definite but has an "
-                                "eigenvalue less than "
-                                + Utilities::to_string (data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp))
-                                + " < 0. This should not happen."));
+                // then verify that the product tmp*(A*tmp) -- which by construction
+                // of the vector tmp only covers the top-left block of the matrix A
+                // -- is indeed positive (or nearly so)
+                Assert (data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp)
+                        >=
+                        -1e-12*data.local_matrix.frobenius_norm(),
+                        ExcMessage ("The top left block of the local Newton-Stokes "
+                                    "matrix is not positive definite but has an "
+                                    "eigenvalue less than "
+                                    + Utilities::to_string (data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp))
+                                    + " < 0. This should not happen."));
+              }
           }
       }
 #endif
@@ -189,7 +218,6 @@ namespace aspect
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
       const double derivative_scaling_factor = this->get_newton_handler().get_newton_derivative_scaling_factor();
-      const bool use_spd_factor = this->get_newton_handler().get_use_spd_factor();
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -278,12 +306,15 @@ namespace aspect
 
                   const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
                   const double viscosity_derivative_wrt_pressure = derivatives->viscosity_derivative_wrt_pressure[q];
+                  const std::pair<std::string,std::string> Newton_stabilisation = this->get_newton_handler().get_Newton_stabilisation();
 
                   // todo: make this 0.9 into a global input parameter
-                  const double alpha  = use_spd_factor ? Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, 0.9)
+                  const double alpha =  Newton_stabilisation.second =="SPD" || Newton_stabilisation.second =="PD" ?
+                                        Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, 0.9)
                                         :
                                         1;
 
+<<<<<<< 9c070c9492be916a7195c2cbb62f971e435fee95
                   if(use_spd_factor)
                   {
                   for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
@@ -300,8 +331,26 @@ namespace aspect
                                            " = " + Utilities::to_string(eta)));
                       }
                   }
+=======
+                  if (Newton_stabilisation.second == "SPD" || Newton_stabilisation.second == "symmetric")
+                    {
+                      for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                        for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                          {
+                            data.local_matrix(i,j) += ( derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate
+                                                                                             + scratch.grads_phi_u[j] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate)
+                                                        + derivative_scaling_factor * pressure_scaling * scratch.grads_phi_u[i] * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * strain_rate )
+                                                      * JxW;
+
+                            Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),
+                                   ExcMessage ("Error: Assembly matrix is not finite." +
+                                               Utilities::to_string(data.local_matrix(i,j)) +
+                                               " = " + Utilities::to_string(eta)));
+                          }
+                    }
+>>>>>>> implement the failsafe in a more flexible way togheter with giving more control over the way both the preconditioner and the A block are stabelized.
                   else
-                  {
+                    {
                       for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
                         for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                           {
@@ -314,43 +363,46 @@ namespace aspect
                                                Utilities::to_string(data.local_matrix(i,j)) +
                                                " = " + Utilities::to_string(eta)));
                           }
-                  }
+                    }
                 }
             }
         }
 
 #if DEBUG
-      /*if (assemble_newton_stokes_matrix)
+      if (assemble_newton_stokes_matrix)
         {
-          // regardless of whether we do or do not add the Newton
-          // linearization terms, we ought to test whether the top-left
-          // block of the matrix is Symmetric Positive Definite (SPD).
-          //
-          // the reason why this is not entirely obvious is described in
-          // the paper that discusses the Newton implementation
-          Vector<double> tmp (stokes_dofs_per_cell);
-          for (unsigned int sample = 0; sample < 100; ++sample)
+          if (this->get_newton_handler().get_Newton_stabilisation().second == "SPD")
             {
-              // fill a vector with random numbers for the Stokes DoFs
-              for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                if (scratch.dof_component_indices[i] < dim)
-                  tmp[i] = Utilities::generate_normal_random_number (0, 1);
-                else
-                  tmp[i] = 0;
+              // regardless of whether we do or do not add the Newton
+              // linearization terms, we ought to test whether the top-left
+              // block of the matrix is Symmetric Positive Definite (SPD).
+              //
+              // the reason why this is not entirely obvious is described in
+              // the paper that discusses the Newton implementation
+              Vector<double> tmp (stokes_dofs_per_cell);
+              for (unsigned int sample = 0; sample < 100; ++sample)
+                {
+                  // fill a vector with random numbers for the Stokes DoFs
+                  for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                    if (scratch.dof_component_indices[i] < dim)
+                      tmp[i] = Utilities::generate_normal_random_number (0, 1);
+                    else
+                      tmp[i] = 0;
 
-              // then verify that the product tmp*(A*tmp) -- which by construction
-              // of the vector tmp only covers the top-left block of the matrix A
-              // -- is indeed positive (or nearly so)
-              Assert (data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp)
-                      >=
-                      -1e-12*data.local_matrix.frobenius_norm(),
-                      ExcMessage ("The top left block of the local Newton-Stokes "
-                                  "matrix is not positive definite but has an "
-                                  "eigenvalue less than "
-                                  + Utilities::to_string (data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp))
-                                  + " < 0. This should not happen."));
+                  // then verify that the product tmp*(A*tmp) -- which by construction
+                  // of the vector tmp only covers the top-left block of the matrix A
+                  // -- is indeed positive (or nearly so)
+                  Assert (data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp)
+                          >=
+                          -1e-12*data.local_matrix.frobenius_norm(),
+                          ExcMessage ("The top left block of the local Newton-Stokes "
+                                      "matrix is not positive definite but has an "
+                                      "eigenvalue less than "
+                                      + Utilities::to_string (data.local_matrix.matrix_norm_square(tmp)/(tmp*tmp))
+                                      + " < 0. This should not happen."));
+                }
             }
-        }*/
+        }
 #endif
     }
 

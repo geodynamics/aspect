@@ -477,19 +477,7 @@ namespace aspect
 
     // Now iterate out the nonlinearities.
     double stokes_residual = 0;
-    const bool use_failsafe = true;
-
-
-    /**
-     * The failsafe first tries to solve the problem without using the
-     * S.P.D. factor in the A block (but only uses it in the precontioning).
-     * If the failsafe is set to false, the S.P.D factor is always used.
-     */
-    if (use_failsafe == true)
-      newton_handler->set_use_spd_factor(false);
-    if (use_failsafe == false)
-      newton_handler->set_use_spd_factor(true);
-
+    newton_handler->set_Newton_stabilisation(parameters.use_Newton_stabilisation_preconditioner,parameters.use_Newton_stabilisation_A_block);
     for (nonlinear_iteration = 0; nonlinear_iteration < max_nonlinear_iterations; ++nonlinear_iteration)
       {
         assemble_and_solve_temperature();
@@ -592,13 +580,14 @@ namespace aspect
                                                             residual,
                                                             residual_old);
 
-                pcout << "   The linear solver tolerance is set to " << parameters.linear_stokes_solver_tolerance << std::endl;
+                const std::pair<std::string,std::string> Newton_stabilisation = newton_handler->get_Newton_stabilisation(); //= parameters.use_Newton_failsafe ? "true." : "false.";
+                pcout << "   The linear solver tolerance is set to " << parameters.linear_stokes_solver_tolerance << ". Stabilisation Preconditioner is " << Newton_stabilisation.first << " and A block is " << Newton_stabilisation.second << "." << std::endl;
               }
           }
 
         build_stokes_preconditioner();
 
-        if (use_failsafe == false)
+        if (parameters.use_Newton_failsafe == false)
           {
             stokes_residual = solve_stokes();
           }
@@ -610,8 +599,8 @@ namespace aspect
               }
             catch (...)
               {
-                pcout << "Solve failed and catched, try again with spd factor" << std::endl;
-                newton_handler->set_use_spd_factor(true);
+                pcout << "Solve failed and catched, try again with stabilisation" << std::endl;
+                newton_handler->set_Newton_stabilisation("SPD","SPD");
                 rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
 
                 assemble_stokes_system();

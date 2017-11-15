@@ -367,6 +367,17 @@ namespace aspect
                            "When the linear Stokes solver tolerance is dynamically chosen, this defines "
                            "the most loose tolerance allowed.");
 
+        prm.declare_entry ("Use Newton stabilization preconditioner", "SPD",
+                           Patterns::Selection ("SPD|PD|symmetric|none"),
+                           "TODO");
+        prm.declare_entry ("Use Newton stabilization A block", "SPD",
+                           Patterns::Selection ("SPD|PD|symmetric|none"),
+                           "TODO");
+        prm.declare_entry ("Use Newton failsafe", "true",
+                           Patterns::Bool (),
+                           "Switches on SPD stabilization when solver fails.");
+
+
       }
       prm.leave_subsection ();
       prm.enter_subsection ("AMG parameters");
@@ -1053,6 +1064,9 @@ namespace aspect
         max_newton_line_search_iterations = prm.get_integer ("Max Newton line search iterations");
         use_newton_residual_scaling_method = prm.get_bool("Use Newton residual scaling method");
         maximum_linear_stokes_solver_tolerance = prm.get_double("Maximum linear Stokes solver tolerance");
+        use_Newton_stabilisation_preconditioner = prm.get("Use Newton stabilization preconditioner");
+        use_Newton_stabilisation_A_block = prm.get("Use Newton stabilization A block");
+        use_Newton_failsafe = prm.get_bool("Use Newton failsafe");
       }
       prm.leave_subsection ();
       prm.enter_subsection ("AMG parameters");

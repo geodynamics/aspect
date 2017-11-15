@@ -308,6 +308,9 @@ namespace aspect
 
     double                         nonlinear_tolerance;
     double                         nonlinear_switch_tolerance;
+    std::string                    use_Newton_stabilisation_preconditioner;
+    std::string                    use_Newton_stabilisation_A_block;
+    bool                           use_Newton_failsafe;
     bool                           resume_computation;
     double                         start_time;
     double                         CFL_number;
