@@ -142,7 +142,7 @@ namespace aspect
                        "Units: Years or seconds, depending on the ``Use years "
                        "in output instead of seconds'' parameter.");
 
-    prm.declare_entry ("Use conduction timestep", "false",
+    prm.declare_entry ("Use conduction timestep", "true",
                        Patterns::Bool (),
                        "Mantle convection simulations are often focused on convection "
                        "dominated systems. However, these codes can also be used to "
