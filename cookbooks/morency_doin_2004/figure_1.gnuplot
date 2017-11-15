@@ -23,5 +23,5 @@ set xlabel "Viscosity (Pa s)"
 set logscale x
 set xrange [1e18:1e28]
 set xtics 1e18,100,1e30
-plot "< grep -v -e \"^$\" -e \" 0 $\" output/depth_average.gnuplot" using 11:(-$1/1000) with lines
+plot "< grep -v -e \"^$\" -e \" 0 $\" output/depth_average.gnuplot" using 14:(-$1/1000) with lines
 unset logscale x
