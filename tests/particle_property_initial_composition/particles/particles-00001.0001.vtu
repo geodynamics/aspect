@@ -4,11 +4,11 @@
     <Piece NumberOfPoints="5" NumberOfCells="5">
       <Points>
         <DataArray name="Position" type="Float64" NumberOfComponents="3" Format="ascii">
-          0.453815 0.856681 0.0
-          0.391371 0.967863 0.0
-          0.500202 0.505601 0.0
-          0.626477 0.866684 0.0
-          0.696704 0.976022 0.0
+          0.292797 0.814081 0.0
+          0.563057 0.593352 0.0
+          0.459822 0.688852 0.0
+          0.693468 0.625158 0.0
+          0.505538 0.969511 0.0
         </DataArray>
       </Points>
       <Cells>
@@ -36,16 +36,16 @@
       </Cells>
       <PointData Scalars="scalars">
         <DataArray type="UInt64" Name="id" NumberOfComponents="1" Format="ascii">
-          5
           6
           7
+          5
           8
           9
         </DataArray>
         <DataArray type="Float64" Name="initial anomaly" NumberOfComponents="1" Format="ascii">
           0
           0
-          2.5091e-14
+          0
           0
           0
         </DataArray>
