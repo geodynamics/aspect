@@ -21,6 +21,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
+#include <aspect/compat.h>
 #include <aspect/simulator_access.h>
 
 #include <aspect/simulator/assemblers/interface.h>
@@ -121,6 +122,94 @@ namespace aspect
   template <int dim>
   void
   Simulator<dim>::
+  set_default_assemblers()
+  {
+    assemblers->stokes_preconditioner.push_back(std_cxx14::make_unique<aspect::Assemblers::StokesPreconditioner<dim> >());
+    assemblers->stokes_system.push_back(std_cxx14::make_unique<aspect::Assemblers::StokesIncompressibleTerms<dim> >());
+
+    if (material_model->is_compressible())
+      {
+        assemblers->stokes_preconditioner.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesCompressiblePreconditioner<dim> >());
+
+        assemblers->stokes_system.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesCompressibleStrainRateViscosityTerm<dim> >());
+      }
+
+    if (parameters.formulation_mass_conservation ==
+        Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
+      {
+        assemblers->stokes_system.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesImplicitReferenceDensityCompressibilityTerm<dim> >());
+      }
+    else if (parameters.formulation_mass_conservation ==
+             Parameters<dim>::Formulation::MassConservation::reference_density_profile)
+      {
+        assemblers->stokes_system.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesReferenceDensityCompressibilityTerm<dim> >());
+      }
+    else if (parameters.formulation_mass_conservation ==
+             Parameters<dim>::Formulation::MassConservation::incompressible)
+      {
+        // do nothing, because we assembled div u =0 above already
+      }
+    else if (parameters.formulation_mass_conservation ==
+             Parameters<dim>::Formulation::MassConservation::isothermal_compression)
+      {
+        assemblers->stokes_system.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesIsothermalCompressionTerm<dim> >());
+      }
+    else if (parameters.formulation_mass_conservation ==
+             Parameters<dim>::Formulation::MassConservation::hydrostatic_compression)
+      {
+        assemblers->stokes_system.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesHydrostaticCompressionTerm<dim> >());
+      }
+    else
+      AssertThrow(false,
+                  ExcMessage("Unknown mass conservation equation approximation. There is no assembler"
+                             " defined that handles this formulation."));
+
+    assemblers->stokes_system_on_boundary_face.push_back(
+      std_cxx14::make_unique<aspect::Assemblers::StokesBoundaryTraction<dim> >());
+
+    // add the terms necessary to normalize the pressure
+    if (do_pressure_rhs_compatibility_modification)
+      assemblers->stokes_system.push_back(
+        std_cxx14::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim> >());
+
+    assemblers->advection_system.push_back(
+      std_cxx14::make_unique<aspect::Assemblers::AdvectionSystem<dim> >());
+
+    if (parameters.use_discontinuous_temperature_discretization ||
+        parameters.use_discontinuous_composition_discretization)
+      {
+        assemblers->advection_system_on_boundary_face.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemBoundaryFace<dim> >());
+
+        assemblers->advection_system_on_interior_face.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemInteriorFace<dim> >());
+      }
+
+    if (parameters.use_discontinuous_temperature_discretization)
+      {
+        assemblers->advection_system_assembler_on_face_properties[0].need_face_material_model_data = true;
+        assemblers->advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
+      }
+
+    if (parameters.use_discontinuous_composition_discretization)
+      {
+        for (unsigned int i = 1; i<=introspection.n_compositional_fields; ++i)
+          {
+            assemblers->advection_system_assembler_on_face_properties[i].need_face_material_model_data = true;
+            assemblers->advection_system_assembler_on_face_properties[i].need_face_finite_element_evaluation = true;
+          }
+      }
+  }
+
+  template <int dim>
+  void
+  Simulator<dim>::
   set_assemblers ()
   {
     // first let the manager delete all existing assemblers:
@@ -129,253 +218,43 @@ namespace aspect
     assemblers->advection_system_assembler_properties.resize(1+introspection.n_compositional_fields);
     assemblers->advection_system_assembler_on_face_properties.resize(1+introspection.n_compositional_fields);
 
-    if (parameters.include_melt_transport)
+    // Set up the set of assemblers depending on the mode of equations
+    if (!parameters.include_melt_transport
+        && !assemble_newton_stokes_system)
       {
-        aspect::Assemblers::MeltStokesPreconditioner<dim> *preconditioner = new aspect::Assemblers::MeltStokesPreconditioner<dim>();
-        assemblers->stokes_preconditioner.push_back(
-          std_cxx11::unique_ptr<aspect::Assemblers::MeltStokesPreconditioner<dim> > (preconditioner));
+        set_default_assemblers();
+
+        // Let the free surface add its assembler:
+        if (parameters.free_surface_enabled)
+          free_surface->set_assemblers();
       }
-    else if (assemble_newton_stokes_system)
+    else if (parameters.include_melt_transport
+             && !assemble_newton_stokes_system)
       {
-        aspect::Assemblers::NewtonStokesPreconditioner<dim> *preconditioner = new aspect::Assemblers::NewtonStokesPreconditioner<dim>();
-        assemblers->stokes_preconditioner.push_back(
-          std_cxx11::unique_ptr<aspect::Assemblers::NewtonStokesPreconditioner<dim> > (preconditioner));
+        melt_handler->set_assemblers(*assemblers);
+
+        AssertThrow (parameters.free_surface_enabled == false,
+                     ExcMessage("The melt implementation does not support free surface computations."));
       }
-    else
+    else if (!parameters.include_melt_transport
+             && assemble_newton_stokes_system)
       {
-        aspect::Assemblers::StokesPreconditioner<dim> *preconditioner = new aspect::Assemblers::StokesPreconditioner<dim>();
-        assemblers->stokes_preconditioner.push_back(
-          std_cxx11::unique_ptr<aspect::Assemblers::StokesPreconditioner<dim> > (preconditioner));
+        newton_handler->set_assemblers(*assemblers);
 
-        if (material_model->is_compressible())
-          {
-            aspect::Assemblers::StokesCompressiblePreconditioner<dim> *preconditioner = new aspect::Assemblers::StokesCompressiblePreconditioner<dim>();
-            assemblers->stokes_preconditioner.push_back(
-              std_cxx11::unique_ptr<aspect::Assemblers::StokesCompressiblePreconditioner<dim> > (preconditioner));
-          }
+        // Let the free surface add its assembler:
+        if (parameters.free_surface_enabled)
+          free_surface->set_assemblers();
       }
-
-
-    if (parameters.include_melt_transport)
+    else if (parameters.include_melt_transport
+             && assemble_newton_stokes_system)
       {
-        aspect::Assemblers::MeltStokesSystem<dim> *melt_stokes_system = new aspect::Assemblers::MeltStokesSystem<dim>();
-        assemblers->stokes_system.push_back(
-          std_cxx11::unique_ptr<aspect::Assemblers::MeltStokesSystem<dim> > (melt_stokes_system));
-      }
-    else  if (assemble_newton_stokes_system)
-      {
-        aspect::Assemblers::NewtonStokesIncompressibleTerms<dim> *incompressible_terms = new aspect::Assemblers::NewtonStokesIncompressibleTerms<dim>();
-        assemblers->stokes_system.push_back(
-          std_cxx11::unique_ptr<aspect::Assemblers::NewtonStokesIncompressibleTerms<dim> > (incompressible_terms));
-
-        if (material_model->is_compressible())
-          {
-            aspect::Assemblers::NewtonStokesCompressibleStrainRateViscosityTerm<dim> *compressible_terms
-              = new aspect::Assemblers::NewtonStokesCompressibleStrainRateViscosityTerm<dim>();
-
-            assemblers->stokes_system.push_back(
-              std_cxx11::unique_ptr<aspect::Assemblers::NewtonStokesCompressibleStrainRateViscosityTerm<dim> > (compressible_terms));
-          }
-
-        if (parameters.formulation_mass_conservation ==
-            Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
-          {
-            aspect::Assemblers::NewtonStokesImplicitReferenceDensityCompressibilityTerm<dim> *compressible_terms
-              = new aspect::Assemblers::NewtonStokesImplicitReferenceDensityCompressibilityTerm<dim>();
-
-            assemblers->stokes_system.push_back(
-              std_cxx11::unique_ptr<aspect::Assemblers::NewtonStokesImplicitReferenceDensityCompressibilityTerm<dim> > (compressible_terms));
-          }
-        else if (parameters.formulation_mass_conservation ==
-                 Parameters<dim>::Formulation::MassConservation::reference_density_profile)
-          {
-            aspect::Assemblers::NewtonStokesReferenceDensityCompressibilityTerm<dim> *compressible_terms
-              = new aspect::Assemblers::NewtonStokesReferenceDensityCompressibilityTerm<dim>();
-
-            assemblers->stokes_system.push_back(
-              std_cxx11::unique_ptr<aspect::Assemblers::NewtonStokesReferenceDensityCompressibilityTerm<dim> > (compressible_terms));
-          }
-        else if (parameters.formulation_mass_conservation ==
-                 Parameters<dim>::Formulation::MassConservation::incompressible)
-          {
-            // do nothing, because we assembled div u =0 above already
-          }
-        else
-          {
-            aspect::Assemblers::NewtonStokesIsothermalCompressionTerm<dim> *compressible_terms
-              = new aspect::Assemblers::NewtonStokesIsothermalCompressionTerm<dim>();
-
-            assemblers->stokes_system.push_back(
-              std_cxx11::unique_ptr<aspect::Assemblers::NewtonStokesIsothermalCompressionTerm<dim> > (compressible_terms));
-          }
-
+        AssertThrow (false,
+                     ExcMessage("The melt implementation does not support the Newton solver at the moment."));
       }
     else
-      {
-        aspect::Assemblers::StokesIncompressibleTerms<dim> *incompressible_terms = new aspect::Assemblers::StokesIncompressibleTerms<dim>();
-        assemblers->stokes_system.push_back(
-          std_cxx11::unique_ptr<aspect::Assemblers::StokesIncompressibleTerms<dim> > (incompressible_terms));
+      AssertThrow(false,ExcInternalError());
 
-        if (material_model->is_compressible())
-          {
-            aspect::Assemblers::StokesCompressibleStrainRateViscosityTerm<dim> *compressible_terms
-              = new aspect::Assemblers::StokesCompressibleStrainRateViscosityTerm<dim>();
-
-            assemblers->stokes_system.push_back(
-              std_cxx11::unique_ptr<aspect::Assemblers::StokesCompressibleStrainRateViscosityTerm<dim> > (compressible_terms));
-          }
-
-        if (parameters.formulation_mass_conservation ==
-            Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
-          {
-            aspect::Assemblers::StokesImplicitReferenceDensityCompressibilityTerm<dim> *compressible_terms
-              = new aspect::Assemblers::StokesImplicitReferenceDensityCompressibilityTerm<dim>();
-
-            assemblers->stokes_system.push_back(
-              std_cxx11::unique_ptr<aspect::Assemblers::StokesImplicitReferenceDensityCompressibilityTerm<dim> > (compressible_terms));
-          }
-        else if (parameters.formulation_mass_conservation ==
-                 Parameters<dim>::Formulation::MassConservation::reference_density_profile)
-          {
-            aspect::Assemblers::StokesReferenceDensityCompressibilityTerm<dim> *compressible_terms
-              = new aspect::Assemblers::StokesReferenceDensityCompressibilityTerm<dim>();
-
-            assemblers->stokes_system.push_back(
-              std_cxx11::unique_ptr<aspect::Assemblers::StokesReferenceDensityCompressibilityTerm<dim> > (compressible_terms));
-          }
-        else if (parameters.formulation_mass_conservation ==
-                 Parameters<dim>::Formulation::MassConservation::incompressible)
-          {
-            // do nothing, because we assembled div u =0 above already
-          }
-        else if (parameters.formulation_mass_conservation ==
-                 Parameters<dim>::Formulation::MassConservation::isothermal_compression)
-          {
-            aspect::Assemblers::StokesIsothermalCompressionTerm<dim> *compressible_terms
-              = new aspect::Assemblers::StokesIsothermalCompressionTerm<dim>();
-
-            assemblers->stokes_system.push_back(
-              std_cxx11::unique_ptr<aspect::Assemblers::StokesIsothermalCompressionTerm<dim> > (compressible_terms));
-          }
-        else if (parameters.formulation_mass_conservation ==
-                 Parameters<dim>::Formulation::MassConservation::hydrostatic_compression)
-          {
-            aspect::Assemblers::StokesHydrostaticCompressionTerm<dim> *compressible_terms
-              = new aspect::Assemblers::StokesHydrostaticCompressionTerm<dim>();
-            assemblers->stokes_system.push_back(
-              std_cxx11::unique_ptr<aspect::Assemblers::StokesHydrostaticCompressionTerm<dim> > (compressible_terms));
-          }
-        else
-          Assert(false, ExcNotImplemented());
-      }
-
-    // add the boundary integral for melt migration
-    if (parameters.include_melt_transport)
-      {
-        assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data = true;
-        assemblers->stokes_system_assembler_on_boundary_face_properties.needed_update_flags = (update_values  | update_quadrature_points |
-            update_normal_vectors | update_gradients |
-            update_JxW_values);
-
-        aspect::Assemblers::MeltStokesSystemBoundary<dim> *melt_stokes_system_boundary = new aspect::Assemblers::MeltStokesSystemBoundary<dim>();
-        assemblers->stokes_system_on_boundary_face.push_back(
-          std_cxx11::unique_ptr<aspect::Assemblers::MeltStokesSystemBoundary<dim> > (melt_stokes_system_boundary));
-      }
-
-    // add the terms for traction boundary conditions
-    if (parameters.include_melt_transport)
-      {
-        aspect::Assemblers::MeltBoundaryTraction<dim> *stokes_boundary_traction
-          = new aspect::Assemblers::MeltBoundaryTraction<dim>();
-
-        assemblers->stokes_system_on_boundary_face.push_back(
-          std_cxx11::unique_ptr<aspect::Assemblers::MeltBoundaryTraction<dim> > (stokes_boundary_traction));
-      }
-    else
-      {
-        aspect::Assemblers::StokesBoundaryTraction<dim> *stokes_boundary_traction
-          = new aspect::Assemblers::StokesBoundaryTraction<dim>();
-
-        assemblers->stokes_system_on_boundary_face.push_back(
-          std_cxx11::unique_ptr<aspect::Assemblers::StokesBoundaryTraction<dim> > (stokes_boundary_traction));
-      }
-
-    // add the terms necessary to normalize the pressure
-    if (do_pressure_rhs_compatibility_modification)
-      {
-        if (parameters.include_melt_transport)
-          {
-            aspect::Assemblers::MeltPressureRHSCompatibilityModification<dim> *melt_pressure_RHS_modification
-              = new aspect::Assemblers::MeltPressureRHSCompatibilityModification<dim>();
-
-            assemblers->stokes_system.push_back(
-              std_cxx11::unique_ptr<aspect::Assemblers::MeltPressureRHSCompatibilityModification<dim> > (melt_pressure_RHS_modification));
-          }
-        else
-          {
-            aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim> *stokes_pressure_RHS_modification
-              = new aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim>();
-
-            assemblers->stokes_system.push_back(
-              std_cxx11::unique_ptr<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim> > (stokes_pressure_RHS_modification));
-          }
-      }
-
-    if (parameters.include_melt_transport)
-      {
-        aspect::Assemblers::MeltAdvectionSystem<dim> *melt_advection_system
-          = new aspect::Assemblers::MeltAdvectionSystem<dim>();
-
-        assemblers->advection_system.push_back(
-          std_cxx11::unique_ptr<aspect::Assemblers::MeltAdvectionSystem<dim> > (melt_advection_system));
-
-      }
-    else
-      {
-        aspect::Assemblers::AdvectionSystem<dim> *advection_system
-          = new aspect::Assemblers::AdvectionSystem<dim>();
-
-        assemblers->advection_system.push_back(
-          std_cxx11::unique_ptr<aspect::Assemblers::AdvectionSystem<dim> > (advection_system));
-
-      }
-
-    if (parameters.use_discontinuous_temperature_discretization ||
-        parameters.use_discontinuous_composition_discretization)
-      {
-        aspect::Assemblers::AdvectionSystemBoundaryFace<dim> *advection_system_boundary_face
-          = new aspect::Assemblers::AdvectionSystemBoundaryFace<dim>();
-
-        assemblers->advection_system_on_boundary_face.push_back(
-          std_cxx11::unique_ptr<aspect::Assemblers::AdvectionSystemBoundaryFace<dim> > (advection_system_boundary_face));
-
-        aspect::Assemblers::AdvectionSystemInteriorFace<dim> *advection_system_interior_face
-          = new aspect::Assemblers::AdvectionSystemInteriorFace<dim>();
-
-        assemblers->advection_system_on_interior_face.push_back(
-          std_cxx11::unique_ptr<aspect::Assemblers::AdvectionSystemInteriorFace<dim> > (advection_system_interior_face));
-
-        if (parameters.use_discontinuous_temperature_discretization)
-          {
-            assemblers->advection_system_assembler_on_face_properties[0].need_face_material_model_data = true;
-            assemblers->advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
-          }
-
-        if (parameters.use_discontinuous_composition_discretization)
-          {
-            for (unsigned int i = 1; i<=introspection.n_compositional_fields; ++i)
-              {
-                assemblers->advection_system_assembler_on_face_properties[i].need_face_material_model_data = true;
-                assemblers->advection_system_assembler_on_face_properties[i].need_face_finite_element_evaluation = true;
-              }
-          }
-      }
-
-    // Let the free surface add its assembler:
-    if (parameters.free_surface_enabled)
-      free_surface->set_assemblers();
-
-    // Finally allow other assemblers to add themselves or modify the existing ones by firing the signal
+    // allow other assemblers to add themselves or modify the existing ones by firing the signal
     this->signals.set_assemblers(*this, *assemblers);
 
     // ensure that all assembler objects have access to the SimulatorAccess

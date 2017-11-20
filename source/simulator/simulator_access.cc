@@ -614,6 +614,13 @@ namespace aspect
   {
     return (simulator->pressure_scaling);
   }
+
+  template <int dim>
+  bool
+  SimulatorAccess<dim>::pressure_rhs_needs_compatibility_modification () const
+  {
+    return simulator->do_pressure_rhs_compatibility_modification;
+  }
 }
 
 

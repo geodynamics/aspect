@@ -32,8 +32,6 @@
 #include <deal.II/fe/fe_dgp.h>
 #include <deal.II/fe/fe_values.h>
 
-
-
 namespace aspect
 {
   namespace MaterialModel
@@ -1274,6 +1272,49 @@ namespace aspect
                                                 new FE_Q<dim>(parameters.stokes_velocity_degree)),
                                               dim,
                                               1));
+
+  }
+
+
+
+  template <int dim>
+  void
+  MeltHandler<dim>::
+  set_assemblers (Assemblers::Manager<dim> &assemblers) const
+  {
+    assemblers.stokes_preconditioner.push_back(std_cxx14::make_unique<Assemblers::MeltStokesPreconditioner<dim> > ());
+    assemblers.stokes_system.push_back(std_cxx14::make_unique<Assemblers::MeltStokesSystem<dim> > ());
+
+    AssertThrow((this->get_parameters().formulation_mass_conservation ==
+                 Parameters<dim>::Formulation::MassConservation::isothermal_compression) ||
+                (this->get_parameters().formulation_mass_conservation ==
+                 Parameters<dim>::Formulation::MassConservation::incompressible),
+                ExcMessage("The melt implementation currently only supports the isothermal compression "
+                           "approximation or the incompressible formulation of the mass conservation equation."));
+
+    // add the boundary integral for melt migration
+    assemblers.stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data = true;
+    assemblers.stokes_system_assembler_on_boundary_face_properties.needed_update_flags = (update_values  | update_quadrature_points |
+        update_normal_vectors | update_gradients |
+        update_JxW_values);
+
+    assemblers.stokes_system_on_boundary_face.push_back(
+      std_cxx14::make_unique<Assemblers::MeltStokesSystemBoundary<dim> > ());
+
+    // add the terms for traction boundary conditions
+    assemblers.stokes_system_on_boundary_face.push_back(
+      std_cxx14::make_unique<Assemblers::MeltBoundaryTraction<dim> > ());
+
+    // add the terms necessary to normalize the pressure
+    if (this->pressure_rhs_needs_compatibility_modification())
+      {
+        assemblers.stokes_system.push_back(
+          std_cxx14::make_unique<Assemblers::MeltPressureRHSCompatibilityModification<dim> > ());
+      }
+
+    assemblers.advection_system.push_back(
+      std_cxx14::make_unique<Assemblers::MeltAdvectionSystem<dim> > ());
+
 
   }
 
