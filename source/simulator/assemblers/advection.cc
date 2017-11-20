@@ -190,7 +190,7 @@ namespace aspect
 
     template <int dim>
     std::vector<double>
-    AdvectionSystemResidual<dim>::execute(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
+    AdvectionSystem<dim>::compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
     {
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
 
@@ -1154,8 +1154,7 @@ namespace aspect
   template class AdvectionSystem<dim>; \
   template class AdvectionSystemBoundaryFace<dim>; \
   template class AdvectionSystemInteriorFace<dim>; \
-  template class AdvectionSystemResidual<dim>;
-
+   
     ASPECT_INSTANTIATE(INSTANTIATE)
   }
 }

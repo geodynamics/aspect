@@ -770,10 +770,11 @@ namespace aspect
 
     template <int dim>
     std::vector<double>
-    MeltAdvectionSystemResidual<dim>::
-    execute(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
+    MeltAdvectionSystem<dim>::
+    compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
     {
-      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch =
+        dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
 
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       std::vector<double> residuals(n_q_points);
@@ -850,30 +851,6 @@ namespace aspect
             }
         }
       return residuals;
-    }
-
-
-
-    template <int dim>
-    void
-    MeltAdvectionSystemResidual<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
-    {
-      MeltHandler<dim>::create_material_model_outputs(outputs);
-
-      const unsigned int n_points = outputs.viscosities.size();
-
-      if (this->get_parameters().enable_additional_stokes_rhs
-          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == NULL)
-        {
-          outputs.additional_outputs.push_back(
-            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >
-            (new MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> (n_points)));
-        }
-
-      Assert(!this->get_parameters().enable_additional_stokes_rhs
-             ||
-             outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >()->rhs_u.size()
-             == n_points, ExcInternalError());
     }
 
 
@@ -1395,7 +1372,6 @@ namespace aspect
     template class MeltStokesSystem<dim>; \
     template class MeltStokesSystemBoundary<dim>; \
     template class MeltAdvectionSystem<dim>; \
-    template class MeltAdvectionSystemResidual<dim>; \
     template class MeltPressureRHSCompatibilityModification<dim>; \
     template class MeltBoundaryTraction<dim>; \
   } \

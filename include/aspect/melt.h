@@ -222,29 +222,14 @@ namespace aspect
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
-    };
-
-    /**
-     * Compute the residual of the advection system on a single cell in
-     * the case of melt migration.
-     */
-    template <int dim>
-    class MeltAdvectionSystemResidual : public Assemblers::ComputeResidualBase<dim>,
-      public aspect::SimulatorAccess<dim>
-    {
-      public:
-        virtual ~MeltAdvectionSystemResidual () {};
-
-        virtual
-        std::vector<double>
-        execute(internal::Assembly::Scratch::ScratchBase<dim> &scratch) const;
 
         /**
-         * Attach melt outputs.
+         * Compute the residual of the advection system on a single cell in
+         * the case of melt migration.
          */
         virtual
-        void
-        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+        std::vector<double>
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch) const;
     };
 
     /**

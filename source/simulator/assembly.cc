@@ -317,11 +317,6 @@ namespace aspect
         assemblers->advection_system.push_back(
           std_cxx11::unique_ptr<aspect::Assemblers::MeltAdvectionSystem<dim> > (melt_advection_system));
 
-        aspect::Assemblers::MeltAdvectionSystemResidual<dim> *melt_advection_system_residual
-          = new aspect::Assemblers::MeltAdvectionSystemResidual<dim>();
-
-        assemblers->advection_system_residual.push_back(
-          std_cxx11::unique_ptr<aspect::Assemblers::MeltAdvectionSystemResidual<dim> > (melt_advection_system_residual));
       }
     else
       {
@@ -331,11 +326,6 @@ namespace aspect
         assemblers->advection_system.push_back(
           std_cxx11::unique_ptr<aspect::Assemblers::AdvectionSystem<dim> > (advection_system));
 
-        aspect::Assemblers::AdvectionSystemResidual<dim> *advection_system_residual
-          = new aspect::Assemblers::AdvectionSystemResidual<dim>();
-
-        assemblers->advection_system_residual.push_back(
-          std_cxx11::unique_ptr<aspect::Assemblers::AdvectionSystemResidual<dim> > (advection_system_residual));
       }
 
     if (parameters.use_discontinuous_temperature_discretization ||
@@ -380,7 +370,6 @@ namespace aspect
     initialize_simulator(*this,assemblers->advection_system);
     initialize_simulator(*this,assemblers->advection_system_on_boundary_face);
     initialize_simulator(*this,assemblers->advection_system_on_interior_face);
-    initialize_simulator(*this,assemblers->advection_system_residual);
   }
 
 

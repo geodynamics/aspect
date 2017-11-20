@@ -44,6 +44,10 @@ namespace aspect
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+
+        virtual
+        std::vector<double>
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch) const;
     };
 
     /**
@@ -78,22 +82,6 @@ namespace aspect
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
-    };
-
-    /**
-     * This class computes the residual for the advection equation at every quadrature
-     * point of the current cell.
-     */
-    template <int dim>
-    class AdvectionSystemResidual : public Assemblers::ComputeResidualBase<dim>,
-      public SimulatorAccess<dim>
-    {
-      public:
-        virtual ~AdvectionSystemResidual () {};
-
-        virtual
-        std::vector<double>
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch) const;
     };
   }
 }

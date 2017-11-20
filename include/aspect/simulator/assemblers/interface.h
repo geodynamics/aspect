@@ -540,44 +540,27 @@ namespace aspect
          * execute() is called.
          */
         virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const {}
-    };
-
-    /**
-     * A base class for objects that implement the computation of residuals
-     * for the advection equation. Just like the assemblers itself, the residual
-     * that we use to compute the necessary entropy viscosity depend on the
-     * equation (i.e. which terms are actually included in the
-     * equation). Thus different objects compute different residuals (i.e.
-     * the residual for a melt advection equation looks different from the
-     * residual for a passive compositional field).
-     * The interface of this class differs from the AssemblerBase class, because
-     * it currently returns a vector of residuals, instead of filling a copy
-     * data object. TODO: This could be easily changed. Is it useful?
-     *
-     * The point of this class is primarily to be able to store
-     * pointers to base objects in a vector. The objects are usually created
-     * in Simulator::set_assemblers() and destroyed in the destructor of
-     * the Simulator object.
-     */
-    template <int dim>
-    class ComputeResidualBase
-    {
-      public:
-        virtual ~ComputeResidualBase () {}
-
-        virtual
-        std::vector<double>
-        execute(internal::Assembly::Scratch::ScratchBase<dim> &) const = 0;
 
         /**
-         * This function gets called if a MaterialModelOutputs is created
-         * and allows the assembler to attach AdditionalOutputs. The
-         * function might be called more than once for a
-         * MaterialModelOutput, so it is recommended to check if
-         * get_additional_output() returns an instance before adding a new
-         * one to the additional_outputs vector.
+         * A required function for objects that implement the assembly of terms
+         * in an equation that requires the computation of residuals
+         * (in particular the advection equation in ASPECT).
+         * Just like the assemblers itself, the residual
+         * that we use to compute the necessary entropy viscosity depend on the
+         * equation (i.e. which terms are actually included in the
+         * equation). Thus different objects compute different residuals (i.e.
+         * the residual for a melt advection equation looks different from the
+         * residual for a passive compositional field).
          */
-        virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const {}
+        virtual
+        std::vector<double>
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &) const
+        {
+          AssertThrow(false, ExcMessage("This function should either be implemented "
+                                        "(if this is an assembler that has to compute a residual, or not be called "
+                                        "(if this is an assembler that has not to compute a residual)."));
+          return std::vector<double>();
+        }
     };
 
     /**
@@ -655,14 +638,6 @@ namespace aspect
          * interior faces (e.g. DG penalty terms).
          */
         std::vector<std_cxx11::unique_ptr<Assemblers::Interface<dim> > > advection_system_on_interior_face;
-
-        /**
-         * A vector of pointers containing all assemblers that compute the
-         * advection system residual.
-         * These assemblers are called once per cell, and are currently only
-         * used to compute the artificial viscosity stabilization.
-         */
-        std::vector<std_cxx11::unique_ptr<Assemblers::ComputeResidualBase<dim> > > advection_system_residual;
 
         /**
          * A structure that describes what information an assembler function
