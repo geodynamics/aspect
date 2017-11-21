@@ -38,6 +38,10 @@ namespace aspect
     AsciiData<dim>::initialize ()
     {
       Utilities::AsciiDataInitial<dim>::initialize(dim);
+
+      AssertThrow(!this->get_parameters().include_melt_transport,
+                  ExcMessage("Using the ascii data plugin for the prescribed Stokes solution "
+                             "is not supported in models with melt transport."));
     }
 
 

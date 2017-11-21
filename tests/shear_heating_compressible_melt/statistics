@@ -1,0 +1,19 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: RMS velocity (m/s)
+# 12: Max. velocity (m/s)
+# 13: Minimal temperature (K)
+# 14: Average temperature (K)
+# 15: Maximal temperature (K)
+# 16: Average nondimensional temperature (K)
+# 17: Average shear heating rate (W/kg) 
+# 18: Total shear heating rate (W) 
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 578 0 0 0 1.08012345e+00 1.97182458e+00 0.00000000e+00 5.01351903e-01 1.00000000e+00 5.01351903e-01 2.11139655e+00 2.11111111e+00 
