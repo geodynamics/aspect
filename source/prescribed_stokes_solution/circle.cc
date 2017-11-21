@@ -33,7 +33,23 @@ namespace aspect
       value(1) = p(0);
       if (dim == 3)
         value(2) = 0;
-      value(dim) = 0;
+
+      if (this->get_parameters().include_melt_transport)
+        {
+          value(dim) = 0;       // fluid pressure
+          value(dim+1) = 0;     // compaction pressure
+
+          value(dim+2) = -p(1); // fluid velocity x
+          value(dim+3) = p(0);  // fluid velocity y
+          if (dim == 3)
+            value(dim+4) = 0;
+
+          value(2*dim+2) = 0;   // pressure
+        }
+      else
+        {
+          value(dim) = 0;       // pressure
+        }
     }
   }
 }

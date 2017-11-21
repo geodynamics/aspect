@@ -88,6 +88,18 @@ namespace aspect
          * A function object representing the pressure.
          */
         Functions::ParsedFunction<dim> prescribed_pressure_function;
+        /**
+         * A function object representing the fluid pressure (in models with melt transport).
+         */
+        Functions::ParsedFunction<dim> prescribed_fluid_pressure_function;
+        /**
+         * A function object representing the compaction pressure (in models with melt transport).
+         */
+        Functions::ParsedFunction<dim> prescribed_compaction_pressure_function;
+        /**
+         * A function object representing the components of the fluid velocity (in models with melt transport).
+         */
+        Functions::ParsedFunction<dim> prescribed_fluid_velocity_function;
     };
   }
 }

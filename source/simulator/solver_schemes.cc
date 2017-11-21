@@ -737,7 +737,7 @@ namespace aspect
                                                                       std_cxx1x::_1,
                                                                       std_cxx1x::_2),
                                                      0,
-                                                     dim+1, // velocity and pressure
+                                                     parameters.include_melt_transport ? 2*dim+3 : dim+1, // velocity and pressure
                                                      introspection.n_components);
 
     VectorTools::interpolate (*mapping, dof_handler, func, distributed_stokes_solution);
@@ -749,6 +749,14 @@ namespace aspect
       distributed_stokes_solution.block(introspection.block_indices.velocities);
     solution.block(introspection.block_indices.pressure) =
       distributed_stokes_solution.block(introspection.block_indices.pressure);
+
+    if (parameters.include_melt_transport)
+      {
+        const unsigned int block_u_f = introspection.variable("fluid velocity").block_index;
+        const unsigned int block_p_f = introspection.variable("fluid pressure").block_index;
+        solution.block(block_u_f) = distributed_stokes_solution.block(block_u_f);
+        solution.block(block_p_f) = distributed_stokes_solution.block(block_p_f);
+      }
 
     if (parameters.run_postprocessors_on_nonlinear_iterations)
       postprocess ();
