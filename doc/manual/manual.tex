@@ -7571,7 +7571,8 @@ the surface; $\gamma$ is a coefficient of yield stress increase with depth; and 
 By limiting the strength of the lithosphere at low temperature, this rheology allows one to
 more realistically model processes like lithospheric delamination and foundering in the
 presence of weak crustal layers. A similar model setup to the one described in \cite{MD04}
-can be reproduced with the following parameters.
+can be reproduced with the files in the directory \url{cookbooks/morency_doin_2004}. 
+In particular, the following sections of the input file are important to reproduce the setup:
 
 \note{\cite{MD04} defines the second invariant of the strain rate in a nonstandard way.
     The formulation in the paper is given as $\epsilon_{II} = \sqrt{\frac{1}{2}
@@ -7585,7 +7586,7 @@ can be reproduced with the following parameters.
     get very close. See Figure~\ref{fig:md-1} for an approximate reproduction of the
     original figure.}
 
-\lstinputlisting[language=prmfile]{cookbooks/morency_doin/morency_doin.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/morency_doin/morency_doin.part.prm.out}
 
 \begin{figure}[h!]
   \includegraphics[width=\textwidth]{cookbooks/morency_doin/morency_doin_2004_fig1.pdf}

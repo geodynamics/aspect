@@ -19,7 +19,7 @@
 */
 
 
-#include <aspect/material_model/morency_doin.h>
+#include "morency_doin.h"
 #include <aspect/geometry_model/interface.h>
 
 
