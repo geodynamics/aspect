@@ -1350,7 +1350,7 @@ namespace aspect
        * Computes the initial Newton residual.
        */
       double
-      compute_initial_newton_residual (LinearAlgebra::BlockVector &linearized_stokes_initial_guess);
+      compute_initial_newton_residual (const LinearAlgebra::BlockVector &linearized_stokes_initial_guess);
 
       /**
        * This function computes the Eisenstat Walker linear tolerance used for the Newton Stokes solver.
