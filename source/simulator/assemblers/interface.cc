@@ -462,6 +462,33 @@ namespace aspect
   namespace Assemblers
   {
     template <int dim>
+    Interface<dim>::~Interface()
+    {}
+
+
+
+    template <int dim>
+    void
+    Interface<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const
+    {}
+
+
+
+    template <int dim>
+    std::vector<double>
+    Interface<dim>::compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &) const
+    {
+      AssertThrow(false,
+                  ExcMessage("If this is an assembler that has to compute a residual"
+                             "then this function should be implemented. "
+                             "If this is an assembler that does not have to compute a residual, it should not be called."));
+
+      return std::vector<double>();
+    }
+
+
+
+    template <int dim>
     Manager<dim>::Properties::Properties ()
       :
       need_face_material_model_data (false),
@@ -492,7 +519,8 @@ namespace aspect
     } \
   } \
   namespace Assemblers { \
-    template struct Manager<dim>::Properties; \
+    template class Interface<dim>; \
+    template class Manager<dim>; \
   }
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

@@ -37,8 +37,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~StokesPreconditioner () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
@@ -54,8 +52,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~StokesCompressiblePreconditioner () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
@@ -71,8 +67,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~StokesIncompressibleTerms () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
@@ -93,8 +87,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~StokesCompressibleStrainRateViscosityTerm () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
@@ -115,8 +107,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~StokesReferenceDensityCompressibilityTerm () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
@@ -137,8 +127,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~StokesImplicitReferenceDensityCompressibilityTerm () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
@@ -159,8 +147,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~StokesIsothermalCompressionTerm () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
@@ -176,8 +162,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~StokesBoundaryTraction () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
@@ -196,8 +180,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~StokesPressureRHSCompatibilityModification () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,

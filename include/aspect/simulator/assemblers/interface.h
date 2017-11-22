@@ -62,13 +62,13 @@ namespace aspect
             :
             cell(),
             face_number(numbers::invalid_unsigned_int)
-          {};
+          {}
 
           ScratchBase(const ScratchBase &scratch)
             :
             cell(scratch.cell),
             face_number(scratch.face_number)
-          {};
+          {}
 
           virtual ~ScratchBase () {};
 
@@ -333,8 +333,6 @@ namespace aspect
         template <int dim>
         struct CopyDataBase
         {
-          CopyDataBase() {};
-
           virtual ~CopyDataBase () {};
         };
 
@@ -486,7 +484,7 @@ namespace aspect
     class Interface
     {
       public:
-        virtual ~Interface () {}
+        virtual ~Interface ();
 
         /**
          * Execute this assembler object. This function performs the primary work
@@ -504,7 +502,7 @@ namespace aspect
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim> &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const =0;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const = 0;
 
         /**
          * This function gets called if a MaterialModelOutputs is created
@@ -539,7 +537,7 @@ namespace aspect
          * This ensures the additional material model output is available when
          * execute() is called.
          */
-        virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const {}
+        virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
 
         /**
          * A required function for objects that implement the assembly of terms
@@ -551,16 +549,12 @@ namespace aspect
          * equation). Thus different objects compute different residuals (i.e.
          * the residual for a melt advection equation looks different from the
          * residual for a passive compositional field).
+         * For assemblers for the Stokes system, an implementation of this
+         * function is not necessary.
          */
         virtual
         std::vector<double>
-        compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &) const
-        {
-          AssertThrow(false, ExcMessage("This function should either be implemented "
-                                        "(if this is an assembler that has to compute a residual, or not be called "
-                                        "(if this is an assembler that has not to compute a residual)."));
-          return std::vector<double>();
-        }
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &) const;
     };
 
     /**

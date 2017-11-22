@@ -140,7 +140,7 @@ namespace aspect
     class NewtonStokesPreconditioner : public NewtonInterface<dim>
     {
       public:
-        virtual ~NewtonStokesPreconditioner () {};
+        virtual ~NewtonStokesPreconditioner () {}
 
         void
         execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
@@ -155,7 +155,7 @@ namespace aspect
     class NewtonStokesIncompressibleTerms : public NewtonInterface<dim>
     {
       public:
-        virtual ~NewtonStokesIncompressibleTerms () {};
+        virtual ~NewtonStokesIncompressibleTerms () {}
 
         void
         execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
@@ -171,7 +171,7 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~NewtonStokesCompressibleStrainRateViscosityTerm () {};
+        virtual ~NewtonStokesCompressibleStrainRateViscosityTerm () {}
 
         virtual
         void
@@ -190,7 +190,7 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~NewtonStokesReferenceDensityCompressibilityTerm () {};
+        virtual ~NewtonStokesReferenceDensityCompressibilityTerm () {}
 
         virtual
         void
@@ -211,7 +211,7 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~NewtonStokesImplicitReferenceDensityCompressibilityTerm () {};
+        virtual ~NewtonStokesImplicitReferenceDensityCompressibilityTerm () {}
 
         virtual
         void
@@ -230,7 +230,7 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~NewtonStokesIsothermalCompressionTerm () {};
+        virtual ~NewtonStokesIsothermalCompressionTerm () {}
 
         virtual
         void

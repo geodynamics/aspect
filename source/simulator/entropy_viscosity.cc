@@ -132,9 +132,9 @@ namespace aspect
 
     for (unsigned int i=1; i<assemblers->advection_system.size(); ++i)
       {
-        std::vector<double> new_residual = assemblers->advection_system[i]->compute_residual(scratch);
-        for (unsigned int i=0; i<residual.size(); ++i)
-          residual[i] += new_residual[i];
+        const std::vector<double> new_residual = assemblers->advection_system[i]->compute_residual(scratch);
+        for (unsigned int j=0; j<residual.size(); ++j)
+          residual[j] += new_residual[j];
       }
 
 

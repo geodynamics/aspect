@@ -584,6 +584,7 @@ namespace aspect
   namespace Assemblers
   {
 #define INSTANTIATE(dim) \
+  template class NewtonInterface<dim>; \
   template class NewtonStokesPreconditioner<dim>; \
   template class NewtonStokesIncompressibleTerms<dim>; \
   template class NewtonStokesCompressibleStrainRateViscosityTerm<dim>; \

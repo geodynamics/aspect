@@ -38,8 +38,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~AdvectionSystem () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
@@ -59,8 +57,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~AdvectionSystemBoundaryFace () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
@@ -76,8 +72,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~AdvectionSystemInteriorFace () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,

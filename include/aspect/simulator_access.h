@@ -640,8 +640,8 @@ namespace aspect
       get_newton_handler () const;
 
       /**
-       * Return a set of boundary indicators that describes which of the
-       * boundaries have a free surface boundary condition
+       * Return a reference to the free surface handler. This function will
+       * throw an exception if no free surface is activated.
        */
       const FreeSurfaceHandler<dim> &
       get_free_surface_handler () const;

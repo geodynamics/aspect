@@ -565,6 +565,7 @@ namespace aspect
   {
     Assert (simulator->free_surface.get() != 0,
             ExcMessage("You can not call this function if the free surface is not enabled."));
+
     return *(simulator->free_surface);
   }
 

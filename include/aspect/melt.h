@@ -146,8 +146,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~MeltInterface () {};
-
         /**
          * Attach melt outputs. Since most melt assemblers require the
          * melt material model properties they are created in this base class
@@ -166,8 +164,6 @@ namespace aspect
     class MeltStokesPreconditioner : public MeltInterface<dim>
     {
       public:
-        virtual ~MeltStokesPreconditioner () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
@@ -182,8 +178,6 @@ namespace aspect
     class MeltStokesSystem : public MeltInterface<dim>
     {
       public:
-        virtual ~MeltStokesSystem () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
@@ -200,8 +194,6 @@ namespace aspect
     class MeltStokesSystemBoundary : public MeltInterface<dim>
     {
       public:
-        virtual ~MeltStokesSystemBoundary () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
@@ -216,8 +208,6 @@ namespace aspect
     class MeltAdvectionSystem : public MeltInterface<dim>
     {
       public:
-        virtual ~MeltAdvectionSystem () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
@@ -241,8 +231,6 @@ namespace aspect
     class MeltPressureRHSCompatibilityModification : public MeltInterface<dim>
     {
       public:
-        virtual ~MeltPressureRHSCompatibilityModification () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
@@ -256,8 +244,6 @@ namespace aspect
     class MeltBoundaryTraction : public MeltInterface<dim>
     {
       public:
-        virtual ~MeltBoundaryTraction () {};
-
         virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,

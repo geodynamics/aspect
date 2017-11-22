@@ -1368,6 +1368,7 @@ namespace aspect
   \
   namespace Assemblers \
   { \
+    template class MeltInterface<dim>; \
     template class MeltStokesPreconditioner<dim>; \
     template class MeltStokesSystem<dim>; \
     template class MeltStokesSystemBoundary<dim>; \

@@ -109,7 +109,7 @@ namespace aspect
     // lines in set_assemblers(), where this operation appears multiple times.
     template <int dim, class AssemblerType>
     void
-    initialize_simulator(Simulator<dim> &simulator,
+    initialize_simulator(const Simulator<dim> &simulator,
                          std::vector<std_cxx11::unique_ptr<AssemblerType> > &assemblers)
     {
       for (unsigned int i=0; i<assemblers.size(); ++i)
