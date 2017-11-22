@@ -78,6 +78,12 @@ namespace aspect
       void execute();
 
       /**
+       * Called by Simulator::set_assemblers() to allow the FreeSurfaceHandler
+       * to register its assembler.
+       */
+      void set_assemblers();
+
+      /**
        * Allocates and sets up the members of the FreeSurfaceHandler. This
        * is called by Simulator<dim>::setup_dofs()
        */

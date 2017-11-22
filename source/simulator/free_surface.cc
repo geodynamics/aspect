@@ -134,7 +134,23 @@ namespace aspect
       free_surface_dof_handler (sim.triangulation)
   {
     parse_parameters(prm);
+  }
 
+  template <int dim>
+  FreeSurfaceHandler<dim>::~FreeSurfaceHandler ()
+  {
+    // Free the Simulator's mapping object, otherwise
+    // when the FreeSurfaceHandler gets destroyed,
+    // the mapping's reference to the mesh displacement
+    // vector will be invalid.
+    sim.mapping.reset();
+  }
+
+
+
+  template <int dim>
+  void FreeSurfaceHandler<dim>::set_assemblers()
+  {
     aspect::Assemblers::ApplyStabilization<dim> *surface_stabilization
       = new aspect::Assemblers::ApplyStabilization<dim>();
 
@@ -151,16 +167,6 @@ namespace aspect
         update_quadrature_points |
         update_normal_vectors |
         update_JxW_values);
-  }
-
-  template <int dim>
-  FreeSurfaceHandler<dim>::~FreeSurfaceHandler ()
-  {
-    // Free the Simulator's mapping object, otherwise
-    // when the FreeSurfaceHandler gets destroyed,
-    // the mapping's reference to the mesh displacement
-    // vector will be invalid.
-    sim.mapping.reset();
   }
 
   template <int dim>
