@@ -123,9 +123,11 @@ namespace aspect
   Simulator<dim>::
   set_assemblers ()
   {
+    // first let the manager delete all existing assemblers:
+    assemblers->reset();
+
     assemblers->advection_system_assembler_properties.resize(1+introspection.n_compositional_fields);
     assemblers->advection_system_assembler_on_face_properties.resize(1+introspection.n_compositional_fields);
-
 
     if (parameters.include_melt_transport)
       {
@@ -359,7 +361,11 @@ namespace aspect
           }
       }
 
-    // allow other assemblers to add themselves or modify the existing ones by firing the signal
+    // Let the free surface add its assembler:
+    if (parameters.free_surface_enabled)
+      free_surface->set_assemblers();
+
+    // Finally allow other assemblers to add themselves or modify the existing ones by firing the signal
     this->signals.set_assemblers(*this, *assemblers);
 
     // ensure that all assembler objects have access to the SimulatorAccess

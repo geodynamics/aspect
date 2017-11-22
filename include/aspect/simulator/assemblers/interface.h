@@ -587,6 +587,12 @@ namespace aspect
     class Manager
     {
       public:
+
+        /**
+         * Reset the state of the manager and remove all Assemblers.
+         */
+        void reset ();
+
         /**
          * A vector of pointers containing all assemblers for the Stokes preconditioner.
          * These assemblers are called once per cell.

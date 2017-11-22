@@ -528,7 +528,6 @@ namespace aspect
 
         if (nonlinear_iteration <= 1)
           {
-            assemblers.reset (new internal::Assembly::AssemblerLists<dim>());
             set_assemblers();
             compute_current_constraints ();
           }

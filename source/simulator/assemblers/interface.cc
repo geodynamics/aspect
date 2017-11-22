@@ -487,6 +487,16 @@ namespace aspect
     }
 
 
+    template <int dim>
+    void Manager<dim>::reset ()
+    {
+      stokes_preconditioner.clear();
+      stokes_system.clear();
+      stokes_system_on_boundary_face.clear();
+      advection_system.clear();
+      advection_system_on_boundary_face.clear();
+      advection_system_on_interior_face.clear();
+    }
 
     template <int dim>
     Manager<dim>::Properties::Properties ()
