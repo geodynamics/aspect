@@ -22,7 +22,7 @@
 #ifndef _aspect__newton_h
 #define _aspect__newton_h
 
-#include <aspect/assembly.h>
+#include <aspect/simulator/assemblers/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <aspect/material_model/interface.h>
@@ -113,88 +113,129 @@ namespace aspect
   namespace Assemblers
   {
     /**
-     * A class containing the functions to assemble the different terms of the Newton Stokes system.
-     */
+      * A base class for the definition of assemblers that implement the
+      * linear system terms for the NewtonStokes solver scheme.
+      */
     template <int dim>
-    class NewtonStokesAssembler : public aspect::internal::Assembly::Assemblers::AssemblerBase<dim>,
+    class NewtonInterface : public aspect::Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
       public:
-        /**
-         * This function assembles the terms of the Newton Stokes preconditioner matrix for the current cell.
-         */
-        void
-        preconditioner (const double                                             pressure_scaling,
-                        internal::Assembly::Scratch::StokesPreconditioner<dim>  &scratch,
-                        internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const;
+        virtual ~NewtonInterface () {};
 
         /**
-         * This function assembles the terms for the matrix and right-hand-side of the incompressible
-         * Newton Stokes system for the current cell.
-         */
-        void
-        incompressible_terms (const double                                     pressure_scaling,
-                              const bool                                       rebuild_stokes_matrix,
-                              internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                              internal::Assembly::CopyData::StokesSystem<dim> &data) const;
-
-        /**
-         * This function assembles the term that arises in the viscosity term of Newton Stokes matrix for
-         * compressible models, because the divergence of the velocity is no longer zero.
-         */
-        void
-        compressible_strain_rate_viscosity_term (const double                                     pressure_scaling,
-                                                 const bool                                       rebuild_stokes_matrix,
-                                                 internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                                 internal::Assembly::CopyData::StokesSystem<dim> &data) const;
-
-        /**
-         * This function assembles the right-hand-side term of the Newton Stokes system
-         * that is caused by the compressibility in the mass conservation equation.
-         * This function approximates this term as
-         * $- \nabla \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u}$
-         */
-        void
-        reference_density_compressibility_term (const double                                     pressure_scaling,
-                                                const bool                                       rebuild_stokes_matrix,
-                                                internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                                internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                                const Parameters<dim> &parameters) const;
-
-        /**
-         * This function assembles the compressibility term of the Newton Stokes system
-         * that is caused by the compressibility in the mass conservation equation.
-         * It includes this term implicitly in the matrix,
-         * which is therefore not longer symmetric.
-         * This function approximates this term as
-         * $ - \nabla \mathbf{u} - \frac{1}{\rho} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u} = 0$
-         */
-        void
-        implicit_reference_density_compressibility_term (const double                                     pressure_scaling,
-                                                         const bool                                       rebuild_stokes_matrix,
-                                                         internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                                         internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                                         const Parameters<dim> &parameters) const;
-
-        /**
-         * This function assembles the right-hand-side term of the Newton Stokes system
-         * that is caused by the compressibility in the mass conservation equation.
-         * This function approximates this term as
-         * $ - \nabla \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial p} \rho \mathbf{g} \cdot \mathbf{u}$
-         */
-        void
-        isothermal_compression_term (const double                                     pressure_scaling,
-                                     const bool                                       rebuild_stokes_matrix,
-                                     internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                     internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                     const Parameters<dim> &parameters) const;
-
-        /**
-         * Attach derivatives outputs.
+         * Attach Newton outputs. Since most Newton assemblers require the
+         * material model derivatives they are created in this base class
+         * already.
          */
         virtual
         void
         create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+    };
+
+    /**
+     * This class assembles the terms of the Newton Stokes preconditioner matrix for the current cell.
+     */
+    template <int dim>
+    class NewtonStokesPreconditioner : public NewtonInterface<dim>
+    {
+      public:
+        virtual ~NewtonStokesPreconditioner () {}
+
+        void
+        execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
+                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+    };
+
+    /**
+     * This class assembles the terms for the matrix and right-hand-side of the incompressible
+     * Newton Stokes system for the current cell.
+     */
+    template <int dim>
+    class NewtonStokesIncompressibleTerms : public NewtonInterface<dim>
+    {
+      public:
+        virtual ~NewtonStokesIncompressibleTerms () {}
+
+        void
+        execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
+                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+    };
+
+    /**
+     * This class assembles the term that arises in the viscosity term of the Newton Stokes matrix for
+     * compressible models, because the divergence of the velocity is not longer zero.
+     */
+    template <int dim>
+    class NewtonStokesCompressibleStrainRateViscosityTerm : public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        virtual ~NewtonStokesCompressibleStrainRateViscosityTerm () {}
+
+        virtual
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+    };
+
+    /**
+     * This class assembles the right-hand-side term of the Newton Stokes system
+     * that is caused by the compressibility in the mass conservation equation.
+     * This function approximates this term as
+     * $- \nabla \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u}$
+     */
+    template <int dim>
+    class NewtonStokesReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        virtual ~NewtonStokesReferenceDensityCompressibilityTerm () {}
+
+        virtual
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+    };
+
+    /**
+     * This class assembles the compressibility term of the Newton Stokes system
+     * that is caused by the compressibility in the mass conservation equation.
+     * It includes this term implicitly in the matrix,
+     * which is therefore not longer symmetric.
+     * This function approximates this term as
+     * $ - \nabla \mathbf{u} - \frac{1}{\rho} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u} = 0$
+     */
+    template <int dim>
+    class NewtonStokesImplicitReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        virtual ~NewtonStokesImplicitReferenceDensityCompressibilityTerm () {}
+
+        virtual
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+    };
+
+    /**
+     * This class assembles the right-hand-side term of the Newton Stokes system
+     * that is caused by the compressibility in the mass conservation equation.
+     * This function approximates this term as
+     * $ - \nabla \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial p} \rho \mathbf{g} \cdot \mathbf{u}$
+     */
+    template <int dim>
+    class NewtonStokesIsothermalCompressionTerm : public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        virtual ~NewtonStokesIsothermalCompressionTerm () {}
+
+        virtual
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
     };
   }
 }

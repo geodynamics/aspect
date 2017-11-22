@@ -1,7 +1,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <aspect/simulator.h>
-#include <aspect/assembly.h>
+#include <aspect/simulator/assemblers/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -40,7 +40,7 @@ namespace aspect
    */
   template <int dim>
   class PhaseBoundaryAssembler :
-    public aspect::internal::Assembly::Assemblers::AssemblerBase<dim>,
+    public aspect::Assemblers::Interface<dim>,
     public SimulatorAccess<dim>
   {
 
@@ -48,20 +48,21 @@ namespace aspect
 
       virtual
       void
-      phase_change_boundary_conditions (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                        const unsigned int                                    face_no,
-                                        internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
-                                        internal::Assembly::CopyData::StokesSystem<dim>      &data) const
+      execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+               internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
       {
+        internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
+        internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+
         const Introspection<dim> &introspection = this->introspection();
         const FiniteElement<dim> &fe            = this->get_fe();
         const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
         const unsigned int n_q_points           = scratch.face_finite_element_values.n_quadrature_points;
 
         //assemble force terms for the matrix for all boundary faces
-        if (cell->face(face_no)->at_boundary())
+        if (scratch.cell->face(scratch.face_number)->at_boundary())
           {
-            scratch.face_finite_element_values.reinit (cell, face_no);
+            scratch.face_finite_element_values.reinit (scratch.cell, scratch.face_number);
 
             for (unsigned int q=0; q<n_q_points; ++q)
               {
@@ -99,31 +100,15 @@ namespace aspect
 
   template <int dim>
   void set_assemblers_phase_boundary(const SimulatorAccess<dim> &simulator_access,
-                                     internal::Assembly::AssemblerLists<dim> &assemblers,
-                                     std::vector<dealii::std_cxx11::shared_ptr<
-                                     internal::Assembly::Assemblers::AssemblerBase<dim> > > &assembler_objects)
+                                     Assemblers::Manager<dim> &assemblers)
   {
     AssertThrow (dynamic_cast<const MaterialModel::InnerCore<dim>*>
                  (&simulator_access.get_material_model()) != 0,
                  ExcMessage ("The phase boundary assembler can only be used with the "
                              "material model 'inner core material'!"));
 
-    std_cxx11::shared_ptr<PhaseBoundaryAssembler<dim> > phase_boundary_assembler
-    (new PhaseBoundaryAssembler<dim>());
-    assembler_objects.push_back (phase_boundary_assembler);
-
-    // add the terms for phase change boundary conditions
-    assemblers.local_assemble_stokes_system_on_boundary_face
-    .connect (std_cxx11::bind(&PhaseBoundaryAssembler<dim>::phase_change_boundary_conditions,
-                              std_cxx11::cref (*phase_boundary_assembler),
-                              std_cxx11::_1,
-                              std_cxx11::_2,
-                              // discard pressure_scaling,
-                              // discard rebuild_stokes_matrix,
-                              std_cxx11::_5,
-                              std_cxx11::_6));
-
-
+    PhaseBoundaryAssembler<dim> *phase_boundary_assembler = new PhaseBoundaryAssembler<dim>();
+    assemblers.stokes_system_on_boundary_face.push_back (std_cxx11::unique_ptr<PhaseBoundaryAssembler<dim> > (phase_boundary_assembler));
   }
 }
 

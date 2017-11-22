@@ -21,12 +21,12 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
-#include <aspect/assembly.h>
 #include <aspect/utilities.h>
 #include <aspect/melt.h>
 #include <aspect/newton.h>
 #include <aspect/free_surface.h>
 
+#include <aspect/simulator/assemblers/interface.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
 #include <deal.II/base/index_set.h>
@@ -148,7 +148,7 @@ namespace aspect
   Simulator<dim>::Simulator (const MPI_Comm mpi_communicator_,
                              ParameterHandler &prm)
     :
-    assemblers (new internal::Assembly::AssemblerLists<dim>()),
+    assemblers (new Assemblers::Manager<dim>()),
     parameters (prm, mpi_communicator_),
     melt_handler (parameters.include_melt_transport ? new MeltHandler<dim> (prm) : NULL),
     newton_handler (parameters.nonlinear_solver == NonlinearSolver::Newton_Stokes ? new NewtonHandler<dim> () : NULL),

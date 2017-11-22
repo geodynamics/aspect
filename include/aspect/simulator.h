@@ -99,13 +99,13 @@ namespace aspect
         template <int dim>      struct StokesSystem;
         template <int dim>      struct AdvectionSystem;
       }
-
-      namespace Assemblers
-      {
-        template <int dim>      class AssemblerBase;
-      }
-      template <int dim>      struct AssemblerLists;
     }
+  }
+
+  namespace Assemblers
+  {
+    template <int dim>      class Interface;
+    template <int dim>      class Manager;
   }
 
   /**
@@ -740,51 +740,13 @@ namespace aspect
        * matrices, and right hand side vectors.
        *
        * One would probably want this variable to just be a member of type
-       * internal::Assembly::AssemblerLists<dim>, but this requires that
+       * Assemblers::Manager<dim>, but this requires that
        * this type is declared in the current scope, and that would require
-       * including <assembly.h> which we don't want because it's big.
+       * including <simulator/assemblers/interface.h> which we don't want because it's big.
        * Consequently, we just store a pointer to such an object, and create
        * the object pointed to at the top of set_assemblers().
        */
-      std_cxx11::unique_ptr<internal::Assembly::AssemblerLists<dim> > assemblers;
-
-      /**
-       * A collection of objects that implement member functions that may
-       * appear in the assembler signal lists. What the objects do is not
-       * actually important, but individual assembler objects may encapsulate
-       * data that is used by concrete assemblers.
-       *
-       * The objects pointed to by this vector are created in
-       * set_assemblers(), and are later destroyed by the destructor
-       * of the current class.
-       */
-      std::vector<std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > > assembler_objects;
-
-      /**
-       * Material models, through functions derived from
-       * MaterialModel::Interface::evaluate(), put their computed material
-       * parameters into a structure of type MaterialModel::MaterialModelOutputs.
-       * By default, material models will compute those parameters that
-       * correspond to the member variables of that structure. However,
-       * there are situations where parts of the simulator need additional
-       * pieces of information; a typical example would be the use of a
-       * Newton scheme that also requires the computation of <i>derivatives</i>
-       * of material parameters with respect to pressure, temperature, and
-       * possibly other variables.
-       *
-       * The computation of such additional information is controlled by
-       * the presence of a collection of pointers in
-       * MaterialModel::MaterialModelOutputs that point to additional
-       * objects. Whether or not one needs these additional objects depends
-       * on what linear system is being assembled, or what postprocessing
-       * wants to compute. For the purpose of assembly, the current
-       * function creates the additional objects (such as the one that stores
-       * derivatives) and adds pointers to them to the collection, based on
-       * what assemblers are selected. It does so by calling the
-       * internal::Assemblers::AssemblerBase::create_additional_material_model_outputs()
-       * functions from each object in Simulator::assembler_objects.
-       */
-      void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
+      std_cxx11::unique_ptr<Assemblers::Manager<dim> > assemblers;
 
       /**
        * Determine, based on the run-time parameters of the current simulation,

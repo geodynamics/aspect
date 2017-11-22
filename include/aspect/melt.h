@@ -24,7 +24,7 @@
 
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
-#include <aspect/assembly.h>
+#include <aspect/simulator/assemblers/interface.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/boundary_fluid_pressure/interface.h>
 
@@ -137,132 +137,118 @@ namespace aspect
   namespace Assemblers
   {
     /**
-     * A class for the definition of functions that implement the
-     * linear system terms for the *melt* migration compressible or
-     * incompressible equations.
-     */
+      * A base class for the definition of assemblers that implement the
+      * linear system terms for the *melt* migration compressible or
+      * incompressible equations.
+      */
     template <int dim>
-    class MeltEquations : public aspect::internal::Assembly::Assemblers::AssemblerBase<dim>,
+    class MeltInterface : public aspect::Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
       public:
         /**
-         * Attach melt outputs.
+         * Attach melt outputs. Since most melt assemblers require the
+         * melt material model properties they are created in this base class
+         * already.
          */
         virtual
         void
         create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+    };
 
-
-        /**
-         * Compute the integrals for the preconditioner for the Stokes system in
-         * the case of melt migration on a single cell.
-         */
+    /**
+     * Compute the integrals for the preconditioner for the Stokes system in
+     * the case of melt migration on a single cell.
+     */
+    template <int dim>
+    class MeltStokesPreconditioner : public MeltInterface<dim>
+    {
+      public:
+        virtual
         void
-        local_assemble_stokes_preconditioner_melt (const double                                             pressure_scaling,
-                                                   internal::Assembly::Scratch::StokesPreconditioner<dim>  &scratch,
-                                                   internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+    };
 
-        /**
-         * Compute the integrals for the Stokes matrix and right hand side in
-         * the case of melt migration on a single cell.
-         */
+    /**
+     * Compute the integrals for the Stokes matrix and right hand side in
+     * the case of melt migration on a single cell.
+     */
+    template <int dim>
+    class MeltStokesSystem : public MeltInterface<dim>
+    {
+      public:
+        virtual
         void
-        local_assemble_stokes_system_melt (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                           const double                                     pressure_scaling,
-                                           const bool                                       rebuild_stokes_matrix,
-                                           internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                           internal::Assembly::CopyData::StokesSystem<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+    };
 
-        /**
-         * Compute the boundary integrals for the Stokes right hand side in
-         * the case of melt migration on a single cell. These boundary terms
-         * are used to describe Neumann boundary conditions for the fluid pressure.
-         */
-        void
-        local_assemble_stokes_system_melt_boundary (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                                    const unsigned int                                    face_no,
-                                                    const double                                          pressure_scaling,
-                                                    internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
-                                                    internal::Assembly::CopyData::StokesSystem<dim>      &data) const;
 
-        /**
-         * Compute the integrals for the Advection system matrix and right hand side in
-         * the case of melt migration on a single cell.
-         */
+    /**
+     * Compute the boundary integrals for the Stokes right hand side in
+     * the case of melt migration on a single cell. These boundary terms
+     * are used to describe Neumann boundary conditions for the fluid pressure.
+     */
+    template <int dim>
+    class MeltStokesSystemBoundary : public MeltInterface<dim>
+    {
+      public:
+        virtual
         void
-        local_assemble_advection_system_melt (const typename Simulator<dim>::AdvectionField      &advection_field,
-                                              const double                                        artificial_viscosity,
-                                              internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
-                                              internal::Assembly::CopyData::AdvectionSystem<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+    };
+
+    /**
+     * Compute the integrals for the Advection system matrix and right hand side in
+     * the case of melt migration on a single cell.
+     */
+    template <int dim>
+    class MeltAdvectionSystem : public MeltInterface<dim>
+    {
+      public:
+        virtual
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
 
         /**
          * Compute the residual of the advection system on a single cell in
          * the case of melt migration.
          */
+        virtual
         std::vector<double>
-        compute_advection_system_residual_melt(const typename Simulator<dim>::AdvectionField     &advection_field,
-                                               internal::Assembly::Scratch::AdvectionSystem<dim> &scratch) const;
-
-
-      private:
-        /**
-         * Compute the right-hand side of the fluid pressure equation of the Stokes
-         * system in case the simulation uses melt transport. This includes a term
-         * derived from Darcy's law, a term including the melting rate and a term dependent
-         * on the densities and velocities of fluid and solid.
-         */
-        double
-        compute_fluid_pressure_rhs(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                   MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                                   MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                                   const unsigned int q_point) const;
-
-        /**
-         * Compute the right-hand side for the porosity system. This function
-         * returns 0 for the temperature and all of the compositional fields, except
-         * for the porosity. It includes the melting rate and a term dependent
-         * on the density and velocity.
-         *
-         * This function is implemented in
-         * <code>source/simulator/melt.cc</code>.
-         */
-        double
-        compute_melting_RHS(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
-                            const typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                            const typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
-                            const typename Simulator<dim>::AdvectionField &advection_field,
-                            const unsigned int q_point) const;
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch) const;
     };
 
     /**
-     * A namespace for the definition of functions that implement various
-     * other terms that need to occasionally or always be assembled.
+     * Integrate the local fluid pressure shape functions on a single cell
+     * for models with melt migration, so that they can later be used to do
+     * the pressure right-hand side compatibility modification.
      */
-    namespace OtherTerms
+    template <int dim>
+    class MeltPressureRHSCompatibilityModification : public MeltInterface<dim>
     {
-      /**
-       * Integrate the local fluid pressure shape functions on a single cell
-       * for models with melt migration, so that they can later be used to do
-       * the pressure right-hand side compatibility modification.
-       */
-      template <int dim>
-      void
-      pressure_rhs_compatibility_modification_melt (const SimulatorAccess<dim>                      &simulator_access,
-                                                    internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                                    internal::Assembly::CopyData::StokesSystem<dim> &data);
+      public:
+        virtual
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+    };
 
-      /**
-       * Assemble traction boundary condition terms for models with melt.
-       */
-      template <int dim>
-      void
-      boundary_traction_melt (const SimulatorAccess<dim>                           &simulator_access,
-                              const typename DoFHandler<dim>::active_cell_iterator &cell,
-                              const unsigned int                                    face_no,
-                              internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
-                              internal::Assembly::CopyData::StokesSystem<dim>      &data);
-    }
+    /**
+     * Assemble traction boundary condition terms for models with melt.
+     */
+    template <int dim>
+    class MeltBoundaryTraction : public MeltInterface<dim>
+    {
+      public:
+        virtual
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+    };
   }
 
 
