@@ -759,6 +759,18 @@ namespace aspect
       void set_assemblers ();
 
       /**
+       * Determine, based on the run-time parameters of the current simulation,
+       * which functions need to be called in order to assemble linear systems,
+       * matrices, and right hand side vectors. This function handles the
+       * default operation mode of ASPECT, i.e. without considering two-phase
+       * flow, or Newton solvers.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void set_default_assemblers ();
+
+      /**
        * Initiate the assembly of the preconditioner for the Stokes system.
        *
        * This function is implemented in

@@ -675,6 +675,15 @@ namespace aspect
       get_pressure_scaling () const;
 
       /**
+       * Return whether we need to apply a compatibility modification
+       * to the pressure right hand side. See documentation of
+       * Simulator<dim>::do_pressure_rhs_compatibility_modification for more
+       * information.
+       */
+      bool
+      pressure_rhs_needs_compatibility_modification() const;
+
+      /**
        * A convenience function that copies the values of the compositional
        * fields at the quadrature point q given as input parameter to the
        * output vector composition_values_at_q_point.

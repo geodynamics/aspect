@@ -66,6 +66,13 @@ namespace aspect
   {
     public:
       /**
+       * Determine, based on the run-time parameters of the current simulation,
+       * which functions need to be called in order to assemble linear systems,
+       * matrices, and right hand side vectors.
+       */
+      void set_assemblers (Assemblers::Manager<dim> &assemblers) const;
+
+      /**
        * Create an additional material model output object that contains
        * the additional output variables (the derivatives) needed for the
        * Newton solver.

@@ -298,6 +298,13 @@ namespace aspect
                                          std::vector<VariableDeclaration<dim> > &variables);
 
       /**
+       * Determine, based on the run-time parameters of the current simulation,
+       * which functions need to be called in order to assemble linear systems,
+       * matrices, and right hand side vectors.
+       */
+      void set_assemblers (Assemblers::Manager<dim> &assemblers) const;
+
+      /**
        * Setup SimulatorAccess for the plugins related to melt transport.
        */
       void initialize_simulator (const Simulator<dim> &simulator_object);
