@@ -959,11 +959,11 @@ namespace aspect
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
       prm.declare_entry ("Compositional field methods", "",
-                         Patterns::List (Patterns::Selection("field|particles")),
+                         Patterns::List (Patterns::Selection("field|particles|static")),
                          "A comma separated list denoting the solution method of each "
                          "compositional field. Each entry of the list must be "
                          "one of the currently implemented field types: "
-                         "``field'', or ``particles''.");
+                         "``field'', ``particles'', or ``static''.");
       prm.declare_entry ("Mapped particle properties", "",
                          Patterns::Map (Patterns::Anything(),
                                         Patterns::Anything()),
@@ -1460,6 +1460,8 @@ namespace aspect
             compositional_field_methods[i] = AdvectionFieldMethod::fem_field;
           else if (x_compositional_field_methods[i] == "particles")
             compositional_field_methods[i] = AdvectionFieldMethod::particles;
+          else if (x_compositional_field_methods[i] == "static")
+            compositional_field_methods[i] = AdvectionFieldMethod::static_field;
           else
             AssertThrow(false,ExcNotImplemented());
         }

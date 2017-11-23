@@ -188,6 +188,18 @@ namespace aspect
               interpolate_particle_properties(adv_field);
               break;
 
+            case Parameters<dim>::AdvectionFieldMethod::static_field:
+            {
+              // Do nothing here, but at least call the signal in case the
+              // user wants to do something with the variable:
+              SolverControl dummy;
+              signals.post_advection_solver(*this,
+                                            adv_field.is_temperature(),
+                                            adv_field.compositional_variable,
+                                            dummy);
+            }
+            break;
+
             default:
               AssertThrow(false,ExcNotImplemented());
           }
