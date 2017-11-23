@@ -1298,12 +1298,16 @@ namespace aspect
         update_normal_vectors | update_gradients |
         update_JxW_values);
 
+
     assemblers.stokes_system_on_boundary_face.push_back(
-      std_cxx14::make_unique<Assemblers::MeltStokesSystemBoundary<dim> > ());
+      std_cxx14::make_unique<aspect::Assemblers::MeltStokesSystemBoundary<dim> >());
 
     // add the terms for traction boundary conditions
-    assemblers.stokes_system_on_boundary_face.push_back(
-      std_cxx14::make_unique<Assemblers::MeltBoundaryTraction<dim> > ());
+    if (!this->get_boundary_traction().empty())
+      {
+        assemblers.stokes_system_on_boundary_face.push_back(
+          std_cxx14::make_unique<Assemblers::MeltBoundaryTraction<dim> > ());
+      }
 
     // add the terms necessary to normalize the pressure
     if (this->pressure_rhs_needs_compatibility_modification())

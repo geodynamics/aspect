@@ -170,8 +170,12 @@ namespace aspect
                   ExcMessage("Unknown mass conservation equation approximation. There is no assembler"
                              " defined that handles this formulation."));
 
-    assemblers->stokes_system_on_boundary_face.push_back(
-      std_cxx14::make_unique<aspect::Assemblers::StokesBoundaryTraction<dim> >());
+    // add the terms for traction boundary conditions
+    if (!boundary_traction.empty())
+      {
+        assemblers->stokes_system_on_boundary_face.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesBoundaryTraction<dim> >());
+      }
 
     // add the terms necessary to normalize the pressure
     if (do_pressure_rhs_compatibility_modification)
@@ -528,48 +532,51 @@ namespace aspect
     for (unsigned int i=0; i<assemblers->stokes_system.size(); ++i)
       assemblers->stokes_system[i]->execute(scratch,data);
 
-    // then also work on possible face terms. if necessary, initialize
-    // the material model data on faces
-    for (scratch.face_number=0; scratch.face_number<GeometryInfo<dim>::faces_per_cell; ++scratch.face_number)
-      if (cell->at_boundary(scratch.face_number))
-        {
-          scratch.face_finite_element_values.reinit (cell, scratch.face_number);
-
-          if (assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data)
+    if (!assemblers->stokes_system_on_boundary_face.empty())
+      {
+        // then also work on possible face terms. if necessary, initialize
+        // the material model data on faces
+        for (scratch.face_number=0; scratch.face_number<GeometryInfo<dim>::faces_per_cell; ++scratch.face_number)
+          if (cell->at_boundary(scratch.face_number))
             {
-              const bool need_viscosity = rebuild_stokes_matrix |
-                                          assemblers->stokes_system_assembler_on_boundary_face_properties.need_viscosity;
+              scratch.face_finite_element_values.reinit (cell, scratch.face_number);
 
-              compute_material_model_input_values (current_linearization_point,
-                                                   scratch.face_finite_element_values,
-                                                   cell,
-                                                   need_viscosity,
-                                                   scratch.face_material_model_inputs);
+              if (assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data)
+                {
+                  const bool need_viscosity = rebuild_stokes_matrix |
+                                              assemblers->stokes_system_assembler_on_boundary_face_properties.need_viscosity;
+
+                  compute_material_model_input_values (current_linearization_point,
+                                                       scratch.face_finite_element_values,
+                                                       cell,
+                                                       need_viscosity,
+                                                       scratch.face_material_model_inputs);
+
+                  for (unsigned int i=0; i<assemblers->stokes_system_on_boundary_face.size(); ++i)
+                    assemblers->stokes_system_on_boundary_face[i]->create_additional_material_model_outputs(scratch.face_material_model_outputs);
+
+                  material_model->evaluate(scratch.face_material_model_inputs,
+                                           scratch.face_material_model_outputs);
+
+                  // TODO: Currently we do not supply reference density values to Stokes face assemblers.
+                  // This seems acceptable for now, since the only face assemblers are the ones for the melt
+                  // assembly where one would not want to use the reference density anyway. In case the reference
+                  // density is ever needed, those assemblers can also query the adiabatic conditions for the
+                  // reference density.
+
+                  // TODO: the following doesn't currently compile because the get_quadrature() call returns
+                  //  a dim-1 dimensional quadrature
+                  // MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+                  //                                            cell,
+                  //                                            compressibility * density *
+                  //                                            scratch.face_finite_element_values.get_mapping(),
+                  //                                            scratch.face_material_model_outputs);
+                }
 
               for (unsigned int i=0; i<assemblers->stokes_system_on_boundary_face.size(); ++i)
-                assemblers->stokes_system_on_boundary_face[i]->create_additional_material_model_outputs(scratch.face_material_model_outputs);
-
-              material_model->evaluate(scratch.face_material_model_inputs,
-                                       scratch.face_material_model_outputs);
-
-              // TODO: Currently we do not supply reference density values to Stokes face assemblers.
-              // This seems acceptable for now, since the only face assemblers are the ones for the melt
-              // assembly where one would not want to use the reference density anyway. In case the reference
-              // density is ever needed, those assemblers can also query the adiabatic conditions for the
-              // reference density.
-
-              // TODO: the following doesn't currently compile because the get_quadrature() call returns
-              //  a dim-1 dimensional quadrature
-              // MaterialModel::MaterialAveraging::average (parameters.material_averaging,
-              //                                            cell,
-              //                                            compressibility * density *
-              //                                            scratch.face_finite_element_values.get_mapping(),
-              //                                            scratch.face_material_model_outputs);
+                assemblers->stokes_system_on_boundary_face[i]->execute(scratch,data);
             }
-
-          for (unsigned int i=0; i<assemblers->stokes_system_on_boundary_face.size(); ++i)
-            assemblers->stokes_system_on_boundary_face[i]->execute(scratch,data);
-        }
+      }
   }
 
 

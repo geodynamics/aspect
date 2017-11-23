@@ -25,11 +25,6 @@
 
 #include <aspect/simulator.h>
 
-#if DEAL_II_VERSION_GTE(9,0,0)
-#include <deal.II/base/std_cxx14/memory.h>
-#endif
-
-
 namespace aspect
 {
   namespace MaterialModel
@@ -92,8 +87,12 @@ namespace aspect
                   ExcMessage("Unknown mass conservation equation approximation. There is no assembler"
                              " defined that handles this formulation."));
 
-    assemblers.stokes_system_on_boundary_face.push_back(
-      std_cxx14::make_unique<aspect::Assemblers::StokesBoundaryTraction<dim> >());
+    // add the terms for traction boundary conditions
+    if (!this->get_boundary_traction().empty())
+      {
+        assemblers.stokes_system_on_boundary_face.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesBoundaryTraction<dim> >());
+      }
 
     // add the terms necessary to normalize the pressure
     if (this->pressure_rhs_needs_compatibility_modification())
