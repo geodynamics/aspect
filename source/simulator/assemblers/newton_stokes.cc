@@ -138,8 +138,8 @@ namespace aspect
                           data.local_matrix(i, j) += ((2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
                                                       + derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate
                                                                                              + scratch.grads_phi_u[j] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate)
-                                                      + one_over_eta * pressure_scaling
-                                                      * pressure_scaling
+                                                      + one_over_eta * this->get_pressure_scaling()
+                                                      * this->get_pressure_scaling()
                                                       * (scratch.phi_p[i] * scratch
                                                          .phi_p[j]))
                                                      * JxW;
@@ -154,8 +154,8 @@ namespace aspect
                         {
                           data.local_matrix(i, j) += ((2.0 * eta * alpha * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
                                                       + derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate)
-                                                      + one_over_eta * pressure_scaling
-                                                      * pressure_scaling
+                                                      + one_over_eta * this->get_pressure_scaling()
+                                                      * this->get_pressure_scaling()
                                                       * (scratch.phi_p[i] * scratch
                                                          .phi_p[j]))
                                                      * JxW;
@@ -314,24 +314,6 @@ namespace aspect
                                         :
                                         1;
 
-<<<<<<< 9c070c9492be916a7195c2cbb62f971e435fee95
-                  if(use_spd_factor)
-                  {
-                  for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                    for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-                      {
-                        data.local_matrix(i,j) += ( derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate
-                                                                                         + scratch.grads_phi_u[j] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate)
-                                                    + derivative_scaling_factor * this->get_pressure_scaling() * scratch.grads_phi_u[i] * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * strain_rate )
-                                                  * JxW;
-
-                        Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),
-                               ExcMessage ("Error: Assembly matrix is not finite." +
-                                           Utilities::to_string(data.local_matrix(i,j)) +
-                                           " = " + Utilities::to_string(eta)));
-                      }
-                  }
-=======
                   if (Newton_stabilisation.second == "SPD" || Newton_stabilisation.second == "symmetric")
                     {
                       for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
@@ -339,7 +321,7 @@ namespace aspect
                           {
                             data.local_matrix(i,j) += ( derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate
                                                                                              + scratch.grads_phi_u[j] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate)
-                                                        + derivative_scaling_factor * pressure_scaling * scratch.grads_phi_u[i] * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * strain_rate )
+                                                        + derivative_scaling_factor * this->get_pressure_scaling() * scratch.grads_phi_u[i] * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * strain_rate )
                                                       * JxW;
 
                             Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),
@@ -348,14 +330,13 @@ namespace aspect
                                                " = " + Utilities::to_string(eta)));
                           }
                     }
->>>>>>> implement the failsafe in a more flexible way togheter with giving more control over the way both the preconditioner and the A block are stabelized.
                   else
                     {
                       for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
                         for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                           {
                             data.local_matrix(i,j) += ( derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate)
-                                                        + derivative_scaling_factor * pressure_scaling * scratch.grads_phi_u[i] * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * strain_rate )
+                                                        + derivative_scaling_factor * this->get_pressure_scaling() * scratch.grads_phi_u[i] * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * strain_rate )
                                                       * JxW;
 
                             Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),
@@ -369,7 +350,7 @@ namespace aspect
         }
 
 #if DEBUG
-      if (assemble_newton_stokes_matrix)
+      if (scratch.rebuild_newton_stokes_matrix)
         {
           if (this->get_newton_handler().get_Newton_stabilisation().second == "SPD")
             {
