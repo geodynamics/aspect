@@ -1075,16 +1075,18 @@ namespace aspect
           const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
           switch (method)
             {
-              // Coupling cases
               case Parameters<dim>::AdvectionFieldMethod::fem_field:
-                coupling[x.compositional_fields[c]][x.compositional_fields[c]]
-                  = DoFTools::always;
+                coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::always;
                 break;
-              // Non-coupling cases
+
               case Parameters<dim>::AdvectionFieldMethod::particles:
-                coupling[x.compositional_fields[c]][x.compositional_fields[c]]
-                  = DoFTools::none;
+                coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::none;
                 break;
+
+              case Parameters<dim>::AdvectionFieldMethod::static_field:
+                coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::none;
+                break;
+
               default:
                 Assert(false,ExcNotImplemented());
             }
@@ -1206,16 +1208,18 @@ namespace aspect
         const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
         switch (method)
           {
-            // Coupling cases
             case Parameters<dim>::AdvectionFieldMethod::fem_field:
-              coupling[x.compositional_fields[c]][x.compositional_fields[c]]
-                = DoFTools::always;
+              coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::always;
               break;
-            // Non-coupling cases
+
             case Parameters<dim>::AdvectionFieldMethod::particles:
-              coupling[x.compositional_fields[c]][x.compositional_fields[c]]
-                = DoFTools::none;
+              coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::none;
               break;
+
+            case Parameters<dim>::AdvectionFieldMethod::static_field:
+              coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::none;
+              break;
+
             default:
               Assert(false,ExcNotImplemented());
           }
@@ -1251,16 +1255,18 @@ namespace aspect
                 const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
                 switch (method)
                   {
-                    // Coupling cases
                     case Parameters<dim>::AdvectionFieldMethod::fem_field:
-                      face_coupling[x.compositional_fields[c]][x.compositional_fields[c]]
-                        = DoFTools::always;
+                      face_coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::always;
                       break;
-                    // Non-coupling cases
+
                     case Parameters<dim>::AdvectionFieldMethod::particles:
-                      face_coupling[x.compositional_fields[c]][x.compositional_fields[c]]
-                        = DoFTools::none;
+                      face_coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::none;
                       break;
+
+                    case Parameters<dim>::AdvectionFieldMethod::static_field:
+                      face_coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::none;
+                      break;
+
                     default:
                       Assert(false,ExcNotImplemented());
                   }

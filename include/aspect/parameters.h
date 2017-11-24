@@ -104,7 +104,8 @@ namespace aspect
       enum Kind
       {
         fem_field,
-        particles
+        particles,
+        static_field
       };
     };
 
