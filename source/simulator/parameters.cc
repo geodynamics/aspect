@@ -963,7 +963,32 @@ namespace aspect
                          "A comma separated list denoting the solution method of each "
                          "compositional field. Each entry of the list must be "
                          "one of the currently implemented field types: "
-                         "``field'', ``particles'', or ``static''.");
+                         "``field'', ``particles'', or ``static''."
+                         "\n\n"
+                         "These choices correspond to the following methods by which "
+                         "compositional fields gain their values:"
+                         "\\begin{itemize}"
+                         "\\item ``field'': If a compositional field is marked with this "
+                         "method, then its values are computed in each time step by "
+                         "advecting along the values of the previous time step using the "
+                         "velocity field, and applying reaction rates to it. In other words, "
+                         "this corresponds to the usual notion of a composition field as "
+                         "mentioned in Section~\\ref{sec:compositional}. "
+                         "\n"
+                         "\\item ``particles'': If a compositional field is marked with "
+                         "this method, then its values are obtained in each time step "
+                         "by interpolating the corresponding properties from the "
+                         "particles located on each cell. The time evolution therefore "
+                         "happens because particles move along with the velocity field, "
+                         "and particle properties can react with each other as well. "
+                         "See Section~\\ref{sec:particles} for more information about "
+                         "how particles behave."
+                         "\n"
+                         "\\item ``static'': If a compositional field is marked "
+                         "this way, then it does not evolve at all. Its values are "
+                         "simply set to the initial conditions, and will then "
+                         "never change."
+                         "\\end{itemize}");
       prm.declare_entry ("Mapped particle properties", "",
                          Patterns::Map (Patterns::Anything(),
                                         Patterns::Anything()),
