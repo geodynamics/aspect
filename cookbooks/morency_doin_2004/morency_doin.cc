@@ -184,27 +184,27 @@ namespace aspect
                              Patterns::List(Patterns::Double(0)),
                              "List of densities, $\\rho$, for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one values is given, then all use the same value.  Units: $kg / m^3$");
+                             "If only one value is given, then all use the same value.  Units: $kg / m^3$");
           prm.declare_entry ("Activation energies", "500",
                              Patterns::List(Patterns::Double(0)),
                              "List of activation energies, $E_a$, for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one values is given, then all use the same value.  Units: $kJ / mol$");
+                             "If only one value is given, then all use the same value.  Units: $kJ / mol$");
           prm.declare_entry ("Thermal expansivities", "3.5e-5",
                              Patterns::List(Patterns::Double(0)),
                              "List of thermal expansivities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one values is given, then all use the same value.  Units: $1 / K$");
+                             "If only one value is given, then all use the same value.  Units: $1 / K$");
           prm.declare_entry ("Stress exponents for viscous rheology", "3",
                              Patterns::List(Patterns::Double(0)),
                              "List of stress exponents, $n_v$, for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one values is given, then all use the same value.  Units: None");
+                             "If only one value is given, then all use the same value.  Units: None");
           prm.declare_entry ("Stress exponents for plastic rheology", "30",
                              Patterns::List(Patterns::Double(0)),
                              "List of stress exponents, $n_p$, for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one values is given, then all use the same value.  Units: None");
+                             "If only one value is given, then all use the same value.  Units: None");
           prm.declare_entry ("Thermal diffusivity", "0.8e-6", Patterns::Double(0), "Units: $m^2/s$");
           prm.declare_entry ("Heat capacity", "1.25e3", Patterns::Double(0), "Units: $J/kg/K$");
           prm.declare_entry ("Activation volume", "6.4e-6", Patterns::Double(0), "($V_a$). Units: $m^3 / mol$");
