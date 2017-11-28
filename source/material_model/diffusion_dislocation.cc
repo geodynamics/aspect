@@ -378,12 +378,12 @@ namespace aspect
                              Patterns::List(Patterns::Double(0)),
                              "List of densities, $\\rho$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: $kg / m^3$");
+                             "If only one value is given, then all use the same value.  Units: $kg / m^3$");
           prm.declare_entry ("Thermal expansivities", "3.5e-5",
                              Patterns::List(Patterns::Double(0)),
                              "List of thermal expansivities for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: $1 / K$");
+                             "If only one value is given, then all use the same value.  Units: $1 / K$");
 
           // Rheological parameters
           prm.declare_entry ("Grain size", "1e-3", Patterns::Double(0), "Units: $m$");
@@ -398,23 +398,23 @@ namespace aspect
                              Patterns::List(Patterns::Double(0)),
                              "List of viscosity prefactors, $A$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value. "
+                             "If only one value is given, then all use the same value. "
                              "Units: $Pa^{-n_{diffusion}} m^{n_{diffusion}/m_{diffusion}} s^{-1}$");
           prm.declare_entry ("Stress exponents for diffusion creep", "1",
                              Patterns::List(Patterns::Double(0)),
                              "List of stress exponents, $n_{diffusion}$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: None");
+                             "If only one value is given, then all use the same value.  Units: None");
           prm.declare_entry ("Grain size exponents for diffusion creep", "3",
                              Patterns::List(Patterns::Double(0)),
                              "List of grain size exponents, $m_{diffusion}$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: None");
+                             "If only one value is given, then all use the same value.  Units: None");
           prm.declare_entry ("Activation energies for diffusion creep", "375e3",
                              Patterns::List(Patterns::Double(0)),
                              "List of activation energies, $E_a$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: $J / mol$");
+                             "If only one value is given, then all use the same value.  Units: $J / mol$");
           prm.declare_entry ("Activation volumes for diffusion creep", "6e-6",
                              Patterns::List(Patterns::Double(0)),
                              "List of activation volumes, $V_a$, for background mantle and compositional fields, "
@@ -426,18 +426,18 @@ namespace aspect
                              Patterns::List(Patterns::Double(0)),
                              "List of viscosity prefactors, $A$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value. "
+                             "If only one value is given, then all use the same value. "
                              "Units: $Pa^{-n_{dislocation}} m^{n_{dislocation}/m_{dislocation}} s^{-1}$");
           prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
                              Patterns::List(Patterns::Double(0)),
                              "List of stress exponents, $n_{dislocation}$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: None");
+                             "If only one value is given, then all use the same value.  Units: None");
           prm.declare_entry ("Activation energies for dislocation creep", "530e3",
                              Patterns::List(Patterns::Double(0)),
                              "List of activation energies, $E_a$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: $J / mol$");
+                             "If only one value is given, then all use the same value.  Units: $J / mol$");
           prm.declare_entry ("Activation volumes for dislocation creep", "1.4e-5",
                              Patterns::List(Patterns::Double(0)),
                              "List of activation volumes, $V_a$, for background mantle and compositional fields, "
