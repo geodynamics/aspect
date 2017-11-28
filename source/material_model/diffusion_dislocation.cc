@@ -402,12 +402,12 @@ namespace aspect
                              "Units: $Pa^{-n_{diffusion}} m^{n_{diffusion}/m_{diffusion}} s^{-1}$");
           prm.declare_entry ("Stress exponents for diffusion creep", "1",
                              Patterns::List(Patterns::Double(0)),
-                             "List of stress exponents, $n_diffusion$, for background mantle and compositional fields, "
+                             "List of stress exponents, $n_{diffusion}$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one values is given, then all use the same value.  Units: None");
           prm.declare_entry ("Grain size exponents for diffusion creep", "3",
                              Patterns::List(Patterns::Double(0)),
-                             "List of grain size exponents, $m_diffusion$, for background mantle and compositional fields, "
+                             "List of grain size exponents, $m_{diffusion}$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one values is given, then all use the same value.  Units: None");
           prm.declare_entry ("Activation energies for diffusion creep", "375e3",
@@ -430,7 +430,7 @@ namespace aspect
                              "Units: $Pa^{-n_{dislocation}} m^{n_{dislocation}/m_{dislocation}} s^{-1}$");
           prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
                              Patterns::List(Patterns::Double(0)),
-                             "List of stress exponents, $n_dislocation$, for background mantle and compositional fields, "
+                             "List of stress exponents, $n_{dislocation}$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one values is given, then all use the same value.  Units: None");
           prm.declare_entry ("Activation energies for dislocation creep", "530e3",
