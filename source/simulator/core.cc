@@ -193,6 +193,7 @@ namespace aspect
     time_step (0),
     old_time_step (0),
     timestep_number (0),
+    nonlinear_iteration (numbers::invalid_unsigned_int),
 
     triangulation (mpi_communicator,
                    typename Triangulation<dim>::MeshSmoothing
