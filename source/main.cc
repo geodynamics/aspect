@@ -441,11 +441,6 @@ int main (int argc, char *argv[])
 {
   using namespace dealii;
 
-  // disable the use of thread. if that is not what you want,
-  // use numbers::invalid_unsigned_int instead of 1 to use as many threads
-  // as deemed useful by TBB
-  Utilities::MPI::MPI_InitFinalize mpi_initialization(argc, argv, /*n_threads =*/ 1);
-
 #ifdef DEBUG
 #ifdef ASPECT_USE_FP_EXCEPTIONS
   // Some implementations seem to not initialize the floating point exception
@@ -459,6 +454,16 @@ int main (int argc, char *argv[])
 
   try
     {
+      // Disable the use of threads. If that is not what you want,
+      // use numbers::invalid_unsigned_int instead of 1 to use as many threads
+      // as deemed useful by TBB.
+      //
+      // Note: we initialize this class inside the try/catch block and not
+      // before, so that the destructor of this instance can react if we are
+      // currently unwinding the stack if an unhandled exception is being
+      // thrown to avoid MPI deadlocks.
+      Utilities::MPI::MPI_InitFinalize mpi_initialization(argc, argv, /*n_threads =*/ 1);
+
       deallog.depth_console(0);
 
       int current_idx = 1;
@@ -712,7 +717,6 @@ int main (int argc, char *argv[])
                 << "Aborting!" << std::endl
                 << "----------------------------------------------------"
                 << std::endl;
-
       return 1;
     }
   catch (std::exception &exc)
@@ -727,7 +731,6 @@ int main (int argc, char *argv[])
                 << "Aborting!" << std::endl
                 << "----------------------------------------------------"
                 << std::endl;
-
       return 1;
     }
   catch (aspect::QuietException &)

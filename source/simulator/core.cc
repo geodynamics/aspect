@@ -686,6 +686,19 @@ namespace aspect
     // wait if there is a thread that's still writing the statistics
     // object (set from the output_statistics() function)
     output_statistics_thread.join();
+
+    // Detect if we are being destroyed because an uncaught exception has
+    // been triggered. If so, reset() the TimerOutput class. This will clear
+    // the currently active timing sections. Otherwise, its destructor will try to
+    // do MPI communication when leaving the open sections, which can cause one of the
+    // following problems:
+    // 1. deadlocks or hangs in the MPI commands synchronizing the timers.
+    // 2. Incorrect error reporting about mismatched Trilinos compress() calls.
+    //
+    // In either case this might not show the real message of the exception
+    // that was being triggered.
+    if (std::uncaught_exception())
+      computing_timer.reset();
   }
 
 
