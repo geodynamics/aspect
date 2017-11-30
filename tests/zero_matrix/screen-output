@@ -28,6 +28,7 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
      RMS, max velocity:        0.0102 m/year, 0.0103 m/year
 
 *** Timestep 1:  t=48350 years
+ERROR: Uncaught exception in MPI_InitFinalize on proc 0. Skipping MPI_Finalize() to avoid a deadlock.
 
 
 Exception 'ExcMessage ("The " + field_name + " equation can not be solved, because the matrix is zero, " "but the right-hand side is nonzero.")' on rank 0 on processing: 
