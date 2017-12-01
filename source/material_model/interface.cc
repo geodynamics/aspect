@@ -32,6 +32,12 @@
 
 #include <list>
 
+#ifdef DEBUG
+#ifdef ASPECT_USE_FP_EXCEPTIONS
+#include <fenv.h>
+#endif
+#endif
+
 
 namespace aspect
 {
@@ -392,6 +398,85 @@ namespace aspect
       entropy_derivative_temperature(n_points, numbers::signaling_nan<double>()),
       reaction_terms(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>()))
     {}
+
+    namespace internal
+    {
+      template <int dim>
+      void check(const std::vector<double> &quantity,
+                 const char *name,
+                 const unsigned int n_points)
+      {
+        Assert(quantity.size() == n_points,
+               ExcMessage("Quantity '"+std::string(name)+"' has an incorrect size!"));
+        for (unsigned int i=0; i<n_points; ++i)
+          Assert(!std::isnan(quantity[i]),
+                 ExcMessage("NaN in '"+std::string(name)+"' discovered."));
+      }
+
+      template <int dim>
+      void check(const std::vector<SymmetricTensor<4,dim> > &quantity,
+                 const char *name,
+                 const unsigned int n_points)
+      {
+        Assert(quantity.size() == n_points,
+               ExcMessage("Quantity '"+std::string(name)+"' has an incorrect size!"));
+        for (unsigned int i=0; i<n_points; ++i)
+          Assert(!std::isnan(quantity[i].norm()),
+                 ExcMessage("NaN in '"+std::string(name)+"' discovered."));
+      }
+
+      template <int dim>
+      void check(const std::vector<std::vector<double> > &quantity,
+                 const char *name,
+                 const unsigned int n_points,
+                 const unsigned int n_components)
+      {
+        Assert(quantity.size() == n_points,
+               ExcMessage("Quantity '"+std::string(name)+"' has an incorrect size!"));
+        for (unsigned int i=0; i<n_points; ++i)
+          {
+            Assert(quantity[i].size()==n_components,
+                   ExcMessage("Quantity '"+std::string(name)+"' has an incorrect number of components!"));
+            for (unsigned int c=0; c<n_components; ++c)
+              Assert(!std::isnan(quantity[i][c]),
+                     ExcMessage("NaN in '"+std::string(name)+"' discovered."));
+          }
+      }
+    }
+
+    template <int dim>
+    void
+    MaterialModelOutputs<dim>::validate() const
+    {
+#ifdef DEBUG
+#ifdef ASPECT_USE_FP_EXCEPTIONS
+      // disable floating point exceptions so we can report nicer errors:
+      fedisableexcept(FE_DIVBYZERO|FE_INVALID);
+#endif
+#endif
+
+      const unsigned int n_points = viscosities.size();
+      Assert(n_points>0, ExcMessage("MaterialModelOutputs with 0 points?"));
+      const unsigned int n_components = reaction_terms[0].size();
+      internal::check<dim>(viscosities, "viscosities", n_points);
+      internal::check<dim>(stress_strain_directors, "stress_strain_directors", n_points);
+      internal::check<dim>(densities, "densities", n_points);
+      internal::check<dim>(thermal_expansion_coefficients, "thermal_expansion_coefficients", n_points);
+      internal::check<dim>(specific_heat, "specific_heat", n_points);
+      internal::check<dim>(thermal_conductivities, "thermal_conductivities", n_points);
+      internal::check<dim>(compressibilities, "compressibilities", n_points);
+      internal::check<dim>(entropy_derivative_pressure, "entropy_derivative_pressure", n_points);
+      internal::check<dim>(entropy_derivative_temperature, "entropy_derivative_temperature", n_points);
+      internal::check<dim>(reaction_terms, "reaction_terms", n_points, n_components);
+
+#ifdef DEBUG
+#ifdef ASPECT_USE_FP_EXCEPTIONS
+      // enable floating point exceptions again:
+      feenableexcept(FE_DIVBYZERO|FE_INVALID);
+#endif
+#endif
+
+    }
 
 
     namespace MaterialAveraging

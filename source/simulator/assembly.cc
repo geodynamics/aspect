@@ -822,6 +822,21 @@ namespace aspect
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
+
+#ifdef DEBUG
+    {
+      // Check that the user filled all entries inside the material model and
+      // hasn't messed with the size of the objects:
+      static bool first = true;
+      if (first)
+        {
+          first = false;
+          scratch.material_model_outputs.validate();
+        }
+    }
+#endif
+
+
     if (parameters.formulation_temperature_equation ==
         Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
       {
