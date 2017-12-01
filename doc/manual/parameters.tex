@@ -2952,10 +2952,14 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 
 
 
-{\it Description:} A comma separated list denoting the solution method of each compositional field. Each entry of the list must be one of the currently implemented field types: ``field'', or ``particles''.
+{\it Description:} A comma separated list denoting the solution method of each compositional field. Each entry of the list must be one of the currently implemented field types: ``field'', ``particles'', or ``static''.
+
+These choices correspond to the following methods by which compositional fields gain their values:\begin{itemize}\item ``field'': If a compositional field is marked with this method, then its values are computed in each time step by advecting along the values of the previous time step using the velocity field, and applying reaction rates to it. In other words, this corresponds to the usual notion of a composition field as mentioned in Section~\ref{sec:compositional}. 
+\item ``particles'': If a compositional field is marked with this method, then its values are obtained in each time step by interpolating the corresponding properties from the particles located on each cell. The time evolution therefore happens because particles move along with the velocity field, and particle properties can react with each other as well. See Section~\ref{sec:particles} for more information about how particles behave.
+\item ``static'': If a compositional field is marked this way, then it does not evolve at all. Its values are simply set to the initial conditions, and will then never change.\end{itemize}
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any one of field, particles]
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any one of field, particles, static]
 \item {\it Parameter name:} {\tt List of normalized fields}
 \phantomsection\label{parameters:Compositional fields/List of normalized fields}
 
@@ -3375,7 +3379,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Description:} Possible approximations for the density derivatives in the mass conservation equation. Note that this parameter is only evaluated if `Formulation' is set to `custom'. Other formulations ignore the value of this parameter.
 
 
-{\it Possible values:} Any one of incompressible, isothermal compression, reference density profile, implicit reference density profile, ask material model
+{\it Possible values:} Any one of incompressible, isothermal compression, hydrostatic compression, reference density profile, implicit reference density profile, ask material model
 \item {\it Parameter name:} {\tt Temperature equation}
 \phantomsection\label{parameters:Formulation/Temperature equation}
 
@@ -4306,7 +4310,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 {\it Description:} Select one of the following models:
 
-`ascii data': Implementation of a model in which the surface topography is derived from a file containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. The order of the data columns has to be `x', 'Topography [m]' in a 2d model and  `x', `y', 'Topography [m]' in a 3d model, which means that there has to be a single column containing the topography. Note that the data in the input file needs to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the data will still be handled as Cartesian, however the assumed grid changes. `x' will be replaced by the azimuth angle in radians  and `y' by the polar angle in radians measured positive from the north pole. The grid will be assumed to be a longitude-colatitude grid. Note that the order of spherical coordinates is `phi', `theta' and not `theta', `phi', since this allows for dimension independent expressions.
+`ascii data': Implementation of a model in which the surface topography is derived from a file containing data in ascii format. The following geometry models are currently supported: box, chunk, shperical shell. Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. The order of the data columns has to be `x', 'Topography [m]' in a 2d model and  `x', `y', 'Topography [m]' in a 3d model, which means that there has to be a single column containing the topography. Note that the data in the input file needs to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the data will still be handled as Cartesian, however the assumed grid changes. `x' will be replaced by the azimuth angle in radians  and `y' by the polar angle in radians measured positive from the north pole. The grid will be assumed to be a longitude-colatitude grid. Note that the order of spherical coordinates is `phi', `theta' and not `theta', `phi', since this allows for dimension independent expressions.
 
 `prm polygon': An initial topography model that defines the initial topography as constant inside each of a set of polygonal parts of the surface. The polygons, and their associated surface elevation, are defined in the `Geometry model/Initial topography/Prm polygon' section.
 
@@ -6694,12 +6698,6 @@ More averaging schemes are available in the averaging material model. This mater
 
 You can select one of the following models:
 
-`Morency and Doin': An implementation of the visco-plastic rheology described by Morency and Doin in \cite{MD04}. Compositional fields can each be assigned individual activation energies, reference densities, thermal expansivities, and stress exponents. The effective viscosity is defined as \[v_\text{eff} = \left(\frac{1}{v_\text{eff}^v}+\frac{1}{v_\text{eff}^p}\right)^{-1}\] where \[v_\text{eff}^v = B \left(\frac{\dot{\epsilon}}{\dot{\epsilon}_\text{ref}} \right)^{-1+1/n_v} exp\left(\frac{E_a +V_a \rho_m g z}{n_v R T}\right) \] \[v_\text{eff}^p = (\tau_0 + \gamma \rho_m g z) \left( \frac{\dot{\epsilon}^{-1+1/n_p}} {\dot{\epsilon}_\text{ref}^{1/n_p}} \right) \] where $B$ is a scaling constant; $\dot{\epsilon}$ is defined as the quadratic sum of the second invariant of the strain rate tensor and a minimum strain rate, $\dot{\epsilon}_0$; $\dot{\epsilon}_\text{ref}$ is a reference strain rate; $n_v$, and $n_p$ are stress exponents; $E_a$ is the activation energy; $V_a$ is the activation volume; $\rho_m$ is the mantle density; $R$ is the gas constant; $T$ is temperature; $\tau_0$ is the cohesive strength of rocks at the surface; $\gamma$ is a coefficient of yield stress increase with depth; and $z$ is depth. 
-
-\note{Morency and Doin define the second invariant of the strain rate in a nonstandard way (see \cite{MD04}. The formulation in the paper is given as $\epsilon_{II} = \sqrt{\frac{1}{2} (\epsilon_{11}^2 +\epsilon_{12}^2)}$ where $\epsilon$ is the strain rate tensor. For consistency, that is also the formulation implemented in this material model.}
-
-The value for the components of this formula and additional parameters are read from the parameter file in subsection 'Material model/Morency and Doin'.
-
 `Steinberger': This material model looks up the viscosity from the tables that correspond to the paper of Steinberger and Calderwood 2006 (``Models of large-scale viscous flow in the Earth's mantle with constraints from mineral physics and surface observations'', Geophys. J. Int., 167, 1461-1481, \url{http://dx.doi.org/10.1111/j.1365-246X.2006.03131.x}) and material data from a database generated by the thermodynamics code \texttt{Perplex}, see \url{http://www.perplex.ethz.ch/}. The default example data builds upon the thermodynamic database by Stixrude 2011 and assumes a pyrolitic composition by Ringwood 1988 but is easily replaceable by other data files. 
 
 `ascii reference profile': A material model that reads in a reference state for density, thermal expansivity, compressibility and specific heat from a text file. 
@@ -6826,7 +6824,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
  The value for the components of this formula and additional parameters are read from the parameter file in subsection  'Material model/Visco Plastic'.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \end{itemize}
 
 
@@ -7024,7 +7022,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} The name of a material model that will be modified by an averaging operation. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic
 \item {\it Parameter name:} {\tt Bell shape limit}
 \phantomsection\label{parameters:Material model/Averaging/Bell shape limit}
 
@@ -7062,7 +7060,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Compressibility. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \item {\it Parameter name:} {\tt Density}
 \phantomsection\label{parameters:Material model/Compositing/Density}
 
@@ -7078,7 +7076,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Density. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \item {\it Parameter name:} {\tt Entropy derivative pressure}
 \phantomsection\label{parameters:Material model/Compositing/Entropy derivative pressure}
 
@@ -7094,7 +7092,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Entropy derivative pressure. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \item {\it Parameter name:} {\tt Entropy derivative temperature}
 \phantomsection\label{parameters:Material model/Compositing/Entropy derivative temperature}
 
@@ -7110,7 +7108,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Entropy derivative temperature. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \item {\it Parameter name:} {\tt Reaction terms}
 \phantomsection\label{parameters:Material model/Compositing/Reaction terms}
 
@@ -7126,7 +7124,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Reaction terms. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \item {\it Parameter name:} {\tt Specific heat}
 \phantomsection\label{parameters:Material model/Compositing/Specific heat}
 
@@ -7142,7 +7140,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Specific heat. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \item {\it Parameter name:} {\tt Thermal conductivity}
 \phantomsection\label{parameters:Material model/Compositing/Thermal conductivity}
 
@@ -7158,7 +7156,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Thermal conductivity. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \item {\it Parameter name:} {\tt Thermal expansion coefficient}
 \phantomsection\label{parameters:Material model/Compositing/Thermal expansion coefficient}
 
@@ -7174,7 +7172,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Thermal expansion coefficient. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \item {\it Parameter name:} {\tt Viscosity}
 \phantomsection\label{parameters:Material model/Compositing/Viscosity}
 
@@ -7190,7 +7188,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Viscosity. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \end{itemize}
 
 \subsection{Parameters in section \tt Material model/Composition reaction model}
@@ -7410,7 +7408,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} The name of a material model that will be modified by a depth dependent viscosity. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Morency and Doin, Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic
 \item {\it Parameter name:} {\tt Data directory}
 \phantomsection\label{parameters:Material model/Depth dependent model/Data directory}
 
@@ -7564,7 +7562,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 375e3
 
 
-{\it Description:} List of activation energies, $E_a$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value.  Units: $J / mol$
+{\it Description:} List of activation energies, $E_a$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: $J / mol$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -7580,7 +7578,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 530e3
 
 
-{\it Description:} List of activation energies, $E_a$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value.  Units: $J / mol$
+{\it Description:} List of activation energies, $E_a$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: $J / mol$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -7628,7 +7626,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3300.
 
 
-{\it Description:} List of densities, $\rho$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value.  Units: $kg / m^3$
+{\it Description:} List of densities, $\rho$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: $kg / m^3$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -7676,7 +7674,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3
 
 
-{\it Description:} List of grain size exponents, $m_diffusion$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value.  Units: None
+{\it Description:} List of grain size exponents, $m_\text{diffusion}$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -7772,7 +7770,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.5e-15
 
 
-{\it Description:} List of viscosity prefactors, $A$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value. Units: $Pa^{-n_{diffusion}} m^{n_{diffusion}/m_{diffusion}} s^{-1}$
+{\it Description:} List of viscosity prefactors, $A$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $Pa^{-n_\text{diffusion}} m^{n_\text{diffusion}/m_\text{diffusion}} s^{-1}$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -7788,7 +7786,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.1e-16
 
 
-{\it Description:} List of viscosity prefactors, $A$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value. Units: $Pa^{-n_{dislocation}} m^{n_{dislocation}/m_{dislocation}} s^{-1}$
+{\it Description:} List of viscosity prefactors, $A$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $Pa^{-n_\text{dislocation}} m^{n_\text{dislocation}/m_\text{dislocation}} s^{-1}$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -7852,7 +7850,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1
 
 
-{\it Description:} List of stress exponents, $n_diffusion$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value.  Units: None
+{\it Description:} List of stress exponents, $n_\text{diffusion}$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -7868,7 +7866,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3.5
 
 
-{\it Description:} List of stress exponents, $n_dislocation$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value.  Units: None
+{\it Description:} List of stress exponents, $n_\text{dislocation}$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -7900,7 +7898,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3.5e-5
 
 
-{\it Description:} List of thermal expansivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value.  Units: $1 / K$
+{\it Description:} List of thermal expansivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: $1 / K$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10150,252 +10148,6 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \end{itemize}
 
-\subsection{Parameters in section \tt Material model/Morency and Doin}
-\label{parameters:Material_20model/Morency_20and_20Doin}
-
-\begin{itemize}
-\item {\it Parameter name:} {\tt Activation energies}
-\phantomsection\label{parameters:Material model/Morency and Doin/Activation energies}
-
-
-\index[prmindex]{Activation energies}
-\index[prmindexfull]{Material model!Morency and Doin!Activation energies}
-{\it Value:} 500
-
-
-{\it Default:} 500
-
-
-{\it Description:} List of activation energies, $E_a$, for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one values is given, then all use the same value.  Units: $kJ / mol$
-
-
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
-\item {\it Parameter name:} {\tt Activation volume}
-\phantomsection\label{parameters:Material model/Morency and Doin/Activation volume}
-
-
-\index[prmindex]{Activation volume}
-\index[prmindexfull]{Material model!Morency and Doin!Activation volume}
-{\it Value:} 6.4e-6
-
-
-{\it Default:} 6.4e-6
-
-
-{\it Description:} ($V_a$). Units: $m^3 / mol$
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Coefficient of yield stress increase with depth}
-\phantomsection\label{parameters:Material model/Morency and Doin/Coefficient of yield stress increase with depth}
-
-
-\index[prmindex]{Coefficient of yield stress increase with depth}
-\index[prmindexfull]{Material model!Morency and Doin!Coefficient of yield stress increase with depth}
-{\it Value:} 0.25
-
-
-{\it Default:} 0.25
-
-
-{\it Description:} ($\gamma$). Units: None
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Cohesive strength of rocks at the surface}
-\phantomsection\label{parameters:Material model/Morency and Doin/Cohesive strength of rocks at the surface}
-
-
-\index[prmindex]{Cohesive strength of rocks at the surface}
-\index[prmindexfull]{Material model!Morency and Doin!Cohesive strength of rocks at the surface}
-{\it Value:} 117
-
-
-{\it Default:} 117
-
-
-{\it Description:} ($\tau_0$). Units: $Pa$
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Densities}
-\phantomsection\label{parameters:Material model/Morency and Doin/Densities}
-
-
-\index[prmindex]{Densities}
-\index[prmindexfull]{Material model!Morency and Doin!Densities}
-{\it Value:} 3300.
-
-
-{\it Default:} 3300.
-
-
-{\it Description:} List of densities, $\rho$, for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one values is given, then all use the same value.  Units: $kg / m^3$
-
-
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
-\item {\it Parameter name:} {\tt Heat capacity}
-\phantomsection\label{parameters:Material model/Morency and Doin/Heat capacity}
-
-
-\index[prmindex]{Heat capacity}
-\index[prmindexfull]{Material model!Morency and Doin!Heat capacity}
-{\it Value:} 1.25e3
-
-
-{\it Default:} 1.25e3
-
-
-{\it Description:} Units: $J/kg/K$
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Minimum strain rate}
-\phantomsection\label{parameters:Material model/Morency and Doin/Minimum strain rate}
-
-
-\index[prmindex]{Minimum strain rate}
-\index[prmindexfull]{Material model!Morency and Doin!Minimum strain rate}
-{\it Value:} 1.4e-20
-
-
-{\it Default:} 1.4e-20
-
-
-{\it Description:} Stabilizes strain dependent viscosity. Units: $1 / s$
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Preexponential constant for viscous rheology law}
-\phantomsection\label{parameters:Material model/Morency and Doin/Preexponential constant for viscous rheology law}
-
-
-\index[prmindex]{Preexponential constant for viscous rheology law}
-\index[prmindexfull]{Material model!Morency and Doin!Preexponential constant for viscous rheology law}
-{\it Value:} 1.24e14
-
-
-{\it Default:} 1.24e14
-
-
-{\it Description:} ($B$). Units: None
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Reference strain rate}
-\phantomsection\label{parameters:Material model/Morency and Doin/Reference strain rate}
-
-
-\index[prmindex]{Reference strain rate}
-\index[prmindexfull]{Material model!Morency and Doin!Reference strain rate}
-{\it Value:} 6.4e-16
-
-
-{\it Default:} 6.4e-16
-
-
-{\it Description:} ($\dot{\epsilon}_\text{ref}$). Units: $1 / s$
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Reference temperature}
-\phantomsection\label{parameters:Material model/Morency and Doin/Reference temperature}
-
-
-\index[prmindex]{Reference temperature}
-\index[prmindexfull]{Material model!Morency and Doin!Reference temperature}
-{\it Value:} 293
-
-
-{\it Default:} 293
-
-
-{\it Description:} For calculating density by thermal expansivity. Units: $K$
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Reference viscosity}
-\phantomsection\label{parameters:Material model/Morency and Doin/Reference viscosity}
-
-
-\index[prmindex]{Reference viscosity}
-\index[prmindexfull]{Material model!Morency and Doin!Reference viscosity}
-{\it Value:} 1e22
-
-
-{\it Default:} 1e22
-
-
-{\it Description:} Reference viscosity for nondimensionalization.
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Stress exponents for plastic rheology}
-\phantomsection\label{parameters:Material model/Morency and Doin/Stress exponents for plastic rheology}
-
-
-\index[prmindex]{Stress exponents for plastic rheology}
-\index[prmindexfull]{Material model!Morency and Doin!Stress exponents for plastic rheology}
-{\it Value:} 30
-
-
-{\it Default:} 30
-
-
-{\it Description:} List of stress exponents, $n_p$, for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one values is given, then all use the same value.  Units: None
-
-
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
-\item {\it Parameter name:} {\tt Stress exponents for viscous rheology}
-\phantomsection\label{parameters:Material model/Morency and Doin/Stress exponents for viscous rheology}
-
-
-\index[prmindex]{Stress exponents for viscous rheology}
-\index[prmindexfull]{Material model!Morency and Doin!Stress exponents for viscous rheology}
-{\it Value:} 3
-
-
-{\it Default:} 3
-
-
-{\it Description:} List of stress exponents, $n_v$, for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one values is given, then all use the same value.  Units: None
-
-
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
-\item {\it Parameter name:} {\tt Thermal diffusivity}
-\phantomsection\label{parameters:Material model/Morency and Doin/Thermal diffusivity}
-
-
-\index[prmindex]{Thermal diffusivity}
-\index[prmindexfull]{Material model!Morency and Doin!Thermal diffusivity}
-{\it Value:} 0.8e-6
-
-
-{\it Default:} 0.8e-6
-
-
-{\it Description:} Units: $m^2/s$
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Thermal expansivities}
-\phantomsection\label{parameters:Material model/Morency and Doin/Thermal expansivities}
-
-
-\index[prmindex]{Thermal expansivities}
-\index[prmindexfull]{Material model!Morency and Doin!Thermal expansivities}
-{\it Value:} 3.5e-5
-
-
-{\it Default:} 3.5e-5
-
-
-{\it Description:} List of thermal expansivities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one values is given, then all use the same value.  Units: $1 / K$
-
-
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
-\end{itemize}
-
 \subsection{Parameters in section \tt Material model/Multicomponent}
 \label{parameters:Material_20model/Multicomponent}
 
@@ -11440,7 +11192,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3
 
 
-{\it Description:} List of grain size exponents, $m_diffusion$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+{\it Description:} List of grain size exponents, $m_\text{diffusion}$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -11520,7 +11272,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.5e-15
 
 
-{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $Pa^{-n_{diffusion}} m^{n_{diffusion}/m_{diffusion}} s^{-1}$
+{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $Pa^{-n_\text{diffusion}} m^{n_\text{diffusion}/m_\text{diffusion}} s^{-1}$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -11536,7 +11288,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.1e-16
 
 
-{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $Pa^{-n_{dislocation}} m^{n_{dislocation}/m_{dislocation}} s^{-1}$
+{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $Pa^{-n_\text{dislocation}} m^{n_\text{dislocation}/m_\text{dislocation}} s^{-1}$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -11616,7 +11368,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1
 
 
-{\it Description:} List of stress exponents, $n_diffusion$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+{\it Description:} List of stress exponents, $n_\text{diffusion}$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -11632,7 +11384,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3.5
 
 
-{\it Description:} List of stress exponents, $n_dislocation$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+{\it Description:} List of stress exponents, $n_\text{dislocation}$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -12751,7 +12503,8 @@ In the output file, data is organized as (i) time, (ii) the 2 or 3 coordinates o
 
 `temperature statistics': A postprocessor that computes some statistics about the temperature field.
 
-`topography': A postprocessor intended for use with a free surface.  After every step, it loops over all the vertices on the top surface and determines the maximum and minimum topography relative to a reference datum (initial box height for a box geometry model or initial radius for a sphere/spherical shell geometry model).  Outputs topography in meters
+`topography': A postprocessor intended for use with a free surface.  After every step it loops over all the vertices on the top surface and determines the maximum and minimum topography relative to a reference datum (initial box height for a box geometry model or initial radius for a sphere/spherical shell geometry model). If 'Topography.Output to file' is set to true, also outputs topography into text files named `topography.NNNNN' in the output directory, where NNNNN is the number of the time step.
+The file format then consists of lines with Euclidean coordinates followed by the corresponding topography value.Topography is printed/written in meters.
 
 `velocity boundary statistics': A postprocessor that computes some statistics about the velocity along the boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the min and max velocity magnitude is computed.
 
@@ -13596,6 +13349,38 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Random cell selection}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Probability density function/Random cell selection}
+
+
+\index[prmindex]{Random cell selection}
+\index[prmindexfull]{Postprocess!Particles!Generator/Probability density function/Random cell selection}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} If true, particle numbers per cell are calculated randomly according to their respective probability density. This means particle numbers per cell can deviate statistically from the integral of the probability density. If false, first determine how many particles each cell should have based on the integral of the density over each of the cells, and then once we know how many particles we want on each cell, choose their locations randomly within each cell.
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Random number seed}
+\phantomsection\label{parameters:Postprocess/Particles/Generator/Probability density function/Random number seed}
+
+
+\index[prmindex]{Random number seed}
+\index[prmindexfull]{Postprocess!Particles!Generator/Probability density function/Random number seed}
+{\it Value:} 5432
+
+
+{\it Default:} 5432
+
+
+{\it Description:} The seed for the random number generator that controls the particle generation. Keep constant to generate identical particle distributions in subsequent model runs. Change to get a different distribution. In parallel computations the seed is further modified on each process to ensure different particle patterns on different processes.
+
+
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Variable names}
 \phantomsection\label{parameters:Postprocess/Particles/Generator/Probability density function/Variable names}
 
@@ -13982,6 +13767,44 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements separated by <;> where each element is [A list of 2 to 2 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]]
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Topography}
+\label{parameters:Postprocess/Topography}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Output to file}
+\phantomsection\label{parameters:Postprocess/Topography/Output to file}
+
+
+\index[prmindex]{Output to file}
+\index[prmindexfull]{Postprocess!Topography!Output to file}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether or not to write topography to a text file named named 'topography.NNNNN' in the output directory
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A boolean value (true or false)]
+\item {\it Parameter name:} {\tt Time between text output}
+\phantomsection\label{parameters:Postprocess/Topography/Time between text output}
+
+
+\index[prmindex]{Time between text output}
+\index[prmindexfull]{Postprocess!Topography!Time between text output}
+{\it Value:} 0.
+
+
+{\it Default:} 0.
+
+
+{\it Description:} The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Visualization}
@@ -14796,6 +14619,180 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\end{itemize}
+
+\subsection{Parameters in section \tt Prescribed Stokes solution/Compaction pressure function}
+\label{parameters:Prescribed_20Stokes_20solution/Compaction_20pressure_20function}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Function constants}
+\phantomsection\label{parameters:Prescribed Stokes solution/Compaction pressure function/Function constants}
+
+
+\index[prmindex]{Function constants}
+\index[prmindexfull]{Prescribed Stokes solution!Compaction pressure function!Function constants}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Function expression}
+\phantomsection\label{parameters:Prescribed Stokes solution/Compaction pressure function/Function expression}
+
+
+\index[prmindex]{Function expression}
+\index[prmindexfull]{Prescribed Stokes solution!Compaction pressure function!Function expression}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Variable names}
+\phantomsection\label{parameters:Prescribed Stokes solution/Compaction pressure function/Variable names}
+
+
+\index[prmindex]{Variable names}
+\index[prmindexfull]{Prescribed Stokes solution!Compaction pressure function!Variable names}
+{\it Value:} x,y,t
+
+
+{\it Default:} x,y,t
+
+
+{\it Description:} The name of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated is `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+
+
+{\it Possible values:} Any string
+\end{itemize}
+
+\subsection{Parameters in section \tt Prescribed Stokes solution/Fluid pressure function}
+\label{parameters:Prescribed_20Stokes_20solution/Fluid_20pressure_20function}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Function constants}
+\phantomsection\label{parameters:Prescribed Stokes solution/Fluid pressure function/Function constants}
+
+
+\index[prmindex]{Function constants}
+\index[prmindexfull]{Prescribed Stokes solution!Fluid pressure function!Function constants}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Function expression}
+\phantomsection\label{parameters:Prescribed Stokes solution/Fluid pressure function/Function expression}
+
+
+\index[prmindex]{Function expression}
+\index[prmindexfull]{Prescribed Stokes solution!Fluid pressure function!Function expression}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Variable names}
+\phantomsection\label{parameters:Prescribed Stokes solution/Fluid pressure function/Variable names}
+
+
+\index[prmindex]{Variable names}
+\index[prmindexfull]{Prescribed Stokes solution!Fluid pressure function!Variable names}
+{\it Value:} x,y,t
+
+
+{\it Default:} x,y,t
+
+
+{\it Description:} The name of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated is `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+
+
+{\it Possible values:} Any string
+\end{itemize}
+
+\subsection{Parameters in section \tt Prescribed Stokes solution/Fluid velocity function}
+\label{parameters:Prescribed_20Stokes_20solution/Fluid_20velocity_20function}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Function constants}
+\phantomsection\label{parameters:Prescribed Stokes solution/Fluid velocity function/Function constants}
+
+
+\index[prmindex]{Function constants}
+\index[prmindexfull]{Prescribed Stokes solution!Fluid velocity function!Function constants}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Function expression}
+\phantomsection\label{parameters:Prescribed Stokes solution/Fluid velocity function/Function expression}
+
+
+\index[prmindex]{Function expression}
+\index[prmindexfull]{Prescribed Stokes solution!Fluid velocity function!Function expression}
+{\it Value:} 0; 0
+
+
+{\it Default:} 0; 0
+
+
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Variable names}
+\phantomsection\label{parameters:Prescribed Stokes solution/Fluid velocity function/Variable names}
+
+
+\index[prmindex]{Variable names}
+\index[prmindexfull]{Prescribed Stokes solution!Fluid velocity function!Variable names}
+{\it Value:} x,y,t
+
+
+{\it Default:} x,y,t
+
+
+{\it Description:} The name of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated is `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+
+
+{\it Possible values:} Any string
 \end{itemize}
 
 \subsection{Parameters in section \tt Prescribed Stokes solution/Pressure function}
