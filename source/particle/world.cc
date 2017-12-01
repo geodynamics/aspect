@@ -726,7 +726,8 @@ namespace aspect
       aspect::oarchive oa (os);
       oa << (*this);
 #if !DEAL_II_VERSION_GTE(9,0,0)
-      output->save(os);
+      if (output)
+        output->save(os);
 #endif
     }
 
@@ -737,7 +738,8 @@ namespace aspect
       aspect::iarchive ia (is);
       ia >> (*this);
 #if !DEAL_II_VERSION_GTE(9,0,0)
-      output->load(is);
+      if (output)
+        output->load(is);
 #endif
     }
 
