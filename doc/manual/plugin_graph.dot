@@ -256,9 +256,6 @@ SimulatorAccess -> N6aspect18InitialTemperature30SphericalHexagonalPerturbationI
 N6aspect18InitialTemperature9InterfaceILi2EEE -> Simulator [len=15, weight=50];
 
 N6aspect13MaterialModel9InterfaceILi2EEE [label="Material model interface", height=.8,width=.8,shape="rect",fillcolor="green"]
-N6aspect13MaterialModel11MorencyDoinILi2EEE [label="Morency and\nDoin", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
-N6aspect13MaterialModel11MorencyDoinILi2EEE -> N6aspect13MaterialModel9InterfaceILi2EEE [len=3, weight=50];
-SimulatorAccess -> N6aspect13MaterialModel11MorencyDoinILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect13MaterialModel11SteinbergerILi2EEE [label="Steinberger", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect13MaterialModel11SteinbergerILi2EEE -> N6aspect13MaterialModel9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect13MaterialModel11SteinbergerILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
@@ -675,6 +672,7 @@ N6aspect24PrescribedStokesSolution9AsciiDataILi2EEE -> N6aspect24PrescribedStoke
 SimulatorAccess -> N6aspect24PrescribedStokesSolution9AsciiDataILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect24PrescribedStokesSolution6CircleILi2EEE [label="circle", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect24PrescribedStokesSolution6CircleILi2EEE -> N6aspect24PrescribedStokesSolution9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect24PrescribedStokesSolution6CircleILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect24PrescribedStokesSolution8FunctionILi2EEE [label="function", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect24PrescribedStokesSolution8FunctionILi2EEE -> N6aspect24PrescribedStokesSolution9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect24PrescribedStokesSolution8FunctionILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
