@@ -11,6 +11,7 @@ set End time                               = 0
 set Pressure normalization                 = volume
 set Nonlinear solver scheme                = Stokes only
 
+set Use years in output instead of seconds = false
 
 ############### Parameters describing the model
 

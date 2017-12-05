@@ -17,6 +17,8 @@
 /benchmarks/**/cmake_install.cmake
 /benchmarks/**/lib*.so
 /benchmarks/**/output/
+/benchmarks/**/aspect
+/benchmarks/**/temp.prm
 /benchmarks/tangurnis/*/*csv
 /benchmarks/tangurnis/*/solution*
 /build*/
