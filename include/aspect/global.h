@@ -46,8 +46,6 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 #include <aspect/compat.h>
 
-#include <cstring>
-
 namespace aspect
 {
   /**

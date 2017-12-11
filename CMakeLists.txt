@@ -25,7 +25,7 @@ MESSAGE(STATUS "====================================================")
 SET(TARGET "aspect")
 
 FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "include/*.h")
-INCLUDE_DIRECTORIES(include)
+INCLUDE_DIRECTORIES(include ${CMAKE_BINARY_DIR}/include)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
 
@@ -99,8 +99,12 @@ FOREACH(_source_file ${TARGET_SRC})
 ENDFOREACH()
 
 
+
 # load in version info and export it
 FILE(STRINGS "${CMAKE_SOURCE_DIR}/VERSION" ASPECT_PACKAGE_VERSION LIMIT_COUNT 1)
+
+DEAL_II_QUERY_GIT_INFORMATION("ASPECT")
+CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/include/aspect/revision.h.in ${CMAKE_BINARY_DIR}/include/aspect/revision.h @ONLY)
 
 INCLUDE(CMakePackageConfigHelpers)
 WRITE_BASIC_PACKAGE_VERSION_FILE(

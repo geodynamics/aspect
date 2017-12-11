@@ -20,9 +20,12 @@
 
 
 #include <aspect/global.h>
+#include <aspect/revision.h>
 
 #include <deal.II/base/multithread_info.h>
 #include <deal.II/base/revision.h>
+
+#include <cstring>
 
 namespace aspect
 {
@@ -114,39 +117,47 @@ void print_aspect_header(Stream &stream)
 
   stream << "-----------------------------------------------------------------------------\n"
          << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
-         << "--     . version 2.0.0-pre\n" //VERSION-INFO. Do not edit by hand.
-#ifdef DEBUG
-         << "--     . running in DEBUG mode\n"
-#else
-         << "--     . running in OPTIMIZED mode\n"
-#endif
-         << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
-  const int n_threads =
-    dealii::MultithreadInfo::n_threads();
-  if (n_threads>1)
-    stream << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
+         << "--     . version " << ASPECT_PACKAGE_VERSION;
+  if (strcmp(ASPECT_GIT_SHORTREV,"") != 0)
+    stream << " (git revision " << ASPECT_GIT_SHORTREV << ")\n";
+  else
+    stream << "\n";
 
-  stream << "--     . using deal.II version " << DEAL_II_PACKAGE_VERSION;
+  stream << "--     . using deal.II " << DEAL_II_PACKAGE_VERSION;
   if (strcmp(DEAL_II_GIT_SHORTREV,"") != 0)
     stream << " (git revision " << DEAL_II_GIT_SHORTREV << ")\n";
   else
     stream << "\n";
 
 #ifdef ASPECT_USE_PETSC
-  stream << "--     . using PETSc version "
+  stream << "--     . using PETSc "
          << PETSC_VERSION_MAJOR    << '.'
          << PETSC_VERSION_MINOR    << '.'
          << PETSC_VERSION_SUBMINOR << '\n';
 #else
-  stream << "--     . using Trilinos version "
+  stream << "--     . using Trilinos "
          << DEAL_II_TRILINOS_VERSION_MAJOR    << '.'
          << DEAL_II_TRILINOS_VERSION_MINOR    << '.'
          << DEAL_II_TRILINOS_VERSION_SUBMINOR << '\n';
 #endif
-  stream << "--     . using p4est version "
+  stream << "--     . using p4est "
          << DEAL_II_P4EST_VERSION_MAJOR << '.'
          << DEAL_II_P4EST_VERSION_MINOR << '.'
          << DEAL_II_P4EST_VERSION_SUBMINOR << '\n';
+
+#ifdef DEBUG
+         stream << "--     . running in DEBUG mode\n"
+#else
+         stream << "--     . running in OPTIMIZED mode\n"
+#endif
+                << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
+
+  const int n_threads =
+    dealii::MultithreadInfo::n_threads();
+  if (n_threads>1)
+    stream << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
+
+
   stream << "-----------------------------------------------------------------------------\n"
          << std::endl;
 }
