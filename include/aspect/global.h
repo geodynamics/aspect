@@ -23,8 +23,6 @@
 #define _aspect_global_h
 
 #include <deal.II/base/mpi.h>
-#include <deal.II/base/multithread_info.h>
-#include <deal.II/base/revision.h>
 
 DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 
@@ -47,6 +45,8 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 
 #include <aspect/compat.h>
+
+#include <cstring>
 
 namespace aspect
 {
@@ -348,45 +348,7 @@ namespace aspect
  * running, with how many processes, and using which linear algebra library.
  */
 template <class Stream>
-void print_aspect_header(Stream &stream)
-{
-  const int n_tasks = dealii::Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
-
-  stream << "-----------------------------------------------------------------------------\n"
-         << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
-         << "--     . version 2.0.0-pre\n" //VERSION-INFO. Do not edit by hand.
-#ifdef DEBUG
-         << "--     . running in DEBUG mode\n"
-#else
-         << "--     . running in OPTIMIZED mode\n"
-#endif
-         << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
-  const int n_threads =
-    dealii::MultithreadInfo::n_threads();
-  if (n_threads>1)
-    stream << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
-
-  stream << "--     . using deal.II version " << DEAL_II_PACKAGE_VERSION << " (git revision "
-         << DEAL_II_GIT_SHORTREV << ")\n";
-#ifdef ASPECT_USE_PETSC
-  stream << "--     . using PETSc version "
-         << PETSC_VERSION_MAJOR    << '.'
-         << PETSC_VERSION_MINOR    << '.'
-         << PETSC_VERSION_SUBMINOR << '\n';
-#else
-  stream << "--     . using Trilinos version "
-         << DEAL_II_TRILINOS_VERSION_MAJOR    << '.'
-         << DEAL_II_TRILINOS_VERSION_MINOR    << '.'
-         << DEAL_II_TRILINOS_VERSION_SUBMINOR << '\n';
-#endif
-  stream << "--     . using p4est version "
-         << DEAL_II_P4EST_VERSION_MAJOR << '.'
-         << DEAL_II_P4EST_VERSION_MINOR << '.'
-         << DEAL_II_P4EST_VERSION_SUBMINOR << '\n';
-  stream << "-----------------------------------------------------------------------------\n"
-         << std::endl;
-}
-
+void print_aspect_header(Stream &stream);
 
 /**
  * A macro that is used in instantiating the ASPECT classes and functions for
