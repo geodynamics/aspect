@@ -146,11 +146,11 @@ void print_aspect_header(Stream &stream)
          << DEAL_II_P4EST_VERSION_SUBMINOR << '\n';
 
 #ifdef DEBUG
-         stream << "--     . running in DEBUG mode\n"
+  stream << "--     . running in DEBUG mode\n"
 #else
-         stream << "--     . running in OPTIMIZED mode\n"
+  stream << "--     . running in OPTIMIZED mode\n"
 #endif
-                << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
+         << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
 
   const int n_threads =
     dealii::MultithreadInfo::n_threads();
