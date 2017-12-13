@@ -119,13 +119,13 @@ void print_aspect_header(Stream &stream)
          << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
          << "--     . version " << ASPECT_PACKAGE_VERSION;
   if (strcmp(ASPECT_GIT_SHORTREV,"") != 0)
-    stream << " (git revision " << ASPECT_GIT_SHORTREV << ")\n";
+    stream << " (" << ASPECT_GIT_BRANCH << ", " << ASPECT_GIT_SHORTREV << ")\n";
   else
     stream << "\n";
 
   stream << "--     . using deal.II " << DEAL_II_PACKAGE_VERSION;
   if (strcmp(DEAL_II_GIT_SHORTREV,"") != 0)
-    stream << " (git revision " << DEAL_II_GIT_SHORTREV << ")\n";
+    stream << " (" << DEAL_II_GIT_BRANCH << ", " << DEAL_II_GIT_SHORTREV << ")\n";
   else
     stream << "\n";
 
