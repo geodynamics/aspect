@@ -20,6 +20,12 @@
 
 
 #include <aspect/global.h>
+#include <aspect/revision.h>
+
+#include <deal.II/base/multithread_info.h>
+#include <deal.II/base/revision.h>
+
+#include <cstring>
 
 namespace aspect
 {
@@ -101,3 +107,60 @@ namespace aspect
   }
 
 }
+
+
+
+template <class Stream>
+void print_aspect_header(Stream &stream)
+{
+  const int n_tasks = dealii::Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
+
+  stream << "-----------------------------------------------------------------------------\n"
+         << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
+         << "--     . version " << ASPECT_PACKAGE_VERSION;
+  if (strcmp(ASPECT_GIT_SHORTREV,"") != 0)
+    stream << " (" << ASPECT_GIT_BRANCH << ", " << ASPECT_GIT_SHORTREV << ")\n";
+  else
+    stream << "\n";
+
+  stream << "--     . using deal.II " << DEAL_II_PACKAGE_VERSION;
+  if (strcmp(DEAL_II_GIT_SHORTREV,"") != 0)
+    stream << " (" << DEAL_II_GIT_BRANCH << ", " << DEAL_II_GIT_SHORTREV << ")\n";
+  else
+    stream << "\n";
+
+#ifdef ASPECT_USE_PETSC
+  stream << "--     . using PETSc "
+         << PETSC_VERSION_MAJOR    << '.'
+         << PETSC_VERSION_MINOR    << '.'
+         << PETSC_VERSION_SUBMINOR << '\n';
+#else
+  stream << "--     . using Trilinos "
+         << DEAL_II_TRILINOS_VERSION_MAJOR    << '.'
+         << DEAL_II_TRILINOS_VERSION_MINOR    << '.'
+         << DEAL_II_TRILINOS_VERSION_SUBMINOR << '\n';
+#endif
+  stream << "--     . using p4est "
+         << DEAL_II_P4EST_VERSION_MAJOR << '.'
+         << DEAL_II_P4EST_VERSION_MINOR << '.'
+         << DEAL_II_P4EST_VERSION_SUBMINOR << '\n';
+
+#ifdef DEBUG
+  stream << "--     . running in DEBUG mode\n"
+#else
+  stream << "--     . running in OPTIMIZED mode\n"
+#endif
+         << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
+
+  const int n_threads =
+    dealii::MultithreadInfo::n_threads();
+  if (n_threads>1)
+    stream << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
+
+
+  stream << "-----------------------------------------------------------------------------\n"
+         << std::endl;
+}
+
+template void print_aspect_header<std::ostream> (std::ostream &stream);
+template void print_aspect_header<std::ofstream> (std::ofstream &stream);

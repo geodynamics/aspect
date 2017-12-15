@@ -23,7 +23,6 @@
 #define _aspect_global_h
 
 #include <deal.II/base/mpi.h>
-#include <deal.II/base/multithread_info.h>
 
 DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 
@@ -347,32 +346,7 @@ namespace aspect
  * running, with how many processes, and using which linear algebra library.
  */
 template <class Stream>
-void print_aspect_header(Stream &stream)
-{
-  const int n_tasks = dealii::Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
-
-  stream << "-----------------------------------------------------------------------------\n"
-         << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
-         << "--     . version 2.0.0-pre\n" //VERSION-INFO. Do not edit by hand.
-#ifdef DEBUG
-         << "--     . running in DEBUG mode\n"
-#else
-         << "--     . running in OPTIMIZED mode\n"
-#endif
-         << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
-  const int n_threads =
-    dealii::MultithreadInfo::n_threads();
-  if (n_threads>1)
-    stream << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
-#ifdef ASPECT_USE_PETSC
-  stream << "--     . using PETSc\n";
-#else
-  stream << "--     . using Trilinos\n";
-#endif
-  stream << "-----------------------------------------------------------------------------\n"
-         << std::endl;
-}
-
+void print_aspect_header(Stream &stream);
 
 /**
  * A macro that is used in instantiating the ASPECT classes and functions for
