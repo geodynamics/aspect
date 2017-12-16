@@ -176,13 +176,20 @@ namespace aspect
         switch (method)
           {
             case Parameters<dim>::AdvectionFieldMethod::fem_field:
+            {
               assemble_advection_system (adv_field);
 
               if (compute_initial_residual)
                 (*initial_residual)[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
 
               current_residual[c] = solve_advection(adv_field);
+
+              // free matrix:
+              const unsigned int block_idx = adv_field.block_index(introspection);
+              if (adv_field.compositional_variable!=0)
+                system_matrix.block(block_idx, block_idx).clear();
               break;
+            }
 
             case Parameters<dim>::AdvectionFieldMethod::particles:
               interpolate_particle_properties(adv_field);

@@ -1010,8 +1010,19 @@ namespace aspect
       computing_timer.enter_section ("   Assemble composition system");
 
     const unsigned int block_idx = advection_field.block_index(introspection);
+
+    if (!advection_field.is_temperature() && advection_field.compositional_variable!=0)
+      {
+        // Allocate the system matrix for the current compositional field by
+        // reusing the Trilinos sparsity pattern from the matrix stored for
+        // composition 0 (this is the place we allocate the matrix at).
+        const unsigned int block0_idx = AdvectionField::composition(0).block_index(introspection);
+        system_matrix.block(block_idx, block_idx).reinit(system_matrix.block(block0_idx, block0_idx));
+      }
+
     system_matrix.block(block_idx, block_idx) = 0;
-    system_rhs = 0;
+    system_rhs.block(block_idx) = 0;
+
 
     typedef
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
