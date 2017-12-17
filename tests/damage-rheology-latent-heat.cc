@@ -19,7 +19,8 @@
 */
 
 #include <aspect/material_model/damage_rheology.h>
-#include <aspect/simulator_access.h>
+#include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/gravity_model/interface.h>
 
 #include <deal.II/base/parameter_handler.h>
 

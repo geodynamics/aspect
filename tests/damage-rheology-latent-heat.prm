@@ -30,7 +30,7 @@ subsection Gravity model
   end
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
   
   subsection Function
@@ -65,7 +65,7 @@ end
 ############### Boundary conditions
 # We set the top temperature to T1=1000K. 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Top temperature = 1000
   end
@@ -79,7 +79,7 @@ subsection Boundary velocity model
   end
 end
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = function
   subsection Function
     set Function expression = 1000.0 + (y-1000000)/1000000

@@ -410,24 +410,12 @@ namespace aspect
        * Return a reference to the vector that has the solution of the entire
        * system at the second-to-last time step. This vector is associated with the
        * DoFHandler object returned by get_stokes_dof_handler().
-       * @note In general the vector is a distributed vector; however, it
-       * contains ghost elements for all locally relevant degrees of freedom.
-       */
-      const LinearAlgebra::BlockVector &
-      get_old_old_solution () const;
-
-      /**
-       * Return a reference to the vector that has the current linearization
-       * point of the entire system, i.e. the velocity and pressure variables
-       * as well as the temperature and compositional fields.
-       * This vector is associated with the DoFHandler object returned by
-       * get_dof_handler().
        *
        * @note In general the vector is a distributed vector; however, it
        * contains ghost elements for all locally relevant degrees of freedom.
        */
       const LinearAlgebra::BlockVector &
-      get_current_linearization_point () const;
+      get_old_old_solution () const;
 
       /**
        * Return a reference to the vector that has the mesh velocity for

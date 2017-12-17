@@ -1,23 +1,23 @@
 # 1: Time step number
 # 2: Time (seconds)
-# 3: Number of mesh cells
-# 4: Number of Stokes degrees of freedom
-# 5: Number of temperature degrees of freedom
-# 6: Number of degrees of freedom for all compositions
-# 7: Iterations for temperature solver
-# 8: Iterations for composition solver 1
-# 9: Iterations for Stokes solver
-# 10: Velocity iterations in Stokes preconditioner
-# 11: Schur complement iterations in Stokes preconditioner
-# 12: Time step size (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
 # 13: Minimal temperature (K)
 # 14: Average temperature (K)
 # 15: Maximal temperature (K)
 # 16: Minimal value for composition olivine_grain_size
 # 17: Maximal value for composition olivine_grain_size
 # 18: Global mass for composition olivine_grain_size
-0 0.0000e+00 320 3303 1449 1449  0  0 28 29 29 2.9168e+14 9.99000000e+02 9.99500000e+02 1.00000000e+03 8.00000000e-05 8.00000000e-05 4.00000000e+06 
-1 2.9168e+14 320 3303 1449 1449 34 22 23 24 24 2.9166e+14 9.99017663e+02 1.00006384e+03 1.00484664e+03 8.00000000e-05 1.33641940e-03 9.12582646e+06 
-2 5.8334e+14 320 3303 1449 1449 25 17 19 20 20 2.9166e+14 9.99028992e+02 1.00063225e+03 1.00987179e+03 8.00000000e-05 1.82413166e-03 1.15262107e+07 
-3 8.7500e+14 320 3303 1449 1449 25 16 17 18 18 1.2500e+14 9.99038084e+02 1.00121423e+03 1.01454972e+03 8.00000000e-05 2.07596500e-03 1.30863213e+07 
-4 1.0000e+15 320 3303 1449 1449 15 10 15 16 16 2.9166e+14 9.99041621e+02 1.00146708e+03 1.01643824e+03 8.00000000e-05 2.15063764e-03 1.36339965e+07 
+0 0.000000000000e+00 0.000000000000e+00 320 3303 1449 1449  0  0 24 26 26 9.99000000e+02 9.99500000e+02 1.00000000e+03 8.00000000e-05 8.00000000e-05 4.00000000e+06 
+1 2.916757647458e+14 2.916757647458e+14 320 3303 1449 1449 34 22 19 21 21 9.99017651e+02 1.00006383e+03 1.00484923e+03 8.00000000e-05 1.33641940e-03 9.12582641e+06 
+2 5.833396860887e+14 2.916639213430e+14 320 3303 1449 1449 25 17 17 19 19 9.99028965e+02 1.00063217e+03 1.00987946e+03 8.00000000e-05 1.82413166e-03 1.15262106e+07 
+3 8.750015192443e+14 2.916618331556e+14 320 3303 1449 1449 25 16 15 17 17 9.99038067e+02 1.00121294e+03 1.01453706e+03 8.00000000e-05 2.07596521e-03 1.30863229e+07 
+4 1.000000000000e+15 1.249984807557e+14 320 3303 1449 1449 15 10 13 15 15 9.99041602e+02 1.00146606e+03 1.01642976e+03 8.00000000e-05 2.15063771e-03 1.36339974e+07 

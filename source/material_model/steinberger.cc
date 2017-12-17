@@ -299,7 +299,8 @@ namespace aspect
           bool interpolation;
       };
 
-      LateralViscosityLookup::LateralViscosityLookup(const std::string &filename)
+      LateralViscosityLookup::LateralViscosityLookup(const std::string &filename,
+                                                                                 const MPI_Comm &comm)
           {
             std::string temp;
             // Read data from disk and distribute among processes
@@ -345,7 +346,8 @@ namespace aspect
             return values.size();
           }
 
-          RadialViscosityLookup::RadialViscosityLookup(const std::string &filename)
+          RadialViscosityLookup::RadialViscosityLookup(const std::string &filename,
+                                                       const MPI_Comm &comm)
           {
             std::string temp;
             // Read data from disk and distribute among processes

@@ -20,11 +20,13 @@
 
 
 #include <aspect/material_model/damage_rheology.h>
-#include <deal.II/base/parameter_handler.h>
+#include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/gravity_model/interface.h>
 
-#include <iostream>
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
+
+#include <iostream>
 
 using namespace dealii;
 
@@ -260,7 +262,7 @@ namespace aspect
                   {
                     double P = 0.0;
                     double depth,T;
-                    double rho,vb,vs,vp,vsq,vpq,h,qs,qp,rho_00;
+                    double rho,vb,vs,vp,vsq,vpq,h;
                     std::string code;
                     double alpha = 0.0;
                     double cp = 0.0;
@@ -678,7 +680,7 @@ namespace aspect
                             const double                  pressure,
                             const std::vector<double>    &compositional_fields,
                             const SymmetricTensor<2,dim> &strain_rate,
-                            const Tensor<1,dim>          &velocity,
+                            const Tensor<1,dim>          &/*velocity*/,
                             const Point<dim>             &position,
                             const unsigned int            field_index,
                             const int                     crossed_transition) const
@@ -1001,7 +1003,7 @@ namespace aspect
     enthalpy (const double      temperature,
               const double      pressure,
               const std::vector<double> &compositional_fields,
-              const Point<dim> &position) const
+              const Point<dim> &/*position*/) const
     {
       //this function is not called from evaluate() so we need to care about
       //corrections for temperature and pressure
@@ -1030,7 +1032,7 @@ namespace aspect
     seismic_Vp (const double      temperature,
                 const double      pressure,
                 const std::vector<double> &compositional_fields,
-                const Point<dim> &position) const
+                const Point<dim> &/*position*/) const
     {
       //this function is not called from evaluate() so we need to care about
       //corrections for temperature and pressure
@@ -1059,7 +1061,7 @@ namespace aspect
     seismic_Vs (const double      temperature,
                 const double      pressure,
                 const std::vector<double> &compositional_fields,
-                const Point<dim> &position) const
+                const Point<dim> &/*position*/) const
     {
       //this function is not called from evaluate() so we need to care about
       //corrections for temperature and pressure
@@ -1224,7 +1226,7 @@ namespace aspect
     template <int dim>
     bool
     DamageRheology<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
+    thermal_conductivity_depends_on (const NonlinearDependence::Dependence /*dependence*/) const
     {
       return false;
     }
@@ -1270,7 +1272,7 @@ namespace aspect
     thermal_expansion_coefficient (const double      temperature,
                                    const double      pressure,
                                    const std::vector<double> &compositional_fields,
-                                   const Point<dim> &position) const
+                                   const Point<dim> &/*position*/) const
     {
       double alpha = 0.0;
       if (!use_table_properties)
@@ -1295,7 +1297,7 @@ namespace aspect
     specific_heat (const double temperature,
                    const double pressure,
                    const std::vector<double> &compositional_fields,
-                   const Point<dim> &position) const
+                   const Point<dim> &/*position*/) const
      {
        double cp = 0.0;
        if (!use_table_properties)
@@ -1323,7 +1325,7 @@ namespace aspect
       unsigned int T_points(0), p_points(0);
       double dHdT(0.0), dHdp(0.0);
 
-      if (in.cell)
+      if (in.current_cell.state() == IteratorState::valid)
         {
           const QTrapez<dim> quadrature_formula;
           const unsigned int n_q_points = quadrature_formula.size();
@@ -1336,7 +1338,7 @@ namespace aspect
           std::vector<std::vector<double> > compositions (quadrature_formula.size(),std::vector<double> (this->n_compositional_fields()));
           std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
-          fe_values.reinit (*in.cell);
+          fe_values.reinit (in.current_cell);
 
           // get the various components of the solution, then
           // evaluate the material properties there
@@ -1558,7 +1560,7 @@ namespace aspect
           else if (use_enthalpy)
             {
               if (this->get_adiabatic_conditions().is_initialized()
-                  && (in.cell)
+                  && (in.current_cell.state() == IteratorState::valid)
                   && (dH[0].second > 0)
                   && (dH[1].second > 0))
                 {

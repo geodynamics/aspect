@@ -20,11 +20,12 @@
 
 
 #include <aspect/material_model/steinberger_rheology.h>
-#include <deal.II/base/parameter_handler.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
-#include <iostream>
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
+
+#include <iostream>
 
 using namespace dealii;
 
@@ -38,8 +39,8 @@ namespace aspect
     {
       DamageRheology<dim>::initialize();
 
-      lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(datadirectory+lateral_viscosity_file_name));
-      radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(datadirectory+radial_viscosity_file_name));
+      lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(datadirectory+lateral_viscosity_file_name, this->get_mpi_communicator()));
+      radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(datadirectory+radial_viscosity_file_name, this->get_mpi_communicator()));
     }
 
     template <int dim>

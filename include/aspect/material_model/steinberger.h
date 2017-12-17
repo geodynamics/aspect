@@ -37,7 +37,8 @@ namespace aspect
       class LateralViscosityLookup
       {
         public:
-          LateralViscosityLookup(const std::string &filename);
+          LateralViscosityLookup(const std::string &filename,
+                                 const MPI_Comm &comm);
 
           double lateral_viscosity(double depth);
 
@@ -53,7 +54,8 @@ namespace aspect
       class RadialViscosityLookup
       {
         public:
-          RadialViscosityLookup(const std::string &filename);
+          RadialViscosityLookup(const std::string &filename,
+                                const MPI_Comm &comm);
 
           double radial_viscosity(double depth) const;
 
