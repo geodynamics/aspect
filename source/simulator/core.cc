@@ -1190,10 +1190,12 @@ namespace aspect
   {
     Amg_preconditioner.reset ();
     Mp_preconditioner.reset ();
-    T_preconditioner.reset ();
-    C_preconditioner.reset ();
-
     system_preconditioner_matrix.clear ();
+
+    // The preconditioner matrix is only used for the Stokes block (velocity and Schur complement) and is of course not
+    // used if we use a direct solver.
+    if (parameters.use_direct_stokes_solver)
+      return;
 
     Table<2,DoFTools::Coupling> coupling (introspection.n_components,
                                           introspection.n_components);
@@ -1202,9 +1204,11 @@ namespace aspect
     const typename Introspection<dim>::ComponentIndices &x
       = introspection.component_indices;
 
+    // velocity-velocity block (only block diagonal):
     for (unsigned int d=0; d<dim; ++d)
       coupling[x.velocities[d]][x.velocities[d]] = DoFTools::always;
 
+    // Schur complement block (pressure - pressure):
     if (parameters.include_melt_transport)
       {
         coupling[introspection.variable("fluid pressure").first_component_index]
@@ -1214,30 +1218,6 @@ namespace aspect
       }
     else
       coupling[x.pressure][x.pressure] = DoFTools::always;
-    coupling[x.temperature][x.temperature] = DoFTools::always;
-
-    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-      {
-        const AdvectionField adv_field (AdvectionField::composition(c));
-        const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
-        switch (method)
-          {
-            case Parameters<dim>::AdvectionFieldMethod::fem_field:
-              coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::always;
-              break;
-
-            case Parameters<dim>::AdvectionFieldMethod::particles:
-              coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::none;
-              break;
-
-            case Parameters<dim>::AdvectionFieldMethod::static_field:
-              coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::none;
-              break;
-
-            default:
-              Assert(false,ExcNotImplemented());
-          }
-      }
 
     LinearAlgebra::BlockDynamicSparsityPattern sp;
 
@@ -1250,57 +1230,11 @@ namespace aspect
                mpi_communicator);
 #endif
 
-    if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
-      {
-        Table<2,DoFTools::Coupling> face_coupling (introspection.n_components,
-                                                   introspection.n_components);
-        face_coupling.fill (DoFTools::none);
-
-        const typename Introspection<dim>::ComponentIndices &x
-          = introspection.component_indices;
-        if (parameters.use_discontinuous_temperature_discretization)
-          face_coupling[x.temperature][x.temperature] = DoFTools::always;
-
-        if (parameters.use_discontinuous_composition_discretization)
-          {
-            for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-              {
-                const AdvectionField adv_field (AdvectionField::composition(c));
-                const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
-                switch (method)
-                  {
-                    case Parameters<dim>::AdvectionFieldMethod::fem_field:
-                      face_coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::always;
-                      break;
-
-                    case Parameters<dim>::AdvectionFieldMethod::particles:
-                      face_coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::none;
-                      break;
-
-                    case Parameters<dim>::AdvectionFieldMethod::static_field:
-                      face_coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::none;
-                      break;
-
-                    default:
-                      Assert(false,ExcNotImplemented());
-                  }
-              }
-          }
-
-        DoFTools::make_flux_sparsity_pattern (dof_handler,
-                                              sp,
-                                              current_constraints, false,
-                                              coupling,
-                                              face_coupling,
-                                              Utilities::MPI::
-                                              this_mpi_process(mpi_communicator));
-      }
-    else
-      DoFTools::make_sparsity_pattern (dof_handler,
-                                       coupling, sp,
-                                       current_constraints, false,
-                                       Utilities::MPI::
-                                       this_mpi_process(mpi_communicator));
+    DoFTools::make_sparsity_pattern (dof_handler,
+                                     coupling, sp,
+                                     current_constraints, false,
+                                     Utilities::MPI::
+                                     this_mpi_process(mpi_communicator));
 
 #ifdef ASPECT_USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
