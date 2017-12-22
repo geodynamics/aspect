@@ -533,7 +533,7 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       void build_advection_preconditioner (const AdvectionField &advection_field,
-                                           std_cxx11::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner);
+                                           aspect::LinearAlgebra::PreconditionILU &preconditioner);
 
       /**
        * Initiate the assembly of the Stokes matrix and right hand side.
@@ -1582,9 +1582,6 @@ namespace aspect
 
       std_cxx11::shared_ptr<LinearAlgebra::PreconditionAMG>     Amg_preconditioner;
       std_cxx11::shared_ptr<LinearAlgebra::PreconditionILU>     Mp_preconditioner;
-      std_cxx11::shared_ptr<LinearAlgebra::PreconditionILU>     T_preconditioner;
-//TODO: use n_compositional_field separate preconditioners
-      std_cxx11::shared_ptr<LinearAlgebra::PreconditionILU>     C_preconditioner;
 
       bool                                                      rebuild_sparsity_and_matrices;
       bool                                                      rebuild_stokes_matrix;

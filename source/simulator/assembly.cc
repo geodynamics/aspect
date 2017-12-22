@@ -726,7 +726,7 @@ namespace aspect
   template <int dim>
   void
   Simulator<dim>::build_advection_preconditioner(const AdvectionField &advection_field,
-                                                 std_cxx11::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner)
+                                                 LinearAlgebra::PreconditionILU &preconditioner)
   {
     switch (advection_field.field_type)
       {
@@ -747,8 +747,7 @@ namespace aspect
       }
 
     const unsigned int block_idx = advection_field.block_index(introspection);
-    preconditioner.reset (new LinearAlgebra::PreconditionILU());
-    preconditioner->initialize (system_matrix.block(block_idx, block_idx));
+    preconditioner.initialize (system_matrix.block(block_idx, block_idx));
     computing_timer.exit_section();
   }
 
@@ -1125,7 +1124,7 @@ namespace aspect
                                                                      const internal::Assembly::CopyData::StokesSystem<dim> &data); \
   template void Simulator<dim>::assemble_stokes_system (); \
   template void Simulator<dim>::build_advection_preconditioner (const AdvectionField &, \
-                                                                std_cxx11::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner); \
+                                                                aspect::LinearAlgebra::PreconditionILU &preconditioner); \
   template void Simulator<dim>::local_assemble_advection_system ( \
                                                                   const AdvectionField          &advection_field, \
                                                                   const Vector<double>           &viscosity_per_cell, \
