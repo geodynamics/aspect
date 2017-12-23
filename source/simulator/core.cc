@@ -1219,6 +1219,15 @@ namespace aspect
     else
       coupling[x.pressure][x.pressure] = DoFTools::always;
 
+    // the system_preconditioner matrix is only used for the Stokes
+    // system as there we use a separate matrix for preconditioning
+    // than the system_matrix object). for temperature and
+    // compositional fields, we precondition with the respective block
+    // of system_matrix. consequently, there is no need to allocate
+    // memory for these blocks in the system_preconditioner matrix and
+    // its sparsity pattern here -- the corresponding entries of
+    // 'coupling' simply remain at DoFTools::none
+
     LinearAlgebra::BlockDynamicSparsityPattern sp;
 
 #ifdef ASPECT_USE_PETSC

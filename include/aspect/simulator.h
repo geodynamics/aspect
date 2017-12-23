@@ -717,8 +717,11 @@ namespace aspect
 
       /**
        * Set up the size and structure of the matrix used to store the
-       * elements of the matrix that is used to build the preconditioner for
-       * the system.
+       * elements of the matrix that is used to build the
+       * preconditioner for the system. This matrix is only used for
+       * the Stokes system, so while it has the size of the whole
+       * system, it only has entries in the velocity and pressure
+       * blocks.
        *
        * This function is implemented in
        * <code>source/simulator/core.cc</code>.
@@ -1565,7 +1568,29 @@ namespace aspect
        * @name Variables that describe the linear systems and solution vectors
        * @{
        */
+
+      /**
+       * An object that contains the entries of the system matrix. It
+       * has a size equal to the total number of degrees of freedom,
+       * but since we typically do not solve for all variables at
+       * once, the content of the matrix at any given time is only
+       * appropriate for the part of the system we are currently
+       * solving.
+       */
       LinearAlgebra::BlockSparseMatrix                          system_matrix;
+
+      /**
+       * An object that contains the entries of preconditioner
+       * matrices for the system matrix. It has a size equal to the
+       * total number of degrees of freedom, but is only used for the
+       * Stokes system (that's the only part of the system where we
+       * use a matrix for preconditioning that is different from the
+       * matrix we solve). Consequently, the blocks in rows and
+       * columns corresponding to temperature or compositional fields
+       * are left empty when building the sparsity pattern of this
+       * matrix in the Simulator::setup_system_preconditioner()
+       * function.
+       */
       LinearAlgebra::BlockSparseMatrix                          system_preconditioner_matrix;
 
       LinearAlgebra::BlockVector                                solution;
