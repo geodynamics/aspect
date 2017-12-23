@@ -1,0 +1,3 @@
+Fixed: Memory consumption for matrix storage got reduced significantly by not allocating unused entries in the preconditioner matrix.
+<br>
+(Timo Heister, 2017/12/22)
