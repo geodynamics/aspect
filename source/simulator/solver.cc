@@ -424,17 +424,16 @@ namespace aspect
                 ExcMessage ("The " + field_name + " equation can not be solved, because the matrix is zero, "
                             "but the right-hand side is nonzero."));
 
+    LinearAlgebra::PreconditionILU preconditioner;
+    build_advection_preconditioner(advection_field, preconditioner);
+
     if (advection_field.is_temperature())
       {
-        build_advection_preconditioner(advection_field,
-                                       T_preconditioner);
         computing_timer.enter_section ("   Solve temperature system");
         pcout << "   Solving temperature system... " << std::flush;
       }
     else
       {
-        build_advection_preconditioner(advection_field,
-                                       C_preconditioner);
         computing_timer.enter_section ("   Solve composition system");
         pcout << "   Solving "
               << introspection.name_for_compositional_index(advection_field.compositional_variable)
@@ -470,11 +469,7 @@ namespace aspect
         solver.solve (system_matrix.block(block_idx,block_idx),
                       distributed_solution.block(block_idx),
                       system_rhs.block(block_idx),
-                      (advection_field.is_temperature()
-                       ?
-                       *T_preconditioner
-                       :
-                       *C_preconditioner));
+                      preconditioner);
       }
     // if the solver fails, report the error from processor 0 with some additional
     // information about its location, and throw a quiet exception on all other
