@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
 
-Loading shared library <./libdamage-rheology-latent-heat.so>
+Loading shared library <./libdamage_rheology_latent_heat.so>
 
 Number of active cells: 320 (on 3 levels)
 Number of degrees of freedom: 6,201 (2,898+405+1,449+1,449)
