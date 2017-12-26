@@ -13,16 +13,16 @@
 
     <br>
 
-    \begin{journal} \format[HTMLChars]{\journal}.\end{journal}
+    \begin{journal} \format[HTMLChars]{\journal}\end{journal}
     \begin{booktitle}, In: \format[HTMLChars]{\booktitle}.\end{booktitle}
-    \begin{howpublished}, \howpublished.\end{howpublished}
-    \begin{school}. Thesis at: \format[HTMLChars]{\school}.\end{school}
+    \begin{howpublished}, \howpublished\end{howpublished}
+    \begin{school}. Thesis at \format[HTMLChars]{\school}.\end{school}
     \begin{address} \format[HTMLChars]{\address}\end{address}
-    \begin{month}, \format[HTMLChars]{\month}, \year.\end{month}
-    \begin{volume} vol. \volume\end{volume}
+    \begin{month}, \format[HTMLChars]{\month}, \year\end{month}
+    \begin{volume}, vol. \volume\end{volume}
     \begin{number}(\format[FormatPagesForHTML]{\number})\end{number}
-    \begin{pages}, pp. \format[FormatPagesForHTML]{\pages}.\end{pages}
-    \begin{publisher} \format[HTMLChars]{\publisher}.\end{publisher}
+    \begin{pages}, pp. \format[FormatPagesForHTML]{\pages}\end{pages}
+    \begin{publisher}. \format[HTMLChars]{\publisher}\end{publisher}.
     
     <p class="infolinks">
       \begin{review}
