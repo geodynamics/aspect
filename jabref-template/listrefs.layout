@@ -22,7 +22,6 @@
  -->\begin{howpublished}, \howpublished\end{howpublished}<!--
  -->\begin{school}. Thesis at \format[HTMLChars]{\school}.\end{school}<!--
  -->\begin{address} \format[HTMLChars]{\address}\end{address}<!--
- -->\begin{month}, \format[HTMLChars]{\month}, \year\end{month}<!--
  -->\begin{volume}, vol. \volume\end{volume}<!--
  -->\begin{number}(\format[FormatPagesForHTML]{\number})\end{number}<!--
  -->\begin{pages}, pp. \format[FormatPagesForHTML]{\pages}\end{pages}<!--
