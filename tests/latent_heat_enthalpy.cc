@@ -403,14 +403,14 @@ namespace aspect
               // get the various components of the solution, then
               // evaluate the material properties there
               fe_values[this->introspection().extractors.temperature]
-                        .get_function_values (this->get_solution(), temperatures);
+              .get_function_values (this->get_solution(), temperatures);
               fe_values[this->introspection().extractors.pressure]
-                        .get_function_values (this->get_solution(), pressures);
+              .get_function_values (this->get_solution(), pressures);
 
               for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                 fe_values[this->introspection().extractors.compositional_fields[c]]
-                          .get_function_values(this->get_solution(),
-                              composition_values[c]);
+                .get_function_values(this->get_solution(),
+                                     composition_values[c]);
               for (unsigned int q=0; q<fe_values.n_quadrature_points; ++q)
                 {
                   for (unsigned int c=0; c<this->n_compositional_fields(); ++c)

@@ -77,7 +77,7 @@ namespace aspect
 
           double
           enthalpy(const double temperature,
-                     const double pressure) const
+                   const double pressure) const
           {
             return value(temperature,pressure,enthalpy_values,true);
           }
@@ -193,118 +193,118 @@ namespace aspect
           PerplexReader(const std::string &filename,
                         const bool interpol)
           {
-                /* Initializing variables */
-                interpolation = interpol;
-                delta_press=-1.0;
-                min_press=-1.0;
-                delta_temp=-1.0;
-                min_temp=-1.0;
-                numtemp=0;
-                numpress=0;
+            /* Initializing variables */
+            interpolation = interpol;
+            delta_press=-1.0;
+            min_press=-1.0;
+            delta_temp=-1.0;
+            min_temp=-1.0;
+            numtemp=0;
+            numpress=0;
 
-                std::string temp;
-                std::ifstream in(filename.c_str(), std::ios::in);
-                AssertThrow (in,
-                             ExcMessage (std::string("Couldn't open file <") + filename));
+            std::string temp;
+            std::ifstream in(filename.c_str(), std::ios::in);
+            AssertThrow (in,
+                         ExcMessage (std::string("Couldn't open file <") + filename));
 
-                getline(in, temp); // eat first line
-                getline(in, temp); // eat next line
-                getline(in, temp); // eat next line
-                getline(in, temp); // eat next line
+            getline(in, temp); // eat first line
+            getline(in, temp); // eat next line
+            getline(in, temp); // eat next line
+            getline(in, temp); // eat next line
 
-                in >> min_temp;
-                getline(in, temp);
-                in >> delta_temp;
-                getline(in, temp);
-                in >> numtemp;
-                getline(in, temp);
-                getline(in, temp);
-                in >> min_press;
-                min_press *= 1e5;  // conversion from [bar] to [Pa]
-                getline(in, temp);
-                in >> delta_press;
-                delta_press *= 1e5; // conversion from [bar] to [Pa]
-                getline(in, temp);
-                in >> numpress;
-                getline(in, temp);
-                getline(in, temp);
-                getline(in, temp);
+            in >> min_temp;
+            getline(in, temp);
+            in >> delta_temp;
+            getline(in, temp);
+            in >> numtemp;
+            getline(in, temp);
+            getline(in, temp);
+            in >> min_press;
+            min_press *= 1e5;  // conversion from [bar] to [Pa]
+            getline(in, temp);
+            in >> delta_press;
+            delta_press *= 1e5; // conversion from [bar] to [Pa]
+            getline(in, temp);
+            in >> numpress;
+            getline(in, temp);
+            getline(in, temp);
+            getline(in, temp);
 
-                Assert(min_temp >= 0.0, ExcMessage("Read in of Material header failed (mintemp)."));
-                Assert(delta_temp > 0, ExcMessage("Read in of Material header failed (delta_temp)."));
-                Assert(numtemp > 0, ExcMessage("Read in of Material header failed (numtemp)."));
-                Assert(min_press >= 0, ExcMessage("Read in of Material header failed (min_press)."));
-                Assert(delta_press > 0, ExcMessage("Read in of Material header failed (delta_press)."));
-                Assert(numpress > 0, ExcMessage("Read in of Material header failed (numpress)."));
+            Assert(min_temp >= 0.0, ExcMessage("Read in of Material header failed (mintemp)."));
+            Assert(delta_temp > 0, ExcMessage("Read in of Material header failed (delta_temp)."));
+            Assert(numtemp > 0, ExcMessage("Read in of Material header failed (numtemp)."));
+            Assert(min_press >= 0, ExcMessage("Read in of Material header failed (min_press)."));
+            Assert(delta_press > 0, ExcMessage("Read in of Material header failed (delta_press)."));
+            Assert(numpress > 0, ExcMessage("Read in of Material header failed (numpress)."));
 
 
-                max_temp = min_temp + (numtemp-1) * delta_temp;
-                max_press = min_press + (numpress-1) * delta_press;
+            max_temp = min_temp + (numtemp-1) * delta_temp;
+            max_press = min_press + (numpress-1) * delta_press;
 
-                density_values.reinit(numtemp,numpress);
-                thermal_expansivity_values.reinit(numtemp,numpress);
-                specific_heat_values.reinit(numtemp,numpress);
-                vp_values.reinit(numtemp,numpress);
-                vs_values.reinit(numtemp,numpress);
-                enthalpy_values.reinit(numtemp,numpress);
+            density_values.reinit(numtemp,numpress);
+            thermal_expansivity_values.reinit(numtemp,numpress);
+            specific_heat_values.reinit(numtemp,numpress);
+            vp_values.reinit(numtemp,numpress);
+            vs_values.reinit(numtemp,numpress);
+            enthalpy_values.reinit(numtemp,numpress);
 
-                unsigned int i = 0;
-                while (!in.eof())
+            unsigned int i = 0;
+            while (!in.eof())
+              {
+                double temp1,temp2;
+                double rho,alpha,cp,vp,vs,h;
+                in >> temp1 >> temp2;
+                in >> rho;
+                if (in.fail())
                   {
-                    double temp1,temp2;
-                    double rho,alpha,cp,vp,vs,h;
-                    in >> temp1 >> temp2;
-                    in >> rho;
-                    if (in.fail())
-                      {
-                        in.clear();
-                        rho = density_values[(i-1)%numtemp][(i-1)/numtemp];
-                      }
-                    in >> alpha;
-                    if (in.fail())
-                      {
-                        in.clear();
-                        alpha = thermal_expansivity_values[(i-1)%numtemp][(i-1)/numtemp];
-                      }
-                    in >> cp;
-                    if (in.fail())
-                      {
-                        in.clear();
-                        cp = specific_heat_values[(i-1)%numtemp][(i-1)/numtemp];
-                      }
-                    in >> vp;
-                    if (in.fail())
-                      {
-                        in.clear();
-                        vp = vp_values[(i-1)%numtemp][(i-1)/numtemp];
-                      }
-                    in >> vs;
-                    if (in.fail())
-                      {
-                        in.clear();
-                        vs = vs_values[(i-1)%numtemp][(i-1)/numtemp];
-                      }
-                    in >> h;
-                    if (in.fail())
-                      {
-                        in.clear();
-                        h = enthalpy_values[(i-1)%numtemp][(i-1)/numtemp];
-                      }
-
-                    getline(in, temp);
-                    if (in.eof())
-                      break;
-
-                    density_values[i%numtemp][i/numtemp]=rho;
-                    thermal_expansivity_values[i%numtemp][i/numtemp]=alpha;
-                    specific_heat_values[i%numtemp][i/numtemp]=cp;
-                    vp_values[i%numtemp][i/numtemp]=vp;
-                    vs_values[i%numtemp][i/numtemp]=vs;
-                    enthalpy_values[i%numtemp][i/numtemp]=h;
-
-                    i++;
+                    in.clear();
+                    rho = density_values[(i-1)%numtemp][(i-1)/numtemp];
                   }
-                Assert(i==numtemp*numpress, ExcMessage("Material table size not consistent with header."));
+                in >> alpha;
+                if (in.fail())
+                  {
+                    in.clear();
+                    alpha = thermal_expansivity_values[(i-1)%numtemp][(i-1)/numtemp];
+                  }
+                in >> cp;
+                if (in.fail())
+                  {
+                    in.clear();
+                    cp = specific_heat_values[(i-1)%numtemp][(i-1)/numtemp];
+                  }
+                in >> vp;
+                if (in.fail())
+                  {
+                    in.clear();
+                    vp = vp_values[(i-1)%numtemp][(i-1)/numtemp];
+                  }
+                in >> vs;
+                if (in.fail())
+                  {
+                    in.clear();
+                    vs = vs_values[(i-1)%numtemp][(i-1)/numtemp];
+                  }
+                in >> h;
+                if (in.fail())
+                  {
+                    in.clear();
+                    h = enthalpy_values[(i-1)%numtemp][(i-1)/numtemp];
+                  }
+
+                getline(in, temp);
+                if (in.eof())
+                  break;
+
+                density_values[i%numtemp][i/numtemp]=rho;
+                thermal_expansivity_values[i%numtemp][i/numtemp]=alpha;
+                specific_heat_values[i%numtemp][i/numtemp]=cp;
+                vp_values[i%numtemp][i/numtemp]=vp;
+                vs_values[i%numtemp][i/numtemp]=vs;
+                enthalpy_values[i%numtemp][i/numtemp]=h;
+
+                i++;
+              }
+            Assert(i==numtemp*numpress, ExcMessage("Material table size not consistent with header."));
           }
 
       };
@@ -357,14 +357,14 @@ namespace aspect
               // get the various components of the solution, then
               // evaluate the material properties there
               fe_values[this->introspection().extractors.temperature]
-                        .get_function_values (this->get_solution(), temperatures);
+              .get_function_values (this->get_solution(), temperatures);
               fe_values[this->introspection().extractors.pressure]
-                        .get_function_values (this->get_solution(), pressures);
+              .get_function_values (this->get_solution(), pressures);
 
               for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                 fe_values[this->introspection().extractors.compositional_fields[c]]
-                          .get_function_values(this->get_solution(),
-                              composition_values[c]);
+                .get_function_values(this->get_solution(),
+                                     composition_values[c]);
               for (unsigned int q=0; q<fe_values.n_quadrature_points; ++q)
                 {
                   for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
@@ -407,17 +407,17 @@ namespace aspect
             {
               // convert the grain size from log to normal
               std::vector<double> composition (in.composition[i]);
-              if(this->advect_log_gransize)
-                    this->convert_log_grain_size(false,composition);
+              if (this->advect_log_gransize)
+                this->convert_log_grain_size(false,composition);
               else
-                for (unsigned int c=0;c<composition.size();++c)
+                for (unsigned int c=0; c<composition.size(); ++c)
                   composition[c] = std::max(this->min_grain_size,composition[c]);
 
               // set up an integer that tells us which phase transition has been crossed inside of the cell
               int crossed_transition(-1);
 
               if (this->get_adiabatic_conditions().is_initialized())
-                for (unsigned int phase=0;phase<this->transition_depths.size();++phase)
+                for (unsigned int phase=0; phase<this->transition_depths.size(); ++phase)
                   {
                     // first, get the pressure at which the phase transition occurs normally
                     const Point<dim,double> transition_point = this->get_geometry_model().representative_point(this->transition_depths[phase]);
@@ -434,26 +434,26 @@ namespace aspect
                                                 - this->transition_slopes[phase] * (in.temperature[i] - this->transition_temperatures[phase]);
 
                     if ((std::abs(pressure_deviation) < pressure_width)
-                      &&
-                      ((in.velocity[i] * this->get_gravity_model().gravity_vector(in.position[i])) * pressure_deviation > 0))
+                        &&
+                        ((in.velocity[i] * this->get_gravity_model().gravity_vector(in.position[i])) * pressure_deviation > 0))
                       crossed_transition = phase;
                   }
               else
                 for (unsigned int j=0; j<in.position.size(); ++j)
-                  for (unsigned int k=0;k<this->transition_depths.size();++k)
-                    if((this->phase_function(in.position[i], in.temperature[i], in.pressure[i], k)
-                        != this->phase_function(in.position[j], in.temperature[j], in.pressure[j], k))
+                  for (unsigned int k=0; k<this->transition_depths.size(); ++k)
+                    if ((this->phase_function(in.position[i], in.temperature[i], in.pressure[i], k)
+                         != this->phase_function(in.position[j], in.temperature[j], in.pressure[j], k))
                         &&
                         ((in.velocity[i] * this->get_gravity_model().gravity_vector(in.position[i]))
-                        * ((in.position[i] - in.position[j]) * this->get_gravity_model().gravity_vector(in.position[i])) > 0))
+                         * ((in.position[i] - in.position[j]) * this->get_gravity_model().gravity_vector(in.position[i])) > 0))
                       crossed_transition = k;
 
               if (in.strain_rate.size() > 0)
                 out.viscosities[i] = std::min(std::max(this->min_eta,this->viscosity(in.temperature[i],
-                                                                               in.pressure[i],
-                                                                               composition,
-                                                                               in.strain_rate[i],
-                                                                               in.position[i])),this->max_eta);
+                                                                                     in.pressure[i],
+                                                                                     composition,
+                                                                                     in.strain_rate[i],
+                                                                                     in.position[i])),this->max_eta);
 
               out.densities[i] = this->density(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
 
@@ -483,15 +483,15 @@ namespace aspect
 
               // TODO: make this more general for not just olivine grains
               if (in.strain_rate.size() > 0)
-                for (unsigned int c=0;c<composition.size();++c)
+                for (unsigned int c=0; c<composition.size(); ++c)
                   {
                     if (this->introspection().name_for_compositional_index(c) == "olivine_grain_size")
-                    {
-                      out.reaction_terms[i][c] = this->grain_size_growth_rate(in.temperature[i], in.pressure[i], composition,
-                          in.strain_rate[i], in.velocity[i], in.position[i], c, crossed_transition);
-                      if(this->advect_log_gransize)
-                            out.reaction_terms[i][c] = - out.reaction_terms[i][c] / composition[c];
-                    }
+                      {
+                        out.reaction_terms[i][c] = this->grain_size_growth_rate(in.temperature[i], in.pressure[i], composition,
+                                                                                in.strain_rate[i], in.velocity[i], in.position[i], c, crossed_transition);
+                        if (this->advect_log_gransize)
+                          out.reaction_terms[i][c] = - out.reaction_terms[i][c] / composition[c];
+                      }
                     else
                       out.reaction_terms[i][c] = 0.0;
                   }

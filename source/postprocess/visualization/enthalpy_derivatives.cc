@@ -125,15 +125,15 @@ namespace aspect
 
         in.cell = &cell;
 
-        const MaterialModel::DamageRheology<dim>* material_model =
-            dynamic_cast<const MaterialModel::DamageRheology<dim> * > (&this->get_material_model());
+        const MaterialModel::DamageRheology<dim> *material_model =
+          dynamic_cast<const MaterialModel::DamageRheology<dim> * > (&this->get_material_model());
 
         AssertThrow(&material_model != 0,
                     ExcMessage("The enthalpy postprocessor currently only works with the damage rheology "
-                        "material model"));
+                               "material model"));
 
         const std_cxx1x::array<std::pair<double, unsigned int>,2> dH =
-            material_model->enthalpy_derivative(in);
+          material_model->enthalpy_derivative(in);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {

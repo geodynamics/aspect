@@ -78,10 +78,10 @@ namespace aspect
         {
           //Use the adiabatic pressure instead of the real one, because of oscillations
           const double pressure = (this->get_adiabatic_conditions().is_initialized())
-              ?
-                  this->get_adiabatic_conditions().pressure(in.position[i])
-                  :
-                  in.pressure[i];
+                                  ?
+                                  this->get_adiabatic_conditions().pressure(in.position[i])
+                                  :
+                                  in.pressure[i];
 
           /* We are only asked to give viscosities if strain_rate.size() > 0
            * and we can only calculate it if adiabatic_conditions are available.
@@ -108,12 +108,12 @@ namespace aspect
         prm.enter_subsection("Damage rheology model");
         {
           prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/material-model/steinberger/",
-                              Patterns::DirectoryName (),
-                              "The path to the model data. The path may also include the special "
-                              "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
-                              "in which the ASPECT source files were located when ASPECT was "
-                              "compiled. This interpretation allows, for example, to reference "
-                              "files located in the 'data/' subdirectory of ASPECT. ");
+                             Patterns::DirectoryName (),
+                             "The path to the model data. The path may also include the special "
+                             "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
+                             "in which the ASPECT source files were located when ASPECT was "
+                             "compiled. This interpretation allows, for example, to reference "
+                             "files located in the 'data/' subdirectory of ASPECT. ");
           prm.declare_entry ("Radial viscosity file name", "radial-visc.txt",
                              Patterns::Anything (),
                              "The file name of the radial viscosity data. ");

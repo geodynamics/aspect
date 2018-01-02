@@ -74,45 +74,6 @@ namespace aspect
          */
 
         /**
-         * Return true if the viscosity() function returns something that may
-         * depend on the variable identifies by the argument.
-         */
-        virtual bool
-        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the density() function returns something that may
-         * depend on the variable identifies by the argument.
-         */
-        virtual bool
-        density_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the compressibility() function returns something
-         * that may depend on the variable identifies by the argument.
-         *
-         * This function must return false for all possible arguments if the
-         * is_compressible() function returns false.
-         */
-        virtual bool
-        compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the specific_heat() function returns something that
-         * may depend on the variable identifies by the argument.
-         */
-        virtual bool
-        specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the thermal_conductivity() function returns
-         * something that may depend on the variable identifies by the
-         * argument.
-         */
-        virtual bool
-        thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
          * Return whether the model is compressible or not.  Incompressibility
          * does not necessarily imply that the density is constant; rather, it
          * may still depend on temperature or pressure. In the current
@@ -130,12 +91,6 @@ namespace aspect
          * @{
          */
         virtual double reference_viscosity () const;
-
-        virtual double reference_density () const;
-
-        virtual unsigned int thermodynamic_phase (const double temperature,
-                                                  const double pressure,
-                                                  const std::vector<double> &compositional_fields) const;
 
         virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                               typename Interface<dim>::MaterialModelOutputs &out) const;
@@ -227,8 +182,10 @@ namespace aspect
          */
         double k_value;
 
-        // grain evolution parameters
-        double gas_constant; // J/(K*mol)
+        /**
+         * Parameters controlling the grain size evolution.
+         */
+        double gas_constant;
         std::vector<double> grain_growth_activation_energy;
         std::vector<double> grain_growth_activation_volume;
         std::vector<double> grain_growth_rate_constant;
@@ -236,13 +193,18 @@ namespace aspect
         std::vector<double> reciprocal_required_strain;
         std::vector<double> recrystallized_grain_size;
 
-        // for paleowattmeter
+        /**
+         * Parameters controlling the dynamic grain recrystallization
+         * (following paleowattmeter).
+         */
         bool use_paleowattmeter;
         std::vector<double> grain_boundary_energy;
         std::vector<double> boundary_area_change_work_fraction;
         std::vector<double> geometric_constant;
 
-        // rheology parameters
+        /**
+         * Parameters controlling the viscosity.
+         */
         double dislocation_viscosity_iteration_threshold;
         unsigned int dislocation_viscosity_iteration_number;
         std::vector<double> dislocation_creep_exponent;
@@ -255,9 +217,11 @@ namespace aspect
         std::vector<double> diffusion_creep_prefactor;
         std::vector<double> diffusion_creep_grain_size_exponent;
 
-        // Because of the nonlinear nature of this material model many
-        // parameters need to be kept within bounds to ensure stability of the
-        // solution. These bounds can be adjusted as input parameters.
+        /**
+         * Because of the nonlinear nature of this material model many
+         * parameters need to be kept within bounds to ensure stability of the
+         * solution. These bounds can be adjusted as input parameters.
+         */
         double max_temperature_dependence_of_eta;
         double min_eta;
         double max_eta;
@@ -269,6 +233,10 @@ namespace aspect
         double min_grain_size;
         double pv_grain_size_scaling;
 
+        /**
+         * Whether to advect the real grain size, or the logarithm of the
+         * grain size. The logarithm reduces jumps.
+         */
         bool advect_log_gransize;
 
 
@@ -389,8 +357,10 @@ namespace aspect
         convert_log_grain_size (const bool normal_to_log,
                                 std::vector<double> &compositional_fields) const;
 
-        // list of depth, width and Clapeyron slopes for the different phase
-        // transitions and in which phase they occur
+        /**
+         * list of depth, width and Clapeyron slopes for the different phase
+         * transitions and in which phase they occur
+         */
         std::vector<double> transition_depths;
         std::vector<double> transition_temperatures;
         std::vector<double> transition_slopes;
@@ -398,7 +368,8 @@ namespace aspect
         std::vector<double> transition_widths;
 
 
-        /* The following variables are properties of the material files
+        /**
+         * The following variables are properties of the material files
          * we read in.
          */
         std::string datadirectory;
@@ -422,8 +393,8 @@ namespace aspect
 
         /**
          * List of pointers to objects that read and process data we get from
-         * Perplex files. There is one pointer/object per compositional field
-         * data provided.
+         * material data files. There is one pointer/object per compositional
+         * field provided.
          */
         std::vector<std_cxx1x::shared_ptr<MaterialModel::Lookup::MaterialLookup> > material_lookup;
     };

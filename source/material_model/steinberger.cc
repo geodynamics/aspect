@@ -300,91 +300,91 @@ namespace aspect
       };
 
       LateralViscosityLookup::LateralViscosityLookup(const std::string &filename,
-                                                                                 const MPI_Comm &comm)
+                                                     const MPI_Comm &comm)
+      {
+        std::string temp;
+        // Read data from disk and distribute among processes
+        std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
+
+        getline(in, temp); // eat first line
+
+        min_depth=1e20;
+        max_depth=-1;
+
+        while (!in.eof())
           {
-            std::string temp;
-            // Read data from disk and distribute among processes
-            std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
+            double visc, depth;
+            in >> visc;;
+            if (in.eof())
+              break;
+            in >> depth;
+            depth *=1000.0;
+            getline(in, temp);
 
-            getline(in, temp); // eat first line
+            min_depth = std::min(depth, min_depth);
+            max_depth = std::max(depth, max_depth);
 
-            min_depth=1e20;
-            max_depth=-1;
-
-            while (!in.eof())
-              {
-                double visc, depth;
-                in >> visc;;
-                if (in.eof())
-                  break;
-                in >> depth;
-                depth *=1000.0;
-                getline(in, temp);
-
-                min_depth = std::min(depth, min_depth);
-                max_depth = std::max(depth, max_depth);
-
-                values.push_back(visc);
-              }
-            delta_depth = (max_depth-min_depth)/(values.size()-1);
+            values.push_back(visc);
           }
+        delta_depth = (max_depth-min_depth)/(values.size()-1);
+      }
 
-          double LateralViscosityLookup::lateral_viscosity(double depth)
+      double LateralViscosityLookup::lateral_viscosity(double depth)
+      {
+        depth=std::max(min_depth, depth);
+        depth=std::min(depth, max_depth);
+
+        Assert(depth>=min_depth, ExcMessage("ASPECT found a depth less than min_depth."));
+        Assert(depth<=max_depth, ExcMessage("ASPECT found a depth greater than max_depth."));
+        const unsigned int idx = static_cast<unsigned int>((depth-min_depth)/delta_depth);
+        Assert(idx<values.size(), ExcMessage("Attempting to look up a depth with an index that would be out of range. (depth-min_depth)/delta_depth too large."));
+        return values[idx];
+      }
+
+      int LateralViscosityLookup::get_nslices() const
+      {
+        return values.size();
+      }
+
+      RadialViscosityLookup::RadialViscosityLookup(const std::string &filename,
+                                                   const MPI_Comm &comm)
+      {
+        std::string temp;
+        // Read data from disk and distribute among processes
+        std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
+
+        min_depth=1e20;
+        max_depth=-1;
+
+        while (!in.eof())
           {
-            depth=std::max(min_depth, depth);
-            depth=std::min(depth, max_depth);
+            double visc, depth;
+            in >> visc;;
+            if (in.eof())
+              break;
+            in >> depth;
+            depth *=1000.0;
+            getline(in, temp);
 
-            Assert(depth>=min_depth, ExcMessage("ASPECT found a depth less than min_depth."));
-            Assert(depth<=max_depth, ExcMessage("ASPECT found a depth greater than max_depth."));
-            const unsigned int idx = static_cast<unsigned int>((depth-min_depth)/delta_depth);
-            Assert(idx<values.size(), ExcMessage("Attempting to look up a depth with an index that would be out of range. (depth-min_depth)/delta_depth too large."));
-            return values[idx];
+            min_depth = std::min(depth, min_depth);
+            max_depth = std::max(depth, max_depth);
+
+            values.push_back(visc);
           }
+        delta_depth = (max_depth-min_depth)/(values.size()-1);
+      }
 
-          int LateralViscosityLookup::get_nslices() const
-          {
-            return values.size();
-          }
+      double RadialViscosityLookup::radial_viscosity(double depth) const
+      {
+        depth=std::max(min_depth, depth);
+        depth=std::min(depth, max_depth);
 
-          RadialViscosityLookup::RadialViscosityLookup(const std::string &filename,
-                                                       const MPI_Comm &comm)
-          {
-            std::string temp;
-            // Read data from disk and distribute among processes
-            std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
-
-            min_depth=1e20;
-            max_depth=-1;
-
-            while (!in.eof())
-              {
-                double visc, depth;
-                in >> visc;;
-                if (in.eof())
-                  break;
-                in >> depth;
-                depth *=1000.0;
-                getline(in, temp);
-
-                min_depth = std::min(depth, min_depth);
-                max_depth = std::max(depth, max_depth);
-
-                values.push_back(visc);
-              }
-            delta_depth = (max_depth-min_depth)/(values.size()-1);
-          }
-
-          double RadialViscosityLookup::radial_viscosity(double depth) const
-          {
-            depth=std::max(min_depth, depth);
-            depth=std::min(depth, max_depth);
-
-            Assert(depth>=min_depth, ExcMessage("ASPECT found a depth less than min_depth."));
-            Assert(depth<=max_depth, ExcMessage("ASPECT found a depth greater than max_depth."));
-            const unsigned int idx = static_cast<unsigned int>((depth-min_depth)/delta_depth);
-            Assert(idx<values.size(), ExcMessage("Attempting to look up a depth with an index that would be out of range. (depth-min_depth)/delta_depth too large."));
-            return values[idx];
-          }
+        Assert(depth>=min_depth, ExcMessage("ASPECT found a depth less than min_depth."));
+        Assert(depth<=max_depth, ExcMessage("ASPECT found a depth greater than max_depth."));
+        const unsigned int idx = static_cast<unsigned int>((depth-min_depth)/delta_depth);
+        Assert(idx<values.size(), ExcMessage("Attempting to look up a depth with an index that would be out of range. (depth-min_depth)/delta_depth too large."));
+        return values[idx];
+      }
     }
 
 

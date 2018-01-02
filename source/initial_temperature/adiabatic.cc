@@ -125,17 +125,17 @@ namespace aspect
                   // one use the mid_angle. And if there are lateral boundaries
                   // do not place a perturbation there.
                   const double angle_fraction = ((n_perturbations == 1) || (shell_geometry_model->opening_angle() != 360))
-                            ?
-                                (static_cast<double> (i) + 0.5) / static_cast<double> (n_perturbations)
-                                :
-                                (static_cast<double> (i)) / static_cast<double> (n_perturbations);
+                                                ?
+                                                (static_cast<double> (i) + 0.5) / static_cast<double> (n_perturbations)
+                                                :
+                                                (static_cast<double> (i)) / static_cast<double> (n_perturbations);
 
                   const double perturbation_angle = numbers::PI/180.0 * angle_fraction * shell_geometry_model->opening_angle();
                   if (dim==2)
                     {
                       // choose the center of the perturbation at half angle along the inner radius
                       mid_point(0) = inner_radius * std::sin(perturbation_angle),
-                          mid_point(1) = inner_radius * std::cos(perturbation_angle);
+                      mid_point(1) = inner_radius * std::cos(perturbation_angle);
                     }
                   else if (dim==3)
                     {
@@ -145,15 +145,15 @@ namespace aspect
                       if (shell_geometry_model->opening_angle() == 90)
                         {
                           mid_point(0) = inner_radius*std::sqrt(1./3),
-                              mid_point(1) = inner_radius*std::sqrt(1./3),
-                              mid_point(2) = inner_radius*std::sqrt(1./3);
+                          mid_point(1) = inner_radius*std::sqrt(1./3),
+                          mid_point(2) = inner_radius*std::sqrt(1./3);
                         }
                       else
                         {
                           // otherwise do the same as in 2d
                           mid_point(0) = inner_radius * std::sin(perturbation_angle) * std::cos(perturbation_angle),
-                              mid_point(1) = inner_radius * std::sin(perturbation_angle) * std::sin(perturbation_angle),
-                              mid_point(2) = inner_radius * std::cos(perturbation_angle);
+                          mid_point(1) = inner_radius * std::sin(perturbation_angle) * std::sin(perturbation_angle),
+                          mid_point(2) = inner_radius * std::cos(perturbation_angle);
                         }
                     }
                   if (mid_point.distance(position) < radius)
