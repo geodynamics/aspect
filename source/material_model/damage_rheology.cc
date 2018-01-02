@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -26,6 +26,7 @@
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
+#include <deal.II/base/signaling_nan.h>
 
 #include <iostream>
 
@@ -45,6 +46,8 @@ namespace aspect
       }
     }
 
+
+
     template <int dim>
     DislocationViscosityOutputs<dim>::DislocationViscosityOutputs (const unsigned int n_points)
       :
@@ -54,14 +57,28 @@ namespace aspect
     {}
 
 
+
     template <int dim>
     std::vector<double>
     DislocationViscosityOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
-      AssertIndexRange (idx, 1);
+      AssertIndexRange (idx, 2);
+      switch (idx)
+        {
+          case 0:
+            return dislocation_viscosities;
 
+          case 1:
+            return boundary_area_change_work_fraction;
+
+          default:
+            AssertThrow(false, ExcInternalError());
+        }
+      // we will never get here, so just return something
       return dislocation_viscosities;
     }
+
+
 
     namespace Lookup
     {
@@ -203,12 +220,12 @@ namespace aspect
       {
         /* Initializing variables */
         interpolation = interpol;
-        delta_press=-1.0;
-        min_press=1e300;
-        max_press=-1e300;
-        delta_temp=-1.0;
-        min_temp=1e300;
-        max_temp=-1e300;
+        delta_press=numbers::signaling_nan<double>();
+        min_press=std::numeric_limits<double>::max();
+        max_press=-std::numeric_limits<double>::max();
+        delta_temp=numbers::signaling_nan<double>();
+        min_temp=std::numeric_limits<double>::max();
+        max_temp=-std::numeric_limits<double>::max();
         numtemp=0;
         numpress=0;
 
@@ -409,10 +426,12 @@ namespace aspect
       {
         /* Initializing variables */
         interpolation = interpol;
-        delta_press=-1.0;
-        min_press=-1.0;
-        delta_temp=-1.0;
-        min_temp=-1.0;
+        delta_press=numbers::signaling_nan<double>();
+        min_press=std::numeric_limits<double>::max();
+        max_press=-std::numeric_limits<double>::max();
+        delta_temp=numbers::signaling_nan<double>();
+        min_temp=std::numeric_limits<double>::max();
+        max_temp=-std::numeric_limits<double>::max();
         numtemp=0;
         numpress=0;
 
@@ -517,10 +536,11 @@ namespace aspect
 
             i++;
           }
-        Assert(i==numtemp*numpress, ExcMessage("Material table size not consistent with header."));
+        Assert(i == numtemp*numpress, ExcMessage("Material table size not consistent with header."));
 
       }
     }
+
 
 
     template <int dim>
@@ -546,13 +566,6 @@ namespace aspect
         }
     }
 
-
-    template <int dim>
-    void
-    DamageRheology<dim>::
-    update()
-    {
-    }
 
 
     template <int dim>
@@ -648,6 +661,8 @@ namespace aspect
       return;
     }
 
+
+
     template <int dim>
     double
     DamageRheology<dim>::
@@ -672,7 +687,9 @@ namespace aspect
       double grain_size = original_grain_size;
       double grain_size_change = 0.0;
       const double timestep = this->get_timestep();
-      double grain_growth_timestep = 500 * 3600 * 24 * 365.25; // 500 yrs
+
+      // use a sub timestep of 500 yrs, currently fixed timestep
+      double grain_growth_timestep = 500 * 3600 * 24 * 365.25;
       double time = 0;
 
       // find out in which phase we are
@@ -696,7 +713,7 @@ namespace aspect
           const double m = grain_growth_exponent[ol_index];
           const double grain_size_growth_rate = grain_growth_rate_constant[ol_index] / (m * pow(grain_size,m-1))
                                                 * exp(- (grain_growth_activation_energy[ol_index] + pressure * grain_growth_activation_volume[ol_index])
-                                                      / (gas_constant * temperature));
+                                                      / (constants::gas_constant * temperature));
           const double grain_size_growth = grain_size_growth_rate * grain_growth_timestep;
 
           // grain size reduction in dislocation creep regime
@@ -727,7 +744,6 @@ namespace aspect
             }
           else
             {
-              //TODO: check equations! are we missing a factor 2 from the conversion between strain_rate and second invariant of strain_rate?
               // paleopiezometer: Hall and Parmentier (2003): Influence of grain size evolution on convective instability. Geochem. Geophys. Geosyst., 4(3).
               grain_size_reduction = reciprocal_required_strain[ol_index] * dislocation_strain_rate * grain_size * grain_growth_timestep;
             }
@@ -787,6 +803,8 @@ namespace aspect
       return grain_size - original_grain_size - phase_grain_size_reduction;
     }
 
+
+
     template <int dim>
     double
     DamageRheology<dim>::
@@ -822,12 +840,12 @@ namespace aspect
       // TODO: we use the prefactors from Behn et al., 2009 as default values, but their laws use the strain rate
       // and we use the second invariant --> check if the prefactors should be changed
       double energy_term = exp((diffusion_activation_energy[ol_index] + diffusion_activation_volume[ol_index] * adiabatic_pressure)
-                               / (diffusion_creep_exponent[ol_index] * gas_constant * temperature));
+                               / (diffusion_creep_exponent[ol_index] * constants::gas_constant * temperature));
       if (this->get_adiabatic_conditions().is_initialized())
         {
           const double adiabatic_energy_term
             = exp((diffusion_activation_energy[ol_index] + diffusion_activation_volume[ol_index] * adiabatic_pressure)
-                  / (diffusion_creep_exponent[ol_index] * gas_constant * this->get_adiabatic_conditions().temperature(position)));
+                  / (diffusion_creep_exponent[ol_index] * constants::gas_constant * this->get_adiabatic_conditions().temperature(position)));
 
           const double temperature_dependence = energy_term / adiabatic_energy_term;
           if (temperature_dependence > max_temperature_dependence_of_eta)
@@ -843,6 +861,8 @@ namespace aspect
              * pow(grain_size, diffusion_creep_grain_size_exponent[ol_index]/diffusion_creep_exponent[ol_index])
              * energy_term;
     }
+
+
 
     template <int dim>
     double
@@ -865,20 +885,23 @@ namespace aspect
 
       double dis_viscosity_old = 0;
       unsigned int i = 0;
-      while (std::abs((dis_viscosity-dis_viscosity_old) / dis_viscosity) > dislocation_viscosity_iteration_threshold && i < dislocation_viscosity_iteration_number)
+      while ((std::abs((dis_viscosity-dis_viscosity_old) / dis_viscosity) > dislocation_viscosity_iteration_threshold)
+             && (i < dislocation_viscosity_iteration_number))
         {
-          SymmetricTensor<2,dim> dislocation_strain_rate = diff_viscosity
-                                                           / (diff_viscosity + dis_viscosity) * strain_rate;
+          const SymmetricTensor<2,dim> dislocation_strain_rate = diff_viscosity
+                                                                 / (diff_viscosity + dis_viscosity) * strain_rate;
           dis_viscosity_old = dis_viscosity;
           dis_viscosity = dislocation_viscosity_fixed_strain_rate(temperature,
                                                                   pressure,
                                                                   std::vector<double>(),
                                                                   dislocation_strain_rate,
                                                                   position);
-          i++;
+          ++i;
         }
       return dis_viscosity;
     }
+
+
 
     template <int dim>
     double
@@ -903,12 +926,12 @@ namespace aspect
       const unsigned int ol_index = get_phase_index(position, temperature, adiabatic_pressure);
 
       double energy_term = exp((dislocation_activation_energy[ol_index] + dislocation_activation_volume[ol_index] * adiabatic_pressure)
-                               / (dislocation_creep_exponent[ol_index] * gas_constant * temperature));
+                               / (dislocation_creep_exponent[ol_index] * constants::gas_constant * temperature));
       if (this->get_adiabatic_conditions().is_initialized())
         {
           const double adiabatic_energy_term
             = exp((dislocation_activation_energy[ol_index] + dislocation_activation_volume[ol_index] * adiabatic_pressure)
-                  / (dislocation_creep_exponent[ol_index] * gas_constant * this->get_adiabatic_conditions().temperature(position)));
+                  / (dislocation_creep_exponent[ol_index] * constants::gas_constant * this->get_adiabatic_conditions().temperature(position)));
 
           const double temperature_dependence = energy_term / adiabatic_energy_term;
           if (temperature_dependence > max_temperature_dependence_of_eta)
@@ -924,6 +947,8 @@ namespace aspect
              * energy_term;
     }
 
+
+
     template <int dim>
     double
     DamageRheology<dim>::
@@ -933,10 +958,6 @@ namespace aspect
                const SymmetricTensor<2,dim> &strain_rate,
                const Point<dim> &position) const
     {
-      //TODO: add assert
-      /*if (this->get_timestep_number() > 0)
-        Assert (grain_size >= 1.e-6, ExcMessage ("Error: The grain size should not be smaller than 1e-6 m."));*/
-
       const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
       const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
 
@@ -950,8 +971,10 @@ namespace aspect
         }
       else
         effective_viscosity = diff_viscosity;
+
       return effective_viscosity;
     }
+
 
 
     template <int dim>
@@ -962,25 +985,20 @@ namespace aspect
               const std::vector<double> &compositional_fields,
               const Point<dim> &/*position*/) const
     {
-      //this function is not called from evaluate() so we need to care about
-      //corrections for temperature and pressure
-      //const double corrected_temperature = get_corrected_temperature(temperature,pressure,position);
-      //const double corrected_pressure = get_corrected_pressure(temperature,pressure,position);
-      const double corrected_temperature = temperature;
-      const double corrected_pressure = pressure;
       AssertThrow ((reference_compressibility != 0.0) || use_table_properties,
-                   ExcMessage("Currently only compressible models are supported for seismic output."));
+                   ExcMessage("Currently only compressible models are supported."));
 
       double enthalpy = 0.0;
       if (n_material_data == 1)
-        enthalpy += material_lookup[0]->enthalpy(corrected_temperature,corrected_pressure);
+        enthalpy += material_lookup[0]->enthalpy(temperature,pressure);
       else
         {
           for (unsigned i = 0; i < n_material_data; i++)
-            enthalpy += compositional_fields[i] * material_lookup[i]->enthalpy(corrected_temperature,corrected_pressure);
+            enthalpy += compositional_fields[i] * material_lookup[i]->enthalpy(temperature,pressure);
         }
       return enthalpy;
     }
+
 
 
     template <int dim>
@@ -991,25 +1009,20 @@ namespace aspect
                 const std::vector<double> &compositional_fields,
                 const Point<dim> &/*position*/) const
     {
-      //this function is not called from evaluate() so we need to care about
-      //corrections for temperature and pressure
-      //const double corrected_temperature = get_corrected_temperature(temperature,pressure,position);
-      //const double corrected_pressure = get_corrected_pressure(temperature,pressure,position);
-      const double corrected_temperature = temperature;
-      const double corrected_pressure = pressure;
       AssertThrow ((reference_compressibility != 0.0) || use_table_properties,
-                   ExcMessage("Currently only compressible models are supported for seismic output."));
+                   ExcMessage("Currently only compressible models are supported."));
 
       double vp = 0.0;
       if (n_material_data == 1)
-        vp += material_lookup[0]->seismic_Vp(corrected_temperature,corrected_pressure);
+        vp += material_lookup[0]->seismic_Vp(temperature,pressure);
       else
         {
           for (unsigned i = 0; i < n_material_data; i++)
-            vp += compositional_fields[i] * material_lookup[i]->seismic_Vp(corrected_temperature,corrected_pressure);
+            vp += compositional_fields[i] * material_lookup[i]->seismic_Vp(temperature,pressure);
         }
       return vp;
     }
+
 
 
     template <int dim>
@@ -1020,25 +1033,20 @@ namespace aspect
                 const std::vector<double> &compositional_fields,
                 const Point<dim> &/*position*/) const
     {
-      //this function is not called from evaluate() so we need to care about
-      //corrections for temperature and pressure
-      //const double corrected_temperature = get_corrected_temperature(temperature,pressure,position);
-      //const double corrected_pressure = get_corrected_pressure(temperature,pressure,position);
-      const double corrected_temperature = temperature;
-      const double corrected_pressure = pressure;
       AssertThrow ((reference_compressibility != 0.0) || use_table_properties,
-                   ExcMessage("Currently only compressible models are supported for seismic output."));
+                   ExcMessage("Currently only compressible models are supported."));
 
       double vs = 0.0;
       if (n_material_data == 1)
-        vs += material_lookup[0]->seismic_Vs(corrected_temperature,corrected_pressure);
+        vs += material_lookup[0]->seismic_Vs(temperature,pressure);
       else
         {
           for (unsigned i = 0; i < n_material_data; i++)
-            vs += compositional_fields[i] * material_lookup[i]->seismic_Vs(corrected_temperature,corrected_pressure);
+            vs += compositional_fields[i] * material_lookup[i]->seismic_Vs(temperature,pressure);
         }
       return vs;
     }
+
 
 
     template <int dim>
@@ -1048,6 +1056,8 @@ namespace aspect
     {
       return eta;
     }
+
+
 
     template <int dim>
     double
@@ -1096,6 +1106,8 @@ namespace aspect
              || use_table_properties;
     }
 
+
+
     template <int dim>
     double
     DamageRheology<dim>::
@@ -1118,6 +1130,8 @@ namespace aspect
       const double rho = density(temperature,pressure,compositional_fields,position);
       return (1/rho)*dRhodp;
     }
+
+
 
     template <int dim>
     double
@@ -1144,6 +1158,8 @@ namespace aspect
       return alpha;
     }
 
+
+
     template <int dim>
     double
     DamageRheology<dim>::
@@ -1168,6 +1184,8 @@ namespace aspect
       cp = std::max(std::min(cp,max_specific_heat),min_specific_heat);
       return cp;
     }
+
+
 
     template <int dim>
     std_cxx1x::array<std::pair<double, unsigned int>,2>
@@ -1275,6 +1293,8 @@ namespace aspect
       return derivative;
     }
 
+
+
     template <int dim>
     void
     DamageRheology<dim>::
@@ -1282,7 +1302,7 @@ namespace aspect
     {
       for (unsigned int i=0; i<in.position.size(); ++i)
         {
-          //Use the adiabatic pressure instead of the real one, because of oscillations
+          // Use the adiabatic pressure instead of the real one, because of oscillations
           const double pressure = (this->get_adiabatic_conditions().is_initialized())
                                   ?
                                   this->get_adiabatic_conditions().pressure(in.position[i])
@@ -1447,6 +1467,7 @@ namespace aspect
           out.specific_heat[i] = std::max(std::min(out.specific_heat[i],max_specific_heat),min_specific_heat);
         }
     }
+
 
 
     template <int dim>
@@ -1757,7 +1778,6 @@ namespace aspect
       {
         prm.enter_subsection("Damage rheology model");
         {
-          gas_constant               = 8.314462;
           reference_rho              = prm.get_double ("Reference density");
           reference_T                = prm.get_double ("Reference temperature");
           eta                        = prm.get_double ("Viscosity");
@@ -1898,7 +1918,7 @@ namespace aspect
           // parameters for reading in tables with material properties
           datadirectory        = prm.get ("Data directory");
           {
-            const std::string      subst_text = "$ASPECT_SOURCE_DIR";
+            const std::string subst_text = "$ASPECT_SOURCE_DIR";
             std::string::size_type position;
             while (position = datadirectory.find (subst_text),  position!=std::string::npos)
               datadirectory.replace (datadirectory.begin()+position,
@@ -1962,6 +1982,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     DamageRheology<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
@@ -1984,8 +2005,7 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(DamageRheology,
                                    "damage rheology",
-                                   "A material model that behaves in the same way as "
-                                   "the simple material model, but includes compositional "
+                                   "A material model that includes compositional "
                                    "fields that stand for average grain sizes of a mineral "
                                    "phase and source terms for them that determine the grain "
                                    "size evolution in dependence of the strain rate, "
@@ -1995,6 +2015,13 @@ namespace aspect
                                    "We use the grain size evolution laws described in Behn "
                                    "et al., 2009. Implications of grain size evolution on the "
                                    "seismic structure of the oceanic upper mantle, "
-                                   "Earth Planet. Sci. Letters, 282, 178–189.")
+                                   "Earth Planet. Sci. Letters, 282, 178–189. "
+                                   "Other material parameters are either prescribed similar "
+                                   "to the 'simple' material model, or read from data files "
+                                   "that were generated by the Perplex or Hefesto software. "
+                                   "The material model"
+                                   "is described in more detail in Dannberg et al., 2017. The "
+                                   "importance of grain size to mantle dynamics and "
+                                   "seismological observations. Geochemistry, Geophysics, Geosystems. ")
   }
 }
