@@ -53,10 +53,95 @@ namespace aspect
         std::vector<double> dislocation_viscosities;
     };
 
-
     namespace Lookup
     {
-      class MaterialLookup;
+      class MaterialLookup
+      {
+        public:
+
+          double
+          specific_heat(double temperature,
+                        double pressure) const;
+
+          double
+          density(double temperature,
+                  double pressure) const;
+
+          double
+          thermal_expansivity(const double temperature,
+                              const double pressure) const;
+
+          double
+          seismic_Vp(const double temperature,
+                     const double pressure) const;
+
+          double
+          seismic_Vs(const double temperature,
+                     const double pressure) const;
+
+          double
+          enthalpy(const double temperature,
+                   const double pressure) const;
+
+          double
+          dHdT (const double temperature,
+                const double pressure) const;
+
+          double
+          dHdp (const double temperature,
+                const double pressure) const;
+
+          double
+          dRhodp (const double temperature,
+                  const double pressure) const;
+          double
+          value (const double temperature,
+                 const double pressure,
+                 const dealii::Table<2,
+                 double> &values,
+                 bool interpol) const;
+
+          std_cxx1x::array<double,2>
+          get_pT_steps() const;
+
+        protected:
+          double get_nT(double temperature) const;
+          double get_np(double pressure) const;
+
+          dealii::Table<2,double> density_values;
+          dealii::Table<2,double> thermal_expansivity_values;
+          dealii::Table<2,double> specific_heat_values;
+          dealii::Table<2,double> vp_values;
+          dealii::Table<2,double> vs_values;
+          dealii::Table<2,double> enthalpy_values;
+
+          double delta_press;
+          double min_press;
+          double max_press;
+          double delta_temp;
+          double min_temp;
+          double max_temp;
+          unsigned int numtemp;
+          unsigned int numpress;
+          bool interpolation;
+      };
+
+      class HeFESToReader : public MaterialLookup
+      {
+        public:
+          HeFESToReader(const std::string &material_filename,
+                        const std::string &derivatives_filename,
+                        const bool interpol,
+                        const MPI_Comm &comm);
+      };
+
+      class PerplexReader : public MaterialLookup
+      {
+        public:
+          PerplexReader(const std::string &filename,
+                        const bool interpol,
+                        const MPI_Comm &comm);
+      };
     }
 
     /**

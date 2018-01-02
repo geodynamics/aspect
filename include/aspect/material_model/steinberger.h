@@ -22,6 +22,8 @@
 #define _aspect_material_model_steinberger_h
 
 #include <aspect/material_model/interface.h>
+
+#include <aspect/material_model/damage_rheology.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -32,8 +34,6 @@ namespace aspect
 
     namespace internal
     {
-      class MaterialLookup;
-
       class LateralViscosityLookup
       {
         public:
@@ -249,7 +249,7 @@ namespace aspect
          * List of pointers to objects that read and process data we get from
          * Perplex files.
          */
-        std::vector<std_cxx11::shared_ptr<internal::MaterialLookup> > material_lookup;
+        std::vector<std_cxx11::shared_ptr<Lookup::PerplexReader> > material_lookup;
 
         /**
          * Pointer to an object that reads and processes data for the lateral

@@ -64,491 +64,461 @@ namespace aspect
 
     namespace Lookup
     {
-      class MaterialLookup
+      double
+      MaterialLookup::specific_heat(double temperature,
+                                    double pressure) const
       {
-        public:
+        return value(temperature,pressure,specific_heat_values,interpolation);
+      }
 
-          double
-          specific_heat(double temperature,
-                        double pressure) const
-          {
-            return value(temperature,pressure,specific_heat_values,interpolation);
-          }
+      double
+      MaterialLookup::density(double temperature,
+                              double pressure) const
+      {
+        return value(temperature,pressure,density_values,interpolation);
+      }
 
-          double
-          density(double temperature,
-                  double pressure) const
-          {
-            return value(temperature,pressure,density_values,interpolation);
-          }
+      double
+      MaterialLookup::thermal_expansivity(const double temperature,
+                                          const double pressure) const
+      {
+        return value(temperature,pressure,thermal_expansivity_values,interpolation);
+      }
 
-          double
-          thermal_expansivity(const double temperature,
+      double
+      MaterialLookup::seismic_Vp(const double temperature,
+                                 const double pressure) const
+      {
+        return value(temperature,pressure,vp_values,false);
+      }
+
+      double
+      MaterialLookup::seismic_Vs(const double temperature,
+                                 const double pressure) const
+      {
+        return value(temperature,pressure,vs_values,false);
+      }
+
+      double
+      MaterialLookup::enthalpy(const double temperature,
+                               const double pressure) const
+      {
+        return value(temperature,pressure,enthalpy_values,true);
+      }
+
+      double
+      MaterialLookup::dHdT (const double temperature,
+                            const double pressure) const
+      {
+        const double h = value(temperature,pressure,enthalpy_values,interpolation);
+        const double dh = value(temperature+delta_temp,pressure,enthalpy_values,interpolation);
+        return (dh - h) / delta_temp;
+      }
+
+      double
+      MaterialLookup::dHdp (const double temperature,
+                            const double pressure) const
+      {
+        const double h = value(temperature,pressure,enthalpy_values,interpolation);
+        const double dh = value(temperature,pressure+delta_press,enthalpy_values,interpolation);
+        return (dh - h) / delta_press;
+      }
+
+      double
+      MaterialLookup::dRhodp (const double temperature,
                               const double pressure) const
-          {
-            return value(temperature,pressure,thermal_expansivity_values,interpolation);
-          }
-
-          double
-          seismic_Vp(const double temperature,
-                     const double pressure) const
-          {
-            return value(temperature,pressure,vp_values,false);
-          }
-
-          double
-          seismic_Vs(const double temperature,
-                     const double pressure) const
-          {
-            return value(temperature,pressure,vs_values,false);
-          }
-
-          double
-          enthalpy(const double temperature,
-                   const double pressure) const
-          {
-            return value(temperature,pressure,enthalpy_values,true);
-          }
-
-          double
-          dHdT (const double temperature,
-                const double pressure) const
-          {
-            const double h = value(temperature,pressure,enthalpy_values,interpolation);
-            const double dh = value(temperature+delta_temp,pressure,enthalpy_values,interpolation);
-            return (dh - h) / delta_temp;
-          }
-
-          double
-          dHdp (const double temperature,
-                const double pressure) const
-          {
-            const double h = value(temperature,pressure,enthalpy_values,interpolation);
-            const double dh = value(temperature,pressure+delta_press,enthalpy_values,interpolation);
-            return (dh - h) / delta_press;
-          }
-
-          double
-          dRhodp (const double temperature,
-                  const double pressure) const
-          {
-            const double rho = value(temperature,pressure,density_values,interpolation);
-            const double drho = value(temperature,pressure+delta_press,density_values,interpolation);
-            return (drho - rho) / delta_press;
-          }
-
-          double
-          value (const double temperature,
-                 const double pressure,
-                 const dealii::Table<2,
-                 double> &values,
-                 bool interpol) const
-          {
-            const double nT = get_nT(temperature);
-            const unsigned int inT = static_cast<unsigned int>(nT);
-
-            const double np = get_np(pressure);
-            const unsigned int inp = static_cast<unsigned int>(np);
-
-            Assert(inT<values.n_rows(), ExcMessage("not in range"));
-            Assert(inp<values.n_cols(), ExcMessage("not in range"));
-
-            if (!interpol)
-              return values[inT][inp];
-            else
-              {
-                // compute the coordinates of this point in the
-                // reference cell between the data points
-                const double xi = nT-inT;
-                const double eta = np-inp;
-
-                Assert ((0 <= xi) && (xi <= 1), ExcInternalError());
-                Assert ((0 <= eta) && (eta <= 1), ExcInternalError());
-
-                // use these coordinates for a bilinear interpolation
-                return ((1-xi)*(1-eta)*values[inT][inp] +
-                        xi    *(1-eta)*values[inT+1][inp] +
-                        (1-xi)*eta    *values[inT][inp+1] +
-                        xi    *eta    *values[inT+1][inp+1]);
-              }
-          }
-
-          std_cxx1x::array<double,2>
-          get_pT_steps() const
-          {
-            return std_cxx1x::array<double,2> {delta_press,delta_temp};
-          }
-
-        protected:
-
-
-          double get_nT(double temperature) const
-          {
-            temperature=std::max(min_temp, temperature);
-            temperature=std::min(temperature, max_temp-delta_temp);
-            Assert(temperature>=min_temp, ExcMessage("not in range"));
-            Assert(temperature<=max_temp, ExcMessage("not in range"));
-            return (temperature-min_temp)/delta_temp;
-          }
-
-          double get_np(double pressure) const
-          {
-            pressure=std::max(min_press, pressure);
-            pressure=std::min(pressure, max_press-delta_press);
-            Assert(pressure>=min_press, ExcMessage("not in range"));
-            Assert(pressure<=max_press, ExcMessage("not in range"));
-            return (pressure-min_press)/delta_press;
-          }
-
-
-          dealii::Table<2,double> density_values;
-          dealii::Table<2,double> thermal_expansivity_values;
-          dealii::Table<2,double> specific_heat_values;
-          dealii::Table<2,double> vp_values;
-          dealii::Table<2,double> vs_values;
-          dealii::Table<2,double> enthalpy_values;
-
-          double delta_press;
-          double min_press;
-          double max_press;
-          double delta_temp;
-          double min_temp;
-          double max_temp;
-          unsigned int numtemp;
-          unsigned int numpress;
-          bool interpolation;
-      };
-      class HeFESToReader : public MaterialLookup
       {
-        public:
-          HeFESToReader(const std::string &material_filename,
-                        const std::string &derivatives_filename,
-                        const bool interpol,
-                        const MPI_Comm &comm)
+        const double rho = value(temperature,pressure,density_values,interpolation);
+        const double drho = value(temperature,pressure+delta_press,density_values,interpolation);
+        return (drho - rho) / delta_press;
+      }
+
+      double
+      MaterialLookup::value (const double temperature,
+                             const double pressure,
+                             const dealii::Table<2,
+                             double> &values,
+                             bool interpol) const
+      {
+        const double nT = get_nT(temperature);
+        const unsigned int inT = static_cast<unsigned int>(nT);
+
+        const double np = get_np(pressure);
+        const unsigned int inp = static_cast<unsigned int>(np);
+
+        Assert(inT<values.n_rows(), ExcMessage("Attempting to look up a temperature value with index greater than the number of rows."));
+        Assert(inp<values.n_cols(), ExcMessage("Attempting to look up a pressure value with index greater than the number of columns."));
+
+        if (!interpol)
+          return values[inT][inp];
+        else
           {
-            /* Initializing variables */
-            interpolation = interpol;
-            delta_press=-1.0;
-            min_press=1e300;
-            max_press=-1e300;
-            delta_temp=-1.0;
-            min_temp=1e300;
-            max_temp=-1e300;
-            numtemp=0;
-            numpress=0;
+            // compute the coordinates of this point in the
+            // reference cell between the data points
+            const double xi = nT-inT;
+            const double eta = np-inp;
 
-            std::string temp;
+            Assert ((0 <= xi) && (xi <= 1), ExcInternalError());
+            Assert ((0 <= eta) && (eta <= 1), ExcInternalError());
 
-            // Read material data
+            // use these coordinates for a bilinear interpolation
+            return ((1-xi)*(1-eta)*values[inT][inp] +
+                xi    *(1-eta)*values[inT+1][inp] +
+                (1-xi)*eta    *values[inT][inp+1] +
+                xi    *eta    *values[inT+1][inp+1]);
+          }
+      }
+
+      std_cxx1x::array<double,2>
+      MaterialLookup::get_pT_steps() const
+      {
+        return std_cxx1x::array<double,2> {delta_press,delta_temp};
+      }
+
+      double
+      MaterialLookup::get_nT(double temperature) const
+      {
+        temperature=std::max(min_temp, temperature);
+        temperature=std::min(temperature, max_temp-delta_temp);
+        Assert(temperature>=min_temp, ExcMessage("ASPECT found a temperature less than min_T."));
+        Assert(temperature<=max_temp, ExcMessage("ASPECT found a temperature greater than max_T."));
+        return (temperature-min_temp)/delta_temp;
+      }
+
+      double
+      MaterialLookup::get_np(double pressure) const
+      {
+        pressure=std::max(min_press, pressure);
+        pressure=std::min(pressure, max_press-delta_press);
+        Assert(pressure>=min_press, ExcMessage("ASPECT found a pressure less than min_p."));
+        Assert(pressure<=max_press, ExcMessage("ASPECT found a pressure greater than max_p."));
+        return (pressure-min_press)/delta_press;
+      }
+
+      HeFESToReader::HeFESToReader(const std::string &material_filename,
+                                   const std::string &derivatives_filename,
+                                   const bool interpol,
+                                   const MPI_Comm &comm)
+      {
+        /* Initializing variables */
+        interpolation = interpol;
+        delta_press=-1.0;
+        min_press=1e300;
+        max_press=-1e300;
+        delta_temp=-1.0;
+        min_temp=1e300;
+        max_temp=-1e300;
+        numtemp=0;
+        numpress=0;
+
+        std::string temp;
+
+        // Read material data
+        {
+          // Read data from disk and distribute among processes
+          std::istringstream in(Utilities::read_and_distribute_file_content(material_filename, comm));
+
+          bool parsed_first_column = false;
+          unsigned int i = 0;
+          double current_pressure = 0.0;
+          double old_pressure = -1.0;
+          while (!in.eof())
             {
-              // Read data from disk and distribute among processes
-              std::istringstream in(Utilities::read_and_distribute_file_content(material_filename, comm));
-
-              bool parsed_first_column = false;
-              unsigned int i = 0;
-              double current_pressure = 0.0;
-              double old_pressure = -1.0;
-              while (!in.eof())
+              in >> current_pressure;
+              if (in.fail())
                 {
-                  in >> current_pressure;
-                  if (in.fail())
-                    {
-                      in.clear();
-                    }
-
-                  if (!parsed_first_column)
-                    {
-                      if (current_pressure > old_pressure)
-                        old_pressure = current_pressure;
-                      else if (current_pressure <= old_pressure)
-                        {
-                          numpress = i;
-                          parsed_first_column = true;
-                        }
-                    }
-
-                  getline(in, temp);
-                  if (in.eof())
-                    break;
-                  i++;
+                  in.clear();
                 }
 
-              in.clear();
-              in.seekg (0, in.beg);
-
-              numtemp = i / numpress;
-
-              Assert(i == numtemp * numpress,
-                     ExcMessage("Material table size not consistent."));
-
-              density_values.reinit(numtemp,numpress);
-              thermal_expansivity_values.reinit(numtemp,numpress);
-              specific_heat_values.reinit(numtemp,numpress);
-              vp_values.reinit(numtemp,numpress);
-              vs_values.reinit(numtemp,numpress);
-              enthalpy_values.reinit(numtemp,numpress);
-
-              i = 0;
-              while (!in.eof())
+              if (!parsed_first_column)
                 {
-                  double P = 0.0;
-                  double depth,T;
-                  double rho,vb,vs,vp,vsq,vpq,h;
-                  std::string code;
-                  double alpha = 0.0;
-                  double cp = 0.0;
-
-                  in >> P >> depth >> T;
-                  if (in.fail())
-                    in.clear();
-                  // conversion from [GPa] to [Pa]
-                  P *= 1e9;
-
-                  min_press=std::min(P,min_press);
-                  min_temp=std::min(T,min_temp);
-                  max_temp = std::max(T,max_temp);
-                  max_press = std::max(P,max_press);
-
-                  in >> rho;
-                  if (in.fail())
+                  if (current_pressure > old_pressure)
+                    old_pressure = current_pressure;
+                  else if (current_pressure <= old_pressure)
                     {
-                      in.clear();
-                      rho = density_values[(i-1)%numtemp][(i-1)/numtemp];
+                      numpress = i;
+                      parsed_first_column = true;
                     }
-                  else
-                    rho *= 1e3; // conversion from [g/cm^3] to [kg/m^3]
-
-                  in >> vb;
-                  if (in.fail())
-                    in.clear();
-
-                  in >> vs;
-                  if (in.fail())
-                    {
-                      in.clear();
-                      vs = vs_values[(i-1)%numtemp][(i-1)/numtemp];
-                    }
-                  in >> vp;
-                  if (in.fail())
-                    {
-                      in.clear();
-                      vp = vp_values[(i-1)%numtemp][(i-1)/numtemp];
-                    }
-                  in >> vsq >> vpq;
-
-                  in >> h;
-                  if (in.fail())
-                    {
-                      in.clear();
-                      h = enthalpy_values[(i-1)%numtemp][(i-1)/numtemp];
-                    }
-                  else
-                    h *= 1e6; // conversion from [kJ/g] to [J/kg]
-
-                  getline(in, temp);
-                  if (in.eof())
-                    break;
-
-                  density_values[i/numpress][i%numpress]=rho;
-                  thermal_expansivity_values[i/numpress][i%numpress]=alpha;
-                  specific_heat_values[i/numpress][i%numpress]=cp;
-                  vp_values[i/numpress][i%numpress]=vp;
-                  vs_values[i/numpress][i%numpress]=vs;
-                  enthalpy_values[i/numpress][i%numpress]=h;
-
-                  i++;
                 }
 
-              delta_temp = (max_temp - min_temp) / (numtemp - 1);
-              delta_press = (max_press - min_press) / (numpress - 1);
-
-              Assert(max_temp >= 0.0, ExcMessage("Read in of Material header failed (max_temp)."));
-              Assert(delta_temp > 0, ExcMessage("Read in of Material header failed (delta_temp)."));
-              Assert(numtemp > 0, ExcMessage("Read in of Material header failed (numtemp)."));
-              Assert(max_press >= 0, ExcMessage("Read in of Material header failed (max_press)."));
-              Assert(delta_press > 0, ExcMessage("Read in of Material header failed (delta_press)."));
-              Assert(numpress > 0, ExcMessage("Read in of Material header failed (numpress)."));
+              getline(in, temp);
+              if (in.eof())
+                break;
+              i++;
             }
 
-            // If requested read derivative data
-            if (derivatives_filename != "")
-              {
-                std::string temp;
-                // Read data from disk and distribute among processes
-                std::istringstream in(Utilities::read_and_distribute_file_content(derivatives_filename, comm));
+          in.clear();
+          in.seekg (0, in.beg);
 
-                int i = 0;
-                while (!in.eof())
-                  {
-                    double P = 0.0;
-                    double depth,T;
-                    double cp,alpha,alpha_eff;
-                    double temp1,temp2;
+          numtemp = i / numpress;
 
-                    in >> P >> depth >> T;
-                    if (in.fail())
-                      in.clear();
+          Assert(i == numtemp * numpress,
+                 ExcMessage("Material table size not consistent."));
 
+          density_values.reinit(numtemp,numpress);
+          thermal_expansivity_values.reinit(numtemp,numpress);
+          specific_heat_values.reinit(numtemp,numpress);
+          vp_values.reinit(numtemp,numpress);
+          vs_values.reinit(numtemp,numpress);
+          enthalpy_values.reinit(numtemp,numpress);
 
-                    in >> cp;
-                    if (in.fail() || (cp <= std::numeric_limits<double>::min()))
-                      {
-                        in.clear();
-                        cp = specific_heat_values[(i-1)%numtemp][(i-1)/numtemp];
-                      }
-                    else
-                      cp *= 1e3; // conversion from [J/g/K] to [J/kg/K]
+          i = 0;
+          while (!in.eof())
+            {
+              double P = 0.0;
+              double depth,T;
+              double rho,vb,vs,vp,vsq,vpq,h;
+              std::string code;
+              double alpha = 0.0;
+              double cp = 0.0;
 
-                    in >> alpha >> alpha_eff;
-                    if (in.fail() || (alpha_eff <= std::numeric_limits<double>::min()))
-                      {
-                        in.clear();
-                        alpha_eff = thermal_expansivity_values[(i-1)%numtemp][(i-1)/numtemp];
-                      }
-                    else
-                      {
-                        alpha *= 1e-5;
-                        alpha_eff *= 1e-5;
-                      }
+              in >> P >> depth >> T;
+              if (in.fail())
+                in.clear();
+              // conversion from [GPa] to [Pa]
+                                           P *= 1e9;
 
-                    in >> temp1 >> temp2;
-                    if (in.fail())
-                      in.clear();
+                                           min_press=std::min(P,min_press);
+                                           min_temp=std::min(T,min_temp);
+                                           max_temp = std::max(T,max_temp);
+                                           max_press = std::max(P,max_press);
 
+                                           in >> rho;
+                                           if (in.fail())
+                                             {
+                                               in.clear();
+                                               rho = density_values[(i-1)%numtemp][(i-1)/numtemp];
+                                             }
+                                           else
+                                             rho *= 1e3; // conversion from [g/cm^3] to [kg/m^3]
 
-                    getline(in, temp);
-                    if (in.eof())
-                      break;
+                                           in >> vb;
+                                           if (in.fail())
+                                             in.clear();
 
-                    specific_heat_values[i/numpress][i%numpress]=cp;
-                    thermal_expansivity_values[i/numpress][i%numpress]=alpha_eff;
+                                           in >> vs;
+                                           if (in.fail())
+                                             {
+                                               in.clear();
+                                               vs = vs_values[(i-1)%numtemp][(i-1)/numtemp];
+                                             }
+                                           in >> vp;
+                                           if (in.fail())
+                                             {
+                                               in.clear();
+                                               vp = vp_values[(i-1)%numtemp][(i-1)/numtemp];
+                                             }
+                                           in >> vsq >> vpq;
 
-                    i++;
-                  }
-              }
-          }
-      };
-      class PerplexReader : public MaterialLookup
-      {
-        public:
-          PerplexReader(const std::string &filename,
-                        const bool interpol,
-                        const MPI_Comm &comm)
+                                           in >> h;
+                                           if (in.fail())
+                                             {
+                                               in.clear();
+                                               h = enthalpy_values[(i-1)%numtemp][(i-1)/numtemp];
+                                             }
+                                           else
+                                             h *= 1e6; // conversion from [kJ/g] to [J/kg]
+
+                                           getline(in, temp);
+                                           if (in.eof())
+                                             break;
+
+                                           density_values[i/numpress][i%numpress]=rho;
+                                           thermal_expansivity_values[i/numpress][i%numpress]=alpha;
+                                           specific_heat_values[i/numpress][i%numpress]=cp;
+                                           vp_values[i/numpress][i%numpress]=vp;
+                                           vs_values[i/numpress][i%numpress]=vs;
+                                           enthalpy_values[i/numpress][i%numpress]=h;
+
+                                           i++;
+            }
+
+          delta_temp = (max_temp - min_temp) / (numtemp - 1);
+          delta_press = (max_press - min_press) / (numpress - 1);
+
+          Assert(max_temp >= 0.0, ExcMessage("Read in of Material header failed (max_temp)."));
+          Assert(delta_temp > 0, ExcMessage("Read in of Material header failed (delta_temp)."));
+          Assert(numtemp > 0, ExcMessage("Read in of Material header failed (numtemp)."));
+          Assert(max_press >= 0, ExcMessage("Read in of Material header failed (max_press)."));
+          Assert(delta_press > 0, ExcMessage("Read in of Material header failed (delta_press)."));
+          Assert(numpress > 0, ExcMessage("Read in of Material header failed (numpress)."));
+        }
+
+        // If requested read derivative data
+        if (derivatives_filename != "")
           {
-            /* Initializing variables */
-            interpolation = interpol;
-            delta_press=-1.0;
-            min_press=-1.0;
-            delta_temp=-1.0;
-            min_temp=-1.0;
-            numtemp=0;
-            numpress=0;
-
             std::string temp;
             // Read data from disk and distribute among processes
-            std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
+            std::istringstream in(Utilities::read_and_distribute_file_content(derivatives_filename, comm));
 
-            getline(in, temp); // eat first line
-            getline(in, temp); // eat next line
-            getline(in, temp); // eat next line
-            getline(in, temp); // eat next line
-
-            in >> min_temp;
-            getline(in, temp);
-            in >> delta_temp;
-            getline(in, temp);
-            in >> numtemp;
-            getline(in, temp);
-            getline(in, temp);
-            in >> min_press;
-            min_press *= 1e5;  // conversion from [bar] to [Pa]
-            getline(in, temp);
-            in >> delta_press;
-            delta_press *= 1e5; // conversion from [bar] to [Pa]
-            getline(in, temp);
-            in >> numpress;
-            getline(in, temp);
-            getline(in, temp);
-            getline(in, temp);
-
-            Assert(min_temp >= 0.0, ExcMessage("Read in of Material header failed (mintemp)."));
-            Assert(delta_temp > 0, ExcMessage("Read in of Material header failed (delta_temp)."));
-            Assert(numtemp > 0, ExcMessage("Read in of Material header failed (numtemp)."));
-            Assert(min_press >= 0, ExcMessage("Read in of Material header failed (min_press)."));
-            Assert(delta_press > 0, ExcMessage("Read in of Material header failed (delta_press)."));
-            Assert(numpress > 0, ExcMessage("Read in of Material header failed (numpress)."));
-
-
-            max_temp = min_temp + (numtemp-1) * delta_temp;
-            max_press = min_press + (numpress-1) * delta_press;
-
-            density_values.reinit(numtemp,numpress);
-            thermal_expansivity_values.reinit(numtemp,numpress);
-            specific_heat_values.reinit(numtemp,numpress);
-            vp_values.reinit(numtemp,numpress);
-            vs_values.reinit(numtemp,numpress);
-            enthalpy_values.reinit(numtemp,numpress);
-
-            unsigned int i = 0;
+            int i = 0;
             while (!in.eof())
               {
+                double P = 0.0;
+                double depth,T;
+                double cp,alpha,alpha_eff;
                 double temp1,temp2;
-                double rho,alpha,cp,vp,vs,h;
-                in >> temp1 >> temp2;
-                in >> rho;
+
+                in >> P >> depth >> T;
                 if (in.fail())
-                  {
-                    in.clear();
-                    rho = density_values[(i-1)%numtemp][(i-1)/numtemp];
-                  }
-                in >> alpha;
-                if (in.fail())
-                  {
-                    in.clear();
-                    alpha = thermal_expansivity_values[(i-1)%numtemp][(i-1)/numtemp];
-                  }
+                  in.clear();
+
+
                 in >> cp;
-                if (in.fail())
+                if (in.fail() || (cp <= std::numeric_limits<double>::min()))
                   {
                     in.clear();
                     cp = specific_heat_values[(i-1)%numtemp][(i-1)/numtemp];
                   }
-                in >> vp;
-                if (in.fail())
-                  {
-                    in.clear();
-                    vp = vp_values[(i-1)%numtemp][(i-1)/numtemp];
-                  }
-                in >> vs;
-                if (in.fail())
-                  {
-                    in.clear();
-                    vs = vs_values[(i-1)%numtemp][(i-1)/numtemp];
-                  }
-                in >> h;
-                if (in.fail())
-                  {
-                    in.clear();
-                    h = enthalpy_values[(i-1)%numtemp][(i-1)/numtemp];
-                  }
+                else
+                  cp *= 1e3; // conversion from [J/g/K] to [J/kg/K]
 
-                getline(in, temp);
-                if (in.eof())
-                  break;
+                                                            in >> alpha >> alpha_eff;
+                                                            if (in.fail() || (alpha_eff <= std::numeric_limits<double>::min()))
+                                                              {
+                                                                in.clear();
+                                                                alpha_eff = thermal_expansivity_values[(i-1)%numtemp][(i-1)/numtemp];
+                                                              }
+                                                            else
+                                                              {
+                                                                alpha *= 1e-5;
+                                                                alpha_eff *= 1e-5;
+                                                              }
 
-                density_values[i%numtemp][i/numtemp]=rho;
-                thermal_expansivity_values[i%numtemp][i/numtemp]=alpha;
-                specific_heat_values[i%numtemp][i/numtemp]=cp;
-                vp_values[i%numtemp][i/numtemp]=vp;
-                vs_values[i%numtemp][i/numtemp]=vs;
-                enthalpy_values[i%numtemp][i/numtemp]=h;
+                                                            in >> temp1 >> temp2;
+                                                            if (in.fail())
+                                                              in.clear();
 
-                i++;
+
+                                                            getline(in, temp);
+                                                            if (in.eof())
+                                                              break;
+
+                                                            specific_heat_values[i/numpress][i%numpress]=cp;
+                                                            thermal_expansivity_values[i/numpress][i%numpress]=alpha_eff;
+
+                                                            i++;
               }
-            Assert(i==numtemp*numpress, ExcMessage("Material table size not consistent with header."));
           }
+      }
 
-      };
+      PerplexReader::PerplexReader(const std::string &filename,
+                                   const bool interpol,
+                                   const MPI_Comm &comm)
+      {
+        /* Initializing variables */
+        interpolation = interpol;
+        delta_press=-1.0;
+        min_press=-1.0;
+        delta_temp=-1.0;
+        min_temp=-1.0;
+        numtemp=0;
+        numpress=0;
+
+        std::string temp;
+        // Read data from disk and distribute among processes
+        std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
+
+        getline(in, temp); // eat first line
+        getline(in, temp); // eat next line
+        getline(in, temp); // eat next line
+        getline(in, temp); // eat next line
+
+        in >> min_temp;
+        getline(in, temp);
+        in >> delta_temp;
+        getline(in, temp);
+        in >> numtemp;
+        getline(in, temp);
+        getline(in, temp);
+        in >> min_press;
+        min_press *= 1e5;  // conversion from [bar] to [Pa]
+        getline(in, temp);
+        in >> delta_press;
+        delta_press *= 1e5; // conversion from [bar] to [Pa]
+        getline(in, temp);
+        in >> numpress;
+        getline(in, temp);
+        getline(in, temp);
+        getline(in, temp);
+
+        Assert(min_temp >= 0.0, ExcMessage("Read in of Material header failed (mintemp)."));
+        Assert(delta_temp > 0, ExcMessage("Read in of Material header failed (delta_temp)."));
+        Assert(numtemp > 0, ExcMessage("Read in of Material header failed (numtemp)."));
+        Assert(min_press >= 0, ExcMessage("Read in of Material header failed (min_press)."));
+        Assert(delta_press > 0, ExcMessage("Read in of Material header failed (delta_press)."));
+        Assert(numpress > 0, ExcMessage("Read in of Material header failed (numpress)."));
+
+
+        max_temp = min_temp + (numtemp-1) * delta_temp;
+        max_press = min_press + (numpress-1) * delta_press;
+
+        density_values.reinit(numtemp,numpress);
+        thermal_expansivity_values.reinit(numtemp,numpress);
+        specific_heat_values.reinit(numtemp,numpress);
+        vp_values.reinit(numtemp,numpress);
+        vs_values.reinit(numtemp,numpress);
+        enthalpy_values.reinit(numtemp,numpress);
+
+        unsigned int i = 0;
+        while (!in.eof())
+          {
+            double temp1,temp2;
+            double rho,alpha,cp,vp,vs,h;
+            in >> temp1 >> temp2;
+            in >> rho;
+            if (in.fail())
+              {
+                in.clear();
+                rho = density_values[(i-1)%numtemp][(i-1)/numtemp];
+              }
+            in >> alpha;
+            if (in.fail())
+              {
+                in.clear();
+                alpha = thermal_expansivity_values[(i-1)%numtemp][(i-1)/numtemp];
+              }
+            in >> cp;
+            if (in.fail())
+              {
+                in.clear();
+                cp = specific_heat_values[(i-1)%numtemp][(i-1)/numtemp];
+              }
+            in >> vp;
+            if (in.fail())
+              {
+                in.clear();
+                vp = vp_values[(i-1)%numtemp][(i-1)/numtemp];
+              }
+            in >> vs;
+            if (in.fail())
+              {
+                in.clear();
+                vs = vs_values[(i-1)%numtemp][(i-1)/numtemp];
+              }
+            in >> h;
+            if (in.fail())
+              {
+                in.clear();
+                h = enthalpy_values[(i-1)%numtemp][(i-1)/numtemp];
+              }
+
+            getline(in, temp);
+            if (in.eof())
+              break;
+
+            density_values[i%numtemp][i/numtemp]=rho;
+            thermal_expansivity_values[i%numtemp][i/numtemp]=alpha;
+            specific_heat_values[i%numtemp][i/numtemp]=cp;
+            vp_values[i%numtemp][i/numtemp]=vp;
+            vs_values[i%numtemp][i/numtemp]=vs;
+            enthalpy_values[i%numtemp][i/numtemp]=h;
+
+            i++;
+          }
+        Assert(i==numtemp*numpress, ExcMessage("Material table size not consistent with header."));
+
+      }
     }
 
 
@@ -556,7 +526,6 @@ namespace aspect
     void
     DamageRheology<dim>::initialize()
     {
-
       n_material_data = material_file_names.size();
       for (unsigned i = 0; i < n_material_data; i++)
         {
