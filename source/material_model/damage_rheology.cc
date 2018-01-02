@@ -926,24 +926,6 @@ namespace aspect
     template <int dim>
     double
     DamageRheology<dim>::
-    viscosity_ratio (const double temperature,
-                     const double pressure,
-                     const std::vector<double> &composition_,
-                     const SymmetricTensor<2,dim> &strain_rate,
-                     const Point<dim> &position) const
-    {
-      // convert the grain size from log to normal
-      std::vector<double> composition (composition_);
-      if (advect_log_gransize)
-        convert_log_grain_size(false,composition);
-
-      return dislocation_viscosity(temperature,pressure,composition,strain_rate,position)
-             / diffusion_viscosity(temperature,pressure,composition,strain_rate,position);
-    }
-
-    template <int dim>
-    double
-    DamageRheology<dim>::
     viscosity (const double temperature,
                const double pressure,
                const std::vector<double> &composition,

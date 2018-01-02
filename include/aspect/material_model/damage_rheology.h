@@ -232,18 +232,6 @@ namespace aspect
          */
 
         /**
-         * Returns the ratio of dislocation to diffusion viscosity. Useful
-         * for postprocessing purposes to determine the regime of deformation
-         * in the viscosity ratio postprocessor.
-         */
-        double
-        viscosity_ratio (const double temperature,
-                         const double pressure,
-                         const std::vector<double> &composition,
-                         const SymmetricTensor<2,dim> &strain_rate,
-                         const Point<dim> &position) const;
-
-        /**
          * Returns the enthalpy as calculated by HeFESTo.
          */
         virtual double enthalpy (const double      temperature,
