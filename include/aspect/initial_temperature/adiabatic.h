@@ -85,15 +85,6 @@ namespace aspect
          * bottom of the model domain.
          */
         double amplitude;
-
-        /**
-         * The number of initial perturbations. This parameter is only used
-         * for a spherical shell geometry, a box geometry always contains only
-         * one perturbation. The perturbations are positioned in regular
-         * intervals along the inner model boundary.
-         */
-        unsigned int n_perturbations;
-
         /*
          * Position of the initial temperature perturbation (in the
          * center or at the boundary of the model domain).

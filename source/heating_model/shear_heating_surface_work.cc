@@ -66,7 +66,7 @@ namespace aspect
           // to the grain size reduction.
 
           heating_model_outputs.heating_source_terms[q] -= 2.0 * material_model_outputs.viscosities[q] *
-                                                           material_model_outputs.boundary_area_change_work_fraction[q] *
+                                                           disl_viscosities_out->boundary_area_change_work_fraction[q] *
                                                            material_model_outputs.viscosities[q] / disl_viscosities_out->dislocation_viscosities[q] *
                                                            compressible_strain_rate * compressible_strain_rate;
 

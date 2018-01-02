@@ -23,8 +23,6 @@
 #include <aspect/utilities.h>
 #include <aspect/melt.h>
 
-#include <deal.II/numerics/data_out.h>
-#include <deal.II/grid/grid_tools.h>
 #include <algorithm>
 
 
@@ -198,14 +196,6 @@ namespace aspect
                                 "The following material properties are available:\n\n"
                                 +
                                 pattern_of_names);
-              prm.declare_entry("Use cell reference",
-                                "false",
-                                Patterns::Bool(),
-                                "Whether to look for the current cell reference and "
-                                "transmit it to the material model. Potentially "
-                                "slows down the postprocessing, but allows some "
-                                "material models to calculate material properties "
-                                "more accurately for postprocessing.");
             }
             prm.leave_subsection();
           }

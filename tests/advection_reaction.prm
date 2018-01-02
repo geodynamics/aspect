@@ -114,7 +114,7 @@ end
 
 
 subsection Boundary temperature model
-  set List of model names = ExponentialDecayBoundary
+  set Model name = ExponentialDecayBoundary
 end
 
 subsection Boundary composition model

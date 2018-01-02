@@ -31,7 +31,7 @@ end
 
 
 subsection Boundary temperature model
-  set List of model names = box
+  set Model name = box
 
   subsection Box
     set Bottom temperature = 1

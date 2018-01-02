@@ -78,7 +78,7 @@ subsection Discretization
   end
 end
 
-##################### Initial temperature model ########################
+##################### Initial conditions ########################
 
 # We choose an adiabatic temperature profile as initial condition. 
 subsection Initial temperature model
@@ -111,7 +111,7 @@ end
 # initial conditions again. This temperature is applied as a prescribed
 # temperature at the top and bottom boundary, as specified above.
 subsection Boundary temperature model
-  set List of model names = initial temperature
+  set Model name = initial temperature
 
   subsection Initial temperature
     set Minimal temperature = 293

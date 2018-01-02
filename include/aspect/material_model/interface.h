@@ -468,13 +468,6 @@ namespace aspect
        */
       template <class AdditionalOutputType>
       const AdditionalOutputType *get_additional_output() const;
-
-      /**
-       * This contains the fraction of the deformation work that is
-       * converted to surface energy of grains instead of thermal energy.
-       * It is used to reduce the shear heating by this fraction.
-       */
-      std::vector<double> boundary_area_change_work_fraction;
     };
 
 

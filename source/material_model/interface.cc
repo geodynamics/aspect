@@ -377,8 +377,6 @@ namespace aspect
 
     }
 
-
-
     template <int dim>
     MaterialModelOutputs<dim>::MaterialModelOutputs(const unsigned int n_points,
                                                     const unsigned int n_comp)
@@ -392,8 +390,7 @@ namespace aspect
       compressibilities(n_points, numbers::signaling_nan<double>()),
       entropy_derivative_pressure(n_points, numbers::signaling_nan<double>()),
       entropy_derivative_temperature(n_points, numbers::signaling_nan<double>()),
-      reaction_terms(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>())),
-      boundary_area_change_work_fraction(n_points,numbers::signaling_nan<double>())
+      reaction_terms(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>()))
     {}
 
 

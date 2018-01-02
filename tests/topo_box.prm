@@ -15,7 +15,7 @@ set Timing output frequency                = 0
 set Use years in output instead of seconds = true
 
 subsection Boundary temperature model
-  set List of model names = initial temperature 
+  set Model name = initial temperature 
 end
 
 subsection Boundary velocity model

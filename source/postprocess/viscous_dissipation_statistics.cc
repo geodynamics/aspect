@@ -20,6 +20,7 @@
 
 
 #include <aspect/postprocess/viscous_dissipation_statistics.h>
+#include <aspect/material_model/damage_rheology.h>
 #include <aspect/global.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -62,6 +63,7 @@ namespace aspect
                                                  this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
                                                    this->n_compositional_fields());
+      this->get_material_model().create_additional_named_outputs(out);
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
@@ -78,7 +80,13 @@ namespace aspect
             // calculate the local viscous dissipation integral
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
-                const double heating_work_fraction = 1.0 - out.boundary_area_change_work_fraction[q];
+                // In some material models a part of the total work done is
+                // converted into other energy types than heat, e.g. surface energy.
+                // If we use such a material model, reduce the work fraction appropriately.
+                double heating_work_fraction = 1.0;
+                if (const MaterialModel::DislocationViscosityOutputs<dim> *disl_viscosities_out =
+                      out.template get_additional_output<MaterialModel::DislocationViscosityOutputs<dim> >())
+                  heating_work_fraction -= disl_viscosities_out->boundary_area_change_work_fraction[q];
 
                 const double div_v = trace(in.strain_rate[q]);
                 local_dissipation_integral += ( - in.pressure[q] * div_v

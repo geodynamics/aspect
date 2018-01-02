@@ -49,7 +49,8 @@ namespace aspect
     DislocationViscosityOutputs<dim>::DislocationViscosityOutputs (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(make_dislocation_viscosity_outputs_names()),
-      dislocation_viscosities(n_points, numbers::signaling_nan<double>())
+      dislocation_viscosities(n_points, numbers::signaling_nan<double>()),
+      boundary_area_change_work_fraction(n_points, numbers::signaling_nan<double>())
     {}
 
 
@@ -163,9 +164,9 @@ namespace aspect
 
             // use these coordinates for a bilinear interpolation
             return ((1-xi)*(1-eta)*values[inT][inp] +
-                xi    *(1-eta)*values[inT+1][inp] +
-                (1-xi)*eta    *values[inT][inp+1] +
-                xi    *eta    *values[inT+1][inp+1]);
+                    xi    *(1-eta)*values[inT+1][inp] +
+                    (1-xi)*eta    *values[inT][inp+1] +
+                    xi    *eta    *values[inT+1][inp+1]);
           }
       }
 
@@ -276,61 +277,61 @@ namespace aspect
               if (in.fail())
                 in.clear();
               // conversion from [GPa] to [Pa]
-                                           P *= 1e9;
+              P *= 1e9;
 
-                                           min_press=std::min(P,min_press);
-                                           min_temp=std::min(T,min_temp);
-                                           max_temp = std::max(T,max_temp);
-                                           max_press = std::max(P,max_press);
+              min_press=std::min(P,min_press);
+              min_temp=std::min(T,min_temp);
+              max_temp = std::max(T,max_temp);
+              max_press = std::max(P,max_press);
 
-                                           in >> rho;
-                                           if (in.fail())
-                                             {
-                                               in.clear();
-                                               rho = density_values[(i-1)%numtemp][(i-1)/numtemp];
-                                             }
-                                           else
-                                             rho *= 1e3; // conversion from [g/cm^3] to [kg/m^3]
+              in >> rho;
+              if (in.fail())
+                {
+                  in.clear();
+                  rho = density_values[(i-1)%numtemp][(i-1)/numtemp];
+                }
+              else
+                rho *= 1e3; // conversion from [g/cm^3] to [kg/m^3]
 
-                                           in >> vb;
-                                           if (in.fail())
-                                             in.clear();
+              in >> vb;
+              if (in.fail())
+                in.clear();
 
-                                           in >> vs;
-                                           if (in.fail())
-                                             {
-                                               in.clear();
-                                               vs = vs_values[(i-1)%numtemp][(i-1)/numtemp];
-                                             }
-                                           in >> vp;
-                                           if (in.fail())
-                                             {
-                                               in.clear();
-                                               vp = vp_values[(i-1)%numtemp][(i-1)/numtemp];
-                                             }
-                                           in >> vsq >> vpq;
+              in >> vs;
+              if (in.fail())
+                {
+                  in.clear();
+                  vs = vs_values[(i-1)%numtemp][(i-1)/numtemp];
+                }
+              in >> vp;
+              if (in.fail())
+                {
+                  in.clear();
+                  vp = vp_values[(i-1)%numtemp][(i-1)/numtemp];
+                }
+              in >> vsq >> vpq;
 
-                                           in >> h;
-                                           if (in.fail())
-                                             {
-                                               in.clear();
-                                               h = enthalpy_values[(i-1)%numtemp][(i-1)/numtemp];
-                                             }
-                                           else
-                                             h *= 1e6; // conversion from [kJ/g] to [J/kg]
+              in >> h;
+              if (in.fail())
+                {
+                  in.clear();
+                  h = enthalpy_values[(i-1)%numtemp][(i-1)/numtemp];
+                }
+              else
+                h *= 1e6; // conversion from [kJ/g] to [J/kg]
 
-                                           getline(in, temp);
-                                           if (in.eof())
-                                             break;
+              getline(in, temp);
+              if (in.eof())
+                break;
 
-                                           density_values[i/numpress][i%numpress]=rho;
-                                           thermal_expansivity_values[i/numpress][i%numpress]=alpha;
-                                           specific_heat_values[i/numpress][i%numpress]=cp;
-                                           vp_values[i/numpress][i%numpress]=vp;
-                                           vs_values[i/numpress][i%numpress]=vs;
-                                           enthalpy_values[i/numpress][i%numpress]=h;
+              density_values[i/numpress][i%numpress]=rho;
+              thermal_expansivity_values[i/numpress][i%numpress]=alpha;
+              specific_heat_values[i/numpress][i%numpress]=cp;
+              vp_values[i/numpress][i%numpress]=vp;
+              vs_values[i/numpress][i%numpress]=vs;
+              enthalpy_values[i/numpress][i%numpress]=h;
 
-                                           i++;
+              i++;
             }
 
           delta_temp = (max_temp - min_temp) / (numtemp - 1);
@@ -373,31 +374,31 @@ namespace aspect
                 else
                   cp *= 1e3; // conversion from [J/g/K] to [J/kg/K]
 
-                                                            in >> alpha >> alpha_eff;
-                                                            if (in.fail() || (alpha_eff <= std::numeric_limits<double>::min()))
-                                                              {
-                                                                in.clear();
-                                                                alpha_eff = thermal_expansivity_values[(i-1)%numtemp][(i-1)/numtemp];
-                                                              }
-                                                            else
-                                                              {
-                                                                alpha *= 1e-5;
-                                                                alpha_eff *= 1e-5;
-                                                              }
+                in >> alpha >> alpha_eff;
+                if (in.fail() || (alpha_eff <= std::numeric_limits<double>::min()))
+                  {
+                    in.clear();
+                    alpha_eff = thermal_expansivity_values[(i-1)%numtemp][(i-1)/numtemp];
+                  }
+                else
+                  {
+                    alpha *= 1e-5;
+                    alpha_eff *= 1e-5;
+                  }
 
-                                                            in >> temp1 >> temp2;
-                                                            if (in.fail())
-                                                              in.clear();
+                in >> temp1 >> temp2;
+                if (in.fail())
+                  in.clear();
 
 
-                                                            getline(in, temp);
-                                                            if (in.eof())
-                                                              break;
+                getline(in, temp);
+                if (in.eof())
+                  break;
 
-                                                            specific_heat_values[i/numpress][i%numpress]=cp;
-                                                            thermal_expansivity_values[i/numpress][i%numpress]=alpha_eff;
+                specific_heat_values[i/numpress][i%numpress]=cp;
+                thermal_expansivity_values[i/numpress][i%numpress]=alpha_eff;
 
-                                                            i++;
+                i++;
               }
           }
       }
@@ -1353,16 +1354,16 @@ namespace aspect
               out.viscosities[i] = std::min(std::max(min_eta,effective_viscosity),max_eta);
 
               if (DislocationViscosityOutputs<dim> *disl_viscosities_out = out.template get_additional_output<DislocationViscosityOutputs<dim> >())
-                {
-                  disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e300);
-                }
+                disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e300);
             }
 
           out.densities[i] = density(in.temperature[i], pressure, in.composition[i], in.position[i]);
           out.thermal_conductivities[i] = k_value;
           out.compressibilities[i] = compressibility(in.temperature[i], pressure, composition, in.position[i]);
 
-          out.boundary_area_change_work_fraction[i] = boundary_area_change_work_fraction[get_phase_index(in.position[i],in.temperature[i],pressure)];
+          if (DislocationViscosityOutputs<dim> *disl_viscosities_out = out.template get_additional_output<DislocationViscosityOutputs<dim> >())
+            disl_viscosities_out->boundary_area_change_work_fraction[i] =
+              boundary_area_change_work_fraction[get_phase_index(in.position[i],in.temperature[i],pressure)];
 
           // TODO: make this more general for not just olivine grains
           if (in.strain_rate.size() > 0)

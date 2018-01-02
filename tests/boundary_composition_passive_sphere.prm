@@ -32,7 +32,7 @@ end
 
 
 subsection Boundary temperature model
-  set List of model names = spherical constant
+  set Model name = spherical constant
   subsection Spherical constant
     set Inner temperature = 1
     set Outer temperature = 0
