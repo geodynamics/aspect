@@ -32,6 +32,28 @@ namespace aspect
   {
     using namespace dealii;
 
+    /**
+     * Additional output fields for the dislocation viscosity parameters
+     * to be added to the MaterialModel::MaterialModelOutputs structure
+     * and filled in the MaterialModel::DamageRheology::evaluate() function.
+     */
+    template <int dim>
+    class DislocationViscosityOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        DislocationViscosityOutputs(const unsigned int n_points);
+
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+
+        /**
+         * Cohesions at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         */
+        std::vector<double> dislocation_viscosities;
+    };
+
+
     namespace Lookup
     {
       class MaterialLookup;
@@ -115,6 +137,11 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
+
+
+        virtual
+        void
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
         /**
          * @}
          */

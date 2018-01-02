@@ -35,6 +35,33 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    namespace
+    {
+      std::vector<std::string> make_dislocation_viscosity_outputs_names()
+      {
+        std::vector<std::string> names;
+        names.push_back("dislocation_viscosity");
+        return names;
+      }
+    }
+
+    template <int dim>
+    DislocationViscosityOutputs<dim>::DislocationViscosityOutputs (const unsigned int n_points)
+      :
+      NamedAdditionalMaterialOutputs<dim>(make_dislocation_viscosity_outputs_names()),
+      dislocation_viscosities(n_points, numbers::signaling_nan<double>())
+    {}
+
+
+    template <int dim>
+    std::vector<double>
+    DislocationViscosityOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      AssertIndexRange (idx, 1);
+
+      return dislocation_viscosities;
+    }
+
     namespace Lookup
     {
       class MaterialLookup
@@ -1373,7 +1400,11 @@ namespace aspect
                 effective_viscosity = diff_viscosity;
 
               out.viscosities[i] = std::min(std::max(min_eta,effective_viscosity),max_eta);
-              out.dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e300);
+
+              if (DislocationViscosityOutputs<dim> *disl_viscosities_out = out.template get_additional_output<DislocationViscosityOutputs<dim> >())
+                {
+                  disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e300);
+                }
             }
 
           out.densities[i] = density(in.temperature[i], pressure, in.composition[i], in.position[i]);
@@ -1975,6 +2006,20 @@ namespace aspect
             this->model_dependence.density |=NonlinearDependence::pressure;
           if (compositional_delta_rho != 0)
             this->model_dependence.density |=NonlinearDependence::compositional_fields;
+        }
+    }
+
+
+    template <int dim>
+    void
+    DamageRheology<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      if (out.template get_additional_output<DislocationViscosityOutputs<dim> >() == NULL)
+        {
+          const unsigned int n_points = out.viscosities.size();
+          out.additional_outputs.push_back(
+            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            (new MaterialModel::DislocationViscosityOutputs<dim> (n_points)));
         }
     }
   }

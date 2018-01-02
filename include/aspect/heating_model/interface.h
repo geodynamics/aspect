@@ -268,6 +268,15 @@ namespace aspect
                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
                   HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
 
+        /**
+         * Allow the heating model plugins to attach additional material model
+         * outputs by looping over all registered plugins and calling their
+         * respective member functions.
+         */
+        virtual
+        void
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const;
+
 
         /**
          * A function that is used to register heating model objects in such

@@ -367,11 +367,6 @@ namespace aspect
       std::vector<SymmetricTensor<4,dim> > stress_strain_directors;
 
       /**
-      * Viscosity $\eta$ values at the given positions.
-      */
-      std::vector<double> dislocation_viscosities;
-
-      /**
        * Density values at the given positions.
        */
       std::vector<double> densities;

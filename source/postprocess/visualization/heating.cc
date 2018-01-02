@@ -99,6 +99,7 @@ namespace aspect
 
         std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_quadrature_points));
 
+        this->get_heating_model_manager().create_additional_material_model_outputs(out);
         HeatingModel::HeatingModelOutputs heating_model_outputs(n_quadrature_points, this->n_compositional_fields());
 
         // we need the cell as input for the material model because some heating models
@@ -111,13 +112,6 @@ namespace aspect
         typename DoFHandler<dim>::active_cell_iterator cell;
         cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_dof_handler(), mid_point)).first;
         in.current_cell = cell;
-
-        for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
-             heating_model = heating_model_objects.begin();
-             heating_model != heating_model_objects.end(); ++heating_model)
-          {
-            (*heating_model)->create_additional_material_model_outputs(out);
-          }
 
         this->get_material_model().evaluate(in, out);
 
