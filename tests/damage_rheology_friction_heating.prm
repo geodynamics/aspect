@@ -21,7 +21,7 @@ subsection Geometry model
 end
 
 subsection Heating model
-  set List of model names = shear heating surface work
+  set List of model names = shear heating
 end
 
 subsection Model settings

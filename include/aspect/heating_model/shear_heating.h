@@ -55,6 +55,13 @@ namespace aspect
         evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
                   HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
+
+        /**
+         * Allow the heating model to attach additional material model outputs.
+         */
+        virtual
+        void
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const;
     };
   }
 }
