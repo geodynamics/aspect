@@ -62,7 +62,7 @@ namespace aspect
           double dHdT = 0.0;
           double dHdp = 0.0;
 
-          if (in.cell)
+          if (in.current_cell.state() == IteratorState::valid)
             {
               const QTrapez<dim> quadrature_formula;
               const unsigned int n_q_points = quadrature_formula.size();
@@ -76,7 +76,7 @@ namespace aspect
               std::vector<std::vector<double> > compositions (quadrature_formula.size(),std::vector<double> (this->n_compositional_fields()));
               std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
-              fe_values.reinit (*in.cell);
+              fe_values.reinit (in.current_cell);
 
               // get the various components of the solution, then
               // evaluate the material properties there
@@ -183,7 +183,7 @@ namespace aspect
 
               if (this->get_adiabatic_conditions().is_initialized())
                 {
-                  if (in.cell
+                  if ((in.current_cell.state() == IteratorState::valid)
                       && (std::fabs(dHdp) > std::numeric_limits<double>::epsilon())
                       && (std::fabs(dHdT) > std::numeric_limits<double>::epsilon()))
                     {

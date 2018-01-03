@@ -15,6 +15,7 @@ set Dimension = 2
 set Start time                             = 0
 set End time                               = 1e15
 set Use years in output instead of seconds = false
+set Adiabatic surface temperature          = 1000.0
 
 subsection Geometry model
   set Model name = box
