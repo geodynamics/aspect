@@ -179,13 +179,6 @@ namespace aspect
                                                           std_cxx11::cref(*geometry_model))),
     material_model (MaterialModel::create_material_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
-    // create a boundary composition model, but only if we actually need
-    // it. otherwise, allow the user to simply specify nothing at all
-    boundary_composition (parameters.fixed_composition_boundary_indicators.empty()
-                          ?
-                          0
-                          :
-                          BoundaryComposition::create_boundary_composition<dim>(prm)),
     prescribed_stokes_solution (PrescribedStokesSolution::create_prescribed_stokes_solution<dim>(prm)),
     adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
 
@@ -490,12 +483,10 @@ namespace aspect
         boundary_temperature_manager.parse_parameters (prm);
       }
 
-    if (boundary_composition.get())
+    if (!parameters.fixed_composition_boundary_indicators.empty())
       {
-        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_composition.get()))
-          sim->initialize_simulator (*this);
-        boundary_composition->parse_parameters (prm);
-        boundary_composition->initialize ();
+        boundary_composition_manager.initialize_simulator (*this);
+        boundary_composition_manager.parse_parameters (prm);
       }
 
     // Make sure we only have a prescribed Stokes plugin if needed
@@ -978,8 +969,7 @@ namespace aspect
 
     // If there are fixed boundary compositions,
     // update the composition boundary condition.
-    if (boundary_composition.get())
-      boundary_composition->update();
+    boundary_composition_manager.update();
 
     // now do the same for the composition variable:
     if (!parameters.use_discontinuous_composition_discretization)
@@ -997,8 +987,8 @@ namespace aspect
               VectorTools::interpolate_boundary_values (*mapping,
                                                         dof_handler,
                                                         *p,
-                                                        VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryComposition::Interface<dim>::boundary_composition,
-                                                            std_cxx11::cref(*boundary_composition),
+                                                        VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryComposition::Manager<dim>::boundary_composition,
+                                                            std_cxx11::cref(boundary_composition_manager),
                                                             *p,
                                                             std_cxx11::_1,
                                                             c),

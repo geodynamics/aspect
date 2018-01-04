@@ -413,18 +413,29 @@ namespace aspect
   bool
   SimulatorAccess<dim>::has_boundary_composition () const
   {
-    return (simulator->boundary_composition.get() != 0);
+    return (get_boundary_composition_manager().get_active_boundary_composition_conditions().size() > 0);
   }
+
 
 
   template <int dim>
   const BoundaryComposition::Interface<dim> &
   SimulatorAccess<dim>::get_boundary_composition () const
   {
-    AssertThrow (simulator->boundary_composition.get() != 0,
-                 ExcMessage("You can not call this function if no such model is actually available."));
-    return *simulator->boundary_composition.get();
+    Assert (get_boundary_composition_manager().get_active_boundary_composition_conditions().size() == 1,
+            ExcMessage("You can only call this function if exactly one boundary composition plugin is active."));
+    return *(get_boundary_composition_manager().get_active_boundary_composition_conditions().front());
   }
+
+
+
+  template <int dim>
+  const BoundaryComposition::Manager<dim> &
+  SimulatorAccess<dim>::get_boundary_composition_manager () const
+  {
+    return simulator->boundary_composition_manager;
+  }
+
 
 
   template <int dim>

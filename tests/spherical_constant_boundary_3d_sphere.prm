@@ -21,7 +21,7 @@ subsection Initial composition model
 end
 
 subsection Boundary composition model
-  set Model name = spherical constant
+  set List of model names = spherical constant
   subsection Spherical constant
     set Outer composition = 0
   end

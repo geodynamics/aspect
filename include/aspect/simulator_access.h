@@ -69,6 +69,7 @@ namespace aspect
 
   namespace BoundaryComposition
   {
+    template <int dim> class Manager;
     template <int dim> class Interface;
   }
 
@@ -526,7 +527,7 @@ namespace aspect
       get_boundary_temperature () const DEAL_II_DEPRECATED;
 
       /**
-       * Return an reference to the manager of the initial temperature models.
+       * Return an reference to the manager of the boundary temperature models.
        * This can then i.e. be used to get the names of the initial temperature
        * models used in a computation, or to compute the initial temperature
        * for a given position.
@@ -539,17 +540,27 @@ namespace aspect
        * set. This is useful because a simulation does not actually have to
        * declare any boundary composition model, for example if all
        * boundaries are reflecting. In such cases, there is no
-       * boundary composition model that can provide, for example,
-       * a minimal and maximal temperature on the boundary.
+       * boundary composition model.
        */
       bool has_boundary_composition () const;
 
       /**
        * Return a reference to the object that describes the composition
        * boundary values.
+       *
+       * @deprecated: Use get_boundary_composition_manager() instead.
        */
       const BoundaryComposition::Interface<dim> &
-      get_boundary_composition () const;
+      get_boundary_composition () const DEAL_II_DEPRECATED;
+
+      /**
+       * Return an reference to the manager of the boundary composition models.
+       * This can then i.e. be used to get the names of the boundary composition
+       * models used in a computation, or to compute the boundary composition
+       * for a given position.
+       */
+      const BoundaryComposition::Manager<dim> &
+      get_boundary_composition_manager () const;
 
       /**
        * Return a reference to the object that describes traction

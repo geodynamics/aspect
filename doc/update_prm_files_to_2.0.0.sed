@@ -28,6 +28,10 @@ s/Initial conditions/Initial temperature model/g
      s/set Model name/set List of model names/g
 }
 
+/subsection Boundary composition model/,/\<end\>/ {
+     s/set Model name/set List of model names/g
+}
+
 # Rename tracers to particles
 s/tracer/particle/g
 s/Tracer/Particle/g

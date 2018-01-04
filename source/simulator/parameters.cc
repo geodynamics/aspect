@@ -1910,7 +1910,7 @@ namespace aspect
     InitialComposition::Manager<dim>::declare_parameters (prm);
     PrescribedStokesSolution::declare_parameters<dim> (prm);
     BoundaryTemperature::Manager<dim>::declare_parameters (prm);
-    BoundaryComposition::declare_parameters<dim> (prm);
+    BoundaryComposition::Manager<dim>::declare_parameters (prm);
     AdiabaticConditions::declare_parameters<dim> (prm);
     BoundaryVelocity::declare_parameters<dim> (prm);
     BoundaryTraction::declare_parameters<dim> (prm);

@@ -79,8 +79,28 @@ namespace aspect
 
 
 
-// -------------------------------- Deal with registering models and automating
-// -------------------------------- their setup and selection at run time
+    // ------------------------------ Manager -----------------------------
+    // -------------------------------- Deal with registering boundary_composition models and automating
+    // -------------------------------- their setup and selection at run time
+
+    template <int dim>
+    Manager<dim>::~Manager()
+    {}
+
+
+
+    template <int dim>
+    void
+    Manager<dim>::update ()
+    {
+      for (unsigned int i=0; i<boundary_composition_objects.size(); ++i)
+        {
+          boundary_composition_objects[i]->update();
+        }
+      return;
+    }
+
+
 
     namespace
     {
@@ -92,13 +112,12 @@ namespace aspect
     }
 
 
-
     template <int dim>
     void
-    register_boundary_composition (const std::string &name,
-                                   const std::string &description,
-                                   void (*declare_parameters_function) (ParameterHandler &),
-                                   Interface<dim> *(*factory_function) ())
+    Manager<dim>::register_boundary_composition (const std::string &name,
+                                                 const std::string &description,
+                                                 void (*declare_parameters_function) (ParameterHandler &),
+                                                 Interface<dim> *(*factory_function) ())
     {
       std_cxx11::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
@@ -108,46 +127,135 @@ namespace aspect
 
 
     template <int dim>
-    Interface<dim> *
-    create_boundary_composition (ParameterHandler &prm)
+    void
+    Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
-      std::string model_name;
+      // find out which plugins are requested and the various other
+      // parameters we declare here
       prm.enter_subsection ("Boundary composition model");
       {
-        model_name = prm.get ("Model name");
+        model_names
+          = Utilities::split_string_list(prm.get("List of model names"));
+
+        AssertThrow(Utilities::has_unique_entries(model_names),
+                    ExcMessage("The list of strings for the parameter "
+                               "'Boundary composition model/List of model names' contains entries more than once. "
+                               "This is not allowed. Please check your parameter file."));
+
+        const std::string model_name = prm.get ("Model name");
+
+        AssertThrow (model_name == "unspecified" || model_names.size() == 0,
+                     ExcMessage ("The parameter 'Model name' is only used for reasons"
+                                 "of backwards compatibility and can not be used together with "
+                                 "the new functionality 'List of model names'. Please add your "
+                                 "boundary composition model to the list instead."));
+
+        if (!(model_name == "unspecified"))
+          model_names.push_back(model_name);
+
+        // create operator list
+        std::vector<std::string> model_operator_names =
+          Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
+                                                  model_names.size(),
+                                                  "List of model operators");
+        model_operators = Utilities::create_model_operator_list(model_operator_names);
       }
       prm.leave_subsection ();
 
-      // If one sets the model name to an empty string in the input file,
-      // ParameterHandler produces an error while reading the file. However,
-      // if one omits specifying any model name at all (not even setting it to
-      // the empty string) then the value we get here is the empty string. If
-      // we don't catch this case here, we end up with awkward downstream
-      // errors because the value obviously does not conform to the Pattern.
-      AssertThrow(model_name != "unspecified",
-                  ExcMessage("You need to select a boundary model for the composition "
-                             "(`set Model name' in `subsection Boundary composition model')."));
+      // go through the list, create objects and let them parse
+      // their own parameters
+      for (unsigned int i=0; i<model_names.size(); ++i)
+        {
+          // create boundary composition objects
+          boundary_composition_objects.push_back (std_cxx11::shared_ptr<Interface<dim> >
+                                                  (std_cxx11::get<dim>(registered_plugins)
+                                                   .create_plugin (model_names[i],
+                                                                   "Boundary composition::Model names")));
 
-      return std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                    "Boundary composition model::Model name");
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_composition_objects.back().get()))
+            sim->initialize_simulator (this->get_simulator());
+
+          boundary_composition_objects.back()->parse_parameters (prm);
+          boundary_composition_objects.back()->initialize ();
+        }
     }
 
 
 
     template <int dim>
+    double
+    Manager<dim>::boundary_composition (const types::boundary_id boundary_indicator,
+                                        const Point<dim> &position,
+                                        const unsigned int compositional_field) const
+    {
+      double composition = 0.0;
+
+      for (unsigned int i=0; i<boundary_composition_objects.size(); ++i)
+        composition = model_operators[i](composition,
+                                         boundary_composition_objects[i]->boundary_composition(boundary_indicator,
+                                             position,
+                                             compositional_field));
+
+      return composition;
+    }
+
+
+
+    template <int dim>
+    const std::vector<std::string> &
+    Manager<dim>::get_active_boundary_composition_names () const
+    {
+      return model_names;
+    }
+
+
+    template <int dim>
+    const std::vector<std_cxx11::shared_ptr<Interface<dim> > > &
+    Manager<dim>::get_active_boundary_composition_conditions () const
+    {
+      return boundary_composition_objects;
+    }
+
+
+    template <int dim>
     void
-    declare_parameters (ParameterHandler &prm)
+    Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
       // declare the entry in the parameter file
       prm.enter_subsection ("Boundary composition model");
       {
         const std::string pattern_of_names
           = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+
+        prm.declare_entry("List of model names",
+                          "",
+                          Patterns::MultipleSelection(pattern_of_names),
+                          "A comma-separated list of boundary composition models that "
+                          "will be used to initialize the composition. "
+                          "These plugins are loaded in the order given, and modify the "
+                          "existing composition field via the operators listed "
+                          "in 'List of model operators'.\n\n"
+                          "The following boundary composition models are available:\n\n"
+                          +
+                          std_cxx11::get<dim>(registered_plugins).get_description_string());
+
+        prm.declare_entry("List of model operators", "add",
+                          Patterns::MultipleSelection("add|subtract|minimum|maximum"),
+                          "A comma-separated list of operators that "
+                          "will be used to append the listed composition models onto "
+                          "the previous models. If only one operator is given, "
+                          "the same operator is applied to all models.");
+
         prm.declare_entry ("Model name", "unspecified",
                            Patterns::Selection (pattern_of_names+"|unspecified"),
                            "Select one of the following models:\n\n"
                            +
-                           std_cxx11::get<dim>(registered_plugins).get_description_string());
+                           std_cxx11::get<dim>(registered_plugins).get_description_string()
+                           + "\n\n" +
+                           "\\textbf{Warning}: This parameter provides an old and "
+                           "deprecated way of specifying "
+                           "boundary composition models and shouldn't be used. "
+                           "Please use 'List of model names' instead.");
       }
       prm.leave_subsection ();
 
@@ -158,7 +266,7 @@ namespace aspect
 
     template <int dim>
     void
-    write_plugin_graph (std::ostream &out)
+    Manager<dim>::write_plugin_graph (std::ostream &out)
     {
       std_cxx11::get<dim>(registered_plugins).write_plugin_graph ("Boundary composition interface",
                                                                   out);
@@ -186,25 +294,7 @@ namespace aspect
   {
 #define INSTANTIATE(dim) \
   template class Interface<dim>; \
-  \
-  template \
-  void \
-  register_boundary_composition<dim> (const std::string &, \
-                                      const std::string &, \
-                                      void ( *) (ParameterHandler &), \
-                                      Interface<dim> *( *) ()); \
-  \
-  template  \
-  void \
-  declare_parameters<dim> (ParameterHandler &); \
-  \
-  template \
-  void \
-  write_plugin_graph<dim> (std::ostream &); \
-  \
-  template \
-  Interface<dim> * \
-  create_boundary_composition<dim> (ParameterHandler &prm);
+  template class Manager<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

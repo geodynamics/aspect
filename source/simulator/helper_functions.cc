@@ -259,7 +259,7 @@ namespace aspect
 
     // then go through all plugin systems and output everything we have
     AdiabaticConditions::write_plugin_graph<dim>(out);
-    BoundaryComposition::write_plugin_graph<dim>(out);
+    BoundaryComposition::Manager<dim>::write_plugin_graph(out);
     BoundaryFluidPressure::write_plugin_graph<dim>(out);
     BoundaryTemperature::Manager<dim>::write_plugin_graph(out);
     BoundaryTraction::write_plugin_graph<dim>(out);
