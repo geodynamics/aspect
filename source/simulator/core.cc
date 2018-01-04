@@ -236,9 +236,9 @@ namespace aspect
       std::set<types::boundary_id> velocity_bi;
       std::set<types::boundary_id> traction_bi;
 
-      for (std::map<types::boundary_id,std::pair<std::string, std::string> >::const_iterator
-           p = parameters.prescribed_velocity_boundary_indicators.begin();
-           p != parameters.prescribed_velocity_boundary_indicators.end();
+      for (std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > >::const_iterator
+           p = boundary_velocity_manager.get_active_boundary_velocity_names().begin();
+           p != boundary_velocity_manager.get_active_boundary_velocity_names().end();
            ++p)
         velocity_bi.insert(p->first);
 
@@ -264,12 +264,17 @@ namespace aspect
                it != intersection.end();
                ++it)
             {
+              const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > >::const_iterator
+              boundary_velocity_names = boundary_velocity_manager.get_active_boundary_velocity_names().find(*it);
+              Assert(boundary_velocity_names != boundary_velocity_manager.get_active_boundary_velocity_names().end(),
+                     ExcInternalError());
+
               std::set<char> velocity_selector;
               std::set<char> traction_selector;
 
               for (std::string::const_iterator
-                   it_selector  = parameters.prescribed_velocity_boundary_indicators[*it].first.begin();
-                   it_selector != parameters.prescribed_velocity_boundary_indicators[*it].first.end();
+                   it_selector  = boundary_velocity_names->second.first.begin();
+                   it_selector != boundary_velocity_names->second.first.end();
                    ++it_selector)
                 velocity_selector.insert(*it_selector);
 
@@ -563,20 +568,8 @@ namespace aspect
     geometry_model->create_coarse_mesh (triangulation);
     global_Omega_diameter = GridTools::diameter (triangulation);
 
-    for (std::map<types::boundary_id,std::pair<std::string,std::string> >::const_iterator
-         p = parameters.prescribed_velocity_boundary_indicators.begin();
-         p != parameters.prescribed_velocity_boundary_indicators.end();
-         ++p)
-      {
-        BoundaryVelocity::Interface<dim> *bv
-          = BoundaryVelocity::create_boundary_velocity<dim>
-            (p->second.second);
-        boundary_velocity[p->first].reset (bv);
-        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(bv))
-          sim->initialize_simulator(*this);
-        bv->parse_parameters (prm);
-        bv->initialize ();
-      }
+    boundary_velocity_manager.initialize_simulator (*this);
+    boundary_velocity_manager.parse_parameters (prm);
 
     for (std::map<types::boundary_id,std::pair<std::string,std::string> >::const_iterator
          p = parameters.prescribed_traction_boundary_indicators.begin();
@@ -601,9 +594,9 @@ namespace aspect
 
     std::set<types::boundary_id> open_velocity_boundary_indicators
       = geometry_model->get_used_boundary_indicators();
-    for (std::map<types::boundary_id,std::pair<std::string,std::string> >::const_iterator
-         p = parameters.prescribed_velocity_boundary_indicators.begin();
-         p != parameters.prescribed_velocity_boundary_indicators.end();
+    for (std::map<types::boundary_id,std::pair<std::string,std::vector<std::string> > >::const_iterator
+         p = boundary_velocity_manager.get_active_boundary_velocity_names().begin();
+         p != boundary_velocity_manager.get_active_boundary_velocity_names().end();
          ++p)
       open_velocity_boundary_indicators.erase (p->first);
     for (std::set<types::boundary_id>::const_iterator
@@ -867,23 +860,23 @@ namespace aspect
     {
       // set the current time and do the interpolation
       // for the prescribed velocity fields
-      for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >::iterator
-           p = boundary_velocity.begin();
-           p != boundary_velocity.end(); ++p)
+      boundary_velocity_manager.update();
+      for (typename std::map<types::boundary_id,std::pair<std::string, std::vector<std::string> > >::const_iterator
+           p = boundary_velocity_manager.get_active_boundary_velocity_names().begin();
+           p != boundary_velocity_manager.get_active_boundary_velocity_names().end(); ++p)
         {
-          p->second->update ();
           VectorFunctionFromVelocityFunctionObject<dim> vel
           (introspection.n_components,
-           std_cxx11::bind (static_cast<Tensor<1,dim> (BoundaryVelocity::Interface<dim>::*)(
+           std_cxx11::bind (static_cast<Tensor<1,dim> (BoundaryVelocity::Manager<dim>::*)(
                               const types::boundary_id,
-                              const Point<dim> &) const> (&BoundaryVelocity::Interface<dim>::boundary_velocity),
-                            p->second,
+                              const Point<dim> &) const> (&BoundaryVelocity::Manager<dim>::boundary_velocity),
+                            std_cxx11::cref(boundary_velocity_manager),
                             p->first,
                             std_cxx11::_1));
 
           // here we create a mask for interpolate_boundary_values out of the 'selector'
           std::vector<bool> mask(introspection.component_masks.velocities.size(), false);
-          const std::string &comp = parameters.prescribed_velocity_boundary_indicators[p->first].first;
+          const std::string &comp = p->second.first;
 
           if (comp.length()>0)
             {

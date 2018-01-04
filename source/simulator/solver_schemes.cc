@@ -232,7 +232,7 @@ namespace aspect
     // before solving.
     if (stokes_matrix_depends_on_solution()
         ||
-        (parameters.prescribed_velocity_boundary_indicators.size() > 0))
+        (boundary_velocity_manager.get_active_boundary_velocity_conditions().size() > 0))
       rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
     assemble_stokes_system ();

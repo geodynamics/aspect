@@ -392,14 +392,6 @@ namespace aspect
     std::set<types::boundary_id> tangential_velocity_boundary_indicators;
 
     /**
-     * Map from boundary id to a pair "components", "velocity boundary type",
-     * where components is of the format "[x][y][z]" and the velocity type is
-     * mapped to one of the plugins of velocity boundary conditions (e.g.
-     * "function")
-     */
-    std::map<types::boundary_id, std::pair<std::string,std::string> > prescribed_velocity_boundary_indicators;
-
-    /**
      * Map from boundary id to a pair "components", "traction boundary type",
      * where components is of the format "[x][y][z]" and the traction type is
      * mapped to one of the plugins of traction boundary conditions (e.g.

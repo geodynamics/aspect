@@ -23,6 +23,7 @@
 #define _aspect_boundary_velocity_interface_h
 
 #include <aspect/plugins.h>
+#include <aspect/simulator_access.h>
 #include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/point.h>
@@ -81,22 +82,11 @@ namespace aspect
 
         /**
          * Return the boundary velocity as a function of position.
-         *
-         * @deprecated Use boundary_velocity(const GeometryModel::Interface<dim> &geometry_model,
-         * const types::boundary_id boundary_indicator,const Point<dim> &position) const instead.
-         */
-        virtual
-        Tensor<1,dim>
-        boundary_velocity (const Point<dim> &position) const DEAL_II_DEPRECATED;
-
-
-        /**
-         * Return the boundary velocity as a function of position.
          */
         virtual
         Tensor<1,dim>
         boundary_velocity (const types::boundary_id boundary_indicator,
-                           const Point<dim> &position) const;
+                           const Point<dim> &position) const = 0;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -119,98 +109,197 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
     };
 
-
-
-
     /**
-     * Register a velocity boundary conditions model so that it can be
-     * selected from the parameter file.
-     *
-     * @param name A string that identifies the velocity boundary conditions
-     * model
-     * @param description A text description of what this model does and that
-     * will be listed in the documentation of the parameter file.
-     * @param declare_parameters_function A pointer to a function that can be
-     * used to declare the parameters that this velocity boundary conditions
-     * model wants to read from input files.
-     * @param factory_function A pointer to a function that can create an
-     * object of this velocity boundary conditions model.
-     *
-     * @ingroup BoundaryVelocities
-     */
+      * A class that manages all boundary velocity objects.
+      *
+      * @ingroup BoundaryVelocities
+      */
     template <int dim>
-    void
-    register_boundary_velocity (const std::string &name,
-                                const std::string &description,
-                                void (*declare_parameters_function) (ParameterHandler &),
-                                Interface<dim> *(*factory_function) ());
+    class Manager : public ::aspect::SimulatorAccess<dim>
+    {
+      public:
+        /**
+         * Destructor. Made virtual since this class has virtual member
+         * functions.
+         */
+        virtual ~Manager ();
 
-    /**
-     * A function that given the name of a model returns a pointer to an
-     * object that describes it. Ownership of the pointer is transferred to
-     * the caller.
-     *
-     * The model object returned is not yet initialized and has not read its
-     * runtime parameters yet.
-     *
-     * @ingroup BoundaryVelocities
-     */
+        /**
+         * A function that is called at the beginning of each time step and
+         * calls the corresponding functions of all created plugins.
+         *
+         * The point of this function is to allow complex boundary velocity
+         * models to do an initialization step once at the beginning of each
+         * time step. An example would be a model that needs to call an
+         * external program to compute the velocity change at a boundary.
+         */
+        virtual
+        void
+        update ();
+
+        /**
+         * Declare the parameters of all known boundary velocity plugins, as
+         * well as the ones this class has itself.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         * This determines which boundary velocity objects will be created;
+         * then let these objects read their parameters as well.
+         */
+        void
+        parse_parameters (ParameterHandler &prm);
+
+        /**
+         * A function that calls the boundary_velocity functions of all the
+         * individual boundary velocity objects and uses the stored operators
+         * to combine them.
+         */
+        Tensor<1,dim>
+        boundary_velocity (const types::boundary_id boundary_indicator,
+                           const Point<dim> &position) const;
+
+        /**
+         * A function that is used to register boundary velocity objects in such
+         * a way that the Manager can deal with all of them without having to
+         * know them by name. This allows the files in which individual
+         * plugins are implemented to register these plugins, rather than also
+         * having to modify the Manager class by adding the new boundary
+         * velocity plugin class.
+         *
+         * @param name A string that identifies the boundary velocity model
+         * @param description A text description of what this model does and that
+         * will be listed in the documentation of the parameter file.
+         * @param declare_parameters_function A pointer to a function that can be
+         * used to declare the parameters that this boundary velocity model
+         * wants to read from input files.
+         * @param factory_function A pointer to a function that can create an
+         * object of this boundary velocity model.
+         */
+        static
+        void
+        register_boundary_velocity (const std::string &name,
+                                    const std::string &description,
+                                    void (*declare_parameters_function) (ParameterHandler &),
+                                    Interface<dim> *(*factory_function) ());
+
+
+        /**
+         * Return a list of names of all boundary velocity models currently
+         * used in the computation, as specified in the input file.
+         */
+        const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > > &
+        get_active_boundary_velocity_names () const;
+
+        /**
+         * Return a list of pointers to all boundary velocity models
+         * currently used in the computation, as specified in the input file.
+         */
+        const std::map<types::boundary_id,std::vector<std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > > > &
+        get_active_boundary_velocity_conditions () const;
+
+        /**
+         * Go through the list of all boundary velocity models that have been selected in
+         * the input file (and are consequently currently active) and see if one
+         * of them has the desired type specified by the template argument. If so,
+         * return a pointer to it. If no boundary velocity model is active
+         * that matches the given type, return a NULL pointer.
+         */
+        template <typename BoundaryVelocityType>
+        BoundaryVelocityType *
+        find_boundary_velocity_model () const;
+
+        /**
+         * For the current plugin subsystem, write a connection graph of all of the
+         * plugins we know about, in the format that the
+         * programs dot and neato understand. This allows for a visualization of
+         * how all of the plugins that ASPECT knows about are interconnected, and
+         * connect to other parts of the ASPECT code.
+         *
+         * @param output_stream The stream to write the output to.
+         */
+        static
+        void
+        write_plugin_graph (std::ostream &output_stream);
+
+
+        /**
+         * Exception.
+         */
+        DeclException1 (ExcBoundaryVelocityNameNotFound,
+                        std::string,
+                        << "Could not find entry <"
+                        << arg1
+                        << "> among the names of registered boundary velocity objects.");
+      private:
+        /**
+         * A list of boundary velocity objects that have been requested in the
+         * parameter file.
+         */
+        std::map<types::boundary_id,std::vector<std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > > > boundary_velocity_objects;
+
+        /**
+         * Map from boundary id to a pair
+         * ("components", list of "velocity boundary type"),
+         * where components is of the format "[x][y][z]" and the velocity type is
+         * mapped to one of the plugins of velocity boundary conditions (e.g.
+         * "function"). If the components string is empty, it is assumed the
+         * plugins are used for all components.
+         */
+        std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > > boundary_velocity_indicators;
+    };
+
+
+
     template <int dim>
-    Interface<dim> *
-    create_boundary_velocity (const std::string &name);
+    template <typename BoundaryVelocityType>
+    inline
+    BoundaryVelocityType *
+    Manager<dim>::find_boundary_velocity_model () const
+    {
+      for (typename std::map<types::boundary_id,std::vector<std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
+           boundary = boundary_velocity_objects.begin();
+           boundary != boundary_velocity_objects.end(); ++boundary)
+        for (typename std::vector<std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim>>>::const_iterator
+             p = boundary->second.begin();
+             p != boundary->second.end(); ++p)
+          if (BoundaryVelocityType *x = dynamic_cast<BoundaryVelocityType *> ( (*p).get()) )
+            return x;
+      return NULL;
+    }
+
 
     /**
-     * Return a list of names of all implemented boundary velocity models,
-     * separated by '|' so that it can be used in an object of type
-     * Patterns::Selection.
+     * Return a string that consists of the names of boundary velocity models that can
+     * be selected. These names are separated by a vertical line '|' so
+     * that the string can be an input to the deal.II classes
+     * Patterns::Selection or Patterns::MultipleSelection.
      */
     template <int dim>
     std::string
-    get_names ();
-
-    /**
-     * Declare the runtime parameters of the registered velocity boundary
-     * conditions models.
-     *
-     * @ingroup BoundaryVelocities
-     */
-    template <int dim>
-    void
-    declare_parameters (ParameterHandler &prm);
-
-
-    /**
-     * For the current plugin subsystem, write a connection graph of all of the
-     * plugins we know about, in the format that the
-     * programs dot and neato understand. This allows for a visualization of
-     * how all of the plugins that ASPECT knows about are interconnected, and
-     * connect to other parts of the ASPECT code.
-     *
-     * @param output_stream The stream to write the output to.
-     */
-    template <int dim>
-    void
-    write_plugin_graph (std::ostream &output_stream);
-
+    get_valid_model_names_pattern ();
 
 
     /**
      * Given a class name, a name, and a description for the parameter file
-     * for a velocity boundary conditions model, register it with the
-     * functions that can declare their parameters and create these objects.
+     * for a boundary velocity model, register it with the functions that
+     * can declare their parameters and create these objects.
      *
      * @ingroup BoundaryVelocities
      */
-#define ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL(classname,name,description) \
+#define ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
   namespace ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::BoundaryVelocity::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::BoundaryVelocity::register_boundary_velocity<2>, \
+    dummy_ ## classname ## _2d (&aspect::BoundaryVelocity::Manager<2>::register_boundary_velocity, \
                                 name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::BoundaryVelocity::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::BoundaryVelocity::register_boundary_velocity<3>, \
+    dummy_ ## classname ## _3d (&aspect::BoundaryVelocity::Manager<3>::register_boundary_velocity, \
                                 name, description); \
   }
   }

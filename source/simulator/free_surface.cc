@@ -315,8 +315,8 @@ namespace aspect
 
     // Zero out the displacement for the prescribed velocity boundaries
     // if the boundary is not in the set of tangential mesh boundaries
-    for (std::map<types::boundary_id, std::pair<std::string, std::string> >::const_iterator p = sim.parameters.prescribed_velocity_boundary_indicators.begin();
-         p != sim.parameters.prescribed_velocity_boundary_indicators.end(); ++p)
+    for (std::map<types::boundary_id, std::pair<std::string, std::vector<std::string> > >::const_iterator p = sim.boundary_velocity_manager.get_active_boundary_velocity_names().begin();
+         p != sim.boundary_velocity_manager.get_active_boundary_velocity_names().end(); ++p)
       {
         if (tangential_mesh_boundary_indicators.find(p->first) == tangential_mesh_boundary_indicators.end())
           {
