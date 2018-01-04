@@ -106,7 +106,7 @@ subsection Initial composition model
 end
 
 subsection Boundary composition model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Left composition = 10, 10
     set Right composition = 20, 20

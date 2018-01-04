@@ -46,7 +46,7 @@ subsection Compositional fields
 end
 
 subsection Boundary composition model
-  set Model name = ascii data
+  set List of model names = ascii data
 
   subsection Ascii data model
     set Data file name       = box_2d_%s.%d.txt

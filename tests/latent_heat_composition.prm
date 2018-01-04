@@ -54,7 +54,7 @@ end
 
 # Boundary compostion derived from initial conditions
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 # We prescribe a constant downward flow.

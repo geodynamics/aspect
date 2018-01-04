@@ -363,7 +363,7 @@ namespace aspect
                                                 face->boundary_id(),
                                                 scratch.face_finite_element_values->quadrature_point(q))
                                               :
-                                              this->get_boundary_composition().boundary_composition(
+                                              this->get_boundary_composition_manager().boundary_composition(
                                                 face->boundary_id(),
                                                 scratch.face_finite_element_values->quadrature_point(q),
                                                 advection_field.compositional_variable));

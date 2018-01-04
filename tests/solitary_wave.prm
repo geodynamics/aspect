@@ -57,7 +57,7 @@ subsection Boundary temperature model
 end
 
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 # we apply the phase speed of the wave here, so that it always stays in the same place in our model
