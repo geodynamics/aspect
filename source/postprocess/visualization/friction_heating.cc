@@ -66,7 +66,7 @@ namespace aspect
             double heating_work_fraction = 1.0;
             if (const MaterialModel::DislocationViscosityOutputs<dim> *disl_viscosities_out =
                   out.template get_additional_output<MaterialModel::DislocationViscosityOutputs<dim> >())
-              heating_work_fraction -= disl_viscosities_out->boundary_area_change_work_fraction[q];
+              heating_work_fraction -= disl_viscosities_out->boundary_area_change_work_fractions[q];
 
             const SymmetricTensor<2,dim> compressible_strain_rate
               = (this->get_material_model().is_compressible()

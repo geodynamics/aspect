@@ -78,7 +78,7 @@ end
 
 subsection Compositional fields
   set Number of fields = 1
-  set Names of fields   = olivine_grain_size
+  set Names of fields   = grain_size
 end
 
 subsection Material model

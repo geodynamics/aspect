@@ -46,7 +46,7 @@ namespace aspect
         virtual std::vector<double> get_nth_output(const unsigned int idx) const;
 
         /**
-         * Cohesions at the evaluation points passed to
+         * Dislocation viscosities at the evaluation points passed to
          * the instance of MaterialModel::Interface::evaluate() that fills
          * the current object.
          */
@@ -57,11 +57,17 @@ namespace aspect
          * converted to surface energy of grains instead of thermal energy.
          * It is used to reduce the shear heating by this fraction.
          */
-        std::vector<double> boundary_area_change_work_fraction;
+        std::vector<double> boundary_area_change_work_fractions;
     };
 
     namespace Lookup
     {
+      /**
+       * A base class that can be used to look up material data from an external
+       * data source (e.g. a table in a file). The class consists of data members
+       * and functions to access this data, but it does not contain the functions
+       * to read this data, which has to be implemented in a derived class.
+       */
       class MaterialLookup
       {
         public:
@@ -101,6 +107,22 @@ namespace aspect
           double
           dRhodp (const double temperature,
                   const double pressure) const;
+
+          /**
+           * Returns the size of the data tables in pressure (first entry)
+           * and temperature (second entry) dimensions.
+           */
+          std_cxx1x::array<double,2>
+          get_pT_steps() const;
+
+        protected:
+          /**
+           * Access that data value of the property that is stored in table
+           * @p values at pressure @p pressure and temperature @p temperature.
+           * @p interpol controls whether to perform linear interpolation
+           * between the closest data points, or simply use the closest point
+           * value.
+           */
           double
           value (const double temperature,
                  const double pressure,
@@ -108,11 +130,14 @@ namespace aspect
                  double> &values,
                  bool interpol) const;
 
-          std_cxx1x::array<double,2>
-          get_pT_steps() const;
-
-        protected:
+          /**
+           * Find the position in a data table given a temperature.
+           */
           double get_nT(double temperature) const;
+
+          /**
+           * Find the position in a data table given a pressure.
+           */
           double get_np(double pressure) const;
 
           dealii::Table<2,double> density_values;
@@ -133,6 +158,10 @@ namespace aspect
           bool interpolation;
       };
 
+      /**
+       * An implementation of the above base class that reads in files created
+       * by the HeFESTo software.
+       */
       class HeFESToReader : public MaterialLookup
       {
         public:
@@ -142,6 +171,10 @@ namespace aspect
                         const MPI_Comm &comm);
       };
 
+      /**
+       * An implementation of the above base class that reads in files created
+       * by the Perplex software.
+       */
       class PerplexReader : public MaterialLookup
       {
         public:
@@ -152,10 +185,12 @@ namespace aspect
     }
 
     /**
-     * A material model that includes compositional fields that stand for
+     * A material model that relies on compositional fields that stand for
      * average grain sizes of a mineral phase and source terms for them that
      * determine the grain size evolution in dependence of the strain rate,
-     * temperature, phase transitions, and the creep regime. In the diffusion
+     * temperature, phase transitions, and the creep regime.
+     * This material model only works if a compositional field
+     * named 'grain_size' is present. In the diffusion
      * creep regime, the viscosity depends on this grain size. We use the grain
      * size evolution laws described in Behn et al., 2009. Implications of grain
      * size evolution on the seismic structure of the oceanic upper mantle, Earth
@@ -237,29 +272,10 @@ namespace aspect
         std_cxx1x::array<std::pair<double, unsigned int>,2>
         enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const;
 
-        /**
-         * Returns the p-wave velocity as calculated by HeFESTo.
-         */
-        virtual double seismic_Vp (const double      temperature,
-                                   const double      pressure,
-                                   const std::vector<double> &compositional_fields,
-                                   const Point<dim> &position) const;
-
-        /**
-         * Returns the s-wave velocity as calculated by HeFESTo.
-         */
-        virtual double seismic_Vs (const double      temperature,
-                                   const double      pressure,
-                                   const std::vector<double> &compositional_fields,
-                                   const Point<dim> &position) const;
-
       protected:
         double reference_rho;
         double reference_T;
         double eta;
-        double composition_viscosity_prefactor_1;
-        double composition_viscosity_prefactor_2;
-        double compositional_delta_rho;
         double thermal_alpha;
         double reference_specific_heat;
 
@@ -389,6 +405,23 @@ namespace aspect
                                                       const double      pressure,
                                                       const std::vector<double> &compositional_fields,
                                                       const Point<dim> &position) const;
+
+        /**
+         * Returns the p-wave velocity as calculated by HeFESTo.
+         */
+        virtual double seismic_Vp (const double      temperature,
+                                   const double      pressure,
+                                   const std::vector<double> &compositional_fields,
+                                   const Point<dim> &position) const;
+
+        /**
+         * Returns the s-wave velocity as calculated by HeFESTo.
+         */
+        virtual double seismic_Vs (const double      temperature,
+                                   const double      pressure,
+                                   const std::vector<double> &compositional_fields,
+                                   const Point<dim> &position) const;
+
         /**
          * Rate of grain size growth (Ostwald ripening) or reduction
          * (due to phase transformations) in dependence on temperature
@@ -400,14 +433,14 @@ namespace aspect
          */
         virtual
         double
-        grain_size_growth_rate (const double                  temperature,
-                                const double                  pressure,
-                                const std::vector<double>    &compositional_fields,
-                                const SymmetricTensor<2,dim> &strain_rate,
-                                const Tensor<1,dim>          &velocity,
-                                const Point<dim>             &position,
-                                const unsigned int            phase_index,
-                                const int                     crossed_transition) const;
+        grain_size_change (const double                  temperature,
+                           const double                  pressure,
+                           const std::vector<double>    &compositional_fields,
+                           const SymmetricTensor<2,dim> &strain_rate,
+                           const Tensor<1,dim>          &velocity,
+                           const Point<dim>             &position,
+                           const unsigned int            phase_index,
+                           const int                     crossed_transition) const;
 
         /**
          * Function that defines the phase transition interface
@@ -454,7 +487,6 @@ namespace aspect
         std::vector<double> transition_depths;
         std::vector<double> transition_temperatures;
         std::vector<double> transition_slopes;
-        std::vector<std::string> transition_phases;
         std::vector<double> transition_widths;
 
 
