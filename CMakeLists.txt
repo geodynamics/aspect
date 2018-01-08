@@ -389,6 +389,8 @@ INSTALL(DIRECTORY include/ DESTINATION include
 INSTALL(FILES ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake ${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake
 	DESTINATION "lib/cmake/Aspect/")
 
+INSTALL(FILES ${CMAKE_BINARY_DIR}/include/aspect/revision.h DESTINATION "include/aspect/")
+
 MESSAGE(STATUS "Writing config into detailed.log...")
 INCLUDE(cmake/write_config)
 
