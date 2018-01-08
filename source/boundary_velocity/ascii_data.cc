@@ -45,9 +45,9 @@ namespace aspect
            p != bvs.end(); ++p)
         {
           for (typename std::vector<std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
-              plugin = p->second.begin(); plugin != p->second.end();++plugin)
-          if (plugin->get() == this)
-            boundary_ids.insert(p->first);
+               plugin = p->second.begin(); plugin != p->second.end(); ++plugin)
+            if (plugin->get() == this)
+              boundary_ids.insert(p->first);
         }
       AssertThrow(*(boundary_ids.begin()) != numbers::invalid_boundary_id,
                   ExcMessage("Did not find the boundary indicator for the prescribed data plugin."));

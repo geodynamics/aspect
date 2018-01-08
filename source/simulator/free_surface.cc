@@ -242,7 +242,7 @@ namespace aspect
             = sim.geometry_model->translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
                                                                            (prm.get ("Additional tangential mesh velocity boundary indicators")));
 
-          tangential_mesh_boundary_indicators = sim.parameters.tangential_velocity_boundary_indicators;
+          tangential_mesh_boundary_indicators = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
           tangential_mesh_boundary_indicators.insert(x_additional_tangential_mesh_boundary_indicators.begin(),
                                                      x_additional_tangential_mesh_boundary_indicators.end());
         }
@@ -308,8 +308,8 @@ namespace aspect
       DoFTools::make_periodicity_constraints(free_surface_dof_handler, (*p).first.first, (*p).first.second, (*p).second, mesh_displacement_constraints);
 
     // Zero out the displacement for the zero-velocity boundary indicators
-    for (std::set<types::boundary_id>::const_iterator p = sim.parameters.zero_velocity_boundary_indicators.begin();
-         p != sim.parameters.zero_velocity_boundary_indicators.end(); ++p)
+    for (std::set<types::boundary_id>::const_iterator p = sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators().begin();
+         p != sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators().end(); ++p)
       VectorTools::interpolate_boundary_values (free_surface_dof_handler, *p,
                                                 ZeroFunction<dim>(dim), mesh_displacement_constraints);
 

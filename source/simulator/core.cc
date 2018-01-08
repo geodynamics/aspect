@@ -226,8 +226,8 @@ namespace aspect
     {
       // make sure velocity and traction boundary indicators don't appear in multiple lists
       std::set<types::boundary_id> boundary_indicator_lists[6]
-        = { parameters.zero_velocity_boundary_indicators,
-            parameters.tangential_velocity_boundary_indicators,
+        = { boundary_velocity_manager.get_zero_boundary_velocity_indicators(),
+            boundary_velocity_manager.get_tangential_boundary_velocity_indicators(),
             parameters.free_surface_boundary_indicators,
             std::set<types::boundary_id>()   // to be prescribed velocity and traction boundary indicators
           };
@@ -600,13 +600,13 @@ namespace aspect
          ++p)
       open_velocity_boundary_indicators.erase (p->first);
     for (std::set<types::boundary_id>::const_iterator
-         p = parameters.zero_velocity_boundary_indicators.begin();
-         p != parameters.zero_velocity_boundary_indicators.end();
+         p = boundary_velocity_manager.get_zero_boundary_velocity_indicators().begin();
+         p != boundary_velocity_manager.get_zero_boundary_velocity_indicators().end();
          ++p)
       open_velocity_boundary_indicators.erase (*p);
     for (std::set<types::boundary_id>::const_iterator
-         p = parameters.tangential_velocity_boundary_indicators.begin();
-         p != parameters.tangential_velocity_boundary_indicators.end();
+         p = boundary_velocity_manager.get_tangential_boundary_velocity_indicators().begin();
+         p != boundary_velocity_manager.get_tangential_boundary_velocity_indicators().end();
          ++p)
       open_velocity_boundary_indicators.erase (*p);
 
@@ -1346,8 +1346,8 @@ namespace aspect
     {
       // do the interpolation for zero velocity
       for (std::set<types::boundary_id>::const_iterator
-           p = parameters.zero_velocity_boundary_indicators.begin();
-           p != parameters.zero_velocity_boundary_indicators.end(); ++p)
+           p = boundary_velocity_manager.get_zero_boundary_velocity_indicators().begin();
+           p != boundary_velocity_manager.get_zero_boundary_velocity_indicators().end(); ++p)
         VectorTools::interpolate_boundary_values (*mapping,
                                                   dof_handler,
                                                   *p,
@@ -1360,7 +1360,7 @@ namespace aspect
       VectorTools::compute_no_normal_flux_constraints (dof_handler,
                                                        /* first_vector_component= */
                                                        introspection.component_indices.velocities[0],
-                                                       parameters.tangential_velocity_boundary_indicators,
+                                                       boundary_velocity_manager.get_tangential_boundary_velocity_indicators(),
                                                        constraints,
                                                        *mapping);
     }

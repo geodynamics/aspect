@@ -121,6 +121,44 @@ namespace aspect
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
+      prm.enter_subsection ("Model settings");
+      {
+        try
+          {
+            const std::vector<types::boundary_id> x_zero_velocity_boundary_indicators
+              = this->get_geometry_model().translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
+                                                                                    (prm.get ("Zero velocity boundary indicators")));
+            zero_velocity_boundary_indicators
+              = std::set<types::boundary_id> (x_zero_velocity_boundary_indicators.begin(),
+                                              x_zero_velocity_boundary_indicators.end());
+          }
+        catch (const std::string &error)
+          {
+            AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Zero velocity "
+                                            "boundary indicators>, there was an error. Specifically, "
+                                            "the conversion function complained as follows: "
+                                            + error));
+          }
+
+        try
+          {
+            const std::vector<types::boundary_id> x_tangential_velocity_boundary_indicators
+              = this->get_geometry_model().translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
+                                                                                    (prm.get ("Tangential velocity boundary indicators")));
+            tangential_velocity_boundary_indicators
+              = std::set<types::boundary_id> (x_tangential_velocity_boundary_indicators.begin(),
+                                              x_tangential_velocity_boundary_indicators.end());
+          }
+        catch (const std::string &error)
+          {
+            AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Tangential velocity "
+                                            "boundary indicators>, there was an error. Specifically, "
+                                            "the conversion function complained as follows: "
+                                            + error));
+          }
+      }
+      prm.leave_subsection ();
+
       // Check if the deprecated parameter was set
       std::string input_string;
       {
@@ -143,7 +181,7 @@ namespace aspect
             Assert(deprecated_input_string == "unspecified", ExcMessage(""));
           }
 
-        if (deprecated_input_string != "unspecified")
+        if (deprecated_input_string != "unspecified:unspecified")
           {
             Assert(input_string == "", ExcMessage(""));
             input_string = deprecated_input_string;
@@ -306,12 +344,32 @@ namespace aspect
     }
 
 
+
     template <int dim>
     const std::map<types::boundary_id,std::vector<std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > > > &
     Manager<dim>::get_active_boundary_velocity_conditions () const
     {
       return boundary_velocity_objects;
     }
+
+
+
+    template <int dim>
+    const std::set<types::boundary_id> &
+    Manager<dim>::get_zero_boundary_velocity_indicators () const
+    {
+      return zero_velocity_boundary_indicators;
+    }
+
+
+
+    template <int dim>
+    const std::set<types::boundary_id> &
+    Manager<dim>::get_tangential_boundary_velocity_indicators () const
+    {
+      return tangential_velocity_boundary_indicators;
+    }
+
 
 
     template <int dim>
@@ -360,6 +418,33 @@ namespace aspect
                            "The following boundary velocity models are available:\n\n"
                            +
                            std_cxx11::get<dim>(registered_plugins).get_description_string());
+        prm.declare_entry ("Zero velocity boundary indicators", "",
+                           Patterns::List (Patterns::Anything()),
+                           "A comma separated list of names denoting those boundaries "
+                           "on which the velocity is zero."
+                           "\n\n"
+                           "The names of the boundaries listed here can either by "
+                           "numbers (in which case they correspond to the numerical "
+                           "boundary indicators assigned by the geometry object), or they "
+                           "can correspond to any of the symbolic names the geometry object "
+                           "may have provided for each part of the boundary. You may want "
+                           "to compare this with the documentation of the geometry model you "
+                           "use in your model.");
+        prm.declare_entry ("Tangential velocity boundary indicators", "",
+                           Patterns::List (Patterns::Anything()),
+                           "A comma separated list of names denoting those boundaries "
+                           "on which the velocity is tangential and unrestrained, i.e., free-slip where "
+                           "no external forces act to prescribe a particular tangential "
+                           "velocity (although there is a force that requires the flow to "
+                           "be tangential)."
+                           "\n\n"
+                           "The names of the boundaries listed here can either by "
+                           "numbers (in which case they correspond to the numerical "
+                           "boundary indicators assigned by the geometry object), or they "
+                           "can correspond to any of the symbolic names the geometry object "
+                           "may have provided for each part of the boundary. You may want "
+                           "to compare this with the documentation of the geometry model you "
+                           "use in your model.");
       }
       prm.leave_subsection ();
 

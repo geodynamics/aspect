@@ -202,6 +202,20 @@ namespace aspect
         get_active_boundary_velocity_conditions () const;
 
         /**
+         * Return a list of boundary ids, on which the velocity is prescribed
+         * to be zero (no-slip).
+         */
+        const std::set<types::boundary_id> &
+        get_zero_boundary_velocity_indicators () const;
+
+        /**
+         * Return a list of boundary ids, on which the velocity is prescribed
+         * to be tangential (free-slip).
+         */
+        const std::set<types::boundary_id> &
+        get_tangential_boundary_velocity_indicators () const;
+
+        /**
          * Go through the list of all boundary velocity models that have been selected in
          * the input file (and are consequently currently active) and see if one
          * of them has the desired type specified by the template argument. If so,
@@ -250,6 +264,18 @@ namespace aspect
          * plugins are used for all components.
          */
         std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > > boundary_velocity_indicators;
+
+        /**
+         * A set of boundary indicators, on which velocities are prescribed to
+         * zero (no-slip).
+         */
+        std::set<types::boundary_id> zero_velocity_boundary_indicators;
+
+        /**
+         * A set of boundary indicators, on which velocities are prescribed to
+         * be tangential (free-slip).
+         */
+        std::set<types::boundary_id> tangential_velocity_boundary_indicators;
     };
 
 

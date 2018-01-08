@@ -388,8 +388,6 @@ namespace aspect
 
     std::set<types::boundary_id> fixed_temperature_boundary_indicators;
     std::set<types::boundary_id> fixed_composition_boundary_indicators;
-    std::set<types::boundary_id> zero_velocity_boundary_indicators;
-    std::set<types::boundary_id> tangential_velocity_boundary_indicators;
 
     /**
      * Map from boundary id to a pair "components", "traction boundary type",
