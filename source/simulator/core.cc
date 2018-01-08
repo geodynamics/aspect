@@ -494,6 +494,9 @@ namespace aspect
         boundary_composition_manager.parse_parameters (prm);
       }
 
+    boundary_velocity_manager.initialize_simulator (*this);
+    boundary_velocity_manager.parse_parameters (prm);
+
     // Make sure we only have a prescribed Stokes plugin if needed
     if (parameters.nonlinear_solver==NonlinearSolver::Advection_only)
       {
@@ -567,9 +570,6 @@ namespace aspect
 
     geometry_model->create_coarse_mesh (triangulation);
     global_Omega_diameter = GridTools::diameter (triangulation);
-
-    boundary_velocity_manager.initialize_simulator (*this);
-    boundary_velocity_manager.parse_parameters (prm);
 
     for (std::map<types::boundary_id,std::pair<std::string,std::string> >::const_iterator
          p = parameters.prescribed_traction_boundary_indicators.begin();
