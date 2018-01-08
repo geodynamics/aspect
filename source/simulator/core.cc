@@ -220,12 +220,83 @@ namespace aspect
         print_aspect_header(log_file_stream);
       }
 
-
     // now that we have output set up, we can start timer sections
     TimerOutput::Scope timer (computing_timer, "Initialization");
 
     // first do some error checking for the parameters we got
     {
+      // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it and
+      // call the initialize() functions immediately after.
+      //
+      // up front, we can not know whether a plugin derives from
+      // SimulatorAccess. all we have is a pointer to the base class of
+      // each plugin type (the 'Interface' class in the namespace
+      // corresponding to each plugin type), but this base class is not
+      // derived from SimulatorAccess. in order to find out whether a
+      // concrete plugin derives from this base (interface) class AND
+      // the SimulatorAccess class via multiple inheritance, we need to
+      // do a sideways dynamic_cast to this putative sibling of the
+      // interface class, and investigate if the dynamic_cast
+      // succeeds. if it succeeds, the dynamic_cast returns a non-NULL
+      // result, and we can test this in an if-statement. there is a nice
+      // idiom whereby we can write
+      //    if (SiblingClass *ptr = dynamic_cast<SiblingClass*>(ptr_to_base))
+      //      ptr->do_something()
+      // where we declare a variable *inside* the 'if' condition, and only
+      // enter the code block guarded by the 'if' in case the so-declared
+      // variable evaluates to something non-zero, which here means that
+      // the dynamic_cast succeeded and returned the address of the sibling
+      // object.
+      //
+      // we also need to let all models parse their parameters. this is done *after* setting
+      // up their SimulatorAccess base class so that they can query, for example, the
+      // geometry model's description of symbolic names for boundary parts. note that
+      // the geometry model is the only model whose run time parameters are already read
+      // at the time it is created
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(initial_topography_model.get()))
+        sim->initialize_simulator (*this);
+      initial_topography_model->initialize ();
+
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(geometry_model.get()))
+        sim->initialize_simulator (*this);
+      geometry_model->initialize ();
+
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(material_model.get()))
+        sim->initialize_simulator (*this);
+      material_model->parse_parameters (prm);
+      material_model->initialize ();
+
+      heating_model_manager.initialize_simulator (*this);
+      heating_model_manager.parse_parameters (prm);
+
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(gravity_model.get()))
+        sim->initialize_simulator (*this);
+      gravity_model->parse_parameters (prm);
+      gravity_model->initialize ();
+
+      // Create the initial condition plugins
+      initial_temperature_manager.initialize_simulator(*this);
+      initial_temperature_manager.parse_parameters (prm);
+
+      // Create the initial composition plugins
+      initial_composition_manager.initialize_simulator(*this);
+      initial_composition_manager.parse_parameters (prm);
+
+      // create a boundary temperature manager, but only if we actually need
+      // it. otherwise, allow the user to simply specify nothing at all
+      boundary_temperature_manager.initialize_simulator (*this);
+      boundary_temperature_manager.parse_parameters (prm);
+
+      if (!parameters.fixed_composition_boundary_indicators.empty())
+        {
+          boundary_composition_manager.initialize_simulator (*this);
+          boundary_composition_manager.parse_parameters (prm);
+        }
+
+      boundary_velocity_manager.initialize_simulator (*this);
+      boundary_velocity_manager.parse_parameters (prm);
+
+      // do some error checking for the parameters we got
       // make sure velocity and traction boundary indicators don't appear in multiple lists
       std::set<types::boundary_id> boundary_indicator_lists[6]
         = { boundary_velocity_manager.get_zero_boundary_velocity_indicators(),
@@ -368,8 +439,8 @@ namespace aspect
       for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
         {
           // Throw error if we are trying to use the same boundary for more than one boundary condition
-          AssertThrow( is_element( (*p).first.first, parameters.fixed_temperature_boundary_indicators ) == false &&
-                       is_element( (*p).first.second, parameters.fixed_temperature_boundary_indicators ) == false &&
+          AssertThrow( is_element( (*p).first.first, boundary_temperature_manager.get_fixed_temperature_boundary_indicators() ) == false &&
+                       is_element( (*p).first.second, boundary_temperature_manager.get_fixed_temperature_boundary_indicators() ) == false &&
                        is_element( (*p).first.first, parameters.fixed_composition_boundary_indicators ) == false &&
                        is_element( (*p).first.second, parameters.fixed_composition_boundary_indicators ) == false &&
                        is_element( (*p).first.first, boundary_indicator_lists[0] ) == false && // zero velocity
@@ -410,13 +481,6 @@ namespace aspect
       // now do the same for the fixed temperature indicators and the
       // compositional indicators
       for (typename std::set<types::boundary_id>::const_iterator
-           p = parameters.fixed_temperature_boundary_indicators.begin();
-           p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
-        AssertThrow (all_boundary_indicators.find (*p)
-                     != all_boundary_indicators.end(),
-                     ExcMessage ("One of the fixed boundary temperature indicators listed in the input file "
-                                 "is not used by the geometry model."));
-      for (typename std::set<types::boundary_id>::const_iterator
            p = parameters.fixed_composition_boundary_indicators.begin();
            p != parameters.fixed_composition_boundary_indicators.end(); ++p)
         AssertThrow (all_boundary_indicators.find (*p)
@@ -424,80 +488,6 @@ namespace aspect
                      ExcMessage ("One of the fixed boundary composition indicators listed in the input file "
                                  "is not used by the geometry model."));
     }
-
-    // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it and
-    // call the initialize() functions immediately after.
-    //
-    // up front, we can not know whether a plugin derives from
-    // SimulatorAccess. all we have is a pointer to the base class of
-    // each plugin type (the 'Interface' class in the namespace
-    // corresponding to each plugin type), but this base class is not
-    // derived from SimulatorAccess. in order to find out whether a
-    // concrete plugin derives from this base (interface) class AND
-    // the SimulatorAccess class via multiple inheritance, we need to
-    // do a sideways dynamic_cast to this putative sibling of the
-    // interface class, and investigate if the dynamic_cast
-    // succeeds. if it succeeds, the dynamic_cast returns a non-NULL
-    // result, and we can test this in an if-statement. there is a nice
-    // idiom whereby we can write
-    //    if (SiblingClass *ptr = dynamic_cast<SiblingClass*>(ptr_to_base))
-    //      ptr->do_something()
-    // where we declare a variable *inside* the 'if' condition, and only
-    // enter the code block guarded by the 'if' in case the so-declared
-    // variable evaluates to something non-zero, which here means that
-    // the dynamic_cast succeeded and returned the address of the sibling
-    // object.
-    //
-    // we also need to let all models parse their parameters. this is done *after* setting
-    // up their SimulatorAccess base class so that they can query, for example, the
-    // geometry model's description of symbolic names for boundary parts. note that
-    // the geometry model is the only model whose run time parameters are already read
-    // at the time it is created
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(initial_topography_model.get()))
-      sim->initialize_simulator (*this);
-    initial_topography_model->initialize ();
-
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(geometry_model.get()))
-      sim->initialize_simulator (*this);
-    geometry_model->initialize ();
-
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(material_model.get()))
-      sim->initialize_simulator (*this);
-    material_model->parse_parameters (prm);
-    material_model->initialize ();
-
-    heating_model_manager.initialize_simulator (*this);
-    heating_model_manager.parse_parameters (prm);
-
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(gravity_model.get()))
-      sim->initialize_simulator (*this);
-    gravity_model->parse_parameters (prm);
-    gravity_model->initialize ();
-
-    // Create the initial condition plugins
-    initial_temperature_manager.initialize_simulator(*this);
-    initial_temperature_manager.parse_parameters (prm);
-
-    // Create the initial composition plugins
-    initial_composition_manager.initialize_simulator(*this);
-    initial_composition_manager.parse_parameters (prm);
-
-    // create a boundary temperature manager, but only if we actually need
-    // it. otherwise, allow the user to simply specify nothing at all
-    if (!parameters.fixed_temperature_boundary_indicators.empty())
-      {
-        boundary_temperature_manager.initialize_simulator (*this);
-        boundary_temperature_manager.parse_parameters (prm);
-      }
-
-    if (!parameters.fixed_composition_boundary_indicators.empty())
-      {
-        boundary_composition_manager.initialize_simulator (*this);
-        boundary_composition_manager.parse_parameters (prm);
-      }
-
-    boundary_velocity_manager.initialize_simulator (*this);
-    boundary_velocity_manager.parse_parameters (prm);
 
     // Make sure we only have a prescribed Stokes plugin if needed
     if (parameters.nonlinear_solver==NonlinearSolver::Advection_only)
@@ -934,8 +924,8 @@ namespace aspect
         // temperature boundary conditions and interpolate the temperature
         // there
         for (std::set<types::boundary_id>::const_iterator
-             p = parameters.fixed_temperature_boundary_indicators.begin();
-             p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
+             p = boundary_temperature_manager.get_fixed_temperature_boundary_indicators().begin();
+             p != boundary_temperature_manager.get_fixed_temperature_boundary_indicators().end(); ++p)
           {
             Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
                     ExcInternalError());

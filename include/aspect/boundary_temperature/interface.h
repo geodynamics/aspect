@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -28,7 +28,7 @@
 #include <aspect/simulator_access.h>
 
 #include <deal.II/base/parameter_handler.h>
-#include <deal.II/distributed/tria.h>
+#include <deal.II/base/types.h>
 
 
 namespace aspect
@@ -80,7 +80,7 @@ namespace aspect
          */
         virtual
         double boundary_temperature (const types::boundary_id boundary_indicator,
-                                     const Point<dim> &position) const;
+                                     const Point<dim> &position) const = 0;
 
         /**
          * Return the minimal temperature on that part of the boundary on
@@ -113,7 +113,7 @@ namespace aspect
          * The point of this function is to allow complex boundary temperature
          * models to do an initialization step once at the beginning of each
          * time step. An example would be a model that needs to call an
-         * external program to compute temperature change at bottom.
+         * external program to compute the temperature change at a boundary.
          */
         virtual
         void
@@ -159,54 +159,56 @@ namespace aspect
         /**
          * A function that is called at the beginning of each time step and
          * calls the corresponding functions of all created plugins.
-         *
-         * The point of this function is to allow complex boundary temperature
-         * models to do an initialization step once at the beginning of each
-         * time step. An example would be a model that needs to call an
-         * external program to compute the temperature change at a boundary.
          */
         virtual
         void
         update ();
 
         /**
-         * Declare the parameters of all known boundary temperature plugins, as
-         * well as the ones this class has itself.
+         * Return a set of boundary indicators for which boundary
+         * temperatures are prescribed.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        const std::set<types::boundary_id> &
+        get_fixed_temperature_boundary_indicators() const;
 
         /**
-         * Read the parameters this class declares from the parameter file.
-         * This determines which boundary temperature objects will be created;
-         * then let these objects read their parameters as well.
+         * Return a list of names of all boundary temperature models currently
+         * used in the computation, as specified in the input file.
          */
-        void
-        parse_parameters (ParameterHandler &prm);
+        const std::vector<std::string> &
+        get_active_boundary_temperature_names () const;
 
         /**
-         * A function that calls the boundary_temperature functions of all the
-         * individual boundary temperature objects and uses the stored operators
-         * to combine them.
+         * Return a list of pointers to all boundary temperature models
+         * currently used in the computation, as specified in the input file.
          */
-        double
-        boundary_temperature (const types::boundary_id boundary_indicator,
-                              const Point<dim> &position) const;
+        const std::vector<std_cxx11::shared_ptr<Interface<dim> > > &
+        get_active_boundary_temperature_conditions () const;
 
         /**
          * Return the minimal temperature of all selected plugins on that
          * part of the boundary on which Dirichlet conditions are posed.
          */
-        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids
-                                    = std::set<types::boundary_id>()) const;
+        double
+        minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids
+                             = std::set<types::boundary_id>()) const;
 
         /**
          * Return the maximal temperature of all selected plugins on that
          * part of the boundary on which Dirichlet conditions are posed.
          */
-        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids
-                                    = std::set<types::boundary_id>()) const;
+        double
+        maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids
+                             = std::set<types::boundary_id>()) const;
+
+        /**
+                * A function that calls the boundary_temperature functions of all the
+                * individual boundary temperature objects active for the given
+                * boundary and uses the stored operators to combine them.
+                */
+        double
+        boundary_temperature (const types::boundary_id boundary_indicator,
+                              const Point<dim> &position) const;
 
         /**
          * A function that is used to register boundary temperature objects in such
@@ -232,20 +234,21 @@ namespace aspect
                                        void (*declare_parameters_function) (ParameterHandler &),
                                        Interface<dim> *(*factory_function) ());
 
+        /**
+         * Declare the parameters of all known boundary temperature plugins, as
+         * well as the ones this class has itself.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
 
         /**
-         * Return a list of names of all boundary temperature models currently
-         * used in the computation, as specified in the input file.
+         * Read the parameters this class declares from the parameter file.
+         * This determines which boundary temperature objects will be created;
+         * then let these objects read their parameters as well.
          */
-        const std::vector<std::string> &
-        get_active_boundary_temperature_names () const;
-
-        /**
-         * Return a list of pointers to all boundary temperature models
-         * currently used in the computation, as specified in the input file.
-         */
-        const std::vector<std_cxx11::shared_ptr<Interface<dim> > > &
-        get_active_boundary_temperature_conditions () const;
+        void
+        parse_parameters (ParameterHandler &prm);
 
         /**
          * Go through the list of all boundary temperature models that have been selected in
@@ -271,7 +274,6 @@ namespace aspect
         void
         write_plugin_graph (std::ostream &output_stream);
 
-
         /**
          * Exception.
          */
@@ -282,27 +284,37 @@ namespace aspect
                         << "> among the names of registered boundary temperature objects.");
       private:
         /**
-         * A list of boundary temperature objects that have been requested in the
+         * A set of boundary indicators for which prescribed temperatures
+         * have been selected.
+         */
+        std::set<types::boundary_id> fixed_temperature_boundary_indicators;
+
+        /**
+         * A vector of names of boundary temperature objects that have been
+         * requested in the parameter file.
+         */
+        std::vector<std::string> boundary_temperature_names;
+
+        /**
+         * A vector of boundary temperature objects that have been requested in the
          * parameter file.
          */
         std::vector<std_cxx11::shared_ptr<Interface<dim> > > boundary_temperature_objects;
 
         /**
-         * A list of names of boundary temperature objects that have been requested
-         * in the parameter file.
+         * A vector of enums of boundary temperature operators that have been
+         * requested in the parameter file.
          */
-        std::vector<std::string> model_names;
+        std::vector<aspect::Utilities::Operator> boundary_temperature_operators;
 
         /**
-         * A list of enums of boundary temperature operators that have been
-         * requested in the parameter file. Each name is associated
-         * with a model_name, and is used to modify the temperature
-         * boundary with the values from the current plugin.
+         * A map between fixed_temperature_boundary_indicators and one or more
+         * indices into the boundary_temperature_names,
+         * boundary_temperature_objects, and boundary_temperature_operators vectors.
+         * This variable stores which plugins are active for which boundary.
          */
-        std::vector<aspect::Utilities::Operator> model_operators;
+        std::multimap<types::boundary_id,unsigned int> boundary_temperature_map;
     };
-
-
 
     template <int dim>
     template <typename BoundaryTemperatureType>
@@ -317,18 +329,6 @@ namespace aspect
           return x;
       return NULL;
     }
-
-
-    /**
-     * Return a string that consists of the names of boundary temperature models that can
-     * be selected. These names are separated by a vertical line '|' so
-     * that the string can be an input to the deal.II classes
-     * Patterns::Selection or Patterns::MultipleSelection.
-     */
-    template <int dim>
-    std::string
-    get_valid_model_names_pattern ();
-
 
     /**
      * Given a class name, a name, and a description for the parameter file

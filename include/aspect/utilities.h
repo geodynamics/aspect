@@ -1037,6 +1037,12 @@ namespace aspect
         Operator(const operation op);
 
         /**
+         * Construct the selected operator. Only works if the supplied
+         * string is a valid operation.
+         */
+        Operator(const std::string &operation);
+
+        /**
          * Execute the selected operation with the given parameters and
          * return the result.
          */

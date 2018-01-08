@@ -39,7 +39,7 @@ Stokes only
 
 subsection Boundary \
 temperature model
-  set Model name = b\
+  set List of model names = b\
 ox
 end
 

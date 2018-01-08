@@ -280,10 +280,10 @@ namespace aspect
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
 
-      if (((parameters.fixed_temperature_boundary_indicators.find(
+      if (((this->get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators().find(
               face->boundary_id()
             )
-            != parameters.fixed_temperature_boundary_indicators.end())
+            != this->get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators().end())
            && (advection_field.is_temperature()))
           ||
           (( parameters.fixed_composition_boundary_indicators.find(

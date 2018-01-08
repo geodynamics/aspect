@@ -2468,6 +2468,26 @@ namespace aspect
 
 
 
+    Operator::Operator(const std::string &operation)
+    {
+      // create operator list
+      if (operation == "add")
+        op = Operator::add;
+      else if (operation == "subtract")
+        op = Operator::subtract;
+      else if (operation == "minimum")
+        op = Operator::minimum;
+      else if (operation == "maximum")
+        op = Operator::maximum;
+      else
+        AssertThrow(false,
+                    ExcMessage ("ASPECT only accepts the following operators: "
+                                "add, subtract, minimum and maximum. But your parameter file "
+                                "contains: " + operation + ". Please check your parameter file.") );
+    }
+
+
+
     double
     Operator::operator() (const double x, const double y) const
     {
@@ -2507,25 +2527,13 @@ namespace aspect
 
 
 
-    std::vector<Operator> create_model_operator_list(const std::vector<std::string> &operator_names)
+    std::vector<Operator>
+    create_model_operator_list(const std::vector<std::string> &operator_names)
     {
       std::vector<Operator> operator_list(operator_names.size());
       for (unsigned int i=0; i<operator_names.size(); ++i)
         {
-          // create operator list
-          if (operator_names[i] == "add")
-            operator_list[i] = Operator(Operator::add);
-          else if (operator_names[i] == "subtract")
-            operator_list[i] = Operator(Operator::subtract);
-          else if (operator_names[i] == "minimum")
-            operator_list[i] = Operator(Operator::minimum);
-          else if (operator_names[i] == "maximum")
-            operator_list[i] = Operator(Operator::maximum);
-          else
-            AssertThrow(false,
-                        ExcMessage ("ASPECT only accepts the following operators: "
-                                    "add, subtract, minimum and maximum. But your parameter file "
-                                    "contains: " + operator_names[i] + ". Please check your parameter file.") );
+          operator_list[i] = Operator(operator_names[i]);
         }
 
       return operator_list;
