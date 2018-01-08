@@ -103,7 +103,8 @@ ENDFOREACH()
 # load in version info and export it
 FILE(STRINGS "${CMAKE_SOURCE_DIR}/VERSION" ASPECT_PACKAGE_VERSION LIMIT_COUNT 1)
 
-DEAL_II_QUERY_GIT_INFORMATION("ASPECT")
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake/macro_aspect_query_git_information.cmake)
+ASPECT_QUERY_GIT_INFORMATION("ASPECT")
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/include/aspect/revision.h.in ${CMAKE_BINARY_DIR}/include/aspect/revision.h @ONLY)
 
 INCLUDE(CMakePackageConfigHelpers)
@@ -387,6 +388,8 @@ INSTALL(DIRECTORY include/ DESTINATION include
 # cmake stuff:
 INSTALL(FILES ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake ${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake
 	DESTINATION "lib/cmake/Aspect/")
+
+INSTALL(FILES ${CMAKE_BINARY_DIR}/include/aspect/revision.h DESTINATION "include/aspect/")
 
 MESSAGE(STATUS "Writing config into detailed.log...")
 INCLUDE(cmake/write_config)
