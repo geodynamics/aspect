@@ -80,6 +80,7 @@ namespace aspect
 
   namespace BoundaryVelocity
   {
+    template <int dim> class Manager;
     template <int dim> class Interface;
   }
 
@@ -625,9 +626,20 @@ namespace aspect
 
       /**
        * Return the map of prescribed_boundary_velocity
+       *
+       * @deprecated: Use get_boundary_velocity_manager() instead.
        */
       const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >
-      get_prescribed_boundary_velocity () const;
+      get_prescribed_boundary_velocity () const DEAL_II_DEPRECATED;
+
+      /**
+       * Return an reference to the manager of the boundary velocity models.
+       * This can then i.e. be used to get the names of the boundary velocity
+       * models used in a computation, or to compute the boundary velocity
+       * for a given position.
+       */
+      const BoundaryVelocity::Manager<dim> &
+      get_boundary_velocity_manager () const;
 
       /**
        * Return a pointer to the manager of the heating model.
