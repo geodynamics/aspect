@@ -172,28 +172,41 @@ namespace aspect
 
 
         /**
-         * Return a list of names of all boundary velocity models currently
-         * used in the computation, as specified in the input file.
+         * Return the names of all prescribed boundary velocity models currently
+         * used in the computation as specified in the input file. The function
+         * returns a map between a boundary identifier and a pair. The
+         * first part of the pair is a string that represents the prescribed
+         * velocity components on this boundary (e.g. y, xz, or xyz) and the
+         * second part is a vector of strings that represent the names of
+         * boundary velocity plugins for this boundary.
+         * If there are no prescribed boundary velocity plugins
+         * for a particular boundary, this boundary identifier will not appear
+         * in the map.
          */
         const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > > &
         get_active_boundary_velocity_names () const;
 
         /**
-         * Return a list of pointers to all boundary velocity models
+         * Return pointers to all boundary velocity models
          * currently used in the computation, as specified in the input file.
+         * The function returns a map between a boundary identifier and a vector
+         * of shared pointers that represent the names of prescribed velocity
+         * boundary models for this boundary. If there are no prescribed
+         * boundary velocity plugins for a particular boundary this boundary
+         * identifier will not appear in the map.
          */
         const std::map<types::boundary_id,std::vector<std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > > > &
         get_active_boundary_velocity_conditions () const;
 
         /**
-         * Return a list of boundary ids, on which the velocity is prescribed
+         * Return a list of boundary ids on which the velocity is prescribed
          * to be zero (no-slip).
          */
         const std::set<types::boundary_id> &
         get_zero_boundary_velocity_indicators () const;
 
         /**
-         * Return a list of boundary ids, on which the velocity is prescribed
+         * Return a list of boundary ids on which the velocity is prescribed
          * to be tangential (free-slip).
          */
         const std::set<types::boundary_id> &
