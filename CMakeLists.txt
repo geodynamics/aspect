@@ -382,8 +382,10 @@ INSTALL(TARGETS aspect
 SET_PROPERTY(TARGET aspect PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 # headers:
-INSTALL(DIRECTORY include/ DESTINATION include
-  COMPONENT includes)
+INSTALL(DIRECTORY include/ 
+  DESTINATION include
+  COMPONENT includes
+  FILES_MATCHING PATTERN "*.h")
 
 # cmake stuff:
 INSTALL(FILES ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake ${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake
