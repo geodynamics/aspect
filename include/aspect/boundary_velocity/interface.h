@@ -138,22 +138,6 @@ namespace aspect
         update ();
 
         /**
-         * Declare the parameters of all known boundary velocity plugins, as
-         * well as the ones this class has itself.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter file.
-         * This determines which boundary velocity objects will be created;
-         * then let these objects read their parameters as well.
-         */
-        void
-        parse_parameters (ParameterHandler &prm);
-
-        /**
          * A function that calls the boundary_velocity functions of all the
          * individual boundary velocity objects and uses the stored operators
          * to combine them.
@@ -214,6 +198,22 @@ namespace aspect
          */
         const std::set<types::boundary_id> &
         get_tangential_boundary_velocity_indicators () const;
+
+        /**
+         * Declare the parameters of all known boundary velocity plugins, as
+         * well as the ones this class has itself.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         * This determines which boundary velocity objects will be created;
+         * then let these objects read their parameters as well.
+         */
+        void
+        parse_parameters (ParameterHandler &prm);
 
         /**
          * Go through the list of all boundary velocity models that have been selected in

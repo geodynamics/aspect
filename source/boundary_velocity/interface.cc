@@ -117,198 +117,6 @@ namespace aspect
     }
 
 
-    template <int dim>
-    void
-    Manager<dim>::parse_parameters (ParameterHandler &prm)
-    {
-      prm.enter_subsection ("Model settings");
-      {
-        try
-          {
-            const std::vector<types::boundary_id> x_zero_velocity_boundary_indicators
-              = this->get_geometry_model().translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
-                                                                                    (prm.get ("Zero velocity boundary indicators")));
-            zero_velocity_boundary_indicators
-              = std::set<types::boundary_id> (x_zero_velocity_boundary_indicators.begin(),
-                                              x_zero_velocity_boundary_indicators.end());
-          }
-        catch (const std::string &error)
-          {
-            AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Zero velocity "
-                                            "boundary indicators>, there was an error. Specifically, "
-                                            "the conversion function complained as follows: "
-                                            + error));
-          }
-
-        try
-          {
-            const std::vector<types::boundary_id> x_tangential_velocity_boundary_indicators
-              = this->get_geometry_model().translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
-                                                                                    (prm.get ("Tangential velocity boundary indicators")));
-            tangential_velocity_boundary_indicators
-              = std::set<types::boundary_id> (x_tangential_velocity_boundary_indicators.begin(),
-                                              x_tangential_velocity_boundary_indicators.end());
-          }
-        catch (const std::string &error)
-          {
-            AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Tangential velocity "
-                                            "boundary indicators>, there was an error. Specifically, "
-                                            "the conversion function complained as follows: "
-                                            + error));
-          }
-      }
-      prm.leave_subsection ();
-
-      // Check if the deprecated parameter was set
-      std::string input_string;
-      {
-        std::string deprecated_input_string;
-
-        prm.enter_subsection ("Model settings");
-        {
-          deprecated_input_string = prm.get("Prescribed velocity boundary indicators");
-        }
-        prm.leave_subsection ();
-
-        prm.enter_subsection("Boundary velocity model");
-        {
-          input_string = prm.get("List of model names");
-        }
-        prm.leave_subsection ();
-
-        if (input_string != "")
-          {
-            Assert(deprecated_input_string == "unspecified", ExcMessage(""));
-          }
-
-        if (deprecated_input_string != "unspecified:unspecified")
-          {
-            Assert(input_string == "", ExcMessage(""));
-            input_string = deprecated_input_string;
-          }
-      }
-
-      // find out which plugins are requested and the various other
-      // parameters we declare here
-      const std::vector<std::string> x_boundary_velocity_indicators
-        = Utilities::split_string_list(input_string);
-
-      for (std::vector<std::string>::const_iterator p = x_boundary_velocity_indicators.begin();
-           p != x_boundary_velocity_indicators.end(); ++p)
-        {
-          // each entry has the format (white space is optional):
-          // <id> [x][y][z] : <value (might have spaces)>
-          //
-          // first tease apart the two halves
-          const std::vector<std::string> split_parts = Utilities::split_string_list (*p, ':');
-          AssertThrow (split_parts.size() == 2,
-                       ExcMessage ("The format for prescribed velocity boundary indicators "
-                                   "requires that each entry has the form `"
-                                   "<id> [x][y][z] : <value>', but there does not "
-                                   "appear to be a colon in the entry <"
-                                   + *p
-                                   + ">."));
-
-          // the easy part: get the value
-          const std::string value = split_parts[1];
-
-          // now for the rest. since we don't know whether there is a
-          // component selector, start reading at the end and subtracting
-          // letters x, y and z
-          std::string key_and_comp = split_parts[0];
-          std::string comp;
-          while ((key_and_comp.size()>0) &&
-                 ((key_and_comp[key_and_comp.size()-1] == 'x')
-                  ||
-                  (key_and_comp[key_and_comp.size()-1] == 'y')
-                  ||
-                  ((key_and_comp[key_and_comp.size()-1] == 'z') && (dim==3))))
-            {
-              comp += key_and_comp[key_and_comp.size()-1];
-              key_and_comp.erase (--key_and_comp.end());
-            }
-
-          // we've stopped reading component selectors now. there are three
-          // possibilities:
-          // - no characters are left. this means that key_and_comp only
-          //   consisted of a single word that only consisted of 'x', 'y'
-          //   and 'z's. then this would have been a mistake to classify
-          //   as a component selector, and we better undo it
-          // - the last character of key_and_comp is not a whitespace. this
-          //   means that the last word in key_and_comp ended in an 'x', 'y'
-          //   or 'z', but this was not meant to be a component selector.
-          //   in that case, put these characters back.
-          // - otherwise, we split successfully. eat spaces that may be at
-          //   the end of key_and_comp to get key
-          if (key_and_comp.size() == 0)
-            key_and_comp.swap (comp);
-          else if (key_and_comp[key_and_comp.size()-1] != ' ')
-            {
-              key_and_comp += comp;
-              comp = "";
-            }
-          else
-            {
-              while ((key_and_comp.size()>0) && (key_and_comp[key_and_comp.size()-1] == ' '))
-                key_and_comp.erase (--key_and_comp.end());
-            }
-
-          // finally, try to translate the key into a boundary_id. then
-          // make sure we haven't seen it yet
-          types::boundary_id boundary_id;
-          try
-            {
-              boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id(key_and_comp);
-            }
-          catch (const std::string &error)
-            {
-              AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Prescribed "
-                                              "velocity indicators>, there was an error. Specifically, "
-                                              "the conversion function complained as follows: "
-                                              + error));
-            }
-
-          if (boundary_velocity_indicators.find(boundary_id) != boundary_velocity_indicators.end())
-            {
-              Assert(boundary_velocity_indicators[boundary_id].first == comp,
-                     ExcMessage("Different velocity plugins for the same boundary have to have the same component selector. "
-                                "This was not the case for boundary: " + key_and_comp +
-                                ", for plugin: " + value + ", with component selector: " + comp));
-
-              // finally, put it into the list
-              boundary_velocity_indicators[boundary_id].second.push_back(value);
-            }
-          else
-            {
-              boundary_velocity_indicators[boundary_id] = std::make_pair(comp,std::vector<std::string>(1,value));
-            }
-        }
-
-      // go through the list, create objects and let them parse
-      // their own parameters
-      for (std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > >::iterator
-           boundary_id = boundary_velocity_indicators.begin();
-           boundary_id != boundary_velocity_indicators.end(); ++boundary_id)
-        {
-          for (std::vector<std::string>::iterator
-               name = boundary_id->second.second.begin();
-               name != boundary_id->second.second.end(); ++name)
-            {
-              boundary_velocity_objects[boundary_id->first].push_back(
-                std_cxx11::shared_ptr<Interface<dim> > (std_cxx11::get<dim>(registered_plugins)
-                                                        .create_plugin (*name,
-                                                                        "Boundary velocity::Model names")));
-
-              if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_velocity_objects[boundary_id->first].back().get()))
-                sim->initialize_simulator (this->get_simulator());
-
-              boundary_velocity_objects[boundary_id->first].back()->parse_parameters (prm);
-              boundary_velocity_objects[boundary_id->first].back()->initialize ();
-            }
-        }
-    }
-
-
 
     template <int dim>
     Tensor<1,dim>
@@ -376,15 +184,11 @@ namespace aspect
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
-      const std::string pattern_of_names
-        = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names () + "|unspecified";
-
-      // declare the deprecated entry in the model settings subsection
       prm.enter_subsection ("Model settings");
       {
-        prm.declare_entry ("Prescribed velocity boundary indicators", "unspecified:unspecified",
+        prm.declare_entry ("Prescribed velocity boundary indicators", "",
                            Patterns::Map (Patterns::Anything(),
-                                          Patterns::Selection(pattern_of_names)),
+                                          Patterns::Selection(std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ())),
                            "A comma separated list denoting those boundaries "
                            "on which the velocity is prescribed, i.e., where unknown "
                            "external forces act to prescribe a particular velocity. This is "
@@ -448,46 +252,171 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      // declare the entry in the parameter file
-      prm.enter_subsection ("Boundary velocity model");
-      {
-        prm.declare_entry("List of model names","",
-                          Patterns::Map (Patterns::Anything(),
-                                         Patterns::Selection(pattern_of_names)),
-                          "A comma separated list denoting those boundaries "
-                          "on which the velocity is prescribed, i.e., where unknown "
-                          "external forces act to prescribe a particular velocity. This is "
-                          "often used to prescribe a velocity that equals that of "
-                          "overlying plates."
-                          "\n\n"
-                          "The format of valid entries for this parameter is that of a map "
-                          "given as ``key1 [selector]: value1, key2 [selector]: value2, key3: value3, ...'' where "
-                          "each key must be a valid boundary indicator (which is either an "
-                          "integer or the symbolic name the geometry model in use may have "
-                          "provided for this part of the boundary) "
-                          "and each value must be one of the currently implemented boundary "
-                          "velocity models. ``selector'' is an optional string given as a subset "
-                          "of the letters `xyz' that allows you to apply the boundary conditions "
-                          "only to the components listed. As an example, '1 y: function' applies "
-                          "the type `function' to the y component on boundary 1. Without a selector "
-                          "it will affect all components of the velocity."
-                          "\n\n"
-                          "Note that the no-slip boundary condition is "
-                          "a special case of the current one where the prescribed velocity "
-                          "happens to be zero. It can thus be implemented by indicating that "
-                          "a particular boundary is part of the ones selected "
-                          "using the current parameter and using ``zero velocity'' as "
-                          "the boundary values. "
-                          "\n\n"
-                          "Note that when ``Use years in output instead of seconds'' is set "
-                          "to true, velocity should be given in m/yr. "
-                          "The following boundary velocity models are available:\n\n"
-                          +
-                          std_cxx11::get<dim>(registered_plugins).get_description_string());
-      }
-      prm.leave_subsection ();
-
       std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+    }
+
+
+
+    template <int dim>
+    void
+    Manager<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection ("Model settings");
+      {
+        try
+          {
+            const std::vector<types::boundary_id> x_zero_velocity_boundary_indicators
+              = this->get_geometry_model().translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
+                                                                                    (prm.get ("Zero velocity boundary indicators")));
+            zero_velocity_boundary_indicators
+              = std::set<types::boundary_id> (x_zero_velocity_boundary_indicators.begin(),
+                                              x_zero_velocity_boundary_indicators.end());
+          }
+        catch (const std::string &error)
+          {
+            AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Zero velocity "
+                                            "boundary indicators>, there was an error. Specifically, "
+                                            "the conversion function complained as follows: "
+                                            + error));
+          }
+
+        try
+          {
+            const std::vector<types::boundary_id> x_tangential_velocity_boundary_indicators
+              = this->get_geometry_model().translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
+                                                                                    (prm.get ("Tangential velocity boundary indicators")));
+            tangential_velocity_boundary_indicators
+              = std::set<types::boundary_id> (x_tangential_velocity_boundary_indicators.begin(),
+                                              x_tangential_velocity_boundary_indicators.end());
+          }
+        catch (const std::string &error)
+          {
+            AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Tangential velocity "
+                                            "boundary indicators>, there was an error. Specifically, "
+                                            "the conversion function complained as follows: "
+                                            + error));
+          }
+
+        // find out which plugins are requested and the various other
+        // parameters we declare here
+        const std::vector<std::string> x_boundary_velocity_indicators
+          = Utilities::split_string_list(prm.get("Prescribed velocity boundary indicators"));
+
+        for (std::vector<std::string>::const_iterator p = x_boundary_velocity_indicators.begin();
+             p != x_boundary_velocity_indicators.end(); ++p)
+          {
+            // each entry has the format (white space is optional):
+            // <id> [x][y][z] : <value (might have spaces)>
+            //
+            // first tease apart the two halves
+            const std::vector<std::string> split_parts = Utilities::split_string_list (*p, ':');
+            AssertThrow (split_parts.size() == 2,
+                         ExcMessage ("The format for prescribed velocity boundary indicators "
+                                     "requires that each entry has the form `"
+                                     "<id> [x][y][z] : <value>', but there does not "
+                                     "appear to be a colon in the entry <"
+                                     + *p
+                                     + ">."));
+
+            // the easy part: get the value
+            const std::string value = split_parts[1];
+
+            // now for the rest. since we don't know whether there is a
+            // component selector, start reading at the end and subtracting
+            // letters x, y and z
+            std::string key_and_comp = split_parts[0];
+            std::string comp;
+            while ((key_and_comp.size()>0) &&
+                   ((key_and_comp[key_and_comp.size()-1] == 'x')
+                    ||
+                    (key_and_comp[key_and_comp.size()-1] == 'y')
+                    ||
+                    ((key_and_comp[key_and_comp.size()-1] == 'z') && (dim==3))))
+              {
+                comp += key_and_comp[key_and_comp.size()-1];
+                key_and_comp.erase (--key_and_comp.end());
+              }
+
+            // we've stopped reading component selectors now. there are three
+            // possibilities:
+            // - no characters are left. this means that key_and_comp only
+            //   consisted of a single word that only consisted of 'x', 'y'
+            //   and 'z's. then this would have been a mistake to classify
+            //   as a component selector, and we better undo it
+            // - the last character of key_and_comp is not a whitespace. this
+            //   means that the last word in key_and_comp ended in an 'x', 'y'
+            //   or 'z', but this was not meant to be a component selector.
+            //   in that case, put these characters back.
+            // - otherwise, we split successfully. eat spaces that may be at
+            //   the end of key_and_comp to get key
+            if (key_and_comp.size() == 0)
+              key_and_comp.swap (comp);
+            else if (key_and_comp[key_and_comp.size()-1] != ' ')
+              {
+                key_and_comp += comp;
+                comp = "";
+              }
+            else
+              {
+                while ((key_and_comp.size()>0) && (key_and_comp[key_and_comp.size()-1] == ' '))
+                  key_and_comp.erase (--key_and_comp.end());
+              }
+
+            // finally, try to translate the key into a boundary_id. then
+            // make sure we haven't seen it yet
+            types::boundary_id boundary_id;
+            try
+              {
+                boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id(key_and_comp);
+              }
+            catch (const std::string &error)
+              {
+                AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Prescribed "
+                                                "velocity indicators>, there was an error. Specifically, "
+                                                "the conversion function complained as follows: "
+                                                + error));
+              }
+
+            if (boundary_velocity_indicators.find(boundary_id) != boundary_velocity_indicators.end())
+              {
+                Assert(boundary_velocity_indicators[boundary_id].first == comp,
+                       ExcMessage("Different velocity plugins for the same boundary have to have the same component selector. "
+                                  "This was not the case for boundary: " + key_and_comp +
+                                  ", for plugin: " + value + ", with component selector: " + comp));
+
+                // finally, put it into the list
+                boundary_velocity_indicators[boundary_id].second.push_back(value);
+              }
+            else
+              {
+                boundary_velocity_indicators[boundary_id] = std::make_pair(comp,std::vector<std::string>(1,value));
+              }
+          }
+      }
+      prm.leave_subsection();
+
+      // go through the list, create objects and let them parse
+      // their own parameters
+      for (std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > >::iterator
+           boundary_id = boundary_velocity_indicators.begin();
+           boundary_id != boundary_velocity_indicators.end(); ++boundary_id)
+        {
+          for (std::vector<std::string>::iterator
+               name = boundary_id->second.second.begin();
+               name != boundary_id->second.second.end(); ++name)
+            {
+              boundary_velocity_objects[boundary_id->first].push_back(
+                std_cxx11::shared_ptr<Interface<dim> > (std_cxx11::get<dim>(registered_plugins)
+                                                        .create_plugin (*name,
+                                                                        "Boundary velocity::Model names")));
+
+              if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_velocity_objects[boundary_id->first].back().get()))
+                sim->initialize_simulator (this->get_simulator());
+
+              boundary_velocity_objects[boundary_id->first].back()->parse_parameters (prm);
+              boundary_velocity_objects[boundary_id->first].back()->initialize ();
+            }
+        }
     }
 
 
