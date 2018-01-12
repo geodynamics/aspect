@@ -20,6 +20,7 @@
 
 
 #include <aspect/postprocess/heat_flux_map.h>
+#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -61,7 +62,9 @@ namespace aspect
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-            if (cell->at_boundary(f))
+            if (cell->at_boundary(f) &&
+                (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top" ||
+                 this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "bottom"))
               {
                 fe_face_values.reinit (cell, f);
 
