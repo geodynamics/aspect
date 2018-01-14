@@ -152,8 +152,8 @@ namespace aspect
                       if (scratch.dof_component_indices[i] ==
                           scratch.dof_component_indices[j])
                         {
-                          data.local_matrix(i, j) += ((2.0 * eta * alpha * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                                      + derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate)
+                          data.local_matrix(i, j) += ((2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                                                      + derivative_scaling_factor * alpha * 2.0 * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate)
                                                       + one_over_eta * this->get_pressure_scaling()
                                                       * this->get_pressure_scaling()
                                                       * (scratch.phi_p[i] * scratch
@@ -335,7 +335,7 @@ namespace aspect
                       for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
                         for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                           {
-                            data.local_matrix(i,j) += ( derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate)
+                            data.local_matrix(i,j) += ( derivative_scaling_factor * alpha * 2.0 * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate)
                                                         + derivative_scaling_factor * this->get_pressure_scaling() * scratch.grads_phi_u[i] * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * strain_rate )
                                                       * JxW;
 

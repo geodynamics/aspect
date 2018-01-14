@@ -1068,8 +1068,8 @@ namespace aspect
         use_Newton_stabilisation_A_block = prm.get("Use Newton stabilization A block");
         use_Newton_failsafe = prm.get_bool("Use Newton failsafe");
 
-        AssertThrow(!DEAL_II_VERSION_GTE(9,0,0) && !use_Newton_failsafe, ExcMessage("The failsafe option can't be used with a deal.ii "
-                                                                                    " les then 9.0.0."));
+//        AssertThrow(!DEAL_II_VERSION_GTE(9,0,0) && !use_Newton_failsafe, ExcMessage("The failsafe option can't be used with a deal.ii "
+//                                                                                    " les then 9.0.0."));
       }
       prm.leave_subsection ();
       prm.enter_subsection ("AMG parameters");
