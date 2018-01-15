@@ -65,7 +65,7 @@ namespace aspect
         delta_depth = (max_depth-min_depth)/(values.size()-1);
       }
 
-      double LateralViscosityLookup::lateral_viscosity(double depth)
+      double LateralViscosityLookup::lateral_viscosity(double depth) const
       {
         depth=std::max(min_depth, depth);
         depth=std::min(depth, max_depth);

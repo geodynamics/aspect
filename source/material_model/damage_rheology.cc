@@ -42,6 +42,7 @@ namespace aspect
       {
         std::vector<std::string> names;
         names.push_back("dislocation_viscosity");
+        names.push_back("boundary_area_change_work_fraction");
         return names;
       }
     }
@@ -154,9 +155,8 @@ namespace aspect
       double
       MaterialLookup::value (const double temperature,
                              const double pressure,
-                             const dealii::Table<2,
-                             double> &values,
-                             bool interpol) const
+                             const Table<2, double> &values,
+                             const bool interpol) const
       {
         const double nT = get_nT(temperature);
         const unsigned int inT = static_cast<unsigned int>(nT);
@@ -190,27 +190,28 @@ namespace aspect
       std_cxx1x::array<double,2>
       MaterialLookup::get_pT_steps() const
       {
-        return std_cxx1x::array<double,2> {delta_press,delta_temp};
+        std_cxx1x::array<double,2> pt_steps;
+        pt_steps[0] = delta_press;
+        pt_steps[1] = delta_temp;
+        return pt_steps;
       }
 
       double
-      MaterialLookup::get_nT(double temperature) const
+      MaterialLookup::get_nT(const double temperature) const
       {
-        temperature=std::max(min_temp, temperature);
-        temperature=std::min(temperature, max_temp-delta_temp);
-        Assert(temperature>=min_temp, ExcMessage("ASPECT found a temperature less than min_T."));
-        Assert(temperature<=max_temp, ExcMessage("ASPECT found a temperature greater than max_T."));
-        return (temperature-min_temp)/delta_temp;
+        double bounded_temperature=std::max(min_temp, temperature);
+        bounded_temperature=std::min(bounded_temperature, max_temp-delta_temp);
+
+        return (bounded_temperature-min_temp)/delta_temp;
       }
 
       double
-      MaterialLookup::get_np(double pressure) const
+      MaterialLookup::get_np(const double pressure) const
       {
-        pressure=std::max(min_press, pressure);
-        pressure=std::min(pressure, max_press-delta_press);
-        Assert(pressure>=min_press, ExcMessage("ASPECT found a pressure less than min_p."));
-        Assert(pressure<=max_press, ExcMessage("ASPECT found a pressure greater than max_p."));
-        return (pressure-min_press)/delta_press;
+        double bounded_pressure=std::max(min_press, pressure);
+        bounded_pressure=std::min(bounded_pressure, max_press-delta_press);
+
+        return (bounded_pressure-min_press)/delta_press;
       }
 
       HeFESToReader::HeFESToReader(const std::string &material_filename,
@@ -226,8 +227,8 @@ namespace aspect
         delta_temp=numbers::signaling_nan<double>();
         min_temp=std::numeric_limits<double>::max();
         max_temp=-std::numeric_limits<double>::max();
-        numtemp=0;
-        numpress=0;
+        n_temperature=0;
+        n_pressure=0;
 
         std::string temp;
 
@@ -254,7 +255,7 @@ namespace aspect
                     old_pressure = current_pressure;
                   else if (current_pressure <= old_pressure)
                     {
-                      numpress = i;
+                      n_pressure = i;
                       parsed_first_column = true;
                     }
                 }
@@ -268,17 +269,17 @@ namespace aspect
           in.clear();
           in.seekg (0, in.beg);
 
-          numtemp = i / numpress;
+          n_temperature = i / n_pressure;
 
-          Assert(i == numtemp * numpress,
+          Assert(i == n_temperature * n_pressure,
                  ExcMessage("Material table size not consistent."));
 
-          density_values.reinit(numtemp,numpress);
-          thermal_expansivity_values.reinit(numtemp,numpress);
-          specific_heat_values.reinit(numtemp,numpress);
-          vp_values.reinit(numtemp,numpress);
-          vs_values.reinit(numtemp,numpress);
-          enthalpy_values.reinit(numtemp,numpress);
+          density_values.reinit(n_temperature,n_pressure);
+          thermal_expansivity_values.reinit(n_temperature,n_pressure);
+          specific_heat_values.reinit(n_temperature,n_pressure);
+          vp_values.reinit(n_temperature,n_pressure);
+          vs_values.reinit(n_temperature,n_pressure);
+          enthalpy_values.reinit(n_temperature,n_pressure);
 
           i = 0;
           while (!in.eof())
@@ -305,7 +306,7 @@ namespace aspect
               if (in.fail())
                 {
                   in.clear();
-                  rho = density_values[(i-1)%numtemp][(i-1)/numtemp];
+                  rho = density_values[(i-1)%n_temperature][(i-1)/n_temperature];
                 }
               else
                 rho *= 1e3; // conversion from [g/cm^3] to [kg/m^3]
@@ -318,13 +319,13 @@ namespace aspect
               if (in.fail())
                 {
                   in.clear();
-                  vs = vs_values[(i-1)%numtemp][(i-1)/numtemp];
+                  vs = vs_values[(i-1)%n_temperature][(i-1)/n_temperature];
                 }
               in >> vp;
               if (in.fail())
                 {
                   in.clear();
-                  vp = vp_values[(i-1)%numtemp][(i-1)/numtemp];
+                  vp = vp_values[(i-1)%n_temperature][(i-1)/n_temperature];
                 }
               in >> vsq >> vpq;
 
@@ -332,7 +333,7 @@ namespace aspect
               if (in.fail())
                 {
                   in.clear();
-                  h = enthalpy_values[(i-1)%numtemp][(i-1)/numtemp];
+                  h = enthalpy_values[(i-1)%n_temperature][(i-1)/n_temperature];
                 }
               else
                 h *= 1e6; // conversion from [kJ/g] to [J/kg]
@@ -341,25 +342,25 @@ namespace aspect
               if (in.eof())
                 break;
 
-              density_values[i/numpress][i%numpress]=rho;
-              thermal_expansivity_values[i/numpress][i%numpress]=alpha;
-              specific_heat_values[i/numpress][i%numpress]=cp;
-              vp_values[i/numpress][i%numpress]=vp;
-              vs_values[i/numpress][i%numpress]=vs;
-              enthalpy_values[i/numpress][i%numpress]=h;
+              density_values[i/n_pressure][i%n_pressure]=rho;
+              thermal_expansivity_values[i/n_pressure][i%n_pressure]=alpha;
+              specific_heat_values[i/n_pressure][i%n_pressure]=cp;
+              vp_values[i/n_pressure][i%n_pressure]=vp;
+              vs_values[i/n_pressure][i%n_pressure]=vs;
+              enthalpy_values[i/n_pressure][i%n_pressure]=h;
 
               i++;
             }
 
-          delta_temp = (max_temp - min_temp) / (numtemp - 1);
-          delta_press = (max_press - min_press) / (numpress - 1);
+          delta_temp = (max_temp - min_temp) / (n_temperature - 1);
+          delta_press = (max_press - min_press) / (n_pressure - 1);
 
-          Assert(max_temp >= 0.0, ExcMessage("Read in of Material header failed (max_temp)."));
-          Assert(delta_temp > 0, ExcMessage("Read in of Material header failed (delta_temp)."));
-          Assert(numtemp > 0, ExcMessage("Read in of Material header failed (numtemp)."));
-          Assert(max_press >= 0, ExcMessage("Read in of Material header failed (max_press)."));
-          Assert(delta_press > 0, ExcMessage("Read in of Material header failed (delta_press)."));
-          Assert(numpress > 0, ExcMessage("Read in of Material header failed (numpress)."));
+          AssertThrow(max_temp >= 0.0, ExcMessage("Read in of Material header failed (max_temp)."));
+          AssertThrow(delta_temp > 0, ExcMessage("Read in of Material header failed (delta_temp)."));
+          AssertThrow(n_temperature > 0, ExcMessage("Read in of Material header failed (numtemp)."));
+          AssertThrow(max_press >= 0, ExcMessage("Read in of Material header failed (max_press)."));
+          AssertThrow(delta_press > 0, ExcMessage("Read in of Material header failed (delta_press)."));
+          AssertThrow(n_pressure > 0, ExcMessage("Read in of Material header failed (numpress)."));
         }
 
         // If requested read derivative data
@@ -386,7 +387,7 @@ namespace aspect
                 if (in.fail() || (cp <= std::numeric_limits<double>::min()))
                   {
                     in.clear();
-                    cp = specific_heat_values[(i-1)%numtemp][(i-1)/numtemp];
+                    cp = specific_heat_values[(i-1)%n_temperature][(i-1)/n_temperature];
                   }
                 else
                   cp *= 1e3; // conversion from [J/g/K] to [J/kg/K]
@@ -395,7 +396,7 @@ namespace aspect
                 if (in.fail() || (alpha_eff <= std::numeric_limits<double>::min()))
                   {
                     in.clear();
-                    alpha_eff = thermal_expansivity_values[(i-1)%numtemp][(i-1)/numtemp];
+                    alpha_eff = thermal_expansivity_values[(i-1)%n_temperature][(i-1)/n_temperature];
                   }
                 else
                   {
@@ -412,8 +413,8 @@ namespace aspect
                 if (in.eof())
                   break;
 
-                specific_heat_values[i/numpress][i%numpress]=cp;
-                thermal_expansivity_values[i/numpress][i%numpress]=alpha_eff;
+                specific_heat_values[i/n_pressure][i%n_pressure]=cp;
+                thermal_expansivity_values[i/n_pressure][i%n_pressure]=alpha_eff;
 
                 i++;
               }
@@ -432,8 +433,8 @@ namespace aspect
         delta_temp=numbers::signaling_nan<double>();
         min_temp=std::numeric_limits<double>::max();
         max_temp=-std::numeric_limits<double>::max();
-        numtemp=0;
-        numpress=0;
+        n_temperature=0;
+        n_pressure=0;
 
         std::string temp;
         // Read data from disk and distribute among processes
@@ -448,7 +449,7 @@ namespace aspect
         getline(in, temp);
         in >> delta_temp;
         getline(in, temp);
-        in >> numtemp;
+        in >> n_temperature;
         getline(in, temp);
         getline(in, temp);
         in >> min_press;
@@ -457,28 +458,28 @@ namespace aspect
         in >> delta_press;
         delta_press *= 1e5; // conversion from [bar] to [Pa]
         getline(in, temp);
-        in >> numpress;
+        in >> n_pressure;
         getline(in, temp);
         getline(in, temp);
         getline(in, temp);
 
-        Assert(min_temp >= 0.0, ExcMessage("Read in of Material header failed (mintemp)."));
-        Assert(delta_temp > 0, ExcMessage("Read in of Material header failed (delta_temp)."));
-        Assert(numtemp > 0, ExcMessage("Read in of Material header failed (numtemp)."));
-        Assert(min_press >= 0, ExcMessage("Read in of Material header failed (min_press)."));
-        Assert(delta_press > 0, ExcMessage("Read in of Material header failed (delta_press)."));
-        Assert(numpress > 0, ExcMessage("Read in of Material header failed (numpress)."));
+        AssertThrow(min_temp >= 0.0, ExcMessage("Read in of Material header failed (mintemp)."));
+        AssertThrow(delta_temp > 0, ExcMessage("Read in of Material header failed (delta_temp)."));
+        AssertThrow(n_temperature > 0, ExcMessage("Read in of Material header failed (numtemp)."));
+        AssertThrow(min_press >= 0, ExcMessage("Read in of Material header failed (min_press)."));
+        AssertThrow(delta_press > 0, ExcMessage("Read in of Material header failed (delta_press)."));
+        AssertThrow(n_pressure > 0, ExcMessage("Read in of Material header failed (numpress)."));
 
 
-        max_temp = min_temp + (numtemp-1) * delta_temp;
-        max_press = min_press + (numpress-1) * delta_press;
+        max_temp = min_temp + (n_temperature-1) * delta_temp;
+        max_press = min_press + (n_pressure-1) * delta_press;
 
-        density_values.reinit(numtemp,numpress);
-        thermal_expansivity_values.reinit(numtemp,numpress);
-        specific_heat_values.reinit(numtemp,numpress);
-        vp_values.reinit(numtemp,numpress);
-        vs_values.reinit(numtemp,numpress);
-        enthalpy_values.reinit(numtemp,numpress);
+        density_values.reinit(n_temperature,n_pressure);
+        thermal_expansivity_values.reinit(n_temperature,n_pressure);
+        specific_heat_values.reinit(n_temperature,n_pressure);
+        vp_values.reinit(n_temperature,n_pressure);
+        vs_values.reinit(n_temperature,n_pressure);
+        enthalpy_values.reinit(n_temperature,n_pressure);
 
         unsigned int i = 0;
         while (!in.eof())
@@ -490,53 +491,53 @@ namespace aspect
             if (in.fail())
               {
                 in.clear();
-                rho = density_values[(i-1)%numtemp][(i-1)/numtemp];
+                rho = density_values[(i-1)%n_temperature][(i-1)/n_temperature];
               }
             in >> alpha;
             if (in.fail())
               {
                 in.clear();
-                alpha = thermal_expansivity_values[(i-1)%numtemp][(i-1)/numtemp];
+                alpha = thermal_expansivity_values[(i-1)%n_temperature][(i-1)/n_temperature];
               }
             in >> cp;
             if (in.fail())
               {
                 in.clear();
-                cp = specific_heat_values[(i-1)%numtemp][(i-1)/numtemp];
+                cp = specific_heat_values[(i-1)%n_temperature][(i-1)/n_temperature];
               }
             in >> vp;
             if (in.fail())
               {
                 in.clear();
-                vp = vp_values[(i-1)%numtemp][(i-1)/numtemp];
+                vp = vp_values[(i-1)%n_temperature][(i-1)/n_temperature];
               }
             in >> vs;
             if (in.fail())
               {
                 in.clear();
-                vs = vs_values[(i-1)%numtemp][(i-1)/numtemp];
+                vs = vs_values[(i-1)%n_temperature][(i-1)/n_temperature];
               }
             in >> h;
             if (in.fail())
               {
                 in.clear();
-                h = enthalpy_values[(i-1)%numtemp][(i-1)/numtemp];
+                h = enthalpy_values[(i-1)%n_temperature][(i-1)/n_temperature];
               }
 
             getline(in, temp);
             if (in.eof())
               break;
 
-            density_values[i%numtemp][i/numtemp]=rho;
-            thermal_expansivity_values[i%numtemp][i/numtemp]=alpha;
-            specific_heat_values[i%numtemp][i/numtemp]=cp;
-            vp_values[i%numtemp][i/numtemp]=vp;
-            vs_values[i%numtemp][i/numtemp]=vs;
-            enthalpy_values[i%numtemp][i/numtemp]=h;
+            density_values[i%n_temperature][i/n_temperature]=rho;
+            thermal_expansivity_values[i%n_temperature][i/n_temperature]=alpha;
+            specific_heat_values[i%n_temperature][i/n_temperature]=cp;
+            vp_values[i%n_temperature][i/n_temperature]=vp;
+            vs_values[i%n_temperature][i/n_temperature]=vs;
+            enthalpy_values[i%n_temperature][i/n_temperature]=h;
 
             i++;
           }
-        Assert(i == numtemp*numpress, ExcMessage("Material table size not consistent with header."));
+        AssertThrow(i == n_temperature*n_pressure, ExcMessage("Material table size not consistent with header."));
 
       }
     }
@@ -588,8 +589,8 @@ namespace aspect
 
           // then calculate the deviation from the transition point (both in temperature
           // and in pressure)
-          double pressure_deviation = pressure - transition_pressure
-                                      - transition_slopes[phase] * (temperature - transition_temperatures[phase]);
+          const double pressure_deviation = pressure - transition_pressure
+                                            - transition_slopes[phase] * (temperature - transition_temperatures[phase]);
 
           // last, calculate the percentage of material that has undergone the transition
           return (pressure_deviation > 0) ? 1 : 0;
@@ -600,15 +601,15 @@ namespace aspect
       // (this is for calculating e.g. the density in the adiabatic profile)
       else
         {
-          double depth = this->get_geometry_model().depth(position);
-          double depth_deviation = (pressure > 0
-                                    ?
-                                    depth - transition_depths[phase]
-                                    - transition_slopes[phase] * (depth / pressure) * (temperature - transition_temperatures[phase])
-                                    :
-                                    depth - transition_depths[phase]
-                                    - transition_slopes[phase] / (this->get_gravity_model().gravity_vector(position).norm() * reference_rho)
-                                    * (temperature - transition_temperatures[phase]));
+          const double depth = this->get_geometry_model().depth(position);
+          const double depth_deviation = (pressure > 0
+                                          ?
+                                          depth - transition_depths[phase]
+                                          - transition_slopes[phase] * (depth / pressure) * (temperature - transition_temperatures[phase])
+                                          :
+                                          depth - transition_depths[phase]
+                                          - transition_slopes[phase] / (this->get_gravity_model().gravity_vector(position).norm() * reference_rho)
+                                          * (temperature - transition_temperatures[phase]));
 
           return (depth_deviation > 0) ? 1 : 0;
         }
@@ -654,8 +655,6 @@ namespace aspect
         grain_size = std::max(std::exp(-grain_size),min_grain_size);
 
       composition[grain_size_index] = grain_size;
-
-      return;
     }
 
 
@@ -757,18 +756,17 @@ namespace aspect
             {
               grain_size_change = 0.0;
               time -= grain_growth_timestep;
+
               grain_growth_timestep /= 2.0;
             }
 
           grain_size += grain_size_change;
           current_composition[field_index] = grain_size;
 
-          if (grain_size < 0)
-            {
-              std::cout << "Grain size smaller 0:  " << grain_size << " ," << grain_size_growth
-                        << " ," << grain_size_reduction << ", timestep: " << grain_growth_timestep << "! \n ";
-              break;
-            }
+          Assert(grain_size > 0,
+                 ExcMessage("The grain size became smaller than zero. This is not valid, "
+                            "and likely an effect of a too large sub-timestep, or unrealistic "
+                            "input parameters."));
         }
       while (time < timestep);
 
@@ -789,11 +787,7 @@ namespace aspect
               phase_grain_size_reduction = grain_size - recrystallized_grain_size[crossed_transition];
         }
 
-      if (grain_size < 5.e-6)
-        {
-          std::cout << "Grain size is " << grain_size << "! It needs to be larger than 5e-6.\n";
-          grain_size = 5e-6;
-        }
+      grain_size = std::max(grain_size, minimum_grain_size);
 
       return grain_size - original_grain_size - phase_grain_size_reduction;
     }
@@ -938,7 +932,7 @@ namespace aspect
 
       const double strain_rate_dependence = (1.0 - dislocation_creep_exponent[phase_index]) / dislocation_creep_exponent[phase_index];
 
-      return pow(dislocation_creep_prefactor[phase_index],-1.0/dislocation_creep_exponent[phase_index])
+      return std::pow(dislocation_creep_prefactor[phase_index],-1.0/dislocation_creep_exponent[phase_index])
              * std::pow(second_strain_rate_invariant,strain_rate_dependence)
              * energy_term;
     }
@@ -986,7 +980,7 @@ namespace aspect
 
       double enthalpy = 0.0;
       if (n_material_data == 1)
-        enthalpy += material_lookup[0]->enthalpy(temperature,pressure);
+        enthalpy = material_lookup[0]->enthalpy(temperature,pressure);
       else
         {
           for (unsigned i = 0; i < n_material_data; i++)
@@ -1010,7 +1004,7 @@ namespace aspect
 
       double vp = 0.0;
       if (n_material_data == 1)
-        vp += material_lookup[0]->seismic_Vp(temperature,pressure);
+        vp = material_lookup[0]->seismic_Vp(temperature,pressure);
       else
         {
           for (unsigned i = 0; i < n_material_data; i++)
@@ -1034,7 +1028,7 @@ namespace aspect
 
       double vs = 0.0;
       if (n_material_data == 1)
-        vs += material_lookup[0]->seismic_Vs(temperature,pressure);
+        vs = material_lookup[0]->seismic_Vs(temperature,pressure);
       else
         {
           for (unsigned i = 0; i < n_material_data; i++)
@@ -1111,7 +1105,7 @@ namespace aspect
 
       double dRhodp = 0.0;
       if (n_material_data == 1)
-        dRhodp += material_lookup[0]->dRhodp(temperature,pressure);
+        dRhodp = material_lookup[0]->dRhodp(temperature,pressure);
       else
         {
           for (unsigned i = 0; i < n_material_data; i++)
@@ -1301,7 +1295,7 @@ namespace aspect
 
           // convert the grain size from log to normal
           std::vector<double> composition (in.composition[i]);
-          if (advect_log_gransize)
+          if (advect_log_grainsize)
             convert_log_grain_size(false,composition);
           else
             {
@@ -1338,6 +1332,9 @@ namespace aspect
                 double pressure_deviation = pressure - transition_pressure
                                             - transition_slopes[phase] * (in.temperature[i] - transition_temperatures[phase]);
 
+                // If we are close to the the phase boundary (pressure difference
+                // is smaller than phase boundary width), and the velocity points
+                // away from the phase transition the material has crossed the transition.
                 if ((std::abs(pressure_deviation) < pressure_width)
                     &&
                     ((in.velocity[i] * this->get_gravity_model().gravity_vector(in.position[i])) * pressure_deviation > 0))
@@ -1394,7 +1391,7 @@ namespace aspect
                   {
                     out.reaction_terms[i][c] = grain_size_change(in.temperature[i], pressure, composition,
                                                                  in.strain_rate[i], in.velocity[i], in.position[i], c, crossed_transition);
-                    if (advect_log_gransize)
+                    if (advect_log_grainsize)
                       out.reaction_terms[i][c] = - out.reaction_terms[i][c] / composition[c];
                   }
                 else
@@ -1562,6 +1559,12 @@ namespace aspect
                              "This is dependent on water content, which is assumed to be "
                              "50 H/10^6 Si for the default value. "
                              "Units: $m^{p_g}/s$.");
+          prm.declare_entry ("Minimum grain size", "5e-6",
+                             Patterns::Double(0),
+                             "Minimum allowable grain size. The grain size will be limited to be "
+                             "larger than this value. This can be used to damp out oscillations, or "
+                             "to limit the viscosity variation due to grain size. "
+                             "Units: $m$.");
           prm.declare_entry ("Reciprocal required strain", "10",
                              Patterns::List (Patterns::Double(0)),
                              "This parameters $\\lambda$ gives an estimate of the strain necessary "
@@ -1801,6 +1804,7 @@ namespace aspect
                                                   (Utilities::split_string_list(prm.get ("Grain growth rate constant")));
           grain_growth_exponent                 = Utilities::string_to_double
                                                   (Utilities::split_string_list(prm.get ("Grain growth exponent")));
+          minimum_grain_size                    = prm.get_double("Minimum grain size");
           reciprocal_required_strain            = Utilities::string_to_double
                                                   (Utilities::split_string_list(prm.get ("Reciprocal required strain")));
 
@@ -1855,7 +1859,7 @@ namespace aspect
 
 
 
-          advect_log_gransize                   = prm.get_bool ("Advect logarithm of grain size");
+          advect_log_grainsize                   = prm.get_bool ("Advect logarithm of grain size");
 
           if (grain_growth_activation_energy.size() != grain_growth_activation_volume.size() ||
               grain_growth_activation_energy.size() != grain_growth_rate_constant.size() ||

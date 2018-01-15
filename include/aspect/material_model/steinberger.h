@@ -34,44 +34,88 @@ namespace aspect
 
     namespace internal
     {
+      /**
+       * A class that reads in a text file that contains the
+       * temperature-dependency of viscosity for a set of equidistant depth
+       * layers. See
+       * the data/material-model/steinberger directory for an example data
+       * file.
+       * The class can return the value for a given depth.
+       */
       class LateralViscosityLookup
       {
         public:
+          /**
+           * Read in a file.
+           */
           LateralViscosityLookup(const std::string &filename,
                                  const MPI_Comm &comm);
 
-          double lateral_viscosity(double depth);
+          /**
+           * Returns a temperature-dependency for a given depth.
+           */
+          double lateral_viscosity(double depth) const;
 
+          /**
+           * Number of depth slices of the read file.
+           */
           int get_nslices() const;
         private:
+          /**
+           * Stored values
+           */
           std::vector<double> values;
+
+          /**
+           * Stored bounds an depths.
+           */
           double min_depth;
           double delta_depth;
           double max_depth;
       };
 
-
+      /**
+       * A class that reads in a text file that contains the
+       * viscosity for a set of equidistant depth layers. See
+       * the data/material-model/steinberger directory for an example data
+       * file.
+       * The class can return the value for a given depth.
+       */
       class RadialViscosityLookup
       {
         public:
+          /**
+           * Constructor. Reads in the given file.
+           */
           RadialViscosityLookup(const std::string &filename,
                                 const MPI_Comm &comm);
 
+          /**
+           * Return the viscosity for a given depth.
+           */
           double radial_viscosity(double depth) const;
 
         private:
+          /**
+           * Stored data values.
+           */
           std::vector<double> values;
+
+          /**
+           * Depth bounds for the read in values.
+           */
           double min_depth;
           double delta_depth;
           double max_depth;
       };
     }
+
     /**
      * A variable viscosity material model that reads the essential values of
      * coefficients from tables in input files.
      *
      * The viscosity of this model is based on the paper
-     * Steinberger/Calderwood 2006: "Models of large-scale viscous flow in the
+     * Steinberger & Calderwood 2006: "Models of large-scale viscous flow in the
      * Earth's mantle with constraints from mineral physics and surface
      * observations". The thermal conductivity is constant and the other
      * parameters are provided via lookup tables from the software PERPLEX.

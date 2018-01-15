@@ -131,7 +131,7 @@ namespace aspect
             {
               // convert the grain size from log to normal
               std::vector<double> composition (in.composition[i]);
-              if (this->advect_log_gransize)
+              if (this->advect_log_grainsize)
                 this->convert_log_grain_size(false,composition);
               else
                 for (unsigned int c=0; c<composition.size(); ++c)
@@ -211,9 +211,9 @@ namespace aspect
                   {
                     if (this->introspection().name_for_compositional_index(c) == "olivine_grain_size")
                       {
-                        out.reaction_terms[i][c] = this->grain_size_growth_rate(in.temperature[i], in.pressure[i], composition,
+                        out.reaction_terms[i][c] = this->grain_size_change(in.temperature[i], in.pressure[i], composition,
                                                                                 in.strain_rate[i], in.velocity[i], in.position[i], c, crossed_transition);
-                        if (this->advect_log_gransize)
+                        if (this->advect_log_grainsize)
                           out.reaction_terms[i][c] = - out.reaction_terms[i][c] / composition[c];
                       }
                     else
@@ -238,7 +238,7 @@ namespace aspect
                                    "resemble the latent heat benchmark. Due to the "
                                    "nature of the benchmark the model needs to be "
                                    "incompressible despite a material table and "
-                                   "use an constant density for the calculation of "
+                                   "use a constant density for the calculation of "
                                    "the latent heat.")
   }
 }

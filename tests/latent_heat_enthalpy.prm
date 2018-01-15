@@ -1,19 +1,23 @@
 #########################################################
-# This is a model setup to test the latent heat generation. 
-# Material flows in from the top and crosses a phase 
+# This is a model setup to test the latent heat generation,
+# similar to the test latent_heat.
+# Material flows in from the top and crosses a phase
 # transition, where energy is released and the temperature
 # increases. The energy release in this model is calculated
 # from a lookup table for enthalpy values and the enthalpy
-# is evaluated at the edges of each cell instead of the 
+# is evaluated at the edges of each cell instead of the
 # quadrature point to catch even very sharp transitions.
-# The steady-state result is around 10 % off the original 
-# test, because the data table was created as small as 
+# The steady-state result is around 10 % off the original
+# test, because the data table was created as small as
 # possible.
+# A similar testcase is also described in the latent heat
+# cookbook, and the predicted temperature solution at the
+# bottom of the model is the same (T2 = 1107.39 K).
 
 set Dimension = 2
 
 set Start time                             = 0
-set End time                               = 1e15
+set End time                               = 2.5e14
 set Use years in output instead of seconds = false
 set Adiabatic surface temperature          = 1000.0
 
@@ -21,8 +25,9 @@ subsection Geometry model
   set Model name = box
 
   subsection Box
-    set X extent = 1000000
+    set X extent = 10000
     set Y extent = 1000000
+    set Y repetitions = 100
   end
 end
 
@@ -91,7 +96,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0 
-  set Initial global refinement          = 4 
+  set Initial global refinement          = 2
   set Time steps between mesh refinement = 0
 end
 

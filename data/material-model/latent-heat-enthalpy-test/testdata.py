@@ -3,7 +3,7 @@
 # This script creates a property table to recreate the latent heat benchmark
 # with a self-consistent formulation for cp and alpha derived from an 
 # enthalpy table in pressure-temperature space. Unfortunately the 
-# benchmark itself assumes some thermodynamic inconsistent relations, so
+# benchmark itself assumes some thermodynamically inconsistent relations, so
 # we need to use our knowledge about the expected result to set up the table
 
 import numpy as np
