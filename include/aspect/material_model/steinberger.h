@@ -184,6 +184,20 @@ namespace aspect
                                    const double      pressure,
                                    const std::vector<double> &compositional_fields,
                                    const Point<dim> &position) const;
+
+        /**
+         * Returns the cell-wise averaged enthalpy derivatives for the evaluate
+         * function and postprocessors. The function returns two pairs, the
+         * first one represents the temperature derivative, the second one the
+         * pressure derivative. The first member of each pair is the derivative,
+         * the second one the number of vertex combinations the function could
+         * use to compute the derivative. The second member is useful to handle
+         * the case no suitable combination of vertices could be found (e.g.
+         * if the temperature and pressure on all vertices of the current
+         * cell is identical.
+         */
+        std_cxx1x::array<std::pair<double, unsigned int>,2>
+        enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const;
         /**
          * @}
          */
