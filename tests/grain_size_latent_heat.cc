@@ -132,7 +132,7 @@ namespace aspect
               // convert the grain size from log to normal
               std::vector<double> composition (in.composition[i]);
               if (this->advect_log_grainsize)
-                this->convert_log_grain_size(false,composition);
+                this->convert_log_grain_size(composition);
               else
                 for (unsigned int c=0; c<composition.size(); ++c)
                   composition[c] = std::max(this->min_grain_size,composition[c]);
@@ -212,7 +212,7 @@ namespace aspect
                     if (this->introspection().name_for_compositional_index(c) == "olivine_grain_size")
                       {
                         out.reaction_terms[i][c] = this->grain_size_change(in.temperature[i], in.pressure[i], composition,
-                                                                                in.strain_rate[i], in.velocity[i], in.position[i], c, crossed_transition);
+                                                                           in.strain_rate[i], in.velocity[i], in.position[i], c, crossed_transition);
                         if (this->advect_log_grainsize)
                           out.reaction_terms[i][c] = - out.reaction_terms[i][c] / composition[c];
                       }

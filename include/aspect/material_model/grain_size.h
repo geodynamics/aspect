@@ -55,7 +55,8 @@ namespace aspect
         /**
          * This contains the fraction of the deformation work that is
          * converted to surface energy of grains instead of thermal energy.
-         * It is used to reduce the shear heating by this fraction.
+         * It is used to reduce the shear heating by this fraction. If it
+         * is set to 0.0 it will not change the shear heating.
          */
         std::vector<double> boundary_area_change_work_fractions;
     };
@@ -430,12 +431,18 @@ namespace aspect
 
         /**
          * Rate of grain size growth (Ostwald ripening) or reduction
-         * (due to phase transformations) in dependence on temperature
-         * pressure, strain rate, mineral phase and creep regime.
-         * We use the grain size evolution laws described in Solomatov
-         * and Reese, 2008. Grain size variations in the Earth’s mantle
-         * and the evolution of primordial chemical heterogeneities,
-         * J. Geophys. Res., 113, B07408.
+         * (due to dynamic recrystallization and phase transformations)
+         * in dependence on temperature, pressure, strain rate, mineral
+         * phase and creep regime.
+         * We use the grain size growth laws as for example described
+         * in Behn, M. D., Hirth, G., & Elsenbeck, J. R. (2009). Implications
+         * of grain size evolution on the seismic structure of the oceanic
+         * upper mantle. Earth and Planetary Science Letters, 282(1), 178-189.
+         *
+         * For the rate of grain size reduction due to dynamic crystallization
+         * there is the choice between the paleowattmeter (Austins and
+         * Evans, 2007) and the paleopiezometer (Hall and Parmentier, 2003)
+         * as described in the parameter use_paleowattmeter.
          */
         double
         grain_size_change (const double                  temperature,
@@ -479,8 +486,7 @@ namespace aspect
          * size
          */
         void
-        convert_log_grain_size (const bool normal_to_log,
-                                std::vector<double> &compositional_fields) const;
+        convert_log_grain_size (std::vector<double> &compositional_fields) const;
 
         /**
          * list of depth, width and Clapeyron slopes for the different phase

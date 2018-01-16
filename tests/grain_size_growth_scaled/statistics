@@ -10,9 +10,9 @@
 # 10: Iterations for Stokes solver
 # 11: Velocity iterations in Stokes preconditioner
 # 12: Schur complement iterations in Stokes preconditioner
-# 13: Minimal value for composition olivine_grain_size
-# 14: Maximal value for composition olivine_grain_size
-# 15: Global mass for composition olivine_grain_size
+# 13: Minimal value for composition grain_size
+# 14: Maximal value for composition grain_size
+# 15: Global mass for composition grain_size
 # 16: Minimal temperature (K)
 # 17: Average temperature (K)
 # 18: Maximal temperature (K)

@@ -642,17 +642,12 @@ namespace aspect
     template <int dim>
     void
     GrainSize<dim>::
-    convert_log_grain_size (const bool normal_to_log,
-                            std::vector<double> &composition) const
+    convert_log_grain_size (std::vector<double> &composition) const
     {
       // get grain size and limit it to a global minimum
       const unsigned int grain_size_index = this->introspection().compositional_index_for_name("grain_size");
       double grain_size = composition[grain_size_index];
-
-      if (normal_to_log)
-        grain_size = -std::log(std::max(grain_size,min_grain_size));
-      else
-        grain_size = std::max(std::exp(-grain_size),min_grain_size);
+      grain_size = std::max(std::exp(-grain_size),min_grain_size);
 
       composition[grain_size_index] = grain_size;
     }
@@ -818,8 +813,6 @@ namespace aspect
       // find out in which phase we are
       const unsigned int phase_index = get_phase_index(position, temperature, adiabatic_pressure);
 
-      // TODO: we use the prefactors from Behn et al., 2009 as default values, but their laws use the strain rate
-      // and we use the second invariant --> check if the prefactors should be changed
       double energy_term = exp((diffusion_activation_energy[phase_index] + diffusion_activation_volume[phase_index] * adiabatic_pressure)
                                / (diffusion_creep_exponent[phase_index] * constants::gas_constant * temperature));
 
@@ -1296,7 +1289,7 @@ namespace aspect
           // convert the grain size from log to normal
           std::vector<double> composition (in.composition[i]);
           if (advect_log_grainsize)
-            convert_log_grain_size(false,composition);
+            convert_log_grain_size(composition);
           else
             {
               const unsigned int grain_size_index = this->introspection().compositional_index_for_name("grain_size");
@@ -1383,7 +1376,6 @@ namespace aspect
             disl_viscosities_out->boundary_area_change_work_fractions[i] =
               boundary_area_change_work_fraction[get_phase_index(in.position[i],in.temperature[i],pressure)];
 
-          // TODO: make this more general for not just olivine grains
           if (in.strain_rate.size() > 0)
             for (unsigned int c=0; c<composition.size(); ++c)
               {
