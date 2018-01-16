@@ -20,7 +20,7 @@
 
 
 #include <aspect/heating_model/shear_heating.h>
-#include <aspect/material_model/damage_rheology.h>
+#include <aspect/material_model/grain_size.h>
 
 
 namespace aspect

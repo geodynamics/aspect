@@ -1,7 +1,6 @@
 # This is a very simple testcase that checks
 # that the implementation of the grain growth
-# laws are correct, and if the work with the 
-# lower mantle grain size scaling. All parameters, including
+# laws are correct. All parameters, including
 # temperature and pressure, are set to constant
 # values and no dynamic recrystallisation is 
 # included (the reciprocal required strain is
@@ -26,9 +25,12 @@
 set Dimension                              = 2
 set End time                               = 50000
 set Use years in output instead of seconds = true
+
 set Surface pressure                       = 0
 set Adiabatic surface temperature          = 1600
+set Linear solver tolerance                = 1e-7
 set Temperature solver tolerance           = 1e-7
+set Nonlinear solver scheme                = IMPES
 
 subsection Geometry model
   set Model name = box
@@ -91,7 +93,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,z
     set Function constants  = 
-    set Function expression = if(z<50000,8e-4,8.00001e-4)
+    set Function expression = if(z<50000,8e-5,8.00001e-5)
   end
 end
 
@@ -101,9 +103,9 @@ subsection Compositional fields
 end
 
 subsection Material model
-  set Model name = damage rheology
+  set Model name = grain size
 
-  subsection Damage rheology model
+  subsection Grain size model
     set Reference density                = 3400
     set Thermal conductivity             = 0
     set Thermal expansion coefficient    = 0
@@ -118,8 +120,6 @@ subsection Material model
     set Grain growth exponent                = 10
     set Use paleowattmeter                   = false
     set Reciprocal required strain           = 0
-
-    set Lower mantle grain size scaling      = 10
 
     # Faul and Jackson 2007
     # Diffusion creep

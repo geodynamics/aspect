@@ -1,7 +1,7 @@
 #########################################################
 # This is a model setup to test the latent heat generation. 
 # It is identical to the latent_heat_enthalpy test, but utilizes
-# the damage rheology material model to ensure a correct 
+# the grain size material model to ensure a correct 
 # implementation of the functionality. For details on the 
 # test see the latent_heat_enthalpy testcase.
 
@@ -89,8 +89,8 @@ end
 
 
 subsection Material model
-  set Model name = damage rheology latent heat
-  subsection Damage rheology model
+  set Model name = grain size latent heat
+  subsection Grain size model
     set Reference density                = 3400
     set Thermal conductivity             = 2.38
     set Thermal expansion coefficient    = 0

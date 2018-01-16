@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/material_model/damage_rheology.h>
+#include <aspect/material_model/grain_size.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
 
@@ -48,7 +48,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class DamageRheologyLatentHeat : public MaterialModel::DamageRheology<dim>
+    class GrainSizeLatentHeat : public MaterialModel::GrainSize<dim>
     {
       public:
         virtual bool is_compressible () const
@@ -231,10 +231,10 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(DamageRheologyLatentHeat,
-                                   "damage rheology latent heat",
+    ASPECT_REGISTER_MATERIAL_MODEL(GrainSizeLatentHeat,
+                                   "grain size latent heat",
                                    "A material model that behaves in the same way as "
-                                   "the damage rheology model, but is modified to "
+                                   "the grain size model, but is modified to "
                                    "resemble the latent heat benchmark. Due to the "
                                    "nature of the benchmark the model needs to be "
                                    "incompressible despite a material table and "

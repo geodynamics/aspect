@@ -23,7 +23,7 @@
 
 #include <aspect/material_model/interface.h>
 
-#include <aspect/material_model/damage_rheology.h>
+#include <aspect/material_model/grain_size.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect

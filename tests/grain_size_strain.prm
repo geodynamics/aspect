@@ -1,10 +1,10 @@
-# A test for the damage rheology material model similar to 
-# damage-rheology-strain. The only difference is the activation of shear
-# heating, which is tested to be reduced by the work fraction that is used to
-# change the boundary area of grains.
+# A test for the grain size material model. The test produces nearly 
+# constant temperatures, pressures, strain rates and uses experimentally 
+# derived values for olivine. Therefore the grain size in the test approaches
+# the equilibrium grain size for t -> infinity
 
 set Dimension                              = 2
-set End time                               = 10000
+set End time                               = 5000
 set Use years in output instead of seconds = true
 
 set Surface pressure                       = 0
@@ -20,16 +20,15 @@ subsection Geometry model
   end
 end
 
-subsection Heating model
-  set List of model names = shear heating
-end
-
 subsection Model settings
   set Fixed temperature boundary indicators   = top,bottom
   set Fixed composition boundary indicators   = 
   set Zero velocity boundary indicators       = 
   set Tangential velocity boundary indicators = 
   set Prescribed velocity boundary indicators = top:function,bottom:function
+
+  set Include shear heating = false
+  set Include adiabatic heating = false
 end
 
 subsection Boundary velocity model
@@ -83,9 +82,9 @@ subsection Compositional fields
 end
 
 subsection Material model
-  set Model name = damage rheology
+  set Model name = grain size
 
-  subsection Damage rheology model
+  subsection Grain size model
     set Reference density                = 3400
     set Thermal conductivity             = 0
     set Thermal expansion coefficient    = 0
@@ -131,5 +130,5 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-  set List of postprocessors = composition statistics,temperature statistics, velocity statistics, viscous dissipation statistics, heating statistics
+  set List of postprocessors = composition statistics,temperature statistics, velocity statistics
 end

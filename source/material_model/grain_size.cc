@@ -19,7 +19,7 @@
 */
 
 
-#include <aspect/material_model/damage_rheology.h>
+#include <aspect/material_model/grain_size.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/utilities.h>
@@ -546,7 +546,7 @@ namespace aspect
 
     template <int dim>
     void
-    DamageRheology<dim>::initialize()
+    GrainSize<dim>::initialize()
     {
       n_material_data = material_file_names.size();
       for (unsigned i = 0; i < n_material_data; i++)
@@ -571,7 +571,7 @@ namespace aspect
 
     template <int dim>
     double
-    DamageRheology<dim>::
+    GrainSize<dim>::
     phase_function (const Point<dim> &position,
                     const double temperature,
                     const double pressure,
@@ -619,7 +619,7 @@ namespace aspect
 
     template <int dim>
     unsigned int
-    DamageRheology<dim>::
+    GrainSize<dim>::
     get_phase_index (const Point<dim> &position,
                      const double temperature,
                      const double pressure) const
@@ -641,7 +641,7 @@ namespace aspect
 
     template <int dim>
     void
-    DamageRheology<dim>::
+    GrainSize<dim>::
     convert_log_grain_size (const bool normal_to_log,
                             std::vector<double> &composition) const
     {
@@ -661,7 +661,7 @@ namespace aspect
 
     template <int dim>
     double
-    DamageRheology<dim>::
+    GrainSize<dim>::
     grain_size_change (const double                  temperature,
                        const double                  pressure,
                        const std::vector<double>    &compositional_fields,
@@ -796,7 +796,7 @@ namespace aspect
 
     template <int dim>
     double
-    DamageRheology<dim>::
+    GrainSize<dim>::
     diffusion_viscosity (const double                  temperature,
                          const double                  pressure,
                          const std::vector<double>    &composition,
@@ -850,7 +850,7 @@ namespace aspect
 
     template <int dim>
     double
-    DamageRheology<dim>::
+    GrainSize<dim>::
     dislocation_viscosity (const double      temperature,
                            const double      pressure,
                            const std::vector<double> &composition,
@@ -892,7 +892,7 @@ namespace aspect
 
     template <int dim>
     double
-    DamageRheology<dim>::
+    GrainSize<dim>::
     dislocation_viscosity_fixed_strain_rate (const double      temperature,
                                              const double      pressure,
                                              const std::vector<double> &,
@@ -941,7 +941,7 @@ namespace aspect
 
     template <int dim>
     double
-    DamageRheology<dim>::
+    GrainSize<dim>::
     viscosity (const double temperature,
                const double pressure,
                const std::vector<double> &composition,
@@ -969,7 +969,7 @@ namespace aspect
 
     template <int dim>
     double
-    DamageRheology<dim>::
+    GrainSize<dim>::
     enthalpy (const double      temperature,
               const double      pressure,
               const std::vector<double> &compositional_fields,
@@ -993,7 +993,7 @@ namespace aspect
 
     template <int dim>
     double
-    DamageRheology<dim>::
+    GrainSize<dim>::
     seismic_Vp (const double      temperature,
                 const double      pressure,
                 const std::vector<double> &compositional_fields,
@@ -1017,7 +1017,7 @@ namespace aspect
 
     template <int dim>
     double
-    DamageRheology<dim>::
+    GrainSize<dim>::
     seismic_Vs (const double      temperature,
                 const double      pressure,
                 const std::vector<double> &compositional_fields,
@@ -1041,7 +1041,7 @@ namespace aspect
 
     template <int dim>
     double
-    DamageRheology<dim>::
+    GrainSize<dim>::
     reference_viscosity () const
     {
       return eta;
@@ -1051,7 +1051,7 @@ namespace aspect
 
     template <int dim>
     double
-    DamageRheology<dim>::
+    GrainSize<dim>::
     density (const double temperature,
              const double pressure,
              const std::vector<double> &compositional_fields, /*composition*/
@@ -1083,7 +1083,7 @@ namespace aspect
 
     template <int dim>
     bool
-    DamageRheology<dim>::
+    GrainSize<dim>::
     is_compressible () const
     {
       return (reference_compressibility != 0)
@@ -1094,7 +1094,7 @@ namespace aspect
 
     template <int dim>
     double
-    DamageRheology<dim>::
+    GrainSize<dim>::
     compressibility (const double temperature,
                      const double pressure,
                      const std::vector<double> &compositional_fields,
@@ -1119,7 +1119,7 @@ namespace aspect
 
     template <int dim>
     double
-    DamageRheology<dim>::
+    GrainSize<dim>::
     thermal_expansion_coefficient (const double      temperature,
                                    const double      pressure,
                                    const std::vector<double> &compositional_fields,
@@ -1146,7 +1146,7 @@ namespace aspect
 
     template <int dim>
     double
-    DamageRheology<dim>::
+    GrainSize<dim>::
     specific_heat (const double temperature,
                    const double pressure,
                    const std::vector<double> &compositional_fields,
@@ -1173,7 +1173,7 @@ namespace aspect
 
     template <int dim>
     std_cxx1x::array<std::pair<double, unsigned int>,2>
-    DamageRheology<dim>::
+    GrainSize<dim>::
     enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const
     {
       std_cxx1x::array<std::pair<double, unsigned int>,2> derivative;
@@ -1281,7 +1281,7 @@ namespace aspect
 
     template <int dim>
     void
-    DamageRheology<dim>::
+    GrainSize<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
       for (unsigned int i=0; i<in.position.size(); ++i)
@@ -1478,11 +1478,11 @@ namespace aspect
 
     template <int dim>
     void
-    DamageRheology<dim>::declare_parameters (ParameterHandler &prm)
+    GrainSize<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("Damage rheology model");
+        prm.enter_subsection("Grain size model");
         {
           prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0),
@@ -1752,16 +1752,16 @@ namespace aspect
 
     template <int dim>
     void
-    DamageRheology<dim>::parse_parameters (ParameterHandler &prm)
+    GrainSize<dim>::parse_parameters (ParameterHandler &prm)
     {
       AssertThrow (this->introspection().compositional_name_exists("grain_size"),
-                   ExcMessage("The 'damage rheology' material model only works if a compositional "
+                   ExcMessage("The 'grain size' material model only works if a compositional "
                               "field with name 'grain_size' is present. Please use another material "
                               "model or add such a field."));
 
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("Damage rheology model");
+        prm.enter_subsection("Grain size model");
         {
           reference_rho              = prm.get_double ("Reference density");
           reference_T                = prm.get_double ("Reference temperature");
@@ -1976,7 +1976,7 @@ namespace aspect
 
     template <int dim>
     void
-    DamageRheology<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    GrainSize<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       // These properties are useful as output, but will also be used by the
       // heating model to reduce shear heating by the amount of work done to
@@ -2006,8 +2006,8 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(DamageRheology,
-                                   "damage rheology",
+    ASPECT_REGISTER_MATERIAL_MODEL(GrainSize,
+                                   "grain size",
                                    "A material model that relies on compositional "
                                    "fields that stand for average grain sizes of a mineral "
                                    "phase and source terms for them that determine the grain "
@@ -2025,8 +2025,10 @@ namespace aspect
                                    "to the 'simple' material model, or read from data files "
                                    "that were generated by the Perplex or Hefesto software. "
                                    "The material model "
-                                   "is described in more detail in Dannberg et al., 2017. The "
-                                   "importance of grain size to mantle dynamics and "
-                                   "seismological observations. Geochemistry, Geophysics, Geosystems.")
+                                   "is described in more detail in Dannberg, J., Z. Eilon, "
+                                   "U. Faul, R. Gassmoeller, P. Moulik, and R. Myhill (2017), "
+                                   "The importance of grain size to mantle dynamics and "
+                                   "seismological observations, Geochem. Geophys. Geosyst., "
+                                   "18, 3034–3061, doi:10.1002/2017GC006944.")
   }
 }

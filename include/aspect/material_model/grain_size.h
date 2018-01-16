@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__model_damage_rheology_h
-#define __aspect__model_damage_rheology_h
+#ifndef __aspect__model_grain_size_h
+#define __aspect__model_grain_size_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
@@ -35,7 +35,7 @@ namespace aspect
     /**
      * Additional output fields for the dislocation viscosity parameters
      * to be added to the MaterialModel::MaterialModelOutputs structure
-     * and filled in the MaterialModel::DamageRheology::evaluate() function.
+     * and filled in the MaterialModel::GrainSize::evaluate() function.
      */
     template <int dim>
     class DislocationViscosityOutputs : public NamedAdditionalMaterialOutputs<dim>
@@ -205,7 +205,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class DamageRheology : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class GrainSize : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
