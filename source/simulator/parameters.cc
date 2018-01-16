@@ -142,6 +142,15 @@ namespace aspect
                        "Units: Years or seconds, depending on the ``Use years "
                        "in output instead of seconds'' parameter.");
 
+    prm.declare_entry ("Maximum relative increase in time step", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
+                       Patterns::Double (0),
+                       "Set a percentage with which the the time step is limited to increase. Generally the "
+                       "time step based on the CFL number should be sufficient, but for complicated models "
+                       "which may suddenly drastically change behavoir, it may be usefull to limit the increase "
+                       "in the timestep, without limiting the time step size of the whole simulation to a "
+                       "particular number if this value is $50$, then that means that the time step can at most "
+                       "increase by 50\\% from one time step to the next, or by a factor of 1.5.");
+
     prm.declare_entry ("Use conduction timestep", "false",
                        Patterns::Bool (),
                        "Mantle convection simulations are often focused on convection "
@@ -1017,6 +1026,8 @@ namespace aspect
     maximum_time_step       = prm.get_double("Maximum time step");
     if (convert_to_years == true)
       maximum_time_step *= year_in_seconds;
+
+    maximum_relative_increase_time_step = prm.get_double("Maximum relative increase in time step") * 0.01;
 
     if (prm.get ("Nonlinear solver scheme") == "IMPES")
       nonlinear_solver = NonlinearSolver::IMPES;
