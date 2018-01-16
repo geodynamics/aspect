@@ -97,13 +97,35 @@ namespace aspect
           enthalpy(const double temperature,
                    const double pressure) const;
 
+          /**
+           * Computes the derivative of enthalpy for temperature, using the
+           * resolution of the read-in table to compute a finite-difference
+           * approximation of the derivative.
+           */
           double
           dHdT (const double temperature,
                 const double pressure) const;
 
+          /**
+           * Computes the derivative of enthalpy for pressure, using the
+           * resolution of the read-in table to compute a finite-difference
+           * approximation of the derivative.
+           */
           double
           dHdp (const double temperature,
                 const double pressure) const;
+
+          /**
+           * Compute the enthalpy derivatives for temperature and pressure
+           * given a set of temperature and pressure points, which will be
+           * used as support points for the finite difference scheme. This
+           * is useful to not 'miss' phase transitions that are not resolved in
+           * the dHdT and dHdp functions.
+           */
+          std_cxx11::array<std::pair<double, unsigned int>,2>
+          enthalpy_derivatives(const std::vector<double> temperatures,
+                               const std::vector<double> pressures,
+                               const unsigned int n_substeps = 1) const;
 
           double
           dRhodp (const double temperature,

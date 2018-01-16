@@ -143,6 +143,74 @@ namespace aspect
         return (dh - h) / delta_press;
       }
 
+      std_cxx11::array<std::pair<double, unsigned int>,2>
+      MaterialLookup::enthalpy_derivatives(const std::vector<double> temperatures,
+                                           const std::vector<double> pressures,
+                                           const unsigned int n_substeps) const
+      {
+        Assert(temperatures.size() == pressures.size(),ExcInternalError());
+        const unsigned int n_q_points = temperatures.size();
+        unsigned int n_T(0), n_p(0);
+        double dHdT(0.0), dHdp(0.0);
+
+        for (unsigned int q=0; q<n_q_points; ++q)
+          {
+            for (unsigned int p=0; p<n_q_points; ++p)
+              {
+                if (std::fabs(temperatures[q] - temperatures[p]) > get_pT_steps()[1] / 4.0)
+                  {
+                    for (unsigned int substep = 0; substep < n_substeps; ++substep)
+                      {
+                        const double current_pressure = pressures[q]
+                                                        + ((double)(substep)/(double)(n_substeps))
+                                                        * (pressures[p]-pressures[q]);
+                        const double T1_substep = temperatures[q]
+                                                  + ((double)(substep)/(double)(n_substeps))
+                                                  * (temperatures[p]-temperatures[q]);
+                        const double T2_substep = temperatures[q]
+                                                  + ((double)(substep+1)/(double)(n_substeps))
+                                                  * (temperatures[p]-temperatures[q]);
+                        const double enthalpy2 = enthalpy(T2_substep,current_pressure);
+                        const double enthalpy1 = enthalpy(T1_substep,current_pressure);
+                        dHdT += (enthalpy2-enthalpy1)/(T2_substep-T1_substep);
+                        ++n_T;
+                      }
+                  }
+                if (std::fabs(pressures[q] - pressures[p]) > get_pT_steps()[0] / 4.0)
+                  {
+                    for (unsigned int substep = 0; substep < n_substeps; ++substep)
+                      {
+                        const double current_temperature = temperatures[q]
+                                                           + ((double)(substep)/(double)(n_substeps))
+                                                           * (temperatures[p]-temperatures[q]);
+                        const double p1_substep = pressures[q]
+                                                  + ((double)(substep)/(double)(n_substeps))
+                                                  * (pressures[p]-pressures[q]);
+                        const double p2_substep = pressures[q]
+                                                  + ((double)(substep+1)/(double)(n_substeps))
+                                                  * (pressures[p]-pressures[q]);
+                        const double enthalpy2 = enthalpy(current_temperature,p2_substep);
+                        const double enthalpy1 = enthalpy(current_temperature,p1_substep);
+                        dHdp += (enthalpy2-enthalpy1)/(p2_substep-p1_substep);
+                        ++n_p;
+                      }
+                  }
+              }
+          }
+
+        if ((n_T > 0)
+            && (n_p > 0))
+          {
+            dHdT /= n_T;
+            dHdp /= n_p;
+          }
+
+        std_cxx11::array<std::pair<double, unsigned int>,2> derivatives;
+        derivatives[0] = std::make_pair(dHdT,n_T);
+        derivatives[1] = std::make_pair(dHdp,n_p);
+        return derivatives;
+      }
+
       double
       MaterialLookup::dRhodp (const double temperature,
                               const double pressure) const
@@ -1170,11 +1238,10 @@ namespace aspect
     enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const
     {
       std_cxx1x::array<std::pair<double, unsigned int>,2> derivative;
-      unsigned int T_points(0), p_points(0);
-      double dHdT(0.0), dHdp(0.0);
 
       if (in.current_cell.state() == IteratorState::valid)
         {
+          // get the pressures and temperatures at the vertices of the cell
           const QTrapez<dim> quadrature_formula;
           const unsigned int n_q_points = quadrature_formula.size();
           FEValues<dim> fe_values (this->get_mapping(),
@@ -1183,90 +1250,26 @@ namespace aspect
                                    update_values);
 
           std::vector<double> temperatures(n_q_points), pressures(n_q_points);
-          std::vector<std::vector<double> > compositions (quadrature_formula.size(),std::vector<double> (this->n_compositional_fields()));
-          std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
-
           fe_values.reinit (in.current_cell);
 
-          // get the various components of the solution, then
-          // evaluate the material properties there
           fe_values[this->introspection().extractors.temperature]
           .get_function_values (this->get_current_linearization_point(), temperatures);
           fe_values[this->introspection().extractors.pressure]
           .get_function_values (this->get_current_linearization_point(), pressures);
-
-          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-            fe_values[this->introspection().extractors.compositional_fields[c]]
-            .get_function_values(this->get_current_linearization_point(),
-                                 composition_values[c]);
-          for (unsigned int q=0; q<fe_values.n_quadrature_points; ++q)
-            {
-              for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                compositions[q][c] = composition_values[c][q];
-            }
 
           AssertThrow (material_lookup.size() == 1,
                        ExcMessage("This formalism is only implemented for one material "
                                   "table."));
 
           // We have to take into account here that the p,T spacing of the table of material properties
-          // we use might be on a finer grid than our model. Because of that we average the enthalpy
-          // derivatives over the whole cell, using finer temperature and pressure intervals
-          for (unsigned int q=0; q<n_q_points; ++q)
-            {
-              for (unsigned int p=0; p<n_q_points; ++p)
-                {
-                  if (std::fabs(temperatures[q] - temperatures[p]) > material_lookup[0]->get_pT_steps()[1] / 4.0)
-                    {
-                      for (unsigned int substep = 0; substep < max_latent_heat_substeps; ++substep)
-                        {
-                          const double current_pressure = pressures[q]
-                                                          + ((double)(substep)/(double)(max_latent_heat_substeps))
-                                                          * (pressures[p]-pressures[q]);
-                          const double T1_substep = temperatures[q]
-                                                    + ((double)(substep)/(double)(max_latent_heat_substeps))
-                                                    * (temperatures[p]-temperatures[q]);
-                          const double T2_substep = temperatures[q]
-                                                    + ((double)(substep+1)/(double)(max_latent_heat_substeps))
-                                                    * (temperatures[p]-temperatures[q]);
-                          const double enthalpy2 = material_lookup[0]->enthalpy(T2_substep,current_pressure);
-                          const double enthalpy1 = material_lookup[0]->enthalpy(T1_substep,current_pressure);
-                          dHdT += (enthalpy2-enthalpy1)/(T2_substep-T1_substep);
-                          T_points++;
-                        }
-                    }
-                  if (std::fabs(pressures[q] - pressures[p]) > material_lookup[0]->get_pT_steps()[0] / 4.0)
-                    {
-                      for (unsigned int substep = 0; substep < max_latent_heat_substeps; ++substep)
-                        {
-                          const double current_temperature = temperatures[q]
-                                                             + ((double)(substep)/(double)(max_latent_heat_substeps))
-                                                             * (temperatures[p]-temperatures[q]);
-                          const double p1_substep = pressures[q]
-                                                    + ((double)(substep)/(double)(max_latent_heat_substeps))
-                                                    * (pressures[p]-pressures[q]);
-                          const double p2_substep = pressures[q]
-                                                    + ((double)(substep+1)/(double)(max_latent_heat_substeps))
-                                                    * (pressures[p]-pressures[q]);
-                          const double enthalpy2 = material_lookup[0]->enthalpy(current_temperature,p2_substep);
-                          const double enthalpy1 = material_lookup[0]->enthalpy(current_temperature,p1_substep);
-                          dHdp += (enthalpy2-enthalpy1)/(p2_substep-p1_substep);
-                          p_points++;
-                        }
-                    }
-                }
-            }
-
-          if ((T_points > 0)
-              && (p_points > 0))
-            {
-              dHdT /= T_points;
-              dHdp /= p_points;
-            }
+          // we use might be on a finer grid than our model. Because of that we compute the enthalpy
+          // derivatives by using finite differences that average over the whole temperature and
+          // pressure range that is used in this cell. This way we should not miss any phase transformation.
+          derivative = material_lookup[0]->enthalpy_derivatives(temperatures,
+                                                                pressures,
+                                                                max_latent_heat_substeps);
         }
 
-      derivative[0] = std::make_pair(dHdT,T_points);
-      derivative[1] = std::make_pair(dHdp,p_points);
       return derivative;
     }
 
