@@ -20,7 +20,7 @@
 
 
 #include <aspect/material_model/interface.h>
-#include <aspect/material_model/damage_rheology.h>
+#include <aspect/material_model/grain_size.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
