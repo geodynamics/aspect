@@ -5,7 +5,6 @@
 <tr id="\format{\bibtexkey}" class="entry">
   <td>
     \begin{author}\format[Authors(FirstFirst,Initials,Comma,Comma),HTMLChars]{\author}\end{author}
-    (\year)
     <br>
     <b>
       \format[HTMLChars]{\title}
@@ -13,16 +12,19 @@
 
     <br>
 
-    \begin{journal} \format[HTMLChars]{\journal}\end{journal}
-    \begin{booktitle}, In: \format[HTMLChars]{\booktitle}.\end{booktitle}
-    \begin{howpublished}, \howpublished\end{howpublished}
-    \begin{school}. Thesis at \format[HTMLChars]{\school}.\end{school}
-    \begin{address} \format[HTMLChars]{\address}\end{address}
-    \begin{month}, \format[HTMLChars]{\month}, \year\end{month}
-    \begin{volume}, vol. \volume\end{volume}
-    \begin{number}(\format[FormatPagesForHTML]{\number})\end{number}
-    \begin{pages}, pp. \format[FormatPagesForHTML]{\pages}\end{pages}
-    \begin{publisher}. \format[HTMLChars]{\publisher}\end{publisher}.
+   <!-- print the details of the publiction. avoid spaces between
+        entries by ending each line with a comment-start marker
+        and begin the next line with the comment-end marker -->
+
+    \begin{journal} \format[HTMLChars]{\journal}\end{journal}<!--
+ -->\begin{booktitle}, In: \format[HTMLChars]{\booktitle}.\end{booktitle}<!--
+ -->\begin{howpublished}, \howpublished\end{howpublished}<!--
+ -->\begin{school}. Thesis at \format[HTMLChars]{\school}.\end{school}<!--
+ -->\begin{address} \format[HTMLChars]{\address}\end{address}<!--
+ -->\begin{volume}, vol. \volume\end{volume}<!--
+ -->\begin{number}(\format[FormatPagesForHTML]{\number})\end{number}<!--
+ -->\begin{pages}, pp. \format[FormatPagesForHTML]{\pages}\end{pages}<!--
+ -->\begin{publisher}. \format[HTMLChars]{\publisher}\end{publisher}.
     
     <p class="infolinks">
       \begin{review}
