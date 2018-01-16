@@ -20,7 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/heat_flux_map.h>
-#include <aspect/simulator_access.h>
+#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -64,44 +64,46 @@ namespace aspect
         unsigned int cell_index = 0;
         for (; cell!=endc; ++cell,++cell_index)
           if (cell->is_locally_owned())
-            if (cell->at_boundary())
-              {
-                double normal_flux = 0;
-                double face_area = 0;
+            {
+              (*return_value.second)(cell_index) = 0;
 
-                for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                  if (cell->at_boundary(f))
-                    {
-                      fe_face_values.reinit (cell, f);
+              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                if (cell->at_boundary(f) &&
+                    (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top" ||
+                     this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "bottom"))
+                  {
+                    double normal_flux = 0;
+                    double face_area = 0;
 
-                      // Temperature gradients needed for heat flux.
-                      fe_face_values[this->introspection().extractors.temperature].get_function_gradients (this->get_solution(),
-                          temperature_gradients);
+                    fe_face_values.reinit (cell, f);
 
-                      // Set use_strain_rate to false since we don't need viscosity.
-                      in.reinit(fe_face_values, cell, this->introspection(), this->get_solution(), false);
-                      this->get_material_model().evaluate(in, out);
+                    // Temperature gradients needed for heat flux.
+                    fe_face_values[this->introspection().extractors.temperature].get_function_gradients (this->get_solution(),
+                        temperature_gradients);
+
+                    // Set use_strain_rate to false since we don't need viscosity.
+                    in.reinit(fe_face_values, cell, this->introspection(), this->get_solution(), false);
+                    this->get_material_model().evaluate(in, out);
 
 
-                      // Calculate the normal conductive heat flux given by the formula
-                      //   j = - k * n . grad T
+                    // Calculate the normal conductive heat flux given by the formula
+                    //   j = - k * n . grad T
 
-                      for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                        {
-                          const double thermal_conductivity
-                            = out.thermal_conductivities[q];
+                    for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                      {
+                        const double thermal_conductivity
+                          = out.thermal_conductivities[q];
 
-                          normal_flux += -thermal_conductivity *
-                                         (temperature_gradients[q] * fe_face_values.normal_vector(q)) *
-                                         fe_face_values.JxW(q);
-                          face_area += fe_face_values.JxW(q);
-                        }
-                    }
+                        normal_flux += -thermal_conductivity *
+                                       (temperature_gradients[q] * fe_face_values.normal_vector(q)) *
+                                       fe_face_values.JxW(q);
+                        face_area += fe_face_values.JxW(q);
+                      }
 
-                // store final position and heatflow
-                (*return_value.second)(cell_index) = normal_flux / face_area;
-
-              }
+                    // add heatflow for this face
+                    (*return_value.second)(cell_index) += normal_flux / face_area;
+                  }
+            }
 
         return return_value;
       }
