@@ -536,7 +536,6 @@ namespace aspect
             {
               for (unsigned i = 0; i < material_lookup.size(); ++i)
                 cp += compositional_fields[i] * material_lookup[i]->dHdT(temperature,pressure);
-              cp = std::max(std::min(cp,6000.0),500.0);
             }
         }
       return cp;
@@ -639,7 +638,6 @@ namespace aspect
                 dHdp += compositional_fields[i] * material_lookup[i]->dHdp(temperature,pressure);
             }
           alpha = (1 - density(temperature,pressure,compositional_fields,position) * dHdp) / temperature;
-          alpha = std::max(std::min(alpha,1e-3),1e-5);
         }
       return alpha;
     }
