@@ -48,7 +48,7 @@ subsection Initial temperature model
 end
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 
   subsection Box
     set Bottom temperature = DELTA_T
