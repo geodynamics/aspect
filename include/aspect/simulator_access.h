@@ -387,8 +387,9 @@ namespace aspect
       /**
        * Return a reference to the vector that has the current solution of the
        * entire system, i.e. the velocity and pressure variables as well as
-       * the temperature.  This vector is associated with the DoFHandler
-       * object returned by get_dof_handler().
+       * the temperature and compositional fields.
+       * This vector is associated with the DoFHandler object returned by
+       * get_dof_handler().
        *
        * @note In general the vector is a distributed vector; however, it
        * contains ghost elements for all locally relevant degrees of freedom.

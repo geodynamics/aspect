@@ -304,6 +304,22 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    void
+    Manager<dim>::
+    create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const
+    {
+      for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
+           heating_model = heating_model_objects.begin();
+           heating_model != heating_model_objects.end(); ++heating_model)
+        {
+          (*heating_model)->create_additional_material_model_outputs(material_model_outputs);
+        }
+    }
+
+
+
     template <int dim>
     const std::vector<std::string> &
     Manager<dim>::get_active_heating_model_names () const
