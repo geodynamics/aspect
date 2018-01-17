@@ -49,6 +49,10 @@ s/initial-conditions/initial-temperature/g
 s/seismic vs/named additional outputs/g
 s/seismic vp/named additional outputs/g
 s/named additional outputs.*named additional outputs/named additional outputs/g
+s/friction heating/heating/g
+s/viscous dissipation statistics/heating statistics/g
+s/heating statistics.*heating statistics/heating statistics/g
+
 
 # Make all instances of boussinesq into Boussinesq
 s/boussinesq/Boussinesq/g

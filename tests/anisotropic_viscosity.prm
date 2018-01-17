@@ -87,5 +87,5 @@ subsection Boundary velocity model
 end
 
 subsection Postprocess
-  set List of postprocessors = heating statistics, viscous dissipation statistics, velocity statistics
+  set List of postprocessors = heating statistics, velocity statistics
 end

@@ -96,7 +96,7 @@ subsection Boundary velocity model
 end
 
 subsection Postprocess
-  set List of postprocessors = heating statistics, viscous dissipation statistics 
+  set List of postprocessors = heating statistics 
 
   subsection Visualization
     set List of output variables = heating, viscosity, strain rate
