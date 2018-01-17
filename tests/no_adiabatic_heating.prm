@@ -1,7 +1,7 @@
 # This is a follow-on on the 'compressibility_iterated_stokes' testcase
 # where we choose
 #   u_z = 1+z/100
-# If we switch off adiabatic heating and friction heating, then there
+# If we switch off adiabatic heating and shear heating, then there
 # should be no effect on the temperature field from the velocity, and
 # no effect from the temperature onto the velocity either. Verify that
 # this is so

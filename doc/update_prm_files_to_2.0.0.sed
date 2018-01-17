@@ -12,10 +12,10 @@
 # sed -i "" -f update_source_files_to_2.0.0.sed FILENAME
 
 # Rename compositional initial conditions
-s/Compositional initial conditions/Initial composition model/g
+s/subsection Compositional initial conditions/Initial composition model/g
 
 # Rename initial (temperature) conditions
-s/Initial conditions/Initial temperature model/g
+s/subsection Initial conditions/Initial temperature model/g
 
 # Replace the 'model name' parameter by 'List of model names'
 # in all subsections that now use the new parameter.
