@@ -89,7 +89,7 @@ end
 
 # Composition boundary conditions
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 

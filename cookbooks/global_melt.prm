@@ -164,7 +164,7 @@ end
 # initial conditions again. This temperature is applied as a prescribed
 # temperature at the top and bottom boundary, as specified above.
 subsection Boundary temperature model
-  set Model name = initial temperature
+  set List of model names = initial temperature
 
   subsection Initial temperature
     set Minimal temperature = 293
@@ -175,7 +175,7 @@ end
 # We again choose the initial composition as boundary condition
 # for all compositional fields. 
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 # Models with melt transport also need an additional boundary condition: 

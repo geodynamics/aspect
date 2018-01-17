@@ -59,7 +59,7 @@ subsection Boundary temperature model
 end
 
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 # we apply simple shear here, so that the top and bottom boundaries 

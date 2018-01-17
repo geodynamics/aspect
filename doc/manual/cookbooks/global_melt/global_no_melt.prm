@@ -74,7 +74,7 @@ end
 # initial conditions again. This temperature is applied as a prescribed
 # temperature at the top and bottom boundary, as specified above.
 subsection Boundary temperature model
-  set Model name = initial temperature
+  set List of model names = initial temperature
 
   subsection Initial temperature
     set Minimal temperature = 293

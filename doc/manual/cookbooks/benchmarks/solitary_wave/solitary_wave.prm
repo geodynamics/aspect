@@ -51,7 +51,7 @@ end
 # As material is flowing in, we prescribe the porosity at the
 # upper and lower boundary. 
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 subsection Model settings
