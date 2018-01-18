@@ -117,7 +117,7 @@ namespace aspect
         /**
          * Number of points at which we compute the adiabatic values.
          */
-        const unsigned int n_points;
+        unsigned int n_points;
 
         /**
          * Vectors of values of temperatures and pressures on a transect into

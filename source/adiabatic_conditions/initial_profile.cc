@@ -34,11 +34,7 @@ namespace aspect
     template <int dim>
     InitialProfile<dim>::InitialProfile()
       :
-      initialized(false),
-      n_points(1000),
-      temperatures(n_points, numbers::signaling_nan<double>()),
-      pressures(n_points, numbers::signaling_nan<double>()),
-      densities(n_points, numbers::signaling_nan<double>())
+      initialized(false)
     {}
 
 
@@ -50,8 +46,9 @@ namespace aspect
       if (initialized)
         return;
 
-      Assert (pressures.size() == n_points, ExcInternalError());
-      Assert (temperatures.size() == n_points, ExcInternalError());
+      temperatures.resize(n_points, numbers::signaling_nan<double>());
+      pressures.resize(n_points, numbers::signaling_nan<double>());
+      densities.resize(n_points, numbers::signaling_nan<double>());
 
       delta_z = this->get_geometry_model().maximal_depth() / (n_points-1);
 
@@ -281,6 +278,12 @@ namespace aspect
                             "is computed. This profile is used to evaluate the "
                             "material model, when computing the pressure and "
                             "temperature profile.");
+          prm.declare_entry ("Number of points", "1000",
+                             Patterns::Integer (5),
+                             "The number of points we use to compute the adiabatic "
+                             "profile. The higher the number of points, the more accurate "
+                             "the downward integration from the adiabatic surface "
+                             "temperature will be.");
         }
         prm.leave_subsection();
       }
@@ -323,6 +326,8 @@ namespace aspect
                   throw;
                 }
             }
+
+          n_points = prm.get_integer ("Number of points");
         }
         prm.leave_subsection();
       }
