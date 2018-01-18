@@ -1009,6 +1009,17 @@ namespace aspect
   {
     system_matrix.clear ();
 
+    bool have_fem_compositional_field = false;
+    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+      {
+        const AdvectionField adv_field (AdvectionField::composition(c));
+        if (adv_field.advection_method(introspection)==Parameters<dim>::AdvectionFieldMethod::fem_field)
+          {
+            have_fem_compositional_field = true;
+            break;
+          }
+      }
+
     Table<2,DoFTools::Coupling> coupling (introspection.n_components,
                                           introspection.n_components);
     coupling.fill (DoFTools::none);
@@ -1066,28 +1077,13 @@ namespace aspect
             }
         }
       coupling[x.temperature][x.temperature] = DoFTools::always;
-      for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-        {
-          const AdvectionField adv_field (AdvectionField::composition(c));
-          const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
-          switch (method)
-            {
-              case Parameters<dim>::AdvectionFieldMethod::fem_field:
-                coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::always;
-                break;
 
-              case Parameters<dim>::AdvectionFieldMethod::particles:
-                coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::none;
-                break;
-
-              case Parameters<dim>::AdvectionFieldMethod::static_field:
-                coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::none;
-                break;
-
-              default:
-                Assert(false,ExcNotImplemented());
-            }
-        }
+      // If we have at least one compositional field that is a FEM field, we
+      // create a matrix block in the first compositional block. Its sparsity
+      // pattern will later be used to allocate composition matrices as
+      // needed.  All other matrix blocks are left empty here.
+      if (have_fem_compositional_field)
+        coupling[x.compositional_fields[0]][x.compositional_fields[0]] = DoFTools::always;
     }
 
     LinearAlgebra::BlockDynamicSparsityPattern sp;
@@ -1111,29 +1107,9 @@ namespace aspect
         if (parameters.use_discontinuous_temperature_discretization)
           face_coupling[x.temperature][x.temperature] = DoFTools::always;
 
-        if (parameters.use_discontinuous_composition_discretization)
-          {
-            for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-              {
-                const AdvectionField adv_field (AdvectionField::composition(c));
-                const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
-                switch (method)
-                  {
-                    // Coupling cases
-                    case Parameters<dim>::AdvectionFieldMethod::fem_field:
-                      face_coupling[x.compositional_fields[c]][x.compositional_fields[c]]
-                        = DoFTools::always;
-                      break;
-                    // Non-coupling cases
-                    case Parameters<dim>::AdvectionFieldMethod::particles:
-                      face_coupling[x.compositional_fields[c]][x.compositional_fields[c]]
-                        = DoFTools::none;
-                      break;
-                    default:
-                      Assert(false,ExcNotImplemented());
-                  }
-              }
-          }
+        // Only allocate composition 0 matrix if needed. Same as the non-DG case (see above)
+        if (parameters.use_discontinuous_composition_discretization && have_fem_compositional_field)
+          face_coupling[x.compositional_fields[0]][x.compositional_fields[0]] = DoFTools::always;
 
         DoFTools::make_flux_sparsity_pattern (dof_handler,
                                               sp,
@@ -1160,6 +1136,21 @@ namespace aspect
     system_matrix.reinit (system_partitioning, system_partitioning, sp, mpi_communicator);
 #else
     sp.compress();
+
+    // We only allocate a composition matrix block for composition 0 (see
+    // above). But even though we specify a coupling of DoFTools::none for the
+    // other composition blocks, entries for constrained entries for boundary
+    // conditions and hanging nodes are being created by
+    // make_sparsity_pattern. These are unnecessary, so we remove those
+    // entries here.
+    for (unsigned int c=1; c<introspection.n_compositional_fields; ++c)
+      {
+        const unsigned int block_idx = introspection.block_indices.compositional_fields[c];
+        // TODO: using clear() would be nice here but clear() also resets the
+        // size, so just reinit():
+        sp.block(block_idx, block_idx).reinit(sp.block(block_idx, block_idx).locally_owned_range_indices(),sp.block(block_idx, block_idx).locally_owned_domain_indices());
+        sp.block(block_idx, block_idx).compress();
+      }
 
     system_matrix.reinit (sp);
 #endif
@@ -1201,7 +1192,6 @@ namespace aspect
       }
     else
       coupling[x.pressure][x.pressure] = DoFTools::always;
-
     // the system_preconditioner matrix is only used for the Stokes
     // system as there we use a separate matrix for preconditioning
     // than the system_matrix object). for temperature and
@@ -1238,6 +1228,29 @@ namespace aspect
     system_preconditioner_matrix.reinit (system_partitioning, system_partitioning, sp, mpi_communicator);
 #else
     sp.compress();
+
+    // We are not interested in temperature and composition matrices for the
+    // preconditioner matrix. But even though we specify a coupling of
+    // DoFTools::none, entries for constrained entries for boundary conditions
+    // and hanging nodes are being created by make_sparsity_pattern. These are
+    // unnecessary, so we remove those entries here.
+    {
+      // temperature:
+      const unsigned int block_idx = introspection.block_indices.temperature;
+      // TODO: using clear() would be nice here but clear() also resets the
+      // size, so just reinit():
+      sp.block(block_idx, block_idx).reinit(sp.block(block_idx, block_idx).locally_owned_range_indices(),sp.block(block_idx, block_idx).locally_owned_domain_indices());
+      sp.block(block_idx, block_idx).compress();
+    }
+    // compositions:
+    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+      {
+        const unsigned int block_idx = introspection.block_indices.compositional_fields[c];
+        // TODO: using clear() would be nice here but clear() also resets the
+        // size, so just reinit():
+        sp.block(block_idx, block_idx).reinit(sp.block(block_idx, block_idx).locally_owned_range_indices(),sp.block(block_idx, block_idx).locally_owned_domain_indices());
+        sp.block(block_idx, block_idx).compress();
+      }
 
     system_preconditioner_matrix.reinit (sp);
 #endif

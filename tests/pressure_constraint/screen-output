@@ -24,11 +24,11 @@ system matrix nnz by block:
            0           0         777
 
 Total system preconditioner matrix memory consumption: 0.03 MB.
-Total system preconditioner matrix nnz: 1,303
+Total system preconditioner matrix nnz: 1,285
 system preconditioner matrix nnz by block: 
        1,122           0           0
            0         163           0
-           0           0          18
+           0           0           0
 
 
 *** Timestep 1:  t=0.1 seconds
@@ -50,11 +50,11 @@ system matrix nnz by block:
            0           0         777
 
 Total system preconditioner matrix memory consumption: 0.03 MB.
-Total system preconditioner matrix nnz: 1,303
+Total system preconditioner matrix nnz: 1,285
 system preconditioner matrix nnz by block: 
        1,122           0           0
            0         163           0
-           0           0          18
+           0           0           0
 
 
 Termination requested by criterion: end time
