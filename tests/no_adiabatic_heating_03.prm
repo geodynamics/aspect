@@ -1,9 +1,9 @@
-# Like 'no_adiabatic_heating_02' but here we actually switch on friction
+# Like 'no_adiabatic_heating_02' but here we actually switch on shear
 # heating and set the viscosity to a non-zero. In this testcase, we have
 #   u_z(z) = 1+z/10
 # so in 2d, we have
 #   eps(u) - 1/3 (div u) I = [[-1/30,0], [0,2/30]]
-# so the friction heating term is
+# so the shear heating term is
 #   2*eta*5/9*(1/10)^2
 # From the velocity, we get
 #   z = t+t^2/20

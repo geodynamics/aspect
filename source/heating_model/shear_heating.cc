@@ -47,6 +47,7 @@ namespace aspect
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
+          // If there is an anisotropic viscosity, use it to compute the correct stress
           const SymmetricTensor<4,dim> &C = material_model_outputs.stress_strain_directors[q];
           const SymmetricTensor<2,dim> &directed_strain_rate = ((C != dealii::identity_tensor<dim> ())
                                                                 ?
@@ -101,6 +102,11 @@ namespace aspect
   {
     ASPECT_REGISTER_HEATING_MODEL(ShearHeating,
                                   "shear heating",
-                                  "Implementation of a standard model for shear heating.")
+                                  "Implementation of a standard model for shear heating. "
+                                  "Adds the term: "
+                                  "$  2 \\eta \\left( \\varepsilon - \\frac{1}{3} \\text{tr} "
+                                  "\\varepsilon \\mathbf 1 \\right) : \\left( \\varepsilon - \\frac{1}{3} "
+                                  "\\text{tr} \\varepsilon \\mathbf 1 \\right)$ to the "
+                                  "right-hand side of the temperature equation.")
   }
 }
