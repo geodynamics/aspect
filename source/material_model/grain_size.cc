@@ -157,7 +157,7 @@ namespace aspect
           {
             for (unsigned int p=0; p<n_q_points; ++p)
               {
-                if (std::fabs(temperatures[q] - temperatures[p]) > get_pT_steps()[1] / 4.0)
+                if (std::fabs(temperatures[q] - temperatures[p]) > 100.0 * std::numeric_limits<double>::epsilon() * std::fabs(temperatures[q] + std::numeric_limits<double>::epsilon()))
                   {
                     for (unsigned int substep = 0; substep < n_substeps; ++substep)
                       {
@@ -176,7 +176,7 @@ namespace aspect
                         ++n_T;
                       }
                   }
-                if (std::fabs(pressures[q] - pressures[p]) > get_pT_steps()[0] / 4.0)
+                if (std::fabs(pressures[q] - pressures[p]) > 100.0 * std::numeric_limits<double>::epsilon() * std::fabs(pressures[q] + std::numeric_limits<double>::epsilon()))
                   {
                     for (unsigned int substep = 0; substep < n_substeps; ++substep)
                       {

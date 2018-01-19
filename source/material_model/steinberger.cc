@@ -24,6 +24,8 @@
 #include <aspect/utilities.h>
 #include <aspect/lateral_averaging.h>
 
+#include <deal.II/base/quadrature_lib.h>
+#include <deal.II/fe/fe_values.h>
 #include <deal.II/base/table.h>
 #include <fstream>
 #include <iostream>
@@ -212,46 +214,25 @@ namespace aspect
                    const Point<dim> &) const
     {
       double cp = 0.0;
-      if (!latent_heat)
+
+      if (material_lookup.size() == 1)
         {
-          if (material_lookup.size() == 1)
-            {
-              cp = material_lookup[0]->specific_heat(temperature,pressure);
-            }
-          else if (material_lookup.size() == compositional_fields.size() + 1)
-            {
-              const double background_cp = material_lookup[0]->specific_heat(temperature,pressure);
-              cp = background_cp;
-              for (unsigned int i = 0; i < compositional_fields.size(); ++i)
-                cp += compositional_fields[i] *
-                      (material_lookup[i+1]->specific_heat(temperature,pressure) - background_cp);
-            }
-          else
-            {
-              for (unsigned i = 0; i < material_lookup.size(); ++i)
-                cp += compositional_fields[i] * material_lookup[i]->specific_heat(temperature,pressure);
-            }
+          cp = material_lookup[0]->specific_heat(temperature,pressure);
+        }
+      else if (material_lookup.size() == compositional_fields.size() + 1)
+        {
+          const double background_cp = material_lookup[0]->specific_heat(temperature,pressure);
+          cp = background_cp;
+          for (unsigned int i = 0; i < compositional_fields.size(); ++i)
+            cp += compositional_fields[i] *
+                  (material_lookup[i+1]->specific_heat(temperature,pressure) - background_cp);
         }
       else
         {
-          if (material_lookup.size() == 1)
-            {
-              cp = material_lookup[0]->dHdT(temperature,pressure);
-            }
-          else if (material_lookup.size() == compositional_fields.size() + 1)
-            {
-              const double background_cp = material_lookup[0]->dHdT(temperature,pressure);
-              cp = background_cp;
-              for (unsigned int i = 0; i < compositional_fields.size(); ++i)
-                cp += compositional_fields[i] *
-                      (material_lookup[i+1]->dHdT(temperature,pressure) - background_cp);
-            }
-          else
-            {
-              for (unsigned i = 0; i < material_lookup.size(); ++i)
-                cp += compositional_fields[i] * material_lookup[i]->dHdT(temperature,pressure);
-            }
+          for (unsigned i = 0; i < material_lookup.size(); ++i)
+            cp += compositional_fields[i] * material_lookup[i]->specific_heat(temperature,pressure);
         }
+
       return cp;
     }
 
@@ -308,50 +289,26 @@ namespace aspect
     thermal_expansion_coefficient (const double      temperature,
                                    const double      pressure,
                                    const std::vector<double> &compositional_fields,
-                                   const Point<dim> &position) const
+                                   const Point<dim> &/*position*/) const
     {
       double alpha = 0.0;
-      if (!latent_heat)
+
+      if (material_lookup.size() == 1)
         {
-          if (material_lookup.size() == 1)
-            {
-              alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
-            }
-          else if (material_lookup.size() == compositional_fields.size() + 1)
-            {
-              const double background_alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
-              alpha = background_alpha;
-              for (unsigned int i = 0; i<compositional_fields.size(); ++i)
-                alpha += compositional_fields[i] *
-                         (material_lookup[i+1]->thermal_expansivity(temperature,pressure) - background_alpha);
-            }
-          else
-            {
-              for (unsigned i = 0; i < material_lookup.size(); ++i)
-                alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature,pressure);
-            }
+          alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
+        }
+      else if (material_lookup.size() == compositional_fields.size() + 1)
+        {
+          const double background_alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
+          alpha = background_alpha;
+          for (unsigned int i = 0; i<compositional_fields.size(); ++i)
+            alpha += compositional_fields[i] *
+                     (material_lookup[i+1]->thermal_expansivity(temperature,pressure) - background_alpha);
         }
       else
         {
-          double dHdp = 0.0;
-          if (material_lookup.size() == 1)
-            {
-              dHdp = material_lookup[0]->dHdp(temperature,pressure);
-            }
-          else if (material_lookup.size() == compositional_fields.size() + 1)
-            {
-              const double background_dHdp = material_lookup[0]->dHdp(temperature,pressure);
-              dHdp = background_dHdp;
-              for (unsigned int i = 0; i < compositional_fields.size(); ++i)
-                dHdp += compositional_fields[i] *
-                        (material_lookup[i+1]->dHdp(temperature,pressure) - background_dHdp);
-            }
-          else
-            {
-              for (unsigned i = 0; i < material_lookup.size(); ++i)
-                dHdp += compositional_fields[i] * material_lookup[i]->dHdp(temperature,pressure);
-            }
-          alpha = (1 - density(temperature,pressure,compositional_fields,position) * dHdp) / temperature;
+          for (unsigned i = 0; i < material_lookup.size(); ++i)
+            alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature,pressure);
         }
       return alpha;
     }
@@ -461,6 +418,48 @@ namespace aspect
       return true;
     }
 
+
+
+    template <int dim>
+    std_cxx1x::array<std::pair<double, unsigned int>,2>
+    Steinberger<dim>::
+    enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const
+    {
+      // We have to take into account here that the p,T spacing of the table of material properties
+      // we use might be on a finer grid than our model. Because of that we compute the enthalpy
+      // derivatives by using finite differences that average over the whole temperature and
+      // pressure range that is used in this cell. This way we should not miss any phase transformation.
+      std_cxx1x::array<std::pair<double, unsigned int>,2> derivative;
+
+      // get the pressures and temperatures at the vertices of the cell
+      const QTrapez<dim> quadrature_formula;
+      const unsigned int n_q_points = quadrature_formula.size();
+      FEValues<dim> fe_values (this->get_mapping(),
+                               this->get_fe(),
+                               quadrature_formula,
+                               update_values);
+
+      std::vector<double> temperatures(n_q_points), pressures(n_q_points);
+      fe_values.reinit (in.current_cell);
+
+      fe_values[this->introspection().extractors.temperature]
+      .get_function_values (this->get_current_linearization_point(), temperatures);
+      fe_values[this->introspection().extractors.pressure]
+      .get_function_values (this->get_current_linearization_point(), pressures);
+
+      // compute the averaged enthalpy derivatives for all temperatures and
+      // pressures in this cell. The 1 means we only do one substep for this
+      // computation (see documentation of the called function for more
+      // information.
+      derivative = material_lookup[0]->enthalpy_derivatives(temperatures,
+                                                            pressures,
+                                                            1);
+
+      return derivative;
+    }
+
+
+
     template <int dim>
     void
     Steinberger<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -473,8 +472,11 @@ namespace aspect
             out.viscosities[i]                  = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
 
           out.densities[i]                      = density                       (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-          out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-          out.specific_heat[i]                  = specific_heat                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+          if (!latent_heat)
+            {
+              out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+              out.specific_heat[i]                  = specific_heat                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+            }
           out.thermal_conductivities[i]         = thermal_conductivity          (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
           out.compressibilities[i]              = compressibility               (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
           out.entropy_derivative_pressure[i]    = 0;
@@ -487,6 +489,50 @@ namespace aspect
             {
               seismic_out->vp[i] = seismic_Vp(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
               seismic_out->vs[i] = seismic_Vs(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+            }
+        }
+
+      if (latent_heat)
+        {
+          /* We separate the calculation of specific heat and thermal expansivity,
+           * because they may depend on cell-wise averaged values that are only
+           * available here.
+           */
+          double average_temperature(0.0);
+          double average_density(0.0);
+          for (unsigned int i = 0; i < in.position.size(); ++i)
+            {
+              average_temperature += in.temperature[i];
+              average_density += out.densities[i];
+            }
+          average_temperature /= in.position.size();
+          average_density /= in.position.size();
+
+          std_cxx1x::array<std::pair<double, unsigned int>,2> dH;
+          if (in.current_cell.state() == IteratorState::valid)
+            dH = enthalpy_derivative(in);
+
+          for (unsigned int i = 0; i < in.position.size(); ++i)
+            {
+              // Use the adiabatic pressure instead of the real one,
+              // to stabilize against pressure oscillations in phase transitions
+              const double pressure = this->get_adiabatic_conditions().pressure(in.position[i]);
+
+              // If all of the derivatives were computed successfully
+              if ((in.current_cell.state() == IteratorState::valid)
+                  && (dH[0].second > 0)
+                  && (dH[1].second > 0))
+                {
+                  // alpha = (1 - rho * dH/dp) / T
+                  out.thermal_expansion_coefficients[i] = (1 - average_density * dH[1].first) / average_temperature;
+                  // cp = dH/dT
+                  out.specific_heat[i] = dH[0].first;
+                }
+              else
+                {
+                  out.thermal_expansion_coefficients[i] = (1 - out.densities[i] * material_lookup[0]->dHdp(in.temperature[i],pressure)) / in.temperature[i];
+                  out.specific_heat[i] = material_lookup[0]->dHdT(in.temperature[i],pressure);
+                }
             }
         }
     }
@@ -613,6 +659,11 @@ namespace aspect
                                 "is assumed to contain a background composition). This condition is not fulfilled. You "
                                 "prescribed " + Utilities::int_to_string(material_file_names.size()) + " material data files, but there are " +
                                 Utilities::int_to_string(this->n_compositional_fields()) + " compositional fields."));
+
+        if (latent_heat)
+          AssertThrow (material_file_names.size() == 1,
+                       ExcMessage("This formalism is currently only implemented for one material "
+                                  "table."));
 
         // Declare dependencies on solution variables
         this->model_dependence.viscosity = NonlinearDependence::temperature;
