@@ -1,6 +1,8 @@
 # A gravity profile that follows the description of
 # the preliminary reference Earth model (PREM) by
-# Dziewonski & Anderson (1981)
+# Dziewonski & Anderson (1981),
+# https://doi.org/10.1016/0031-9201(81)90046-7.
+#
 # POINTS: 44
 # Columns: depth[km] gravity[m/s^2]
 depth gravity
