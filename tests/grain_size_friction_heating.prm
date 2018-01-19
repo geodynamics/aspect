@@ -46,7 +46,7 @@ subsection Boundary temperature model
 end
 
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 subsection Gravity model
@@ -131,5 +131,5 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-  set List of postprocessors = composition statistics,temperature statistics, velocity statistics, viscous dissipation statistics, heating statistics
+  set List of postprocessors = composition statistics,temperature statistics, velocity statistics, heating statistics
 end
