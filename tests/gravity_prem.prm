@@ -21,8 +21,8 @@ subsection Gravity model
   set Model name = ascii data
 
   subsection Ascii data model
-    set Data directory = $ASPECT_SOURCE_DIR/data/gravity-model/
-    set Data file name = prem.txt
+#    set Data directory = $ASPECT_SOURCE_DIR/data/gravity-model/
+#    set Data file name = prem.txt
   end
 end
 
