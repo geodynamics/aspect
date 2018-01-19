@@ -82,8 +82,8 @@ namespace aspect
       prm.enter_subsection("Gravity model");
       {
         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                          "$ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/test/",
-                                                          "");
+                                                          "$ASPECT_SOURCE_DIR/data/gravity-model/",
+                                                          "prem.txt");
       }
       prm.leave_subsection();
     }
@@ -99,7 +99,6 @@ namespace aspect
       }
       prm.leave_subsection();
     }
-
   }
 }
 
@@ -111,7 +110,9 @@ namespace aspect
     ASPECT_REGISTER_GRAVITY_MODEL(AsciiData,
                                   "ascii data",
                                   "Gravity is read from a file that describes the reference "
-                                  "state. Note the required format of the "
+                                  "state. The default profile follows the preliminary "
+                                  "reference Earth model (PREM, Dziewonski and Anderson, 1981). "
+                                  "Note the required format of the "
                                   "input data: The first lines may contain any number of comments "
                                   "if they begin with '#', but one of these lines needs to "
                                   "contain the number of points in the reference state as "
