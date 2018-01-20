@@ -69,12 +69,11 @@ namespace aspect
 
 
     /**
-     * A class that describes gravity as a radial vector with a magnitude that
-     * is physically correct for an earth in which there are different
-     * densities for the earth core and mantle. Specifically, at the core-
-     * mantle boundary, gravity is assumed to be equal to 10.7 m/s^2 and it is
-     * 9.8 at the earth surface; in between, it follows the behavior one would
-     * expect for a mantle of constant density.
+     * This model has been removed due to its misleading name. The available
+     * AsciiData gravity model (using default parameters) is much more
+     * earth-like, since it uses the gravity profile used in the construction
+     * of the Preliminary Reference Earth Model (PREM, Dziewonski and Anderson,
+     * 1981).
      *
      * This is the model used and discussed in the step-32 tutorial program of
      * deal.II.
@@ -85,17 +84,12 @@ namespace aspect
     class RadialEarthLike : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
+        virtual void initialize();
+
         /**
          * Return the gravity vector as a function of position.
          */
         virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const;
-
-        /**
-         * Read the parameters this class declares from the parameter file.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
     };
 
 

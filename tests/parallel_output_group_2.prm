@@ -54,7 +54,7 @@ end
 
 
 subsection Gravity model
-  set Model name = radial earth-like
+  set Model name = ascii data
 end
 
 

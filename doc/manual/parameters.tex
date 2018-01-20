@@ -4684,7 +4684,7 @@ In either case, this parameter is ignored unless the opening angle of the domain
 
 `radial constant': A gravity model in which the gravity has a constant magnitude and the direction is radial (pointing inward if the value is positive). The magnitude is read from the parameter file in subsection 'Radial constant'.
 
-`radial earth-like': A gravity model in which the gravity direction is radially inward and with a magnitude that matches that of the earth at the core-mantle boundary as well as at the surface and in between is physically correct under the assumption of a constant density.
+`radial earth-like': This plugin has been removed due to its misleading name. The included profile was hard-coded and was less earth-like than the `ascii data' plugin, which uses the profile of the Preliminary Reference Earth Model (PREM). Use `ascii data' instead of `radial earth-like'.
 
 `radial linear': A gravity model which is radial (pointing inward if the gravity is positive) and the magnitude decreases linearly with depth down to zero at the maximal depth the geometry returns, as you would get with a constant density spherical domain. (Note that this would be for a full sphere, not a spherical shell.) The magnitude of gravity at the surface is read from the input file in a section ``Gravity model/Radial linear''.
 
@@ -6899,13 +6899,15 @@ Viscosity is interpolated from this file using linear interpolation. ``None'': n
 
 ``List:'': read a comma-separated list of depth values corresponding to the maximum depths of layers having constant depth-dependence $\eta(z)$. The layers must be specified in order of increasing depth, and the last layer in the list must have a depth greater than or equal to the maximal depth of the model. The list of layer depths is specified as ``Material model/Depth dependent model/Depth list'' and the corresponding list of layer viscosities is specified as ``Material model/Depth dependent model/Viscosity list''
 
-`diffusion dislocation':  An implementation of a viscous rheology including diffusion and dislocation creep. Compositional fields can each be assigned individual activation energies, reference densities, thermal expansivities, and stress exponents. The effective viscosity is defined as 
+`diffusion dislocation': An implementation of a viscous rheology including diffusion and dislocation creep. Compositional fields can each be assigned individual activation energies, reference densities, thermal expansivities, and stress exponents. The effective viscosity is defined as 
 
- \[\eta_\text{eff} = \left(\frac{1}{\eta_\text{eff}^\text{diff}}+ \frac{1}{\eta_\text{eff}^\text{dis}}\right)^{-1}\] where \[\eta_\text{i} = 0.5 A^{-\frac{1}{n_i}} d^\frac{m_i}{n_i} \dot{\varepsilon_i}^{\frac{1-n_i}{n_i}} \exp\left(\frac{E_i^* + PV_i^*}{n_iRT}\right)\] 
+\[\eta_\text{eff} = \left(\frac{1}{\eta_\text{eff}^\text{diff}}+ \frac{1}{\eta_\text{eff}^\text{dis}}\right)^{-1}\] where \[\eta_\text{i} = 0.5 A^{-\frac{1}{n_i}} d^\frac{m_i}{n_i} \dot{\varepsilon_i}^{\frac{1-n_i}{n_i}} \exp\left(\frac{E_i^* + PV_i^*}{n_iRT}\right)\] 
 
- where $d$ is grain size, $i$ corresponds to diffusion or dislocation creep, $\dot{\varepsilon}$ is the square root of the second invariant of the strain rate tensor, $R$ is the gas constant, $T$ is temperature,  and $P$ is pressure. $A_i$ are prefactors, $n_i$ and $m_i$ are stress and grain size exponents $E_i$ are the activation energies and $V_i$ are the activation volumes. 
+where $d$ is grain size, $i$ corresponds to diffusion or dislocation creep, $\dot{\varepsilon}$ is the square root of the second invariant of the strain rate tensor, $R$ is the gas constant, $T$ is temperature, and $P$ is pressure. $A_i$ are prefactors, $n_i$ and $m_i$ are stress and grain size exponents $E_i$ are the activation energies and $V_i$ are the activation volumes. 
 
- The ratio of diffusion to dislocation strain rate is found by Newton's method, iterating to find the stress which satisfies the above equations. The value for the components of this formula and additional parameters are read from the parameter file in subsection 'Material model/DiffusionDislocation'.
+This form of the viscosity equation is commonly used in geodynamic simulatons See, for example, Billen and Hirth (2007), G3, 8, Q08012. Significantly, other studies may use slightly different forms of the viscosity equation leading to variations in how specific terms are defined or combined. For example, the grain size exponent should always be positive in the diffusion viscosity equation used here, while other studies place the grain size term in the denominator and invert the sign of the grain size exponent. When examining previous work, one should carefully check how the viscous prefactor and grain size terms are defined.  
+
+The ratio of diffusion to dislocation strain rate is found by Newton's method, iterating to find the stress which satisfies the above equations. The value for the components of this formula and additional parameters are read from the parameter file in subsection 'Material model/DiffusionDislocation'.
 
 `drucker prager': A material model that has constant values for all coefficients but the density and viscosity. The defaults for all coefficients are chosen to be similar to what is believed to be correct for Earth's mantle. All of the values that define this model are read from a section ``Material model/Drucker Prager'' in the input file, see Section~\ref{parameters:Material_20model/Drucker_20Prager}. Note that the model does not take into account any dependencies of material properties on compositional fields. 
 
@@ -6973,7 +6975,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 `visco plastic': An implementation of a visco-plastic rheology with options for selecting dislocation creep, diffusion creep or composite viscous flow laws.  Plasticity limits viscous stresses through a Drucker Prager yield criterion. The model is incompressible. Note that this material model is based heavily on the DiffusionDislocation (Bob Myhill) and DruckerPrager (Anne Glerum) material models. 
 
- The viscosity for dislocation or diffusion creep is defined as \[v = \frac 12 A^{-\frac{1}{n}} d^{\frac{m}{n}} \dot{\varepsilon}_{ii}^{\frac{1-n}{n}} \exp\left(\frac{E + PV}{nRT}\right)\] where $A$ is the prefactor, $n$ is the stress exponent, $\dot{\varepsilon}_{ii}$ is the square root of the deviatoric strain rate tensor second invariant, $d$ is grain size, $m$ is the grain size exponent, $E$ is activation energy, $V$ is activation volume, $P$ is pressure, $R$ is the gas exponent and $T$ is temperature. This form of the viscosity equation is commonly used in geodynamic simulations.  See, for example, Billen and Hirth (2007), G3, 8, Q08012.
+ The viscosity for dislocation or diffusion creep is defined as \[v = \frac 12 A^{-\frac{1}{n}} d^{\frac{m}{n}} \dot{\varepsilon}_{ii}^{\frac{1-n}{n}} \exp\left(\frac{E + PV}{nRT}\right)\] where $A$ is the prefactor, $n$ is the stress exponent, $\dot{\varepsilon}_{ii}$ is the square root of the deviatoric strain rate tensor second invariant, $d$ is grain size, $m$ is the grain size exponent, $E$ is activation energy, $V$ is activation volume, $P$ is pressure, $R$ is the gas exponent and $T$ is temperature. This form of the viscosity equation is commonly used in geodynamic simulations. See, for example, Billen and Hirth (2007), G3, 8, Q08012. Significantly, other studies may use slightly different forms of the viscosity equation leading to variations in how specific terms are defined or combined. For example, the grain size exponent should always be positive in the diffusion viscosity equation used here, while other studies place the grain size term in the denominator and invert the sign of the grain size exponent. When examining previous work, one should carefully check how the viscous prefactor and grain size terms are defined. 
 
  One may select to use the diffusion ($v_\text{diff}$; $n=1$, $m!=0$), dislocation ($v_\text{disl}$, $n>1$, $m=0$) or composite $\frac{v_\text{diff}*v_\text{disl}}{v_\text{diff}+v_\text{disl}}$ equation form. 
 
@@ -7938,7 +7940,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.5e-15
 
 
-{\it Description:} List of viscosity prefactors, $A$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $Pa^{-n_\text{diffusion}} m^{n_\text{diffusion}/m_\text{diffusion}} s^{-1}$
+{\it Description:} List of viscosity prefactors, $A$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $Pa^{-1} m^{m_\text{diffusion}} s^{-1}$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -7954,7 +7956,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.1e-16
 
 
-{\it Description:} List of viscosity prefactors, $A$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $Pa^{-n_\text{dislocation}} m^{n_\text{dislocation}/m_\text{dislocation}} s^{-1}$
+{\it Description:} List of viscosity prefactors, $A$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $Pa^{-n_\text{dislocation}} s^{-1}$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10766,7 +10768,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 {\it Default:} 0.0
 
 
-{\it Description:} Freezing rate of melt when in subsolidus regions.Units: $1/yr$.
+{\it Description:} Freezing rate of melt when in subsolidus regions. If this parameter is set to a number larger than 0.0, it specifies the fraction of melt that will freeze per year (or per second, depending on the ``Use years in output instead of seconds'' parameter), as soon as the porosity exceeds the equilibrium melt fraction, and the equilibrium melt fraction falls below the depletion. In this case, melt will freeze according to the given rate until one of those conditions is not fulfilled anymore. The reasoning behind this is that there should not be more melt present than the equilibrium melt fraction, as melt production decreases with increasing depletion, but the freezing process of melt also reduces the depletion by the same amount, and as soon as the depletion falls below the equilibrium melt fraction, we expect that material should melt again (no matter how much melt is present). This is quite a simplification and not a realistic freezing parameterization, but without tracking the melt composition, there is no way to compute freezing rates accurately. If this parameter is set to zero, no freezing will occur. Note that freezing can never be faster than determined by the ``Melting time scale for operator splitting''. The product of the ``Freezing rate'' and the ``Melting time scale for operator splitting'' defines how fast freezing occurs with respect to melting (if the product is 0.5, melting will occur twice as fast as freezing). Units: 1/yr or 1/s, depending on the ``Use years in output instead of seconds'' parameter.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -10846,9 +10848,9 @@ Also note that the melting time scale has to be larger than or equal to the reac
 {\it Default:} 1e3
 
 
-{\it Description:} In case the operator splitting scheme is used, the porosity field can not be set to a new equilibrium melt fraction instantly, but the model has to provide a melting time scale instead. This time scale defines how fast melting happens, or more specifically, the parameter defines the time after which the deviation of the porosity from the equilibrium melt fraction will be reduced to a fraction of $1/e$. So if the melting time scale is small compared to the time step size, the reaction will be so fast that the porosity is very close to the equilibrium melt fraction after reactions are computed. Conversely, if the melting time scale is large compared to the time step size, almost no melting and freezing will occur.
+{\it Description:} Because the operator splitting scheme is used, the porosity field can not be set to a new equilibrium melt fraction instantly, but the model has to provide a melting time scale instead. This time scale defines how fast melting happens, or more specifically, the parameter defines the time after which the deviation of the porosity from the equilibrium melt fraction will be reduced to a fraction of $1/e$. So if the melting time scale is small compared to the time step size, the reaction will be so fast that the porosity is very close to the equilibrium melt fraction after reactions are computed. Conversely, if the melting time scale is large compared to the time step size, almost no melting and freezing will occur.
 
-Also note that the melting time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. If the model does not use operator splitting, this parameter is not used. Units: yr or s, depending on the ``Use years in output instead of seconds'' parameter.
+Also note that the melting time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. Units: yr or s, depending on the ``Use years in output instead of seconds'' parameter.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -11089,6 +11091,8 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 
 {\it Description:} If fractional melting should be used (if true), including a solidus change based on depletion (in this case, the amount of melt that has migrated away from its origin), and freezing of melt when it has moved to a region with temperatures lower than the solidus; or if batch melting should be used (if false), assuming that the melt fraction only depends on temperature and pressure, and how much melt has already been generated at a given point, but not considering movement of melt in the melting parameterization.
+
+Note that melt does not freeze unless the 'Freezing rate' parameter is set to a value larger than 0.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -12202,7 +12206,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 {\it Default:} 3
 
 
-{\it Description:} List of grain size exponents, $m_\text{diffusion}$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+{\it Description:} List of grain size exponents, $m_\text{diffusion}$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: None
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -12282,7 +12286,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 {\it Default:} 1.5e-15
 
 
-{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $Pa^{-1} m^{1/m_{diffusion}} s^{-1}$
+{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $Pa^{-1} m^{m_\text{diffusion}} s^{-1}$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -12298,7 +12302,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 {\it Default:} 1.1e-16
 
 
-{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $Pa^{-n_\text{dislocation}} m^{n_\text{dislocation}/m_\text{dislocation}} s^{-1}$
+{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $Pa^{-n_\text{dislocation}} s^{-1}$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]

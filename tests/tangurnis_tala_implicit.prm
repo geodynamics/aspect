@@ -164,21 +164,7 @@ end
 
 
 subsection Gravity model
-  # Select one of the following models:
-  #
-  # `radial constant': A gravity model in which the gravity direction is
-  # radially inward and at constant magnitude. The magnitude is read from the
-  # parameter file in subsection 'Radial constant'.
-  #
-  # `radial earth-like': A gravity model in which the gravity direction is
-  # radially inward and with a magnitude that matches that of the earth at the
-  # core-mantle boundary as well as at the surface and in between is
-  # physically correct under the assumption of a constant density.
-  #
-  # `vertical': A gravity model in which the gravity direction is vertically
-  # downward and at constant magnitude.
   set Model name = vertical
-
 end
 
 

@@ -1,4 +1,6 @@
 
+   Ascii data file coordinates are not equidistant. 
+
 Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 
@@ -14,7 +16,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 *** Timestep 1:  t=1e+06 years
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 12 iterations.
-   Solving Stokes system... 70+0 iterations.
+   Solving Stokes system... 71+0 iterations.
 
    Postprocessing:
      Heating rate (average/total):  1.428e-12 W/kg, 3.79e+05 W

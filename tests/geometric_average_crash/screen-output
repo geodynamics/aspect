@@ -1,11 +1,13 @@
 
+   Ascii data file coordinates are not equidistant. 
+
 Number of active cells: 512 (on 4 levels)
 Number of degrees of freedom: 20,381 (14,739+729+4,913)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 189+0 iterations.
+   Solving Stokes system... 200+2 iterations.
 
    Postprocessing:
 
