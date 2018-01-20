@@ -120,8 +120,9 @@ namespace aspect
         return Tensor<1,dim>();
 
       const double depth = this->get_geometry_model().depth(p);
-      return  (-magnitude_at_surface * p/p.norm() *
-               (1.0 - depth/this->get_geometry_model().maximal_depth()));
+      return  ((magnitude_at_surface  * (1.0 - depth/this->get_geometry_model().maximal_depth()))
+          + (magnitude_at_bottom * depth/this->get_geometry_model().maximal_depth()))
+          * -1.0 * p/p.norm();
     }
 
 
@@ -137,6 +138,14 @@ namespace aspect
                              Patterns::Double (),
                              "Magnitude of the radial gravity vector "
                              "at the surface of the domain. Units: $m/s^2$");
+          prm.declare_entry ("Magnitude at bottom", "10.7",
+                             Patterns::Double (),
+                             "Magnitude of the radial gravity vector "
+                             "at the bottom of the domain. 'Bottom' means the"
+                             "maximum depth in the chosen geometry, and for "
+                             "example represents the CMB in the 'spherical shell' "
+                             "geometry, and the center of the 'sphere' geometry. "
+                             "Units: $m/s^2$");
         }
         prm.leave_subsection ();
       }
@@ -153,6 +162,7 @@ namespace aspect
         prm.enter_subsection("Radial linear");
         {
           magnitude_at_surface = prm.get_double ("Magnitude at surface");
+          magnitude_at_bottom = prm.get_double ("Magnitude at bottom");
         }
         prm.leave_subsection ();
       }
@@ -164,7 +174,6 @@ namespace aspect
                           "lithosphere boundary indicators'."));
 
     }
-
   }
 }
 

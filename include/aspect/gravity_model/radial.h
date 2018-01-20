@@ -136,6 +136,13 @@ namespace aspect
          */
         double magnitude_at_surface;
 
+        /**
+         * Magnitude of the gravity vector at the bottom, m/s^2.
+         * 'Bottom' means at the maximum depth of the provided geometry, for
+         * a full sphere this means the center.
+         */
+        double magnitude_at_bottom;
+
     };
   }
 }
