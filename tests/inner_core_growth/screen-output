@@ -1,0 +1,38 @@
+
+Loading shared library <./libinner_core_growth.so>
+
+Number of active cells: 320 (on 4 levels)
+Number of degrees of freedom: 4,276 (2,626+337+1,313)
+
+Number of free surface degrees of freedom: 674
+*** Timestep 0:  t=0 seconds
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 90+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-inner_core_growth/solution/solution-00000
+     RMS, max velocity:                  0.000381 m/s, 0.000657 m/s
+     Temperature min/avg/max:            0 K, 0.2683 K, 0.8 K
+     Heat fluxes through boundary parts: 5.562 W
+
+*** Timestep 1:  t=50 seconds
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 128 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 89+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-inner_core_growth/solution/solution-00001
+     RMS, max velocity:                  0.0117 m/s, 0.0118 m/s
+     Temperature min/avg/max:            0 K, 11.68 K, 5.847 K
+     Heat fluxes through boundary parts: 73.6 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

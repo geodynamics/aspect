@@ -24,7 +24,7 @@
 #include <aspect/utilities.h>
 #include <aspect/melt.h>
 #include <aspect/newton.h>
-#include <aspect/free_surface.h>
+#include <aspect/mesh_deformation/free_surface.h>
 
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
@@ -206,7 +206,6 @@ namespace aspect
     // now that we have output set up, we can start timer sections
     TimerOutput::Scope timer (computing_timer, "Initialization");
 
-
     // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it and
     // call the initialize() functions immediately after.
     //
@@ -313,7 +312,9 @@ namespace aspect
                       ExcMessage("The free surface scheme can only be used with no pressure normalization") );
 
         // Allocate the FreeSurfaceHandler object
-        free_surface.reset( new FreeSurfaceHandler<dim>( *this, prm ) );
+        free_surface.reset(new MeshDeformation::FreeSurfaceHandler<dim>(*this));
+        free_surface->initialize_simulator(*this);
+        free_surface->parse_parameters(prm);
       }
 
     // Initialize the melt handler

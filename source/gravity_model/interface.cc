@@ -26,7 +26,7 @@
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/std_cxx11/tuple.h>
 
-#include <list>
+#include <vector>
 
 
 namespace aspect

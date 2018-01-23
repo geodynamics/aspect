@@ -21,8 +21,8 @@
 
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
-#include <aspect/free_surface.h>
 #include <aspect/melt.h>
+#include <aspect/mesh_deformation/free_surface.h>
 
 #include <deal.II/base/mpi.h>
 #include <deal.II/grid/grid_tools.h>
