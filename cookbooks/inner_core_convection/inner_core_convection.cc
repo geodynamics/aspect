@@ -51,6 +51,25 @@ namespace aspect
          * the model time).
          */
         Functions::ParsedFunction<dim> resistance_to_phase_change;
+
+      private:
+        /**
+         * Parameters related to the phase transition.
+         */
+        double transition_depth;
+        double transition_width;
+        double transition_temperature;
+        double transition_clapeyron_slope;
+        double transition_density_change;
+
+        /**
+         * Percentage of material that has already undergone the phase
+         * transition to the higher-pressure material.
+         */
+        virtual
+        double
+        phase_function (const Point<dim> &position,
+                        const double temperature) const;
     };
 
   }
@@ -60,6 +79,32 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    template <int dim>
+    double
+    InnerCore<dim>::
+    phase_function (const Point<dim> &position,
+                    const double temperature) const
+    {
+      // We need to convert the depth to pressure,
+      // keeping in mind that for this model, the pressure is only the dynamic pressure,
+      // so we have to compute the hydrostatic pressure explicitly as rho * g.
+      const double depth = this->get_geometry_model().depth(position);
+      const double reference_rho = 1.0; // formulation is nondimensionalized
+      const double pressure_gradient = this->get_gravity_model().gravity_vector(position).norm() * reference_rho;
+      double depth_deviation = depth - transition_depth;
+
+      if (std::abs(pressure_gradient) > 0)
+        depth_deviation -= transition_clapeyron_slope * (temperature - transition_temperature) / pressure_gradient;
+
+      double phase_func;
+      // use delta function for width = 0
+      if (transition_width == 0)
+        (depth_deviation > 0) ? phase_func = 1 : phase_func = 0;
+      else
+        phase_func = 0.5*(1.0 + std::tanh(depth_deviation / transition_width));
+      return phase_func;
+    }
+
 
     template <int dim>
     void
@@ -76,7 +121,8 @@ namespace aspect
       // density * cp to be 1
       for (unsigned int q=0; q < in.position.size(); ++q)
         {
-          out.densities[q] = - out.thermal_expansion_coefficients[q] * in.temperature[q];
+          out.densities[q] = - out.thermal_expansion_coefficients[q] * in.temperature[q]
+                             + phase_function (in.position[q], in.temperature[q]) * transition_density_change;
           if (std::abs(out.densities[q]) > 0.0)
             out.specific_heat[q] /= out.densities[q];
         }
@@ -111,6 +157,39 @@ namespace aspect
             Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
           }
           prm.leave_subsection();
+
+          prm.declare_entry ("Phase transition depth", "0.0",
+                             Patterns::Double (0),
+                             "The depth where the phase transition occurs. "
+                             "Units: m.");
+          prm.declare_entry ("Phase transition width", "0.0",
+                             Patterns::Double (0),
+                             "The width of the phase transition. The argument of the phase function "
+                             "is scaled with this value, leading to a jump between phases "
+                             "for a value of zero and a gradual transition for larger values. "
+                             "Units: m.");
+          prm.declare_entry ("Phase transition temperature", "0.0",
+                             Patterns::Double (0),
+                             "The temperature at which the phase transition occurs in the depth "
+                             "given by the 'Phase transition depth' parameter.  Higher or lower "
+                             "temperatures lead to phase transition occurring in shallower or greater "
+                             "depths, depending on the Clapeyron slope given in 'Phase transition "
+                             "Clapeyron slope'. "
+                             "Units: K.");
+          prm.declare_entry ("Phase transition Clapeyron slope", "0.0",
+                             Patterns::Double (),
+                             "The Clapeyron slope of the phase transition. A positive "
+                             "Clapeyron slope indicates that the phase transition will occur in "
+                             "a greater depth if the temperature is higher than the one given in "
+                             "Phase transition temperatures (and in a smaller depth if the "
+                             "temperature is smaller than the one given in Phase transition temperatures). "
+                             "For negative Clapeyron slopes, the effect is in the opposite direction. "
+                             "Units: Pa/K.");
+          prm.declare_entry ("Phase transition density change", "0.0",
+                             Patterns::Double (),
+                             "The density change that occurs across the phase transition. "
+                             "A positive value means that the density increases with depth. "
+                             "Units: kg/m$^3$.");
         }
         prm.leave_subsection();
       }
@@ -145,6 +224,13 @@ namespace aspect
             }
           prm.leave_subsection();
         }
+
+        transition_depth           = prm.get_double ("Phase transition depth");
+        transition_width           = prm.get_double ("Phase transition width");
+        transition_temperature     = prm.get_double ("Phase transition temperature");
+        transition_clapeyron_slope = prm.get_double ("Phase transition Clapeyron slope");
+        transition_density_change  = prm.get_double ("Phase transition density change");
+
         prm.leave_subsection();
       }
       prm.leave_subsection();
