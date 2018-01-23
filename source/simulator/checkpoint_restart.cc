@@ -166,6 +166,18 @@ namespace aspect
           std::ofstream f ((parameters.output_directory + "restart.resume.z").c_str());
           f.write((const char *)compression_header, 4 * sizeof(compression_header[0]));
           f.write((char *)&compressed_data[0], compressed_data_length);
+          f.close();
+
+          // We check the fail state of the stream _after_ closing the file to
+          // make sure the writes were completed correctly. This also catches
+          // the cases where the file could not be opened in the first place
+          // or one of the write() commands fails, as the fail state is
+          // "sticky".
+          if (!f)
+            AssertThrow(false, ExcMessage ("Writing of the checkpoint file '" + parameters.output_directory
+                                           + "restart.resume.z' with size "
+                                           + Utilities::to_string(4 * sizeof(compression_header[0])+compressed_data_length)
+                                           + " failed on processor 0."));
         }
 #else
       AssertThrow (false,
