@@ -82,7 +82,7 @@ namespace aspect
           double phase_func;
           // use delta function for width = 0
           if (transition_widths[phase]==0)
-            (depth_deviation > 0) ? phase_func = 1 : phase_func = 0;
+            phase_func = (depth_deviation > 0) ? 1 : 0;
           else
             phase_func = 0.5*(1.0 + std::tanh(depth_deviation / transition_widths[phase]));
           return phase_func;
