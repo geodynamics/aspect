@@ -34,9 +34,23 @@ namespace aspect
     template <int dim>
     InitialProfile<dim>::InitialProfile()
       :
-      initialized(false)
+      initialized(false),
+      surface_condition_function(2)
     {}
 
+
+
+    template <int dim>
+    void
+    InitialProfile<dim>::update()
+    {
+      if (use_surface_condition_function)
+        {
+          initialized = false;
+          surface_condition_function.set_time(this->get_time());
+          initialize();
+        }
+    }
 
 
     template <int dim>
@@ -79,8 +93,16 @@ namespace aspect
         {
           if (i==0)
             {
-              pressures[i] = this->get_surface_pressure();
-              temperatures[i] = this->get_adiabatic_surface_temperature();
+              if (!use_surface_condition_function)
+                {
+                  pressures[0] = this->get_surface_pressure();
+                  temperatures[0] = this->get_adiabatic_surface_temperature();
+                }
+              else
+                {
+                  pressures[0] = surface_condition_function.value(Point<1>(),0);
+                  temperatures[0] = surface_condition_function.value(Point<1>(),1);
+                }
             }
           else
             {
@@ -101,7 +123,7 @@ namespace aspect
                                 ?
                                 temperatures[i-1] * (1 + alpha * gravity * delta_z * one_over_cp)
                                 :
-                                this->get_adiabatic_surface_temperature();
+                                temperatures[0];
             }
 
           const double z = double(i)/double(n_points-1)*this->get_geometry_model().maximal_depth();
@@ -284,6 +306,18 @@ namespace aspect
                              "profile. The higher the number of points, the more accurate "
                              "the downward integration from the adiabatic surface "
                              "temperature will be.");
+          prm.declare_entry ("Use surface condition function", "false",
+                             Patterns::Bool(),
+                             "Whether to use the surface_conditions_function to determine surface "
+                             "conditions, or the adiabatic_surface_temperature and surface_pressure "
+                             "parameters. If this is set to true the reference profile is updated "
+                             "every timestep.");
+
+          prm.enter_subsection("Surface condition function");
+          {
+            Functions::ParsedFunction<1>::declare_parameters (prm, 2);
+          }
+          prm.leave_subsection();
         }
         prm.leave_subsection();
       }
@@ -328,6 +362,26 @@ namespace aspect
             }
 
           n_points = prm.get_integer ("Number of points");
+          use_surface_condition_function = prm.get_bool("Use surface condition function");
+          if (use_surface_condition_function)
+            {
+              prm.enter_subsection("Surface condition function");
+              try
+                {
+                  surface_condition_function.parse_parameters (prm);
+                }
+              catch (...)
+                {
+                  std::cerr << "ERROR: FunctionParser failed to parse\n"
+                            << "\t'Adiabatic conditions model.Initial profile.Surface condition function'\n"
+                            << "with expression\n"
+                            << "\t'" << prm.get("Function expression") << "'"
+                            << "More information about the cause of the parse error \n"
+                            << "is shown below.\n";
+                  throw;
+                }
+              prm.leave_subsection();
+            }
         }
         prm.leave_subsection();
       }

@@ -63,6 +63,13 @@ namespace aspect
         virtual void initialize ();
 
         /**
+         * Update function. By default does nothing, but if a time-dependent
+         * surface condition function is used, this will reinitialize the
+         * adiabatic profile with the current conditions.
+         */
+        virtual void update ();
+
+        /**
          * Some plugins need to know whether the adiabatic conditions are
          * already calculated. This is for example the case for the simple
          * compressible material model, which uses the adiabatic temperature
@@ -154,6 +161,19 @@ namespace aspect
          * if the reference_composition variable is set to function.
          */
         std_cxx11::unique_ptr<Functions::ParsedFunction<1> > composition_function;
+
+        /**
+         * Whether to use the surface_conditions_function to determine surface
+         * conditions, or the adiabatic_surface_temperature and surface_pressure
+         * parameters. If this is set to true the reference profile is updated
+         * every timestep.
+         */
+        bool use_surface_condition_function;
+
+        /**
+         * ParsedFunction: depth->(surface_pressure,surface_temperature)
+         */
+        Functions::ParsedFunction<1> surface_condition_function;
 
         /**
          * Internal helper function. Returns the reference property at a
