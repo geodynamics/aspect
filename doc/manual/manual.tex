@@ -7856,7 +7856,7 @@ In their non-dimensional form derived by \cite{Deguen2013}, the equations for in
   H,
 \end{align}
 
-where $Ra$ is the Rayleigh number and $H$ is the 'source term', originated from the time-dependence of the reference temperature (secular cooling). 
+where $Ra$ is the Rayleigh number and 6 is the 'source term', originated from the time-dependence of the reference temperature (secular cooling). In spherical geometry, $H=6$. 
 
 \vspace{0.3cm}
 \textbf{Thermal evolution of the inner core.}
@@ -7931,10 +7931,10 @@ $Ra=10^5, \mathcal{P}=0.01$ (translation), $Ra=10, \mathcal{P}=30$ (no convectio
     \label{fig:inner-core-regimes}
        \end{center}
 \end{figure}
-
+:w
 \vspace{0.3cm}
 \textbf{Mesh refinement.}
-In the particular case of the inner core dynamics, two main type of mesh refinement could be used. For simulations in the translative mode (Figure 1 ), the particular boundary implies that a finest refinement at the outer boundary is more appropriate. The boundary is permeable, allowing melting or freezing and transfer of material through the boundary. The temperature is set at 1 et the boundary, and for the translation case, a large temperature gradient is imposed at the boundary layer. For this, a specific refinement has to be set for defining correctly the boundary layer at the inner core boundary. For simulations in plume convection, an adaptative mesh-refinement (with the temperature field for exemple) is more adapted, otherwise, the plumes are not enough defined.
+The temperature is set at 1 et the boundary, and for the translation case, a large temperature gradient can be imposed at the boundary layer, especially for the translation regime. For this, a specific refinement can be set for defining correctly the boundary layer at the inner core boundary. 
 
 In order to have a mesh that is much finer at the outer boundary than in the center of the domain, this expression for the mesh refinement subsection can be used in the input file :
 \lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/inner_core_traction.part.3.prm}
@@ -7942,7 +7942,7 @@ In order to have a mesh that is much finer at the outer boundary than in the cen
 \vspace{0.3cm}
 \textbf{Scaling laws.} 
 In addition, \cite{Deguen2013} give scaling laws for the velocities in each regime derived from linear stability 
-analysis, and show how numerical results compare to them. In the regimes of low $\mathcal{P}$, translation will start 
+analysis of perfect translation, and show how numerical results compare to them. In the regimes of low $\mathcal{P}$, translation will start 
 at a critical ratio of Rayleigh number and phase change number $\frac{Ra}{\mathcal{P}}=\frac{175}{2}$ with steady-state 
 translation velocities being zero below this threshold and tending to $v_0=\frac{175}{2}\sqrt{\frac{6}{5}\frac{Ra}{\mathcal{P}}}$ 
 going towards higher values of $\frac{Ra}{\mathcal{P}}$.
