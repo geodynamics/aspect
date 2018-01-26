@@ -266,7 +266,7 @@ namespace aspect
         // and will therefore be updated as well.
         const unsigned int fluid_velocity_block = introspection.variable("fluid velocity").block_index;
         const unsigned int fluid_pressure_block = introspection.variable("fluid pressure").block_index;
-        current_linearization_point.block(fluid_velocity_block) = solution(fluid_velocity_block);
+        current_linearization_point.block(fluid_velocity_block) = solution.block(fluid_velocity_block);
         current_linearization_point.block(fluid_pressure_block) = solution.block(fluid_pressure_block);
       }
 
