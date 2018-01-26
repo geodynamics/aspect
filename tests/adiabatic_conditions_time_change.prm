@@ -8,7 +8,7 @@ set Use years in output instead of seconds = false  # default: true
 set Nonlinear solver scheme                = IMPES
 
 subsection Adiabatic conditions model
-  subsection Initial profile
+  subsection Compute profile
     set Use surface condition function = true
     subsection Surface condition function
       set Function expression = 1e12*t; 1613.0+1e6*t

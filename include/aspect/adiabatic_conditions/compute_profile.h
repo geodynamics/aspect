@@ -19,12 +19,11 @@
 */
 
 
-#ifndef _aspect_adiabatic_conditions_initial_profile_h
-#define _aspect_adiabatic_conditions_initial_profile_h
+#ifndef _aspect_adiabatic_conditions_compute_profile_h
+#define _aspect_adiabatic_conditions_compute_profile_h
 
 
 #include <aspect/adiabatic_conditions/interface.h>
-#include <deal.II/base/point.h>
 
 #include <deal.II/base/parsed_function.h>
 
@@ -36,22 +35,25 @@ namespace aspect
 
     /**
      * A model in which the adiabatic profile is
-     * calculated once at the start of the model run.
+     * calculated by solving the hydrostatic equations for
+     * pressure and temperature in depth.
      * The gravity is assumed to be in depth direction
      * and the composition is either given by the initial
      * composition at reference points or computed
      * as a reference depth-function.
      * All material parameters are computed by the
-     * material model plugin.
+     * material model plugin. The surface conditions are
+     * either constant or changing over time as prescribed
+     * by an user-provided function.
      */
     template <int dim>
-    class InitialProfile : public Interface<dim>
+    class ComputeProfile : public Interface<dim>
     {
       public:
         /**
          * Constructor. Initialize variables.
          */
-        InitialProfile ();
+        ComputeProfile ();
 
         /**
          * Initialization function. Because this function is called after

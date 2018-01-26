@@ -70,3 +70,6 @@ s/struct AssemblerLists/class Manager/g
 s/AssemblerLists/Manager/g
 s/AssemblerBase/Interface/g
 s:assembly.h:simulator/assemblers/interface.h:g
+
+# Rename adiabatic conditions plugin initial profile includes
+s:#include <aspect/adiabatic_conditions/initial_profile.h>:#include <aspect/adiabatic_conditions/compute_profile.h>:g

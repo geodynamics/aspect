@@ -36,9 +36,9 @@ subsection Initial temperature model
 end
 
 subsection Adiabatic conditions model
-  set Model name = initial profile
+  set Model name = compute profile
 
-  subsection Initial profile
+  subsection Compute profile
     set Number of points = 5
   end
 end

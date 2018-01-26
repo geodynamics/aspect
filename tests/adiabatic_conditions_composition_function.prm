@@ -7,7 +7,7 @@ set Use years in output instead of seconds = false
 set Adiabatic surface temperature = 1613
 
 subsection Adiabatic conditions model
-  subsection Initial profile
+  subsection Compute profile
     set Function expression = if(x > 1500000,1.0,0.0)
     set Composition reference profile = function
   end
