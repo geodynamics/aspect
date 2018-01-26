@@ -120,10 +120,15 @@ namespace aspect
       // keeping in mind that for this model, the pressure is only the dynamic pressure,
       // so we have to get the hydrostatic pressure explicitly as an input.
       const double radius = this->get_geometry_model().maximal_depth() - this->get_geometry_model().depth(position);
+      Assert(radius >= 0,
+             ExcMessage("There is a point in the model where the depth is larger "
+                        "than the maximal depth of this geometry."));
+
       const double pressure_deviation = hydrostatic_pressure(radius) - hydrostatic_pressure(transition_radius);
 
       double depth_deviation = transition_radius - radius;
-      if (depth_deviation != 0.0)
+      if (std::fabs(pressure_deviation) > 100.0 * std::numeric_limits<double>::epsilon()
+          * (std::fabs(hydrostatic_pressure(radius)) + std::fabs(hydrostatic_pressure(transition_radius)))/2)
         depth_deviation *= (1.0 - transition_clapeyron_slope * (temperature - transition_temperature) / pressure_deviation);
 
       double phase_func;
