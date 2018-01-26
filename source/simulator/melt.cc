@@ -1416,7 +1416,7 @@ namespace aspect
   apply_free_surface_stabilization_with_melt (const double free_surface_theta,
                                               const typename DoFHandler<dim>::active_cell_iterator &cell,
                                               internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
-                                              internal::Assembly::CopyData::StokesSystem<dim>      &data)
+                                              internal::Assembly::CopyData::StokesSystem<dim>      &data) const
   {
     if (!this->get_parameters().free_surface_enabled)
       return;

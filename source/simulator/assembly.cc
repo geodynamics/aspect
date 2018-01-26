@@ -236,9 +236,6 @@ namespace aspect
              && !assemble_newton_stokes_system)
       {
         melt_handler->set_assemblers(*assemblers);
-
-        AssertThrow (parameters.free_surface_enabled == false,
-                     ExcMessage("The melt implementation does not support free surface computations."));
       }
     else if (!parameters.include_melt_transport
              && assemble_newton_stokes_system)
