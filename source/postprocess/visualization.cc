@@ -209,6 +209,8 @@ namespace aspect
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
       last_output_time (std::numeric_limits<double>::quiet_NaN()),
+      maximum_timesteps_between_outputs (numbers::invalid_unsigned_int),
+      last_output_timestep (numbers::invalid_unsigned_int),
       output_file_number (numbers::invalid_unsigned_int),
       mesh_changed (true)
     {}
@@ -330,7 +332,8 @@ namespace aspect
 
       // return if graphical output is not requested at this time
       if ((this->get_time() < last_output_time + output_interval)
-          && (this->get_timestep_number() != 0))
+          && (this->get_timestep_number() != 0)
+	  && (this->get_timestep_number() < last_output_timestep + maximum_timesteps_between_outputs))
         return std::pair<std::string,std::string>();
 
       // up the counter of the number of the file by one, but not in
@@ -623,6 +626,7 @@ namespace aspect
 
       // up the next time we need output
       set_last_output_time (this->get_time());
+      last_output_timestep= this->get_timestep_number();
 
       // return what should be printed to the screen.
       return std::make_pair (std::string ("Writing graphical output:"),
@@ -879,6 +883,8 @@ namespace aspect
           output_interval = prm.get_double ("Time between graphical output");
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;
+	
+	  maximum_timesteps_between_outputs = prm.get_integer("Steps between graphical output")
 
           if (output_interval > 0.0)
             {

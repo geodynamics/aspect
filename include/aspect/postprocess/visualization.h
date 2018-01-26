@@ -385,11 +385,12 @@ namespace aspect
         double last_output_time;
 	
         /**
-         * Step interval between the generation of graphical output. This parameter
+         * Maximum number of steps between the generation of graphical output. 
+	 * This parameter
          * is read from the input file and consequently is not part of the
          * state that needs to be saved and restored.
          */
-        double output_interval_step;
+        double maximum_timesteps_between_outputs; 
 
         /**
          * Timestep at which the last graphical output was produced
