@@ -383,6 +383,21 @@ namespace aspect
          * to be produced. Used to check for the next necessary output time.
          */
         double last_output_time;
+	
+        /**
+         * Step interval between the generation of graphical output. This parameter
+         * is read from the input file and consequently is not part of the
+         * state that needs to be saved and restored.
+         */
+        double output_interval_step;
+
+        /**
+         * Timestep at which the last graphical output was produced
+         * Used to check for the next necessary output time.
+         */
+        double last_output_timestep;
+
+
 
         /**
          * Consecutively counted number indicating the how-manyth time we will

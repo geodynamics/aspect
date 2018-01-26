@@ -729,6 +729,11 @@ namespace aspect
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
 
+	  prm.declare_entry ("Steps between graphical output", "1e9",
+                             Patterns::Integer(0),
+                             "The number of steps between each generation of "
+                             "graphical output files.");
+
           // now also see about the file format we're supposed to write in
           prm.declare_entry ("Output format", "vtu",
                              Patterns::Selection (DataOutBase::get_output_format_names ()),
