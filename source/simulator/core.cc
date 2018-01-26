@@ -531,12 +531,6 @@ namespace aspect
     // Initialize the free surface handler
     if (parameters.free_surface_enabled)
       {
-        // It should be possible to make the free surface work with any of a number of nonlinear
-        // schemes, but I do not see a way to do it in generality --IR
-        AssertThrow( parameters.nonlinear_solver == NonlinearSolver::IMPES ||
-                     parameters.nonlinear_solver == NonlinearSolver::iterated_Stokes ||
-                     parameters.nonlinear_solver == NonlinearSolver::Newton_Stokes,
-                     ExcMessage("The free surface scheme is only implemented for the IMPES, Iterated Stokes solver or the Newton Stokes solver.") );
         // Pressure normalization doesn't really make sense with a free surface, and if we do
         // use it, we can run into problems with geometry_model->depth().
         AssertThrow ( parameters.pressure_normalization == "no",
