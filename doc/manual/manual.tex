@@ -7831,7 +7831,8 @@ as temperature variations associated with lithospheric thinning exert a first-or
 \textit{This section was contributed by Juliane Dannberg, and the model setup was inspired 
 by discussions with John Rudge. Additional materials and comments by Mathilde Kervazo and Marine Lasbleis}
 
-This is an example of convection in the inner core of the Earth. The model is based on a spherical geometry, with a single material. Three main particularities are constitutive of this inner core dynamics modelling: it consists of a self-gravitating sphere where the gravity decreases linearly from the boundary to zero at the center of the inner core; the boundary conditions combine normal stress and normal velocity, and take into account the rate of phase change (melting/freezing) at the inner-outer core boundary; the material is temperature dependent density,  that makes the density profile unstably stratified as temperature increases towards the center of the core.
+This is an example of convection in the inner core of the Earth. The model is based on a spherical geometry, with a single material. Three main particularities are constitutive of this inner core dynamics modelling: it consists of a self-gravitating sphere where the gravity decreases linearly from the boundary to zero at the center of the inner core; the boundary conditions combine normal stress and normal velocity, and take into account the rate of phase change (melting/freezing) at the inner-outer core boundary; the material has a temperature dependent density,  that makes the density profile unstably stratified as temperature increases towards the center of the core.
+We do not actually compute self-gravitation, but defines a linear gravity profile. Since the density variations are very small, this is a good approximation.
 
 The setup is analogous to the models described in \cite{Deguen2013}, and all material properties 
 are chosen in a way so that the equations are non-dimensional.
