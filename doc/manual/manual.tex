@@ -7839,7 +7839,8 @@ are chosen in a way so that the equations are non-dimensional.
 The required heating model and changes to the material model are implemented in a shared library
 (\url{cookbooks/inner_core_convection/inner_core_convection.cc}). 
 
-In their non-dimensional form derived by \cite{Deguen2013}, the equations for inner core convection in the approximation of no growth (equation 59 for the temperature) are
+In their non-dimensional form derived by \cite{Deguen2013},  we solve for the potential temperature $T = \~{T}-T_{is}$ ($\~{T}$ is the temperature field, $T_{is}$ the isentropic temperature). This allows to solve the temperature field with simple boundary conditions ($T=0$), even if the temperature of the inner core boundary evolves with time, defined as the intersection between the isentrope and the liquidus of the material in the outer core.  
+The equations for inner core convection in the approximation of no growth (equation 59 for the potential temperature) are
 
 \begin{align}
   \label{eq:inner-core-1}
@@ -7855,12 +7856,9 @@ In their non-dimensional form derived by \cite{Deguen2013}, the equations for in
   &=
   H,
 \end{align}
+where $Ra$ is the Rayleigh number and $H$ is the 'source term',  constructed when removing the adiabatic temperature from the temperature field to obtain the potential temperature $T$. $H$ describes the time-evolution of the adiabatic temperature over time, due to secular cooling of the outer core. 
+In spherical geometry, $H=6$. 
 
-where $Ra$ is the Rayleigh number and 6 is the 'source term', originated from the time-dependence of the reference temperature (secular cooling). In spherical geometry, $H=6$. 
-
-\vspace{0.3cm}
-\textbf{Thermal evolution of the inner core.}
-Thermal evolution of the inner core implies that, owing to secular cooling, the temperature decreases with respect to the initial state. The growing inner core is however stable if formerly solidified material is colder than the current adiabatic profil attached to the liquidus temperature at the inner core boundary, as a result of diffusion. If not, it is unstable to thermal convection.  
 
 \vspace{0.3cm}
 \textbf{Mechanical boundary.}
@@ -7896,13 +7894,13 @@ Instructions for how to compile and run models with a shared library are given i
 \vspace{0.3cm}
 \textbf{Governing parameters.}  Analyzing Equations~\eqref{eq:inner-core-1}--\eqref{eq:inner-core-3}, two parameters determine 
 the dynamics of convection in the inner core: the Rayleigh number $Ra$ and the phase change number $\mathcal{P}$. 
-Three main areas can be distinguished: the stable area, the plume convection area and the translation mode of convection area (Figure~\ref{fig:diagramme-regime}). For low Rayleigh numbers (below the critical value $Ra_c$), there is no convection and thermal diffusion dominates the heat transport. However, if the inner core is convectively unstable ($Ra$>$Ra_c$), the convection regime depends mostly on $\mathcal{P}$. For low $\mathcal{P}$ (<29), the convective translation mode dominates, where material freezes at one side and melts at the other side, so that the velocity field is uniform, pointing from the freezing to the melting side. Otherwise, at high $\mathcal{P}$ (>29), convection takes the usual form of thermal convection with shear free boundary and no phase change, that is the one-cell axisymmetric mode at the onset, and chaotic plume convection for larger Rayleigh number. In this case, melting and solidification at the ICB have only a small dynamic effect. At intermediate values of P, the first unstable mode is a linear combination of the high-P convection mode and of the small-P translation mode.
+Three main areas can be distinguished: the stable area, the plume convection area and the translation mode of convection area (Figure~\ref{fig:diagramme-regime}). For low Rayleigh numbers (below the critical value $Ra_c$), there is no convection and thermal diffusion dominates the heat transport. However, if the inner core is convectively unstable ($Ra$>$Ra_c$), the convection regime depends mostly on $\mathcal{P}$. For low $\mathcal{P}$ (<29), the convective translation mode dominates, where material freezes at one side of the inner core and melts at the other side, so that the velocity field is uniform, pointing from the freezing to the melting side. Otherwise, at high $\mathcal{P}$ (>29), convection takes the usual form of thermal convection with shear free boundary and no phase change, that is the one-cell axisymmetric mode at the onset, and chaotic plume convection for larger Rayleigh number. In this case, melting and solidification at the ICB have only a small dynamic effect. At intermediate values of P, the first unstable mode is a linear combination of the high-P convection mode and of the small-P translation mode.
 
 
 \begin{figure}[h]
 \begin{center}
 \includegraphics[height=0.57\textwidth]{cookbooks/inner_core_convection/Diagstab.pdf}
-\caption{Stability diagram for convection in a sphere with phase change at its outer boundary. The stability curves for the first unstable mode (l=1) and the translation are obtained from \cite{Deguen2013}.}
+	\caption{Stability diagram for convection in a sphere with phase change at its outer boundary. The stability curves for the first unstable mode (l=1) and the translation are obtained from \cite{Deguen2013}. Each dot (no convection) and triangle (blue: translation, yeallow: plume convection) is one model run done with ASPECT. The highest the Ra and P are, the more refinement is required (see text).}
     \label{fig:diagramme-regime}
 \end{center}
 \end{figure}
@@ -7931,12 +7929,12 @@ $Ra=10^5, \mathcal{P}=0.01$ (translation), $Ra=10, \mathcal{P}=30$ (no convectio
     \label{fig:inner-core-regimes}
        \end{center}
 \end{figure}
-:w
+
 \vspace{0.3cm}
 \textbf{Mesh refinement.}
-The temperature is set at 1 et the boundary, and for the translation case, a large temperature gradient can be imposed at the boundary layer, especially for the translation regime. For this, a specific refinement can be set for defining correctly the boundary layer at the inner core boundary. 
+The temperature is set at 0 at the outer boundary and a large temperature gradient can develop at the boundary layer, especially for the translation regime. The adaptive mesh refinement allows it to resolve this layer at the inner core boundary. Another solution is to apply a specific initial refinement, based on the boundary layer thickness scaling law $\delta \propto Ra^{−0.236}$, and to refine specifically the uppermost part of the inner core. 
 
-In order to have a mesh that is much finer at the outer boundary than in the center of the domain, this expression for the mesh refinement subsection can be used in the input file :
+In order to have a mesh that is much finer at the outer boundary than in the center of the domain, this expression for the mesh refinement subsection can be used in the input file:
 \lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/inner_core_traction.part.3.prm}
 
 \vspace{0.3cm}
