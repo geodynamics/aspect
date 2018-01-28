@@ -328,6 +328,7 @@ namespace aspect
       if (std::isnan(last_output_time))
         {
           last_output_time = this->get_time() - output_interval;
+          last_output_timestep = this->get_timestep_number();
         }
 
       // return if graphical output is not requested at this time
@@ -733,7 +734,7 @@ namespace aspect
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
 
-	  prm.declare_entry ("Steps between graphical output", "1e9",
+	  prm.declare_entry ("Steps between graphical output", "10",
                              Patterns::Integer(0),
                              "The number of steps between each generation of "
                              "graphical output files.");
@@ -884,7 +885,7 @@ namespace aspect
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;
 	
-	  maximum_timesteps_between_outputs = prm.get_integer("Steps between graphical output")
+	  maximum_timesteps_between_outputs = prm.get_integer("Steps between graphical output");
 
           if (output_interval > 0.0)
             {
