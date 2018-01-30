@@ -713,8 +713,7 @@ namespace aspect
                              "List of stress limiter exponents, $n_\\text{lim}$, "
                              "for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "The default value of 1 ensures the entire stress limiter term is set to 1 "
-                             "and does not affect the viscosity. Units: none.");
+                             "Units: none.");
 
         }
         prm.leave_subsection();
