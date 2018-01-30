@@ -34,6 +34,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include <boost/lexical_cast.hpp>
+
 namespace aspect
 {
   namespace Postprocess
@@ -734,7 +736,7 @@ namespace aspect
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
 
-	  prm.declare_entry ("Steps between graphical output", "100000000",
+	  prm.declare_entry ("Steps between graphical output", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
                              Patterns::Integer(0),
                              "The number of steps between each generation of "
                              "graphical output files.");

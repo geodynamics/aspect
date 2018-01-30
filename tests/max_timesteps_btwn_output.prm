@@ -1,4 +1,6 @@
-# A description of convection in a 2d box. See the manual for more information.
+# This is a test to check if output files are correctlywritten if the maximum number of steps 
+# between outputs is smaller than the required one (while the dt between output files is large)
+# Based on the cookbook for convection in a 2d box. 
 
 
 # At the top, we define the number of space dimensions we would like to
