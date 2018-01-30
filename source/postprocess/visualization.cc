@@ -734,7 +734,7 @@ namespace aspect
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
 
-	  prm.declare_entry ("Steps between graphical output", "10",
+	  prm.declare_entry ("Steps between graphical output", "100000000",
                              Patterns::Integer(0),
                              "The number of steps between each generation of "
                              "graphical output files.");
