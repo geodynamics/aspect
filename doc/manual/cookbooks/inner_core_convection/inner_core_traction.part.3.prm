@@ -1,0 +1,11 @@
+subsection Mesh refinement
+  set Initial global refinement          = 4  #this may be more expensive, and should be run on a cluster.
+  set Initial adaptive refinement        = 1
+  set Strategy                           = minimum refinement function
+  set Time steps between mesh refinement = 0
+
+  subsection Minimum refinement function
+    set Variable names = depth, phi, theta
+    set Function expression = if(depth>0.1,if(depth>0.2,2,5),6)
+  end
+end
