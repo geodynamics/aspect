@@ -8,7 +8,7 @@
 
 set Dimension = 2
 set CFL number                             = 0.5
-set End time                               = 2e5
+set End time                               = 1e4
 set Output directory                       = output
 set Resume computation                     = false
 set Start time                             = 0
@@ -22,7 +22,7 @@ set Use years in output instead of seconds = true
 set Maximum time step                      = 1e4
 
 subsection Boundary temperature model
-  set Model name = constant
+  set List of model names = constant
   subsection Constant
     set Boundary indicator to temperature mappings = 0:0,1:0,2:0,3:0
   end
@@ -90,12 +90,16 @@ end
 
 subsection Mesh refinement
   set Additional refinement times        =
-  set Initial adaptive refinement        = 0                       # default: 2
-  set Initial global refinement          = 6                      # default: 2
+  set Initial adaptive refinement        = 2                       # default: 2
+  set Initial global refinement          = 3                      # default: 2
   set Refinement fraction                = 0.3
   set Coarsening fraction                = 0.00
-  set Strategy                           = temperature
+  set Strategy                           = minimum refinement function
   set Time steps between mesh refinement = 0                     # default: 10
+  subsection Minimum refinement function
+    set Variable names      = depth, phi
+    set Function expression = if(depth<10000,5,3)
+  end
 end
 
 
