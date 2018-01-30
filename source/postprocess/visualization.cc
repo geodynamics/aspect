@@ -335,8 +335,8 @@ namespace aspect
 
       // return if graphical output is not requested at this time
       if ((this->get_time() < last_output_time + output_interval)
-          && (this->get_timestep_number() != 0)
-	  && (this->get_timestep_number() < last_output_timestep + maximum_timesteps_between_outputs))
+          && (this->get_timestep_number() < last_output_timestep + maximum_timesteps_between_outputs)
+          && (this->get_timestep_number() != 0))
         return std::pair<std::string,std::string>();
 
       // up the counter of the number of the file by one, but not in
@@ -629,7 +629,7 @@ namespace aspect
 
       // up the next time we need output
       set_last_output_time (this->get_time());
-      last_output_timestep= this->get_timestep_number();
+      last_output_timestep = this->get_timestep_number();
 
       // return what should be printed to the screen.
       return std::make_pair (std::string ("Writing graphical output:"),
@@ -738,7 +738,7 @@ namespace aspect
 
 	  prm.declare_entry ("Steps between graphical output", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
                              Patterns::Integer(0),
-                             "The number of steps between each generation of "
+                             "The maximum number of time steps between each generation of "
                              "graphical output files.");
 
           // now also see about the file format we're supposed to write in

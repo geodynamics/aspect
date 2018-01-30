@@ -386,7 +386,7 @@ namespace aspect
 	
         /**
          * Maximum number of steps between the generation of graphical output. 
-	 * This parameter
+         * This parameter
          * is read from the input file and consequently is not part of the
          * state that needs to be saved and restored.
          */
@@ -397,8 +397,6 @@ namespace aspect
          * Used to check for the next necessary output time.
          */
         double last_output_timestep;
-
-
 
         /**
          * Consecutively counted number indicating the how-manyth time we will

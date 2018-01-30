@@ -1,4 +1,4 @@
-# This is a test to check if output files are correctlywritten if the maximum number of steps 
+# This is a test to check if output files are correctly written if the maximum number of steps 
 # between outputs is smaller than the required one (while the dt between output files is large)
 # Based on the cookbook for convection in a 2d box. 
 
