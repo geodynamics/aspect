@@ -736,7 +736,7 @@ namespace aspect
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
 
-	  prm.declare_entry ("Steps between graphical output", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
+          prm.declare_entry ("Steps between graphical output", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
                              Patterns::Integer(0),
                              "The maximum number of time steps between each generation of "
                              "graphical output files.");
@@ -886,8 +886,8 @@ namespace aspect
           output_interval = prm.get_double ("Time between graphical output");
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;
-	
-	  maximum_timesteps_between_outputs = prm.get_integer("Steps between graphical output");
+
+          maximum_timesteps_between_outputs = prm.get_integer("Steps between graphical output");
 
           if (output_interval > 0.0)
             {
