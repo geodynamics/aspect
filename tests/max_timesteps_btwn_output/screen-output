@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.0.0-pre (nber_steps_btwn_outputs, cd4735d)
+--     . version 2.0.0-pre (nber_steps_btwn_outputs, 54750aa)
 --     . using deal.II 8.5.0
 --     . using Trilinos 12.10.1
 --     . using p4est 2.0.0
@@ -20,7 +20,7 @@ Number of degrees of freedom: 948 (578+81+289)
      RMS, max velocity:                  17.9 m/s, 25.3 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: 3.761e-05 W, -3.761e-05 W, -1 W, 1 W
-     Writing graphical output:           output/solution/solution-00000
+     Writing graphical output:           output-max_timesteps_btwn_output/solution/solution-00000
 
 *** Timestep 1:  t=0.00246718 seconds
    Solving temperature system... 13 iterations.
@@ -66,7 +66,7 @@ Number of degrees of freedom: 948 (578+81+289)
      RMS, max velocity:                  520 m/s, 742 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: 0.005021 W, -0.005021 W, -1.744 W, 1.744 W
-     Writing graphical output:           output/solution/solution-00001
+     Writing graphical output:           output-max_timesteps_btwn_output/solution/solution-00001
 
 *** Timestep 6:  t=0.00334484 seconds
    Solving temperature system... 12 iterations.
@@ -112,25 +112,25 @@ Number of degrees of freedom: 948 (578+81+289)
      RMS, max velocity:                  800 m/s, 1.15e+03 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: 0.02757 W, -0.02757 W, -4.23 W, 4.23 W
-     Writing graphical output:           output/solution/solution-00002
+     Writing graphical output:           output-max_timesteps_btwn_output/solution/solution-00002
 
 Termination requested by criterion: end step
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.741s |            |
+| Total wallclock time elapsed since start    |     0.738s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        11 |    0.0373s |         5% |
-| Assemble temperature system     |        11 |     0.114s |        15% |
-| Build Stokes preconditioner     |         1 |    0.0462s |       6.2% |
-| Build temperature preconditioner|        11 |    0.0141s |       1.9% |
-| Solve Stokes system             |        11 |    0.0472s |       6.4% |
-| Solve temperature system        |        11 |     0.012s |       1.6% |
-| Initialization                  |         1 |     0.208s |        28% |
-| Postprocessing                  |        11 |    0.0896s |        12% |
-| Setup dof systems               |         1 |     0.062s |       8.4% |
-| Setup initial conditions        |         1 |    0.0177s |       2.4% |
+| Assemble Stokes system          |        11 |    0.0356s |       4.8% |
+| Assemble temperature system     |        11 |     0.115s |        16% |
+| Build Stokes preconditioner     |         1 |    0.0467s |       6.3% |
+| Build temperature preconditioner|        11 |    0.0112s |       1.5% |
+| Solve Stokes system             |        11 |    0.0442s |         6% |
+| Solve temperature system        |        11 |    0.0117s |       1.6% |
+| Initialization                  |         1 |     0.216s |        29% |
+| Postprocessing                  |        11 |    0.0916s |        12% |
+| Setup dof systems               |         1 |    0.0608s |       8.2% |
+| Setup initial conditions        |         1 |    0.0179s |       2.4% |
 +---------------------------------+-----------+------------+------------+
 
