@@ -1,3 +1,5 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 Number of active cells: 100 (on 1 levels)
 Number of degrees of freedom: 2,326 (882+121+441+441+441)
@@ -12,7 +14,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:                  0.000408 m/year, 0.000692 m/year
      Mass fluxes through boundary parts: 1.57e+05 kg/yr, 1.57e+05 kg/yr, -1.65e+05 kg/yr, -1.4e+05 kg/yr
 
 

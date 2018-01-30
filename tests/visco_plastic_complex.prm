@@ -138,7 +138,8 @@ subsection Material model
     set Activation volumes for dislocation creep = 18.e-6,18.e-6,0.
 
     # Yielding mechanism and values
-    set Yield mechanism = drucker
+    set Yield mechanism = limiter
+    set Stress limiter exponents = 10, 10, 10
     set Angles of internal friction = 0.,0.,0.
     set Cohesions = 1.e6,1.e6,1.e6
 
