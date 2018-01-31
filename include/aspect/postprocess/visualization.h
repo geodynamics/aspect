@@ -390,13 +390,13 @@ namespace aspect
          * is read from the input file and consequently is not part of the
          * state that needs to be saved and restored.
          */
-        double maximum_timesteps_between_outputs;
+        unsigned int maximum_timesteps_between_outputs;
 
         /**
          * Timestep at which the last graphical output was produced
          * Used to check for the next necessary output time.
          */
-        double last_output_timestep;
+        unsigned int last_output_timestep;
 
         /**
          * Consecutively counted number indicating the how-manyth time we will
