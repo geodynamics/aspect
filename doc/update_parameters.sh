@@ -46,6 +46,7 @@ sed -i 's/phi\.%d/phi\.\\%d/g' parameters.tex
 sed -i 's/box_2d_%s.%d/box\\_2d\\_\\%s.\\%d/g' parameters.tex
 sed -i 's/box_2d_%s./box\\_2d\\_\\%s./g' parameters.tex
 sed -i 's/box_2d\.txt/box\\_2d\.txt/g' parameters.tex
+sed -i 's/grain_size/grain\\_size/g' parameters.tex
 sed -i 's/#/\\#/g' parameters.tex
 
 # Process index entries to contain at most three levels (by replacing the

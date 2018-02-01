@@ -201,6 +201,22 @@ In practice, you should choose the value of this parameter to be so that if you 
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Maximum relative increase in time step}
+\phantomsection\label{parameters:Maximum relative increase in time step}
+
+
+\index[prmindex]{Maximum relative increase in time step}
+\index[prmindexfull]{Maximum relative increase in time step}
+{\it Value:} 2147483647
+
+
+{\it Default:} 2147483647
+
+
+{\it Description:} Set a percentage with which the the time step is limited to increase. Generally the time step based on the CFL number should be sufficient, but for complicated models which may suddenly drastically change behavoir, it may be usefull to limit the increase in the timestep, without limiting the time step size of the whole simulation to a particular number if this value is $50$, then that means that the time step can at most increase by 50\% from one time step to the next, or by a factor of 1.5.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Maximum time step}
 \phantomsection\label{parameters:Maximum time step}
 
@@ -642,6 +658,22 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Number of points}
+\phantomsection\label{parameters:Adiabatic conditions model/Initial profile/Number of points}
+
+
+\index[prmindex]{Number of points}
+\index[prmindexfull]{Adiabatic conditions model!Initial profile!Number of points}
+{\it Value:} 1000
+
+
+{\it Default:} 1000
+
+
+{\it Description:} The number of points we use to compute the adiabatic profile. The higher the number of points, the more accurate the downward integration from the adiabatic surface temperature will be.
+
+
+{\it Possible values:} An integer $n$ such that $5\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Variable names}
 \phantomsection\label{parameters:Adiabatic conditions model/Initial profile/Variable names}
 
@@ -664,6 +696,58 @@ If the function you are describing represents a vector-valued function with mult
 \label{parameters:Boundary_20composition_20model}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt List of model names}
+\phantomsection\label{parameters:Boundary composition model/List of model names}
+
+
+\index[prmindex]{List of model names}
+\index[prmindexfull]{Boundary composition model!List of model names}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A comma-separated list of boundary composition models that will be used to initialize the composition. These plugins are loaded in the order given, and modify the existing composition field via the operators listed in 'List of model operators'.
+
+The following boundary composition models are available:
+
+`ascii data': Implementation of a model in which the boundary composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. The order of the data columns has to be `x', `composition1', `composition2', etc. in a 2d model and `x', `y', `composition1', `composition2', etc., in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the data will still be handled as Cartesian, however the assumed grid changes. `x' will be replaced by the radial distance of the point to the bottom of the model, `y' by the azimuth angle and `z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r', `phi', `theta' and not `r', `theta', `phi', since this allows for dimension independent expressions.
+
+`box': A model in which the composition is chosen constant on the sides of a box which are selected by the parameters Left/Right/Top/Bottom/Front/Back composition
+
+`box with lithosphere boundary indicators': A model in which the composition is chosen constant on all the sides of a box. Additional boundary indicators are added to the lithospheric parts of the vertical boundaries. This model is to be used with the 'Two Merged Boxes' Geometry Model.
+
+`function': Implementation of a model in which the boundary composition is given in terms of an explicit formula that is elaborated in the parameters in section ``Boundary composition model|Function''. 
+
+Since the symbol $t$ indicating time may appear in the formulas for the prescribed composition, it is interpreted as having units seconds unless the global input parameter ``Use years in output instead of seconds'' is set, in which case we interpret the formula expressions as having units year.
+
+The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+
+`initial composition': A model in which the composition at the boundary is chosen to be the same as given in the initial conditions.
+
+Because this class simply takes what the initial composition had described, this class can not know certain pieces of information such as the minimal and maximal composition on the boundary. For operations that require this, for example in post-processing, this boundary composition model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section ``Boundary composition model/Initial composition''.
+
+`spherical constant': A model in which the composition is chosen constant on the inner and outer boundaries of a surface, spherical shell, chunk or ellipsoidal chunk. Parameters are read from subsection 'Spherical constant'.
+
+
+{\it Possible values:} A comma-separated list of any of ascii data, box, box with lithosphere boundary indicators, function, initial composition, spherical constant
+\item {\it Parameter name:} {\tt List of model operators}
+\phantomsection\label{parameters:Boundary composition model/List of model operators}
+
+
+\index[prmindex]{List of model operators}
+\index[prmindexfull]{Boundary composition model!List of model operators}
+{\it Value:} add
+
+
+{\it Default:} add
+
+
+{\it Description:} A comma-separated list of operators that will be used to append the listed composition models onto the previous models. If only one operator is given, the same operator is applied to all models.
+
+
+{\it Possible values:} A comma-separated list of any of add, subtract, minimum, maximum
 \item {\it Parameter name:} {\tt Model name}
 \phantomsection\label{parameters:Boundary composition model/Model name}
 
@@ -695,6 +779,8 @@ The format of these functions follows the syntax understood by the muparser libr
 Because this class simply takes what the initial composition had described, this class can not know certain pieces of information such as the minimal and maximal composition on the boundary. For operations that require this, for example in post-processing, this boundary composition model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section ``Boundary composition model/Initial composition''.
 
 `spherical constant': A model in which the composition is chosen constant on the inner and outer boundaries of a surface, spherical shell, chunk or ellipsoidal chunk. Parameters are read from subsection 'Spherical constant'.
+
+\textbf{Warning}: This parameter provides an old and deprecated way of specifying boundary composition models and shouldn't be used. Please use 'List of model names' instead.
 
 
 {\it Possible values:} Any one of ascii data, box, box with lithosphere boundary indicators, function, initial composition, spherical constant, unspecified
@@ -4456,7 +4542,9 @@ In either case, this parameter is ignored unless the opening angle of the domain
 {\it Default:} 3481000
 
 
-{\it Description:} Inner radius of the spherical shell. Units: m.
+{\it Description:} Inner radius of the spherical shell. Units: m. 
+
+\note{The default value of 3,481,000 m equals the radius of a sphere with equal volume as Earth (i.e., 6371 km) minus the average depth of the core-mantle boundary (i.e., 2890 km).}
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -4488,7 +4576,9 @@ In either case, this parameter is ignored unless the opening angle of the domain
 {\it Default:} 6336000
 
 
-{\it Description:} Outer radius of the spherical shell. Units: m.
+{\it Description:} Outer radius of the spherical shell. Units: m. 
+
+\note{The default value of 6,336,000 m equals the radius of a sphere with equal volume as Earth (i.e., 6371 km) minus the average depth of the mantle-crust interface (i.e., 35 km).}
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -4512,7 +4602,7 @@ In either case, this parameter is ignored unless the opening angle of the domain
 
 {\it Description:} Select one of the following models:
 
-`ascii data': Gravity is read from a file that describes the reference state. Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of points in the reference state as for example '\# POINTS: 3'. Following the comment lines there has to be a single line containing the names of all data columns, separated by arbitrarily many spaces. Column names are not allowed to contain spaces. The file can contain unnecessary columns, but for this plugin it needs to at least provide a column named `gravity'. Note that the data lines in the file need to be sorted in order of increasing depth from 0 to the maximal depth in the model domain. Points in the model that are outside of the provided depth range will be assigned the maximum or minimum depth values, respectively. Points do not need to be equidistant, but the computation of properties is optimized in speed if they are.
+`ascii data': Gravity is read from a file that describes the reference state. The default profile follows the preliminary reference Earth model (PREM, Dziewonski and Anderson, 1981). Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of points in the reference state as for example '\# POINTS: 3'. Following the comment lines there has to be a single line containing the names of all data columns, separated by arbitrarily many spaces. Column names are not allowed to contain spaces. The file can contain unnecessary columns, but for this plugin it needs to at least provide a column named `gravity'. Note that the data lines in the file need to be sorted in order of increasing depth from 0 to the maximal depth in the model domain. Points in the model that are outside of the provided depth range will be assigned the maximum or minimum depth values, respectively. Points do not need to be equidistant, but the computation of properties is optimized in speed if they are.
 
 `function': Gravity is given in terms of an explicit formula that is elaborated in the parameters in section ``Gravity model|Function''. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
@@ -4540,10 +4630,10 @@ In either case, this parameter is ignored unless the opening angle of the domain
 
 \index[prmindex]{Data directory}
 \index[prmindexfull]{Gravity model!Ascii data model!Data directory}
-{\it Value:} \$ASPECT\_SOURCE\_DIR/data/adiabatic-conditions/ascii-data/test/
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/gravity-model/
 
 
-{\it Default:} \$ASPECT\_SOURCE\_DIR/data/adiabatic-conditions/ascii-data/test/
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/gravity-model/
 
 
 {\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
@@ -4556,10 +4646,10 @@ In either case, this parameter is ignored unless the opening angle of the domain
 
 \index[prmindex]{Data file name}
 \index[prmindexfull]{Gravity model!Ascii data model!Data file name}
-{\it Value:} 
+{\it Value:} prem.txt
 
 
-{\it Default:} 
+{\it Default:} prem.txt
 
 
 {\it Description:} The file name of the material data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of a box or a spherical shell).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
@@ -4755,7 +4845,7 @@ If there is no field called porosity, the heating terms are 0.
 The crust and mantle can have different concentrations, and the crust can be defined either by depth or by a certain compositional field.
 The formula is interpreted as having units W/kg.
 
-`shear heating': Implementation of a standard model for shear heating.
+`shear heating': Implementation of a standard model for shear heating. Adds the term: $  2 \eta \left( \varepsilon - \frac{1}{3} \text{tr} \varepsilon \mathbf 1 \right) : \left( \varepsilon - \frac{1}{3} \text{tr} \varepsilon \mathbf 1 \right)$ to the right-hand side of the temperature equation.
 
 `shear heating with melt': Implementation of a standard model for shear heating of migrating melt, including bulk (compression) heating $\xi \left( \nabla \cdot \mathbf u_s \right)^2 $ and heating due to melt segregation $\frac{\eta_f \phi^2}{k} \left( \mathbf u_f - \mathbf u_s \right)^2 $. For full shear heating, this has to be used in combination with the heating model shear heating to also include shear heating for the solid part.
 
@@ -4804,7 +4894,7 @@ If there is no field called porosity, the heating terms are 0.
 The crust and mantle can have different concentrations, and the crust can be defined either by depth or by a certain compositional field.
 The formula is interpreted as having units W/kg.
 
-`shear heating': Implementation of a standard model for shear heating.
+`shear heating': Implementation of a standard model for shear heating. Adds the term: $  2 \eta \left( \varepsilon - \frac{1}{3} \text{tr} \varepsilon \mathbf 1 \right) : \left( \varepsilon - \frac{1}{3} \text{tr} \varepsilon \mathbf 1 \right)$ to the right-hand side of the temperature equation.
 
 `shear heating with melt': Implementation of a standard model for shear heating of migrating melt, including bulk (compression) heating $\xi \left( \nabla \cdot \mathbf u_s \right)^2 $ and heating due to melt segregation $\frac{\eta_f \phi^2}{k} \left( \mathbf u_f - \mathbf u_s \right)^2 $. For full shear heating, this has to be used in combination with the heating model shear heating to also include shear heating for the solid part.
 
@@ -6755,6 +6845,8 @@ Note that this model uses the formulation that assumes an incompressible medium 
 
 `dynamic friction': This model is for use with an arbitrary number of compositional fields, where each field represents a rock type which can have completely different properties from the others.Each rock type itself has constant material properties, with the exception of viscosity which is modified according to a Drucker-Prager yield criterion. Unlike the drucker prager or visco plastic material models, the angle of internal friction is a function of velocity. This relationship is similar to rate-and-state friction constitutive relationships, which are applicable to the strength of rocks during earthquakes. The formulation used here is derived from van Dinther et al. 2013, JGR. Each compositional field is interpreed as a volume fraction. If the sum of the fields is greater than one, they are renormalized. If it is less than one, material properties for ``background material'' make up the rest. When more than one field is present, the material properties are averaged arithmetically. An exception is the viscosity, where the averaging should make more of a difference. For this, the user selectsbetween arithmetic, harmonic, geometric, or maximum composition averaging. 
 
+`grain size': A material model that relies on compositional fields that stand for average grain sizes of a mineral phase and source terms for them that determine the grain size evolution in dependence of the strain rate, temperature, phase transitions, and the creep regime. This material model only works if a compositional field named 'grain\_size' is present. In the diffusion creep regime, the viscosity depends on this grain size field. We use the grain size evolution laws described in Behn et al., 2009. Implications of grain size evolution on the seismic structure of the oceanic upper mantle, Earth Planet. Sci. Letters, 282, 178–189. Other material parameters are either prescribed similar to the 'simple' material model, or read from data files that were generated by the Perplex or Hefesto software. The material model is described in more detail in Dannberg, J., Z. Eilon, U. Faul, R. Gassmoeller, P. Moulik, and R. Myhill (2017), The importance of grain size to mantle dynamics and seismological observations, Geochem. Geophys. Geosyst., 18, 3034–3061, doi:10.1002/2017GC006944.
+
 `latent heat': A material model that includes phase transitions and the possibility that latent heat is released or absorbed when material crosses one of the phase transitions of up to two different materials (compositional fields). This model implements a standard approximation of the latent heat terms following Christensen \& Yuen, 1985. The change of entropy is calculated as $Delta S = \gamma \frac{\Delta\rho}{\rho^2}$ with the Clapeyron slope $\gamma$ and the density change $\Delta\rho$ of the phase transition being input parameters. The model employs an analytic phase function in the form $X=0.5 \left( 1 + \tanh \left( \frac{\Delta p}{\Delta p_0} \right) \right)$ with $\Delta p = p - p_\text{transition} - \gamma \left( T - T_\text{transition} \right)$ and $\Delta p_0$ being the pressure difference over the width of the phase transition (specified as input parameter).
 
 `latent heat melt': A material model that includes the latent heat of melting for two materials: peridotite and pyroxenite. The melting model for peridotite is taken from Katz et al., 2003 (A new parameterization of hydrous mantle melting) and the one for pyroxenite from Sobolev et al., 2011 (Linking mantle plumes, large igneous provinces and environmental catastrophes). The model assumes a constant entropy change for melting 100\% of the material, which can be specified in the input file. The partial derivatives of entropy with respect to temperature and pressure required for calculating the latent heat consumption are then calculated as product of this constant entropy change, and the respective derivative of the function the describes the melt fraction. This is linearly averaged with respect to the fractions of the two materials present. If no compositional fields are specified in the input file, the model assumes that the material is peridotite. If compositional fields are specified, the model assumes that the first compositional field is the fraction of pyroxenite and the rest of the material is peridotite. 
@@ -6824,7 +6916,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
  The value for the components of this formula and additional parameters are read from the parameter file in subsection  'Material model/Visco Plastic'.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \end{itemize}
 
 
@@ -7022,7 +7114,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} The name of a material model that will be modified by an averaging operation. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic
 \item {\it Parameter name:} {\tt Bell shape limit}
 \phantomsection\label{parameters:Material model/Averaging/Bell shape limit}
 
@@ -7060,7 +7152,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Compressibility. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \item {\it Parameter name:} {\tt Density}
 \phantomsection\label{parameters:Material model/Compositing/Density}
 
@@ -7076,7 +7168,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Density. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \item {\it Parameter name:} {\tt Entropy derivative pressure}
 \phantomsection\label{parameters:Material model/Compositing/Entropy derivative pressure}
 
@@ -7092,7 +7184,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Entropy derivative pressure. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \item {\it Parameter name:} {\tt Entropy derivative temperature}
 \phantomsection\label{parameters:Material model/Compositing/Entropy derivative temperature}
 
@@ -7108,7 +7200,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Entropy derivative temperature. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \item {\it Parameter name:} {\tt Reaction terms}
 \phantomsection\label{parameters:Material model/Compositing/Reaction terms}
 
@@ -7124,7 +7216,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Reaction terms. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \item {\it Parameter name:} {\tt Specific heat}
 \phantomsection\label{parameters:Material model/Compositing/Specific heat}
 
@@ -7140,7 +7232,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Specific heat. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \item {\it Parameter name:} {\tt Thermal conductivity}
 \phantomsection\label{parameters:Material model/Compositing/Thermal conductivity}
 
@@ -7156,7 +7248,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Thermal conductivity. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \item {\it Parameter name:} {\tt Thermal expansion coefficient}
 \phantomsection\label{parameters:Material model/Compositing/Thermal expansion coefficient}
 
@@ -7172,7 +7264,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Thermal expansion coefficient. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \item {\it Parameter name:} {\tt Viscosity}
 \phantomsection\label{parameters:Material model/Compositing/Viscosity}
 
@@ -7188,7 +7280,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} Material model to use for Viscosity. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic, unspecified
 \end{itemize}
 
 \subsection{Parameters in section \tt Material model/Composition reaction model}
@@ -7408,7 +7500,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Description:} The name of a material model that will be modified by a depth dependent viscosity. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, multicomponent, nondimensional, simple, simple compressible, simpler, visco plastic
 \item {\it Parameter name:} {\tt Data directory}
 \phantomsection\label{parameters:Material model/Depth dependent model/Data directory}
 
@@ -8330,6 +8422,812 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\end{itemize}
+
+\subsection{Parameters in section \tt Material model/Grain size model}
+\label{parameters:Material_20model/Grain_20size_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Advect logarithm of grain size}
+\phantomsection\label{parameters:Material model/Grain size model/Advect logarithm of grain size}
+
+
+\index[prmindex]{Advect logarithm of grain size}
+\index[prmindexfull]{Material model!Grain size model!Advect logarithm of grain size}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to advect the logarithm of the grain size or the grain size. The equation and the physics are the same, but for problems with high grain size gradients it might be preferable to advect the logarithm. 
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Average specific grain boundary energy}
+\phantomsection\label{parameters:Material model/Grain size model/Average specific grain boundary energy}
+
+
+\index[prmindex]{Average specific grain boundary energy}
+\index[prmindexfull]{Material model!Grain size model!Average specific grain boundary energy}
+{\it Value:} 1.0
+
+
+{\it Default:} 1.0
+
+
+{\it Description:} The average specific grain boundary energy $\gamma$. Units: $J/m^2$.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Bilinear interpolation}
+\phantomsection\label{parameters:Material model/Grain size model/Bilinear interpolation}
+
+
+\index[prmindex]{Bilinear interpolation}
+\index[prmindexfull]{Material model!Grain size model!Bilinear interpolation}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} Whether to use bilinear interpolation to compute material properties (slower but more accurate).
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Data directory}
+\phantomsection\label{parameters:Material model/Grain size model/Data directory}
+
+
+\index[prmindex]{Data directory}
+\index[prmindexfull]{Material model!Grain size model!Data directory}
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/material-model/steinberger/
+
+
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/material-model/steinberger/
+
+
+{\it Description:} The path to the model data. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the 'data/' subdirectory of ASPECT. 
+
+
+{\it Possible values:} A directory name
+\item {\it Parameter name:} {\tt Derivatives file names}
+\phantomsection\label{parameters:Material model/Grain size model/Derivatives file names}
+
+
+\index[prmindex]{Derivatives file names}
+\index[prmindexfull]{Material model!Grain size model!Derivatives file names}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} The file names of the enthalpy derivatives data. List with as many components as active compositional fields (material data is assumed to be in order with the ordering of the fields). 
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any string]
+\item {\it Parameter name:} {\tt Diffusion activation energy}
+\phantomsection\label{parameters:Material model/Grain size model/Diffusion activation energy}
+
+
+\index[prmindex]{Diffusion activation energy}
+\index[prmindexfull]{Material model!Grain size model!Diffusion activation energy}
+{\it Value:} 3.35e5
+
+
+{\it Default:} 3.35e5
+
+
+{\it Description:} The activation energy for diffusion creep $E_{diff}$. Units: $J/mol$.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Diffusion activation volume}
+\phantomsection\label{parameters:Material model/Grain size model/Diffusion activation volume}
+
+
+\index[prmindex]{Diffusion activation volume}
+\index[prmindexfull]{Material model!Grain size model!Diffusion activation volume}
+{\it Value:} 4e-6
+
+
+{\it Default:} 4e-6
+
+
+{\it Description:} The activation volume for diffusion creep $V_{diff}$. Units: $m^3/mol$.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Diffusion creep exponent}
+\phantomsection\label{parameters:Material model/Grain size model/Diffusion creep exponent}
+
+
+\index[prmindex]{Diffusion creep exponent}
+\index[prmindexfull]{Material model!Grain size model!Diffusion creep exponent}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Power-law exponent $n_{diff}$ for diffusion creep. Units: none.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Diffusion creep grain size exponent}
+\phantomsection\label{parameters:Material model/Grain size model/Diffusion creep grain size exponent}
+
+
+\index[prmindex]{Diffusion creep grain size exponent}
+\index[prmindexfull]{Material model!Grain size model!Diffusion creep grain size exponent}
+{\it Value:} 3
+
+
+{\it Default:} 3
+
+
+{\it Description:} Diffusion creep grain size exponent $p_{diff}$ that determines the dependence of vescosity on grain size. Units: none.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Diffusion creep prefactor}
+\phantomsection\label{parameters:Material model/Grain size model/Diffusion creep prefactor}
+
+
+\index[prmindex]{Diffusion creep prefactor}
+\index[prmindexfull]{Material model!Grain size model!Diffusion creep prefactor}
+{\it Value:} 7.4e-15
+
+
+{\it Default:} 7.4e-15
+
+
+{\it Description:} Prefactor for the diffusion creep law $A_{diff}$. Units: $m^{p_{diff}} Pa^{-n_{diff}}/s$.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Dislocation activation energy}
+\phantomsection\label{parameters:Material model/Grain size model/Dislocation activation energy}
+
+
+\index[prmindex]{Dislocation activation energy}
+\index[prmindexfull]{Material model!Grain size model!Dislocation activation energy}
+{\it Value:} 4.8e5
+
+
+{\it Default:} 4.8e5
+
+
+{\it Description:} The activation energy for dislocation creep $E_{dis}$. Units: $J/mol$.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Dislocation activation volume}
+\phantomsection\label{parameters:Material model/Grain size model/Dislocation activation volume}
+
+
+\index[prmindex]{Dislocation activation volume}
+\index[prmindexfull]{Material model!Grain size model!Dislocation activation volume}
+{\it Value:} 1.1e-5
+
+
+{\it Default:} 1.1e-5
+
+
+{\it Description:} The activation volume for dislocation creep $V_{dis}$. Units: $m^3/mol$.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Dislocation creep exponent}
+\phantomsection\label{parameters:Material model/Grain size model/Dislocation creep exponent}
+
+
+\index[prmindex]{Dislocation creep exponent}
+\index[prmindexfull]{Material model!Grain size model!Dislocation creep exponent}
+{\it Value:} 3.5
+
+
+{\it Default:} 3.5
+
+
+{\it Description:} Power-law exponent $n_{dis}$ for dislocation creep. Units: none.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Dislocation creep prefactor}
+\phantomsection\label{parameters:Material model/Grain size model/Dislocation creep prefactor}
+
+
+\index[prmindex]{Dislocation creep prefactor}
+\index[prmindexfull]{Material model!Grain size model!Dislocation creep prefactor}
+{\it Value:} 4.5e-15
+
+
+{\it Default:} 4.5e-15
+
+
+{\it Description:} Prefactor for the dislocation creep law $A_{dis}$. Units: $Pa^{-n_{dis}}/s$.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Dislocation viscosity iteration number}
+\phantomsection\label{parameters:Material model/Grain size model/Dislocation viscosity iteration number}
+
+
+\index[prmindex]{Dislocation viscosity iteration number}
+\index[prmindexfull]{Material model!Grain size model!Dislocation viscosity iteration number}
+{\it Value:} 100
+
+
+{\it Default:} 100
+
+
+{\it Description:} We need to perform an iteration inside the computation of the dislocation viscosity, because it depends on the dislocation strain rate, which depends on the dislocation viscosity itself. This number determines the maximum number of iterations that are performed. 
+
+
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Dislocation viscosity iteration threshold}
+\phantomsection\label{parameters:Material model/Grain size model/Dislocation viscosity iteration threshold}
+
+
+\index[prmindex]{Dislocation viscosity iteration threshold}
+\index[prmindexfull]{Material model!Grain size model!Dislocation viscosity iteration threshold}
+{\it Value:} 1e-3
+
+
+{\it Default:} 1e-3
+
+
+{\it Description:} We need to perform an iteration inside the computation of the dislocation viscosity, because it depends on the dislocation strain rate, which depends on the dislocation viscosity itself. This number determines the termination accuracy, i.e. if the dislocation viscosity changes by less than this factor we terminate the iteration.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Geometric constant}
+\phantomsection\label{parameters:Material model/Grain size model/Geometric constant}
+
+
+\index[prmindex]{Geometric constant}
+\index[prmindexfull]{Material model!Grain size model!Geometric constant}
+{\it Value:} 3
+
+
+{\it Default:} 3
+
+
+{\it Description:} Geometric constant $c$ used in the paleowattmeter grain size reduction law. Units: none.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Grain growth activation energy}
+\phantomsection\label{parameters:Material model/Grain size model/Grain growth activation energy}
+
+
+\index[prmindex]{Grain growth activation energy}
+\index[prmindexfull]{Material model!Grain size model!Grain growth activation energy}
+{\it Value:} 3.5e5
+
+
+{\it Default:} 3.5e5
+
+
+{\it Description:} The activation energy for grain growth $E_g$. Units: $J/mol$.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Grain growth activation volume}
+\phantomsection\label{parameters:Material model/Grain size model/Grain growth activation volume}
+
+
+\index[prmindex]{Grain growth activation volume}
+\index[prmindexfull]{Material model!Grain size model!Grain growth activation volume}
+{\it Value:} 8e-6
+
+
+{\it Default:} 8e-6
+
+
+{\it Description:} The activation volume for grain growth $V_g$. Units: $m^3/mol$.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Grain growth exponent}
+\phantomsection\label{parameters:Material model/Grain size model/Grain growth exponent}
+
+
+\index[prmindex]{Grain growth exponent}
+\index[prmindexfull]{Material model!Grain size model!Grain growth exponent}
+{\it Value:} 3
+
+
+{\it Default:} 3
+
+
+{\it Description:} Exponent of the grain growth law $p_g$. This is an experimentally determined grain growth constant. Units: none.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Grain growth rate constant}
+\phantomsection\label{parameters:Material model/Grain size model/Grain growth rate constant}
+
+
+\index[prmindex]{Grain growth rate constant}
+\index[prmindexfull]{Material model!Grain size model!Grain growth rate constant}
+{\it Value:} 1.5e-5
+
+
+{\it Default:} 1.5e-5
+
+
+{\it Description:} Prefactor of the Ostwald ripening grain growth law $G_0$. This is dependent on water content, which is assumed to be 50 H/$10^6$ Si for the default value. Units: $m^{p_g}/s$.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Lower mantle grain size scaling}
+\phantomsection\label{parameters:Material model/Grain size model/Lower mantle grain size scaling}
+
+
+\index[prmindex]{Lower mantle grain size scaling}
+\index[prmindexfull]{Material model!Grain size model!Lower mantle grain size scaling}
+{\it Value:} 1.0
+
+
+{\it Default:} 1.0
+
+
+{\it Description:} A scaling factor for the grain size in the lower mantle. In models where the high grain size contrast between the upper and lower mantle causes numerical problems, the grain size in the lower mantle can be scaled to a larger value, simultaneously scaling the viscosity prefactors and grain growth parameters to keep the same physical behavior. Differences to the original formulation only occur when material with a smaller grain size than the recrystallization grain size cross the upper-lower mantle boundary. The real grain size can be obtained by dividing the model grain size by this value. Units: none.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Material file format}
+\phantomsection\label{parameters:Material model/Grain size model/Material file format}
+
+
+\index[prmindex]{Material file format}
+\index[prmindexfull]{Material model!Grain size model!Material file format}
+{\it Value:} perplex
+
+
+{\it Default:} perplex
+
+
+{\it Description:} The material file format to be read in the property tables.
+
+
+{\it Possible values:} Any one of perplex, hefesto
+\item {\it Parameter name:} {\tt Material file names}
+\phantomsection\label{parameters:Material model/Grain size model/Material file names}
+
+
+\index[prmindex]{Material file names}
+\index[prmindexfull]{Material model!Grain size model!Material file names}
+{\it Value:} pyr-ringwood88.txt
+
+
+{\it Default:} pyr-ringwood88.txt
+
+
+{\it Description:} The file names of the material data. List with as many components as active compositional fields (material data is assumed to be in order with the ordering of the fields). 
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any string]
+\item {\it Parameter name:} {\tt Maximum latent heat substeps}
+\phantomsection\label{parameters:Material model/Grain size model/Maximum latent heat substeps}
+
+
+\index[prmindex]{Maximum latent heat substeps}
+\index[prmindexfull]{Material model!Grain size model!Maximum latent heat substeps}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} The maximum number of substeps over the temperature pressure range to calculate the averaged enthalpy gradient over a cell.
+
+
+{\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Maximum specific heat}
+\phantomsection\label{parameters:Material model/Grain size model/Maximum specific heat}
+
+
+\index[prmindex]{Maximum specific heat}
+\index[prmindexfull]{Material model!Grain size model!Maximum specific heat}
+{\it Value:} 6000
+
+
+{\it Default:} 6000
+
+
+{\it Description:} The maximum specific heat that is allowed in the whole model domain. Units: J/kg/K.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Maximum temperature dependence of viscosity}
+\phantomsection\label{parameters:Material model/Grain size model/Maximum temperature dependence of viscosity}
+
+
+\index[prmindex]{Maximum temperature dependence of viscosity}
+\index[prmindexfull]{Material model!Grain size model!Maximum temperature dependence of viscosity}
+{\it Value:} 100
+
+
+{\it Default:} 100
+
+
+{\it Description:} The factor by which viscosity at adiabatic temperature and ambient temperature are allowed to differ (a value of x means that the viscosity can be x times higher or x times lower compared to the value at adiabatic temperature. This parameter is introduced to limit local viscosity contrasts, but still allow for a widely varying viscosity over the whole mantle range. Units: none.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Maximum thermal expansivity}
+\phantomsection\label{parameters:Material model/Grain size model/Maximum thermal expansivity}
+
+
+\index[prmindex]{Maximum thermal expansivity}
+\index[prmindexfull]{Material model!Grain size model!Maximum thermal expansivity}
+{\it Value:} 1e-3
+
+
+{\it Default:} 1e-3
+
+
+{\it Description:} The maximum thermal expansivity that is allowed in the whole model domain. Units: 1/K.
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Maximum viscosity}
+\phantomsection\label{parameters:Material model/Grain size model/Maximum viscosity}
+
+
+\index[prmindex]{Maximum viscosity}
+\index[prmindexfull]{Material model!Grain size model!Maximum viscosity}
+{\it Value:} 1e26
+
+
+{\it Default:} 1e26
+
+
+{\it Description:} The maximum viscosity that is allowed in the whole model domain. Units: Pa s.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Minimum grain size}
+\phantomsection\label{parameters:Material model/Grain size model/Minimum grain size}
+
+
+\index[prmindex]{Minimum grain size}
+\index[prmindexfull]{Material model!Grain size model!Minimum grain size}
+{\it Value:} 1e-5
+
+
+{\it Default:} 1e-5
+
+
+{\it Description:} The minimum grain size that is used for the material model. This parameter is introduced to limit local viscosity contrasts, but still allows for a widely varying viscosity over the whole mantle range. Units: m.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Minimum specific heat}
+\phantomsection\label{parameters:Material model/Grain size model/Minimum specific heat}
+
+
+\index[prmindex]{Minimum specific heat}
+\index[prmindexfull]{Material model!Grain size model!Minimum specific heat}
+{\it Value:} 500
+
+
+{\it Default:} 500
+
+
+{\it Description:} The minimum specific heat that is allowed in the whole model domain. Units: J/kg/K.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Minimum thermal expansivity}
+\phantomsection\label{parameters:Material model/Grain size model/Minimum thermal expansivity}
+
+
+\index[prmindex]{Minimum thermal expansivity}
+\index[prmindexfull]{Material model!Grain size model!Minimum thermal expansivity}
+{\it Value:} 1e-5
+
+
+{\it Default:} 1e-5
+
+
+{\it Description:} The minimum thermal expansivity that is allowed in the whole model domain. Units: 1/K.
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Minimum viscosity}
+\phantomsection\label{parameters:Material model/Grain size model/Minimum viscosity}
+
+
+\index[prmindex]{Minimum viscosity}
+\index[prmindexfull]{Material model!Grain size model!Minimum viscosity}
+{\it Value:} 1e18
+
+
+{\it Default:} 1e18
+
+
+{\it Description:} The minimum viscosity that is allowed in the whole model domain. Units: Pa s.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Phase transition Clapeyron slopes}
+\phantomsection\label{parameters:Material model/Grain size model/Phase transition Clapeyron slopes}
+
+
+\index[prmindex]{Phase transition Clapeyron slopes}
+\index[prmindexfull]{Material model!Grain size model!Phase transition Clapeyron slopes}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A list of Clapeyron slopes for each phase transition. A positive Clapeyron slope indicates that the phase transition will occur in a greater depth, if the temperature is higher than the one given in Phase transition temperatures and in a smaller depth, if the temperature is smaller than the one given in Phase transition temperatures. For negative slopes the other way round. List must have the same number of entries as Phase transition depths. Units: $Pa/K$.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Phase transition depths}
+\phantomsection\label{parameters:Material model/Grain size model/Phase transition depths}
+
+
+\index[prmindex]{Phase transition depths}
+\index[prmindexfull]{Material model!Grain size model!Phase transition depths}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A list of depths where phase transitions occur. Values must monotonically increase. Units: $m$.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Phase transition temperatures}
+\phantomsection\label{parameters:Material model/Grain size model/Phase transition temperatures}
+
+
+\index[prmindex]{Phase transition temperatures}
+\index[prmindexfull]{Material model!Grain size model!Phase transition temperatures}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition ocurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: $K$.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Phase transition widths}
+\phantomsection\label{parameters:Material model/Grain size model/Phase transition widths}
+
+
+\index[prmindex]{Phase transition widths}
+\index[prmindexfull]{Material model!Grain size model!Phase transition widths}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A list of widths for each phase transition. This is only use to specify the region where the recrystallized grain size is assigned after material has crossed a phase transition and should accordingly be chosen similar to the maximum cell width expected at the phase transition.List must have the same number of entries as Phase transition depths. Units: $m$.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Reciprocal required strain}
+\phantomsection\label{parameters:Material model/Grain size model/Reciprocal required strain}
+
+
+\index[prmindex]{Reciprocal required strain}
+\index[prmindexfull]{Material model!Grain size model!Reciprocal required strain}
+{\it Value:} 10
+
+
+{\it Default:} 10
+
+
+{\it Description:} This parameters $\lambda$ gives an estimate of the strain necessary to achieve a new grain size. 
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Recrystallized grain size}
+\phantomsection\label{parameters:Material model/Grain size model/Recrystallized grain size}
+
+
+\index[prmindex]{Recrystallized grain size}
+\index[prmindexfull]{Material model!Grain size model!Recrystallized grain size}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} The grain size $d_{ph}$ to that a phase will be reduced to when crossing a phase transition. When set to zero, grain size will not be reduced. Units: m.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Reference compressibility}
+\phantomsection\label{parameters:Material model/Grain size model/Reference compressibility}
+
+
+\index[prmindex]{Reference compressibility}
+\index[prmindexfull]{Material model!Grain size model!Reference compressibility}
+{\it Value:} 4e-12
+
+
+{\it Default:} 4e-12
+
+
+{\it Description:} The value of the reference compressibility. Units: $1/Pa$.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Reference density}
+\phantomsection\label{parameters:Material model/Grain size model/Reference density}
+
+
+\index[prmindex]{Reference density}
+\index[prmindexfull]{Material model!Grain size model!Reference density}
+{\it Value:} 3300
+
+
+{\it Default:} 3300
+
+
+{\it Description:} Reference density $\rho_0$. Units: $kg/m^3$.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Reference specific heat}
+\phantomsection\label{parameters:Material model/Grain size model/Reference specific heat}
+
+
+\index[prmindex]{Reference specific heat}
+\index[prmindexfull]{Material model!Grain size model!Reference specific heat}
+{\it Value:} 1250
+
+
+{\it Default:} 1250
+
+
+{\it Description:} The value of the specific heat $cp$. Units: $J/kg/K$.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Reference temperature}
+\phantomsection\label{parameters:Material model/Grain size model/Reference temperature}
+
+
+\index[prmindex]{Reference temperature}
+\index[prmindexfull]{Material model!Grain size model!Reference temperature}
+{\it Value:} 293
+
+
+{\it Default:} 293
+
+
+{\it Description:} The reference temperature $T_0$. Units: $K$.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Thermal conductivity}
+\phantomsection\label{parameters:Material model/Grain size model/Thermal conductivity}
+
+
+\index[prmindex]{Thermal conductivity}
+\index[prmindexfull]{Material model!Grain size model!Thermal conductivity}
+{\it Value:} 4.7
+
+
+{\it Default:} 4.7
+
+
+{\it Description:} The value of the thermal conductivity $k$. Units: $W/m/K$.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Thermal expansion coefficient}
+\phantomsection\label{parameters:Material model/Grain size model/Thermal expansion coefficient}
+
+
+\index[prmindex]{Thermal expansion coefficient}
+\index[prmindexfull]{Material model!Grain size model!Thermal expansion coefficient}
+{\it Value:} 2e-5
+
+
+{\it Default:} 2e-5
+
+
+{\it Description:} The value of the thermal expansion coefficient $\alpha$. Units: $1/K$.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Use enthalpy for material properties}
+\phantomsection\label{parameters:Material model/Grain size model/Use enthalpy for material properties}
+
+
+\index[prmindex]{Use enthalpy for material properties}
+\index[prmindexfull]{Material model!Grain size model!Use enthalpy for material properties}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} Whether to use the enthalpy to calculate thermal expansivity and specific heat (if true) or use the thermal expansivity and specific heat values from the material properties table directly (if false).
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Use paleowattmeter}
+\phantomsection\label{parameters:Material model/Grain size model/Use paleowattmeter}
+
+
+\index[prmindex]{Use paleowattmeter}
+\index[prmindexfull]{Material model!Grain size model!Use paleowattmeter}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} A flag indicating whether the computation should be use the paleowattmeter approach of Austin and Evans (2007) for grain size reduction in the dislocation creep regime (if true) or the paleopiezometer aprroach from Hall and Parmetier (2003) (if false).
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Use table properties}
+\phantomsection\label{parameters:Material model/Grain size model/Use table properties}
+
+
+\index[prmindex]{Use table properties}
+\index[prmindexfull]{Material model!Grain size model!Use table properties}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to use the table properties also for density, thermal expansivity and specific heat. If false the properties are generated as in the simple compressible plugin.
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Viscosity}
+\phantomsection\label{parameters:Material model/Grain size model/Viscosity}
+
+
+\index[prmindex]{Viscosity}
+\index[prmindexfull]{Material model!Grain size model!Viscosity}
+{\it Value:} 5e24
+
+
+{\it Default:} 5e24
+
+
+{\it Description:} The value of the constant viscosity. Units: $kg/m/s$.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Work fraction for boundary area change}
+\phantomsection\label{parameters:Material model/Grain size model/Work fraction for boundary area change}
+
+
+\index[prmindex]{Work fraction for boundary area change}
+\index[prmindexfull]{Material model!Grain size model!Work fraction for boundary area change}
+{\it Value:} 0.1
+
+
+{\it Default:} 0.1
+
+
+{\it Description:} The fraction $\chi$ of work done by dislocation creep to change the grain boundary area. Units: $J/m^2$.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
 \end{itemize}
 
 \subsection{Parameters in section \tt Material model/Latent heat}
@@ -12343,7 +13241,19 @@ The format of valid entries for this parameter is that of a map given as ``key1 
 
 Note that the no-slip boundary condition is a special case of the current one where the prescribed velocity happens to be zero. It can thus be implemented by indicating that a particular boundary is part of the ones selected using the current parameter and using ``zero velocity'' as the boundary values. Alternatively, you can simply list the part of the boundary on which the velocity is to be zero with the parameter ``Zero velocity boundary indicator'' in the current parameter section.
 
-Note that when ``Use years in output instead of seconds'' is set to true, velocity should be given in m/yr. 
+Note that when ``Use years in output instead of seconds'' is set to true, velocity should be given in m/yr. The following boundary velocity models are available:
+
+`ascii data': Implementation of a model in which the boundary velocity is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. The order of the data columns has to be `x', `velocity$_x$', `velocity$_y$' in a 2d model or `x', `y', `velocity$_x$', `velocity$_y$', `velocity$_z$' in a 3d model. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the velocities will still be handled as Cartesian, however the assumed grid changes. `x' will be replaced by the radial distance of the point to the bottom of the model, `y' by the azimuth angle and `z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r', `phi', `theta' and not `r', `theta', `phi', since this allows for dimension independent expressions. No matter which geometry model is chosen, the unit of the velocities is assumed to be m/s or m/yr depending on the 'Use years in output instead of seconds' flag.
+
+`function': Implementation of a model in which the boundary velocity is given in terms of an explicit formula that is elaborated in the parameters in section ``Boundary velocity model|Function''. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+
+The formula you describe in the mentioned section is a semicolon separated list of velocities for each of the $d$ components of the velocity vector. These $d$ formulas are interpreted as having units m/s, unless the global input parameter ``Use years in output instead of seconds'' is set, in which case we interpret the formula expressions as having units m/year.
+
+Likewise, since the symbol $t$ indicating time may appear in the formulas for the prescribed velocities, it is interpreted as having units seconds unless the global parameter above has been set.
+
+`gplates': Implementation of a model in which the boundary velocity is derived from files that are generated by the GPlates program.
+
+`zero velocity': Implementation of a model in which the boundary velocity is zero. This is commonly referred to as a ``stick boundary condition'', indicating that the material ``sticks'' to the material on the other side of the boundary.
 
 
 {\it Possible values:} A key-value map of 0 to 4294967295 elements  where each key is [Any string] and each value is [Any one of ascii data, function, gplates, zero velocity]
@@ -12510,14 +13420,10 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 `velocity statistics': A postprocessor that computes some statistics about the velocity field.
 
-`viscous dissipation statistics': A postprocessor that computes the viscous dissipation for the whole domain as: $\frac{1}{2} \int_{V} \sigma : \dot{\epsilon}dV$ = $\int_{V} (-p\nabla \cdot u+2\mu\dot{\epsilon}:\dot{\epsilon} - \frac{2\mu}{3}(\nabla\cdot u)^{2}) dV$.
-
-The information produced by this postprocessor is a subset of what is generated by the `heating statistics' postprocessor.
-
 `visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
 
 
-{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, command, composition statistics, core statistics, depth average, dynamic topography, geoid, global statistics, heat flux densities, heat flux map, heat flux statistics, heating statistics, mass flux statistics, matrix statistics, melt statistics, memory statistics, particle count statistics, particles, point values, pressure statistics, spherical velocity statistics, temperature statistics, topography, velocity boundary statistics, velocity statistics, viscous dissipation statistics, visualization
+{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, command, composition statistics, core statistics, depth average, dynamic topography, geoid, global statistics, heat flux densities, heat flux map, heat flux statistics, heating statistics, mass flux statistics, matrix statistics, melt statistics, memory statistics, particle count statistics, particles, point values, pressure statistics, spherical velocity statistics, temperature statistics, topography, velocity boundary statistics, velocity statistics, visualization
 \item {\it Parameter name:} {\tt Run postprocessors on nonlinear iterations}
 \phantomsection\label{parameters:Postprocess/Run postprocessors on nonlinear iterations}
 
@@ -13889,8 +14795,6 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 
 `error indicator': A visualization output object that generates output showing the estimated error or other mesh refinement indicator as a spatially variable function with one value per cell.
 
-`friction heating': A visualization output object that generates output for the amount of friction heating often referred to as $\tau:\epsilon$. More concisely, in the incompressible case, the quantity that is output is defined as $\eta \varepsilon(\mathbf u):\varepsilon(\mathbf u)$ where $\eta$ is itself a function of temperature, pressure and strain rate. In the compressible case, the quantity that is computed is $\eta [\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]$.
-
 `geoid': Visualization for the geoid solution. The geoid is given by the equivalent water column height due to a gravity perturbation. (Units: m)
 
 `gravity': A visualization output object that outputs the gravity vector.
@@ -13958,7 +14862,7 @@ This visualization postprocessor outputs whatever quantities the material model 
 `volumetric strain rate': A visualization output object that generates output for the volumetric strain rate, i.e., for the quantity $\nabla\cdot\mathbf u = \textrm{div}\; \mathbf u = \textrm{trace}\; \varepsilon(\mathbf u)$. This should be zero (in some average sense) in incompressible convection models, but can be non-zero in compressible models and models with melt transport.
 
 
-{\it Possible values:} A comma-separated list of any of Vp anomaly, Vs anomaly, adiabat, artificial viscosity, artificial viscosity composition, boundary indicators, compositional vector, density, depth, dynamic topography, error indicator, friction heating, geoid, gravity, heat flux map, heating, material properties, maximum horizontal compressive stress, melt fraction, melt material properties, named additional outputs, nonadiabatic pressure, nonadiabatic temperature, particle count, partition, shear stress, spd factor, specific heat, strain rate, stress, thermal conductivity, thermal diffusivity, thermal expansivity, vertical heat flux, viscosity, volumetric strain rate
+{\it Possible values:} A comma-separated list of any of Vp anomaly, Vs anomaly, adiabat, artificial viscosity, artificial viscosity composition, boundary indicators, compositional vector, density, depth, dynamic topography, error indicator, geoid, gravity, heat flux map, heating, material properties, maximum horizontal compressive stress, melt fraction, melt material properties, named additional outputs, nonadiabatic pressure, nonadiabatic temperature, particle count, partition, shear stress, spd factor, specific heat, strain rate, stress, thermal conductivity, thermal diffusivity, thermal expansivity, vertical heat flux, viscosity, volumetric strain rate
 \item {\it Parameter name:} {\tt Number of grouped files}
 \phantomsection\label{parameters:Postprocess/Visualization/Number of grouped files}
 

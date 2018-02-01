@@ -1552,7 +1552,7 @@ namespace aspect
                              Patterns::List (Patterns::Double(0)),
                              "Prefactor of the Ostwald ripening grain growth law $G_0$. "
                              "This is dependent on water content, which is assumed to be "
-                             "50 H/10^6 Si for the default value. "
+                             "50 H/$10^6$ Si for the default value. "
                              "Units: $m^{p_g}/s$.");
           prm.declare_entry ("Minimum grain size", "5e-6",
                              Patterns::Double(0),
@@ -1578,11 +1578,11 @@ namespace aspect
           prm.declare_entry ("Average specific grain boundary energy", "1.0",
                              Patterns::List (Patterns::Double(0)),
                              "The average specific grain boundary energy $\\gamma$. "
-                             "Units: J/m^2.");
+                             "Units: $J/m^2$.");
           prm.declare_entry ("Work fraction for boundary area change", "0.1",
                              Patterns::List (Patterns::Double(0)),
                              "The fraction $\\chi$ of work done by dislocation creep to change the grain boundary area. "
-                             "Units: J/m^2.");
+                             "Units: $J/m^2$.");
           prm.declare_entry ("Geometric constant", "3",
                              Patterns::List (Patterns::Double(0)),
                              "Geometric constant $c$ used in the paleowattmeter grain size reduction law. "
