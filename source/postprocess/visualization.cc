@@ -737,7 +737,7 @@ namespace aspect
                              "seconds otherwise.");
 
           prm.declare_entry ("Steps between graphical output", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
-                             Patterns::Integer(0),
+                             Patterns::Integer(0,std::numeric_limits<int>::max()),
                              "The maximum number of time steps between each generation of "
                              "graphical output files.");
 
