@@ -513,11 +513,9 @@ namespace aspect
          * Function that takes an object in the same format
          * as in.composition as argument and converts the
          * vector that corresponds to the grain size to its
-         * logarithms and back and limits the grain size to
-         * a global minimum.
-         * @in normal_to_log: if true, convert from the grain
-         * size to its logarithm, otherwise from log to grain
-         * size
+         * logarithms and limits the grain size to
+         * a global minimum. The input argument @p compositional_fields
+         * is modified in-place.
          */
         void
         convert_log_grain_size (std::vector<double> &compositional_fields) const;
