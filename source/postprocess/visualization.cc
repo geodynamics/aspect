@@ -998,6 +998,7 @@ namespace aspect
     void Visualization<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &last_output_time
+      & last_output_timestep
       & output_file_number
       & times_and_pvtu_names
       & output_file_names_by_timestep
