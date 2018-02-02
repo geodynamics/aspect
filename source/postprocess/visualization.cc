@@ -34,6 +34,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include <boost/lexical_cast.hpp>
+
 namespace aspect
 {
   namespace Postprocess
@@ -209,6 +211,8 @@ namespace aspect
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
       last_output_time (std::numeric_limits<double>::quiet_NaN()),
+      maximum_timesteps_between_outputs (std::numeric_limits<int>::max()),
+      last_output_timestep (numbers::invalid_unsigned_int),
       output_file_number (numbers::invalid_unsigned_int),
       mesh_changed (true)
     {}
@@ -326,10 +330,20 @@ namespace aspect
       if (std::isnan(last_output_time))
         {
           last_output_time = this->get_time() - output_interval;
+          last_output_timestep = this->get_timestep_number();
         }
 
-      // return if graphical output is not requested at this time
+      // Return if graphical output is not requested at this time. Do not
+      // return in the first timestep, or if the last output was more than
+      // output_interval in time ago, or maximum_timesteps_between_outputs in
+      // number of timesteps ago.
+      // The comparison in number of timesteps is safe from integer overflow for
+      // at most 2 billion timesteps , which is not likely to
+      // be ever reached (both values are unsigned int,
+      // and the default value of maximum_timesteps_between_outputs is
+      // set to numeric_limits<int>::max())
       if ((this->get_time() < last_output_time + output_interval)
+          && (this->get_timestep_number() < last_output_timestep + maximum_timesteps_between_outputs)
           && (this->get_timestep_number() != 0))
         return std::pair<std::string,std::string>();
 
@@ -623,6 +637,7 @@ namespace aspect
 
       // up the next time we need output
       set_last_output_time (this->get_time());
+      last_output_timestep = this->get_timestep_number();
 
       // return what should be printed to the screen.
       return std::make_pair (std::string ("Writing graphical output:"),
@@ -728,6 +743,11 @@ namespace aspect
                              "Units: years if the "
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
+
+          prm.declare_entry ("Time steps between graphical output", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
+                             Patterns::Integer(0,std::numeric_limits<int>::max()),
+                             "The maximum number of time steps between each generation of "
+                             "graphical output files.");
 
           // now also see about the file format we're supposed to write in
           prm.declare_entry ("Output format", "vtu",
@@ -875,6 +895,8 @@ namespace aspect
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;
 
+          maximum_timesteps_between_outputs = prm.get_integer("Time steps between graphical output");
+
           if (output_interval > 0.0)
             {
               // since we increase the time indicating when to write the next graphical output
@@ -976,6 +998,7 @@ namespace aspect
     void Visualization<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &last_output_time
+      & last_output_timestep
       & output_file_number
       & times_and_pvtu_names
       & output_file_names_by_timestep

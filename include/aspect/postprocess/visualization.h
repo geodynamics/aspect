@@ -385,6 +385,20 @@ namespace aspect
         double last_output_time;
 
         /**
+         * Maximum number of steps between the generation of graphical output.
+         * This parameter
+         * is read from the input file and consequently is not part of the
+         * state that needs to be saved and restored.
+         */
+        unsigned int maximum_timesteps_between_outputs;
+
+        /**
+         * Timestep at which the last graphical output was produced
+         * Used to check for the next necessary output time.
+         */
+        unsigned int last_output_timestep;
+
+        /**
          * Consecutively counted number indicating the how-manyth time we will
          * create output the next time we get to it.
          */
