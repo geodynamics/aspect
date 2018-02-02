@@ -211,7 +211,7 @@ namespace aspect
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
       last_output_time (std::numeric_limits<double>::quiet_NaN()),
-      maximum_timesteps_between_outputs (numbers::invalid_unsigned_int),
+      maximum_timesteps_between_outputs (std::numeric_limits<int>::max()),
       last_output_timestep (numbers::invalid_unsigned_int),
       output_file_number (numbers::invalid_unsigned_int),
       mesh_changed (true)
@@ -744,7 +744,7 @@ namespace aspect
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
 
-          prm.declare_entry ("Steps between graphical output", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
+          prm.declare_entry ("Time steps between graphical output", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
                              Patterns::Integer(0,std::numeric_limits<int>::max()),
                              "The maximum number of time steps between each generation of "
                              "graphical output files.");
@@ -895,7 +895,7 @@ namespace aspect
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;
 
-          maximum_timesteps_between_outputs = prm.get_integer("Steps between graphical output");
+          maximum_timesteps_between_outputs = prm.get_integer("Time steps between graphical output");
 
           if (output_interval > 0.0)
             {
