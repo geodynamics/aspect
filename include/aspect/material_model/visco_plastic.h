@@ -235,7 +235,6 @@ namespace aspect
         std::vector<double> friction_strain_weakening_factors;
 
         std::vector<double> prefactors_diffusion;
-        std::vector<double> stress_exponents_diffusion;
         std::vector<double> grain_size_exponents_diffusion;
         std::vector<double> activation_energies_diffusion;
         std::vector<double> activation_volumes_diffusion;

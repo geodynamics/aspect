@@ -201,9 +201,9 @@ namespace aspect
           // Note: values of A, d, m, E, V and n are distinct for diffusion & dislocation creep
 
           // Diffusion creep: viscosity is grain size dependent (m!=0) and strain-rate independent (n=1)
-          double viscosity_diffusion = 0.5 * std::pow(prefactors_diffusion[j],-1/stress_exponents_diffusion[j]) *
+          double viscosity_diffusion = 0.5 / prefactors_diffusion[j] *
                                        std::exp((activation_energies_diffusion[j] + pressure*activation_volumes_diffusion[j])/
-                                                (constants::gas_constant*temperature*stress_exponents_diffusion[j])) *
+                                                (constants::gas_constant*temperature)) *
                                        std::pow(grain_size, grain_size_exponents_diffusion[j]);
 
           // For dislocation creep, viscosity is grain size independent (m=0) and strain-rate dependent (n>1)
@@ -306,8 +306,7 @@ namespace aspect
             {
               case stress_limiter:
               {
-                // viscosity_yield = std::min(viscosity_limiter, viscosity_pre_yield);
-                viscosity_yield = viscosity_limiter;
+                viscosity_yield = 1. / ( 1./viscosity_limiter + 1./viscosity_pre_yield);
                 break;
               }
               case drucker_prager:
@@ -648,7 +647,7 @@ namespace aspect
                              "List of viscosity prefactors, $A$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. "
-                             "Units: $Pa^{-n_\\text{diffusion}} m^{n_\\text{diffusion}/m_\\text{diffusion}} s^{-1}$");
+                             "Units: $Pa^{-1} m^{1/m_{diffusion}} s^{-1}$");
           prm.declare_entry ("Stress exponents for diffusion creep", "1",
                              Patterns::List(Patterns::Double(0)),
                              "List of stress exponents, $n_\\text{diffusion}$, for background material and compositional fields, "
@@ -714,8 +713,7 @@ namespace aspect
                              "List of stress limiter exponents, $n_\\text{lim}$, "
                              "for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "The default value of 1 ensures the entire stress limiter term is set to 1 "
-                             "and does not affect the viscosity. Units: none.");
+                             "Units: none.");
 
         }
         prm.leave_subsection();
@@ -825,9 +823,6 @@ namespace aspect
           prefactors_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactors for diffusion creep"))),
                                                                          n_fields,
                                                                          "Prefactors for diffusion creep");
-          stress_exponents_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress exponents for diffusion creep"))),
-                                                                               n_fields,
-                                                                               "Stress exponents for diffusion creep");
           grain_size_exponents_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Grain size exponents for diffusion creep"))),
                                                                                    n_fields,
                                                                                    "Grain size exponents for diffusion creep");
