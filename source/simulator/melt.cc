@@ -478,15 +478,6 @@ namespace aspect
       const types::boundary_id boundary_indicator
         = scratch.cell->face(scratch.face_number)->boundary_id();
 
-      // If the boundary is a free surface, we always want to use
-      // grad_p_f = rho_f * gravity,
-      // because that means that the fluid will move with the same velocity as the solid,
-      // and no melt can flow through the free surface boundary.
-      // For this case, we do not have to assemble any of the terms (the sum would be zero).
-      if (this->get_parameters().free_surface_boundary_indicators.find(boundary_indicator)
-          != this->get_parameters().free_surface_boundary_indicators.end())
-        return;
-
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
 
@@ -1465,23 +1456,23 @@ namespace aspect
 
                 const Tensor<1,dim>
                 gravity = this->get_gravity_model().gravity_vector(scratch.face_finite_element_values.quadrature_point(q_point));
-                double g_norm = gravity.norm();
+                const double g_norm = gravity.norm();
 
                 // construct the relevant vectors
                 const Tensor<1,dim> n_hat = scratch.face_finite_element_values.normal_vector(q_point);
                 const Tensor<1,dim> g_hat = (g_norm == 0.0 ? Tensor<1,dim>() : gravity/g_norm);
 
-                double pressure_perturbation = scratch.face_material_model_outputs.densities[q_point] *
-                                               this->get_timestep() * free_surface_theta * g_norm;
+                const double pressure_perturbation = scratch.face_material_model_outputs.densities[q_point] *
+                                                     this->get_timestep() * free_surface_theta * g_norm;
 
                 // see Kaus et al 2010 for details of the stabilization term
                 for (unsigned int i=0; i< stokes_dofs_per_cell; ++i)
                   for (unsigned int j=0; j< stokes_dofs_per_cell; ++j)
                     {
                       // The fictive stabilization stress is (phi_u[i].g)*(phi_u[j].n)
-                      const double stress_value = -pressure_perturbation*
-                                                  (scratch.phi_u[i]*g_hat) * (scratch.phi_u[j]*n_hat)
-                                                  *scratch.face_finite_element_values.JxW(q_point);
+                      const double stress_value = - pressure_perturbation
+                                                  * (scratch.phi_u[i] * g_hat) * (scratch.phi_u[j] * n_hat)
+                                                  * scratch.face_finite_element_values.JxW(q_point);
 
                       data.local_matrix(i,j) += stress_value;
                     }

@@ -130,7 +130,7 @@ namespace aspect
 
           for (unsigned int i=0; i < in.position.size(); ++i)
             {
-              double porosity = std::max(in.composition[i][porosity_idx],0.0);
+              const double porosity = std::max(in.composition[i][porosity_idx],0.0);
               melt_out->fluid_densities[i] = 300.;
               melt_out->permeabilities[i] = 1e-8 * std::pow(porosity, 3);
               melt_out->compaction_viscosities[i] = eta;
