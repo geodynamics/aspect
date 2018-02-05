@@ -618,7 +618,7 @@ namespace aspect
        * system involving the velocity and pressure variables).
        *
        * @note If this function is called from a nonlinear solver -- e.g., the
-       * iterated Stokes, iterated IMPES, or Newton solver --, then the
+       * iterated Stokes, or iterated IMPES --, then the
        * @p current_linearization_point is the solution of the previous
        * iteration (or the solution extrapolated from the previous time
        * steps, if this is the first nonlinear iteration). Let us call
@@ -646,7 +646,12 @@ namespace aspect
        * with them, whether or not the solution was already good. If it
        * happens to have been good already, then it will be even better after
        * the solve. If it was not good enough yet, then we have to solve
-       * anyway.)
+       * anyway.) In contrast to all of this, if we are using a Newton
+       * solver, then $x_{k+1}$ is actually the Newton <i>update</i>
+       * vector, for which we have no initial guess other than the zero
+       * vector. In this case, the function simply returns $\|F_k\|$ where
+       * $F_k=F(x_k)$ is the residual vector for the previous solution
+       * $x_k$.
        *
        * This function is implemented in
        * <code>source/simulator/solver.cc</code>.
