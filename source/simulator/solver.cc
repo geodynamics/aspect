@@ -550,6 +550,7 @@ namespace aspect
         // (it will be ignored by the solver anyway), we need this if we are
         // using a nonlinear scheme, because we use this to compute the current
         // nonlinear residual (see initial_residual below).
+
         // TODO: if there was an easy way to know if the caller needs the
         // initial residual we could skip all of this stuff.
         distributed_stokes_solution.block(0) = solution.block(0);
