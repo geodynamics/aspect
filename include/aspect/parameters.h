@@ -308,9 +308,6 @@ namespace aspect
 
     double                         nonlinear_tolerance;
     double                         nonlinear_switch_tolerance;
-    std::string                    use_Newton_stabilisation_preconditioner;
-    std::string                    use_Newton_stabilisation_A_block;
-    bool                           use_Newton_failsafe;
     bool                           resume_computation;
     double                         start_time;
     double                         CFL_number;
@@ -340,10 +337,6 @@ namespace aspect
     double                         temperature_solver_tolerance;
     double                         composition_solver_tolerance;
     bool                           use_operator_splitting;
-    unsigned int                   max_pre_newton_nonlinear_iterations;
-    unsigned int                   max_newton_line_search_iterations;
-    bool                           use_newton_residual_scaling_method;
-    double                         maximum_linear_stokes_solver_tolerance;
 
     /**
      * @}

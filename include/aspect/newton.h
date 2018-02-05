@@ -106,16 +106,68 @@ namespace aspect
       void set_newton_derivative_scaling_factor(const double newton_derivative_scaling_factor);
 
       /**
-       * Gets the Newton derivative scaling factor used for scaling the
-       * derivative part of the Newton Stokes solver in the assembly.
+       * Get the stabilization type used in the preconditioner.
        */
-      std::pair<std::string,std::string> get_Newton_stabilisation() const;
+      std::string get_preconditioner_stabilization() const;
 
       /**
-       * Sets the Newton derivative scaling factor used for scaling the
-       * derivative part of the Newton Stokes solver in the assembly.
+       * Set the stabilization type used in the preconditioner.
        */
-      void set_Newton_stabilisation(const std::string use_Newton_stabilisation_preconditioner,const std::string use_Newton_stabilisation_A_block);
+      void set_preconditioner_stabilization(const std::string preconditioner_stabilization);
+
+      /**
+       * Get the stabilization type used in the velocity block.
+       */
+      std::string get_velocity_block_stabilization() const;
+
+      /**
+       * Sets the stabilization type used in the velocity block.
+       */
+      void set_velocity_block_stabilization(const std::string velocity_block_stabilization);
+
+      /**
+       * Get whether to use the Newton failsafe
+       */
+      bool get_use_Newton_failsafe();
+
+      /**
+       * Get the nonlinear tolerance at which to switch the
+       * nonlinear solver from defect corrected Piccard to
+       * Newton.
+       */
+      double get_nonlinear_switch_tolerance();
+
+      /**
+       * Get the maximum amount of pre-Newton nonlinear iterations
+       */
+      unsigned int get_max_pre_newton_nonlinear_iterations();
+
+      /**
+       * Get the maximum amount of line search iterations
+       */
+      unsigned int get_max_newton_line_search_iterations();
+
+      /**
+       * Get whether to use the residual scaling method
+       */
+      bool get_use_newton_residual_scaling_method();
+
+      /**
+       * Get the maximum linear Stokes solver tolerance
+       */
+      double get_maximum_linear_stokes_solver_tolerance();
+
+      /**
+       * Declare additional parameters that are needed for the Newton
+       * solver.
+       */
+      static void declare_parameters (ParameterHandler &prm);
+
+      /**
+       * Parse additional parameters that are needed for the Newton
+       * solver.
+       */
+      void parse_parameters (ParameterHandler &prm);
 
     private:
       /**
@@ -125,8 +177,15 @@ namespace aspect
        * See the get_newton_derivative_scaling_factor() function for an
        * explanation of the purpose of this factor.
        */
-      double newton_derivative_scaling_factor;
-      std::pair<std::string,std::string> Newton_stabilisation;
+      double       newton_derivative_scaling_factor;
+      std::string  preconditioner_stabilization;
+      std::string  velocity_block_stabilization;
+      bool         use_Newton_failsafe;
+      double       nonlinear_switch_tolerance;
+      unsigned int max_pre_newton_nonlinear_iterations;
+      unsigned int max_newton_line_search_iterations;
+      bool         use_newton_residual_scaling_method;
+      double       maximum_linear_stokes_solver_tolerance;
   };
 
   namespace Assemblers

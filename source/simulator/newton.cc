@@ -163,20 +163,164 @@ namespace aspect
   }
 
   template <int dim>
-  std::pair<std::string,std::string>
+  std::string
   NewtonHandler<dim>::
-  get_Newton_stabilisation() const
+  get_preconditioner_stabilization() const
   {
-    return Newton_stabilisation;
+    return preconditioner_stabilization;
   }
 
 
   template <int dim>
   void
   NewtonHandler<dim>::
-  set_Newton_stabilisation(const std::string use_Newton_stabilisation_preconditioner,const std::string use_Newton_stabilisation_A_block)
+  set_preconditioner_stabilization(const std::string preconditioner_stabilization_)
   {
-    Newton_stabilisation = std::make_pair(use_Newton_stabilisation_preconditioner,use_Newton_stabilisation_A_block);
+    preconditioner_stabilization = preconditioner_stabilization_;
+  }
+
+  template <int dim>
+  std::string
+  NewtonHandler<dim>::
+  get_velocity_block_stabilization() const
+  {
+    return velocity_block_stabilization;
+  }
+
+
+  template <int dim>
+  void
+  NewtonHandler<dim>::
+  set_velocity_block_stabilization(const std::string velocity_block_stabilization_)
+  {
+    velocity_block_stabilization = velocity_block_stabilization_;
+  }
+
+  template <int dim>
+  bool
+  NewtonHandler<dim>::
+  get_use_Newton_failsafe()
+  {
+    return use_Newton_failsafe;
+  }
+
+  template <int dim>
+  double
+  NewtonHandler<dim>::
+  get_nonlinear_switch_tolerance()
+  {
+    return nonlinear_switch_tolerance;
+  }
+
+  template <int dim>
+  unsigned int
+  NewtonHandler<dim>::
+  get_max_pre_newton_nonlinear_iterations()
+  {
+    return max_pre_newton_nonlinear_iterations;
+  }
+
+  template <int dim>
+  unsigned int
+  NewtonHandler<dim>::
+  get_max_newton_line_search_iterations()
+  {
+    return max_newton_line_search_iterations;
+  }
+
+  template <int dim>
+  bool
+  NewtonHandler<dim>::
+  get_use_newton_residual_scaling_method()
+  {
+    return use_newton_residual_scaling_method;
+  }
+
+  template <int dim>
+  double
+  NewtonHandler<dim>::
+  get_maximum_linear_stokes_solver_tolerance()
+  {
+    return maximum_linear_stokes_solver_tolerance;
+  }
+
+  template <int dim>
+  void
+  NewtonHandler<dim>::
+  declare_parameters (ParameterHandler &prm)
+  {
+    prm.enter_subsection ("Solver parameters");
+    {
+      prm.enter_subsection ("Newton solver parameters");
+      {
+        prm.declare_entry ("Nonlinear Newton solver switch tolerance", "1e-5",
+                           Patterns::Double(0,1),
+                           "A relative tolerance with respect to the residual of the first "
+                           "iteration, up to which the nonlinear Picard solver will iterate, "
+                           "before changing to the newton solver.");
+
+        prm.declare_entry ("Max pre-Newton nonlinear iterations", "10",
+                           Patterns::Integer (0),
+                           "The maximum number of Picard nonlinear iterations to be performed "
+                           "before switching to Newton iterations.");
+
+        prm.declare_entry ("Max Newton line search iterations", "5",
+                           Patterns::Integer (0),
+                           "The maximum number of line search iterations allowed. If the "
+                           "criterion is not reached after this iteration, we apply the scaled "
+                           "increment to the solution and continue.");
+
+        prm.declare_entry ("Use Newton residual scaling method", "false",
+                           Patterns::Bool (),
+                           "This method allows to slowly introduce the derivatives based on the improvement "
+                           "of the residual. If set to false, the scaling factor for the Newton derivatives "
+                           "is set to one immediately when switching on the Newton solver.");
+
+        prm.declare_entry ("Maximum linear Stokes solver tolerance", "0.9",
+                           Patterns::Double (0,1),
+                           "When the linear Stokes solver tolerance is dynamically chosen, this defines "
+                           "the most loose tolerance allowed.");
+
+        prm.declare_entry ("Stabilization preconditioner", "SPD",
+                           Patterns::Selection ("SPD|PD|symmetric|none"),
+                           "TODO");
+        prm.declare_entry ("Stabilization velocity block", "SPD",
+                           Patterns::Selection ("SPD|PD|symmetric|none"),
+                           "TODO");
+        prm.declare_entry ("Use Newton failsafe", "false",
+                           Patterns::Bool (),
+                           "Switches on SPD stabilization when solver fails.");
+      }
+      prm.leave_subsection ();
+    }
+    prm.leave_subsection ();
+  }
+
+  template <int dim>
+  void
+  NewtonHandler<dim>::
+  parse_parameters (ParameterHandler &prm)
+  {
+    prm.enter_subsection ("Solver parameters");
+    {
+      prm.enter_subsection ("Newton solver parameters");
+      {
+        nonlinear_switch_tolerance = prm.get_double("Nonlinear Newton solver switch tolerance");
+        max_pre_newton_nonlinear_iterations = prm.get_integer ("Max pre-Newton nonlinear iterations");
+        max_newton_line_search_iterations = prm.get_integer ("Max Newton line search iterations");
+        use_newton_residual_scaling_method = prm.get_bool("Use Newton residual scaling method");
+        maximum_linear_stokes_solver_tolerance = prm.get_double("Maximum linear Stokes solver tolerance");
+        preconditioner_stabilization = prm.get("Stabilization preconditioner");
+        velocity_block_stabilization = prm.get("Stabilization velocity block");
+        use_Newton_failsafe = prm.get_bool("Use Newton failsafe");
+
+        AssertThrow((!DEAL_II_VERSION_GTE(9,0,0) && !use_Newton_failsafe) || DEAL_II_VERSION_GTE(9,0,0),
+                    ExcMessage("The failsafe option can't be used with a deal.ii less then 9.0.0."));
+      }
+      prm.leave_subsection ();
+    }
+    prm.leave_subsection ();
+
   }
 }
 

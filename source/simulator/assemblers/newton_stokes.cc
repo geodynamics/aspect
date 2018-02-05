@@ -96,7 +96,6 @@ namespace aspect
 
           const double JxW = scratch.finite_element_values.JxW(q);
 
-
           // TODO: Find out why in this version of ASPECT adding the derivative to the preconditioning
           // is way worse than the normal preconditioning
           if (derivative_scaling_factor == 0)
@@ -120,15 +119,14 @@ namespace aspect
               const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
               const SymmetricTensor<2,dim> strain_rate = scratch.material_model_inputs.strain_rate[q];
 
-              const std::pair<std::string,std::string> Newton_stabilisation = this->get_newton_handler().get_Newton_stabilisation();
-              // In the preconditioning, the S.P.D. factor should always be used.
+              const std::string preconditioner_stabilization = this->get_newton_handler().get_preconditioner_stabilization();
               // todo: make this 0.9 into a global input parameter
-              const double alpha = Newton_stabilisation.first =="SPD" || Newton_stabilisation.first =="PD" ?
+              const double alpha = preconditioner_stabilization =="SPD" || preconditioner_stabilization =="PD" ?
                                    Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, 0.9)
                                    :
                                    1;
 
-              if (Newton_stabilisation.first == "SPD" || Newton_stabilisation.first == "symmetric")
+              if (preconditioner_stabilization == "SPD" || preconditioner_stabilization == "symmetric")
                 {
                   for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
                     for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
@@ -167,7 +165,7 @@ namespace aspect
         }
 #if DEBUG
       {
-        if (this->get_newton_handler().get_Newton_stabilisation().first == "SPD")
+        if (this->get_newton_handler().get_preconditioner_stabilization() == "SPD")
           {
             // regardless of whether we do or do not add the Newton
             // linearization terms, we ought to test whether the top-left
@@ -306,15 +304,14 @@ namespace aspect
 
                   const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
                   const double viscosity_derivative_wrt_pressure = derivatives->viscosity_derivative_wrt_pressure[q];
-                  const std::pair<std::string,std::string> Newton_stabilisation = this->get_newton_handler().get_Newton_stabilisation();
-
+                  const std::string velocity_block_stabilization = this->get_newton_handler().get_velocity_block_stabilization();
                   // todo: make this 0.9 into a global input parameter
-                  const double alpha =  Newton_stabilisation.second =="SPD" || Newton_stabilisation.second =="PD" ?
+                  const double alpha =  velocity_block_stabilization =="SPD" || velocity_block_stabilization =="PD" ?
                                         Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, 0.9)
                                         :
                                         1;
 
-                  if (Newton_stabilisation.second == "SPD" || Newton_stabilisation.second == "symmetric")
+                  if (velocity_block_stabilization == "SPD" || velocity_block_stabilization == "symmetric")
                     {
                       for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
                         for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
@@ -352,7 +349,7 @@ namespace aspect
 #if DEBUG
       if (scratch.rebuild_newton_stokes_matrix)
         {
-          if (this->get_newton_handler().get_Newton_stabilisation().second == "SPD")
+          if (this->get_newton_handler().get_velocity_block_stabilization() == "SPD")
             {
               // regardless of whether we do or do not add the Newton
               // linearization terms, we ought to test whether the top-left
