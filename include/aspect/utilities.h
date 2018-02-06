@@ -1060,6 +1060,13 @@ namespace aspect
      * entry in the list must match one of the allowed operations.
      */
     std::vector<Operator> create_model_operator_list(const std::vector<std::string> &operator_names);
+
+    /**
+     * Create matrix with unit at independent indices
+     */
+    template <int dim>
+    SymmetricTensor<2,dim> symmetric_independent_component_matrix (const unsigned int k);
+
   }
 }
 
