@@ -173,7 +173,8 @@ namespace aspect
         bool use_surface_condition_function;
 
         /**
-         * ParsedFunction: depth->(surface_pressure,surface_temperature)
+         * ParsedFunction: If provided in the inpute file it prescribes
+         * (surface pressure(t), surface temperature(t)).
          */
         Functions::ParsedFunction<1> surface_condition_function;
 

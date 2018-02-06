@@ -100,8 +100,8 @@ namespace aspect
                 }
               else
                 {
-                  pressures[0] = surface_condition_function.value(Point<1>(),0);
-                  temperatures[0] = surface_condition_function.value(Point<1>(),1);
+                  pressures[0] = surface_condition_function.value(Point<1>(0.0),0);
+                  temperatures[0] = surface_condition_function.value(Point<1>(0.0),1);
                 }
             }
           else
@@ -411,6 +411,6 @@ namespace aspect
                                                "All material parameters are computed by the "
                                                "material model plugin. The surface conditions are "
                                                "either constant or changing over time as prescribed "
-                                               "by an user-provided function.")
+                                               "by a user-provided function.")
   }
 }
