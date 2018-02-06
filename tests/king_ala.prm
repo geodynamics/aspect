@@ -84,7 +84,6 @@ set Surface pressure                       = 0
 
 
 subsection Adiabatic conditions model
-  #set Model name = initial profile
   set Model name = function
 
   subsection Function

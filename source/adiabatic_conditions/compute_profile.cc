@@ -20,7 +20,7 @@
 
 
 #include <aspect/global.h>
-#include <aspect/adiabatic_conditions/initial_profile.h>
+#include <aspect/adiabatic_conditions/compute_profile.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/initial_composition/interface.h>
 
@@ -32,16 +32,30 @@ namespace aspect
   namespace AdiabaticConditions
   {
     template <int dim>
-    InitialProfile<dim>::InitialProfile()
+    ComputeProfile<dim>::ComputeProfile()
       :
-      initialized(false)
+      initialized(false),
+      surface_condition_function(2)
     {}
 
 
 
     template <int dim>
     void
-    InitialProfile<dim>::initialize()
+    ComputeProfile<dim>::update()
+    {
+      if (use_surface_condition_function)
+        {
+          initialized = false;
+          surface_condition_function.set_time(this->get_time());
+          initialize();
+        }
+    }
+
+
+    template <int dim>
+    void
+    ComputeProfile<dim>::initialize()
     {
       if (initialized)
         return;
@@ -79,8 +93,16 @@ namespace aspect
         {
           if (i==0)
             {
-              pressures[i] = this->get_surface_pressure();
-              temperatures[i] = this->get_adiabatic_surface_temperature();
+              if (!use_surface_condition_function)
+                {
+                  pressures[0] = this->get_surface_pressure();
+                  temperatures[0] = this->get_adiabatic_surface_temperature();
+                }
+              else
+                {
+                  pressures[0] = surface_condition_function.value(Point<1>(0.0),0);
+                  temperatures[0] = surface_condition_function.value(Point<1>(0.0),1);
+                }
             }
           else
             {
@@ -101,7 +123,7 @@ namespace aspect
                                 ?
                                 temperatures[i-1] * (1 + alpha * gravity * delta_z * one_over_cp)
                                 :
-                                this->get_adiabatic_surface_temperature();
+                                temperatures[0];
             }
 
           const double z = double(i)/double(n_points-1)*this->get_geometry_model().maximal_depth();
@@ -142,20 +164,20 @@ namespace aspect
         {
           Assert (*std::min_element (pressures.begin(), pressures.end()) >=
                   -std::numeric_limits<double>::epsilon() * pressures.size(),
-                  ExcMessage("Adiabatic InitialProfile encountered a negative pressure of "
+                  ExcMessage("Adiabatic ComputeProfile encountered a negative pressure of "
                              + dealii::Utilities::to_string(*std::min_element (pressures.begin(), pressures.end()))));
         }
       else if (gravity_direction == -1 && this->get_surface_pressure() <= 0)
         {
           Assert (*std::max_element (pressures.begin(), pressures.end()) <=
                   std::numeric_limits<double>::epsilon() * pressures.size(),
-                  ExcMessage("Adiabatic InitialProfile encountered a positive pressure of "
+                  ExcMessage("Adiabatic ComputeProfile encountered a positive pressure of "
                              + dealii::Utilities::to_string(*std::max_element (pressures.begin(), pressures.end()))));
         }
 
       Assert (*std::min_element (temperatures.begin(), temperatures.end()) >=
               -std::numeric_limits<double>::epsilon() * temperatures.size(),
-              ExcMessage("Adiabatic InitialProfile encountered a negative temperature."));
+              ExcMessage("Adiabatic ComputeProfile encountered a negative temperature."));
 
 
       initialized = true;
@@ -165,7 +187,7 @@ namespace aspect
 
     template <int dim>
     bool
-    InitialProfile<dim>::is_initialized() const
+    ComputeProfile<dim>::is_initialized() const
     {
       return initialized;
     }
@@ -173,7 +195,7 @@ namespace aspect
 
 
     template <int dim>
-    double InitialProfile<dim>::pressure (const Point<dim> &p) const
+    double ComputeProfile<dim>::pressure (const Point<dim> &p) const
     {
       return get_property(p,pressures);
     }
@@ -181,7 +203,7 @@ namespace aspect
 
 
     template <int dim>
-    double InitialProfile<dim>::temperature (const Point<dim> &p) const
+    double ComputeProfile<dim>::temperature (const Point<dim> &p) const
     {
       return get_property(p,temperatures);
     }
@@ -189,7 +211,7 @@ namespace aspect
 
 
     template <int dim>
-    double InitialProfile<dim>::density (const Point<dim> &p) const
+    double ComputeProfile<dim>::density (const Point<dim> &p) const
     {
       return get_property(p,densities);
     }
@@ -197,7 +219,7 @@ namespace aspect
 
 
     template <int dim>
-    double InitialProfile<dim>::density_derivative (const Point<dim> &p) const
+    double ComputeProfile<dim>::density_derivative (const Point<dim> &p) const
     {
       const double z = this->get_geometry_model().depth(p);
 
@@ -224,7 +246,7 @@ namespace aspect
 
 
     template <int dim>
-    double InitialProfile<dim>::get_property (const Point<dim> &p,
+    double ComputeProfile<dim>::get_property (const Point<dim> &p,
                                               const std::vector<double> &property) const
     {
       const double z = this->get_geometry_model().depth(p);
@@ -265,11 +287,11 @@ namespace aspect
 
     template <int dim>
     void
-    InitialProfile<dim>::declare_parameters (ParameterHandler &prm)
+    ComputeProfile<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Adiabatic conditions model");
       {
-        prm.enter_subsection("Initial profile");
+        prm.enter_subsection("Compute profile");
         {
           Functions::ParsedFunction<1>::declare_parameters (prm, 1);
           prm.declare_entry("Composition reference profile","initial composition",
@@ -284,6 +306,21 @@ namespace aspect
                              "profile. The higher the number of points, the more accurate "
                              "the downward integration from the adiabatic surface "
                              "temperature will be.");
+          prm.declare_entry ("Use surface condition function", "false",
+                             Patterns::Bool(),
+                             "Whether to use the 'Surface condition function' to determine surface "
+                             "conditions, or the 'Adiabatic surface temperature' and 'Surface pressure' "
+                             "parameters. If this is set to true the reference profile is updated "
+                             "every timestep. The function expression of the function should be "
+                             "independent of space, but can depend on time 't'. The function must "
+                             "return two components, the first one being reference surface pressure, "
+                             "the second one being reference surface temperature.");
+
+          prm.enter_subsection("Surface condition function");
+          {
+            Functions::ParsedFunction<1>::declare_parameters (prm, 2);
+          }
+          prm.leave_subsection();
         }
         prm.leave_subsection();
       }
@@ -293,11 +330,11 @@ namespace aspect
 
     template <int dim>
     void
-    InitialProfile<dim>::parse_parameters (ParameterHandler &prm)
+    ComputeProfile<dim>::parse_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Adiabatic conditions model");
       {
-        prm.enter_subsection("Initial profile");
+        prm.enter_subsection("Compute profile");
         {
           const std::string composition_profile = prm.get("Composition reference profile");
 
@@ -318,7 +355,7 @@ namespace aspect
               catch (...)
                 {
                   std::cerr << "ERROR: FunctionParser failed to parse\n"
-                            << "\t'Adiabatic conditions model.Initial profile'\n"
+                            << "\t'Adiabatic conditions model.compute profile'\n"
                             << "with expression\n"
                             << "\t'" << prm.get("Function expression") << "'"
                             << "More information about the cause of the parse error \n"
@@ -328,6 +365,26 @@ namespace aspect
             }
 
           n_points = prm.get_integer ("Number of points");
+          use_surface_condition_function = prm.get_bool("Use surface condition function");
+          if (use_surface_condition_function)
+            {
+              prm.enter_subsection("Surface condition function");
+              try
+                {
+                  surface_condition_function.parse_parameters (prm);
+                }
+              catch (...)
+                {
+                  std::cerr << "ERROR: FunctionParser failed to parse\n"
+                            << "\t'Adiabatic conditions model.Initial profile.Surface condition function'\n"
+                            << "with expression\n"
+                            << "\t'" << prm.get("Function expression") << "'"
+                            << "More information about the cause of the parse error \n"
+                            << "is shown below.\n";
+                  throw;
+                }
+              prm.leave_subsection();
+            }
         }
         prm.leave_subsection();
       }
@@ -342,15 +399,18 @@ namespace aspect
 {
   namespace AdiabaticConditions
   {
-    ASPECT_REGISTER_ADIABATIC_CONDITIONS_MODEL(InitialProfile,
-                                               "initial profile",
+    ASPECT_REGISTER_ADIABATIC_CONDITIONS_MODEL(ComputeProfile,
+                                               "compute profile",
                                                "A model in which the adiabatic profile is "
-                                               "calculated once at the start of the model run. "
+                                               "calculated by solving the hydrostatic equations for "
+                                               "pressure and temperature in depth. "
                                                "The gravity is assumed to be in depth direction "
                                                "and the composition is either given by the initial "
                                                "composition at reference points or computed "
                                                "as a reference depth-function. "
                                                "All material parameters are computed by the "
-                                               "material model plugin.")
+                                               "material model plugin. The surface conditions are "
+                                               "either constant or changing over time as prescribed "
+                                               "by a user-provided function.")
   }
 }

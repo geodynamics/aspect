@@ -53,7 +53,6 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 
 subsection Adiabatic conditions model
-  #set Model name = initial profile
   set Model name = function
   subsection Function
     set Function constants  = Di=0.5, gamma=1.0

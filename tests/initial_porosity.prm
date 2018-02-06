@@ -31,7 +31,7 @@ set Use direct solver for Stokes system    = false
 set Number of cheap Stokes solver steps    = 0
 
 subsection Adiabatic conditions model
-  subsection Initial profile
+  subsection Compute profile
     set Composition reference profile = function
     set Function expression = 0.0;0.0
   end
