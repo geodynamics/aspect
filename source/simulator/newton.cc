@@ -283,10 +283,20 @@ namespace aspect
 
         prm.declare_entry ("Stabilization preconditioner", "SPD",
                            Patterns::Selection ("SPD|PD|symmetric|none"),
-                           "TODO");
+                           "This parameters allows for the stabilisation of the preconditioner. By default, the "
+                           "matrix created for the preconditioning is not necessarily Symmetric Positive Definite. "
+                           "This is problematic (see Fraters et al, in prep). When none is chosen, the perconitioner "
+                           "is not stabilized. The Symmetric parameters symmetrizes the matrix, and PD makes the matrix "
+                           "Positive Definite. SPD is the full stabilization, where the matrix is garanteed Symmetric "
+                           "Positive Definite.");
         prm.declare_entry ("Stabilization velocity block", "SPD",
                            Patterns::Selection ("SPD|PD|symmetric|none"),
-                           "TODO");
+                           "This parameters allows for the stabilisation of the velocity block. By default, the "
+                           "matrix created for the velocity block is not necessarily Symmetric Positive Definite. "
+                           "This is problematic (see Fraters et al, in prep). When none is chosen, the velocity block "
+                           "is not stabilized. The Symmetric parameters symmetrizes the matrix, and PD makes the matrix "
+                           "Positive Definite. SPD is the full stabilization, where the matrix is garanteed Symmetric "
+                           "Positive Definite.");
         prm.declare_entry ("Use Newton failsafe", "false",
                            Patterns::Bool (),
                            "Switches on SPD stabilization when solver fails.");
