@@ -16,26 +16,12 @@ Number of free surface degrees of freedom: 1071
    Solving Stokes system... 0+62 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.208101
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+17 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.000172802
-
 
    Postprocessing:
      Writing graphical output: output-crustal_model_3D/solution/solution-00000
-     RMS, max velocity:        0.0097 m/year, 0.0147 m/year
+     RMS, max velocity:        0.00945 m/year, 0.016 m/year
      Topography min/max:       0 m, 0 m
-     Pressure min/avg/max:     -9.571e+07 Pa, 1.938e+08 Pa, 9.104e+08 Pa
-
-Number of active cells: 192 (on 2 levels)
-Number of degrees of freedom: 8,937 (6,435+357+2,145)
-
-Number of free surface degrees of freedom: 1071
-
-
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
+     Pressure min/avg/max:     -7.758e+07 Pa, 2.117e+08 Pa, 6.156e+08 Pa
 
 Termination requested by criterion: end time
 
