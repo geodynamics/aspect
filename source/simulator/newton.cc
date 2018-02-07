@@ -163,7 +163,7 @@ namespace aspect
   }
 
   template <int dim>
-  std::string
+  PreconditionerStabilization
   NewtonHandler<dim>::
   get_preconditioner_stabilization() const
   {
@@ -174,13 +174,13 @@ namespace aspect
   template <int dim>
   void
   NewtonHandler<dim>::
-  set_preconditioner_stabilization(const std::string preconditioner_stabilization_)
+  set_preconditioner_stabilization(const PreconditionerStabilization preconditioner_stabilization_)
   {
     preconditioner_stabilization = preconditioner_stabilization_;
   }
 
   template <int dim>
-  std::string
+  VelocityBlockStabilization
   NewtonHandler<dim>::
   get_velocity_block_stabilization() const
   {
@@ -191,7 +191,7 @@ namespace aspect
   template <int dim>
   void
   NewtonHandler<dim>::
-  set_velocity_block_stabilization(const std::string velocity_block_stabilization_)
+  set_velocity_block_stabilization(const VelocityBlockStabilization velocity_block_stabilization_)
   {
     velocity_block_stabilization = velocity_block_stabilization_;
   }
@@ -242,6 +242,50 @@ namespace aspect
   get_maximum_linear_stokes_solver_tolerance()
   {
     return maximum_linear_stokes_solver_tolerance;
+  }
+
+  template <int dim>
+  std::string
+  NewtonHandler<dim>::
+  get_preconditioner_stabilization_string(PreconditionerStabilization preconditioner_stabilization)
+  {
+    switch (preconditioner_stabilization)
+      {
+        case PreconditionerStabilization::SPD:
+          return "SPD";
+          break;
+        case PreconditionerStabilization::PD:
+          return "PD";
+          break;
+        case PreconditionerStabilization::symmetric:
+          return "symmetric";
+          break;
+        case PreconditionerStabilization::none:
+          return "none";
+          break;
+      }
+  }
+
+  template <int dim>
+  std::string
+  NewtonHandler<dim>::
+  get_velocity_block_stabilization_string(VelocityBlockStabilization velocity_block_stabilization)
+  {
+    switch (velocity_block_stabilization)
+      {
+        case VelocityBlockStabilization::SPD:
+          return "SPD";
+          break;
+        case VelocityBlockStabilization::PD:
+          return "PD";
+          break;
+        case VelocityBlockStabilization::symmetric:
+          return "symmetric";
+          break;
+        case VelocityBlockStabilization::none:
+          return "none";
+          break;
+      }
   }
 
   template <int dim>
@@ -320,8 +364,26 @@ namespace aspect
         max_newton_line_search_iterations = prm.get_integer ("Max Newton line search iterations");
         use_newton_residual_scaling_method = prm.get_bool("Use Newton residual scaling method");
         maximum_linear_stokes_solver_tolerance = prm.get_double("Maximum linear Stokes solver tolerance");
-        preconditioner_stabilization = prm.get("Stabilization preconditioner");
-        velocity_block_stabilization = prm.get("Stabilization velocity block");
+        std::string preconditioner_stabilization_string = prm.get("Stabilization preconditioner");
+        if (preconditioner_stabilization_string == "SPD")
+          preconditioner_stabilization = PreconditionerStabilization::SPD;
+        else if (preconditioner_stabilization_string == "PD")
+          preconditioner_stabilization = PreconditionerStabilization::PD;
+        else if (preconditioner_stabilization_string == "symmetric")
+          preconditioner_stabilization = PreconditionerStabilization::symmetric;
+        else if (preconditioner_stabilization_string == "none")
+          preconditioner_stabilization = PreconditionerStabilization::none;
+
+        std::string velocity_block_stabilization_string = prm.get("Stabilization velocity block");
+        if (velocity_block_stabilization_string == "SPD")
+          velocity_block_stabilization = VelocityBlockStabilization::SPD;
+        else if (velocity_block_stabilization_string == "PD")
+          velocity_block_stabilization = VelocityBlockStabilization::PD;
+        else if (velocity_block_stabilization_string == "symmetric")
+          velocity_block_stabilization = VelocityBlockStabilization::symmetric;
+        else if (velocity_block_stabilization_string == "none")
+          velocity_block_stabilization = VelocityBlockStabilization::none;
+
         use_Newton_failsafe = prm.get_bool("Use Newton failsafe");
 
         AssertThrow((!DEAL_II_VERSION_GTE(9,0,0) && !use_Newton_failsafe) || DEAL_II_VERSION_GTE(9,0,0),
