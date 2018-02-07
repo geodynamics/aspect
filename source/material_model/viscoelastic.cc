@@ -177,7 +177,7 @@ namespace aspect
           const double vis_avg = average_value ( volume_fractions, viscosities, viscosity_averaging);
           const double esm_avg = average_value ( volume_fractions, elastic_shear_moduli, viscosity_averaging);
 
-          //Compute viscoelastic (e.g., effective) viscosity (equation 28 in Moresi et al., 2003, J. Comp. Phys.) 
+          //Compute viscoelastic (e.g., effective) viscosity (equation 28 in Moresi et al., 2003, J. Comp. Phys.)
           const double vev_avg = ( vis_avg * dte ) / ( dte + ( vis_avg / esm_avg ) );
 
           out.viscosities[i] = vev_avg;
@@ -221,7 +221,7 @@ namespace aspect
               // Rotation (vorticity) tensor (equation 25 in Moresi et al., 2003, J. Comp. Phys.)
               const Tensor<2,dim> rotation = 0.5 * ( old_velocity_gradients[i] - transpose(old_velocity_gradients[i]) );
 
-              // Recalculate average values of viscosity, elastic shear modulus and viscoelastic (effective) viscosity 
+              // Recalculate average values of viscosity, elastic shear modulus and viscoelastic (effective) viscosity
               const std::vector<double> composition = in.composition[i];
               const std::vector<double> volume_fractions = compute_volume_fractions(composition);
               const double vis_avg = average_value ( volume_fractions, viscosities, viscosity_averaging);
@@ -239,7 +239,7 @@ namespace aspect
               const double dt = this->get_timestep();
               if (use_fixed_elastic_time_step == true && use_stress_averaging == true)
                 {
-                  stress_new = ( ( 1. - ( dt / dte ) ) * stress_old ) + ( ( dt / dte ) * stress_new ) ; 
+                  stress_new = ( ( 1. - ( dt / dte ) ) * stress_old ) + ( ( dt / dte ) * stress_new ) ;
                 }
 
               // Fill reaction terms
@@ -247,7 +247,7 @@ namespace aspect
                 out.reaction_terms[i][j] = -stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)]
                                            + stress_new[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)];
 
-              // Fill elastic outputs (see equation 30 in Moresi et al., 2003, J. Comp. Phys.) 
+              // Fill elastic outputs (see equation 30 in Moresi et al., 2003, J. Comp. Phys.)
               if (force)
                 {
                   force->rhs_e[i] = -1. * ( ( vev_avg / ( esm_avg * dte  ) ) * stress_old );
@@ -393,14 +393,14 @@ namespace aspect
           elastic_shear_moduli = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Elastic shear moduli"))),
                                                                          n_fields,
                                                                          "Elastic shear moduli");
-          
+
           use_fixed_elastic_time_step = prm.get_bool ("Use fixed elastic time step");
 
           use_stress_averaging = prm.get_bool ("Use stress averaging");
           if (use_stress_averaging)
             AssertThrow(use_fixed_elastic_time_step == true,
                         ExcMessage("A fixed elastic time step must also be used with stress averaging"));
-              
+
           fixed_elastic_time_step = prm.get_double ("Fixed elastic time step");
 
 
@@ -435,7 +435,7 @@ namespace aspect
                                    "of compositional fields, where each field represents a different "
                                    "rock type or component of the viscoelastic stress tensor. The stress "
                                    "tensor in 2D and 3D, respectively, contains 3 or 6 components. The "
-                                   "compositional fields representing these components must be the first " 
+                                   "compositional fields representing these components must be the first "
                                    "listed compositional fields in the parameter file."
                                    "\n\n "
                                    "Expanding the model to include non-linear viscous flow (e.g., "
@@ -463,7 +463,7 @@ namespace aspect
                                    "(($\\hat{D_{e}}$) and viscous (($\\hat{D_{v}}$)) components: "
                                    "$\\hat{D} = \\hat{D_{e}} + \\hat{D_{v}}$  "
                                    "These terms further decompose into"
-                                   "$\\hat{D_{v}} = \\frac{\\tau}{2\\eta}$ and " 
+                                   "$\\hat{D_{v}} = \\frac{\\tau}{2\\eta}$ and "
                                    "$\\hat{D_{e}} = \\frac{\\overset{\\triangledown}{\\tau}}{2\\mu}$, where "
                                    "$\\tau$ is the viscous deviatoric stress, $\\eta$ is the shear viscosity, "
                                    "$\\mu$ is the shear modulus and $\\overset{\\triangledown}{\\tau}$ is the "
@@ -472,7 +472,7 @@ namespace aspect
                                    "account for material spin (e.g., rotation) due to advection: "
                                    "$\\overset{\\triangledown}{\\tau} = \\dot{\\tau} + {\\tau}W -W\\tau$. "
                                    "Above, $W$ is the material spin tensor (eqn. 25): "
-                                   "$W_{ij} = \\frac{1}{2} \\left (\\frac{\\partial V_{i}}{\\partial x_{j}} -$ " 
+                                   "$W_{ij} = \\frac{1}{2} \\left (\\frac{\\partial V_{i}}{\\partial x_{j}} -$ "
                                    "$\\frac{\\partial V_{j}}{\\partial x_{i}} \\right )$ "
                                    "\n\n"
                                    "The Jaumann stress-rate can also be approximated using terms from the time "

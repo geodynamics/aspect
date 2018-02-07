@@ -33,36 +33,36 @@ namespace aspect
 
     /**
      * A material model which is intended for simple linear viscoelastic
-     * problems with multiple compositional fields. 
+     * problems with multiple compositional fields.
      *
-     * The viscoelastic constitutive relationship and implementation follows 
-     * a method commonly used in the Geodynamics community, where only the 
+     * The viscoelastic constitutive relationship and implementation follows
+     * a method commonly used in the Geodynamics community, where only the
      * elastic shear strength of rocks (e.g., shear modulus) is considered.
      * The material model directly follows the work flow and terminology
      * of Moresi et al. 2003 (J. Comp. Phys., v. 184, p. 476-497) equations
-     * 23-32, which is commonly referred to in proceeding geodynamic 
+     * 23-32, which is commonly referred to in proceeding geodynamic
      * publications. However, a notable difference between this material
      * model and that of previous work is the use of compositional fields,
-     * rather than tracers, to track and advect the stress tensor. The 
+     * rather than tracers, to track and advect the stress tensor. The
      * material model will be updated when an option to track and advect
      * stresses with tracers is implemented.
-     * 
-     * The first 3 (2D) or 6 (3D) compositional fields are used to track 
-     * individual components of the viscoelastic stress tensor, while additional 
-     * fields represent distinct rock types. 
+     *
+     * The first 3 (2D) or 6 (3D) compositional fields are used to track
+     * individual components of the viscoelastic stress tensor, while additional
+     * fields represent distinct rock types.
      *
      * The value of each compositional field representing distinct
      * rock types at a point is interpreted to be a volume fraction of that
-     * rock type. If the sum of the compositional field volume fractions is 
-     * less than one, then the remainder of the volume is assumed to be  
+     * rock type. If the sum of the compositional field volume fractions is
+     * less than one, then the remainder of the volume is assumed to be
      * 'background material'.
      *
      * Several model parameters (densities, elastic shear moduli,
      * thermal expansivities, thermal conductivies, specific heats) can
-     * be defined per-compositional field. For each material parameter the 
-     * user supplies a comma delimited list of length N+1, where N is the 
-     * number of compositional fields. The additional field corresponds to 
-     * the value for background material. They should be ordered 
+     * be defined per-compositional field. For each material parameter the
+     * user supplies a comma delimited list of length N+1, where N is the
+     * number of compositional fields. The additional field corresponds to
+     * the value for background material. They should be ordered
      * ``background, composition1, composition2...''. However, the first 3 (2D)
      * or 6 (3D) composition fields correspond to components of the elastic
      * stress tensor and their material values will not contribute to the volume
@@ -144,7 +144,7 @@ namespace aspect
          * The first 3 (2D) or 6 (3D) compositional fields are assumed
          * to be components of the viscoelastic stress tensor and
          * assigned volume fractions of zero.
-         */        
+         */
         const std::vector<double> compute_volume_fractions(
           const std::vector<double> &compositional_fields) const;
 
@@ -205,17 +205,17 @@ namespace aspect
          * Vector for field elastic shear moduli, read from parameter file.
          */
         std::vector<double> elastic_shear_moduli;
-        
+
         /**
          * Bool indicating whether to use a fixed material time scale in the
-         * viscoelastic rheology during all time step, read from parameter file. 
+         * viscoelastic rheology during all time step, read from parameter file.
          */
         bool use_fixed_elastic_time_step;
 
         /**
          * Boolindicating whether to use a stress averaging scheme to account
          * for differences between the numerical and fixed elastic time step,
-         * read from parameter file. 
+         * read from parameter file.
          */
         bool use_stress_averaging;
 
