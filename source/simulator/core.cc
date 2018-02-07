@@ -1731,9 +1731,6 @@ namespace aspect
         case NonlinearSolver::iterated_IMPES:
         {
           solve_iterated_IMPES();
-
-              if (nonlinear_iteration == 0)// hack
-                compute_current_constraints ();
           break;
         }
 

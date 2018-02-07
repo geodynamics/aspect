@@ -107,8 +107,6 @@ namespace aspect
         // Set use_strain_rates to true since the compaction viscosity might also depend on the strain rate.
         MaterialModel::MaterialModelInputs<dim> in(input_data,
                                                    this->introspection(), true);
-        typename DoFHandler<dim>::active_cell_iterator cell = input_data.template get_cell<DoFHandler<dim> >();
-        in.cell = &cell;
 
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
         MeltHandler<dim>::create_material_model_outputs(out);
@@ -161,7 +159,7 @@ namespace aspect
                   }
                 else if (property_names[i] == "is melt cell")
                   {
-                    computed_quantities[q][output_index] = this->get_melt_handler().is_melt_cell(cell)? 1.0 : 0.0;
+                    computed_quantities[q][output_index] = this->get_melt_handler().is_melt_cell(in.current_cell)? 1.0 : 0.0;
                   }
                 else
                   AssertThrow(false, ExcNotImplemented());

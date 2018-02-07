@@ -242,6 +242,9 @@ namespace aspect
         (boundary_velocity_manager.get_active_boundary_velocity_conditions().size() > 0))
       rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
+    if (nonlinear_iteration == 0)// hack
+      compute_current_constraints ();
+
     assemble_stokes_system ();
     build_stokes_preconditioner();
 

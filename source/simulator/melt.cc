@@ -69,9 +69,9 @@ namespace aspect
                                            const MeltHandler<dim> &handler,
                                            bool consider_is_melt_cell) const
     {
-      Assert(inputs.cell != NULL, ExcMessage("sorry, I need a cell."));
+      Assert(inputs.current_cell.state() == IteratorState::valid, ExcMessage("sorry, I need a cell."));
 
-      if (consider_is_melt_cell && !handler.is_melt_cell(*inputs.cell))
+      if (consider_is_melt_cell && !handler.is_melt_cell(inputs.current_cell))
         return 0.0;
 
       const MaterialModel::MeltOutputs<dim> *melt_outputs = outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
@@ -89,8 +89,6 @@ namespace aspect
           max_K_D = std::max(max_K_D, melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]);
         }
 
-//      if (min_K_D < 1e-3 * ref_K_D)
-//        return 0.0;
       if (consider_is_melt_cell)
         return std::max(K_D, 1e-3 * ref_K_D);
       else
@@ -229,14 +227,14 @@ namespace aspect
               {
                 if (scratch.dof_component_indices[i] == scratch.dof_component_indices[j])
                   data.local_matrix(i,j) += ((use_tensor ?
-                                            2.0 * eta * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
+                                              2.0 * eta * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
                                               :
-                                            2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                           -
-                                           (use_tensor ?
-                                            eta_two_thirds * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
-                                            :
-                                            eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j]))
+                                              2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                                             -
+                                             (use_tensor ?
+                                              eta_two_thirds * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
+                                              :
+                                              eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j]))
                                              +
                                              (one_over_eta *
                                               pressure_scaling *
@@ -286,7 +284,8 @@ namespace aspect
       double
       compute_fluid_pressure_rhs(const SimulatorAccess<dim> *simulator_access,
                                  const internal::Assembly::Scratch::StokesSystem<dim> &scratch,
-                                 const unsigned int q_point)
+                                 const unsigned int q_point,
+                                 const double K_D)
       {
         if (!simulator_access->get_parameters().include_melt_transport)
           return 0.0;
@@ -306,11 +305,6 @@ namespace aspect
         const Tensor<1,dim> fluid_density_gradient = melt_out->fluid_density_gradients[q_point];
         const Tensor<1,dim> current_u = scratch.velocity_values[q_point];
         const double porosity         = std::max(scratch.material_model_inputs.composition[q_point][porosity_index],0.0);
-        const double K_D = (porosity > simulator_access->get_melt_handler().melt_transport_threshold
-                            ?
-                            melt_out->permeabilities[q_point] / melt_out->fluid_viscosities[q_point]
-                            :
-                            0.0);
 
         const Tensor<1,dim>
         gravity = simulator_access->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q_point));
@@ -541,7 +535,7 @@ namespace aspect
       const unsigned int p_f_component_index = introspection.variable("fluid pressure").first_component_index;
       const unsigned int p_c_component_index = introspection.variable("compaction pressure").first_component_index;
 
-      const typename DoFHandler<dim>::face_iterator face = scratch.cell->face(scratch.face_number);
+      const typename DoFHandler<dim>::face_iterator face = scratch.face_material_model_inputs.current_cell->face(scratch.face_number);
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.face_material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
       const double K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->darcy_coefficient(scratch.material_model_inputs, scratch.material_model_outputs, this->get_melt_handler(), true);
@@ -607,8 +601,14 @@ namespace aspect
 
         const double melting_rate         = scratch.material_model_outputs.reaction_terms[q_point][scratch.advection_field->compositional_variable];
         const double density              = scratch.material_model_outputs.densities[q_point];
-        const double current_phi          = scratch.material_model_inputs.composition[q_point][scratch.advection_field->compositional_variable];
-        const double divergence_u         = scratch.current_velocity_divergences[q_point];
+
+        // average divergence u over the cell
+        // TODO: do this outside of the loop over quadrature points
+        double divergence_u = 0.0;
+        const unsigned int N = scratch.material_model_inputs.position.size();
+        for (unsigned int i=0; i<N; ++i)
+          divergence_u += scratch.current_velocity_divergences[i] * 1./N;
+
         const double compressibility      = (simulator_access->get_material_model().is_compressible()
                                              ?
                                              scratch.material_model_outputs.compressibilities[q_point]
@@ -621,8 +621,7 @@ namespace aspect
         double melt_transport_RHS = melting_rate / density
                                     + divergence_u + compressibility * density * (current_u * gravity);
 
-        if (current_phi < simulator_access->get_melt_handler().melt_transport_threshold
-            && melting_rate < simulator_access->get_melt_handler().melt_transport_threshold)
+        if (!simulator_access->get_melt_handler().is_melt_cell(scratch.material_model_inputs.current_cell))
           melt_transport_RHS = melting_rate / density;
 
         return melt_transport_RHS;
@@ -1186,8 +1185,7 @@ namespace aspect
 
                 for (unsigned int i=0; i<fluid_velocity_dofs_per_cell; ++i)
                   for (unsigned int j=0; j<fluid_velocity_dofs_per_cell; ++j)
-                    cell_matrix(i,j) += phi_u_f[j] * phi_u_f[i] *
-                                        JxW;
+                    cell_matrix(i,j) += phi_u_f[j] * phi_u_f[i] * JxW;
 
                 //const double phi = std::max(0.0, porosity_values[q]);
                 //const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
@@ -1203,11 +1201,11 @@ namespace aspect
                                         * phi_u_f[i]
                                         * JxW;
                   }
-                  else
-                    for (unsigned int i=0; i<fluid_velocity_dofs_per_cell; ++i) 
-                      cell_vector(i) += (u_s_values[q])
-                                        * phi_u_f[i]
-                                        * JxW;
+                else
+                  for (unsigned int i=0; i<fluid_velocity_dofs_per_cell; ++i)
+                    cell_vector(i) += (u_s_values[q])
+                                      * phi_u_f[i]
+                                      * JxW;
 
               }
 
@@ -1330,8 +1328,6 @@ namespace aspect
 
   namespace
   {
-
-
     template <int dim>
     struct PcAssembleData
     {
@@ -1349,6 +1345,8 @@ namespace aspect
         material_model_inputs(quadrature.size(), n_compositional_fields),
         material_model_outputs(quadrature.size(), n_compositional_fields)
       {}
+
+
       PcAssembleData (const PcAssembleData &scratch)
         :
         finite_element_values (scratch.finite_element_values.get_mapping(),
@@ -1366,12 +1364,12 @@ namespace aspect
       virtual ~PcAssembleData ()
       {}
 
-      FEValues<dim>               finite_element_values;
+      FEValues<dim>                            finite_element_values;
 
-      std::vector<types::global_dof_index> local_dof_indices;
-      std::vector<unsigned int>            dof_component_indices;
+      std::vector<types::global_dof_index>     local_dof_indices;
+      std::vector<unsigned int>                dof_component_indices;
 
-      MaterialModel::MaterialModelInputs<dim> material_model_inputs;
+      MaterialModel::MaterialModelInputs<dim>  material_model_inputs;
       MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
 
     };
