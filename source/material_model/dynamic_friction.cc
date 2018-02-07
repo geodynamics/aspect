@@ -113,7 +113,7 @@ namespace aspect
           // Drucker Prager yield criterion.
           strength[i] = ( (dim==3)
                           ?
-                          ( 6.0 * cohesions[i] * std::cos(phi[i]) + 2.0 * std::max(pressure,0.0) * std::sin(phi[i]) )
+                          ( 6.0 * cohesions[i] * std::cos(phi[i]) + 6.0 * std::max(pressure,0.0) * std::sin(phi[i]) )
                           / ( std::sqrt(3.0) * ( 3.0 + std::sin(phi[i]) ) )
                           :
                           cohesions[i] * std::cos(phi[i]) + std::max(pressure,0.0) * std::sin(phi[i]) );
