@@ -477,6 +477,19 @@ namespace aspect
 
     // Now iterate out the nonlinearities.
     double stokes_residual = 0;
+    const bool use_failsafe = true;
+
+
+    /**
+     * The failsafe first tries to solve the problem without using the
+     * S.P.D. factor in the A block (but only uses it in the precontioning).
+     * If the failsafe is set to false, the S.P.D factor is always used.
+     */
+    if (use_failsafe == true)
+      newton_handler->set_use_spd_factor(false);
+    if (use_failsafe == false)
+      newton_handler->set_use_spd_factor(true);
+
     for (nonlinear_iteration = 0; nonlinear_iteration < max_nonlinear_iterations; ++nonlinear_iteration)
       {
         assemble_and_solve_temperature();
@@ -585,7 +598,51 @@ namespace aspect
 
         build_stokes_preconditioner();
 
-        stokes_residual = solve_stokes();
+        if (use_failsafe == false)
+          {
+            stokes_residual = solve_stokes();
+          }
+        else
+          {
+            try
+              {
+                stokes_residual = solve_stokes();
+              }
+            catch (...)
+              {
+                pcout << "Solve failed and catched, try again with spd factor" << std::endl;
+                newton_handler->set_use_spd_factor(true);
+                rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
+
+                assemble_stokes_system();
+                /**
+                 * Eisenstat Walker method for determining the tolerance
+                 */
+                if (nonlinear_iteration > 1)
+                  {
+                    residual_old = residual;
+                    velocity_residual = system_rhs.block(introspection.block_indices.velocities).l2_norm();
+                    pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
+                    residual = std::sqrt(velocity_residual * velocity_residual + pressure_residual * pressure_residual);
+
+                    if (!use_picard)
+                      {
+                        const bool EisenstatWalkerChoiceOne = true;
+                        parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
+                                                                    parameters.maximum_linear_stokes_solver_tolerance,
+                                                                    parameters.linear_stokes_solver_tolerance,
+                                                                    stokes_residual,
+                                                                    residual,
+                                                                    residual_old);
+
+                        pcout << "   The linear solver tolerance is set to " << parameters.linear_stokes_solver_tolerance << std::endl;
+                      }
+                  }
+
+                build_stokes_preconditioner();
+                stokes_residual = solve_stokes();
+              }
+          }
 
         velocity_residual = system_rhs.block(introspection.block_indices.velocities).l2_norm();
         pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
