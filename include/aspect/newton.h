@@ -62,19 +62,36 @@ namespace aspect
    * material model outputs for the Newton solver.
    */
 
-  enum class PreconditionerStabilization
-  {
-    SPD, PD, symmetric, none
-  };
-  enum class VelocityBlockStabilization
-  {
-    SPD, PD, symmetric, none
-  };
-
   template <int dim>
   class NewtonHandler: public SimulatorAccess<dim>
   {
     public:
+
+      /**
+       * This enum describes the type of stabilization is used
+       * for the Newton solver. None represents no stabilization,
+       * SPD represent that the resulting matrix is made Symmetric
+       * Positive Definite, symmetric represents that the matrix is
+       * only symmetrized, and PD represents that we do the same as
+       * what we do for SPD, but without the symmetrization.
+       */
+      enum NewtonStabilization
+      {
+        none = 0,
+        symmetric = 1,
+        PD = 2,
+        SPD = symmetric | PD
+      };
+
+      friend
+      NewtonStabilization
+      operator| (const NewtonStabilization a,
+                 const NewtonStabilization b)
+      {
+        return static_cast<NewtonStabilization>(
+                 static_cast<int>(a) | static_cast<int>(b));
+      }
+
       /**
        * Determine, based on the run-time parameters of the current simulation,
        * which functions need to be called in order to assemble linear systems,
@@ -118,22 +135,22 @@ namespace aspect
       /**
        * Get the stabilization type used in the preconditioner.
        */
-      PreconditionerStabilization get_preconditioner_stabilization() const;
+      NewtonStabilization get_preconditioner_stabilization() const;
 
       /**
        * Set the stabilization type used in the preconditioner.
        */
-      void set_preconditioner_stabilization(const PreconditionerStabilization preconditioner_stabilization);
+      void set_preconditioner_stabilization(const NewtonStabilization preconditioner_stabilization);
 
       /**
        * Get the stabilization type used in the velocity block.
        */
-      VelocityBlockStabilization get_velocity_block_stabilization() const;
+      NewtonStabilization get_velocity_block_stabilization() const;
 
       /**
        * Sets the stabilization type used in the velocity block.
        */
-      void set_velocity_block_stabilization(const VelocityBlockStabilization velocity_block_stabilization);
+      void set_velocity_block_stabilization(const NewtonStabilization velocity_block_stabilization);
 
       /**
        * Get whether to use the Newton failsafe. If the failsafe is used, a failure
@@ -172,13 +189,7 @@ namespace aspect
       /**
        * get a std::string describing the stabilization type used for the preconditioner.
        */
-      std::string get_preconditioner_stabilization_string(PreconditionerStabilization preconditioner_stabilization);
-
-      /**
-       * get a std::string describing the stabilization type used for the velocity block.
-       */
-      std::string get_velocity_block_stabilization_string(VelocityBlockStabilization velocity_block_stabilization);
-
+      std::string get_newton_stabilization_string(const NewtonStabilization preconditioner_stabilization) const;
 
       /**
        * Declare additional parameters that are needed for the Newton.
@@ -200,15 +211,15 @@ namespace aspect
        * See the get_newton_derivative_scaling_factor() function for an
        * explanation of the purpose of this factor.
        */
-      double                      newton_derivative_scaling_factor;
-      PreconditionerStabilization preconditioner_stabilization;
-      VelocityBlockStabilization  velocity_block_stabilization;
-      bool                        use_Newton_failsafe;
-      double                      nonlinear_switch_tolerance;
-      unsigned int                max_pre_newton_nonlinear_iterations;
-      unsigned int                max_newton_line_search_iterations;
-      bool                        use_newton_residual_scaling_method;
-      double                      maximum_linear_stokes_solver_tolerance;
+      double              newton_derivative_scaling_factor;
+      NewtonStabilization preconditioner_stabilization;
+      NewtonStabilization velocity_block_stabilization;
+      bool                use_Newton_failsafe;
+      double              nonlinear_switch_tolerance;
+      unsigned int        max_pre_newton_nonlinear_iterations;
+      unsigned int        max_newton_line_search_iterations;
+      bool                use_newton_residual_scaling_method;
+      double              maximum_linear_stokes_solver_tolerance;
   };
 
   namespace Assemblers

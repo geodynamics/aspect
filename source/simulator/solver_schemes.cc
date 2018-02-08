@@ -579,9 +579,9 @@ namespace aspect
                                                             residual,
                                                             residual_old);
 
-                const std::string preconditioner_stabilization = newton_handler->get_preconditioner_stabilization_string(newton_handler->get_preconditioner_stabilization());
-                const std::string velocity_block_stabilization = newton_handler->get_velocity_block_stabilization_string(newton_handler->get_velocity_block_stabilization());
-                pcout << "   The linear solver tolerance is set to " << parameters.linear_stokes_solver_tolerance << ". Stabilisation Preconditioner is " << preconditioner_stabilization << " and A block is " << velocity_block_stabilization << "." << std::endl;
+                const std::string preconditioner_stabilization = newton_handler->get_newton_stabilization_string(newton_handler->get_preconditioner_stabilization());
+                const std::string velocity_block_stabilization = newton_handler->get_newton_stabilization_string(newton_handler->get_velocity_block_stabilization());
+                pcout << "   The linear solver tolerance is set to " << parameters.linear_stokes_solver_tolerance << ". Stabilization Preconditioner is " << preconditioner_stabilization << " and A block is " << velocity_block_stabilization << "." << std::endl;
               }
           }
 
@@ -599,9 +599,10 @@ namespace aspect
               }
             catch (...)
               {
+                // start the solve over again and try with a stabilized version
                 pcout << "Solve failed and catched, try again with stabilisation" << std::endl;
-                newton_handler->set_preconditioner_stabilization(PreconditionerStabilization::SPD);
-                newton_handler->set_velocity_block_stabilization(VelocityBlockStabilization::SPD);
+                newton_handler->set_preconditioner_stabilization(NewtonHandler<dim>::NewtonStabilization::SPD);
+                newton_handler->set_velocity_block_stabilization(NewtonHandler<dim>::NewtonStabilization::SPD);
                 rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
 
                 assemble_stokes_system();
