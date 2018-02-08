@@ -841,6 +841,8 @@ namespace aspect
 
                     f.close();
 
+                    computing_timer.exit_section();
+
                     // avoid a deadlock that was fixed after deal.II 8.5.0
 #if DEAL_II_VERSION_GTE(9,0,0)
                     AssertThrow (false,
