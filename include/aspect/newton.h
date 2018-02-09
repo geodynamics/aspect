@@ -187,6 +187,11 @@ namespace aspect
       double get_maximum_linear_stokes_solver_tolerance();
 
       /**
+       * Get the SPD safety factor.
+       */
+      double get_SPD_safety_factor() const;
+
+      /**
        * get a std::string describing the stabilization type used for the preconditioner.
        */
       std::string get_newton_stabilization_string(const NewtonStabilization preconditioner_stabilization) const;
@@ -220,6 +225,7 @@ namespace aspect
       unsigned int        max_newton_line_search_iterations;
       bool                use_newton_residual_scaling_method;
       double              maximum_linear_stokes_solver_tolerance;
+      double              SPD_safety_factor;
   };
 
   namespace Assemblers
