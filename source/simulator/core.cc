@@ -220,7 +220,9 @@ namespace aspect
         print_aspect_header(log_file_stream);
       }
 
-    computing_timer.enter_section("Initialization");
+
+    // now that we have output set up, we can start timer sections
+    TimerOutput::Scope timer (computing_timer, "Initialization");
 
     // first do some error checking for the parameters we got
     {
@@ -652,8 +654,6 @@ namespace aspect
     // now that all member variables have been set up, also
     // connect the functions that will actually do the assembly
     set_assemblers();
-
-    computing_timer.exit_section();
   }
 
 
@@ -1258,7 +1258,7 @@ namespace aspect
   {
     signals.edit_parameters_pre_setup_dofs(*this, parameters);
 
-    computing_timer.enter_section("Setup dof systems");
+    TimerOutput::Scope timer (computing_timer, "Setup dof systems");
 
     dof_handler.distribute_dofs(finite_element);
 
@@ -1390,9 +1390,6 @@ namespace aspect
 
     rebuild_stokes_matrix         = true;
     rebuild_stokes_preconditioner = true;
-
-
-    computing_timer.exit_section();
   }
 
 
@@ -1463,7 +1460,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::postprocess ()
   {
-    computing_timer.enter_section ("Postprocessing");
+    TimerOutput::Scope timer (computing_timer, "Postprocessing");
     pcout << "   Postprocessing:" << std::endl;
 
     // run all the postprocessing routines and then write
@@ -1501,108 +1498,109 @@ namespace aspect
 
     // finally, write the entire set of current results to disk
     output_statistics();
-
-    computing_timer.exit_section ();
   }
 
 
   template <int dim>
   void Simulator<dim>::refine_mesh (const unsigned int max_grid_level)
   {
-    computing_timer.enter_section ("Refine mesh structure, part 1");
-
-    Vector<float> estimated_error_per_cell (triangulation.n_active_cells());
-    mesh_refinement_manager.execute (estimated_error_per_cell);
-
-    if (parameters.adapt_by_fraction_of_cells)
-      parallel::distributed::GridRefinement::
-      refine_and_coarsen_fixed_number   (triangulation,
-                                         estimated_error_per_cell,
-                                         parameters.refinement_fraction,
-                                         parameters.coarsening_fraction);
-    else
-      parallel::distributed::GridRefinement::
-      refine_and_coarsen_fixed_fraction (triangulation,
-                                         estimated_error_per_cell,
-                                         parameters.refinement_fraction,
-                                         parameters.coarsening_fraction);
-
-    mesh_refinement_manager.tag_additional_cells ();
-
-
-    // clear refinement flags if parameter.refinement_fraction=0.0
-    if (parameters.refinement_fraction==0.0)
-      {
-        for (typename Triangulation<dim>::active_cell_iterator
-             cell = triangulation.begin_active();
-             cell != triangulation.end(); ++cell)
-          cell->clear_refine_flag ();
-      }
-    else
-      {
-        // limit maximum refinement level
-        if (triangulation.n_levels() > max_grid_level)
-          for (typename Triangulation<dim>::active_cell_iterator
-               cell = triangulation.begin_active(max_grid_level);
-               cell != triangulation.end(); ++cell)
-            cell->clear_refine_flag ();
-      }
-
-    // clear coarsening flags if parameter.coarsening_fraction=0.0
-    if (parameters.coarsening_fraction==0.0)
-      {
-        for (typename Triangulation<dim>::active_cell_iterator
-             cell = triangulation.begin_active();
-             cell != triangulation.end(); ++cell)
-          cell->clear_coarsen_flag ();
-      }
-    else
-      {
-        // limit minimum refinement level
-        for (typename Triangulation<dim>::active_cell_iterator
-             cell = triangulation.begin_active(0);
-             cell != triangulation.end_active(parameters.min_grid_level); ++cell)
-          cell->clear_coarsen_flag ();
-      }
-
-    std::vector<const LinearAlgebra::BlockVector *> x_system (2);
-    x_system[0] = &solution;
-    x_system[1] = &old_solution;
-
-    if (parameters.free_surface_enabled)
-      x_system.push_back( &free_surface->mesh_velocity );
-
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
     system_trans(dof_handler);
 
-    std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
     std_cxx11::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> >
     freesurface_trans;
 
-    if (parameters.free_surface_enabled)
-      {
-        x_fs_system[0] = &free_surface->mesh_displacements;
-        freesurface_trans.reset (new parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
-                                 (free_surface->free_surface_dof_handler));
-      }
+    {
+      TimerOutput::Scope timer (computing_timer, "Refine mesh structure, part 1");
+
+      Vector<float> estimated_error_per_cell (triangulation.n_active_cells());
+      mesh_refinement_manager.execute (estimated_error_per_cell);
+
+      if (parameters.adapt_by_fraction_of_cells)
+        parallel::distributed::GridRefinement::
+        refine_and_coarsen_fixed_number   (triangulation,
+                                           estimated_error_per_cell,
+                                           parameters.refinement_fraction,
+                                           parameters.coarsening_fraction);
+      else
+        parallel::distributed::GridRefinement::
+        refine_and_coarsen_fixed_fraction (triangulation,
+                                           estimated_error_per_cell,
+                                           parameters.refinement_fraction,
+                                           parameters.coarsening_fraction);
+
+      mesh_refinement_manager.tag_additional_cells ();
 
 
-    // Possibly store data of plugins associated with cells
-    signals.pre_refinement_store_user_data(triangulation);
+      // clear refinement flags if parameter.refinement_fraction=0.0
+      if (parameters.refinement_fraction==0.0)
+        {
+          for (typename Triangulation<dim>::active_cell_iterator
+               cell = triangulation.begin_active();
+               cell != triangulation.end(); ++cell)
+            cell->clear_refine_flag ();
+        }
+      else
+        {
+          // limit maximum refinement level
+          if (triangulation.n_levels() > max_grid_level)
+            for (typename Triangulation<dim>::active_cell_iterator
+                 cell = triangulation.begin_active(max_grid_level);
+                 cell != triangulation.end(); ++cell)
+              cell->clear_refine_flag ();
+        }
 
-    triangulation.prepare_coarsening_and_refinement();
-    system_trans.prepare_for_coarsening_and_refinement(x_system);
+      // clear coarsening flags if parameter.coarsening_fraction=0.0
+      if (parameters.coarsening_fraction==0.0)
+        {
+          for (typename Triangulation<dim>::active_cell_iterator
+               cell = triangulation.begin_active();
+               cell != triangulation.end(); ++cell)
+            cell->clear_coarsen_flag ();
+        }
+      else
+        {
+          // limit minimum refinement level
+          for (typename Triangulation<dim>::active_cell_iterator
+               cell = triangulation.begin_active(0);
+               cell != triangulation.end_active(parameters.min_grid_level); ++cell)
+            cell->clear_coarsen_flag ();
+        }
 
-    if (parameters.free_surface_enabled)
-      freesurface_trans->prepare_for_coarsening_and_refinement(x_fs_system);
+      std::vector<const LinearAlgebra::BlockVector *> x_system (2);
+      x_system[0] = &solution;
+      x_system[1] = &old_solution;
 
-    triangulation.execute_coarsening_and_refinement ();
-    computing_timer.exit_section();
+      if (parameters.free_surface_enabled)
+        x_system.push_back( &free_surface->mesh_velocity );
+
+      std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
+
+      if (parameters.free_surface_enabled)
+        {
+          x_fs_system[0] = &free_surface->mesh_displacements;
+          freesurface_trans.reset (new parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
+                                   (free_surface->free_surface_dof_handler));
+        }
+
+
+      // Possibly store data of plugins associated with cells
+      signals.pre_refinement_store_user_data(triangulation);
+
+      triangulation.prepare_coarsening_and_refinement();
+      system_trans.prepare_for_coarsening_and_refinement(x_system);
+
+      if (parameters.free_surface_enabled)
+        freesurface_trans->prepare_for_coarsening_and_refinement(x_fs_system);
+
+      triangulation.execute_coarsening_and_refinement ();
+    } // leave the timed section
 
     setup_dofs ();
 
-    computing_timer.enter_section ("Refine mesh structure, part 2");
     {
+      TimerOutput::Scope timer (computing_timer, "Refine mesh structure, part 2");
+
       LinearAlgebra::BlockVector distributed_system;
       LinearAlgebra::BlockVector old_distributed_system;
       LinearAlgebra::BlockVector distributed_mesh_velocity;
@@ -1662,11 +1660,10 @@ namespace aspect
 
       // Possibly load data of plugins associated with cells
       signals.post_refinement_load_user_data(triangulation);
-    }
-    computing_timer.exit_section();
 
-    // calculate global volume after displacing mesh (if we have, in fact, displaced it)
-    global_volume = GridTools::volume (triangulation, *mapping);
+      // calculate global volume after displacing mesh (if we have, in fact, displaced it)
+      global_volume = GridTools::volume (triangulation, *mapping);
+    }
   }
 
 
@@ -1814,7 +1811,7 @@ namespace aspect
 
     if (parameters.resume_computation == false)
       {
-        computing_timer.enter_section ("Setup initial conditions");
+        TimerOutput::Scope timer (computing_timer, "Setup initial conditions");
 
         // Add topography to box models after all initial refinement
         // is completed.
@@ -1825,8 +1822,6 @@ namespace aspect
         compute_initial_pressure_field ();
 
         signals.post_set_initial_state (*this);
-
-        computing_timer.exit_section();
       }
 
     // start the principal loop over time steps:

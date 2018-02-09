@@ -396,7 +396,7 @@ namespace aspect
     if (parameters.use_direct_stokes_solver)
       return;
 
-    computing_timer.enter_section ("   Build Stokes preconditioner");
+    TimerOutput::Scope timer (computing_timer, "   Build Stokes preconditioner");
     pcout << "   Rebuilding Stokes preconditioner..." << std::flush;
 
     // first assemble the raw matrices necessary for the preconditioner
@@ -457,8 +457,8 @@ namespace aspect
     rebuild_stokes_preconditioner = false;
 
     pcout << std::endl;
-    computing_timer.exit_section();
   }
+
 
 
   template <int dim>
@@ -608,17 +608,15 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::assemble_stokes_system ()
   {
-    if (!assemble_newton_stokes_system)
-      computing_timer.enter_section ("   Assemble Stokes system");
-    else if (assemble_newton_stokes_matrix)
-      {
-        if (newton_handler->get_newton_derivative_scaling_factor() == 0)
-          computing_timer.enter_section ("   Assemble Stokes system picard");
-        else
-          computing_timer.enter_section ("   Assemble Stokes system newton");
-      }
-    else
-      computing_timer.enter_section ("   Assemble Stokes system rhs");
+    TimerOutput::Scope timer (computing_timer,
+                              (!assemble_newton_stokes_system ?
+                               "   Assemble Stokes system" :
+                               (assemble_newton_stokes_matrix ?
+                                (newton_handler->get_newton_derivative_scaling_factor() == 0 ?
+                                 "   Assemble Stokes system picard" :
+                                 "   Assemble Stokes system newton")
+                                :
+                                "   Assemble Stokes system rhs")));
 
     if (rebuild_stokes_matrix == true)
       system_matrix = 0;
@@ -719,37 +717,23 @@ namespace aspect
 
     // record that we have just rebuilt the matrix
     rebuild_stokes_matrix = false;
-
-    computing_timer.exit_section();
   }
+
+
 
   template <int dim>
   void
   Simulator<dim>::build_advection_preconditioner(const AdvectionField &advection_field,
                                                  LinearAlgebra::PreconditionILU &preconditioner)
   {
-    switch (advection_field.field_type)
-      {
-        case AdvectionField::temperature_field:
-        {
-          computing_timer.enter_section ("   Build temperature preconditioner");
-          break;
-        }
-
-        case AdvectionField::compositional_field:
-        {
-          computing_timer.enter_section ("   Build composition preconditioner");
-          break;
-        }
-
-        default:
-          Assert (false, ExcNotImplemented());
-      }
+    TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
+                                                "   Build temperature preconditioner" :
+                                                "   Build composition preconditioner"));
 
     const unsigned int block_idx = advection_field.block_index(introspection);
     preconditioner.initialize (system_matrix.block(block_idx, block_idx));
-    computing_timer.exit_section();
   }
+
 
 
   template <int dim>
@@ -1008,10 +992,9 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::assemble_advection_system (const AdvectionField &advection_field)
   {
-    if (advection_field.is_temperature())
-      computing_timer.enter_section ("   Assemble temperature system");
-    else
-      computing_timer.enter_section ("   Assemble composition system");
+    TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
+                                                "   Assemble temperature system" :
+                                                "   Assemble composition system"));
 
     const unsigned int block_idx = advection_field.block_index(introspection);
 
@@ -1111,8 +1094,6 @@ namespace aspect
 
     system_matrix.compress(VectorOperation::add);
     system_rhs.compress(VectorOperation::add);
-
-    computing_timer.exit_section();
   }
 }
 
