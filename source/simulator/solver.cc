@@ -427,14 +427,15 @@ namespace aspect
     LinearAlgebra::PreconditionILU preconditioner;
     build_advection_preconditioner(advection_field, preconditioner);
 
+    TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
+                                                "   Solve temperature system" :
+                                                "   Solve composition system"));
     if (advection_field.is_temperature())
       {
-        computing_timer.enter_section ("   Solve temperature system");
         pcout << "   Solving temperature system... " << std::flush;
       }
     else
       {
-        computing_timer.enter_section ("   Solve composition system");
         pcout << "   Solving "
               << introspection.name_for_compositional_index(advection_field.compositional_variable)
               << " system "
@@ -515,15 +516,15 @@ namespace aspect
          && parameters.use_limiter_for_discontinuous_composition_solution))
       apply_limiter_to_dg_solutions(advection_field);
 
-    computing_timer.exit_section();
-
     return initial_residual;
   }
+
+
 
   template <int dim>
   double Simulator<dim>::solve_stokes ()
   {
-    computing_timer.enter_section ("   Solve Stokes system");
+    TimerOutput::Scope timer (computing_timer, "   Solve Stokes system");
     pcout << "   Solving Stokes system... " << std::flush;
 
     // extract Stokes parts of solution vector, without any ghost elements
@@ -841,8 +842,6 @@ namespace aspect
 
                     f.close();
 
-                    computing_timer.exit_section();
-
                     // avoid a deadlock that was fixed after deal.II 8.5.0
 #if DEAL_II_VERSION_GTE(9,0,0)
                     AssertThrow (false,
@@ -919,8 +918,6 @@ namespace aspect
     // convert melt pressures:
     if (parameters.include_melt_transport)
       melt_handler->compute_melt_variables(solution);
-
-    computing_timer.exit_section();
 
     return initial_residual;
   }
