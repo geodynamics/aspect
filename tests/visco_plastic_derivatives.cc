@@ -1,18 +1,27 @@
 #include <aspect/simulator.h>
-#include <deal.II/grid/tria.h>
+#include <aspect/simulator_access.h>
+
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/visco_plastic.h>
 #include <aspect/simulator_access.h>
 #include <aspect/newton.h>
 
+#include <deal.II/grid/tria.h>
+#include <deal.II/base/exceptions.h>
+#include <deal.II/base/std_cxx11/shared_ptr.h>
+
 #include <iostream>
 
-int f(double parameter)
+template <int dim>
+void f(const aspect::SimulatorAccess<dim> &simulator_access,
+       aspect::Assemblers::Manager<dim> &,
+       unsigned int parameter)
 {
+  // Prepare NewtonHandler for test
+  const_cast<aspect::NewtonHandler<dim> &> (simulator_access.get_newton_handler()).set_newton_derivative_scaling_factor(1.0);
 
-  std::cout << std::endl << "Test for p = " << parameter << std::endl;
+  std::cout << std::endl << "Testing ViscoPlastic derivatives against analytical derivatives" << std::endl;
 
-  const int dim=2;
   using namespace aspect::MaterialModel;
   MaterialModelInputs<dim> in_base(5,3);
   in_base.composition[0][0] = 0;
@@ -38,9 +47,9 @@ int f(double parameter)
   in_base.pressure[4] = 5e8;
 
   /**
-   * We can't take to small strain-rates, because then the difference in the
-   * visocisty will be too small for the double accuracy which stores
-   * the visocity solutions and the finite diference solution.
+   * We can't take too small strain-rates, because then the difference in the
+   * viscosity will be too small for the double accuracy which stores
+   * the viscosity solutions and the finite difference solution.
    */
   in_base.strain_rate[0] = SymmetricTensor<2,dim>();
   in_base.strain_rate[0][0][0] = 1e-12;
@@ -125,48 +134,18 @@ int f(double parameter)
   MaterialModelOutputs<dim> out_dviscositydstrainrate_oneone(5,3);
   MaterialModelOutputs<dim> out_dviscositydtemperature(5,3);
 
-  if (out_base.get_additional_output<MaterialModelDerivatives<dim> >() != NULL)
-    throw "error";
+  out_base.additional_outputs.push_back(std_cxx11::make_shared<MaterialModelDerivatives<dim> > (5));
 
-  out_base.additional_outputs.push_back(std::make_shared<MaterialModelDerivatives<dim> > (5));
-
-  ViscoPlastic<dim> mat;
-  ParameterHandler prm;
-  mat.declare_parameters(prm);
-
-  prm.enter_subsection("Compositional fields");
-  {
-    prm.set ("Number of fields", "3");
-  }
-  prm.leave_subsection();
-
-  prm.enter_subsection("Material model");
-  {
-    prm.enter_subsection ("Visco Plastic");
-    {
-//      prm.enter_subsection ("Viscosity");
-//      {
-      //prm.set ("Reference strain rate", "1e-20");
-      prm.set ("Angles of internal friction", "30");
-      //    }
-//     prm.leave_subsection();
-    }
-    prm.leave_subsection();
-  }
-  prm.leave_subsection();
-
-  mat.parse_parameters(prm);
-
-  mat.evaluate(in_base, out_base);
-  mat.evaluate(in_dviscositydpressure, out_dviscositydpressure);
-  mat.evaluate(in_dviscositydstrainrate_zerozero, out_dviscositydstrainrate_zerozero);
-  mat.evaluate(in_dviscositydstrainrate_onezero, out_dviscositydstrainrate_onezero);
-  mat.evaluate(in_dviscositydstrainrate_oneone, out_dviscositydstrainrate_oneone);
-  mat.evaluate(in_dviscositydtemperature, out_dviscositydtemperature);
+  simulator_access.get_material_model().evaluate(in_base, out_base);
+  simulator_access.get_material_model().evaluate(in_dviscositydpressure, out_dviscositydpressure);
+  simulator_access.get_material_model().evaluate(in_dviscositydstrainrate_zerozero, out_dviscositydstrainrate_zerozero);
+  simulator_access.get_material_model().evaluate(in_dviscositydstrainrate_onezero, out_dviscositydstrainrate_onezero);
+  simulator_access.get_material_model().evaluate(in_dviscositydstrainrate_oneone, out_dviscositydstrainrate_oneone);
+  simulator_access.get_material_model().evaluate(in_dviscositydtemperature, out_dviscositydtemperature);
 
   // set up additional output for the derivatives
   MaterialModelDerivatives<dim> *derivatives;
-  derivatives = out_base.get_additional_output<MaterialModelDerivatives<dim> >();
+  derivatives = out_base.template get_additional_output<MaterialModelDerivatives<dim> >();
 
   double temp;
   for (unsigned int i = 0; i < 5; i++)
@@ -223,7 +202,7 @@ int f(double parameter)
       std::cout << "onezero at point " << i << ": Finite difference = " << temp << ". Analytical derivative = " << derivatives->viscosity_derivative_wrt_strain_rate[i][1][0]   << std::endl;
       if (std::fabs(temp - derivatives->viscosity_derivative_wrt_strain_rate[i][1][0]) > 1e-3 * (std::fabs(temp) + std::fabs(derivatives->viscosity_derivative_wrt_strain_rate[i][1][0])) )
         {
-          std::cout << "   Error: The derivative of the viscosity to the strain rate is too different from the analitical value." << std::endl;
+          std::cout << "   Error: The derivative of the viscosity to the strain rate is too different from the analytical value." << std::endl;
           Error = true;
         }
     }
@@ -241,7 +220,7 @@ int f(double parameter)
       std::cout << "oneone at point " << i << ": Finite difference = " << temp << ". Analytical derivative = " << derivatives->viscosity_derivative_wrt_strain_rate[i][1][1]  << std::endl;
       if (std::fabs(temp - derivatives->viscosity_derivative_wrt_strain_rate[i][1][1]) > 1e-3 * (std::fabs(temp) + std::fabs(derivatives->viscosity_derivative_wrt_strain_rate[i][1][1])) )
         {
-          std::cout << "   Error: The derivative of the viscosity to the strain rate is too different from the analitical value." << std::endl;
+          std::cout << "   Error: The derivative of the viscosity to the strain rate is too different from the analytical value." << std::endl;
           Error = true;
         }
 
@@ -249,26 +228,40 @@ int f(double parameter)
 
   if (Error)
     {
-      std::cout << "Some parts of the test where not succesful." << std::endl;
+      std::cout << "Some parts of the test where not successful." << std::endl;
     }
   else
     {
       std::cout << "OK" << std::endl;
     }
 
-  return 42;
+  // Restore NewtonHandler state after test
+  const_cast<aspect::NewtonHandler<dim> &> (simulator_access.get_newton_handler()).set_newton_derivative_scaling_factor(0.0);
+
 }
 
-int exit_function()
+template <>
+void f(const aspect::SimulatorAccess<3> &simulator_access,
+       aspect::Assemblers::Manager<3> &)
 {
-  exit(0);
-  return 42;
+  AssertThrow(false,dealii::ExcInternalError());
 }
-// run this function by initializing a global variable by it
-int ik = f(-1); // Testing harmonic mean
-int ji = f(0); // Testing geometric mean
-int jj = f(1); // Testing arithmetic mean
-int kj = f(1000); // Testing max function
-int kl = exit_function();
 
+template <int dim>
+void signal_connector (aspect::SimulatorSignals<dim> &signals)
+{
+  std::cout << "* Connecting signals" << std::endl;
+  signals.set_assemblers.connect (std_cxx11::bind(&f<dim>,
+                                                  std_cxx11::_1,
+                                                  std_cxx11::_2,
+                                                  1));
+
+  signals.set_assemblers.connect (std_cxx11::bind(&f<dim>,
+                                                  std_cxx11::_1,
+                                                  std_cxx11::_2,
+                                                  2));
+}
+
+ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
+                                  signal_connector<3>)
 

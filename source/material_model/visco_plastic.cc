@@ -183,7 +183,7 @@ namespace aspect
       // The first time this function is called (first iteration of first time step)
       // a specified "reference" strain rate is used as the returned value would
       // otherwise be zero.
-      const double edot_ii = ( (&(this->get_simulator()) != nullptr && this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
+      const double edot_ii = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
                                ?
                                ref_strain_rate
                                :
@@ -358,22 +358,11 @@ namespace aspect
       MaterialModel::MaterialModelDerivatives<dim> *derivatives;
       derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
 
-      // When there is no simulator, we are in a test, so make sure we use the derivatives.
-      double derivative_scaling_factor = 1;
-      if (&(this->get_simulator()) != nullptr)
-        {
-          // If do not use use the Newton solver, get the derivative scaling factor,
-          // otherwise set it to zero.
-          if (this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::Newton_Stokes)
-            {
-              derivative_scaling_factor = this->get_newton_handler().get_newton_derivative_scaling_factor();
-            }
-          else
-            {
-              derivative_scaling_factor = 0;
-            }
-        }
-
+      // If we use the Newton solver, get the derivative scaling factor,
+      // otherwise set it to zero.
+      double derivative_scaling_factor = 0.0;
+      if (this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::Newton_Stokes)
+        derivative_scaling_factor = this->get_newton_handler().get_newton_derivative_scaling_factor();
 
       // Loop through points
       for (unsigned int i=0; i < in.temperature.size(); ++i)
@@ -458,7 +447,7 @@ namespace aspect
                     }
 
                   /**
-                   * Now compute the derivative of the viscoisty to the pressure
+                   * Now compute the derivative of the viscosity to the pressure
                    */
                   double pressure_difference = in.pressure[i] + (std::fabs(in.pressure[i]) * finite_difference_accuracy);
 
@@ -634,14 +623,6 @@ namespace aspect
     void
     ViscoPlastic<dim>::declare_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Compositional fields");
-      {
-        prm.declare_entry ("Number of fields", "0",
-                           Patterns::Integer (0),
-                           "The number of fields that will be advected along with the flow field, excluding "
-                           "velocity, pressure and temperature.");
-      }
-      prm.leave_subsection();
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection ("Visco Plastic");
@@ -827,13 +808,7 @@ namespace aspect
     ViscoPlastic<dim>::parse_parameters (ParameterHandler &prm)
     {
       // increment by one for background:
-      unsigned int n_fields = 0;
-      prm.enter_subsection("Compositional fields");
-      {
-        n_fields = prm.get_integer("Number of fields")+1;//this->n_compositional_fields() + 1;
-      }
-      prm.leave_subsection();
-
+      const unsigned int n_fields = this->n_compositional_fields() + 1;
 
       // number of required compositional fields for full finite strain tensor
       const unsigned int s = Tensor<2,dim>::n_independent_components;
@@ -842,7 +817,6 @@ namespace aspect
       {
         prm.enter_subsection ("Visco Plastic");
         {
-
           // Reference and minimum/maximum values
           reference_T = prm.get_double("Reference temperature");
           min_strain_rate = prm.get_double("Minimum strain rate");
@@ -873,6 +847,7 @@ namespace aspect
           if (use_strain_weakening)
             AssertThrow(this->n_compositional_fields() >= 1,
                         ExcMessage("There must be at least one compositional field. "));
+
           use_finite_strain_tensor  = prm.get_bool ("Use finite strain tensor");
           if (use_finite_strain_tensor)
             AssertThrow(this->n_compositional_fields() >= s,
