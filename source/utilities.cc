@@ -2406,7 +2406,7 @@ namespace aspect
     double compute_spd_factor(const double eta,
                               const SymmetricTensor<2,dim> &strain_rate,
                               const SymmetricTensor<2,dim> &dviscosities_dstrain_rate,
-                              const double safety_factor)
+                              const double SPD_safety_factor)
     {
       // if the strain rate is zero, or the derivative is zero, then
       // the exact choice of alpha factor does not matter because the
@@ -2420,16 +2420,12 @@ namespace aspect
       const double one_minus_part = 1 - (contract_a_b / norm_a_b);
       const double denom = one_minus_part * one_minus_part * norm_a_b;
 
-      if (denom == 0)
+      // the case denom == 0 (smallest eigenvalue is zero), should return one,
+      // and it does here, because C_safety * 2.0 * eta is always larger then zero.
+      if (denom <= SPD_safety_factor * 2.0 * eta)
         return 1.0;
       else
-        {
-          const double alpha = (2.0*eta)/denom;
-          if (alpha >= 1.0)
-            return 1.0;
-          else
-            return std::max(0.0,safety_factor*alpha);
-        }
+        return std::max(0.0, SPD_safety_factor * ((2.0 * eta) / denom));
     }
 
 
