@@ -5,22 +5,24 @@
 #include <aspect/material_model/visco_plastic.h>
 #include <aspect/simulator_access.h>
 #include <aspect/newton.h>
+#include <aspect/parameters.h>
 
 #include <deal.II/grid/tria.h>
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/std_cxx11/shared_ptr.h>
+#include <deal.II/base/std_cxx11/bind.h>
 
 #include <iostream>
 
 template <int dim>
 void f(const aspect::SimulatorAccess<dim> &simulator_access,
        aspect::Assemblers::Manager<dim> &,
-       unsigned int parameter)
+       std::string averaging_parameter)
 {
   // Prepare NewtonHandler for test
   const_cast<aspect::NewtonHandler<dim> &> (simulator_access.get_newton_handler()).set_newton_derivative_scaling_factor(1.0);
 
-  std::cout << std::endl << "Testing ViscoPlastic derivatives against analytical derivatives" << std::endl;
+  std::cout << std::endl << "Testing ViscoPlastic derivatives against analytical derivatives for averaging parameter " << averaging_parameter << std::endl;
 
   using namespace aspect::MaterialModel;
   MaterialModelInputs<dim> in_base(5,3);
@@ -134,6 +136,26 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   MaterialModelOutputs<dim> out_dviscositydstrainrate_oneone(5,3);
   MaterialModelOutputs<dim> out_dviscositydtemperature(5,3);
 
+  aspect::ParameterHandler prm;
+
+  const aspect::MaterialModel::ViscoPlastic<dim> const_material_model = dynamic_cast<const aspect::MaterialModel::ViscoPlastic<dim> &>(simulator_access.get_material_model());
+  aspect::MaterialModel::ViscoPlastic<dim> material_model = const_cast<aspect::MaterialModel::ViscoPlastic<dim> &>(const_material_model);
+
+  material_model.declare_parameters(prm);
+
+  prm.enter_subsection("Material model");
+  {
+    prm.enter_subsection ("Visco Plastic");
+    {
+      prm.set ("Viscosity averaging scheme", averaging_parameter);
+      prm.set ("Angles of internal friction", "30");
+    }
+    prm.leave_subsection();
+  }
+  prm.leave_subsection();
+
+  const_cast<aspect::MaterialModel::Interface<dim> &>(simulator_access.get_material_model()).parse_parameters(prm);
+
   out_base.additional_outputs.push_back(std_cxx11::make_shared<MaterialModelDerivatives<dim> > (5));
 
   simulator_access.get_material_model().evaluate(in_base, out_base);
@@ -241,8 +263,9 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
 }
 
 template <>
-void f(const aspect::SimulatorAccess<3> &simulator_access,
-       aspect::Assemblers::Manager<3> &)
+void f(const aspect::SimulatorAccess<3> &,
+       aspect::Assemblers::Manager<3> &,
+       std::string )
 {
   AssertThrow(false,dealii::ExcInternalError());
 }
@@ -250,16 +273,27 @@ void f(const aspect::SimulatorAccess<3> &simulator_access,
 template <int dim>
 void signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
+  using namespace dealii;
   std::cout << "* Connecting signals" << std::endl;
   signals.set_assemblers.connect (std_cxx11::bind(&f<dim>,
                                                   std_cxx11::_1,
                                                   std_cxx11::_2,
-                                                  1));
+                                                  "harmonic"));
 
   signals.set_assemblers.connect (std_cxx11::bind(&f<dim>,
                                                   std_cxx11::_1,
                                                   std_cxx11::_2,
-                                                  2));
+                                                  "geometric"));
+
+  signals.set_assemblers.connect (std_cxx11::bind(&f<dim>,
+                                                  std_cxx11::_1,
+                                                  std_cxx11::_2,
+                                                  "arithmetic"));
+
+  signals.set_assemblers.connect (std_cxx11::bind(&f<dim>,
+                                                  std_cxx11::_1,
+                                                  std_cxx11::_2,
+                                                  "maximum composition"));
 }
 
 ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
