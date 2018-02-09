@@ -23,6 +23,7 @@
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 #include <aspect/melt.h>
+#include <aspect/newton.h>
 #include <aspect/free_surface.h>
 
 #include <deal.II/base/parameter_handler.h>
@@ -337,38 +338,6 @@ namespace aspect
 
     prm.enter_subsection ("Solver parameters");
     {
-      prm.enter_subsection ("Newton solver parameters");
-      {
-        prm.declare_entry ("Nonlinear Newton solver switch tolerance", "1e-5",
-                           Patterns::Double(0,1),
-                           "A relative tolerance with respect to the residual of the first "
-                           "iteration, up to which the nonlinear Picard solver will iterate, "
-                           "before changing to the newton solver.");
-
-        prm.declare_entry ("Max pre-Newton nonlinear iterations", "10",
-                           Patterns::Integer (0),
-                           "The maximum number of Picard nonlinear iterations to be performed "
-                           "before switching to Newton iterations.");
-
-        prm.declare_entry ("Max Newton line search iterations", "5",
-                           Patterns::Integer (0),
-                           "The maximum number of line search iterations allowed. If the "
-                           "criterion is not reached after this iteration, we apply the scaled "
-                           "increment to the solution and continue.");
-
-        prm.declare_entry ("Use Newton residual scaling method", "false",
-                           Patterns::Bool (),
-                           "This method allows to slowly introduce the derivatives based on the improvement "
-                           "of the residual. If set to false, the scaling factor for the Newton derivatives "
-                           "is set to one immediately when switching on the Newton solver.");
-
-        prm.declare_entry ("Maximum linear Stokes solver tolerance", "0.9",
-                           Patterns::Double (0,1),
-                           "When the linear Stokes solver tolerance is dynamically chosen, this defines "
-                           "the most loose tolerance allowed.");
-
-      }
-      prm.leave_subsection ();
       prm.enter_subsection ("AMG parameters");
       {
         prm.declare_entry ("AMG smoother type", "Chebyshev",
@@ -1046,15 +1015,6 @@ namespace aspect
 
     prm.enter_subsection ("Solver parameters");
     {
-      prm.enter_subsection ("Newton solver parameters");
-      {
-        nonlinear_switch_tolerance = prm.get_double("Nonlinear Newton solver switch tolerance");
-        max_pre_newton_nonlinear_iterations = prm.get_integer ("Max pre-Newton nonlinear iterations");
-        max_newton_line_search_iterations = prm.get_integer ("Max Newton line search iterations");
-        use_newton_residual_scaling_method = prm.get_bool("Use Newton residual scaling method");
-        maximum_linear_stokes_solver_tolerance = prm.get_double("Maximum linear Stokes solver tolerance");
-      }
-      prm.leave_subsection ();
       prm.enter_subsection ("AMG parameters");
       {
         AMG_smoother_type                      = prm.get ("AMG smoother type");
@@ -1726,6 +1686,7 @@ namespace aspect
   {
     Parameters<dim>::declare_parameters (prm);
     MeltHandler<dim>::declare_parameters (prm);
+    NewtonHandler<dim>::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
     MeshRefinement::Manager<dim>::declare_parameters (prm);
     TerminationCriteria::Manager<dim>::declare_parameters (prm);

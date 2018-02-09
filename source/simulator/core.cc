@@ -551,6 +551,15 @@ namespace aspect
         melt_handler->initialize_simulator (*this);
       }
 
+    // If the solver type is a Newton type of solver, we need to set make sure
+    // assemble_newton_stokes_system set to true.
+    if (parameters.nonlinear_solver == NonlinearSolver::Newton_Stokes)
+      {
+        assemble_newton_stokes_system = true;
+        newton_handler->initialize_simulator(*this);
+        newton_handler->parse_parameters(prm);
+      }
+
     postprocess_manager.initialize_simulator (*this);
     postprocess_manager.parse_parameters (prm);
 
@@ -639,14 +648,6 @@ namespace aspect
 
     // check that the setup of equations, material models, and heating terms is consistent
     check_consistency_of_formulation();
-
-    // If the solver type is a Newton type of solver, we need to set make sure
-    // assemble_newton_stokes_system set to true.
-    if (parameters.nonlinear_solver == NonlinearSolver::Newton_Stokes)
-      {
-        assemble_newton_stokes_system = true;
-        newton_handler->initialize_simulator(*this);
-      }
 
     // now that all member variables have been set up, also
     // connect the functions that will actually do the assembly

@@ -482,8 +482,8 @@ namespace aspect
         assemble_and_solve_temperature();
         assemble_and_solve_composition();
 
-        if (use_picard == true && (residual/initial_residual <= parameters.nonlinear_switch_tolerance ||
-                                   nonlinear_iteration >= parameters.max_pre_newton_nonlinear_iterations))
+        if (use_picard == true && (residual/initial_residual <= newton_handler->get_nonlinear_switch_tolerance() ||
+                                   nonlinear_iteration >= newton_handler->get_max_pre_newton_nonlinear_iterations()))
           {
             use_picard = false;
             pcout << "   Switching from defect correction form of Picard to the Newton solver scheme." << std::endl;
@@ -494,7 +494,7 @@ namespace aspect
              * just set it so the newton_derivative_scaling_factor goes from
              * zero to one when switching on the Newton solver.
              */
-            if (!parameters.use_newton_residual_scaling_method)
+            if (!newton_handler->get_use_newton_residual_scaling_method())
               newton_residual_for_derivative_scaling_factor = 0;
           }
 
@@ -573,19 +573,67 @@ namespace aspect
               {
                 const bool EisenstatWalkerChoiceOne = true;
                 parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
-                                                            parameters.maximum_linear_stokes_solver_tolerance,
+                                                            newton_handler->get_maximum_linear_stokes_solver_tolerance(),
                                                             parameters.linear_stokes_solver_tolerance,
                                                             stokes_residual,
                                                             residual,
                                                             residual_old);
 
-                pcout << "   The linear solver tolerance is set to " << parameters.linear_stokes_solver_tolerance << std::endl;
+                const std::string preconditioner_stabilization = newton_handler->get_newton_stabilization_string(newton_handler->get_preconditioner_stabilization());
+                const std::string velocity_block_stabilization = newton_handler->get_newton_stabilization_string(newton_handler->get_velocity_block_stabilization());
+                pcout << "   The linear solver tolerance is set to " << parameters.linear_stokes_solver_tolerance << ". Stabilization Preconditioner is " << preconditioner_stabilization << " and A block is " << velocity_block_stabilization << "." << std::endl;
               }
           }
 
         build_stokes_preconditioner();
 
-        stokes_residual = solve_stokes();
+        if (newton_handler->get_use_Newton_failsafe() == false)
+          {
+            stokes_residual = solve_stokes();
+          }
+        else
+          {
+            try
+              {
+                stokes_residual = solve_stokes();
+              }
+            catch (...)
+              {
+                // start the solve over again and try with a stabilized version
+                pcout << "Solve failed and catched, try again with stabilisation" << std::endl;
+                newton_handler->set_preconditioner_stabilization(NewtonHandler<dim>::NewtonStabilization::SPD);
+                newton_handler->set_velocity_block_stabilization(NewtonHandler<dim>::NewtonStabilization::SPD);
+                rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
+
+                assemble_stokes_system();
+                /**
+                 * Eisenstat Walker method for determining the tolerance
+                 */
+                if (nonlinear_iteration > 1)
+                  {
+                    residual_old = residual;
+                    velocity_residual = system_rhs.block(introspection.block_indices.velocities).l2_norm();
+                    pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
+                    residual = std::sqrt(velocity_residual * velocity_residual + pressure_residual * pressure_residual);
+
+                    if (!use_picard)
+                      {
+                        const bool EisenstatWalkerChoiceOne = true;
+                        parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
+                                                                    newton_handler->get_maximum_linear_stokes_solver_tolerance(),
+                                                                    parameters.linear_stokes_solver_tolerance,
+                                                                    stokes_residual,
+                                                                    residual,
+                                                                    residual_old);
+
+                        pcout << "   The linear solver tolerance is set to " << parameters.linear_stokes_solver_tolerance << std::endl;
+                      }
+                  }
+
+                build_stokes_preconditioner();
+                stokes_residual = solve_stokes();
+              }
+          }
 
         velocity_residual = system_rhs.block(introspection.block_indices.velocities).l2_norm();
         pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
@@ -659,7 +707,7 @@ namespace aspect
                 // Determine if the decrease is sufficient.
                 if (test_residual < (1.0 - alpha * lambda) * residual
                     ||
-                    line_search_iteration >= parameters.max_newton_line_search_iterations
+                    line_search_iteration >= newton_handler->get_max_newton_line_search_iterations()
                     ||
                     use_picard)
                   {
@@ -684,12 +732,12 @@ namespace aspect
                   }
 
                 line_search_iteration++;
-                Assert(line_search_iteration <= parameters.max_newton_line_search_iterations,
+                Assert(line_search_iteration <= newton_handler->get_max_newton_line_search_iterations(),
                        ExcMessage ("This tests the while condition. This condition should "
                                    "actually never be false, because the break statement "
                                    "above should have caught it."));
               }
-            while (line_search_iteration <= parameters.max_newton_line_search_iterations);
+            while (line_search_iteration <= newton_handler->get_max_newton_line_search_iterations());
             // The while condition should actually never be false, because the break statement above should have caught it.
           }
 
@@ -710,7 +758,7 @@ namespace aspect
              * on the improvement of the residual. This method was suggested
              * by Raid Hassani.
              */
-            if (parameters.use_newton_residual_scaling_method)
+            if (newton_handler->get_use_newton_residual_scaling_method())
               newton_residual_for_derivative_scaling_factor = test_residual;
             else
               newton_residual_for_derivative_scaling_factor = 0;
