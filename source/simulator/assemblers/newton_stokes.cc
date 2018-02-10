@@ -120,10 +120,10 @@ namespace aspect
               const SymmetricTensor<2,dim> strain_rate = scratch.material_model_inputs.strain_rate[q];
 
               typename NewtonHandler<dim>::NewtonStabilization preconditioner_stabilization = this->get_newton_handler().get_preconditioner_stabilization();
-              // todo: make this 0.9 into a global input parameter
+
               // use the spd factor when the stabilization is PD or SPD
               const double alpha = (preconditioner_stabilization | NewtonHandler<dim>::NewtonStabilization::PD) != NewtonHandler<dim>::NewtonStabilization::none ?
-                                   Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, 0.9)
+                                   Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, this->get_newton_handler().get_SPD_safety_factor())
                                    :
                                    1;
 
@@ -307,10 +307,10 @@ namespace aspect
                   const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
                   const double viscosity_derivative_wrt_pressure = derivatives->viscosity_derivative_wrt_pressure[q];
                   typename NewtonHandler<dim>::NewtonStabilization velocity_block_stabilization = this->get_newton_handler().get_velocity_block_stabilization();
-                  // todo: make this 0.9 into a global input parameter
+
                   // use the spd factor when the stabilization is PD or SPD
                   const double alpha =  (velocity_block_stabilization | NewtonHandler<dim>::NewtonStabilization::PD) != NewtonHandler<dim>::NewtonStabilization::none ?
-                                        Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, 0.9)
+                                        Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, this->get_newton_handler().get_SPD_safety_factor())
                                         :
                                         1;
 

@@ -245,6 +245,14 @@ namespace aspect
   }
 
   template <int dim>
+  double
+  NewtonHandler<dim>::
+  get_SPD_safety_factor() const
+  {
+    return SPD_safety_factor;
+  }
+
+  template <int dim>
   std::string
   NewtonHandler<dim>::
   get_newton_stabilization_string(const NewtonStabilization preconditioner_stabilization) const
@@ -331,6 +339,18 @@ namespace aspect
                            "When this parameter is true and the linear solver fails, we try again, but now with SPD stabilization "
                            "for both the preconditioner and the velocity block. The SPD stabilization will remain active untill "
                            "the next timestep, when the default values are restored.");
+
+
+        prm.declare_entry ("SPD safety factor", "0.9",
+                           Patterns::Double (0,1),
+                           "When stabilizing the Newton matrix, we can encounter situations where the coefficient inside the elliptic (top-left) "
+                           "block becomes negative or zero. This coefficient has the form $1+x$ where $x$ can sometimes be smaller than $-1$. In "
+                           "this case, the top-left block of the matrix is no longer positive definite, and both preconditioners and iterative "
+                           "solvers may fail. To prevent this, the stabilization computes an $\alpha$ so that $1+\alpha x$ is never negative. "
+                           "This $\alpha$ is chosen as $1$ if $x\ge -1$, and $\alpha=-\frac 1x$ otherwise. (Note that this always leads to "
+                           "$0\le \alpha \le 1$.)  On the other hand, we also want to stay away from $1+\alpha x=0$, and so modify the choice of "
+                           "$\alpha$ to be $1$ if $x\ge -c$, and $\alpha=-\frac cx$ with a $c$ between zero and one. This way, if $c<1$, we are "
+                           "assured that $1-\alpha x>c$, i.e., bounded away from zero.");
       }
       prm.leave_subsection ();
     }
@@ -375,6 +395,9 @@ namespace aspect
 
         AssertThrow((!DEAL_II_VERSION_GTE(9,0,0) && !use_Newton_failsafe) || DEAL_II_VERSION_GTE(9,0,0),
                     ExcMessage("The failsafe option can't be used with a deal.ii less then 9.0.0."));
+
+        SPD_safety_factor = prm.get_double("SPD safety factor");
+
       }
       prm.leave_subsection ();
     }

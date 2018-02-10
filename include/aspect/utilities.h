@@ -989,7 +989,7 @@ namespace aspect
     double compute_spd_factor(const double eta,
                               const SymmetricTensor<2,dim> &strain_rate,
                               const SymmetricTensor<2,dim> &dviscosities_dstrain_rate,
-                              const double safety_factor);
+                              const double SPD_safety_factor);
 
     /**
      * Converts an array of size dim to a Point of size dim.
