@@ -22,6 +22,8 @@
 #include <aspect/simulator.h>
 #include <aspect/free_surface.h>
 #include <aspect/global.h>
+#include <aspect/simulator/assemblers/interface.h>
+#include <aspect/melt.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
@@ -51,6 +53,15 @@ namespace aspect
 
       if (!this->get_parameters().free_surface_enabled)
         return;
+
+      if (this->get_parameters().include_melt_transport)
+        {
+          this->get_melt_handler().apply_free_surface_stabilization_with_melt (this->get_free_surface_handler().get_stabilization_term(),
+                                                                               scratch.cell,
+                                                                               scratch,
+                                                                               data);
+          return;
+        }
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();

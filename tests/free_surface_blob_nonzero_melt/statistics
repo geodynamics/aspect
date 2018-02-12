@@ -1,0 +1,23 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Minimum topography (m)
+# 14: Maximum topography (m)
+# 15: RMS velocity (m/year)
+# 16: Max. velocity (m/year)
+# 17: Visualization file name
+# 18: Minimal value for composition porosity
+# 19: Maximal value for composition porosity
+# 20: Global mass for composition porosity
+0 0.000000000000e+00 0.000000000000e+00 1360 13383 5921 5921 0 0 32 272 128  0.00000000e+00 0.00000000e+00 1.27301436e-02 2.26399495e-02 output-free_surface_blob_nonzero_melt/solution/solution-00000  0.00000000e+00 1.99999965e-02 5.94762824e+08 
+1 6.619917053091e+03 6.619917053091e+03 1360 13383 5921 5921 9 9 29 250 118 -1.38006964e+02 1.49276372e+02 1.00446523e-02 1.68195473e-02 output-free_surface_blob_nonzero_melt/solution/solution-00001 -1.02096438e-05 2.01274513e-02 5.94778315e+08 
+2 1.000000000000e+04 3.380082946909e+03 1360 13383 5921 5921 9 9 26 229 107 -1.88459733e+02 2.05361919e+02 9.74607258e-03 1.61873318e-02 output-free_surface_blob_nonzero_melt/solution/solution-00002 -1.47371523e-05 2.01252458e-02 5.94780969e+08 

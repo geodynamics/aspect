@@ -548,8 +548,6 @@ namespace aspect
         AssertThrow( !parameters.use_discontinuous_temperature_discretization &&
                      !parameters.use_discontinuous_composition_discretization,
                      ExcMessage("Melt transport can not be used with discontinuous elements.") );
-        AssertThrow( !parameters.free_surface_enabled,
-                     ExcMessage("Melt transport together with a free surface has not been tested.") );
         melt_handler->initialize_simulator (*this);
       }
 

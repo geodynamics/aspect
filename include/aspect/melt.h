@@ -327,6 +327,15 @@ namespace aspect
       bool is_porosity (const typename Simulator<dim>::AdvectionField &advection_field) const;
 
       /**
+       * Apply free surface stabilization to a cell of the system matrix when melt
+       * transport is used in the computation. Called during assembly of the system matrix.
+       */
+      void apply_free_surface_stabilization_with_melt (const double free_surface_theta,
+                                                       const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                                       internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
+                                                       internal::Assembly::CopyData::StokesSystem<dim>      &data) const;
+
+      /**
        * The porosity limit for melt migration. For smaller porosities, the equations
        * reduce to the Stokes equations and neglect melt transport. In practice, this
        * means that all terms in the assembly related to the migration of melt are set
