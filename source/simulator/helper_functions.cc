@@ -1561,6 +1561,10 @@ namespace aspect
                            "(it does not create ReactionRateOutputs, which are required for this "
                            "solver scheme)."));
 
+    // some heating models require the additional outputs
+    heating_model_manager.create_additional_material_model_outputs(out_C);
+    heating_model_manager.create_additional_material_model_outputs(out_T);
+
     // Make a loop first over all cells, than over all reaction time steps, and then over
     // all degrees of freedom in each element to compute the reactions. This is possible
     // because the reactions only depend on the temperature and composition values at a given

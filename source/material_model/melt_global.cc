@@ -214,8 +214,15 @@ namespace aspect
           else
             {
               out.viscosities[i] = eta_0;
+
+              // no melting/freezing is used in the model --> set all reactions to zero
               for (unsigned int c=0; c<in.composition[i].size(); ++c)
-                out.reaction_terms[i][c] = 0.0;
+                {
+                  out.reaction_terms[i][c] = 0.0;
+
+                  if (this->get_parameters().use_operator_splitting && reaction_rate_out != NULL)
+                    reaction_rate_out->reaction_rates[i][c] = 0.0;
+                }
             }
 
           out.entropy_derivative_pressure[i]    = 0.0;
