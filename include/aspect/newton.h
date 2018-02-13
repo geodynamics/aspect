@@ -92,6 +92,15 @@ namespace aspect
                  static_cast<int>(a) | static_cast<int>(b));
       }
 
+      friend
+      NewtonStabilization
+      operator& (const NewtonStabilization a,
+                 const NewtonStabilization b)
+      {
+        return static_cast<NewtonStabilization>(
+                 static_cast<int>(a) & static_cast<int>(b));
+      }
+
       /**
        * Determine, based on the run-time parameters of the current simulation,
        * which functions need to be called in order to assemble linear systems,
