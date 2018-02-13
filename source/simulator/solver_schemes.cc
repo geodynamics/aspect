@@ -243,7 +243,13 @@ namespace aspect
       rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
     if (nonlinear_iteration == 0)// hack
-      compute_current_constraints ();
+      {
+        compute_current_constraints ();
+        setup_system_matrix (introspection.index_sets.system_partitioning);
+        setup_system_preconditioner (introspection.index_sets.system_partitioning);
+
+        rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+      }
 
     assemble_stokes_system ();
     build_stokes_preconditioner();
