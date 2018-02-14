@@ -83,6 +83,12 @@ namespace aspect
         SPD = symmetric | PD
       };
 
+
+      /**
+       * A binary 'or' operator that concatenates a set of stabilization
+       * flags by returning an object that combines the bits set in each
+       * of the two arguments.
+       */
       friend
       NewtonStabilization
       operator| (const NewtonStabilization a,
@@ -92,6 +98,12 @@ namespace aspect
                  static_cast<int>(a) | static_cast<int>(b));
       }
 
+
+      /**
+       * A binary 'and' operator that takes the intersection of two sets
+       * of stabilization flags by returning an object that selects those bits
+       * that are set in both of the two arguments.
+       */
       friend
       NewtonStabilization
       operator& (const NewtonStabilization a,
