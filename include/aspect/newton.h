@@ -57,15 +57,11 @@ namespace aspect
     };
   }
 
-  /**
-   * A Class which can declare and parse parameters and creates
-   * material model outputs for the Newton solver.
-   */
 
-  template <int dim>
-  class NewtonHandler: public SimulatorAccess<dim>
+  namespace Newton
   {
-    public:
+    struct Parameters
+    {
 
       /**
        * This enum describes the type of stabilization is used
@@ -75,7 +71,7 @@ namespace aspect
        * only symmetrized, and PD represents that we do the same as
        * what we do for SPD, but without the symmetrization.
        */
-      enum NewtonStabilization
+      enum Stabilization
       {
         none = 0,
         symmetric = 1,
@@ -90,11 +86,11 @@ namespace aspect
        * of the two arguments.
        */
       friend
-      NewtonStabilization
-      operator| (const NewtonStabilization a,
-                 const NewtonStabilization b)
+      Stabilization
+      operator| (const Stabilization a,
+                 const Stabilization b)
       {
-        return static_cast<NewtonStabilization>(
+        return static_cast<Stabilization>(
                  static_cast<int>(a) | static_cast<int>(b));
       }
 
@@ -105,14 +101,58 @@ namespace aspect
        * that are set in both of the two arguments.
        */
       friend
-      NewtonStabilization
-      operator& (const NewtonStabilization a,
-                 const NewtonStabilization b)
+      Stabilization
+      operator& (const Stabilization a,
+                 const Stabilization b)
       {
-        return static_cast<NewtonStabilization>(
+        return static_cast<Stabilization>(
                  static_cast<int>(a) & static_cast<int>(b));
       }
 
+      /**
+       * Declare additional parameters that are needed for the Newton.
+       * solver.
+       */
+      static void declare_parameters (ParameterHandler &prm);
+
+      /**
+       * Parse additional parameters that are needed for the Newton.
+       * solver.
+       */
+      void parse_parameters (ParameterHandler &prm);
+
+      /**
+       * A scaling factor for those terms of the Newton matrix that
+       * result from the linearization of the viscosity.
+       *
+       * See the get_newton_derivative_scaling_factor() function for an
+       * explanation of the purpose of this factor.
+       */
+      double              newton_derivative_scaling_factor;
+
+      Stabilization       preconditioner_stabilization;
+      Stabilization       velocity_block_stabilization;
+
+      bool                use_Newton_failsafe;
+
+      double              nonlinear_switch_tolerance;
+      unsigned int        max_pre_newton_nonlinear_iterations;
+      unsigned int        max_newton_line_search_iterations;
+      bool                use_newton_residual_scaling_method;
+      double              maximum_linear_stokes_solver_tolerance;
+      double              SPD_safety_factor;
+    };
+  }
+
+
+
+  /**
+   * A class that supports the functionality of the Newton solver.
+   */
+  template <int dim>
+  class NewtonHandler : public SimulatorAccess<dim>
+  {
+    public:
       /**
        * Determine, based on the run-time parameters of the current simulation,
        * which functions need to be called in order to assemble linear systems,
@@ -156,22 +196,22 @@ namespace aspect
       /**
        * Get the stabilization type used in the preconditioner.
        */
-      NewtonStabilization get_preconditioner_stabilization() const;
+      Newton::Parameters::Stabilization get_preconditioner_stabilization() const;
 
       /**
        * Set the stabilization type used in the preconditioner.
        */
-      void set_preconditioner_stabilization(const NewtonStabilization preconditioner_stabilization);
+      void set_preconditioner_stabilization(const Newton::Parameters::Stabilization preconditioner_stabilization);
 
       /**
        * Get the stabilization type used in the velocity block.
        */
-      NewtonStabilization get_velocity_block_stabilization() const;
+      Newton::Parameters::Stabilization get_velocity_block_stabilization() const;
 
       /**
        * Sets the stabilization type used in the velocity block.
        */
-      void set_velocity_block_stabilization(const NewtonStabilization velocity_block_stabilization);
+      void set_velocity_block_stabilization(const Newton::Parameters::Stabilization velocity_block_stabilization);
 
       /**
        * Get whether to use the Newton failsafe. If the failsafe is used, a failure
@@ -213,41 +253,18 @@ namespace aspect
       double get_SPD_safety_factor() const;
 
       /**
-       * get a std::string describing the stabilization type used for the preconditioner.
+       * Get a std::string describing the stabilization type used for the
+       * preconditioner.
        */
-      std::string get_newton_stabilization_string(const NewtonStabilization preconditioner_stabilization) const;
+      std::string get_newton_stabilization_string(const Newton::Parameters::Stabilization preconditioner_stabilization) const;
 
       /**
-       * Declare additional parameters that are needed for the Newton.
-       * solver.
+       * The object that stores the run-time parameters that control the Newton
+       * method.
        */
-      static void declare_parameters (ParameterHandler &prm);
-
-      /**
-       * Parse additional parameters that are needed for the Newton.
-       * solver.
-       */
-      void parse_parameters (ParameterHandler &prm);
-
-    private:
-      /**
-       * A scaling factor for those terms of the Newton matrix that
-       * result from the linearization of the viscosity.
-       *
-       * See the get_newton_derivative_scaling_factor() function for an
-       * explanation of the purpose of this factor.
-       */
-      double              newton_derivative_scaling_factor;
-      NewtonStabilization preconditioner_stabilization;
-      NewtonStabilization velocity_block_stabilization;
-      bool                use_Newton_failsafe;
-      double              nonlinear_switch_tolerance;
-      unsigned int        max_pre_newton_nonlinear_iterations;
-      unsigned int        max_newton_line_search_iterations;
-      bool                use_newton_residual_scaling_method;
-      double              maximum_linear_stokes_solver_tolerance;
-      double              SPD_safety_factor;
+      Newton::Parameters parameters;
   };
+
 
   namespace Assemblers
   {

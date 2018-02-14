@@ -119,15 +119,15 @@ namespace aspect
               const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
               const SymmetricTensor<2,dim> strain_rate = scratch.material_model_inputs.strain_rate[q];
 
-              typename NewtonHandler<dim>::NewtonStabilization preconditioner_stabilization = this->get_newton_handler().get_preconditioner_stabilization();
+              typename Newton::Parameters::Stabilization preconditioner_stabilization = this->get_newton_handler().get_preconditioner_stabilization();
 
               // use the spd factor when the stabilization is PD or SPD
-              const double alpha = (preconditioner_stabilization & NewtonHandler<dim>::NewtonStabilization::PD) != NewtonHandler<dim>::NewtonStabilization::none ?
+              const double alpha = (preconditioner_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none ?
                                    Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, this->get_newton_handler().get_SPD_safety_factor())
                                    :
                                    1;
               // symmetrize when the stabilization is symmetric or SPD
-              if ((preconditioner_stabilization & NewtonHandler<dim>::NewtonStabilization::symmetric) != NewtonHandler<dim>::NewtonStabilization::none)
+              if ((preconditioner_stabilization & Newton::Parameters::Stabilization::symmetric) != Newton::Parameters::Stabilization::none)
                 {
                   for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
                     for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
@@ -166,7 +166,7 @@ namespace aspect
         }
 #if DEBUG
       {
-        if (this->get_newton_handler().get_preconditioner_stabilization() == NewtonHandler<dim>::NewtonStabilization::SPD)
+        if (this->get_newton_handler().get_preconditioner_stabilization() == Newton::Parameters::Stabilization::SPD)
           {
             // regardless of whether we do or do not add the Newton
             // linearization terms, we ought to test whether the top-left
@@ -305,16 +305,16 @@ namespace aspect
 
                   const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
                   const double viscosity_derivative_wrt_pressure = derivatives->viscosity_derivative_wrt_pressure[q];
-                  typename NewtonHandler<dim>::NewtonStabilization velocity_block_stabilization = this->get_newton_handler().get_velocity_block_stabilization();
+                  typename Newton::Parameters::Stabilization velocity_block_stabilization = this->get_newton_handler().get_velocity_block_stabilization();
 
                   // use the spd factor when the stabilization is PD or SPD
-                  const double alpha =  (velocity_block_stabilization & NewtonHandler<dim>::NewtonStabilization::PD) != NewtonHandler<dim>::NewtonStabilization::none ?
+                  const double alpha =  (velocity_block_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none ?
                                         Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, this->get_newton_handler().get_SPD_safety_factor())
                                         :
                                         1;
 
                   // symmetrize when the stabilization is symmetric or SPD
-                  if ((velocity_block_stabilization & NewtonHandler<dim>::NewtonStabilization::symmetric) != NewtonHandler<dim>::NewtonStabilization::none)
+                  if ((velocity_block_stabilization & Newton::Parameters::Stabilization::symmetric) != Newton::Parameters::Stabilization::none)
                     {
                       for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
                         for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
@@ -352,7 +352,7 @@ namespace aspect
 #if DEBUG
       if (scratch.rebuild_newton_stokes_matrix)
         {
-          if (this->get_newton_handler().get_velocity_block_stabilization() == NewtonHandler<dim>::NewtonStabilization::SPD)
+          if (this->get_newton_handler().get_velocity_block_stabilization() == Newton::Parameters::Stabilization::SPD)
             {
               // regardless of whether we do or do not add the Newton
               // linearization terms, we ought to test whether the top-left
