@@ -603,6 +603,7 @@ namespace aspect
         const double density              = scratch.material_model_outputs.densities[q_point];
 
         // average divergence u over the cell
+        // TODO: and we should probably do the averaging for the LHS too.
         // TODO: do this outside of the loop over quadrature points
         double divergence_u = 0.0;
         const unsigned int N = scratch.material_model_inputs.position.size();
@@ -618,6 +619,8 @@ namespace aspect
         const Tensor<1,dim>
         gravity = simulator_access->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q_point));
 
+        // Note that the full advection term would be (1 - phi) * (div u + kappa rho u g),
+        // but we expanded the term and move the part (- phi) * (div u + kappa rho u g) over to the LHS.
         double melt_transport_RHS = melting_rate / density
                                     + divergence_u + compressibility * density * (current_u * gravity);
 
@@ -1431,13 +1434,11 @@ namespace aspect
 
           // Prepare the data structures for assembly
           scratch.finite_element_values.reinit (cell);
-
-          this->compute_material_model_input_values (this->get_current_linearization_point(),
-                                                     scratch.finite_element_values,
-                                                     cell,
-                                                     true,
-                                                     scratch.material_model_inputs);
-
+          scratch.material_model_inputs.reinit(scratch.finite_element_values,
+                                               cell,
+                                               this->introspection(),
+                                               this->get_current_linearization_point(),
+                                               true);
 
           this->get_material_model().evaluate(scratch.material_model_inputs,
                                               scratch.material_model_outputs);

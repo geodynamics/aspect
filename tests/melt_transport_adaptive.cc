@@ -7,6 +7,7 @@
 #include <aspect/global.h>
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/melt.h>
+#include <aspect/simulator.h>
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
@@ -14,6 +15,8 @@
 #include <deal.II/base/function_lib.h>
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/vector_tools.h>
+#include <deal.II/fe/fe_values.h>
+#include <deal.II/numerics/derivative_approximation.h>
 
 
 namespace aspect
@@ -70,16 +73,100 @@ namespace aspect
       {
         indicators = 0;
 
-        KellyErrorEstimator<dim>::estimate (this->get_mapping(),
-                                            this->get_dof_handler(),
-                                            QGauss<dim-1>(this->introspection().polynomial_degree.velocities +1),
-                                            typename FunctionMap<dim>::type(),
-                                            this->get_solution(),
-                                            indicators,
-                                            this->introspection().variable("compaction pressure").component_mask,
-                                            0,
-                                            0,
-                                            this->get_triangulation().locally_owned_subdomain());
+        // create a vector in which we set the temperature block to
+        // be a finite element interpolation of the density.
+        // we do so by setting up a quadrature formula with the
+        // compaction pressure unit support points, then looping over these
+        // points and rescaling it, and writing
+        // the result into the output vector in the same order
+        // (because quadrature points and compaction pressure dofs are,
+        // by design of the quadrature formula, numbered in the
+        // same way)
+        LinearAlgebra::BlockVector vec_distributed (this->introspection().index_sets.system_partitioning,
+                                                    this->get_mpi_communicator());
+
+        const unsigned int pc_component_index = this->introspection().variable("compaction pressure").first_component_index;
+        const unsigned int pc_base_index = this->introspection().variable("compaction pressure").base_index;
+
+        // Use a quadrature formula with only one point, as the scaling factor we need is cell-wise constant
+        const QMidpoint<dim> quadrature;
+
+        std::vector<types::global_dof_index> local_dof_indices (this->get_fe().dofs_per_cell);
+        FEValues<dim> fe_values (this->get_mapping(),
+                                 this->get_fe(),
+                                 quadrature,
+                                 update_quadrature_points | update_values | update_gradients);
+
+        MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
+        MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
+        MeltHandler<dim>::create_material_model_outputs(out);
+
+        const double ref_K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->reference_darcy_coefficient();
+
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = this->get_dof_handler().begin_active(),
+        endc = this->get_dof_handler().end();
+        for (; cell!=endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              fe_values.reinit(cell);
+              // Set use_strain_rates to false since we don't need viscosity
+              in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
+
+              this->get_material_model().evaluate(in, out);
+
+              MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+              AssertThrow(melt_out != NULL,
+                          ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
+
+              const double K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->darcy_coefficient(in, out, this->get_melt_handler(), true);
+              const double p_c_scale = std::sqrt(K_D / ref_K_D);
+
+              cell->get_dof_indices (local_dof_indices);
+
+              // for each compaction pressure dof, write into the output
+              // vector the scaled compaction pressure. note that quadrature points and
+              // dofs are enumerated in the same order
+              for (unsigned int i=0; i<this->get_fe().base_element(pc_base_index).dofs_per_cell; ++i)
+                {
+                  const unsigned int system_local_dof
+                    = this->get_fe().component_to_system_index(pc_component_index,
+                                                               /*dof index within component=*/i);
+
+                  vec_distributed(local_dof_indices[system_local_dof])
+                    = p_c_scale * this->get_solution()[local_dof_indices[system_local_dof]];
+                }
+            }
+
+        vec_distributed.compress(VectorOperation::insert);
+
+        // now create a vector with the requisite ghost elements
+        // and use it for estimating the gradients
+        LinearAlgebra::BlockVector vec (this->introspection().index_sets.system_partitioning,
+                                        this->introspection().index_sets.system_relevant_partitioning,
+                                        this->get_mpi_communicator());
+        vec = vec_distributed;
+
+        DerivativeApproximation::approximate_gradient  (this->get_mapping(),
+                                                        this->get_dof_handler(),
+                                                        vec,
+                                                        indicators,
+                                                        pc_component_index);
+
+        // Scale gradient in each cell with the correct power of h. Otherwise,
+        // error indicators do not reduce when refined if there is a density
+        // jump. We need at least order 1 for the error not to grow when
+        // refining, so anything >1 should work. (note that the gradient
+        // itself scales like 1/h, so multiplying it with any factor h^s, s>1
+        // will yield convergence of the error indicators to zero as h->0)
+        const double power = 1.0 + dim/2.0;
+        {
+          unsigned int i=0;
+          for (cell = this->get_dof_handler().begin_active(); cell!=endc; ++cell, ++i)
+            if (cell->is_locally_owned())
+              indicators(i) *= std::pow(cell->diameter(), power);
+        }
+
       }
 
   };
@@ -114,13 +201,11 @@ namespace aspect
                             typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-        double c = 1.0;
         for (unsigned int i=0; i<in.position.size(); ++i)
           {
-            const double porosity = in.composition[i][porosity_idx];
             const double x = in.position[i](0);
             const double z = in.position[i](1);
-            out.viscosities[i] = 1.0;//exp(c*porosity);
+            out.viscosities[i] = 1.0;
             out.thermal_expansion_coefficients[i] = 0.0;
             out.specific_heat[i] = 1.0;
             out.thermal_conductivities[i] = 1.0;
@@ -140,7 +225,6 @@ namespace aspect
 
         if (melt_out != NULL)
           {
-            double c = 1.0;
             const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
             for (unsigned int i=0; i<in.position.size(); ++i)
