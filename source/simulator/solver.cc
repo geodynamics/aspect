@@ -522,7 +522,8 @@ namespace aspect
 
 
   template <int dim>
-  double Simulator<dim>::solve_stokes ()
+  std::pair<double,double>
+  Simulator<dim>::solve_stokes ()
   {
     TimerOutput::Scope timer (computing_timer, "   Solve Stokes system");
     pcout << "   Solving Stokes system... " << std::flush;
@@ -530,11 +531,8 @@ namespace aspect
     // extract Stokes parts of solution vector, without any ghost elements
     LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
 
-    double initial_residual = numbers::signaling_nan<double>();
-    // the final linear residual is for the direct solver zero,
-    // so we set it here to zero. For the iterative solver, we
-    // use the value returned by solver control.
-    double final_linear_residual = 0;
+    double initial_nonlinear_residual = numbers::signaling_nan<double>();
+    double final_linear_residual      = numbers::signaling_nan<double>();
 
     if (parameters.use_direct_stokes_solver)
       {
@@ -580,10 +578,10 @@ namespace aspect
         // we need a temporary vector for the residual (even if we don't care about it)
         LinearAlgebra::Vector residual (introspection.index_sets.stokes_partitioning[0], mpi_communicator);
 
-        initial_residual = system_matrix.block(0,0).residual(
-                             residual,
-                             distributed_stokes_solution.block(0),
-                             system_rhs.block(0));
+        initial_nonlinear_residual = system_matrix.block(0,0).residual(
+                                       residual,
+                                       distributed_stokes_solution.block(0),
+                                       system_rhs.block(0));
 
         SolverControl cn;
         // TODO: can we re-use the direct solver?
@@ -597,6 +595,12 @@ namespace aspect
             solver.solve(system_matrix.block(0,0),
                          distributed_stokes_solution.block(0),
                          system_rhs.block(0));
+
+            // if we got here, we have successfully solved the linear system
+            // with a direct solver, and the final linear residual should
+            // be approximately zero. we could compute it exactly, but
+            // this is probably not necessary
+            final_linear_residual = 0;
           }
         // if the solver fails, report the error from processor 0 with some additional
         // information about its location, and throw a quiet exception on all other
@@ -699,9 +703,9 @@ namespace aspect
             // the nonlinear residual. Because the place where the nonlinear residual is
             // checked against the nonlinear tolerance comes after the solve, the system
             // is solved one time too many in the case of a nonlinear Picard solver.
-            initial_residual = stokes_block.residual (distributed_stokes_solution,
-                                                      linearized_stokes_initial_guess,
-                                                      system_rhs);
+            initial_nonlinear_residual = stokes_block.residual (distributed_stokes_solution,
+                                                                linearized_stokes_initial_guess,
+                                                                system_rhs);
 
             // Note: the residual is computed with a zero velocity, effectively computing
             // || B^T p - g ||, which we are going to use for our solver tolerance.
@@ -729,6 +733,11 @@ namespace aspect
             const double residual_p = system_rhs.block(1).l2_norm();
             solver_tolerance = parameters.linear_stokes_solver_tolerance *
                                std::sqrt(residual_u*residual_u+residual_p*residual_p);
+
+            // as described in the documentation of the function, the initial
+            // nonlinear residual for the Newton method is computed by just
+            // taking the norm of the right hand side
+            initial_nonlinear_residual = std::sqrt(residual_u*residual_u+residual_p*residual_p);
           }
         // Now overwrite the solution vector again with the current best guess
         // to solve the linear system
@@ -880,11 +889,6 @@ namespace aspect
                                    solver_control_cheap,
                                    solver_control_expensive);
 
-        // For the Newton solver we are interested in || F( x^{k-1} ) + F'( x^{k-1} )
-        // \delta x^{k-1} ||, which is the linear residual.
-        if (assemble_newton_stokes_system)
-          initial_residual = final_linear_residual;
-
         // distribute hanging node and
         // other constraints
         current_constraints.distribute (distributed_stokes_solution);
@@ -919,7 +923,8 @@ namespace aspect
     if (parameters.include_melt_transport)
       melt_handler->compute_melt_variables(solution);
 
-    return initial_residual;
+    return std::pair<double,double>(initial_nonlinear_residual,
+                                    final_linear_residual);
   }
 
 }
@@ -933,7 +938,7 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template double Simulator<dim>::solve_advection (const AdvectionField &); \
-  template double Simulator<dim>::solve_stokes ();
+  template std::pair<double,double> Simulator<dim>::solve_stokes ();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

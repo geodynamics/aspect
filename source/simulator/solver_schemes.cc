@@ -232,7 +232,7 @@ namespace aspect
 
   template <int dim>
   double Simulator<dim>::assemble_and_solve_stokes (const bool compute_initial_residual,
-                                                    double *initial_residual)
+                                                    double *initial_nonlinear_residual)
   {
     // If the Stokes matrix depends on the solution, or the boundary conditions
     // for the Stokes system have changed rebuild the matrix and preconditioner
@@ -247,11 +247,11 @@ namespace aspect
 
     if (compute_initial_residual)
       {
-        Assert(initial_residual != NULL, ExcInternalError());
-        *initial_residual = compute_initial_stokes_residual();
+        Assert(initial_nonlinear_residual != NULL, ExcInternalError());
+        *initial_nonlinear_residual = compute_initial_stokes_residual();
       }
 
-    const double current_residual = solve_stokes();
+    const double current_nonlinear_residual = solve_stokes().first;
 
     current_linearization_point.block(introspection.block_indices.velocities)
       = solution.block(introspection.block_indices.velocities);
@@ -270,10 +270,10 @@ namespace aspect
         current_linearization_point.block(fluid_pressure_block) = solution.block(fluid_pressure_block);
       }
 
-    if ((initial_residual != NULL) && (*initial_residual > 0))
-      return current_residual / *initial_residual;
-
-    return 0.0;
+    if ((initial_nonlinear_residual != NULL) && (*initial_nonlinear_residual > 0))
+      return current_nonlinear_residual / *initial_nonlinear_residual;
+    else
+      return 0.0;
   }
 
 
@@ -307,18 +307,18 @@ namespace aspect
       parameters.max_nonlinear_iterations;
     do
       {
-        const double relative_stokes_residual =
+        const double relative_nonlinear_stokes_residual =
           assemble_and_solve_stokes(nonlinear_iteration == 0, &initial_stokes_residual);
 
         pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
-              << ": " << relative_stokes_residual
+              << ": " << relative_nonlinear_stokes_residual
               << std::endl
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
           postprocess ();
 
-        if (relative_stokes_residual < parameters.nonlinear_tolerance)
+        if (relative_nonlinear_stokes_residual < parameters.nonlinear_tolerance)
           break;
 
         ++nonlinear_iteration;
@@ -353,14 +353,14 @@ namespace aspect
         const std::vector<double>  relative_composition_residual =
           assemble_and_solve_composition(nonlinear_iteration == 0, &initial_composition_residual);
 
-        const double relative_stokes_residual =
+        const double relative_nonlinear_stokes_residual =
           assemble_and_solve_stokes(nonlinear_iteration == 0, &initial_stokes_residual);
 
         // write the residual output in the same order as the solutions
         pcout << "      Relative nonlinear residuals (temperature, compositional fields, Stokes system): " << relative_temperature_residual;
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
           pcout << ", " << relative_composition_residual[c];
-        pcout << ", " << relative_stokes_residual;
+        pcout << ", " << relative_nonlinear_stokes_residual;
         pcout << std::endl;
 
         double max = 0.0;
@@ -379,7 +379,7 @@ namespace aspect
               max = std::max(relative_composition_residual[c],max);
           }
 
-        max = std::max(relative_stokes_residual, max);
+        max = std::max(relative_nonlinear_stokes_residual, max);
         max = std::max(relative_temperature_residual, max);
         pcout << "      Relative nonlinear residual (total system) after nonlinear iteration " << nonlinear_iteration+1
               << ": " << max
@@ -422,11 +422,11 @@ namespace aspect
 
     do
       {
-        const double relative_stokes_residual =
+        const double relative_nonlinear_stokes_residual =
           assemble_and_solve_stokes(nonlinear_iteration == 0, &initial_stokes_residual);
 
         pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
-              << ": " << relative_stokes_residual
+              << ": " << relative_nonlinear_stokes_residual
               << std::endl
               << std::endl;
 
@@ -434,7 +434,7 @@ namespace aspect
           postprocess ();
 
         // if reached convergence, exit nonlinear iterations.
-        if (relative_stokes_residual < parameters.nonlinear_tolerance)
+        if (relative_nonlinear_stokes_residual < parameters.nonlinear_tolerance)
           break;
 
         ++nonlinear_iteration;
@@ -476,7 +476,8 @@ namespace aspect
       parameters.max_nonlinear_iterations;
 
     // Now iterate out the nonlinearities.
-    double stokes_residual = 0;
+    std::pair<double,double> stokes_residuals (numbers::signaling_nan<double>(),
+                                               numbers::signaling_nan<double>());
     for (nonlinear_iteration = 0; nonlinear_iteration < max_nonlinear_iterations; ++nonlinear_iteration)
       {
         assemble_and_solve_temperature();
@@ -575,7 +576,7 @@ namespace aspect
                 parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
                                                             newton_handler->get_maximum_linear_stokes_solver_tolerance(),
                                                             parameters.linear_stokes_solver_tolerance,
-                                                            stokes_residual,
+                                                            stokes_residuals.second,
                                                             residual,
                                                             residual_old);
 
@@ -589,13 +590,13 @@ namespace aspect
 
         if (newton_handler->get_use_Newton_failsafe() == false)
           {
-            stokes_residual = solve_stokes();
+            stokes_residuals = solve_stokes();
           }
         else
           {
             try
               {
-                stokes_residual = solve_stokes();
+                stokes_residuals = solve_stokes();
               }
             catch (...)
               {
@@ -622,7 +623,7 @@ namespace aspect
                         parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
                                                                     newton_handler->get_maximum_linear_stokes_solver_tolerance(),
                                                                     parameters.linear_stokes_solver_tolerance,
-                                                                    stokes_residual,
+                                                                    stokes_residuals.second,
                                                                     residual,
                                                                     residual_old);
 
@@ -631,7 +632,7 @@ namespace aspect
                   }
 
                 build_stokes_preconditioner();
-                stokes_residual = solve_stokes();
+                stokes_residuals = solve_stokes();
               }
           }
 
@@ -649,10 +650,10 @@ namespace aspect
             current_linearization_point.block(introspection.block_indices.velocities) = solution.block(introspection.block_indices.velocities);
             current_linearization_point.block(introspection.block_indices.pressure) = solution.block(introspection.block_indices.pressure);
 
-            residual = stokes_residual;
+            residual = stokes_residuals.first;
 
             pcout << "      Relative nonlinear residual (total Newton system) after nonlinear iteration " << nonlinear_iteration+1
-                  << ": " << stokes_residual/initial_residual << ", norm of the rhs: " << stokes_residual << std::endl;
+                  << ": " << stokes_residuals.first/initial_residual << ", norm of the rhs: " << stokes_residuals.first << std::endl;
 
           }
         else
