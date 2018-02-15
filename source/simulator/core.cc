@@ -557,7 +557,7 @@ namespace aspect
       {
         assemble_newton_stokes_system = true;
         newton_handler->initialize_simulator(*this);
-        newton_handler->parse_parameters(prm);
+        newton_handler->parameters.parse_parameters(prm);
       }
 
     postprocess_manager.initialize_simulator (*this);

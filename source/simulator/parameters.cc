@@ -1686,7 +1686,7 @@ namespace aspect
   {
     Parameters<dim>::declare_parameters (prm);
     MeltHandler<dim>::declare_parameters (prm);
-    NewtonHandler<dim>::declare_parameters (prm);
+    Newton::Parameters::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
     MeshRefinement::Manager<dim>::declare_parameters (prm);
     TerminationCriteria::Manager<dim>::declare_parameters (prm);

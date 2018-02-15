@@ -150,7 +150,7 @@ namespace aspect
   NewtonHandler<dim>::
   get_newton_derivative_scaling_factor() const
   {
-    return newton_derivative_scaling_factor;
+    return parameters.newton_derivative_scaling_factor;
   }
 
 
@@ -159,41 +159,41 @@ namespace aspect
   NewtonHandler<dim>::
   set_newton_derivative_scaling_factor(const double set_newton_derivative_scaling_factor)
   {
-    newton_derivative_scaling_factor = set_newton_derivative_scaling_factor;
+    parameters.newton_derivative_scaling_factor = set_newton_derivative_scaling_factor;
   }
 
   template <int dim>
-  typename NewtonHandler<dim>::NewtonStabilization
+  Newton::Parameters::Stabilization
   NewtonHandler<dim>::
   get_preconditioner_stabilization() const
   {
-    return preconditioner_stabilization;
+    return parameters.preconditioner_stabilization;
   }
 
 
   template <int dim>
   void
   NewtonHandler<dim>::
-  set_preconditioner_stabilization(const NewtonStabilization preconditioner_stabilization_)
+  set_preconditioner_stabilization(const Newton::Parameters::Stabilization preconditioner_stabilization_)
   {
-    preconditioner_stabilization = preconditioner_stabilization_;
+    parameters.preconditioner_stabilization = preconditioner_stabilization_;
   }
 
   template <int dim>
-  typename NewtonHandler<dim>::NewtonStabilization
+  Newton::Parameters::Stabilization
   NewtonHandler<dim>::
   get_velocity_block_stabilization() const
   {
-    return velocity_block_stabilization;
+    return parameters.velocity_block_stabilization;
   }
 
 
   template <int dim>
   void
   NewtonHandler<dim>::
-  set_velocity_block_stabilization(const NewtonStabilization velocity_block_stabilization_)
+  set_velocity_block_stabilization(const Newton::Parameters::Stabilization velocity_block_stabilization_)
   {
-    velocity_block_stabilization = velocity_block_stabilization_;
+    parameters.velocity_block_stabilization = velocity_block_stabilization_;
   }
 
   template <int dim>
@@ -201,7 +201,7 @@ namespace aspect
   NewtonHandler<dim>::
   get_use_Newton_failsafe()
   {
-    return use_Newton_failsafe;
+    return parameters.use_Newton_failsafe;
   }
 
   template <int dim>
@@ -209,7 +209,7 @@ namespace aspect
   NewtonHandler<dim>::
   get_nonlinear_switch_tolerance()
   {
-    return nonlinear_switch_tolerance;
+    return parameters.nonlinear_switch_tolerance;
   }
 
   template <int dim>
@@ -217,7 +217,7 @@ namespace aspect
   NewtonHandler<dim>::
   get_max_pre_newton_nonlinear_iterations()
   {
-    return max_pre_newton_nonlinear_iterations;
+    return parameters.max_pre_newton_nonlinear_iterations;
   }
 
   template <int dim>
@@ -225,7 +225,7 @@ namespace aspect
   NewtonHandler<dim>::
   get_max_newton_line_search_iterations()
   {
-    return max_newton_line_search_iterations;
+    return parameters.max_newton_line_search_iterations;
   }
 
   template <int dim>
@@ -233,7 +233,7 @@ namespace aspect
   NewtonHandler<dim>::
   get_use_newton_residual_scaling_method()
   {
-    return use_newton_residual_scaling_method;
+    return parameters.use_newton_residual_scaling_method;
   }
 
   template <int dim>
@@ -241,7 +241,7 @@ namespace aspect
   NewtonHandler<dim>::
   get_maximum_linear_stokes_solver_tolerance()
   {
-    return maximum_linear_stokes_solver_tolerance;
+    return parameters.maximum_linear_stokes_solver_tolerance;
   }
 
   template <int dim>
@@ -249,23 +249,23 @@ namespace aspect
   NewtonHandler<dim>::
   get_SPD_safety_factor() const
   {
-    return SPD_safety_factor;
+    return parameters.SPD_safety_factor;
   }
 
   template <int dim>
   std::string
   NewtonHandler<dim>::
-  get_newton_stabilization_string(const NewtonStabilization preconditioner_stabilization) const
+  get_newton_stabilization_string(const Newton::Parameters::Stabilization preconditioner_stabilization) const
   {
     switch (preconditioner_stabilization)
       {
-        case NewtonStabilization::SPD:
+        case Newton::Parameters::Stabilization::SPD:
           return "SPD";
-        case NewtonStabilization::PD:
+        case Newton::Parameters::Stabilization::PD:
           return "PD";
-        case NewtonStabilization::symmetric:
+        case Newton::Parameters::Stabilization::symmetric:
           return "symmetric";
-        case NewtonStabilization::none:
+        case Newton::Parameters::Stabilization::none:
           return "none";
         default:
           Assert(false,ExcNotImplemented());
@@ -273,136 +273,140 @@ namespace aspect
       }
   }
 
-  template <int dim>
-  void
-  NewtonHandler<dim>::
-  declare_parameters (ParameterHandler &prm)
+
+  namespace Newton
   {
-    prm.enter_subsection ("Solver parameters");
+    void
+    Parameters::
+    declare_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection ("Newton solver parameters");
+      prm.enter_subsection ("Solver parameters");
       {
-        prm.declare_entry ("Nonlinear Newton solver switch tolerance", "1e-5",
-                           Patterns::Double(0,1),
-                           "A relative tolerance with respect to the residual of the first "
-                           "iteration, up to which the nonlinear Picard solver will iterate, "
-                           "before changing to the Newton solver.");
+        prm.enter_subsection ("Newton solver parameters");
+        {
+          prm.declare_entry ("Nonlinear Newton solver switch tolerance", "1e-5",
+                             Patterns::Double(0,1),
+                             "A relative tolerance with respect to the residual of the first "
+                             "iteration, up to which the nonlinear Picard solver will iterate, "
+                             "before changing to the Newton solver.");
 
-        prm.declare_entry ("Max pre-Newton nonlinear iterations", "10",
-                           Patterns::Integer (0),
-                           "If the 'Nonlinear Newton solver switch tolerance' is reached before the "
-                           "maximal number of Picard iteration, then the solver switches to Newton "
-                           "solves anyway.");
+          prm.declare_entry ("Max pre-Newton nonlinear iterations", "10",
+                             Patterns::Integer (0),
+                             "If the 'Nonlinear Newton solver switch tolerance' is reached before the "
+                             "maximal number of Picard iteration, then the solver switches to Newton "
+                             "solves anyway.");
 
-        prm.declare_entry ("Max Newton line search iterations", "5",
-                           Patterns::Integer (0),
-                           "The maximum number of line search iterations allowed. If the "
-                           "criterion is not reached after this number of iteration, we apply "
-                           "the scaled increment even though it does not satisfy the necessary "
-                           "criteria and simply continue with the next Newton iteration.");
+          prm.declare_entry ("Max Newton line search iterations", "5",
+                             Patterns::Integer (0),
+                             "The maximum number of line search iterations allowed. If the "
+                             "criterion is not reached after this number of iteration, we apply "
+                             "the scaled increment even though it does not satisfy the necessary "
+                             "criteria and simply continue with the next Newton iteration.");
 
-        prm.declare_entry ("Use Newton residual scaling method", "false",
-                           Patterns::Bool (),
-                           "This method allows to slowly introduce the derivatives based on the improvement "
-                           "of the residual. If set to false, the scaling factor for the Newton derivatives "
-                           "is set to one immediately when switching on the Newton solver. When this is set to "
-                           "true, the derivatives are slowly introduced by the following equation: max(0.0, "
-                           "(1.0-(residual/switch_initial_residual))), where switch_initial_residual is the "
-                           "residual at the time when the Newton solver is switched on.");
+          prm.declare_entry ("Use Newton residual scaling method", "false",
+                             Patterns::Bool (),
+                             "This method allows to slowly introduce the derivatives based on the improvement "
+                             "of the residual. If set to false, the scaling factor for the Newton derivatives "
+                             "is set to one immediately when switching on the Newton solver. When this is set to "
+                             "true, the derivatives are slowly introduced by the following equation: max(0.0, "
+                             "(1.0-(residual/switch_initial_residual))), where switch_initial_residual is the "
+                             "residual at the time when the Newton solver is switched on.");
 
-        prm.declare_entry ("Maximum linear Stokes solver tolerance", "0.9",
-                           Patterns::Double (0,1),
-                           "The linear Stokes solver tolerance is dynamically chosen for the Newton solver, based "
-                           "on the Eisenstat walker 1994 paper (https://doi.org/10.1137/0917003), equation 2.2. "
-                           "Because this value can become larger then one, we limit this value by this parameter.");
+          prm.declare_entry ("Maximum linear Stokes solver tolerance", "0.9",
+                             Patterns::Double (0,1),
+                             "The linear Stokes solver tolerance is dynamically chosen for the Newton solver, based "
+                             "on the Eisenstat walker 1994 paper (https://doi.org/10.1137/0917003), equation 2.2. "
+                             "Because this value can become larger then one, we limit this value by this parameter.");
 
-        prm.declare_entry ("Stabilization preconditioner", "SPD",
-                           Patterns::Selection ("SPD|PD|symmetric|none"),
-                           "This parameters allows for the stabilization of the preconditioner. If one derives the Newton "
-                           "method without any modifications, the matrix created for the preconditioning is not necessarily "
-                           "Symmetric Positive Definite. This is problematic (see Fraters et al., in prep). When `none' is chosen, "
-                           "the preconditioner is not stabilized. The `symmetric' parameters symmetrizes the matrix, and `PD' makes "
-                           "the matrix Positive Definite. `SPD' is the full stabilization, where the matrix is guaranteed Symmetric "
-                           "Positive Definite.");
+          prm.declare_entry ("Stabilization preconditioner", "SPD",
+                             Patterns::Selection ("SPD|PD|symmetric|none"),
+                             "This parameters allows for the stabilization of the preconditioner. If one derives the Newton "
+                             "method without any modifications, the matrix created for the preconditioning is not necessarily "
+                             "Symmetric Positive Definite. This is problematic (see Fraters et al., in prep). When `none' is chosen, "
+                             "the preconditioner is not stabilized. The `symmetric' parameters symmetrizes the matrix, and `PD' makes "
+                             "the matrix Positive Definite. `SPD' is the full stabilization, where the matrix is guaranteed Symmetric "
+                             "Positive Definite.");
 
-        prm.declare_entry ("Stabilization velocity block", "SPD",
-                           Patterns::Selection ("SPD|PD|symmetric|none"),
-                           "This parameters allows for the stabilization of the velocity block. If one derives the Newton "
-                           "method without any modifications, the matrix created for the velocity block is not necessarily "
-                           "Symmetric Positive Definite. This is problematic (see Fraters et al., in prep). When `none' is chosen, "
-                           "the velocity block is not stabilized. The `symmetric' parameters symmetrizes the matrix, and `PD' makes "
-                           "the matrix Positive Definite. `SPD' is the full stabilization, where the matrix is guaranteed Symmetric "
-                           "Positive Definite.");
+          prm.declare_entry ("Stabilization velocity block", "SPD",
+                             Patterns::Selection ("SPD|PD|symmetric|none"),
+                             "This parameters allows for the stabilization of the velocity block. If one derives the Newton "
+                             "method without any modifications, the matrix created for the velocity block is not necessarily "
+                             "Symmetric Positive Definite. This is problematic (see Fraters et al., in prep). When `none' is chosen, "
+                             "the velocity block is not stabilized. The `symmetric' parameters symmetrizes the matrix, and `PD' makes "
+                             "the matrix Positive Definite. `SPD' is the full stabilization, where the matrix is guaranteed Symmetric "
+                             "Positive Definite.");
 
-        prm.declare_entry ("Use Newton failsafe", "false",
-                           Patterns::Bool (),
-                           "When this parameter is true and the linear solver fails, we try again, but now with SPD stabilization "
-                           "for both the preconditioner and the velocity block. The SPD stabilization will remain active untill "
-                           "the next timestep, when the default values are restored.");
+          prm.declare_entry ("Use Newton failsafe", "false",
+                             Patterns::Bool (),
+                             "When this parameter is true and the linear solver fails, we try again, but now with SPD stabilization "
+                             "for both the preconditioner and the velocity block. The SPD stabilization will remain active untill "
+                             "the next timestep, when the default values are restored.");
 
 
-        prm.declare_entry ("SPD safety factor", "0.9",
-                           Patterns::Double (0,1),
-                           "When stabilizing the Newton matrix, we can encounter situations where the coefficient inside the elliptic (top-left) "
-                           "block becomes negative or zero. This coefficient has the form $1+x$ where $x$ can sometimes be smaller than $-1$. In "
-                           "this case, the top-left block of the matrix is no longer positive definite, and both preconditioners and iterative "
-                           "solvers may fail. To prevent this, the stabilization computes an $\\alpha$ so that $1+\\alpha x$ is never negative. "
-                           "This $\\alpha$ is chosen as $1$ if $x\\ge -1$, and $\\alpha=-\\frac 1x$ otherwise. (Note that this always leads to "
-                           "$0\\le \\alpha \\le 1$.)  On the other hand, we also want to stay away from $1+\\alpha x=0$, and so modify the choice of "
-                           "$\\alpha$ to be $1$ if $x\\ge -c$, and $\\alpha=-\\frac cx$ with a $c$ between zero and one. This way, if $c<1$, we are "
-                           "assured that $1-\\alpha x>c$, i.e., bounded away from zero.");
+          prm.declare_entry ("SPD safety factor", "0.9",
+                             Patterns::Double (0,1),
+                             "When stabilizing the Newton matrix, we can encounter situations where the coefficient inside the elliptic (top-left) "
+                             "block becomes negative or zero. This coefficient has the form $1+x$ where $x$ can sometimes be smaller than $-1$. In "
+                             "this case, the top-left block of the matrix is no longer positive definite, and both preconditioners and iterative "
+                             "solvers may fail. To prevent this, the stabilization computes an $\\alpha$ so that $1+\\alpha x$ is never negative. "
+                             "This $\\alpha$ is chosen as $1$ if $x\\ge -1$, and $\\alpha=-\\frac 1x$ otherwise. (Note that this always leads to "
+                             "$0\\le \\alpha \\le 1$.)  On the other hand, we also want to stay away from $1+\\alpha x=0$, and so modify the choice of "
+                             "$\\alpha$ to be $1$ if $x\\ge -c$, and $\\alpha=-\\frac cx$ with a $c$ between zero and one. This way, if $c<1$, we are "
+                             "assured that $1-\\alpha x>c$, i.e., bounded away from zero.");
+        }
+        prm.leave_subsection ();
       }
       prm.leave_subsection ();
     }
-    prm.leave_subsection ();
-  }
 
-  template <int dim>
-  void
-  NewtonHandler<dim>::
-  parse_parameters (ParameterHandler &prm)
-  {
-    prm.enter_subsection ("Solver parameters");
+
+
+    void
+    Parameters::
+    parse_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection ("Newton solver parameters");
+      prm.enter_subsection ("Solver parameters");
       {
-        nonlinear_switch_tolerance = prm.get_double("Nonlinear Newton solver switch tolerance");
-        max_pre_newton_nonlinear_iterations = prm.get_integer ("Max pre-Newton nonlinear iterations");
-        max_newton_line_search_iterations = prm.get_integer ("Max Newton line search iterations");
-        use_newton_residual_scaling_method = prm.get_bool("Use Newton residual scaling method");
-        maximum_linear_stokes_solver_tolerance = prm.get_double("Maximum linear Stokes solver tolerance");
-        std::string preconditioner_stabilization_string = prm.get("Stabilization preconditioner");
-        if (preconditioner_stabilization_string == "SPD")
-          preconditioner_stabilization = NewtonStabilization::SPD;
-        else if (preconditioner_stabilization_string == "PD")
-          preconditioner_stabilization = NewtonStabilization::PD;
-        else if (preconditioner_stabilization_string == "symmetric")
-          preconditioner_stabilization = NewtonStabilization::symmetric;
-        else if (preconditioner_stabilization_string == "none")
-          preconditioner_stabilization = NewtonStabilization::none;
+        prm.enter_subsection ("Newton solver parameters");
+        {
+          nonlinear_switch_tolerance = prm.get_double("Nonlinear Newton solver switch tolerance");
+          max_pre_newton_nonlinear_iterations = prm.get_integer ("Max pre-Newton nonlinear iterations");
+          max_newton_line_search_iterations = prm.get_integer ("Max Newton line search iterations");
+          use_newton_residual_scaling_method = prm.get_bool("Use Newton residual scaling method");
+          maximum_linear_stokes_solver_tolerance = prm.get_double("Maximum linear Stokes solver tolerance");
+          std::string preconditioner_stabilization_string = prm.get("Stabilization preconditioner");
+          if (preconditioner_stabilization_string == "SPD")
+            preconditioner_stabilization = Stabilization::SPD;
+          else if (preconditioner_stabilization_string == "PD")
+            preconditioner_stabilization = Stabilization::PD;
+          else if (preconditioner_stabilization_string == "symmetric")
+            preconditioner_stabilization = Stabilization::symmetric;
+          else if (preconditioner_stabilization_string == "none")
+            preconditioner_stabilization = Stabilization::none;
 
-        std::string velocity_block_stabilization_string = prm.get("Stabilization velocity block");
-        if (velocity_block_stabilization_string == "SPD")
-          velocity_block_stabilization = NewtonStabilization::SPD;
-        else if (velocity_block_stabilization_string == "PD")
-          velocity_block_stabilization = NewtonStabilization::PD;
-        else if (velocity_block_stabilization_string == "symmetric")
-          velocity_block_stabilization = NewtonStabilization::symmetric;
-        else if (velocity_block_stabilization_string == "none")
-          velocity_block_stabilization = NewtonStabilization::none;
+          std::string velocity_block_stabilization_string = prm.get("Stabilization velocity block");
+          if (velocity_block_stabilization_string == "SPD")
+            velocity_block_stabilization = Stabilization::SPD;
+          else if (velocity_block_stabilization_string == "PD")
+            velocity_block_stabilization = Stabilization::PD;
+          else if (velocity_block_stabilization_string == "symmetric")
+            velocity_block_stabilization = Stabilization::symmetric;
+          else if (velocity_block_stabilization_string == "none")
+            velocity_block_stabilization = Stabilization::none;
 
-        use_Newton_failsafe = prm.get_bool("Use Newton failsafe");
+          use_Newton_failsafe = prm.get_bool("Use Newton failsafe");
 
-        AssertThrow((!DEAL_II_VERSION_GTE(9,0,0) && !use_Newton_failsafe) || DEAL_II_VERSION_GTE(9,0,0),
-                    ExcMessage("The failsafe option can't be used with a deal.ii less then 9.0.0."));
+          AssertThrow((!DEAL_II_VERSION_GTE(9,0,0) && !use_Newton_failsafe) || DEAL_II_VERSION_GTE(9,0,0),
+                      ExcMessage("The failsafe option can't be used with a deal.ii less then 9.0.0."));
 
-        SPD_safety_factor = prm.get_double("SPD safety factor");
+          SPD_safety_factor = prm.get_double("SPD safety factor");
 
+        }
+        prm.leave_subsection ();
       }
       prm.leave_subsection ();
-    }
-    prm.leave_subsection ();
 
+    }
   }
 }
 

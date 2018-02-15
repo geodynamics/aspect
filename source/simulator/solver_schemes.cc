@@ -601,8 +601,8 @@ namespace aspect
               {
                 // start the solve over again and try with a stabilized version
                 pcout << "Solve failed and catched, try again with stabilisation" << std::endl;
-                newton_handler->set_preconditioner_stabilization(NewtonHandler<dim>::NewtonStabilization::SPD);
-                newton_handler->set_velocity_block_stabilization(NewtonHandler<dim>::NewtonStabilization::SPD);
+                newton_handler->set_preconditioner_stabilization(Newton::Parameters::Stabilization::SPD);
+                newton_handler->set_velocity_block_stabilization(Newton::Parameters::Stabilization::SPD);
                 rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
 
                 assemble_stokes_system();
