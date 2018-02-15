@@ -613,7 +613,7 @@ namespace aspect
                               (!assemble_newton_stokes_system ?
                                "   Assemble Stokes system" :
                                (assemble_newton_stokes_matrix ?
-                                (newton_handler->get_newton_derivative_scaling_factor() == 0 ?
+                                (newton_handler->parameters.newton_derivative_scaling_factor == 0 ?
                                  "   Assemble Stokes system picard" :
                                  "   Assemble Stokes system newton")
                                 :
