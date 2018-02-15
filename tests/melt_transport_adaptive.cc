@@ -73,15 +73,15 @@ namespace aspect
       {
         indicators = 0;
 
-        // create a vector in which we set the temperature block to
-        // be a finite element interpolation of the density.
-        // we do so by setting up a quadrature formula with the
-        // compaction pressure unit support points, then looping over these
-        // points and rescaling it, and writing
-        // the result into the output vector in the same order
-        // (because quadrature points and compaction pressure dofs are,
-        // by design of the quadrature formula, numbered in the
-        // same way)
+        // create a vector in which we set the compaction pressure block
+        // (that contains the scaled compaction pressure p_c_bar) to
+        // be a finite element interpolation of the (real) compaction pressure.
+        // we do so by setting up a quadrature formula and looping over these
+        // points, rescaling the compaction pressure, and writing
+        // the result into the output vector. As the scaling factor between
+        // the pressures is cell-wise constant (and the error indicator is
+        // a cellwise quantity too), we use a quadrature formula with only
+        // one point.
         LinearAlgebra::BlockVector vec_distributed (this->introspection().index_sets.system_partitioning,
                                                     this->get_mpi_communicator());
 

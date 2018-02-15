@@ -293,6 +293,57 @@ namespace aspect
 
 
     /**
+     * An initial conditions model for the solitary waves benchmark.
+     */
+    template <int dim>
+    class SolitaryWaveInitialCondition : public InitialComposition::Interface<dim>,
+      public ::aspect::SimulatorAccess<dim>
+    {
+      public:
+
+        /**
+         * Initialization function. Take references to the material model and
+         * get the compaction length, so that it can be used subsequently to
+         * compute the analytical solution for the shape of the solitary wave.
+         */
+        void
+        initialize ();
+
+        /**
+         * Return the boundary velocity as a function of position.
+         */
+        virtual
+        double
+        initial_composition (const Point<dim> &position, const unsigned int n_comp) const;
+
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+
+        double
+        get_amplitude () const;
+
+        double
+        get_background_porosity () const;
+
+        double
+        get_offset () const;
+
+      private:
+        double amplitude;
+        double background_porosity;
+        double offset;
+        double compaction_length;
+        bool read_solution;
+        std::string file_name;
+    };
+
+
+    /**
      * @note This benchmark only talks about the flow field, not about a
      * temperature field. All quantities related to the temperature are
      * therefore set to zero in the implementation of this class.
@@ -315,7 +366,16 @@ namespace aspect
 
         virtual double reference_darcy_coefficient () const
         {
-          return reference_permeability * pow(0.01, 3.0) / eta_f;
+          // Note that this number is based on the background porosity in the
+          // solitary wave initial condition.
+          const SolitaryWaveInitialCondition<dim> *initial_conditions =
+            this->get_initial_composition_manager().template find_initial_composition_model<SolitaryWaveInitialCondition<dim> >();
+
+          AssertThrow(initial_conditions != 0,
+                      ExcMessage("Material model Solitary Wave only works with the initial composition Solitary wave."));
+
+          return reference_permeability * pow(initial_conditions->get_background_porosity(), 3.0) / eta_f;
+
         }
 
         double length_scaling (const double porosity) const
@@ -447,55 +507,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    /**
-     * An initial conditions model for the solitary waves benchmark.
-     */
-    template <int dim>
-    class SolitaryWaveInitialCondition : public InitialComposition::Interface<dim>,
-      public ::aspect::SimulatorAccess<dim>
-    {
-      public:
 
-        /**
-         * Initialization function. Take references to the material model and
-         * get the compaction length, so that it can be used subsequently to
-         * compute the analytical solution for the shape of the solitary wave.
-         */
-        void
-        initialize ();
-
-        /**
-         * Return the boundary velocity as a function of position.
-         */
-        virtual
-        double
-        initial_composition (const Point<dim> &position, const unsigned int n_comp) const;
-
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-
-        double
-        get_amplitude () const;
-
-        double
-        get_background_porosity () const;
-
-        double
-        get_offset () const;
-
-      private:
-        double amplitude;
-        double background_porosity;
-        double offset;
-        double compaction_length;
-        bool read_solution;
-        std::string file_name;
-    };
 
     template <int dim>
     double
@@ -982,7 +994,7 @@ namespace aspect
          << ", " << std::abs(delta);
 
 
-      return std::make_pair("Errors e_f, e_p, e_c, delta:", os.str());
+      return std::make_pair("Errors e_f, e_p_c_bar, e_c, delta:", os.str());
     }
 
   }
