@@ -177,7 +177,7 @@ namespace aspect
 
   template <int dim>
   class TestMeltMaterial:
-    public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
+    public MaterialModel::MeltInterface<dim>
   {
     public:
       virtual bool is_compressible () const
@@ -268,7 +268,7 @@ namespace aspect
 
 
   template <int dim>
-  class RefFunction : public Function<dim>
+  class RefFunction : public Function<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
       RefFunction () : Function<dim>(dim+2) {}
@@ -288,8 +288,14 @@ namespace aspect
         values[7] = 0;
         values[8] = 0.1000000000e-1 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.20e1 * z, 0.2e1));
 
+        // We have to scale the compaction pressure solution to p_c_bar using sqrt(K_D / ref_K_D).
+        // K_D is equal to the porosity (as defined in the material model).
+        const double K_D = values[8];
+        const double ref_K_D = 0.01;
+        const double p_c_scale = std::sqrt(K_D / ref_K_D);
 
-
+        if (p_c_scale > 0)
+          values[3] /= p_c_scale;
       }
   };
 
@@ -324,6 +330,7 @@ namespace aspect
     Vector<float> cellwise_errors_u (this->get_triangulation().n_active_cells());
     Vector<float> cellwise_errors_p_f (this->get_triangulation().n_active_cells());
     Vector<float> cellwise_errors_p_c (this->get_triangulation().n_active_cells());
+    Vector<float> cellwise_errors_p_c_bar (this->get_triangulation().n_active_cells());
     Vector<float> cellwise_errors_u_f (this->get_triangulation().n_active_cells());
     Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
     Vector<float> cellwise_errors_porosity (this->get_triangulation().n_active_cells());
@@ -362,7 +369,7 @@ namespace aspect
     VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                        this->get_solution(),
                                        ref_func,
-                                       cellwise_errors_p_c,
+                                       cellwise_errors_p_c_bar,
                                        quadrature_formula,
                                        VectorTools::L2_norm,
                                        &comp_p_c);
@@ -381,12 +388,45 @@ namespace aspect
                                        VectorTools::L2_norm,
                                        &comp_u_f);
 
+
+    // Loop over all cells to compute the error for p_c from p_c_bar
+    const QGauss<dim> quadrature(this->get_parameters().stokes_velocity_degree+1);
+    FEValues<dim> fe_values (this->get_mapping(),
+                             this->get_fe(),
+                             quadrature,
+                             update_quadrature_points | update_values | update_gradients | update_JxW_values);
+
+    MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
+    MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
+
+    MeltHandler<dim>::create_material_model_outputs(out);
+    const double ref_K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->reference_darcy_coefficient();
+
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = this->get_dof_handler().begin_active(),
+    endc = this->get_dof_handler().end();
+    for (; cell!=endc; ++cell)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          in.reinit(fe_values, cell, this->introspection(), this->get_solution());
+
+          this->get_material_model().evaluate(in, out);
+
+          const double K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->darcy_coefficient(in, out, this->get_melt_handler(), true);
+          const double p_c_scale = std::sqrt(K_D / ref_K_D);
+
+          const unsigned int i = cell->active_cell_index();
+          cellwise_errors_p_c[i] = cellwise_errors_p_c_bar[i] * p_c_scale;
+        }
+
     std::ostringstream os;
     os << std::scientific
        << "ndofs= " << this->get_solution().size()
        << " u_L2= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_u.norm_sqr(),MPI_COMM_WORLD))
        << " p_L2= "  << std::sqrt(Utilities::MPI::sum(cellwise_errors_p.norm_sqr(),MPI_COMM_WORLD))
        << " p_f_L2= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_p_f.norm_sqr(),MPI_COMM_WORLD))
+       << " p_c_bar_L= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_p_c_bar.norm_sqr(),MPI_COMM_WORLD))
        << " p_c_L= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_p_c.norm_sqr(),MPI_COMM_WORLD))
        << " phi_L2= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_porosity.norm_sqr(),MPI_COMM_WORLD))
        << " u_f_L2= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_u_f.norm_sqr(),MPI_COMM_WORLD))
