@@ -2,12 +2,11 @@
 *** Resuming from snapshot!
 
 Number of active cells: 1,024 (on 6 levels)
-Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
+Number of degrees of freedom: 13,764 (9,539+4,225)
 
 *** Timestep 5:  t=5.61937e+06 seconds
    Solving temperature system... 19 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system... done.
 
    Postprocessing:
      Writing depth average:    output1.tmp/depth_average.gnuplot
@@ -17,7 +16,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 6:  t=6.90034e+06 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system... done.
 
    Postprocessing:
      Writing depth average:    output1.tmp/depth_average.gnuplot
@@ -27,7 +26,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 7:  t=8.2418e+06 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system... done.
 
    Postprocessing:
      Writing depth average:    output1.tmp/depth_average.gnuplot
@@ -37,7 +36,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 8:  t=9.64864e+06 seconds
    Solving temperature system... 20 iterations.
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system... done.
 
    Postprocessing:
      Writing depth average:    output1.tmp/depth_average.gnuplot
@@ -47,7 +46,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 9:  t=1.11265e+07 seconds
    Solving temperature system... 20 iterations.
-   Solving Stokes system... 31+0 iterations.
+   Solving Stokes system... done.
 
    Postprocessing:
      Writing depth average:    output1.tmp/depth_average.gnuplot
@@ -59,8 +58,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 10:  t=1.26816e+07 seconds
    Solving temperature system... 20 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 31+0 iterations.
+   Solving Stokes system... done.
 
    Postprocessing:
      Writing depth average:    output1.tmp/depth_average.gnuplot
@@ -69,12 +67,11 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      RMS, max velocity:        4.05e-09 m/s, 9.53e-09 m/s
 
 Number of active cells: 982 (on 6 levels)
-Number of degrees of freedom: 13,282 (8,156+1,048+4,078)
+Number of degrees of freedom: 13,282 (9,204+4,078)
 
 *** Timestep 11:  t=1.4e+07 seconds
    Solving temperature system... 19 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system... done.
 
    Postprocessing:
      Writing depth average:    output1.tmp/depth_average.gnuplot
