@@ -1894,7 +1894,7 @@ namespace aspect
           {
             new_linear_stokes_solver_tolerance = std::min(newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
                                                           std::max(0.9 * std::fabs(newton_residual*newton_residual)
-            /
+                                                                   /
                                                                    (newton_residual_old*newton_residual_old),
                                                                    0.9*linear_stokes_solver_tolerance*linear_stokes_solver_tolerance));
           }

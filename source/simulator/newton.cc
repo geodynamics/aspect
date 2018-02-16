@@ -146,30 +146,29 @@ namespace aspect
 
 
 
-  template <int dim>
-  std::string
-  NewtonHandler<dim>::
-  get_newton_stabilization_string(const Newton::Parameters::Stabilization preconditioner_stabilization) const
-  {
-    switch (preconditioner_stabilization)
-      {
-        case Newton::Parameters::Stabilization::SPD:
-          return "SPD";
-        case Newton::Parameters::Stabilization::PD:
-          return "PD";
-        case Newton::Parameters::Stabilization::symmetric:
-          return "symmetric";
-        case Newton::Parameters::Stabilization::none:
-          return "none";
-        default:
-          Assert(false,ExcNotImplemented());
-          return "";
-      }
-  }
-
-
   namespace Newton
   {
+    std::string
+    to_string(const Newton::Parameters::Stabilization preconditioner_stabilization)
+    {
+      switch (preconditioner_stabilization)
+        {
+          case Newton::Parameters::Stabilization::SPD:
+            return "SPD";
+          case Newton::Parameters::Stabilization::PD:
+            return "PD";
+          case Newton::Parameters::Stabilization::symmetric:
+            return "symmetric";
+          case Newton::Parameters::Stabilization::none:
+            return "none";
+          default:
+            Assert(false,ExcNotImplemented());
+            return "";
+        }
+    }
+
+
+
     void
     Parameters::
     declare_parameters (ParameterHandler &prm)

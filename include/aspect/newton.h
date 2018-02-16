@@ -109,6 +109,7 @@ namespace aspect
                  static_cast<int>(a) & static_cast<int>(b));
       }
 
+
       /**
        * Declare additional parameters that are needed for the Newton.
        * solver.
@@ -161,6 +162,14 @@ namespace aspect
       double              maximum_linear_stokes_solver_tolerance;
       double              SPD_safety_factor;
     };
+
+
+    /**
+     * Get a std::string describing the stabilization type used for the
+     * preconditioner.
+     */
+    std::string
+    to_string(const Newton::Parameters::Stabilization preconditioner_stabilization);
   }
 
 
@@ -185,12 +194,6 @@ namespace aspect
        * Newton solver.
        */
       static void create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output);
-
-      /**
-       * Get a std::string describing the stabilization type used for the
-       * preconditioner.
-       */
-      std::string get_newton_stabilization_string(const Newton::Parameters::Stabilization preconditioner_stabilization) const;
 
       /**
        * The object that stores the run-time parameters that control the Newton

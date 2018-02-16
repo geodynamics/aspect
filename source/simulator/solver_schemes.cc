@@ -580,9 +580,13 @@ namespace aspect
                                                             residual,
                                                             residual_old);
 
-                const std::string preconditioner_stabilization = newton_handler->get_newton_stabilization_string(newton_handler->parameters.preconditioner_stabilization);
-                const std::string velocity_block_stabilization = newton_handler->get_newton_stabilization_string(newton_handler->parameters.velocity_block_stabilization);
-                pcout << "   The linear solver tolerance is set to " << parameters.linear_stokes_solver_tolerance << ". Stabilization Preconditioner is " << preconditioner_stabilization << " and A block is " << velocity_block_stabilization << "." << std::endl;
+                pcout << "   The linear solver tolerance is set to "
+                      << parameters.linear_stokes_solver_tolerance
+                      << ". Stabilization Preconditioner is "
+                      << Newton::to_string(newton_handler->parameters.preconditioner_stabilization)
+                      << " and A block is "
+                      << Newton::to_string(newton_handler->parameters.velocity_block_stabilization)
+                      << "." << std::endl;
               }
           }
 
