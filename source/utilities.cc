@@ -2534,11 +2534,10 @@ namespace aspect
 
     template <int dim>
     SymmetricTensor<2,dim>
-    symmetric_independent_component_matrix (const unsigned int k)
+    nth_basis_for_symmetric_tensors (const unsigned int k)
     {
-      // somehow I need this, because otherwise it complains that I am passing 3 arguments and it only takes 2...
-      const bool boolian = k < SymmetricTensor<2,dim>::n_independent_components;
-      Assert(boolian, ExcMessage("The component is larger then the amount of independent components in the matrix.") );
+      Assert((k < SymmetricTensor<2,dim>::n_independent_components),
+             ExcMessage("The component is larger then the amount of independent components in the matrix.") );
 
       const TableIndices<2> indices_ij = SymmetricTensor<2,dim>::unrolled_to_component_indices (k);
 
@@ -2633,8 +2632,8 @@ namespace aspect
     template std_cxx11::array<double,2> convert_point_to_array<2>(const Point<2> &point);
     template std_cxx11::array<double,3> convert_point_to_array<3>(const Point<3> &point);
 
-    template SymmetricTensor<2,2> symmetric_independent_component_matrix (const unsigned int k);
-    template SymmetricTensor<2,3> symmetric_independent_component_matrix (const unsigned int k);
+    template SymmetricTensor<2,2> nth_basis_for_symmetric_tensors (const unsigned int k);
+    template SymmetricTensor<2,3> nth_basis_for_symmetric_tensors (const unsigned int k);
 
   }
 }
