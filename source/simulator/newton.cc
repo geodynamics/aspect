@@ -145,137 +145,30 @@ namespace aspect
   }
 
 
-  template <int dim>
-  double
-  NewtonHandler<dim>::
-  get_newton_derivative_scaling_factor() const
-  {
-    return parameters.newton_derivative_scaling_factor;
-  }
-
-
-  template <int dim>
-  void
-  NewtonHandler<dim>::
-  set_newton_derivative_scaling_factor(const double set_newton_derivative_scaling_factor)
-  {
-    parameters.newton_derivative_scaling_factor = set_newton_derivative_scaling_factor;
-  }
-
-  template <int dim>
-  Newton::Parameters::Stabilization
-  NewtonHandler<dim>::
-  get_preconditioner_stabilization() const
-  {
-    return parameters.preconditioner_stabilization;
-  }
-
-
-  template <int dim>
-  void
-  NewtonHandler<dim>::
-  set_preconditioner_stabilization(const Newton::Parameters::Stabilization preconditioner_stabilization_)
-  {
-    parameters.preconditioner_stabilization = preconditioner_stabilization_;
-  }
-
-  template <int dim>
-  Newton::Parameters::Stabilization
-  NewtonHandler<dim>::
-  get_velocity_block_stabilization() const
-  {
-    return parameters.velocity_block_stabilization;
-  }
-
-
-  template <int dim>
-  void
-  NewtonHandler<dim>::
-  set_velocity_block_stabilization(const Newton::Parameters::Stabilization velocity_block_stabilization_)
-  {
-    parameters.velocity_block_stabilization = velocity_block_stabilization_;
-  }
-
-  template <int dim>
-  bool
-  NewtonHandler<dim>::
-  get_use_Newton_failsafe()
-  {
-    return parameters.use_Newton_failsafe;
-  }
-
-  template <int dim>
-  double
-  NewtonHandler<dim>::
-  get_nonlinear_switch_tolerance()
-  {
-    return parameters.nonlinear_switch_tolerance;
-  }
-
-  template <int dim>
-  unsigned int
-  NewtonHandler<dim>::
-  get_max_pre_newton_nonlinear_iterations()
-  {
-    return parameters.max_pre_newton_nonlinear_iterations;
-  }
-
-  template <int dim>
-  unsigned int
-  NewtonHandler<dim>::
-  get_max_newton_line_search_iterations()
-  {
-    return parameters.max_newton_line_search_iterations;
-  }
-
-  template <int dim>
-  bool
-  NewtonHandler<dim>::
-  get_use_newton_residual_scaling_method()
-  {
-    return parameters.use_newton_residual_scaling_method;
-  }
-
-  template <int dim>
-  double
-  NewtonHandler<dim>::
-  get_maximum_linear_stokes_solver_tolerance()
-  {
-    return parameters.maximum_linear_stokes_solver_tolerance;
-  }
-
-  template <int dim>
-  double
-  NewtonHandler<dim>::
-  get_SPD_safety_factor() const
-  {
-    return parameters.SPD_safety_factor;
-  }
-
-  template <int dim>
-  std::string
-  NewtonHandler<dim>::
-  get_newton_stabilization_string(const Newton::Parameters::Stabilization preconditioner_stabilization) const
-  {
-    switch (preconditioner_stabilization)
-      {
-        case Newton::Parameters::Stabilization::SPD:
-          return "SPD";
-        case Newton::Parameters::Stabilization::PD:
-          return "PD";
-        case Newton::Parameters::Stabilization::symmetric:
-          return "symmetric";
-        case Newton::Parameters::Stabilization::none:
-          return "none";
-        default:
-          Assert(false,ExcNotImplemented());
-          return "";
-      }
-  }
-
 
   namespace Newton
   {
+    std::string
+    to_string(const Newton::Parameters::Stabilization preconditioner_stabilization)
+    {
+      switch (preconditioner_stabilization)
+        {
+          case Newton::Parameters::Stabilization::SPD:
+            return "SPD";
+          case Newton::Parameters::Stabilization::PD:
+            return "PD";
+          case Newton::Parameters::Stabilization::symmetric:
+            return "symmetric";
+          case Newton::Parameters::Stabilization::none:
+            return "none";
+          default:
+            Assert(false,ExcNotImplemented());
+            return "";
+        }
+    }
+
+
+
     void
     Parameters::
     declare_parameters (ParameterHandler &prm)

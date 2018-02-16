@@ -47,7 +47,7 @@ namespace aspect
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points           = scratch.finite_element_values.n_quadrature_points;
-      const double derivative_scaling_factor = this->get_newton_handler().get_newton_derivative_scaling_factor();
+      const double derivative_scaling_factor = this->get_newton_handler().parameters.newton_derivative_scaling_factor;
 
       // First loop over all dofs and find those that are in the Stokes system
       // save the component (pressure and dim velocities) each belongs to.
@@ -119,11 +119,12 @@ namespace aspect
               const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
               const SymmetricTensor<2,dim> strain_rate = scratch.material_model_inputs.strain_rate[q];
 
-              typename Newton::Parameters::Stabilization preconditioner_stabilization = this->get_newton_handler().get_preconditioner_stabilization();
+              const typename Newton::Parameters::Stabilization
+              preconditioner_stabilization = this->get_newton_handler().parameters.preconditioner_stabilization;
 
               // use the spd factor when the stabilization is PD or SPD
               const double alpha = (preconditioner_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none ?
-                                   Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, this->get_newton_handler().get_SPD_safety_factor())
+                                   Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, this->get_newton_handler().parameters.SPD_safety_factor)
                                    :
                                    1;
               // symmetrize when the stabilization is symmetric or SPD
@@ -166,7 +167,7 @@ namespace aspect
         }
 #if DEBUG
       {
-        if (this->get_newton_handler().get_preconditioner_stabilization() == Newton::Parameters::Stabilization::SPD)
+        if (this->get_newton_handler().parameters.preconditioner_stabilization == Newton::Parameters::Stabilization::SPD)
           {
             // regardless of whether we do or do not add the Newton
             // linearization terms, we ought to test whether the top-left
@@ -216,7 +217,7 @@ namespace aspect
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
-      const double derivative_scaling_factor = this->get_newton_handler().get_newton_derivative_scaling_factor();
+      const double derivative_scaling_factor = this->get_newton_handler().parameters.newton_derivative_scaling_factor;
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -305,11 +306,12 @@ namespace aspect
 
                   const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
                   const double viscosity_derivative_wrt_pressure = derivatives->viscosity_derivative_wrt_pressure[q];
-                  typename Newton::Parameters::Stabilization velocity_block_stabilization = this->get_newton_handler().get_velocity_block_stabilization();
+                  typename Newton::Parameters::Stabilization velocity_block_stabilization = this->get_newton_handler().parameters.velocity_block_stabilization;
 
                   // use the spd factor when the stabilization is PD or SPD
                   const double alpha =  (velocity_block_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none ?
-                                        Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, this->get_newton_handler().get_SPD_safety_factor())
+                                        Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate,
+                                                                           this->get_newton_handler().parameters.SPD_safety_factor)
                                         :
                                         1;
 
@@ -352,7 +354,7 @@ namespace aspect
 #if DEBUG
       if (scratch.rebuild_newton_stokes_matrix)
         {
-          if (this->get_newton_handler().get_velocity_block_stabilization() == Newton::Parameters::Stabilization::SPD)
+          if (this->get_newton_handler().parameters.velocity_block_stabilization == Newton::Parameters::Stabilization::SPD)
             {
               // regardless of whether we do or do not add the Newton
               // linearization terms, we ought to test whether the top-left
@@ -406,7 +408,7 @@ namespace aspect
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
-      const double derivative_scaling_factor = this->get_newton_handler().get_newton_derivative_scaling_factor();
+      const double derivative_scaling_factor = this->get_newton_handler().parameters.newton_derivative_scaling_factor;
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {

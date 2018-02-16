@@ -483,8 +483,8 @@ namespace aspect
         assemble_and_solve_temperature();
         assemble_and_solve_composition();
 
-        if (use_picard == true && (residual/initial_residual <= newton_handler->get_nonlinear_switch_tolerance() ||
-                                   nonlinear_iteration >= newton_handler->get_max_pre_newton_nonlinear_iterations()))
+        if (use_picard == true && (residual/initial_residual <= newton_handler->parameters.nonlinear_switch_tolerance ||
+                                   nonlinear_iteration >= newton_handler->parameters.max_pre_newton_nonlinear_iterations))
           {
             use_picard = false;
             pcout << "   Switching from defect correction form of Picard to the Newton solver scheme." << std::endl;
@@ -495,12 +495,13 @@ namespace aspect
              * just set it so the newton_derivative_scaling_factor goes from
              * zero to one when switching on the Newton solver.
              */
-            if (!newton_handler->get_use_newton_residual_scaling_method())
+            if (!newton_handler->parameters.use_newton_residual_scaling_method)
               newton_residual_for_derivative_scaling_factor = 0;
           }
 
-        newton_handler->set_newton_derivative_scaling_factor(std::max(0.0,
-                                                                      (1.0-(newton_residual_for_derivative_scaling_factor/switch_initial_residual))));
+        newton_handler->parameters.newton_derivative_scaling_factor
+          = (std::max(0.0,
+                      (1.0-(newton_residual_for_derivative_scaling_factor/switch_initial_residual))));
 
 
         /**
@@ -574,21 +575,25 @@ namespace aspect
               {
                 const bool EisenstatWalkerChoiceOne = true;
                 parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
-                                                            newton_handler->get_maximum_linear_stokes_solver_tolerance(),
+                                                            newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
                                                             parameters.linear_stokes_solver_tolerance,
                                                             stokes_residuals.second,
                                                             residual,
                                                             residual_old);
 
-                const std::string preconditioner_stabilization = newton_handler->get_newton_stabilization_string(newton_handler->get_preconditioner_stabilization());
-                const std::string velocity_block_stabilization = newton_handler->get_newton_stabilization_string(newton_handler->get_velocity_block_stabilization());
-                pcout << "   The linear solver tolerance is set to " << parameters.linear_stokes_solver_tolerance << ". Stabilization Preconditioner is " << preconditioner_stabilization << " and A block is " << velocity_block_stabilization << "." << std::endl;
+                pcout << "   The linear solver tolerance is set to "
+                      << parameters.linear_stokes_solver_tolerance
+                      << ". Stabilization Preconditioner is "
+                      << Newton::to_string(newton_handler->parameters.preconditioner_stabilization)
+                      << " and A block is "
+                      << Newton::to_string(newton_handler->parameters.velocity_block_stabilization)
+                      << "." << std::endl;
               }
           }
 
         build_stokes_preconditioner();
 
-        if (newton_handler->get_use_Newton_failsafe() == false)
+        if (newton_handler->parameters.use_Newton_failsafe == false)
           {
             stokes_residuals = solve_stokes();
           }
@@ -602,8 +607,8 @@ namespace aspect
               {
                 // start the solve over again and try with a stabilized version
                 pcout << "Solve failed and catched, try again with stabilisation" << std::endl;
-                newton_handler->set_preconditioner_stabilization(Newton::Parameters::Stabilization::SPD);
-                newton_handler->set_velocity_block_stabilization(Newton::Parameters::Stabilization::SPD);
+                newton_handler->parameters.preconditioner_stabilization = Newton::Parameters::Stabilization::SPD;
+                newton_handler->parameters.velocity_block_stabilization = Newton::Parameters::Stabilization::SPD;
                 rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
 
                 assemble_stokes_system();
@@ -621,7 +626,7 @@ namespace aspect
                       {
                         const bool EisenstatWalkerChoiceOne = true;
                         parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
-                                                                    newton_handler->get_maximum_linear_stokes_solver_tolerance(),
+                                                                    newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
                                                                     parameters.linear_stokes_solver_tolerance,
                                                                     stokes_residuals.second,
                                                                     residual,
@@ -708,13 +713,14 @@ namespace aspect
                 // Determine if the decrease is sufficient.
                 if (test_residual < (1.0 - alpha * lambda) * residual
                     ||
-                    line_search_iteration >= newton_handler->get_max_newton_line_search_iterations()
+                    line_search_iteration >= newton_handler->parameters.max_newton_line_search_iterations
                     ||
                     use_picard)
                   {
                     pcout << "      Relative nonlinear residual (total Newton system) after nonlinear iteration " << nonlinear_iteration+1
                           << ": " << test_residual/initial_residual << ", norm of the rhs: " << test_residual
-                          << ", newton_derivative_scaling_factor: " << newton_handler->get_newton_derivative_scaling_factor() << std::endl;
+                          << ", newton_derivative_scaling_factor: " << newton_handler->parameters.newton_derivative_scaling_factor
+                          << std::endl;
                     residual = test_residual;
                     break;
                   }
@@ -733,12 +739,12 @@ namespace aspect
                   }
 
                 line_search_iteration++;
-                Assert(line_search_iteration <= newton_handler->get_max_newton_line_search_iterations(),
+                Assert(line_search_iteration <= newton_handler->parameters.max_newton_line_search_iterations,
                        ExcMessage ("This tests the while condition. This condition should "
                                    "actually never be false, because the break statement "
                                    "above should have caught it."));
               }
-            while (line_search_iteration <= newton_handler->get_max_newton_line_search_iterations());
+            while (line_search_iteration <= newton_handler->parameters.max_newton_line_search_iterations);
             // The while condition should actually never be false, because the break statement above should have caught it.
           }
 
@@ -759,7 +765,7 @@ namespace aspect
              * on the improvement of the residual. This method was suggested
              * by Raid Hassani.
              */
-            if (newton_handler->get_use_newton_residual_scaling_method())
+            if (newton_handler->parameters.use_newton_residual_scaling_method)
               newton_residual_for_derivative_scaling_factor = test_residual;
             else
               newton_residual_for_derivative_scaling_factor = 0;
