@@ -240,7 +240,6 @@ namespace aspect
           for (; cell!=endc; ++cell)
             if (cell->is_locally_owned())
               {
-                const types::LevelInd found_cell(cell->level(),cell->index());
                 const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
                 // Add particles if necessary
