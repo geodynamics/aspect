@@ -450,7 +450,7 @@ namespace aspect
   const std::set<types::boundary_id> &
   SimulatorAccess<dim>::get_fixed_composition_boundary_indicators () const
   {
-    return simulator->parameters.fixed_composition_boundary_indicators;
+    return get_boundary_composition_manager().get_fixed_composition_boundary_indicators();
   }
 
 

@@ -287,11 +287,8 @@ namespace aspect
       boundary_temperature_manager.initialize_simulator (*this);
       boundary_temperature_manager.parse_parameters (prm);
 
-      if (!parameters.fixed_composition_boundary_indicators.empty())
-        {
-          boundary_composition_manager.initialize_simulator (*this);
-          boundary_composition_manager.parse_parameters (prm);
-        }
+      boundary_composition_manager.initialize_simulator (*this);
+      boundary_composition_manager.parse_parameters (prm);
 
       boundary_velocity_manager.initialize_simulator (*this);
       boundary_velocity_manager.parse_parameters (prm);
@@ -441,8 +438,8 @@ namespace aspect
           // Throw error if we are trying to use the same boundary for more than one boundary condition
           AssertThrow( is_element( (*p).first.first, boundary_temperature_manager.get_fixed_temperature_boundary_indicators() ) == false &&
                        is_element( (*p).first.second, boundary_temperature_manager.get_fixed_temperature_boundary_indicators() ) == false &&
-                       is_element( (*p).first.first, parameters.fixed_composition_boundary_indicators ) == false &&
-                       is_element( (*p).first.second, parameters.fixed_composition_boundary_indicators ) == false &&
+                       is_element( (*p).first.first, boundary_composition_manager.get_fixed_composition_boundary_indicators() ) == false &&
+                       is_element( (*p).first.second, boundary_composition_manager.get_fixed_composition_boundary_indicators() ) == false &&
                        is_element( (*p).first.first, boundary_indicator_lists[0] ) == false && // zero velocity
                        is_element( (*p).first.second, boundary_indicator_lists[0] ) == false && // zero velocity
                        is_element( (*p).first.first, boundary_indicator_lists[1] ) == false && // tangential velocity
@@ -476,17 +473,6 @@ namespace aspect
             AssertThrow (boundary_indicator_lists[i].empty(),
                          ExcMessage ("With solver type Advection only, one cannot set boundary conditions for velocity."));
         }
-
-
-      // now do the same for the fixed temperature indicators and the
-      // compositional indicators
-      for (typename std::set<types::boundary_id>::const_iterator
-           p = parameters.fixed_composition_boundary_indicators.begin();
-           p != parameters.fixed_composition_boundary_indicators.end(); ++p)
-        AssertThrow (all_boundary_indicators.find (*p)
-                     != all_boundary_indicators.end(),
-                     ExcMessage ("One of the fixed boundary composition indicators listed in the input file "
-                                 "is not used by the geometry model."));
     }
 
     // Make sure we only have a prescribed Stokes plugin if needed
@@ -955,23 +941,26 @@ namespace aspect
         // there
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
           for (std::set<types::boundary_id>::const_iterator
-               p = parameters.fixed_composition_boundary_indicators.begin();
-               p != parameters.fixed_composition_boundary_indicators.end(); ++p)
+               p = boundary_composition_manager.get_fixed_composition_boundary_indicators().begin();
+               p != boundary_composition_manager.get_fixed_composition_boundary_indicators().end(); ++p)
             {
-              Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
-                      ExcInternalError());
-              VectorTools::interpolate_boundary_values (*mapping,
-                                                        dof_handler,
-                                                        *p,
-                                                        VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryComposition::Manager<dim>::boundary_composition,
-                                                            std_cxx11::cref(boundary_composition_manager),
+              if (boundary_composition_manager.has_boundary_composition(*p,c))
+                {
+                  Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
+                          ExcInternalError());
+                  VectorTools::interpolate_boundary_values (*mapping,
+                                                            dof_handler,
                                                             *p,
-                                                            std_cxx11::_1,
-                                                            c),
-                                                            introspection.component_masks.compositional_fields[c].first_selected_component(),
-                                                            introspection.n_components),
-                                                        current_constraints,
-                                                        introspection.component_masks.compositional_fields[c]);
+                                                            VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryComposition::Manager<dim>::boundary_composition,
+                                                                std_cxx11::cref(boundary_composition_manager),
+                                                                *p,
+                                                                std_cxx11::_1,
+                                                                c),
+                                                                introspection.component_masks.compositional_fields[c].first_selected_component(),
+                                                                introspection.n_components),
+                                                            current_constraints,
+                                                            introspection.component_masks.compositional_fields[c]);
+                }
             }
       }
 

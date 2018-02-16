@@ -1,0 +1,21 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for Stokes solver
+# 12: Velocity iterations in Stokes preconditioner
+# 13: Schur complement iterations in Stokes preconditioner
+# 14: Minimal value for composition crust
+# 15: Maximal value for composition crust
+# 16: Global mass for composition crust
+# 17: Minimal value for composition mantle
+# 18: Maximal value for composition mantle
+# 19: Global mass for composition mantle
+# 20: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 2178 0 0 0 31 32 32 -1.50000000e+00 1.50000000e+00 5.72906641e+11 -4.00000000e+00 1.50000000e+00 -3.77368750e+11 output-boundary_composition_selective_list/solution/solution-00000 

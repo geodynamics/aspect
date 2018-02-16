@@ -470,29 +470,6 @@ namespace aspect
                          "be used for computing the additional pressures and the melt velocity, "
                          "and has a different advection equation than other compositional fields, "
                          "as it is effectively advected with the melt velocity.");
-      prm.declare_entry ("Fixed composition boundary indicators", "",
-                         Patterns::List (Patterns::Anything()),
-                         "A comma separated list of names denoting those boundaries "
-                         "on which the composition is fixed and described by the "
-                         "boundary composition object selected in its own section "
-                         "of this input file. All boundary indicators used by the geometry "
-                         "but not explicitly listed here will end up with no-flux "
-                         "(insulating) boundary conditions."
-                         "\n\n"
-                         "The names of the boundaries listed here can either by "
-                         "numbers (in which case they correspond to the numerical "
-                         "boundary indicators assigned by the geometry object), or they "
-                         "can correspond to any of the symbolic names the geometry object "
-                         "may have provided for each part of the boundary. You may want "
-                         "to compare this with the documentation of the geometry model you "
-                         "use in your model."
-                         "\n\n"
-                         "This parameter only describes which boundaries have a fixed "
-                         "composition, but not what composition should hold on these "
-                         "boundaries. The latter piece of information needs to be "
-                         "implemented in a plugin in the BoundaryComposition "
-                         "group, unless an existing implementation in this group "
-                         "already provides what you want.");
       prm.declare_entry ("Free surface boundary indicators", "",
                          Patterns::List (Patterns::Anything()),
                          "A comma separated list of names denoting those boundaries "
@@ -1510,23 +1487,6 @@ namespace aspect
   {
     prm.enter_subsection ("Model settings");
     {
-      try
-        {
-          const std::vector<types::boundary_id> x_fixed_composition_boundary_indicators
-            = geometry_model.translate_symbolic_boundary_names_to_ids (Utilities::split_string_list
-                                                                       (prm.get ("Fixed composition boundary indicators")));
-          fixed_composition_boundary_indicators
-            = std::set<types::boundary_id> (x_fixed_composition_boundary_indicators.begin(),
-                                            x_fixed_composition_boundary_indicators.end());
-        }
-      catch (const std::string &error)
-        {
-          AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Fixed composition "
-                                          "boundary indicators>, there was an error. Specifically, "
-                                          "the conversion function complained as follows: "
-                                          + error));
-        }
-
       try
         {
           const std::vector<types::boundary_id> x_free_surface_boundary_indicators

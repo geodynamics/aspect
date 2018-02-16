@@ -286,10 +286,7 @@ namespace aspect
             != this->get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators().end())
            && (advection_field.is_temperature()))
           ||
-          (( parameters.fixed_composition_boundary_indicators.find(
-               face->boundary_id()
-             )
-             != parameters.fixed_composition_boundary_indicators.end())
+          (this->get_boundary_composition_manager().has_boundary_composition(face->boundary_id(), advection_field.compositional_variable)
            && (!advection_field.is_temperature())))
         {
           /*
