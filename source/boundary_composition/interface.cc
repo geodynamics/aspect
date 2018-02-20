@@ -140,14 +140,11 @@ namespace aspect
           Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
                                                   boundary_composition_names.size(),
                                                   "List of model operators");
+
         boundary_composition_operators = Utilities::create_model_operator_list(model_operator_names,
                                                                                "Boundary composition model/List of model operators");
-      }
-      prm.leave_subsection ();
 
-      // Now, figure out which model is used for which boundary and which composition
-      prm.enter_subsection("Model settings");
-      {
+        // Now, figure out which model is used for which boundary and which composition
         boundary_composition_maps.resize(this->n_compositional_fields());
 
         const std::vector<std::string> x_fixed_composition_boundary_indicators
@@ -175,7 +172,7 @@ namespace aspect
               }
             catch (const std::string &error)
               {
-                AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Prescribed "
+                AssertThrow (false, ExcMessage ("While parsing the entry <Boundary composition model/Prescribed "
                                                 "composition indicators>, there was an error. Specifically, "
                                                 "the conversion function complained as follows: "
                                                 + error));
@@ -188,7 +185,7 @@ namespace aspect
                   {
                     AssertThrow(boundary_composition_maps[composition].find(boundary_id) == boundary_composition_maps[composition].end(),
                                 ExcMessage("You can not specify a single boundary indicator in the "
-                                           "<Model settings/Prescribed composition indicators> parameter "
+                                           "<Boundary composition model/Prescribed composition indicators> parameter "
                                            "if you already specified something for the same boundary. "
                                            "For each boundary, either use all "
                                            "plugins by only specifying the boundary indicator, or select one or "
@@ -223,7 +220,7 @@ namespace aspect
                             const unsigned int existing_plugin_position = relevant_plugins.first->second;
                             AssertThrow(plugin_position != existing_plugin_position,
                                         ExcMessage("You specified the same plugin multiple times for "
-                                                   "the same boundary in the <Model settings/Fixed "
+                                                   "the same boundary in the <Boundary composition model/Fixed "
                                                    "composition boundary indicators>. This is not supported."));
                           }
 
@@ -243,7 +240,7 @@ namespace aspect
                         AssertThrow(boundary_composition_maps[composition].count(boundary_id) == 0,
                                     ExcMessage("You specified all plugins for composition " + split_parts[1] +
                                                " for boundary " + split_parts[0] +
-                                               " in the <Model settings/Fixed "
+                                               " in the <Boundary composition model/Fixed "
                                                "composition boundary indicators>, but this composition already has "
                                                "boundary conditions assigned for this boundary. Check your "
                                                "input file for double assignments."));
@@ -261,7 +258,7 @@ namespace aspect
 
                         AssertThrow(plugin_name != boundary_composition_names.end(),
                                     ExcMessage("The plugin name " + split_parts[2] + " in the parameter "
-                                               "<Model settings/Fixed composition boundary indicators> has to be one of "
+                                               "<Boundary composition model/Fixed composition boundary indicators> has to be one of "
                                                "the selected plugin names in the parameter "
                                                "<Boundary composition model/List of model names>. This seems to be not the "
                                                "case. Please check your input file."));
@@ -278,7 +275,7 @@ namespace aspect
                             const unsigned int existing_plugin_position = relevant_plugins.first->second;
                             AssertThrow(plugin_position != existing_plugin_position,
                                         ExcMessage("You specified the same plugin multiple times for "
-                                                   "the same boundary in the <Model settings/Fixed "
+                                                   "the same boundary in the <Boundary composition model/Fixed "
                                                    "composition boundary indicators>. This is not supported."));
                           }
 
@@ -400,34 +397,6 @@ namespace aspect
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection ("Model settings");
-      {
-        prm.declare_entry ("Fixed composition boundary indicators", "",
-                           Patterns::List (Patterns::Anything()),
-                           "A comma separated list of names denoting those boundaries "
-                           "on which the composition is fixed and described by the "
-                           "boundary composition object selected in its own section "
-                           "of this input file. All boundary indicators used by the geometry "
-                           "but not explicitly listed here will end up with no-flux "
-                           "(insulating) boundary conditions."
-                           "\n\n"
-                           "The names of the boundaries listed here can either by "
-                           "numbers (in which case they correspond to the numerical "
-                           "boundary indicators assigned by the geometry object), or they "
-                           "can correspond to any of the symbolic names the geometry object "
-                           "may have provided for each part of the boundary. You may want "
-                           "to compare this with the documentation of the geometry model you "
-                           "use in your model."
-                           "\n\n"
-                           "This parameter only describes which boundaries have a fixed "
-                           "composition, but not what composition should hold on these "
-                           "boundaries. The latter piece of information needs to be "
-                           "implemented in a plugin in the BoundaryComposition "
-                           "group, unless an existing implementation in this group "
-                           "already provides what you want.");
-      }
-      prm.leave_subsection();
-
       // declare the entry in the parameter file
       prm.enter_subsection ("Boundary composition model");
       {
@@ -452,6 +421,30 @@ namespace aspect
                           "will be used to append the listed composition models onto "
                           "the previous models. If only one operator is given, "
                           "the same operator is applied to all models.");
+
+        prm.declare_entry ("Fixed composition boundary indicators", "",
+                           Patterns::List (Patterns::Anything()),
+                           "A comma separated list of names denoting those boundaries "
+                           "on which the composition is fixed and described by the "
+                           "boundary composition object selected in its own section "
+                           "of this input file. All boundary indicators used by the geometry "
+                           "but not explicitly listed here will end up with no-flux "
+                           "(insulating) boundary conditions."
+                           "\n\n"
+                           "The names of the boundaries listed here can either by "
+                           "numbers (in which case they correspond to the numerical "
+                           "boundary indicators assigned by the geometry object), or they "
+                           "can correspond to any of the symbolic names the geometry object "
+                           "may have provided for each part of the boundary. You may want "
+                           "to compare this with the documentation of the geometry model you "
+                           "use in your model."
+                           "\n\n"
+                           "This parameter only describes which boundaries have a fixed "
+                           "composition, but not what composition should hold on these "
+                           "boundaries. The latter piece of information needs to be "
+                           "implemented in a plugin in the BoundaryComposition "
+                           "group, unless an existing implementation in this group "
+                           "already provides what you want.");
       }
       prm.leave_subsection ();
 

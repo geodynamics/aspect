@@ -214,8 +214,33 @@ namespace aspect
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection ("Model settings");
+      // declare the entry in the parameter file
+      prm.enter_subsection ("Boundary temperature model");
       {
+        const std::string pattern_of_names
+          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+
+        prm.declare_entry("List of model names",
+                          "",
+                          Patterns::MultipleSelection(pattern_of_names),
+                          "A comma-separated list of boundary temperature models that "
+                          "will be used to set the boundary temperature. "
+                          "These plugins are loaded in the order given, and modify the "
+                          "boundary temperature via the operators listed "
+                          "in 'List of model operators'. Which boundary model "
+                          "is used for which boundary is controlled by the "
+                          "'Boundary temperature model/Fixed temperature boundary indicators' parameter.\n\n"
+                          "The following boundary temperature models are available:\n\n"
+                          +
+                          std_cxx11::get<dim>(registered_plugins).get_description_string());
+
+        prm.declare_entry("List of model operators", "add",
+                          Patterns::MultipleSelection("add|subtract|minimum|maximum"),
+                          "A comma-separated list of operators that "
+                          "will be used to append the listed temperature models onto "
+                          "the previous models. If only one operator is given, "
+                          "the same operator is applied to all models.");
+
         prm.declare_entry ("Fixed temperature boundary indicators", "",
                            Patterns::List (Patterns::Anything()),
                            "A comma separated list of names denoting those boundaries "
@@ -247,35 +272,6 @@ namespace aspect
                            "case all given plugins will be combined to compute the boundary "
                            "temperature.");
       }
-      prm.leave_subsection();
-
-      // declare the entry in the parameter file
-      prm.enter_subsection ("Boundary temperature model");
-      {
-        const std::string pattern_of_names
-          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
-
-        prm.declare_entry("List of model names",
-                          "",
-                          Patterns::MultipleSelection(pattern_of_names),
-                          "A comma-separated list of boundary temperature models that "
-                          "will be used to set the boundary temperature. "
-                          "These plugins are loaded in the order given, and modify the "
-                          "boundary temperature via the operators listed "
-                          "in 'List of model operators'. Which boundary model "
-                          "is used for which boundary is controlled by the "
-                          "'Model settings/Fixed temperature boundary indicators' parameter.\n\n"
-                          "The following boundary temperature models are available:\n\n"
-                          +
-                          std_cxx11::get<dim>(registered_plugins).get_description_string());
-
-        prm.declare_entry("List of model operators", "add",
-                          Patterns::MultipleSelection("add|subtract|minimum|maximum"),
-                          "A comma-separated list of operators that "
-                          "will be used to append the listed temperature models onto "
-                          "the previous models. If only one operator is given, "
-                          "the same operator is applied to all models.");
-      }
       prm.leave_subsection ();
 
       std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
@@ -306,12 +302,8 @@ namespace aspect
                                              boundary_temperature_names.size(),
                                              "List of model operators"),
                                            "Boundary temperature model/List of model operators");
-      }
-      prm.leave_subsection ();
 
-      // Finally, figure out which model is used for which boundary
-      prm.enter_subsection("Model settings");
-      {
+        // Finally, figure out which model is used for which boundary
         const std::vector<std::string> x_fixed_temperature_boundary_indicators
           = Utilities::split_string_list (prm.get ("Fixed temperature boundary indicators"));
 
@@ -332,7 +324,7 @@ namespace aspect
               }
             catch (const std::string &error)
               {
-                AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Prescribed "
+                AssertThrow (false, ExcMessage ("While parsing the entry <Boundary temperature model/Prescribed "
                                                 "temperature indicators>, there was an error. Specifically, "
                                                 "the conversion function complained as follows: "
                                                 + error));
@@ -343,7 +335,7 @@ namespace aspect
               {
                 AssertThrow(boundary_temperature_map.find(boundary_id) == boundary_temperature_map.end(),
                             ExcMessage("You can not specify a single boundary indicator in the "
-                                       "<Model settings/Prescribed temperature indicators> parameter "
+                                       "<Boundary temperature model/Prescribed temperature indicators> parameter "
                                        "if you already specified something for the same boundary. "
                                        "For each boundary, either use all "
                                        "plugins by only specifying the boundary indicator, or select one or "
@@ -363,7 +355,7 @@ namespace aspect
 
                 AssertThrow(plugin_name != boundary_temperature_names.end(),
                             ExcMessage("The plugin name " + split_parts[1] + " in the parameter "
-                                       "<Model settings/Fixed temperature boundary indicators> has to be one of "
+                                       "<Boundary temperature model/Fixed temperature boundary indicators> has to be one of "
                                        "the selected plugin names in the parameter "
                                        "<Boundary temperature model/List of model names>. This seems to be not the "
                                        "case. Please check your input file."));
@@ -382,7 +374,7 @@ namespace aspect
                       const unsigned int existing_plugin_position = relevant_plugins.first->second;
                       AssertThrow(plugin_position != existing_plugin_position,
                                   ExcMessage("You specified the same plugin multiple times for "
-                                             "the same boundary in the <Model settings/Fixed "
+                                             "the same boundary in the <Boundary temperature model/Fixed "
                                              "temperature boundary indicators>. This is not supported."));
                     }
                 }
@@ -392,7 +384,7 @@ namespace aspect
               }
             else
               AssertThrow(false,
-                          ExcMessage("Each entry in <Model settings/Fixed "
+                          ExcMessage("Each entry in <Boundary temperature model/Fixed "
                                      "temperature boundary indicators> has to be either "
                                      "a boundary name or a pair of boundary name : plugin name"));
           }

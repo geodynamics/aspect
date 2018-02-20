@@ -184,7 +184,7 @@ namespace aspect
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection ("Model settings");
+      prm.enter_subsection ("Boundary velocity model");
       {
         prm.declare_entry ("Prescribed velocity boundary indicators", "",
                            Patterns::Map (Patterns::Anything(),
@@ -261,7 +261,7 @@ namespace aspect
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection ("Model settings");
+      prm.enter_subsection ("Boundary velocity model");
       {
         try
           {
@@ -274,7 +274,7 @@ namespace aspect
           }
         catch (const std::string &error)
           {
-            AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Zero velocity "
+            AssertThrow (false, ExcMessage ("While parsing the entry <Boundary velocity model/Zero velocity "
                                             "boundary indicators>, there was an error. Specifically, "
                                             "the conversion function complained as follows: "
                                             + error));
@@ -291,7 +291,7 @@ namespace aspect
           }
         catch (const std::string &error)
           {
-            AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Tangential velocity "
+            AssertThrow (false, ExcMessage ("While parsing the entry <Boundary velocity model/Tangential velocity "
                                             "boundary indicators>, there was an error. Specifically, "
                                             "the conversion function complained as follows: "
                                             + error));
@@ -371,7 +371,7 @@ namespace aspect
               }
             catch (const std::string &error)
               {
-                AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Prescribed "
+                AssertThrow (false, ExcMessage ("While parsing the entry <Boundary velocity model/Prescribed "
                                                 "velocity indicators>, there was an error. Specifically, "
                                                 "the conversion function complained as follows: "
                                                 + error));
