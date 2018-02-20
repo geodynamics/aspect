@@ -1060,6 +1060,15 @@ namespace aspect
      * entry in the list must match one of the allowed operations.
      */
     std::vector<Operator> create_model_operator_list(const std::vector<std::string> &operator_names);
+
+    /**
+     * A function that returns a SymmetricTensor, whose entries are zero, except for
+     * the k'th component, which is set to one. If k is not on the main diagonal the
+     * resulting tensor is symmetrized.
+     */
+    template <int dim>
+    SymmetricTensor<2,dim> nth_basis_for_symmetric_tensors (const unsigned int k);
+
   }
 }
 
