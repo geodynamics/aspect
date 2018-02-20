@@ -99,13 +99,8 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template struct SimulatorSignals<dim>; \
-  namespace internals {\
-    namespace SimulatorSignals {\
-      template void call_connector_functions<dim> (aspect::SimulatorSignals<dim> &signals);\
-    }\
-  }\
-   
+  template struct SimulatorSignals<dim>;
+
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }
