@@ -605,10 +605,9 @@ namespace aspect
       {
         // If the velocity is zero and we either do not compute the conduction
         // timestep or do not have any conduction, then it is somewhat
-        // arbitrary what time step we should choose. In that case, do as if
-        // the velocity was one
-        new_time_step = (parameters.CFL_number /
-                         (parameters.temperature_degree * 1));
+        // arbitrary what time step we should choose. In that case, set the time
+        // step to the 'Maximum time step'.
+        new_time_step = parameters.maximum_time_step;
       }
 
     // make sure that the timestep doesn't increase too fast
