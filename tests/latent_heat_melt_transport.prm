@@ -118,6 +118,7 @@ subsection Material model
     set Surface solidus               = 2500
     set Pressure solidus change       = -1e-7
     set Exponential melt weakening factor = 0.0
+    set Melting time scale for operator splitting = 2.400384061e15
   end
 end
 

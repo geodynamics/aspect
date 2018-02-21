@@ -133,6 +133,7 @@ namespace aspect
         bool model_is_compressible;
         bool fractional_melting;
         double freezing_rate;
+        double melting_time_scale;
 
         /**
          * Parameters for anhydrous melting of peridotite after Katz, 2003

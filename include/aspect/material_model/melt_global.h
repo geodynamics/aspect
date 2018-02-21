@@ -131,6 +131,7 @@ namespace aspect
         double compressibility;
         double melt_compressibility;
         bool include_melting_and_freezing;
+        double melting_time_scale;
 
         // entropy change upon melting
         double peridotite_melting_entropy_change;

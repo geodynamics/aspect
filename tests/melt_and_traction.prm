@@ -221,6 +221,9 @@ subsection Material model
     # model this using a simplified, linear relationship, saying that to melt 100%
     # of the rock the temperature has to be 200 K higher than to melt it initially.
     set Depletion solidus change          = 200
+
+    set Melting time scale for operator splitting = 1e100
+    set Include melting and freezing      = false
   end
 end
 
