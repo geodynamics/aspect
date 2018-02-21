@@ -19,8 +19,6 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
        aspect::Assemblers::Manager<dim> &,
        std::string averaging_parameter)
 {
-  // Prepare NewtonHandler for test
-  const_cast<aspect::NewtonHandler<dim> &> (simulator_access.get_newton_handler()).set_newton_derivative_scaling_factor(1.0);
 
   std::cout << std::endl << "Testing ViscoPlastic derivatives against analytical derivatives for averaging parameter " << averaging_parameter << std::endl;
 
@@ -256,9 +254,6 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
     {
       std::cout << "OK" << std::endl;
     }
-
-  // Restore NewtonHandler state after test
-  const_cast<aspect::NewtonHandler<dim> &> (simulator_access.get_newton_handler()).set_newton_derivative_scaling_factor(0.0);
 
 }
 
