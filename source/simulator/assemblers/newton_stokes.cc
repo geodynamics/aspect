@@ -34,6 +34,8 @@ namespace aspect
       NewtonHandler<dim>::create_material_model_outputs(outputs);
     }
 
+
+
     template <int dim>
     void
     NewtonStokesPreconditioner<dim>::
@@ -111,7 +113,6 @@ namespace aspect
             }
           else
             {
-
               const MaterialModel::MaterialModelDerivatives<dim> *derivatives = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
 
               AssertThrow(derivatives != NULL, ExcMessage ("Error: The newton method requires the derivatives"));
@@ -124,7 +125,8 @@ namespace aspect
 
               // use the spd factor when the stabilization is PD or SPD
               const double alpha = (preconditioner_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none ?
-                                   Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate, this->get_newton_handler().parameters.SPD_safety_factor)
+                                   Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate,
+                                                                      this->get_newton_handler().parameters.SPD_safety_factor)
                                    :
                                    1;
               // symmetrize when the stabilization is symmetric or SPD
@@ -137,11 +139,11 @@ namespace aspect
                         {
                           data.local_matrix(i, j) += ((2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
                                                       + derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate
-                                                                                             + scratch.grads_phi_u[j] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate)
+                                                                                             +
+                                                                                             scratch.grads_phi_u[j] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate)
                                                       + one_over_eta * this->get_pressure_scaling()
                                                       * this->get_pressure_scaling()
-                                                      * (scratch.phi_p[i] * scratch
-                                                         .phi_p[j]))
+                                                      * (scratch.phi_p[i] * scratch.phi_p[j]))
                                                      * JxW;
                         }
                 }
