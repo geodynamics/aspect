@@ -246,6 +246,15 @@ namespace aspect
                              "$0\\le \\alpha \\le 1$.)  On the other hand, we also want to stay away from $1+\\alpha x=0$, and so modify the choice of "
                              "$\\alpha$ to be $1$ if $x\\ge -c$, and $\\alpha=-\\frac cx$ with a $c$ between zero and one. This way, if $c<1$, we are "
                              "assured that $1-\\alpha x>c$, i.e., bounded away from zero.");
+
+          prm.declare_entry ("Use Eisenstat Walker method for Picard iterations", "false",
+                             Patterns::Bool(),
+                             "If set to true, the Picard iteration uses the Eisenstat Walker method to determine how accurately linear systems need "
+                             "to be solved. The Picard iteration is used, for example, in the first few iterations of the Newton method before the "
+                             "matrix is built including derivatives of the model, since the Picard iteration generally converges even from points "
+                             "where Newton's method does not. "
+                             "\n\n"
+                             "Once derivatives are used in a Newton method, \aspect{} always uses the Eisenstat Walker method.");
         }
         prm.leave_subsection ();
       }
@@ -293,6 +302,7 @@ namespace aspect
                       ExcMessage("The failsafe option can't be used with a deal.ii less then 9.0.0."));
 
           SPD_safety_factor = prm.get_double("SPD safety factor");
+          use_Eisenstat_Walker_method_for_Picard_iterations = prm.get_bool("Use Eisenstat Walker method for Picard iterations");
 
         }
         prm.leave_subsection ();

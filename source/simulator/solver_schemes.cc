@@ -571,7 +571,7 @@ namespace aspect
             pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
             residual = std::sqrt(velocity_residual * velocity_residual + pressure_residual * pressure_residual);
 
-            if (!use_picard)
+            if (!use_picard || newton_handler->parameters.use_Eisenstat_Walker_method_for_Picard_iterations)
               {
                 const bool EisenstatWalkerChoiceOne = true;
                 parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
@@ -583,11 +583,16 @@ namespace aspect
 
                 pcout << "   The linear solver tolerance is set to "
                       << parameters.linear_stokes_solver_tolerance
-                      << ". Stabilization Preconditioner is "
-                      << Newton::to_string(newton_handler->parameters.preconditioner_stabilization)
-                      << " and A block is "
-                      << Newton::to_string(newton_handler->parameters.velocity_block_stabilization)
-                      << "." << std::endl;
+                      << ". ";
+                if (!use_picard)
+                  {
+                    pcout << "Stabilization Preconditioner is "
+                          << Newton::to_string(newton_handler->parameters.preconditioner_stabilization)
+                          << " and A block is "
+                          << Newton::to_string(newton_handler->parameters.velocity_block_stabilization)
+                          << ".";
+                  }
+                pcout << std::endl;
               }
           }
 
