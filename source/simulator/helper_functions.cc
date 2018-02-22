@@ -603,12 +603,12 @@ namespace aspect
 
     if (new_time_step == std::numeric_limits<double>::max())
       {
-        // If the velocity is zero and we either do not compute the conduction
-        // timestep or do not have any conduction, then it is somewhat
-        // arbitrary what time step we should choose. In that case, do as if
-        // the velocity was one
-        new_time_step = (parameters.CFL_number /
-                         (parameters.temperature_degree * 1));
+        // In some models the velocity is zero, either because that is the prescribed
+        // Stokes solution, or just because there is no buoyancy and nothing is moving.
+        // If this is the case, and if we either do not compute the conduction time
+        // step or do not have any conduction, it is somewhat arbitrary what time step
+        // we should choose. In that case, set the time step to the 'Maximum time step'.
+        new_time_step = parameters.maximum_time_step;
       }
 
     // make sure that the timestep doesn't increase too fast
