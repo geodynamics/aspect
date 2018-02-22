@@ -31,6 +31,9 @@ namespace aspect
     void
     NewtonInterface<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
+      if (this->get_newton_handler().parameters.newton_derivative_scaling_factor == 0)
+        return;
+
       NewtonHandler<dim>::create_material_model_outputs(outputs);
     }
 
