@@ -1,0 +1,27 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Minimal value for composition porosity
+# 16: Maximal value for composition porosity
+# 17: Global mass for composition porosity
+# 18: Minimal value for composition peridotite
+# 19: Maximal value for composition peridotite
+# 20: Global mass for composition peridotite
+# 21: Minimal temperature (K)
+# 22: Average temperature (K)
+# 23: Maximal temperature (K)
+# 24: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 2178 1 0 0 0 0 0 0 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00020000e+03 1.00020000e+03 1.00020000e+03 output-melting_rate_operator_splitting/solution/solution-00000 
+1 1.000000000000e+05 1.000000000000e+05 256 2467 1089 2178 1 0 0 0 0 0 0 9.99699879e-02 9.99699879e-02 9.99699879e+08 9.99699879e-02 9.99699879e-02 9.99699879e+08 1.00009997e+03 1.00009997e+03 1.00009997e+03 output-melting_rate_operator_splitting/solution/solution-00001 
+2 2.000000000000e+05 1.000000000000e+05 256 2467 1089 2178 1 0 0 0 0 0 0 9.99699879e-02 9.99699879e-02 9.99699879e+08 9.99699879e-02 9.99699879e-02 9.99699879e+08 1.00009997e+03 1.00009997e+03 1.00009997e+03 output-melting_rate_operator_splitting/solution/solution-00002 

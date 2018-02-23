@@ -158,7 +158,7 @@ namespace aspect
           out.densities[i] = (reference_rho_s + delta_rho) * temperature_dependence
                              * std::exp(compressibility * (in.pressure[i] - this->get_surface_pressure()));
 
-          if (this->include_melt_transport() && include_melting_and_freezing)
+          if (this->include_melt_transport() && include_melting_and_freezing && in.strain_rate.size())
             {
               AssertThrow(this->introspection().compositional_name_exists("peridotite"),
                           ExcMessage("Material model Melt simple only works if there is a "
@@ -169,26 +169,28 @@ namespace aspect
               const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
               const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
 
-              // calculate the melting rate as difference between the equilibrium melt fraction
-              // and the solution of the previous time step
-              // solidus is lowered by previous melting events (fractional melting)
+              // Calculate the melting rate as difference between the equilibrium melt fraction
+              // and the solution of the previous time step (or the current solution, in case
+              // operator splitting is used).
+              // The solidus is lowered by previous melting events (fractional melting).
               const double eq_melt_fraction = melt_fraction(in.temperature[i],
                                                             this->get_adiabatic_conditions().pressure(in.position[i]),
                                                             in.composition[i][peridotite_idx] - in.composition[i][porosity_idx]);
-              double melting_rate = eq_melt_fraction - old_porosity[i];
+              double porosity_change = eq_melt_fraction - old_porosity[i];
 
               // do not allow negative porosity
-              if (old_porosity[i] + melting_rate < 0)
-                melting_rate = -old_porosity[i];
+              if (old_porosity[i] + porosity_change < 0)
+                porosity_change = -old_porosity[i];
+
+              const double depletion_change = porosity_change - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
 
               for (unsigned int c=0; c<in.composition[i].size(); ++c)
                 {
-                  if (c == peridotite_idx && this->get_timestep_number() > 1 && (in.strain_rate.size()))
-                    out.reaction_terms[i][c] = melting_rate
-                                               - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
-                  else if (c == porosity_idx && this->get_timestep_number() > 1 && (in.strain_rate.size()))
-                    out.reaction_terms[i][c] = melting_rate
-                                               * out.densities[i]  / this->get_timestep();
+                  if (c == peridotite_idx && this->get_timestep_number() > 1)
+                    out.reaction_terms[i][c] = depletion_change;
+                  else if (c == porosity_idx && this->get_timestep_number() > 1)
+                    out.reaction_terms[i][c] = porosity_change
+                                               * out.densities[i] / this->get_timestep();
                   else
                     out.reaction_terms[i][c] = 0.0;
 
@@ -198,9 +200,9 @@ namespace aspect
                       if (reaction_rate_out != NULL)
                         {
                           if (c == peridotite_idx && this->get_timestep_number() > 0)
-                            reaction_rate_out->reaction_rates[i][c] = out.reaction_terms[i][c] / this->get_timestep() ;
+                            reaction_rate_out->reaction_rates[i][c] = depletion_change / melting_time_scale;
                           else if (c == porosity_idx && this->get_timestep_number() > 0)
-                            reaction_rate_out->reaction_rates[i][c] = melting_rate / this->get_timestep();
+                            reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale;
                           else
                             reaction_rate_out->reaction_rates[i][c] = 0.0;
                         }
@@ -396,6 +398,24 @@ namespace aspect
                              "Whether to include melting and freezing (according to a simplified "
                              "linear melting approximation in the model (if true), or not (if "
                              "false).");
+          prm.declare_entry ("Melting time scale for operator splitting", "1e3",
+                             Patterns::Double (0),
+                             "In case the operator splitting scheme is used, the porosity field can not "
+                             "be set to a new equilibrium melt fraction instantly, but the model has to "
+                             "provide a melting time scale instead. This time scale defines how fast melting "
+                             "happens, or more specifically, the parameter defines the time after which "
+                             "the deviation of the porosity from the equilibrium melt fraction will be "
+                             "reduced to a fraction of $1/e$. So if the melting time scale is small compared "
+                             "to the time step size, the reaction will be so fast that the porosity is very "
+                             "close to the equilibrium melt fraction after reactions are computed. Conversely, "
+                             "if the melting time scale is large compared to the time step size, almost no "
+                             "melting and freezing will occur."
+                             "\n\n"
+                             "Also note that the melting time scale has to be larger than or equal to the reaction "
+                             "time step used in the operator splitting scheme, otherwise reactions can not be "
+                             "computed. If the model does not use operator splitting, this parameter is not used. "
+                             "Units: yr or s, depending on the ``Use years "
+                             "in output instead of seconds'' parameter.");
         }
         prm.leave_subsection();
       }
@@ -432,11 +452,25 @@ namespace aspect
           compressibility                   = prm.get_double ("Solid compressibility");
           melt_compressibility              = prm.get_double ("Melt compressibility");
           include_melting_and_freezing      = prm.get_bool ("Include melting and freezing");
+          melting_time_scale                = prm.get_double ("Melting time scale for operator splitting");
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model Melt simple with Thermal viscosity exponent can not have reference_T=0."));
 
+          if (this->get_parameters().convert_to_years == true)
+            melting_time_scale *= year_in_seconds;
 
+          if (this->get_parameters().use_operator_splitting)
+            {
+              AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step,
+                          ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)
+                                     + " in the operator splitting scheme is too large to compute melting rates! "
+                                     "You have to choose it in such a way that it is smaller than the 'Melting time scale for "
+                                     "operator splitting' chosen in the material model, which is currently "
+                                     + Utilities::to_string(melting_time_scale) + "."));
+              AssertThrow(melting_time_scale > 0,
+                          ExcMessage("The Melting time scale for operator splitting must be larger than 0!"));
+            }
         }
         prm.leave_subsection();
       }
