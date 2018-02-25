@@ -91,6 +91,8 @@ namespace aspect
          * Utilities::derivative_of_weighted_p_norm_average.
          */
         double viscosity_averaging_p;
+
+        bool use_deviator_of_strain_rate;
     };
   }
 }
@@ -197,7 +199,8 @@ namespace aspect
                   // to prevent a division-by-zero, and a floating point exception.
                   // Otherwise, calculate the square-root of the norm of the second invariant of the deviatoric-
                   // strain rate (often simplified as epsilondot_ii)
-                  const double edot_ii_strict = std::sqrt(0.5*deviator(in.strain_rate[i])*deviator(in.strain_rate[i]));
+                  const SymmetricTensor<2,dim> edot = use_deviator_of_strain_rate ? deviator(in.strain_rate[i]) : in.strain_rate[i];
+                  const double edot_ii_strict = std::sqrt(0.5*edot*edot);
                   const double edot_ii = 2.0 * std::max(edot_ii_strict, min_strain_rate[c] * min_strain_rate[c]);
 
                   const double stress_exponent_inv = 1/stress_exponent[c];
@@ -207,12 +210,10 @@ namespace aspect
                     {
                       if (edot_ii_strict > min_strain_rate[c] * min_strain_rate[c] && composition_viscosities[c] < max_viscosity[c] && composition_viscosities[c] > min_viscosity[c])
                         {
-                          /**
-                           * strictly speaking the derivative is this:
-                           * 0.5 * ((1/stress_exponent)-1) * std::pow(2,2) * out.viscosities[i] * (1/(edot_ii*edot_ii)) * deviator(in.strain_rate[i]),
-                           * but we can (and do) simply it as:
-                           */
-                          composition_viscosities_derivatives[c] = 2.0 * (stress_exponent_inv-1) * composition_viscosities[c] * (1.0/(edot_ii*edot_ii)) * deviator(in.strain_rate[i]);
+                          composition_viscosities_derivatives[c] = 2.0 * (stress_exponent_inv-1) * composition_viscosities[c] * (1.0/(edot_ii*edot_ii)) * edot;
+
+                          if (use_deviator_of_strain_rate == true)
+                            composition_viscosities_derivatives[c] = composition_viscosities_derivatives[c] * deviator_tensor<dim>();
                         }
                       else
                         {
@@ -338,6 +339,12 @@ namespace aspect
                              "This is the p value in the generalized weighed average equation: "
                              " $\\text{mean} = \\frac{1}{k}(\\sum_{i=1}^k \\big(c_i \\eta_{\\text{eff}_i}^p)\\big)^{\\frac{1}{p}}$. "
                              " Units: $Pa s$");
+
+          // strain-rate deviator parameter
+          prm.declare_entry ("Use deviator of strain-rate", "true",
+                             Patterns::Bool(),
+                             "This value determines wheter to use the deviator of the strain-rate in computing the viscosity, "
+                             "or simply the strain rate $\\varepsilon(\\mathbf u)$.");
         }
         prm.leave_subsection();
       }
@@ -385,6 +392,8 @@ namespace aspect
 
           // averaging parameters
           viscosity_averaging_p = prm.get_double("Viscosity averaging p");
+
+          use_deviator_of_strain_rate = prm.get_bool ("Use deviator of strain-rate");
 
         }
         prm.leave_subsection();
