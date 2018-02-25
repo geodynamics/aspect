@@ -181,7 +181,6 @@ namespace aspect
                   if (scratch.rebuild_stokes_matrix)
                     {
                       scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
-                      scratch.grad_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].gradient(i,q);
                       scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
                     }
                   ++i_stokes;
