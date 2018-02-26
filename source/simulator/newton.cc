@@ -254,7 +254,7 @@ namespace aspect
                              "matrix is built including derivatives of the model, since the Picard iteration generally converges even from points "
                              "where Newton's method does not. "
                              "\n\n"
-                             "Once derivatives are used in a Newton method, \aspect{} always uses the Eisenstat Walker method.");
+                             "Once derivatives are used in a Newton method, \\aspect{} always uses the Eisenstat Walker method.");
         }
         prm.leave_subsection ();
       }
