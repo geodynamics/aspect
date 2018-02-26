@@ -2481,9 +2481,7 @@ namespace aspect
         op = Operator::maximum;
       else
         AssertThrow(false,
-                    ExcMessage ("ASPECT only accepts the following operators: "
-                                "add, subtract, minimum and maximum. But your parameter file "
-                                "contains: " + operation + ". Please check your parameter file.") );
+                    ExcOperatorUnknown(operation.c_str()));
     }
 
 
@@ -2528,12 +2526,24 @@ namespace aspect
 
 
     std::vector<Operator>
-    create_model_operator_list(const std::vector<std::string> &operator_names)
+    create_model_operator_list(const std::vector<std::string> &operator_names,
+                               const std::string &id_text)
     {
       std::vector<Operator> operator_list(operator_names.size());
       for (unsigned int i=0; i<operator_names.size(); ++i)
         {
-          operator_list[i] = Operator(operator_names[i]);
+          try
+            {
+              operator_list[i] = Operator(operator_names[i]);
+            }
+          catch (Operator::ExcOperatorUnknown &exc)
+            {
+              AssertThrow(false,
+                          ExcMessage ("ASPECT only accepts the following operators: "
+                                      "add, subtract, minimum and maximum. But your parameter file "
+                                      "contains <" + operator_names[i] + "> in parameter <"
+                                      + id_text + ">. Please check your parameter file."));
+            }
         }
 
       return operator_list;

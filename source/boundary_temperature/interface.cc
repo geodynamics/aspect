@@ -118,15 +118,20 @@ namespace aspect
 
     template <int dim>
     double
-    Manager<dim>::minimal_temperature (const std::set<types::boundary_id> &/*fixed_boundary_ids*/) const
+    Manager<dim>::minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
-      double temperature = std::numeric_limits<double>::max();
+      const std::set<types::boundary_id> &boundary_ids = fixed_boundary_ids.empty()
+                                                         ?
+                                                         fixed_temperature_boundary_indicators
+                                                         :
+                                                         fixed_boundary_ids;
 
+      double temperature = std::numeric_limits<double>::max();
       for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            boundary = boundary_temperature_objects.begin();
            boundary != boundary_temperature_objects.end(); ++boundary)
         temperature = std::min(temperature,
-                               (*boundary)->minimal_temperature(fixed_temperature_boundary_indicators));
+                               (*boundary)->minimal_temperature(boundary_ids));
 
       return temperature;
     }
@@ -135,15 +140,20 @@ namespace aspect
 
     template <int dim>
     double
-    Manager<dim>::maximal_temperature (const std::set<types::boundary_id> &/*fixed_boundary_ids*/) const
+    Manager<dim>::maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
-      double temperature = 0.0;
+      const std::set<types::boundary_id> &boundary_ids = fixed_boundary_ids.empty()
+                                                         ?
+                                                         fixed_temperature_boundary_indicators
+                                                         :
+                                                         fixed_boundary_ids;
 
+      double temperature = 0.0;
       for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            boundary = boundary_temperature_objects.begin();
            boundary != boundary_temperature_objects.end(); ++boundary)
         temperature = std::max(temperature,
-                               (*boundary)->maximal_temperature(fixed_temperature_boundary_indicators));
+                               (*boundary)->maximal_temperature(boundary_ids));
 
       return temperature;
     }
@@ -294,7 +304,8 @@ namespace aspect
                                            Utilities::possibly_extend_from_1_to_N (
                                              Utilities::split_string_list(prm.get("List of model operators")),
                                              boundary_temperature_names.size(),
-                                             "List of model operators"));
+                                             "List of model operators"),
+                                           "Boundary temperature model/List of model operators");
       }
       prm.leave_subsection ();
 

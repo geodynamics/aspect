@@ -83,22 +83,14 @@ namespace aspect
                                      const Point<dim> &position) const = 0;
 
         /**
-         * Return the minimal temperature on that part of the boundary on
-         * which Dirichlet conditions are posed.
-         *
-         * This value is used in computing dimensionless numbers such as the
-         * Nusselt number indicating heat flux.
+         * Return the minimal temperature on the set of given boundary ids.
          */
         virtual
         double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids
                                     = std::set<types::boundary_id>()) const = 0;
 
         /**
-         * Return the maximal temperature on that part of the boundary on
-         * which Dirichlet conditions are posed.
-         *
-         * This value is used in computing dimensionless numbers such as the
-         * Nusselt number indicating heat flux.
+         * Return the maximal temperature on the set of given boundary ids.
          */
         virtual
         double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids
@@ -186,26 +178,28 @@ namespace aspect
         get_active_boundary_temperature_conditions () const;
 
         /**
-         * Return the minimal temperature of all selected plugins on that
-         * part of the boundary on which Dirichlet conditions are posed.
+         * Return the minimal temperature of all selected plugins active on the
+         * set of given boundary ids. If no boundary ids are given, all
+         * boundaries on which Dirichlet conditions are posed are considered.
          */
         double
         minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids
                              = std::set<types::boundary_id>()) const;
 
         /**
-         * Return the maximal temperature of all selected plugins on that
-         * part of the boundary on which Dirichlet conditions are posed.
+         * Return the maximal temperature of all selected plugins active on the
+         * set of given boundary ids. If no boundary ids are given, all
+         * boundaries on which Dirichlet conditions are posed are considered.
          */
         double
         maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids
                              = std::set<types::boundary_id>()) const;
 
         /**
-                * A function that calls the boundary_temperature functions of all the
-                * individual boundary temperature objects active for the given
-                * boundary and uses the stored operators to combine them.
-                */
+         * A function that calls the boundary_temperature() functions of all the
+         * individual boundary temperature objects active for the given
+         * boundary and uses the stored operators to combine them.
+         */
         double
         boundary_temperature (const types::boundary_id boundary_indicator,
                               const Point<dim> &position) const;
