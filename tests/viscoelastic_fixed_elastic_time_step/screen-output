@@ -9,9 +9,12 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Skipping s12 composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 27+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
 
    Postprocessing:
-     RMS, max velocity: 0.0258 m/year, 0.0444 m/year
+     RMS, max velocity:     0.0258 m/year, 0.0444 m/year
+     Writing depth average: output-viscoelastic_fixed_elastic_time_step/depth_average.txt
 
 
 
@@ -26,9 +29,12 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Solving s12 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00345201
+
 
    Postprocessing:
-     RMS, max velocity: 0.0258 m/year, 0.0444 m/year
+     RMS, max velocity:     0.0258 m/year, 0.0444 m/year
+     Writing depth average: output-viscoelastic_fixed_elastic_time_step/depth_average.txt
 
 
 
