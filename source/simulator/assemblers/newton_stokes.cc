@@ -109,16 +109,37 @@ namespace aspect
                 for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
                   if (scratch.dof_component_indices[i] ==
                       scratch.dof_component_indices[j])
-                    data.local_matrix(i, j) += ((2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                                + one_over_eta * this->get_pressure_scaling() * this->get_pressure_scaling()
-                                                * (scratch.phi_p[i] * scratch.phi_p[j]))
+                    data.local_matrix(i, j) += (
+                                                 // top left block: for the current case with
+                                                 // derivative_scaling_factor==0 the top left block
+                                                 // of the system matrix only contains the usual
+                                                 // Stokes term. So approximate this block in the
+                                                 // same way as we do in the preconditioner when
+                                                 // we solve the regular Stokes problem, i.e.,
+                                                 // by replacing the symmetric gradient by the
+                                                 // regular gradient to make the block more sparse
+                                                 (2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                                                 +
+                                                 // bottom right block: approximate the pressure
+                                                 // Schur complement by the pressure mass matrix.
+                                                 // if the derivative scaling factor is zero,
+                                                 // then we only use the viscosity in the top
+                                                 // left block, and so clearly the mass matrix
+                                                 // approximation in the bottom right needs to
+                                                 // only be scaled by 1/eta, without considering
+                                                 // the derivatives
+                                                 one_over_eta
+                                                 * this->get_pressure_scaling()
+                                                 * this->get_pressure_scaling()
+                                                 * (scratch.phi_p[i] * scratch.phi_p[j]))
                                                * JxW;
             }
           else
             {
-              const MaterialModel::MaterialModelDerivatives<dim> *derivatives = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
-
-              AssertThrow(derivatives != NULL, ExcMessage ("Error: The newton method requires the derivatives"));
+              const MaterialModel::MaterialModelDerivatives<dim> *derivatives
+                = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+              AssertThrow(derivatives != NULL,
+                          ExcMessage ("Error: The newton method requires derivatives from the material model."));
 
               const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
               const SymmetricTensor<2,dim> strain_rate = scratch.material_model_inputs.strain_rate[q];
@@ -132,6 +153,7 @@ namespace aspect
                                                                       this->get_newton_handler().parameters.SPD_safety_factor)
                                    :
                                    1;
+
               // symmetrize when the stabilization is symmetric or SPD
               if ((preconditioner_stabilization & Newton::Parameters::Stabilization::symmetric) != Newton::Parameters::Stabilization::none)
                 {
@@ -140,14 +162,26 @@ namespace aspect
                       if (scratch.dof_component_indices[i] ==
                           scratch.dof_component_indices[j])
                         {
-                          data.local_matrix(i, j) += ((2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                                      + derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate
-                                                                                             +
-                                                                                             scratch.grads_phi_u[j] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate)
-                                                      + one_over_eta * this->get_pressure_scaling()
-                                                      * this->get_pressure_scaling()
-                                                      * (scratch.phi_p[i] * scratch.phi_p[j]))
-                                                     * JxW;
+                          data.local_matrix(i, j)
+                          += (
+                               // top left block: approximate J^{uu}
+                               (2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                               + derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate
+                                                                      +
+                                                                      scratch.grads_phi_u[j] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate)
+                               +
+                               // bottom right block: approximate the
+                               // pressure Schur complement by the
+                               // pressure mass matrix.  strictly
+                               // speaking, we probably ought to also
+                               // consider the derivatives deta/deps
+                               // here, but we leave this as a TODO
+                               one_over_eta
+                               * this->get_pressure_scaling()
+                               * this->get_pressure_scaling()
+                               * (scratch.phi_p[i] * scratch.phi_p[j])
+                             )
+                             * JxW;
                         }
                 }
               else
@@ -157,13 +191,24 @@ namespace aspect
                       if (scratch.dof_component_indices[i] ==
                           scratch.dof_component_indices[j])
                         {
-                          data.local_matrix(i, j) += ((2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                                      + derivative_scaling_factor * alpha * 2.0 * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate)
-                                                      + one_over_eta * this->get_pressure_scaling()
-                                                      * this->get_pressure_scaling()
-                                                      * (scratch.phi_p[i] * scratch
-                                                         .phi_p[j]))
-                                                     * JxW;
+                          data.local_matrix(i, j)
+                          += (
+                               // top left block: approximate J^{uu}
+                               (2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                               + derivative_scaling_factor * alpha * 2.0 * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate)
+                               +
+                               // bottom right block: approximate the
+                               // pressure Schur complement by the
+                               // pressure mass matrix.  strictly
+                               // speaking, we probably ought to also
+                               // consider the derivatives deta/deps
+                               // here, but we leave this as a TODO
+                               one_over_eta
+                               * this->get_pressure_scaling()
+                               * this->get_pressure_scaling()
+                               * (scratch.phi_p[i] * scratch.phi_p[j])
+                             )
+                             * JxW;
                         }
                 }
 
