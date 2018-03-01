@@ -26,12 +26,12 @@ N6aspect19AdiabaticConditions9InterfaceILi2EEE [label="Adiabatic conditions inte
 N6aspect19AdiabaticConditions9AsciiDataILi2EEE [label="ascii data", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect19AdiabaticConditions9AsciiDataILi2EEE -> N6aspect19AdiabaticConditions9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect19AdiabaticConditions9AsciiDataILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect19AdiabaticConditions14ComputeProfileILi2EEE [label="compute\nprofile", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect19AdiabaticConditions14ComputeProfileILi2EEE -> N6aspect19AdiabaticConditions9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect19AdiabaticConditions14ComputeProfileILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect19AdiabaticConditions8FunctionILi2EEE [label="function", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect19AdiabaticConditions8FunctionILi2EEE -> N6aspect19AdiabaticConditions9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect19AdiabaticConditions8FunctionILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
-N6aspect19AdiabaticConditions14InitialProfileILi2EEE [label="initial\nprofile", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
-N6aspect19AdiabaticConditions14InitialProfileILi2EEE -> N6aspect19AdiabaticConditions9InterfaceILi2EEE [len=3, weight=50];
-SimulatorAccess -> N6aspect19AdiabaticConditions14InitialProfileILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect19AdiabaticConditions9InterfaceILi2EEE -> Simulator [len=15, weight=50];
 
 N6aspect19BoundaryComposition9InterfaceILi2EEE [label="Boundary composition interface", height=.8,width=.8,shape="rect",fillcolor="green"]
@@ -324,6 +324,9 @@ SimulatorAccess -> N6aspect14MeshRefinement19ArtificialViscosityILi2EEE [style="
 N6aspect14MeshRefinement8BoundaryILi2EEE [label="boundary", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect14MeshRefinement8BoundaryILi2EEE -> N6aspect14MeshRefinement9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect14MeshRefinement8BoundaryILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect14MeshRefinement16CompactionLengthILi2EEE [label="compaction\nlength", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect14MeshRefinement16CompactionLengthILi2EEE -> N6aspect14MeshRefinement9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect14MeshRefinement16CompactionLengthILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect14MeshRefinement11CompositionILi2EEE [label="composition", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect14MeshRefinement11CompositionILi2EEE -> N6aspect14MeshRefinement9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect14MeshRefinement11CompositionILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
