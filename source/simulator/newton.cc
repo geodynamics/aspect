@@ -201,8 +201,8 @@ namespace aspect
                              "This method allows to slowly introduce the derivatives based on the improvement "
                              "of the residual. If set to false, the scaling factor for the Newton derivatives "
                              "is set to one immediately when switching on the Newton solver. When this is set to "
-                             "true, the derivatives are slowly introduced by the following equation: max(0.0, "
-                             "(1.0-(residual/switch_initial_residual))), where switch_initial_residual is the "
+                             "true, the derivatives are slowly introduced by the following equation: $\\max(0.0, "
+                             "(1.0-(residual/switch\\_initial\\_residual)))$, where switch\\_initial\\_residual is the "
                              "residual at the time when the Newton solver is switched on.");
 
           prm.declare_entry ("Maximum linear Stokes solver tolerance", "0.9",
