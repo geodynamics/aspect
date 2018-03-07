@@ -70,7 +70,7 @@ namespace aspect
             computed_quantities[q](0) = Utilities::compute_spd_factor<dim>(out.viscosities[q],
                                                                            in.strain_rate[q],
                                                                            derivatives->viscosity_derivative_wrt_strain_rate[q],
-                                                                           0.9);
+                                                                           this->get_newton_handler().parameters.SPD_safety_factor);
           }
       }
     }
