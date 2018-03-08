@@ -19,11 +19,11 @@ namespace aspect
      * implementing the derivatives needed for the Newton method.
      *
      * Power law equation to compute the viscosity $\eta$ per composition:
-     * $\eta = A * \dot\varepsilon_{II}^{\frac{1}{n}-1}$ where $A$ is the
-     * prefactor, $\dot\varepsion$ is the strain-rate, II indicates
-     * the square root of the second invariant defined as
-     * $\frac{1}{2} \dot\varepsilon_{ij} \dot\varepsilon_{ij}$, and
-     * $n$ is the stress exponent.
+     * $\eta = A^{\frac{-1}{n}} * \left(2.0 * \dot\varepsilon_{II}\right)
+     * ^{\frac{1}{n}-1}$ where $A$ is the prefactor, $\dot\varepsion$ is
+     * the strain-rate, II indicates the square root of the second invariant
+     * defined as $\frac{1}{2} \dot\varepsilon_{ij} \dot\varepsilon_{ij}$,
+     * and $n$ is the stress exponent.
      *
      * The viscosities per composition are averaged using the
      * utilities weighted p-norm function. The volume fractions are used
@@ -201,16 +201,16 @@ namespace aspect
                   // strain rate (often simplified as epsilondot_ii)
                   const SymmetricTensor<2,dim> edot = use_deviator_of_strain_rate ? deviator(in.strain_rate[i]) : in.strain_rate[i];
                   const double edot_ii_strict = std::sqrt(0.5*edot*edot);
-                  const double edot_ii = 2.0 * std::max(edot_ii_strict, min_strain_rate[c] * min_strain_rate[c]);
+                  const double edot_ii = 2.0 * std::max(edot_ii_strict, min_strain_rate[c]);
 
                   const double stress_exponent_inv = 1/stress_exponent[c];
                   composition_viscosities[c] = std::max(std::min(std::pow(viscosity_prefactor[c],-stress_exponent_inv) * std::pow(edot_ii,stress_exponent_inv-1), max_viscosity[c]), min_viscosity[c]);
                   Assert(dealii::numbers::is_finite(composition_viscosities[c]), ExcMessage ("Error: Viscosity is not finite."));
                   if (derivatives != NULL)
                     {
-                      if (edot_ii_strict > min_strain_rate[c] * min_strain_rate[c] && composition_viscosities[c] < max_viscosity[c] && composition_viscosities[c] > min_viscosity[c])
+                      if (edot_ii_strict > min_strain_rate[c] && composition_viscosities[c] < max_viscosity[c] && composition_viscosities[c] > min_viscosity[c])
                         {
-                          composition_viscosities_derivatives[c] = 2.0 * (stress_exponent_inv-1) * composition_viscosities[c] * (1.0/(edot_ii*edot_ii)) * edot;
+                          composition_viscosities_derivatives[c] = (stress_exponent_inv-1) * composition_viscosities[c] * (1.0/(edot*edot)) * edot;
 
                           if (use_deviator_of_strain_rate == true)
                             composition_viscosities_derivatives[c] = composition_viscosities_derivatives[c] * deviator_tensor<dim>();
@@ -294,7 +294,7 @@ namespace aspect
           // Reference and minimum/maximum values
           prm.declare_entry ("Reference temperature", "293", Patterns::Double(0),
                              "For calculating density by thermal expansivity. Units: $K$");
-          prm.declare_entry ("Minimum strain rate", "1.4e-20", Patterns::List(Patterns::Double(0)),
+          prm.declare_entry ("Minimum strain rate", "1.96e-40", Patterns::List(Patterns::Double(0)),
                              "Stabilizes strain dependent viscosity. Units: $1 / s$");
           prm.declare_entry ("Minimum viscosity", "1e10", Patterns::List(Patterns::Double(0)),
                              "Lower cutoff for effective viscosity. Units: $Pa s$");
@@ -420,11 +420,12 @@ namespace aspect
                                    "simple nonlinear",
                                    "A material model based on a simple power law rheology and implementing the derivatives "
                                    "needed for the Newton method. "
-                                   "Power law equation to compute the viscosity $\\eta$ per composition: "
-                                   "$\\eta = A * \\dot\\varepsilon_{II}^{\\frac{1}{n}-1}$ where $A$ is the prefactor, "
-                                   "$\\dot\\varepsion$ is the strain-rate, II indicates the square root of the second "
-                                   "invariant defined as $\\frac{1}{2} \\dot\\varepsilon_{ij} \\dot\\varepsilon_{ij}$, and "
-                                   "$n$ is the stress exponent. "
+                                   "Power law equation to compute the viscosity $\\eta$ per composition comes from the book Introduction "
+                                   "to Geodynamic Modelling by Taras Gerya (2010): "
+                                   "$\\eta = A^{\\frac{-1}{n}} * \\left(2.0 * \\dot\\varepsilon_{II}\\right)^{\\frac{1}{n}-1}$ "
+                                   "where $A$ is the prefactor, $\\dot\\varepsion$ is the strain-rate, II indicates the square "
+                                   "root of the second invariant defined as $\\frac{1}{2} \\dot\\varepsilon_{ij} \\dot\\varepsilon_{ij}$, "
+                                   "and $n$ is the stress exponent. "
                                    "The viscosities per composition are averaged using the utilities weighted "
                                    "p-norm function. The volume fractions are used as weights for the averaging. ")
   }
