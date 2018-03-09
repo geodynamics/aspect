@@ -29,8 +29,6 @@
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/std_cxx11/tuple.h>
 
-#include <boost/lexical_cast.hpp>
-
 #include <list>
 
 
@@ -143,7 +141,7 @@ namespace aspect
                                                   boundary_composition_names.size(),
                                                   "List of model operators");
         boundary_composition_operators = Utilities::create_model_operator_list(model_operator_names,
-                                                                "Boundary composition model/List of model operators");
+                                                                               "Boundary composition model/List of model operators");
       }
       prm.leave_subsection ();
 
@@ -292,6 +290,25 @@ namespace aspect
       }
       prm.leave_subsection();
 
+      // For now we can not support boundary conditions for one field, but not for others at the same
+      // boundary, because we use a single matrix block for all of them, and different Dirichlet
+      // boundary conditions require a different sparsity pattern. Thus for now all boundary_composition_maps
+      // need to have the same set of keys.
+      //
+      // TODO: Lift this restriction by keeping constrained degrees of freedom in the sparsity pattern
+      // of the composition matrix block (might require changes to deal.II).
+      for (std::set<types::boundary_id>::const_iterator boundary = fixed_composition_boundary_indicators.begin();
+           boundary != fixed_composition_boundary_indicators.end(); ++boundary)
+        {
+          for (unsigned int i=0; i<boundary_composition_maps.size(); ++i)
+            AssertThrow(boundary_composition_maps[i].find(*boundary) != boundary_composition_maps[i].end(),
+                        ExcMessage("You have specified Dirichlet boundary conditions for any compositional field "
+                                   "at boundary id <" + this->get_geometry_model().translate_id_to_symbol_name(*boundary)
+                                   + "> but not for compositional field number "
+                                   + Utilities::to_string(i) + ". If you specify Dirichlet boundary conditions for a "
+                                   "compositional field at a boundary you have to do so for every field."));
+        }
+
       // Now that everything is parsed, go through the list, create objects
       // and let them parse their own parameters.
       for (unsigned int i=0; i<boundary_composition_names.size(); ++i)
@@ -345,6 +362,9 @@ namespace aspect
     Manager<dim>::has_boundary_composition(const types::boundary_id boundary_id,
                                            const unsigned int       compositional_index) const
     {
+      Assert(compositional_index < this->n_compositional_fields(),
+             ExcMessage("There is no compositional field with index " + Utilities::to_string(compositional_index)));
+
       return (boundary_composition_maps[compositional_index].find(boundary_id) !=
               boundary_composition_maps[compositional_index].end());
     }

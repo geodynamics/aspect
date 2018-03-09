@@ -28,6 +28,8 @@
 #include <deal.II/fe/fe_dgp.h>
 #include <deal.II/base/std_cxx1x/tuple.h>
 
+#include <boost/lexical_cast.hpp>
+
 namespace aspect
 {
   namespace internal

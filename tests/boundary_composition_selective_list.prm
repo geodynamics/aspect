@@ -26,7 +26,7 @@ subsection Boundary composition model
   subsection Box
     set Left composition = 15, 9
     set Right composition = 0, 0
-    set Top composition = 0, 0
+    set Top composition = 15, 9
     set Bottom composition = 7, 5
   end
 
@@ -37,7 +37,7 @@ end
 
 subsection Model settings
   set Fixed temperature boundary indicators   = top,left,bottom,right
-  set Fixed composition boundary indicators   = top, left: function, bottom: initial composition
+  set Fixed composition boundary indicators   = top, left: initial composition, bottom: crust: function, bottom: mantle: box, right: crust: initial composition, right: mantle: function
 
   set Prescribed velocity boundary indicators = bottom:function,left:function,right:function,top:function
 end

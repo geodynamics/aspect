@@ -18,4 +18,4 @@
 # 18: Maximal value for composition mantle
 # 19: Global mass for composition mantle
 # 20: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 2178 0 0 0 31 32 32 -1.50000000e+00 1.50000000e+00 5.72906641e+11 -4.00000000e+00 1.50000000e+00 -3.77368750e+11 output-boundary_composition_selective_list/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 2178 0 0 0 31 32 32 -3.00000000e+00 1.65000000e+01 6.36715234e+11 -3.00000000e+00 5.00000000e+00 -3.10582422e+11 output-boundary_composition_selective_list/solution/solution-00000 

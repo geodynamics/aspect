@@ -280,14 +280,12 @@ namespace aspect
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
 
-      if (((this->get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators().find(
-              face->boundary_id()
-            )
-            != this->get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators().end())
-           && (advection_field.is_temperature()))
+      if ((advection_field.is_temperature() &&
+           (this->get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators().find(face->boundary_id())
+            != this->get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators().end()))
           ||
-          (this->get_boundary_composition_manager().has_boundary_composition(face->boundary_id(), advection_field.compositional_variable)
-           && (!advection_field.is_temperature())))
+          (!advection_field.is_temperature() &&
+           this->get_boundary_composition_manager().has_boundary_composition(face->boundary_id(), advection_field.compositional_variable)))
         {
           /*
            * We are in the case of a Dirichlet temperature or composition boundary.
