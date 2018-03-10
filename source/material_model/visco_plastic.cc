@@ -755,7 +755,7 @@ namespace aspect
                              Patterns::List(Patterns::Double(0)),
                              "List of grain size exponents, $m_\\text{diffusion}$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value.  Units: None");
+                             "If only one value is given, then all use the same value. Units: None");
           prm.declare_entry ("Activation energies for diffusion creep", "375e3",
                              Patterns::List(Patterns::Double(0)),
                              "List of activation energies, $E_a$, for background material and compositional fields, "
@@ -1012,8 +1012,16 @@ namespace aspect
                                    "$V$ is activation volume, $P$ is pressure, $R$ is the gas "
                                    "exponent and $T$ is temperature. "
                                    "This form of the viscosity equation is commonly used in "
-                                   "geodynamic simulations.  See, for example, Billen and Hirth "
-                                   "(2007), G3, 8, Q08012."
+                                   "geodynamic simulations. See, for example, Billen and Hirth "
+                                   "(2007), G3, 8, Q08012. Significantly, other studies may use"
+                                   "slightly different forms of the viscosity equation leading to"
+                                   "variations in how specific terms are defined or combined. For"
+                                   "example, the grain size exponent should always be positive in"
+                                   "the diffusion viscosity equation used here, while other studies"
+                                   "place the grain size term in the denominator and invert the sign"
+                                   "of the grain size exponent. When examining previous work, one"
+                                   "should carefully check how the viscous prefactor and grain size"
+                                   "terms are defined."
                                    "\n\n "
                                    "One may select to use the diffusion ($v_\\text{diff}$; $n=1$, $m!=0$), "
                                    "dislocation ($v_\\text{disl}$, $n>1$, $m=0$) or composite "
