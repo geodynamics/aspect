@@ -240,7 +240,7 @@ namespace aspect
     if (stokes_matrix_depends_on_solution()
         ||
         (boundary_velocity_manager.get_active_boundary_velocity_conditions().size() > 0))
-      rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+      rebuild_stokes_matrix = reinitialize_stokes_preconditioner = true;
 
     assemble_stokes_system ();
     build_stokes_preconditioner();
@@ -558,7 +558,7 @@ namespace aspect
         // update the Stokes matrix in every time step and so need to set
         // the following flag. if we change the Stokes matrix we also
         // need to update the Stokes preconditioner.
-        rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
+        rebuild_stokes_matrix = reinitialize_stokes_preconditioner = assemble_newton_stokes_matrix = true;
 
         assemble_stokes_system();
 
@@ -614,7 +614,7 @@ namespace aspect
                 pcout << "Solve failed and catched, try again with stabilisation" << std::endl;
                 newton_handler->parameters.preconditioner_stabilization = Newton::Parameters::Stabilization::SPD;
                 newton_handler->parameters.velocity_block_stabilization = Newton::Parameters::Stabilization::SPD;
-                rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
+                rebuild_stokes_matrix = reinitialize_stokes_preconditioner = assemble_newton_stokes_matrix = true;
 
                 assemble_stokes_system();
                 /**

@@ -481,7 +481,8 @@ namespace aspect
         // for a restarted computation than for one that ran straight
         // through
         rebuild_stokes_matrix =
-          rebuild_stokes_preconditioner = true;
+          rebuild_stokes_preconditioner =
+            reinitialize_stokes_preconditioner = true;
       }
     return write_checkpoint;
   }

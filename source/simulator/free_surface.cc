@@ -293,7 +293,7 @@ namespace aspect
     interpolate_mesh_velocity();
 
     // After changing the mesh we need to rebuild things
-    sim.rebuild_stokes_matrix = sim.rebuild_stokes_preconditioner = true;
+    sim.rebuild_stokes_matrix = sim.rebuild_stokes_preconditioner = sim.reinitialize_stokes_preconditioner = true;
   }
 
 

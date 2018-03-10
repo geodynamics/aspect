@@ -1679,6 +1679,7 @@ namespace aspect
       bool                                                      assemble_newton_stokes_matrix;
       bool                                                      assemble_newton_stokes_system;
       bool                                                      rebuild_stokes_preconditioner;
+      bool                                                      reinitialize_stokes_preconditioner;
 
       /**
        * @}
