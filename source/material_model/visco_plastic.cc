@@ -745,7 +745,7 @@ namespace aspect
                              "List of viscosity prefactors, $A$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. "
-                             "Units: $Pa^{-1} m^{1/m_{diffusion}} s^{-1}$");
+                             "Units: $Pa^{-1} m^{m_\\text{diffusion}} s^{-1}$");
           prm.declare_entry ("Stress exponents for diffusion creep", "1",
                              Patterns::List(Patterns::Double(0)),
                              "List of stress exponents, $n_\\text{diffusion}$, for background material and compositional fields, "
@@ -773,7 +773,7 @@ namespace aspect
                              "List of viscosity prefactors, $A$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. "
-                             "Units: $Pa^{-n_\\text{dislocation}} m^{n_\\text{dislocation}/m_\\text{dislocation}} s^{-1}$");
+                             "Units: $Pa^{-n_\\text{dislocation}} s^{-1}$");
           prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
                              Patterns::List(Patterns::Double(0)),
                              "List of stress exponents, $n_\\text{dislocation}$, for background material and compositional fields, "
