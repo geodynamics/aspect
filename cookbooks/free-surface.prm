@@ -103,12 +103,19 @@ end
 # Here we specify that the model has fixed temperature
 # boundary conditions, as well as free slip boundary
 # conditions for the sides and bottom. 
-subsection Model settings
-  set Fixed temperature boundary indicators   = left, right, bottom, top
-  set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = left, right, bottom
-  set Zero velocity boundary indicators       = 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = left, right, bottom, top
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom
+end
+
+subsection Free surface
   # We specify a comma delimited list of the free surface boundaries
   # for the model.  In this case, it is just the top boundary
   # of the box geometry model. 

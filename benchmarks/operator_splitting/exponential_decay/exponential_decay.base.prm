@@ -48,11 +48,12 @@ subsection Geometry model
 end
 
 
-subsection Model settings
-  set Fixed temperature boundary indicators   = 
-  set Zero velocity boundary indicators       = 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0, 1, 2, 3
-  set Prescribed velocity boundary indicators = 
 end
 
 
@@ -91,7 +92,7 @@ end
 # and composition decay over time, and that is implemented in
 # a plugin.  
 subsection Heating model
-  set Model name = exponential decay heating
+  set List of model names = exponential decay heating
 
   subsection Exponential decay heating
     set Half life = 10

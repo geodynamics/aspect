@@ -84,13 +84,19 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
-  set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = bottom, top
-  set Zero velocity boundary indicators       = 
-  set Remove nullspace                        = net x translation
 end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top
+end
+
+set Remove nullspace                        = net x translation
 
 subsection Postprocess
   set List of postprocessors = visualization
