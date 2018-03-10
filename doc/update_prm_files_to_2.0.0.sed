@@ -103,7 +103,7 @@ b jump
 # Repeat the additions until we add
 # a line that does not start with a '#'.
 # The ^\n pattern makes sure we do not search in already added lines.
-/ *#[^\n][^\n]*$/ b jump
+/\n *#[^\n][^\n]*$/ b jump
 }
 
 # Add more lines to the current pattern, 
