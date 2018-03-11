@@ -217,6 +217,24 @@ namespace aspect
       // convert coordinates from [x,y,z] to [r, phi, theta]
       std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
+      // Evaluate the spherical harmonics at this position. Since they are the
+      // same for all depth splines, do it once to avoid multiple evaluations.
+      // NOTE: there is apparently a factor of sqrt(2) difference
+      // between the standard orthonormalized spherical harmonics
+      // and those used for S40RTS (see PR # 966)
+      std::vector<std::vector<double> > cosine_components(max_degree+1,std::vector<double>(max_degree+1,0.0));
+      std::vector<std::vector<double> > sine_components(max_degree+1,std::vector<double>(max_degree+1,0.0));
+
+      for (int degree_l = 0; degree_l < max_degree+1; degree_l++)
+        {
+          for (int order_m = 0; order_m < degree_l+1; order_m++)
+            {
+              const std::pair<double,double> sph_harm_vals = Utilities::real_spherical_harmonic( degree_l, order_m, scoord[2], scoord[1] );
+              cosine_components[degree_l][order_m] = sph_harm_vals.first;
+              sine_components[degree_l][order_m] = sph_harm_vals.second;
+            }
+        }
+
       // iterate over all degrees and orders at each depth and sum them all up.
       std::vector<double> spline_values(num_spline_knots,0);
       double prefact;
@@ -228,14 +246,6 @@ namespace aspect
             {
               for (int order_m = 0; order_m < degree_l+1; order_m++)
                 {
-                  // Evaluate the spherical harmonics at this position.
-                  // NOTE: there is apparently a factor of sqrt(2) difference
-                  // between the standard orthonormalized spherical harmonics
-                  // and those used for S40RTS (see PR # 966)
-                  const std::pair<double,double> sph_harm_vals = Utilities::real_spherical_harmonic( degree_l, order_m, scoord[2], scoord[1] );
-                  const double cos_component = sph_harm_vals.first;
-                  const double sin_component = sph_harm_vals.second;
-
                   if (degree_l == 0)
                     prefact = (zero_out_degree_0
                                ?
@@ -246,7 +256,8 @@ namespace aspect
                     prefact = 1./sqrt(2.);
                   else prefact = 1.0;
 
-                  spline_values[depth_interp] += prefact * (a_lm[ind]*cos_component + b_lm[ind]*sin_component);
+                  spline_values[depth_interp] += prefact * (a_lm[ind] * cosine_components[degree_l][order_m]
+                                                            + b_lm[ind] * sine_components[degree_l][order_m]);
 
                   ind += 1;
                 }
