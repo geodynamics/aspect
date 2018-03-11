@@ -636,14 +636,18 @@ namespace aspect
                      ExcMessage (std::string("Could not open file <") +
                                  parameters.output_directory + "parameters.prm>."));
         prm.print_parameters(prm_out, ParameterHandler::Text);
-      }
-    if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
-      {
-        std::ofstream prm_out ((parameters.output_directory + "parameters.tex").c_str());
-        AssertThrow (prm_out,
+
+        std::ofstream tex_out ((parameters.output_directory + "parameters.tex").c_str());
+        AssertThrow (tex_out,
                      ExcMessage (std::string("Could not open file <") +
                                  parameters.output_directory + "parameters.tex>."));
-        prm.print_parameters(prm_out, ParameterHandler::LaTeX);
+        prm.print_parameters(tex_out, ParameterHandler::LaTeX);
+
+        std::ofstream json_out ((parameters.output_directory + "parameters.json").c_str());
+        AssertThrow (json_out,
+                     ExcMessage (std::string("Could not open file <") +
+                                 parameters.output_directory + "parameters.json>."));
+        prm.print_parameters(json_out, ParameterHandler::JSON);
       }
 
     // check that the setup of equations, material models, and heating terms is consistent
