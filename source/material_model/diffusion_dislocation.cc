@@ -399,7 +399,7 @@ namespace aspect
                              "List of viscosity prefactors, $A$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. "
-                             "Units: $Pa^{-n_\\text{diffusion}} m^{n_\\text{diffusion}/m_\\text{diffusion}} s^{-1}$");
+                             "Units: $Pa^{-1} m^{m_\\text{diffusion}} s^{-1}$");
           prm.declare_entry ("Stress exponents for diffusion creep", "1",
                              Patterns::List(Patterns::Double(0)),
                              "List of stress exponents, $n_\\text{diffusion}$, for background mantle and compositional fields, "
@@ -427,7 +427,7 @@ namespace aspect
                              "List of viscosity prefactors, $A$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. "
-                             "Units: $Pa^{-n_\\text{dislocation}} m^{n_\\text{dislocation}/m_\\text{dislocation}} s^{-1}$");
+                             "Units: $Pa^{-n_\\text{dislocation}} s^{-1}$");
           prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
                              Patterns::List(Patterns::Double(0)),
                              "List of stress exponents, $n_\\text{dislocation}$, for background mantle and compositional fields, "
@@ -556,30 +556,40 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(DiffusionDislocation,
                                    "diffusion dislocation",
-                                   " An implementation of a viscous rheology including diffusion"
-                                   " and dislocation creep."
-                                   " Compositional fields can each be assigned individual"
-                                   " activation energies, reference densities, thermal expansivities,"
-                                   " and stress exponents. The effective viscosity is defined as"
+                                   "An implementation of a viscous rheology including diffusion "
+                                   "and dislocation creep. "
+                                   "Compositional fields can each be assigned individual "
+                                   "activation energies, reference densities, thermal expansivities, "
+                                   "and stress exponents. The effective viscosity is defined as "
+                                   "\n\n"
+                                   "\\[\\eta_\\text{eff} = \\left(\\frac{1}{\\eta_\\text{eff}^\\text{diff}}+ "
+                                   "\\frac{1}{\\eta_\\text{eff}^\\text{dis}}\\right)^{-1}\\] "
+                                   "where "
+                                   "\\[\\eta_\\text{i} = 0.5 A^{-\\frac{1}{n_i}} d^\\frac{m_i}{n_i} "
+                                   "\\dot{\\varepsilon_i}^{\\frac{1-n_i}{n_i}} "
+                                   "\\exp\\left(\\frac{E_i^* + PV_i^*}{n_iRT}\\right)\\] "
+                                   "\n\n"
+                                   "where $d$ is grain size, $i$ corresponds to diffusion or dislocation creep, "
+                                   "$\\dot{\\varepsilon}$ is the square root of the second invariant of the "
+                                   "strain rate tensor, $R$ is the gas constant, $T$ is temperature, "
+                                   "and $P$ is pressure. "
+                                   "$A_i$ are prefactors, $n_i$ and $m_i$ are stress and grain size exponents "
+                                   "$E_i$ are the activation energies and $V_i$ are the activation volumes. "
+                                   "\n\n"
+                                   "This form of the viscosity equation is commonly used in geodynamic simulatons "
+                                   "See, for example, Billen and Hirth (2007), G3, 8, Q08012. Significantly, "
+                                   "other studies may use slightly different forms of the viscosity equation "
+                                   "leading to variations in how specific terms are defined or combined. For "
+                                   "example, the grain size exponent should always be positive in the diffusion "
+                                   "viscosity equation used here, while other studies place the grain size term "
+                                   "in the denominator and invert the sign of the grain size exponent. When "
+                                   "examining previous work, one should carefully check how the viscous "
+                                   "prefactor and grain size terms are defined. "
                                    " \n\n"
-                                   " \\[\\eta_\\text{eff} = \\left(\\frac{1}{\\eta_\\text{eff}^\\text{diff}}+"
-                                   " \\frac{1}{\\eta_\\text{eff}^\\text{dis}}\\right)^{-1}\\]"
-                                   " where"
-                                   " \\[\\eta_\\text{i} = 0.5 A^{-\\frac{1}{n_i}} d^\\frac{m_i}{n_i}"
-                                   " \\dot{\\varepsilon_i}^{\\frac{1-n_i}{n_i}}"
-                                   " \\exp\\left(\\frac{E_i^* + PV_i^*}{n_iRT}\\right)\\]"
-                                   " \n\n"
-                                   " where $d$ is grain size, $i$ corresponds to diffusion or dislocation creep,"
-                                   " $\\dot{\\varepsilon}$ is the square root of the second invariant of the"
-                                   " strain rate tensor, $R$ is the gas constant, $T$ is temperature, "
-                                   " and $P$ is pressure."
-                                   " $A_i$ are prefactors, $n_i$ and $m_i$ are stress and grain size exponents"
-                                   " $E_i$ are the activation energies and $V_i$ are the activation volumes."
-                                   " \n\n"
-                                   " The ratio of diffusion to dislocation strain rate is found by Newton's"
-                                   " method, iterating to find the stress which satisfies the above equations."
-                                   " The value for the components of this formula and additional"
-                                   " parameters are read from the parameter file in subsection"
-                                   " 'Material model/DiffusionDislocation'.")
+                                   "The ratio of diffusion to dislocation strain rate is found by Newton's "
+                                   "method, iterating to find the stress which satisfies the above equations. "
+                                   "The value for the components of this formula and additional "
+                                   "parameters are read from the parameter file in subsection "
+                                   "'Material model/DiffusionDislocation'.")
   }
 }
