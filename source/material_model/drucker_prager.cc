@@ -128,15 +128,16 @@ namespace aspect
 
                   if (derivatives != NULL)
                     {
-                      const double averaging_factor = effective_viscosity * effective_viscosity * std::pow(eta_plastic + minimum_viscosity,-2);
+                      const double averaging_factor = maximum_viscosity * maximum_viscosity
+                                                      / ((eta_plastic + minimum_viscosity + maximum_viscosity) * (eta_plastic + minimum_viscosity + maximum_viscosity));
                       const SymmetricTensor<2,dim> effective_viscosity_strain_rate_derivatives
-                        = averaging_factor * 0.5 * (eta_plastic * (-1.0/std::sqrt(edot_ii_strict * edot_ii_strict))) * strain_rate_deviator;
+                        = -0.5 * averaging_factor * (eta_plastic / edot_ii_strict) * strain_rate_deviator;
                       const double effective_viscosity_pressure_derivatives = averaging_factor * (dim == 2 ?
                                                                                                   sin_phi * strain_rate_effective_inv
                                                                                                   :
                                                                                                   (sin_phi*strength_inv_part));
 
-                      derivatives->viscosity_derivative_wrt_strain_rate[i] = effective_viscosity_strain_rate_derivatives;
+                      derivatives->viscosity_derivative_wrt_strain_rate[i] = deviator_tensor<dim>() * effective_viscosity_strain_rate_derivatives;
 
                       derivatives->viscosity_derivative_wrt_pressure[i] = effective_viscosity_pressure_derivatives;
 
