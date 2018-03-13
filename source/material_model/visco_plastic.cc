@@ -1017,7 +1017,7 @@ namespace aspect
                                    "slightly different forms of the viscosity equation leading to "
                                    "variations in how specific terms are defined or combined. For "
                                    "example, the grain size exponent should always be positive in "
-                                   "the diffusion viscosity equation used here, while other studies"
+                                   "the diffusion viscosity equation used here, while other studies "
                                    "place the grain size term in the denominator and invert the sign "
                                    "of the grain size exponent. When examining previous work, one "
                                    "should carefully check how the viscous prefactor and grain size "
