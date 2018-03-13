@@ -177,7 +177,7 @@ namespace aspect
 
   template <int dim>
   class TestMeltMaterial:
-    public MaterialModel::MeltInterface<dim>
+    public MaterialModel::MeltInterface<dim>, public SimulatorAccess<dim>
   {
     public:
       virtual bool is_compressible () const

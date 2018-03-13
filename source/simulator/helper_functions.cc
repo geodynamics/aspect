@@ -1001,10 +1001,8 @@ namespace aspect
         // of freedom on each cell.
         Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(introspection.base_elements.pressure)) != 0,
                 ExcInternalError());
-        const unsigned int pressure_component = (parameters.include_melt_transport ?
-                                                 introspection.variable("fluid pressure").first_component_index
-                                                 : introspection.component_indices.pressure);
         Assert(!parameters.include_melt_transport, ExcNotImplemented());
+        const unsigned int pressure_component = introspection.component_indices.pressure;
         std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
         typename DoFHandler<dim>::active_cell_iterator
         cell = dof_handler.begin_active(),

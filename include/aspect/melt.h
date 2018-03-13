@@ -383,6 +383,11 @@ namespace aspect
        */
       std_cxx11::unique_ptr<BoundaryFluidPressure::Interface<dim> > boundary_fluid_pressure;
 
+      /**
+       * Whether to use a discontinuous element for the compaction pressure or not.
+       */
+      bool use_discontinuous_p_c;
+
     private:
       /**
        * is_melt_cell_vector[cell->active_cell_index()] says whether we have

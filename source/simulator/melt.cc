@@ -1634,11 +1634,11 @@ namespace aspect
     variables.insert(variables.begin()+2,
                      VariableDeclaration<dim>(
                        "compaction pressure",
-//                       (parameters.use_locally_conservative_discretization)
-//                       ?
+                       (parameters.use_locally_conservative_discretization || use_discontinuous_p_c)
+                       ?
                        std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_DGP<dim>(parameters.stokes_velocity_degree-1))
-//                       :
-//                       std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(parameters.stokes_velocity_degree-1))
+                       :
+                       std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(parameters.stokes_velocity_degree-1))
                        ,
                        1,
                        1));
@@ -1720,6 +1720,12 @@ namespace aspect
                          "advection equation. Only used if Include melt transport is true. "
                          "If this is set to false, only the solid velocity is used (as in models "
                          "without melt migration).");
+      prm.declare_entry ("Use discontinuous compaction pressure", "true",
+                         Patterns::Bool (),
+                         "Whether to use a discontinuous element for the compaction pressure or not. "
+                         "From our preliminary tests, continuous elements seem to work better in models "
+                         "where the porosity is > 0 everywhere in the domain, and discontinuous elements "
+                         "work better in models where in parts of the domain the porosity = 0.");
     }
     prm.leave_subsection();
 
@@ -1751,6 +1757,7 @@ namespace aspect
     {
       melt_transport_threshold = prm.get_double("Melt transport threshold");
       heat_advection_by_melt = prm.get_bool("Heat advection by melt");
+      use_discontinuous_p_c = prm.get_bool("Use discontinuous compaction pressure");
     }
     prm.leave_subsection();
 

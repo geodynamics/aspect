@@ -1287,8 +1287,7 @@ namespace aspect
                       && !use_discontinuous_composition_discretization,
                       ExcMessage ("Using discontinuous elements for temperature "
                                   "or composition in models with melt transport is currently not implemented."));
-          // We can not have a DG p_f. While it would be possible to use a
-          // discontinuous p_c, this is not tested, so we disable it for now.
+          // We can not have a DG p_f.
           AssertThrow(!use_locally_conservative_discretization,
                       ExcMessage ("Discontinuous elements for the pressure "
                                   "in models with melt transport are not supported"));
