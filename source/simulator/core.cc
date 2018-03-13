@@ -206,7 +206,8 @@ namespace aspect
     rebuild_stokes_matrix (true),
     assemble_newton_stokes_matrix (true),
     assemble_newton_stokes_system (parameters.nonlinear_solver == NonlinearSolver::Newton_Stokes ? true : false),
-    rebuild_stokes_preconditioner (true)
+    rebuild_stokes_preconditioner (true),
+    reinitialize_stokes_preconditioner (true)
   {
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
       {
@@ -820,7 +821,7 @@ namespace aspect
         rebuild_sparsity_and_matrices = false;
         setup_system_matrix (introspection.index_sets.system_partitioning);
         setup_system_preconditioner (introspection.index_sets.system_partitioning);
-        rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+        rebuild_stokes_matrix = rebuild_stokes_preconditioner = reinitialize_stokes_preconditioner = true;
       }
 
     // notify different system components that we started the next time step
@@ -1392,6 +1393,7 @@ namespace aspect
 
     rebuild_stokes_matrix         = true;
     rebuild_stokes_preconditioner = true;
+    reinitialize_stokes_preconditioner = true;
   }
 
 

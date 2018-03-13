@@ -391,7 +391,8 @@ namespace aspect
   void
   Simulator<dim>::build_stokes_preconditioner ()
   {
-    if (rebuild_stokes_preconditioner == false)
+    if (rebuild_stokes_preconditioner == false
+        && reinitialize_stokes_preconditioner == false)
       return;
 
     if (parameters.use_direct_stokes_solver)
@@ -402,6 +403,18 @@ namespace aspect
 
     // first assemble the raw matrices necessary for the preconditioner
     assemble_stokes_preconditioner ();
+
+    if (rebuild_stokes_preconditioner == false
+             && reinitialize_stokes_preconditioner == true)
+      {
+        TimerOutput::Scope timer (computing_timer, "   Reinitialize Stokes preconditioner");
+        Amg_preconditioner->reinit();
+        Mp_preconditioner->initialize (system_preconditioner_matrix.block(1,1));
+        reinitialize_stokes_preconditioner = false;
+        pcout << std::endl;
+
+        return;
+      }
 
     // then extract the other information necessary to build the
     // AMG preconditioners for the A and M blocks
@@ -456,6 +469,7 @@ namespace aspect
                                       Amg_data);
 
     rebuild_stokes_preconditioner = false;
+    reinitialize_stokes_preconditioner = false;
 
     pcout << std::endl;
   }
