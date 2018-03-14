@@ -1495,6 +1495,10 @@ namespace aspect
   {
     std::cout << "MeltHandler::add_current_constraints:" << std::endl;
 
+    constraints.clear ();
+    constraints.reinit (this->introspection().index_sets.system_relevant_set);
+    constraints.merge (current_constraints);
+
     IndexSet nonzero_pc_dofs(this->introspection().index_sets.system_relevant_set.size());
 
     const QTrapez<dim> quadrature_formula;
@@ -1548,8 +1552,8 @@ namespace aspect
     }
 
 
-    PcNonZeroAssembler<dim> ass(nonzero_pc_dofs, is_melt_cell_vector);
-    ass.initialize_simulator(this->get_simulator());
+    PcNonZeroAssembler<dim> assembler(nonzero_pc_dofs, is_melt_cell_vector);
+    assembler.initialize_simulator(this->get_simulator());
 
     typedef
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
@@ -1565,12 +1569,12 @@ namespace aspect
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      this->get_dof_handler().end()),
          std_cxx11::bind (&PcNonZeroAssembler<dim>::local_assemble,
-                          &ass,
+                          &assembler,
                           std_cxx11::_1,
                           std_cxx11::_2,
                           std_cxx11::_3),
          std_cxx11::bind (&PcNonZeroAssembler<dim>::copy_local_to_global,
-                          &ass,
+                          &assembler,
                           std_cxx11::_1),
          PcAssembleData<dim> (fe, quadrature_formula,
                               this->get_mapping(),
@@ -1595,9 +1599,24 @@ namespace aspect
     //for_constraints.print(std::cout);
 
     // and constrain those. Note that we do not constrain p_c dofs that
-    // are on the interface between a cell with "melt" and a cell "without melt"
-    // (using the definition "at least one quadrature point with p_c_scale>0).
+    // are on the interface between a cell "with melt" and a cell "without melt"
+    // (using the definition "at least one quadrature point with p_c_scale>0").
     constraints.add_lines(for_constraints);
+    constraints.close();
+  }
+
+
+  template <int dim>
+  void
+  MeltHandler<dim>::
+  save_constraints(ConstraintMatrix &constraints)
+  {
+    std::cout << "      MeltHandler::save_constraints:" << std::endl;
+
+    current_constraints.clear ();
+    current_constraints.reinit (this->introspection().index_sets.system_relevant_set);
+    current_constraints.merge (constraints);
+    current_constraints.close();
   }
 
 

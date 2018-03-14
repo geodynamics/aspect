@@ -346,9 +346,22 @@ namespace aspect
                                                        internal::Assembly::CopyData::StokesSystem<dim>      &data) const;
 
       /**
-       *
+       * Constrain the compaction pressure to zero in all cells that are not
+       * "melt cells" (cells where the porosity is above a given threshold).
+       * This reverts the system of equations we solve back to the Stokes
+       * system without melt transport for these cells.
        */
       void add_current_constraints(ConstraintMatrix &constraints);
+
+      /**
+       * Copy the current constraints and store them in a private member
+       * variable so that we can use them later. This is necessary because
+       * we want to add the melt constraints, which depend on the solution
+       * of the porosity field, later on, after we have computed this solution.
+       * In this way, we only need to update the constraints matrix instead
+       * of computing all constraints again.
+       */
+      void save_constraints(ConstraintMatrix &constraints);
 
       /**
         *
@@ -394,6 +407,14 @@ namespace aspect
        * melt transport in this cell or not.
        */
       std::vector<bool> is_melt_cell_vector;
+
+      /**
+       * Constraint object. We need to save the current constraints at the
+       * start of every time step so that we can add the melt constraints,
+       * which depend on the solution of the porosity field, later after
+       * we have computed this solution.
+       */
+      ConstraintMatrix current_constraints;
   };
 
 }
