@@ -101,8 +101,6 @@ namespace aspect
         MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
         MeltHandler<dim>::create_material_model_outputs(out);
 
-        const double ref_K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->reference_darcy_coefficient();
-
         typename DoFHandler<dim>::active_cell_iterator
         cell = this->get_dof_handler().begin_active(),
         endc = this->get_dof_handler().end();
@@ -119,8 +117,7 @@ namespace aspect
               AssertThrow(melt_out != NULL,
                           ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
 
-              const double K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->darcy_coefficient(in, out, this->get_melt_handler(), true);
-              const double p_c_scale = std::sqrt(K_D / ref_K_D);
+              const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(in, out, this->get_melt_handler(), true);
 
               cell->get_dof_indices (local_dof_indices);
 
@@ -400,7 +397,6 @@ namespace aspect
     MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
 
     MeltHandler<dim>::create_material_model_outputs(out);
-    const double ref_K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->reference_darcy_coefficient();
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = this->get_dof_handler().begin_active(),
@@ -413,8 +409,7 @@ namespace aspect
 
           this->get_material_model().evaluate(in, out);
 
-          const double K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->darcy_coefficient(in, out, this->get_melt_handler(), true);
-          const double p_c_scale = std::sqrt(K_D / ref_K_D);
+          const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(in, out, this->get_melt_handler(), true);
 
           const unsigned int i = cell->active_cell_index();
           cellwise_errors_p_c[i] = cellwise_errors_p_c_bar[i] * p_c_scale;

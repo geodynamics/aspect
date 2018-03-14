@@ -116,10 +116,7 @@ namespace aspect
         AssertThrow(melt_outputs != NULL,
                     ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
 
-        const double ref_K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->reference_darcy_coefficient();
-        const double K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->darcy_coefficient(in, out, this->get_melt_handler(), true);
-        const double K_D_no_cut = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->darcy_coefficient(in, out, this->get_melt_handler(), false);
-        const double p_c_scale = std::sqrt(K_D / ref_K_D);
+        const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(in, out, this->get_melt_handler(), true);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
@@ -151,10 +148,12 @@ namespace aspect
                   }
                 else if (property_names[i] == "darcy coefficient")
                   {
+                    const double K_D = this->get_melt_handler().limited_darcy_coefficient(melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]);
                     computed_quantities[q][output_index] = K_D;
                   }
                 else if (property_names[i] == "darcy coefficient no cutoff")
                   {
+                    const double K_D_no_cut = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
                     computed_quantities[q][output_index] = K_D_no_cut;
                   }
                 else if (property_names[i] == "is melt cell")

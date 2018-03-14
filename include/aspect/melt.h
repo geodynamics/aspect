@@ -129,13 +129,14 @@ namespace aspect
         virtual double reference_darcy_coefficient () const = 0;
 
         /**
-         *
-         * returns the cell-averaged and cut-off darcy coefficient
+         * Returns the cell-averaged and cut-off value of p_c_scale,
+         * the factor we use to rescale the compaction pressure and to
+         * decide if a cell is a melt cell.
          */
-        double darcy_coefficient (const MaterialModel::MaterialModelInputs<dim> &inputs,
-                                  const MaterialModel::MaterialModelOutputs<dim> &outputs,
-                                  const MeltHandler<dim> &handler,
-                                  bool consider_is_melt_cell) const;
+        double p_c_scale (const MaterialModel::MaterialModelInputs<dim> &inputs,
+                          const MaterialModel::MaterialModelOutputs<dim> &outputs,
+                          const MeltHandler<dim> &handler,
+                          bool consider_is_melt_cell) const;
     };
 
 
@@ -367,6 +368,13 @@ namespace aspect
         *
         */
       bool is_melt_cell(const typename DoFHandler<dim>::active_cell_iterator &cell) const;
+
+      /**
+        * Given the Darcy coefficient as computed by the material model, limit the
+        * coefficient to a minimum value based on the reference Darcy coefficient,
+        * and return this value.
+        */
+      double limited_darcy_coefficient(const double K_D) const;
 
       /**
        * The porosity limit for melt migration. For smaller porosities, the equations
