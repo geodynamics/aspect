@@ -462,7 +462,10 @@ int main (int argc, char *argv[])
       // before, so that the destructor of this instance can react if we are
       // currently unwinding the stack if an unhandled exception is being
       // thrown to avoid MPI deadlocks.
-      Utilities::MPI::MPI_InitFinalize mpi_initialization(argc, argv, /*n_threads =*/ 1);
+      const char *penv = getenv ("DEAL_II_NUM_THREADS");
+      const unsigned int max_threads = (penv==NULL) ? 1 : numbers::invalid_unsigned_int;
+
+      Utilities::MPI::MPI_InitFinalize mpi_initialization(argc, argv, max_threads);
 
       deallog.depth_console(0);
 
