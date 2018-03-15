@@ -54,13 +54,13 @@ namespace aspect
               in >> order;
               getline(in,temp);  // throw away the rest of the line
 
-              const int num_layers = 28;
-              // const int maxnumber = num_layers * (order+1)*(order+2);
+              const unsigned int num_layers = 28;
 
               // read in all coefficients as a single data vector
-              for (int i=0; i<num_layers; i++)
+              std::vector<double> coeffs;
+              for (unsigned int i=0; i<num_layers; ++i)
                 {
-                  for (int j=0; j<(order+1)*(order+2); j++)
+                  for (unsigned int j=0; j<(order+1)*(order+2); ++j)
                     {
                       double new_val;
                       in >> new_val;
@@ -68,23 +68,22 @@ namespace aspect
                     }
                   getline(in,temp);
                 }
+
               // reorder the coefficients into sin and cos coefficients. a_lm will be the cos coefficients
               // and b_lm the sin coefficients.
-              int ind = 0;
-              int ind_degree;
+              unsigned int ind = 0;
 
-              for (int j=0; j<num_layers; j++)
-
-                for (int i=0; i<order+1; i++)
+              for (unsigned int j=0; j<num_layers; ++j)
+                for (unsigned int i=0; i<order+1; ++i)
                   {
-                    ind_degree = 0;
+                    unsigned int ind_degree = 0;
                     while (ind_degree <= i)
                       {
                         a_lm.push_back(coeffs[ind]);
-                        ind += 1;
+                        ++ind;
                         b_lm.push_back(coeffs[ind]);
-                        ind += 1;
-                        ind_degree +=1;
+                        ++ind;
+                        ++ind_degree;
                       }
                   }
             }
@@ -101,14 +100,13 @@ namespace aspect
               return b_lm;
             }
 
-            int maxdegree()
+            unsigned int maxdegree()
             {
               return order;
             }
 
           private:
-            int order;
-            std::vector<double> coeffs;
+            unsigned int order;
             std::vector<double> a_lm;
             std::vector<double> b_lm;
 
@@ -130,13 +128,11 @@ namespace aspect
               getline(in,temp);  // throw away the rest of the line
               getline(in,temp);  // throw away the rest of the line
 
-              int num_splines = 28;
-
-              for (int i=0; i<num_splines; i++)
+              const unsigned int num_splines = 28;
+              depths.resize(num_splines);
+              for (unsigned int i=0; i<num_splines; ++i)
                 {
-                  double new_val;
-                  in >> new_val;
-                  depths.push_back(new_val);
+                  in >> depths[i];
                 }
             }
 
@@ -187,7 +183,7 @@ namespace aspect
                                             reference_temperature;
 
       // get the degree from the input file (60)
-      int max_degree = spherical_harmonics_lookup->maxdegree();
+      unsigned int max_degree = spherical_harmonics_lookup->maxdegree();
 
       // lower the maximum order if needed
       if (lower_max_order)
@@ -208,27 +204,38 @@ namespace aspect
       const double rcmb = 3480e3;
       std::vector<double> depth_values(num_spline_knots,0);
 
-      for (int i = 0; i<num_spline_knots; i++)
+      for (unsigned int i = 0; i<num_spline_knots; ++i)
         depth_values[i] = rcmb+(rmoho-rcmb)*0.5*(r[i]+1);
 
       // convert coordinates from [x,y,z] to [r, phi, theta]
       std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
+      // Evaluate the spherical harmonics at this position. Since they are the
+      // same for all depth splines, do it once to avoid multiple evaluations.
+      std::vector<std::vector<double> > cosine_components(max_degree+1,std::vector<double>(max_degree+1,0.0));
+      std::vector<std::vector<double> > sine_components(max_degree+1,std::vector<double>(max_degree+1,0.0));
+
+      for (unsigned int degree_l = 0; degree_l < max_degree+1; ++degree_l)
+        {
+          for (unsigned int order_m = 0; order_m < degree_l+1; ++order_m)
+            {
+              const std::pair<double,double> sph_harm_vals = Utilities::real_spherical_harmonic( degree_l, order_m, scoord[2], scoord[1] );
+              cosine_components[degree_l][order_m] = sph_harm_vals.first;
+              sine_components[degree_l][order_m] = sph_harm_vals.second;
+            }
+        }
+
       // iterate over all degrees and orders at each depth and sum them all up.
       std::vector<double> spline_values(num_spline_knots,0);
       double prefact;
-      int ind = 0;
+      unsigned int ind = 0;
 
-      for (int depth_interp = 0; depth_interp < num_spline_knots; depth_interp++)
+      for (unsigned int depth_interp = 0; depth_interp < num_spline_knots; ++depth_interp)
         {
-          for (int degree_l = 0; degree_l < max_degree+1; degree_l++)
+          for (unsigned int degree_l = 0; degree_l < max_degree+1; ++degree_l)
             {
-              for (int order_m = 0; order_m < degree_l+1; order_m++)
+              for (unsigned int order_m = 0; order_m < degree_l+1; ++order_m)
                 {
-                  const std::pair<double,double> sph_harm_vals = Utilities::real_spherical_harmonic( degree_l, order_m, scoord[2], scoord[1] );
-                  const double cos_component = sph_harm_vals.first;
-                  const double sin_component = sph_harm_vals.second;
-
                   // normalization after Dahlen and Tromp, 1986, Appendix B.6
                   if (degree_l == 0)
                     prefact = (zero_out_degree_0
@@ -236,11 +243,13 @@ namespace aspect
                                0.
                                :
                                1.);
-                  else prefact = 1.0;
+                  else
+                    prefact = 1.0;
 
-                  spline_values[depth_interp] += prefact * (a_lm[ind]*cos_component + b_lm[ind]*sin_component);
+                  spline_values[depth_interp] += prefact * (a_lm[ind] * cosine_components[degree_l][order_m]
+                                                            + b_lm[ind] * sine_components[degree_l][order_m]);
 
-                  ind += 1;
+                  ++ind;
                 }
             }
         }
