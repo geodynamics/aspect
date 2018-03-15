@@ -1148,20 +1148,18 @@ namespace aspect
 
             std::vector<Tensor<1,dim> > phi_u_f(fluid_velocity_dofs_per_cell);
 
-            // average the porosity cell-wise, and make sure it is above a threshold (as done for the Darcy coefficient)
-            // double phi = 1.0;
-//            for (unsigned int q=0; q<n_q_points; ++q)
-//              {
-//                phi *= std::pow (std::max(0.0, porosity_values[q]), 1./n_q_points);
-//              }
+            double K_D_over_phi = 0.0;
 
-
-//            const double K_D_no_cutoff = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->darcy_coefficient(in,out,this->get_melt_handler(), false);
-//            const double K_D_over_phi = (phi > 0
-//                                         ?
-//                                         K_D_no_cutoff / phi
-//                                         :
-//                                         0);
+            if (average_melt_velocity)
+              {
+                // average the K_D and the porosity cell-wise
+                for (unsigned int q=0; q<n_q_points; ++q)
+                  {
+                    const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
+                    const double K_D_over_phi_q_point = (porosity_values[q] > 0 ? K_D / porosity_values[q] : 0.0);
+                    K_D_over_phi += K_D_over_phi_q_point/n_q_points;
+                  }
+              }
 
             for (unsigned int q=0; q<n_q_points; ++q)
               {
@@ -1181,9 +1179,14 @@ namespace aspect
                   for (unsigned int j=0; j<fluid_velocity_dofs_per_cell; ++j)
                     cell_matrix(i,j) += phi_u_f[j] * phi_u_f[i] * JxW;
 
-                // use K_D without cutoff to compute u_f
-                const double phi = std::max(0.0, porosity_values[q]);
-                const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
+                if (!average_melt_velocity)
+                  {
+                    // use K_D without cutoff to compute u_f
+                    const double phi = std::max(0.0, porosity_values[q]);
+                    const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
+
+                    K_D_over_phi = (phi > 0 ? K_D / phi : 0.0);
+                  }
 
                 // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
                 if (p_c_scale > 0)
@@ -1192,7 +1195,7 @@ namespace aspect
 
 
                     for (unsigned int i=0; i<fluid_velocity_dofs_per_cell; ++i)
-                      cell_vector(i) += (u_s_values[q] - K_D / phi * (grad_p_f_values[q] - melt_outputs->fluid_densities[q]*gravity))
+                      cell_vector(i) += (u_s_values[q] - K_D_over_phi * (grad_p_f_values[q] - melt_outputs->fluid_densities[q]*gravity))
                                         * phi_u_f[i]
                                         * JxW;
                   }
@@ -1581,7 +1584,7 @@ namespace aspect
   limited_darcy_coefficient(const double K_D) const
   {
     const double ref_K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->reference_darcy_coefficient();
-    return std::max(K_D, 1.e-6*ref_K_D);
+    return std::max(K_D, 1.e-3*ref_K_D);
   }
 
 
@@ -1701,6 +1704,23 @@ namespace aspect
                          "From our preliminary tests, continuous elements seem to work better in models "
                          "where the porosity is > 0 everywhere in the domain, and discontinuous elements "
                          "work better in models where in parts of the domain the porosity = 0.");
+      prm.declare_entry ("Average melt velocity", "true",
+                         Patterns::Bool (),
+                         "Whether to cell-wise average the material properties that are used to "
+                         "compute the melt velocity or not. The melt velocity is computed as the "
+                         "sum of the solid velocity and the phase separation flux "
+                         "$ - K_D / \\phi (\\nabla p_f - \\rho_f \\mathbf g)$. "
+                         "If this parameter is set to true, $K_D$ and $\\phi$ will be averaged "
+                         "cell-wise in the computation of the phase separation flux. "
+                         "This is useful because in some models the melt velocity can have spikes "
+                         "close to the interface between regions of melt and no melt, as both $K_D$ "
+                         "and $\\phi$ go to zero for vanishing melt fraction. As the melt velocity is "
+                         "used for computing the time step size, and in models that use heat "
+                         "transport by melt or shear heating of melt, setting this parameter to true "
+                         "can speed up the model and make it mode stable. In computations where "
+                         "accuracy and convergence behavior of the melt velocity is important "
+                         "(like in benchmark cases with an analytical solution), this parameter "
+                         "should probably be set to 'false'.");
     }
     prm.leave_subsection();
 
@@ -1733,6 +1753,7 @@ namespace aspect
       melt_transport_threshold = prm.get_double("Melt transport threshold");
       heat_advection_by_melt = prm.get_bool("Heat advection by melt");
       use_discontinuous_p_c = prm.get_bool("Use discontinuous compaction pressure");
+      average_melt_velocity = prm.get_bool("Average melt velocity");
     }
     prm.leave_subsection();
 

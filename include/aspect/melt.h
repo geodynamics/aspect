@@ -365,7 +365,9 @@ namespace aspect
       void save_constraints(ConstraintMatrix &constraints);
 
       /**
-        *
+        * Returns the entry of the private variable is_melt_cell_vector
+        * for the cell given in the input, describing if we have melt
+        * transport in this cell or not.
         */
       bool is_melt_cell(const typename DoFHandler<dim>::active_cell_iterator &cell) const;
 
@@ -408,6 +410,16 @@ namespace aspect
        * Whether to use a discontinuous element for the compaction pressure or not.
        */
       bool use_discontinuous_p_c;
+
+      /**
+       * Whether to cell-wise average the material properties that are used to
+       * compute the melt velocity or not. Note that the melt velocity is computed
+       * as the sum of the solid velocity and the phase separation flux (difference
+       * between melt and solid velocity). If this parameter is set to true,
+       * material properties in the computation of the phase separation flux will
+       * be averaged cell-wise.
+       */
+      bool average_melt_velocity;
 
     private:
       /**

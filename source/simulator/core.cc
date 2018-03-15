@@ -994,13 +994,11 @@ namespace aspect
     signals.post_constraints_creation(*this, current_constraints);
 
     current_constraints.close();
+    melt_handler->save_constraints (current_constraints);
 
     // let the melt handler add its constraints once before we solve the porosity system for the first time
     if(time_step == 0 && parameters.include_melt_transport)
-      {
-        melt_handler->save_constraints (current_constraints);
-        melt_handler->add_current_constraints (current_constraints);
-      }
+      melt_handler->add_current_constraints (current_constraints);
   }
 
 
