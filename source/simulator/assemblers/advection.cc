@@ -502,11 +502,7 @@ namespace aspect
               ExcInternalError());
       const bool cell_has_periodic_neighbor = cell->has_periodic_neighbor (face_no);
 
-      if ((!face->at_boundary() && !face->has_children())
-          ||
-          (face->at_boundary() && cell->periodic_neighbor_is_coarser(face_no))
-          ||
-          (face->at_boundary() && neighbor->level () == cell->level () && neighbor->active()))
+      if (!neighbor->has_children())
         {
           if (neighbor->level () == cell->level () &&
               neighbor->active() &&
@@ -816,7 +812,8 @@ namespace aspect
               */
             }
         }
-      else // face->has_children(), so always assemble from here.
+      // neighbor has children, so always assemble from here.
+      else
         {
           const unsigned int neighbor2 =
             (cell_has_periodic_neighbor
@@ -825,10 +822,10 @@ namespace aspect
              :
              cell->neighbor_face_no(face_no));
 
-          // TODO: need to consider subfaces on periodic neighbors of a coarsen cell
-          // as in such case, the face of current active cell is on the boundary and face->number_of_children()==1
-
-          // loop over subfaces
+          // Loop over subfaces. We know that the neighbor is finer, so we could loop over the subfaces of the current
+          // face. but if we are at a periodic boundary, then the face of the current cell has no children, so instead use
+          // the children of the periodic neighbor's corresponding face since we know that the letter does indeed have
+          // children (because we know that the neighbor is refined).
           typename DoFHandler<dim>::face_iterator neighbor_face=neighbor->face(neighbor2);
           for (unsigned int subface_no=0; subface_no<neighbor_face->number_of_children(); ++subface_no)
             {
