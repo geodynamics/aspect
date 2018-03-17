@@ -3,7 +3,7 @@
 # In this 1D model, material is upwelling with a high temperature
 # from the bottom boundary and melting adiabatically. This 
 # leads to dissipation heating due to the relative movement of 
-# melt and solid. As these thers scale with 1/porosity, this
+# melt and solid. As these terms scale with 1/porosity, this
 # can lead to instabilities. This should be fixed by using a
 # Melt transport threshold > 0, as done in this test. 
 
@@ -133,7 +133,7 @@ subsection Material model
     set Use full compressibility = false
     set Thermal conductivity = 4.7
     set Melt extraction depth = 0.0
-    set Freezing rate = 0.0
+    set Freezing rate = 1e-3
   end
 end
 
