@@ -922,7 +922,8 @@ namespace aspect
                       ExcInternalError());
 
               // then adjust its value
-              distributed_vector(local_dof_indices[first_pressure_dof]) += pressure_adjustment;
+              distributed_vector(local_dof_indices[first_pressure_dof]) = vector(local_dof_indices[first_pressure_dof])
+                                                                          + pressure_adjustment;
             }
         distributed_vector.compress(VectorOperation::insert);
       }
@@ -1022,10 +1023,11 @@ namespace aspect
                       ExcInternalError());
 
               // then adjust its value
-              vector (local_dof_indices[first_pressure_dof]) -= pressure_adjustment;
+              vector (local_dof_indices[first_pressure_dof]) = relevant_vector(local_dof_indices[first_pressure_dof])
+                                                               - pressure_adjustment;
             }
 
-        vector.compress(VectorOperation::add);
+        vector.compress(VectorOperation::insert);
       }
   }
 
