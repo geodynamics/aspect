@@ -1,0 +1,75 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Visualization file name
+ 0 0.000000000000e+00 0.000000000000e+00 112 1245 549 1008 0 0 output-discontinuous_composition_serial_periodic_amr/solution/solution-00000 
+ 1 6.250000000000e-02 6.250000000000e-02 112 1245 549 1008 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00001 
+ 2 1.250000000000e-01 6.250000000000e-02  76  847 373  684 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00002 
+ 3 1.875000000000e-01 6.250000000000e-02 124 1289 569 1116 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00003 
+ 4 2.500000000000e-01 6.250000000000e-02 100 1140 503  900 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00004 
+ 5 3.125000000000e-01 6.250000000000e-02 124 1289 569 1116 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00005 
+ 6 3.750000000000e-01 6.250000000000e-02 100 1140 503  900 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00006 
+ 7 4.375000000000e-01 6.250000000000e-02 124 1289 569 1116 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00007 
+ 8 5.000000000000e-01 6.250000000000e-02 124 1289 569 1116 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00008 
+ 9 5.625000000000e-01 6.250000000000e-02 148 1510 667 1332 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00009 
+10 6.250000000000e-01 6.250000000000e-02 148 1510 667 1332 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00010 
+11 6.875000000000e-01 6.250000000000e-02 148 1510 667 1332 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00011 
+12 7.500000000000e-01 6.250000000000e-02 148 1510 667 1332 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00012 
+13 8.125000000000e-01 6.250000000000e-02 148 1510 667 1332 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00013 
+14 8.750000000000e-01 6.250000000000e-02 124 1361 601 1116 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00014 
+15 9.375000000000e-01 6.250000000000e-02 124 1289 569 1116 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00015 
+16 1.000000000000e+00 6.250000000000e-02 136 1450 639 1224 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00016 
+17 1.062500000000e+00 6.250000000000e-02 160 1599 705 1440 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00017 
+18 1.125000000000e+00 6.250000000000e-02 160 1599 705 1440 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00018 
+19 1.187500000000e+00 6.250000000000e-02 160 1599 705 1440 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00019 
+20 1.250000000000e+00 6.250000000000e-02 160 1599 705 1440 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00020 
+21 1.312500000000e+00 6.250000000000e-02 160 1599 705 1440 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00021 
+22 1.375000000000e+00 6.250000000000e-02 160 1599 705 1440 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00022 
+23 1.437500000000e+00 6.250000000000e-02 184 1876 827 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00023 
+24 1.500000000000e+00 6.250000000000e-02 184 1876 827 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00024 
+25 1.562500000000e+00 6.250000000000e-02 184 1876 827 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00025 
+26 1.625000000000e+00 6.250000000000e-02 148 1578 695 1332 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00026 
+27 1.687500000000e+00 6.250000000000e-02 160 1655 729 1440 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00027 
+28 1.750000000000e+00 6.250000000000e-02 148 1578 695 1332 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00028 
+29 1.812500000000e+00 6.250000000000e-02 160 1655 729 1440 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00029 
+30 1.875000000000e+00 6.250000000000e-02 148 1578 695 1332 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00030 
+31 1.937500000000e+00 6.250000000000e-02 160 1655 729 1440 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00031 
+32 2.000000000000e+00 6.250000000000e-02 184 1876 827 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00032 
+33 2.062500000000e+00 6.250000000000e-02 184 1876 827 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00033 
+34 2.125000000000e+00 6.250000000000e-02 184 1876 827 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00034 
+35 2.187500000000e+00 6.250000000000e-02 184 1876 827 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00035 
+36 2.250000000000e+00 6.250000000000e-02 160 1655 729 1440 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00036 
+37 2.312500000000e+00 6.250000000000e-02 160 1655 729 1440 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00037 
+38 2.375000000000e+00 6.250000000000e-02 160 1655 729 1440 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00038 
+39 2.437500000000e+00 6.250000000000e-02 184 1876 827 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00039 
+40 2.500000000000e+00 6.250000000000e-02 184 1876 827 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00040 
+41 2.562500000000e+00 6.250000000000e-02 184 1876 827 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00041 
+42 2.625000000000e+00 6.250000000000e-02 184 1876 827 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00042 
+43 2.687500000000e+00 6.250000000000e-02 184 1876 827 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00043 
+44 2.750000000000e+00 6.250000000000e-02 148 1578 695 1332 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00044 
+45 2.812500000000e+00 6.250000000000e-02 160 1655 729 1440 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00045 
+46 2.875000000000e+00 6.250000000000e-02 148 1578 695 1332 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00046 
+47 2.937500000000e+00 6.250000000000e-02 184 1876 827 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00047 
+48 3.000000000000e+00 6.250000000000e-02 184 1876 827 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00048 
+49 3.062500000000e+00 6.250000000000e-02 184 1876 827 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00049 
+50 3.125000000000e+00 6.250000000000e-02 184 1876 827 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00050 
+51 3.187500000000e+00 6.250000000000e-02 160 1599 705 1440 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00051 
+52 3.250000000000e+00 6.250000000000e-02 184 1876 827 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00052 
+53 3.312500000000e+00 6.250000000000e-02 160 1599 705 1440 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00053 
+54 3.375000000000e+00 6.250000000000e-02 160 1599 705 1440 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00054 
+55 3.437500000000e+00 6.250000000000e-02 184 1820 803 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00055 
+56 3.500000000000e+00 6.250000000000e-02 184 1820 803 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00056 
+57 3.562500000000e+00 6.250000000000e-02 184 1820 803 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00057 
+58 3.625000000000e+00 6.250000000000e-02 184 1820 803 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00058 
+59 3.687500000000e+00 6.250000000000e-02 184 1820 803 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00059 
+60 3.750000000000e+00 6.250000000000e-02 148 1510 667 1332 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00060 
+61 3.812500000000e+00 6.250000000000e-02 184 1820 803 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00061 
+62 3.875000000000e+00 6.250000000000e-02 148 1510 667 1332 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00062 
+63 3.937500000000e+00 6.250000000000e-02 184 1836 811 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00063 
+64 4.000000000000e+00 6.250000000000e-02 184 1836 811 1656 0 2 output-discontinuous_composition_serial_periodic_amr/solution/solution-00064 
