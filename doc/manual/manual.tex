@@ -3887,16 +3887,16 @@ with for example two threads per process will offset some of the performance
 loss you will see in these situations.
 
 Multithreading is controlled by setting the command line parameter \texttt{-j}
-or \texttt{--threads}. If the parameter is not set \aspect{} will create
+or \texttt{-{}-threads}. If the parameter is not set, \aspect{} will create
 exactly one thread per MPI process, i.e. multithreading is disabled.  Appending
-it will automatically spawn several threads per MPI process (a typical example
-is ``2''). Note that the internally used TBB library will determine the number
-of threads as a reasonable number, i.e. if you start with 2~MPI processes on a
+the parameter allows \aspect{} to spawn several threads per MPI process. Note
+that the internally used TBB library will determine the number of threads based
+on the number of available cores, i.e., if you start 2~MPI processes on a
 quadcore machine with hyperthreading (8 logical cores), \aspect{} will spawn 4
 threads on each MPI process. Also note that there is no guarantee that the
 final number of threads will exactly match the number of available logical
 cores if you start with a number of processes that is not a divisor of your
-logical threads (e.g. 3 MPI processes for 8 logical cores).
+logical cores (e.g. 3 MPI processes for 8 logical cores).
 
 \subsection{Input parameter files}
 \label{sec:parameters-overview}

@@ -368,9 +368,9 @@ void print_help()
             << std::endl;
   std::cout << "    optional arguments [args]:"
             << std::endl
-            << "       -v, --version          (for information about library versions)"
-            << std::endl
             << "       -h, --help             (for this usage help)"
+            << std::endl
+            << "       -v, --version          (for information about library versions)"
             << std::endl
             << "       -j, --threads          (to use multi-threading)"
             << std::endl
@@ -666,7 +666,7 @@ int main (int argc, char *argv[])
             break;
           }
           default:
-            AssertThrow(false,
+            AssertThrow((dim >= 2) && (dim <= 3),
                         ExcMessage ("ASPECT can only be run in 2d and 3d but a "
                                     "different space dimension is given in the parameter file."));
         }
