@@ -17,6 +17,7 @@ set Use years in output instead of seconds = false
 set Linear solver tolerance                = 1e-7
 set Pressure normalization                 = surface
 set Nonlinear solver scheme                = Advection only
+set Use operator splitting                 = true
 
 subsection Compositional fields
   set Number of fields = 2
