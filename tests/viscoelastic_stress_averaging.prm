@@ -64,7 +64,7 @@ end
 # Number and name of compositional fields
 subsection Compositional fields
   set Number of fields = 3
-  set Names of fields  = s11, s22, s12
+  set Names of fields  = sxx, syy, sxy
 end
 
 # Spatial domain of different compositional fields

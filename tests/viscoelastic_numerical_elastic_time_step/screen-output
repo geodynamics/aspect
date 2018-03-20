@@ -4,9 +4,9 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
-   Skipping s11 composition solve because RHS is zero.
-   Skipping s22 composition solve because RHS is zero.
-   Skipping s12 composition solve because RHS is zero.
+   Skipping sxx composition solve because RHS is zero.
+   Skipping syy composition solve because RHS is zero.
+   Skipping sxy composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 27+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
@@ -24,9 +24,9 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
 
 *** Timestep 1:  t=1000 years
    Solving temperature system... 0 iterations.
-   Solving s11 system ... 11 iterations.
-   Solving s22 system ... 11 iterations.
-   Solving s12 system ... 12 iterations.
+   Solving sxx system ... 11 iterations.
+   Solving syy system ... 11 iterations.
+   Solving sxy system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00275809

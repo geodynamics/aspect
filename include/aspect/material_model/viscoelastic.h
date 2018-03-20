@@ -72,8 +72,8 @@ namespace aspect
      * except density, which varies linearly with temperature according to the
      * thermal expansivity.
      *
-     * When more than one field is present at a point, they are averaged
-     * arithmetically. An exception is viscosity, which may be averaged
+     * When more than one compositional field is present at a point, they are
+     * averaged arithmetically. An exception is viscosity, which may be averaged
      * arithmetically, harmonically, geometrically, or by selecting the
      * viscosity of the composition with the greatest volume fraction.
      *
@@ -85,7 +85,6 @@ namespace aspect
     class Viscoelastic : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-
         /**
          * Function to compute the material properties in @p out given the
          * inputs in @p in. If MaterialModelInputs.strain_rate has the length
@@ -139,7 +138,6 @@ namespace aspect
          */
 
       private:
-
         /**
          * The first 3 (2D) or 6 (3D) compositional fields are assumed
          * to be components of the viscoelastic stress tensor and
@@ -208,14 +206,18 @@ namespace aspect
 
         /**
          * Bool indicating whether to use a fixed material time scale in the
-         * viscoelastic rheology during all time step, read from parameter file.
+         * viscoelastic rheology for all time steps (if true) or to use the
+         * actual (variable) advection time step of the model (if false). Read
+         * from parameter file.
          */
         bool use_fixed_elastic_time_step;
 
         /**
-         * Boolindicating whether to use a stress averaging scheme to account
-         * for differences between the numerical and fixed elastic time step,
-         * read from parameter file.
+         * Bool indicating whether to use a stress averaging scheme to account
+         * for differences between the numerical and fixed elastic time step
+         * (if true). When set to false, the viscoelastic stresses are not
+         * modified to account for differences between the viscoelastic time
+         * step and the numerical time step. Read from parameter file.
          */
         bool use_stress_averaging;
 

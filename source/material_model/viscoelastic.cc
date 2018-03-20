@@ -125,6 +125,43 @@ namespace aspect
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
 
+
+      // Check whether the compositional fields representing the viscoelastic
+      // stress tensor are both named correctly and listed in the right order.
+      if ( dim == 2)
+        {
+          AssertThrow(this->introspection().compositional_index_for_name("sxx") == 0,
+                      ExcMessage("Material model Viscoelastic only works if the first "
+                                 "compositional field is called sxx."));
+          AssertThrow(this->introspection().compositional_index_for_name("syy") == 1,
+                      ExcMessage("Material model Viscoelastic only works if the second "
+                                 "compositional field is called syy."));
+          AssertThrow(this->introspection().compositional_index_for_name("sxy") == 2,
+                      ExcMessage("Material model Viscoelastic only works if the third "
+                                 "compositional field is called sxy."));
+        }
+      if ( dim == 3)
+        {
+          AssertThrow(this->introspection().compositional_index_for_name("sxx") == 0,
+                      ExcMessage("Material model Viscoelastic only works if the first "
+                                 "compositional field is called sxx."));
+          AssertThrow(this->introspection().compositional_index_for_name("syy") == 1,
+                      ExcMessage("Material model Viscoelastic only works if the second "
+                                 "compositional field is called syy."));
+          AssertThrow(this->introspection().compositional_index_for_name("szz") == 2,
+                      ExcMessage("Material model Viscoelastic only works if the third "
+                                 "compositional field is called szz."));
+          AssertThrow(this->introspection().compositional_index_for_name("sxy") == 3,
+                      ExcMessage("Material model Viscoelastic only works if the fourth "
+                                 "compositional field is called sxy."));
+          AssertThrow(this->introspection().compositional_index_for_name("sxz") == 4,
+                      ExcMessage("Material model Viscoelastic only works if the fifth "
+                                 "compositional field is called sxz."));
+          AssertThrow(this->introspection().compositional_index_for_name("syz") == 5,
+                      ExcMessage("Material model Viscoelastic only works if the sixth "
+                                 "compositional field is called syz."));
+        }
+
       // Define elastic time step
       const double dte = ( ( this->get_timestep_number() > 0 && use_fixed_elastic_time_step == false )
                            ?
@@ -436,11 +473,11 @@ namespace aspect
                                    "rock type or component of the viscoelastic stress tensor. The stress "
                                    "tensor in 2D and 3D, respectively, contains 3 or 6 components. The "
                                    "compositional fields representing these components must be the first "
-                                   "listed compositional fields in the parameter file."
+                                   "listed compositional fields in the parameter file. "
                                    "\n\n "
                                    "Expanding the model to include non-linear viscous flow (e.g., "
                                    "diffusion/dislocation creep) and plasticity would produce a "
-                                   "of constitutive relationship commonly referred to as partial "
+                                   "constitutive relationship commonly referred to as partial "
                                    "elastoviscoplastic (e.g., pEVP) in the geodynamics community. "
                                    "While extensively discussed and applied within the geodynamics "
                                    "literature, notable references include: "
@@ -462,7 +499,7 @@ namespace aspect
                                    "rate of deformation ($\\hat{D}$) as the sum of elastic "
                                    "(($\\hat{D_{e}}$) and viscous (($\\hat{D_{v}}$)) components: "
                                    "$\\hat{D} = \\hat{D_{e}} + \\hat{D_{v}}$  "
-                                   "These terms further decompose into"
+                                   "These terms further decompose into "
                                    "$\\hat{D_{v}} = \\frac{\\tau}{2\\eta}$ and "
                                    "$\\hat{D_{e}} = \\frac{\\overset{\\triangledown}{\\tau}}{2\\mu}$, where "
                                    "$\\tau$ is the viscous deviatoric stress, $\\eta$ is the shear viscosity, "
@@ -496,12 +533,40 @@ namespace aspect
                                    "($ \\alpha = \\frac{\\eta}{\\mu} $): "
                                    "$\\eta_{eff} = \\eta \\frac{\\triangle t^{e}}{\\triangle t^{e} + \\alpha}$ "
                                    "The magnitude of the shear modulus thus controls how much the effective "
-                                   "viscosity is reduced relative to the initial viscosity."
+                                   "viscosity is reduced relative to the initial viscosity. "
                                    "\n\n"
                                    "Elastic effects are introduced into the governing stokes equations through "
                                    "an elastic force term (eqn. 30) using stresses from the previous time step: "
                                    "$F^{e,t} = -\\frac{\\eta_{eff}}{\\mu \\triangle t^{e}} \\tau^{t}$. "
                                    "This force term is added onto the right-hand side force vector in the "
-                                   "system of equations. ")
+                                   "system of equations. "
+                                   "\n\n"
+                                   "Several model parameters (densities, elastic shear moduli, thermal expansivities, "
+                                   "thermal conductivies, specific heats) can be defined per-compositional field. "
+                                   "For each material parameter the user supplies a comma delimited list of length "
+                                   "N+1, where N is the number of compositional fields. The additional field corresponds "
+                                   "to the value for background material. They should be ordered ''background, "
+                                   "composition1, composition2...''. However, the first 3 (2D) or 6 (3D) composition "
+                                   "fields correspond to components of the elastic stress tensor and their material "
+                                   "values will not contribute to the volume fractions. If a single value is given, then "
+                                   "all the compositional fields are given that value. Other lengths of lists are not "
+                                   "allowed. For a given compositional field the material parameters are treated as "
+                                   "constant, except density, which varies linearly with temperature according to the "
+                                   "thermal expansivity. "
+                                   "\n\n"
+                                   "When more than one compositional field is present at a point, they are averaged "
+                                   "arithmetically. An exception is viscosity, which may be averaged arithmetically, "
+                                   "harmonically, geometrically, or by selecting the viscosity of the composition field "
+                                   "with the greatest volume fraction. "
+                                   "\n\n"
+                                   "As mentioned above, the viscoelastic stress tensor is tracked through 3 (2D) or "
+                                   "6 (3D) individual components on compositional fields or tracers. When using tracers, "
+                                   "corresponding compositional fields are still required for the material to access the "
+                                   "tracer values. In either case, the stress tensor components must be named and listed "
+                                   "in a very specific format, which is designed to minimize mislabeling stress tensor "
+                                   "components as distinct 'compositional rock types' (or vice versa). For 2D models, the "
+                                   "first three compositional fields must be labeled sxx, syy and sxy. In 3D, the first "
+                                   "six compositional fields must be labeled sxx, syy, szz, sxy, sxz, syz. In both cases, "
+                                   "x, y and z correspond to the coordinate axes nomenclature used by the Geometry model.")
   }
 }
