@@ -137,7 +137,7 @@ namespace aspect
          * @}
          */
 
-      private:
+      protected:
         /**
          * The first 3 (2D) or 6 (3D) compositional fields are assumed
          * to be components of the viscoelastic stress tensor and
@@ -172,6 +172,19 @@ namespace aspect
         double average_value (const std::vector<double> &composition,
                               const std::vector<double> &parameter_values,
                               const enum AveragingScheme &average_type) const;
+
+
+        double calculate_average_viscosity (const std::vector<double> &composition,
+                                            const std::vector<double> &viscosities,
+                                            const enum AveragingScheme &average_type) const;
+
+        double calculate_average_elastic_shear_modulus (const std::vector<double> &composition,
+                                                        const std::vector<double> &elastic_shear_moduli,
+                                                        const enum AveragingScheme &average_type) const;
+
+        double calculate_average_viscoelastic_viscosity (const double average_viscosity,
+                                                         const double average_elastic_shear_modulus,
+                                                         const double dte) const;
 
 
         /**

@@ -778,7 +778,7 @@ namespace aspect
         std::vector<double> rhs_melt_pc;
 
         /**
-         * Force tensor on the right-hand side for the conservation of
+         * Force tensor (elastic terms) on the right-hand side for the conservation of
          * momentum equation (first part of the Stokes equation) in each
          * quadrature point.
          */
