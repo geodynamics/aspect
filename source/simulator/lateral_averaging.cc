@@ -36,14 +36,23 @@ namespace aspect
 
   template <int dim>
   template <class FUNCTOR>
-  void LateralAveraging<dim>::compute_lateral_average(std::vector<double> &values,
-                                                      FUNCTOR &fctr) const
+  void LateralAveraging<dim>::compute_lateral_averages(std::vector<std::vector<double> > &values,
+                                                       std::vector<FUNCTOR> &functors) const
   {
     Assert (values.size() > 0,
             ExcMessage ("To call this function, you need to request a positive "
+                        "number of properties to compute."));
+    Assert (values[0].size() > 0,
+            ExcMessage ("To call this function, you need to request a positive "
                         "number of depth slices."));
-    const unsigned int num_slices = values.size();
-    std::vector<double> volume(num_slices);
+
+    const unsigned int n_properties = values.size();
+    const unsigned int n_slices = values[0].size();
+    for (unsigned int i=0; i < n_properties; ++i)
+      Assert (values[i].size() == n_slices,
+              ExcMessage ("All properties need to have the same number of depth slices."));
+
+    std::vector<double> volume(n_slices);
 
     // this yields 10^dim quadrature points evenly distributed in the interior of the cell.
     // We avoid points on the faces, as they would be counted more than once.
@@ -59,7 +68,7 @@ namespace aspect
 
     std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_q_points));
 
-    std::vector<double> output_values(quadrature_formula.size());
+    std::vector<std::vector<double> > output_values(n_properties,std::vector<double>(quadrature_formula.size()));
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = this->get_dof_handler().begin_active(),
@@ -71,60 +80,73 @@ namespace aspect
     MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
                                                  this->n_compositional_fields());
 
-    fctr.setup(quadrature_formula.size());
+    bool functors_need_material_output = false;
+    for (unsigned int i=0; i<n_properties; ++i)
+      {
+        functors[i].setup(quadrature_formula.size());
+        if (functors[i].need_material_properties())
+          functors_need_material_output = true;
+      }
 
     for (; cell!=endc; ++cell)
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          if (fctr.need_material_properties())
-            {
 
-              // get the density at each quadrature point if necessary
+          if (functors_need_material_output)
+            {
+              // get the material properties at each quadrature point if necessary
               in.reinit(fe_values,
                         cell,
                         this->introspection(),
                         this->get_solution());
-
               this->get_material_model().evaluate(in, out);
-
             }
 
-          fctr(in, out, fe_values, this->get_solution(), output_values);
+
+          for (unsigned int i = 0; i < n_properties; ++i)
+            functors[i](in, out, fe_values, this->get_solution(), output_values[i]);
 
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
               const double depth = this->get_geometry_model().depth(fe_values.quadrature_point(q));
               // make sure we are rounding down and never end up with idx==num_slices:
               const double magic = 1.0-2.0*std::numeric_limits<double>::epsilon();
-              const unsigned int idx = static_cast<unsigned int>(std::floor((depth*num_slices)/max_depth*magic));
+              const unsigned int idx = static_cast<unsigned int>(std::floor((depth*n_slices)/max_depth*magic));
 
-              Assert(idx<num_slices, ExcInternalError());
+              Assert(idx<n_slices, ExcInternalError());
 
-              values[idx] += output_values[q] * fe_values.JxW(q);
+              for (unsigned int i = 0; i < n_properties; ++i)
+                values[i][idx] += output_values[i][q] * fe_values.JxW(q);
+
               volume[idx] += fe_values.JxW(q);
             }
         }
 
-    std::vector<double> values_all(num_slices);
-    std::vector<double> volume_all(num_slices);
+    std::vector<double> volume_all(n_slices);
     Utilities::MPI::sum(volume, this->get_mpi_communicator(), volume_all);
-    Utilities::MPI::sum(values, this->get_mpi_communicator(), values_all);
 
     bool print_under_res_warning=false;
-    for (unsigned int i=0; i<num_slices; ++i)
+    for (unsigned int property=0; property<n_properties; ++property)
       {
-        if (volume_all[i] > 0.0)
+        std::vector<double> values_all(n_slices);
+        Utilities::MPI::sum(values[property], this->get_mpi_communicator(), values_all);
+
+        for (unsigned int i=0; i<n_slices; ++i)
           {
-            values[i] = values_all[i] / (static_cast<double>(volume_all[i]));
-          }
-        else
-          {
-            print_under_res_warning = true;
-            // Output nan if no quadrature points in depth block
-            values[i] = std::numeric_limits<double>::quiet_NaN();
+            if (volume_all[i] > 0.0)
+              {
+                values[property][i] = values_all[i] / (static_cast<double>(volume_all[i]));
+              }
+            else
+              {
+                print_under_res_warning = true;
+                // Output nan if no quadrature points in depth block
+                values[property][i] = std::numeric_limits<double>::quiet_NaN();
+              }
           }
       }
+
     if (print_under_res_warning)
       {
         this->get_pcout() << "In computing depth averages, there is at least"
@@ -133,6 +155,17 @@ namespace aspect
                           << " Consider reducing number of depth layers for "
                           << " averaging" << std::endl;
       }
+  }
+
+  template <int dim>
+  template <class FUNCTOR>
+  void LateralAveraging<dim>::compute_lateral_average(std::vector<double> &values,
+                                                      FUNCTOR &functor) const
+  {
+    std::vector<std::vector<double> > vector_of_values(1,values);
+    std::vector<FUNCTOR> vector_of_functors(1,functor);
+    compute_lateral_averages(vector_of_values,vector_of_functors);
+    values = vector_of_values[0];
   }
 
   namespace

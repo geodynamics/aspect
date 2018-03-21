@@ -137,13 +137,13 @@ namespace aspect
       get_vertical_heat_flux_averages(std::vector<double> &values) const;
 
     private:
-
       /**
-       * Internal routine to compute the depth average of a certain quantity.
+       * Internal routine to compute the depth averages of several quantities.
        *
-       * The functor @p fctr must be an object of a user defined type that can
-       * be arbitrary but has to satisfy certain requirements. In essence,
-       * this class type needs to implement the following interface of member
+       * The vector of functors @p functors must contain one or mroe objects of
+       * a user defined type that can
+       * be arbitrary but have to satisfy certain requirements. In essence,
+       * each class type needs to implement the following interface of member
        * functions:
        * @code
        * template <int dim>
@@ -170,14 +170,23 @@ namespace aspect
        * };
        * @endcode
        *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       * @param fctr Instance of a class satisfying the signature above.
+       * @param values The output vectors of depth averaged values. The
+       * function expects one vector of doubles per property and uses the
+       * pre-existing size of these vectors as the number of depth slices.
+       * Each property vector needs to have the same size.
+       * @param functors Instances of a class satisfying the signature above
+       * that are used to fill the values vectors.
+       */
+      template <class FUNCTOR>
+      void compute_lateral_averages(std::vector<std::vector<double> > &values,
+                                    std::vector<FUNCTOR> &functors) const;
+
+      /**
+       * A version of the function above for a single property.
        */
       template <class FUNCTOR>
       void compute_lateral_average(std::vector<double> &values,
-                                   FUNCTOR &fctr) const;
+                                   FUNCTOR &fctr) const DEAL_II_DEPRECATED;
 
       /**
        * Compute a depth average of the current temperature/composition. The
