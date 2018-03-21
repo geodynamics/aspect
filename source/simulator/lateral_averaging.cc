@@ -36,7 +36,7 @@ namespace aspect
 
   template <int dim>
   void LateralAveraging<dim>::compute_lateral_averages(std::vector<std_cxx11::unique_ptr<FunctorBase<dim> > > &functors,
-      std::vector<std::vector<double> > &values) const
+                                                       std::vector<std::vector<double> > &values) const
   {
     Assert (values.size() > 0,
             ExcMessage ("To call this function, you need to request a positive "
@@ -46,7 +46,7 @@ namespace aspect
                         "number of depth slices."));
     Assert (functors.size() == values.size(),
             ExcMessage ("To call this function, you need supply as many data "
-                "vectors as properties you want to compute."));
+                        "vectors as properties you want to compute."));
 
     const unsigned int n_properties = values.size();
     const unsigned int n_slices = values[0].size();
@@ -171,9 +171,9 @@ namespace aspect
     vector_of_functors[0].reset(&functor);
 
     compute_lateral_averages(vector_of_functors,vector_of_values);
-    values = vector_of_values[0];
+    values.swap(vector_of_values[0]);
 
-    // Security measure to prevent destruction of object that is owned by calling
+    // Security measure to prevent destruction of functor that is owned by calling
     // function.
     vector_of_functors[0].release();
   }
@@ -525,10 +525,10 @@ namespace aspect
         else if (property_names[property_index].substr(0,2) == "C_")
           {
             const unsigned int c =
-                Utilities::string_to_int(property_names[property_index].substr(2,std::string::npos));
+              Utilities::string_to_int(property_names[property_index].substr(2,std::string::npos));
 
             functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
-                new FunctorDepthAverageField<dim> (this->introspection().extractors.compositional_fields[c])));
+                                 new FunctorDepthAverageField<dim> (this->introspection().extractors.compositional_fields[c])));
           }
         else if (property_names[property_index] == "velocity_magnitude")
           {

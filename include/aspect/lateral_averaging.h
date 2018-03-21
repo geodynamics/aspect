@@ -242,7 +242,7 @@ namespace aspect
        * A version of the function above for a single property.
        */
       void compute_lateral_average(std::vector<double> &values,
-                                   FunctorBase<dim> &fctr) const DEAL_II_DEPRECATED;
+                                   FunctorBase<dim> &fctr) const;
 
       /**
        * Compute a depth average of the current temperature/composition. The
