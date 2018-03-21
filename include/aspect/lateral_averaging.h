@@ -28,6 +28,52 @@ namespace aspect
 {
   using namespace dealii;
 
+  template <int dim>
+  class FunctorBase
+  {
+    public:
+      /**
+       * operator() will have @p in and @p out filled out if @p true.
+       */
+      virtual
+      bool
+      need_material_properties() const = 0;
+
+      /**
+       * If this material model can produce additional named outputs
+       * that are derived from NamedAdditionalOutputs, create them in here.
+       * By default, this does nothing.
+        */
+      virtual
+      void
+      create_additional_material_model_outputs (const unsigned int /*n_points*/,
+                                                MaterialModel::MaterialModelOutputs<dim> &/*outputs*/) const
+      {}
+
+      /**
+       * called once at the beginning with the number of quadrature points.
+       */
+      virtual
+      void
+      setup(const unsigned int q_points) = 0;
+
+      /**
+      * Fill @p output for each quadrature point.
+      * This takes material model inputs and outputs (which are filled
+      * if need_material_properties() == true), an initialized FEValues
+      * object for a cell, and the current solution vector as inputs.
+      * It then evaluates the desired quantity and puts the results in
+      * the output vector, which is q_points long.
+      */
+      virtual
+      void
+      operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+                 const MaterialModel::MaterialModelOutputs<dim> &out,
+                 const FEValues<dim> &fe_values,
+                 const LinearAlgebra::BlockVector &solution,
+                 std::vector<double> &output) = 0;
+  };
+
   /**
    * LateralAveraging is a class that performs various averaging operations
    * on the solution.  The functions of this class take a vector as an argument.
@@ -46,6 +92,18 @@ namespace aspect
   class LateralAveraging : public SimulatorAccess<dim>
   {
     public:
+      /**
+       * Fill the argument with a set of lateral averages of the current
+       * temperature field. The function fills a vector that contains average
+       * field values over slices of the domain of same depth.
+       *
+       * @param values The output vector of laterally averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
+       */
+      void
+      get_averages(std::vector<std::string> property_names,
+                   std::vector<std::vector<double> > &values) const;
 
       /**
        * Fill the argument with a set of lateral averages of the current
@@ -177,16 +235,14 @@ namespace aspect
        * @param functors Instances of a class satisfying the signature above
        * that are used to fill the values vectors.
        */
-      template <class FUNCTOR>
       void compute_lateral_averages(std::vector<std::vector<double> > &values,
-                                    std::vector<FUNCTOR> &functors) const;
+                                    std::vector<std_cxx11::unique_ptr<FunctorBase<dim> > > &functors) const;
 
       /**
        * A version of the function above for a single property.
        */
-      template <class FUNCTOR>
       void compute_lateral_average(std::vector<double> &values,
-                                   FUNCTOR &fctr) const DEAL_II_DEPRECATED;
+                                   FunctorBase<dim> &fctr) const DEAL_II_DEPRECATED;
 
       /**
        * Compute a depth average of the current temperature/composition. The

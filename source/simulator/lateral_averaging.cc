@@ -35,9 +35,8 @@ namespace aspect
 {
 
   template <int dim>
-  template <class FUNCTOR>
   void LateralAveraging<dim>::compute_lateral_averages(std::vector<std::vector<double> > &values,
-                                                       std::vector<FUNCTOR> &functors) const
+                                                       std::vector<std_cxx11::unique_ptr<FunctorBase<dim> > > &functors) const
   {
     Assert (values.size() > 0,
             ExcMessage ("To call this function, you need to request a positive "
@@ -83,9 +82,11 @@ namespace aspect
     bool functors_need_material_output = false;
     for (unsigned int i=0; i<n_properties; ++i)
       {
-        functors[i].setup(quadrature_formula.size());
-        if (functors[i].need_material_properties())
+        functors[i]->setup(quadrature_formula.size());
+        if (functors[i]->need_material_properties())
           functors_need_material_output = true;
+
+        functors[i]->create_additional_material_model_outputs(n_q_points,out);
       }
 
     for (; cell!=endc; ++cell)
@@ -103,9 +104,8 @@ namespace aspect
               this->get_material_model().evaluate(in, out);
             }
 
-
           for (unsigned int i = 0; i < n_properties; ++i)
-            functors[i](in, out, fe_values, this->get_solution(), output_values[i]);
+            (*functors[i])(in, out, fe_values, this->get_solution(), output_values[i]);
 
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
@@ -158,20 +158,25 @@ namespace aspect
   }
 
   template <int dim>
-  template <class FUNCTOR>
   void LateralAveraging<dim>::compute_lateral_average(std::vector<double> &values,
-                                                      FUNCTOR &functor) const
+                                                      FunctorBase<dim> &functor) const
   {
     std::vector<std::vector<double> > vector_of_values(1,values);
-    std::vector<FUNCTOR> vector_of_functors(1,functor);
+    std::vector<std_cxx11::unique_ptr<FunctorBase<dim> > > vector_of_functors(1);
+    vector_of_functors[0].reset(&functor);
+
     compute_lateral_averages(vector_of_values,vector_of_functors);
     values = vector_of_values[0];
+
+    // Security measure to prevent destruction of object that is owned by calling
+    // function.
+    vector_of_functors[0].release();
   }
 
   namespace
   {
     template <int dim>
-    class FunctorDepthAverageField
+    class FunctorDepthAverageField: public FunctorBase<dim>
     {
       public:
         FunctorDepthAverageField(const FEValuesExtractors::Scalar &field)
@@ -188,7 +193,7 @@ namespace aspect
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &,
                         const MaterialModel::MaterialModelOutputs<dim> &,
-                        FEValues<dim> &fe_values,
+                        const FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
                         std::vector<double> &output)
         {
@@ -224,7 +229,7 @@ namespace aspect
   namespace
   {
     template <int dim>
-    class FunctorDepthAverageViscosity
+    class FunctorDepthAverageViscosity: public FunctorBase<dim>
     {
       public:
         bool need_material_properties() const
@@ -237,7 +242,7 @@ namespace aspect
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &,
                         const MaterialModel::MaterialModelOutputs<dim> &out,
-                        FEValues<dim> &,
+                        const FEValues<dim> &,
                         const LinearAlgebra::BlockVector &,
                         std::vector<double> &output)
         {
@@ -257,7 +262,7 @@ namespace aspect
   namespace
   {
     template <int dim>
-    class FunctorDepthAverageVelocityMagnitude
+    class FunctorDepthAverageVelocityMagnitude: public FunctorBase<dim>
     {
       public:
         FunctorDepthAverageVelocityMagnitude(const FEValuesExtractors::Vector &field,
@@ -276,7 +281,7 @@ namespace aspect
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &,
                         const MaterialModel::MaterialModelOutputs<dim> &,
-                        FEValues<dim> &fe_values,
+                        const FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
                         std::vector<double> &output)
         {
@@ -305,7 +310,7 @@ namespace aspect
   namespace
   {
     template <int dim>
-    class FunctorDepthAverageSinkingVelocity
+    class FunctorDepthAverageSinkingVelocity: public FunctorBase<dim>
     {
       public:
         FunctorDepthAverageSinkingVelocity(const FEValuesExtractors::Vector &field,
@@ -328,7 +333,7 @@ namespace aspect
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
                         const MaterialModel::MaterialModelOutputs<dim> &,
-                        FEValues<dim> &fe_values,
+                        const FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
                         std::vector<double> &output)
         {
@@ -364,11 +369,11 @@ namespace aspect
   namespace
   {
     template <int dim>
-    class FunctorDepthAverageVsVp
+    class FunctorDepthAverageVsVp: public FunctorBase<dim>
     {
       public:
-        FunctorDepthAverageVsVp(const MaterialModel::Interface<dim> *mm, bool vs)
-          : material_model(mm), vs_(vs)
+        FunctorDepthAverageVsVp(bool vs)
+          : vs_(vs)
         {}
 
         bool need_material_properties() const
@@ -379,21 +384,25 @@ namespace aspect
         void setup(const unsigned int)
         {}
 
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-                        MaterialModel::MaterialModelOutputs<dim> &out,
-                        FEValues<dim> &,
+        void
+        create_additional_material_model_outputs (const unsigned int n_points,
+                                                  MaterialModel::MaterialModelOutputs<dim> &outputs) const
+        {
+          outputs.additional_outputs.push_back(
+                      std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+                      (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
+        }
+
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                        const MaterialModel::MaterialModelOutputs<dim> &out,
+                        const FEValues<dim> &,
                         const LinearAlgebra::BlockVector &,
                         std::vector<double> &output)
         {
-          const unsigned int n_points = in.position.size();
+          const MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
+            = out.template get_additional_output<const MaterialModel::SeismicAdditionalOutputs<dim> >();
 
-          out.additional_outputs.push_back(
-            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-            (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
-
-          material_model->evaluate(in, out);
-          MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
-            = out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >();
+          Assert(seismic_outputs != NULL,ExcInternalError());
 
           if (vs_)
             for (unsigned int q=0; q<output.size(); ++q)
@@ -403,7 +412,6 @@ namespace aspect
               output[q] = seismic_outputs->vp[q];
         }
 
-        const MaterialModel::Interface<dim> *material_model;
         bool vs_;
     };
 
@@ -412,7 +420,7 @@ namespace aspect
   template <int dim>
   void LateralAveraging<dim>::get_Vs_averages(std::vector<double> &values) const
   {
-    FunctorDepthAverageVsVp<dim> f(&this->get_material_model(), true /* Vs */);
+    FunctorDepthAverageVsVp<dim> f(true /* Vs */);
 
     compute_lateral_average(values, f);
   }
@@ -420,7 +428,7 @@ namespace aspect
   template <int dim>
   void LateralAveraging<dim>::get_Vp_averages(std::vector<double> &values) const
   {
-    FunctorDepthAverageVsVp<dim> f(&this->get_material_model(), false /* Vp */);
+    FunctorDepthAverageVsVp<dim> f(false /* Vp */);
 
     compute_lateral_average(values, f);
   }
@@ -428,7 +436,7 @@ namespace aspect
   namespace
   {
     template <int dim>
-    class FunctorDepthAverageVerticalHeatFlux
+    class FunctorDepthAverageVerticalHeatFlux: public FunctorBase<dim>
     {
       public:
         FunctorDepthAverageVerticalHeatFlux(const FEValuesExtractors::Vector &velocity_field,
@@ -453,7 +461,7 @@ namespace aspect
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
                         const MaterialModel::MaterialModelOutputs<dim> &out,
-                        FEValues<dim> &fe_values,
+                        const FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
                         std::vector<double> &output)
         {
@@ -492,6 +500,65 @@ namespace aspect
                                                &this->get_gravity_model() );
 
     compute_lateral_average(values, f);
+  }
+
+  template <int dim>
+  void LateralAveraging<dim>::get_averages(std::vector<std::string> property_names,
+                                           std::vector<std::vector<double> > &values) const
+  {
+    Assert(property_names.size() == values.size(),
+        ExcMessage("This size of the value vectors needs to be as large as the size of the property names"));
+
+    std::vector<std_cxx11::unique_ptr<FunctorBase<dim> > > functors;
+    for (unsigned int property_index=0; property_index<property_names.size(); ++property_index)
+      {
+        if (property_names[property_index] == "temperature")
+          {
+
+            functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
+                new FunctorDepthAverageField<dim> (this->introspection().extractors.temperature)));
+          }
+
+      }
+//    if (std::find( output_variables.begin(), output_variables.end(), "temperature") != output_variables.end() )
+//      variables.push_back("temperature");
+//
+//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "composition") != output_variables.end() )
+//      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+//        variables.push_back(std::string("C_") + Utilities::int_to_string(c));
+//
+//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic temperature") != output_variables.end() )
+//      variables.push_back("adiabatic_temperature");
+//
+//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic pressure") != output_variables.end() )
+//      variables.push_back("adiabatic_pressure");
+//
+//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic density") != output_variables.end() )
+//      variables.push_back("adiabatic_density");
+//
+//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic density derivative") != output_variables.end() )
+//      variables.push_back("adiabatic_density_derivative");
+//
+//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "velocity magnitude") != output_variables.end() )
+//      variables.push_back("velocity_magnitude");
+//
+//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "sinking velocity") != output_variables.end() )
+//      variables.push_back("sinking_velocity");
+//
+//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "Vs") != output_variables.end() )
+//      variables.push_back("Vs");
+//
+//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "Vp") != output_variables.end() )
+//      variables.push_back("Vp");
+//
+//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "viscosity") != output_variables.end() )
+//      variables.push_back("viscosity");
+//
+//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "vertical heat flux") != output_variables.end() )
+//      variables.push_back("vertical_heat_flux");
+//
+//    FunctorDepthAverageViscosity<dim> f;
+//    compute_lateral_average(values, f);
   }
 }
 
