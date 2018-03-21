@@ -235,8 +235,8 @@ namespace aspect
        * @param functors Instances of a class satisfying the signature above
        * that are used to fill the values vectors.
        */
-      void compute_lateral_averages(std::vector<std::vector<double> > &values,
-                                    std::vector<std_cxx11::unique_ptr<FunctorBase<dim> > > &functors) const;
+      void compute_lateral_averages(std::vector<std_cxx11::unique_ptr<FunctorBase<dim> > > &functors,
+                                    std::vector<std::vector<double> > &values) const;
 
       /**
        * A version of the function above for a single property.

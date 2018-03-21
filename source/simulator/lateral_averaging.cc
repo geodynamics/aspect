@@ -35,8 +35,8 @@ namespace aspect
 {
 
   template <int dim>
-  void LateralAveraging<dim>::compute_lateral_averages(std::vector<std::vector<double> > &values,
-                                                       std::vector<std_cxx11::unique_ptr<FunctorBase<dim> > > &functors) const
+  void LateralAveraging<dim>::compute_lateral_averages(std::vector<std_cxx11::unique_ptr<FunctorBase<dim> > > &functors,
+      std::vector<std::vector<double> > &values) const
   {
     Assert (values.size() > 0,
             ExcMessage ("To call this function, you need to request a positive "
@@ -44,6 +44,9 @@ namespace aspect
     Assert (values[0].size() > 0,
             ExcMessage ("To call this function, you need to request a positive "
                         "number of depth slices."));
+    Assert (functors.size() == values.size(),
+            ExcMessage ("To call this function, you need supply as many data "
+                "vectors as properties you want to compute."));
 
     const unsigned int n_properties = values.size();
     const unsigned int n_slices = values[0].size();
@@ -149,11 +152,13 @@ namespace aspect
 
     if (print_under_res_warning)
       {
-        this->get_pcout() << "In computing depth averages, there is at least"
-                          << " one depth band that does not have any quadrature"
-                          << " points in it." << std::endl
-                          << " Consider reducing number of depth layers for "
-                          << " averaging" << std::endl;
+        this->get_pcout() << std::endl
+                          << "**** Warning: When computing depth averages, there is at least one depth band"
+                          << std::endl
+                          << "     that does not have any quadrature points in it."
+                          << std::endl
+                          << "     Consider reducing the number of depth layers for averaging."
+                          << std::endl << std::endl;
       }
   }
 
@@ -165,7 +170,7 @@ namespace aspect
     std::vector<std_cxx11::unique_ptr<FunctorBase<dim> > > vector_of_functors(1);
     vector_of_functors[0].reset(&functor);
 
-    compute_lateral_averages(vector_of_values,vector_of_functors);
+    compute_lateral_averages(vector_of_functors,vector_of_values);
     values = vector_of_values[0];
 
     // Security measure to prevent destruction of object that is owned by calling
@@ -389,8 +394,8 @@ namespace aspect
                                                   MaterialModel::MaterialModelOutputs<dim> &outputs) const
         {
           outputs.additional_outputs.push_back(
-                      std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-                      (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
+            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
         }
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &,
@@ -507,58 +512,70 @@ namespace aspect
                                            std::vector<std::vector<double> > &values) const
   {
     Assert(property_names.size() == values.size(),
-        ExcMessage("This size of the value vectors needs to be as large as the size of the property names"));
+           ExcMessage("This size of the value vectors needs to be as large as the size of the property names"));
 
     std::vector<std_cxx11::unique_ptr<FunctorBase<dim> > > functors;
     for (unsigned int property_index=0; property_index<property_names.size(); ++property_index)
       {
         if (property_names[property_index] == "temperature")
           {
+            functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
+                                 new FunctorDepthAverageField<dim> (this->introspection().extractors.temperature)));
+          }
+        else if (property_names[property_index].substr(0,2) == "C_")
+          {
+            const unsigned int c =
+                Utilities::string_to_int(property_names[property_index].substr(2,std::string::npos));
 
             functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
-                new FunctorDepthAverageField<dim> (this->introspection().extractors.temperature)));
+                new FunctorDepthAverageField<dim> (this->introspection().extractors.compositional_fields[c])));
           }
-
+        else if (property_names[property_index] == "velocity_magnitude")
+          {
+            functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
+                                 new FunctorDepthAverageVelocityMagnitude<dim> (this->introspection().extractors.velocities,
+                                                                                this->convert_output_to_years())));
+          }
+        else if (property_names[property_index] == "sinking_velocity")
+          {
+            functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
+                                 new FunctorDepthAverageSinkingVelocity<dim> (this->introspection().extractors.velocities,
+                                                                              &this->get_gravity_model(),
+                                                                              this->convert_output_to_years())));
+          }
+        else if (property_names[property_index] == "Vs")
+          {
+            functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
+                                 new FunctorDepthAverageVsVp<dim> (true /* Vs */)));
+          }
+        else if (property_names[property_index] == "Vp")
+          {
+            functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
+                                 new FunctorDepthAverageVsVp<dim> (false /* Vp */)));
+          }
+        else if (property_names[property_index] == "viscosity")
+          {
+            functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
+                                 new FunctorDepthAverageViscosity<dim>()));
+          }
+        else if (property_names[property_index] == "vertical_heat_flux")
+          {
+            functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
+                                 new FunctorDepthAverageVerticalHeatFlux<dim> (this->introspection().extractors.velocities,
+                                                                               this->introspection().extractors.temperature,
+                                                                               &this->get_gravity_model())));
+          }
+        else
+          {
+            AssertThrow(false,
+                        ExcMessage("The lateral averaging scheme was asked to average the property "
+                                   "named <" + property_names[property_index] + ">, but it does not know how "
+                                   "to do that. There is no functor implemented that computes this property."));
+          }
       }
-//    if (std::find( output_variables.begin(), output_variables.end(), "temperature") != output_variables.end() )
-//      variables.push_back("temperature");
-//
-//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "composition") != output_variables.end() )
-//      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-//        variables.push_back(std::string("C_") + Utilities::int_to_string(c));
-//
-//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic temperature") != output_variables.end() )
-//      variables.push_back("adiabatic_temperature");
-//
-//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic pressure") != output_variables.end() )
-//      variables.push_back("adiabatic_pressure");
-//
-//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic density") != output_variables.end() )
-//      variables.push_back("adiabatic_density");
-//
-//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic density derivative") != output_variables.end() )
-//      variables.push_back("adiabatic_density_derivative");
-//
-//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "velocity magnitude") != output_variables.end() )
-//      variables.push_back("velocity_magnitude");
-//
-//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "sinking velocity") != output_variables.end() )
-//      variables.push_back("sinking_velocity");
-//
-//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "Vs") != output_variables.end() )
-//      variables.push_back("Vs");
-//
-//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "Vp") != output_variables.end() )
-//      variables.push_back("Vp");
-//
-//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "viscosity") != output_variables.end() )
-//      variables.push_back("viscosity");
-//
-//    if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "vertical heat flux") != output_variables.end() )
-//      variables.push_back("vertical_heat_flux");
-//
-//    FunctorDepthAverageViscosity<dim> f;
-//    compute_lateral_average(values, f);
+
+    // Now compute values for all selected properties.
+    compute_lateral_averages(functors,values);
   }
 }
 
