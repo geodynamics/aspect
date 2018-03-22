@@ -1148,16 +1148,16 @@ namespace aspect
 
             std::vector<Tensor<1,dim> > phi_u_f(fluid_velocity_dofs_per_cell);
 
-            double K_D_over_phi = 0.0;
+            double K_D_over_phi = 1.0;
 
             if (average_melt_velocity)
               {
-                // average the K_D and the porosity cell-wise
+                // average the K_D and the porosity cell-wise (geometric mean)
                 for (unsigned int q=0; q<n_q_points; ++q)
                   {
                     const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
                     const double K_D_over_phi_q_point = (porosity_values[q] > 0 ? K_D / porosity_values[q] : 0.0);
-                    K_D_over_phi += K_D_over_phi_q_point/n_q_points;
+                    K_D_over_phi *= std::pow(K_D_over_phi_q_point, 1.0/n_q_points);
                   }
               }
 

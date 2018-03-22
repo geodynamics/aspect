@@ -11,7 +11,7 @@
 # this amount (visible in the maximum value).
 
 # Note that the maximum porosity can deviate slightly, 
-# as additional melt is created bx compaction.
+# as additional melt is created by compaction.
 ############### Global parameters
 
 set Dimension                              = 2
