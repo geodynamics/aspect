@@ -311,7 +311,7 @@ namespace aspect
         }
 
       // Viscoelasticity section
-      if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0)
+      if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.strain_rate.size() > 0)
         {
           // Get old (previous time step) velocity gradients
           const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+1);
