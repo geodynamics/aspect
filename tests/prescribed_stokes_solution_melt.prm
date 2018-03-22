@@ -16,6 +16,7 @@ set Temperature solver tolerance           = 1e-10
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
+set Use operator splitting                 = true
 
 subsection Compositional fields
   set Number of fields = 2

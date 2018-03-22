@@ -34,6 +34,14 @@ subsection Compositional fields
   set Names of fields = peridotite, porosity
 end
 
+set Use operator splitting                     = true
+subsection Solver parameters
+  subsection Operator splitting parameters
+    set Reaction time step                     = 1.5e7
+    set Reaction time steps per advection step = 1
+  end
+end
+
 subsection Discretization
   set Stokes velocity polynomial degree    = 2
   set Composition polynomial degree        = 1
@@ -106,6 +114,7 @@ subsection Material model
     set Reference shear viscosity = 1e21
     set Reference solid density = 3300
     set Reference melt density = 3200
+    set Melting time scale for operator splitting = 1e100
   end 
 end
 
