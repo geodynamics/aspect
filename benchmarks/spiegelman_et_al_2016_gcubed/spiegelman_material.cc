@@ -118,7 +118,6 @@ namespace aspect
       private:
 
         double reference_T;
-        std::vector<double> reference_T_list;
 
 
         /**
@@ -158,7 +157,6 @@ namespace aspect
         std::vector<double> cos_phi;
 
         std::vector<double> constant_viscosity;
-        std::vector<double> stress_exponent;
 
         unsigned int n_fields;
 
@@ -297,7 +295,6 @@ namespace aspect
           // const Point<dim> position = in.position[i];
           const double temperature = in.temperature[i];
           const double pressure = in.pressure[i];
-          const Point<dim> position = in.position[i];
 
           // Averaging composition-field dependent properties
           // Compositions
@@ -514,6 +511,8 @@ namespace aspect
                            Patterns::Integer (0),
                            "The number of fields that will be advected along with the flow field, excluding "
                            "velocity, pressure and temperature.");
+
+        // temperature and density parameters
         prm.declare_entry ("List of conductivities", "2.25",
                            Patterns::List (Patterns::Double(0)),
                            "A list of thermal conductivities equal to the number of "
@@ -522,23 +521,17 @@ namespace aspect
                            Patterns::List (Patterns::Double(0)),
                            "A list of heat capacities equal to the number of "
                            "compositional fields.");
-        prm.declare_entry ("List of reftemps", "0",
-                           Patterns::List (Patterns::Double(0)),
-                           "A list of reference temperatures equal to the number of "
-                           "compositional fields.");
-        prm.declare_entry ("List of refdens", "2700",
-                           Patterns::List (Patterns::Double(0)),
-                           "A list of reference densities equal to the number of "
-                           "compositional fields.");
         prm.declare_entry ("Thermal expansivities", "3.5e-5",
                            Patterns::List(Patterns::Double(0)),
                            "List of thermal expansivities for background mantle and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one values is given, then all use the same value.  Units: $1 / K$");
-        prm.declare_entry ("List of stress exponents", "1",
+        prm.declare_entry ("List of reference densities", "2700",
                            Patterns::List (Patterns::Double(0)),
-                           "A list of stress exponents equal to the number of "
+                           "A list of reference densities equal to the number of "
                            "compositional fields.");
+
+        // visocosity parameters
         prm.declare_entry ("List of cohesions", "1e20",
                            Patterns::List (Patterns::Double(0)),
                            "A list of initial viscosities equal to the number of "
@@ -551,7 +544,7 @@ namespace aspect
                            Patterns::List (Patterns::Double(0)),
                            "A list of initial viscosities equal to the number of "
                            "compositional fields.");
-        prm.declare_entry ("List of constant_viscosities", "0",
+        prm.declare_entry ("List of constant viscosities", "0",
                            Patterns::List (Patterns::Double(0)),
                            "A list of viscous viscosities equal to the number of "
                            "compositional fields. When it is zero, the Drucker Prager "
@@ -563,7 +556,7 @@ namespace aspect
 
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection ("Drucker prager compositions");
+        prm.enter_subsection ("Spiegelman 2016");
         {
           // Reference and minimum/maximum values
           prm.declare_entry ("Reference temperature", "293", Patterns::Double(0),
@@ -617,21 +610,15 @@ namespace aspect
       prm.enter_subsection ("Compositional fields");
       {
         n_fields = prm.get_integer ("Number of fields")+1;
-        reference_T_list = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of reftemps"))),
-                                                       n_fields,
-                                                       "List of reftemps");
-        ref_visc_list = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of initial viscosities"))),
-                                                    n_fields,
-                                                    "List of initial viscosities");
+
+        // temperature and density parameters
         thermal_diffusivity = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of conductivities"))),
                                                           n_fields,
                                                           "List of conductivities");
         heat_capacity = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of capacities"))),
                                                     n_fields,
                                                     "List of capacities");
-
-        // ---- Compositional parameters
-        densities = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of refdens"))),
+        densities = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of reference densities"))),
                                                 n_fields,
                                                 "List of refdens");
         thermal_expansivities = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("Thermal expansivities"))),
@@ -646,6 +633,12 @@ namespace aspect
                                           n_fields,
                                           "List of angles of internal friction");
 
+
+        // Todo: make use of the initial viscosity
+        ref_visc_list = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of initial viscosities"))),
+                                                    n_fields,
+                                                    "List of initial viscosities");
+
         sin_phi.resize(n_fields);
         cos_phi.resize(n_fields);
         for (unsigned int c = 0; c < n_fields; ++c)
@@ -654,18 +647,15 @@ namespace aspect
             cos_phi[c] = std::cos(phi[c] * numbers::PI/180);
           }
 
-        constant_viscosity = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of constant_viscositys"))),
+        constant_viscosity = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of constant viscosities"))),
                                                          n_fields,
-                                                         "List of constant_viscositys");
-        stress_exponent = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of stress exponents"))),
-                                                      n_fields,
-                                                      "List of stress exponents");
+                                                         "List of constant viscosities");
       }
       prm.leave_subsection();
 
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection ("Drucker prager compositions");
+        prm.enter_subsection ("Spiegelman 2016");
         {
 
           // Reference and minimum/maximum values
