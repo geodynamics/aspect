@@ -26,13 +26,231 @@
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/base/quadrature_lib.h>
 
-#include <deal.II/fe/fe_values.h>
-#include <deal.II/base/quadrature_lib.h>
-
 
 
 namespace aspect
 {
+  /**
+   * This namespace contains all the implemented functors. They are used to
+   * compute various properties of the solution that will be laterally averaged.
+   */
+  namespace
+  {
+    template <int dim>
+    class FunctorDepthAverageField: public FunctorBase<dim>
+    {
+      public:
+        FunctorDepthAverageField(const FEValuesExtractors::Scalar &field)
+          : field_(field)
+        {}
+
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                        const MaterialModel::MaterialModelOutputs<dim> &,
+                        const FEValues<dim> &fe_values,
+                        const LinearAlgebra::BlockVector &solution,
+                        std::vector<double> &output)
+        {
+          fe_values[field_].get_function_values (solution, output);
+        }
+
+        const FEValuesExtractors::Scalar field_;
+    };
+
+    template <int dim>
+    class FunctorDepthAverageViscosity: public FunctorBase<dim>
+    {
+      public:
+        bool need_material_properties() const
+        {
+          return true;
+        }
+
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                        const MaterialModel::MaterialModelOutputs<dim> &out,
+                        const FEValues<dim> &,
+                        const LinearAlgebra::BlockVector &,
+                        std::vector<double> &output)
+        {
+          output = out.viscosities;
+        }
+    };
+
+    template <int dim>
+    class FunctorDepthAverageVelocityMagnitude: public FunctorBase<dim>
+    {
+      public:
+        FunctorDepthAverageVelocityMagnitude(const FEValuesExtractors::Vector &field,
+                                             bool convert_to_years)
+          : field_(field), convert_to_years_(convert_to_years)
+        {}
+
+        void setup(const unsigned int q_points)
+        {
+          velocity_values.resize(q_points);
+        }
+
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                        const MaterialModel::MaterialModelOutputs<dim> &,
+                        const FEValues<dim> &fe_values,
+                        const LinearAlgebra::BlockVector &solution,
+                        std::vector<double> &output)
+        {
+          fe_values[field_].get_function_values (solution, velocity_values);
+          for (unsigned int q=0; q<output.size(); ++q)
+            output[q] = std::sqrt( velocity_values[q] * velocity_values[q] ) *
+                        (convert_to_years_ ? year_in_seconds : 1.0);
+        }
+
+        std::vector<Tensor<1,dim> > velocity_values;
+        const FEValuesExtractors::Vector field_;
+        const bool convert_to_years_;
+    };
+
+    template <int dim>
+    class FunctorDepthAverageSinkingVelocity: public FunctorBase<dim>
+    {
+      public:
+        FunctorDepthAverageSinkingVelocity(const FEValuesExtractors::Vector &field,
+                                           const GravityModel::Interface<dim> *gravity,
+                                           bool convert_to_years)
+          : field_(field),
+            gravity_(gravity),
+            convert_to_years_(convert_to_years)
+        {}
+
+        bool need_material_properties() const
+        {
+          // this is needed because we want to access in.position in operator()
+          return true;
+        }
+
+        void setup(const unsigned int q_points)
+        {
+          velocity_values.resize(q_points);
+        }
+
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+                        const MaterialModel::MaterialModelOutputs<dim> &,
+                        const FEValues<dim> &fe_values,
+                        const LinearAlgebra::BlockVector &solution,
+                        std::vector<double> &output)
+        {
+          fe_values[field_].get_function_values (solution, velocity_values);
+          for (unsigned int q=0; q<output.size(); ++q)
+            {
+              const Tensor<1,dim> g = gravity_->gravity_vector(in.position[q]);
+              const Tensor<1,dim> vertical = (g.norm() > 0 ? g/g.norm() : Tensor<1,dim>());
+
+              output[q] = std::fabs(std::min(0.0, velocity_values[q] * vertical))
+                          * (convert_to_years_ ? year_in_seconds : 1.0);
+            }
+        }
+
+        std::vector<Tensor<1,dim> > velocity_values;
+        const FEValuesExtractors::Vector field_;
+        const GravityModel::Interface<dim> *gravity_;
+        const bool convert_to_years_;
+    };
+
+    template <int dim>
+    class FunctorDepthAverageVsVp: public FunctorBase<dim>
+    {
+      public:
+        FunctorDepthAverageVsVp(bool vs)
+          : vs_(vs)
+        {}
+
+        bool need_material_properties() const
+        {
+          return true;
+        }
+
+        void
+        create_additional_material_model_outputs (const unsigned int n_points,
+                                                  MaterialModel::MaterialModelOutputs<dim> &outputs) const
+        {
+          outputs.additional_outputs.push_back(
+            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
+        }
+
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                        const MaterialModel::MaterialModelOutputs<dim> &out,
+                        const FEValues<dim> &,
+                        const LinearAlgebra::BlockVector &,
+                        std::vector<double> &output)
+        {
+          const MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
+            = out.template get_additional_output<const MaterialModel::SeismicAdditionalOutputs<dim> >();
+
+          Assert(seismic_outputs != NULL,ExcInternalError());
+
+          if (vs_)
+            for (unsigned int q=0; q<output.size(); ++q)
+              output[q] = seismic_outputs->vs[q];
+          else
+            for (unsigned int q=0; q<output.size(); ++q)
+              output[q] = seismic_outputs->vp[q];
+        }
+
+        bool vs_;
+    };
+
+    template <int dim>
+    class FunctorDepthAverageVerticalHeatFlux: public FunctorBase<dim>
+    {
+      public:
+        FunctorDepthAverageVerticalHeatFlux(const FEValuesExtractors::Vector &velocity_field,
+                                            const FEValuesExtractors::Scalar &temperature_field,
+                                            const GravityModel::Interface<dim> *gm)
+          : velocity_field_(velocity_field),
+            temperature_field_(temperature_field),
+            gravity_model(gm)
+        {}
+
+        bool need_material_properties() const
+        {
+          return true;
+        }
+
+        void setup(const unsigned int q_points)
+        {
+          velocity_values.resize(q_points);
+          temperature_values.resize(q_points);
+          temperature_gradients.resize(q_points);
+        }
+
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+                        const MaterialModel::MaterialModelOutputs<dim> &out,
+                        const FEValues<dim> &fe_values,
+                        const LinearAlgebra::BlockVector &solution,
+                        std::vector<double> &output)
+        {
+          fe_values[velocity_field_].get_function_values (solution, velocity_values);
+          fe_values[temperature_field_].get_function_values (solution, temperature_values);
+          fe_values[temperature_field_].get_function_gradients (solution, temperature_gradients);
+
+          for (unsigned int q=0; q<output.size(); ++q)
+            {
+              const Tensor<1,dim> gravity = gravity_model->gravity_vector(in.position[q]);
+              const Tensor<1,dim> vertical = -gravity/( gravity.norm() != 0.0 ?
+                                                        gravity.norm() : 1.0 );
+              const double advective_flux = (velocity_values[q] * vertical) * in.temperature[q] *
+                                            out.densities[q]*out.specific_heat[q];
+              const double conductive_flux = -(temperature_gradients[q]*vertical) *
+                                             out.thermal_conductivities[q];
+              output[q] = advective_flux + conductive_flux;
+            }
+        }
+
+        const FEValuesExtractors::Vector velocity_field_;
+        const FEValuesExtractors::Scalar temperature_field_;
+        const GravityModel::Interface<dim> *gravity_model;
+        std::vector<Tensor<1,dim> > velocity_values;
+        std::vector<Tensor<1,dim> > temperature_gradients;
+        std::vector<double> temperature_values;
+    };
+  }
 
   template <int dim>
   void LateralAveraging<dim>::compute_lateral_averages(std::vector<std_cxx11::unique_ptr<FunctorBase<dim> > > &functors,
@@ -163,348 +381,77 @@ namespace aspect
   }
 
   template <int dim>
-  void LateralAveraging<dim>::compute_lateral_average(std::vector<double> &values,
-                                                      FunctorBase<dim> &functor) const
-  {
-    std::vector<std::vector<double> > vector_of_values(1,values);
-    std::vector<std_cxx11::unique_ptr<FunctorBase<dim> > > vector_of_functors(1);
-    vector_of_functors[0].reset(&functor);
-
-    compute_lateral_averages(vector_of_functors,vector_of_values);
-    values.swap(vector_of_values[0]);
-
-    // Security measure to prevent destruction of functor that is owned by calling
-    // function.
-    vector_of_functors[0].release();
-  }
-
-  namespace
-  {
-    template <int dim>
-    class FunctorDepthAverageField: public FunctorBase<dim>
-    {
-      public:
-        FunctorDepthAverageField(const FEValuesExtractors::Scalar &field)
-          : field_(field) {}
-
-        bool need_material_properties() const
-        {
-          return false;
-        }
-
-        void setup(const unsigned int)
-        {
-        }
-
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs<dim> &,
-                        const FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output)
-        {
-          fe_values[field_].get_function_values (solution, output);
-        }
-
-        const FEValuesExtractors::Scalar field_;
-    };
-  }
-
-  template <int dim>
   void LateralAveraging<dim>::get_temperature_averages(std::vector<double> &values) const
   {
-    FEValuesExtractors::Scalar field = this->introspection().extractors.temperature;
-    get_field_averages( field, values );
+    std::vector<std::vector<double> > vector_values(1,values);
+    std::vector<std::string> property_name(1,"temperature");
+    get_averages(property_name,vector_values);
+    values.swap(vector_values[0]);
   }
 
   template <int dim>
   void LateralAveraging<dim>::get_composition_averages( const unsigned int c, std::vector<double> &values) const
   {
-    FEValuesExtractors::Scalar field = this->introspection().extractors.compositional_fields[c];
-    get_field_averages( field, values );
-  }
-
-  template <int dim>
-  void LateralAveraging<dim>::get_field_averages(const FEValuesExtractors::Scalar &field,
-                                                 std::vector<double> &values) const
-  {
-    FunctorDepthAverageField<dim> f(field);
-    compute_lateral_average(values, f);
-  }
-
-  namespace
-  {
-    template <int dim>
-    class FunctorDepthAverageViscosity: public FunctorBase<dim>
-    {
-      public:
-        bool need_material_properties() const
-        {
-          return true;
-        }
-
-        void setup(const unsigned int)
-        {}
-
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs<dim> &out,
-                        const FEValues<dim> &,
-                        const LinearAlgebra::BlockVector &,
-                        std::vector<double> &output)
-        {
-          output = out.viscosities;
-        }
-    };
+    std::vector<std::vector<double> > vector_values(1,values);
+    std::vector<std::string> property_name(1,"C_"+Utilities::int_to_string(c));
+    get_averages(property_name,vector_values);
+    values.swap(vector_values[0]);
   }
 
   template <int dim>
   void LateralAveraging<dim>::get_viscosity_averages(std::vector<double> &values) const
   {
-    FunctorDepthAverageViscosity<dim> f;
-    compute_lateral_average(values, f);
-  }
-
-
-  namespace
-  {
-    template <int dim>
-    class FunctorDepthAverageVelocityMagnitude: public FunctorBase<dim>
-    {
-      public:
-        FunctorDepthAverageVelocityMagnitude(const FEValuesExtractors::Vector &field,
-                                             bool convert_to_years)
-          : field_(field), convert_to_years_(convert_to_years) {}
-
-        bool need_material_properties() const
-        {
-          return false;
-        }
-
-        void setup(const unsigned int q_points)
-        {
-          velocity_values.resize(q_points);
-        }
-
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs<dim> &,
-                        const FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output)
-        {
-          fe_values[field_].get_function_values (solution, velocity_values);
-          for (unsigned int q=0; q<output.size(); ++q)
-            output[q] = std::sqrt( velocity_values[q] * velocity_values[q] ) *
-                        (convert_to_years_ ? year_in_seconds : 1.0);
-        }
-
-        std::vector<Tensor<1,dim> > velocity_values;
-        const FEValuesExtractors::Vector field_;
-        const bool convert_to_years_;
-    };
+    std::vector<std::vector<double> > vector_values(1,values);
+    std::vector<std::string> property_name(1,"viscosity");
+    get_averages(property_name,vector_values);
+    values.swap(vector_values[0]);
   }
 
 
   template <int dim>
   void LateralAveraging<dim>::get_velocity_magnitude_averages(std::vector<double> &values) const
   {
-    FunctorDepthAverageVelocityMagnitude<dim> f(this->introspection().extractors.velocities,
-                                                this->convert_output_to_years());
-
-    compute_lateral_average(values, f);
-  }
-
-  namespace
-  {
-    template <int dim>
-    class FunctorDepthAverageSinkingVelocity: public FunctorBase<dim>
-    {
-      public:
-        FunctorDepthAverageSinkingVelocity(const FEValuesExtractors::Vector &field,
-                                           const GravityModel::Interface<dim> *gravity,
-                                           bool convert_to_years)
-          : field_(field),
-            gravity_(gravity),
-            convert_to_years_(convert_to_years) {}
-
-        bool need_material_properties() const
-        {
-          // this is needed because we want to access in.position in operator()
-          return true;
-        }
-
-        void setup(const unsigned int q_points)
-        {
-          velocity_values.resize(q_points);
-        }
-
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-                        const MaterialModel::MaterialModelOutputs<dim> &,
-                        const FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output)
-        {
-          fe_values[field_].get_function_values (solution, velocity_values);
-          for (unsigned int q=0; q<output.size(); ++q)
-            {
-              const Tensor<1,dim> g = gravity_->gravity_vector(in.position[q]);
-              const Tensor<1,dim> vertical = (g.norm() > 0 ? g/g.norm() : Tensor<1,dim>());
-
-              output[q] = std::fabs(std::min(0.0, velocity_values[q] * vertical))
-                          * (convert_to_years_ ? year_in_seconds : 1.0);
-            }
-        }
-
-        std::vector<Tensor<1,dim> > velocity_values;
-        const FEValuesExtractors::Vector field_;
-        const GravityModel::Interface<dim> *gravity_;
-        const bool convert_to_years_;
-    };
+    std::vector<std::vector<double> > vector_values(1,values);
+    std::vector<std::string> property_name(1,"velocity_magnitude");
+    get_averages(property_name,vector_values);
+    values.swap(vector_values[0]);
   }
 
 
   template <int dim>
   void LateralAveraging<dim>::get_sinking_velocity_averages(std::vector<double> &values) const
   {
-    FunctorDepthAverageSinkingVelocity<dim> f(this->introspection().extractors.velocities,
-                                              &this->get_gravity_model(),
-                                              this->convert_output_to_years());
-
-    compute_lateral_average(values, f);
-  }
-
-  namespace
-  {
-    template <int dim>
-    class FunctorDepthAverageVsVp: public FunctorBase<dim>
-    {
-      public:
-        FunctorDepthAverageVsVp(bool vs)
-          : vs_(vs)
-        {}
-
-        bool need_material_properties() const
-        {
-          return true;
-        }
-
-        void setup(const unsigned int)
-        {}
-
-        void
-        create_additional_material_model_outputs (const unsigned int n_points,
-                                                  MaterialModel::MaterialModelOutputs<dim> &outputs) const
-        {
-          outputs.additional_outputs.push_back(
-            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-            (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
-        }
-
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs<dim> &out,
-                        const FEValues<dim> &,
-                        const LinearAlgebra::BlockVector &,
-                        std::vector<double> &output)
-        {
-          const MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
-            = out.template get_additional_output<const MaterialModel::SeismicAdditionalOutputs<dim> >();
-
-          Assert(seismic_outputs != NULL,ExcInternalError());
-
-          if (vs_)
-            for (unsigned int q=0; q<output.size(); ++q)
-              output[q] = seismic_outputs->vs[q];
-          else
-            for (unsigned int q=0; q<output.size(); ++q)
-              output[q] = seismic_outputs->vp[q];
-        }
-
-        bool vs_;
-    };
-
+    std::vector<std::vector<double> > vector_values(1,values);
+    std::vector<std::string> property_name(1,"sinking_velocity");
+    get_averages(property_name,vector_values);
+    values.swap(vector_values[0]);
   }
 
   template <int dim>
   void LateralAveraging<dim>::get_Vs_averages(std::vector<double> &values) const
   {
-    FunctorDepthAverageVsVp<dim> f(true /* Vs */);
-
-    compute_lateral_average(values, f);
+    std::vector<std::vector<double> > vector_values(1,values);
+    std::vector<std::string> property_name(1,"Vs");
+    get_averages(property_name,vector_values);
+    values.swap(vector_values[0]);
   }
 
   template <int dim>
   void LateralAveraging<dim>::get_Vp_averages(std::vector<double> &values) const
   {
-    FunctorDepthAverageVsVp<dim> f(false /* Vp */);
-
-    compute_lateral_average(values, f);
-  }
-
-  namespace
-  {
-    template <int dim>
-    class FunctorDepthAverageVerticalHeatFlux: public FunctorBase<dim>
-    {
-      public:
-        FunctorDepthAverageVerticalHeatFlux(const FEValuesExtractors::Vector &velocity_field,
-                                            const FEValuesExtractors::Scalar &temperature_field,
-                                            const GravityModel::Interface<dim> *gm)
-          : velocity_field_(velocity_field),
-            temperature_field_(temperature_field),
-            gravity_model(gm)
-        {}
-
-        bool need_material_properties() const
-        {
-          return true;
-        }
-
-        void setup(const unsigned int q_points)
-        {
-          velocity_values.resize(q_points);
-          temperature_values.resize(q_points);
-          temperature_gradients.resize(q_points);
-        }
-
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-                        const MaterialModel::MaterialModelOutputs<dim> &out,
-                        const FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output)
-        {
-          fe_values[velocity_field_].get_function_values (solution, velocity_values);
-          fe_values[temperature_field_].get_function_values (solution, temperature_values);
-          fe_values[temperature_field_].get_function_gradients (solution, temperature_gradients);
-
-          for (unsigned int q=0; q<output.size(); ++q)
-            {
-              const Tensor<1,dim> gravity = gravity_model->gravity_vector(in.position[q]);
-              const Tensor<1,dim> vertical = -gravity/( gravity.norm() != 0.0 ?
-                                                        gravity.norm() : 1.0 );
-              const double advective_flux = (velocity_values[q] * vertical) * in.temperature[q] *
-                                            out.densities[q]*out.specific_heat[q];
-              const double conductive_flux = -(temperature_gradients[q]*vertical) *
-                                             out.thermal_conductivities[q];
-              output[q] = advective_flux + conductive_flux;
-            }
-        }
-
-        const FEValuesExtractors::Vector velocity_field_;
-        const FEValuesExtractors::Scalar temperature_field_;
-        const GravityModel::Interface<dim> *gravity_model;
-        std::vector<Tensor<1,dim> > velocity_values;
-        std::vector<Tensor<1,dim> > temperature_gradients;
-        std::vector<double> temperature_values;
-    };
-
+    std::vector<std::vector<double> > vector_values(1,values);
+    std::vector<std::string> property_name(1,"Vp");
+    get_averages(property_name,vector_values);
+    values.swap(vector_values[0]);
   }
 
   template <int dim>
   void LateralAveraging<dim>::get_vertical_heat_flux_averages(std::vector<double> &values) const
   {
-    FunctorDepthAverageVerticalHeatFlux<dim> f(this->introspection().extractors.velocities,
-                                               this->introspection().extractors.temperature,
-                                               &this->get_gravity_model() );
-
-    compute_lateral_average(values, f);
+    std::vector<std::vector<double> > vector_values(1,values);
+    std::vector<std::string> property_name(1,"vertical_heat_flux");
+    get_averages(property_name,vector_values);
+    values.swap(vector_values[0]);
   }
 
   template <int dim>

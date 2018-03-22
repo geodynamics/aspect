@@ -24,10 +24,20 @@
 
 #include <aspect/simulator_access.h>
 
+#include <deal.II/fe/fe_values.h>
+
 namespace aspect
 {
   using namespace dealii;
 
+  /**
+   * This is the base class for all the functors implemented. Each is
+   * used to compute one of the properties that will be laterally
+   * averaged. The point of the base class is to allow handing over
+   * a variable of type
+   * <code> std::vector<std::unique_ptr<FunctorBase<dim> > > </code> to the
+   * LateralAveraging::get_averages() function.
+   */
   template <int dim>
   class FunctorBase
   {
@@ -37,12 +47,14 @@ namespace aspect
        */
       virtual
       bool
-      need_material_properties() const = 0;
+      need_material_properties() const
+      {
+        return false;
+      }
 
       /**
-       * If this material model can produce additional named outputs
-       * that are derived from NamedAdditionalOutputs, create them in here.
-       * By default, this does nothing.
+       * If this functor needs additional material model outputs
+       * create them in here. By default, this does nothing.
         */
       virtual
       void
@@ -51,11 +63,12 @@ namespace aspect
       {}
 
       /**
-       * called once at the beginning with the number of quadrature points.
+       * Called once at the beginning with the number of quadrature points.
        */
       virtual
       void
-      setup(const unsigned int q_points) = 0;
+      setup(const unsigned int /*q_points*/)
+      {}
 
       /**
       * Fill @p output for each quadrature point.
@@ -93,13 +106,14 @@ namespace aspect
   {
     public:
       /**
-       * Fill the argument with a set of lateral averages of the current
-       * temperature field. The function fills a vector that contains average
-       * field values over slices of the domain of same depth.
+       * Fill the @p values with a set of lateral averages of the selected
+       * @p property_names. See the implementation of this function for
+       * a range of accepted names.
        *
        * @param values The output vector of laterally averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
+       * function takes the pre-existing size of these vectors as the number of
+       * depth slices. Each vector has to have the same size, and there have
+       * to be as many vectors in @p values, as names in @p property_names.
        */
       void
       get_averages(std::vector<std::string> property_names,
@@ -197,66 +211,20 @@ namespace aspect
     private:
       /**
        * Internal routine to compute the depth averages of several quantities.
+       * All of the public functions that compute a single field also call this
+       * function. The vector of functors @p functors must contain one or more
+       * objects of classes that are derived from FunctorBase and are used to
+       * fill the values vectors.
        *
-       * The vector of functors @p functors must contain one or mroe objects of
-       * a user defined type that can
-       * be arbitrary but have to satisfy certain requirements. In essence,
-       * each class type needs to implement the following interface of member
-       * functions:
-       * @code
-       * template <int dim>
-       * class Functor
-       * {
-       *   public:
-       *     // operator() will have @p in and @p out filled out if @p true
-       *     bool need_material_properties() const;
-       *
-       *     // called once at the beginning with the number of quadrature points
-       *     void setup(const unsigned int q_points);
-       *
-       *     // Fill @p output for each quadrature point.
-       *     // This takes material model inputs and outputs (which are filled
-       *     // if need_material_properties() == true), an initialized FEValues
-       *     // object for a cell, and the current solution vector as inputs.
-       *     // It then evaluates the desired quantity and puts the results in
-       *     // the output vector, which is q_points long.
-       *     void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-       *                     const MaterialModel::MaterialModelOutputs<dim> &out,
-       *                     FEValues<dim> &fe_values,
-       *                     const LinearAlgebra::BlockVector &solution,
-       *                     std::vector<double> &output);
-       * };
-       * @endcode
-       *
+       * @param functors Instances of a class derived from FunctorBase
+       * that are used to fill the values vectors.
        * @param values The output vectors of depth averaged values. The
        * function expects one vector of doubles per property and uses the
        * pre-existing size of these vectors as the number of depth slices.
-       * Each property vector needs to have the same size.
-       * @param functors Instances of a class satisfying the signature above
-       * that are used to fill the values vectors.
+       * Each vector has to have the same size.
        */
       void compute_lateral_averages(std::vector<std_cxx11::unique_ptr<FunctorBase<dim> > > &functors,
                                     std::vector<std::vector<double> > &values) const;
-
-      /**
-       * A version of the function above for a single property.
-       */
-      void compute_lateral_average(std::vector<double> &values,
-                                   FunctorBase<dim> &fctr) const;
-
-      /**
-       * Compute a depth average of the current temperature/composition. The
-       * function fills a vector that contains average
-       * temperatures/compositions over slices of the domain of same depth.
-       *
-       * @param field  Extractor for temperature or compositional field to average.
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void get_field_averages(const FEValuesExtractors::Scalar &field,
-                              std::vector<double> &values) const;
-
   };
 }
 
