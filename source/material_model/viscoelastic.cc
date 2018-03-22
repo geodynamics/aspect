@@ -26,6 +26,7 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <aspect/global.h>
 #include <numeric>
+#include <deal.II/base/signaling_nan.h>
 
 //using namespace dealii;
 
@@ -33,6 +34,41 @@ namespace aspect
 {
   namespace MaterialModel
   {
+
+    namespace
+    {
+      std::vector<std::string> make_elastic_additional_outputs_names()
+      {
+        std::vector<std::string> names;
+        names.push_back("elastic_shear_modulus");
+        return names;
+      }
+    }
+
+    template <int dim>
+    ElasticAdditionalOutputs<dim>::ElasticAdditionalOutputs (const unsigned int n_points)
+      :
+      NamedAdditionalMaterialOutputs<dim>(make_elastic_additional_outputs_names()),
+      elastic_shear_moduli(n_points, numbers::signaling_nan<double>())
+    {}
+
+    template <int dim>
+    std::vector<double>
+    ElasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      AssertIndexRange (idx, 1);
+      switch (idx)
+        {
+          case 0:
+            return elastic_shear_moduli;
+
+          default:
+            AssertThrow(false, ExcInternalError());
+        }
+      // we will never get here, so just return something
+      return elastic_shear_moduli;
+    }
+
     template <int dim>
     const std::vector<double>
     Viscoelastic<dim>::
@@ -265,6 +301,13 @@ namespace aspect
                                                      dte);
 
           out.viscosities[i] = average_viscoelastic_viscosity;
+
+          // Fill elastic outputs if they exist
+          if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim> >())
+            {
+              elastic_out->elastic_shear_moduli[i] = average_elastic_shear_modulus;
+            }
+
         }
 
       // Viscoelasticity section
@@ -514,6 +557,20 @@ namespace aspect
       this->model_dependence.specific_heat = NonlinearDependence::compositional_fields;
       this->model_dependence.thermal_conductivity = NonlinearDependence::compositional_fields;
     }
+
+    template <int dim>
+    void
+    Viscoelastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      if (out.template get_additional_output<ElasticAdditionalOutputs<dim> >() == NULL)
+        {
+          const unsigned int n_points = out.viscosities.size();
+          out.additional_outputs.push_back(
+            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            (new MaterialModel::ElasticAdditionalOutputs<dim> (n_points)));
+        }
+    }
+
   }
 }
 
