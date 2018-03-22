@@ -130,6 +130,7 @@ namespace aspect
             const double average = std::pow (prod, 1./N);
             for (unsigned int i=0; i<N; ++i)
               values_out[i] = average;
+            break;
           }
           case pick_largest:
           {
