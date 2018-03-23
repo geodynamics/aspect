@@ -736,8 +736,8 @@ namespace aspect
                                                                 linearized_stokes_initial_guess,
                                                                 system_rhs);
 
-        // ignore pressure residual
-        initial_residual = distributed_stokes_solution.block(0).l2_norm();
+            // ignore pressure residual
+            initial_nonlinear_residual = distributed_stokes_solution.block(0).l2_norm();
 
             // Note: the residual is computed with a zero velocity, effectively computing
             // || B^T p - g ||, which we are going to use for our solver tolerance.
