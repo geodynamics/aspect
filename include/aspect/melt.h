@@ -132,6 +132,15 @@ namespace aspect
          * Returns the cell-averaged and cut-off value of p_c_scale,
          * the factor we use to rescale the compaction pressure and to
          * decide if a cell is a melt cell.
+         * The last input argument consider_is_melt_cell determines if
+         * this computation takes into account if a cell is a "melt cell"
+         * (cells where we solve the melt transport equations, as
+         * indicated by the entries stored in the is_melt_cell vector of
+         * the melt handler) and return a value of zero if the cell is
+         * not a melt cell (if true), or whether the computation should
+         * disregard the information about which cells are melt cells,
+         * which is required when we want to update the is_melt_cell
+         * vector and find out which cells should be melt cells (if false).
          */
         double p_c_scale (const MaterialModel::MaterialModelInputs<dim> &inputs,
                           const MaterialModel::MaterialModelOutputs<dim> &outputs,
@@ -230,7 +239,6 @@ namespace aspect
         virtual
         std::vector<double>
         compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch) const;
-
     };
 
     /**
@@ -423,8 +431,11 @@ namespace aspect
 
     private:
       /**
-       * is_melt_cell_vector[cell->active_cell_index()] says whether we have
-       * melt transport in this cell or not.
+       * is_melt_cell_vector[cell->active_cell_index()] says whether we want to
+       * solve the melt transport equations (as opposed to the Stokes equations without
+       * melt) in this cell or not. The value is set to true or false based on the
+       * porosity in the cell (only cells where the porosity is above a threshold are
+       * considered melt cells).
        */
       std::vector<bool> is_melt_cell_vector;
 

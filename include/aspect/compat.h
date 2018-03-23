@@ -57,7 +57,6 @@ namespace aspect
       check (const unsigned int step,
              const double check_value)
       {
-
         dealii::SolverControl::State return_value = dealii::SolverControl::check(step, check_value);
 
         if (history_data_enabled)

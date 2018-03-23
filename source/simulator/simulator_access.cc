@@ -654,6 +654,13 @@ namespace aspect
   {
     return simulator->do_pressure_rhs_compatibility_modification;
   }
+
+  template <int dim>
+  bool
+  SimulatorAccess<dim>::model_has_prescribed_stokes_solution () const
+  {
+    return (simulator->prescribed_stokes_solution.get() != 0);
+  }
 }
 
 

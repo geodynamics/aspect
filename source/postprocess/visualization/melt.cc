@@ -107,7 +107,6 @@ namespace aspect
         // Set use_strain_rates to true since the compaction viscosity might also depend on the strain rate.
         MaterialModel::MaterialModelInputs<dim> in(input_data,
                                                    this->introspection(), true);
-
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
         MeltHandler<dim>::create_material_model_outputs(out);
 

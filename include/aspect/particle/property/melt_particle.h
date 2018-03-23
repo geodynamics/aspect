@@ -113,6 +113,23 @@ namespace aspect
           virtual
           std::vector<std::pair<std::string, unsigned int> >
           get_property_information() const;
+
+          /**
+           * Declare the parameters this class takes through input files.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter file.
+           */
+          virtual
+          void
+          parse_parameters (ParameterHandler &prm);
+
+        private:
+          double threshold_for_melt_presence;
       };
     }
   }

@@ -303,6 +303,11 @@ namespace aspect
     typedef dealii::TrilinosWrappers::BlockSparseMatrix BlockSparseMatrix;
 
     /**
+     * Typedef for the base class for all preconditioners.
+     */
+    typedef dealii::TrilinosWrappers::PreconditionBase PreconditionBase;
+
+    /**
      * Typedef for the AMG preconditioner type used for the top left block of
      * the Stokes matrix.
      */

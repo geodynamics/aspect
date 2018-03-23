@@ -50,8 +50,6 @@ namespace aspect
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
       MeltHandler<dim>::create_material_model_outputs(out);
 
-      const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-
       for (typename DoFHandler<dim>::active_cell_iterator
            cell = this->get_dof_handler().begin_active();
            cell != this->get_dof_handler().end(); ++cell)
@@ -72,18 +70,17 @@ namespace aspect
               // for each composition dof, check if the compaction length exceeds the cell size
               for (unsigned int i=0; i<this->get_fe().base_element(this->introspection().base_elements.compositional_fields).dofs_per_cell; ++i)
                 {
-                  const double porosity = in.composition[i][porosity_idx];
                   const double compaction_length = std::sqrt((out.viscosities[i] + 4./3. * melt_out->compaction_viscosities[i])
                                                              * melt_out->permeabilities[i] / melt_out->fluid_viscosities[i]);
 
                   // If the compaction length exceeds the cell diameter anywhere in the cell, cell is marked for refinement.
                   // Do not apply any refinement if the porosity is so small that melt can not migrate.
                   if (compaction_length < 2.0 * cells_per_compaction_length * cell->minimum_vertex_distance()
-                      && porosity > this->get_melt_handler().melt_transport_threshold)
+                      && this->get_melt_handler().is_melt_cell(cell))
                     clear_coarsen = true;
 
                   if (compaction_length < cells_per_compaction_length * cell->minimum_vertex_distance()
-                      && porosity > this->get_melt_handler().melt_transport_threshold)
+                      && this->get_melt_handler().is_melt_cell(cell))
                     {
                       refine = true;
                       break;

@@ -478,21 +478,11 @@ namespace aspect
                                                   :
                                                   numbers::invalid_unsigned_int);
 
+      // In regions without melt, the fluid velocity equals the solid velocity, so we can use it for all particles.
       std::vector<bool> use_fluid_velocity((compute_fluid_velocity ?
                                             particles_in_cell
                                             :
-                                            0), false);
-
-      if (compute_fluid_velocity)
-        {
-          const unsigned int melt_property_index = property_manager->get_data_info()
-                                                   .get_position_by_field_name("melt_presence");
-
-          typename ParticleHandler<dim>::particle_iterator it = begin_particle;
-          for (unsigned int particle_index = 0; it!=end_particle; ++it,++particle_index)
-            if (it->get_properties()[melt_property_index] == 1.0)
-              use_fluid_velocity[particle_index] = true;
-        }
+                                            0), compute_fluid_velocity);
 
       for (unsigned int j=0; j<velocity_fe.dofs_per_cell; ++j)
         {

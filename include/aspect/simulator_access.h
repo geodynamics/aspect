@@ -708,6 +708,12 @@ namespace aspect
       pressure_rhs_needs_compatibility_modification() const;
 
       /**
+       * Return whether the model uses a prescribed Stokes solution.
+       */
+      bool
+      model_has_prescribed_stokes_solution () const;
+
+      /**
        * A convenience function that copies the values of the compositional
        * fields at the quadrature point q given as input parameter to the
        * output vector composition_values_at_q_point.

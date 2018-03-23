@@ -19,6 +19,10 @@ set Pressure normalization                 = surface
 set Nonlinear solver scheme                = Advection only
 set Use operator splitting                 = true
 
+subsection Melt settings
+  set Use discontinuous compaction pressure = false
+end
+
 subsection Compositional fields
   set Number of fields = 2
   set Names of fields = porosity, peridotite

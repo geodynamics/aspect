@@ -75,7 +75,6 @@ namespace aspect
         return 0.0;
 
       const MaterialModel::MeltOutputs<dim> *melt_outputs = outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-
       const double ref_K_D = this->reference_darcy_coefficient();
 
       double K_D = 1.0;
@@ -87,12 +86,19 @@ namespace aspect
           max_K_D = std::max(max_K_D, melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]);
         }
 
+      // For melt cells, we return the average Darcy coefficient of the cell,
+      // but always a value larger than a threshold depending on the reference Darcy coefficient,
+      // so that K_D can never be zero (or close to zero) in melt cells.
+      // The same threshold is used when computing which cells are melt cells (the else branch),
+      // with the difference that we return a p_c_scale of zero to indicate that the cell is not
+      // a melt cell if the maximum Darcy coefficient of the cell is below the threshold.
       if (consider_is_melt_cell)
         K_D = std::max(K_D, 1e-3 * ref_K_D);
       else
         K_D = (max_K_D < 1e-3 * ref_K_D) ? 0.0 : K_D;
 
-      return std::sqrt(K_D / ref_K_D);
+      // If the reference permeability is set to zero, there is no melt transport in the whole model and we return zero.
+      return (ref_K_D > 0 ? std::sqrt(K_D / ref_K_D) : 0.0);
     }
   }
 
@@ -533,7 +539,6 @@ namespace aspect
       const typename DoFHandler<dim>::face_iterator face = scratch.face_material_model_inputs.current_cell->face(scratch.face_number);
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.face_material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-      const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(scratch.material_model_inputs, scratch.material_model_outputs, this->get_melt_handler(), true);
 
       std::vector<double> grad_p_f(n_face_q_points);
       this->get_melt_handler().boundary_fluid_pressure->fluid_pressure_gradient(
@@ -588,7 +593,8 @@ namespace aspect
       double
       compute_melting_RHS(const SimulatorAccess<dim> *simulator_access,
                           const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
-                          const unsigned int q_point)
+                          const unsigned int q_point,
+                          const double divergence_u)
       {
         Assert (scratch.material_model_outputs.densities[q_point] > 0,
                 ExcMessage ("The density needs to be a positive quantity "
@@ -596,14 +602,6 @@ namespace aspect
 
         const double melting_rate         = scratch.material_model_outputs.reaction_terms[q_point][scratch.advection_field->compositional_variable];
         const double density              = scratch.material_model_outputs.densities[q_point];
-
-        // average divergence u over the cell
-        // TODO: and we should probably do the averaging for the LHS too.
-        // TODO: do this outside of the loop over quadrature points
-        double divergence_u = 0.0;
-        const unsigned int N = scratch.material_model_inputs.position.size();
-        for (unsigned int i=0; i<N; ++i)
-          divergence_u += scratch.current_velocity_divergences[i] * 1./N;
 
         const double compressibility      = (simulator_access->get_material_model().is_compressible()
                                              ?
@@ -660,6 +658,12 @@ namespace aspect
       std::vector<Tensor<1,dim> > fluid_velocity_values(n_q_points);
       const FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
       scratch.finite_element_values[ex_u_f].get_function_values (this->get_solution(),fluid_velocity_values);
+
+      // average divergence u over the cell (needed for porosity advection)
+      double divergence_u = 0.0;
+      if (this->get_melt_handler().is_porosity(*scratch.advection_field))
+        for (unsigned int q=0; q<n_q_points; ++q)
+          divergence_u += scratch.current_velocity_divergences[q] * 1./n_q_points;
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -727,7 +731,8 @@ namespace aspect
           const double melt_transport_RHS = (this->get_melt_handler().is_porosity(*scratch.advection_field) ?
                                              compute_melting_RHS (this,
                                                                   scratch,
-                                                                  q)
+                                                                  q,
+                                                                  divergence_u)
                                              :
                                              0.0);
 
@@ -752,7 +757,7 @@ namespace aspect
           const double melt_transport_LHS =
             (this->get_melt_handler().is_porosity(*scratch.advection_field)
              ?
-             scratch.current_velocity_divergences[q]
+             divergence_u
              + (this->get_material_model().is_compressible()
                 ?
                 scratch.material_model_outputs.compressibilities[q]
@@ -772,7 +777,7 @@ namespace aspect
           double density_c_P_solid = density_c_P;
           double density_c_P_melt = 0.0;
 
-          if (scratch.advection_field->is_temperature() && porosity >= this->get_melt_handler().melt_transport_threshold
+          if (scratch.advection_field->is_temperature() && this->get_melt_handler().is_melt_cell(scratch.cell)
               && this->get_melt_handler().heat_advection_by_melt)
             {
               density_c_P_solid = (1.0 - porosity) * scratch.material_model_outputs.densities[q] * scratch.material_model_outputs.specific_heat[q];
@@ -828,6 +833,12 @@ namespace aspect
                                                  scratch.material_model_outputs,
                                                  scratch.heating_model_outputs);
 
+      // average divergence u over the cell (needed for porosity advection)
+      double divergence_u = 0.0;
+      if (this->get_melt_handler().is_porosity(*scratch.advection_field))
+        for (unsigned int q=0; q<n_q_points; ++q)
+          divergence_u += scratch.current_velocity_divergences[q] * 1./n_q_points;
+
       for (unsigned int q=0; q < n_q_points; ++q)
         {
           const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
@@ -859,8 +870,7 @@ namespace aspect
               const double field = ((scratch.old_field_values)[q] + (scratch.old_old_field_values)[q]) / 2;
 
               const double dreaction_term_dt =
-                (this->get_old_timestep() == 0 || (this->get_melt_handler().is_porosity(*scratch.advection_field)
-                                                   && this->include_melt_transport()))
+                (this->get_old_timestep() == 0 || this->get_melt_handler().is_porosity(*scratch.advection_field))
                 ?
                 0.0
                 :
@@ -871,7 +881,8 @@ namespace aspect
               const double melt_transport_RHS = (this->get_melt_handler().is_porosity(*scratch.advection_field) ?
                                                  compute_melting_RHS (this,
                                                                       scratch,
-                                                                      q)
+                                                                      q,
+                                                                      divergence_u)
                                                  :
                                                  0.0);
 
@@ -905,7 +916,6 @@ namespace aspect
     MeltPressureRHSCompatibilityModification<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
-
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
@@ -925,7 +935,6 @@ namespace aspect
         for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
           {
             const unsigned int component_index_i = fe.system_to_component_index(i).first;
-
 
             if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
               {
@@ -1741,6 +1750,11 @@ namespace aspect
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_fluid_pressure.get()))
       sim->initialize_simulator (simulator_object);
     boundary_fluid_pressure->initialize ();
+
+    if (use_discontinuous_p_c)
+      AssertThrow(!this->model_has_prescribed_stokes_solution(),
+                  ExcMessage("You can not use a discontinuous p_c in a model "
+                             "with a presribed Stokes solution."));
   }
 
   template <int dim>
