@@ -64,7 +64,7 @@ subsection Material model
 end
 
 subsection Heating model
-  set List of model names = shear heating
+  set List of model names = anisotropic shear heating
 end
 
 subsection Mesh refinement

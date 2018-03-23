@@ -382,7 +382,6 @@ namespace aspect
                                                     const unsigned int n_comp)
       :
       viscosities(n_points, numbers::signaling_nan<double>()),
-      stress_strain_directors(n_points, dealii::identity_tensor<dim> ()),
       densities(n_points, numbers::signaling_nan<double>()),
       thermal_expansion_coefficients(n_points, numbers::signaling_nan<double>()),
       specific_heat(n_points, numbers::signaling_nan<double>()),

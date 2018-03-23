@@ -227,26 +227,15 @@ namespace aspect
             S = - (1/eta + 1/viscosity_c)  M_p  for p_c
           */
           const double viscosity_c = melt_outputs->compaction_viscosities[q];
-
-          const SymmetricTensor<4,dim> &stress_strain_director =
-            scratch.material_model_outputs.stress_strain_directors[q];
-          const bool use_tensor = (stress_strain_director != dealii::identity_tensor<dim> ());
-
           const double JxW = scratch.finite_element_values.JxW(q);
 
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
               {
                 if (scratch.dof_component_indices[i] == scratch.dof_component_indices[j])
-                  data.local_matrix(i,j) += ((use_tensor ?
-                                              2.0 * eta * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
-                                              :
-                                              2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                  data.local_matrix(i,j) += (2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j])
                                              -
-                                             (use_tensor ?
-                                              eta_two_thirds * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
-                                              :
-                                              eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j]))
+                                             eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
                                              +
                                              (one_over_eta *
                                               pressure_scaling *
@@ -428,9 +417,6 @@ namespace aspect
                                          numbers::signaling_nan<double>());
           const Tensor<1,dim>
           gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
-          const SymmetricTensor<4,dim> &stress_strain_director =
-            scratch.material_model_outputs.stress_strain_directors[q];
-          const bool use_tensor = (stress_strain_director !=  dealii::identity_tensor<dim> ());
 
           const double compressibility
             = (this->get_material_model().is_compressible()
@@ -493,14 +479,8 @@ namespace aspect
               if (scratch.rebuild_stokes_matrix)
                 for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                   {
-                    data.local_matrix(i,j) += ( (use_tensor ?
-                                                 eta * 2.0 * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
-                                                 :
-                                                 eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                                - (use_tensor ?
-                                                   eta_two_thirds * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
-                                                   :
-                                                   eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
+                    data.local_matrix(i,j) += ( (eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                                                - (eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
                                                   )
                                                 - (pressure_scaling *
                                                    scratch.div_phi_u[i] * scratch.phi_p[j])
