@@ -381,10 +381,12 @@ namespace aspect
 
       /**
         * Given the Darcy coefficient as computed by the material model, limit the
-        * coefficient to a minimum value based on the reference Darcy coefficient,
-        * and return this value.
+        * coefficient to a minimum value based on the reference Darcy coefficient
+        * in melt cells, and set it to zero in cells that are not melt cells, and
+        * return this value.
         */
-      double limited_darcy_coefficient(const double K_D) const;
+      double limited_darcy_coefficient(const double K_D,
+                                       const bool is_melt_cell) const;
 
       /**
        * The porosity limit for melt migration. For smaller porosities, the equations

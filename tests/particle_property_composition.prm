@@ -1,7 +1,7 @@
 # Listing of Parameters
 # ---------------------
 # Uses the solitary wave benchmark to demonstrate the particle property melt particle, 
-# which records the presence of melt over the melt thransport threshold
+# which records the presence of melt over the melt transport threshold
 
 set Additional shared libraries            = ./libsolitary_wave.so
 

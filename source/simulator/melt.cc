@@ -212,7 +212,7 @@ namespace aspect
           const double eta = scratch.material_model_outputs.viscosities[q];
           const double one_over_eta = 1. / eta;
           const double eta_two_thirds = scratch.material_model_outputs.viscosities[q] * 2.0 / 3.0;
-          const double K_D = this->get_melt_handler().limited_darcy_coefficient(melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]);
+          const double K_D = this->get_melt_handler().limited_darcy_coefficient(melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q], p_c_scale > 0);
 
           /*
             - R = 1/eta M_p + K_D L_p for p
@@ -433,7 +433,7 @@ namespace aspect
           const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
           const double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.000);
 
-          const double K_D = this->get_melt_handler().limited_darcy_coefficient(melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]);
+          const double K_D = this->get_melt_handler().limited_darcy_coefficient(melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q], p_c_scale > 0);
           const double viscosity_c = melt_outputs->compaction_viscosities[q];
           const Tensor<1,dim> density_gradient_f = melt_outputs->fluid_density_gradients[q];
           const double density_f = melt_outputs->fluid_densities[q];
@@ -535,6 +535,7 @@ namespace aspect
       const FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
       const unsigned int p_f_component_index = introspection.variable("fluid pressure").first_component_index;
       const unsigned int p_c_component_index = introspection.variable("compaction pressure").first_component_index;
+      const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(scratch.material_model_inputs, scratch.material_model_outputs, this->get_melt_handler(), true);
 
       const typename DoFHandler<dim>::face_iterator face = scratch.face_material_model_inputs.current_cell->face(scratch.face_number);
 
@@ -557,7 +558,7 @@ namespace aspect
           const Tensor<1,dim>
           gravity = this->get_gravity_model().gravity_vector (scratch.face_finite_element_values.quadrature_point(q));
           const double density_f = melt_outputs->fluid_densities[q];
-          const double K_D = this->get_melt_handler().limited_darcy_coefficient(melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]);
+          const double K_D = this->get_melt_handler().limited_darcy_coefficient(melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q], p_c_scale > 0);
 
           for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
             {
@@ -1590,10 +1591,11 @@ namespace aspect
   template <int dim>
   double
   MeltHandler<dim>::
-  limited_darcy_coefficient(const double K_D) const
+  limited_darcy_coefficient(const double K_D,
+                            const bool is_melt_cell) const
   {
     const double ref_K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->reference_darcy_coefficient();
-    return std::max(K_D, 1.e-3*ref_K_D);
+    return is_melt_cell ? std::max(K_D, 1.e-3*ref_K_D) : 0;
   }
 
 

@@ -147,7 +147,7 @@ namespace aspect
                   }
                 else if (property_names[i] == "darcy coefficient")
                   {
-                    const double K_D = this->get_melt_handler().limited_darcy_coefficient(melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]);
+                    const double K_D = this->get_melt_handler().limited_darcy_coefficient(melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q], p_c_scale > 0);
                     computed_quantities[q][output_index] = K_D;
                   }
                 else if (property_names[i] == "darcy coefficient no cutoff")

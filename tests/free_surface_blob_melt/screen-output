@@ -2,7 +2,7 @@
 Loading shared library <./libfree_surface_blob_melt.so>
 
 Number of active cells: 640 (on 4 levels)
-Number of degrees of freedom: 18,129 (5,346+1,394+5,346+697+2,673+2,673)
+Number of degrees of freedom: 19,352 (5,346+2,617+5,346+697+2,673+2,673)
 
 Number of free surface degrees of freedom: 1394
 *** Timestep 0:  t=0 years
@@ -10,11 +10,11 @@ Number of free surface degrees of freedom: 1394
    Solving temperature system... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+27 iterations.
-   Solving for u_f in 0 iterations.
+   Solving Stokes system... 0+18 iterations.
+   Solving for u_f in 11 iterations.
 
 Number of active cells: 664 (on 5 levels)
-Number of degrees of freedom: 19,101 (5,634+1,466+5,634+733+2,817+2,817)
+Number of degrees of freedom: 20,360 (5,634+2,725+5,634+733+2,817+2,817)
 
 Number of free surface degrees of freedom: 1466
 *** Timestep 0:  t=0 years
@@ -22,8 +22,8 @@ Number of free surface degrees of freedom: 1466
    Solving temperature system... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+27 iterations.
-   Solving for u_f in 0 iterations.
+   Solving Stokes system... 0+18 iterations.
+   Solving for u_f in 12 iterations.
 
    Postprocessing:
      Topography min/max: 0 m, 0 m
@@ -34,8 +34,8 @@ Number of free surface degrees of freedom: 1466
    Solving temperature system... 18 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+26 iterations.
-   Solving for u_f in 0 iterations.
+   Solving Stokes system... 0+16 iterations.
+   Solving for u_f in 12 iterations.
 
    Postprocessing:
      Topography min/max: -393.7 m, 876.7 m
@@ -46,8 +46,8 @@ Number of free surface degrees of freedom: 1466
    Solving temperature system... 21 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+24 iterations.
-   Solving for u_f in 0 iterations.
+   Solving Stokes system... 0+15 iterations.
+   Solving for u_f in 11 iterations.
 
    Postprocessing:
      Topography min/max: -2260 m, 1102 m
@@ -58,8 +58,8 @@ Number of free surface degrees of freedom: 1466
    Solving temperature system... 15 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+24 iterations.
-   Solving for u_f in 0 iterations.
+   Solving Stokes system... 0+15 iterations.
+   Solving for u_f in 12 iterations.
 
    Postprocessing:
      Topography min/max: -476.2 m, 224.4 m
@@ -70,8 +70,8 @@ Number of free surface degrees of freedom: 1466
    Solving temperature system... 15 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+24 iterations.
-   Solving for u_f in 0 iterations.
+   Solving Stokes system... 0+15 iterations.
+   Solving for u_f in 12 iterations.
 
    Postprocessing:
      Topography min/max: -338.4 m, 712.9 m
@@ -82,8 +82,8 @@ Number of free surface degrees of freedom: 1466
    Solving temperature system... 24 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+23 iterations.
-   Solving for u_f in 0 iterations.
+   Solving Stokes system... 0+15 iterations.
+   Solving for u_f in 11 iterations.
 
    Postprocessing:
      Topography min/max: -2422 m, 1242 m
@@ -100,8 +100,8 @@ Number of free surface degrees of freedom: 1466
    Solving temperature system... 16 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+24 iterations.
-   Solving for u_f in 0 iterations.
+   Solving Stokes system... 0+15 iterations.
+   Solving for u_f in 11 iterations.
 
    Postprocessing:
      Topography min/max: -583.1 m, 294.2 m
@@ -112,8 +112,8 @@ Number of free surface degrees of freedom: 1466
    Solving temperature system... 15 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+24 iterations.
-   Solving for u_f in 0 iterations.
+   Solving Stokes system... 0+15 iterations.
+   Solving for u_f in 12 iterations.
 
    Postprocessing:
      Topography min/max: -376.8 m, 744.6 m
@@ -124,8 +124,8 @@ Number of free surface degrees of freedom: 1466
    Solving temperature system... 24 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+23 iterations.
-   Solving for u_f in 0 iterations.
+   Solving Stokes system... 0+15 iterations.
+   Solving for u_f in 11 iterations.
 
    Postprocessing:
      Topography min/max: -2389 m, 1290 m
@@ -136,8 +136,8 @@ Number of free surface degrees of freedom: 1466
    Solving temperature system... 16 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+25 iterations.
-   Solving for u_f in 0 iterations.
+   Solving Stokes system... 0+15 iterations.
+   Solving for u_f in 11 iterations.
 
    Postprocessing:
      Topography min/max: -441.2 m, 233.8 m
@@ -148,8 +148,8 @@ Number of free surface degrees of freedom: 1466
    Solving temperature system... 16 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+24 iterations.
-   Solving for u_f in 0 iterations.
+   Solving Stokes system... 0+15 iterations.
+   Solving for u_f in 12 iterations.
 
    Postprocessing:
      Topography min/max: -386.2 m, 737.6 m

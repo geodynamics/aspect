@@ -121,6 +121,7 @@ end
 
 subsection Melt settings
   set Use discontinuous compaction pressure = false
+  set Average melt velocity                 = false
 end
 
 

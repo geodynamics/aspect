@@ -1,277 +1,297 @@
 
-Number of active cells: 192 (on 4 levels)
-Number of degrees of freedom: 5,290 (1,666+450+1,666+225+833+225+225)
+Loading shared library <./libparticle_melt_advection.so>
+
+Number of active cells: 512 (on 5 levels)
+Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
-   Skipping peridotite composition solve because RHS is zero.
+   Solving peridotite system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+36 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.87476e-16, 1.20111e-16, 0, 0.956793
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.956793
+   Solving Stokes system... 21+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.77121e-16, 1.4111e-16, 1.4111e-16, 0.168325
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.168325
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
-   Skipping peridotite composition solve because RHS is zero.
+   Solving peridotite system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+36 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.13013e-16, 1.20111e-16, 0, 0.752886
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.752886
-
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 0 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+35 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.3936e-16, 1.20111e-16, 0, 0.16311
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.16311
-
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 0 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+32 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.21222e-16, 1.20111e-16, 0, 0.025768
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.025768
-
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 0 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+28 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.24729e-16, 1.20111e-16, 0, 0.00311419
-      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.00311419
-
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 0 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+25 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.12646e-16, 1.20111e-16, 0, 0.000303303
-      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.000303303
-
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 0 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+21 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.2184e-16, 1.20111e-16, 0, 2.46785e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 7: 2.46785e-05
-
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 0 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+17 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.16234e-16, 1.20111e-16, 0, 1.71537e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 8: 1.71537e-06
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.77121e-16, 1.4111e-16, 1.4111e-16, 8.68063e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.68063e-08
 
 
    Postprocessing:
      Writing graphical output:  output-particle_melt_advection/solution/solution-00000
-     Compositions min/max/mass: 0/0.2721/8.939e+10 // 0/0/0
-     RMS, max velocity:         0.279 m/year, 1.38 m/year
-     Temperature min/avg/max:   293 K, 2136 K, 4200 K
+     Compositions min/max/mass: 1.438e-28/0.2/1.257e+08 // 1.438e-28/0.2/1.257e+08
+     RMS, max velocity:         0.00292 m/year, 0.00958 m/year
+     Temperature min/avg/max:   293 K, 1519 K, 1625 K
      Writing depth average:     output-particle_melt_advection/depth_average.gnuplot
      Writing particle output:   output-particle_melt_advection/particles/particle-00000
 
-*** Timestep 1:  t=100000 years
-   Solving temperature system... 11 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
+*** Timestep 1:  t=3221.32 years
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 4 iterations.
+   Solving peridotite system ... 3 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+26 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0118326, 0.159783, 0, 0.0223922
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.159783
+   Solving Stokes system... 18+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000236148, 0.0291833, 0.00606512, 0.0176208
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0291833
 
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving peridotite system ... 3 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+26 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000795903, 0.07248, 0, 0.00747608
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.07248
+   Solving Stokes system... 14+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.81425e-07, 0.00179541, 0.000110837, 0.000699568
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00179541
 
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
+   Solving temperature system... 4 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving peridotite system ... 2 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+26 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000419264, 0.0563518, 0, 0.00436835
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0563518
+   Solving Stokes system... 10+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.2672e-08, 8.26451e-05, 3.95751e-06, 2.46731e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 8.26451e-05
 
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
+   Solving temperature system... 3 iterations.
+   Solving porosity system ... 2 iterations.
+   Solving peridotite system ... 2 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+26 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000161779, 0.0612867, 0, 0.00438236
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.0612867
-
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+26 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000374396, 0.0488634, 0, 0.00396823
-      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.0488634
-
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+24 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000675745, 0.0554164, 0, 0.00313225
-      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.0554164
-
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+27 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000286676, 0.0604252, 0, 0.00703041
-      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.0604252
-
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+26 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000658048, 0.055261, 0, 0.00753673
-      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.055261
-
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+26 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000983284, 0.0559084, 0, 0.00615684
-      Relative nonlinear residual (total system) after nonlinear iteration 9: 0.0559084
-
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 5 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+27 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000612971, 0.0515675, 0, 0.0061324
-      Relative nonlinear residual (total system) after nonlinear iteration 10: 0.0515675
-
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+27 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00086677, 0.0609365, 0, 0.00701854
-      Relative nonlinear residual (total system) after nonlinear iteration 11: 0.0609365
-
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+27 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000693629, 0.0580434, 0, 0.00589117
-      Relative nonlinear residual (total system) after nonlinear iteration 12: 0.0580434
-
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+26 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00139261, 0.0437996, 0, 0.00434155
-      Relative nonlinear residual (total system) after nonlinear iteration 13: 0.0437996
-
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+26 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000526079, 0.0538683, 0, 0.00574833
-      Relative nonlinear residual (total system) after nonlinear iteration 14: 0.0538683
-
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+26 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000754795, 0.057319, 0, 0.00619204
-      Relative nonlinear residual (total system) after nonlinear iteration 15: 0.057319
-
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+26 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00065743, 0.0501851, 0, 0.00478976
-      Relative nonlinear residual (total system) after nonlinear iteration 16: 0.0501851
-
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+26 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000366453, 0.046624, 0, 0.0046039
-      Relative nonlinear residual (total system) after nonlinear iteration 17: 0.046624
-
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+26 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000336761, 0.0488559, 0, 0.00592128
-      Relative nonlinear residual (total system) after nonlinear iteration 18: 0.0488559
-
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+27 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000748895, 0.0527689, 0, 0.00613236
-      Relative nonlinear residual (total system) after nonlinear iteration 19: 0.0527689
-
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 6 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+26 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000876585, 0.056009, 0, 0.00562792
-      Relative nonlinear residual (total system) after nonlinear iteration 20: 0.056009
+   Solving Stokes system... 6+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.17921e-09, 5.22978e-06, 2.47089e-07, 1.98235e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 5.22978e-06
 
 
    Postprocessing:
      Writing graphical output:  output-particle_melt_advection/solution/solution-00001
-     Compositions min/max/mass: -0.01312/0.2168/8.32e+10 // 0/0/0
-     RMS, max velocity:         0.289 m/year, 1.41 m/year
-     Temperature min/avg/max:   293 K, 2136 K, 4200 K
+     Compositions min/max/mass: -8.114e-07/0.1974/1.257e+08 // -2.776e-09/0.1976/1.256e+08
+     RMS, max velocity:         0.00293 m/year, 0.00964 m/year
+     Temperature min/avg/max:   293 K, 1518 K, 1625 K
      Writing particle output:   output-particle_melt_advection/particles/particle-00001
+
+*** Timestep 2:  t=6395.88 years
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving peridotite system ... 3 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.47601e-05, 0.00281141, 0.00308618, 0.00491689
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00491689
+
+   Solving temperature system... 4 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving peridotite system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.82524e-08, 0.000126638, 5.57584e-06, 6.98658e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000126638
+
+   Solving temperature system... 3 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving peridotite system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.2923e-09, 6.31101e-06, 3.66387e-07, 2.54658e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 6.31101e-06
+
+
+   Postprocessing:
+     Writing graphical output:  output-particle_melt_advection/solution/solution-00002
+     Compositions min/max/mass: -2.655e-06/0.1939/1.257e+08 // -1.954e-08/0.1944/1.256e+08
+     RMS, max velocity:         0.00293 m/year, 0.00966 m/year
+     Temperature min/avg/max:   293 K, 1518 K, 1625 K
+     Writing particle output:   output-particle_melt_advection/particles/particle-00002
+
+*** Timestep 3:  t=9539.33 years
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving peridotite system ... 3 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.18238e-06, 0.00141637, 0.00155418, 0.00444806
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00444806
+
+   Solving temperature system... 4 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving peridotite system ... 3 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.42114e-08, 9.59994e-05, 3.03251e-06, 5.77952e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.59994e-05
+
+   Solving temperature system... 3 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving peridotite system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.36572e-09, 3.83169e-06, 2.18072e-07, 1.61402e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.83169e-06
+
+
+   Postprocessing:
+     Writing graphical output:  output-particle_melt_advection/solution/solution-00003
+     Compositions min/max/mass: -4.607e-06/0.1902/1.257e+08 // -2.265e-08/0.1906/1.256e+08
+     RMS, max velocity:         0.00294 m/year, 0.00965 m/year
+     Temperature min/avg/max:   293 K, 1518 K, 1625 K
+     Writing particle output:   output-particle_melt_advection/particles/particle-00003
+
+*** Timestep 4:  t=12645.9 years
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving peridotite system ... 3 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.43983e-06, 0.00150082, 0.000420361, 0.00426819
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00426819
+
+   Solving temperature system... 4 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving peridotite system ... 3 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.95286e-08, 9.01513e-05, 2.3991e-06, 5.54476e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.01513e-05
+
+   Solving temperature system... 3 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving peridotite system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.75428e-10, 3.01382e-06, 1.5929e-07, 1.35514e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.01382e-06
+
+
+   Postprocessing:
+     Writing graphical output:  output-particle_melt_advection/solution/solution-00004
+     Compositions min/max/mass: -7.752e-06/0.1868/1.257e+08 // -3.484e-08/0.1867/1.255e+08
+     RMS, max velocity:         0.00294 m/year, 0.00965 m/year
+     Temperature min/avg/max:   293 K, 1518 K, 1625 K
+     Writing particle output:   output-particle_melt_advection/particles/particle-00004
+
+*** Timestep 5:  t=15715.7 years
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving peridotite system ... 3 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.90652e-06, 0.00159928, 0.000193916, 0.00418312
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00418312
+
+   Solving temperature system... 4 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving peridotite system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.3011e-08, 8.88914e-05, 2.316e-06, 5.66023e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.88914e-05
+
+   Solving temperature system... 2 iterations.
+   Solving porosity system ... 2 iterations.
+   Solving peridotite system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.37266e-10, 2.68778e-06, 1.30904e-07, 1.35621e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.68778e-06
+
+
+   Postprocessing:
+     Writing graphical output:  output-particle_melt_advection/solution/solution-00005
+     Compositions min/max/mass: -1.45e-05/0.1838/1.257e+08 // -4.949e-08/0.1831/1.255e+08
+     RMS, max velocity:         0.00295 m/year, 0.0097 m/year
+     Temperature min/avg/max:   293 K, 1518 K, 1625 K
+     Writing particle output:   output-particle_melt_advection/particles/particle-00005
+
+*** Timestep 6:  t=18750.8 years
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving peridotite system ... 3 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.68994e-06, 0.0016339, 0.000346233, 0.00416248
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00416248
+
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving peridotite system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.15612e-07, 0.000130389, 2.35352e-06, 6.66259e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000130389
+
+   Solving temperature system... 3 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving peridotite system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.34896e-09, 4.91093e-06, 2.57335e-07, 2.37972e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 4.91093e-06
+
+
+   Postprocessing:
+     Writing graphical output:  output-particle_melt_advection/solution/solution-00006
+     Compositions min/max/mass: -2.709e-05/0.1812/1.257e+08 // -6.659e-08/0.18/1.254e+08
+     RMS, max velocity:         0.00295 m/year, 0.00973 m/year
+     Temperature min/avg/max:   293 K, 1518 K, 1625 K
+     Writing particle output:   output-particle_melt_advection/particles/particle-00006
+
+*** Timestep 7:  t=20000 years
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving peridotite system ... 3 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.37508e-07, 0.000471671, 0.000180698, 0.00120371
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00120371
+
+   Solving temperature system... 4 iterations.
+   Solving porosity system ... 2 iterations.
+   Solving peridotite system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24196e-08, 1.27194e-05, 3.39207e-07, 8.54962e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.27194e-05
+
+   Solving temperature system... 2 iterations.
+   Solving porosity system ... 2 iterations.
+   Solving peridotite system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1+0 iterations.
+   Solving for u_f in 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.5464e-11, 1.73319e-07, 7.26747e-09, 1.27667e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.73319e-07
+
+
+   Postprocessing:
+     Writing graphical output:  output-particle_melt_advection/solution/solution-00007
+     Compositions min/max/mass: -6.259e-05/0.1802/1.257e+08 // -7.458e-08/0.1789/1.254e+08
+     RMS, max velocity:         0.00295 m/year, 0.00974 m/year
+     Temperature min/avg/max:   293 K, 1518 K, 1625 K
+     Writing particle output:   output-particle_melt_advection/particles/particle-00007
 
 Termination requested by criterion: end time
 
