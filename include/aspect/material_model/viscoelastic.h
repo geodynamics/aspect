@@ -31,11 +31,11 @@ namespace aspect
   {
     using namespace dealii;
 
-     /**
-     * Additional output fields for the elastic shear modulus to be added to
-     * the MaterialModel::MaterialModelOutputs structure and filled in the 
-     * MaterialModel::Interface::evaluate() function.
-     */
+    /**
+    * Additional output fields for the elastic shear modulus to be added to
+    * the MaterialModel::MaterialModelOutputs structure and filled in the
+    * MaterialModel::Interface::evaluate() function.
+    */
     template <int dim>
     class ElasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
