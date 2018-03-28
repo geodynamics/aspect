@@ -1,0 +1,222 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libspiegelman_material.so>
+
+Test for p = -1000
+pressure on quadrature point 0: Finite difference = 3.45536e+10. Analytical derivative = 3.45536e+10
+pressure on quadrature point 1: Finite difference = 4.10554e+10. Analytical derivative = 4.10554e+10
+pressure on quadrature point 2: Finite difference = 2.26055e+10. Analytical derivative = 2.26055e+10
+pressure on quadrature point 3: Finite difference = -104.858. Analytical derivative = 1.41177
+Error: The derivative of the viscosity to the pressure is too different from the analytical value.
+pressure on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+zerozero on quadrature point 0: Finite difference = -3.93578e+29. Analytical derivative = -3.93578e+29
+zerozero on quadrature point 1: Finite difference = 5.35503e+29. Analytical derivative = 5.35502e+29
+zerozero on quadrature point 2: Finite difference = 2.26867e+30. Analytical derivative = 2.26867e+30
+zerozero on quadrature point 3: Finite difference = 0. Analytical derivative = 7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+zerozero on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+onezero on quadrature point 0: Finite difference = -3.93578e+29. Analytical derivative = -3.93578e+29
+onezero on quadrature point 1: Finite difference = 1.82178e+31. Analytical derivative = 1.82178e+31
+onezero on quadrature point 2: Finite difference = -2.26867e+31. Analytical derivative = -2.26867e+31
+onezero on quadrature point 3: Finite difference = 0. Analytical derivative = -7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+onezero on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+oneone on quadrature point 0: Finite difference = -3.93578e+30. Analytical derivative = -3.93578e+30
+oneone on quadrature point 1: Finite difference = -1.31836e+29. Analytical derivative = -1.31844e+29
+oneone on quadrature point 2: Finite difference = -2.26873e+29. Analytical derivative = -2.26867e+29
+oneone on quadrature point 3: Finite difference = 0. Analytical derivative = -7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+oneone on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+Some parts of the test where not succesfull.
+
+Test for p = -2
+pressure on quadrature point 0: Finite difference = 3.45536e+10. Analytical derivative = 3.45536e+10
+pressure on quadrature point 1: Finite difference = 6.73355e+10. Analytical derivative = 6.73355e+10
+pressure on quadrature point 2: Finite difference = 2.26055e+10. Analytical derivative = 2.26055e+10
+pressure on quadrature point 3: Finite difference = -104.858. Analytical derivative = 1.41177
+Error: The derivative of the viscosity to the pressure is too different from the analytical value.
+pressure on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+zerozero on quadrature point 0: Finite difference = -3.93578e+29. Analytical derivative = -3.93578e+29
+zerozero on quadrature point 1: Finite difference = 8.78284e+29. Analytical derivative = 8.78284e+29
+zerozero on quadrature point 2: Finite difference = 2.26867e+30. Analytical derivative = 2.26867e+30
+zerozero on quadrature point 3: Finite difference = 0. Analytical derivative = 7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+zerozero on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+onezero on quadrature point 0: Finite difference = -3.93578e+29. Analytical derivative = -3.93578e+29
+onezero on quadrature point 1: Finite difference = 2.98792e+31. Analytical derivative = 2.98792e+31
+onezero on quadrature point 2: Finite difference = -2.26867e+31. Analytical derivative = -2.26867e+31
+onezero on quadrature point 3: Finite difference = 0. Analytical derivative = -7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+onezero on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+oneone on quadrature point 0: Finite difference = -3.93578e+30. Analytical derivative = -3.93578e+30
+oneone on quadrature point 1: Finite difference = -2.16237e+29. Analytical derivative = -2.16239e+29
+oneone on quadrature point 2: Finite difference = -2.26866e+29. Analytical derivative = -2.26867e+29
+oneone on quadrature point 3: Finite difference = 0. Analytical derivative = -7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+oneone on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+Some parts of the test where not succesfull.
+
+Test for p = -1.5
+pressure on quadrature point 0: Finite difference = 3.45536e+10. Analytical derivative = 3.45536e+10
+pressure on quadrature point 1: Finite difference = 6.65133e+10. Analytical derivative = 6.65134e+10
+pressure on quadrature point 2: Finite difference = 2.26055e+10. Analytical derivative = 2.26055e+10
+pressure on quadrature point 3: Finite difference = -104.858. Analytical derivative = 1.41177
+Error: The derivative of the viscosity to the pressure is too different from the analytical value.
+pressure on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+zerozero on quadrature point 0: Finite difference = -3.93577e+29. Analytical derivative = -3.93578e+29
+zerozero on quadrature point 1: Finite difference = 8.67558e+29. Analytical derivative = 8.6756e+29
+zerozero on quadrature point 2: Finite difference = 2.26867e+30. Analytical derivative = 2.26867e+30
+zerozero on quadrature point 3: Finite difference = 0. Analytical derivative = 7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+zerozero on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+onezero on quadrature point 0: Finite difference = -3.93577e+29. Analytical derivative = -3.93578e+29
+onezero on quadrature point 1: Finite difference = 2.95144e+31. Analytical derivative = 2.95144e+31
+onezero on quadrature point 2: Finite difference = -2.26867e+31. Analytical derivative = -2.26867e+31
+onezero on quadrature point 3: Finite difference = 0. Analytical derivative = -7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+onezero on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+oneone on quadrature point 0: Finite difference = -3.93578e+30. Analytical derivative = -3.93578e+30
+oneone on quadrature point 1: Finite difference = -2.13595e+29. Analytical derivative = -2.13599e+29
+oneone on quadrature point 2: Finite difference = -2.26873e+29. Analytical derivative = -2.26867e+29
+oneone on quadrature point 3: Finite difference = 0. Analytical derivative = -7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+oneone on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+Some parts of the test where not succesfull.
+
+Test for p = -1
+pressure on quadrature point 0: Finite difference = 3.45536e+10. Analytical derivative = 3.45536e+10
+pressure on quadrature point 1: Finite difference = 6.02249e+10. Analytical derivative = 6.02249e+10
+pressure on quadrature point 2: Finite difference = 2.26055e+10. Analytical derivative = 2.26055e+10
+pressure on quadrature point 3: Finite difference = 0. Analytical derivative = 1.41177
+Error: The derivative of the viscosity to the pressure is too different from the analytical value.
+pressure on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+zerozero on quadrature point 0: Finite difference = -3.93578e+29. Analytical derivative = -3.93578e+29
+zerozero on quadrature point 1: Finite difference = 7.85536e+29. Analytical derivative = 7.85538e+29
+zerozero on quadrature point 2: Finite difference = 2.26867e+30. Analytical derivative = 2.26867e+30
+zerozero on quadrature point 3: Finite difference = 0. Analytical derivative = 7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+zerozero on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+onezero on quadrature point 0: Finite difference = -3.93578e+29. Analytical derivative = -3.93578e+29
+onezero on quadrature point 1: Finite difference = 2.6724e+31. Analytical derivative = 2.6724e+31
+onezero on quadrature point 2: Finite difference = -2.26867e+31. Analytical derivative = -2.26867e+31
+onezero on quadrature point 3: Finite difference = 0. Analytical derivative = -7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+onezero on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+oneone on quadrature point 0: Finite difference = -3.93578e+30. Analytical derivative = -3.93578e+30
+oneone on quadrature point 1: Finite difference = -1.9339e+29. Analytical derivative = -1.93405e+29
+oneone on quadrature point 2: Finite difference = -2.26879e+29. Analytical derivative = -2.26867e+29
+oneone on quadrature point 3: Finite difference = 0. Analytical derivative = -7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+oneone on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+Some parts of the test where not succesfull.
+
+Test for p = 0
+pressure on quadrature point 0: Finite difference = 3.45536e+10. Analytical derivative = 3.45536e+10
+pressure on quadrature point 1: Finite difference = 3.22711e+10. Analytical derivative = 3.22711e+10
+pressure on quadrature point 2: Finite difference = 2.26055e+10. Analytical derivative = 2.26055e+10
+pressure on quadrature point 3: Finite difference = 0. Analytical derivative = 1.41177
+Error: The derivative of the viscosity to the pressure is too different from the analytical value.
+pressure on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+zerozero on quadrature point 0: Finite difference = -3.93577e+29. Analytical derivative = -3.93578e+29
+zerozero on quadrature point 1: Finite difference = 4.21106e+29. Analytical derivative = 4.20925e+29
+zerozero on quadrature point 2: Finite difference = 2.26861e+30. Analytical derivative = 2.26867e+30
+zerozero on quadrature point 3: Finite difference = 0. Analytical derivative = 7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+zerozero on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+onezero on quadrature point 0: Finite difference = -3.93577e+29. Analytical derivative = -3.93578e+29
+onezero on quadrature point 1: Finite difference = 1.43199e+31. Analytical derivative = 1.43199e+31
+onezero on quadrature point 2: Finite difference = -2.26867e+31. Analytical derivative = -2.26867e+31
+onezero on quadrature point 3: Finite difference = 0. Analytical derivative = -7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+onezero on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+oneone on quadrature point 0: Finite difference = -3.93578e+30. Analytical derivative = -3.93578e+30
+oneone on quadrature point 1: Finite difference = -1.0351e+29. Analytical derivative = -1.03634e+29
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+oneone on quadrature point 2: Finite difference = -2.27338e+29. Analytical derivative = -2.26867e+29
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+oneone on quadrature point 3: Finite difference = 0. Analytical derivative = -7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+oneone on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+Some parts of the test where not succesfull.
+
+Test for p = 1
+pressure on quadrature point 0: Finite difference = 3.45536e+10. Analytical derivative = 3.45536e+10
+pressure on quadrature point 1: Finite difference = 1.02638e+10. Analytical derivative = 1.02638e+10
+pressure on quadrature point 2: Finite difference = 2.26055e+10. Analytical derivative = 2.26055e+10
+pressure on quadrature point 3: Finite difference = -104.858. Analytical derivative = 1.41177
+Error: The derivative of the viscosity to the pressure is too different from the analytical value.
+pressure on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+zerozero on quadrature point 0: Finite difference = -3.93578e+29. Analytical derivative = -3.93578e+29
+zerozero on quadrature point 1: Finite difference = 1.33876e+29. Analytical derivative = 1.33875e+29
+zerozero on quadrature point 2: Finite difference = 2.26867e+30. Analytical derivative = 2.26867e+30
+zerozero on quadrature point 3: Finite difference = 0. Analytical derivative = 7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+zerozero on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+onezero on quadrature point 0: Finite difference = -3.93578e+29. Analytical derivative = -3.93578e+29
+onezero on quadrature point 1: Finite difference = 4.55444e+30. Analytical derivative = 4.55444e+30
+onezero on quadrature point 2: Finite difference = -2.26867e+31. Analytical derivative = -2.26867e+31
+onezero on quadrature point 3: Finite difference = 0. Analytical derivative = -7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+onezero on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+oneone on quadrature point 0: Finite difference = -3.93578e+30. Analytical derivative = -3.93578e+30
+oneone on quadrature point 1: Finite difference = -3.29803e+28. Analytical derivative = -3.2961e+28
+oneone on quadrature point 2: Finite difference = -2.26873e+29. Analytical derivative = -2.26867e+29
+oneone on quadrature point 3: Finite difference = 0. Analytical derivative = -7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+oneone on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+Some parts of the test where not succesfull.
+
+Test for p = 2
+pressure on quadrature point 0: Finite difference = 3.45536e+10. Analytical derivative = 3.45536e+10
+pressure on quadrature point 1: Finite difference = 2.55303e+09. Analytical derivative = 2.55303e+09
+pressure on quadrature point 2: Finite difference = 2.26055e+10. Analytical derivative = 2.26055e+10
+pressure on quadrature point 3: Finite difference = 0. Analytical derivative = 1.41177
+Error: The derivative of the viscosity to the pressure is too different from the analytical value.
+pressure on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+zerozero on quadrature point 0: Finite difference = -3.93578e+29. Analytical derivative = -3.93578e+29
+zerozero on quadrature point 1: Finite difference = 3.32987e+28. Analytical derivative = 3.33003e+28
+zerozero on quadrature point 2: Finite difference = 2.26867e+30. Analytical derivative = 2.26867e+30
+zerozero on quadrature point 3: Finite difference = 0. Analytical derivative = 7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+zerozero on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+onezero on quadrature point 0: Finite difference = -3.93578e+29. Analytical derivative = -3.93578e+29
+onezero on quadrature point 1: Finite difference = 1.13287e+30. Analytical derivative = 1.13287e+30
+onezero on quadrature point 2: Finite difference = -2.26867e+31. Analytical derivative = -2.26867e+31
+onezero on quadrature point 3: Finite difference = 0. Analytical derivative = -7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+onezero on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+oneone on quadrature point 0: Finite difference = -3.93578e+30. Analytical derivative = -3.93578e+30
+oneone on quadrature point 1: Finite difference = -8.20622e+27. Analytical derivative = -8.19874e+27
+oneone on quadrature point 2: Finite difference = -2.26873e+29. Analytical derivative = -2.26867e+29
+oneone on quadrature point 3: Finite difference = 0. Analytical derivative = -7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+oneone on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+Some parts of the test where not succesfull.
+
+Test for p = 1000
+pressure on quadrature point 0: Finite difference = 3.45536e+10. Analytical derivative = 3.45536e+10
+pressure on quadrature point 1: Finite difference = 0. Analytical derivative = 0
+pressure on quadrature point 2: Finite difference = 2.26055e+10. Analytical derivative = 2.26055e+10
+pressure on quadrature point 3: Finite difference = -104.858. Analytical derivative = 1.41177
+Error: The derivative of the viscosity to the pressure is too different from the analytical value.
+pressure on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+zerozero on quadrature point 0: Finite difference = -3.93578e+29. Analytical derivative = -3.93578e+29
+zerozero on quadrature point 1: Finite difference = 0. Analytical derivative = 0
+zerozero on quadrature point 2: Finite difference = 2.26867e+30. Analytical derivative = 2.26867e+30
+zerozero on quadrature point 3: Finite difference = 0. Analytical derivative = 7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+zerozero on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+onezero on quadrature point 0: Finite difference = -3.93578e+29. Analytical derivative = -3.93578e+29
+onezero on quadrature point 1: Finite difference = 0. Analytical derivative = 0
+onezero on quadrature point 2: Finite difference = -2.26867e+31. Analytical derivative = -2.26867e+31
+onezero on quadrature point 3: Finite difference = 0. Analytical derivative = -7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+onezero on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+oneone on quadrature point 0: Finite difference = -3.93578e+30. Analytical derivative = -3.93578e+30
+oneone on quadrature point 1: Finite difference = 0. Analytical derivative = 0
+oneone on quadrature point 2: Finite difference = -2.26873e+29. Analytical derivative = -2.26867e+29
+oneone on quadrature point 3: Finite difference = 0. Analytical derivative = -7.06495e+32
+   Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
+oneone on quadrature point 4: Finite difference = 0. Analytical derivative = 0
+Some parts of the test where not succesfull.
