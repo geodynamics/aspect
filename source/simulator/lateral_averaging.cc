@@ -37,7 +37,7 @@ namespace aspect
   namespace
   {
     template <int dim>
-    class FunctorDepthAverageField: public FunctorBase<dim>
+    class FunctorDepthAverageField: public internal::FunctorBase<dim>
     {
       public:
         FunctorDepthAverageField(const FEValuesExtractors::Scalar &field)
@@ -56,8 +56,10 @@ namespace aspect
         const FEValuesExtractors::Scalar field_;
     };
 
+
+
     template <int dim>
-    class FunctorDepthAverageViscosity: public FunctorBase<dim>
+    class FunctorDepthAverageViscosity: public internal::FunctorBase<dim>
     {
       public:
         bool need_material_properties() const
@@ -75,8 +77,10 @@ namespace aspect
         }
     };
 
+
+
     template <int dim>
-    class FunctorDepthAverageVelocityMagnitude: public FunctorBase<dim>
+    class FunctorDepthAverageVelocityMagnitude: public internal::FunctorBase<dim>
     {
       public:
         FunctorDepthAverageVelocityMagnitude(const FEValuesExtractors::Vector &field,
@@ -106,8 +110,10 @@ namespace aspect
         const bool convert_to_years_;
     };
 
+
+
     template <int dim>
-    class FunctorDepthAverageSinkingVelocity: public FunctorBase<dim>
+    class FunctorDepthAverageSinkingVelocity: public internal::FunctorBase<dim>
     {
       public:
         FunctorDepthAverageSinkingVelocity(const FEValuesExtractors::Vector &field,
@@ -152,8 +158,10 @@ namespace aspect
         const bool convert_to_years_;
     };
 
+
+
     template <int dim>
-    class FunctorDepthAverageVsVp: public FunctorBase<dim>
+    class FunctorDepthAverageVsVp: public internal::FunctorBase<dim>
     {
       public:
         FunctorDepthAverageVsVp(bool vs)
@@ -196,8 +204,10 @@ namespace aspect
         bool vs_;
     };
 
+
+
     template <int dim>
-    class FunctorDepthAverageVerticalHeatFlux: public FunctorBase<dim>
+    class FunctorDepthAverageVerticalHeatFlux: public internal::FunctorBase<dim>
     {
       public:
         FunctorDepthAverageVerticalHeatFlux(const FEValuesExtractors::Vector &velocity_field,
@@ -252,27 +262,50 @@ namespace aspect
     };
   }
 
-  template <int dim>
-  void LateralAveraging<dim>::compute_lateral_averages(std::vector<std_cxx11::unique_ptr<FunctorBase<dim> > > &functors,
-                                                       std::vector<std::vector<double> > &values) const
+  namespace internal
   {
-    Assert (values.size() > 0,
+    template <int dim>
+    bool
+    FunctorBase<dim>::need_material_properties() const
+    {
+      return false;
+    }
+
+
+
+    template <int dim>
+    void
+    FunctorBase<dim>::create_additional_material_model_outputs (const unsigned int /*n_points*/,
+                                                                MaterialModel::MaterialModelOutputs<dim> &/*outputs*/) const
+    {}
+
+
+
+    template <int dim>
+    void
+    FunctorBase<dim>::setup(const unsigned int /*q_points*/)
+    {}
+  }
+
+
+
+  template <int dim>
+  std::vector<std::vector<double> >
+  LateralAveraging<dim>::compute_lateral_averages(const unsigned int n_slices,
+                                                  std::vector<std_cxx11::unique_ptr<internal::FunctorBase<dim> > > &functors) const
+  {
+    Assert (functors.size() > 0,
             ExcMessage ("To call this function, you need to request a positive "
                         "number of properties to compute."));
-    Assert (values[0].size() > 0,
+    Assert (n_slices > 0,
             ExcMessage ("To call this function, you need to request a positive "
                         "number of depth slices."));
-    Assert (functors.size() == values.size(),
-            ExcMessage ("To call this function, you need supply as many data "
-                        "vectors as properties you want to compute."));
 
-    const unsigned int n_properties = values.size();
-    const unsigned int n_slices = values[0].size();
-    for (unsigned int i=0; i < n_properties; ++i)
-      Assert (values[i].size() == n_slices,
-              ExcMessage ("All properties need to have the same number of depth slices."));
+    const unsigned int n_properties = functors.size();
 
-    std::vector<double> volume(n_slices);
+    std::vector<std::vector<double> > values(n_properties,
+                                             std::vector<double>(n_slices,0.0));
+    std::vector<double> volume(n_slices,0.0);
 
     // this yields 10^dim quadrature points evenly distributed in the interior of the cell.
     // We avoid points on the faces, as they would be counted more than once.
@@ -286,14 +319,10 @@ namespace aspect
                              quadrature_formula,
                              update_values | update_gradients | update_quadrature_points | update_JxW_values);
 
-    std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_q_points));
-
-    std::vector<std::vector<double> > output_values(n_properties,std::vector<double>(quadrature_formula.size()));
-
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = this->get_dof_handler().begin_active(),
-    endc = this->get_dof_handler().end();
-
+    std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),
+                                                          std::vector<double> (n_q_points));
+    std::vector<std::vector<double> > output_values(n_properties,
+                                                    std::vector<double>(quadrature_formula.size()));
 
     MaterialModel::MaterialModelInputs<dim> in(n_q_points,
                                                this->n_compositional_fields());
@@ -310,6 +339,9 @@ namespace aspect
         functors[i]->create_additional_material_model_outputs(n_q_points,out);
       }
 
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = this->get_dof_handler().begin_active(),
+    endc = this->get_dof_handler().end();
     for (; cell!=endc; ++cell)
       if (cell->is_locally_owned())
         {
@@ -378,95 +410,96 @@ namespace aspect
                           << "     Consider reducing the number of depth layers for averaging."
                           << std::endl << std::endl;
       }
+
+    return values;
   }
+
+
 
   template <int dim>
   void LateralAveraging<dim>::get_temperature_averages(std::vector<double> &values) const
   {
-    std::vector<std::vector<double> > vector_values(1,values);
-    std::vector<std::string> property_name(1,"temperature");
-    get_averages(property_name,vector_values);
-    values.swap(vector_values[0]);
+    values = get_averages(values.size(),
+                          std::vector<std::string>(1,"temperature"))[0];
   }
 
+
+
   template <int dim>
-  void LateralAveraging<dim>::get_composition_averages( const unsigned int c, std::vector<double> &values) const
+  void LateralAveraging<dim>::get_composition_averages(const unsigned int c,
+                                                       std::vector<double> &values) const
   {
-    std::vector<std::vector<double> > vector_values(1,values);
-    std::vector<std::string> property_name(1,"C_"+Utilities::int_to_string(c));
-    get_averages(property_name,vector_values);
-    values.swap(vector_values[0]);
+    values = get_averages(values.size(),
+                          std::vector<std::string>(1,"C_" + Utilities::int_to_string(c)))[0];
   }
+
+
 
   template <int dim>
   void LateralAveraging<dim>::get_viscosity_averages(std::vector<double> &values) const
   {
-    std::vector<std::vector<double> > vector_values(1,values);
-    std::vector<std::string> property_name(1,"viscosity");
-    get_averages(property_name,vector_values);
-    values.swap(vector_values[0]);
+    values = get_averages(values.size(),
+                          std::vector<std::string>(1,"viscosity"))[0];
   }
+
 
 
   template <int dim>
   void LateralAveraging<dim>::get_velocity_magnitude_averages(std::vector<double> &values) const
   {
-    std::vector<std::vector<double> > vector_values(1,values);
-    std::vector<std::string> property_name(1,"velocity_magnitude");
-    get_averages(property_name,vector_values);
-    values.swap(vector_values[0]);
+    values = get_averages(values.size(),
+                          std::vector<std::string>(1,"velocity_magnitude"))[0];
   }
+
 
 
   template <int dim>
   void LateralAveraging<dim>::get_sinking_velocity_averages(std::vector<double> &values) const
   {
-    std::vector<std::vector<double> > vector_values(1,values);
-    std::vector<std::string> property_name(1,"sinking_velocity");
-    get_averages(property_name,vector_values);
-    values.swap(vector_values[0]);
+    values = get_averages(values.size(),
+                          std::vector<std::string>(1,"sinking_velocity"))[0];
   }
+
+
 
   template <int dim>
   void LateralAveraging<dim>::get_Vs_averages(std::vector<double> &values) const
   {
-    std::vector<std::vector<double> > vector_values(1,values);
-    std::vector<std::string> property_name(1,"Vs");
-    get_averages(property_name,vector_values);
-    values.swap(vector_values[0]);
+    values = get_averages(values.size(),
+                          std::vector<std::string>(1,"Vs"))[0];
   }
+
+
 
   template <int dim>
   void LateralAveraging<dim>::get_Vp_averages(std::vector<double> &values) const
   {
-    std::vector<std::vector<double> > vector_values(1,values);
-    std::vector<std::string> property_name(1,"Vp");
-    get_averages(property_name,vector_values);
-    values.swap(vector_values[0]);
+    values = get_averages(values.size(),
+                          std::vector<std::string>(1,"Vp"))[0];
   }
+
+
 
   template <int dim>
   void LateralAveraging<dim>::get_vertical_heat_flux_averages(std::vector<double> &values) const
   {
-    std::vector<std::vector<double> > vector_values(1,values);
-    std::vector<std::string> property_name(1,"vertical_heat_flux");
-    get_averages(property_name,vector_values);
-    values.swap(vector_values[0]);
+    values = get_averages(values.size(),
+                          std::vector<std::string>(1,"vertical_heat_flux"))[0];
   }
 
-  template <int dim>
-  void LateralAveraging<dim>::get_averages(std::vector<std::string> property_names,
-                                           std::vector<std::vector<double> > &values) const
-  {
-    Assert(property_names.size() == values.size(),
-           ExcMessage("This size of the value vectors needs to be as large as the size of the property names"));
 
-    std::vector<std_cxx11::unique_ptr<FunctorBase<dim> > > functors;
+
+  template <int dim>
+  std::vector<std::vector<double> >
+  LateralAveraging<dim>::get_averages(const unsigned int n_slices,
+                                      const std::vector<std::string> &property_names) const
+  {
+    std::vector<std_cxx11::unique_ptr<internal::FunctorBase<dim> > > functors;
     for (unsigned int property_index=0; property_index<property_names.size(); ++property_index)
       {
         if (property_names[property_index] == "temperature")
           {
-            functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
+            functors.push_back(std_cxx11::unique_ptr<internal::FunctorBase<dim> >(
                                  new FunctorDepthAverageField<dim> (this->introspection().extractors.temperature)));
           }
         else if (property_names[property_index].substr(0,2) == "C_")
@@ -474,40 +507,40 @@ namespace aspect
             const unsigned int c =
               Utilities::string_to_int(property_names[property_index].substr(2,std::string::npos));
 
-            functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
+            functors.push_back(std_cxx11::unique_ptr<internal::FunctorBase<dim> >(
                                  new FunctorDepthAverageField<dim> (this->introspection().extractors.compositional_fields[c])));
           }
         else if (property_names[property_index] == "velocity_magnitude")
           {
-            functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
+            functors.push_back(std_cxx11::unique_ptr<internal::FunctorBase<dim> >(
                                  new FunctorDepthAverageVelocityMagnitude<dim> (this->introspection().extractors.velocities,
                                                                                 this->convert_output_to_years())));
           }
         else if (property_names[property_index] == "sinking_velocity")
           {
-            functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
+            functors.push_back(std_cxx11::unique_ptr<internal::FunctorBase<dim> >(
                                  new FunctorDepthAverageSinkingVelocity<dim> (this->introspection().extractors.velocities,
                                                                               &this->get_gravity_model(),
                                                                               this->convert_output_to_years())));
           }
         else if (property_names[property_index] == "Vs")
           {
-            functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
+            functors.push_back(std_cxx11::unique_ptr<internal::FunctorBase<dim> >(
                                  new FunctorDepthAverageVsVp<dim> (true /* Vs */)));
           }
         else if (property_names[property_index] == "Vp")
           {
-            functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
+            functors.push_back(std_cxx11::unique_ptr<internal::FunctorBase<dim> >(
                                  new FunctorDepthAverageVsVp<dim> (false /* Vp */)));
           }
         else if (property_names[property_index] == "viscosity")
           {
-            functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
+            functors.push_back(std_cxx11::unique_ptr<internal::FunctorBase<dim> >(
                                  new FunctorDepthAverageViscosity<dim>()));
           }
         else if (property_names[property_index] == "vertical_heat_flux")
           {
-            functors.push_back(std_cxx11::unique_ptr<FunctorBase<dim> >(
+            functors.push_back(std_cxx11::unique_ptr<internal::FunctorBase<dim> >(
                                  new FunctorDepthAverageVerticalHeatFlux<dim> (this->introspection().extractors.velocities,
                                                                                this->introspection().extractors.temperature,
                                                                                &this->get_gravity_model())));
@@ -522,7 +555,7 @@ namespace aspect
       }
 
     // Now compute values for all selected properties.
-    compute_lateral_averages(functors,values);
+    return compute_lateral_averages(n_slices, functors);
   }
 }
 

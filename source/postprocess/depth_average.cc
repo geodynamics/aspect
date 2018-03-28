@@ -40,6 +40,10 @@ namespace aspect
   {
     namespace
     {
+      // This function takes a vector of variables names and returns a vector
+      // of the same variable names, except it removes all variables that are
+      // not computed by the LateralAveraging class. In other words the
+      // returned vector is a proper input for LateralAveraging<dim>::get_averages().
       std::vector<std::string>
       filter_non_averaging_variables(const std::vector<std::string> &variables)
       {
@@ -73,7 +77,7 @@ namespace aspect
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
       last_output_time (std::numeric_limits<double>::quiet_NaN()),
-      n_depth_zones (100),
+      n_depth_zones (numbers::invalid_unsigned_int),
       ascii_output(false)
     {}
 
@@ -99,10 +103,9 @@ namespace aspect
       // Add all the requested fields
       {
         const std::vector<std::string> averaging_variables = filter_non_averaging_variables(variables);
-        data_point.values.resize(averaging_variables.size(), std::vector<double> (n_depth_zones));
 
         // Compute averaged variables
-        this->get_lateral_averaging().get_averages(averaging_variables,data_point.values);
+        data_point.values = this->get_lateral_averaging().get_averages(n_depth_zones,averaging_variables);
 
         // Grow data_point.values to include adiabatic properties, and reorder
         // starting from end (to avoid unnecessary copies), and fill in the adiabatic variables.

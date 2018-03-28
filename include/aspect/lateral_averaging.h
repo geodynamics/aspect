@@ -30,62 +30,61 @@ namespace aspect
 {
   using namespace dealii;
 
-  /**
-   * This is the base class for all the functors implemented. Each is
-   * used to compute one of the properties that will be laterally
-   * averaged. The point of the base class is to allow handing over
-   * a variable of type
-   * <code> std::vector<std::unique_ptr<FunctorBase<dim> > > </code> to the
-   * LateralAveraging::get_averages() function.
-   */
-  template <int dim>
-  class FunctorBase
+  namespace internal
   {
-    public:
-      /**
-       * operator() will have @p in and @p out filled out if @p true.
-       */
-      virtual
-      bool
-      need_material_properties() const
-      {
-        return false;
-      }
+    /**
+     * This is the base class for all the functors implemented. Each is
+     * used to compute one of the properties that will be laterally
+     * averaged. The point of the base class is to allow handing over
+     * a variable of type
+     * <code> std::vector<std::unique_ptr<FunctorBase<dim> > > </code> to the
+     * LateralAveraging::get_averages() function.
+     */
+    template <int dim>
+    class FunctorBase
+    {
+      public:
+        /**
+         * operator() will have @p in and @p out filled out if @p true. By default
+         * returns false.
+         */
+        virtual
+        bool
+        need_material_properties() const;
 
-      /**
-       * If this functor needs additional material model outputs
-       * create them in here. By default, this does nothing.
+        /**
+         * If this functor needs additional material model outputs
+         * create them in here. By default, this does nothing.
+          */
+        virtual
+        void
+        create_additional_material_model_outputs (const unsigned int n_points,
+                                                  MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+
+        /**
+         * Called once at the beginning of compute_lateral_averages() to setup
+         * internal data structures with the number of quadrature points.
+         */
+        virtual
+        void
+        setup(const unsigned int q_points);
+
+        /**
+        * This takes @p in material model inputs and @p out outputs (which are filled
+        * if need_material_properties() == true), an initialized FEValues
+        * object for a cell, and the current solution vector as inputs.
+        * Functions in derived classes should then evaluate the desired quantity
+        * and return the results in the output vector, which is q_points long.
         */
-      virtual
-      void
-      create_additional_material_model_outputs (const unsigned int /*n_points*/,
-                                                MaterialModel::MaterialModelOutputs<dim> &/*outputs*/) const
-      {}
-
-      /**
-       * Called once at the beginning with the number of quadrature points.
-       */
-      virtual
-      void
-      setup(const unsigned int /*q_points*/)
-      {}
-
-      /**
-      * Fill @p output for each quadrature point.
-      * This takes material model inputs and outputs (which are filled
-      * if need_material_properties() == true), an initialized FEValues
-      * object for a cell, and the current solution vector as inputs.
-      * It then evaluates the desired quantity and puts the results in
-      * the output vector, which is q_points long.
-      */
-      virtual
-      void
-      operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-                 const MaterialModel::MaterialModelOutputs<dim> &out,
-                 const FEValues<dim> &fe_values,
-                 const LinearAlgebra::BlockVector &solution,
-                 std::vector<double> &output) = 0;
-  };
+        virtual
+        void
+        operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+                   const MaterialModel::MaterialModelOutputs<dim> &out,
+                   const FEValues<dim> &fe_values,
+                   const LinearAlgebra::BlockVector &solution,
+                   std::vector<double> &output) = 0;
+    };
+  }
 
   /**
    * LateralAveraging is a class that performs various averaging operations
@@ -108,16 +107,20 @@ namespace aspect
       /**
        * Fill the @p values with a set of lateral averages of the selected
        * @p property_names. See the implementation of this function for
-       * a range of accepted names.
+       * a range of accepted names. This function is more efficient than
+       * calling multiple of the other functions that compute one property
+       * each.
        *
-       * @param values The output vector of laterally averaged values. The
-       * function takes the pre-existing size of these vectors as the number of
-       * depth slices. Each vector has to have the same size, and there have
-       * to be as many vectors in @p values, as names in @p property_names.
+       * @param n_slices The number of depth slices to perform the averaging in.
+       * @return The output vector of laterally averaged values. Each vector
+       * has the same size of @p n_slices, and there are
+       * as many vectors returned as names in @p property_names.
+       * @param property_names Names of the available quantities to average.
+       * Check the implementation of this function for available names.
        */
-      void
-      get_averages(std::vector<std::string> property_names,
-                   std::vector<std::vector<double> > &values) const;
+      std::vector<std::vector<double> >
+      get_averages(const unsigned int n_slices,
+                   const std::vector<std::string> &property_names) const;
 
       /**
        * Fill the argument with a set of lateral averages of the current
@@ -216,15 +219,17 @@ namespace aspect
        * objects of classes that are derived from FunctorBase and are used to
        * fill the values vectors.
        *
+       * @param n_slices Number of depth slices to be computed.
        * @param functors Instances of a class derived from FunctorBase
-       * that are used to fill the values vectors.
-       * @param values The output vectors of depth averaged values. The
-       * function expects one vector of doubles per property and uses the
-       * pre-existing size of these vectors as the number of depth slices.
-       * Each vector has to have the same size.
+       * that are used to compute the averaged properties.
+       * @return The output vectors of depth averaged values. The
+       * function returns one vector of doubles per property and uses
+       * @p n_slices as the number of depth slices.
+       * Each returned vector has the same size.
        */
-      void compute_lateral_averages(std::vector<std_cxx11::unique_ptr<FunctorBase<dim> > > &functors,
-                                    std::vector<std::vector<double> > &values) const;
+      std::vector<std::vector<double> >
+      compute_lateral_averages(const unsigned int n_slices,
+                               std::vector<std_cxx11::unique_ptr<internal::FunctorBase<dim> > > &functors) const;
   };
 }
 
