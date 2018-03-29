@@ -175,56 +175,8 @@ namespace aspect
                     ExcMessage("The list of strings for the parameter "
                                "'Heating model/List of model names' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
-
-        const std::string model_name = prm.get ("Model name");
-
-        AssertThrow (model_name == "unspecified" || model_names.size() == 0,
-                     ExcMessage ("The parameter 'Model name' is only used for reasons "
-                                 "of backwards compatibility and can not be used together with "
-                                 "the new functionality 'List of model names'. Please add your "
-                                 "heating model to the list instead."));
-
-        if (!(model_name == "unspecified"))
-          model_names.push_back(model_name);
-
       }
       prm.leave_subsection ();
-
-      prm.enter_subsection ("Model settings");
-      {
-        const bool include_shear_heating = prm.get_bool ("Include shear heating");
-        Assert(!(include_shear_heating && std::find(model_names.begin(), model_names.end(), "shear heating") != model_names.end()),
-               ExcMessage ("Deprecated: The old functionality 'Include shear heating' "
-                           "is only allowed for reasons of backwards compatibility and "
-                           "can not be used together with the new functionality 'List "
-                           "of model names'. Please remove the 'Include shear heating' "
-                           "setting."));
-        if (include_shear_heating)
-          model_names.push_back("shear heating");
-
-        const bool include_adiabatic_heating = prm.get_bool ("Include adiabatic heating");
-        Assert(!(include_adiabatic_heating && std::find(model_names.begin(), model_names.end(), "adiabatic heating") != model_names.end()),
-               ExcMessage ("Deprecated: The old functionality 'Include adiabatic heating' "
-                           "is only allowed for reasons of backwards compatibility and "
-                           "can not be used together with the new functionality 'List "
-                           "of model names'. Please remove the 'Include adiabatic heating' "
-                           "setting."));
-        if (include_adiabatic_heating)
-          model_names.push_back("adiabatic heating");
-
-        const bool include_latent_heat = prm.get_bool ("Include latent heat");
-        Assert(!(include_latent_heat && std::find(model_names.begin(), model_names.end(), "latent heat") != model_names.end()),
-               ExcMessage ("Deprecated: The old functionality 'Include latent heat' "
-                           "is only allowed for reasons of backwards compatibility and "
-                           "can not be used together with the new functionality 'List "
-                           "of model names'. Please remove the 'Include latent heat' "
-                           "setting."));
-        if (include_latent_heat)
-          model_names.push_back("latent heat");
-      }
-      prm.leave_subsection ();
-
-
 
       // go through the list, create objects and let them parse
       // their own parameters
@@ -357,45 +309,6 @@ namespace aspect
                           "The following heating models are available:\n\n"
                           +
                           std_cxx11::get<dim>(registered_plugins).get_description_string());
-
-        prm.declare_entry ("Model name", "unspecified",
-                           Patterns::Selection (pattern_of_names+"|unspecified"),
-                           "Select one of the following models:\n\n"
-                           "Warning: This is the old formulation of specifying "
-                           "heating models and shouldn't be used. Please use 'List of "
-                           "model names' instead.\n\n"
-                           +
-                           std_cxx11::get<dim>(registered_plugins).get_description_string());
-      }
-      prm.leave_subsection ();
-
-      prm.enter_subsection ("Model settings");
-      {
-        prm.declare_entry ("Include shear heating", "false",
-                           Patterns::Bool (),
-                           "Whether to include shear heating into the model or not. From a "
-                           "physical viewpoint, shear heating should always be used but may "
-                           "be undesirable when comparing results with known benchmarks that "
-                           "do not include this term in the temperature equation.\n\n"
-                           "Warning: deprecated! Add `shear heating' to the 'List of model "
-                           "names' instead.");
-        prm.declare_entry ("Include adiabatic heating", "false",
-                           Patterns::Bool (),
-                           "Whether to include adiabatic heating into the model or not. From a "
-                           "physical viewpoint, adiabatic heating should always be used but may "
-                           "be undesirable when comparing results with known benchmarks that "
-                           "do not include this term in the temperature equation.\n\n"
-                           "Warning: deprecated! Add `adiabatic heating' to the 'List of model "
-                           "names' instead.");
-        prm.declare_entry ("Include latent heat", "false",
-                           Patterns::Bool (),
-                           "Whether to include the generation of latent heat at phase transitions "
-                           "into the model or not. From a physical viewpoint, latent heat should "
-                           "always be used but may be undesirable when comparing results with known "
-                           "benchmarks that do not include this term in the temperature equation "
-                           "or when dealing with a model without phase transitions.\n\n"
-                           "Warning: deprecated! Add `latent heat' to the 'List of model "
-                           "names' instead.");
       }
       prm.leave_subsection ();
 

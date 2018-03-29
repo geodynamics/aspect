@@ -39,8 +39,11 @@ Stokes only
 
 subsection Boundary \
 temperature model
-  set Model name = b\
+  set List of model names = b\
 ox
+  set Fixed temperat\
+ure boundary indicators  \
+ = 0, 1
 end
 
 
@@ -118,27 +121,11 @@ nsity, temperature
 end
 
 
-subsection Model set\
-tings
-  set Include adiaba\
-tic heating              \
- = false
-  set Include shear \
-heating                  \
- = false # default: true
-
-  set Fixed temperat\
-ure boundary indicators  \
- = 0, 1
-  set Prescribed vel\
-ocity boundary indicators\
- =
+subsection Boundary velo\
+city model
   set Tangential vel\
 ocity boundary indicators\
  = 0,1,2,3
-  set Zero velocity \
-boundary indicators      \
- =
 end
 
 

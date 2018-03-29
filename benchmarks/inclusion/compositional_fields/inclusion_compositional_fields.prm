@@ -26,13 +26,15 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left  : InclusionBoundary, \
                                                 right : InclusionBoundary, \
                                                 bottom: InclusionBoundary, \
                                                 top   : InclusionBoundary
-  set Tangential velocity boundary indicators =
-  set Zero velocity boundary indicators       =
 end
 
 subsection Material model

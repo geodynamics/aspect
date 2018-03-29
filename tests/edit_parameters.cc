@@ -1,6 +1,7 @@
 #include <deal.II/base/parameter_handler.h>
 #include <aspect/global.h>
 #include <aspect/simulator_signals.h>
+#include <aspect/boundary_temperature/interface.h>
 
 namespace aspect
 {
@@ -39,7 +40,9 @@ namespace aspect
     if ( simulator_access.get_timestep_number() >= switch_step && !switched )
       {
         simulator_access.get_pcout()<<"Switching boundary condition!"<<std::endl;
-        parameters.fixed_temperature_boundary_indicators.erase(bottom);
+        std::set<types::boundary_id> &temperature_boundary_ids =
+          const_cast<std::set<types::boundary_id> &> (simulator_access.get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators());
+        temperature_boundary_ids.erase(bottom);
         switched = true;
       }
   }

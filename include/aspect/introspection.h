@@ -339,6 +339,18 @@ namespace aspect
       compositional_index_for_name (const std::string &name) const;
 
       /**
+       * A function that gets a string as an input
+       * parameter and returns its compositional index if it exists. The string
+       * can be either the name of the compositional field, or the index itself.
+       * If the name is not found, an exception is thrown.
+       *
+       * @param name The name of compositional field (as specified in the
+       * input file)
+       */
+      unsigned int
+      compositional_index_for_string (const std::string &name) const;
+
+      /**
        * A function that gets the index of a compositional field as an input
        * parameter and returns its name.
        *
