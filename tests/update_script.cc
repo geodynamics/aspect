@@ -12,14 +12,12 @@
  */
 int f()
 {
-  std::cout << "* starting from beginning:" << std::endl;
-
   // call ASPECT with "--" and pipe an existing input file into it.
   int ret;
   std::string command;
 
   command = ("cat update_script.x.prm | sed -f " ASPECT_SOURCE_DIR "/doc/update_prm_files_to_2.0.0.sed "
-      "| sed 's:set Additional shared libraries = ./libupdate_script.so::' > output-update_script/updated.prm");
+             "| sed 's:set Additional shared libraries = ./libupdate_script.so::' > output-update_script/updated.prm");
   std::cout << "Executing the update script:\n"
             << command
             << std::endl;

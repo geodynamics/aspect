@@ -1,11 +1,10 @@
-# This is a relatively realistic compressible model setup.
-# There is no simple analytical solution to it, it is rather
-# intended to serve as a comparison for more complicated
-# material models, which should be able to reproduce it.
-# The material model used here is already tested by
-# simple_compressibility_iterated_stokes.
-# Currently there is the steinberger_compressible test
-# reproducing this test.
+# This is a test for the .prm update script in
+# doc/update_prm_files_to_2.0.0.sed. The content of this prm
+# file is only executable by ASPECT <=1.5, but the corresponding
+# shared library in update_script.cc will first execute the update
+# script on this .prm file before running ASPECT with the updated
+# version of the file. The success of this test means the script did
+# its job and ASPECT 2.0 is able to read the updated file.
 
 set CFL number                             = 1.0
 set End time                               = 1e5
@@ -18,7 +17,7 @@ subsection Adiabatic conditions model
   subsection Initial profile
     set Use surface condition function = true
     subsection Surface condition function
-      set Function expression = 1e12*t; 1613.0+1e6*t
+      set Function expression = 1e-2*t; 1613.0+1e-13*t
     end
   end
 end

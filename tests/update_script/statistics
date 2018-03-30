@@ -4,20 +4,28 @@
 # 4: Number of mesh cells
 # 5: Number of Stokes degrees of freedom
 # 6: Number of temperature degrees of freedom
-# 7: Iterations for temperature solver
-# 8: Iterations for Stokes solver
-# 9: Velocity iterations in Stokes preconditioner
-# 10: Schur complement iterations in Stokes preconditioner
-# 11: Visualization file name
-# 12: RMS velocity (m/year)
-# 13: Max. velocity (m/year)
-# 14: Minimal temperature (K)
-# 15: Average temperature (K)
-# 16: Maximal temperature (K)
-# 17: Average nondimensional temperature (K)
-# 18: Outward heat flux through boundary with indicator 0 ("bottom") (W)
-# 19: Outward heat flux through boundary with indicator 1 ("top") (W)
-# 20: Outward heat flux through boundary with indicator 2 ("left") (W)
-# 21: Outward heat flux through boundary with indicator 3 ("right") (W)
-0 0.000000000000e+00 0.000000000000e+00 192 1891 833  0 18 19 19 output-simple_compressible/solution/solution-00000 5.81496163e-01 1.11553251e+00 2.73000000e+02 2.25420787e+03 4.25000000e+03 4.98166425e-01 -2.32770645e+05 5.38969268e+05 2.17027488e+03 2.17027488e+03 
-1 1.000000000000e+05 1.000000000000e+05 192 1891 833 12 15 16 17 output-simple_compressible/solution/solution-00001 5.75393113e-01 1.11233165e+00 2.73000000e+02 2.25179238e+03 4.25000000e+03 4.97559060e-01 -2.20695706e+05 5.14563511e+05 1.92964126e+03 1.92959016e+03 
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Visualization file name
+# 14: RMS velocity (m/year)
+# 15: Max. velocity (m/year)
+# 16: Minimal temperature (K)
+# 17: Average temperature (K)
+# 18: Maximal temperature (K)
+# 19: Average nondimensional temperature (K)
+# 20: Outward heat flux through boundary with indicator 0 ("bottom") (W)
+# 21: Outward heat flux through boundary with indicator 1 ("top") (W)
+# 22: Outward heat flux through boundary with indicator 2 ("left") (W)
+# 23: Outward heat flux through boundary with indicator 3 ("right") (W)
+# 24: Number of advected particles
+# 25: Particle file name
+# 26: Average adiabatic heating rate (W/kg) 
+# 27: Total adiabatic heating rate (W) 
+# 28: Pressure at top (Pa)
+# 29: Pressure at bottom (Pa)
+0 0.000000000000e+00 0.000000000000e+00 192 1891 833 833  0 0 18 19 19 output-update_script/solution/solution-00000 5.81495926e-01 1.11550257e+00 2.73000000e+02 2.27173564e+03 4.25000000e+03 5.02573708e-01 -2.27302002e+05 5.44196950e+05 2.17027488e+03 2.17027488e+03 50 output-update_script/output-update_script/particles/particles-00000 -3.45194501e-10 -2.90238580e+07 8.09935905e-08 1.07957203e+11 
+1 1.000000000000e+05 1.000000000000e+05 192 1891 833 833 11 0 15 16 17 output-update_script/solution/solution-00001 5.75378602e-01 1.11224286e+00 2.73000000e+02 2.26921547e+03 4.25000000e+03 5.01940022e-01 -2.15581328e+05 5.19529569e+05 1.93071344e+03 1.93066298e+03 50                                                                  "" -3.39883329e-10 -2.85800114e+07 6.40142113e-08 1.07958339e+11 
