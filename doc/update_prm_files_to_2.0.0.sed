@@ -12,10 +12,10 @@
 # sed -i "" -f update_source_files_to_2.0.0.sed FILENAME
 
 # Rename compositional initial conditions
-s/subsection Compositional initial conditions/Initial composition model/g
+s/subsection Compositional initial conditions/subsection Initial composition model/g
 
 # Rename initial (temperature) conditions
-s/subsection Initial conditions/Initial temperature model/g
+s/subsection Initial conditions/subsection Initial temperature model/g
 
 # Rename adiabatic conditions plugin initial profile
 s/subsection Initial profile/subsection Compute profile/g
