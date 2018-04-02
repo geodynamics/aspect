@@ -1069,6 +1069,28 @@ namespace aspect
     template <int dim>
     SymmetricTensor<2,dim> nth_basis_for_symmetric_tensors (const unsigned int k);
 
+    template <typename TestType, typename ObjectType>
+    inline
+    bool
+    object_is_of_type (const ObjectType &object)
+    {
+      return (dynamic_cast<const TestType *> (&object) != 0);
+    }
+
+    template <typename TestType, typename ObjectType>
+    inline
+    TestType &
+    get_object_as_type (ObjectType &object)
+    {
+      if (!object_is_of_type<TestType>(object))
+        AssertThrow(false,
+                    ExcMessage("You have requested to convert an object into a type "
+                               "in which it can not be converted."));
+
+      // We can safely dereference the pointer, because we checked above that
+      // the object is actually of type TestType, and so it is not a nullptr.
+      return *dynamic_cast<TestType *> (&object);
+    }
   }
 }
 

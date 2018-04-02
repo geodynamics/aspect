@@ -24,6 +24,7 @@
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/two_merged_boxes.h>
 #include <aspect/geometry_model/sphere.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/tensor.h>
 
@@ -77,9 +78,11 @@ namespace aspect
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
-      Assert (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == 0,
+
+      Assert (Utilities::object_is_of_type<const GeometryModel::Box<dim> >(this->get_geometry_model()) == false,
               ExcMessage ("Gravity model 'radial constant' should not be used with geometry model 'box'."));
-      Assert (dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*> (&this->get_geometry_model()) == 0,
+
+      Assert (Utilities::object_is_of_type<const GeometryModel::TwoMergedBoxes<dim> >(this->get_geometry_model()) == false,
               ExcMessage ("Gravity model 'radial constant' should not be used with geometry model 'box with "
                           "lithosphere boundary indicators'."));
     }

@@ -24,6 +24,7 @@
 
 #include <aspect/global.h>
 #include <aspect/plugins.h>
+#include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 
 #include <deal.II/base/std_cxx11/shared_ptr.h>
@@ -232,6 +233,28 @@ namespace aspect
         find_postprocessor () const;
 
         /**
+         * Go through the list of all postprocessors that have been selected
+         * in the input file (and are consequently currently active) and see
+         * if one of them has the desired type specified by the template
+         * argument. If so, return a pointer to it. If no postprocessor is
+         * active that matches the given type, return a NULL pointer.
+         */
+        template <typename PostprocessorType>
+        bool
+        has_postprocessor_of_type () const;
+
+        /**
+         * Go through the list of all postprocessors that have been selected
+         * in the input file (and are consequently currently active) and see
+         * if one of them has the desired type specified by the template
+         * argument. If so, return a pointer to it. If no postprocessor is
+         * active that matches the given type, return a NULL pointer.
+         */
+        template <typename PostprocessorType>
+        PostprocessorType &
+        get_postprocessor_of_type () const;
+
+        /**
          * Declare the parameters of all known postprocessors, as well as of
          * ones this class has itself.
          */
@@ -376,6 +399,46 @@ namespace aspect
         if (PostprocessorType *x = dynamic_cast<PostprocessorType *> ( (*p).get()) )
           return x;
       return NULL;
+    }
+
+    /**
+     */
+    template <int dim>
+    template <typename PostprocessorType>
+    inline
+    bool
+    Manager<dim>::has_postprocessor_of_type () const
+    {
+      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+           p = postprocessors.begin();
+           p != postprocessors.end(); ++p)
+        if (Utilities::object_is_of_type<PostprocessorType>(*(*p)))
+          return true;
+
+      return false;
+    }
+
+    /**
+     */
+    template <int dim>
+    template <typename PostprocessorType>
+    inline
+    PostprocessorType &
+    Manager<dim>::get_postprocessor_of_type () const
+    {
+      AssertThrow(has_postprocessor_of_type<PostprocessorType> (),
+                  ExcMessage("You asked Postprocess:Manager::get_postprocessor_of_type() for a "
+                             "postprocessor type that could not be found in the current model. Activate this "
+                             "postprocessor in the input file."));
+
+      typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator postprocessor;
+      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+           p = postprocessors.begin();
+           p != postprocessors.end(); ++p)
+        if (Utilities::object_is_of_type<PostprocessorType>(*(*p)))
+          postprocessor = p;
+
+      return Utilities::get_object_as_type<PostprocessorType>(*(*postprocessor));
     }
 
 

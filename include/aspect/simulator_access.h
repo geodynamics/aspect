@@ -100,6 +100,11 @@ namespace aspect
     template <int dim> class Interface;
   }
 
+  namespace Postprocess
+  {
+    template <int dim> class Manager;
+  }
+
   template <int dim> class MeltHandler;
   template <int dim> class FreeSurfaceHandler;
 
@@ -745,6 +750,12 @@ namespace aspect
       template <typename PostprocessorType>
       PostprocessorType *
       find_postprocessor () const;
+
+      /**
+       * Return a reference to the melt handler.
+       */
+      const Postprocess::Manager<dim> &
+      get_postprocess_manager () const;
 
       /** @} */
 

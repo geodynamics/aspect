@@ -42,19 +42,35 @@ namespace aspect
     template <int dim>
     void Box2<dim>::update()
     {
-
-      const Postprocess::HeatFluxStatistics<dim> *heat_flux_postprocess=
-        this->template find_postprocessor<const Postprocess::HeatFluxStatistics<dim> >();
-      const Postprocess::PressureStatistics<dim> *pressure_postprocess=
-        this->template find_postprocessor<const Postprocess::PressureStatistics<dim> >();
-      if (pressure_postprocess==NULL)
-        std::cout << "PressureStatistics is not found!" << std::endl;
-      else
+      if (this->get_postprocess_manager().template has_postprocessor_of_type<Postprocess::PressureStatistics<dim> >())
         std::cout << "PressureStatistics is found!" << std::endl;
-      if (heat_flux_postprocess==NULL)
-        std::cout << "HeatFluxStatistics is not found!" << std::endl;
       else
+        std::cout << "PressureStatistics is not found!" << std::endl;
+
+      if (this->get_postprocess_manager().template has_postprocessor_of_type<Postprocess::HeatFluxStatistics<dim> >())
         std::cout << "HeatFluxStatistics is found!" << std::endl;
+      else
+        std::cout << "HeatFluxStatistics is not found!" << std::endl;
+
+      try
+        {
+          this->get_postprocess_manager().template get_postprocessor_of_type<Postprocess::PressureStatistics<dim> >();
+          std::cout << "PressureStatistics is found!" << std::endl;
+        }
+      catch (...)
+        {
+          std::cout << "PressureStatistics is not found!" << std::endl;
+        }
+
+      try
+        {
+          this->get_postprocess_manager().template get_postprocessor_of_type<Postprocess::HeatFluxStatistics<dim> >();
+          std::cout << "HeatFluxStatistics is found!" << std::endl;
+        }
+      catch (...)
+        {
+          std::cout << "HeatFluxStatistics is not found!" << std::endl;
+        }
     }
   }
 }

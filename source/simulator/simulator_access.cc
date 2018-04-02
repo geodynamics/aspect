@@ -654,6 +654,15 @@ namespace aspect
   {
     return simulator->do_pressure_rhs_compatibility_modification;
   }
+
+
+
+  template <int dim>
+  const Postprocess::Manager<dim> &
+  SimulatorAccess<dim>::get_postprocess_manager() const
+  {
+    return simulator->postprocess_manager;
+  }
 }
 
 
