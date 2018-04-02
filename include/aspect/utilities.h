@@ -34,6 +34,8 @@
 
 #include <aspect/geometry_model/interface.h>
 
+#include <typeinfo>
+#include <boost/core/demangle.hpp>
 
 
 namespace aspect
@@ -1069,26 +1071,49 @@ namespace aspect
     template <int dim>
     SymmetricTensor<2,dim> nth_basis_for_symmetric_tensors (const unsigned int k);
 
-    template <typename TestType, typename ObjectType>
+    /**
+     * This function returns if a given plugin (e.g. a material model returned
+     * from SimulatorAccess::get_material_model() ) matches a certain plugin
+     * type (e.g. MaterialModel::Simple). This check is needed, because often
+     * it is only possible to get a reference to an Interface, not the actual
+     * plugin type, but the actual plugin type might be important. For example
+     * a radial gravity model might only be implemented for spherical geometry
+     * models, and would want to check if the current geometry is in fact a
+     * spherical shell.
+     */
+    template <typename TestType, typename PluginType>
     inline
     bool
-    object_is_of_type (const ObjectType &object)
+    plugin_type_matches (const PluginType &object)
     {
       return (dynamic_cast<const TestType *> (&object) != 0);
     }
 
-    template <typename TestType, typename ObjectType>
+    /**
+     * This function converts a reference to a type (in particular a reference
+     * to an interface class) into a reference to a different type (in
+     * particular a plugin class). This allows accessing members of the plugin
+     * that are not specified in the interface class. Note that you should
+     * first check if the plugin type is actually convertible by calling
+     * plugin_matches_type() before calling this function. If the plugin is
+     * not convertible this function throws an exception.
+     */
+    template <typename TestType, typename PluginType>
     inline
     TestType &
-    get_object_as_type (ObjectType &object)
+    get_plugin_as_type (PluginType &object)
     {
-      if (!object_is_of_type<TestType>(object))
+      if (!plugin_type_matches<TestType>(object))
         AssertThrow(false,
-                    ExcMessage("You have requested to convert an object into a type "
-                               "in which it can not be converted."));
+                    ExcMessage("You have requested to convert a plugin of type <"
+                               + boost::core::demangle(typeid(PluginType).name())
+                               + "> into type <"
+                               + boost::core::demangle(typeid(TestType).name()) +
+                               "> in which it can not be converted."));
 
       // We can safely dereference the pointer, because we checked above that
-      // the object is actually of type TestType, and so it is not a nullptr.
+      // the object is actually of type TestType, and so the result
+      // is not a nullptr.
       return *dynamic_cast<TestType *> (&object);
     }
   }
