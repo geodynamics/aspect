@@ -79,10 +79,10 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      Assert (Utilities::plugin_type_matches<const GeometryModel::Box<dim> >(this->get_geometry_model()) == false,
+      Assert (Plugins::plugin_type_matches<const GeometryModel::Box<dim> >(this->get_geometry_model()) == false,
               ExcMessage ("Gravity model 'radial constant' should not be used with geometry model 'box'."));
 
-      Assert (Utilities::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim> >(this->get_geometry_model()) == false,
+      Assert (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim> >(this->get_geometry_model()) == false,
               ExcMessage ("Gravity model 'radial constant' should not be used with geometry model 'box with "
                           "lithosphere boundary indicators'."));
     }

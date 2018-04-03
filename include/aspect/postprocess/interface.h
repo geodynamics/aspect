@@ -24,7 +24,6 @@
 
 #include <aspect/global.h>
 #include <aspect/plugins.h>
-#include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 
 #include <deal.II/base/std_cxx11/shared_ptr.h>
@@ -230,7 +229,8 @@ namespace aspect
          * if one of them has the desired type specified by the template
          * argument. If so, return a pointer to it. If no postprocessor is
          * active that matches the given type, return a NULL pointer.
-         * @deprecated: Use has_matching_postprocessor() and
+         *
+         * @deprecated Use has_matching_postprocessor() and
          * get_matching_postprocessor() instead.
          */
         template <typename PostprocessorType>
@@ -240,7 +240,7 @@ namespace aspect
         /**
          * Go through the list of all postprocessors that have been selected
          * in the input file (and are consequently currently active) and return
-         * if one of them has the desired type specified by the template
+         * true if one of them has the desired type specified by the template
          * argument.
          */
         template <typename PostprocessorType>
@@ -250,9 +250,10 @@ namespace aspect
         /**
          * Go through the list of all postprocessors that have been selected
          * in the input file (and are consequently currently active) and see
-         * if one of them has the desired type specified by the template
-         * argument. If so, return a reference to it. If no postprocessor is
-         * active that matches the given type, throw an exception.
+         * if one of them has the type specified by the template
+         * argument or can be casted to that type. If so, return a reference
+         * to it. If no postprocessor is active that matches the given type,
+         * throw an exception.
          */
         template <typename PostprocessorType>
         PostprocessorType &
@@ -411,7 +412,7 @@ namespace aspect
       for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
-        if (Utilities::plugin_type_matches<PostprocessorType>(*(*p)))
+        if (Plugins::plugin_type_matches<PostprocessorType>(*(*p)))
           return true;
 
       return false;
@@ -435,11 +436,11 @@ namespace aspect
       for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
-        if (Utilities::plugin_type_matches<PostprocessorType>(*(*p)))
-          return Utilities::get_plugin_as_type<PostprocessorType>(*(*p));
+        if (Plugins::plugin_type_matches<PostprocessorType>(*(*p)))
+          return Plugins::get_plugin_as_type<PostprocessorType>(*(*p));
 
       // We will never get here, because we had the Assert above. Just to avoid warnings.
-      return Utilities::get_plugin_as_type<PostprocessorType>(*(*postprocessor));
+      return Plugins::get_plugin_as_type<PostprocessorType>(*(*postprocessor));
     }
 
 

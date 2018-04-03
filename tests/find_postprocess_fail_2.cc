@@ -48,10 +48,10 @@ namespace aspect
             this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::HeatFluxStatistics<dim> >();
 
           std::cout << "HeatFluxStatistics is PressureStatistics:"
-                    << Utilities::plugin_type_matches<Postprocess::PressureStatistics<dim> >(heat_flux_statistics)
+                    << Plugins::plugin_type_matches<Postprocess::PressureStatistics<dim> >(heat_flux_statistics)
                     << std::endl;
 
-          Utilities::get_plugin_as_type<Postprocess::PressureStatistics<dim> >(heat_flux_statistics);
+          Plugins::get_plugin_as_type<Postprocess::PressureStatistics<dim> >(heat_flux_statistics);
         }
     }
   }
