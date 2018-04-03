@@ -1,0 +1,50 @@
+
+Loading shared library <./libupdate_script.so>
+Executing the update script:
+cat update_script.x.prm | sed -f ASPECT_DIR/doc/update_prm_files_to_2.0.0.sed | sed 's:set Additional shared libraries = ./libupdate_script.so::' > output-update_script/updated.prm
+Running ASPECT with updated parameter file:
+../aspect output-update_script/updated.prm
+
+Number of active cells: 192 (on 4 levels)
+Number of degrees of freedom: 3,557 (1,666+225+833+833)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Skipping C_1 composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-update_script/solution/solution-00000
+     RMS, max velocity:                  0.581 m/year, 1.12 m/year
+     Temperature min/avg/max:            273 K, 2272 K, 4250 K
+     Heat fluxes through boundary parts: -2.273e+05 W, 5.442e+05 W, 2170 W, 2170 W
+     Writing depth average:              output-update_script/depth_average.gnuplot
+     Writing particle output:            output-update_script/particles/particles-00000
+     Heating rate (average/total):       -3.452e-10 W/kg, -2.902e+07 W
+     Pressure at top/bottom of domain:   8.099e-08 Pa, 1.08e+11 Pa
+     Computing dynamic topography        
+
+*** Timestep 1:  t=100000 years
+   Solving temperature system... 11 iterations.
+   Skipping C_1 composition solve because RHS is zero.
+   Solving Stokes system... 15+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-update_script/solution/solution-00001
+     RMS, max velocity:                  0.575 m/year, 1.11 m/year
+     Temperature min/avg/max:            273 K, 2269 K, 4250 K
+     Heat fluxes through boundary parts: -2.156e+05 W, 5.195e+05 W, 1931 W, 1931 W
+     Writing depth average:              output-update_script/depth_average.gnuplot
+     Number of advected particles:       50
+     Heating rate (average/total):       -3.399e-10 W/kg, -2.858e+07 W
+     Pressure at top/bottom of domain:   6.401e-08 Pa, 1.08e+11 Pa
+     Computing dynamic topography        
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
