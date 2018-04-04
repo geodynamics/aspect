@@ -121,8 +121,8 @@ namespace aspect
 
       const double depth = this->get_geometry_model().depth(p);
       return  ((magnitude_at_surface  * (1.0 - depth/this->get_geometry_model().maximal_depth()))
-          + (magnitude_at_bottom * depth/this->get_geometry_model().maximal_depth()))
-          * -1.0 * p/p.norm();
+               + (magnitude_at_bottom * depth/this->get_geometry_model().maximal_depth()))
+              * -1.0 * p/p.norm();
     }
 
 
