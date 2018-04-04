@@ -21,6 +21,9 @@ s/subsection Initial conditions/subsection Initial temperature model/g
 s/subsection Initial profile/subsection Compute profile/g
 s/set Model name = initial profile/set Model name = compute profile/g
 
+# Recover previous behavior of the 'Radial linear' gravity model
+s/subsection Radial linear/subsection Radial linear\n    set Magnitude at bottom = 0.0/g
+
 # Replace the 'model name' parameter by 'List of model names'
 # in all subsections that now use the new parameter.
 # Note that this command only works if the parameter is set
