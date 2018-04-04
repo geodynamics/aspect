@@ -120,9 +120,8 @@ namespace aspect
         return Tensor<1,dim>();
 
       const double depth = this->get_geometry_model().depth(p);
-      return  ((magnitude_at_surface  * (1.0 - depth/this->get_geometry_model().maximal_depth()))
-               + (magnitude_at_bottom * depth/this->get_geometry_model().maximal_depth()))
-              * -1.0 * p/p.norm();
+      return  (-magnitude_at_surface  * p/p.norm() * (1.0 - depth/this->get_geometry_model().maximal_depth()))
+              + (-magnitude_at_bottom * p/p.norm() * (depth/this->get_geometry_model().maximal_depth()));
     }
 
 
