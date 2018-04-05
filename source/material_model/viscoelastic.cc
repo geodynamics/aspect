@@ -314,13 +314,17 @@ namespace aspect
       if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.strain_rate.size() > 0)
         {
           // Get old (previous time step) velocity gradients
-          const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+1);
+          std::vector<Point<dim> > quadrature_positions(in.position.size());
+          for (unsigned int i=0; i < in.position.size(); ++i)
+            quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
+
           FEValues<dim> fe_values (this->get_mapping(),
                                    this->get_fe(),
-                                   quadrature_formula,
+                                   Quadrature<dim>(quadrature_positions),
                                    update_gradients);
+
           fe_values.reinit (in.current_cell);
-          std::vector<Tensor<2,dim> > old_velocity_gradients (quadrature_formula.size(), Tensor<2,dim>());
+          std::vector<Tensor<2,dim> > old_velocity_gradients (Quadrature<dim>(quadrature_positions).size(), Tensor<2,dim>());
           fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_old_solution(),
                                                                                          old_velocity_gradients);
 
