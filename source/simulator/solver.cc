@@ -280,10 +280,10 @@ namespace aspect
       // first solve with the bottom left block, which we have built
       // as a mass matrix with the inverse of the viscosity
       {
-        aspect::SolverControl solver_control(1000, src.block(1).l2_norm() * S_block_tolerance);
+        SolverControl solver_control(1000, src.block(1).l2_norm() * S_block_tolerance);
 
 #ifdef ASPECT_USE_PETSC
-        SolverGMRES<LinearAlgebra::Vector> solver(solver_control);
+        SolverCG<LinearAlgebra::Vector> solver(solver_control);
 #else
         TrilinosWrappers::SolverCG solver(solver_control);
 #endif
@@ -836,7 +836,6 @@ namespace aspect
                   {
                     // output solver history
                     std::ofstream f((parameters.output_directory+"solver_history.txt").c_str());
-                    f << std::setprecision(16);
 
                     // Only request the solver history if a history has actually been created
                     if (parameters.n_cheap_stokes_solver_steps > 0)

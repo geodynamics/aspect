@@ -36,7 +36,6 @@ subsection Model settings
 end
 
 subsection Melt settings
-  set Melt transport threshold                = 0.0
   set Use discontinuous compaction pressure   = false
 end
 

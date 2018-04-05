@@ -1,17 +1,14 @@
 #########################################################
-# This is a test for the melting rate functionality
-# It uses a new material model similar to the melt
-# simple model, but with a different melting rate.
+# This is a test for the new melt solver. It checks if
+# melt transport works correctly in a model that has both
+# regions with and without melt (so only some of the cells
+# are "melt cells").
 
-# The melting rate has the form of a Gaussian function 
-# and every timestep a fixed amount of material is melting. 
+# The initial porosity is zero everywhere, except for a 
+# Gaussian in the center of the model (the "melt blob"). 
+# As there is no melting or freezing, the blob should
+# just rise, conserving the total porosity.
 
-# The amplitude of the Gaussian is 0.0001, so both the 
-# porosity and the peridotite field should increase by
-# this amount (visible in the maximum value).
-
-# Note that the maximum porosity can deviate slightly, 
-# as additional melt is created by compaction.
 ############### Global parameters
 
 set Dimension                              = 2
@@ -26,10 +23,6 @@ set CFL number                             = 0.2
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
-
-subsection Melt settings
-  set Melt transport threshold = 0.0
-end
 
 
 ############### Parameters describing the model
@@ -71,7 +64,7 @@ end
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   
   subsection Box
     set Bottom temperature = 1600

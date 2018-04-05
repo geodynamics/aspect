@@ -66,3 +66,6 @@ s/boussinesq/Boussinesq/g
 
 # Rename Dynamic topography subsection
 s/subsection Dynamic Topography/subsection Dynamic topography/g
+
+# Remove all instances of `melt transport threshold`
+/Melt transport threshold/d

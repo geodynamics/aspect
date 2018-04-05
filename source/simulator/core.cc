@@ -545,10 +545,8 @@ namespace aspect
     // Initialize the melt handler
     if (parameters.include_melt_transport)
       {
-        AssertThrow( !parameters.use_discontinuous_temperature_discretization &&
-                     !parameters.use_discontinuous_composition_discretization,
-                     ExcMessage("Melt transport can not be used with discontinuous elements.") );
         melt_handler->initialize_simulator (*this);
+        melt_handler->initialize();
       }
 
     // If the solver type is a Newton type of solver, we need to set make sure

@@ -111,7 +111,9 @@ namespace aspect
           prm.enter_subsection("Particles");
           {
             prm.enter_subsection("Melt particle");
-            threshold_for_melt_presence = prm.get_double ("Threshold for melt presence");
+            {
+              threshold_for_melt_presence = prm.get_double ("Threshold for melt presence");
+            }
             prm.leave_subsection();
           }
           prm.leave_subsection();

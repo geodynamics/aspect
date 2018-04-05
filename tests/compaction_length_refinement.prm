@@ -110,10 +110,6 @@ subsection Model settings
   set Include melt transport                  = true
 end
 
-subsection Melt settings
-  set Melt transport threshold                = 0
-end
-
 
 subsection Postprocess
 

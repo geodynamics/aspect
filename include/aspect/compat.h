@@ -59,8 +59,8 @@ namespace aspect
       {
         dealii::SolverControl::State return_value = dealii::SolverControl::check(step, check_value);
 
-        if (history_data_enabled)
-          history_data.resize(maxsteps+1);
+        if (step == 0)
+          history_data.resize(history_data.size()+1);
 
         return return_value;
       }
