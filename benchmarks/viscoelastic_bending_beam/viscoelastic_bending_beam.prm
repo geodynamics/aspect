@@ -64,6 +64,11 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
+# Formulation classification
+subsection Formulation
+  set Enable elasticity = true
+end
+
 # Boundary classifications
 subsection Model settings
   set Fixed composition boundary indicators   = bottom, top, right  
@@ -72,7 +77,6 @@ subsection Model settings
   set Free surface boundary indicators        = 
   set Tangential velocity boundary indicators = bottom, top, right
   set Zero velocity boundary indicators       = left
-  set Enable elasticity                       = true
 end
 
 # Number and name of compositional fields

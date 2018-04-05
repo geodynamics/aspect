@@ -586,6 +586,7 @@ namespace aspect
                          "\n\n"
                          "Note that while more than one operation can be selected it only makes sense to "
                          "pick one rotational and one translational operation.");
+
     }
     prm.leave_subsection();
 

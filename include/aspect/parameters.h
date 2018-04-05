@@ -373,6 +373,12 @@ namespace aspect
     typename Formulation::TemperatureEquation::Kind formulation_temperature_equation;
 
     /**
+     * This variable determines whether additional terms related to elastic forces
+     * are added to the Stokes equation.
+    */
+    bool                           enable_elasticity;
+
+    /**
      * @}
      */
 
@@ -382,7 +388,6 @@ namespace aspect
      */
     bool                           include_melt_transport;
     bool                           enable_additional_stokes_rhs;
-    bool                           enable_elasticity;
 
     /**
      * Map from boundary id to a pair "components", "traction boundary type",
