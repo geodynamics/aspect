@@ -1573,7 +1573,7 @@ namespace aspect
     // now subtract the ones that are nonzero as computed above:
     for_constraints.subtract_set(nonzero_pc_dofs);
 
-    // and constrain those.
+    // and constrain the remaining dofs (that are not in melt cells).
     constraints.add_lines(for_constraints);
     constraints.close();
   }
