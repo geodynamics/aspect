@@ -120,8 +120,11 @@ namespace aspect
         return Tensor<1,dim>();
 
       const double depth = this->get_geometry_model().depth(p);
-      return  (-magnitude_at_surface  * p/p.norm() * (1.0 - depth/this->get_geometry_model().maximal_depth()))
-              + (-magnitude_at_bottom * p/p.norm() * (depth/this->get_geometry_model().maximal_depth()));
+      const double maximal_depth = this->get_geometry_model().maximal_depth();
+
+      return  (-magnitude_at_surface * (1.0 - depth/maximal_depth)
+               -magnitude_at_bottom  * (depth/maximal_depth))
+              * p/p.norm();
     }
 
 
@@ -140,11 +143,12 @@ namespace aspect
           prm.declare_entry ("Magnitude at bottom", "10.7",
                              Patterns::Double (),
                              "Magnitude of the radial gravity vector "
-                             "at the bottom of the domain. 'Bottom' means the"
+                             "at the bottom of the domain. `Bottom' means the"
                              "maximum depth in the chosen geometry, and for "
-                             "example represents the CMB in the 'spherical shell' "
-                             "geometry, and the center of the 'sphere' geometry. "
-                             "Units: $m/s^2$");
+                             "example represents the core-mantle boundary in "
+                             "the case of the `spherical shell' geometry model, "
+                             "and the center in the case of the `sphere' "
+                             "geometry model. Units: $m/s^2$");
         }
         prm.leave_subsection ();
       }
@@ -199,11 +203,8 @@ namespace aspect
     ASPECT_REGISTER_GRAVITY_MODEL(RadialLinear,
                                   "radial linear",
                                   "A gravity model which is radial (pointing inward if the gravity "
-                                  "is positive) and the magnitude decreases linearly with depth down "
-                                  "to zero at the maximal depth the geometry returns, as you would "
-                                  "get with a constant density spherical domain. (Note that this "
-                                  "would be for a full sphere, not a spherical shell.) The "
-                                  "magnitude of gravity at the surface is read from the input "
-                                  "file in a section ``Gravity model/Radial linear''.")
+                                  "is positive) and the magnitude changes linearly with depth. The "
+                                  "magnitude of gravity at the surface and bottom is read from the "
+                                  "input file in a section ``Gravity model/Radial linear''.")
   }
 }

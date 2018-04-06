@@ -101,9 +101,7 @@ namespace aspect
 
     /**
      * A class that describes gravity as a radial vector of linearly
-     * decreasing magnitude with depth.  Meant for use in the Sphere geometry
-     * model, where you expect that kind of field if one assumed a constant
-     * density of Earth.
+     * changing magnitude with depth.
      *
      * @ingroup GravityModels
      */
