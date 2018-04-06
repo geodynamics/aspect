@@ -86,7 +86,7 @@ namespace aspect
 
         double compute_second_invariant(const SymmetricTensor<2,dim> strain_rate, const double min_strain_rate) const;
 
-        double compute_viscosity(const double edot_ii,const double pressure,const int comp, const double constant_viscosity,const bool regularize, const double min_visc, const double max_visc) const;
+        double compute_viscosity(const double edot_ii,const double pressure,const int comp, const double constant_viscosity,const bool compute_full_viscosity, const double min_visc, const double max_visc) const;
 
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const;
@@ -250,11 +250,12 @@ namespace aspect
                       const double pressure,
                       const int comp,
                       const double constant_viscosity,
-                      const bool regularize,
+                      const bool compute_full_viscosity,
                       const double min_visc,
                       const double max_visc) const
     {
       double viscosity;
+
       if (constant_viscosity == 0)
         {
           const double strength = ( (dim==3)
@@ -269,15 +270,19 @@ namespace aspect
             viscosity = strength / ( 2.0 * std::sqrt(0.5) * edot_ii );
           else
             viscosity = ref_visc;
-          if (regularize == true)
-            viscosity = ref_visc*viscosity / (ref_visc + viscosity);
+
+          if (compute_full_viscosity == true)
+            viscosity = ref_visc * viscosity / (ref_visc + viscosity);
         }
       else
         {
           viscosity = constant_viscosity;
         }
 
-      return std::max(std::min(viscosity,max_visc),min_visc);
+      if (compute_full_viscosity == true)
+        return std::max(std::min(viscosity, max_visc), min_visc);
+      else
+        return viscosity;
     }
 
     template <int dim>
@@ -292,7 +297,6 @@ namespace aspect
 
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-          // const Point<dim> position = in.position[i];
           const double temperature = in.temperature[i];
           const double pressure = in.pressure[i];
 
@@ -362,7 +366,10 @@ namespace aspect
                           //analytic
                           if (constant_viscosity[c] == 0  && composition_viscosities[c] <= max_visc[c] && composition_viscosities[c] >= min_visc[c])
                             {
-                              const double drucker_prager_viscosity = compute_viscosity(edot_ii,pressure,c,constant_viscosity[c],false,min_visc[c],max_visc[c]);
+                              // we only want the pure durcker prager here, so the regularization should be off and the min and max values should not be used.
+                              // Therefore we set the compute_full_viscosity flag to flase. The min and max viscosity values  won't be used with this flag,
+                              // so we enter dummy values.
+                              const double drucker_prager_viscosity = compute_viscosity(edot_ii,pressure,c,constant_viscosity[c],false,std::numeric_limits<double>::min(),std::numeric_limits<double>::max());
                               const double regularization_adjustment = (ref_visc * ref_visc)
                                                                        / (ref_visc * ref_visc + 2.0 * ref_visc * drucker_prager_viscosity
                                                                           + drucker_prager_viscosity * drucker_prager_viscosity);
