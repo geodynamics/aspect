@@ -42,34 +42,16 @@ namespace aspect
     template <int dim>
     void Box2<dim>::update()
     {
-      if (this->get_postprocess_manager().template has_matching_postprocessor<Postprocess::PressureStatistics<dim> >())
-        std::cout << "PressureStatistics is found!" << std::endl;
-      else
-        std::cout << "PressureStatistics is not found!" << std::endl;
-
       if (this->get_postprocess_manager().template has_matching_postprocessor<Postprocess::HeatFluxStatistics<dim> >())
-        std::cout << "HeatFluxStatistics is found!" << std::endl;
-      else
-        std::cout << "HeatFluxStatistics is not found!" << std::endl;
+        {
+          Postprocess::HeatFluxStatistics<dim> &heat_flux_statistics =
+            this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::HeatFluxStatistics<dim> >();
 
-      try
-        {
-          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::PressureStatistics<dim> >();
-          std::cout << "PressureStatistics is found!" << std::endl;
-        }
-      catch (...)
-        {
-          std::cout << "PressureStatistics is not found!" << std::endl;
-        }
+          std::cout << "HeatFluxStatistics is PressureStatistics:"
+                    << Plugins::plugin_type_matches<Postprocess::PressureStatistics<dim> >(heat_flux_statistics)
+                    << std::endl;
 
-      try
-        {
-          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::HeatFluxStatistics<dim> >();
-          std::cout << "HeatFluxStatistics is found!" << std::endl;
-        }
-      catch (...)
-        {
-          std::cout << "HeatFluxStatistics is not found!" << std::endl;
+          Plugins::get_plugin_as_type<Postprocess::PressureStatistics<dim> >(heat_flux_statistics);
         }
     }
   }

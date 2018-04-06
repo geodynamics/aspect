@@ -132,14 +132,14 @@ namespace aspect
            heating_model != heating_model_objects.end(); ++heating_model, ++index)
         {
           // finally produce something for the statistics file
-          const std::string name1("Average " + heating_model_names[index] + " rate (W/kg) ");
+          const std::string name1("Average " + heating_model_names[index] + " rate (W/kg)");
           statistics.add_value (name1, global_heating_integrals[index]/global_mass);
           // also make sure that the other columns filled by the this object
           // all show up with sufficient accuracy and in scientific notation
           statistics.set_precision (name1, 8);
           statistics.set_scientific (name1, true);
 
-          const std::string name2("Total " + heating_model_names[index] + " rate (W) ");
+          const std::string name2("Total " + heating_model_names[index] + " rate (W)");
           statistics.add_value (name2, global_heating_integrals[index]);
           // also make sure that the other columns filled by the this object
           // all show up with sufficient accuracy and in scientific notation

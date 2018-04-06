@@ -1,3 +1,5 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 Loading shared library <./libfind_postprocess.so>
 
@@ -6,7 +8,11 @@ Number of degrees of freedom: 948 (578+81+289)
 
 PressureStatistics is not found!
 HeatFluxStatistics is found!
+PressureStatistics is not found!
+HeatFluxStatistics is found!
 *** Timestep 0:  t=0 seconds
+PressureStatistics is not found!
+HeatFluxStatistics is found!
 PressureStatistics is not found!
 HeatFluxStatistics is found!
    Solving temperature system... 0 iterations.

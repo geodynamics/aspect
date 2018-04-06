@@ -661,6 +661,13 @@ namespace aspect
   {
     return (simulator->prescribed_stokes_solution.get() != 0);
   }
+
+  template <int dim>
+  const Postprocess::Manager<dim> &
+  SimulatorAccess<dim>::get_postprocess_manager() const
+  {
+    return simulator->postprocess_manager;
+  }
 }
 
 

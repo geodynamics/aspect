@@ -31,6 +31,9 @@
 #include <deal.II/base/parameter_handler.h>
 
 #include <boost/serialization/split_member.hpp>
+#include <boost/core/demangle.hpp>
+
+#include <typeinfo>
 
 
 namespace aspect
@@ -226,10 +229,35 @@ namespace aspect
          * if one of them has the desired type specified by the template
          * argument. If so, return a pointer to it. If no postprocessor is
          * active that matches the given type, return a NULL pointer.
+         *
+         * @deprecated Use has_matching_postprocessor() and
+         * get_matching_postprocessor() instead.
          */
         template <typename PostprocessorType>
         PostprocessorType *
-        find_postprocessor () const;
+        find_postprocessor () const DEAL_II_DEPRECATED;
+
+        /**
+         * Go through the list of all postprocessors that have been selected
+         * in the input file (and are consequently currently active) and return
+         * true if one of them has the desired type specified by the template
+         * argument.
+         */
+        template <typename PostprocessorType>
+        bool
+        has_matching_postprocessor () const;
+
+        /**
+         * Go through the list of all postprocessors that have been selected
+         * in the input file (and are consequently currently active) and see
+         * if one of them has the type specified by the template
+         * argument or can be casted to that type. If so, return a reference
+         * to it. If no postprocessor is active that matches the given type,
+         * throw an exception.
+         */
+        template <typename PostprocessorType>
+        PostprocessorType &
+        get_matching_postprocessor () const;
 
         /**
          * Declare the parameters of all known postprocessors, as well as of
@@ -357,13 +385,8 @@ namespace aspect
         (*p)->load (saved_text);
     }
 
-    /**
-     * Go through the list of all postprocessors that have been selected in
-     * the input file (and are consequently currently active) and see if one
-     * of them has the desired type specified by the template argument. If so,
-     * return a pointer to it. If no postprocessor is active that matches the
-     * given type, return a NULL pointer.
-     */
+
+
     template <int dim>
     template <typename PostprocessorType>
     inline
@@ -376,6 +399,48 @@ namespace aspect
         if (PostprocessorType *x = dynamic_cast<PostprocessorType *> ( (*p).get()) )
           return x;
       return NULL;
+    }
+
+
+
+    template <int dim>
+    template <typename PostprocessorType>
+    inline
+    bool
+    Manager<dim>::has_matching_postprocessor () const
+    {
+      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+           p = postprocessors.begin();
+           p != postprocessors.end(); ++p)
+        if (Plugins::plugin_type_matches<PostprocessorType>(*(*p)))
+          return true;
+
+      return false;
+    }
+
+
+
+    template <int dim>
+    template <typename PostprocessorType>
+    inline
+    PostprocessorType &
+    Manager<dim>::get_matching_postprocessor () const
+    {
+      AssertThrow(has_matching_postprocessor<PostprocessorType> (),
+                  ExcMessage("You asked Postprocess:Manager::get_postprocessor_of_type() for a "
+                             "postprocessor of type <" + boost::core::demangle(typeid(PostprocessorType).name()) + "> "
+                             "that could not be found in the current model. Activate this "
+                             "postprocessor in the input file."));
+
+      typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator postprocessor;
+      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+           p = postprocessors.begin();
+           p != postprocessors.end(); ++p)
+        if (Plugins::plugin_type_matches<PostprocessorType>(*(*p)))
+          return Plugins::get_plugin_as_type<PostprocessorType>(*(*p));
+
+      // We will never get here, because we had the Assert above. Just to avoid warnings.
+      return Plugins::get_plugin_as_type<PostprocessorType>(*(*postprocessor));
     }
 
 

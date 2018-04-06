@@ -27,6 +27,9 @@
 #include <deal.II/base/utilities.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/std_cxx11/tuple.h>
+#include <deal.II/base/exceptions.h>
+
+#include <boost/core/demangle.hpp>
 
 #include <string>
 #include <list>
@@ -40,6 +43,55 @@ namespace aspect
 {
   template <int dim> class SimulatorAccess;
 
+  namespace Plugins
+  {
+    using namespace dealii;
+
+    /**
+     * This function returns if a given plugin (e.g. a material model returned
+     * from SimulatorAccess::get_material_model() ) matches a certain plugin
+     * type (e.g. MaterialModel::Simple). This check is needed, because often
+     * it is only possible to get a reference to an Interface, not the actual
+     * plugin type, but the actual plugin type might be important. For example
+     * a radial gravity model might only be implemented for spherical geometry
+     * models, and would want to check if the current geometry is in fact a
+     * spherical shell.
+     */
+    template <typename TestType, typename PluginType>
+    inline
+    bool
+    plugin_type_matches (const PluginType &object)
+    {
+      return (dynamic_cast<const TestType *> (&object) != NULL);
+    }
+
+    /**
+     * This function converts a reference to a type (in particular a reference
+     * to an interface class) into a reference to a different type (in
+     * particular a plugin class). This allows accessing members of the plugin
+     * that are not specified in the interface class. Note that you should
+     * first check if the plugin type is actually convertible by calling
+     * plugin_matches_type() before calling this function. If the plugin is
+     * not convertible this function throws an exception.
+     */
+    template <typename TestType, typename PluginType>
+    inline
+    TestType &
+    get_plugin_as_type (PluginType &object)
+    {
+      AssertThrow(plugin_type_matches<TestType>(object),
+                  ExcMessage("You have requested to convert a plugin of type <"
+                             + boost::core::demangle(typeid(PluginType).name())
+                             + "> into type <"
+                             + boost::core::demangle(typeid(TestType).name()) +
+                             ">, but this cast cannot be performed."));
+
+      // We can safely dereference the pointer, because we checked above that
+      // the object is actually of type TestType, and so the result
+      // is not a nullptr.
+      return *dynamic_cast<TestType *> (&object);
+    }
+  }
 
   namespace internal
   {
