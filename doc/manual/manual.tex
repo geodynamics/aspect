@@ -8064,20 +8064,20 @@ can be much faster than the time step of the model. For mid-ocean ridges, melt i
 be in equilibrium with the solid, which means that the reaction is basically instantaneous. 
 To model these type of processes, \aspect{} uses operator splitting (see also Section \ref{sec:benchmark-operator_splitting}): Reactions are solved on a different time scale than advection. 
 For this model, this means that at the beginning of each time step, all melting reactions, 
-including their latent heat effects, are solved using a smaller time step. In the input file, 
-we have to choose both the size of this time step and the rate (or characteristic time scale) of melting, 
+including their latent heat effects, are solved using several shorter sub-time steps. In the input file, 
+we have to choose both the size of these sub-time steps and the rate (or characteristic time scale) of melting, 
 and they have to be consistent in the sense that the operator splitting time step can not be larger than 
 the reaction time scale. 
-The melting model we use here is the anyhdrous mantle melting model of \cite{KSL2003} for a peridotitic 
+The melting model we use here is the anhydrous mantle melting model of \cite{KSL2003} for a peridotitic 
 rock composition, as implemented in the ``melt simple'' material model. 
 
 \lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/melting_and_freezing.part.prm}
 
 To make sure we reproduce the characteristic triangular melting region of a mid-ocean ridge, we have to  
-set up the boundary conditions in a way that they will lead to corner flow. At the top boundary, we can 
+set up the boundary conditions in a way so that they will lead to corner flow. At the top boundary, we can 
 simply prescribe the half-spreading rate, and at the left boundary we can use a free-slip boundary, as 
 material should not cross this centerline. However, we do not know the inflow and outflow velocities at 
-the bottom and right side of the model. However, what we can do here is prescribing the lithostatic 
+the bottom and right side of the model. Instead, what we can do here is prescribing the lithostatic 
 pressure as a boundary condition for the stress. We accomplish this by using the 
 ``initial lithostatic pressure'' model. This plugin will automatically compute a 1d lithostatic pressure 
 profile at a given point at the time of the model start and apply it as a boundary traction.
@@ -8090,7 +8090,7 @@ the two-phase flow equations are solved (instead of the Stokes system, which is 
 no melt present in a cell). At the boundary between these regions, material properties like the 
 compaction viscosity may jump, and there may be strong gradients or jumps in some solution variables such 
 as the melt velocity and the compaction pressure. In addition, the characteristic length scale for melt transport, 
-the compaction length $\delta$ depends on the porosity:
+the compaction length $\delta$, depends on the porosity:
 \begin{equation}
 \delta = \sqrt{\frac{(\xi+4\eta/3)k}{\eta_f}}.
 \end{equation}
@@ -8104,7 +8104,7 @@ to all cells where the two-phase flow equations are solved.
 
 \lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/mesh_refinement.part.prm}
 
-\aspect{} also supports an alternative method for how to make sure that regions with melt are sufficiently 
+\aspect{} also supports an alternative method to make sure that regions with melt are sufficiently 
 well resolved, relying directly on the compaction length, and we will discuss this method as a possible 
 modification to this cookbook at the end of this section. 
 
@@ -8148,7 +8148,7 @@ A vertical profile at a distance of 80 km from the ridge axis showing this compo
 
 \paragraph{Mesh refinement.}
 Another option for making sure that melt migration is resolved properly in the model is using a 
-refinement criterion that directly relates to the compaction length, which can be done in the mesh 
+refinement criterion that directly relates to the compaction length. This can be done in the mesh 
 refinement section of the input file:
 
 \lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/compaction_length.part.prm}
