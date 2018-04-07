@@ -40,17 +40,6 @@ end
 
 ##################### Settings for melt transport ########################
 
-# In models with melt transport, the are additional 'Melt settings' that 
-# let us specify parameters related to the melt transport computations. 
-# One of these is the 'Melt transport threshold': If the porosity is lower
-# than the value specified here, melt will no longer move with a different
-# velocity than the solid, and the system of equations will revert to the
-# usual Stokes equations. Only for porosity larger then the threshold, 
-# the two-phase flow equations apply. 
-subsection Melt settings
-  set Melt transport threshold                = 0.0
-end
-
 # In models with melt transport, we always need a compositional field with
 # the name 'porosity'. Only the field with that name will be advected with
 # the melt velocity, all other compositional fields will continue to work

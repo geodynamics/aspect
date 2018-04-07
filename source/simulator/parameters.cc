@@ -1278,21 +1278,6 @@ namespace aspect
                                "is of one degree lower and continuous, and if you selected "
                                "a linear element for the velocity, you'd need a continuous "
                                "element of degree zero for the pressure, which does not exist."))
-
-      if (include_melt_transport)
-        {
-          // The additional terms in the temperature systems have not been ported
-          // to the DG formulation:
-          AssertThrow(!use_discontinuous_temperature_discretization
-                      && !use_discontinuous_composition_discretization,
-                      ExcMessage ("Using discontinuous elements for temperature "
-                                  "or composition in models with melt transport is currently not implemented."));
-          // We can not have a DG p_f. While it would be possible to use a
-          // discontinuous p_c, this is not tested, so we disable it for now.
-          AssertThrow(!use_locally_conservative_discretization,
-                      ExcMessage ("Discontinuous elements for the pressure "
-                                  "in models with melt transport are not supported"));
-        }
     }
     prm.leave_subsection ();
 
@@ -1685,7 +1670,7 @@ namespace aspect
   void Simulator<dim>::declare_parameters (ParameterHandler &prm)
   {
     Parameters<dim>::declare_parameters (prm);
-    MeltHandler<dim>::declare_parameters (prm);
+    Melt::Parameters<dim>::declare_parameters (prm);
     Newton::Parameters::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
     MeshRefinement::Manager<dim>::declare_parameters (prm);

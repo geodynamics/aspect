@@ -545,10 +545,8 @@ namespace aspect
     // Initialize the melt handler
     if (parameters.include_melt_transport)
       {
-        AssertThrow( !parameters.use_discontinuous_temperature_discretization &&
-                     !parameters.use_discontinuous_composition_discretization,
-                     ExcMessage("Melt transport can not be used with discontinuous elements.") );
         melt_handler->initialize_simulator (*this);
+        melt_handler->initialize();
       }
 
     // If the solver type is a Newton type of solver, we need to set make sure
@@ -989,12 +987,18 @@ namespace aspect
             }
       }
 
-
     // let plugins add more constraints if they so choose, then close the
     // constraints object
     signals.post_constraints_creation(*this, current_constraints);
 
     current_constraints.close();
+
+    // let the melt handler add its constraints once before we solve the porosity system for the first time
+    if (parameters.include_melt_transport)
+      melt_handler->save_constraints (current_constraints);
+
+    if (time_step == 0 && parameters.include_melt_transport)
+      melt_handler->add_current_constraints (current_constraints);
   }
 
 
@@ -1185,6 +1189,10 @@ namespace aspect
         coupling[introspection.variable("fluid pressure").first_component_index]
         [introspection.variable("fluid pressure").first_component_index] = DoFTools::always;
         coupling[introspection.variable("compaction pressure").first_component_index]
+        [introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
+        coupling[introspection.variable("compaction pressure").first_component_index]
+        [introspection.variable("fluid pressure").first_component_index] = DoFTools::always;
+        coupling[introspection.variable("fluid pressure").first_component_index]
         [introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
       }
     else
@@ -1420,7 +1428,6 @@ namespace aspect
 
       if (!parameters.include_melt_transport)
         {
-          // locally_owned_melt_pressure_dofs is only used if not using melt
           if (parameters.use_direct_stokes_solver)
             introspection.index_sets.locally_owned_pressure_dofs = system_index_set & Utilities::extract_locally_active_dofs_with_component(dof_handler, introspection.component_masks.pressure);
           else

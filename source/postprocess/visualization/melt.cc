@@ -115,6 +115,10 @@ namespace aspect
         AssertThrow(melt_outputs != NULL,
                     ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
 
+        const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(in,
+                                 out,
+                                 this->get_melt_handler(),
+                                 true);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
@@ -137,6 +141,27 @@ namespace aspect
                       }
                     --output_index;
                   }
+                else if (property_names[i] == "p_c")
+                  {
+                    const unsigned int pc_comp_idx = this->introspection().variable("compaction pressure").first_component_index;
+                    const double p_c_bar = input_data.solution_values[q][pc_comp_idx];
+
+                    computed_quantities[q][output_index] = p_c_scale * p_c_bar;
+                  }
+                else if (property_names[i] == "darcy coefficient")
+                  {
+                    const double K_D = this->get_melt_handler().limited_darcy_coefficient(melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q], p_c_scale > 0);
+                    computed_quantities[q][output_index] = K_D;
+                  }
+                else if (property_names[i] == "darcy coefficient no cutoff")
+                  {
+                    const double K_D_no_cut = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
+                    computed_quantities[q][output_index] = K_D_no_cut;
+                  }
+                else if (property_names[i] == "is melt cell")
+                  {
+                    computed_quantities[q][output_index] = this->get_melt_handler().is_melt_cell(in.current_cell)? 1.0 : 0.0;
+                  }
                 else
                   AssertThrow(false, ExcNotImplemented());
               }
@@ -155,10 +180,11 @@ namespace aspect
             {
               const std::string pattern_of_names
                 = "compaction viscosity|fluid viscosity|permeability|"
-                  "fluid density|fluid density gradient";
+                  "fluid density|fluid density gradient|p_c|is melt cell|"
+                  "darcy coefficient|darcy coefficient no cutoff";
 
               prm.declare_entry("List of properties",
-                                "compaction viscosity,permeability",
+                                "compaction viscosity,permeability,p_c",
                                 Patterns::MultipleSelection(pattern_of_names),
                                 "A comma separated list of melt properties that should be "
                                 "written whenever writing graphical output. "

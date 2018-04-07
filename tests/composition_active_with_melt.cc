@@ -75,7 +75,6 @@ namespace aspect
 
             for (unsigned int i=0; i<in.position.size(); ++i)
               {
-                double porosity = in.composition[i][0];
                 melt_out->compaction_viscosities[i] = 1.0;
                 melt_out->fluid_viscosities[i] = 1.0;
                 melt_out->permeabilities[i] = 0.0; //1e-30*porosity * porosity;

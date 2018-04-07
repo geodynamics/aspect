@@ -152,10 +152,6 @@ subsection Model settings
   set Include melt transport                  = true
 end
 
-subsection Melt settings
-  set Melt transport threshold                = 1e-4
-end
-
 subsection Postprocess
 
   set List of postprocessors = visualization,composition statistics,velocity statistics, shear bands growth rate

@@ -4,8 +4,10 @@
 # from the bottom boundary and melting adiabatically. This 
 # leads to dissipation heating due to the relative movement of 
 # melt and solid. As these terms scale with 1/porosity, this
-# can lead to instabilities. This should be fixed by using a
-# Melt transport threshold > 0, as done in this test. 
+# can lead to instabilities. However, this can be avoided by 
+# choosing a resolution that is high enough and choosing the 
+# Darcy coefficient variation threshold that is not too small
+# (here, the default value is sufficient). 
 
 # The test is based on the model of 1D upwelling melting in a
 # plume with melt-related heating in the Supplementary material 
@@ -195,7 +197,6 @@ subsection Model settings
 end
 
 subsection Melt settings
-  set Melt transport threshold                = 1e-3
   set Heat advection by melt                  = true
 end
 

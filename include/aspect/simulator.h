@@ -1672,7 +1672,7 @@ namespace aspect
 
 
       std_cxx11::shared_ptr<LinearAlgebra::PreconditionAMG>     Amg_preconditioner;
-      std_cxx11::shared_ptr<LinearAlgebra::PreconditionILU>     Mp_preconditioner;
+      std_cxx11::shared_ptr<LinearAlgebra::PreconditionBase>    Mp_preconditioner;
 
       bool                                                      rebuild_sparsity_and_matrices;
       bool                                                      rebuild_stokes_matrix;

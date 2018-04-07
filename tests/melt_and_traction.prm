@@ -60,10 +60,6 @@ end
 
 ##################### Settings for melt transport ########################
 
-subsection Melt settings
-  set Melt transport threshold                = 0.0
-end
-
 subsection Compositional fields
   set Number of fields = 2
   set Names of fields = porosity, peridotite

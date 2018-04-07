@@ -61,6 +61,7 @@ namespace aspect
 
         if (step == 0)
           history_data.resize(history_data.size()+1);
+
         return return_value;
       }
 

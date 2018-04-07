@@ -50,7 +50,7 @@ namespace aspect
                                "there is a compositional field called porosity."));
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-        if (solution[this->introspection().component_indices.compositional_fields[porosity_idx]] > this->get_melt_handler().melt_transport_threshold)
+        if (solution[this->introspection().component_indices.compositional_fields[porosity_idx]] > threshold_for_melt_presence)
           data[data_position] = 1.0;
         else
           data[data_position] =  0.0;
@@ -77,6 +77,49 @@ namespace aspect
         std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("melt_presence",1));
         return property_information;
       }
+
+      template <int dim>
+      void
+      MeltParticle<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Particles");
+          {
+            prm.enter_subsection("Melt particle");
+            {
+              prm.declare_entry ("Threshold for melt presence", "1e-3",
+                                 Patterns::Double (0,1),
+                                 "The minimum porosity that has to be present at the position of a particle "
+                                 "for it to be considered a melt particle (in the sense that the melt_presence "
+                                 "property is set to 1).");
+            }
+            prm.leave_subsection();
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
+      }
+
+
+      template <int dim>
+      void
+      MeltParticle<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Particles");
+          {
+            prm.enter_subsection("Melt particle");
+            {
+              threshold_for_melt_presence = prm.get_double ("Threshold for melt presence");
+            }
+            prm.leave_subsection();
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
+      }
     }
   }
 }
@@ -91,10 +134,10 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_PROPERTY(MeltParticle,
                                         "melt particle",
                                         "Implementation of a plugin in which the particle "
-                                        "property is defined as presence of melt above the "
-                                        "melt transport theshold. This property is set "
-                                        "to 0 if melt is not present and set to 1 if melt  "
-                                        "is present.")
+                                        "property is defined as presence of melt above a "
+                                        "threshold, which can be set as an input parameter. "
+                                        "This property is set to 0 if melt is not present and "
+                                        "set to 1 if melt is present.")
     }
   }
 }

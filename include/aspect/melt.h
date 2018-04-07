@@ -127,6 +127,28 @@ namespace aspect
           * permeability divided by fluid viscosity. Units: m^2/Pa/s.
           */
         virtual double reference_darcy_coefficient () const = 0;
+
+        /**
+         * Returns the cell-averaged and cut-off value of p_c_scale,
+         * the factor we use to rescale the compaction pressure and to
+         * decide if a cell is a melt cell.
+         * The last input argument @p consider_is_melt_cell determines if
+         * this computation takes into account if a cell is a "melt cell".
+         * Melt cells are cells where we solve the melt transport equations,
+         * as indicated by the entries stored in the is_melt_cell vector of
+         * the melt handler. In case @p consider_is_melt_cell is set to true,
+         * this function returns a value of zero if the cell is not a melt cell.
+         * If @p consider_is_melt_cell is set to false the computation
+         * disregards the information about which cells are melt cells,
+         * and computes p_c_scale from the cell-averaged Darcy coefficient
+         * for all cells. This is needed for example when we want to update
+         * the is_melt_cell vector and need to find out which cells should be
+         * marked as melt cells.
+         */
+        double p_c_scale (const MaterialModel::MaterialModelInputs<dim> &inputs,
+                          const MaterialModel::MaterialModelOutputs<dim> &outputs,
+                          const MeltHandler<dim> &handler,
+                          const bool consider_is_melt_cell) const;
     };
 
 
@@ -252,6 +274,68 @@ namespace aspect
   }
 
 
+  namespace Melt
+  {
+    template <int dim>
+    struct Parameters
+    {
+      /**
+       * Declare additional parameters that are needed in models with
+       * melt transport.
+       */
+      static void declare_parameters (ParameterHandler &prm);
+
+      /**
+       * Parse additional parameters that are needed in models with
+       * melt transport.
+       *
+       * This has to be called before edit_finite_element_variables,
+       * so that the finite elements that are used for the additional melt
+       * variables can be specified in the input file and are parsed before
+       * the introspection object is created.
+       */
+      void parse_parameters (ParameterHandler &prm);
+
+      /**
+       * The factor by how much the Darcy coefficient K_D in a cell can be smaller than
+       * the reference Darcy coefficient for this cell still to be considered a melt cell
+       * (for which the melt transport equations are solved). If the Darcy coefficient
+       * is smaller than the product of this value and the reference Dracy coefficient,
+       * the cell is not considered a melt cell and the Stokes system without melt
+       * transport is solved instead. In practice, this means that all terms in the
+       * assembly related to the migration of melt are set to zero, and the compaction
+       * pressure degrees of freedom are constrained to be zero.
+       */
+      double melt_scaling_factor_threshold;
+
+      /**
+       * Whether to use a porosity weighted average of the melt and solid velocity
+       * to advect heat in the temperature equation or not. If this is set to true,
+       * additional terms are assembled on the left-hand side of the temperature
+       * advection equation in models with melt migration.
+       * If this is set to false, only the solid velocity is used (as in models
+       * without melt migration).
+       */
+      bool heat_advection_by_melt;
+
+      /**
+       * Whether to use a discontinuous element for the compaction pressure or not.
+       */
+      bool use_discontinuous_p_c;
+
+      /**
+       * Whether to cell-wise average the material properties that are used to
+       * compute the melt velocity or not. Note that the melt velocity is computed
+       * as the sum of the solid velocity and the phase separation flux (difference
+       * between melt and solid velocity). If this parameter is set to true,
+       * material properties in the computation of the phase separation flux will
+       * be averaged cell-wise.
+       */
+      bool average_melt_velocity;
+    };
+  }
+
+
   /**
    * Class that contains all runtime parameters and other helper functions
    * related to melt transport. A global instance can be retrieved with
@@ -263,23 +347,6 @@ namespace aspect
   {
     public:
       MeltHandler(ParameterHandler &prm);
-
-      /**
-       * Declare additional parameters that are needed in models with
-       * melt transport (including the fluid pressure boundary conditions).
-       */
-      static void declare_parameters (ParameterHandler &prm);
-
-      /**
-       * Parse additional parameters that are needed in models with
-       * melt transport (including the fluid pressure boundary conditions).
-       *
-       * This has to be called before edit_finite_element_variables,
-       * so that the finite elements that are used for the additional melt
-       * variables can be specified in the input file and are parsed before
-       * the introspection object is created.
-       */
-      void parse_parameters (ParameterHandler &prm);
 
       /**
        * Create an additional material model output object that contains
@@ -303,6 +370,15 @@ namespace aspect
        * matrices, and right hand side vectors.
        */
       void set_assemblers (Assemblers::Manager<dim> &assemblers) const;
+
+
+      /**
+       * Initialize function. This is mainly to check that the melt transport
+       * parameters chosen in the input file are consistent with the rest of
+       * the options. We can not do this in the parse_parameters function,
+       * as we do not have simulator access at that point.
+       */
+      void initialize() const;
 
       /**
        * Setup SimulatorAccess for the plugins related to melt transport.
@@ -336,32 +412,76 @@ namespace aspect
                                                        internal::Assembly::CopyData::StokesSystem<dim>      &data) const;
 
       /**
-       * The porosity limit for melt migration. For smaller porosities, the equations
-       * reduce to the Stokes equations and neglect melt transport. In practice, this
-       * means that all terms in the assembly related to the migration of melt are set
-       * to zero for porosities smaller than this threshold.
-       * This does not include the compaction term $p_c/\xi$, which is necessary for the
-       * solvability of the linear system, but does not influence the solution variables
-       * of the Stokes problem (in the absence of porosity).
+       * Constrain the compaction pressure to zero in all cells that are not
+       * "melt cells" (cells where the porosity is above a given threshold).
+       * This reverts the system of equations we solve back to the Stokes
+       * system without melt transport for these cells.
        */
-      double melt_transport_threshold;
+      void add_current_constraints(ConstraintMatrix &constraints);
 
       /**
-       * Whether to use a porosity weighted average of the melt and solid velocity
-       * to advect heat in the temperature equation or not. If this is set to true,
-       * additional terms are assembled on the left-hand side of the temperature
-       * advection equation in models with melt migration.
-       * If this is set to false, only the solid velocity is used (as in models
-       * without melt migration).
+       * Copy the current constraints and store them in a private member
+       * variable so that we can use them later. This is necessary because
+       * we want to add the melt constraints, which depend on the solution
+       * of the porosity field, later on, after we have computed this solution.
+       * In this way, we only need to update the constraints matrix instead
+       * of computing all constraints again.
        */
-      bool heat_advection_by_melt;
+      void save_constraints(ConstraintMatrix &constraints);
 
+      /**
+        * Returns the entry of the private variable is_melt_cell_vector
+        * for the cell given in the input, describing if we have melt
+        * transport in this cell or not.
+        */
+      bool is_melt_cell(const typename DoFHandler<dim>::active_cell_iterator &cell) const;
+
+      /**
+        * Given the Darcy coefficient @p K_D as computed by the material model, limit the
+        * coefficient to a minimum value (computed as the K_D variation threshold given in
+        * the input file times the reference Darcy coefficient) in melt cells and return
+        * this value. If @p is_melt_cell is false, return zero.
+        */
+      double limited_darcy_coefficient(const double K_D,
+                                       const bool is_melt_cell) const;
+
+      /**
+       * Return a pointer to the boundary fluid pressure.
+       */
+      const BoundaryFluidPressure::Interface<dim> &
+      get_boundary_fluid_pressure () const;
+
+      /**
+       * The object that stores the run-time parameters that control the how the
+       * melt transport equations are solved.
+       */
+      Melt::Parameters<dim> melt_parameters;
+
+    private:
       /**
        * Store a pointer to the fluid pressure boundary plugin, so that the
        * initialization can be done together with the other objects related to melt
        * transport.
        */
-      std_cxx11::unique_ptr<BoundaryFluidPressure::Interface<dim> > boundary_fluid_pressure;
+      const std_cxx11::unique_ptr<aspect::BoundaryFluidPressure::Interface<dim> > boundary_fluid_pressure;
+
+      /**
+       * is_melt_cell_vector[cell->active_cell_index()] says whether we want to
+       * solve the melt transport equations (as opposed to the Stokes equations without
+       * melt) in this cell or not. The value is set to true or false based on the
+       * porosity in the cell (only cells where the porosity is above a threshold are
+       * considered melt cells).
+       */
+      std::vector<bool> is_melt_cell_vector;
+
+      /**
+       * Constraint object. We need to save the current constraints at the
+       * start of every time step so that we can add the melt constraints,
+       * which depend on the solution of the porosity field, later after
+       * we have computed this solution.
+       */
+      ConstraintMatrix current_constraints;
+
   };
 
 }

@@ -763,7 +763,7 @@ namespace aspect
 
         // create a cheap preconditioner that consists of only a single V-cycle
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
-              LinearAlgebra::PreconditionILU>
+              LinearAlgebra::PreconditionBase>
               preconditioner_cheap (system_matrix, system_preconditioner_matrix,
                                     *Mp_preconditioner, *Amg_preconditioner,
                                     false,
@@ -772,7 +772,7 @@ namespace aspect
 
         // create an expensive preconditioner that solves for the A block with CG
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
-              LinearAlgebra::PreconditionILU>
+              LinearAlgebra::PreconditionBase>
               preconditioner_expensive (system_matrix, system_preconditioner_matrix,
                                         *Mp_preconditioner, *Amg_preconditioner,
                                         true,
@@ -806,10 +806,11 @@ namespace aspect
         // it in n_expensive_stokes_solver_steps steps or less.
         catch (SolverControl::NoConvergence)
           {
+            const unsigned int number_of_temporary_vectors = (parameters.include_melt_transport ? 100 : 50);
             SolverFGMRES<LinearAlgebra::BlockVector>
             solver(solver_control_expensive, mem,
                    SolverFGMRES<LinearAlgebra::BlockVector>::
-                   AdditionalData(50, true));
+                   AdditionalData(number_of_temporary_vectors, true));
 
             try
               {

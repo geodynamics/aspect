@@ -119,6 +119,12 @@ subsection Material model
 end
 
 
+subsection Melt settings
+  set Use discontinuous compaction pressure = false
+  set Average melt velocity                 = false
+end
+
+
 subsection Mesh refinement
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 0.0

@@ -23,6 +23,7 @@
 #include <aspect/global.h>
 #include <aspect/free_surface.h>
 #include <aspect/newton.h>
+#include <aspect/melt.h>
 
 #include <deal.II/numerics/vector_tools.h>
 
@@ -241,6 +242,17 @@ namespace aspect
         ||
         (boundary_velocity_manager.get_active_boundary_velocity_conditions().size() > 0))
       rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+
+    // set constraints for p_c if porosity is below a threshold
+    if (nonlinear_iteration == 0 && parameters.include_melt_transport)
+      {
+        melt_handler->add_current_constraints (current_constraints);
+
+        setup_system_matrix (introspection.index_sets.system_partitioning);
+        setup_system_preconditioner (introspection.index_sets.system_partitioning);
+
+        rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+      }
 
     assemble_stokes_system ();
     build_stokes_preconditioner();

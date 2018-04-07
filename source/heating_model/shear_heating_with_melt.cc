@@ -49,8 +49,9 @@ namespace aspect
       // get the melt velocity from the solution vector
       std::vector<Tensor<1,dim> > melt_velocity (material_model_inputs.position.size());
 
-      if (material_model_inputs.current_cell.state() == IteratorState::valid
-          && this->get_timestep_number() > 0)
+      bool is_melt_cell = false;
+
+      if (material_model_inputs.current_cell.state() == IteratorState::valid)
         {
           // we have to create a long vector, because that is the only way to extract the velocities
           // from the solution vector
@@ -69,6 +70,8 @@ namespace aspect
           for (unsigned int i=0; i<material_model_inputs.position.size(); ++i)
             for (unsigned int d=0; d<dim; ++d)
               melt_velocity[i][d] = melt_velocity_vector[d][i];
+
+          is_melt_cell = this->get_melt_handler().is_melt_cell(material_model_inputs.current_cell);
         }
 
       const MaterialModel::MeltOutputs<dim> *melt_outputs = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
@@ -78,7 +81,7 @@ namespace aspect
         {
           const double porosity = material_model_inputs.composition[q][this->introspection().compositional_index_for_name("porosity")];
 
-          if (porosity >= this->get_melt_handler().melt_transport_threshold)
+          if (is_melt_cell)
             heating_model_outputs.heating_source_terms[q] = melt_outputs->compaction_viscosities[q]
                                                             * pow(trace(material_model_inputs.strain_rate[q]),2)
                                                             +

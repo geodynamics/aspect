@@ -1,7 +1,7 @@
 # Listing of Parameters
 # ---------------------
 # Uses the solitary wave benchmark to demonstrate the particle property melt particle, 
-# which records the presence of melt over the melt thransport threshold
+# which records the presence of melt over the melt transport threshold
 
 set Additional shared libraries            = ./libsolitary_wave.so
 
@@ -145,10 +145,6 @@ subsection Model settings
   set Zero velocity boundary indicators       = 
 
   set Include melt transport                  = true
-end
-
-subsection Melt settings
-  set Melt transport threshold                = 5e-3
 end
 
 

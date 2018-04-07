@@ -22,6 +22,7 @@
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
 #include <aspect/free_surface.h>
+#include <aspect/melt.h>
 
 #include <deal.II/base/mpi.h>
 #include <deal.II/grid/grid_tools.h>
@@ -327,6 +328,14 @@ namespace aspect
                                  e.what()
                                  +
                                  ">"));
+      }
+
+    // We have to compute the constraints here because the vector that tells
+    // us if a cell is a melt cell is not saved between restarts.
+    if (parameters.include_melt_transport)
+      {
+        compute_current_constraints ();
+        melt_handler->add_current_constraints (current_constraints);
       }
   }
 
