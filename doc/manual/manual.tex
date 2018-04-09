@@ -2450,6 +2450,7 @@ setup problems, and performance penalties.
 \end{enumerate}
 
 \subsection{Docker Container}
+\label{subsec:docker_container}
 
 \subsubsection{Installing Docker and downloading the \aspect{} image}
 
@@ -11836,7 +11837,24 @@ requests by others, one of the trusted maintainers has to specifically request a
 test run, and this will usually happen
 as soon as the patch developer indicates the patch is ready for review.}
 Upon completion of the test suite, both the general summary (pass/fail) and a
-full verbose log will available from the GitHub page.
+full verbose log will available from the GitHub page. Because the official test
+setup is set up in a Docker container, it is simple to replicate the results on
+a local machine. To this end, follow the instructions in
+Section~\ref{subsec:docker_container} to set up Docker, and then run the
+following command in any terminal (replace \texttt{ASPECT\_SOURCE\_DIR} with
+the path to your \aspect{} directory):
+\begin{lstlisting}[frame=single,language=ksh] 
+    docker run -v ASPECT_SOURCE_DIR:/home/dealii/aspect \
+    --name=aspect-tester --rm -it \
+    dealii/dealii:v8.5.0-gcc-mpi-fulldepscandi-debugrelease \
+    bash /home/dealii/aspect/cmake/compile_and_update_tests.sh
+\end{lstlisting}
+
+This command executes the shell script 
+\texttt{cmake/compile\_and\_update\_tests.sh} \textit{inside} the docker
+container that contains the official \aspect{} test system. Note that by
+mounting your \aspect{} folder into the container you are actually updating the
+reference test results on the host system (i.e. your computer).
 
 
 \subsubsection{Writing tests}
