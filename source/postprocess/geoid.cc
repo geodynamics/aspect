@@ -161,21 +161,18 @@ namespace aspect
                                                 const double &inner_radius) const
     {
       // Get a pointer to the dynamic topography postprocessor.
-      Postprocess::DynamicTopography<dim> *dynamic_topography =
-        this->template find_postprocessor<Postprocess::DynamicTopography<dim> >();
-      AssertThrow(dynamic_topography != NULL,
-                  ExcMessage("Could not find the DynamicTopography postprocessor") );
+      const Postprocess::DynamicTopography<dim> &dynamic_topography =
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim> >();
 
       // Get the already-computed dynamic topography solution.
-      const LinearAlgebra::BlockVector topo_vector = dynamic_topography->topography_vector();
+      const LinearAlgebra::BlockVector topo_vector = dynamic_topography.topography_vector();
 
       // Get a pointer to the boundary densities postprocessor.
-      Postprocess::BoundaryDensities<dim> *boundary_densities =
-        this->template find_postprocessor<Postprocess::BoundaryDensities<dim> >();
-      AssertThrow(boundary_densities != NULL,
-                  ExcMessage("Could not find the BoundaryDensities postprocessor") );
-      const double top_layer_average_density = boundary_densities->density_at_top();
-      const double bottom_layer_average_density = boundary_densities->density_at_bottom();
+      const Postprocess::BoundaryDensities<dim> &boundary_densities =
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryDensities<dim> >();
+
+      const double top_layer_average_density = boundary_densities.density_at_top();
+      const double bottom_layer_average_density = boundary_densities.density_at_bottom();
 
 
       const unsigned int quadrature_degree = this->introspection().polynomial_degree.temperature;

@@ -566,12 +566,12 @@ namespace aspect
     double
     HollowSpherePostprocessor<dim>::compute_dynamic_topography_error() const
     {
-      Postprocess::DynamicTopography<dim> *dynamic_topography =
-        this->template find_postprocessor<Postprocess::DynamicTopography<dim> >();
+      const Postprocess::DynamicTopography<dim> &dynamic_topography =
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim> >();
 
-      const HollowSphereMaterial<dim> *material_model
-        = dynamic_cast<const HollowSphereMaterial<dim> *>(&this->get_material_model());
-      const double beta = material_model->get_mmm();
+      const HollowSphereMaterial<dim> &material_model
+        = Plugins::get_plugin_as_type<const HollowSphereMaterial<dim> >(this->get_material_model());
+      const double beta = material_model.get_mmm();
 
       const QGauss<dim-1> quadrature_formula (this->introspection().polynomial_degree.velocities+2);
       FEFaceValues<dim> fe_face_values(this->get_mapping(),
@@ -579,7 +579,7 @@ namespace aspect
                                        quadrature_formula,
                                        update_values | update_gradients |
                                        update_q_points | update_JxW_values);
-      LinearAlgebra::BlockVector topo_vector = dynamic_topography->topography_vector();
+      LinearAlgebra::BlockVector topo_vector = dynamic_topography.topography_vector();
       std::vector<double> topo_values(quadrature_formula.size());
 
       double l2_error = 0.;

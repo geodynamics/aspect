@@ -215,13 +215,11 @@ namespace aspect
     // need to write into it and we can not
     // write into vectors with ghost elements
 
-    const Postprocess::Particles<dim> *particle_postprocessor = postprocess_manager.template find_postprocessor<Postprocess::Particles<dim> >();
+    const Postprocess::Particles<dim> &particle_postprocessor =
+      postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim> >();
 
-    AssertThrow(particle_postprocessor != 0,
-                ExcMessage("Did not find the <particles> postprocessor when trying to interpolate particle properties."));
-
-    const Particle::Interpolator::Interface<dim> *particle_interpolator = &particle_postprocessor->get_particle_world().get_interpolator();
-    const Particle::Property::Manager<dim> *particle_property_manager = &particle_postprocessor->get_particle_world().get_property_manager();
+    const Particle::Interpolator::Interface<dim> *particle_interpolator = &particle_postprocessor.get_particle_world().get_interpolator();
+    const Particle::Property::Manager<dim> *particle_property_manager = &particle_postprocessor.get_particle_world().get_property_manager();
 
     unsigned int particle_property;
 
@@ -272,7 +270,7 @@ namespace aspect
           property_mask.set(particle_property,true);
 
           const std::vector<std::vector<double> > particle_properties =
-            particle_interpolator->properties_at_points(particle_postprocessor->get_particle_world().get_particle_handler(),
+            particle_interpolator->properties_at_points(particle_postprocessor.get_particle_world().get_particle_handler(),
                                                         quadrature_points,
                                                         property_mask,
                                                         cell);

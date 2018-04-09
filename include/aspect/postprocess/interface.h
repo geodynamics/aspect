@@ -256,7 +256,7 @@ namespace aspect
          * throw an exception.
          */
         template <typename PostprocessorType>
-        PostprocessorType &
+        const PostprocessorType &
         get_matching_postprocessor () const;
 
         /**
@@ -423,11 +423,11 @@ namespace aspect
     template <int dim>
     template <typename PostprocessorType>
     inline
-    PostprocessorType &
+    const PostprocessorType &
     Manager<dim>::get_matching_postprocessor () const
     {
       AssertThrow(has_matching_postprocessor<PostprocessorType> (),
-                  ExcMessage("You asked Postprocess:Manager::get_postprocessor_of_type() for a "
+                  ExcMessage("You asked Postprocess:Manager::get_matching_postprocessor() for a "
                              "postprocessor of type <" + boost::core::demangle(typeid(PostprocessorType).name()) + "> "
                              "that could not be found in the current model. Activate this "
                              "postprocessor in the input file."));

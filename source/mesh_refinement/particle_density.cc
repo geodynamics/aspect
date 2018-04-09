@@ -32,14 +32,15 @@ namespace aspect
     void
     ParticleDensity<dim>::execute(Vector<float> &indicators) const
     {
-      const Postprocess::Particles<dim> *particle_postprocessor = this->template find_postprocessor<Postprocess::Particles<dim> >();
-
-      AssertThrow(particle_postprocessor != 0,
+      AssertThrow(this->get_postprocess_manager().template has_matching_postprocessor<Postprocess::Particles<dim> >(),
                   ExcMessage("The mesh refinement plugin `particle density' requires the "
                              "postprocessor plugin `particles' to be selected. Please activate the "
                              "particles or deactivate this mesh refinement plugin."));
 
-      const Particle::ParticleHandler<dim> &particle_handler = particle_postprocessor->get_particle_world().get_particle_handler();
+      const Postprocess::Particles<dim> &particle_postprocessor =
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >();
+
+      const Particle::ParticleHandler<dim> &particle_handler = particle_postprocessor.get_particle_world().get_particle_handler();
 
       unsigned int i = 0;
       typename DoFHandler<dim>::active_cell_iterator

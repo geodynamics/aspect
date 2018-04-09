@@ -67,6 +67,14 @@ namespace aspect
           std::pair<std::string, Vector<float> *>
           execute () const;
 
+          /**
+           * Let the postprocessor manager know about the other postprocessors
+           * which this one depends on. Specifically, the particles
+           * postprocessor.
+           */
+          virtual
+          std::list<std::string>
+          required_other_postprocessors() const;
       };
     }
   }

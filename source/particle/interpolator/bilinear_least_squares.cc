@@ -214,8 +214,9 @@ namespace aspect
                     global_maximum_particle_properties = Utilities::string_to_double(Utilities::split_string_list(prm.get("Global particle property maximum")));
                     global_minimum_particle_properties = Utilities::string_to_double(Utilities::split_string_list(prm.get("Global particle property minimum")));
 
-                    const Postprocess::Particles<dim> *particle_postprocessor = this->template find_postprocessor<Postprocess::Particles<dim> >();
-                    const unsigned int n_property_components = particle_postprocessor->get_particle_world().get_property_manager().get_n_property_components();
+                    const Postprocess::Particles<dim> &particle_postprocessor =
+                      this->get_postprocess_manager().template get_matching_postprocessor<const Postprocess::Particles<dim> >();
+                    const unsigned int n_property_components = particle_postprocessor.get_particle_world().get_property_manager().get_n_property_components();
 
                     AssertThrow(global_minimum_particle_properties.size() == n_property_components,
                                 ExcMessage("Make sure that the size of list 'Global minimum particle property' "

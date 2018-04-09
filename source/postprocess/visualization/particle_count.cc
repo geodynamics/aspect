@@ -36,15 +36,11 @@ namespace aspect
       std::pair<std::string, Vector<float> *>
       ParticleCount<dim>::execute() const
       {
-        const Postprocess::Particles<dim> *particle_postprocessor = this->template find_postprocessor<Postprocess::Particles<dim> >();
-
-        AssertThrow(particle_postprocessor != 0,
-                    ExcMessage("The <particles> postprocessor was not found in the list of "
-                               "active postprocessors. You need to select this postprocessor to "
-                               "be able to select the <particle count> visualization plugin."));
+        const Postprocess::Particles<dim> &particle_postprocessor =
+          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >();
 
         const Particle::ParticleHandler<dim> &particle_handler =
-          particle_postprocessor->get_particle_world().get_particle_handler();
+          particle_postprocessor.get_particle_world().get_particle_handler();
 
         std::pair<std::string, Vector<float> *>
         return_value ("particles_per_cell",
@@ -65,6 +61,14 @@ namespace aspect
         return return_value;
       }
 
+
+
+      template <int dim>
+      std::list<std::string>
+      ParticleCount<dim>::required_other_postprocessors() const
+      {
+        return std::list<std::string> (1, "particles");
+      }
     }
   }
 }
