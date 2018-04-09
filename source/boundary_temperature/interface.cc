@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,9 +21,6 @@
 
 #include <aspect/global.h>
 #include <aspect/boundary_temperature/interface.h>
-#include <aspect/simulator_access.h>
-
-#include <aspect/utilities.h>
 
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
@@ -41,40 +38,32 @@ namespace aspect
     {}
 
 
+
     template <int dim>
     void
     Interface<dim>::update ()
     {}
+
+
 
     template <int dim>
     void
     Interface<dim>::initialize ()
     {}
 
-    template <int dim>
-    double
-    Interface<dim>::boundary_temperature (const types::boundary_id /*boundary_indicator*/,
-                                          const Point<dim>        &/*position*/) const
-    {
-      AssertThrow(false,
-                  ExcMessage("The boundary temperature plugin has to implement a function called `temperature' "
-                             "with three arguments or a function `boundary_temperature' with two arguments. "
-                             "The function with three arguments is deprecated and will "
-                             "be removed in a later version of ASPECT."));
-      return numbers::signaling_nan<double>();
-    }
 
 
     template <int dim>
     void
     Interface<dim>::
-    declare_parameters (dealii::ParameterHandler &)
+    declare_parameters (ParameterHandler &)
     {}
+
 
 
     template <int dim>
     void
-    Interface<dim>::parse_parameters (dealii::ParameterHandler &)
+    Interface<dim>::parse_parameters (ParameterHandler &)
     {}
 
 
@@ -96,7 +85,101 @@ namespace aspect
         {
           boundary_temperature_objects[i]->update();
         }
-      return;
+    }
+
+
+
+    template <int dim>
+    const std::set<types::boundary_id> &
+    Manager<dim>::get_fixed_temperature_boundary_indicators() const
+    {
+      return fixed_temperature_boundary_indicators;
+    }
+
+
+
+    template <int dim>
+    const std::vector<std::string> &
+    Manager<dim>::get_active_boundary_temperature_names () const
+    {
+      return boundary_temperature_names;
+    }
+
+
+
+    template <int dim>
+    const std::vector<std_cxx11::shared_ptr<Interface<dim> > > &
+    Manager<dim>::get_active_boundary_temperature_conditions () const
+    {
+      return boundary_temperature_objects;
+    }
+
+
+
+    template <int dim>
+    double
+    Manager<dim>::minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
+    {
+      const std::set<types::boundary_id> &boundary_ids = fixed_boundary_ids.empty()
+                                                         ?
+                                                         fixed_temperature_boundary_indicators
+                                                         :
+                                                         fixed_boundary_ids;
+
+      double temperature = std::numeric_limits<double>::max();
+      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+           boundary = boundary_temperature_objects.begin();
+           boundary != boundary_temperature_objects.end(); ++boundary)
+        temperature = std::min(temperature,
+                               (*boundary)->minimal_temperature(boundary_ids));
+
+      return temperature;
+    }
+
+
+
+    template <int dim>
+    double
+    Manager<dim>::maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
+    {
+      const std::set<types::boundary_id> &boundary_ids = fixed_boundary_ids.empty()
+                                                         ?
+                                                         fixed_temperature_boundary_indicators
+                                                         :
+                                                         fixed_boundary_ids;
+
+      double temperature = 0.0;
+      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+           boundary = boundary_temperature_objects.begin();
+           boundary != boundary_temperature_objects.end(); ++boundary)
+        temperature = std::max(temperature,
+                               (*boundary)->maximal_temperature(boundary_ids));
+
+      return temperature;
+    }
+
+
+
+    template <int dim>
+    double
+    Manager<dim>::boundary_temperature (const types::boundary_id boundary_indicator,
+                                        const Point<dim> &position) const
+    {
+      double temperature = 0.0;
+
+      std::pair<std::multimap<types::boundary_id,unsigned int>::const_iterator,
+          std::multimap<types::boundary_id,unsigned int>::const_iterator> relevant_plugins =
+            boundary_temperature_map.equal_range(boundary_indicator);
+
+      for (; relevant_plugins.first != relevant_plugins.second; ++relevant_plugins.first)
+        {
+          const unsigned int plugin_index = relevant_plugins.first->second;
+          temperature = boundary_temperature_operators[plugin_index](temperature,
+                                                                     boundary_temperature_objects[plugin_index]->boundary_temperature(boundary_indicator,
+                                                                         position));
+        }
+
+      return temperature;
     }
 
 
@@ -109,6 +192,7 @@ namespace aspect
       aspect::internal::Plugins::PluginList<Interface<2> >,
       aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
     }
+
 
 
     template <int dim>
@@ -125,129 +209,46 @@ namespace aspect
     }
 
 
-    template <int dim>
-    void
-    Manager<dim>::parse_parameters (ParameterHandler &prm)
-    {
-      // find out which plugins are requested and the various other
-      // parameters we declare here
-      prm.enter_subsection ("Boundary temperature model");
-      {
-        model_names
-          = Utilities::split_string_list(prm.get("List of model names"));
-
-        AssertThrow(Utilities::has_unique_entries(model_names),
-                    ExcMessage("The list of strings for the parameter "
-                               "'Boundary temperature model/List of model names' contains entries more than once. "
-                               "This is not allowed. Please check your parameter file."));
-
-        const std::string model_name = prm.get ("Model name");
-
-        AssertThrow (model_name == "unspecified" || model_names.size() == 0,
-                     ExcMessage ("The parameter 'Model name' is only used for reasons"
-                                 "of backwards compatibility and can not be used together with "
-                                 "the new functionality 'List of model names'. Please add your "
-                                 "boundary temperature model to the list instead."));
-
-        if (!(model_name == "unspecified"))
-          model_names.push_back(model_name);
-
-        // create operator list
-        std::vector<std::string> model_operator_names =
-          Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
-                                                  model_names.size(),
-                                                  "List of model operators");
-        model_operators = Utilities::create_model_operator_list(model_operator_names);
-      }
-      prm.leave_subsection ();
-
-      // go through the list, create objects and let them parse
-      // their own parameters
-      for (unsigned int i=0; i<model_names.size(); ++i)
-        {
-          // create boundary temperature objects
-          boundary_temperature_objects.push_back (std_cxx11::shared_ptr<Interface<dim> >
-                                                  (std_cxx11::get<dim>(registered_plugins)
-                                                   .create_plugin (model_names[i],
-                                                                   "Boundary temperature::Model names")));
-
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_temperature_objects.back().get()))
-            sim->initialize_simulator (this->get_simulator());
-
-          boundary_temperature_objects.back()->parse_parameters (prm);
-          boundary_temperature_objects.back()->initialize ();
-        }
-    }
-
-
-
-    template <int dim>
-    double
-    Manager<dim>::boundary_temperature (const types::boundary_id boundary_indicator,
-                                        const Point<dim> &position) const
-    {
-      double temperature = 0.0;
-
-      for (unsigned int i=0; i<boundary_temperature_objects.size(); ++i)
-        temperature = model_operators[i](temperature,
-                                         boundary_temperature_objects[i]->boundary_temperature(boundary_indicator,
-                                             position));
-
-      return temperature;
-    }
-
-
-
-    template <int dim>
-    double
-    Manager<dim>::minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
-    {
-      double temperature = std::numeric_limits<double>::max();
-
-      for (unsigned int i=0; i<boundary_temperature_objects.size(); ++i)
-        temperature = std::min(temperature,
-                               boundary_temperature_objects[i]->minimal_temperature(fixed_boundary_ids));
-
-      return temperature;
-    }
-
-
-
-    template <int dim>
-    double
-    Manager<dim>::maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
-    {
-      double temperature = 0.0;
-
-      for (unsigned int i=0; i<boundary_temperature_objects.size(); ++i)
-        temperature = std::max(temperature,
-                               boundary_temperature_objects[i]->maximal_temperature(fixed_boundary_ids));
-
-      return temperature;
-    }
-
-
-
-    template <int dim>
-    const std::vector<std::string> &
-    Manager<dim>::get_active_boundary_temperature_names () const
-    {
-      return model_names;
-    }
-
-
-    template <int dim>
-    const std::vector<std_cxx11::shared_ptr<Interface<dim> > > &
-    Manager<dim>::get_active_boundary_temperature_conditions () const
-    {
-      return boundary_temperature_objects;
-    }
-
 
     template <int dim>
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
+      prm.enter_subsection ("Model settings");
+      {
+        prm.declare_entry ("Fixed temperature boundary indicators", "",
+                           Patterns::List (Patterns::Anything()),
+                           "A comma separated list of names denoting those boundaries "
+                           "on which the temperature is fixed and described by the "
+                           "boundary temperature objects selected in the "
+                           "<Boundary temperature model/List of model names> parameter "
+                           "of this input file. All boundary indicators used by the geometry "
+                           "but not explicitly listed here will end up with no-flux "
+                           "(insulating) boundary conditions."
+                           "\n\n"
+                           "The names of the boundaries listed here can either by "
+                           "numbers (in which case they correspond to the numerical "
+                           "boundary indicators assigned by the geometry object), or they "
+                           "can correspond to any of the symbolic names the geometry object "
+                           "may have provided for each part of the boundary. You may want "
+                           "to compare this with the documentation of the geometry model you "
+                           "use in your model."
+                           "\n\n"
+                           "Each entry in this list has to be either a single boundary "
+                           "identifier as described above, or a pattern of the type "
+                           "'boundary identifier : plugin name', where plugin name is "
+                           "one of the names given in the "
+                           "<Boundary temperature model/List of model names> parameter. "
+                           "If only a boundary identifier is given, the boundary temperature "
+                           "of all active boundary temperature plugins will be combined to "
+                           "compute the boundary temperature. If only one plugin is given, "
+                           "only this plugin is used. The same boundary identifier can "
+                           "appear multiple times with different plugin names, in which "
+                           "case all given plugins will be combined to compute the boundary "
+                           "temperature.");
+      }
+      prm.leave_subsection();
+
       // declare the entry in the parameter file
       prm.enter_subsection ("Boundary temperature model");
       {
@@ -258,10 +259,12 @@ namespace aspect
                           "",
                           Patterns::MultipleSelection(pattern_of_names),
                           "A comma-separated list of boundary temperature models that "
-                          "will be used to initialize the temperature. "
+                          "will be used to set the boundary temperature. "
                           "These plugins are loaded in the order given, and modify the "
-                          "existing temperature field via the operators listed "
-                          "in 'List of model operators'.\n\n"
+                          "boundary temperature via the operators listed "
+                          "in 'List of model operators'. Which boundary model "
+                          "is used for which boundary is controlled by the "
+                          "'Model settings/Fixed temperature boundary indicators' parameter.\n\n"
                           "The following boundary temperature models are available:\n\n"
                           +
                           std_cxx11::get<dim>(registered_plugins).get_description_string());
@@ -272,21 +275,142 @@ namespace aspect
                           "will be used to append the listed temperature models onto "
                           "the previous models. If only one operator is given, "
                           "the same operator is applied to all models.");
-
-        prm.declare_entry ("Model name", "unspecified",
-                           Patterns::Selection (pattern_of_names+"|unspecified"),
-                           "Select one of the following models:\n\n"
-                           +
-                           std_cxx11::get<dim>(registered_plugins).get_description_string()
-                           + "\n\n" +
-                           "\\textbf{Warning}: This parameter provides an old and "
-                           "deprecated way of specifying "
-                           "boundary temperature models and shouldn't be used. "
-                           "Please use 'List of model names' instead.");
       }
       prm.leave_subsection ();
 
       std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+    }
+
+
+
+    template <int dim>
+    void
+    Manager<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      // find out which plugins are requested and the various other
+      // parameters we declare here
+      prm.enter_subsection ("Boundary temperature model");
+      {
+        boundary_temperature_names
+          = Utilities::split_string_list(prm.get("List of model names"));
+
+        AssertThrow(Utilities::has_unique_entries(boundary_temperature_names),
+                    ExcMessage("The list of strings for the parameter "
+                               "'Boundary temperature model/List of model names' contains entries more than once. "
+                               "This is not allowed. Please check your parameter file."));
+
+        // create operator list
+        boundary_temperature_operators = Utilities::create_model_operator_list(
+                                           Utilities::possibly_extend_from_1_to_N (
+                                             Utilities::split_string_list(prm.get("List of model operators")),
+                                             boundary_temperature_names.size(),
+                                             "List of model operators"),
+                                           "Boundary temperature model/List of model operators");
+      }
+      prm.leave_subsection ();
+
+      // Finally, figure out which model is used for which boundary
+      prm.enter_subsection("Model settings");
+      {
+        const std::vector<std::string> x_fixed_temperature_boundary_indicators
+          = Utilities::split_string_list (prm.get ("Fixed temperature boundary indicators"));
+
+        for (unsigned int i = 0; i < x_fixed_temperature_boundary_indicators.size(); ++i)
+          {
+            // each entry has the format (white space is optional):
+            // <id> : <value (might have spaces)>
+            //
+            // first tease apart the two halves
+            const std::vector<std::string> split_parts = Utilities::split_string_list (x_fixed_temperature_boundary_indicators[i], ':');
+
+            // try to translate the key into a boundary_id
+            types::boundary_id boundary_id;
+            try
+              {
+                boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id(split_parts[0]);
+                fixed_temperature_boundary_indicators.insert(boundary_id);
+              }
+            catch (const std::string &error)
+              {
+                AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Prescribed "
+                                                "temperature indicators>, there was an error. Specifically, "
+                                                "the conversion function complained as follows: "
+                                                + error));
+              }
+
+            // If only a boundary_id is given, use all models for this boundary
+            if (split_parts.size() == 1)
+              {
+                AssertThrow(boundary_temperature_map.find(boundary_id) == boundary_temperature_map.end(),
+                            ExcMessage("You can not specify a single boundary indicator in the "
+                                       "<Model settings/Prescribed temperature indicators> parameter "
+                                       "if you already specified something for the same boundary. "
+                                       "For each boundary, either use all "
+                                       "plugins by only specifying the boundary indicator, or select one or "
+                                       "several plugins by name."));
+
+                for (unsigned int j = 0; j < boundary_temperature_names.size(); ++j)
+                  boundary_temperature_map.insert(std::make_pair(boundary_id,j));
+              }
+            // Add the selected plugin otherwise.
+            else if (split_parts.size() == 2)
+              {
+                // Make sure the two parts are something like "boundary_id : plugin_name"
+                // We checked the first part above already, now check the second.
+                std::vector<std::string>::iterator plugin_name = std::find(boundary_temperature_names.begin(),
+                                                                           boundary_temperature_names.end(),
+                                                                           split_parts[1]);
+
+                AssertThrow(plugin_name != boundary_temperature_names.end(),
+                            ExcMessage("The plugin name " + split_parts[1] + " in the parameter "
+                                       "<Model settings/Fixed temperature boundary indicators> has to be one of "
+                                       "the selected plugin names in the parameter "
+                                       "<Boundary temperature model/List of model names>. This seems to be not the "
+                                       "case. Please check your input file."));
+
+                const unsigned int plugin_position = std::distance(boundary_temperature_names.begin(),
+                                                                   plugin_name);
+
+                // Make sure this plugin was not already added for this boundary
+                {
+                  std::pair<std::multimap<types::boundary_id,unsigned int>::const_iterator,
+                      std::multimap<types::boundary_id,unsigned int>::const_iterator> relevant_plugins =
+                        boundary_temperature_map.equal_range(boundary_id);
+
+                  for (; relevant_plugins.first != relevant_plugins.second; ++relevant_plugins.first)
+                    {
+                      const unsigned int existing_plugin_position = relevant_plugins.first->second;
+                      AssertThrow(plugin_position != existing_plugin_position,
+                                  ExcMessage("You specified the same plugin multiple times for "
+                                             "the same boundary in the <Model settings/Fixed "
+                                             "temperature boundary indicators>. This is not supported."));
+                    }
+                }
+
+                // Add the plugin
+                boundary_temperature_map.insert(std::make_pair(boundary_id,plugin_position));
+              }
+            else
+              AssertThrow(false,
+                          ExcMessage("Each entry in <Model settings/Fixed "
+                                     "temperature boundary indicators> has to be either "
+                                     "a boundary name or a pair of boundary name : plugin name"));
+          }
+      }
+      prm.leave_subsection();
+
+      // Now create and initialize all of the requested models. We can only do this here at the end,
+      // because some models might ask, which boundary they are responsible for.
+      for (unsigned int i = 0; i<boundary_temperature_names.size(); ++i)
+        {
+          boundary_temperature_objects.push_back(std_cxx11::shared_ptr<Interface<dim> > (std_cxx11::get<dim>(registered_plugins)
+                                                                                         .create_plugin (boundary_temperature_names[i],
+                                                                                             "Boundary temperature::Model names")));
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_temperature_objects.back().get()))
+            sim->initialize_simulator (this->get_simulator());
+          boundary_temperature_objects.back()->parse_parameters (prm);
+          boundary_temperature_objects.back()->initialize ();
+        }
     }
 
 

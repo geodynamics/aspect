@@ -158,7 +158,8 @@ namespace aspect
           Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
                                                   model_names.size(),
                                                   "List of model operators");
-        model_operators = Utilities::create_model_operator_list(model_operator_names);
+        model_operators = Utilities::create_model_operator_list(model_operator_names,
+                                                                "Boundary composition model/List of model operators");
       }
       prm.leave_subsection ();
 

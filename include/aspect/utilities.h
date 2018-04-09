@@ -1014,6 +1014,18 @@ namespace aspect
     {
       public:
         /**
+         * An error occurred opening the named file.
+         *
+         * The constructor takes a single argument of type <tt>char*</tt> naming the
+         * file.
+         */
+        DeclException1 (ExcOperatorUnknown,
+                        char *,
+                        << "ASPECT only accepts the following operators: "
+                        "add, subtract, minimum and maximum. But your parameter file "
+                        "contains <" << arg1 << ">. Please check your parameter file.");
+
+        /**
          * An enum of supported operations.
          */
         enum operation
@@ -1037,6 +1049,12 @@ namespace aspect
         Operator(const operation op);
 
         /**
+         * Construct the selected operator. Only works if the supplied
+         * string is a valid operation.
+         */
+        Operator(const std::string &operation);
+
+        /**
          * Execute the selected operation with the given parameters and
          * return the result.
          */
@@ -1057,9 +1075,13 @@ namespace aspect
 
     /**
      * Create a vector of operator objects out of a list of strings. Each
-     * entry in the list must match one of the allowed operations.
+     * entry in the list must match one of the allowed operations. The @p id_text
+     * is meant to provide more helpful error messages if something goes wrong and
+     * should contain the name of the parameter or parameter file subsection this
+     * operator list is created in.
      */
-    std::vector<Operator> create_model_operator_list(const std::vector<std::string> &operator_names);
+    std::vector<Operator> create_model_operator_list(const std::vector<std::string> &operator_names,
+                                                     const std::string &id_text);
 
     /**
      * A function that returns a SymmetricTensor, whose entries are zero, except for
@@ -1068,7 +1090,6 @@ namespace aspect
      */
     template <int dim>
     SymmetricTensor<2,dim> nth_basis_for_symmetric_tensors (const unsigned int k);
-
   }
 }
 

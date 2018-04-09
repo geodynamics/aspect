@@ -52,21 +52,13 @@ namespace aspect
                                      const Point<dim> &position) const;
 
         /**
-         * Return the minimal the temperature on that part of the boundary on
-         * which Dirichlet conditions are posed.
-         *
-         * This value is used in computing dimensionless numbers such as the
-         * Nusselt number indicating heat flux.
+         * Return the minimal temperature on the set of given boundary ids.
          */
         virtual
         double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
         /**
-         * Return the maximal the temperature on that part of the boundary on
-         * which Dirichlet conditions are posed.
-         *
-         * This value is used in computing dimensionless numbers such as the
-         * Nusselt number indicating heat flux.
+         * Return the maximal temperature on the set of given boundary ids.
          */
         virtual
         double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
