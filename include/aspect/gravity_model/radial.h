@@ -101,9 +101,7 @@ namespace aspect
 
     /**
      * A class that describes gravity as a radial vector of linearly
-     * decreasing magnitude with depth.  Meant for use in the Sphere geometry
-     * model, where you expect that kind of field if one assumed a constant
-     * density of Earth.
+     * changing magnitude with depth.
      *
      * @ingroup GravityModels
      */
@@ -135,6 +133,13 @@ namespace aspect
          * Magnitude of the gravity vector at the surface, m/s^2
          */
         double magnitude_at_surface;
+
+        /**
+         * Magnitude of the gravity vector at the bottom, m/s^2.
+         * 'Bottom' means at the maximum depth of the provided geometry, for
+         * a full sphere this means the center.
+         */
+        double magnitude_at_bottom;
 
     };
   }
