@@ -1835,7 +1835,7 @@ namespace aspect
 
   template <int dim>
   void
-  Simulator<dim>::check_consistency_of_boundary_conditions()
+  Simulator<dim>::check_consistency_of_boundary_conditions() const
   {
     // make sure velocity and traction boundary indicators don't appear in multiple lists
     std::set<types::boundary_id> boundary_indicator_lists[6]

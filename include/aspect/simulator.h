@@ -1394,17 +1394,16 @@ namespace aspect
 
       /**
        * This function checks that the user-selected boundary conditions do not
-       * contain contradictions. If an incorrect
-       * selection is detected it throws an exception. This for example assures
-       * that not both velocity and traction boundary conditions are prescribed
-       * at the same boundary, and that no boundary temperatures are prescribed
-       * at a periodic boundary.
+       * contain contradictions. If an incorrect selection is detected it
+       * throws an exception. This for example assures that not both velocity
+       * and traction boundary conditions are prescribed at the same boundary,
+       * and that no boundary temperatures are prescribed at a periodic boundary.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
       void
-      check_consistency_of_boundary_conditions ();
+      check_consistency_of_boundary_conditions () const;
 
       /**
        * Computes the initial Newton residual.
