@@ -70,22 +70,6 @@ namespace aspect
   namespace
   {
     /**
-     * Return whether t is an element of the given container object.
-     */
-    template <typename Container>
-    bool is_element (const typename Container::value_type &t,
-                     const Container                      &container)
-    {
-      for (typename Container::const_iterator p = container.begin();
-           p != container.end();
-           ++p)
-        if (*p == t)
-          return true;
-
-      return false;
-    }
-
-    /**
      * Helper function to construct the final std::vector of FEVariable before
      * it is used to construct the Introspection object. Create the default
      * setup based on parameters followed by a signal to allow modifications.
@@ -220,210 +204,8 @@ namespace aspect
         print_aspect_header(log_file_stream);
       }
 
-
     // now that we have output set up, we can start timer sections
     TimerOutput::Scope timer (computing_timer, "Initialization");
-
-    // first do some error checking for the parameters we got
-    {
-      // make sure velocity and traction boundary indicators don't appear in multiple lists
-      std::set<types::boundary_id> boundary_indicator_lists[6]
-        = { boundary_velocity_manager.get_zero_boundary_velocity_indicators(),
-            boundary_velocity_manager.get_tangential_boundary_velocity_indicators(),
-            parameters.free_surface_boundary_indicators,
-            std::set<types::boundary_id>()   // to be prescribed velocity and traction boundary indicators
-          };
-
-      // sets of the boundary indicators only (no selectors and values)
-      std::set<types::boundary_id> velocity_bi;
-      std::set<types::boundary_id> traction_bi;
-
-      for (std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > >::const_iterator
-           p = boundary_velocity_manager.get_active_boundary_velocity_names().begin();
-           p != boundary_velocity_manager.get_active_boundary_velocity_names().end();
-           ++p)
-        velocity_bi.insert(p->first);
-
-      for (std::map<types::boundary_id,std::pair<std::string, std::string> >::const_iterator
-           r = parameters.prescribed_traction_boundary_indicators.begin();
-           r != parameters.prescribed_traction_boundary_indicators.end();
-           ++r)
-        traction_bi.insert(r->first);
-
-      // are there any indicators that occur in both the prescribed velocity and traction list?
-      std::set<types::boundary_id> intersection;
-      std::set_intersection (velocity_bi.begin(),
-                             velocity_bi.end(),
-                             traction_bi.begin(),
-                             traction_bi.end(),
-                             std::inserter(intersection, intersection.end()));
-
-      // if so, do they have different selectors?
-      if (!intersection.empty())
-        {
-          for (std::set<types::boundary_id>::const_iterator
-               it = intersection.begin();
-               it != intersection.end();
-               ++it)
-            {
-              const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > >::const_iterator
-              boundary_velocity_names = boundary_velocity_manager.get_active_boundary_velocity_names().find(*it);
-              Assert(boundary_velocity_names != boundary_velocity_manager.get_active_boundary_velocity_names().end(),
-                     ExcInternalError());
-
-              std::set<char> velocity_selector;
-              std::set<char> traction_selector;
-
-              for (std::string::const_iterator
-                   it_selector  = boundary_velocity_names->second.first.begin();
-                   it_selector != boundary_velocity_names->second.first.end();
-                   ++it_selector)
-                velocity_selector.insert(*it_selector);
-
-              for (std::string::const_iterator
-                   it_selector  = parameters.prescribed_traction_boundary_indicators[*it].first.begin();
-                   it_selector != parameters.prescribed_traction_boundary_indicators[*it].first.end();
-                   ++it_selector)
-                traction_selector.insert(*it_selector);
-
-              // if there are no selectors specified, throw exception
-              AssertThrow(!velocity_selector.empty() || !traction_selector.empty(),
-                          ExcMessage ("Boundary indicator <"
-                                      +
-                                      Utilities::int_to_string(*it)
-                                      +
-                                      "> with symbolic name <"
-                                      +
-                                      geometry_model->translate_id_to_symbol_name (*it)
-                                      +
-                                      "> is listed as having both "
-                                      "velocity and traction boundary conditions in the input file."));
-
-              std::set<char> intersection_selector;
-              std::set_intersection (velocity_selector.begin(),
-                                     velocity_selector.end(),
-                                     traction_selector.begin(),
-                                     traction_selector.end(),
-                                     std::inserter(intersection_selector, intersection_selector.end()));
-
-              // if the same selectors are specified, throw exception
-              AssertThrow(intersection_selector.empty(),
-                          ExcMessage ("Selectors of boundary indicator <"
-                                      +
-                                      Utilities::int_to_string(*it)
-                                      +
-                                      "> with symbolic name <"
-                                      +
-                                      geometry_model->translate_id_to_symbol_name (*it)
-                                      +
-                                      "> are listed as having both "
-                                      "velocity and traction boundary conditions in the input file."));
-            }
-        }
-
-
-      // remove correct boundary indicators that occur in both the velocity and the traction set
-      // but have different selectors
-      std::set<types::boundary_id> union_set;
-      std::set_union (velocity_bi.begin(),
-                      velocity_bi.end(),
-                      traction_bi.begin(),
-                      traction_bi.end(),
-                      std::inserter(union_set, union_set.end()));
-
-      // assign the prescribed boundary indicator list to the boundary_indicator_lists
-      boundary_indicator_lists[3] = union_set;
-
-      // for each combination of boundary indicator lists, make sure that the
-      // intersection is empty
-      for (unsigned int i=0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-        for (unsigned int j=i+1; j<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++j)
-          {
-            std::set<types::boundary_id> intersection;
-            std::set_intersection (boundary_indicator_lists[i].begin(),
-                                   boundary_indicator_lists[i].end(),
-                                   boundary_indicator_lists[j].begin(),
-                                   boundary_indicator_lists[j].end(),
-                                   std::inserter(intersection, intersection.end()));
-
-            // if the same indicators are specified for different boundary conditions, throw exception
-            AssertThrow (intersection.empty(),
-                         ExcMessage ("Boundary indicator <"
-                                     +
-                                     Utilities::int_to_string(*intersection.begin())
-                                     +
-                                     "> with symbolic name <"
-                                     +
-                                     geometry_model->translate_id_to_symbol_name (*intersection.begin())
-                                     +
-                                     "> is listed as having more "
-                                     "than one type of velocity or traction boundary condition in the input file."));
-          }
-
-      // Check that the periodic boundaries do not have other boundary conditions set
-      typedef std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >
-      periodic_boundary_set;
-      periodic_boundary_set pbs = geometry_model->get_periodic_boundary_pairs();
-
-      for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
-        {
-          // Throw error if we are trying to use the same boundary for more than one boundary condition
-          AssertThrow( is_element( (*p).first.first, parameters.fixed_temperature_boundary_indicators ) == false &&
-                       is_element( (*p).first.second, parameters.fixed_temperature_boundary_indicators ) == false &&
-                       is_element( (*p).first.first, parameters.fixed_composition_boundary_indicators ) == false &&
-                       is_element( (*p).first.second, parameters.fixed_composition_boundary_indicators ) == false &&
-                       is_element( (*p).first.first, boundary_indicator_lists[0] ) == false && // zero velocity
-                       is_element( (*p).first.second, boundary_indicator_lists[0] ) == false && // zero velocity
-                       is_element( (*p).first.first, boundary_indicator_lists[1] ) == false && // tangential velocity
-                       is_element( (*p).first.second, boundary_indicator_lists[1] ) == false && // tangential velocity
-                       is_element( (*p).first.first, boundary_indicator_lists[2] ) == false && // free surface
-                       is_element( (*p).first.second, boundary_indicator_lists[2] ) == false && // free surface
-                       is_element( (*p).first.first, boundary_indicator_lists[3] ) == false && // prescribed traction or velocity
-                       is_element( (*p).first.second, boundary_indicator_lists[3] ) == false,  // prescribed traction or velocity
-                       ExcMessage("Periodic boundaries must not have boundary conditions set."));
-        }
-
-      const std::set<types::boundary_id> all_boundary_indicators
-        = geometry_model->get_used_boundary_indicators();
-      if (parameters.nonlinear_solver!=NonlinearSolver::Advection_only)
-        {
-          // next make sure that all listed indicators are actually used by
-          // this geometry
-          for (unsigned int i=0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-            for (typename std::set<types::boundary_id>::const_iterator
-                 p = boundary_indicator_lists[i].begin();
-                 p != boundary_indicator_lists[i].end(); ++p)
-              AssertThrow (all_boundary_indicators.find (*p)
-                           != all_boundary_indicators.end(),
-                           ExcMessage ("One of the boundary indicators listed in the input file "
-                                       "is not used by the geometry model."));
-        }
-      else
-        {
-          // next make sure that there are no listed indicators
-          for (unsigned  int i = 0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-            AssertThrow (boundary_indicator_lists[i].empty(),
-                         ExcMessage ("With solver type Advection only, one cannot set boundary conditions for velocity."));
-        }
-
-
-      // now do the same for the fixed temperature indicators and the
-      // compositional indicators
-      for (typename std::set<types::boundary_id>::const_iterator
-           p = parameters.fixed_temperature_boundary_indicators.begin();
-           p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
-        AssertThrow (all_boundary_indicators.find (*p)
-                     != all_boundary_indicators.end(),
-                     ExcMessage ("One of the fixed boundary temperature indicators listed in the input file "
-                                 "is not used by the geometry model."));
-      for (typename std::set<types::boundary_id>::const_iterator
-           p = parameters.fixed_composition_boundary_indicators.begin();
-           p != parameters.fixed_composition_boundary_indicators.end(); ++p)
-        AssertThrow (all_boundary_indicators.find (*p)
-                     != all_boundary_indicators.end(),
-                     ExcMessage ("One of the fixed boundary composition indicators listed in the input file "
-                                 "is not used by the geometry model."));
-    }
 
     // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it and
     // call the initialize() functions immediately after.
@@ -512,9 +294,6 @@ namespace aspect
                     ExcMessage("The prescribed stokes plugin you selected only works with solver type 'Advection only' ")
                    );
       }
-
-
-
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(prescribed_stokes_solution.get()))
       sim->initialize_simulator (*this);
@@ -647,6 +426,9 @@ namespace aspect
                                  parameters.output_directory + "parameters.json>."));
         prm.print_parameters(json_out, ParameterHandler::JSON);
       }
+
+    // check that the boundary condition selection is consistent
+    check_consistency_of_boundary_conditions();
 
     // check that the setup of equations, material models, and heating terms is consistent
     check_consistency_of_formulation();
@@ -939,8 +721,6 @@ namespace aspect
              p = parameters.fixed_temperature_boundary_indicators.begin();
              p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
           {
-            Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
-                    ExcInternalError());
             VectorTools::interpolate_boundary_values (*mapping,
                                                       dof_handler,
                                                       *p,
@@ -970,8 +750,6 @@ namespace aspect
                p = parameters.fixed_composition_boundary_indicators.begin();
                p != parameters.fixed_composition_boundary_indicators.end(); ++p)
             {
-              Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
-                      ExcInternalError());
               VectorTools::interpolate_boundary_values (*mapping,
                                                         dof_handler,
                                                         *p,
