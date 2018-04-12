@@ -182,12 +182,11 @@ namespace aspect
               if (old_porosity[i] + porosity_change < 0)
                 porosity_change = -old_porosity[i];
 
-              const double depletion_change = porosity_change - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
-
               for (unsigned int c=0; c<in.composition[i].size(); ++c)
                 {
                   if (c == peridotite_idx && this->get_timestep_number() > 1)
-                    out.reaction_terms[i][c] = depletion_change;
+                    out.reaction_terms[i][c] = porosity_change
+                                               - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
                   else if (c == porosity_idx && this->get_timestep_number() > 1)
                     out.reaction_terms[i][c] = porosity_change
                                                * out.densities[i] / this->get_timestep();
@@ -200,7 +199,8 @@ namespace aspect
                       if (reaction_rate_out != NULL)
                         {
                           if (c == peridotite_idx && this->get_timestep_number() > 0)
-                            reaction_rate_out->reaction_rates[i][c] = depletion_change / melting_time_scale;
+                            reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale
+                                                                      - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]);
                           else if (c == porosity_idx && this->get_timestep_number() > 0)
                             reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale;
                           else
