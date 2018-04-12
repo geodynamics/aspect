@@ -384,7 +384,7 @@ namespace aspect
   bool
   SimulatorAccess<dim>::has_boundary_temperature () const
   {
-    return (get_boundary_temperature_manager().get_active_boundary_temperature_conditions().size() > 0);
+    return (get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators().size() > 0);
   }
 
 
@@ -413,7 +413,7 @@ namespace aspect
   bool
   SimulatorAccess<dim>::has_boundary_composition () const
   {
-    return (get_boundary_composition_manager().get_active_boundary_composition_conditions().size() > 0);
+    return (get_boundary_composition_manager().get_fixed_composition_boundary_indicators().size() > 0);
   }
 
 
@@ -442,7 +442,7 @@ namespace aspect
   const std::set<types::boundary_id> &
   SimulatorAccess<dim>::get_fixed_temperature_boundary_indicators () const
   {
-    return simulator->parameters.fixed_temperature_boundary_indicators;
+    return get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators();
   }
 
 
@@ -450,7 +450,7 @@ namespace aspect
   const std::set<types::boundary_id> &
   SimulatorAccess<dim>::get_fixed_composition_boundary_indicators () const
   {
-    return simulator->parameters.fixed_composition_boundary_indicators;
+    return get_boundary_composition_manager().get_fixed_composition_boundary_indicators();
   }
 
 

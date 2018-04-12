@@ -159,6 +159,31 @@ namespace aspect
                                                   model_names.size(),
                                                   "List of model operators");
         model_operators = Utilities::create_model_operator_list(model_operator_names);
+
+        try
+          {
+            const std::vector<types::boundary_id> x_fixed_composition_boundary_indicators
+              = this->get_geometry_model().translate_symbolic_boundary_names_to_ids (Utilities::split_string_list
+                                                                                     (prm.get ("Fixed composition boundary indicators")));
+            fixed_composition_boundary_indicators
+              = std::set<types::boundary_id> (x_fixed_composition_boundary_indicators.begin(),
+                                              x_fixed_composition_boundary_indicators.end());
+
+            // If model names have been set, but no boundaries on which to use them,
+            // ignore the set values, do not create objects that are never used.
+            if (fixed_composition_boundary_indicators.size() == 0)
+              {
+                model_names.clear();
+                model_operators.clear();
+              }
+          }
+        catch (const std::string &error)
+          {
+            AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Fixed composition "
+                                            "boundary indicators>, there was an error. Specifically, "
+                                            "the conversion function complained as follows: "
+                                            + error));
+          }
       }
       prm.leave_subsection ();
 
@@ -217,6 +242,16 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    const std::set<types::boundary_id> &
+    Manager<dim>::get_fixed_composition_boundary_indicators() const
+    {
+      return fixed_composition_boundary_indicators;
+    }
+
+
+
     template <int dim>
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
@@ -256,6 +291,30 @@ namespace aspect
                            "deprecated way of specifying "
                            "boundary composition models and shouldn't be used. "
                            "Please use 'List of model names' instead.");
+
+        prm.declare_entry ("Fixed composition boundary indicators", "",
+                           Patterns::List (Patterns::Anything()),
+                           "A comma separated list of names denoting those boundaries "
+                           "on which the composition is fixed and described by the "
+                           "boundary composition object selected in its own section "
+                           "of this input file. All boundary indicators used by the geometry "
+                           "but not explicitly listed here will end up with no-flux "
+                           "(insulating) boundary conditions."
+                           "\n\n"
+                           "The names of the boundaries listed here can either be "
+                           "numbers (in which case they correspond to the numerical "
+                           "boundary indicators assigned by the geometry object), or they "
+                           "can correspond to any of the symbolic names the geometry object "
+                           "may have provided for each part of the boundary. You may want "
+                           "to compare this with the documentation of the geometry model you "
+                           "use in your model."
+                           "\n\n"
+                           "This parameter only describes which boundaries have a fixed "
+                           "composition, but not what composition should hold on these "
+                           "boundaries. The latter piece of information needs to be "
+                           "implemented in a plugin in the BoundaryComposition "
+                           "group, unless an existing implementation in this group "
+                           "already provides what you want.");
       }
       prm.leave_subsection ();
 

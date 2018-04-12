@@ -1,4 +1,6 @@
-#Test runtime editing of parameters
+# Test runtime editing of parameters, in particular reducing
+# the CFL number by a factor of 2 after 5 timesteps.
+
 set Dimension = 2
 set CFL number                             = 1.0
 set End time                               = 1.e9

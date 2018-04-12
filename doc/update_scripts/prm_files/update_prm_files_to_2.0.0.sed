@@ -45,11 +45,15 @@ b jump_before_gravity
 # belongs to the opening subsection (i.e. if the parameter is set
 # after a subsection nested inside the 'Boundary temperature model'
 # subsection the following will simply do nothing).
-/subsection Boundary temperature model/,/\bend\b/ {
+/subsection Boundary temperature model/,/^ *\bend\b/ {
      s/set Model name/set List of model names/g
 }
 
-/subsection Boundary composition model/,/\bend\b/ {
+/subsection Boundary composition model/,/^ *\bend\b/ {
+     s/set Model name/set List of model names/g
+}
+
+/subsection Heating model/,/^ *\bend\b/ {
      s/set Model name/set List of model names/g
 }
 
