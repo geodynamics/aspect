@@ -56,7 +56,7 @@ subsection Prescribed Stokes solution
   end
 end
 
-set Nonlinear solver scheme                   = Advection only
+set Nonlinear solver scheme                   = single Advection, no Stokes
 
 subsection Compositional fields
   set Number of fields = 1

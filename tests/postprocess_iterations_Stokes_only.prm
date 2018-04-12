@@ -1,6 +1,6 @@
 #########################################################
 # This is a model setup to test the postprocessing of 
-# nonlinear iterations for the Stokes only solver. 
+# nonlinear iterations for the no Advection, iterated Stokes solver. 
 
 set Dimension = 2
 set CFL number                             = 1.0
@@ -10,7 +10,7 @@ set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
 
-set Nonlinear solver scheme                = Stokes only
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Max nonlinear iterations               = 5
 
 set Use direct solver for Stokes system = true

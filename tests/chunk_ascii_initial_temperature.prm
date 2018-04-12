@@ -10,7 +10,7 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 1600.0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 
 

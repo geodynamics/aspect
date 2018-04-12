@@ -8,7 +8,7 @@
 set Additional shared libraries            = ./libshear_bands.so
 
 set Adiabatic surface temperature          = 1623
-set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Output directory                       = output
 set Max nonlinear iterations               = 50
 set Nonlinear solver tolerance             = 1e-5

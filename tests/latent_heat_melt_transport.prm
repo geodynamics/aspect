@@ -14,7 +14,7 @@ set Dimension = 2
 set Start time                             = 0
 set End time                               = 4e16
 set Use years in output instead of seconds = false
-set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Use operator splitting                     = true
 subsection Solver parameters
   subsection Operator splitting parameters

@@ -7,7 +7,7 @@
 # the strain rate as eta=1/(1+|dot eps|). Because the strain rate
 # is constant, so is the viscosity.
 #
-# In this version of the testcase, we only run a single IMPES step,
+# In this version of the testcase, we only run a single Advection and a single Stokes step,
 # so the viscosity we use for the first velocity step is eta=1.
 # We can only tell that the correct viscosity is computed in a
 # postprocessor, which we implement in the .cc file. The correct
@@ -21,7 +21,7 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 
 

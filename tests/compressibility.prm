@@ -28,7 +28,7 @@
 # accelerate towards the top as expected but is in fact constant).
 #
 # This testcase therefore verifies that we compute this wrong solution
-# in the first iteration. We use the Stokes only/max_nonlinear_iterations=1
+# in the first iteration. We use the no Advection, iterated Stokes/max_nonlinear_iterations=1
 # option for the solver scheme.
 
 set Dimension = 2
@@ -39,7 +39,7 @@ set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
 
-set Nonlinear solver scheme                = Stokes only
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Max nonlinear iterations               = 1
 
 

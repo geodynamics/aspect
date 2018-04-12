@@ -13,7 +13,7 @@ set Start time                             = 0
 set End time                               = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 
 ############ These parameters are of interest for this test: #########

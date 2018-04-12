@@ -90,15 +90,6 @@ set Surface pressure                       = 0
 # such conversion happens.
 set Use years in output instead of seconds = false  # default: true
 
-# Select one of the following solver schemes:
-#
-# 'IMPES': This is the IMplicit Pressure Explicit Saturation scheme. In a first
-# step the variables velocity and pressure are computed from equations without
-# time derivatives. In a second step the variable temperature is updated by
-# using an explicit time step.
-set Nonlinear solver scheme                = IMPES
-
-
 subsection Boundary temperature model
   # Select one of the following models:
   #

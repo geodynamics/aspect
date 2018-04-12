@@ -3,7 +3,7 @@ set CFL number                             = 1.0
 set End time                               = 0
 set Start time                             = 0
 set Use years in output instead of seconds = false
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 
 subsection Boundary temperature model

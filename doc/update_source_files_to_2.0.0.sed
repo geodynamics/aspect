@@ -73,3 +73,11 @@ s:assembly.h:simulator/assemblers/interface.h:g
 
 # Rename adiabatic conditions plugin initial profile includes
 s:#include <aspect/adiabatic_conditions/initial_profile.h>:#include <aspect/adiabatic_conditions/compute_profile.h>:g
+
+# Rename nonlinear solver schemes
+s/NonlinearSolver::iterated_IMPES/NonlinearSolver::iterated_Advection_and_Stokes/g
+s/NonlinearSolver::IMPES/NonlinearSolver::single_Advection_single_Stokes/g
+s/NonlinearSolver::iterated Stokes/NonlinearSolver::single_Advection_iterated_Stokes/g
+s/NonlinearSolver::Stokes_only/NonlinearSolver::no_Advection_iterated_Stokes/g
+s/NonlinearSolver::Advection_only/NonlinearSolver::single_Advection_no_Stokes/g
+s/NonlinearSolver::Newton_Stokes/NonlinearSolver::iterated_Advection_and_Newton_Stokes/g

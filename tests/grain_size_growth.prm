@@ -30,7 +30,7 @@ set Surface pressure                       = 0
 set Adiabatic surface temperature          = 1600
 set Linear solver tolerance                = 1e-7
 set Temperature solver tolerance           = 1e-7
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 subsection Geometry model
   set Model name = box

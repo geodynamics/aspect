@@ -434,65 +434,64 @@ namespace aspect
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.
        *
-       * 'IMPES' is the classical IMplicit
-       * Pressure Explicit Saturation scheme in which ones solves
-       * the temperatures and Stokes equations exactly
-       * once per time step, one after the other.
+       * If `single Advection, single Stokes' is selected as the nonlinear solver scheme,
+       * no nonlinear iterations are done, and the temperature, compositional fields and
+       * Stokes equations are solved exactly once per time step, one after the other.
        *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_IMPES ();
+      void solve_single_advection_single_stokes ();
 
       /**
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.
        *
-       * The 'Stokes only' scheme only solves the Stokes system and ignores
-       * compositions and the temperature equation (careful, the material
+       * The `no Advection, iterated Stokes' scheme only solves the Stokes system and
+       * ignores compositions and the temperature equation (careful, the material
        * model must not depend on the temperature; mostly useful for
        * Stokes benchmarks).
        *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_stokes_only ();
+      void solve_no_advection_iterated_stokes ();
 
       /**
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.
        *
-       * The `iterated IMPES' scheme iterates the decoupled IMPES approach
-       * by alternating the solution of the temperature and Stokes systems.
+       * The `iterated Advection and Stokes' scheme iterates
+       * by alternating the solution of the temperature, composition and Stokes systems.
        * This is essentially a type of Picard iterations for the whole
        * system of equations.
        *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_iterated_IMPES ();
+      void solve_iterated_advection_and_stokes ();
 
       /**
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.
        *
-       * The `iterated Stokes' scheme solves the temperature and composition
-       * equations once at the beginning of each time step
+       * The `single Advection, iterated Stokes' scheme solves the temperature and
+       * composition equations once at the beginning of each time step
        * and then iterates out the solution of the Stokes equation using
        * Picard iterations.
        *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_iterated_stokes ();
+      void solve_single_advection_iterated_stokes ();
 
       /**
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.
        *
-       * 'Newton Stokes' iterates over solving the temperature, composition,
-       * and Stokes equations just like 'iterated IMPES', but for the
-       * Stokes system it is able to switch from a defect correction form of
+       * The `iterated Advection and Newton Stokes' scheme iterates over solving the temperature,
+       * composition, and Stokes equations just like `iterated Advection and Stokes', but
+       * for the Stokes system it is able to switch from a defect correction form of
        * Picard iterations to Newton iterations after a certain tolerance or
        * number of iterations is reached. This can greatly improve the
        * convergence rate for particularly nonlinear viscosities.
@@ -500,20 +499,20 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_newton_stokes ();
+      void solve_iterated_advection_and_newton_stokes ();
 
       /**
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.
        *
-       * The 'Advection only' scheme only solves the temperature and other
+       * The `single Advection, no Stokes' scheme only solves the temperature and other
        * advection systems and instead of solving for the Stokes system,
        * a prescribed velocity and pressure is used."
        *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_advection_only ();
+      void solve_single_advection_no_stokes ();
 
       /**
        * Initiate the assembly of the Stokes preconditioner matrix via
@@ -647,7 +646,8 @@ namespace aspect
        * the Eisenstat-Walker method.
        *
        * @note If this function is called from a nonlinear solver -- e.g., the
-       * iterated Stokes, or iterated IMPES solvers --, then the
+       * `single Advection, iterated Stokes', or the
+       * `iterated Advection and Stokes' solvers schemes --, then the
        * @p current_linearization_point is the solution of the previous
        * iteration (or the solution extrapolated from the previous time
        * steps, if this is the first nonlinear iteration). Let us call
@@ -1412,7 +1412,8 @@ namespace aspect
       compute_initial_newton_residual (const LinearAlgebra::BlockVector &linearized_stokes_initial_guess);
 
       /**
-       * This function computes the Eisenstat Walker linear tolerance used for the Newton Stokes solver.
+       * This function computes the Eisenstat Walker linear tolerance used for the Newton iterations
+       * in the `iterated Advection and Newton Stokes' solver scheme.
        * The Eisenstat and Walker (1996) method is used for determining the linear tolerance of
        * the iteration after the first iteration. The paper gives two preferred choices of computing
        * this tolerance. Both choices are implemented here with the suggested parameter values and
@@ -1439,8 +1440,8 @@ namespace aspect
 
       /**
        * This routine computes the initial (nonlinear) Stokes residual that is
-       * needed as a convergence criterion in models with the iterated IMPES
-       * solver. We calculate it in the same way as the tolerance for the linear
+       * needed as a convergence criterion in models with solver schemes that do
+       * nonlinear iterations. We calculate it in the same way as the tolerance for the linear
        * solver, using the norm of the pressure RHS for the pressure part and a
        * residual with zero velocity for the velocity part to get the part of
        * the RHS not balanced by the static pressure.

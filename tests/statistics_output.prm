@@ -6,7 +6,7 @@
 # At the top, we define the number of space dimensions we would like to
 # work in:
 set Dimension                              = 2
-set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Linear solver tolerance                = 1e-12
 
 # There are several global variables that have to do with what

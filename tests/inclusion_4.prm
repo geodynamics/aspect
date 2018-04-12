@@ -17,7 +17,7 @@ set Surface pressure                       = 0
 
 set Pressure normalization                 = volume
 
-set Nonlinear solver scheme                = Stokes only
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Linear solver tolerance                = 1e-7
 set Nonlinear solver tolerance             = 1e-5
 set Max nonlinear iterations               = 1

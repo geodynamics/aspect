@@ -1,11 +1,12 @@
 #########################################################
-# This is a model setup to test the residual of the 
-# iterated IMPES solver. Although the initial composition
-# residual is 0, the overall residual is finite.
+# This is a model setup to test the postprocessing of 
+# nonlinear iterations for the iterated Advection and Stokes solver. 
+
 
 set Adiabatic surface temperature          = 0               # default: 0
 set CFL number                             = 0.5
-set Nonlinear solver scheme                = iterated IMPES
+set Composition solver tolerance           = 1e-12
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 10
 set Linear solver tolerance                = 1e-12
 
@@ -86,7 +87,7 @@ subsection Initial composition model
   set Model name = function
   subsection Function
     set Function constants  = pi=3.1415926,x0=150000,a = 0.2, b = 75000, c = 10000, d=0.0
-    set Function expression = 0.0
+    set Function expression = d + a * exp(-((x-b)*(x-b)+y*y)/(2*c*c))
     set Variable names      = x,y
   end
 end
@@ -129,7 +130,12 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = 
+  set Run postprocessors on nonlinear iterations = true
+  set List of postprocessors = visualization, dynamic topography, heat flux map
+
+  subsection Visualization
+    set Time between graphical output = 0
+  end
 end
 
 

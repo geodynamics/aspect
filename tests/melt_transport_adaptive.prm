@@ -8,7 +8,7 @@
 # is implemented in the .cc file, together with a postprocessor to calculate 
 # the error and a new pressure boundary cinsition.     
 # 
-set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 50
 set Nonlinear solver tolerance             = 1e-10
 set Linear solver tolerance                = 1e-12

@@ -147,10 +147,12 @@ namespace aspect
                        Patterns::Double (0),
                        "Set a percentage with which the the time step is limited to increase. Generally the "
                        "time step based on the CFL number should be sufficient, but for complicated models "
-                       "which may suddenly drastically change behavoir, it may be usefull to limit the increase "
-                       "in the timestep, without limiting the time step size of the whole simulation to a "
-                       "particular number if this value is $50$, then that means that the time step can at most "
-                       "increase by 50\\% from one time step to the next, or by a factor of 1.5.");
+                       "which may suddenly drastically change behavior, it may be useful to limit the increase "
+                       "in the time step, without limiting the time step size of the whole simulation to a "
+                       "particular number. For example, if this parameter is set to $50$, then that means that "
+                       "the time step can at most increase by 50\\% from one time step to the next, or by a "
+                       "factor of 1.5. "
+                       "Units: \\%");
 
     prm.declare_entry ("Use conduction timestep", "false",
                        Patterns::Bool (),
@@ -160,29 +162,46 @@ namespace aspect
                        "This parameter indicates whether the simulator should also use "
                        "heat conduction in determining the length of each time step.");
 
-    prm.declare_entry ("Nonlinear solver scheme", "IMPES",
-                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes|Newton Stokes|Stokes only|Advection only"),
+    prm.declare_entry ("Nonlinear solver scheme", "single Advection, single Stokes",
+                       Patterns::Selection ("single Advection, single Stokes|iterated Advection and Stokes|single Advection, iterated Stokes|no Advection, iterated Stokes|iterated Advection and Newton Stokes|single Advection, no Stokes|IMPES|iterated IMPES|iterated Stokes|Newton Stokes|Stokes only|Advection only"),
                        "The kind of scheme used to resolve the nonlinearity in the system. "
-                       "'IMPES' is the classical IMplicit Pressure Explicit Saturation scheme "
-                       "in which ones solves the temperatures and Stokes equations exactly "
-                       "once per time step, one after the other. The `iterated IMPES' scheme "
-                       "iterates this decoupled approach by alternating the solution of the "
-                       "temperature and Stokes systems. The `iterated Stokes' scheme solves "
-                       "the temperature equation once at the beginning of each time step "
-                       "and then iterates out the solution of the Stokes equation. The 'Stokes only' "
-                       "scheme only solves the Stokes system and ignores compositions and the "
-                       "temperature equation (careful, the material model must not depend on "
-                       "the temperature; mostly useful for Stokes benchmarks). The 'Advection only' "
-                       "scheme only solves the temperature and other advection systems and instead "
-                       "of solving for the Stokes system, a prescribed velocity and pressure is "
-                       "used.");
+                       "`single Advection, single Stokes' means that no nonlinear iterations are done, "
+                       "and the temperature, compositional fields and Stokes equations are solved exactly "
+                       "once per time step, one after the other. "
+                       "The `iterated Advection and Stokes' scheme iterates this decoupled approach "
+                       "by alternating the solution of the temperature, composition and Stokes systems. "
+                       "The `single Advection, iterated Stokes' scheme solves the temperature and composition "
+                       "equation once at the beginning of each time step and then iterates out the solution of "
+                       "the Stokes equation. "
+                       "The `no Advection, iterated Stokes' scheme only solves the Stokes system, iterating "
+                       "out the solution, and ignores compositions and the temperature equation (careful, "
+                       "the material model must not depend on the temperature or composition; this is mostly "
+                       "useful for Stokes benchmarks). "
+                       "The `single Advection, no Stokes' scheme only solves the temperature and other advection "
+                       "systems once, and instead of solving for the Stokes system, a prescribed velocity "
+                       "and pressure is used. "
+                       "The `iterated Advection and Newton Stokes' scheme iterates by alternating the solution "
+                       "of the temperature, composition and Stokes equations, using Picard iterations for the "
+                       "temperature and composition, and Newton iterations for the Stokes system. "
+                       "The `IMPES' scheme is deprecated and only allowed for reasons of backwards "
+                       "compatibility, it is the same as `single Advection, single Stokes' ."
+                       "The `iterated IMPES' scheme is deprecated and only allowed for reasons of "
+                       "backwards compatibility, it is the same as `iterated Advection and Stokes'. "
+                       "The `iterated Stokes' scheme is deprecated and only allowed for reasons of "
+                       "backwards compatibility, it is the same as `single Advection, iterated Stokes'. "
+                       "The `Stokes only' scheme is deprecated and only allowed for reasons of "
+                       "backwards compatibility, it is the same as `no Advection, iterated Stokes'. "
+                       "The `Advection only' scheme is deprecated and only allowed for reasons of "
+                       "backwards compatibility, it is the same as `single Advection, no Stokes'. "
+                       "The `Newton Stokes' scheme is deprecated and only allowed for reasons of "
+                       "backwards compatibility, it is the same as `iterated Advection and Newton Stokes'.");
 
     prm.declare_entry ("Nonlinear solver tolerance", "1e-5",
                        Patterns::Double(0,1),
-                       "A relative tolerance up to which the nonlinear solver "
-                       "will iterate. This parameter is only relevant if "
-                       "Nonlinear solver scheme is set to `iterated Stokes' or "
-                       "`iterated IMPES'.");
+                       "A relative tolerance up to which the nonlinear solver will iterate. "
+                       "This parameter is only relevant if the `Nonlinear solver scheme' does nonlinear "
+                       "iterations, in other words, if it is set to something other than "
+                       "`single Advection, single Stokes' or `single Advection, no Stokes'.");
 
     prm.declare_entry ("Pressure normalization", "surface",
                        Patterns::Selection ("surface|volume|no"),
@@ -345,9 +364,9 @@ namespace aspect
                            "This parameter sets the type of smoother for the AMG. "
                            "The default is strongly recommended for any normal runs "
                            "with ASPECT. There are some indications that the symmetric "
-                           "Gaus-Seidel might be better and more stable for the Newton "
+                           "Gauss-Seidel might be better and more stable for the Newton "
                            "solver. For extensive benchmarking of various settings of the "
-                           "AMG parameters in this secton for the Stokes problem and others, "
+                           "AMG parameters in this section for the Stokes problem and others, "
                            "see https://github.com/geodynamics/aspect/pull/234.");
 
         prm.declare_entry ("AMG smoother sweeps", "2",
@@ -359,7 +378,7 @@ namespace aspect
                            "this parameter sets the number of SSOR relaxation sweeps for post-smoothing to be performed. "
                            "The default is strongly recommended. There are indications that for the Newton solver a different "
                            "value might be better. For extensive benchmarking of various settings of the "
-                           "AMG parameters in this secton for the Stokes problem and others, "
+                           "AMG parameters in this section for the Stokes problem and others, "
                            "see https://github.com/geodynamics/aspect/pull/234.");
 
         prm.declare_entry ("AMG aggregation threshold", "0.001",
@@ -371,7 +390,7 @@ namespace aspect
                            "aggregation\\_threshold times the diagonal element do couple strongly. "
                            "The default is strongly recommended. There are indications that for the Newton solver a different "
                            "value might be better. For extensive benchmarking of various settings of the "
-                           "AMG parameters in this secton for the Stokes problem and others, "
+                           "AMG parameters in this section for the Stokes problem and others, "
                            "see https://github.com/geodynamics/aspect/pull/234.");
 
         prm.declare_entry ("AMG output details", "false",
@@ -998,18 +1017,30 @@ namespace aspect
 
     maximum_relative_increase_time_step = prm.get_double("Maximum relative increase in time step") * 0.01;
 
-    if (prm.get ("Nonlinear solver scheme") == "IMPES")
-      nonlinear_solver = NonlinearSolver::IMPES;
+    if (prm.get ("Nonlinear solver scheme") == "single Advection, single Stokes")
+      nonlinear_solver = NonlinearSolver::single_Advection_single_Stokes;
+    else if (prm.get ("Nonlinear solver scheme") == "IMPES")
+      nonlinear_solver = NonlinearSolver::single_Advection_single_Stokes;
+    else if (prm.get ("Nonlinear solver scheme") == "iterated Advection and Stokes")
+      nonlinear_solver = NonlinearSolver::iterated_Advection_and_Stokes;
     else if (prm.get ("Nonlinear solver scheme") == "iterated IMPES")
-      nonlinear_solver = NonlinearSolver::iterated_IMPES;
+      nonlinear_solver = NonlinearSolver::iterated_Advection_and_Stokes;
+    else if (prm.get ("Nonlinear solver scheme") == "single Advection, iterated Stokes")
+      nonlinear_solver = NonlinearSolver::single_Advection_iterated_Stokes;
     else if (prm.get ("Nonlinear solver scheme") == "iterated Stokes")
-      nonlinear_solver = NonlinearSolver::iterated_Stokes;
+      nonlinear_solver = NonlinearSolver::single_Advection_iterated_Stokes;
+    else if (prm.get ("Nonlinear solver scheme") == "no Advection, iterated Stokes")
+      nonlinear_solver = NonlinearSolver::no_Advection_iterated_Stokes;
     else if (prm.get ("Nonlinear solver scheme") == "Stokes only")
-      nonlinear_solver = NonlinearSolver::Stokes_only;
+      nonlinear_solver = NonlinearSolver::no_Advection_iterated_Stokes;
+    else if (prm.get ("Nonlinear solver scheme") == "iterated Advection and Newton Stokes")
+      nonlinear_solver = NonlinearSolver::iterated_Advection_and_Newton_Stokes;
     else if (prm.get ("Nonlinear solver scheme") == "Newton Stokes")
-      nonlinear_solver = NonlinearSolver::Newton_Stokes;
+      nonlinear_solver = NonlinearSolver::iterated_Advection_and_Newton_Stokes;
+    else if (prm.get ("Nonlinear solver scheme") == "single Advection, no Stokes")
+      nonlinear_solver = NonlinearSolver::single_Advection_no_Stokes;
     else if (prm.get ("Nonlinear solver scheme") == "Advection only")
-      nonlinear_solver = NonlinearSolver::Advection_only;
+      nonlinear_solver = NonlinearSolver::single_Advection_no_Stokes;
     else
       AssertThrow (false, ExcNotImplemented());
 

@@ -11,8 +11,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00000.0000
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00000.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00000.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00000.0000
      Pressure at top/bottom of domain: -2.002e-13 Pa, 6.444e+05 Pa
      Computing dynamic topography      
 
@@ -23,8 +23,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 5.20807e-13
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00000.0001
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00000.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00000.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00000.0001
      Pressure at top/bottom of domain: -2.173e-13 Pa, 6.444e+05 Pa
      Computing dynamic topography      
 
@@ -37,8 +37,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.821377
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0000
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0000
      Pressure at top/bottom of domain: -4.245e-13 Pa, 6.395e+05 Pa
      Computing dynamic topography      
 
@@ -49,8 +49,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.113623
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0001
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0001
      Pressure at top/bottom of domain: 1.273e-13 Pa, 6.388e+05 Pa
      Computing dynamic topography      
 
@@ -61,8 +61,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0205037
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0002
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0002
      Pressure at top/bottom of domain: -3.508e-13 Pa, 6.386e+05 Pa
      Computing dynamic topography      
 
@@ -73,8 +73,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 0.00392882
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0003
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0003
      Pressure at top/bottom of domain: 2.064e-13 Pa, 6.386e+05 Pa
      Computing dynamic topography      
 
@@ -85,8 +85,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000777886
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0004
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0004
      Pressure at top/bottom of domain: -4.68e-13 Pa, 6.386e+05 Pa
      Computing dynamic topography      
 
@@ -97,8 +97,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 6: 0.000157509
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0005
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0005
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0005
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0005
      Pressure at top/bottom of domain: -2.064e-13 Pa, 6.386e+05 Pa
      Computing dynamic topography      
 
@@ -109,8 +109,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 7: 3.24128e-05
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0006
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0006
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0006
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0006
      Pressure at top/bottom of domain: -3.795e-13 Pa, 6.386e+05 Pa
      Computing dynamic topography      
 
@@ -121,8 +121,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 8: 6.74805e-06
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00001.0007
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00001.0007
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0007
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0007
      Pressure at top/bottom of domain: -3.694e-13 Pa, 6.386e+05 Pa
      Computing dynamic topography      
 
@@ -135,8 +135,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.455259
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0000
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0000
      Pressure at top/bottom of domain: 1.801e-13 Pa, 6.314e+05 Pa
      Computing dynamic topography      
 
@@ -147,8 +147,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.055206
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0001
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0001
      Pressure at top/bottom of domain: -9.003e-14 Pa, 6.311e+05 Pa
      Computing dynamic topography      
 
@@ -159,8 +159,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00922176
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0002
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0002
      Pressure at top/bottom of domain: -3.26e-14 Pa, 6.31e+05 Pa
      Computing dynamic topography      
 
@@ -171,8 +171,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 0.00168053
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0003
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0003
      Pressure at top/bottom of domain: -5.122e-14 Pa, 6.31e+05 Pa
      Computing dynamic topography      
 
@@ -183,8 +183,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000317032
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0004
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0004
      Pressure at top/bottom of domain: -3.539e-13 Pa, 6.31e+05 Pa
      Computing dynamic topography      
 
@@ -195,8 +195,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 6: 6.12444e-05
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0005
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0005
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0005
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0005
      Pressure at top/bottom of domain: -1.785e-13 Pa, 6.31e+05 Pa
      Computing dynamic topography      
 
@@ -207,8 +207,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 7: 1.2047e-05
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0006
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0006
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0006
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0006
      Pressure at top/bottom of domain: -1.599e-13 Pa, 6.31e+05 Pa
      Computing dynamic topography      
 
@@ -219,8 +219,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 8: 2.40272e-06
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00002.0007
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00002.0007
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0007
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0007
      Pressure at top/bottom of domain: -5.2e-13 Pa, 6.31e+05 Pa
      Computing dynamic topography      
 
@@ -233,8 +233,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.647102
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0000
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00003.0000
      Pressure at top/bottom of domain: -2.577e-13 Pa, 6.25e+05 Pa
      Computing dynamic topography      
 
@@ -245,8 +245,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0271297
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0001
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00003.0001
      Pressure at top/bottom of domain: 4.967e-14 Pa, 6.25e+05 Pa
      Computing dynamic topography      
 
@@ -257,8 +257,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00147209
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0002
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00003.0002
      Pressure at top/bottom of domain: -3.244e-13 Pa, 6.25e+05 Pa
      Computing dynamic topography      
 
@@ -269,8 +269,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000143673
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0003
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00003.0003
      Pressure at top/bottom of domain: -3.912e-13 Pa, 6.25e+05 Pa
      Computing dynamic topography      
 
@@ -281,8 +281,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 5: 1.83012e-05
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0004
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00003.0004
      Pressure at top/bottom of domain: 2.173e-13 Pa, 6.25e+05 Pa
      Computing dynamic topography      
 
@@ -293,8 +293,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 6: 2.45329e-06
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00003.0005
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00003.0005
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0005
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00003.0005
      Pressure at top/bottom of domain: 1.459e-13 Pa, 6.25e+05 Pa
      Computing dynamic topography      
 
@@ -307,8 +307,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.594093
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0000
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00004.0000
      Pressure at top/bottom of domain: -4.455e-13 Pa, 6.212e+05 Pa
      Computing dynamic topography      
 
@@ -319,8 +319,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0150718
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0001
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00004.0001
      Pressure at top/bottom of domain: -6.814e-13 Pa, 6.211e+05 Pa
      Computing dynamic topography      
 
@@ -331,8 +331,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00104033
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0002
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00004.0002
      Pressure at top/bottom of domain: -1.242e-13 Pa, 6.211e+05 Pa
      Computing dynamic topography      
 
@@ -343,8 +343,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 9.98032e-05
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0003
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00004.0003
      Pressure at top/bottom of domain: -1.614e-13 Pa, 6.211e+05 Pa
      Computing dynamic topography      
 
@@ -355,8 +355,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 5: 1.05543e-05
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0004
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00004.0004
      Pressure at top/bottom of domain: -9.468e-14 Pa, 6.211e+05 Pa
      Computing dynamic topography      
 
@@ -367,8 +367,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 6: 1.12433e-06
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00004.0005
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00004.0005
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0005
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00004.0005
      Pressure at top/bottom of domain: -1.506e-13 Pa, 6.211e+05 Pa
      Computing dynamic topography      
 
@@ -381,8 +381,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.383226
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0000
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00005.0000
      Pressure at top/bottom of domain: 1.63e-13 Pa, 6.186e+05 Pa
      Computing dynamic topography      
 
@@ -393,8 +393,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0120047
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0001
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00005.0001
      Pressure at top/bottom of domain: -1.04e-13 Pa, 6.186e+05 Pa
      Computing dynamic topography      
 
@@ -405,8 +405,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000929408
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0002
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00005.0002
      Pressure at top/bottom of domain: -1.692e-13 Pa, 6.186e+05 Pa
      Computing dynamic topography      
 
@@ -417,8 +417,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 9.01498e-05
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0003
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00005.0003
      Pressure at top/bottom of domain: -2.282e-13 Pa, 6.186e+05 Pa
      Computing dynamic topography      
 
@@ -429,8 +429,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 5: 9.03192e-06
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00005.0004
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00005.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00005.0004
      Pressure at top/bottom of domain: 2.359e-13 Pa, 6.186e+05 Pa
      Computing dynamic topography      
 
@@ -443,8 +443,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.258279
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0000
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00006.0000
      Pressure at top/bottom of domain: -2.39e-13 Pa, 6.17e+05 Pa
      Computing dynamic topography      
 
@@ -455,8 +455,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00805902
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0001
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00006.0001
      Pressure at top/bottom of domain: -2.856e-13 Pa, 6.17e+05 Pa
      Computing dynamic topography      
 
@@ -467,8 +467,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000630225
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0002
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00006.0002
      Pressure at top/bottom of domain: -2.049e-13 Pa, 6.17e+05 Pa
      Computing dynamic topography      
 
@@ -479,8 +479,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 6.03151e-05
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0003
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00006.0003
      Pressure at top/bottom of domain: -2.716e-13 Pa, 6.17e+05 Pa
      Computing dynamic topography      
 
@@ -491,8 +491,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 5: 5.95712e-06
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00006.0004
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00006.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00006.0004
      Pressure at top/bottom of domain: -4.191e-14 Pa, 6.17e+05 Pa
      Computing dynamic topography      
 
@@ -505,8 +505,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.159808
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0000
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00007.0000
      Pressure at top/bottom of domain: 2.266e-13 Pa, 6.16e+05 Pa
      Computing dynamic topography      
 
@@ -517,8 +517,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00550759
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0001
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00007.0001
      Pressure at top/bottom of domain: -3.632e-13 Pa, 6.161e+05 Pa
      Computing dynamic topography      
 
@@ -529,8 +529,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000439483
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0002
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00007.0002
      Pressure at top/bottom of domain: -3.104e-15 Pa, 6.161e+05 Pa
      Computing dynamic topography      
 
@@ -541,8 +541,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 4.12574e-05
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0003
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00007.0003
      Pressure at top/bottom of domain: 2.406e-13 Pa, 6.161e+05 Pa
      Computing dynamic topography      
 
@@ -553,8 +553,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 5: 3.96441e-06
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00007.0004
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00007.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00007.0004
      Pressure at top/bottom of domain: 1.521e-13 Pa, 6.161e+05 Pa
      Computing dynamic topography      
 
@@ -567,8 +567,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0961601
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0000
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00008.0000
      Pressure at top/bottom of domain: -6.985e-14 Pa, 6.155e+05 Pa
      Computing dynamic topography      
 
@@ -579,8 +579,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00400586
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0001
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00008.0001
      Pressure at top/bottom of domain: 1.816e-13 Pa, 6.155e+05 Pa
      Computing dynamic topography      
 
@@ -591,8 +591,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000325253
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0002
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00008.0002
      Pressure at top/bottom of domain: 5.433e-14 Pa, 6.155e+05 Pa
      Computing dynamic topography      
 
@@ -603,8 +603,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 2.93572e-05
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0003
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00008.0003
      Pressure at top/bottom of domain: -2.018e-13 Pa, 6.155e+05 Pa
      Computing dynamic topography      
 
@@ -615,8 +615,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 5: 2.67649e-06
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00008.0004
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00008.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00008.0004
      Pressure at top/bottom of domain: -8.692e-14 Pa, 6.155e+05 Pa
      Computing dynamic topography      
 
@@ -629,8 +629,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0590716
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0000
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00009.0000
      Pressure at top/bottom of domain: 6.209e-14 Pa, 6.152e+05 Pa
      Computing dynamic topography      
 
@@ -641,8 +641,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00294368
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0001
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00009.0001
      Pressure at top/bottom of domain: -1.816e-13 Pa, 6.152e+05 Pa
      Computing dynamic topography      
 
@@ -653,8 +653,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000236209
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0002
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00009.0002
      Pressure at top/bottom of domain: -4.936e-13 Pa, 6.152e+05 Pa
      Computing dynamic topography      
 
@@ -665,8 +665,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 2.00694e-05
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0003
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00009.0003
      Pressure at top/bottom of domain: 1.242e-13 Pa, 6.152e+05 Pa
      Computing dynamic topography      
 
@@ -677,8 +677,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 5: 1.70762e-06
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00009.0004
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00009.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00009.0004
      Pressure at top/bottom of domain: -1.009e-13 Pa, 6.152e+05 Pa
      Computing dynamic topography      
 
@@ -691,8 +691,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0416316
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0000
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00010.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00010.0000
      Pressure at top/bottom of domain: 1.055e-13 Pa, 6.15e+05 Pa
      Computing dynamic topography      
 
@@ -703,8 +703,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00224469
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0001
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00010.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00010.0001
      Pressure at top/bottom of domain: -2.98e-13 Pa, 6.15e+05 Pa
      Computing dynamic topography      
 
@@ -715,8 +715,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000170268
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0002
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00010.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00010.0002
      Pressure at top/bottom of domain: -2.608e-13 Pa, 6.15e+05 Pa
      Computing dynamic topography      
 
@@ -727,8 +727,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 1.33117e-05
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0003
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00010.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00010.0003
      Pressure at top/bottom of domain: 4.812e-14 Pa, 6.15e+05 Pa
      Computing dynamic topography      
 
@@ -739,8 +739,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 5: 1.04354e-06
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00010.0004
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00010.0004
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00010.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00010.0004
      Pressure at top/bottom of domain: -1.273e-13 Pa, 6.15e+05 Pa
      Computing dynamic topography      
 
@@ -753,8 +753,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0254169
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0000
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00011.0000
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00011.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00011.0000
      Pressure at top/bottom of domain: 8.537e-14 Pa, 6.149e+05 Pa
      Computing dynamic topography      
 
@@ -765,8 +765,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00111551
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0001
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00011.0001
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00011.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00011.0001
      Pressure at top/bottom of domain: 3.57e-14 Pa, 6.149e+05 Pa
      Computing dynamic topography      
 
@@ -777,8 +777,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 6.51037e-05
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0002
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00011.0002
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00011.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00011.0002
      Pressure at top/bottom of domain: -8.227e-14 Pa, 6.149e+05 Pa
      Computing dynamic topography      
 
@@ -789,8 +789,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 3.9168e-06
 
    Postprocessing:
-     Writing graphical output:         output-postprocess_iterations_iterated_IMPES/solution/solution-00011.0003
-     Writing heat flux map:            output-postprocess_iterations_iterated_IMPES/heat_flux.00011.0003
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00011.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00011.0003
      Pressure at top/bottom of domain: -1.211e-13 Pa, 6.149e+05 Pa
      Computing dynamic topography      
 

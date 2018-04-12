@@ -135,7 +135,7 @@ namespace aspect
     assemblers (new Assemblers::Manager<dim>()),
     parameters (prm, mpi_communicator_),
     melt_handler (parameters.include_melt_transport ? new MeltHandler<dim> (prm) : NULL),
-    newton_handler (parameters.nonlinear_solver == NonlinearSolver::Newton_Stokes ? new NewtonHandler<dim> () : NULL),
+    newton_handler (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ? new NewtonHandler<dim> () : NULL),
     post_signal_creation(
       std_cxx11::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
                        std_cxx11::ref(signals))),
@@ -189,7 +189,7 @@ namespace aspect
 
     rebuild_stokes_matrix (true),
     assemble_newton_stokes_matrix (true),
-    assemble_newton_stokes_system (parameters.nonlinear_solver == NonlinearSolver::Newton_Stokes ? true : false),
+    assemble_newton_stokes_system (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ? true : false),
     rebuild_stokes_preconditioner (true)
   {
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
@@ -206,6 +206,7 @@ namespace aspect
 
     // now that we have output set up, we can start timer sections
     TimerOutput::Scope timer (computing_timer, "Initialization");
+
 
     // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it and
     // call the initialize() functions immediately after.
@@ -282,16 +283,17 @@ namespace aspect
     boundary_velocity_manager.parse_parameters (prm);
 
     // Make sure we only have a prescribed Stokes plugin if needed
-    if (parameters.nonlinear_solver==NonlinearSolver::Advection_only)
+    if (parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes)
       {
         AssertThrow(prescribed_stokes_solution.get()!=NULL,
-                    ExcMessage("For 'Advection only' solver you need to provide a Stokes plugin")
+                    ExcMessage("For the 'single Advection, no Stokes' solver scheme you need to provide a Stokes plugin!")
                    );
       }
     else
       {
         AssertThrow(prescribed_stokes_solution.get()==NULL,
-                    ExcMessage("The prescribed stokes plugin you selected only works with solver type 'Advection only' ")
+                    ExcMessage("The prescribed stokes plugin you selected only works with the solver "
+                               "scheme 'single Advection, no Stokes'.")
                    );
       }
 
@@ -330,7 +332,7 @@ namespace aspect
 
     // If the solver type is a Newton type of solver, we need to set make sure
     // assemble_newton_stokes_system set to true.
-    if (parameters.nonlinear_solver == NonlinearSolver::Newton_Stokes)
+    if (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes)
       {
         assemble_newton_stokes_system = true;
         newton_handler->initialize_simulator(*this);
@@ -808,13 +810,10 @@ namespace aspect
     // - all velocities couple with all velocities
     // - pressure couples with all velocities and the other way
     //   around
-    // - temperature only couples with itself when using the IMPES
-    //   scheme
+    // - temperature only couples with itself
     // - compositional fields only couple with themselves
-    // this is also valid in the case of melt transport (for the
-    // fluid and the compaction pressure
-    // additionally, fluid pressure and compaction pressures couple
-    // with themselves
+    // - additionally, in models with melt transport fluid pressure
+    //   and compaction pressures couple with themselves
     {
       const typename Introspection<dim>::ComponentIndices &x
         = introspection.component_indices;
@@ -1492,39 +1491,39 @@ namespace aspect
 
     switch (parameters.nonlinear_solver)
       {
-        case NonlinearSolver::IMPES:
+        case NonlinearSolver::single_Advection_single_Stokes:
         {
-          solve_IMPES();
+          solve_single_advection_single_stokes();
           break;
         }
 
-        case NonlinearSolver::Stokes_only:
+        case NonlinearSolver::no_Advection_iterated_Stokes:
         {
-          solve_stokes_only();
+          solve_no_advection_iterated_stokes();
           break;
         }
 
-        case NonlinearSolver::iterated_IMPES:
+        case NonlinearSolver::iterated_Advection_and_Stokes:
         {
-          solve_iterated_IMPES();
+          solve_iterated_advection_and_stokes();
           break;
         }
 
-        case NonlinearSolver::iterated_Stokes:
+        case NonlinearSolver::single_Advection_iterated_Stokes:
         {
-          solve_iterated_stokes();
+          solve_single_advection_iterated_stokes();
           break;
         }
 
-        case NonlinearSolver::Newton_Stokes:
+        case NonlinearSolver::iterated_Advection_and_Newton_Stokes:
         {
-          solve_newton_stokes();
+          solve_iterated_advection_and_newton_stokes();
           break;
         }
 
-        case NonlinearSolver::Advection_only:
+        case NonlinearSolver::single_Advection_no_Stokes:
         {
-          solve_advection_only();
+          solve_single_advection_no_stokes();
           break;
         }
 

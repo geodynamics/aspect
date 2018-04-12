@@ -19,7 +19,7 @@ set End time                               = 2
 set Use years in output instead of seconds = true
 set Use direct solver for Stokes system    = false
 set Adiabatic surface temperature          = 1600 
-set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 50
 set Maximum time step                      = 1
 

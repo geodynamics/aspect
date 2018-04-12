@@ -14,7 +14,7 @@ subsection Prescribed Stokes solution
   set Function expression = 0;1
   end
 end
-set Nonlinear solver scheme                = Advection only
+set Nonlinear solver scheme                = single Advection, no Stokes
 
 
 subsection Geometry model

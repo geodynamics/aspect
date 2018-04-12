@@ -1996,7 +1996,7 @@ namespace aspect
 
     const std::set<types::boundary_id> all_boundary_indicators
       = geometry_model->get_used_boundary_indicators();
-    if (parameters.nonlinear_solver!=NonlinearSolver::Advection_only)
+    if (parameters.nonlinear_solver != NonlinearSolver::single_Advection_no_Stokes)
       {
         // next make sure that all listed indicators are actually used by
         // this geometry
@@ -2014,7 +2014,8 @@ namespace aspect
         // next make sure that there are no listed indicators
         for (unsigned  int i = 0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
           AssertThrow (boundary_indicator_lists[i].empty(),
-                       ExcMessage ("With solver type Advection only, one cannot set boundary conditions for velocity."));
+                       ExcMessage ("With the solver scheme `single Advection, no Stokes', "
+                                   "one cannot set boundary conditions for velocity."));
       }
 
 

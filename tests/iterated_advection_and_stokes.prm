@@ -1,15 +1,12 @@
 #########################################################
-# This is a model setup to test the iterated IMPES
-# nonlinear solver scheme when using the direct solver. 
+# This is a model setup to test the iterated Advection and Stokes solver. 
 # Both the calculation of the residuum and the convergence 
-# with prescribed boundary conditions are tested, as well 
-# as agreement with the respective test for the iterative
-# solver (iterated_IMPES).
+# with prescribed boundary conditions are tested.
 
 set Adiabatic surface temperature          = 0               # default: 0
 set CFL number                             = 0.5
 set Composition solver tolerance           = 1e-12
-set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 10
 set Linear solver tolerance                = 1e-12
 
@@ -28,7 +25,7 @@ set Resume computation                     = false
 set Start time                             = 0
 
 set Use years in output instead of seconds = true
-set Use direct solver for Stokes system    = true
+set Use direct solver for Stokes system    = false
 
 subsection Discretization
   set Stokes velocity polynomial degree = 2
