@@ -63,7 +63,7 @@ end
 # Warning: Merge the parameter in the following subsection with any
 # other parameter of the same name, otherwise your model results might change
 subsection Heating model
-  set List of model names = PARAMETER NEEDS MANUAL CHECK:adiabatic heating
+  set List of model names = adiabatic heating
 end
 
 subsection Boundary velocity model
