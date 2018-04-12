@@ -33,10 +33,23 @@ end
 
 
 # Boundary classifications
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
+end
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left x: function, right x:function
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom
+end
+
+subsection Free surface
   set Free surface boundary indicators        = top
 end
 

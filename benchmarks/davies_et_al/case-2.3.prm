@@ -34,13 +34,20 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
-  set Remove nullspace                        = net rotation
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
+subsection Nullspace removal
+  set Remove nullspace                        = net rotation
+end
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0,1
-  set Prescribed velocity boundary indicators = 
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1
-  set Zero velocity boundary indicators       = 
 end
 
 subsection Gravity model

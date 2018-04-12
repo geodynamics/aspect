@@ -101,11 +101,16 @@ subsection Material model
   set Model name = test material
 end
 
-subsection Model settings
-  set Fixed temperature boundary indicators   = 0,1,2,3        # default:  
-  set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function
-  set Tangential velocity boundary indicators = 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 0,1,2,3        # default:  
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function
 end
 
 

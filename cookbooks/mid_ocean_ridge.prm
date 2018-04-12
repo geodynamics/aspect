@@ -83,16 +83,27 @@ end
 
 ##################### Boundary conditions ########################
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Melt settings
   # We want to solve the McKenzie Equations to track the flow of melt. 
   set Include melt transport                  = true
+end
 
+subsection Boundary temperature model
   # We set a fixed temperature at the top of the model domain, and also 
   # prescribe the temperature and composition at the bottom, where material 
   # flows in
   set Fixed temperature boundary indicators   = top, bottom
-  set Fixed composition boundary indicators   = bottom
+end
 
+subsection Boundary composition model
+  set Fixed composition boundary indicators   = bottom
+end
+
+subsection Boundary velocity model
   # To model the divergent velocitiy field of a mid-ocean ridge, we prescribe 
   # the plate velocity (pointing away from the ridge) at the top boundary. 
   # We use a closed boundary with free slip conditions as the left boundary, which 
@@ -102,7 +113,13 @@ subsection Model settings
   # the bottom and right side of the model, so that material can flow in and out 
   # accordning to the flow induced be the moving plate.  
   set Prescribed velocity boundary indicators = top:function
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left
+end
+
+subsection Boundary traction model
   set Prescribed traction boundary indicators = right:initial lithostatic pressure, bottom:initial lithostatic pressure
 end
 

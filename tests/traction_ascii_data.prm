@@ -92,15 +92,20 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 0
 end
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 3
-  set Fixed composition boundary indicators   = 
-  set Prescribed velocity boundary indicators =
+end
 
+subsection Boundary traction model
   set Prescribed traction boundary indicators = 0:ascii data
-  set Tangential velocity boundary indicators = 1,2,3
-  set Zero velocity boundary indicators       = 
+end
 
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 1,2,3
 end
 
 subsection Boundary traction model

@@ -27,8 +27,15 @@ end
 
 
 # Boundary classifications (fixed T boundaries, prescribed velocity) 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom, top, left, right
 end
 
@@ -85,7 +92,7 @@ end
 # See Initial temperature model section for relationship between heat flux, production
 # and initial temperature profile representative of a continental geotherm.
 subsection Heating model
-  set Model name = compositional heating
+  set List of model names = compositional heating
   subsection Compositional heating
     set Use compositional field for heat production averaging = 1, 1
     set Compositional heating values = 0., 1.5e-6

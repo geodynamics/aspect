@@ -53,8 +53,15 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0, 1, 2, 3
+end
+
+subsection Melt settings
   set Include melt transport = true
 end
 

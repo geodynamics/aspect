@@ -232,32 +232,25 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false # default: true
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
+subsection Boundary temperature model
   # A comma separated list of integers denoting those boundaries on which the
   # temperature is fixed and described by the boundary temperature object
   # selected in its own section of this input file. All boundary indicators
   # used by the geometry but not explicitly listed here will end up with
   # no-flux (insulating) boundary conditions.
   set Fixed temperature boundary indicators   = left, right, bottom, top
+end
 
-  # A comma separated list of integers denoting those boundaries on which the
-  # velocity is tangential but prescribed, i.e., where external forces act to
-  # prescribe a particular velocity. This is often used to prescribe a
-  # velocity that equals that of overlying plates.
-  set Prescribed velocity boundary indicators = 
-
+subsection Boundary velocity model
   # A comma separated list of integers denoting those boundaries on which the
   # velocity is tangential and unrestrained, i.e., where no external forces
   # act to prescribe a particular tangential velocity (although there is a
   # force that requires the flow to be tangential).
   set Tangential velocity boundary indicators = left, right, bottom, top
-
-  # A comma separated list of integers denoting those boundaries on which the
-  # velocity is zero.
-  set Zero velocity boundary indicators       = 
 end
 
 

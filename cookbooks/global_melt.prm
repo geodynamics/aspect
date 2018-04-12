@@ -53,15 +53,23 @@ set End time                               = 1.4e8
 # We fix the temperature at the top and bottom boundaries of
 # the box, and prescribe free-slip boundary conditions on all
 # sides. 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top, bottom
-  set Prescribed velocity boundary indicators =
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, top, bottom
-  
+end
+
+subsection Melt settings
   # In addition, we now also specify in the model settings that we want to
   # run a model with melt transport. 
   set Include melt transport                  = true
-end 
+end
 
 ##################### Settings for melt transport ########################
 

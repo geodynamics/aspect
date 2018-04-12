@@ -1,6 +1,10 @@
 ##################### Boundary conditions ########################
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   # To model the divergent velocitiy field of a mid-ocean ridge, we prescribe 
   # the plate velocity (pointing away from the ridge) at the top boundary. 
   # We use a closed boundary with free slip conditions as the left boundary, which 
@@ -10,7 +14,13 @@ subsection Model settings
   # the bottom and right side of the model, so that material can flow in and out 
   # accordning to the flow induced be the moving plate.  
   set Prescribed velocity boundary indicators = top:function
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left
+end
+
+subsection Boundary traction model
   set Prescribed traction boundary indicators = right:initial lithostatic pressure, bottom:initial lithostatic pressure
 end
 

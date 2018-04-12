@@ -25,8 +25,15 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left: function, right:function, bottom:function
+end
+
+subsection Free surface
   set Free surface boundary indicators        = top
 end
 

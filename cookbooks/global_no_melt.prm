@@ -26,11 +26,17 @@ end
 # We fix the temperature at the top and bottom boundaries of
 # the box, and prescribe free-slip boundary conditions on all
 # sides. 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top, bottom
-  set Prescribed velocity boundary indicators =
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, top, bottom
-end 
+end
 
 # We also choose relatively large values for the stabilization parameters:
 # The model resolution is very coarse (in order for this model to run in a 
