@@ -1892,8 +1892,8 @@ namespace aspect
               velocity_selector.insert(*it_selector);
 
             for (std::string::const_iterator
-                 it_selector  = parameters.prescribed_traction_boundary_indicators[*it].first.begin();
-                 it_selector != parameters.prescribed_traction_boundary_indicators[*it].first.end();
+                 it_selector  = parameters.prescribed_traction_boundary_indicators.find(*it)->second.first.begin();
+                 it_selector != parameters.prescribed_traction_boundary_indicators.find(*it)->second.first.end();
                  ++it_selector)
               traction_selector.insert(*it_selector);
 
@@ -2155,7 +2155,7 @@ namespace aspect
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
   template void Simulator<dim>::compute_reactions(); \
   template void Simulator<dim>::check_consistency_of_formulation(); \
-  template void Simulator<dim>::check_consistency_of_boundary_conditions(); \
+  template void Simulator<dim>::check_consistency_of_boundary_conditions() const; \
   template double Simulator<dim>::compute_initial_newton_residual(const LinearAlgebra::BlockVector &linearized_stokes_initial_guess); \
   template double Simulator<dim>::compute_Eisenstat_Walker_linear_tolerance(const bool EisenstatWalkerChoiceOne, \
                                                                             const double maximum_linear_stokes_solver_tolerance, \
