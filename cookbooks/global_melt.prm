@@ -29,14 +29,15 @@ set Number of cheap Stokes solver steps    = 100
 # time scale than the flow of melt, so we want to decouple the advection
 # of melt (and temperature) and the melting process itself. To do that, 
 # we use the operator splitting scheme, and define that for every 
-# advection time step, we want to do at least 50 reaction time step, 
-# and in addition, we limit the maximum reaction time step size to 
-# 500,000 years. 
+# advection time step, we want to do at least 10 reaction time steps. 
+# If these time steps would be larger than 10,000 years, we will do 
+# more reaction time steps (so that reaction time step size never exceeds 
+# 10,000 years). 
 set Use operator splitting                     = true
 subsection Solver parameters
   subsection Operator splitting parameters
-    set Reaction time step                     = 1e5
-    set Reaction time steps per advection step = 50
+    set Reaction time step                     = 1e4
+    set Reaction time steps per advection step = 10
   end
 end
 
@@ -78,23 +79,15 @@ subsection Compositional fields
   set Names of fields = porosity, peridotite
 end
 
-# We choose the degree of the finite element used for compositional fields 
-# as one order lower than the degree of the velocity element. This achieves 
-# the best results for models with melt migration, because in this case the 
-# porosity and the divergence of the velocity, which is contained in the 
-# porosity advection equation as a source term, are in the same function space, 
-# and no interpolation is necessary. This guarantees that no melt is generated 
-# for a divergence-free velocity field.
 subsection Discretization
-  set Stokes velocity polynomial degree    = 2
-  set Composition polynomial degree        = 1
-
   # We also choose relatively large values for the stabilization parameters:
   # The model resolution is very coarse (in order for this model to run in a 
   # short time), so we want to make sure that no temperature over- and 
   # undershoots will develop. In a model with melting this would be 
   # particularly problematic, as large amounts of melt could be generated
   # by temperature spikes. 
+  # However, note that in an application model with a higher resolution, 
+  # we would choose much smaller values for the stabilization parameters. 
   subsection Stabilization parameters
     set beta  = 0.5
     set cR    = 1
@@ -279,6 +272,12 @@ subsection Material model
     # model this using a simplified, linear relationship, saying that to melt 100%
     # of the rock the temperature has to be 200 K higher than to melt it initially.
     set Depletion solidus change          = 200
+
+    # We also have to determine how fast melting and freezing should happen. 
+    # Here, we choose a time scale of 10,000 years, which is a relatively long time
+    # (or in other words, slow melting rate), but because this is a global model
+    # and the time steps are big, it should be sufficient. 
+    set Melting time scale for operator splitting = 1e4
   end
 end
 
@@ -288,7 +287,7 @@ end
 # We make use of two different refinement criteria: we set a minimum of 4 global
 # refinements everywhere in the model (which is the same resolution as for the 
 # model without melt), and we refine in regions where melt is present, to be 
-# precise, everywhere where the porosity is bigger than 1e-4. 
+# precise, everywhere where the porosity is bigger than 1e-5. 
 # We adapt the mesh every 5 time steps. 
 subsection Mesh refinement
   set Coarsening fraction                      = 0.05
@@ -306,9 +305,9 @@ subsection Mesh refinement
     set Variable names      = depth,phi
   end
 
-  # refine where the porosity is bigger than 1e-4
+  # refine where the porosity is bigger than 1e-5
   subsection Composition threshold
-    set Compositional field thresholds = 1e-4,1.0
+    set Compositional field thresholds = 1e-5,1.0
   end
 end
 
@@ -344,7 +343,7 @@ subsection Postprocess
     end
 
     subsection Melt material properties
-      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
+      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity, p_c
     end
 
     set Number of grouped files       = 0
