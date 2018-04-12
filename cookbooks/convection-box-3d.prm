@@ -62,15 +62,15 @@ subsection Initial temperature model
 end
 
 
-# Then follows a section that describes the boundary conditions
-# for the temperature. The model we choose is called 'box' and
-# allows to set a constant temperature on each of the four sides
-# of the box geometry. In our case, we choose something that is
-# heated from below and cooled from above. (As will be seen
-# in the next section, the actual temperature prescribed here
-# at the left and right does not matter.)
+# Then follows a section that describes the boundary conditions for the
+# temperature. The model we choose is called 'box' and allows to set a constant
+# temperature on each of the four sides of the box geometry. In our case, we
+# choose something that is heated from below and cooled from above. 
+# All other parts of the boundary are insulated (i.e., no heat flux through
+# these boundaries; this is also often used to specify symmetry boundaries).
 subsection Boundary temperature model
   set List of model names = box
+  set Fixed temperature boundary indicators   = bottom, top
 
   subsection Box
     set Bottom temperature = 1
@@ -81,18 +81,11 @@ subsection Boundary temperature model
 end
 
 
-# We then also have to prescribe several other parts of the model such as
-# which boundaries actually carry a prescribed boundary temperature, whereas
-# all other parts of the boundary are insulated (i.e., no heat flux through
-# these boundaries; this is also often used to specify symmetry boundaries).
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = bottom, top
-end
-
+# The next parameters then describe on which parts of the
+# boundary we prescribe a zero or nonzero velocity and
+# on which parts the flow is allowed to be tangential.
+# Here, all six sides of the box allow tangential
+# unrestricted flow but with a zero normal component:
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, front, back, bottom, top
 end

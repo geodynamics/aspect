@@ -39,10 +39,6 @@ subsection Solver parameters
   end
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Melt settings
   # In addition, we now also specify in the model settings that we want to
   # run a model with melt transport. 

@@ -17,6 +17,7 @@ set Use years in output instead of seconds = true
 set Additional shared libraries = ./libcrameri_benchmark_1.so
 
 subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top
   set List of model names = constant
   subsection Constant
     set Boundary indicator to temperature mappings = left:0, right:0, bottom:0, top:0
@@ -94,27 +95,13 @@ subsection Mesh refinement
 end
 
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = bottom, top
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = bottom
 end
 
 subsection Free surface
   set Free surface boundary indicators = top
-end
-
-subsection Free surface
   set Free surface stabilization theta = 0.5
 end
 

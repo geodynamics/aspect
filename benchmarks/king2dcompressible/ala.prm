@@ -166,8 +166,9 @@ end
 
 # We prescibe the adiabatic surface temperature as top temperature
 # and the (nondimensional) temperature change across the boundary 
-# is set to 1.
+# is set to 1 (with no flux conditions at the sides).
 subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
   set List of model names = box
 
   subsection Box
@@ -178,17 +179,7 @@ subsection Boundary temperature model
   end
 end
 
-# The temperature is prescribed at top and bottom (with no flux
-# conditions at the sides), and the velocity boundary conditions
-# are free slip on all bounadries. 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = top, bottom
-end
-
+# The velocity boundary conditions are free slip on all boundaries.
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, top, bottom
 end

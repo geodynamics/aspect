@@ -11,7 +11,9 @@ set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, single Stokes
 
 subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
   set List of model names = box
+
   subsection Box
     set Top temperature = 0.0
     set Bottom temperature = 1000.0
@@ -82,14 +84,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 10                       # default: 10
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = bottom, top
-end
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom, top

@@ -1,17 +1,5 @@
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary composition model
   set Fixed composition boundary indicators   = bottom
-end
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = bottom, top
-end
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = left x: function, right x:function, bottom y:function
 end
 
 subsection Free surface
@@ -19,6 +7,7 @@ subsection Free surface
 end
 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x: function, right x:function, bottom y:function
   subsection Function
     set Variable names      = x,y
     set Function constants  = cm=0.01, year=1
@@ -27,6 +16,7 @@ subsection Boundary velocity model
 end
 
 subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top
   set List of model names = box
   subsection Box
     set Bottom temperature = 1573

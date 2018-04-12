@@ -7,6 +7,7 @@ set Use years in output instead of seconds = true
 
 
 subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
   set List of model names = spherical constant
 
   subsection Spherical constant
@@ -80,14 +81,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = top, bottom
-end
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = top, bottom, left, right

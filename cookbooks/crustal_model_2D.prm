@@ -25,25 +25,15 @@ subsection Geometry model
   end
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = left: function, right:function, bottom:function
-end
-
-subsection Free surface
-  set Free surface boundary indicators        = top
-end
-
 
 # Advecting the free surface vertically rather than
 # in the surface normal direction can result in a
 # more stable mesh when the deformation is large
 subsection Free surface
+  set Free surface boundary indicators = top
   set Surface velocity projection = vertical
 end
+
 
 subsection Material model
 #  set Model name = viscoplastic 
@@ -64,6 +54,7 @@ subsection Material model
   end
 end
 
+
 subsection Gravity model
   set Model name = vertical
   subsection Vertical
@@ -73,6 +64,8 @@ end
 
 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left: function, right:function, bottom:function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = cm=0.01, year=1 

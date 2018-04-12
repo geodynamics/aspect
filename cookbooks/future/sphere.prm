@@ -23,17 +23,10 @@ subsection Geometry model
 end
 
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = top
 end
 
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = top
-end
 
 subsection Nullspace removal
   set Remove nullspace = net rotation
@@ -41,7 +34,9 @@ end
 
 
 subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top
   set List of model names = constant
+
   subsection Constant
     set Boundary indicator to temperature mappings = top: 0.0 
   end
@@ -59,7 +54,6 @@ end
 subsection Gravity model
   set Model name = radial linear
   subsection Radial linear
-    set Magnitude at bottom = 0.0
     set Magnitude at bottom = 0.0
     set Magnitude at surface = 4.5
   end

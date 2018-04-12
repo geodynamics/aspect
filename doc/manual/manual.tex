@@ -5751,11 +5751,13 @@ topography on the free surface at every time step.
 
 The bulk of the parameter file for this cookbook is similar to previous ones in this manual.
 We use initial temperature conditions that set up a hot blob of rock in the center of the 
-domain. In the \texttt{Model settings} section you need to give \aspect{} a comma 
-separated list of the free surface boundary indicators.  In this case, we are 
-dealing with the top boundary of a box in 2D, corresponding to boundary indicator 3.  
+domain.
 
-The main addition is the \texttt{Free surface} subsection.  There is one main
+The main addition is the \texttt{Free surface} subsection.
+In this subsection you need to give \aspect{} a comma
+separated list of the free surface boundary indicators.  In this case, we are
+dealing with the `top' boundary of a box in 2D.
+There is another significant
 parameter that needs to be set here: the value for the stabilization parameter ``theta''.
 If this parameter is zero, then there is no stabilization, and you are likely to
 see instabilities develop in the free surface.  If this parameter is one then it
@@ -6898,7 +6900,7 @@ The next section concerns the geometry. The geometry model remains unchanged at
 ``spherical shell'' but we omit the opening angle of 90 degrees as we would like
 to get a complete spherical shell. Such a shell of course also only has two
 boundaries (the inner one has indicator zero, the outer one indicator one) and
-consequently these are the only ones we need to list in the ``Model settings''
+consequently these are the only ones we need to list in the ``Boundary velocity model''
 section:
 
 \lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/part2.part.prm.out}
@@ -7377,7 +7379,7 @@ The relevant section of the input file is then as follows:
 
 \lstinputlisting[language=prmfile]{cookbooks/gplates/gplates.part.prm.out}
 
-In the model settings subsection the user prescribes the boundary that is supposed to 
+In the ``Boundary velocity model'' subsection the user prescribes the boundary that is supposed to
 use the GPlates plugin. Although currently nothing forbids the user to use GPlates plugin for other
 boundaries than the surface, its current usage and the provided sample data only make sense
 for the surface of a spherical shell (boundary number 1 in the above provided parameter file). 
@@ -9475,11 +9477,11 @@ of the entire system satisfies the Stokes equations with their boundary
 conditions. In other words, the solution of the problem is not unique: given a
 solution, adding a solid body rotation yields another solution. We select
 arbitrarily the one that has no net rotation (see
-Section~\ref{parameters:Model_20settings}). The section in the input file 
+Section~\ref{parameters:Nullspace_20removal}). The section in the input file
 that is relevant is then as follows (the full input file resides at
 \url{benchmarks/davies_et_al/case-2.1.prm}):
 \index[prmindex]{Remove nullspace}
-\index[prmindexfull]{Model settings!Remove nullspace}
+\index[prmindexfull]{Nullspace removal!Remove nullspace}
 
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/case-2.1.prm.out}
 
@@ -11034,7 +11036,7 @@ plugins above.
 \label{sec:prescribed-velocity-boundary-conditions}
 
 \index[prmindex]{Prescribed velocity boundary indicators}
-\index[prmindexfull]{Model settings!Prescribed velocity boundary indicators}
+\index[prmindexfull]{Boundary velocity model!Prescribed velocity boundary indicators}
 
 Most of the time, one chooses relatively simple boundary values for the
 velocity: either a zero boundary velocity, a tangential flow model in which
@@ -11106,7 +11108,7 @@ plugins above.
 \label{sec:temperature-boundary-conditions}
 
 \index[prmindex]{Fixed temperature boundary indicators}
-\index[prmindexfull]{Model settings!Fixed temperature boundary indicators}
+\index[prmindexfull]{Boundary temperature model!Fixed temperature boundary indicators}
 The boundary conditions are responsible for describing the temperature values
 at those parts of the boundary at which the temperature is fixed (see
 Section~\ref{sec:geometry-models} for how it is determined which parts of the

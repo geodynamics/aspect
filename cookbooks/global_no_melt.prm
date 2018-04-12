@@ -23,17 +23,8 @@ subsection Solver parameters
   end
 end
 
-# We fix the temperature at the top and bottom boundaries of
-# the box, and prescribe free-slip boundary conditions on all
+# We fix prescribe free-slip boundary conditions on all
 # sides. 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = top, bottom
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, top, bottom
 end
@@ -85,8 +76,9 @@ end
 
 # As boundary conditions for the temperature, we just use the
 # initial conditions again. This temperature is applied as a prescribed
-# temperature at the top and bottom boundary, as specified above.
+# temperature at the top and bottom boundary.
 subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
   set List of model names = initial temperature
 
   subsection Initial temperature
