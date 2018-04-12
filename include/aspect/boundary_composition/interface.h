@@ -98,7 +98,7 @@ namespace aspect
         double
         boundary_composition (const types::boundary_id boundary_indicator,
                               const Point<dim> &position,
-                              const unsigned int compositional_field) const;
+                              const unsigned int compositional_field) const = 0;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -199,6 +199,20 @@ namespace aspect
                                        void (*declare_parameters_function) (ParameterHandler &),
                                        Interface<dim> *(*factory_function) ());
 
+        /**
+         * Returns whether a given composition has a prescribed boundary
+         * condition at the given boundary.
+         */
+        bool
+        has_boundary_composition(const types::boundary_id boundary_id,
+                                 const unsigned int       compositional_index) const;
+
+        /**
+         * Return a set of boundary indicators for which any (not necessarily
+         * all) compositional fields are prescribed.
+         */
+        const std::set<types::boundary_id> &
+        get_fixed_composition_boundary_indicators() const;
 
         /**
          * Return a list of names of all boundary composition models currently
@@ -249,6 +263,12 @@ namespace aspect
                         << "> among the names of registered boundary composition objects.");
       private:
         /**
+         * A set of boundary indicators for which prescribed compositions
+         * have been selected.
+         */
+        std::set<types::boundary_id> fixed_composition_boundary_indicators;
+
+        /**
          * A list of boundary composition objects that have been requested in the
          * parameter file.
          */
@@ -258,7 +278,7 @@ namespace aspect
          * A list of names of boundary composition objects that have been requested
          * in the parameter file.
          */
-        std::vector<std::string> model_names;
+        std::vector<std::string> boundary_composition_names;
 
         /**
          * A list of enums of boundary composition operators that have been
@@ -266,7 +286,18 @@ namespace aspect
          * with a model_name, and is used to modify the composition
          * boundary with the values from the current plugin.
          */
-        std::vector<aspect::Utilities::Operator> model_operators;
+        std::vector<aspect::Utilities::Operator> boundary_composition_operators;
+
+        /**
+         * A vector of maps between fixed_composition_boundary_indicators and one or more
+         * indices into the boundary_composition_names,
+         * boundary_composition_objects, and boundary_composition_operators vectors.
+         * Each entry of the vector is responsible for one compositional field,
+         * therefore there are n_compositional_field entries.
+         * This structure stores which plugins are active for which boundary and
+         * which composition.
+         */
+        std::vector<std::multimap<types::boundary_id,unsigned int> > boundary_composition_maps;
     };
 
 

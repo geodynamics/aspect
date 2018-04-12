@@ -28,6 +28,8 @@
 #include <deal.II/fe/fe_dgp.h>
 #include <deal.II/base/std_cxx1x/tuple.h>
 
+#include <boost/lexical_cast.hpp>
+
 namespace aspect
 {
   namespace internal
@@ -252,6 +254,28 @@ namespace aspect
                              " you asked for is not used in the simulation."));
 
     return (it - composition_names.begin());
+  }
+
+  template <int dim>
+  unsigned int
+  Introspection<dim>::compositional_index_for_string (const std::string &name) const
+  {
+    const std::vector<std::string>::const_iterator
+    it = std::find(composition_names.begin(), composition_names.end(), name);
+
+    if (it != composition_names.end())
+      return (it - composition_names.begin());
+
+    unsigned int index;
+    if (boost::conversion::try_lexical_convert(name,index))
+      return index;
+    else
+      AssertThrow (false,
+                   ExcMessage ("The compositional string " + name +
+                               " you asked for is neither a name, nor an index "
+                               "of a compositional field in the simulation."));
+
+    return numbers::invalid_unsigned_int;
   }
 
   template <int dim>

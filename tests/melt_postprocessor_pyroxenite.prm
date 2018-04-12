@@ -80,7 +80,7 @@ subsection Boundary temperature model
 end
 
 subsection Boundary composition model
-  set List of model names = box
+  set List of model names =
 end
 
 subsection Model settings
