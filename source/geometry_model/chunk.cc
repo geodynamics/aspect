@@ -42,6 +42,13 @@ namespace aspect
     {}
 
     template <int dim>
+    Chunk<dim>::ChunkGeometry::ChunkGeometry(const ChunkGeometry &other)
+      :
+      ChartManifold<dim,dim>(other),
+      point1_lon(other.point1_lon)
+    {}
+
+    template <int dim>
     DerivativeForm<1,dim,dim>
     Chunk<dim>::ChunkGeometry::
     push_forward_gradient(const Point<dim> &chart_point) const
@@ -166,6 +173,16 @@ namespace aspect
     {
       point1_lon = p1_lon;
     }
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+    template <int dim>
+    std::unique_ptr<Manifold<dim,dim> >
+    Chunk<dim>::ChunkGeometry::
+    clone() const
+    {
+      return std_cxx14::make_unique<ChunkGeometry>(*this);
+    }
+#endif
 
 #if !DEAL_II_VERSION_GTE(9,0,0)
     template <int dim>
@@ -540,7 +557,6 @@ namespace aspect
 
       return true;
     }
-
 
     template <int dim>
     void

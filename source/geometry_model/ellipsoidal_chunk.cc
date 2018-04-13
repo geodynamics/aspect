@@ -43,7 +43,7 @@ namespace aspect
      * the EllipsoidalChunkGeometry class
      */
 
-    // constructor
+    // Constructor
     template <int dim>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::EllipsoidalChunkGeometry()
       :
@@ -52,6 +52,17 @@ namespace aspect
       semi_minor_axis_b (-1),
       bottom_depth (-1)
     {}
+
+    // Copy constructor
+    template <int dim>
+    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::EllipsoidalChunkGeometry(const EllipsoidalChunkGeometry &other)
+      :
+      ChartManifold<dim,3,3>(other)
+    {
+      this->initialize(other.topography);
+      this->set_manifold_parameters(other.semi_major_axis_a, other.eccentricity, other.semi_minor_axis_b,
+                                    other.bottom_depth, other.corners);
+    }
 
 
     template <int dim>
@@ -183,6 +194,15 @@ namespace aspect
       AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points."));
       return push_forward_ellipsoid (push_forward_topography(chart_point), semi_major_axis_a, eccentricity);
     }
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+    template <int dim>
+    std::unique_ptr<Manifold<dim,3> >
+    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::clone() const
+    {
+      return std_cxx14::make_unique<EllipsoidalChunkGeometry>(*this);
+    }
+#endif
 
     template <int dim>
     void
