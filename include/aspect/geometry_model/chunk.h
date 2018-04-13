@@ -274,7 +274,15 @@ namespace aspect
         class ChunkGeometry : public ChartManifold<dim,dim>
         {
           public:
+            /**
+             * Constructor
+             */
             ChunkGeometry();
+
+            /**
+             * Copy constructor
+             */
+            ChunkGeometry(const ChunkGeometry &other);
 
             virtual
             Point<dim>
@@ -291,6 +299,15 @@ namespace aspect
             virtual
             void
             set_min_longitude(const double p1_lon);
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+            /**
+            * Return a copy of this manifold.
+            */
+            virtual
+            std::unique_ptr<Manifold<dim,dim> >
+            clone() const;
+#endif
 
           private:
             // The minimum longitude of the domain
