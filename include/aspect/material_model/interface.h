@@ -353,20 +353,6 @@ namespace aspect
       std::vector<double> viscosities;
 
       /**
-       * Stress-strain "director" tensors at the given positions. This
-       * variable can be used to implement exotic rheologies such as
-       * anisotropic viscosity.
-       *
-       * @note The strain rate term in equation (1) of the manual will be
-       * multiplied by this tensor *and* the viscosity scalar ($\eta$), as
-       * described in the manual section titled "Constitutive laws". This
-       * variable is assigned the rank-four identity tensor by default.
-       * This leaves the isotropic constitutive law unchanged if the material
-       * model does not explicitly assign a value.
-       */
-      std::vector<SymmetricTensor<4,dim> > stress_strain_directors;
-
-      /**
        * Density values at the given positions.
        */
       std::vector<double> densities;

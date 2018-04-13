@@ -1,3 +1,14 @@
+# This tests an implementation of anisotropic viscosity terms in the Stokes
+# equation. In this test we create new assembler
+# classes in anisotropic_viscosity.cc that extend the standard assemblers
+# with a fourth order viscosity tensor. The chosen material model 'anisotropic'
+# then replaces the standard assemblers with the custom ones during the call
+# to the set_assemblers signal, and during every call to evaluate()
+# fills the AdditionalMaterialOutputs object of type AnisotropicViscosity with
+# the chosen viscosity tensor that is selected in this input file.
+# This way the solved equations are changed without modifying the main codei
+# base.
+
 set Dimension = 2
 set CFL number                             = 1.0
 set End time                               = 0
@@ -64,7 +75,7 @@ subsection Material model
 end
 
 subsection Heating model
-  set List of model names = shear heating
+  set List of model names = anisotropic shear heating
 end
 
 subsection Mesh refinement
