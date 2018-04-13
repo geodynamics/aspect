@@ -90,25 +90,27 @@ namespace aspect
 // ------------------------------ RadialEarthLike -------------------
 
     template <int dim>
-    Tensor<1,dim>
-    RadialEarthLike<dim>::gravity_vector (const Point<dim> &p) const
+    void
+    RadialEarthLike<dim>::initialize ()
     {
-      const double r = p.norm();
-      return -(1.245e-6 * r + 7.714e13/r/r) * p / r;
+      AssertThrow(false,
+                  ExcMessage("The 'radial earth-like' gravity model has been removed "
+                             "due to its misleading name. The available AsciiData gravity "
+                             "model (using default parameters) is much more earth-like, since "
+                             "it uses the gravity profile used in the construction of the "
+                             "Preliminary Reference Earth Model (PREM, Dziewonski and Anderson, "
+                             "1981). Use the 'ascii data' model instead of 'radial earth-like'."));
     }
 
+
+
     template <int dim>
-    void
-    RadialEarthLike<dim>::parse_parameters (ParameterHandler & /*prm*/)
+    Tensor<1,dim>
+    RadialEarthLike<dim>::gravity_vector (const Point<dim> &/*p*/) const
     {
-      Assert (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == 0,
-              ExcMessage ("Gravity model 'radial earth-like constant' should not be used with geometry model 'box'."));
-      Assert (dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*> (&this->get_geometry_model()) == 0,
-              ExcMessage ("Gravity model 'radial earth-like constant' should not be used with geometry model 'box "
-                          "with lithosphere boundary indicators'."));
-      Assert (dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) == 0,
-              ExcMessage ("Gravity model 'radial earth-like constant' should not be used with geometry model 'sphere', "
-                          "because this gravity model is only valid for the mantle."));
+      // We should never get here, because of the assertion in initialize().
+      AssertThrow(false,ExcInternalError());
+      return Tensor<1,dim>();
     }
 
 
@@ -197,11 +199,11 @@ namespace aspect
 
     ASPECT_REGISTER_GRAVITY_MODEL(RadialEarthLike,
                                   "radial earth-like",
-                                  "A gravity model in which the gravity direction is radially inward "
-                                  "and with a magnitude that matches that of the earth at "
-                                  "the core-mantle boundary as well as at the surface and "
-                                  "in between is physically correct under the assumption "
-                                  "of a constant density.")
+                                  "This plugin has been removed due to its misleading name. "
+                                  "The included profile was hard-coded and was less earth-like "
+                                  "than the `ascii data' plugin, which uses the profile "
+                                  "of the Preliminary Reference Earth Model (PREM). Use `ascii data' "
+                                  "instead of `radial earth-like'.")
 
     ASPECT_REGISTER_GRAVITY_MODEL(RadialLinear,
                                   "radial linear",
