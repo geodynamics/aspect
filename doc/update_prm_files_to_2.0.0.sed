@@ -22,7 +22,25 @@ s/subsection Initial profile/subsection Compute profile/g
 s/set Model name = initial profile/set Model name = compute profile/g
 
 # Recover previous behavior of the 'Radial linear' gravity model
-s/subsection Radial linear/subsection Radial linear\n    set Magnitude at bottom = 0.0/g
+# In the following we read the whole subsection 'Radial linear'
+# when we find it (N adds the next line), check if 
+# 'Magnitude at bottom' is inside, and insert (i) it, if not.
+:jump_before_gravity
+/subsection Radial linear/,/\bend\b/ {
+n
+/^ *end/b jump_before_gravity
+
+:jump_in_gravity
+N
+/end/!b jump_in_gravity
+# If we get here, we found an end, either we found the new parameter,
+# or it needs to be added. Then jump up to finish this subsection
+/set Magnitude at bottom/!{
+i\    set Magnitude at bottom = 0.0
+}
+
+b jump_before_gravity
+}
 
 # Replace the 'model name' parameter by 'List of model names'
 # in all subsections that now use the new parameter.
