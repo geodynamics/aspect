@@ -26,6 +26,8 @@
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/distributed/tria.h>
 #include <deal.II/base/std_cxx11/array.h>
+#include <aspect/utilities.h>
+#include <aspect/coordinate_systems.h>
 
 #include <set>
 
@@ -141,6 +143,13 @@ namespace aspect
         */
         virtual
         double height_above_reference_surface(const Point<dim> &position) const = 0;
+
+
+        /**
+         * Returns what the natural coordinate system for this geometry model is.
+         */
+        virtual
+        aspect::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const = 0;
 
         /**
          * Takes the Cartesian points (x,z or x,y,z) and returns standardized
