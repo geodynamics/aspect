@@ -36,20 +36,16 @@ namespace aspect
       std::pair<std::string, Vector<float> *>
       Geoid<dim>::execute() const
       {
+        AssertThrow (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim> >(this->get_geometry_model()),
+                     ExcMessage("The geoid postprocessor is currently only implemented for "
+                                "the spherical shell geometry model."));
+
         std::pair<std::string, Vector<float> *>
         return_value ("geoid",
                       new Vector<float>(this->get_triangulation().n_active_cells()));
 
-        Postprocess::Geoid<dim> *geoid = this->template find_postprocessor<Postprocess::Geoid<dim> >();
-        AssertThrow(geoid != NULL,
-                    ExcMessage("Could not find the Geoid postprocessor"
-                               "Perhaps you forgot to include it in the Postprocessors list?"));
-
-        const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
-                                                                   (&this->get_geometry_model());
-        AssertThrow (geometry_model != 0,
-                     ExcMessage("The geoid postprocessor is currently only implemented for "
-                                "the spherical shell geometry model."));
+        const Postprocess::Geoid<dim> &geoid =
+          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Geoid<dim> >();
 
         // loop over all of the surface cells and if one less than h/3 away from
         // the top or bottom surface
@@ -70,7 +66,7 @@ namespace aspect
                         {
                           // Get the location of the cell for the expansion
                           const Point<dim> p = cell->face(f)->center();
-                          (*return_value.second)(cell_index)  = geoid->evaluate(p);
+                          (*return_value.second)(cell_index)  = geoid.evaluate(p);
 
                         }
                     }

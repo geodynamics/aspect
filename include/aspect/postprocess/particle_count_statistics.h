@@ -46,6 +46,14 @@ namespace aspect
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
+
+        /**
+         * Let the postprocessor manager know about the other postprocessors
+         * this one depends on. Specifically, the particles postprocessor.
+         */
+        virtual
+        std::list<std::string>
+        required_other_postprocessors() const;
     };
   }
 }

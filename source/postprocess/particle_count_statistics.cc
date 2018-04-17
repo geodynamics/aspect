@@ -40,15 +40,11 @@ namespace aspect
     std::pair<std::string,std::string>
     ParticleCountStatistics<dim>::execute (TableHandler &statistics)
     {
-      const Postprocess::Particles<dim> *particle_postprocessor = this->template find_postprocessor<Postprocess::Particles<dim> >();
-
-      AssertThrow(particle_postprocessor != 0,
-                  ExcMessage("The <particles> postprocessor was not found in the list of "
-                             "active postprocessors. You need to select this postprocessor to "
-                             "be able to select the <particle count> visualization plugin."));
+      const Postprocess::Particles<dim> &particle_postprocessor =
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >();
 
       const Particle::ParticleHandler<dim> &particle_handler =
-        particle_postprocessor->get_particle_world().get_particle_handler();
+        particle_postprocessor.get_particle_world().get_particle_handler();
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
@@ -56,7 +52,7 @@ namespace aspect
 
       unsigned int local_min_particles = std::numeric_limits<unsigned int>::max();
       unsigned int local_max_particles = 0;
-      const Particle::types::particle_index global_particles = particle_postprocessor->get_particle_world().n_global_particles();
+      const Particle::types::particle_index global_particles = particle_postprocessor.get_particle_world().n_global_particles();
 
       // compute local min/max
       for (; cell!=endc; ++cell)
@@ -85,6 +81,15 @@ namespace aspect
 
       return std::pair<std::string, std::string> ("Particle count per cell min/avg/max:",
                                                   output.str());
+    }
+
+
+
+    template <int dim>
+    std::list<std::string>
+    ParticleCountStatistics<dim>::required_other_postprocessors() const
+    {
+      return std::list<std::string> (1, "particles");
     }
   }
 }

@@ -34,14 +34,13 @@ namespace aspect
     std::pair<std::string,std::string>
     DynamicTopography<dim>::execute (TableHandler &)
     {
-      Postprocess::BoundaryPressures<dim> *boundary_pressures =
-        this->template find_postprocessor<Postprocess::BoundaryPressures<dim> >();
-      AssertThrow(boundary_pressures != NULL,
-                  ExcMessage("Could not find the BoundaryPressures postprocessor") );
+      const Postprocess::BoundaryPressures<dim> &boundary_pressures =
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryPressures<dim> >();
+
       // Get the average pressure at the top and bottom boundaries.
       // This will be used to compute the dynamic pressure at the boundaries.
-      const double surface_pressure = boundary_pressures->pressure_at_top();
-      const double bottom_pressure = boundary_pressures->pressure_at_bottom();
+      const double surface_pressure = boundary_pressures.pressure_at_top();
+      const double bottom_pressure = boundary_pressures.pressure_at_bottom();
 
       // If the gravity vector is pointed *up*, as determined by representative points
       // at the surface and at depth, then we are running backwards advection, and need

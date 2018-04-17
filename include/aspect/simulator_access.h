@@ -752,10 +752,13 @@ namespace aspect
        * file (or, has been required by another postprocessor using the
        * Postprocess::Interface::required_other_postprocessors()
        * mechanism), then the function returns a NULL pointer.
+       *
+       * @deprecated Use get_postprocess_manager().has_matching_postprocessor()
+       * and get_postprocess_manager().get_matching_postprocessor() instead.
        */
       template <typename PostprocessorType>
       PostprocessorType *
-      find_postprocessor () const;
+      find_postprocessor () const DEAL_II_DEPRECATED;
 
       /**
        * Return a reference to the melt handler.
@@ -778,7 +781,10 @@ namespace aspect
   PostprocessorType *
   SimulatorAccess<dim>::find_postprocessor () const
   {
-    return simulator->postprocess_manager.template find_postprocessor<PostprocessorType>();
+    if (get_postprocess_manager().template has_matching_postprocessor<PostprocessorType>())
+      return &get_postprocess_manager().template get_matching_postprocessor<PostprocessorType>();
+
+    return NULL;
   }
 }
 
