@@ -357,6 +357,15 @@ namespace aspect
       return true;
     }
 
+
+    template <int dim>
+    aspect::Utilities::Coordinates::CoordinateSystem
+    SphericalShell<dim>::natural_coordinate_system() const
+    {
+      return aspect::Utilities::Coordinates::CoordinateSystem::spherical;
+    }
+
+
     template <int dim>
     void
     SphericalShell<dim>::declare_parameters (ParameterHandler &prm)

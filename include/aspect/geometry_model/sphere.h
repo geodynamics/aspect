@@ -108,6 +108,13 @@ namespace aspect
         bool
         has_curved_elements() const;
 
+        /*
+         * Returns what the natural coordinate system for this geometry model is,
+         * which for a sphere is Spherical.
+         */
+        virtual
+        aspect::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const;
+
         /**
          * Return whether the given point lies within the domain specified
          * by the geometry. This function does not take into account

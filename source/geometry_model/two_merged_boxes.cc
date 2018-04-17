@@ -292,6 +292,39 @@ namespace aspect
     }
 
 
+    template <int dim>
+    aspect::Utilities::Coordinates::CoordinateSystem
+    TwoMergedBoxes<dim>::natural_coordinate_system() const
+    {
+      return aspect::Utilities::Coordinates::CoordinateSystem::cartesian;
+    }
+
+
+    template <int dim>
+    std_cxx11::array<double,dim>
+    TwoMergedBoxes<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
+    {
+      std::array<double,dim> position_array;
+      for (unsigned int i = 0; i < dim; i++)
+        position_array[i] = position_point(i);
+
+      return position_array;
+    }
+
+
+
+    template <int dim>
+    Point<dim>
+    TwoMergedBoxes<dim>::natural_to_cartesian_coordinates(const std_cxx11::array<double,dim> &position_tensor) const
+    {
+      Point<dim> position_point;
+      for (unsigned int i = 0; i < dim; i++)
+        position_point[i] = position_tensor[i];
+
+      return position_point;
+    }
+
+
 
     template <int dim>
     void

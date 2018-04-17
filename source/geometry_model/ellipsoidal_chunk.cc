@@ -50,7 +50,8 @@ namespace aspect
       semi_major_axis_a (-1),
       eccentricity (-1),
       semi_minor_axis_b (-1),
-      bottom_depth (-1)
+      bottom_depth (-1),
+      topography(NULL)
     {}
 
     // Copy constructor
@@ -103,7 +104,6 @@ namespace aspect
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back_ellipsoid(const Point<3> &x, const double semi_major_axis_a, const double eccentricity) const
     {
       AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
-
       const double R    = semi_major_axis_a;
       const double b      = std::sqrt(R * R * (1 - eccentricity * eccentricity));
       const double ep     = std::sqrt((R * R - b * b) / (b * b));
@@ -128,13 +128,12 @@ namespace aspect
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward_topography(const Point<3> &phi_theta_d_hat) const
     {
       AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
-
       const double d_hat = phi_theta_d_hat[2]; // long, lat, depth
       Point<dim-1> phi_theta;
       const double rad_to_degree = 180/numbers::PI;
       if (dim == 3)
         phi_theta = Point<dim-1>(phi_theta_d_hat[0] * rad_to_degree,phi_theta_d_hat[1] * rad_to_degree);
-      const double h = topography->value(phi_theta);
+      const double h = topography != NULL ? topography->value(phi_theta) : 0;
       const double d = d_hat + (d_hat + bottom_depth)/bottom_depth*h;
       const Point<3> phi_theta_d (phi_theta_d_hat[0],
                                   phi_theta_d_hat[1],
@@ -147,13 +146,12 @@ namespace aspect
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back_topography(const Point<3> &phi_theta_d) const
     {
       AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
-
       const double d = phi_theta_d[2];
       const double rad_to_degree = 180/numbers::PI;
       Point<dim-1> phi_theta;
       if (dim == 3)
         phi_theta = Point<dim-1>(phi_theta_d[0] * rad_to_degree,phi_theta_d[1] * rad_to_degree);
-      const double h = topography->value(phi_theta);
+      const double h = topography != NULL ? topography->value(phi_theta) : 0;
       const double d_hat = bottom_depth * (d-h)/(bottom_depth+h);
       const Point<3> phi_theta_d_hat (phi_theta_d[0],
                                       phi_theta_d[1],
@@ -733,6 +731,57 @@ namespace aspect
 
       return true;
     }
+
+    template <int dim>
+    std_cxx11::array<double,dim>
+    EllipsoidalChunk<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
+    {
+      Assert(dim == 3,ExcMessage("This geometry model doesn't support 2d."));
+      // the chunk manifold works internally with a vector with longitude, latitude, depth.
+      // We need to output radius, longitude, latitude to be consistent.
+
+      Point<dim> transformed_point = manifold.pull_back(position_point);
+
+      const double radius = get_radius(position_point);
+      std::array<double,dim> position_array;
+      position_array[0] = radius + transformed_point(2);
+      position_array[1] = transformed_point(1);
+      position_array[2] = transformed_point(0);
+
+      return position_array;
+    }
+
+
+    template <int dim>
+    aspect::Utilities::Coordinates::CoordinateSystem
+    EllipsoidalChunk<dim>::natural_coordinate_system() const
+    {
+      return aspect::Utilities::Coordinates::CoordinateSystem::ellipsoidal;
+    }
+
+
+
+    template <int dim>
+    Point<dim>
+    EllipsoidalChunk<dim>::natural_to_cartesian_coordinates(const std_cxx11::array<double,dim> &position_tensor) const
+    {
+      Assert(dim == 3,ExcMessage("This geometry model doesn't support 2d."));
+
+      // We receive radius, longitude, latitude and we need to turn it first back into
+      // longitude, latitude, depth for internal use, and push_forward to cartesian coordiantes.
+      Point<3> position_point;
+      position_point(0) = position_tensor[2];
+      position_point(1) = position_tensor[1];
+
+      const double radius = semi_major_axis_a / (std::sqrt(1 - eccentricity * eccentricity * std::sin(position_point(1)) * std::sin(position_point(1))));
+      position_point(2) = position_tensor[0] - radius;
+
+      Point<3> transformed_point = manifold.push_forward(position_point);
+      Point<3> double_transformed_point = manifold.pull_back(transformed_point);
+
+      return reinterpret_cast<Point<dim>&>(transformed_point);
+    }
+
   }
 }
 
