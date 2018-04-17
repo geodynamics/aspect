@@ -154,6 +154,14 @@ namespace aspect
     }
 
 
+    template <int dim>
+    aspect::Utilities::Coordinates::CoordinateSystem
+    Sphere<dim>::natural_coordinate_system() const
+    {
+      return aspect::Utilities::Coordinates::CoordinateSystem::spherical;
+    }
+
+
 
     template <int dim>
     void
