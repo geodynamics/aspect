@@ -777,7 +777,6 @@ namespace aspect
       position_point(2) = position_tensor[0] - radius;
 
       Point<3> transformed_point = manifold.push_forward(position_point);
-      Point<3> double_transformed_point = manifold.pull_back(transformed_point);
 
       return reinterpret_cast<Point<dim>&>(transformed_point);
     }
