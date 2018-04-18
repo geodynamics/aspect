@@ -1,13 +1,14 @@
-# This is a test for the .prm update script in
-# doc/update_prm_files_to_2.0.0.sed. The content of this prm
-# file is only executable by ASPECT <=1.5, but the corresponding
-# shared library in update_script.cc will first execute the update
-# script on this .prm file before running ASPECT with the updated
-# version of the file. The success of this test means the script did
-# its job and ASPECT 2.0 is able to read the updated file. This
-# test differs from update_script.prm by applying the script twice,
+# This test is a modified copy of update_script.prm.
+# It differs from update_script.prm by applying the update script twice,
 # and checking that it does not add additional lines after the
 # first run.
+
+# The content of this prm file is only executable by ASPECT <=1.5, but the
+# corresponding shared library in update_script.cc will first execute the
+# update script on this .prm file before running ASPECT with the updated
+# version of the file. The success of this test means the script did its job
+# and ASPECT 2.0 is able to read the twice updated file and the twice updated
+# file does not differ from the once updated file.
 
 set CFL number                             = 1.0
 set End time                               = 1e5
