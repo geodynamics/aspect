@@ -1,0 +1,139 @@
+# This test is a modified copy of update_script.prm.
+# It differs from update_script.prm by applying the update script twice,
+# and checking that it does not add additional lines after the
+# first run.
+
+# The content of this prm file is only executable by ASPECT <=1.5, but the
+# corresponding shared library in update_script.cc will first execute the
+# update script on this .prm file before running ASPECT with the updated
+# version of the file. The success of this test means the script did its job
+# and ASPECT 2.0 is able to read the twice updated file and the twice updated
+# file does not differ from the once updated file.
+
+set CFL number                             = 1.0
+set End time                               = 1e5
+set Adiabatic surface temperature          = 1600.0
+set Use years in output instead of seconds = true
+
+subsection Adiabatic conditions model
+  set Model name = initial profile
+
+  subsection Initial profile
+    set Use surface condition function = true
+    subsection Surface condition function
+      set Function expression = 1e-2*t; 1613.0+1e-13*t
+    end
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Boundary composition model
+  set Model name = function
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+end
+
+subsection Boundary temperature model
+  set Model name = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 4250
+    set Outer temperature = 273
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Opening angle = 90
+    set Outer radius  = 6371000
+  end
+end
+
+subsection Gravity model
+  set Model name = radial linear
+
+  subsection Radial linear
+    set Magnitude at bottom = 10.7
+    set Magnitude at surface = 9.81
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = harmonic perturbation
+  subsection Harmonic perturbation
+    set Magnitude = 200.0
+  end
+end
+
+subsection Material model
+  set Model name = simple compressible
+
+  subsection Simple compressible model
+    set Reference density = 3340
+    set Reference specific heat = 1200
+    set Thermal expansion coefficient = 3e-5
+    set Viscosity = 1e21
+    set Reference compressibility = 2.5e-12
+  end
+
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+
+  set Initial global refinement          = 3
+
+  set Refinement fraction                = 0.0
+  set Coarsening fraction                = 0.0
+
+  set Strategy                           = velocity
+
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0,1
+
+
+  set Tangential velocity boundary indicators = 0,2,3
+  set Zero velocity boundary indicators       = 1
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization,velocity statistics, basic statistics, temperature statistics,heat flux statistics, depth average, dynamic topography, tracers, viscous dissipation statistics
+
+  subsection Tracers
+    set Number of tracers = 50
+  end
+
+  subsection Dynamic Topography
+    set Subtract mean of dynamic topography = true
+  end
+
+  subsection Visualization
+    set Output format                 = vtu
+    set List of output variables      = density, friction heating
+    set Time between graphical output = 0
+  end
+
+  subsection Depth average
+    set Time between graphical output = 0
+    set Number of zones = 10
+  end
+
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating
+end

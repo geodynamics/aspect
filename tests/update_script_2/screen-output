@@ -1,0 +1,50 @@
+
+Loading shared library <./libupdate_script_2.so>
+Executing the update script:
+cat update_script_2.x.prm | sed 's:set Additional shared libraries = ./libupdate_script_2.so::' | sed -f ASPECT_DIR/doc/update_prm_files_to_2.0.0.sed > output-update_script_2/updated.prm && cat output-update_script_2/updated.prm | sed -f ASPECT_DIR/doc/update_prm_files_to_2.0.0.sed > output-update_script_2/updated2.prm && diff output-update_script_2/updated.prm output-update_script_2/updated2.prm
+Running ASPECT with updated parameter file:
+../aspect output-update_script_2/updated2.prm
+
+Number of active cells: 192 (on 4 levels)
+Number of degrees of freedom: 3,557 (1,666+225+833+833)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Skipping C_1 composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-update_script_2/solution/solution-00000
+     RMS, max velocity:                  0.613 m/year, 1.18 m/year
+     Temperature min/avg/max:            273 K, 2295 K, 4250 K
+     Heat fluxes through boundary parts: -2.071e+05 W, 5.442e+05 W, 2170 W, 2170 W
+     Writing depth average:              output-update_script_2/depth_average.gnuplot
+     Writing particle output:            output-update_script_2/particles/particles-00000
+     Heating rate (average/total):       -3.806e-10 W/kg, -3.213e+07 W
+     Pressure at top/bottom of domain:   6.109e-08 Pa, 1.136e+11 Pa
+     Computing dynamic topography        
+
+*** Timestep 1:  t=100000 years
+   Solving temperature system... 12 iterations.
+   Skipping C_1 composition solve because RHS is zero.
+   Solving Stokes system... 15+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-update_script_2/solution/solution-00001
+     RMS, max velocity:                  0.606 m/year, 1.17 m/year
+     Temperature min/avg/max:            273 K, 2292 K, 4250 K
+     Heat fluxes through boundary parts: -1.963e+05 W, 5.186e+05 W, 1925 W, 1925 W
+     Writing depth average:              output-update_script_2/depth_average.gnuplot
+     Number of advected particles:       50
+     Heating rate (average/total):       -3.748e-10 W/kg, -3.165e+07 W
+     Pressure at top/bottom of domain:   7.299e-08 Pa, 1.136e+11 Pa
+     Computing dynamic topography        
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
