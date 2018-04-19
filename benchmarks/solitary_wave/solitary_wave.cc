@@ -368,13 +368,13 @@ namespace aspect
         {
           // Note that this number is based on the background porosity in the
           // solitary wave initial condition.
-          const SolitaryWaveInitialCondition<dim> *initial_conditions =
+          const SolitaryWaveInitialCondition<dim> *initial_composition =
             this->get_initial_composition_manager().template find_initial_composition_model<SolitaryWaveInitialCondition<dim> >();
 
-          AssertThrow(initial_conditions != 0,
+          AssertThrow(initial_composition != 0,
                       ExcMessage("Material model Solitary Wave only works with the initial composition Solitary wave."));
 
-          return reference_permeability * pow(initial_conditions->get_background_porosity(), 3.0) / eta_f;
+          return reference_permeability * pow(initial_composition->get_background_porosity(), 3.0) / eta_f;
 
         }
 
