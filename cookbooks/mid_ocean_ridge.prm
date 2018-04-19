@@ -151,7 +151,7 @@ end
 # In particular, the bottom boundary temperature will control the steady state 
 # temperature profile, and we choose a potential temperature of 1570 K (1300 °C). 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 
   subsection Box
     set Top temperature = 293
@@ -196,7 +196,7 @@ end
 # The boundary conditions (which are relevant for material inflowing at the 
 # bottom boundary of the model) are the same as the initial conditions.
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 ##################### Mesh refinement #########################
