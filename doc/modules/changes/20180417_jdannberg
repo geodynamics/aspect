@@ -7,4 +7,4 @@ iterated IMPES -> iterated Advection and Stokes
 Advection only -> single Advection, no Stokes
 The old names still work, but should be considered as deprecated. 
 <br>
-(Juliane Dannberg, 2018/04/06)
+(Juliane Dannberg, 2018/04/17)

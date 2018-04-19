@@ -162,8 +162,13 @@ namespace aspect
                        "This parameter indicates whether the simulator should also use "
                        "heat conduction in determining the length of each time step.");
 
+    const std::string allowed_solver_schemes = "single Advection, single Stokes|iterated Advection and Stokes|"
+                                               "single Advection, iterated Stokes|no Advection, iterated Stokes|"
+                                               "iterated Advection and Newton Stokes|single Advection, no Stokes|"
+                                               "IMPES|iterated IMPES|iterated Stokes|Newton Stokes|Stokes only|Advection only";
+
     prm.declare_entry ("Nonlinear solver scheme", "single Advection, single Stokes",
-                       Patterns::Selection ("single Advection, single Stokes|iterated Advection and Stokes|single Advection, iterated Stokes|no Advection, iterated Stokes|iterated Advection and Newton Stokes|single Advection, no Stokes|IMPES|iterated IMPES|iterated Stokes|Newton Stokes|Stokes only|Advection only"),
+                       Patterns::Selection (allowed_solver_schemes),
                        "The kind of scheme used to resolve the nonlinearity in the system. "
                        "`single Advection, single Stokes' means that no nonlinear iterations are done, "
                        "and the temperature, compositional fields and Stokes equations are solved exactly "
@@ -184,17 +189,17 @@ namespace aspect
                        "of the temperature, composition and Stokes equations, using Picard iterations for the "
                        "temperature and composition, and Newton iterations for the Stokes system. "
                        "The `IMPES' scheme is deprecated and only allowed for reasons of backwards "
-                       "compatibility, it is the same as `single Advection, single Stokes' ."
+                       "compatibility. It is the same as `single Advection, single Stokes' ."
                        "The `iterated IMPES' scheme is deprecated and only allowed for reasons of "
-                       "backwards compatibility, it is the same as `iterated Advection and Stokes'. "
+                       "backwards compatibility. It is the same as `iterated Advection and Stokes'. "
                        "The `iterated Stokes' scheme is deprecated and only allowed for reasons of "
-                       "backwards compatibility, it is the same as `single Advection, iterated Stokes'. "
+                       "backwards compatibility. It is the same as `single Advection, iterated Stokes'. "
                        "The `Stokes only' scheme is deprecated and only allowed for reasons of "
-                       "backwards compatibility, it is the same as `no Advection, iterated Stokes'. "
+                       "backwards compatibility. It is the same as `no Advection, iterated Stokes'. "
                        "The `Advection only' scheme is deprecated and only allowed for reasons of "
-                       "backwards compatibility, it is the same as `single Advection, no Stokes'. "
+                       "backwards compatibility. It is the same as `single Advection, no Stokes'. "
                        "The `Newton Stokes' scheme is deprecated and only allowed for reasons of "
-                       "backwards compatibility, it is the same as `iterated Advection and Newton Stokes'.");
+                       "backwards compatibility. It is the same as `iterated Advection and Newton Stokes'.");
 
     prm.declare_entry ("Nonlinear solver tolerance", "1e-5",
                        Patterns::Double(0,1),
@@ -1017,32 +1022,23 @@ namespace aspect
 
     maximum_relative_increase_time_step = prm.get_double("Maximum relative increase in time step") * 0.01;
 
-    if (prm.get ("Nonlinear solver scheme") == "single Advection, single Stokes")
-      nonlinear_solver = NonlinearSolver::single_Advection_single_Stokes;
-    else if (prm.get ("Nonlinear solver scheme") == "IMPES")
-      nonlinear_solver = NonlinearSolver::single_Advection_single_Stokes;
-    else if (prm.get ("Nonlinear solver scheme") == "iterated Advection and Stokes")
-      nonlinear_solver = NonlinearSolver::iterated_Advection_and_Stokes;
-    else if (prm.get ("Nonlinear solver scheme") == "iterated IMPES")
-      nonlinear_solver = NonlinearSolver::iterated_Advection_and_Stokes;
-    else if (prm.get ("Nonlinear solver scheme") == "single Advection, iterated Stokes")
-      nonlinear_solver = NonlinearSolver::single_Advection_iterated_Stokes;
-    else if (prm.get ("Nonlinear solver scheme") == "iterated Stokes")
-      nonlinear_solver = NonlinearSolver::single_Advection_iterated_Stokes;
-    else if (prm.get ("Nonlinear solver scheme") == "no Advection, iterated Stokes")
-      nonlinear_solver = NonlinearSolver::no_Advection_iterated_Stokes;
-    else if (prm.get ("Nonlinear solver scheme") == "Stokes only")
-      nonlinear_solver = NonlinearSolver::no_Advection_iterated_Stokes;
-    else if (prm.get ("Nonlinear solver scheme") == "iterated Advection and Newton Stokes")
-      nonlinear_solver = NonlinearSolver::iterated_Advection_and_Newton_Stokes;
-    else if (prm.get ("Nonlinear solver scheme") == "Newton Stokes")
-      nonlinear_solver = NonlinearSolver::iterated_Advection_and_Newton_Stokes;
-    else if (prm.get ("Nonlinear solver scheme") == "single Advection, no Stokes")
-      nonlinear_solver = NonlinearSolver::single_Advection_no_Stokes;
-    else if (prm.get ("Nonlinear solver scheme") == "Advection only")
-      nonlinear_solver = NonlinearSolver::single_Advection_no_Stokes;
-    else
-      AssertThrow (false, ExcNotImplemented());
+    {
+      const std::string solver_scheme = prm.get ("Nonlinear solver scheme");
+      if (solver_scheme == "single Advection, single Stokes" || solver_scheme == "IMPES")
+        nonlinear_solver = NonlinearSolver::single_Advection_single_Stokes;
+      else if (solver_scheme == "iterated Advection and Stokes" || solver_scheme == "iterated IMPES")
+        nonlinear_solver = NonlinearSolver::iterated_Advection_and_Stokes;
+      else if (solver_scheme == "single Advection, iterated Stokes" || solver_scheme == "iterated Stokes")
+        nonlinear_solver = NonlinearSolver::single_Advection_iterated_Stokes;
+      else if (solver_scheme == "no Advection, iterated Stokes" || solver_scheme == "Stokes only")
+        nonlinear_solver = NonlinearSolver::no_Advection_iterated_Stokes;
+      else if (solver_scheme == "iterated Advection and Newton Stokes" || solver_scheme == "Newton Stokes")
+        nonlinear_solver = NonlinearSolver::iterated_Advection_and_Newton_Stokes;
+      else if (solver_scheme == "single Advection, no Stokes" || solver_scheme == "Advection only")
+        nonlinear_solver = NonlinearSolver::single_Advection_no_Stokes;
+      else
+        AssertThrow (false, ExcNotImplemented());
+    }
 
     prm.enter_subsection ("Solver parameters");
     {
