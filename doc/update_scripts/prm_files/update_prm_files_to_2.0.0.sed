@@ -30,7 +30,8 @@ N
 # If we get here, we found an end. If we did not find the new parameter,
 # it needs to be added.
 /set Magnitude at bottom/!{
-i\    set Magnitude at bottom = 0.0
+i\
+    set Magnitude at bottom = 0.0
 }
 
 # Then jump up to finish this part, and print the whole modified subsection

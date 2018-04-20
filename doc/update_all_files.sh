@@ -9,11 +9,11 @@ DOC_DIR=`dirname $0`
 BASE_DIR=`pwd $DOC_DIR/..`
 
 # Update source files
-SOURCE_FILES=`find $BASE_DIR -type f -name *.cc -or -name *.h -not -path */doc/*`
+SOURCE_FILES=`find $BASE_DIR -type f -name *.cc -or -name *.h -not -name *.bak -path doc/ -prune`
 bash ${DOC_DIR}/update_source_files.sh $SOURCE_FILES
 
 # Update prm files
-PRM_FILES=`find $BASE_DIR -type f -name *.prm* -not -name *update_script*`
+PRM_FILES=`find $BASE_DIR -type f -name *.prm* -not -name *update_script* -not -name *.bak`
 bash ${DOC_DIR}/update_prm_files.sh $PRM_FILES
 
 # To remove the backup files that are created you will likely want to use the
