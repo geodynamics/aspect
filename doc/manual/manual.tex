@@ -4061,6 +4061,26 @@ an if-statement that has the general form
 the syntax understood, reference the documentation of the muparser library
 linked to above.
 
+\subsubsection{Compatibility of input files with newer \aspect{} versions}
+
+We strive to maintain compatibility for options in input files as long as
+possible. However, occasionally we have to reorder, rename, or remove options
+from parameter files to improve \aspect{} further. This is in particular true
+for new major versions. In order to allow running old parameter files with
+newer \aspect{} versions we provide scripts that can automatically update
+existing parameter files to the new syntax. Executing
+\texttt{doc/update\_prm\_files.sh} with one or more parameter files as
+arguments will create a backup of the old parameter file (named
+\texttt{old\_filename.bak}), and replace the existing file with a version that
+should work with the current \aspect{} version.
+
+\note{Not all text replacements are unique, and the structure of input files
+allows for constructions the script can not properly parse. Also we can not
+guarantee to preserve the structure and position of comments, as it is not
+always clear to which part of the input file they refer. Thus, it is important
+that you check your updated input file for errors. That being said, all input
+files in the main \aspect{} repository are updated successfully using this
+script.}
   
 \subsection{A graphical user interface for editing \aspect{} parameter files}
 Preparing a parameter file in a text editor can be a tedious task, not
