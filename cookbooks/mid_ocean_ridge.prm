@@ -9,7 +9,7 @@ set Adiabatic surface temperature          = 1570
 # Because our model includes melt transport, it is nonlinear and we have to 
 # use an iterative solver scheme, that iterates between solving the temperature
 # composition and Stokes equations. 
-set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Output directory                       = output_mid_ocean_ridge
 
 # The end time of the simulation. We want to run the model until it reaches

@@ -13,7 +13,7 @@ set Start time                             = 0
 set End time                               = 0
 
 set Pressure normalization                 = volume
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 
 ############### Parameters describing the model

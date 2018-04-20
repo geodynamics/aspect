@@ -95,3 +95,11 @@ s/subsection Dynamic Topography/subsection Dynamic topography/g
 
 # Remove all instances of `melt transport threshold`
 /Melt transport threshold/d
+
+# Rename solver schemes:
+s/iterated IMPES/iterated Advection and Stokes/g
+s/IMPES/single Advection, single Stokes/g
+s/= *iterated Stokes/= single Advection, iterated Stokes/g
+s/Stokes only/no Advection, iterated Stokes/g
+s/Advection only/single Advection, no Stokes/g
+s/= *Newton Stokes/= iterated Advection and Newton Stokes/g

@@ -10,7 +10,7 @@ set Pressure normalization = no
 set Linear solver tolerance = 1.e-7
 set Number of cheap Stokes solver steps    = 30
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 subsection Boundary temperature model
   set List of model names = box

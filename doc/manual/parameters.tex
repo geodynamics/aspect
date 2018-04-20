@@ -213,7 +213,7 @@ In practice, you should choose the value of this parameter to be so that if you 
 {\it Default:} 2147483647
 
 
-{\it Description:} Set a percentage with which the the time step is limited to increase. Generally the time step based on the CFL number should be sufficient, but for complicated models which may suddenly drastically change behavoir, it may be usefull to limit the increase in the timestep, without limiting the time step size of the whole simulation to a particular number if this value is $50$, then that means that the time step can at most increase by 50\% from one time step to the next, or by a factor of 1.5.
+{\it Description:} Set a percentage with which the the time step is limited to increase. Generally the time step based on the CFL number should be sufficient, but for complicated models which may suddenly drastically change behavior, it may be useful to limit the increase in the time step, without limiting the time step size of the whole simulation to a particular number. For example, if this parameter is set to $50$, then that means that the time step can at most increase by 50\% from one time step to the next, or by a factor of 1.5. Units: \%
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -239,16 +239,16 @@ In practice, you should choose the value of this parameter to be so that if you 
 
 \index[prmindex]{Nonlinear solver scheme}
 \index[prmindexfull]{Nonlinear solver scheme}
-{\it Value:} IMPES
+{\it Value:} single Advection, single Stokes
 
 
-{\it Default:} IMPES
+{\it Default:} single Advection, single Stokes
 
 
-{\it Description:} The kind of scheme used to resolve the nonlinearity in the system. 'IMPES' is the classical IMplicit Pressure Explicit Saturation scheme in which ones solves the temperatures and Stokes equations exactly once per time step, one after the other. The `iterated IMPES' scheme iterates this decoupled approach by alternating the solution of the temperature and Stokes systems. The `iterated Stokes' scheme solves the temperature equation once at the beginning of each time step and then iterates out the solution of the Stokes equation. The 'Stokes only' scheme only solves the Stokes system and ignores compositions and the temperature equation (careful, the material model must not depend on the temperature; mostly useful for Stokes benchmarks). The 'Advection only' scheme only solves the temperature and other advection systems and instead of solving for the Stokes system, a prescribed velocity and pressure is used.
+{\it Description:} The kind of scheme used to resolve the nonlinearity in the system. `single Advection, single Stokes' means that no nonlinear iterations are done, and the temperature, compositional fields and Stokes equations are solved exactly once per time step, one after the other. The `iterated Advection and Stokes' scheme iterates this decoupled approach by alternating the solution of the temperature, composition and Stokes systems. The `single Advection, iterated Stokes' scheme solves the temperature and composition equation once at the beginning of each time step and then iterates out the solution of the Stokes equation. The `no Advection, iterated Stokes' scheme only solves the Stokes system, iterating out the solution, and ignores compositions and the temperature equation (careful, the material model must not depend on the temperature or composition; this is mostly useful for Stokes benchmarks). The `single Advection, no Stokes' scheme only solves the temperature and other advection systems once, and instead of solving for the Stokes system, a prescribed velocity and pressure is used. The `iterated Advection and Newton Stokes' scheme iterates by alternating the solution of the temperature, composition and Stokes equations, using Picard iterations for the temperature and composition, and Newton iterations for the Stokes system. The `IMPES' scheme is deprecated and only allowed for reasons of backwards compatibility, it is the same as `single Advection, single Stokes' .The `iterated IMPES' scheme is deprecated and only allowed for reasons of backwards compatibility, it is the same as `iterated Advection and Stokes'. The `iterated Stokes' scheme is deprecated and only allowed for reasons of backwards compatibility, it is the same as `single Advection, iterated Stokes'. The `Stokes only' scheme is deprecated and only allowed for reasons of backwards compatibility, it is the same as `no Advection, iterated Stokes'. The `Advection only' scheme is deprecated and only allowed for reasons of backwards compatibility, it is the same as `single Advection, no Stokes'. The `Newton Stokes' scheme is deprecated and only allowed for reasons of backwards compatibility, it is the same as `iterated Advection and Newton Stokes'.
 
 
-{\it Possible values:} Any one of IMPES, iterated IMPES, iterated Stokes, Newton Stokes, Stokes only, Advection only
+{\it Possible values:} Any one of single Advection, single Stokes, iterated Advection and Stokes, single Advection, iterated Stokes, no Advection, iterated Stokes, iterated Advection and Newton Stokes, single Advection, no Stokes, IMPES, iterated IMPES, iterated Stokes, Newton Stokes, Stokes only, Advection only
 \item {\it Parameter name:} {\tt Nonlinear solver tolerance}
 \phantomsection\label{parameters:Nonlinear solver tolerance}
 
@@ -261,7 +261,7 @@ In practice, you should choose the value of this parameter to be so that if you 
 {\it Default:} 1e-5
 
 
-{\it Description:} A relative tolerance up to which the nonlinear solver will iterate. This parameter is only relevant if Nonlinear solver scheme is set to `iterated Stokes' or `iterated IMPES'.
+{\it Description:} A relative tolerance up to which the nonlinear solver will iterate. This parameter is only relevant if the `Nonlinear solver scheme' does nonlinear iterations, in other words, if it is set to something other than `single Advection, single Stokes' or `single Advection, no Stokes'.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 1$
@@ -1352,8 +1352,10 @@ If the function you are describing represents a vector-valued function with mult
 
 `fluid density' prescribes the gradient of the fluid pressure as fluid density times gravity and causes melt to flow in with the same velocity as inflowing solid material, or no melt flowing in or out if the solid velocity normal to the boundary is zero.
 
+'average density' prescribes the gradient of the fluid pressure as the averaged fluid and solid density times gravity (which is a better approximation for the lithostatic pressure than just the solid density) and leads to approximately the same pressure in the melt as in the solid, so that fluid is only flowing in or out due to differences in dynamic pressure.
 
-{\it Possible values:} Any one of solid density, fluid density
+
+{\it Possible values:} Any one of solid density, fluid density, average density
 \end{itemize}
 
 \subsection{Parameters in section \tt Boundary temperature model}
@@ -4686,7 +4688,7 @@ In either case, this parameter is ignored unless the opening angle of the domain
 
 `radial earth-like': This plugin has been removed due to its misleading name. The included profile was hard-coded and was less earth-like than the `ascii data' plugin, which uses the profile of the Preliminary Reference Earth Model (PREM). Use `ascii data' instead of `radial earth-like'.
 
-`radial linear': A gravity model which is radial (pointing inward if the gravity is positive) and the magnitude decreases linearly with depth down to zero at the maximal depth the geometry returns, as you would get with a constant density spherical domain. (Note that this would be for a full sphere, not a spherical shell.) The magnitude of gravity at the surface is read from the input file in a section ``Gravity model/Radial linear''.
+`radial linear': A gravity model which is radial (pointing inward if the gravity is positive) and the magnitude changes linearly with depth. The magnitude of gravity at the surface and bottom is read from the input file in a section ``Gravity model/Radial linear''.
 
 `vertical': A gravity model in which the gravity direction is vertical (pointing downward for positive values) and at a constant magnitude by default equal to one.
 
@@ -4834,6 +4836,22 @@ If the function you are describing represents a vector-valued function with mult
 \label{parameters:Gravity_20model/Radial_20linear}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Magnitude at bottom}
+\phantomsection\label{parameters:Gravity model/Radial linear/Magnitude at bottom}
+
+
+\index[prmindex]{Magnitude at bottom}
+\index[prmindexfull]{Gravity model!Radial linear!Magnitude at bottom}
+{\it Value:} 10.7
+
+
+{\it Default:} 10.7
+
+
+{\it Description:} Magnitude of the radial gravity vector at the bottom of the domain. `Bottom' means themaximum depth in the chosen geometry, and for example represents the core-mantle boundary in the case of the `spherical shell' geometry model, and the center in the case of the `sphere' geometry model. Units: $m/s^2$
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Magnitude at surface}
 \phantomsection\label{parameters:Gravity model/Radial linear/Magnitude at surface}
 
@@ -12552,6 +12570,22 @@ Note that melt does not freeze unless the 'Freezing rate' parameter is set to a 
 \label{parameters:Melt_20settings}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Average melt velocity}
+\phantomsection\label{parameters:Melt settings/Average melt velocity}
+
+
+\index[prmindex]{Average melt velocity}
+\index[prmindexfull]{Melt settings!Average melt velocity}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} Whether to cell-wise average the material properties that are used to compute the melt velocity or not. The melt velocity is computed as the sum of the solid velocity and the phase separation flux $ - K_D / \phi (\nabla p_f - \rho_f \mathbf g)$. If this parameter is set to true, $K_D$ and $\phi$ will be averaged cell-wise in the computation of the phase separation flux. This is useful because in some models the melt velocity can have spikes close to the interface between regions of melt and no melt, as both $K_D$ and $\phi$ go to zero for vanishing melt fraction. As the melt velocity is used for computing the time step size, and in models that use heat transport by melt or shear heating of melt, setting this parameter to true can speed up the model and make it mode stable. In computations where accuracy and convergence behavior of the melt velocity is important (like in benchmark cases with an analytical solution), this parameter should probably be set to 'false'.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Heat advection by melt}
 \phantomsection\label{parameters:Melt settings/Heat advection by melt}
 
@@ -12568,22 +12602,38 @@ Note that melt does not freeze unless the 'Freezing rate' parameter is set to a 
 
 
 {\it Possible values:} A boolean value (true or false)
-\item {\it Parameter name:} {\tt Melt transport threshold}
-\phantomsection\label{parameters:Melt settings/Melt transport threshold}
+\item {\it Parameter name:} {\tt Melt scaling factor threshold}
+\phantomsection\label{parameters:Melt settings/Melt scaling factor threshold}
 
 
-\index[prmindex]{Melt transport threshold}
-\index[prmindexfull]{Melt settings!Melt transport threshold}
+\index[prmindex]{Melt scaling factor threshold}
+\index[prmindexfull]{Melt settings!Melt scaling factor threshold}
 {\it Value:} 1e-3
 
 
 {\it Default:} 1e-3
 
 
-{\it Description:} The porosity limit for melt migration. For smaller porosities, the equations reduce to the Stokes equations and do neglect melt transport. Only used if Include melt transport is true. 
+{\it Description:} The factor by how much the Darcy coefficient K_D in a cell can be smaller than the reference Darcy coefficient for this cell still to be considered a melt cell (for which the melt transport equations are solved). For smaller Darcy coefficients, the Stokes equations (without melt) are solved instead. Only used if ``Include melt transport'' is true. 
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Use discontinuous compaction pressure}
+\phantomsection\label{parameters:Melt settings/Use discontinuous compaction pressure}
+
+
+\index[prmindex]{Use discontinuous compaction pressure}
+\index[prmindexfull]{Melt settings!Use discontinuous compaction pressure}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} Whether to use a discontinuous element for the compaction pressure or not. From our preliminary tests, continuous elements seem to work better in models where the porosity is > 0 everywhere in the domain, and discontinuous elements work better in models where in parts of the domain the porosity = 0.
+
+
+{\it Possible values:} A boolean value (true or false)
 \end{itemize}
 
 \subsection{Parameters in section \tt Mesh refinement}
@@ -14081,7 +14131,7 @@ The following properties are available:
 
 `integrated strain invariant': A plugin in which the particle property is defined as the finite strain invariant ($\varepsilon_{ii}$). This property is calculated with the timestep ($dt$) and the second invariant of the deviatoric strain rate tensor ($\dot{\varepsilon}_{ii}$), where the value at time step $n$ is $\varepsilon_{ii}^{n} = \varepsilon_{ii}^{n-1} + dt\dot{\varepsilon}_{ii}$.
 
-`melt particle': Implementation of a plugin in which the particle property is defined as presence of melt above the melt transport theshold. This property is set to 0 if melt is not present and set to 1 if melt  is present.
+`melt particle': Implementation of a plugin in which the particle property is defined as presence of melt above a threshold, which can be set as an input parameter. This property is set to 0 if melt is not present and set to 1 if melt is present.
 
 `pT path': Implementation of a plugin in which the particle property is defined as the current pressure and temperature at this position. This can be used to generate pressure-temperature paths of material points over time.
 
@@ -14791,6 +14841,28 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} A boolean value (true or false)
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Particles/Melt particle}
+\label{parameters:Postprocess/Particles/Melt_20particle}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Threshold for melt presence}
+\phantomsection\label{parameters:Postprocess/Particles/Melt particle/Threshold for melt presence}
+
+
+\index[prmindex]{Threshold for melt presence}
+\index[prmindexfull]{Postprocess!Particles!Melt particle/Threshold for melt presence}
+{\it Value:} 1e-3
+
+
+{\it Default:} 1e-3
+
+
+{\it Description:} The minimum porosity that has to be present at the position of a particle for it to be considered a melt particle (in the sense that the melt_presence property is set to 1).
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 1$
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Point values}
@@ -15507,18 +15579,18 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 \index[prmindex]{List of properties}
 \index[prmindexfull]{Postprocess!Visualization!Melt material properties/List of properties}
-{\it Value:} compaction viscosity,permeability
+{\it Value:} compaction viscosity,permeability,p_c
 
 
-{\it Default:} compaction viscosity,permeability
+{\it Default:} compaction viscosity,permeability,p_c
 
 
 {\it Description:} A comma separated list of melt properties that should be written whenever writing graphical output. The following material properties are available:
 
-compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gradient
+compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gradient|p_c|is melt cell|darcy coefficient|darcy coefficient no cutoff
 
 
-{\it Possible values:} A comma-separated list of any of compaction viscosity, fluid viscosity, permeability, fluid density, fluid density gradient
+{\it Possible values:} A comma-separated list of any of compaction viscosity, fluid viscosity, permeability, fluid density, fluid density gradient, p_c, is melt cell, darcy coefficient, darcy coefficient no cutoff
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Visualization/Vp anomaly}
@@ -15991,7 +16063,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 0.001
 
 
-{\it Description:} This threshold tells the AMG setup how the coarsening should be performed. In the AMG used by ML, all points that strongly couple with the tentative coarse-level point form one aggregate. The term strong coupling is controlled by the variable aggregation\_threshold, meaning that all elements that are not smaller than aggregation\_threshold times the diagonal element do couple strongly. The default is strongly recommended. There are indications that for the Newton solver a different value might be better. For extensive benchmarking of various settings of the AMG parameters in this secton for the Stokes problem and others, see https://github.com/geodynamics/aspect/pull/234.
+{\it Description:} This threshold tells the AMG setup how the coarsening should be performed. In the AMG used by ML, all points that strongly couple with the tentative coarse-level point form one aggregate. The term strong coupling is controlled by the variable aggregation\_threshold, meaning that all elements that are not smaller than aggregation\_threshold times the diagonal element do couple strongly. The default is strongly recommended. There are indications that for the Newton solver a different value might be better. For extensive benchmarking of various settings of the AMG parameters in this section for the Stokes problem and others, see https://github.com/geodynamics/aspect/pull/234.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 1$
@@ -16023,7 +16095,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 2
 
 
-{\it Description:} Determines how many sweeps of the smoother should be performed. When the flag elliptic is set to true, (which is true for ASPECT), the polynomial degree of the Chebyshev smoother is set to this value. The term sweeps refers to the number of matrix-vector products performed in the Chebyshev case. In the non-elliptic case, this parameter sets the number of SSOR relaxation sweeps for post-smoothing to be performed. The default is strongly recommended. There are indications that for the Newton solver a different value might be better. For extensive benchmarking of various settings of the AMG parameters in this secton for the Stokes problem and others, see https://github.com/geodynamics/aspect/pull/234.
+{\it Description:} Determines how many sweeps of the smoother should be performed. When the flag elliptic is set to true, (which is true for ASPECT), the polynomial degree of the Chebyshev smoother is set to this value. The term sweeps refers to the number of matrix-vector products performed in the Chebyshev case. In the non-elliptic case, this parameter sets the number of SSOR relaxation sweeps for post-smoothing to be performed. The default is strongly recommended. There are indications that for the Newton solver a different value might be better. For extensive benchmarking of various settings of the AMG parameters in this section for the Stokes problem and others, see https://github.com/geodynamics/aspect/pull/234.
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
@@ -16039,7 +16111,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} Chebyshev
 
 
-{\it Description:} This parameter sets the type of smoother for the AMG. The default is strongly recommended for any normal runs with ASPECT. There are some indications that the symmetric Gaus-Seidel might be better and more stable for the Newton solver. For extensive benchmarking of various settings of the AMG parameters in this secton for the Stokes problem and others, see https://github.com/geodynamics/aspect/pull/234.
+{\it Description:} This parameter sets the type of smoother for the AMG. The default is strongly recommended for any normal runs with ASPECT. There are some indications that the symmetric Gauss-Seidel might be better and more stable for the Newton solver. For extensive benchmarking of various settings of the AMG parameters in this section for the Stokes problem and others, see https://github.com/geodynamics/aspect/pull/234.
 
 
 {\it Possible values:} Any one of Chebyshev, symmetric Gauss-Seidel

@@ -16,7 +16,7 @@ set Surface pressure                       = 0.0
 set Use years in output instead of seconds = false
 set Linear solver tolerance                = 1e-7
 set Pressure normalization                 = surface
-set Nonlinear solver scheme                = Advection only
+set Nonlinear solver scheme                = single Advection, no Stokes
 set Use operator splitting                 = true
 
 subsection Melt settings

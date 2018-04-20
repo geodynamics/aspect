@@ -10,7 +10,7 @@ set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 0.5
 set Composition solver tolerance           = 1e-24
 set Temperature solver tolerance           = 1e-20
-set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 4
 set Nonlinear solver tolerance             = 1e-5
 

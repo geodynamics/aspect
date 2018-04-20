@@ -1,5 +1,5 @@
 Overhaul of the melt solver. 
-Changed: Modelwith melt transport now have a new preconditioner, 
+Changed: Models with melt transport now have a new preconditioner, 
 and the linear system is solved in a different way: Based on the 
 Darcy coefficient, each cell is classified as a melt cell 
 (where the melt transport equations are solved) or not a melt 

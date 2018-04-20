@@ -16,7 +16,7 @@ subsection Heating model
 end
 
 set End time                               = 2e5
-set Nonlinear solver scheme                = iterated Stokes
+set Nonlinear solver scheme                = single Advection, iterated Stokes
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0

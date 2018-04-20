@@ -1,5 +1,5 @@
 # This is a copy of the free_surface_iterated_stokes test, 
-# the only difference being that it uses the iterated IMPES solver.
+# the only difference being that it uses the iterated Advection and Stokes solver.
 
 set Dimension = 2
 set CFL number                             = 0.1
@@ -10,7 +10,7 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Pressure normalization                 = no
-set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Linear solver tolerance                = 1.e-7
 set Number of cheap Stokes solver steps    = 0 
 set Timing output frequency                = 5

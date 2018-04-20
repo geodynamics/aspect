@@ -1,6 +1,6 @@
 set Dimension = 2
 set Maximum time step = 1e4
-set Nonlinear solver scheme = iterated IMPES
+set Nonlinear solver scheme = iterated Advection and Stokes
 
 subsection Geometry model
   set Model name = box

@@ -27,7 +27,7 @@ set CFL number                             = 1.0
 # instead of seconds' parameter is set; seconds otherwise.
 set End time                               = 0.0001
 
-set Nonlinear solver scheme                = Stokes only
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 
 # The name of the directory into which all output files should be placed. This
 # may be an absolute or a relative path.

@@ -1,7 +1,7 @@
 #########################################################
 # This is a variation of the composition_reaction test,
 # with the exception that we use a reaction term that
-# requires the iterated IMPES solver scheme to reach the 
+# requires the iterated Advection and Stokes solver scheme to reach the 
 # correct reaction rate, which is one for the second 
 # field and the value of the second field for the first 
 # and the third field. Without iterating, the fields will
@@ -17,7 +17,7 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0.01
 set Use years in output instead of seconds = false
-set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 10
 
 

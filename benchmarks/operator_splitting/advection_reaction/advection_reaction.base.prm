@@ -20,7 +20,7 @@ set End time                               = 1
 set Use years in output instead of seconds = false
 
 # We use a new solver scheme option that enables the operator split. 
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 set Use operator splitting                 = true
 
 # As we split the time-stepping of advection and reactions, 

@@ -35,7 +35,7 @@ put instead of seconds = \
 false  # default: true
 set Nonlinear solver \
  scheme                = \
-Stokes only
+no Advection, iterated Stokes
 
 subsection Boundary \
 temperature model

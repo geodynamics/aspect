@@ -64,12 +64,12 @@ namespace aspect
     {
       enum Kind
       {
-        IMPES,
-        iterated_IMPES,
-        iterated_Stokes,
-        Stokes_only,
-        Newton_Stokes,
-        Advection_only
+        single_Advection_single_Stokes,
+        iterated_Advection_and_Stokes,
+        single_Advection_iterated_Stokes,
+        no_Advection_iterated_Stokes,
+        iterated_Advection_and_Newton_Stokes,
+        single_Advection_no_Stokes
       };
     };
 

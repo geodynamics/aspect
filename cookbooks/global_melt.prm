@@ -16,11 +16,11 @@ set Use years in output instead of seconds = true
 # porosity (several material properties, such as the viscosities and the
 # permeability depend nonlinearly on the porosity; and changes in temperature
 # determine how much material is melting or freezing). 
-# Because of that, we use a nonlinear solver scheme ('iterated IMPES')
+# Because of that, we use a nonlinear solver scheme ('iterated Advection and Stokes')
 # that iterates between all of these equations, and we have to set its 
 # solver tolerance and the maximum number of iterations separately from 
 # the linear solver parameters. 
-set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 20
 set Nonlinear solver tolerance             = 1e-5
 set Number of cheap Stokes solver steps    = 100
