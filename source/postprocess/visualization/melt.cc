@@ -141,7 +141,7 @@ namespace aspect
                       }
                     --output_index;
                   }
-                else if (property_names[i] == "p_c")
+                else if (property_names[i] == "compaction pressure")
                   {
                     const unsigned int pc_comp_idx = this->introspection().variable("compaction pressure").first_component_index;
                     const double p_c_bar = input_data.solution_values[q][pc_comp_idx];
@@ -180,11 +180,11 @@ namespace aspect
             {
               const std::string pattern_of_names
                 = "compaction viscosity|fluid viscosity|permeability|"
-                  "fluid density|fluid density gradient|p_c|is melt cell|"
+                  "fluid density|fluid density gradient|compaction pressure|is melt cell|"
                   "darcy coefficient|darcy coefficient no cutoff";
 
               prm.declare_entry("List of properties",
-                                "compaction viscosity,permeability,p_c",
+                                "compaction viscosity,permeability,compaction pressure",
                                 Patterns::MultipleSelection(pattern_of_names),
                                 "A comma separated list of melt properties that should be "
                                 "written whenever writing graphical output. "
