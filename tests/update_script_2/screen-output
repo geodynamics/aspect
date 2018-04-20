@@ -1,7 +1,7 @@
 
 Loading shared library <./libupdate_script_2.so>
 Executing the update script:
-cat update_script_2.x.prm | sed 's:set Additional shared libraries = ./libupdate_script_2.so::' | sed -f ASPECT_DIR/doc/update_prm_files_to_2.0.0.sed > output-update_script_2/updated.prm && cat output-update_script_2/updated.prm | sed -f ASPECT_DIR/doc/update_prm_files_to_2.0.0.sed > output-update_script_2/updated2.prm && diff output-update_script_2/updated.prm output-update_script_2/updated2.prm
+cp update_script_2.x.prm output-update_script_2/updated2.prm;sed -i.bak 's:set Additional shared libraries = ./libupdate_script_2.so::' output-update_script_2/updated2.prm;bash ASPECT_DIR/doc/update_prm_files.sh output-update_script_2/updated2.prm;bash ASPECT_DIR/doc/update_prm_files.sh output-update_script_2/updated2.prm;rm output-update_script_2/updated2.prm.bak
 Running ASPECT with updated parameter file:
 ../aspect output-update_script_2/updated2.prm
 

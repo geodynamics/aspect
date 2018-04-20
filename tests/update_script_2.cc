@@ -16,14 +16,15 @@
  */
 int f()
 {
-  // call ASPECT with "--" and pipe an existing input file into it.
   int ret;
   std::string command;
 
-  command = ("cat update_script_2.x.prm | sed 's:set Additional shared libraries = ./libupdate_script_2.so::' | "
-             "sed -f " ASPECT_SOURCE_DIR "/doc/update_prm_files_to_2.0.0.sed > output-update_script_2/updated.prm && "
-             "cat output-update_script_2/updated.prm | sed -f " ASPECT_SOURCE_DIR "/doc/update_prm_files_to_2.0.0.sed > output-update_script_2/updated2.prm && "
-             "diff output-update_script_2/updated.prm output-update_script_2/updated2.prm");
+  command = ("cp update_script_2.x.prm output-update_script_2/updated2.prm;"
+             "sed -i.bak 's:set Additional shared libraries = ./libupdate_script_2.so::' output-update_script_2/updated2.prm;"
+             "bash " ASPECT_SOURCE_DIR "/doc/update_prm_files.sh output-update_script_2/updated2.prm;"
+             "bash " ASPECT_SOURCE_DIR "/doc/update_prm_files.sh output-update_script_2/updated2.prm;"
+             "rm output-update_script_2/updated2.prm.bak");
+
   std::cout << "Executing the update script:\n"
             << command
             << std::endl;
