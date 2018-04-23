@@ -8,7 +8,6 @@ set Use years in output instead of seconds          = true
 set Nonlinear solver scheme                         = single Advection, iterated Stokes
 set Nonlinear solver tolerance                      = 1e-8
 set Max nonlinear iterations                        = 100
-set Maximum number of expensive Stokes solver steps = 5000
 set CFL number                                      = 0.5
 set Output directory                                = output-crustal_model_2D
 set Timing output frequency                         = 1
@@ -132,5 +131,6 @@ subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-9
     set Number of cheap Stokes solver steps = 0
+    set Maximum number of expensive Stokes solver steps = 5000
   end
 end

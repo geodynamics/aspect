@@ -61,7 +61,7 @@ $ s/.*//
 b solver_settings
 }
 
-/Number of expensive Stokes solver steps/ {
+/Maximum number of expensive Stokes solver steps/ {
 s/set Maximum number of expensive Stokes solver steps *=/    set Maximum number of expensive Stokes solver steps =/
 H
 # Delete line and read next, except at end of file

@@ -22,7 +22,6 @@ set End time                               = 1.0e8
 # surface is defined as the top boundary).
 set Temperature solver tolerance           = 1e-10
 
-set Maximum number of expensive Stokes solver steps = 5
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
@@ -173,5 +172,6 @@ subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-7
     set Number of cheap Stokes solver steps = 0
+    set Maximum number of expensive Stokes solver steps = 5
   end
 end
