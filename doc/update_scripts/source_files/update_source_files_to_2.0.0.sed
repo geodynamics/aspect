@@ -1,15 +1,5 @@
 # A script for the stream editor sed to update .cc and .h files from the
-# naming scheme used in ASPECT 1.5.0 to ASPECT 2.0.0. This script correctly
-# updated all files within the official development version of ASPECT,
-# but it is not guaranteed to work for all possible names in user plugins.
-# Consequently a backup of files is strongly recommended, and the changes
-# created by this script should be investigated to ensure a correct renaming.
-#
-# Usage for a c++ source or header file named FILENAME (possibly containing
-# wildcards such as '*.cc') on Linux:
-# sed -i -f update_source_files_to_2.0.0.sed FILENAME
-# On MacOS:
-# sed -i "" -f update_source_files_to_2.0.0.sed FILENAME
+# naming scheme used in ASPECT 1.5.0 to ASPECT 2.0.0.
 
 # Rename fluid pressure boundary conditions
 s/fluid_pressure_boundary_conditions/boundary_fluid_pressure/g
