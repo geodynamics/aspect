@@ -14,6 +14,15 @@ set Use years in output instead of seconds = true
 # the model with and without melt migration, we set the end time to 140 Ma.
 set End time                               = 1.4e8
 
+# We choose a stricter than default linear Stokes solver tolerance,
+# to be consistent with the global_melt cookbook.
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-8
+    set Number of cheap Stokes solver steps = 100
+  end
+end
+
 # We fix the temperature at the top and bottom boundaries of
 # the box, and prescribe free-slip boundary conditions on all
 # sides. 
@@ -190,9 +199,3 @@ subsection Checkpointing
   set Time between checkpoint = 1700
 end
 
-subsection Solver parameters
-  subsection Stokes solver parameters
-    set Linear solver tolerance = 1e-8
-    set Number of cheap Stokes solver steps = 100
-  end
-end

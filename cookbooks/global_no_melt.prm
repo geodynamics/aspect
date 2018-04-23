@@ -15,7 +15,7 @@ set Use years in output instead of seconds = true
 set End time                               = 1.4e8
 
 # We choose a stricter than default linear Stokes solver tolerance,
-# to improve the nonlinear convergence behavior.
+# to be consistent with the global_melt cookbook.
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-8

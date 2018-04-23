@@ -31,7 +31,8 @@ set Nonlinear solver tolerance             = 1e-5
 # If these time steps would be larger than 10,000 years, we will do 
 # more reaction time steps (so that reaction time step size never exceeds 
 # 10,000 years). Here, we also specify the Stokes linear solver tolerance
-# and maximum number of cheap Stokes solver steps.
+# and maximum number of cheap Stokes solver steps to improve the nonlinear
+# convergence behavior.
 set Use operator splitting                     = true
 subsection Solver parameters
   subsection Operator splitting parameters
