@@ -184,11 +184,11 @@ namespace aspect
             {
               const std::string pattern_of_names
                 = "compaction viscosity|fluid viscosity|permeability|"
-                  "fluid density|fluid density gradient|compaction pressure|is melt cell|"
+                  "fluid density|fluid density gradient|is melt cell|"
                   "darcy coefficient|darcy coefficient no cutoff";
 
               prm.declare_entry("List of properties",
-                                "compaction viscosity,permeability,compaction pressure",
+                                "compaction viscosity,permeability",
                                 Patterns::MultipleSelection(pattern_of_names),
                                 "A comma separated list of melt properties that should be "
                                 "written whenever writing graphical output. "
@@ -218,6 +218,9 @@ namespace aspect
                           ExcMessage("The list of strings for the parameter "
                                      "'Postprocess/Visualization/Melt material properties/List of properties' contains entries more than once. "
                                      "This is not allowed. Please check your parameter file."));
+
+              // Always output compaction pressure
+              property_names.insert(property_names.begin(),"compaction pressure");
             }
             prm.leave_subsection();
           }
@@ -241,7 +244,10 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(MeltMaterialProperties,
                                                   "melt material properties",
                                                   "A visualization output object that generates output "
-                                                  "for melt related properties of the material model.")
+                                                  "for melt related properties of the material model. Note "
+                                                  "that this postprocessor always outputs the compaction pressure, "
+                                                  "but can output a large range of additional properties, as "
+                                                  "selected in the ``List of properties'' parameter.")
 
     }
   }
