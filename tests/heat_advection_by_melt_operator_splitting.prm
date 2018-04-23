@@ -6,7 +6,6 @@
 #
 set Dimension                              = 2
 set Nonlinear solver scheme                = iterated Advection and Stokes
-set Linear solver tolerance                = 1e-12
 
 set Use operator splitting                 = true
 
@@ -136,3 +135,8 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-12
+  end
+end

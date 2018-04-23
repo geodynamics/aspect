@@ -6,7 +6,6 @@ set End time                               = 1e9
 #set Resume computation                     = true
 set Start time                             = 0
 set Pressure normalization                 = no
-set Linear solver tolerance                = 1.e-7
 set Use years in output instead of seconds = true
 
 subsection Boundary temperature model
@@ -107,5 +106,11 @@ subsection Postprocess
   subsection Visualization
     set Output format = gnuplot
     set Time between graphical output = 0.
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1.e-7
   end
 end

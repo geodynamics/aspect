@@ -15,8 +15,6 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Pressure normalization = surface
-set Linear solver tolerance = 1.e-7
-set Number of cheap Stokes solver steps    = 30
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = iterated Advection and Stokes
 
@@ -119,4 +117,11 @@ end
 subsection Termination criteria
   set Termination criteria = end step
   set End step = 0
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1.e-7
+    set Number of cheap Stokes solver steps = 30
+  end
 end

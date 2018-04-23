@@ -7,9 +7,7 @@ set Dimension                              = 2
 set Adiabatic surface temperature          = 1600
 set Maximum time step                      = 1e6
 set Output directory                       = no_melt
-set Linear solver tolerance                = 1e-8
 set Use years in output instead of seconds = true
-set Number of cheap Stokes solver steps    = 100
 
 # The end time of the simulation. Because we want to see how upwellings
 # and downwellings evolve over time, and if differences develop between 
@@ -193,4 +191,11 @@ end
 # point. 
 subsection Checkpointing
   set Time between checkpoint = 1700
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-8
+    set Number of cheap Stokes solver steps = 100
+  end
 end

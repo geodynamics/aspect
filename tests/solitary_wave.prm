@@ -11,7 +11,6 @@ set Temperature solver tolerance           = 1e-14
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 10
 set Nonlinear solver tolerance             = 1e-5
-set Linear solver tolerance                = 1e-10
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
@@ -28,8 +27,6 @@ set Resume computation                     = false
 set Start time                             = 0
 
 set Use years in output instead of seconds = true
-set Use direct solver for Stokes system    = false
-set Number of cheap Stokes solver steps    = 0
 
 subsection Discretization
   subsection Stabilization parameters
@@ -169,3 +166,10 @@ end
 
 
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-10
+    set Use direct solver for Stokes system = false
+    set Number of cheap Stokes solver steps = 0
+  end
+end

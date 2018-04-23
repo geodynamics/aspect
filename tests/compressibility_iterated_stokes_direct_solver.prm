@@ -12,7 +12,6 @@ set Use years in output instead of seconds = false  # default: true
 set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Max nonlinear iterations               = 5
 
-set Use direct solver for Stokes system = true
 
 subsection Boundary temperature model
   set List of model names = box
@@ -97,5 +96,11 @@ subsection Postprocess
     set Number of grouped files       = 0
     set Output format                 = vtu
     set Time between graphical output = 0                                                                                # default: 1e8
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = true
   end
 end

@@ -48,7 +48,6 @@ set Dimension                              = 2
 set CFL number = 10.0
 set Additional shared libraries                = ./libplugin.so
 
-set Use direct solver for Stokes system        = true#false
 
 
 set Adiabatic surface temperature              = 0.091 #0.100
@@ -75,7 +74,6 @@ end
 # be normalized. Here, we choose a zero average pressure
 # at the surface of the domain (for the current geometry, the
 # surface is defined as the top boundary).
-set Linear solver tolerance                = 1e-7
 set Temperature solver tolerance           = 1e-10
 
 set Pressure normalization                 = surface
@@ -280,3 +278,9 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = true#false
+    set Linear solver tolerance = 1e-7
+  end
+end

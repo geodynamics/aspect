@@ -18,7 +18,6 @@ subsection Material model
   end
 end
 
-set Linear solver tolerance = 0.6e-9
 
 set Dimension = 2
 
@@ -129,3 +128,8 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 0.6e-9
+  end
+end

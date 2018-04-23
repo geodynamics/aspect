@@ -10,7 +10,6 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 20000
 set Use years in output instead of seconds = true
-set Use direct solver for Stokes system    = false
 set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 50
@@ -20,7 +19,6 @@ set Pressure normalization                 = surface
 set Surface pressure                       = 0
 
 set Use years in output instead of seconds = true
-set Use direct solver for Stokes system    = false
 
 subsection Discretization
   set Stokes velocity polynomial degree    = 2
@@ -170,3 +168,9 @@ subsection Checkpointing
 end
 
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = false
+    set Use direct solver for Stokes system = false
+  end
+end

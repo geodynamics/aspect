@@ -6,7 +6,6 @@ set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
 set Nonlinear solver scheme                = single Advection, single Stokes
-set Number of cheap Stokes solver steps    = 30
 
 subsection Boundary temperature model
   set List of model names = box
@@ -71,3 +70,8 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 30
+  end
+end

@@ -25,7 +25,6 @@ set CFL number                             = 1.0
 set End time                               = 0.0001
 
 set Nonlinear solver scheme                = no Advection, iterated Stokes
-set Use direct solver for Stokes system        = false
 
 # The name of the directory into which all output files should be placed. This
 # may be an absolute or a relative path.
@@ -328,3 +327,8 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = false
+  end
+end

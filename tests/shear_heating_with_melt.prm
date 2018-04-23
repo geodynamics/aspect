@@ -32,7 +32,6 @@ set Resume computation                     = false
 set Start time                             = 0
 
 set Use years in output instead of seconds = true
-set Use direct solver for Stokes system    = false
 set Use operator splitting                 = true
 
 subsection Solver parameters
@@ -226,4 +225,10 @@ subsection Postprocess
     set Time between graphical output = 2500                                                                               # default: 1e8
   end
 
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = false
+  end
 end

@@ -7,11 +7,9 @@ set End time                               = 1e6
 set Use years in output instead of seconds = true
 set CFL number                             = .5
 set Output directory                       = output-crustal_model_3D
-set Linear solver tolerance                = 1e-9
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-8
 set Max nonlinear iterations               = 100
-set Number of cheap Stokes solver steps    = 0
 set Pressure normalization                 = no
 set Timing output frequency                = 1
 
@@ -130,3 +128,9 @@ end
 
 
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-9
+    set Number of cheap Stokes solver steps = 0
+  end
+end

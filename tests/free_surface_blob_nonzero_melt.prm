@@ -15,8 +15,6 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Pressure normalization                 = no
-set Linear solver tolerance                = 1.e-7
-set Number of cheap Stokes solver steps    = 0 
 set Timing output frequency                = 5
 set Use years in output instead of seconds = true
 set Maximum time step                      = 1e4
@@ -136,5 +134,12 @@ subsection Postprocess
   subsection Visualization
     set List of output variables =  melt material properties
     set Time between graphical output = 0
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1.e-7
+    set Number of cheap Stokes solver steps = 0 
   end
 end

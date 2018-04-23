@@ -1,7 +1,6 @@
 set Dimension                              = 2
 set CFL number                             = 1.0
 set End time                               = 1e8
-set Linear solver tolerance                = 1e-7
 set Adiabatic surface temperature          = 1613.0
 set Output directory                       = output-steinberger
 set Use years in output instead of seconds = true
@@ -104,3 +103,8 @@ subsection Postprocess
 end
 
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+  end
+end

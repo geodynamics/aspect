@@ -5,7 +5,6 @@
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 0
-set Linear solver tolerance                = 1e-6
 
 subsection Material model
   set Model name = ascii reference profile
@@ -146,4 +145,10 @@ end
 
 subsection Checkpointing
   set Time between checkpoint  = 1800
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-6
+  end
 end

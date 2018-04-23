@@ -5,7 +5,6 @@
 
 set Dimension = 2
 
-set Use direct solver for Stokes system = true
 
 set Start time                             = 0
 set End time                               = 6e15
@@ -157,4 +156,10 @@ end
 
 subsection Heating model
   set List of model names =  latent heat
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = true
+  end
 end

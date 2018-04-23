@@ -1,7 +1,6 @@
 set Dimension                              = 2
 set End time                               = 0
 set Output directory                       = output
-set Linear solver tolerance                = 1e-7
 set Temperature solver tolerance           = 1e-10
 
 set Pressure normalization                 = surface
@@ -102,5 +101,11 @@ subsection Postprocess
 
   subsection Depth average
     set Time between graphical output = 1e6
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
   end
 end

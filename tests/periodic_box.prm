@@ -9,7 +9,6 @@ set Output directory                       = output
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Pressure normalization                 = no
-set Linear solver tolerance = 1.e-7
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, single Stokes
 
@@ -99,4 +98,10 @@ end
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, basic statistics
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1.e-7
+  end
 end

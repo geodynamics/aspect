@@ -3,8 +3,13 @@
 
 include $ASPECT_SOURCE_DIR/tests/pressure_compatibility.prm
 
-set Use direct solver for Stokes system    = true
 
 subsection Discretization
   set Use locally conservative discretization = true
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = true
+  end
 end

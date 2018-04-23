@@ -20,7 +20,6 @@ set Output directory                       = output-depth-dependent-box-function
 # be normalized. Here, we choose a zero average pressure
 # at the surface of the domain (for the current geometry, the
 # surface is defined as the top boundary).
-set Linear solver tolerance                = 1e-7
 set Temperature solver tolerance           = 1e-10
 
 set Pressure normalization                 = surface
@@ -172,3 +171,8 @@ subsection Postprocess
 
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+  end
+end

@@ -8,7 +8,6 @@ set End time                               = 0
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = iterated Advection and Newton Stokes
 set Max nonlinear iterations               = 0
-set Number of cheap Stokes solver steps    = 0
 
 # Model geometry (100x100 km, 10 km spacing)
 subsection Geometry model
@@ -103,5 +102,11 @@ subsection Postprocess
   subsection Visualization
     set List of output variables = viscosity, strain rate, named additional outputs
     set Output format            = gnuplot
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
   end
 end

@@ -10,7 +10,6 @@ set End time                               = 10 # but note the very low viscosit
 set Use years in output instead of seconds = true
 set Output directory                       = output
 
-set Linear solver tolerance                = 1e-15
 set Temperature solver tolerance           = 1e-15
 
 set Pressure normalization                 = surface
@@ -112,3 +111,8 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-15
+  end
+end
