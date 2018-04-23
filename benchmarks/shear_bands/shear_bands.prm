@@ -161,8 +161,3 @@ end
 
 
 
-subsection Solver parameters
-  subsection Stokes solver parameters
-    set Use direct solver for Stokes system = false
-  end
-end

@@ -236,7 +236,6 @@ end
 
 subsection Solver parameters
   subsection Stokes solver parameters
-    set Use direct solver for Stokes system = false
     set Linear solver tolerance = 1e-9
   end
 end

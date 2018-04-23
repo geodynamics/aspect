@@ -126,7 +126,6 @@ end
 
 subsection Solver parameters
   subsection Stokes solver parameters
-    set Linear solver tolerance = 1.e-7
     set Number of cheap Stokes solver steps = 30
   end
 end

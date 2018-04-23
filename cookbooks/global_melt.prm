@@ -30,12 +30,17 @@ set Nonlinear solver tolerance             = 1e-5
 # advection time step, we want to do at least 10 reaction time steps. 
 # If these time steps would be larger than 10,000 years, we will do 
 # more reaction time steps (so that reaction time step size never exceeds 
-# 10,000 years). 
+# 10,000 years). Here, we also specify the Stokes linear solver tolerance
+# and maximum number of cheap Stokes solver steps.
 set Use operator splitting                     = true
 subsection Solver parameters
   subsection Operator splitting parameters
     set Reaction time step                     = 1e4
     set Reaction time steps per advection step = 10
+  end
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-8
+    set Number of cheap Stokes solver steps = 100
   end
 end
 
@@ -362,12 +367,4 @@ end
 # point. 
 subsection Checkpointing
   set Time between checkpoint = 1700
-end
-
-
-subsection Solver parameters
-  subsection Stokes solver parameters
-    set Linear solver tolerance = 1e-8
-    set Number of cheap Stokes solver steps = 100
-  end
 end
