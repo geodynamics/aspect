@@ -38,12 +38,16 @@ subsection Geometry model
 end
 
 #Boundary conditions
-subsection Model settings
-  set Tangential velocity boundary indicators = 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 0:BursteddeBoundary, 1: BursteddeBoundary, 2: BursteddeBoundary, 3: BursteddeBoundary, 4: BursteddeBoundary, 5: BursteddeBoundary
+end
 
+subsection Formulation
  set Enable additional Stokes RHS            = true
-
 end
 
 

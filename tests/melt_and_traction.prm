@@ -30,16 +30,31 @@ end
 set End time                               = 1e5
 
 # We apply the lithostatic pressure at the bottom and the right side. 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top, bottom
+end
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = top:function
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left
+end
+
+subsection Boundary traction model
   set Prescribed traction boundary indicators = right:initial lithostatic pressure, bottom y:initial lithostatic pressure
-  
+end
+
+subsection Melt settings
   # In addition, we now also specify in the model settings that we want to
   # run a model with melt transport. 
   set Include melt transport                  = true
-end 
+end
 
 subsection Boundary traction model
   subsection Initial lithostatic pressure

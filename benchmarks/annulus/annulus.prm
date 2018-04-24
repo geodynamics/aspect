@@ -35,8 +35,8 @@ subsection Geometry model
 end
 
 #Boundary conditions
-subsection Model settings
-  set Tangential velocity boundary indicators = 
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 0  : AnnulusBoundary, \
                                                 1  : AnnulusBoundary
 end

@@ -1979,10 +1979,10 @@ namespace aspect
     for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
       {
         // Throw error if we are trying to use the same boundary for more than one boundary condition
-        AssertThrow( is_element( (*p).first.first, parameters.fixed_temperature_boundary_indicators ) == false &&
-                     is_element( (*p).first.second, parameters.fixed_temperature_boundary_indicators ) == false &&
-                     is_element( (*p).first.first, parameters.fixed_composition_boundary_indicators ) == false &&
-                     is_element( (*p).first.second, parameters.fixed_composition_boundary_indicators ) == false &&
+        AssertThrow( is_element( (*p).first.first, boundary_temperature_manager.get_fixed_temperature_boundary_indicators() ) == false &&
+                     is_element( (*p).first.second, boundary_temperature_manager.get_fixed_temperature_boundary_indicators() ) == false &&
+                     is_element( (*p).first.first, boundary_composition_manager.get_fixed_composition_boundary_indicators() ) == false &&
+                     is_element( (*p).first.second, boundary_composition_manager.get_fixed_composition_boundary_indicators() ) == false &&
                      is_element( (*p).first.first, boundary_indicator_lists[0] ) == false && // zero velocity
                      is_element( (*p).first.second, boundary_indicator_lists[0] ) == false && // zero velocity
                      is_element( (*p).first.first, boundary_indicator_lists[1] ) == false && // tangential velocity
@@ -2022,15 +2022,15 @@ namespace aspect
     // now do the same for the fixed temperature indicators and the
     // compositional indicators
     for (typename std::set<types::boundary_id>::const_iterator
-         p = parameters.fixed_temperature_boundary_indicators.begin();
-         p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
+         p = boundary_temperature_manager.get_fixed_temperature_boundary_indicators().begin();
+         p != boundary_temperature_manager.get_fixed_temperature_boundary_indicators().end(); ++p)
       AssertThrow (all_boundary_indicators.find (*p)
                    != all_boundary_indicators.end(),
                    ExcMessage ("One of the fixed boundary temperature indicators listed in the input file "
                                "is not used by the geometry model."));
     for (typename std::set<types::boundary_id>::const_iterator
-         p = parameters.fixed_composition_boundary_indicators.begin();
-         p != parameters.fixed_composition_boundary_indicators.end(); ++p)
+         p = boundary_composition_manager.get_fixed_composition_boundary_indicators().begin();
+         p != boundary_composition_manager.get_fixed_composition_boundary_indicators().end(); ++p)
       AssertThrow (all_boundary_indicators.find (*p)
                    != all_boundary_indicators.end(),
                    ExcMessage ("One of the fixed boundary composition indicators listed in the input file "

@@ -65,11 +65,8 @@ end
 # into account the effect of melting/freezing of material at 
 # the boundary of inner and outer core, and which is implemented
 # in the shared library. 
-subsection Model settings
-  set Zero velocity boundary indicators       = 
+subsection Boundary traction model
   set Prescribed traction boundary indicators = surface: zero traction
-  set Prescribed velocity boundary indicators =
-  set Fixed temperature boundary indicators   = surface
 end
 
 # We use a constant radiogenic heating rate.  
@@ -83,7 +80,9 @@ end
 
 # The (potential) temperature is set to zero at the outer boundary.
 subsection Boundary temperature model
+  set Fixed temperature boundary indicators = surface
   set List of model names = spherical constant
+
   subsection Spherical constant
     set Inner temperature = 0.1
     set Outer temperature = 0

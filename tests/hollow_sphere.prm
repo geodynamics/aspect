@@ -31,8 +31,11 @@ subsection Geometry model
 end
 
 #Boundary conditions
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = inner : HollowSphereBoundary, \
                                                 outer : HollowSphereBoundary
 end

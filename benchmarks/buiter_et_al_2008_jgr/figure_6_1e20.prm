@@ -32,19 +32,12 @@ subsection Mesh refinement
 end
 
 
-# Boundary classifications
-subsection Model settings
-  set Fixed temperature boundary indicators   = bottom, top
-  set Prescribed velocity boundary indicators = left x: function, right x:function
-  set Tangential velocity boundary indicators = bottom
-  set Free surface boundary indicators        = top
-end
-
-
+# Free surface boundary classifications.
 # Advecting the free surface vertically rather than
 # in the surface normal direction can result in a
 # more stable mesh when the deformation is large
 subsection Free surface
+  set Free surface boundary indicators = top
   set Surface velocity projection = vertical
 end
 
@@ -52,6 +45,8 @@ end
 # Velocity on boundaries characterized by functions
 # Total extension rate is 1 cm/yr (0.5 cm/yr on each side)
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x: function, right x:function
+  set Tangential velocity boundary indicators = bottom
   subsection Function
     set Variable names      = x,y
     set Function constants  = m=0.005, year=1
@@ -106,6 +101,7 @@ end
 
 # Temperature boundary conditions
 subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top
   set List of model names = box
   subsection Box
     set Bottom temperature = 273

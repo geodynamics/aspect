@@ -476,6 +476,12 @@ namespace aspect
                          "Note that this parameter is only evaluated "
                          "if `Formulation' is set to `custom'. Other formulations ignore "
                          "the value of this parameter.");
+      prm.declare_entry ("Enable additional Stokes RHS", "false",
+                         Patterns::Bool (),
+                         "Whether to ask the material model for additional terms for the right-hand side "
+                         "of the Stokes equation. This feature is likely only used when implementing force "
+                         "vectors for manufactured solution problems and requires filling additional outputs "
+                         "of type AdditionalMaterialOutputsStokesRHS.");
     }
     prm.leave_subsection();
 
@@ -485,7 +491,7 @@ namespace aspect
     // we do not know which symbolic names will be valid to address individual
     // parts of the boundary. we can only work around this by allowing any string
     // to indicate a boundary
-    prm.enter_subsection ("Model settings");
+    prm.enter_subsection ("Melt settings");
     {
       prm.declare_entry ("Include melt transport", "false",
                          Patterns::Bool (),
@@ -497,52 +503,11 @@ namespace aspect
                          "be used for computing the additional pressures and the melt velocity, "
                          "and has a different advection equation than other compositional fields, "
                          "as it is effectively advected with the melt velocity.");
-      prm.declare_entry ("Fixed temperature boundary indicators", "",
-                         Patterns::List (Patterns::Anything()),
-                         "A comma separated list of names denoting those boundaries "
-                         "on which the temperature is fixed and described by the "
-                         "boundary temperature object selected in its own section "
-                         "of this input file. All boundary indicators used by the geometry "
-                         "but not explicitly listed here will end up with no-flux "
-                         "(insulating) boundary conditions."
-                         "\n\n"
-                         "The names of the boundaries listed here can either by "
-                         "numbers (in which case they correspond to the numerical "
-                         "boundary indicators assigned by the geometry object), or they "
-                         "can correspond to any of the symbolic names the geometry object "
-                         "may have provided for each part of the boundary. You may want "
-                         "to compare this with the documentation of the geometry model you "
-                         "use in your model."
-                         "\n\n"
-                         "This parameter only describes which boundaries have a fixed "
-                         "temperature, but not what temperature should hold on these "
-                         "boundaries. The latter piece of information needs to be "
-                         "implemented in a plugin in the BoundaryTemperature "
-                         "group, unless an existing implementation in this group "
-                         "already provides what you want.");
-      prm.declare_entry ("Fixed composition boundary indicators", "",
-                         Patterns::List (Patterns::Anything()),
-                         "A comma separated list of names denoting those boundaries "
-                         "on which the composition is fixed and described by the "
-                         "boundary composition object selected in its own section "
-                         "of this input file. All boundary indicators used by the geometry "
-                         "but not explicitly listed here will end up with no-flux "
-                         "(insulating) boundary conditions."
-                         "\n\n"
-                         "The names of the boundaries listed here can either by "
-                         "numbers (in which case they correspond to the numerical "
-                         "boundary indicators assigned by the geometry object), or they "
-                         "can correspond to any of the symbolic names the geometry object "
-                         "may have provided for each part of the boundary. You may want "
-                         "to compare this with the documentation of the geometry model you "
-                         "use in your model."
-                         "\n\n"
-                         "This parameter only describes which boundaries have a fixed "
-                         "composition, but not what composition should hold on these "
-                         "boundaries. The latter piece of information needs to be "
-                         "implemented in a plugin in the BoundaryComposition "
-                         "group, unless an existing implementation in this group "
-                         "already provides what you want.");
+    }
+    prm.leave_subsection();
+
+    prm.enter_subsection ("Free surface");
+    {
       prm.declare_entry ("Free surface boundary indicators", "",
                          Patterns::List (Patterns::Anything()),
                          "A comma separated list of names denoting those boundaries "
@@ -556,6 +521,11 @@ namespace aspect
                          "may have provided for each part of the boundary. You may want "
                          "to compare this with the documentation of the geometry model you "
                          "use in your model.");
+    }
+    prm.leave_subsection();
+
+    prm.enter_subsection ("Boundary traction model");
+    {
       prm.declare_entry ("Prescribed traction boundary indicators", "",
                          Patterns::Map (Patterns::Anything(),
                                         Patterns::Selection(BoundaryTraction::get_names<dim>())),
@@ -577,6 +547,11 @@ namespace aspect
                          "only to the components listed. As an example, '1 y: function' applies "
                          "the type `function' to the y component on boundary 1. Without a selector "
                          "it will affect all components of the traction.");
+    }
+    prm.leave_subsection();
+
+    prm.enter_subsection ("Nullspace removal");
+    {
       prm.declare_entry ("Remove nullspace", "",
                          Patterns::MultipleSelection("net rotation|angular momentum|"
                                                      "net translation|linear momentum|"
@@ -607,15 +582,8 @@ namespace aspect
                          "\n\n"
                          "Note that while more than one operation can be selected it only makes sense to "
                          "pick one rotational and one translational operation.");
-      prm.declare_entry ("Enable additional Stokes RHS", "false",
-                         Patterns::Bool (),
-                         "Whether to ask the material model for additional terms for the right-hand side "
-                         "of the Stokes equation. This feature is likely only used when implementing force "
-                         "vectors for manufactured solution problems and requires filling additional outputs "
-                         "of type AdditionalMaterialOutputsStokesRHS.");
-
     }
-    prm.leave_subsection ();
+    prm.leave_subsection();
 
     prm.enter_subsection ("Mesh refinement");
     {
@@ -1192,64 +1160,67 @@ namespace aspect
           formulation_temperature_equation = Formulation::TemperatureEquation::parse(prm.get("Temperature equation"));
         }
       else AssertThrow(false, ExcNotImplemented());
+
+      enable_additional_stokes_rhs = prm.get_bool ("Enable additional Stokes RHS");
     }
     prm.leave_subsection ();
 
 
-    prm.enter_subsection ("Model settings");
+    prm.enter_subsection ("Melt settings");
     {
       include_melt_transport = prm.get_bool ("Include melt transport");
-      enable_additional_stokes_rhs = prm.get_bool ("Enable additional Stokes RHS");
+    }
+    prm.leave_subsection();
 
-      {
-        nullspace_removal = NullspaceRemoval::none;
-        std::vector<std::string> nullspace_names =
-          Utilities::split_string_list(prm.get("Remove nullspace"));
-        AssertThrow(Utilities::has_unique_entries(nullspace_names),
-                    ExcMessage("The list of strings for the parameter "
-                               "'Model settings/Remove nullspace' contains entries more than once. "
-                               "This is not allowed. Please check your parameter file."));
+    prm.enter_subsection ("Nullspace removal");
+    {
+      nullspace_removal = NullspaceRemoval::none;
+      std::vector<std::string> nullspace_names =
+        Utilities::split_string_list(prm.get("Remove nullspace"));
+      AssertThrow(Utilities::has_unique_entries(nullspace_names),
+                  ExcMessage("The list of strings for the parameter "
+                             "'Model settings/Remove nullspace' contains entries more than once. "
+                             "This is not allowed. Please check your parameter file."));
 
-        for (unsigned int i=0; i<nullspace_names.size(); ++i)
-          {
-            if (nullspace_names[i]=="net rotation")
-              nullspace_removal = typename NullspaceRemoval::Kind(
-                                    nullspace_removal | NullspaceRemoval::net_rotation);
-            else if (nullspace_names[i]=="angular momentum")
-              nullspace_removal = typename NullspaceRemoval::Kind(
-                                    nullspace_removal | NullspaceRemoval::angular_momentum);
-            else if (nullspace_names[i]=="net translation")
-              nullspace_removal = typename NullspaceRemoval::Kind(
-                                    nullspace_removal | NullspaceRemoval::net_translation_x |
-                                    NullspaceRemoval::net_translation_y | ( dim == 3 ?
-                                                                            NullspaceRemoval::net_translation_z : 0) );
-            else if (nullspace_names[i]=="net x translation")
-              nullspace_removal = typename NullspaceRemoval::Kind(
-                                    nullspace_removal | NullspaceRemoval::net_translation_x);
-            else if (nullspace_names[i]=="net y translation")
-              nullspace_removal = typename NullspaceRemoval::Kind(
-                                    nullspace_removal | NullspaceRemoval::net_translation_y);
-            else if (nullspace_names[i]=="net z translation")
-              nullspace_removal = typename NullspaceRemoval::Kind(
-                                    nullspace_removal | NullspaceRemoval::net_translation_z);
-            else if (nullspace_names[i]=="linear x momentum")
-              nullspace_removal = typename       NullspaceRemoval::Kind(
-                                    nullspace_removal | NullspaceRemoval::linear_momentum_x);
-            else if (nullspace_names[i]=="linear y momentum")
-              nullspace_removal = typename       NullspaceRemoval::Kind(
-                                    nullspace_removal | NullspaceRemoval::linear_momentum_y);
-            else if (nullspace_names[i]=="linear z momentum")
-              nullspace_removal = typename       NullspaceRemoval::Kind(
-                                    nullspace_removal | NullspaceRemoval::linear_momentum_z);
-            else if (nullspace_names[i]=="linear momentum")
-              nullspace_removal = typename NullspaceRemoval::Kind(
-                                    nullspace_removal | NullspaceRemoval::linear_momentum_x |
-                                    NullspaceRemoval::linear_momentum_y | ( dim == 3 ?
-                                                                            NullspaceRemoval::linear_momentum_z : 0) );
-            else
-              AssertThrow(false, ExcInternalError());
-          }
-      }
+      for (unsigned int i=0; i<nullspace_names.size(); ++i)
+        {
+          if (nullspace_names[i]=="net rotation")
+            nullspace_removal = typename NullspaceRemoval::Kind(
+                                  nullspace_removal | NullspaceRemoval::net_rotation);
+          else if (nullspace_names[i]=="angular momentum")
+            nullspace_removal = typename NullspaceRemoval::Kind(
+                                  nullspace_removal | NullspaceRemoval::angular_momentum);
+          else if (nullspace_names[i]=="net translation")
+            nullspace_removal = typename NullspaceRemoval::Kind(
+                                  nullspace_removal | NullspaceRemoval::net_translation_x |
+                                  NullspaceRemoval::net_translation_y | ( dim == 3 ?
+                                                                          NullspaceRemoval::net_translation_z : 0) );
+          else if (nullspace_names[i]=="net x translation")
+            nullspace_removal = typename NullspaceRemoval::Kind(
+                                  nullspace_removal | NullspaceRemoval::net_translation_x);
+          else if (nullspace_names[i]=="net y translation")
+            nullspace_removal = typename NullspaceRemoval::Kind(
+                                  nullspace_removal | NullspaceRemoval::net_translation_y);
+          else if (nullspace_names[i]=="net z translation")
+            nullspace_removal = typename NullspaceRemoval::Kind(
+                                  nullspace_removal | NullspaceRemoval::net_translation_z);
+          else if (nullspace_names[i]=="linear x momentum")
+            nullspace_removal = typename       NullspaceRemoval::Kind(
+                                  nullspace_removal | NullspaceRemoval::linear_momentum_x);
+          else if (nullspace_names[i]=="linear y momentum")
+            nullspace_removal = typename       NullspaceRemoval::Kind(
+                                  nullspace_removal | NullspaceRemoval::linear_momentum_y);
+          else if (nullspace_names[i]=="linear z momentum")
+            nullspace_removal = typename       NullspaceRemoval::Kind(
+                                  nullspace_removal | NullspaceRemoval::linear_momentum_z);
+          else if (nullspace_names[i]=="linear momentum")
+            nullspace_removal = typename NullspaceRemoval::Kind(
+                                  nullspace_removal | NullspaceRemoval::linear_momentum_x |
+                                  NullspaceRemoval::linear_momentum_y | ( dim == 3 ?
+                                                                          NullspaceRemoval::linear_momentum_z : 0) );
+          else
+            AssertThrow(false, ExcInternalError());
+        }
     }
     prm.leave_subsection ();
 
@@ -1537,7 +1508,7 @@ namespace aspect
     AssertThrow((!use_direct_stokes_solver) || (nullspace_removal == NullspaceRemoval::none),
                 ExcMessage("Because of the difference in system partitioning, nullspace removal is "
                            "currently not compatible with the direct solver. "
-                           "Please turn off one or both of the options 'Model settings/Remove nullspace', "
+                           "Please turn off one or both of the options 'Nullspace removal/Remove nullspace', "
                            "or 'Use direct solver for Stokes system', or contribute code to enable "
                            "this feature combination."));
   }
@@ -1550,42 +1521,8 @@ namespace aspect
   parse_geometry_dependent_parameters(ParameterHandler &prm,
                                       const GeometryModel::Interface<dim> &geometry_model)
   {
-    prm.enter_subsection ("Model settings");
+    prm.enter_subsection ("Free surface");
     {
-      try
-        {
-          const std::vector<types::boundary_id> x_fixed_temperature_boundary_indicators
-            = geometry_model.translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
-                                                                      (prm.get ("Fixed temperature boundary indicators")));
-          fixed_temperature_boundary_indicators
-            = std::set<types::boundary_id> (x_fixed_temperature_boundary_indicators.begin(),
-                                            x_fixed_temperature_boundary_indicators.end());
-        }
-      catch (const std::string &error)
-        {
-          AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Fixed temperature "
-                                          "boundary indicators>, there was an error. Specifically, "
-                                          "the conversion function complained as follows: "
-                                          + error));
-        }
-
-      try
-        {
-          const std::vector<types::boundary_id> x_fixed_composition_boundary_indicators
-            = geometry_model.translate_symbolic_boundary_names_to_ids (Utilities::split_string_list
-                                                                       (prm.get ("Fixed composition boundary indicators")));
-          fixed_composition_boundary_indicators
-            = std::set<types::boundary_id> (x_fixed_composition_boundary_indicators.begin(),
-                                            x_fixed_composition_boundary_indicators.end());
-        }
-      catch (const std::string &error)
-        {
-          AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Fixed composition "
-                                          "boundary indicators>, there was an error. Specifically, "
-                                          "the conversion function complained as follows: "
-                                          + error));
-        }
-
       try
         {
           const std::vector<types::boundary_id> x_free_surface_boundary_indicators
@@ -1604,7 +1541,11 @@ namespace aspect
                                           "the conversion function complained as follows: "
                                           + error));
         }
+    }
+    prm.leave_subsection();
 
+    prm.enter_subsection ("Boundary traction model");
+    {
       const std::vector<std::string> x_prescribed_traction_boundary_indicators
         = Utilities::split_string_list
           (prm.get ("Prescribed traction boundary indicators"));
@@ -1693,7 +1634,6 @@ namespace aspect
           prescribed_traction_boundary_indicators[boundary_id] =
             std::pair<std::string,std::string>(comp,value);
         }
-
     }
     prm.leave_subsection ();
   }

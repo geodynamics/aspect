@@ -225,6 +225,13 @@ namespace aspect
         BoundaryCompositionType *
         find_boundary_composition_model () const;
 
+        /*
+         * Return a set of boundary indicators for which boundary
+         * compositions are prescribed.
+         */
+        const std::set<types::boundary_id> &
+        get_fixed_composition_boundary_indicators() const;
+
         /**
          * For the current plugin subsystem, write a connection graph of all of the
          * plugins we know about, in the format that the
@@ -267,6 +274,12 @@ namespace aspect
          * boundary with the values from the current plugin.
          */
         std::vector<aspect::Utilities::Operator> model_operators;
+
+        /**
+         * A set of boundary ids on which the boundary_composition_objects
+         * will be applied.
+         */
+        std::set<types::boundary_id> fixed_composition_boundary_indicators;
     };
 
 

@@ -265,19 +265,13 @@ namespace aspect
     initial_composition_manager.initialize_simulator(*this);
     initial_composition_manager.parse_parameters (prm);
 
-    // create a boundary temperature manager, but only if we actually need
-    // it. otherwise, allow the user to simply specify nothing at all
-    if (!parameters.fixed_temperature_boundary_indicators.empty())
-      {
-        boundary_temperature_manager.initialize_simulator (*this);
-        boundary_temperature_manager.parse_parameters (prm);
-      }
+    // Create a boundary temperature manager
+    boundary_temperature_manager.initialize_simulator (*this);
+    boundary_temperature_manager.parse_parameters (prm);
 
-    if (!parameters.fixed_composition_boundary_indicators.empty())
-      {
-        boundary_composition_manager.initialize_simulator (*this);
-        boundary_composition_manager.parse_parameters (prm);
-      }
+    // Create a boundary composition manager
+    boundary_composition_manager.initialize_simulator (*this);
+    boundary_composition_manager.parse_parameters (prm);
 
     boundary_velocity_manager.initialize_simulator (*this);
     boundary_velocity_manager.parse_parameters (prm);
@@ -720,8 +714,8 @@ namespace aspect
         // temperature boundary conditions and interpolate the temperature
         // there
         for (std::set<types::boundary_id>::const_iterator
-             p = parameters.fixed_temperature_boundary_indicators.begin();
-             p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
+             p = boundary_temperature_manager.get_fixed_temperature_boundary_indicators().begin();
+             p != boundary_temperature_manager.get_fixed_temperature_boundary_indicators().end(); ++p)
           {
             VectorTools::interpolate_boundary_values (*mapping,
                                                       dof_handler,
@@ -749,8 +743,8 @@ namespace aspect
         // there
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
           for (std::set<types::boundary_id>::const_iterator
-               p = parameters.fixed_composition_boundary_indicators.begin();
-               p != parameters.fixed_composition_boundary_indicators.end(); ++p)
+               p = boundary_composition_manager.get_fixed_composition_boundary_indicators().begin();
+               p != boundary_composition_manager.get_fixed_composition_boundary_indicators().end(); ++p)
             {
               VectorTools::interpolate_boundary_values (*mapping,
                                                         dof_handler,

@@ -30,10 +30,12 @@ subsection Initial temperature model
 end
 
 
-subsection Model settings
-  set Zero velocity boundary indicators       =
-  set Prescribed velocity boundary indicators = west:function, east:function, south:function, north:function, inner:function, outer:function
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = west:function, east:function, south:function, north:function, inner:function, outer:function
 end
 
 subsection Boundary velocity model

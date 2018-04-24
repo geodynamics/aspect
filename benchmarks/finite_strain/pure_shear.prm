@@ -54,12 +54,9 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, bottom
   set Prescribed velocity boundary indicators = top:function, right:function
-end
-
-subsection Boundary velocity model
   subsection Function
     set Function expression = 1-y; x-1
   end

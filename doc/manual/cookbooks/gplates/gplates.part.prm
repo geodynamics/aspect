@@ -1,11 +1,10 @@
-subsection Model settings
-  set Prescribed velocity boundary indicators = outer:gplates 
-  set Tangential velocity boundary indicators = inner
-
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = inner, outer
 end
 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = outer:gplates 
+  set Tangential velocity boundary indicators = inner
   subsection GPlates model
     set Data directory = $ASPECT_SOURCE_DIR/data/boundary-velocity/gplates/ 
     set Velocity file name = current_day.gpml 

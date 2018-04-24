@@ -71,3 +71,9 @@ s/NonlinearSolver::iterated Stokes/NonlinearSolver::single_Advection_iterated_St
 s/NonlinearSolver::Stokes_only/NonlinearSolver::no_Advection_iterated_Stokes/g
 s/NonlinearSolver::Advection_only/NonlinearSolver::single_Advection_no_Stokes/g
 s/NonlinearSolver::Newton_Stokes/NonlinearSolver::iterated_Advection_and_Newton_Stokes/g
+
+# Account for moved parameters
+s/this->get_parameters().fixed_composition_boundary_indicators/this->get_boundary_composition_manager().get_fixed_composition_boundary_indicators()/g
+s/this->get_parameters().fixed_temperature_boundary_indicators/this->get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators()/g
+s/parameters.fixed_composition_boundary_indicators/this->get_fixed_composition_boundary_indicators()/g
+s/parameters.fixed_temperature_boundary_indicators/this->get_fixed_temperature_boundary_indicators()/g

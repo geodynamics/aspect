@@ -40,15 +40,30 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
-  set Fixed temperature boundary indicators   = top,bottom
-  set Fixed composition boundary indicators   = left
-  set Zero velocity boundary indicators       = 
-  set Tangential velocity boundary indicators = bottom,top
-  set Prescribed velocity boundary indicators = left:function,right:function 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
-  set Include shear heating = false
-  set Include adiabatic heating = true
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top,bottom
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators   = left
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom,top
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left:function,right:function 
+end
+
+# Warning: Merge the parameter in the following subsection with any
+# other parameter of the same name, otherwise your model results might change
+subsection Heating model
+  set List of model names = adiabatic heating
 end
 
 subsection Boundary velocity model

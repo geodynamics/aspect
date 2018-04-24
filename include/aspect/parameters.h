@@ -383,9 +383,6 @@ namespace aspect
     bool                           include_melt_transport;
     bool                           enable_additional_stokes_rhs;
 
-    std::set<types::boundary_id> fixed_temperature_boundary_indicators;
-    std::set<types::boundary_id> fixed_composition_boundary_indicators;
-
     /**
      * Map from boundary id to a pair "components", "traction boundary type",
      * where components is of the format "[x][y][z]" and the traction type is

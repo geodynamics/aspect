@@ -47,6 +47,7 @@ subsection Initial temperature model
 end
 
 subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
   set List of model names = box
 
   subsection Box
@@ -57,15 +58,9 @@ subsection Boundary temperature model
   end
 end
 
-subsection Model settings
-  set Fixed temperature boundary indicators   = bottom, top
 
-  set Zero velocity boundary indicators       =
-  set Prescribed velocity boundary indicators =
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
-
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
 end
 
 subsection Gravity model

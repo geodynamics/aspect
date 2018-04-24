@@ -16,7 +16,7 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right
   set Zero velocity boundary indicators       = bottom, top
 end

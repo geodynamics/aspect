@@ -42,6 +42,7 @@ end
 # but different from the reference temperature to approximate
 # boundary layers.
 subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
   set List of model names = spherical constant
   subsection Spherical constant
     set Inner temperature = 2000
@@ -109,9 +110,8 @@ subsection Mesh refinement
   set Initial adaptive refinement        = 0
 end
 
-# We assume fixed temperatures and free slip at the inner and outer boundary
-subsection Model settings
-  set Fixed temperature boundary indicators   = top, bottom
+# We assume free slip at the inner and outer boundary
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = top, bottom
 end
 

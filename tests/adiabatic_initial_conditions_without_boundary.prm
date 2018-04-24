@@ -57,10 +57,15 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
-  set Fixed temperature boundary indicators   =
-  set Prescribed velocity boundary indicators =
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0, 2, 3
+end
+
+subsection Boundary velocity model
   set Zero velocity boundary indicators       = 1
 end
 

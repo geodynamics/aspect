@@ -9,15 +9,16 @@ subsection Initial temperature model
 end
 
 subsection Free surface
+  set Free surface boundary indicators        = top
   set Free surface stabilization theta = 0.5
 end
 
-subsection Model settings
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = left, right, bottom, top
-  set Prescribed velocity boundary indicators =
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom
-  set Zero velocity boundary indicators       = 
-  set Free surface boundary indicators        = top
 end
 
 subsection Postprocess
