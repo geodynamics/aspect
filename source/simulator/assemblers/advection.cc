@@ -848,11 +848,6 @@ namespace aspect
                 (*scratch.subface_finite_element_values)[introspection.extractors.velocities].get_function_values(this->get_mesh_velocity(),
                     scratch.face_mesh_velocity_values);
 
-              // get the mesh velocity, as we need to subtract it off of the advection systems
-              if (parameters.free_surface_enabled)
-                (*scratch.subface_finite_element_values)[introspection.extractors.velocities].get_function_values(this->get_mesh_velocity(),
-                    scratch.face_mesh_velocity_values);
-
               this->compute_material_model_input_values (this->get_current_linearization_point(),
                                                          *scratch.subface_finite_element_values,
                                                          cell,
