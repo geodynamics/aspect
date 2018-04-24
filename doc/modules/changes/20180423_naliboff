@@ -1,5 +1,7 @@
 Changed: A number of Stokes solver parameters have been moved from the global
 namespace into the subsection 'Solver parameters/Stokes solver parameters'.
-The update script was improved to handle these parameters automatically.
+The advection and composition solver tolerances have also been moved to the
+'Solver parameters' subsection. The update script was improved to handle all
+changes automatically.
 <br>
 (John Naliboff, Rene Gassmoeller, 2018/04/23)
