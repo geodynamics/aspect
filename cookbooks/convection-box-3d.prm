@@ -11,12 +11,10 @@ set Use years in output instead of seconds = false
 set End time                               = 1.0
 set Output directory                       = output-convection-box-3d
 
-# Then there are variables that describe the tolerance of
-# the linear solver as well as how the pressure should
+# Then there are variables that describe how the pressure should
 # be normalized. Here, we choose a zero average pressure
 # at the surface of the domain (for the current geometry, the
 # surface is defined as the top boundary).
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 
