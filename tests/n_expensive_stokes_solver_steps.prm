@@ -20,7 +20,6 @@ set End time                               = 1.0e8
 # be normalized. Here, we choose a zero average pressure
 # at the surface of the domain (for the current geometry, the
 # surface is defined as the top boundary).
-set Temperature solver tolerance           = 1e-10
 
 
 set Pressure normalization                 = surface
@@ -162,6 +161,8 @@ subsection Postprocess
 end
 
 subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-7
     set Number of cheap Stokes solver steps = 0

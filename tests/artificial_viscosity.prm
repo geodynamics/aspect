@@ -5,8 +5,6 @@
 set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 0.1
 set Nonlinear solver scheme                = single Advection, single Stokes
-set Temperature solver tolerance           = 1e-8
-set Composition solver tolerance           = 1e-8
 
 set Dimension                              = 2
 set End time                               = 0.005
@@ -142,6 +140,9 @@ end
 
 
 subsection Solver parameters
+  set Temperature solver tolerance = 1e-8
+  set Composition solver tolerance = 1e-8
+
   subsection Stokes solver parameters
     set Use direct solver for Stokes system = false
     set Number of cheap Stokes solver steps = 0

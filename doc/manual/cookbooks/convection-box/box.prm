@@ -14,7 +14,6 @@ set Output directory                       = output-convection-box
 # be normalized. Here, we choose a zero average pressure
 # at the surface of the domain (for the current geometry, the
 # surface is defined as the top boundary).
-set Temperature solver tolerance           = 1e-10
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
@@ -157,4 +156,8 @@ subsection Postprocess
   subsection Visualization
     set Time between graphical output = 0.01
   end
+end
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
 end

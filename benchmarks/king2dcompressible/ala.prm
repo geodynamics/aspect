@@ -72,7 +72,6 @@ subsection Discretization
   end
 end
 
-set Temperature solver tolerance           = 1e-10
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
@@ -233,6 +232,8 @@ subsection Postprocess
 end
 
 subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-9
   end

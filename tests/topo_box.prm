@@ -1,7 +1,6 @@
 #Test topography postprocessor with box geometry
 set Output directory                       = topo_box
 set CFL number                             = 0.5                                                     
-set Composition solver tolerance           = 1e-10
 set Dimension                              = 2                                                       
 set End time                               = 1e+7
 set Nonlinear solver scheme                = single Advection, single Stokes
@@ -9,7 +8,6 @@ set Nonlinear solver tolerance             = 1e-6
 set Pressure normalization                 = no                                                      
 set Resume computation                     = false 
 set Start time                             = 0
-set Temperature solver tolerance           = 1e-10
 set Timing output frequency                = 0                                                       
 set Use years in output instead of seconds = true
 
@@ -121,6 +119,9 @@ subsection Termination criteria
 end
 
 subsection Solver parameters
+  set Composition solver tolerance = 1e-10
+  set Temperature solver tolerance = 1e-10
+
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-8
   end
