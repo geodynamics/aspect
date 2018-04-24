@@ -54,6 +54,10 @@ namespace aspect
           if (property_names[i] == "fluid density gradient")
             for (unsigned int i=0; i<dim; ++i)
               solution_names.push_back ("fluid_density_gradient");
+          else if (property_names[i] == "compaction pressure")
+            {
+              solution_names.push_back ("p_c");
+            }
           else
             {
               solution_names.push_back(property_names[i]);
@@ -141,7 +145,7 @@ namespace aspect
                       }
                     --output_index;
                   }
-                else if (property_names[i] == "p_c")
+                else if (property_names[i] == "compaction pressure")
                   {
                     const unsigned int pc_comp_idx = this->introspection().variable("compaction pressure").first_component_index;
                     const double p_c_bar = input_data.solution_values[q][pc_comp_idx];
@@ -180,11 +184,11 @@ namespace aspect
             {
               const std::string pattern_of_names
                 = "compaction viscosity|fluid viscosity|permeability|"
-                  "fluid density|fluid density gradient|p_c|is melt cell|"
+                  "fluid density|fluid density gradient|is melt cell|"
                   "darcy coefficient|darcy coefficient no cutoff";
 
               prm.declare_entry("List of properties",
-                                "compaction viscosity,permeability,p_c",
+                                "compaction viscosity,permeability",
                                 Patterns::MultipleSelection(pattern_of_names),
                                 "A comma separated list of melt properties that should be "
                                 "written whenever writing graphical output. "
@@ -214,6 +218,9 @@ namespace aspect
                           ExcMessage("The list of strings for the parameter "
                                      "'Postprocess/Visualization/Melt material properties/List of properties' contains entries more than once. "
                                      "This is not allowed. Please check your parameter file."));
+
+              // Always output compaction pressure
+              property_names.insert(property_names.begin(),"compaction pressure");
             }
             prm.leave_subsection();
           }
@@ -237,7 +244,10 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(MeltMaterialProperties,
                                                   "melt material properties",
                                                   "A visualization output object that generates output "
-                                                  "for melt related properties of the material model.")
+                                                  "for melt related properties of the material model. Note "
+                                                  "that this postprocessor always outputs the compaction pressure, "
+                                                  "but can output a large range of additional properties, as "
+                                                  "selected in the ``List of properties'' parameter.")
 
     }
   }

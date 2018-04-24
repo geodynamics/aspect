@@ -245,7 +245,7 @@ In practice, you should choose the value of this parameter to be so that if you 
 {\it Default:} single Advection, single Stokes
 
 
-{\it Description:} The kind of scheme used to resolve the nonlinearity in the system. `single Advection, single Stokes' means that no nonlinear iterations are done, and the temperature, compositional fields and Stokes equations are solved exactly once per time step, one after the other. The `iterated Advection and Stokes' scheme iterates this decoupled approach by alternating the solution of the temperature, composition and Stokes systems. The `single Advection, iterated Stokes' scheme solves the temperature and composition equation once at the beginning of each time step and then iterates out the solution of the Stokes equation. The `no Advection, iterated Stokes' scheme only solves the Stokes system, iterating out the solution, and ignores compositions and the temperature equation (careful, the material model must not depend on the temperature or composition; this is mostly useful for Stokes benchmarks). The `single Advection, no Stokes' scheme only solves the temperature and other advection systems once, and instead of solving for the Stokes system, a prescribed velocity and pressure is used. The `iterated Advection and Newton Stokes' scheme iterates by alternating the solution of the temperature, composition and Stokes equations, using Picard iterations for the temperature and composition, and Newton iterations for the Stokes system. The `IMPES' scheme is deprecated and only allowed for reasons of backwards compatibility, it is the same as `single Advection, single Stokes' .The `iterated IMPES' scheme is deprecated and only allowed for reasons of backwards compatibility, it is the same as `iterated Advection and Stokes'. The `iterated Stokes' scheme is deprecated and only allowed for reasons of backwards compatibility, it is the same as `single Advection, iterated Stokes'. The `Stokes only' scheme is deprecated and only allowed for reasons of backwards compatibility, it is the same as `no Advection, iterated Stokes'. The `Advection only' scheme is deprecated and only allowed for reasons of backwards compatibility, it is the same as `single Advection, no Stokes'. The `Newton Stokes' scheme is deprecated and only allowed for reasons of backwards compatibility, it is the same as `iterated Advection and Newton Stokes'.
+{\it Description:} The kind of scheme used to resolve the nonlinearity in the system. `single Advection, single Stokes' means that no nonlinear iterations are done, and the temperature, compositional fields and Stokes equations are solved exactly once per time step, one after the other. The `iterated Advection and Stokes' scheme iterates this decoupled approach by alternating the solution of the temperature, composition and Stokes systems. The `single Advection, iterated Stokes' scheme solves the temperature and composition equation once at the beginning of each time step and then iterates out the solution of the Stokes equation. The `no Advection, iterated Stokes' scheme only solves the Stokes system, iterating out the solution, and ignores compositions and the temperature equation (careful, the material model must not depend on the temperature or composition; this is mostly useful for Stokes benchmarks). The `single Advection, no Stokes' scheme only solves the temperature and other advection systems once, and instead of solving for the Stokes system, a prescribed velocity and pressure is used. The `iterated Advection and Newton Stokes' scheme iterates by alternating the solution of the temperature, composition and Stokes equations, using Picard iterations for the temperature and composition, and Newton iterations for the Stokes system. The `IMPES' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `single Advection, single Stokes' .The `iterated IMPES' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `iterated Advection and Stokes'. The `iterated Stokes' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `single Advection, iterated Stokes'. The `Stokes only' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `no Advection, iterated Stokes'. The `Advection only' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `single Advection, no Stokes'. The `Newton Stokes' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `iterated Advection and Newton Stokes'.
 
 
 {\it Possible values:} Any one of single Advection, single Stokes, iterated Advection and Stokes, single Advection, iterated Stokes, no Advection, iterated Stokes, iterated Advection and Newton Stokes, single Advection, no Stokes, IMPES, iterated IMPES, iterated Stokes, Newton Stokes, Stokes only, Advection only
@@ -12614,7 +12614,7 @@ Note that melt does not freeze unless the 'Freezing rate' parameter is set to a 
 {\it Default:} 1e-3
 
 
-{\it Description:} The factor by how much the Darcy coefficient K_D in a cell can be smaller than the reference Darcy coefficient for this cell still to be considered a melt cell (for which the melt transport equations are solved). For smaller Darcy coefficients, the Stokes equations (without melt) are solved instead. Only used if ``Include melt transport'' is true. 
+{\it Description:} The factor by how much the Darcy coefficient K\_D in a cell can be smaller than the reference Darcy coefficient for this cell still to be considered a melt cell (for which the melt transport equations are solved). For smaller Darcy coefficients, the Stokes equations (without melt) are solved instead. Only used if ``Include melt transport'' is true. 
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -14859,7 +14859,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 1e-3
 
 
-{\it Description:} The minimum porosity that has to be present at the position of a particle for it to be considered a melt particle (in the sense that the melt_presence property is set to 1).
+{\it Description:} The minimum porosity that has to be present at the position of a particle for it to be considered a melt particle (in the sense that the melt presence property is set to 1).
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 1$
@@ -15037,7 +15037,7 @@ Fig.~\ref{fig:max-horizontal-compressive-stress} shows a simple example for this
 
 `melt fraction': A visualization output object that generates output for the melt fraction at the temperature and pressure of the current point. If the material model computes a melt fraction, this is the quantity that will be visualized. Otherwise, a specific parametrization for batch melting (as described in the following) will be used. It does not take into account latent heat. If there are no compositional fields, this postprocessor will visualize the melt fraction of peridotite (calculated using the anhydrous model of Katz, 2003). If there is at least one compositional field, the postprocessor assumes that the  first compositional field is the content of pyroxenite, and will visualize the melt fraction for a mixture of peridotite and pyroxenite (using the melting model of Sobolev, 2011 for pyroxenite). All the parameters that were used in these calculations can be changed in the input file, the most relevant maybe being the mass fraction of Cpx in peridotite in the Katz melting model (Mass fraction cpx), which right now has a default of 15\%. The corresponding p-T-diagrams can be generated by running the tests melt\_postprocessor\_peridotite and melt\_postprocessor\_pyroxenite.
 
-`melt material properties': A visualization output object that generates output for melt related properties of the material model.
+`melt material properties': A visualization output object that generates output for melt related properties of the material model. Note that this postprocessor always outputs the compaction pressure, but can output a large range of additional properties, as selected in the ``List of properties'' parameter.
 
 `named additional outputs': Some material models can compute quantities other than those that typically appear in the equations that \aspect{} solves (such as the viscosity, density, etc). Examples of quantities material models may be able to compute are seismic velocities, or other quantities that can be derived from the state variables and the material coefficients such as the stress or stress anisotropies. These quantities are generically referred to as `named outputs' because they are given an explicit name different from the usual outputs of material models.
 
@@ -15579,18 +15579,18 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 \index[prmindex]{List of properties}
 \index[prmindexfull]{Postprocess!Visualization!Melt material properties/List of properties}
-{\it Value:} compaction viscosity,permeability,p_c
+{\it Value:} compaction viscosity,permeability
 
 
-{\it Default:} compaction viscosity,permeability,p_c
+{\it Default:} compaction viscosity,permeability
 
 
 {\it Description:} A comma separated list of melt properties that should be written whenever writing graphical output. The following material properties are available:
 
-compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gradient|p_c|is melt cell|darcy coefficient|darcy coefficient no cutoff
+compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gradient|is melt cell|darcy coefficient|darcy coefficient no cutoff
 
 
-{\it Possible values:} A comma-separated list of any of compaction viscosity, fluid viscosity, permeability, fluid density, fluid density gradient, p_c, is melt cell, darcy coefficient, darcy coefficient no cutoff
+{\it Possible values:} A comma-separated list of any of compaction viscosity, fluid viscosity, permeability, fluid density, fluid density gradient, is melt cell, darcy coefficient, darcy coefficient no cutoff
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Visualization/Vp anomaly}

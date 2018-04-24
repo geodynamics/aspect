@@ -91,7 +91,7 @@ namespace aspect
               prm.declare_entry ("Threshold for melt presence", "1e-3",
                                  Patterns::Double (0,1),
                                  "The minimum porosity that has to be present at the position of a particle "
-                                 "for it to be considered a melt particle (in the sense that the melt_presence "
+                                 "for it to be considered a melt particle (in the sense that the melt presence "
                                  "property is set to 1).");
             }
             prm.leave_subsection();
