@@ -28,7 +28,6 @@ set End time                               = 50000
 set Use years in output instead of seconds = true
 set Surface pressure                       = 0
 set Adiabatic surface temperature          = 1600
-set Temperature solver tolerance           = 1e-7
 
 subsection Geometry model
   set Model name = box
@@ -162,4 +161,8 @@ end
 
 subsection Postprocess
   set List of postprocessors = composition statistics,temperature statistics, velocity statistics
+end
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-7
 end

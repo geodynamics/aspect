@@ -269,18 +269,6 @@ namespace aspect
                        "The name of the directory into which all output files should be "
                        "placed. This may be an absolute or a relative path.");
 
-    prm.declare_entry ("Temperature solver tolerance", "1e-12",
-                       Patterns::Double(0,1),
-                       "The relative tolerance up to which the linear system for "
-                       "the temperature system gets solved. See `linear solver "
-                       "tolerance' for more details.");
-
-    prm.declare_entry ("Composition solver tolerance", "1e-12",
-                       Patterns::Double(0,1),
-                       "The relative tolerance up to which the linear system for "
-                       "the composition system gets solved. See `linear solver "
-                       "tolerance' for more details.");
-
     prm.declare_entry ("Use operator splitting", "false",
                        Patterns::Bool(),
                        "If set to true, the advection and reactions of compositional fields and "
@@ -291,6 +279,18 @@ namespace aspect
 
     prm.enter_subsection ("Solver parameters");
     {
+      prm.declare_entry ("Temperature solver tolerance", "1e-12",
+                         Patterns::Double(0,1),
+                         "The relative tolerance up to which the linear system for "
+                         "the temperature system gets solved. See `Stokes solver "
+                         "parameters/Linear solver tolerance' for more details.");
+
+      prm.declare_entry ("Composition solver tolerance", "1e-12",
+                         Patterns::Double(0,1),
+                         "The relative tolerance up to which the linear system for "
+                         "the composition system gets solved. See `Stokes solver "
+                         "parameters/Linear solver tolerance' for more details.");
+
       prm.enter_subsection ("Stokes solver parameters");
       {
         prm.declare_entry ("Use direct solver for Stokes system", "false",
@@ -1013,6 +1013,9 @@ namespace aspect
 
     prm.enter_subsection ("Solver parameters");
     {
+      temperature_solver_tolerance    = prm.get_double ("Temperature solver tolerance");
+      composition_solver_tolerance    = prm.get_double ("Composition solver tolerance");
+
       prm.enter_subsection ("Stokes solver parameters");
       {
         use_direct_stokes_solver        = prm.get_bool("Use direct solver for Stokes system");
@@ -1086,8 +1089,6 @@ namespace aspect
     adiabatic_surface_temperature   = prm.get_double ("Adiabatic surface temperature");
     pressure_normalization          = prm.get("Pressure normalization");
 
-    temperature_solver_tolerance    = prm.get_double ("Temperature solver tolerance");
-    composition_solver_tolerance    = prm.get_double ("Composition solver tolerance");
     use_operator_splitting          = prm.get_bool("Use operator splitting");
 
     prm.enter_subsection ("Mesh refinement");

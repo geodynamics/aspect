@@ -8,7 +8,6 @@ set End time                               = 0
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-4
 set Max nonlinear iterations               = 6 
-set Temperature solver tolerance           = 1e-4
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
@@ -79,6 +78,8 @@ subsection Postprocess
 end 
 
 subsection Solver parameters
+  set Temperature solver tolerance = 1e-4
+
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-4
     set Number of cheap Stokes solver steps = 0
