@@ -5,7 +5,6 @@
 # now becomes so that it affects the overall error (which is iteration
 # plus discretization)
 
-set Linear solver tolerance = 1e-2
 
 set Dimension = 2
 
@@ -122,3 +121,8 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-2
+  end
+end

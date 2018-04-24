@@ -4,7 +4,6 @@ set Start time                             = 0
 set End time                               = 1e9
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, single Stokes
-set Number of cheap Stokes solver steps    = 200
 set Output directory                       = compositional_heating
 set Timing output frequency                = 1
 
@@ -154,4 +153,10 @@ end
 # Postprocessor
 subsection Postprocess
   set List of postprocessors = heat flux statistics, temperature statistics
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 200
+  end
 end

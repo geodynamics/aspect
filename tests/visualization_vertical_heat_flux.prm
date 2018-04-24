@@ -6,7 +6,6 @@ set Use years in output instead of seconds = false
 set End time                               = 0.0
 set Output directory                       = output
 
-set Linear solver tolerance                = 1e-7
 set Temperature solver tolerance           = 1e-10
 
 set Pressure normalization                 = surface
@@ -95,3 +94,8 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+  end
+end

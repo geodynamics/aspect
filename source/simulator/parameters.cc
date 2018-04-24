@@ -269,77 +269,6 @@ namespace aspect
                        "The name of the directory into which all output files should be "
                        "placed. This may be an absolute or a relative path.");
 
-    prm.declare_entry ("Use direct solver for Stokes system", "false",
-                       Patterns::Bool(),
-                       "If set to true the linear system for the Stokes equation will "
-                       "be solved using Trilinos klu, otherwise an iterative Schur "
-                       "complement solver is used. The direct solver is only efficient "
-                       "for small problems.");
-
-    prm.declare_entry ("Linear solver tolerance", "1e-7",
-                       Patterns::Double(0,1),
-                       "A relative tolerance up to which the linear Stokes systems in each "
-                       "time or nonlinear step should be solved. The absolute tolerance will "
-                       "then be $\\| M x_0 - F \\| \\cdot \\text{tol}$, where $x_0 = (0,p_0)$ "
-                       "is the initial guess of the pressure, $M$ is the system matrix, "
-                       "F is the right-hand side, and tol is the parameter specified here. "
-                       "We include the initial guess of the pressure "
-                       "to remove the dependency of the tolerance on the static pressure. "
-                       "A given tolerance value of 1 would "
-                       "mean that a zero solution vector is an acceptable solution "
-                       "since in that case the norm of the residual of the linear "
-                       "system equals the norm of the right hand side. A given "
-                       "tolerance of 0 would mean that the linear system has to be "
-                       "solved exactly, since this is the only way to obtain "
-                       "a zero residual."
-                       "\n\n"
-                       "In practice, you should choose the value of this parameter "
-                       "to be so that if you make it smaller the results of your "
-                       "simulation do not change any more (qualitatively) whereas "
-                       "if you make it larger, they do. For most cases, the default "
-                       "value should be sufficient. In fact, a tolerance of 1e-4 "
-                       "might be accurate enough.");
-
-    prm.declare_entry ("Linear solver A block tolerance", "1e-2",
-                       Patterns::Double(0,1),
-                       "A relative tolerance up to which the approximate inverse of the $A$ block "
-                       "of the Stokes system is computed. This approximate $A$ is used in the "
-                       "preconditioning used in the GMRES solver. The exact definition of this "
-                       "block preconditioner for the Stokes equation can be found in "
-                       "\\cite{KHB12}.");
-
-    prm.declare_entry ("Linear solver S block tolerance", "1e-6",
-                       Patterns::Double(0,1),
-                       "A relative tolerance up to which the approximate inverse of the $S$ block "
-                       "(i.e., the Schur complement matrix $S = BA^{-1}B^{T}$) of the Stokes "
-                       "system is computed. This approximate inverse of the $S$ block is used "
-                       "in the preconditioning used in the GMRES solver. The exact definition of "
-                       "this block preconditioner for the Stokes equation can be found in "
-                       "\\cite{KHB12}.");
-
-    prm.declare_entry ("Number of cheap Stokes solver steps", "200",
-                       Patterns::Integer(0),
-                       "As explained in the paper that describes ASPECT (Kronbichler, Heister, and Bangerth, "
-                       "2012, see \\cite{KHB12}) we first try to solve the Stokes system in every "
-                       "time step using a GMRES iteration with a poor but cheap "
-                       "preconditioner. By default, we try whether we can converge the GMRES "
-                       "solver in 200 such iterations before deciding that we need a better "
-                       "preconditioner. This is sufficient for simple problems with variable "
-                       "viscosity and we never need the second phase with the more expensive "
-                       "preconditioner. On the other hand, for more complex problems, and in "
-                       "particular for problems with strongly nonlinear viscosity, the 200 "
-                       "cheap iterations don't actually do very much good and one might skip "
-                       "this part right away. In that case, this parameter can be set to "
-                       "zero, i.e., we immediately start with the better but more expensive "
-                       "preconditioner.");
-
-    prm.declare_entry ("Maximum number of expensive Stokes solver steps", "1000",
-                       Patterns::Integer(0),
-                       "This sets the maximum number of iterations used in the expensive Stokes solver. "
-                       "If this value is set too low for the size of the problem, the Stokes solver will "
-                       "not converge and return an error message pointing out that the user didn't allow "
-                       "a sufficiently large number of iterations for the iterative solver to converge.");
-
     prm.declare_entry ("Temperature solver tolerance", "1e-12",
                        Patterns::Double(0,1),
                        "The relative tolerance up to which the linear system for "
@@ -362,6 +291,80 @@ namespace aspect
 
     prm.enter_subsection ("Solver parameters");
     {
+      prm.enter_subsection ("Stokes solver parameters");
+      {
+        prm.declare_entry ("Use direct solver for Stokes system", "false",
+                           Patterns::Bool(),
+                           "If set to true the linear system for the Stokes equation will "
+                           "be solved using Trilinos klu, otherwise an iterative Schur "
+                           "complement solver is used. The direct solver is only efficient "
+                           "for small problems.");
+
+        prm.declare_entry ("Linear solver tolerance", "1e-7",
+                           Patterns::Double(0,1),
+                           "A relative tolerance up to which the linear Stokes systems in each "
+                           "time or nonlinear step should be solved. The absolute tolerance will "
+                           "then be $\\| M x_0 - F \\| \\cdot \\text{tol}$, where $x_0 = (0,p_0)$ "
+                           "is the initial guess of the pressure, $M$ is the system matrix, "
+                           "F is the right-hand side, and tol is the parameter specified here. "
+                           "We include the initial guess of the pressure "
+                           "to remove the dependency of the tolerance on the static pressure. "
+                           "A given tolerance value of 1 would "
+                           "mean that a zero solution vector is an acceptable solution "
+                           "since in that case the norm of the residual of the linear "
+                           "system equals the norm of the right hand side. A given "
+                           "tolerance of 0 would mean that the linear system has to be "
+                           "solved exactly, since this is the only way to obtain "
+                           "a zero residual."
+                           "\n\n"
+                           "In practice, you should choose the value of this parameter "
+                           "to be so that if you make it smaller the results of your "
+                           "simulation do not change any more (qualitatively) whereas "
+                           "if you make it larger, they do. For most cases, the default "
+                           "value should be sufficient. In fact, a tolerance of 1e-4 "
+                           "might be accurate enough.");
+
+        prm.declare_entry ("Number of cheap Stokes solver steps", "200",
+                           Patterns::Integer(0),
+                           "As explained in the paper that describes ASPECT (Kronbichler, Heister, and Bangerth, "
+                           "2012, see \\cite{KHB12}) we first try to solve the Stokes system in every "
+                           "time step using a GMRES iteration with a poor but cheap "
+                           "preconditioner. By default, we try whether we can converge the GMRES "
+                           "solver in 200 such iterations before deciding that we need a better "
+                           "preconditioner. This is sufficient for simple problems with variable "
+                           "viscosity and we never need the second phase with the more expensive "
+                           "preconditioner. On the other hand, for more complex problems, and in "
+                           "particular for problems with strongly nonlinear viscosity, the 200 "
+                           "cheap iterations don't actually do very much good and one might skip "
+                           "this part right away. In that case, this parameter can be set to "
+                           "zero, i.e., we immediately start with the better but more expensive "
+                           "preconditioner.");
+
+        prm.declare_entry ("Maximum number of expensive Stokes solver steps", "1000",
+                           Patterns::Integer(0),
+                           "This sets the maximum number of iterations used in the expensive Stokes solver. "
+                           "If this value is set too low for the size of the problem, the Stokes solver will "
+                           "not converge and return an error message pointing out that the user didn't allow "
+                           "a sufficiently large number of iterations for the iterative solver to converge.");
+
+        prm.declare_entry ("Linear solver A block tolerance", "1e-2",
+                           Patterns::Double(0,1),
+                           "A relative tolerance up to which the approximate inverse of the $A$ block "
+                           "of the Stokes system is computed. This approximate $A$ is used in the "
+                           "preconditioning used in the GMRES solver. The exact definition of this "
+                           "block preconditioner for the Stokes equation can be found in "
+                           "\\cite{KHB12}.");
+
+        prm.declare_entry ("Linear solver S block tolerance", "1e-6",
+                           Patterns::Double(0,1),
+                           "A relative tolerance up to which the approximate inverse of the $S$ block "
+                           "(i.e., the Schur complement matrix $S = BA^{-1}B^{T}$) of the Stokes "
+                           "system is computed. This approximate inverse of the $S$ block is used "
+                           "in the preconditioning used in the GMRES solver. The exact definition of "
+                           "this block preconditioner for the Stokes equation can be found in "
+                           "\\cite{KHB12}.");
+      }
+      prm.leave_subsection ();
       prm.enter_subsection ("AMG parameters");
       {
         prm.declare_entry ("AMG smoother type", "Chebyshev",
@@ -1042,6 +1045,16 @@ namespace aspect
 
     prm.enter_subsection ("Solver parameters");
     {
+      prm.enter_subsection ("Stokes solver parameters");
+      {
+        use_direct_stokes_solver        = prm.get_bool("Use direct solver for Stokes system");
+        linear_stokes_solver_tolerance  = prm.get_double ("Linear solver tolerance");
+        n_cheap_stokes_solver_steps     = prm.get_integer ("Number of cheap Stokes solver steps");
+        n_expensive_stokes_solver_steps = prm.get_integer ("Maximum number of expensive Stokes solver steps");
+        linear_solver_A_block_tolerance = prm.get_double ("Linear solver A block tolerance");
+        linear_solver_S_block_tolerance = prm.get_double ("Linear solver S block tolerance");
+      }
+      prm.leave_subsection ();
       prm.enter_subsection ("AMG parameters");
       {
         AMG_smoother_type                      = prm.get ("AMG smoother type");
@@ -1105,12 +1118,6 @@ namespace aspect
     adiabatic_surface_temperature   = prm.get_double ("Adiabatic surface temperature");
     pressure_normalization          = prm.get("Pressure normalization");
 
-    use_direct_stokes_solver        = prm.get_bool("Use direct solver for Stokes system");
-    linear_stokes_solver_tolerance  = prm.get_double ("Linear solver tolerance");
-    linear_solver_A_block_tolerance = prm.get_double ("Linear solver A block tolerance");
-    linear_solver_S_block_tolerance = prm.get_double ("Linear solver S block tolerance");
-    n_cheap_stokes_solver_steps     = prm.get_integer ("Number of cheap Stokes solver steps");
-    n_expensive_stokes_solver_steps = prm.get_integer ("Maximum number of expensive Stokes solver steps");
     temperature_solver_tolerance    = prm.get_double ("Temperature solver tolerance");
     composition_solver_tolerance    = prm.get_double ("Composition solver tolerance");
     use_operator_splitting          = prm.get_bool("Use operator splitting");

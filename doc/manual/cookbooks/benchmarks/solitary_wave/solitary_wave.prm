@@ -10,7 +10,6 @@ set Additional shared libraries            = ./libsolitary_wave.so
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 10
 set Nonlinear solver tolerance             = 1e-5
-set Linear solver tolerance                = 1e-10
 
 # The end time is chosen in such a way that the solitary wave travels
 # approximately 5 times its wavelength during the model time.
@@ -98,4 +97,10 @@ end
 # Postprocessor for the error calculation
 subsection Postprocess
   set List of postprocessors = solitary wave statistics
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-10
+  end
 end

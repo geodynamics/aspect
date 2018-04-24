@@ -9,10 +9,8 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = false
-set Linear solver tolerance                = 1e-7 
 set Nonlinear solver tolerance             = 1e-5
 set Nonlinear solver scheme                = single Advection, iterated Stokes
-set Number of cheap Stokes solver steps    = 0
 set Max nonlinear iterations               = 10 # to localize deformation, more iterations are needed
 
 ############### Parameters describing the model
@@ -129,4 +127,11 @@ end
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, mass flux statistics
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7 
+    set Number of cheap Stokes solver steps = 0
+  end
 end

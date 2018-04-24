@@ -3,7 +3,6 @@ set Start time                             = 0
 set End time                               = 0
 set Output directory                       = output-sinker-with-averaging
 
-set Linear solver tolerance                = 1e-7
 set Pressure normalization                 = volume
 
 

@@ -6,7 +6,6 @@
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 2.63e8
-set Linear solver tolerance                = 1e-6
 set Output directory                       = output-burnman
 
 subsection Material model
@@ -142,4 +141,10 @@ end
 
 subsection Checkpointing
   set Time between checkpoint  = 1800
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-6
+  end
 end

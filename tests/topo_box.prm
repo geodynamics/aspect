@@ -4,7 +4,6 @@ set CFL number                             = 0.5
 set Composition solver tolerance           = 1e-10
 set Dimension                              = 2                                                       
 set End time                               = 1e+7
-set Linear solver tolerance                = 1e-8
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Nonlinear solver tolerance             = 1e-6
 set Pressure normalization                 = no                                                      
@@ -104,5 +103,11 @@ subsection Termination criteria
   end
   subsection User request
     set File name = terminate-aspect
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-8
   end
 end

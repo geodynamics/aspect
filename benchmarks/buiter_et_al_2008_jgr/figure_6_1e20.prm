@@ -3,9 +3,6 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 1e6
 set Use years in output instead of seconds = true
-set Use direct solver for Stokes system    = false
-set Linear solver tolerance                = 1e-7
-set Number of cheap Stokes solver steps    = 0
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-3
 set Max nonlinear iterations               = 100
@@ -183,5 +180,11 @@ subsection Postprocess
     set List of output variables = density, viscosity, strain rate, error indicator, partition
     set Time between graphical output = 1e5
     set Interpolate output = false
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
   end
 end

@@ -6,12 +6,10 @@
 set Dimension                              = 2
 set Adiabatic surface temperature          = 1600
 set Maximum time step                      = 1e6
-set Linear solver tolerance                = 1e-8
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 20
 set Nonlinear solver tolerance             = 1e-7
-set Number of cheap Stokes solver steps    = 100
 
 # In addition, melting and freezing normally happens on a much faster
 # time scale than the flow of melt, so we want to decouple the advection
@@ -279,3 +277,9 @@ subsection Postprocess
 end
 
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-8
+    set Number of cheap Stokes solver steps = 100
+  end
+end

@@ -5,7 +5,6 @@ set End time                               = 0
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Max nonlinear iterations               = 1
-set Number of cheap Stokes solver steps    = 0
 set Output directory                       = visco_plastic_yield_strain_weakening
 set Timing output frequency                = 1
 
@@ -116,5 +115,11 @@ subsection Postprocess
   subsection Visualization
     set List of output variables = viscosity, strain rate, named additional outputs
     set Output format            = gnuplot
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
   end
 end

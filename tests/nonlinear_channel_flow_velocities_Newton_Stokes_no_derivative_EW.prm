@@ -13,7 +13,6 @@ set Use years in output instead of seconds = false  # default: true
 set Nonlinear solver scheme = iterated Advection and Newton Stokes
 set Max nonlinear iterations = 100 
 set Nonlinear solver tolerance = 1e-10
-set Linear solver tolerance = 1e-8
 
 subsection Solver parameters
   subsection Newton solver parameters
@@ -130,3 +129,8 @@ subsection Postprocess
 end
 
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-8
+  end
+end

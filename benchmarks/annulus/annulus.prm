@@ -10,7 +10,6 @@
 # step before the program terminates.
 
 set Additional shared libraries            = ./libannulus.so
-set Linear solver tolerance                = 1e-12
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
@@ -18,7 +17,6 @@ set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Output directory                       = output
 set Pressure normalization                 = surface
-set Number of cheap Stokes solver steps    = 0
 
 ############### Parameters describing the model
 # Because the temperature plays no role in this model we need not
@@ -111,3 +109,9 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-12
+    set Number of cheap Stokes solver steps = 0
+  end
+end

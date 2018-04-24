@@ -16,7 +16,6 @@ set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
 set Nonlinear solver scheme                = single Advection, single Stokes
-set Use direct solver for Stokes system    = true
 
 
 subsection Boundary temperature model
@@ -96,3 +95,8 @@ subsection Termination criteria
   set Checkpoint on termination = false
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = true
+  end
+end

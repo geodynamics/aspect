@@ -3,4 +3,9 @@
 
 include $ASPECT_SOURCE_DIR/tests/stokes_residual.prm
 
-set Number of cheap Stokes solver steps    = 0
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+end

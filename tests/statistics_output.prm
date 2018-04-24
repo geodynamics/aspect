@@ -7,7 +7,6 @@
 # work in:
 set Dimension                              = 2
 set Nonlinear solver scheme                = iterated Advection and Stokes
-set Linear solver tolerance                = 1e-12
 
 # There are several global variables that have to do with what
 # time system we want to work in and what the end time is.
@@ -135,3 +134,8 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-12
+  end
+end

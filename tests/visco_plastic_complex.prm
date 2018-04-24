@@ -5,7 +5,6 @@ set End time                               = 0
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Max nonlinear iterations               = 1
-set Number of cheap Stokes solver steps    = 0
 set Output directory                       = visco_plastic_complex
 set Timing output frequency                = 1
 
@@ -164,4 +163,10 @@ end
 # Post processing
 subsection Postprocess
   set List of postprocessors = velocity statistics, mass flux statistics
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
 end

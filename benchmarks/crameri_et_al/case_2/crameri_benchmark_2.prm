@@ -7,8 +7,6 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Pressure normalization = no
-set Linear solver tolerance = 1.e-7
-set Number of cheap Stokes solver steps    = 30
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, single Stokes
 
@@ -123,5 +121,11 @@ subsection Postprocess
     set Number of grouped files       = 1
     set Output format                 = vtu
     set Time between graphical output = 1e6
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 30
   end
 end

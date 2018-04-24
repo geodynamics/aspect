@@ -10,7 +10,6 @@ set CFL number                             = 1
 set End time                               = 50
 set Adiabatic surface temperature          = 0.5
 set Use years in output instead of seconds = false
-set Linear solver tolerance                = 1e-7
 set Pressure normalization                 = no
 
 subsection Boundary temperature model
@@ -97,4 +96,10 @@ end
 
 subsection Heating model
   set List of model names = adiabatic heating, shear heating
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+  end
 end

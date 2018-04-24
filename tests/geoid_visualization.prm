@@ -4,7 +4,6 @@ set Dimension                              = 3
 set Use years in output instead of seconds = true
 set Start time                             = 0
 set End time                               = 0
-set Linear solver tolerance                = 1e-7
 set Adiabatic surface temperature          = 0.0
 set Nonlinear solver scheme                = no Advection, iterated Stokes
 
@@ -105,5 +104,11 @@ subsection Postprocess
     set Density below = 2.0
     set Output surface = false
     set Output bottom = false
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
   end
 end

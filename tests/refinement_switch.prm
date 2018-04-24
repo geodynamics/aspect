@@ -4,7 +4,6 @@ set Use years in output instead of seconds = false
 set End time                               = 0.5
 set Output directory                       = refinement_switch 
 
-set Linear solver tolerance                = 1e-7
 set Temperature solver tolerance           = 1e-10
 
 set Pressure normalization                 = surface
@@ -114,4 +113,10 @@ end
 subsection Termination criteria
   set End step                  = 1  
   set Termination criteria      = end step
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+  end
 end

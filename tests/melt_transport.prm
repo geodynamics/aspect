@@ -27,7 +27,6 @@ set Resume computation                     = false
 set Start time                             = 0
 
 set Use years in output instead of seconds = true
-set Use direct solver for Stokes system    = true
 
 subsection Compositional fields
   set Number of fields = 2
@@ -169,3 +168,8 @@ end
 
 
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = true
+  end
+end

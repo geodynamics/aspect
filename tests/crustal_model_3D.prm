@@ -6,11 +6,9 @@ set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = true
 set CFL number                             = .5
-set Linear solver tolerance                = 1e-9
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-9
 set Max nonlinear iterations               = 2
-set Number of cheap Stokes solver steps    = 0
 set Pressure normalization                 = no
 
 ############### Parameters describing the model
@@ -124,3 +122,9 @@ end
 
 
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-9
+    set Number of cheap Stokes solver steps = 0
+  end
+end

@@ -4,11 +4,9 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = true
-set Linear solver tolerance                = 1e-9
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-5
 set Max nonlinear iterations               = 1
-set Number of cheap Stokes solver steps    = 0
 set CFL number                             = 0.5
 set Output directory                       = dynamic_friction
 set Timing output frequency                = 1
@@ -134,3 +132,9 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, basic statistics
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-9
+    set Number of cheap Stokes solver steps = 0
+  end
+end
