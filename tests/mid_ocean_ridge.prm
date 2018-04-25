@@ -1,0 +1,25 @@
+# Copy of the mid-ocean ridge cookbook, with temperature dependent
+# compaction viscosity. 
+
+include $ASPECT_SOURCE_DIR/cookbooks/mid_ocean_ridge.prm
+
+set End time = 1e4
+
+subsection Material model
+  set Model name = melt simple 
+  subsection Melt simple
+    set Thermal bulk viscosity exponent = 7
+  end
+end
+
+subsection Postprocess
+  subsection Visualization
+    set Output format      = gnuplot
+    set Interpolate output = false
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 3
+end

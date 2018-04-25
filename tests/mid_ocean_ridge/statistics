@@ -1,0 +1,25 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Visualization file name
+# 16: Minimal value for composition porosity
+# 17: Maximal value for composition porosity
+# 18: Global mass for composition porosity
+# 19: Minimal value for composition peridotite
+# 20: Maximal value for composition peridotite
+# 21: Global mass for composition peridotite
+# 22: RMS velocity (m/year)
+# 23: Max. velocity (m/year)
+0 0.000000000000e+00 0.000000000000e+00 384 3659 1617 3234 2  0 0 0 44 45 314 output-mid_ocean_ridge/solution/solution-00000 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.68556117e-02 2.98385186e-02 
+1 1.000000000000e+04 1.000000000000e+04 384 3659 1617 3234 3 13 0 0 42 44 306 output-mid_ocean_ridge/solution/solution-00001 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.69002868e-02 2.98404308e-02 
