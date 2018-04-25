@@ -233,10 +233,10 @@ subsection Postprocess
 
     # To see in which cells melt transport is modelled, it can be useful to look 
     # at the property 'is melt cell', so we include it in the output. In addition, 
-    # we have to add the compaction pressure 'p_c' here, as it is not a solution
-    # variable (we solved for a scaled compaction pressure 'p_c_bar').  
+    # we always visualize the compaction pressure 'p_c' if this postprocessor is
+    # used.  
     subsection Melt material properties
-      set List of properties = compaction viscosity, permeability, fluid density, p_c, is melt cell
+      set List of properties = compaction viscosity, permeability, fluid density, is melt cell
     end
 
     set Time between graphical output = 0

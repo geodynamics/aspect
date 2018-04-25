@@ -1,0 +1,73 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Number of active cells: 384 (on 4 levels)
+Number of degrees of freedom: 13,321 (3,234+1,577+3,234+425+1,617+1,617+1,617)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 44+0 iterations.
+   Solving for u_f in 10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59922e-16, 0, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59922e-16, 0, 0, 8.7539e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.7539e-08
+
+
+   Postprocessing:
+     Writing graphical output:  output-mid_ocean_ridge/solution/solution-00000
+     Compositions min/max/mass: 0/0/0 // 0/0/0
+     RMS, max velocity:         0.0169 m/year, 0.0298 m/year
+
+*** Timestep 1:  t=10000 years
+   Solving composition reactions in 50 substep(s).
+   Solving temperature system... 6 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 29+0 iterations.
+   Solving for u_f in 10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0202921, 0, 0, 0.000315352
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0202921
+
+   Solving temperature system... 4 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13+0 iterations.
+   Solving for u_f in 10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.50784e-05, 0, 0, 7.2474e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.50784e-05
+
+   Solving temperature system... 3 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.20845e-07, 0, 0, 6.56093e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.20845e-07
+
+
+   Postprocessing:
+     Writing graphical output:  output-mid_ocean_ridge/solution/solution-00001
+     Compositions min/max/mass: 0/0/0 // 0/0/0
+     RMS, max velocity:         0.0169 m/year, 0.0298 m/year
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
