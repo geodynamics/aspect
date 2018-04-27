@@ -303,11 +303,15 @@ namespace aspect
          * points. This allows for evaluating properties at the cell vertices
          * and interpolating to the quadrature points, or to query the cell for
          * material ids, neighbors, or other information that is not available
-         * solely from the locations. Note that not all calling functions can set
-         * this reference. In these cases it will be a cell constructed with a
-         * default constructor, so make sure that your material model either fails
+         * solely from the locations. Note that not all calling functions will
+         * set this cell iterator. In these cases it will be an invalid iterator
+         * constructed using the default constructor, so make sure that your
+         * material model either fails
          * with a proper error message or provide an alternative calculation for
-         * these cases.
+         * these cases. You can detect this with
+         * @code
+         * if (in.current_cell.state() == IteratorState::valid)
+         * @endcode
          */
         typename DoFHandler<dim>::active_cell_iterator current_cell;
 
