@@ -35,19 +35,24 @@ namespace aspect
       for (unsigned int i=0; i < in.position.size(); ++i)
         {
           const double delta_temp = in.temperature[i]-reference_T;
-          const double temperature_dependence = (reference_T > 0
-                                                 ?
-                                                 std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),
-                                                                   maximum_thermal_prefactor),
-                                                          minimum_thermal_prefactor)
-                                                 :
-                                                 1.0);
+          const double temperature_dependence
+            = (reference_T > 0
+               ?
+               std::max(std::min(std::exp(-thermal_viscosity_exponent *
+                                          delta_temp/reference_T),
+                                 maximum_thermal_prefactor),
+                        minimum_thermal_prefactor)
+               :
+               1.0);
 
           out.viscosities[i] = ((composition_viscosity_prefactor != 1.0) && (in.composition[i].size()>0))
                                ?
                                // Geometric interpolation
-                               pow(10.0, ((1-in.composition[i][0]) * log10(eta*temperature_dependence)
-                                          + in.composition[i][0] * log10(eta*composition_viscosity_prefactor*temperature_dependence)))
+                               std::pow(10.0, ((1-in.composition[i][0]) * std::log10(eta *
+                                                                                     temperature_dependence)
+                                               + in.composition[i][0] * std::log10(eta *
+                                                                                   composition_viscosity_prefactor *
+                                                                                   temperature_dependence)))
                                :
                                temperature_dependence * eta;
 
