@@ -760,13 +760,10 @@ namespace aspect
     }
 
 
-
-    template <int dim>
-    Point<dim>
-    EllipsoidalChunk<dim>::natural_to_cartesian_coordinates(const std_cxx11::array<double,dim> &position_tensor) const
+    template <>
+    Point<3>
+    EllipsoidalChunk<3>::natural_to_cartesian_coordinates(const std_cxx11::array<double,3> &position_tensor) const
     {
-      Assert(dim == 3,ExcMessage("This geometry model doesn't support 2d."));
-
       // We receive radius, longitude, latitude and we need to turn it first back into
       // longitude, latitude, depth for internal use, and push_forward to cartesian coordiantes.
       Point<3> position_point;
@@ -777,8 +774,16 @@ namespace aspect
       position_point(2) = position_tensor[0] - radius;
 
       Point<3> transformed_point = manifold.push_forward(position_point);
+      return transformed_point;
+    }
 
-      return reinterpret_cast<Point<dim>&>(transformed_point);
+
+    template <>
+    Point<2>
+    EllipsoidalChunk<2>::natural_to_cartesian_coordinates(const std_cxx11::array<double,2> &/*position_tensor*/) const
+    {
+      Assert(false, ExcMessage("This geometry model doesn't support 2d."));
+      return Point<2>();
     }
 
   }
