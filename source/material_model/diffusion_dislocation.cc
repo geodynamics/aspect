@@ -20,7 +20,7 @@
 
 #include <aspect/material_model/diffusion_dislocation.h>
 #include <aspect/utilities.h>
-
+#include <aspect/adiabatic_conditions/interface.h>
 
 namespace aspect
 {
@@ -305,8 +305,15 @@ namespace aspect
           out.thermal_expansion_coefficients[i] = thermal_expansivity;
           // Specific heat at the given positions.
           out.specific_heat[i] = heat_capacity;
-          // Thermal conductivity at the given positions.
-          out.thermal_conductivities[i] = thermal_diffusivity * heat_capacity * density;
+          // Thermal conductivity at the given positions. If the temperature equation uses
+          // the reference density profile formulation, use the reference density to
+          // calculate thermal conductivity. Otherwise, use the real density.
+          if (this->get_parameters().formulation_temperature_equation ==
+              Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+            out.thermal_conductivities[i] = thermal_diffusivity * heat_capacity *
+                                            this->get_adiabatic_conditions().density(in.position[i]);
+          else
+            out.thermal_conductivities[i] = thermal_diffusivity * heat_capacity * density;
           // Compressibility at the given positions.
           // The compressibility is given as
           // $\frac 1\rho \frac{\partial\rho}{\partial p}$.
