@@ -89,7 +89,14 @@ namespace aspect
       in.strain_rate.resize(0); // adiabat has strain=0.
       this->get_material_model().evaluate(in, out);
 
-      const double kappa = out.thermal_conductivities[0] / (out.densities[0] * out.specific_heat[0]);
+      const double kappa = ( (this->get_parameters().formulation_temperature_equation ==
+                              Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+                             ?
+                             out.thermal_conductivities[0] /
+                             (this->get_adiabatic_conditions().density(in.position[0]) * out.specific_heat[0])
+                             :
+                             out.thermal_conductivities[0] / (out.densities[0] * out.specific_heat[0])
+                           );
 
       // analytical solution for the thermal boundary layer from half-space cooling model
       const double surface_cooling_temperature = age_top > 0.0 ?

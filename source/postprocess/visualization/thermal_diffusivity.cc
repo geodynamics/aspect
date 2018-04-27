@@ -20,6 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/thermal_diffusivity.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 
 
@@ -59,7 +60,14 @@ namespace aspect
         this->get_material_model().evaluate(in, out);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
-          computed_quantities[q](0) = out.thermal_conductivities[q] / (out.densities[q] * out.specific_heat[q]);
+
+          if (this->get_parameters().formulation_temperature_equation ==
+              Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+            computed_quantities[q](0) = out.thermal_conductivities[q] /
+                                        (this->get_adiabatic_conditions().density(in.position[q]) * out.specific_heat[q]);
+          else
+            computed_quantities[q](0) = out.thermal_conductivities[q] / (out.densities[q] * out.specific_heat[q]);
+
       }
     }
   }
