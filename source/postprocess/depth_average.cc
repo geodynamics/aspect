@@ -366,11 +366,36 @@ namespace aspect
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "sinking velocity") != output_variables.end() )
               variables.push_back("sinking_velocity");
 
-            if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "Vs") != output_variables.end() )
-              variables.push_back("Vs");
+            // handle seismic velocities, because they may, or may not be provided by the material model
+            {
+              MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
+              this->get_material_model().create_additional_named_outputs(out);
 
-            if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "Vp") != output_variables.end() )
-              variables.push_back("Vp");
+              const bool material_model_provides_seismic_output =
+                (out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >() != 0);
+
+              const bool output_vs = std::find( output_variables.begin(), output_variables.end(), "Vs") != output_variables.end();
+              const bool output_vp = std::find( output_variables.begin(), output_variables.end(), "Vp") != output_variables.end();
+
+              if (output_vs || output_vp)
+                AssertThrow(material_model_provides_seismic_output,
+                            ExcMessage("You requested seismic velocities from the 'Depth average' postprocessor, "
+                                       "but the material model does not provide seismic velocities. Either remove 'Vs' and "
+                                       "'Vp' from the 'List of output variables' parameter, or use a material model that "
+                                       "provides these velocities."));
+
+              if (output_all_variables && material_model_provides_seismic_output)
+                {
+                  variables.push_back("Vs");
+                  variables.push_back("Vp");
+                }
+
+              if (output_vs)
+                variables.push_back("Vs");
+
+              if (output_vp)
+                variables.push_back("Vp");
+            }
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "viscosity") != output_variables.end() )
               variables.push_back("viscosity");

@@ -405,6 +405,18 @@ namespace aspect
       void
       SeismicVsAnomaly<dim>::parse_parameters (ParameterHandler &prm)
       {
+        // First make sure the material model actually provides seismic velocities
+        MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
+        this->get_material_model().create_additional_named_outputs(out);
+
+        const bool material_model_provides_seismic_output =
+          (out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >() != 0);
+
+        AssertThrow(material_model_provides_seismic_output,
+                    ExcMessage("You requested the 'Vs anomaly' postprocessor, "
+                               "but the material model does not provide seismic velocities. Either remove 'Vs anomaly', "
+                               "or use a material model that provides these velocities."));
+
         prm.enter_subsection("Postprocess");
         {
           prm.enter_subsection("Visualization");
@@ -468,13 +480,24 @@ namespace aspect
       void
       SeismicVpAnomaly<dim>::parse_parameters (ParameterHandler &prm)
       {
+        // First make sure the material model actually provides seismic velocities
+        MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
+        this->get_material_model().create_additional_named_outputs(out);
+
+        const bool material_model_provides_seismic_output =
+          (out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >() != 0);
+
+        AssertThrow(material_model_provides_seismic_output,
+                    ExcMessage("You requested the 'Vp anomaly' postprocessor, "
+                               "but the material model does not provide seismic velocities. Either remove 'Vp anomaly', "
+                               "or use a material model that provides these velocities."));
+
         prm.enter_subsection("Postprocess");
         {
           prm.enter_subsection("Visualization");
           {
             prm.enter_subsection("Vp anomaly");
             {
-
               // Average velocity scheme
               if (prm.get ("Average velocity scheme") == "reference profile")
                 average_velocity_scheme = reference_profile;
@@ -522,7 +545,8 @@ namespace aspect
                                                   "capture step changes in velocities, but small enough to "
                                                   "maintain a reasonable number of evaluation points per slice. "
                                                   "Bear in mind that lateral averaging subsamples the "
-                                                  "finite element mesh.")
+                                                  "finite element mesh. Note that this plugin requires a "
+                                                  "material model that provides seismic velocities.")
 
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(SeismicVpAnomaly,
                                                   "Vp anomaly",
@@ -544,7 +568,8 @@ namespace aspect
                                                   "capture step changes in velocities, but small enough to "
                                                   "maintain a reasonable number of evaluation points per slice. "
                                                   "Bear in mind that lateral averaging subsamples the "
-                                                  "finite element mesh.")
+                                                  "finite element mesh. Note that this plugin requires a "
+                                                  "material model that provides seismic velocities.")
     }
   }
 }
