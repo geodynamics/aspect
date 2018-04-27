@@ -157,6 +157,29 @@ namespace aspect
       }
   }
 
+  namespace
+  {
+    template <int dim>
+    const Point<2> &as_2d(const Point<dim> &p);
+
+    template <>
+    const Point<2> &as_2d(const Point<2> &p)
+    {
+      return p;
+    }
+
+    template <int dim>
+    const Point<3> &as_3d(const Point<dim> &p);
+
+    template <>
+    const Point<3> &as_3d(const Point<3> &p)
+    {
+      return p;
+    }
+
+  }
+
+
   /**
    * This function is called by a signal which is triggered after the other constraints
    * have been calculated. This enables us to define additional constraints in the mass
@@ -223,29 +246,25 @@ namespace aspect
                         // function values. The function parser
                         // objects expect points of a certain
                         // dimension, but Point p will be compiled for
-                        // both 2d and 3d, so we need some careful
-                        // casts to make this compile. Casting Point
-                        // objects between 2d and 3d is somewhat
-                        // meaningless but the offending casts will
-                        // never actually be executed because they are
-                        // protected by the if/else statements.
+                        // both 2d and 3d, so we need to do some trickery
+                        // to make this compile.
                         double indicator, u_i;
                         if (dim == 2)
                           {
                             indicator = prescribed_velocity_indicator_function_2d.value
-                                        (reinterpret_cast<const Point<2>&>(p),
+                                        (as_2d(p),
                                          component_direction);
                             u_i       = prescribed_velocity_function_2d.value
-                                        (reinterpret_cast<const Point<2>&>(p),
+                                        (as_2d(p),
                                          component_direction);
                           }
                         else
                           {
                             indicator = prescribed_velocity_indicator_function_3d.value
-                                        (reinterpret_cast<const Point<3>&>(p),
+                                        (as_3d(p),
                                          component_direction);
                             u_i       = prescribed_velocity_function_3d.value
-                                        (reinterpret_cast<const Point<3>&>(p),
+                                        (as_3d(p),
                                          component_direction);
                           }
 

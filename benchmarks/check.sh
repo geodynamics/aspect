@@ -70,7 +70,7 @@ echo "Please be patient..."
 
 ( (cd crameri_et_al/case_2 && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
-( (cd davies_et_al; cd case-2.3-plugin; make_lib && cd .. && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+( (cd davies_et_al; cd case-2.3-plugin; make_lib && cd .. && run_prm "case-2.1.prm" && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd finite_strain && make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 

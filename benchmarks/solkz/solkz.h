@@ -55,7 +55,7 @@ namespace aspect
       {
         double Z;
         double u1, u2, u3, u4, u5, u6, SS;
-        double sum1, sum2, sum3, sum4, sum5, sum6, mag, sum7, x, z;
+        double sum1, sum2, sum3, sum4, sum5, sum6, sum7, x, z;
         double sigma;
         int n;
         double kn;
@@ -583,7 +583,7 @@ namespace aspect
              exp(-2 * z * B) * (AA * cos(km * z) + BB * sin(km * z));
         SS *= sin(kn * x); /* stream function */
 
-        mag = sqrt(u1 * u1 + u2 * u2);
+        //mag = sqrt(u1 * u1 + u2 * u2);
         /*printf("%0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f\n",x,z,sum1,sum2,sum3,sum4,sum5,sum6,mag,sum7,SS);*/
 
 
@@ -715,7 +715,7 @@ namespace aspect
          */
 
         void
-        parse_parameters(ParameterHandler &prm)
+        parse_parameters(ParameterHandler &/*prm*/)
         {
           // Declare dependencies on solution variables
           this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
@@ -743,22 +743,15 @@ namespace aspect
          */
         virtual
         std::pair<std::string, std::string>
-        execute(TableHandler &statistics)
+        execute(TableHandler &/*statistics*/)
         {
-          std_cxx1x::shared_ptr <Function<dim>> ref_func;
-          if (dynamic_cast<const SolKzMaterial<dim> *>(&this->get_material_model()) != NULL)
-            {
-              const SolKzMaterial<dim> *
-              material_model
-                = dynamic_cast<const SolKzMaterial<dim> *>(&this->get_material_model());
+          AnalyticSolutions::FunctionSolKz<dim> ref_func;
 
-              ref_func.reset(new AnalyticSolutions::FunctionSolKz<dim>());
-            }
-          else
+          if (dynamic_cast<const SolKzMaterial<dim> *>(&this->get_material_model()) == NULL)
             {
               AssertThrow(false,
                           ExcMessage(
-                            "Postprocessor DuretzEtAl only works with the material model SolCx, SolKz, and Inclusion."));
+                            "Postprocessor SolKzPostprocessor only works with the material model SolKzn."));
             }
 
           const QGauss<dim> quadrature_formula(this->introspection().polynomial_degree.velocities + 2);
@@ -775,28 +768,28 @@ namespace aspect
 
           VectorTools::integrate_difference(this->get_mapping(), this->get_dof_handler(),
                                             this->get_solution(),
-                                            *ref_func,
+                                            ref_func,
                                             cellwise_errors_u,
                                             quadrature_formula,
                                             VectorTools::L1_norm,
                                             &comp_u);
           VectorTools::integrate_difference(this->get_mapping(), this->get_dof_handler(),
                                             this->get_solution(),
-                                            *ref_func,
+                                            ref_func,
                                             cellwise_errors_p,
                                             quadrature_formula,
                                             VectorTools::L1_norm,
                                             &comp_p);
           VectorTools::integrate_difference(this->get_mapping(), this->get_dof_handler(),
                                             this->get_solution(),
-                                            *ref_func,
+                                            ref_func,
                                             cellwise_errors_ul2,
                                             quadrature_formula,
                                             VectorTools::L2_norm,
                                             &comp_u);
           VectorTools::integrate_difference(this->get_mapping(), this->get_dof_handler(),
                                             this->get_solution(),
-                                            *ref_func,
+                                            ref_func,
                                             cellwise_errors_pl2,
                                             quadrature_formula,
                                             VectorTools::L2_norm,
