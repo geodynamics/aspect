@@ -38,7 +38,7 @@ namespace aspect
     {
       Tensor<1,3>
       burstedde_velocity (const Point<3> &pos,
-                          const double eta)
+                          const double /*eta*/)
       {
         const double x = pos[0];
         const double y = pos[1];
@@ -62,7 +62,6 @@ namespace aspect
 
         const double min_eta = 1.0;
         const double max_eta = eta;
-        const double A(min_eta*(max_eta-min_eta)/(max_eta+min_eta));
 
         return x*y*z+x*x*x*y*y*y*z-5./32.;
       }
@@ -137,7 +136,7 @@ namespace aspect
     Tensor<1,2>
     BursteddeBoundary<2>::
     boundary_velocity (const types::boundary_id ,
-                       const Point<2> &p) const
+                       const Point<2> &/*p*/) const
     {
       Assert (false, ExcNotImplemented());
       return Tensor<1,2>();
