@@ -27,7 +27,6 @@
 
 #include <cmath>
 
-
 namespace aspect
 {
   namespace InitialTemperature
