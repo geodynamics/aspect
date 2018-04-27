@@ -347,7 +347,7 @@ subsection Postprocess
     end
 
     subsection Melt material properties
-      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity, p_c
+      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
     end
 
     set Number of grouped files       = 0
