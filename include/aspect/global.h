@@ -246,6 +246,11 @@ namespace aspect
     typedef dealii::PETScWrappers::MPI::BlockSparseMatrix BlockSparseMatrix;
 
     /**
+     * Typedef for the base class for all preconditioners.
+     */
+    typedef dealii::PETScWrappers::PreconditionerBase PreconditionBase;
+
+    /**
      * Typedef for the AMG preconditioner type used for the top left block of
      * the Stokes matrix.
      */
