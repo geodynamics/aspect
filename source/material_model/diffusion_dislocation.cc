@@ -307,9 +307,11 @@ namespace aspect
           out.specific_heat[i] = heat_capacity;
           // Thermal conductivity at the given positions. If the temperature equation uses
           // the reference density profile formulation, use the reference density to
-          // calculate thermal conductivity. Otherwise, use the real density.
+          // calculate thermal conductivity. Otherwise, use the real density. If the adiabatic
+          // conditions are not yet initialized, the real density will still be used.
           if (this->get_parameters().formulation_temperature_equation ==
-              Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+              Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile &&
+              this->get_adiabatic_conditions().is_initialized())
             out.thermal_conductivities[i] = thermal_diffusivity * heat_capacity *
                                             this->get_adiabatic_conditions().density(in.position[i]);
           else
