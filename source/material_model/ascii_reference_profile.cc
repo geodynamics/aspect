@@ -233,7 +233,9 @@ namespace aspect
     void
     AsciiReferenceProfile<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == NULL)
+      if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == NULL
+          && seismic_vp_index != numbers::invalid_unsigned_int
+          && seismic_vs_index != numbers::invalid_unsigned_int)
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
