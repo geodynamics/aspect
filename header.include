@@ -26,6 +26,7 @@
               <ul class="dropdown-menu">
                 <li><a href="http://www.math.clemson.edu/~heister/manual.pdf">Manual</a></li>
                 <li><a href="http://lists.geodynamics.org/cgi-bin/mailman/listinfo/aspect-devel">Mailing lists</a></li>
+                <li><a href="cite.html">How to cite?</a></li>
                 <li><a href="publications.html">Publications</a></li>
                 <li><a href="https://github.com/geodynamics/aspect/blob/master/LICENSE">License</a></li>
                 <li><a href="https://github.com/geodynamics/aspect/wiki">Installation Instructions</a></li>
