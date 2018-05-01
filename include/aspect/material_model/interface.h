@@ -307,7 +307,7 @@ namespace aspect
          * set this cell iterator. In these cases it will be an invalid iterator
          * constructed using the default constructor, so make sure that your
          * material model either fails
-         * with a proper error message or provide an alternative calculation for
+         * with a proper error message, or provides an alternative calculation for
          * these cases. You can detect this with
          * @code
          * if (in.current_cell.state() == IteratorState::valid)
