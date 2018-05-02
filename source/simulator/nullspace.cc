@@ -353,7 +353,7 @@ namespace aspect
 
     // compute and remove angular momentum from velocity field, by computing
     // \int \rho u \cdot r_orth = \omega  * \int \rho x^2    ( 2 dimensions)
-    // \int \rho r \times u =  I^{-1} \cdot \omega  (3 dimensions)
+    // \int \rho r \times u =  I \cdot \omega  (3 dimensions)
 
     QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
     const unsigned int n_q_points = quadrature.size();
