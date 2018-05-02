@@ -70,51 +70,7 @@ namespace aspect
       return cohesions;
     }
 
-    template <int dim>
-    std::vector<double>
-    ViscoPlastic<dim>::
-    compute_volume_fractions( const std::vector<double> &compositional_fields) const
-    {
-      std::vector<double> volume_fractions( compositional_fields.size()+1);
 
-      // clip the compositional fields so they are between zero and one
-      std::vector<double> x_comp = compositional_fields;
-      for ( unsigned int i=0; i < x_comp.size(); ++i)
-        x_comp[i] = std::min(std::max(x_comp[i], 0.0), 1.0);
-
-      // assign compositional fields associated with strain a value of 0
-      if (use_strain_weakening == true)
-        {
-          if (use_finite_strain_tensor == false)
-            {
-              x_comp[0] = 0.0;
-            }
-          else
-            {
-              for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
-                x_comp[i] = 0.;
-            }
-        }
-
-      // sum the compositional fields for normalization purposes
-      double sum_composition = 0.0;
-      for ( unsigned int i=0; i < x_comp.size(); ++i)
-        sum_composition += x_comp[i];
-
-      if (sum_composition >= 1.0)
-        {
-          volume_fractions[0] = 0.0;  // background material
-          for ( unsigned int i=1; i <= x_comp.size(); ++i)
-            volume_fractions[i] = x_comp[i-1]/sum_composition;
-        }
-      else
-        {
-          volume_fractions[0] = 1.0 - sum_composition; // background material
-          for ( unsigned int i=1; i <= x_comp.size(); ++i)
-            volume_fractions[i] = x_comp[i-1];
-        }
-      return volume_fractions;
-    }
 
     template <int dim>
     double
@@ -124,6 +80,21 @@ namespace aspect
                     const enum averaging_scheme &average_type) const
     {
       double averaged_parameter = 0.0;
+
+      // Store which components to exclude during volume fraction computation.
+      ComponentMask composition_mask(this->n_compositional_fields(),true);
+      if (use_strain_weakening == true)
+        {
+          if (use_finite_strain_tensor == false)
+            {
+              composition_mask.set(0,false);
+            }
+          else
+            {
+              for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
+                composition_mask.set(i,false);
+            }
+        }
       const std::vector<double> volume_fractions = compute_volume_fractions(composition);
 
       switch (average_type)
@@ -359,13 +330,28 @@ namespace aspect
       MaterialModel::MaterialModelDerivatives<dim> *derivatives;
       derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
 
+      // Store which components to exclude during volume fraction computation.
+      ComponentMask composition_mask(this->n_compositional_fields(),true);
+      if (use_strain_weakening == true)
+        {
+          if (use_finite_strain_tensor == false)
+            {
+              composition_mask.set(0,false);
+            }
+          else
+            {
+              for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
+                composition_mask.set(i,false);
+            }
+        }
+
       // Loop through points
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
           const double temperature = in.temperature[i];
           const double pressure = in.pressure[i];
           const std::vector<double> &composition = in.composition[i];
-          const std::vector<double> volume_fractions = compute_volume_fractions(composition);
+          const std::vector<double> volume_fractions = compute_volume_fractions(composition, composition_mask);
           const SymmetricTensor<2,dim> strain_rate = in.strain_rate[i];
 
           // Averaging composition-field dependent properties

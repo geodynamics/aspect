@@ -160,8 +160,6 @@ namespace aspect
 
         double grain_size;
 
-        std::vector<double> compute_volume_fractions(
-          const std::vector<double> &compositional_fields) const;
         std::vector<double> densities;
         std::vector<double> thermal_expansivities;
         std::vector<double> thermal_diffusivities;
