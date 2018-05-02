@@ -29,72 +29,25 @@ namespace aspect
   namespace HeatingModel
   {
     template <int dim>
-    CompositionalHeating<dim>::CompositionalHeating ()
-    {}
-
-    template <int dim>
-    std::vector<double>
-    CompositionalHeating<dim>::
-    compute_volume_fractions( const std::vector<double> &compositional_fields) const
-    {
-      std::vector<double> volume_fractions( compositional_fields.size()+1);
-      double sum_composition = 0.0;
-
-      std::vector<double> x_comp = compositional_fields;
-      for ( unsigned int i=0; i < x_comp.size(); ++i)
-        {
-          if (field_used_in_heat_production_averaging[i] == 1)
-            {
-              // clip the compositional fields so they are between zero and one
-              // and sum them for normalization purposes
-              x_comp[i] = std::min(std::max(x_comp[i], 0.0), 1.0);
-              sum_composition += x_comp[i];
-            }
-          else
-            x_comp[i] = 0.0;
-        }
-
-      if (sum_composition >= 1.0)
-        {
-          volume_fractions[0] = 0.0;  // background material
-          for ( unsigned int i=1; i <= x_comp.size(); ++i)
-            volume_fractions[i] = x_comp[i-1]/sum_composition;
-        }
-      else
-        {
-          volume_fractions[0] = 1.0 - sum_composition; // background material
-          for ( unsigned int i=1; i <= x_comp.size(); ++i)
-            volume_fractions[i] = x_comp[i-1];
-        }
-      return volume_fractions;
-    }
-
-
-    template <int dim>
     void
     CompositionalHeating<dim>::
     evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
               const MaterialModel::MaterialModelOutputs<dim> &/*material_model_outputs*/,
               HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
-
       for (unsigned int q = 0; q < heating_model_outputs.heating_source_terms.size(); ++q)
         {
-
           // Compute compositional volume fractions
-          const std::vector<double> volume_fractions = compute_volume_fractions(material_model_inputs.composition[q]);
+          const std::vector<double> volume_fractions = MaterialModel::compute_volume_fractions(material_model_inputs.composition[q],
+                                                       fields_used_in_heat_production_averaging);
 
           // Calculate average compositional heat production
           double compositional_heat_production = 0.;
           for (unsigned int c=0; c < volume_fractions.size(); ++c)
-            {
-              compositional_heat_production += volume_fractions[c] * heating_values[c];
-            }
+            compositional_heat_production += volume_fractions[c] * heating_values[c];
 
           heating_model_outputs.heating_source_terms[q] = compositional_heat_production;
-
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
-
         }
     }
 
@@ -136,16 +89,23 @@ namespace aspect
       {
         prm.enter_subsection("Compositional heating");
         {
+          std::vector<int> used_fields = Utilities::possibly_extend_from_1_to_N (
+                                           Utilities::string_to_int(
+                                             Utilities::split_string_list(
+                                               prm.get("Use compositional field for heat production averaging"))),
+                                           n_fields,
+                                           "Use compositional field for heat production averaging");
 
-          field_used_in_heat_production_averaging = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_int(Utilities::split_string_list(prm.get("Use compositional field for heat production averaging"))),
-                                                    n_fields,
-                                                    "Use compositional field for heat production averaging");
+          fields_used_in_heat_production_averaging.resize(used_fields.size());
+          for (unsigned int i=0; i<used_fields.size(); ++i)
+            fields_used_in_heat_production_averaging[i] = used_fields[i];
 
-          heating_values = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Compositional heating values"))),
-                                                                   n_fields,
-                                                                   "Compositional heating values");
-
-
+          heating_values = Utilities::possibly_extend_from_1_to_N (
+                             Utilities::string_to_double(
+                               Utilities::split_string_list(
+                                 prm.get("Compositional heating values"))),
+                             n_fields,
+                             "Compositional heating values");
         }
         prm.leave_subsection();
       }
