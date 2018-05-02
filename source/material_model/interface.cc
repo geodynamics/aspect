@@ -71,33 +71,35 @@ namespace aspect
     compute_volume_fractions(const std::vector<double> &compositional_fields,
                              const ComponentMask &field_mask)
     {
-      std::vector<double> volume_fractions( compositional_fields.size()+1);
+      std::vector<double> volume_fractions(compositional_fields.size()+1);
 
-      // clip the compositional fields so they are between zero and one
+      // Clip the compositional fields so they are between zero and one,
+      // and sum the compositional fields for normalization purposes.
+      double sum_composition = 0.0;
       std::vector<double> x_comp = compositional_fields;
       for (unsigned int i=0; i < x_comp.size(); ++i)
-        x_comp[i] = std::min(std::max(x_comp[i], 0.0), 1.0);
+        if (field_mask[i] == true)
+          {
+            x_comp[i] = std::min(std::max(x_comp[i], 0.0), 1.0);
+            sum_composition += x_comp[i];
+          }
 
-      // sum the compositional fields for normalization purposes
-      double sum_composition = 0.0;
+      // Compute background material fraction
+      if (sum_composition >= 1.0)
+        volume_fractions[0] = 0.0;
+      else
+        volume_fractions[0] = 1.0 - sum_composition;
+
+      // Compute and possibly normalize volume fractions
       for (unsigned int i=0; i < x_comp.size(); ++i)
         if (field_mask[i] == true)
-        sum_composition += x_comp[i];
-
-      if (sum_composition >= 1.0)
-        {
-          volume_fractions[0] = 0.0;  // background material
-          for (unsigned int i=0; i < x_comp.size(); ++i)
-            if (field_mask[i] == true)
+          {
+            if (sum_composition >= 1.0)
               volume_fractions[i+1] = x_comp[i]/sum_composition;
-        }
-      else
-        {
-          volume_fractions[0] = 1.0 - sum_composition; // background material
-          for (unsigned int i=0; i < x_comp.size(); ++i)
-            if (field_mask[i] == true)
+            else
               volume_fractions[i+1] = x_comp[i];
-        }
+          }
+
       return volume_fractions;
     }
 
