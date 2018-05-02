@@ -68,31 +68,35 @@ namespace aspect
 
 
     std::vector<double>
-    compute_volume_fractions(const std::vector<double> &compositional_fields)
+    compute_volume_fractions(const std::vector<double> &compositional_fields,
+                             const ComponentMask &field_mask)
     {
       std::vector<double> volume_fractions( compositional_fields.size()+1);
 
       // clip the compositional fields so they are between zero and one
       std::vector<double> x_comp = compositional_fields;
-      for ( unsigned int i=0; i < x_comp.size(); ++i)
+      for (unsigned int i=0; i < x_comp.size(); ++i)
         x_comp[i] = std::min(std::max(x_comp[i], 0.0), 1.0);
 
       // sum the compositional fields for normalization purposes
       double sum_composition = 0.0;
-      for ( unsigned int i=0; i < x_comp.size(); ++i)
+      for (unsigned int i=0; i < x_comp.size(); ++i)
+        if (field_mask[i] == true)
         sum_composition += x_comp[i];
 
       if (sum_composition >= 1.0)
         {
-          volume_fractions[0] = 0.0;  // background mantle
-          for ( unsigned int i=1; i <= x_comp.size(); ++i)
-            volume_fractions[i] = x_comp[i-1]/sum_composition;
+          volume_fractions[0] = 0.0;  // background material
+          for (unsigned int i=0; i < x_comp.size(); ++i)
+            if (field_mask[i] == true)
+              volume_fractions[i+1] = x_comp[i]/sum_composition;
         }
       else
         {
-          volume_fractions[0] = 1.0 - sum_composition; // background mantle
-          for ( unsigned int i=1; i <= x_comp.size(); ++i)
-            volume_fractions[i] = x_comp[i-1];
+          volume_fractions[0] = 1.0 - sum_composition; // background material
+          for (unsigned int i=0; i < x_comp.size(); ++i)
+            if (field_mask[i] == true)
+              volume_fractions[i+1] = x_comp[i];
         }
       return volume_fractions;
     }
