@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -23,7 +23,6 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
-#include <deal.II/base/parameter_handler.h>
 
 namespace aspect
 {
@@ -53,8 +52,23 @@ namespace aspect
     };
 
     /**
-     * A material model which is intended for simple linear viscoelastic
-     * problems with multiple compositional fields.
+     * An implementation of a simple linear viscoelastic rheology that only
+     * includes the deviatoric components of elasticity. Specifically, the
+     * viscoelastic rheology only takes into account the elastic shear
+     * strength (e.g., shear modulus), while the tensile and volumetric
+     * strength (e.g., Young's and bulk modulus) are not considered. The model
+     * is incompressible and allows specifying an arbitrary number of
+     * compositional fields, where each field represents a different rock type
+     * or component of the viscoelastic stress tensor. The stress tensor in 2D
+     * and 3D, respectively, contains 3 or 6 components. The compositional fields
+     * representing these components must be named and listed in a very specific
+     * format, which is designed to minimize mislabeling stress tensor components
+     * as distinct 'compositional rock types' (or vice versa). For 2D models,
+     * the first three compositional fields must be labeled stress_xx, stress_yy
+     * and stress_xy. In 3D, the first six compositional fields must be labeled
+     * stress_xx, stress_yy, stress_zz, stress_xy, stress_xz, stress_yz. In both
+     * cases, x, y and z correspond to the coordinate axes nomenclature used by
+     * the Geometry model.
      *
      * The viscoelastic constitutive relationship and implementation follows
      * a method commonly used in the Geodynamics community, where only the
@@ -64,13 +78,8 @@ namespace aspect
      * 23-32, which is commonly referred to in proceeding geodynamic
      * publications. However, a notable difference between this material
      * model and that of previous work is the use of compositional fields,
-     * rather than tracers, to track and advect the stress tensor. The
-     * material model will be updated when an option to track and advect
-     * stresses with tracers is implemented.
-     *
-     * The first 3 (2D) or 6 (3D) compositional fields are used to track
-     * individual components of the viscoelastic stress tensor, while additional
-     * fields represent distinct rock types.
+     * rather than tracers, to track and advect the stress tensor.
+     * TODO: Add option to track and advect stresses with tracers.
      *
      * The value of each compositional field representing distinct
      * rock types at a point is interpreted to be a volume fraction of that
@@ -97,8 +106,6 @@ namespace aspect
      * averaged arithmetically. An exception is viscosity, which may be averaged
      * arithmetically, harmonically, geometrically, or by selecting the
      * viscosity of the composition with the greatest volume fraction.
-     *
-     *
      *
      * @ingroup MaterialModels
      */
@@ -163,7 +170,7 @@ namespace aspect
         create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
 
 
-      protected:
+      private:
         /**
          * The first 3 (2D) or 6 (3D) compositional fields are assumed
          * to be components of the viscoelastic stress tensor and
@@ -200,13 +207,13 @@ namespace aspect
                               const enum AveragingScheme &average_type) const;
 
 
-        double calculate_average_viscosity (const std::vector<double> &composition,
-                                            const std::vector<double> &viscosities,
-                                            const enum AveragingScheme &average_type) const;
+        /**
+         * Used for calculating average elastic shear modulus and viscosity
+         */
+        double calculate_average_vector (const std::vector<double> &composition,
+                                         const std::vector<double> &parameter_values,
+                                         const enum AveragingScheme &average_type) const;
 
-        double calculate_average_elastic_shear_modulus (const std::vector<double> &composition,
-                                                        const std::vector<double> &elastic_shear_moduli,
-                                                        const enum AveragingScheme &average_type) const;
 
         double calculate_average_viscoelastic_viscosity (const double average_viscosity,
                                                          const double average_elastic_shear_modulus,

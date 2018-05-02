@@ -10,16 +10,23 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 1e3
 set Use years in output instead of seconds = true
-set Linear solver tolerance                = 1e-7
-set Nonlinear solver scheme                = iterated Stokes
+set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Max nonlinear iterations               = 1
-set Number of cheap Stokes solver steps    = 500
 set CFL number                             = 0.5
 set Maximum time step                      = 1000
 set Output directory                       = viscoelastic_fixed_elastic_time_step
 set Timing output frequency                = 1
 set Pressure normalization                 = surface
 set Surface pressure                       = 0.
+
+# Solver settings
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+    set Number of cheap Stokes solver steps = 500
+  end
+end
+
 
 # Model geometry (100x100 km, 5 km spacing)
 subsection Geometry model
@@ -40,22 +47,27 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
+# Element types
+subsection Discretization
+  set Composition polynomial degree     = 2
+  set Stokes velocity polynomial degree = 2
+  set Temperature polynomial degree     = 1
+end
+
 # Formulation classification
 subsection Formulation
   set Enable elasticity = true
 end
 
-# Boundary classifications
-subsection Model settings
-  set Fixed composition boundary indicators   = bottom, top, left, right
+# Temperature boundary conditions
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top, left, right
-  set Prescribed velocity boundary indicators = bottom y:function, right x:function 
-  set Free surface boundary indicators        = 
-  set Tangential velocity boundary indicators = top, left 
-  set Zero velocity boundary indicators       = 
 end
 
+# Velocity boundary conditions
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom y:function, right x:function
+  set Tangential velocity boundary indicators = top, left
   subsection Function
     set Variable names      = x,y
     set Function constants  = cm=0.01, year=1, vel=3.154
@@ -81,23 +93,27 @@ end
 
 # Composition boundary conditions
 subsection Boundary composition model
-  set Model name = initial composition
+  set Fixed composition boundary indicators = bottom, top, left, right
+  set List of model names = initial composition
 end
 
-# Temperature boundary and initial conditions
+# Temperature initial conditions
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+# Temperature boundary conditions
 subsection Boundary temperature model
-  set Model name = box
+  set Fixed temperature boundary indicators = bottom, top, left, right
+  set List of model names = box
   subsection Box
     set Bottom temperature = 293
     set Left temperature   = 293
     set Right temperature  = 293
     set Top temperature    = 293
-  end
-end
-subsection Initial temperature model
-  set Model name = function
-  subsection Function
-    set Function expression = 293
   end
 end
 
@@ -124,13 +140,6 @@ subsection Gravity model
   subsection Vertical
     set Magnitude = 0.
   end
-end
-
-# Element types
-subsection Discretization
-  set Composition polynomial degree     = 2
-  set Stokes velocity polynomial degree = 2
-  set Temperature polynomial degree     = 1
 end
 
 # Post processing

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -27,8 +27,6 @@
 #include <aspect/global.h>
 #include <numeric>
 #include <deal.II/base/signaling_nan.h>
-
-//using namespace dealii;
 
 namespace aspect
 {
@@ -125,7 +123,11 @@ namespace aspect
           case harmonic:
           {
             for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]/(parameter_values[i]);
+              {
+                AssertThrow(parameter_values[i] != 0,
+                            ExcMessage ("All values must be greater than 0 during harmonic averaging"));
+                averaged_parameter += volume_fractions[i]/(parameter_values[i]);
+              }
             averaged_parameter = 1.0/averaged_parameter;
             break;
           }
@@ -156,25 +158,13 @@ namespace aspect
     template <int dim>
     double
     Viscoelastic<dim>::
-    calculate_average_viscosity (const std::vector<double> &composition,
-                                 const std::vector<double> &viscosities,
-                                 const enum AveragingScheme &average_type) const
+    calculate_average_vector (const std::vector<double> &composition,
+                              const std::vector<double> &parameter_values,
+                              const enum AveragingScheme &average_type) const
     {
       const std::vector<double> volume_fractions = compute_volume_fractions(composition);
-      const double average_viscosity = average_value(volume_fractions, viscosities, average_type);
-      return average_viscosity;
-    }
-
-    template <int dim>
-    double
-    Viscoelastic<dim>::
-    calculate_average_elastic_shear_modulus (const std::vector<double> &composition,
-                                             const std::vector<double> &elastic_shear_moduli,
-                                             const enum AveragingScheme &average_type) const
-    {
-      const std::vector<double> volume_fractions = compute_volume_fractions(composition);
-      const double average_elastic_shear_modulus = average_value(volume_fractions, elastic_shear_moduli, average_type);
-      return average_elastic_shear_modulus;
+      const double averaged_vector = average_value(volume_fractions, parameter_values, average_type);
+      return averaged_vector;
     }
 
     template <int dim>
@@ -196,43 +186,6 @@ namespace aspect
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
 
-
-      // Check whether the compositional fields representing the viscoelastic
-      // stress tensor are both named correctly and listed in the right order.
-      if ( dim == 2)
-        {
-          AssertThrow(this->introspection().compositional_index_for_name("stress_xx") == 0,
-                      ExcMessage("Material model Viscoelastic only works if the first "
-                                 "compositional field is called stress_xx."));
-          AssertThrow(this->introspection().compositional_index_for_name("stress_yy") == 1,
-                      ExcMessage("Material model Viscoelastic only works if the second "
-                                 "compositional field is called stress_yy."));
-          AssertThrow(this->introspection().compositional_index_for_name("stress_xy") == 2,
-                      ExcMessage("Material model Viscoelastic only works if the third "
-                                 "compositional field is called stress_xy."));
-        }
-      if ( dim == 3)
-        {
-          AssertThrow(this->introspection().compositional_index_for_name("stress_xx") == 0,
-                      ExcMessage("Material model Viscoelastic only works if the first "
-                                 "compositional field is called stress_xx."));
-          AssertThrow(this->introspection().compositional_index_for_name("stress_yy") == 1,
-                      ExcMessage("Material model Viscoelastic only works if the second "
-                                 "compositional field is called stress_yy."));
-          AssertThrow(this->introspection().compositional_index_for_name("stress_zz") == 2,
-                      ExcMessage("Material model Viscoelastic only works if the third "
-                                 "compositional field is called stress_zz."));
-          AssertThrow(this->introspection().compositional_index_for_name("stress_xy") == 3,
-                      ExcMessage("Material model Viscoelastic only works if the fourth "
-                                 "compositional field is called stress_xy."));
-          AssertThrow(this->introspection().compositional_index_for_name("stress_xz") == 4,
-                      ExcMessage("Material model Viscoelastic only works if the fifth "
-                                 "compositional field is called stress_xz."));
-          AssertThrow(this->introspection().compositional_index_for_name("stress_yz") == 5,
-                      ExcMessage("Material model Viscoelastic only works if the sixth "
-                                 "compositional field is called stress_yz."));
-        }
-
       // The elastic time step (dte) is equal to the numerical time step if the time step number
       // is greater than 0 and the parameter 'use_fixed_elastic_time_step' is set to false.
       // On the first (0) time step the elastic time step is always equal to the value
@@ -242,7 +195,7 @@ namespace aspect
                            ?
                            this->get_timestep()
                            :
-                           fixed_elastic_time_step * year_in_seconds );
+                           fixed_elastic_time_step);
 
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
@@ -285,22 +238,19 @@ namespace aspect
             out.reaction_terms[i][c] = 0.0;
 
           // Average viscosity
-          const double average_viscosity = calculate_average_viscosity(composition,
-                                                                       viscosities,
-                                                                       viscosity_averaging);
+          const double average_viscosity = calculate_average_vector(composition,
+                                                                    viscosities,
+                                                                    viscosity_averaging);
+
           // Average elastic shear modulus
-          const double average_elastic_shear_modulus =
-            calculate_average_elastic_shear_modulus(composition,
-                                                    elastic_shear_moduli,
-                                                    viscosity_averaging);
+          const double average_elastic_shear_modulus = calculate_average_vector(composition,
+                                                                                elastic_shear_moduli,
+                                                                                viscosity_averaging);
 
           // Average viscoelastic (e.g., effective) viscosity (equation 28 in Moresi et al., 2003, J. Comp. Phys.)
-          const double average_viscoelastic_viscosity =
-            calculate_average_viscoelastic_viscosity(average_viscosity,
-                                                     average_elastic_shear_modulus,
-                                                     dte);
-
-          out.viscosities[i] = average_viscoelastic_viscosity;
+          out.viscosities[i] = calculate_average_viscoelastic_viscosity(average_viscosity,
+                                                                        average_elastic_shear_modulus,
+                                                                        dte);
 
           // Fill elastic outputs if they exist
           if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim> >())
@@ -318,13 +268,15 @@ namespace aspect
           for (unsigned int i=0; i < in.position.size(); ++i)
             quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
 
+          // FEValues requires a quadrature and we provide the default quadrature
+          // as we only need to evaluate the solution and gradients.
           FEValues<dim> fe_values (this->get_mapping(),
                                    this->get_fe(),
                                    Quadrature<dim>(quadrature_positions),
                                    update_gradients);
 
           fe_values.reinit (in.current_cell);
-          std::vector<Tensor<2,dim> > old_velocity_gradients (Quadrature<dim>(quadrature_positions).size(), Tensor<2,dim>());
+          std::vector<Tensor<2,dim> > old_velocity_gradients (quadrature_positions.size(), Tensor<2,dim>());
           fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_old_solution(),
                                                                                          old_velocity_gradients);
 
@@ -342,24 +294,14 @@ namespace aspect
               // Rotation (vorticity) tensor (equation 25 in Moresi et al., 2003, J. Comp. Phys.)
               const Tensor<2,dim> rotation = 0.5 * ( old_velocity_gradients[i] - transpose(old_velocity_gradients[i]) );
 
-              // Recalculate average values of viscosity, elastic shear modulus and viscoelastic (effective) viscosity
+              // Recalculate average elastic shear modulus
               const std::vector<double> composition = in.composition[i];
-
-              // Average viscosity
-              const double average_viscosity = calculate_average_viscosity(composition,
-                                                                           viscosities,
-                                                                           viscosity_averaging);
-              // Average elastic shear modulus
-              const double average_elastic_shear_modulus =
-                calculate_average_elastic_shear_modulus(composition,
-                                                        elastic_shear_moduli,
-                                                        viscosity_averaging);
+              const double average_elastic_shear_modulus = calculate_average_vector(composition,
+                                                                                    elastic_shear_moduli,
+                                                                                    viscosity_averaging);
 
               // Average viscoelastic viscosity
-              const double average_viscoelastic_viscosity =
-                calculate_average_viscoelastic_viscosity(average_viscosity,
-                                                         average_elastic_shear_modulus,
-                                                         dte);
+              const double average_viscoelastic_viscosity = out.viscosities[i];
 
               // Calculate the current (new) viscoelastic stress, which is a function of the material
               // properties (viscoelastic viscosity, shear modulus), elastic time step size, strain rate,
@@ -463,14 +405,11 @@ namespace aspect
                              "Select whether the material time scale in the viscoelastic constitutive"
                              "relationship uses the regular numerical time step or a separate fixed"
                              "elastic time step throughout the model run. The fixed elastic time step"
-                             "is always used during the initial time step. Note that there is no"
-                             "physical motivation for using an elastic time step that differs from"
-                             "the numerical time step. As such, this option should only be used in"
-                             "reproducing previous studies or if the numerical time step is a"
-                             "constant value, which can be enforced through the CFL condition and"
-                             "maximum time step parameter. When using a fixed elastic time step that"
-                             "differs the numerical time step it is strongly recommended that the stress"
-                             "averaging scheme is also applied");
+                             "is always used during the initial time step. If a fixed elastic time"
+                             "step is used throughout the model run, a stress averaging scheme can be"
+                             "applied to account for differences with the numerical time step. An"
+                             "alternative approach is to limit the maximum time step size so that it"
+                             "is equal to the elastic time step.");
           prm.declare_entry ("Fixed elastic time step", "1.e3",
                              Patterns::Double (0),
                              "The fixed elastic time step $dte$. Units: $yr$.");
@@ -488,17 +427,9 @@ namespace aspect
     void
     Viscoelastic<dim>::parse_parameters (ParameterHandler &prm)
     {
-      //not pretty, but we need to get the number of compositional fields before
-      //simulatoraccess has been initialized here...
-      unsigned int n_foreground_fields;
-      prm.enter_subsection ("Compositional fields");
-      {
-        n_foreground_fields = prm.get_integer ("Number of fields");
-      }
-      prm.leave_subsection();
 
-      const unsigned int n_fields= n_foreground_fields + 1;
-
+      // Get the number of fields for composition-dependent material properties
+      const unsigned int n_fields = this->n_compositional_fields() + 1;
 
       prm.enter_subsection("Material model");
       {
@@ -542,17 +473,73 @@ namespace aspect
           use_stress_averaging = prm.get_bool ("Use stress averaging");
           if (use_stress_averaging)
             AssertThrow(use_fixed_elastic_time_step == true,
-                        ExcMessage("A fixed elastic time step must also be used with stress averaging"));
+                        ExcMessage("Stress averaging can only be used if 'Use fixed elastic time step' is set to true'"));
 
           fixed_elastic_time_step = prm.get_double ("Fixed elastic time step");
+          AssertThrow(fixed_elastic_time_step > 0,
+                      ExcMessage("The fixed elastic time step must be greater than zero"));
 
-          Assert (this->get_parameters().enable_elasticity == true,
-                  ExcMessage ("Material model Viscoelastic only works if 'Enable elasticity' is set to true"));
+          if (this->convert_output_to_years())
+            fixed_elastic_time_step *= year_in_seconds;
+
+          AssertThrow(this->get_parameters().enable_elasticity == true,
+                      ExcMessage ("Material model Viscoelastic only works if 'Enable elasticity' is set to true"));
+
+          // Check whether the compositional fields representing the viscoelastic
+          // stress tensor are both named correctly and listed in the right order.
+          if ( dim == 2)
+            {
+              AssertThrow(this->introspection().compositional_index_for_name("stress_xx") == 0,
+                          ExcMessage("Material model Viscoelastic only works if the first "
+                                     "compositional field is called stress_xx."));
+              AssertThrow(this->introspection().compositional_index_for_name("stress_yy") == 1,
+                          ExcMessage("Material model Viscoelastic only works if the second "
+                                     "compositional field is called stress_yy."));
+              AssertThrow(this->introspection().compositional_index_for_name("stress_xy") == 2,
+                          ExcMessage("Material model Viscoelastic only works if the third "
+                                     "compositional field is called stress_xy."));
+            }
+          if ( dim == 3)
+            {
+              AssertThrow(this->introspection().compositional_index_for_name("stress_xx") == 0,
+                          ExcMessage("Material model Viscoelastic only works if the first "
+                                     "compositional field is called stress_xx."));
+              AssertThrow(this->introspection().compositional_index_for_name("stress_yy") == 1,
+                          ExcMessage("Material model Viscoelastic only works if the second "
+                                     "compositional field is called stress_yy."));
+              AssertThrow(this->introspection().compositional_index_for_name("stress_zz") == 2,
+                          ExcMessage("Material model Viscoelastic only works if the third "
+                                     "compositional field is called stress_zz."));
+              AssertThrow(this->introspection().compositional_index_for_name("stress_xy") == 3,
+                          ExcMessage("Material model Viscoelastic only works if the fourth "
+                                     "compositional field is called stress_xy."));
+              AssertThrow(this->introspection().compositional_index_for_name("stress_xz") == 4,
+                          ExcMessage("Material model Viscoelastic only works if the fifth "
+                                     "compositional field is called stress_xz."));
+              AssertThrow(this->introspection().compositional_index_for_name("stress_yz") == 5,
+                          ExcMessage("Material model Viscoelastic only works if the sixth "
+                                     "compositional field is called stress_yz."));
+            }
+
+          // Currently, it only makes sense to use this material model when the nonlinear solver
+          // scheme does a single Advection iteration and at minimum one Stokes iteration. More
+          // than one nonlinear Advection iteration will produce an unrealistic build-up of
+          // viscoelastic stress, which are tracked through compositional fields.
+          AssertThrow((this->get_parameters().nonlinear_solver ==
+                       Parameters<dim>::NonlinearSolver::single_Advection_single_Stokes
+                       ||
+                       this->get_parameters().nonlinear_solver ==
+                       Parameters<dim>::NonlinearSolver::single_Advection_iterated_Stokes),
+                      ExcMessage ("The material model will only work with the nonlinear "
+                                  "solver schemes 'single Advection, single Stokes' and "
+                                  "'single Advection, iterated Stokes'"));
 
         }
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+
 
       // Declare dependencies on solution variables
       this->model_dependence.viscosity = NonlinearDependence::compositional_fields;
@@ -574,7 +561,6 @@ namespace aspect
             (new MaterialModel::ElasticAdditionalOutputs<dim> (n_points)));
         }
     }
-
   }
 }
 
@@ -594,8 +580,15 @@ namespace aspect
                                    "of compositional fields, where each field represents a different "
                                    "rock type or component of the viscoelastic stress tensor. The stress "
                                    "tensor in 2D and 3D, respectively, contains 3 or 6 components. The "
-                                   "compositional fields representing these components must be the first "
-                                   "listed compositional fields in the parameter file. "
+                                   "compositional fields representing these components must be named "
+                                   "and listed in a very specific format, which is designed to minimize"
+                                   "mislabeling stress tensor components as distinct 'compositional "
+                                   "rock types' (or vice versa). For 2D models, the first three "
+                                   "compositional fields must be labeled stress_xx, stress_yy and stress_xy. "
+                                   "In 3D, the first six compositional fields must be labeled stress_xx, "
+                                   "stress_yy, stress_zz, stress_xy, stress_xz, stress_yz. In both cases, "
+                                   "x, y and z correspond to the coordinate axes nomenclature used by the "
+                                   "Geometry model. "
                                    "\n\n "
                                    "Expanding the model to include non-linear viscous flow (e.g., "
                                    "diffusion/dislocation creep) and plasticity would produce a "
@@ -643,12 +636,9 @@ namespace aspect
                                    "can be specified as the numerical time step size or an independent fixed time "
                                    "step. If the latter case is a selected, the user has an option to apply a "
                                    "stress averaging scheme to account for the differences between the numerical "
-                                   "and fixed elastic time step (eqn. 32). However, note that there is no physical"
-                                   "basis for using an elastic time step that differs from the numerical time step, "
-                                   "and it is strongly recommended that these two values are equal. If one selects "
-                                   "to use a fixed elastic time step throughout the model run, this can still be "
-                                   "achieved by using CFL and maximum time step values that restrict the numerical "
-                                   "time step to a specific time. "
+                                   "and fixed elastic time step (eqn. 32). If one selects to use a fixed elastic time "
+                                   "step throughout the model run, this can still be achieved by using CFL and "
+                                   "maximum time step values that restrict the numerical time step to a specific time."
                                    "\n\n "
                                    "The formulation above allows rewriting the total rate of deformation (eqn. 29) as "
                                    "$\\tau^{t + \\Delta t^{e}} = \\eta_{eff} \\left ( "
@@ -668,6 +658,11 @@ namespace aspect
                                    "This force term is added onto the right-hand side force vector in the "
                                    "system of equations. "
                                    "\n\n "
+                                   "The value of each compositional field representing distinck rock types at a "
+                                   "point is interpreted to be a volume fraction of that rock type. If the sum of "
+                                   "the compositional field volume fractions is less than one, then the remainder "
+                                   "of the volume is assumed to be 'background material'."
+                                   "\n\n "
                                    "Several model parameters (densities, elastic shear moduli, thermal expansivities, "
                                    "thermal conductivies, specific heats) can be defined per-compositional field. "
                                    "For each material parameter the user supplies a comma delimited list of length "
@@ -684,17 +679,6 @@ namespace aspect
                                    "When more than one compositional field is present at a point, they are averaged "
                                    "arithmetically. An exception is viscosity, which may be averaged arithmetically, "
                                    "harmonically, geometrically, or by selecting the viscosity of the composition field "
-                                   "with the greatest volume fraction. "
-                                   "\n\n "
-                                   "As noted above, the viscoelastic stress tensor is tracked through 3 (2D) or "
-                                   "6 (3D) individual components on compositional fields or tracers. When using tracers, "
-                                   "corresponding compositional fields are still required for the material to access the "
-                                   "tracer values. In either case, the stress tensor components must be named and listed "
-                                   "in a very specific format, which is designed to minimize mislabeling stress tensor "
-                                   "components as distinct 'compositional rock types' (or vice versa). For 2D models, the "
-                                   "first three compositional fields must be labeled stress_xx, stress_yy and stress_xy. "
-                                   "In 3D, the first six compositional fields must be labeled stress_xx, stress_yy, "
-                                   "stress_zz, stress_xy, stress_xz, stress_yz. In both cases, x, y and z correspond to "
-                                   "the coordinate axes nomenclature used by the Geometry model. ")
+                                   "with the greatest volume fraction.")
   }
 }
