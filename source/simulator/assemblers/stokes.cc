@@ -170,6 +170,9 @@ namespace aspect
       const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
       *force = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >();
 
+      const MaterialModel::ElasticOutputs<dim>
+      *elastic_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >();
+
       for (unsigned int q=0; q<n_q_points; ++q)
         {
           for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
@@ -212,8 +215,8 @@ namespace aspect
                                       + pressure_scaling * force->rhs_p[q] * scratch.phi_p[i])
                                      * JxW;
 
-              if (force != NULL && this->get_parameters().enable_elasticity)
-                data.local_rhs(i) += (double_contract(force->rhs_e[q],Tensor<2,dim>(scratch.grads_phi_u[i])))
+              if (elastic_outputs != NULL )
+                data.local_rhs(i) += (double_contract(elastic_outputs->rhs_e[q],Tensor<2,dim>(scratch.grads_phi_u[i])))
                                      * JxW;
 
               if (scratch.rebuild_stokes_matrix)
@@ -250,11 +253,23 @@ namespace aspect
             std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >
             (new MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> (n_points)));
         }
+
       Assert(!this->get_parameters().enable_additional_stokes_rhs
              ||
-             !this->get_parameters().enable_elasticity
-             ||
              outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >()->rhs_u.size()
+             == n_points, ExcInternalError());
+
+      if ((this->get_parameters().enable_elasticity) &&
+          outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >() == NULL)
+        {
+          outputs.additional_outputs.push_back(
+            std_cxx11::shared_ptr<MaterialModel::ElasticOutputs<dim> >
+            (new MaterialModel::ElasticOutputs<dim> (n_points)));
+        }
+
+      Assert(!this->get_parameters().enable_elasticity
+             ||
+             outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >()->rhs_e.size()
              == n_points, ExcInternalError());
     }
 

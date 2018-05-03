@@ -280,8 +280,8 @@ namespace aspect
           fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_old_solution(),
                                                                                          old_velocity_gradients);
 
-          MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
-          *force_out = out.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >();
+          MaterialModel::ElasticOutputs<dim>
+          *force_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim> >();
 
           for (unsigned int i=0; i < in.position.size(); ++i)
             {
@@ -325,7 +325,7 @@ namespace aspect
                 out.reaction_terms[i][j] = -stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)]
                                            + stress_new[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)];
 
-              // Fill elastic outputs (see equation 30 in Moresi et al., 2003, J. Comp. Phys.)
+              // Fill elastic force outputs (See equation 30 in Moresi et al., 2003, J. Comp. Phys.)
               if (force_out)
                 {
                   force_out->rhs_e[i] = -1. * ( ( average_viscoelastic_viscosity / ( average_elastic_shear_modulus * dte  ) ) * stress_old );

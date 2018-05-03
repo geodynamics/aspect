@@ -745,7 +745,7 @@ namespace aspect
     {
       public:
         AdditionalMaterialOutputsStokesRHS(const unsigned int n_points)
-          : rhs_u(n_points), rhs_p(n_points), rhs_melt_pc(n_points), rhs_e(n_points)
+          : rhs_u(n_points), rhs_p(n_points), rhs_melt_pc(n_points)
         {}
 
         virtual ~AdditionalMaterialOutputsStokesRHS()
@@ -777,6 +777,32 @@ namespace aspect
          */
         std::vector<double> rhs_melt_pc;
 
+    };
+
+    /**
+     * A class for an elastic force term to be added to the RHS of the
+     * Stokes system, which can be attached to the
+     * MaterialModel::MaterialModelOutputs structure and filled in the
+     * MaterialModel::Interface::evaluate() function.
+     */
+    template <int dim>
+    class ElasticOutputs: public AdditionalMaterialOutputs<dim>
+    {
+      public:
+        ElasticOutputs(const unsigned int n_points)
+          : rhs_e(n_points)
+        {}
+
+        virtual ~ElasticOutputs()
+        {}
+
+        virtual void average (const MaterialAveraging::AveragingOperation /*operation*/,
+                              const FullMatrix<double>  &/*projection_matrix*/,
+                              const FullMatrix<double>  &/*expansion_matrix*/)
+        {
+          // TODO: not implemented
+        }
+
         /**
          * Force tensor (elastic terms) on the right-hand side for the conservation of
          * momentum equation (first part of the Stokes equation) in each
@@ -785,7 +811,6 @@ namespace aspect
         std::vector<Tensor<2,dim> > rhs_e;
 
     };
-
 
 
     /**
