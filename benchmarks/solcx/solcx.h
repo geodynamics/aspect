@@ -3130,7 +3130,7 @@ namespace aspect
          */
         virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics)
+        execute (TableHandler &/*statistics*/)
         {
           std_cxx1x::shared_ptr<Function<dim> > ref_func;
           if (dynamic_cast<const SolCxMaterial<dim> *>(&this->get_material_model()) != NULL)
