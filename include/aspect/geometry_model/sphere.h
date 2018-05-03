@@ -35,6 +35,11 @@ namespace aspect
     {
       public:
         /**
+         * Constructor.
+         */
+        Sphere();
+
+        /**
          * Generate a coarse mesh for the geometry described by this class.
          */
         virtual
