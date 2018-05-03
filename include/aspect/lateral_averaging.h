@@ -70,12 +70,12 @@ namespace aspect
         setup(const unsigned int q_points);
 
         /**
-        * This takes @p in material model inputs and @p out outputs (which are filled
-        * if need_material_properties() == true), an initialized FEValues
-        * object for a cell, and the current solution vector as inputs.
-        * Functions in derived classes should then evaluate the desired quantity
-        * and return the results in the output vector, which is q_points long.
-        */
+         * This takes @p in material model inputs and @p out outputs (which are filled
+         * if need_material_properties() == true), an initialized FEValues
+         * object for a cell, and the current solution vector as inputs.
+         * Functions in derived classes should then evaluate the desired quantity
+         * and return the results in the output vector, which is q_points long.
+         */
         virtual
         void
         operator()(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -83,6 +83,12 @@ namespace aspect
                    const FEValues<dim> &fe_values,
                    const LinearAlgebra::BlockVector &solution,
                    std::vector<double> &output) = 0;
+
+        /**
+         * Provide an (empty) virtual destructor.
+         */
+        virtual
+        ~FunctorBase();
     };
   }
 

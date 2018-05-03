@@ -274,6 +274,12 @@ namespace aspect
 
 
     template <int dim>
+    FunctorBase<dim>::~FunctorBase()
+    {}
+
+
+
+    template <int dim>
     void
     FunctorBase<dim>::create_additional_material_model_outputs (const unsigned int /*n_points*/,
                                                                 MaterialModel::MaterialModelOutputs<dim> &/*outputs*/) const
