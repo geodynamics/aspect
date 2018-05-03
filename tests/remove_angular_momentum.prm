@@ -72,5 +72,5 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, basic statistics
+  set List of postprocessors = velocity statistics, basic statistics, rotation statistics
 end

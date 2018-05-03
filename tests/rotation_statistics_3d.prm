@@ -1,0 +1,91 @@
+# This test is based on prescribed_stokes_solution, with the modification
+# that we create a rotating sphere. The velocity is prescribed with a angular velocity
+# of 1, and this is mostly a test that the 'rotation statistics' postprocessor
+# correctly computes this angular velocity w, and the corresponding angular
+# momentum L = I * w. Since the moment of inertia I of a 3D sphere is 
+#
+# I = 2/5 M R^2 = 2/5 rho V R^2 = 2/5 rho * 4/3 PI R^3 R^2
+#
+# with rho=1 and R=1: I = 2/5 * 4/3 * PI = 1.675516
+#
+# and with the angular velocity w=1 the angular momentum we expect 
+# L = I = 1.675516. The test output is slightly off, but converges with
+# increasing resolution towards this value.
+
+set Dimension                              = 3
+
+set Use years in output instead of seconds = false
+set End time                               = 0.0
+set Output directory                       = output
+
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+
+subsection Prescribed Stokes solution  
+  set Model name = circle
+end
+set Nonlinear solver scheme                = single Advection, no Stokes
+
+subsection Discretization
+  set Temperature polynomial degree = 1
+end
+
+
+subsection Geometry model
+  set Model name = sphere
+
+  subsection Sphere
+    set Radius = 1
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0.0
+  end
+end
+
+
+subsection Boundary temperature model
+  set List of model names = constant
+end
+
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Vertical
+    set Magnitude = 1
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 1
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 2
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, rotation statistics
+end

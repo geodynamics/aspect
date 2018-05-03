@@ -1,0 +1,13 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: RMS velocity (m/s)
+# 9: Max. velocity (m/s)
+# 10: Angular momentum (kg*m^2/s)
+# 11: Moment of inertia (kg*m^2)
+# 12: Angular velocity (1/s)
+0 0.000000000000e+00 0.000000000000e+00 448 11968 517 0 6.32768726e-01 9.72776915e-01 1.67626435e+00 1.67535481e+00 1.00054289e+00 

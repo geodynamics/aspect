@@ -72,5 +72,8 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, basic statistics
+  set List of postprocessors = velocity statistics, basic statistics, rotation statistics
+  subsection Rotation statistics
+    set Use constant density of one = true
+  end
 end
