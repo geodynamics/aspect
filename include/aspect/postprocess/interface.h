@@ -234,8 +234,9 @@ namespace aspect
          * get_matching_postprocessor() instead.
          */
         template <typename PostprocessorType>
+        DEAL_II_DEPRECATED
         PostprocessorType *
-        find_postprocessor () const DEAL_II_DEPRECATED;
+        find_postprocessor () const;
 
         /**
          * Go through the list of all postprocessors that have been selected

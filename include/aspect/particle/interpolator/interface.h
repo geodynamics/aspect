@@ -73,11 +73,12 @@ namespace aspect
            * @return A vector with as many entries as @p positions. Every entry
            * is a vector of interpolated particle properties at this position.
            */
+          DEAL_II_DEPRECATED
           virtual
           std::vector<std::vector<double> >
           properties_at_points(const ParticleHandler<dim> &particle_handler,
                                const std::vector<Point<dim> > &positions,
-                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const DEAL_II_DEPRECATED;
+                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
 
           /**
            * Perform an interpolation of the properties of the particles in

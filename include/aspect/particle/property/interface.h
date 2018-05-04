@@ -569,8 +569,9 @@ namespace aspect
            * @deprecated This function will be replaced by
            * ParticlePropertyInformation::get_position_by_fieldname(name)
            */
+          DEAL_II_DEPRECATED
           unsigned int
-          get_property_component_by_name(const std::string &name) const DEAL_II_DEPRECATED;
+          get_property_component_by_name(const std::string &name) const;
 
           /**
            * A function that is used to register particle property

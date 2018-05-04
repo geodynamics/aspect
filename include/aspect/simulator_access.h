@@ -530,8 +530,9 @@ namespace aspect
        *
        * @deprecated: Use get_boundary_temperature_manager() instead.
        */
+      DEAL_II_DEPRECATED
       const BoundaryTemperature::Interface<dim> &
-      get_boundary_temperature () const DEAL_II_DEPRECATED;
+      get_boundary_temperature () const;
 
       /**
        * Return an reference to the manager of the boundary temperature models.
@@ -557,8 +558,9 @@ namespace aspect
        *
        * @deprecated: Use get_boundary_composition_manager() instead.
        */
+      DEAL_II_DEPRECATED
       const BoundaryComposition::Interface<dim> &
-      get_boundary_composition () const DEAL_II_DEPRECATED;
+      get_boundary_composition () const;
 
       /**
        * Return an reference to the manager of the boundary composition models.
@@ -582,8 +584,9 @@ namespace aspect
        *
        * @deprecated Use <code> get_initial_temperature_manager </code> instead.
        */
+      DEAL_II_DEPRECATED
       const InitialTemperature::Interface<dim> &
-      get_initial_temperature () const DEAL_II_DEPRECATED;
+      get_initial_temperature () const;
 
       /**
        * Return a reference to the manager of the initial temperature models.
@@ -598,8 +601,9 @@ namespace aspect
        * Return a pointer to the object that describes the composition initial
        * values.
        */
+      DEAL_II_DEPRECATED
       const InitialComposition::Interface<dim> &
-      get_initial_composition () const DEAL_II_DEPRECATED;
+      get_initial_composition () const;
 
       /**
        * Return a pointer to the manager of the initial composition model.
@@ -635,8 +639,9 @@ namespace aspect
        *
        * @deprecated: Use get_boundary_velocity_manager() instead.
        */
+      DEAL_II_DEPRECATED
       const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >
-      get_prescribed_boundary_velocity () const DEAL_II_DEPRECATED;
+      get_prescribed_boundary_velocity () const;
 
       /**
        * Return an reference to the manager of the boundary velocity models.
@@ -757,8 +762,9 @@ namespace aspect
        * and get_postprocess_manager().get_matching_postprocessor() instead.
        */
       template <typename PostprocessorType>
+      DEAL_II_DEPRECATED
       PostprocessorType *
-      find_postprocessor () const DEAL_II_DEPRECATED;
+      find_postprocessor () const;
 
       /**
        * Return a reference to the melt handler.
