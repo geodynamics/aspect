@@ -85,10 +85,11 @@ namespace aspect
          * @deprecated Use boundary_traction(const types::boundary_id boundary_indicator,
          * const Point<dim> &position, const Tensor<1,dim> &normal_vector) const instead.
          */
+        DEAL_II_DEPRECATED
         virtual
         Tensor<1,dim>
         traction (const Point<dim> &position,
-                  const Tensor<1,dim> &normal_vector) const DEAL_II_DEPRECATED;
+                  const Tensor<1,dim> &normal_vector) const;
 
         /**
          * Return the boundary traction as a function of position. The
