@@ -30,6 +30,24 @@ namespace aspect
 {
   namespace GeometryModel
   {
+    /*
+      intel 18 incorrectly complains:
+
+      warning #411: class template "aspect::GeometryModel::Sphere<dim>" defines no constructor to initialize the following:
+      const member "aspect::GeometryModel::Sphere<dim>::spherical_manifold"
+
+      even though SphericalManifold's constructor has only one argument with a default.
+    */
+    template <int dim>
+    Sphere<dim>::Sphere()
+#if DEAL_II_VERSION_GTE(9,0,0)
+      :
+      spherical_manifold()
+#endif
+    {}
+
+
+
     template <int dim>
     void
     Sphere<dim>::
