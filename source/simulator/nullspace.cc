@@ -425,9 +425,9 @@ namespace aspect
                   local_moment_of_inertia[0][0] += (r_vec.square() - r_vec[0]*r_vec[0])*rho * fe.JxW(k);
                   local_moment_of_inertia[1][1] += (r_vec.square() - r_vec[1]*r_vec[1])*rho * fe.JxW(k);
                   local_moment_of_inertia[2][2] += (r_vec.square() - r_vec[2]*r_vec[2])*rho * fe.JxW(k);
-                  local_moment_of_inertia[0][1] += ( r_vec[0]*r_vec[1])*rho * fe.JxW(k);
-                  local_moment_of_inertia[0][2] += ( r_vec[0]*r_vec[2])*rho * fe.JxW(k);
-                  local_moment_of_inertia[1][2] += ( r_vec[1]*r_vec[2])*rho * fe.JxW(k);
+                  local_moment_of_inertia[0][1] -= ( r_vec[0]*r_vec[1])*rho * fe.JxW(k);
+                  local_moment_of_inertia[0][2] -= ( r_vec[0]*r_vec[2])*rho * fe.JxW(k);
+                  local_moment_of_inertia[1][2] -= ( r_vec[1]*r_vec[2])*rho * fe.JxW(k);
                 }
             }
         }
