@@ -627,7 +627,7 @@ namespace aspect
       class FunctionSolKz : public Function<dim>
       {
         public:
-          FunctionSolKz() : Function<dim>() {}
+          FunctionSolKz(unsigned int n_components) : Function<dim>(n_components) {}
 
           virtual void vector_value(const Point<dim> &p,
                                     Vector<double> &values) const
@@ -745,7 +745,7 @@ namespace aspect
         std::pair<std::string, std::string>
         execute(TableHandler &/*statistics*/)
         {
-          AnalyticSolutions::FunctionSolKz<dim> ref_func;
+          AnalyticSolutions::FunctionSolKz<dim> ref_func(this->introspection().n_components);
 
           if (dynamic_cast<const SolKzMaterial<dim> *>(&this->get_material_model()) == NULL)
             {

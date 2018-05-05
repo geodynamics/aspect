@@ -136,7 +136,7 @@ namespace aspect
   class RefFunction : public Function<dim>
   {
     public:
-      RefFunction () : Function<dim>(dim+2) {}
+      RefFunction () : Function<dim>(2*dim+3+2) {}
       virtual void vector_value (const Point< dim >   &p,
                                  Vector< double >   &values) const
       {

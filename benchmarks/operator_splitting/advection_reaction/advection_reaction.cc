@@ -268,7 +268,7 @@ namespace aspect
   class RefFunction : public Function<dim>
   {
     public:
-      RefFunction () : Function<dim>(dim+2) {}
+      RefFunction () : Function<dim>(dim+3) {}
       virtual void vector_value (const Point< dim >   &p,
                                  Vector< double >   &values) const
       {
@@ -406,6 +406,8 @@ namespace aspect
   std::pair<std::string,std::string>
   ExponentialDecayPostprocessor<dim>::execute (TableHandler & /*statistics*/)
   {
+    AssertThrow (this->n_compositional_fields() == 1, ExcInternalError());
+
     RefFunction<dim> ref_func;
     ref_func.set_time(this->get_time());
 
@@ -416,8 +418,8 @@ namespace aspect
     Vector<float> cellwise_errors_composition (this->get_triangulation().n_active_cells());
     Vector<float> cellwise_errors_temperature (this->get_triangulation().n_active_cells());
 
-    ComponentSelectFunction<dim> comp_C(dim+2, n_total_comp);
-    ComponentSelectFunction<dim> comp_T(dim+1, n_total_comp);
+    ComponentSelectFunction<dim> comp_C(this->introspection().component_indices.compositional_fields[0], n_total_comp);
+    ComponentSelectFunction<dim> comp_T(this->introspection().component_indices.temperature, n_total_comp);
 
     VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                        this->get_solution(),

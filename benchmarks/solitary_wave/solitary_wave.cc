@@ -247,9 +247,9 @@ namespace aspect
       class FunctionSolitaryWave : public Function<dim>
       {
         public:
-          FunctionSolitaryWave (const double offset, const double delta, const std::vector<double> &initial_pressure, const double max_z)
+          FunctionSolitaryWave (const double offset, const double delta, const std::vector<double> &initial_pressure, const double max_z, const unsigned int n_components)
             :
-            Function<dim>(dim+2),
+            Function<dim>(n_components),
             offset_(offset),
             delta_(delta),
             initial_pressure_(initial_pressure),
@@ -931,7 +931,7 @@ namespace aspect
         {
           store_initial_pressure();
           ref_func.reset (new AnalyticSolutions::FunctionSolitaryWave<dim>(offset,0.0,initial_pressure,
-                                                                           this->get_geometry_model().maximal_depth()));
+                                                                           this->get_geometry_model().maximal_depth(), this->introspection().n_components));
         }
 
       double delta=0;
