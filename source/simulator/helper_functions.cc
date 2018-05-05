@@ -1439,8 +1439,8 @@ namespace aspect
                 || max_solution_local > max_solution_exact_global)
               {
                 // Compute the cell area and cell solution average
-                double local_area = 0;
-                double local_solution_average = 0;
+                double local_area = 0.0;
+                double local_solution_average = 0.0;
                 for (unsigned int q = 0; q < n_q_points_0; ++q)
                   {
                     local_area += fe_values_0.JxW(q);
@@ -1455,12 +1455,18 @@ namespace aspect
                  * exact global maximum/minimum values. Meanwhile, the new solution's cell average
                  * equals to the old solution's cell average.
                  */
-                double theta = std::min<double>
-                               (1, abs((max_solution_exact_global-local_solution_average)
-                                       /(max_solution_local-local_solution_average)));
-                theta = std::min<double>
-                        (theta, abs((min_solution_exact_global-local_solution_average)
-                                    /(min_solution_local-local_solution_average)));
+                double theta = 1.0;
+                if (std::abs(max_solution_local-local_solution_average) > std::numeric_limits<double>::min())
+                  {
+                    theta = std::min(theta, std::abs((max_solution_exact_global-local_solution_average)
+                                                     / (max_solution_local-local_solution_average)));
+                  }
+                if (std::abs(min_solution_local-local_solution_average) > std::numeric_limits<double>::min())
+                  {
+                    theta = std::min(theta, std::abs((min_solution_exact_global-local_solution_average)
+                                                     / (min_solution_local-local_solution_average)));
+                  }
+
                 /* Modify the advection degrees of freedom of the numerical solution.
                  * note that we are using DG elements, so every DoF on a locally owned cell is locally owned;
                  * this means that we do not need to check whether the 'distributed_solution' vector actually
