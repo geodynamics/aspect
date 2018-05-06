@@ -132,10 +132,12 @@ namespace aspect
                                                       / ((eta_plastic + minimum_viscosity + maximum_viscosity) * (eta_plastic + minimum_viscosity + maximum_viscosity));
                       const SymmetricTensor<2,dim> effective_viscosity_strain_rate_derivatives
                         = -0.5 * averaging_factor * (eta_plastic / edot_ii_strict) * strain_rate_deviator;
-                      const double effective_viscosity_pressure_derivatives = averaging_factor * (dim == 2 ?
-                                                                                                  sin_phi * strain_rate_effective_inv
-                                                                                                  :
-                                                                                                  (sin_phi*strength_inv_part));
+                      const double effective_viscosity_pressure_derivatives = averaging_factor * sin_phi * strain_rate_effective_inv *
+                                                                              (dim == 3
+                                                                               ?
+                                                                               (6.0 * strength_inv_part)
+                                                                               :
+                                                                               1);
 
                       derivatives->viscosity_derivative_wrt_strain_rate[i] = deviator_tensor<dim>() * effective_viscosity_strain_rate_derivatives;
 
