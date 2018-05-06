@@ -29,6 +29,7 @@ _detailed(
 #
 #  ASPECT configuration:
 #        ASPECT_VERSION:            ${ASPECT_PACKAGE_VERSION}
+#        GIT REVISION:              ${ASPECT_GIT_SHORTREV} (${ASPECT_GIT_BRANCH})
 #        DEAL_II_DIR:               ${deal.II_DIR}
 #        DEAL_II VERSION:           ${DEAL_II_PACKAGE_VERSION}
 #        ASPECT_USE_PETSC:          ${ASPECT_USE_PETSC}
@@ -37,11 +38,13 @@ _detailed(
 #        ASPECT_USE_SHARED_LIBS:    ${ASPECT_USE_SHARED_LIBS}
 #        ASPECT_HAVE_LINK_H:        ${ASPECT_HAVE_LINK_H}
 #        CMAKE_BUILD_TYPE:          ${CMAKE_BUILD_TYPE}
+#        ASPECT_PRECOMPILE_HEADERS: ${ASPECT_PRECOMPILE_HEADERS}
 #        CMAKE_INSTALL_PREFIX:      ${CMAKE_INSTALL_PREFIX}
 #        CMAKE_SOURCE_DIR:          ${CMAKE_SOURCE_DIR} 
 #        CMAKE_BINARY_DIR:          ${CMAKE_BINARY_DIR}
 #        CMAKE_CXX_COMPILER:        ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION} on platform ${CMAKE_SYSTEM_NAME} ${CMAKE_SYSTEM_PROCESSOR}
 #                                   ${CMAKE_CXX_COMPILER}
+#        PARAMETER_GUI_EXECUTABLE:  ${PARAMETER_GUI_EXECUTABLE}
 ")
 IF(CMAKE_C_COMPILER_WORKS)
   _detailed(
@@ -60,5 +63,11 @@ _detailed(
 #        LINKAGE:                   DYNAMIC
 ")
 ENDIF()
+
+GET_PROPERTY(_COMPILE_FLAGS TARGET aspect PROPERTY COMPILE_FLAGS)
+_detailed("#
+#        COMPILE_FLAGS:             ${_COMPILE_FLAGS}
+")
+
 
 _detailed("#\n###")
