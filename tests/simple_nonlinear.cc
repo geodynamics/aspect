@@ -10,12 +10,12 @@
 
 #include "../benchmarks/nonlinear_channel_flow/simple_nonlinear.cc"
 
+template<int dim>
 int f(double parameter)
 {
 
-  std::cout << std::endl << "Test for p = " << parameter << std::endl;
+  std::cout << std::endl << "Test for p = " << parameter << " with dimension " << dim << std::endl;
 
-  const int dim=2;
   using namespace aspect::MaterialModel;
   MaterialModelInputs<dim> in_base(5,3);
   in_base.composition[0][0] = 0;
@@ -128,7 +128,7 @@ int f(double parameter)
   MaterialModelOutputs<dim> out_dviscositydstrainrate_oneone(5,3);
   MaterialModelOutputs<dim> out_dviscositydtemperature(5,3);
 
-  if (out_base.get_additional_output<MaterialModelDerivatives<dim> >() != NULL)
+  if (out_base.template get_additional_output<MaterialModelDerivatives<dim> >() != NULL)
     throw "error";
 
   out_base.additional_outputs.push_back(std::make_shared<MaterialModelDerivatives<dim> > (5));
@@ -165,7 +165,7 @@ int f(double parameter)
 
   //set up additional output for the derivatives
   MaterialModelDerivatives<dim> *derivatives;
-  derivatives = out_base.get_additional_output<MaterialModelDerivatives<dim> >();
+  derivatives = out_base.template get_additional_output<MaterialModelDerivatives<dim> >();
 
   double temp;
   for (unsigned int i = 0; i < 5; i++)
@@ -263,14 +263,25 @@ int exit_function()
   return 42;
 }
 // run this function by initializing a global variable by it
-int ii = f(-1000); // Testing min function
-int iz = f(-2); // Testing generalized p norm mean with negative p
-int ij = f(-1.5); // Testing generalized p norm mean with negative, non int p
-int ik = f(-1); // Testing harmonic mean
-int ji = f(0); // Testing geometric mean
-int jj = f(1); // Testing arithmetic mean
-int jk = f(2); // Testing generalized p norm mean with positive p
-int kj = f(1000); // Testing max function
-int kl = exit_function();
+// test 2D
+int ii2 = f<2>(-1000); // Testing min function
+int iz2 = f<2>(-2); // Testing generalized p norm mean with negative p
+int ij2 = f<2>(-1.5); // Testing generalized p norm mean with negative, non int p
+int ik2 = f<2>(-1); // Testing harmonic mean
+int ji2 = f<2>(0); // Testing geometric mean
+int jj2 = f<2>(1); // Testing arithmetic mean
+int jk2 = f<2>(2); // Testing generalized p norm mean with positive p
+int kj2 = f<2>(1000); // Testing max function
+// test 3D
+int ii3 = f<3>(-1000); // Testing min function
+int iz3 = f<3>(-2); // Testing generalized p norm mean with negative p
+int ij3 = f<3>(-1.5); // Testing generalized p norm mean with negative, non int p
+int ik3 = f<3>(-1); // Testing harmonic mean
+int ji3 = f<3>(0); // Testing geometric mean
+int jj3 = f<3>(1); // Testing arithmetic mean
+int jk3 = f<3>(2); // Testing generalized p norm mean with positive p
+int kj3 = f<3>(1000); // Testing max function
+// exit
+int kl2 = exit_function();
 
 

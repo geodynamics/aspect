@@ -1,7 +1,7 @@
 
 Loading shared library <./libsimple_nonlinear.so>
 
-Test for p = -1000
+Test for p = -1000 with dimension 2
 zerozero 0: Finite difference = 3.4588e+30. Analytical derivative = 3.4588e+30
 zerozero 1: Finite difference = 9.45819e+27. Analytical derivative = 9.45833e+27
 zerozero 2: Finite difference = 1.15028e+28. Analytical derivative = 1.15029e+28
@@ -21,7 +21,7 @@ oneone 4: Finite difference = -1.4336e+22. Analytical derivative = 0
    Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
 Some parts of the test where not succesfull.
 
-Test for p = -2
+Test for p = -2 with dimension 2
 zerozero 0: Finite difference = 3.4588e+30. Analytical derivative = 3.4588e+30
 zerozero 1: Finite difference = 1.54539e+28. Analytical derivative = 1.54541e+28
 zerozero 2: Finite difference = 1.67688e+28. Analytical derivative = 1.67688e+28
@@ -41,7 +41,7 @@ oneone 4: Finite difference = -1.4336e+22. Analytical derivative = 0
    Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
 Some parts of the test where not succesfull.
 
-Test for p = -1.5
+Test for p = -1.5 with dimension 2
 zerozero 0: Finite difference = 3.4588e+30. Analytical derivative = 3.4588e+30
 zerozero 1: Finite difference = 1.59213e+28. Analytical derivative = 1.59213e+28
 zerozero 2: Finite difference = 1.77238e+28. Analytical derivative = 1.77239e+28
@@ -61,7 +61,7 @@ oneone 4: Finite difference = -1.4336e+22. Analytical derivative = 0
    Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
 Some parts of the test where not succesfull.
 
-Test for p = -1
+Test for p = -1 with dimension 2
 zerozero 0: Finite difference = 3.4588e+30. Analytical derivative = 3.4588e+30
 zerozero 1: Finite difference = 1.63782e+28. Analytical derivative = 1.63784e+28
 zerozero 2: Finite difference = 1.90553e+28. Analytical derivative = 1.90553e+28
@@ -81,7 +81,7 @@ oneone 4: Finite difference = -1.4336e+22. Analytical derivative = 0
    Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
 Some parts of the test where not succesfull.
 
-Test for p = 0
+Test for p = 0 with dimension 2
 zerozero 0: Finite difference = 3.4588e+30. Analytical derivative = 3.4588e+30
 zerozero 1: Finite difference = 1.72138e+28. Analytical derivative = 1.72127e+28
 zerozero 2: Finite difference = 2.33127e+28. Analytical derivative = 2.33136e+28
@@ -99,7 +99,7 @@ oneone 3: Finite difference = 0. Analytical derivative = 0
 oneone 4: Finite difference = 0. Analytical derivative = 0
 OK
 
-Test for p = 1
+Test for p = 1 with dimension 2
 zerozero 0: Finite difference = 3.4588e+30. Analytical derivative = 3.4588e+30
 zerozero 1: Finite difference = 1.78932e+28. Analytical derivative = 1.78934e+28
 zerozero 2: Finite difference = 2.94542e+28. Analytical derivative = 2.94543e+28
@@ -119,7 +119,7 @@ oneone 4: Finite difference = -1.4336e+22. Analytical derivative = 0
    Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
 Some parts of the test where not succesfull.
 
-Test for p = 2
+Test for p = 2 with dimension 2
 zerozero 0: Finite difference = 3.4588e+30. Analytical derivative = 3.4588e+30
 zerozero 1: Finite difference = 1.84129e+28. Analytical derivative = 1.84132e+28
 zerozero 2: Finite difference = 3.53658e+28. Analytical derivative = 3.53658e+28
@@ -139,7 +139,7 @@ oneone 4: Finite difference = -1.4336e+22. Analytical derivative = 0
    Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
 Some parts of the test where not succesfull.
 
-Test for p = 1000
+Test for p = 1000 with dimension 2
 zerozero 0: Finite difference = 3.4588e+30. Analytical derivative = 3.4588e+30
 zerozero 1: Finite difference = 2.03772e+28. Analytical derivative = 2.03773e+28
 zerozero 2: Finite difference = 5.33915e+28. Analytical derivative = 5.33915e+28
@@ -158,3 +158,147 @@ oneone 3: Finite difference = 0. Analytical derivative = 0
 oneone 4: Finite difference = -1.4336e+22. Analytical derivative = 0
    Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
 Some parts of the test where not succesfull.
+
+Test for p = -1000 with dimension 3
+zerozero 0: Finite difference = 1.22129e+30. Analytical derivative = 1.22129e+30
+zerozero 1: Finite difference = 1.13647e+28. Analytical derivative = 1.13647e+28
+zerozero 2: Finite difference = 1.46269e+28. Analytical derivative = 1.46269e+28
+zerozero 3: Finite difference = 0. Analytical derivative = 0
+zerozero 4: Finite difference = -1.02759e+29. Analytical derivative = -1.02759e+29
+onezero 0: Finite difference = -4.57984e+29. Analytical derivative = -4.57984e+29
+onezero 1: Finite difference = 5.16375e+29. Analytical derivative = 5.16375e+29
+onezero 2: Finite difference = -2.08955e+29. Analytical derivative = -2.08955e+29
+onezero 3: Finite difference = 0. Analytical derivative = 0
+onezero 4: Finite difference = -3.08276e+29. Analytical derivative = -3.08277e+29
+oneone 0: Finite difference = -2.90056e+30. Analytical derivative = -2.90056e+30
+oneone 1: Finite difference = -7.55054e+27. Analytical derivative = -7.55089e+27
+oneone 2: Finite difference = -8.35819e+27. Analytical derivative = -8.35821e+27
+oneone 3: Finite difference = 0. Analytical derivative = 0
+oneone 4: Finite difference = -1.02759e+29. Analytical derivative = -1.02759e+29
+OK
+
+Test for p = -2 with dimension 3
+zerozero 0: Finite difference = 1.22129e+30. Analytical derivative = 1.22129e+30
+zerozero 1: Finite difference = 1.8569e+28. Analytical derivative = 1.8569e+28
+zerozero 2: Finite difference = 2.1323e+28. Analytical derivative = 2.1323e+28
+zerozero 3: Finite difference = 0. Analytical derivative = 0
+zerozero 4: Finite difference = -1.02759e+29. Analytical derivative = -1.02759e+29
+onezero 0: Finite difference = -4.57984e+29. Analytical derivative = -4.57984e+29
+onezero 1: Finite difference = 8.43711e+29. Analytical derivative = 8.43711e+29
+onezero 2: Finite difference = -3.04614e+29. Analytical derivative = -3.04614e+29
+onezero 3: Finite difference = 0. Analytical derivative = 0
+onezero 4: Finite difference = -3.08276e+29. Analytical derivative = -3.08277e+29
+oneone 0: Finite difference = -2.90056e+30. Analytical derivative = -2.90056e+30
+oneone 1: Finite difference = -1.23365e+28. Analytical derivative = -1.23375e+28
+oneone 2: Finite difference = -1.21847e+28. Analytical derivative = -1.21846e+28
+oneone 3: Finite difference = 0. Analytical derivative = 0
+oneone 4: Finite difference = -1.02759e+29. Analytical derivative = -1.02759e+29
+OK
+
+Test for p = -1.5 with dimension 3
+zerozero 0: Finite difference = 1.22129e+30. Analytical derivative = 1.22129e+30
+zerozero 1: Finite difference = 1.91304e+28. Analytical derivative = 1.91304e+28
+zerozero 2: Finite difference = 2.25374e+28. Analytical derivative = 2.25374e+28
+zerozero 3: Finite difference = 0. Analytical derivative = 0
+zerozero 4: Finite difference = -1.02759e+29. Analytical derivative = -1.02759e+29
+onezero 0: Finite difference = -4.57984e+29. Analytical derivative = -4.57984e+29
+onezero 1: Finite difference = 8.6922e+29. Analytical derivative = 8.6922e+29
+onezero 2: Finite difference = -3.21963e+29. Analytical derivative = -3.21963e+29
+onezero 3: Finite difference = 0. Analytical derivative = 0
+onezero 4: Finite difference = -3.08276e+29. Analytical derivative = -3.08277e+29
+oneone 0: Finite difference = -2.90056e+30. Analytical derivative = -2.90056e+30
+oneone 1: Finite difference = -1.27091e+28. Analytical derivative = -1.27105e+28
+oneone 2: Finite difference = -1.28786e+28. Analytical derivative = -1.28785e+28
+oneone 3: Finite difference = 0. Analytical derivative = 0
+oneone 4: Finite difference = -1.02759e+29. Analytical derivative = -1.02759e+29
+OK
+
+Test for p = -1 with dimension 3
+zerozero 0: Finite difference = 1.22129e+30. Analytical derivative = 1.22129e+30
+zerozero 1: Finite difference = 1.96797e+28. Analytical derivative = 1.96796e+28
+zerozero 2: Finite difference = 2.42304e+28. Analytical derivative = 2.42304e+28
+zerozero 3: Finite difference = 0. Analytical derivative = 0
+zerozero 4: Finite difference = -1.02759e+29. Analytical derivative = -1.02759e+29
+onezero 0: Finite difference = -4.57984e+29. Analytical derivative = -4.57984e+29
+onezero 1: Finite difference = 8.94172e+29. Analytical derivative = 8.94172e+29
+onezero 2: Finite difference = -3.46149e+29. Analytical derivative = -3.46149e+29
+onezero 3: Finite difference = 0. Analytical derivative = 0
+onezero 4: Finite difference = -3.08276e+29. Analytical derivative = -3.08277e+29
+oneone 0: Finite difference = -2.90056e+30. Analytical derivative = -2.90056e+30
+oneone 1: Finite difference = -1.30743e+28. Analytical derivative = -1.30754e+28
+oneone 2: Finite difference = -1.38459e+28. Analytical derivative = -1.3846e+28
+oneone 3: Finite difference = 0. Analytical derivative = 0
+oneone 4: Finite difference = -1.02759e+29. Analytical derivative = -1.02759e+29
+OK
+
+Test for p = 0 with dimension 3
+zerozero 0: Finite difference = 1.22129e+30. Analytical derivative = 1.22129e+30
+zerozero 1: Finite difference = 2.06903e+28. Analytical derivative = 2.0682e+28
+zerozero 2: Finite difference = 2.96447e+28. Analytical derivative = 2.96453e+28
+zerozero 3: Finite difference = 0. Analytical derivative = 0
+zerozero 4: Finite difference = -1.02759e+29. Analytical derivative = -1.02759e+29
+onezero 0: Finite difference = -4.57984e+29. Analytical derivative = -4.57984e+29
+onezero 1: Finite difference = 9.39722e+29. Analytical derivative = 9.39722e+29
+onezero 2: Finite difference = -4.23504e+29. Analytical derivative = -4.23504e+29
+onezero 3: Finite difference = 0. Analytical derivative = 0
+onezero 4: Finite difference = -3.08276e+29. Analytical derivative = -3.08277e+29
+oneone 0: Finite difference = -2.90056e+30. Analytical derivative = -2.90056e+30
+oneone 1: Finite difference = -1.37339e+28. Analytical derivative = -1.37415e+28
+oneone 2: Finite difference = -1.69439e+28. Analytical derivative = -1.69402e+28
+oneone 3: Finite difference = 0. Analytical derivative = 0
+oneone 4: Finite difference = -1.02759e+29. Analytical derivative = -1.02759e+29
+OK
+
+Test for p = 1 with dimension 3
+zerozero 0: Finite difference = 1.22129e+30. Analytical derivative = 1.22129e+30
+zerozero 1: Finite difference = 2.15e+28. Analytical derivative = 2.15e+28
+zerozero 2: Finite difference = 3.74536e+28. Analytical derivative = 3.74536e+28
+zerozero 3: Finite difference = 0. Analytical derivative = 0
+zerozero 4: Finite difference = -1.02759e+29. Analytical derivative = -1.02759e+29
+onezero 0: Finite difference = -4.57984e+29. Analytical derivative = -4.57984e+29
+onezero 1: Finite difference = 9.76887e+29. Analytical derivative = 9.76887e+29
+onezero 2: Finite difference = -5.35052e+29. Analytical derivative = -5.35052e+29
+onezero 3: Finite difference = 0. Analytical derivative = 0
+onezero 4: Finite difference = -3.08276e+29. Analytical derivative = -3.08277e+29
+oneone 0: Finite difference = -2.90056e+30. Analytical derivative = -2.90056e+30
+oneone 1: Finite difference = -1.42837e+28. Analytical derivative = -1.42849e+28
+oneone 2: Finite difference = -2.1402e+28. Analytical derivative = -2.14021e+28
+oneone 3: Finite difference = 0. Analytical derivative = 0
+oneone 4: Finite difference = -1.02759e+29. Analytical derivative = -1.02759e+29
+OK
+
+Test for p = 2 with dimension 3
+zerozero 0: Finite difference = 1.22129e+30. Analytical derivative = 1.22129e+30
+zerozero 1: Finite difference = 2.21246e+28. Analytical derivative = 2.21246e+28
+zerozero 2: Finite difference = 4.49707e+28. Analytical derivative = 4.49707e+28
+zerozero 3: Finite difference = 0. Analytical derivative = 0
+zerozero 4: Finite difference = -1.02759e+29. Analytical derivative = -1.02759e+29
+onezero 0: Finite difference = -4.57984e+29. Analytical derivative = -4.57984e+29
+onezero 1: Finite difference = 1.00527e+30. Analytical derivative = 1.00527e+30
+onezero 2: Finite difference = -6.42438e+29. Analytical derivative = -6.42438e+29
+onezero 3: Finite difference = 0. Analytical derivative = 0
+onezero 4: Finite difference = -3.08276e+29. Analytical derivative = -3.08277e+29
+oneone 0: Finite difference = -2.90056e+30. Analytical derivative = -2.90056e+30
+oneone 1: Finite difference = -1.46984e+28. Analytical derivative = -1.46999e+28
+oneone 2: Finite difference = -2.56975e+28. Analytical derivative = -2.56975e+28
+oneone 3: Finite difference = 0. Analytical derivative = 0
+oneone 4: Finite difference = -1.02759e+29. Analytical derivative = -1.02759e+29
+OK
+
+Test for p = 1000 with dimension 3
+zerozero 0: Finite difference = 1.22129e+30. Analytical derivative = 1.22129e+30
+zerozero 1: Finite difference = 2.44845e+28. Analytical derivative = 2.44846e+28
+zerozero 2: Finite difference = 6.78919e+28. Analytical derivative = 6.78919e+28
+zerozero 3: Finite difference = 0. Analytical derivative = 0
+zerozero 4: Finite difference = -1.02759e+29. Analytical derivative = -1.02759e+29
+onezero 0: Finite difference = -4.57984e+29. Analytical derivative = -4.57984e+29
+onezero 1: Finite difference = 1.1125e+30. Analytical derivative = 1.1125e+30
+onezero 2: Finite difference = -9.69885e+29. Analytical derivative = -9.69885e+29
+onezero 3: Finite difference = 0. Analytical derivative = 0
+onezero 4: Finite difference = -3.08276e+29. Analytical derivative = -3.08277e+29
+oneone 0: Finite difference = -2.90056e+30. Analytical derivative = -2.90056e+30
+oneone 1: Finite difference = -1.62667e+28. Analytical derivative = -1.62679e+28
+oneone 2: Finite difference = -3.87953e+28. Analytical derivative = -3.87954e+28
+oneone 3: Finite difference = 0. Analytical derivative = 0
+oneone 4: Finite difference = -1.02759e+29. Analytical derivative = -1.02759e+29
+OK
