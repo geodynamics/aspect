@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
 
-Loading shared library <./libvisco_plastic_derivatives.so>
+Loading shared library <./libvisco_plastic_derivatives_2d.so>
 
 * Connecting signals
 
@@ -104,7 +104,7 @@ Number of degrees of freedom: 2,767 (882+121+441+441+441+441)
    Postprocessing:
      RMS, max velocity:                  0 m/year, 0 m/year
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
-     Writing graphical output:           output-visco_plastic_derivatives/solution/solution-00000
+     Writing graphical output:           output-visco_plastic_derivatives_2d/solution/solution-00000
 
 Termination requested by criterion: end time
 
