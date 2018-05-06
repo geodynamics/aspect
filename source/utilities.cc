@@ -698,7 +698,8 @@ namespace aspect
 
       if ((Utilities::MPI::this_mpi_process(comm) == 0))
         {
-          if (opendir(pathname.c_str()) == NULL)
+          DIR *output_directory = opendir(pathname.c_str());
+          if (output_directory == NULL)
             {
               if (!silent)
                 std::cout << "\n"
@@ -714,7 +715,7 @@ namespace aspect
             }
           else
             {
-              error = 0;
+              error = closedir(output_directory);
             }
           // Broadcast error code
           MPI_Bcast (&error, 1, MPI_INT, 0, comm);
