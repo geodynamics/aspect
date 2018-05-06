@@ -506,6 +506,14 @@ namespace aspect
         get_column_names() const;
 
         /**
+         * Returns whether the stored coordinates are equidistant. If
+         * coordinates are equidistant the lookup is more efficient. Returns
+         * false if no coordinates are loaded at the moment.
+         */
+        bool
+        has_equidistant_coordinates() const;
+
+        /**
          * Returns the column index of a column with the given name
          * @p column_name. Throws an exception if no such
          * column exists or no names were provided in the file.
@@ -571,6 +579,12 @@ namespace aspect
          * to transform the unit of the data.
          */
         const double scale_factor;
+
+        /**
+         * Stores whether the coordinate values are equidistant or not,
+         * this determines the type of data function stored.
+         */
+        bool coordinate_values_are_equidistant;
 
         /**
          * Computes the table indices of each entry in the input data file.
