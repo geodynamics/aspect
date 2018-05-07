@@ -1177,8 +1177,11 @@ namespace aspect
       components(components),
       data(components),
       maximum_component_value(components),
-      scale_factor(scale_factor)
+      scale_factor(scale_factor),
+      coordinate_values_are_equidistant(false)
     {}
+
+
 
     template <int dim>
     AsciiDataLookup<dim>::AsciiDataLookup(const double scale_factor)
@@ -1186,8 +1189,11 @@ namespace aspect
       components(numbers::invalid_unsigned_int),
       data(),
       maximum_component_value(),
-      scale_factor(scale_factor)
+      scale_factor(scale_factor),
+      coordinate_values_are_equidistant(false)
     {}
+
+
 
     template <int dim>
     std::vector<std::string>
@@ -1195,6 +1201,17 @@ namespace aspect
     {
       return data_component_names;
     }
+
+
+
+    template <int dim>
+    bool
+    AsciiDataLookup<dim>::has_equidistant_coordinates() const
+    {
+      return coordinate_values_are_equidistant;
+    }
+
+
 
     template <int dim>
     unsigned int
@@ -1379,7 +1396,7 @@ namespace aspect
       std_cxx11::array<unsigned int,dim> table_intervals;
 
       // Whether or not the grid is equidistant
-      bool equidistant_grid = true;
+      coordinate_values_are_equidistant = true;
 
       for (unsigned int i = 0; i < dim; i++)
         {
@@ -1417,7 +1434,7 @@ namespace aspect
                   // Compare current grid spacing with first grid spacing,
                   // taking into account roundoff of the read-in coordinates
                   if (std::abs(current_grid_spacing - grid_spacing) > 0.005*(current_grid_spacing+grid_spacing))
-                    equidistant_grid = false;
+                    coordinate_values_are_equidistant = false;
                 }
 
               // Set the coordinate value
@@ -1437,14 +1454,12 @@ namespace aspect
           if (data[i])
             delete data[i];
 
-          if (equidistant_grid)
+          if (coordinate_values_are_equidistant)
             data[i] = new Functions::InterpolatedUniformGridData<dim> (grid_extent,
                                                                        table_intervals,
                                                                        data_tables[dim+i]);
           else
             {
-              if (Utilities::MPI::this_mpi_process(comm) == 0)
-                std::cout << "   Ascii data file coordinates are not equidistant. " << std::endl << std::endl;
               data[i] = new Functions::InterpolatedTensorProductGridData<dim> (coordinate_values,
                                                                                data_tables[dim+i]);
             }

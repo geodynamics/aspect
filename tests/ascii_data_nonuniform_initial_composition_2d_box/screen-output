@@ -2,8 +2,6 @@
 
    Loading Ascii data initial file ASPECT_DIR/data/initial-composition/ascii-data/test/box_2d_nonuniform.txt.
 
-   Ascii data file coordinates are not equidistant. 
-
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 349 (162+25+81+81)
 
