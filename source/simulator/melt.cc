@@ -286,7 +286,8 @@ namespace aspect
       compute_fluid_pressure_rhs(const SimulatorAccess<dim> *simulator_access,
                                  const internal::Assembly::Scratch::StokesSystem<dim> &scratch,
                                  const unsigned int q_point,
-                                 const double K_D)
+                                 const double K_D,
+                                 const double operator_split_reaction)
       {
         if (!simulator_access->get_parameters().include_melt_transport)
           return 0.0;
@@ -299,9 +300,17 @@ namespace aspect
         const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
         const unsigned int is_compressible = simulator_access->get_material_model().is_compressible();
 
-        const double melting_rate     = scratch.material_model_outputs.reaction_terms[q_point][porosity_index];
         const double solid_density    = scratch.material_model_outputs.densities[q_point];
         const double fluid_density    = melt_out->fluid_densities[q_point];
+        double melting_rate           = scratch.material_model_outputs.reaction_terms[q_point][porosity_index];
+
+        if (simulator_access->get_parameters().use_operator_splitting)
+          melting_rate = (simulator_access->get_timestep() > 0
+                          ?
+                          operator_split_reaction * solid_density / simulator_access->get_timestep()
+                          :
+                          0.0);
+
         const double solid_compressibility = scratch.material_model_outputs.compressibilities[q_point];
         const Tensor<1,dim> fluid_density_gradient = melt_out->fluid_density_gradients[q_point];
         const Tensor<1,dim> current_u = scratch.velocity_values[q_point];
@@ -368,6 +377,12 @@ namespace aspect
       *force = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >();
 
       const double pressure_scaling = this->get_pressure_scaling();
+
+      std::vector<double> reactions(n_q_points, numbers::signaling_nan<double>());
+      const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+      if (this->get_parameters().use_operator_splitting)
+        scratch.finite_element_values[introspection.extractors.compositional_fields[porosity_index]].get_function_values(this->get_reaction_vector(),
+            reactions);
 
       for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
         {
@@ -438,7 +453,8 @@ namespace aspect
           const double p_f_RHS = compute_fluid_pressure_rhs(this,
                                                             scratch,
                                                             q,
-                                                            K_D);
+                                                            K_D,
+                                                            reactions[q]);
           const double bulk_density = (1.0 - porosity) * density_s + porosity * density_f;
 
           const double JxW = scratch.finite_element_values.JxW(q);
@@ -750,6 +766,7 @@ namespace aspect
 
           const double melt_transport_LHS =
             (this->get_melt_handler().is_porosity(*scratch.advection_field)
+             && this->get_melt_handler().is_melt_cell(scratch.material_model_inputs.current_cell)
              ?
              divergence_u
              + (this->get_material_model().is_compressible()
@@ -1777,7 +1794,7 @@ namespace aspect
     if (melt_parameters.use_discontinuous_p_c)
       AssertThrow(!this->model_has_prescribed_stokes_solution(),
                   ExcMessage("You can not use a discontinuous p_c in a model "
-                             "with a presribed Stokes solution."));
+                             "with a prescribed Stokes solution."));
     // We can not have a DG p_f.
     AssertThrow(!this->get_parameters().use_locally_conservative_discretization,
                 ExcMessage ("Discontinuous elements for the fluid pressure "

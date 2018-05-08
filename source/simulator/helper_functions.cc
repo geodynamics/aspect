@@ -1701,6 +1701,8 @@ namespace aspect
         distributed_vector.block(block_c) = old_old_solution.block(block_c);
         distributed_vector.block(block_c) +=  distributed_reaction_vector.block(block_c);
         old_old_solution.block(block_c) = distributed_vector.block(block_c);
+
+        operator_split_reaction_vector.block(block_c) = distributed_reaction_vector.block(block_c);
       }
 
     const unsigned int block_T = introspection.block_indices.temperature;
@@ -1720,6 +1722,7 @@ namespace aspect
     distributed_vector.block(block_T) +=  distributed_reaction_vector.block(block_T);
     old_old_solution.block(block_T) = distributed_vector.block(block_T);
 
+    operator_split_reaction_vector.block(block_T) = distributed_reaction_vector.block(block_T);
     current_linearization_point = old_solution;
   }
 

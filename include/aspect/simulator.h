@@ -1682,6 +1682,9 @@ namespace aspect
       // only used if is_compressible()
       LinearAlgebra::BlockVector                                pressure_shape_function_integrals;
 
+      // only used if operator split is enabled
+      LinearAlgebra::BlockVector                                operator_split_reaction_vector;
+
 
 
       std_cxx11::shared_ptr<LinearAlgebra::PreconditionAMG>     Amg_preconditioner;
