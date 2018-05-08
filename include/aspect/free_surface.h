@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -144,9 +144,9 @@ namespace aspect
       Simulator<dim> &sim;
 
       /**
-      * Finite element for the free surface implementation, which is
-      * used for tracking mesh deformation.
-      */
+       * Finite element for the free surface implementation, which is used for
+       * tracking mesh deformation.
+       */
       const FESystem<dim> free_surface_fe;
 
       /**

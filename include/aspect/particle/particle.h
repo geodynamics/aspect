@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -197,11 +197,11 @@ namespace aspect
         write_data(void *&data) const;
 
         /**
-          * Set the location of this particle. Note that this does not check
-          * whether this is a valid location in the simulation domain.
-          *
-          * @param [in] new_location The new location for this particle.
-          */
+         * Set the location of this particle. Note that this does not check
+         * whether this is a valid location in the simulation domain.
+         *
+         * @param [in] new_location The new location for this particle.
+         */
         void
         set_location (const Point<spacedim> &new_location);
 
@@ -245,9 +245,9 @@ namespace aspect
         set_property_pool(PropertyPool &property_pool);
 
         /**
-          * Returns whether this particle has a valid property pool and a valid
-          * handle to properties.
-          */
+         * Returns whether this particle has a valid property pool and a valid
+         * handle to properties.
+         */
         bool
         has_properties () const;
 

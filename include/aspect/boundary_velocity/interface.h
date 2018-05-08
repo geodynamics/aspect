@@ -110,10 +110,10 @@ namespace aspect
     };
 
     /**
-      * A class that manages all boundary velocity objects.
-      *
-      * @ingroup BoundaryVelocities
-      */
+     * A class that manages all boundary velocity objects.
+     *
+     * @ingroup BoundaryVelocities
+     */
     template <int dim>
     class Manager : public ::aspect::SimulatorAccess<dim>
     {

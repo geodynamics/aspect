@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -63,10 +63,11 @@ namespace aspect
            * request by need_update() for every particle for every property.
            *
            * @param [in] data_position An unsigned integer that denotes which
-
+           * component of the particle property vector is associated with the
            * current property. For properties that own several components it
-           * denotes the first component of this property, all other components
-           * fill consecutive entries in the @p particle_properties vector.
+           * denotes the first component of this property, all other
+           * components fill consecutive entries in the @p particle_properties
+           * vector.
            *
            * @param [in] position The current particle position.
            *

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -89,7 +89,7 @@ namespace aspect
           std::vector<std::string> dataset_names;
 
           /**
-           *  Store which of the data fields are vectors.
+           * Store which of the data fields are vectors.
            */
           std::vector<std_cxx11::tuple<unsigned int, unsigned int, std::string> > vector_datasets;
       };

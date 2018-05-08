@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -133,12 +133,12 @@ namespace aspect
           const std::vector<double> &compositional_fields) const;
 
         /**
-        * From a list of static friction of coefficient, dynamic friction of
-        * coefficient, cohesions and background viscosity for N + 1 fields
-        * (background mantle and N compositions) , we compute viscosities
-        * for drucker prager model with coefficient of friction dependent
-        * on the strain rate.
-        */
+         * From a list of static friction of coefficient, dynamic friction of
+         * coefficient, cohesions and background viscosity for N + 1 fields
+         * (background mantle and N compositions) , we compute viscosities for
+         * drucker prager model with coefficient of friction dependent on the
+         * strain rate.
+         */
 
         const std::vector<double> compute_viscosities(
           const double pressure,
@@ -177,8 +177,8 @@ namespace aspect
         std::vector<double> densities;
 
         /**
-        * The dynamic coefficient of friction
-        */
+         * The dynamic coefficient of friction
+         */
         std::vector<double> mu_d;
 
         /**

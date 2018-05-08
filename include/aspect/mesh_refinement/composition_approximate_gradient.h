@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -54,8 +54,8 @@ namespace aspect
         execute (Vector<float> &error_indicators) const;
 
         /**
-        * Declare the parameters this class takes through input files.
-        */
+         * Declare the parameters this class takes through input files.
+         */
         static
         void
         declare_parameters (ParameterHandler &prm);

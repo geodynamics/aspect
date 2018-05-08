@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -93,7 +93,7 @@ namespace aspect
 
         /**
          * Currently chosen source for the viscosity.
-         **/
+         */
         ViscositySource viscosity_source;
 
         /**

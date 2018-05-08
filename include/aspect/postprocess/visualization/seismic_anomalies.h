@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -79,11 +79,11 @@ namespace aspect
         private:
 
           /**
-           * Scheme chosen to define the average seismic velocity as
-          * a function of depth. Reference profile evaluates the
-          * material model using the P-T profile defined by the reference
-          * adiabatic conditions and the lateral average option calculates
-          * the average velocity within a number n_slices of depth slices.
+           * Scheme chosen to define the average seismic velocity as a
+           * function of depth. Reference profile evaluates the material model
+           * using the P-T profile defined by the reference adiabatic
+           * conditions and the lateral average option calculates the average
+           * velocity within a number n_slices of depth slices.
            */
           enum VelocityScheme
           {
@@ -147,11 +147,11 @@ namespace aspect
         private:
 
           /**
-           * Scheme chosen to define the average seismic velocity as
-          * a function of depth. Reference profile evaluates the
-          * material model using the P-T profile defined by the reference
-          * adiabatic conditions and the lateral average option calculates
-          * the average velocity within a number n_slices of depth slices.
+           * Scheme chosen to define the average seismic velocity as a
+           * function of depth. Reference profile evaluates the material model
+           * using the P-T profile defined by the reference adiabatic
+           * conditions and the lateral average option calculates the average
+           * velocity within a number n_slices of depth slices.
            */
           enum VelocityScheme
           {

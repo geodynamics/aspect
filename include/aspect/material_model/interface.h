@@ -766,14 +766,14 @@ namespace aspect
 
         /**
          * Force value for the conservation of mass equation (second Stokes
-        * equation) in each quadrature point.
-        */
+         * equation) in each quadrature point.
+         */
         std::vector<double> rhs_p;
 
         /**
-        * Force for the compaction pressure equation (when using melt
-        * transport) in each quadrature point.
-        */
+         * Force for the compaction pressure equation (when using melt
+         * transport) in each quadrature point.
+         */
         std::vector<double> rhs_melt_pc;
     };
 

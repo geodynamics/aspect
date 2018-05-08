@@ -80,8 +80,8 @@ namespace aspect
 
 
       /**
-      * The exact solution for the Inclusion benchmark.
-      */
+       * The exact solution for the Inclusion benchmark.
+       */
       template <int dim>
       class FunctionInclusion : public Function<dim>
       {
@@ -138,12 +138,12 @@ namespace aspect
 
 
     /**
-    * @note This benchmark only talks about the flow field, not about a
-    * temperature field. All quantities related to the temperature are
-    * therefore set to zero in the implementation of this class.
-    *
-    * @ingroup MaterialModels
-    */
+     * @note This benchmark only talks about the flow field, not about a
+     * temperature field. All quantities related to the temperature are
+     * therefore set to zero in the implementation of this class.
+     *
+     * @ingroup MaterialModels
+     */
     template <int dim>
     class InclusionMaterial : public MaterialModel::Interface<dim>
     {
@@ -271,11 +271,11 @@ namespace aspect
 
 
     /**
-    * A postprocessor that evaluates the accuracy of the solution.
-    *
-    * The implementation of error evaluators that correspond to the
-    * benchmarks defined in the paper Duretz et al. reference above.
-    */
+     * A postprocessor that evaluates the accuracy of the solution.
+     *
+     * The implementation of error evaluators that correspond to the
+     * benchmarks defined in the paper Duretz et al. reference above.
+     */
     template <int dim>
     class InclusionPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {

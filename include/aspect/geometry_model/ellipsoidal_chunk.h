@@ -109,8 +109,8 @@ namespace aspect
 
 #if DEAL_II_VERSION_GTE(9,0,0)
             /**
-            * Return a copy of this manifold.
-            */
+             * Return a copy of this manifold.
+             */
             virtual
             std::unique_ptr<Manifold<dim,3> >
             clone() const;
@@ -151,8 +151,8 @@ namespace aspect
         };
 
         /**
-        * Initialize function
-        */
+         * Initialize function
+         */
         virtual
         void
         initialize ();

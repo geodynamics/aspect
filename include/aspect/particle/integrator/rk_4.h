@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -30,13 +30,13 @@ namespace aspect
     namespace Integrator
     {
       /**
-      * Runge Kutta fourth order integrator, where $y_{n+1} = y_n + (1/6)*k1 + (1/3)*k2 + (1/3)*k3 + (1/6)*k4$
-      * and k1, k2, k3, k4 are defined as usual.
-      * This scheme requires storing the original location and intermediate k1, k2, k3 values,
-      * so the read/write_data functions reflect this.
-      *
+       * Runge Kutta fourth order integrator, where $y_{n+1} = y_n + (1/6)*k1 + (1/3)*k2 + (1/3)*k3 + (1/6)*k4$
+       * and k1, k2, k3, k4 are defined as usual.
+       * This scheme requires storing the original location and intermediate k1, k2, k3 values,
+       * so the read/write_data functions reflect this.
+       *
        * @ingroup ParticleIntegrators
-      */
+       */
       template <int dim>
       class RK4 : public Interface<dim>
       {

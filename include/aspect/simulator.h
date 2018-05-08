@@ -1228,12 +1228,13 @@ namespace aspect
       get_extrapolated_advection_field_range (const AdvectionField &advection_field) const;
 
       /**
-       * Check if timing output should be written in this timestep, and if
-       * so write it.
+       * Check if timing output should be written in this timestep, and if so
+       * write it.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
-       * */
+       *
+       */
       void maybe_write_timing_output () const;
 
       /**

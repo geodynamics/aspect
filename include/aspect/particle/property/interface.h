@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -284,13 +284,13 @@ namespace aspect
       };
 
       /**
-        * Interface provides an example of how to extend the Particle
-        * class to include related particle data. This allows users to attach
-        * scalars/vectors/tensors/etc to particles and ensure they are
-        * transmitted correctly over MPI and written to output files.
-        *
-        * @ingroup ParticleProperties
-        */
+       * Interface provides an example of how to extend the Particle class to
+       * include related particle data. This allows users to attach
+       * scalars/vectors/tensors/etc to particles and ensure they are
+       * transmitted correctly over MPI and written to output files.
+       *
+       * @ingroup ParticleProperties
+       */
       template <int dim>
       class Interface
       {

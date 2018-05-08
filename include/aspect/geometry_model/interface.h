@@ -133,14 +133,14 @@ namespace aspect
         double depth(const Point<dim> &position) const = 0;
 
         /**
-          * Return the height of the given position relative to
-          * the reference surface of the model. Positive returned value
-        * means that the point is above (i.e., farther from the center
-        * of the model) the reference surface, negative value means that
-        * the point is below the the reference surface.
-          *
-          * Same limitations as for the depth function, apply here.
-        */
+         * Return the height of the given position relative to the reference
+         * surface of the model. Positive returned value means that the point
+         * is above (i.e., farther from the center of the model) the reference
+         * surface, negative value means that the point is below the the
+         * reference surface.
+         *
+         * Same limitations as for the depth function, apply here.
+         */
         virtual
         double height_above_reference_surface(const Point<dim> &position) const = 0;
 
