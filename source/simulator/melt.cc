@@ -302,16 +302,14 @@ namespace aspect
 
         const double solid_density    = scratch.material_model_outputs.densities[q_point];
         const double fluid_density    = melt_out->fluid_densities[q_point];
-        const double reaction_rate    = simulator_access->get_timestep() > 0
-                                        ?
-                                        operator_split_reaction * solid_density / simulator_access->get_timestep()
-                                        :
-                                        0.0;
-        const double melting_rate     = simulator_access->get_parameters().use_operator_splitting
-                                        ?
-                                        reaction_rate
-                                        :
-                                        scratch.material_model_outputs.reaction_terms[q_point][porosity_index];
+        double melting_rate           = scratch.material_model_outputs.reaction_terms[q_point][porosity_index];
+
+        if (simulator_access->get_parameters().use_operator_splitting)
+          melting_rate = (simulator_access->get_timestep() > 0
+                          ?
+                          operator_split_reaction * solid_density / simulator_access->get_timestep()
+                          :
+                          0.0);
 
         const double solid_compressibility = scratch.material_model_outputs.compressibilities[q_point];
         const Tensor<1,dim> fluid_density_gradient = melt_out->fluid_density_gradients[q_point];
@@ -380,7 +378,7 @@ namespace aspect
 
       const double pressure_scaling = this->get_pressure_scaling();
 
-      std::vector<double> reactions(n_q_points);
+      std::vector<double> reactions(n_q_points, numbers::signaling_nan<double>());
       const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
       if (this->get_parameters().use_operator_splitting)
         scratch.finite_element_values[introspection.extractors.compositional_fields[porosity_index]].get_function_values(this->get_reaction_vector(),
