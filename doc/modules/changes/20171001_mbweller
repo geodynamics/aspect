@@ -1,7 +1,0 @@
-New: The new 'function' boundary composition plugin allows 
-to prescribe compositional field boundary conditions using
-an analytical function. It supports the
-coordinate systems cartesian, spherical, and depth.
-<br>
-(Matt Weller, Rene Gassmoeller, 2017/10/01)
-

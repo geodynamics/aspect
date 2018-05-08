@@ -1,6 +1,0 @@
-Fixed: The material models <code>visco plastic</code> and <code>diffusion 
-dislocation</code> now use the reference density to calculate thermal
-conductivity if the <code>Temperature equation</code> formulation is set
-to <code>reference density profile</code>.
-<br>
-(John Naliboff, 2018/04/30)

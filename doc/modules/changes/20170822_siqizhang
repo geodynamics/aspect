@@ -1,6 +1,0 @@
-New: a new boundary temperature plugin that the core mantle boundary temperature evolves through time 
-by calculating the heat flux through core mantle boundary and solving the core energy balance. 
-A postprocessor of the core evolution is also added. It is used in our paper Zhang & O'Neill [2016] 
-and it could be useful for people interested in long term planetary evolution.
-<br>
-(Siqi Zhang & Craig O'Neill, 2017/08/22)

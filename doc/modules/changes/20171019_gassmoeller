@@ -1,6 +1,0 @@
-Changed: The hdf5 visualization output no longer automatically merges
-vertices of adjacent cells to save disk space. This has lead to confusion
-when investigating discontinous output properties, and is now an input
-parameter that needs to be explicitly enabled.
-<br>
-(Rene Gassmoeller, 2017/10/19)

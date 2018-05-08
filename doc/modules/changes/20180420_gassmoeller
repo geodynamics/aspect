@@ -1,6 +1,0 @@
-Changed: The update scripts for old parameter and source files have been moved
-and renamed. The official way to update old files is now to call
-doc/update_prm_files.sh or doc/update_source_files.sh with all file names that
-should be updated.
-<br>
-(Rene Gassmoeller, 2018/04/20)

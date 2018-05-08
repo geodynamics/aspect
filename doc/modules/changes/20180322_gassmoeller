@@ -1,7 +1,0 @@
-Removed: Due to low usage, and the lack of realistic applications, the code
-paths for using anisotropic viscosity have been removed from the main assembly.
-They are still available and tested as plugins for the anisotropic_viscosity
-test and can be utilized if needed. This optimization speeds up the Stokes
-assembly by up to 25%.
-<br>
-(Rene Gassmoeller, 2018/03/22)

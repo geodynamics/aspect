@@ -1,7 +1,0 @@
-Fixed: The 'heat flux map' visualization postprocessor used to compute
-the heat flux through every boundary face and average the computed fluxes per
-cell. At side boundaries of boxes the computed flux usually makes no sense,
-and one is usually only interested in the surface or bottom heat flux. Thus
-the plugin was changed to only compute fluxes at top and bottom boundaries.
-<br>
-(Rene Gassmoeller, 2018/01/15)

@@ -1,6 +1,0 @@
-Changed: The screen output of the different solver schemes now has
-the same style. All lines that output the total nonlinear residual 
-of the system iterated over begin with 'Nonlinear residual' and 
-then specify the system being solved. 
-<br>
-(Juliane Dannberg, 2017/11/01)

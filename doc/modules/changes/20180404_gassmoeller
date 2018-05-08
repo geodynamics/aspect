@@ -1,8 +1,0 @@
-Changed: The 'radial linear' gravity model no longer goes towards a zero
-gravity at the bottom of the domain, but allows setting the gravity at
-the bottom to a fixed value.
-The new default value was chosen to represent mantle gravity profiles.
-If you used the old model, please restore the old behavior by setting the
-parameter to 0.0.
-<br>
-(Rene Gassmoeller, 2018/04/04)

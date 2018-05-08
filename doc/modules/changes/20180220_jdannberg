@@ -1,5 +1,0 @@
-Changed: If the velocity is zero, the time step size is now set to
-the maximum time step input parameter instead of arbitrarily being 
-set to 1 second.
-<br>
-(Juliane Dannberg, 2018/02/20)

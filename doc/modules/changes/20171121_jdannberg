@@ -1,5 +1,0 @@
-New: The option to prescribe a Stokes solution when using the
-advection only solver scheme now also works in models where melt 
-transport is used. 
-<br>
-(Juliane Dannberg, 2017/11/21)

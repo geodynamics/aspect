@@ -1,7 +1,0 @@
-New: There is a new cmake option ASPECT_COMPARE_TEST_RESULTS,
-which allows to run the test suite without comparing its results.
-This is useful for other machines than the reference tester, and to
-check if one of the tests crashes. The option defaults to ON, which
-preserves the old behavior of comparing the results.
-<br>
-(Rene Gassmoeller, 2017/10/31)

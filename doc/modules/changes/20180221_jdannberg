@@ -1,5 +1,0 @@
-Fixed: The melt material models now work correctly with operator 
-splitting and latent heat of melting. This is achieved by setting
-a separate time scale for these reactions in the material model. 
-<br>
-(Juliane Dannberg, 2018/02/21)

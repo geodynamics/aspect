@@ -1,6 +1,0 @@
-Added: A new particle interpolation scheme called
-harmonic average. If a cell contains zero particles,
-then the harmonic average of the particle properties
-in the neighboring cells is returned.
-<br>
-(Harsha Lokavarapu, 2017/10/21)

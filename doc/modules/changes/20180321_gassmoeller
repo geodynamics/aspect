@@ -1,4 +1,0 @@
-Improved: The 'depth average' postprocessor was significantly optimized, and
-now uses approximately ten times less computing time.
-<br>
-(Rene Gassmoeller, 2018/03/21)

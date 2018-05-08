@@ -1,5 +1,0 @@
-New: We now reuse the memory for matrices for compositional fields instead of
-allocating one for each field. This will result in memory savings if a large
-number of them are used.
-<br>
-(Timo Heister, 2018/01/12)

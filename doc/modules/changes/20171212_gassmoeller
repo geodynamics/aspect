@@ -1,6 +1,0 @@
-Changed: The ASPECT header (the first lines of each output and the
-beginning of log.txt files) now contains more information about the
-version of the software and the used dependencies. This will
-improve the reproducibility of old model results.
-<br>
-(Rene Gassmoeller, 2017/12/12)

@@ -1,5 +1,0 @@
-Changed: The 'Morency and Doin' material model was removed from the available
-material models, and moved to a cookbook folder. This material model is
-really only useful in that particular setup.
-<br>
-(Rene Gassmoeller, 2017/11/15)

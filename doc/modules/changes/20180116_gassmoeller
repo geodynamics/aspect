@@ -1,7 +1,0 @@
-Changed: Removed min/max bounds on the specific heat capacity and
-thermal expansivity inside the 'Steinberger' material model. 
-These bounds were only used if the 'Use latent heat' parameter
-was set to true. To prevent silently changing the solution these
-bounds were removed.
-<br>
-(Rene Gassmoeller, 2018/01/16)
