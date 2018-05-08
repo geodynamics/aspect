@@ -298,6 +298,12 @@ namespace aspect
     return simulator->old_old_solution;
   }
 
+  template <int dim>
+  const LinearAlgebra::BlockVector &
+  SimulatorAccess<dim>::get_reaction_vector () const
+  {
+    return simulator->operator_split_reaction_vector;
+  }
 
   template <int dim>
   const LinearAlgebra::BlockVector &

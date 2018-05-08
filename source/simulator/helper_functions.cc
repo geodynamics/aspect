@@ -1510,9 +1510,6 @@ namespace aspect
     LinearAlgebra::BlockVector distributed_vector (introspection.index_sets.system_partitioning,
                                                    mpi_communicator);
 
-    LinearAlgebra::BlockVector distributed_reaction_vector (introspection.index_sets.system_partitioning,
-                                                            mpi_communicator);
-
     // we use a different (potentially smaller) time step than in the advection scheme,
     // and we want all of our reaction time steps (within one advection step) to have the same size
     const unsigned int number_of_reaction_steps = std::max(static_cast<unsigned int>(time_step / parameters.reaction_time_step),
@@ -1661,7 +1658,7 @@ namespace aspect
                 if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[composition_idx]))
                   {
                     distributed_vector(local_dof_indices[composition_idx]) = in_C.composition[j][c];
-                    distributed_reaction_vector(local_dof_indices[composition_idx]) = accumulated_reactions_C[j][c];
+                    operator_split_reaction_vector(local_dof_indices[composition_idx]) = accumulated_reactions_C[j][c];
                   }
               }
 
@@ -1677,7 +1674,7 @@ namespace aspect
                 if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[temperature_idx]))
                   {
                     distributed_vector(local_dof_indices[temperature_idx]) = in_T.temperature[j];
-                    distributed_reaction_vector(local_dof_indices[temperature_idx]) = accumulated_reactions_T[j];
+                    operator_split_reaction_vector(local_dof_indices[temperature_idx]) = accumulated_reactions_T[j];
                   }
               }
         }
@@ -1691,15 +1688,15 @@ namespace aspect
 
         // we have to update the old solution with our reaction update too
         // so that the advection scheme will have the correct time stepping in the next step
-        distributed_reaction_vector.block(block_c).compress(VectorOperation::insert);
+        operator_split_reaction_vector.block(block_c).compress(VectorOperation::insert);
 
         // we do not need distributed_vector any more, use it to temporarily store the update
         distributed_vector.block(block_c) = old_solution.block(block_c);
-        distributed_vector.block(block_c) +=  distributed_reaction_vector.block(block_c);
+        distributed_vector.block(block_c) +=  operator_split_reaction_vector.block(block_c);
         old_solution.block(block_c) = distributed_vector.block(block_c);
 
         distributed_vector.block(block_c) = old_old_solution.block(block_c);
-        distributed_vector.block(block_c) +=  distributed_reaction_vector.block(block_c);
+        distributed_vector.block(block_c) +=  operator_split_reaction_vector.block(block_c);
         old_old_solution.block(block_c) = distributed_vector.block(block_c);
       }
 
@@ -1709,15 +1706,15 @@ namespace aspect
 
     // we have to update the old solution with our reaction update too
     // so that the advection scheme will have the correct time stepping in the next step
-    distributed_reaction_vector.block(block_T).compress(VectorOperation::insert);
+    operator_split_reaction_vector.block(block_T).compress(VectorOperation::insert);
 
     // we do not need distributed_vector any more, use it to temporarily store the update
     distributed_vector.block(block_T) = old_solution.block(block_T);
-    distributed_vector.block(block_T) +=  distributed_reaction_vector.block(block_T);
+    distributed_vector.block(block_T) +=  operator_split_reaction_vector.block(block_T);
     old_solution.block(block_T) = distributed_vector.block(block_T);
 
     distributed_vector.block(block_T) = old_old_solution.block(block_T);
-    distributed_vector.block(block_T) +=  distributed_reaction_vector.block(block_T);
+    distributed_vector.block(block_T) +=  operator_split_reaction_vector.block(block_T);
     old_old_solution.block(block_T) = distributed_vector.block(block_T);
 
     current_linearization_point = old_solution;
