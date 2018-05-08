@@ -2894,9 +2894,9 @@ namespace aspect
 
 
       /**
-      * The exact solution for the SolCx benchmark, given the value
-      * of the jump in viscosity $\eta_B$.
-      */
+       * The exact solution for the SolCx benchmark, given the value of the
+       * jump in viscosity $\eta_B$.
+       */
       template<int dim>
       class FunctionSolCx : public Function<dim>
       {
@@ -2941,20 +2941,19 @@ namespace aspect
 
 
     /**
-    * A material model that describes the <i>SolCx</i> benchmark of the
-    * paper cited in the documentation of the DuretzEtAl namespace.
-    *
-    * @note The SolCx benchmark only talks about the flow field, not about
-    * a temperature field. All quantities related to the temperature are
-    * therefore set to zero in the implementation of this class.
-    *
-    * @note The analytic solution of this benchmark is implemented in the
-    * "SolCx error" postprocessor in
-    * aspect::Postprocessor::DuretzEtAl::SolCx class and can be used to
-    * assess the accuracy of the computed solution.
-    *
-    * @ingroup MaterialModels
-    */
+     * A material model that describes the <i>SolCx</i> benchmark of the paper
+     * cited in the documentation of the DuretzEtAl namespace.
+     *
+     * @note The SolCx benchmark only talks about the flow field, not about a
+     * temperature field. All quantities related to the temperature are
+     * therefore set to zero in the implementation of this class.
+     *
+     * @note The analytic solution of this benchmark is implemented in the
+     * "SolCx error" postprocessor in aspect::Postprocessor::DuretzEtAl::SolCx
+     * class and can be used to assess the accuracy of the computed solution.
+     *
+     * @ingroup MaterialModels
+     */
     template <int dim>
     class SolCxMaterial : public MaterialModel::Interface<dim>
     {
@@ -3116,11 +3115,11 @@ namespace aspect
 
 
     /**
-    * A postprocessor that evaluates the accuracy of the solution.
-    *
-    * The implementation of error evaluators that correspond to the
-    * benchmarks defined in the paper Duretz et al. reference above.
-    */
+     * A postprocessor that evaluates the accuracy of the solution.
+     *
+     * The implementation of error evaluators that correspond to the
+     * benchmarks defined in the paper Duretz et al. reference above.
+     */
     template <int dim>
     class SolCxPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {

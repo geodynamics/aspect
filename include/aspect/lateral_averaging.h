@@ -53,9 +53,9 @@ namespace aspect
         need_material_properties() const;
 
         /**
-         * If this functor needs additional material model outputs
-         * create them in here. By default, this does nothing.
-          */
+         * If this functor needs additional material model outputs create them
+         * in here. By default, this does nothing.
+         */
         virtual
         void
         create_additional_material_model_outputs (const unsigned int n_points,

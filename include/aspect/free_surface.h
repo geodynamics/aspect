@@ -144,9 +144,9 @@ namespace aspect
       Simulator<dim> &sim;
 
       /**
-      * Finite element for the free surface implementation, which is
-      * used for tracking mesh deformation.
-      */
+       * Finite element for the free surface implementation, which is used for
+       * tracking mesh deformation.
+       */
       const FESystem<dim> free_surface_fe;
 
       /**

@@ -134,9 +134,9 @@ namespace aspect
         double depth(const Point<dim> &position) const;
 
         /**
-             * Return the height of the given position relative to
-             * the outer radius.
-             */
+         * Return the height of the given position relative to the outer
+         * radius.
+         */
         virtual
         double height_above_reference_surface(const Point<dim> &position) const;
 
@@ -144,64 +144,60 @@ namespace aspect
         Point<dim> representative_point(const double depth) const;
 
         /**
-         * Return the longitude at the western edge of the chunk
-         * Measured in radians
+         * Return the longitude at the western edge of the chunk measured in
+         * radians.
          */
         virtual
         double west_longitude() const;
 
         /**
-         * Return the longitude at the eastern edge of the chunk
-         * Measured in radians
+         * Return the longitude at the eastern edge of the chunk measured in
+         * radians.
          */
         virtual
         double east_longitude() const;
 
         /**
-         * Returns the longitude range of the chunk
-         * Measured in radians
+         * Return the longitude range of the chunk measured in radians.
          */
         virtual
         double longitude_range() const;
 
         /**
-         * Return the latitude at the southern edge of the chunk
-         * Measured in radians from the equator
+         * Return the latitude at the southern edge of the chunk measured in
+         * radians from the equator.
          */
         virtual
         double south_latitude() const;
 
         /**
-         * Return the latitude at the northern edge of the chunk
-         * Measured in radians from the equator
+         * Return the latitude at the northern edge of the chunk measured in
+         * radians from the equator.
          */
         virtual
         double north_latitude() const;
 
         /**
-         * Return the latitude range of the chunk
-         * Measured in radians
+         * Return the latitude range of the chunk Measured in radians
          */
         virtual
         double latitude_range() const;
 
         /**
-         * Return the maximum depth from the surface of the model
-         * Measured in meters
+         * Return the maximum depth from the surface of the model measured in
+         * meters.
          */
         virtual
         double maximal_depth() const;
 
         /**
-         * Return the inner radius of the chunk
-         * Measured in meters
+         * Return the inner radius of the chunk measured in meters.
          */
         virtual
         double inner_radius() const;
 
         /**
-         * Return the outer radius of the chunk
-         * Measured in meters
+         * Return the outer radius of the chunk measured in meters.
          */
         virtual
         double outer_radius() const;
@@ -325,8 +321,8 @@ namespace aspect
 
 #if DEAL_II_VERSION_GTE(9,0,0)
             /**
-            * Return a copy of this manifold.
-            */
+             * Return a copy of this manifold.
+             */
             virtual
             std::unique_ptr<Manifold<dim,dim> >
             clone() const;

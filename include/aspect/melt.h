@@ -123,9 +123,9 @@ namespace aspect
     {
       public:
         /**
-          * Reference value for the Darcy coefficient, which is defined as
-          * permeability divided by fluid viscosity. Units: m^2/Pa/s.
-          */
+         * Reference value for the Darcy coefficient, which is defined as
+         * permeability divided by fluid viscosity. Units: m^2/Pa/s.
+         */
         virtual double reference_darcy_coefficient () const = 0;
 
         /**
@@ -159,10 +159,10 @@ namespace aspect
   namespace Assemblers
   {
     /**
-      * A base class for the definition of assemblers that implement the
-      * linear system terms for the *melt* migration compressible or
-      * incompressible equations.
-      */
+     * A base class for the definition of assemblers that implement the linear
+     * system terms for the *melt* migration compressible or incompressible
+     * equations.
+     */
     template <int dim>
     class MeltInterface : public aspect::Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
@@ -430,18 +430,19 @@ namespace aspect
       void save_constraints(ConstraintMatrix &constraints);
 
       /**
-        * Returns the entry of the private variable is_melt_cell_vector
-        * for the cell given in the input, describing if we have melt
-        * transport in this cell or not.
-        */
+       * Returns the entry of the private variable is_melt_cell_vector for the
+       * cell given in the input, describing if we have melt transport in this
+       * cell or not.
+       */
       bool is_melt_cell(const typename DoFHandler<dim>::active_cell_iterator &cell) const;
 
       /**
-        * Given the Darcy coefficient @p K_D as computed by the material model, limit the
-        * coefficient to a minimum value (computed as the K_D variation threshold given in
-        * the input file times the reference Darcy coefficient) in melt cells and return
-        * this value. If @p is_melt_cell is false, return zero.
-        */
+       * Given the Darcy coefficient @p K_D as computed by the material model,
+       * limit the coefficient to a minimum value (computed as the K_D
+       * variation threshold given in the input file times the reference Darcy
+       * coefficient) in melt cells and return this value. If @p is_melt_cell
+       * is false, return zero.
+       */
       double limited_darcy_coefficient(const double K_D,
                                        const bool is_melt_cell) const;
 

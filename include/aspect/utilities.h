@@ -658,9 +658,9 @@ namespace aspect
         AsciiDataBoundary();
 
         /**
-          * Initialization function. This function is called once at the
-          * beginning of the program. Checks preconditions.
-          */
+         * Initialization function. This function is called once at the
+         * beginning of the program. Checks preconditions.
+         */
         virtual
         void
         initialize (const std::set<types::boundary_id> &boundary_ids,
@@ -1085,23 +1085,27 @@ namespace aspect
                           const GeometryModel::Interface<dim> &geometry_model);
 
         /**
-        * Returns the coordinates in the given coordinate system, which may not be Cartesian.
-        */
+         * Returns the coordinates in the given coordinate system, which may
+         * not be Cartesian.
+         */
         std_cxx11::array<double,dim> &get_coordinates();
 
         /**
-        * The coordinate that represents the 'surface' directions in the chosen coordinate system.
-        **/
+         * The coordinate that represents the 'surface' directions in the
+         * chosen coordinate system.
+         */
         std_cxx11::array<double,dim-1> get_surface_coordinates() const;
 
         /**
-        * The coordinate that represents the 'depth' direction in the chosen coordinate system.
-        **/
+         * The coordinate that represents the 'depth' direction in the chosen
+         * coordinate system.
+         */
         double get_depth_coordinate() const;
 
       private:
         /**
-         * An enum which stores the the coordinate system of this natural point
+         * An enum which stores the the coordinate system of this natural
+         * point
          */
         Utilities::Coordinates::CoordinateSystem coordinate_system;
 

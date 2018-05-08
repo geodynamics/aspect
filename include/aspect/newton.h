@@ -207,9 +207,9 @@ namespace aspect
   namespace Assemblers
   {
     /**
-      * A base class for the definition of assemblers that implement the
-      * linear system terms for the NewtonStokes solver scheme.
-      */
+     * A base class for the definition of assemblers that implement the linear
+     * system terms for the NewtonStokes solver scheme.
+     */
     template <int dim>
     class NewtonInterface : public aspect::Assemblers::Interface<dim>,
       public SimulatorAccess<dim>

@@ -93,7 +93,7 @@ namespace aspect
 
         /**
          * Currently chosen source for the viscosity.
-         **/
+         */
         ViscositySource viscosity_source;
 
         /**

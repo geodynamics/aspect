@@ -54,8 +54,8 @@ namespace aspect
         execute (Vector<float> &error_indicators) const;
 
         /**
-        * Declare the parameters this class takes through input files.
-        */
+         * Declare the parameters this class takes through input files.
+         */
         static
         void
         declare_parameters (ParameterHandler &prm);
