@@ -48,12 +48,12 @@ Number of degrees of freedom: 17,673 (6,387+4,290+561+2,145+2,145+2,145)
    Solving peridotite system ... 3 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6638e-10, 1.51207e-07, 6.34018e-09, 2.4166e-06
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.66379e-10, 1.51207e-07, 6.34018e-09, 2.4166e-06
       Relative nonlinear residual (total system) after nonlinear iteration 3: 2.4166e-06
 
 
    Postprocessing:
-     Compositions min/max/mass: -4.55e-10/0.2001/1.257e+08 // -4.053e-12/0.2001/1.257e+08
+     Compositions min/max/mass: -4.549e-10/0.2001/1.257e+08 // -4.053e-12/0.2001/1.257e+08
      Writing graphical output:  output-melting_rate/solution/solution-00001
 
 *** Timestep 2:  t=200 years
@@ -78,12 +78,12 @@ Number of degrees of freedom: 17,673 (6,387+4,290+561+2,145+2,145+2,145)
    Solving peridotite system ... 3 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.96312e-11, 1.84105e-08, 7.59997e-10, 2.88236e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.96312e-11, 1.84105e-08, 7.59998e-10, 2.88236e-07
       Relative nonlinear residual (total system) after nonlinear iteration 3: 2.88236e-07
 
 
    Postprocessing:
-     Compositions min/max/mass: -7.12e-10/0.2002/1.258e+08 // -5.202e-12/0.2002/1.258e+08
+     Compositions min/max/mass: -7.119e-10/0.2002/1.258e+08 // -5.202e-12/0.2002/1.258e+08
      Writing graphical output:  output-melting_rate/solution/solution-00002
 
 Termination requested by criterion: end time
