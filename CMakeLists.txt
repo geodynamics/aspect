@@ -303,6 +303,12 @@ ENDIF()
 # exceptions. This is done here:
 SET(ASPECT_USE_FP_EXCEPTIONS ON CACHE BOOL "If ON, floating point exception are raised in debug mode.")
 
+# Clang 6.0 throws random floating point exceptions, which we could not
+# track down. Disable the exceptions for now.
+IF("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 6.0.0)
+  SET(ASPECT_USE_FP_EXCEPTIONS OFF CACHE BOOL "" FORCE)
+ENDIF()
+
 IF (ASPECT_USE_FP_EXCEPTIONS)
   INCLUDE(${CMAKE_SOURCE_DIR}/cmake/fpe_check.cmake)
 
