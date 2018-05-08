@@ -1147,7 +1147,7 @@ Equations \eqref{eq:stokes-1}--\eqref{eq:temperature} require us to
 pose initial conditions for the temperature, and this is done by
 selecting one of the existing models for initial conditions in the
 input parameter file, see
-Section~\ref{parameters:Initial_20conditions}. The equations
+Section~\ref{parameters:Initial_20temperature_20model}. The equations
 themselves do not require that initial conditions are specified for
 the velocity and pressure variables (since there are no time
 derivatives on these variables in the model).
@@ -2283,7 +2283,7 @@ that there will be an appreciable difference between the two varieties,
 though removing linear/angular momentum is more physically motivated.
 
 The user can flag the nullspace for removal by setting the \texttt{Remove nullspace} option,
-as described in Section~\ref{parameters:Model_20settings}.
+as described in Section~\ref{parameters:Nullspace_20removal}.
 Figure~\ref{fig:rigid_rotation} shows the result of removing angular momentum from a convection 
 model in a 2D annulus with free-slip velocity boundary conditions. 
 
@@ -3963,7 +3963,7 @@ categorized into the following groups:
 \item Parameters that describe certain global aspects of the equations to be
   solved: This includes, for example, a description if certain terms in the
   model should be omitted or not. See
-  Section~\ref{parameters:Model_20settings} for the list of parameters in this
+  Section~\ref{parameters:Formulation} for the list of parameters in this
   category.
 
 \item Parameters that characterize plugins: Certain behaviors of
@@ -3988,7 +3988,7 @@ categorized into the following groups:
   \item The gravity description:
     Sections~\ref{parameters:Gravity_20model} and following.
   \item Initial conditions for the temperature:
-    Sections~\ref{parameters:Initial_20conditions} and following.
+    Sections~\ref{parameters:Initial_20temperature_20model} and following.
   \item Temperature boundary conditions:
     Sections~\ref{parameters:Boundary_20temperature_20model} and following.
   \item Postprocessors:
@@ -4012,7 +4012,7 @@ prescribes a constant temperature, or a
 plugin that implements a particular formula for these initial conditions in
 C++ in the code of the plugin, or a
 plugin that allows you to describe this formula in a symbolic way in the input file
-(see Section~\ref{parameters:Initial_20conditions}). An example of this latter
+(see Section~\ref{parameters:Initial_20temperature_20model}). An example of this latter
 case is this snippet of code discussed in
 Section~\ref{sec:cookbooks-simple-box-3d}:
 %
@@ -6596,7 +6596,7 @@ In the following, let us pick apart this input file:
   \item The description of what we want to model is complete by specifying
   that the initial temperature is a perturbation with hexagonal symmetry from a
   linear interpolation between inner and outer temperatures (see
-  Section~\ref{parameters:Initial_20conditions}), and what kind of gravity model
+  Section~\ref{parameters:Initial_20composition_20model}), and what kind of gravity model
   we want to choose (one reminiscent of the one inside the Earth mantle, see
   Section~\ref{parameters:Gravity_20model}).
 

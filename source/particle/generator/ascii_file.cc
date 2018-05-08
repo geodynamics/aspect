@@ -142,9 +142,9 @@ namespace aspect
                                          "dimensions and as many lines as particles to be generated. "
                                          "Initial comment lines starting with `#' will be discarded."
                                          "All of the values that define this generator are read "
-                                         "from a section ``Particle generator/Ascii file'' in the "
+                                         "from a section ``Postprocess/Particles/Generator/Ascii file'' in the "
                                          "input file, see "
-                                         "Section~\\ref{parameters:Particle_20generator/Ascii_20file}.")
+                                         "Section~\\ref{parameters:Postprocess/Particles/Generator/Ascii_20file}.")
     }
   }
 }
