@@ -5549,14 +5549,12 @@ The following initial temperature models are available:
 
 `polar box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is such that there are two poles on opposing corners of the box. 
 
-`solidus': This is a temperature initial condition that starts the model close to solidus, it also contains a user defined lithosphere thickness and with perturbations  in both lithosphere thickness and temperature based on spherical harmonic functions. It was used as the initial condition of early Mars after the freezing of the magma ocean, using the solidus from Parmentier et al., Melt-solid segregation, Fractional magma ocean solidification, and implications for long term planetary evolution. Luna and Planetary Science, 2007.
-
 `spherical gaussian perturbation': An initial temperature field in which the temperature is perturbed by a single Gaussian added to an otherwise spherically symmetric state. Additional parameters are read from the parameter file in subsection 'Spherical gaussian perturbation'.
 
 `spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following an $N$-fold pattern in a specified direction from an otherwise spherically symmetric state. The class's name comes from previous versions when the only option was $N=6$.
 
 
-{\it Possible values:} A comma-separated list of any of S40RTS perturbation, SAVANI perturbation, adiabatic, adiabatic boundary, ascii data, function, harmonic perturbation, inclusion shape perturbation, mandelbox, perturbed box, polar box, solidus, spherical gaussian perturbation, spherical hexagonal perturbation
+{\it Possible values:} A comma-separated list of any of S40RTS perturbation, SAVANI perturbation, adiabatic, adiabatic boundary, ascii data, function, harmonic perturbation, inclusion shape perturbation, mandelbox, perturbed box, polar box, spherical gaussian perturbation, spherical hexagonal perturbation
 \item {\it Parameter name:} {\tt List of model operators}
 \phantomsection\label{parameters:Initial temperature model/List of model operators}
 
@@ -5609,8 +5607,6 @@ The following initial temperature models are available:
 
 `polar box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is such that there are two poles on opposing corners of the box. 
 
-`solidus': This is a temperature initial condition that starts the model close to solidus, it also contains a user defined lithosphere thickness and with perturbations  in both lithosphere thickness and temperature based on spherical harmonic functions. It was used as the initial condition of early Mars after the freezing of the magma ocean, using the solidus from Parmentier et al., Melt-solid segregation, Fractional magma ocean solidification, and implications for long term planetary evolution. Luna and Planetary Science, 2007.
-
 `spherical gaussian perturbation': An initial temperature field in which the temperature is perturbed by a single Gaussian added to an otherwise spherically symmetric state. Additional parameters are read from the parameter file in subsection 'Spherical gaussian perturbation'.
 
 `spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following an $N$-fold pattern in a specified direction from an otherwise spherically symmetric state. The class's name comes from previous versions when the only option was $N=6$.
@@ -5618,7 +5614,7 @@ The following initial temperature models are available:
 \textbf{Warning}: This parameter provides an old and deprecated way of specifying initial temperature models and shouldn't be used. Please use 'List of model names' instead.
 
 
-{\it Possible values:} Any one of S40RTS perturbation, SAVANI perturbation, adiabatic, adiabatic boundary, ascii data, function, harmonic perturbation, inclusion shape perturbation, mandelbox, perturbed box, polar box, solidus, spherical gaussian perturbation, spherical hexagonal perturbation, unspecified
+{\it Possible values:} Any one of S40RTS perturbation, SAVANI perturbation, adiabatic, adiabatic boundary, ascii data, function, harmonic perturbation, inclusion shape perturbation, mandelbox, perturbed box, polar box, spherical gaussian perturbation, spherical hexagonal perturbation, unspecified
 \end{itemize}
 
 
@@ -6548,144 +6544,6 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Description:} This parameter specifies how the perturbation in shear wave velocity as prescribed by SAVANI is scaled into a density perturbation. See the general description of this model for more detailed information.
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\end{itemize}
-
-\subsection{Parameters in section \tt Initial temperature model/Solidus}
-\label{parameters:Initial_20temperature_20model/Solidus}
-
-\begin{itemize}
-\item {\it Parameter name:} {\tt Lithosphere thickness}
-\phantomsection\label{parameters:Initial temperature model/Solidus/Lithosphere thickness}
-
-
-\index[prmindex]{Lithosphere thickness}
-\index[prmindexfull]{Initial temperature model!Solidus!Lithosphere thickness}
-{\it Value:} 0
-
-
-{\it Default:} 0
-
-
-{\it Description:} The thickness of lithosphere thickness. Units: m
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Supersolidus}
-\phantomsection\label{parameters:Initial temperature model/Solidus/Supersolidus}
-
-
-\index[prmindex]{Supersolidus}
-\index[prmindexfull]{Initial temperature model!Solidus!Supersolidus}
-{\it Value:} 0e0
-
-
-{\it Default:} 0e0
-
-
-{\it Description:} The difference from solidus, use this number to generate initial conditions that close to solidus instead of exactly at solidus. Use small negative number in this parameter to prevent large melting generation at the beginning.   Units: K 
-
-
-{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
-\end{itemize}
-
-
-
-\subsection{Parameters in section \tt Initial temperature model/Solidus/Data}
-\label{parameters:Initial_20temperature_20model/Solidus/Data}
-
-\begin{itemize}
-\item {\it Parameter name:} {\tt Solidus filename}
-\phantomsection\label{parameters:Initial temperature model/Solidus/Data/Solidus filename}
-
-
-\index[prmindex]{Solidus filename}
-\index[prmindexfull]{Initial temperature model!Solidus!Data/Solidus filename}
-{\it Value:} 
-
-
-{\it Default:} 
-
-
-{\it Description:} The solidus data filename. It is a function of radius or pressure in the following format: 
-Line 1:  Header 
-Line 2:  Unit of temperature (C/K)        Unit of pressure (GPa/kbar) or radius (km/m) 
-Line 3~: Column of solidus temperature    Column of radius/pressure 
-See data/initial-temperature/solidus.Mars as an example.
-
-In order to facilitate placing input files in locations relative to the ASPECT source directory, the file name may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
-
-
-{\it Possible values:} Any string
-\end{itemize}
-
-\subsection{Parameters in section \tt Initial temperature model/Solidus/Perturbation}
-\label{parameters:Initial_20temperature_20model/Solidus/Perturbation}
-
-\begin{itemize}
-\item {\it Parameter name:} {\tt Lateral wave number one}
-\phantomsection\label{parameters:Initial temperature model/Solidus/Perturbation/Lateral wave number one}
-
-
-\index[prmindex]{Lateral wave number one}
-\index[prmindexfull]{Initial temperature model!Solidus!Perturbation/Lateral wave number one}
-{\it Value:} 3
-
-
-{\it Default:} 3
-
-
-{\it Description:} Doubled first lateral wave number of the harmonic perturbation. Equals the spherical harmonic degree in 3D spherical shells. In all other cases one equals half of a sine period over the model domain. This allows for single up-/downswings. Negative numbers reverse the sign of the perturbation but are not allowed for the spherical harmonic case.
-
-
-{\it Possible values:} An integer $n$ such that $-2147483648\leq n \leq 2147483647$
-\item {\it Parameter name:} {\tt Lateral wave number two}
-\phantomsection\label{parameters:Initial temperature model/Solidus/Perturbation/Lateral wave number two}
-
-
-\index[prmindex]{Lateral wave number two}
-\index[prmindexfull]{Initial temperature model!Solidus!Perturbation/Lateral wave number two}
-{\it Value:} 2
-
-
-{\it Default:} 2
-
-
-{\it Description:} Doubled second lateral wave number of the harmonic perturbation. Equals the spherical harmonic order in 3D spherical shells. In all other cases one equals half of a sine period over the model domain. This allows for single up-/downswings. Negative numbers reverse the sign of the perturbation.
-
-
-{\it Possible values:} An integer $n$ such that $-2147483648\leq n \leq 2147483647$
-\item {\it Parameter name:} {\tt Lithosphere thickness amplitude}
-\phantomsection\label{parameters:Initial temperature model/Solidus/Perturbation/Lithosphere thickness amplitude}
-
-
-\index[prmindex]{Lithosphere thickness amplitude}
-\index[prmindexfull]{Initial temperature model!Solidus!Perturbation/Lithosphere thickness amplitude}
-{\it Value:} 0e0
-
-
-{\it Default:} 0e0
-
-
-{\it Description:} The amplitude of the initial lithosphere thickness perturbation in (m)
-
-
-{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Temperature amplitude}
-\phantomsection\label{parameters:Initial temperature model/Solidus/Perturbation/Temperature amplitude}
-
-
-\index[prmindex]{Temperature amplitude}
-\index[prmindexfull]{Initial temperature model!Solidus!Perturbation/Temperature amplitude}
-{\it Value:} 0e0
-
-
-{\it Default:} 0e0
-
-
-{\it Description:} The amplitude of the initial spherical temperature perturbation in (K)
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -12860,6 +12718,10 @@ To use this refinement criterion, you may want to combine it with other refineme
 
 `composition': A mesh refinement criterion that computes refinement indicators from the compositional fields. If there is more than one compositional field, then it simply takes the sum of the indicators computed from each of the compositional field.
 
+The way these indicators are computed is by evaluating the `Kelly error indicator' on each compositional field. This error indicator takes the finite element approximation of the compositional field and uses it to compute an approximation of the second derivatives of the composition for each cell. This approximation is then multiplied by an appropriate power of the cell's diameter to yield an indicator for how large the error is likely going to be on this cell. This construction rests on the observation that for many partial differential equations, the error on each cell is proportional to some power of the cell's diameter times the second derivatives of the solution on that cell.
+
+For complex equations such as those we solve here, this observation may not be strictly true in the mathematical sense, but it often yields meshes that are surprisingly good.
+
 `composition approximate gradient': A mesh refinement criterion that computes refinement indicators from the gradients of compositional fields. If there is more than one compositional field, then it simply takes the sum of the indicators times a user-specified weight for each field.
 
 In contrast to the `composition gradient' refinement criterion, the current criterion does not compute the gradient at quadrature points on each cell, but by a finite difference approximation between the centers of cells. Consequently, it also works if the compositional fields are computed using discontinuous finite elements.
@@ -12894,6 +12756,10 @@ To use this refinement criterion, you may want to combine it with other refineme
 
 `temperature': A mesh refinement criterion that computes refinement indicators from the temperature field.
 
+The way these indicators are computed is by evaluating the `Kelly error indicator' on the temperature field. This error indicator takes the finite element approximation of the temperature field and uses it to compute an approximation of the second derivatives of the temperature for each cell. This approximation is then multiplied by an appropriate power of the cell's diameter to yield an indicator for how large the error is likely going to be on this cell. This construction rests on the observation that for many partial differential equations, the error on each cell is proportional to some power of the cell's diameter times the second derivatives of the solution on that cell.
+
+For complex equations such as those we solve here, this observation may not be strictly true in the mathematical sense, but it often yields meshes that are surprisingly good.
+
 `thermal energy density': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the thermal energy density, $\rho C_p T$. Because this quantity may not be a continuous function ($\rho$ and $C_p$ may be discontinuous functions along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1.5}$ where $h_K$ is the diameter of each cell. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
 
 `topography': A class that implements a mesh refinement criterion, which always flags all cells in the uppermost layer for refinement. This is useful to provide high accuracy for processes at or close to the surface.
@@ -12901,6 +12767,10 @@ To use this refinement criterion, you may want to combine it with other refineme
 To use this refinement criterion, you may want to combine it with other refinement criteria, setting the 'Normalize individual refinement criteria' flag and using the `max' setting for 'Refinement criteria merge operation'.
 
 `velocity': A mesh refinement criterion that computes refinement indicators from the velocity field.
+
+The way these indicators are computed is by evaluating the `Kelly error indicator' on the velocity field. This error indicator takes the finite element approximation of the velocity field and uses it to compute an approximation of the second derivatives of the velocity for each cell. This approximation is then multiplied by an appropriate power of the cell's diameter to yield an indicator for how large the error is likely going to be on this cell. This construction rests on the observation that for many partial differential equations, the error on each cell is proportional to some power of the cell's diameter times the second derivatives of the solution on that cell.
+
+For complex equations such as those we solve here, this observation may not be strictly true in the mathematical sense, but it often yields meshes that are surprisingly good.
 
 `viscosity': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the logarithm of the viscosity, $\log\eta$. (We choose the logarithm of the viscosity because it can vary by orders of magnitude.)Because this quantity may not be a continuous function ($\eta$ may be a discontinuous function along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell and $d$ is the dimension. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
 
@@ -13994,7 +13864,7 @@ The following properties are available:
 
 {\it Description:} Select one of the following models:
 
-`ascii file': Generates a distribution of particles from coordinates specified in an Ascii data file. The file format is a simple text file, with as many columns as spatial dimensions and as many lines as particles to be generated. Initial comment lines starting with `\#' will be discarded.All of the values that define this generator are read from a section ``Particle generator/Ascii file'' in the input file, see Section~\ref{parameters:Particle_20generator/Ascii_20file}.
+`ascii file': Generates a distribution of particles from coordinates specified in an Ascii data file. The file format is a simple text file, with as many columns as spatial dimensions and as many lines as particles to be generated. Initial comment lines starting with `\#' will be discarded.All of the values that define this generator are read from a section ``Postprocess/Particles/Generator/Ascii file'' in the input file, see Section~\ref{parameters:Postprocess/Particles/Generator/Ascii_20file}.
 
 `probability density function': Generate a random distribution of particles over the entire simulation domain. The probability density is prescribed in the form of a user-prescribed function. The format of this function follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}. The return value of the function is always checked to be a non-negative probability density but it can be zero in parts of the domain.
 
@@ -14758,9 +14628,9 @@ Of course, activating this option also greatly increases the amount of data \asp
 
 The following postprocessors are available:
 
-`Vp anomaly': A visualization output object that generates output showing the percentage anomaly in the seismic compressional wave speed $V_p$ as a spatially variable function with one value per cell. This anomaly is either shown as a percentage anomaly relative to the reference profile given by adiabatic conditions (with the compositions given by the current composition, such that the reference could potentially change through time), or as a percentage change relative to the laterally averaged velocity at the depth of the cell. This velocity is calculated by linear interpolation between average values calculated within equally thick depth slices. The number of depth slices in the domain is user-defined. Typically, the best results will be obtained if the number of depth slices is balanced between being large enough to capture step changes in velocities, but small enough to maintain a reasonable number of evaluation points per slice. Bear in mind that lateral averaging subsamples the finite element mesh.
+`Vp anomaly': A visualization output object that generates output showing the percentage anomaly in the seismic compressional wave speed $V_p$ as a spatially variable function with one value per cell. This anomaly is either shown as a percentage anomaly relative to the reference profile given by adiabatic conditions (with the compositions given by the current composition, such that the reference could potentially change through time), or as a percentage change relative to the laterally averaged velocity at the depth of the cell. This velocity is calculated by linear interpolation between average values calculated within equally thick depth slices. The number of depth slices in the domain is user-defined. Typically, the best results will be obtained if the number of depth slices is balanced between being large enough to capture step changes in velocities, but small enough to maintain a reasonable number of evaluation points per slice. Bear in mind that lateral averaging subsamples the finite element mesh. Note that this plugin requires a material model that provides seismic velocities.
 
-`Vs anomaly': A visualization output object that generates output showing the percentage anomaly in the seismic shear wave speed $V_s$ as a spatially variable function with one value per cell. This anomaly is either shown as a percentage anomaly relative to the reference profile given by adiabatic conditions (with the compositions given by the current composition, such that the reference could potentially change through time), or as a percentage change relative to the laterally averaged velocity at the depth of the cell. This velocity is calculated by linear interpolation between average values calculated within equally thick depth slices. The number of depth slices in the domain is user-defined. Typically, the best results will be obtained if the number of depth slices is balanced between being large enough to capture step changes in velocities, but small enough to maintain a reasonable number of evaluation points per slice. Bear in mind that lateral averaging subsamples the finite element mesh.
+`Vs anomaly': A visualization output object that generates output showing the percentage anomaly in the seismic shear wave speed $V_s$ as a spatially variable function with one value per cell. This anomaly is either shown as a percentage anomaly relative to the reference profile given by adiabatic conditions (with the compositions given by the current composition, such that the reference could potentially change through time), or as a percentage change relative to the laterally averaged velocity at the depth of the cell. This velocity is calculated by linear interpolation between average values calculated within equally thick depth slices. The number of depth slices in the domain is user-defined. Typically, the best results will be obtained if the number of depth slices is balanced between being large enough to capture step changes in velocities, but small enough to maintain a reasonable number of evaluation points per slice. Bear in mind that lateral averaging subsamples the finite element mesh. Note that this plugin requires a material model that provides seismic velocities.
 
 `adiabat': A visualization output object that generates adiabatic temperature, pressure, density, and density derivative as produced by AdiabaticConditions.
 
