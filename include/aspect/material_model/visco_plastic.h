@@ -148,7 +148,7 @@ namespace aspect
 
         double get_min_strain_rate() const;
 
-      protected:
+      private:
 
         double reference_T;
 
