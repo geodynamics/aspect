@@ -1,6 +1,0 @@
-Fixed: The mass reaction term on the right-hand side of the 
-Stokes system in models with melt transport is now computed 
-correctly (instead of being zero) in models with operator 
-splitting. 
-<br>
-(Juliane Dannberg, 2018/05/08)

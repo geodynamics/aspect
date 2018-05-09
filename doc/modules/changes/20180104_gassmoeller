@@ -1,5 +1,0 @@
-Changed: The boundary composition plugins are now controlled by
-a manager class that allows assigning several plugins at the same
-time. This behavior is identical to the boundary temperature plugins.
-<br>
-(Rene Gassmoeller, 2018/01/04)

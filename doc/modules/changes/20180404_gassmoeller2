@@ -1,7 +1,0 @@
-Removed: The 'radial earth-like' gravity profile was not really earth-like, and
-was in fact worse than the default values for most of the other available
-gravity plugins. This plugin was removed and all occurrences replaced by the
-'ascii data' plugin, which by default uses a data file with values from the
-PREM reference model.
-<br>
-(Rene Gassmoeller, 2018/04/04)

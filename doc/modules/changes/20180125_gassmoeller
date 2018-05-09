@@ -1,9 +1,0 @@
-New: The 'initial profile' adiabatic conditions plugin was
-renamed to 'compute profile' as it can
-now use a function to change the adiabatic surface pressure
-and temperature over time. If this option is used the 
-adiabatic reference profile will be recomputed for every
-timestep based on the new function values. If the new
-option is not set the behavior is unchanged.
-<br>
-(Rene Gassmoeller, 2018/01/25)

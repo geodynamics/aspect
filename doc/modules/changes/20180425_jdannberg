@@ -1,8 +1,0 @@
-Fixed: The melt simple model now correctly always uses the Thermal 
-bulk viscosity exponent parameter to compute the temperature 
-dependence of the compaction/bulk viscosity (instead of the Thermal 
-viscosity exponent that describes the temperature dependence of 
-the shear viscosity, which was used before in certain cases and 
-was not the correct parameter for the computation). 
-<br>
-(Juliane Dannberg, 2018/04/25)

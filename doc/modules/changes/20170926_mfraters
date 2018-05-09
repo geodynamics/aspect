@@ -1,4 +1,0 @@
-New: The core of the Newton solver has been added to ASPECT and is functional.
-This includes several tests to test that the Newton solver is functioning properly.
-<br>
-(Menno Fraters 2017/05/16)

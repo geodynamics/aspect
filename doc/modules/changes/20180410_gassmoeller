@@ -1,8 +1,0 @@
-Removed: The 'Model settings' subsection in the parameter file has been
-removed. It contained a selection of parameters that conceptually belonged to
-other subsections and were never moved to the correct places. The update script
-in doc/update_prm_files_to_2.0.0.sed was updated to correctly identify and move
-these parameters to their new subsections, and all files in the repository have
-been updated using this script.
-<br>
-(Rene Gassmoeller, 2018/04/10)

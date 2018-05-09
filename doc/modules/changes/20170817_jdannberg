@@ -1,4 +1,0 @@
-New: There is now a visualization postprocessor that outputs
-the volumetric strain rate (the divergence of the velocity).
-<br>
-(Juliane Dannberg, 2017/08/17)

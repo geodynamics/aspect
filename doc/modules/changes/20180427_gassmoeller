@@ -1,5 +1,0 @@
-Removed: The 'solidus' initial temperature plugin was made somewhat redundant
-by the 'adiabatic conditions/ascii_data' plugin, and since the inclusion of
-melting the name 'solidus' is misleading. It was moved into the tests directory
-until it is made more general, or used in a cookbook.
-(Rene Gassmoeller, 2018/04/27)

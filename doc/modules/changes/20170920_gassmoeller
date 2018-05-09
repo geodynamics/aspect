@@ -1,6 +1,0 @@
-New: Much of the non ASPECT specific particle functionality has been moved into
-the new ParticleHandler class, that will eventually be transferred into
-deal.II. Some particle related interfaces and plugins need to be adjusted, in
-particular the Particle::Integrator plugins.
-<br>
-(Rene Gassmoeller, 2017/09/20)

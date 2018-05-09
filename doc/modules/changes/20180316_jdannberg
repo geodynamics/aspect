@@ -1,9 +1,0 @@
-Overhaul of the melt simple material model. 
-Fixed: The freezing of melt in the melt simple material model is 
-now more consistent: The freezing rate parameter determines the 
-freezing of all melt, and melt freezes if both the porosity and 
-the depletion are larger than the equilibrium melt fraction. 
-Changed: The melt simple material model can now only be used
-with operator splitting.
-<br>
-(Juliane Dannberg, 2018/03/16)

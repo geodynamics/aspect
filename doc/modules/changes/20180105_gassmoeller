@@ -1,8 +1,0 @@
-Changed: The boundary velocity plugins are now controlled by
-a manager class that allows assigning several plugins at the same boundary. 
-This behavior is identical to the boundary temperature and boundary
-composition plugins with the additional possibiltiy of assigning different
-plugins to different boundaries, and only prescribing certain
-components of the velocity.
-<br>
-(Rene Gassmoeller, 2018/01/05)

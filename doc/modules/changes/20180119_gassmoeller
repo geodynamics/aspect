@@ -1,5 +1,0 @@
-New: There is now a gravity profile that follows the values of the Preliminary
-Reference Earth Model (PREM), which is also the new default value for the
-'ascii data' gravity model.
-<br>
-(Rene Gassmoeller, 2018/01/19)

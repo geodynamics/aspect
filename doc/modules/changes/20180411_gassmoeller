@@ -1,6 +1,0 @@
-Removed: The deprecated parameters 'Heating model/Model name', 'Model
-settings/Include shear heating', 'Model settings/Include adiabatic heating',
-and 'Model settings/Include latent heat' have been removed. Use 'Heating
-model/List of model names' instead.
-<br>
-(Rene Gassmoeller, 2018/04/11)

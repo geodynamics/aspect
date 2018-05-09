@@ -1,5 +1,0 @@
-New: There is now a new mesh refinement criterion that adds the
-option to refine cells based on the compaction length, a
-typical length scale of features in models with melt migration. 
-<br>
-(Juliane Dannberg, 2018/02/12)

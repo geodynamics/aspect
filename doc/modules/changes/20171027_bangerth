@@ -1,8 +1,0 @@
-Fixed: A forgotten factor of 2 in assembling the preconditioner for
-the Stokes equation, and a forgotten term for compressible models, 
-led to a suboptimal performance of the solver. The
-answers were always correct, but it took more iterations than
-necessary. This is now fixed, and results in significantly fewer
-GMRES iterations when solving the Stokes equations.
-<br>
-(Menno Fraters, Wolfgang Bangerth, Rene Gassmoeller, Timo Heister, 2017/10/27)

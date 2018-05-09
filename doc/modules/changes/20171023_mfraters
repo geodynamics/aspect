@@ -1,3 +1,0 @@
-Changed: The 'depth' function of geometry models now uses any existing initial topography instead of the undeformed geometry as reference level to compute the depth.
-<br>
-(Menno Fraters 2017/05/16)

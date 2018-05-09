@@ -1,6 +1,0 @@
-New: We now also write a machine readable .json file that contains all
-parameters of each model additionally to the .prm and .tex files. This
-allows automated evaluation of model output (e.g. plotting statistics
-over input parameters).
-<br>
-(Rene Gassmoeller, 2018/03/11)
