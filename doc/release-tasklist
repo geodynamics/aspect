@@ -15,27 +15,29 @@
     - format is X.Y.Z for a release, X.Y.Z-pre for the dev version or X.Y.Z-rcW for release candidates
     - backwards incompatible changes require incrementing X, adding features incrementing Y
   . setup:
-      export OLDVER=1.4.0;export VER=1.5.0;export VERSHORT=1.5;export NEXTVER=2.0.0-pre
+      export OLDVER=1.5.0;export VER=2.0.0;export VERSHORT=2.0;export NEXTVER=2.1.0-pre
       export DEALSRCDIR=/ssd/deal-git/
   . fix doxygen errors:
       find include -name "*h" -print | xargs -n 1 $DEALSRCDIR/contrib/utilities/checkdoxygen.py
     and commit.
-  . update the release for people to cite in the manual by updating
-      the release number and the release year
+  . manual, check for missing labels:
+    . cd doc
+    . make manual.pdf
+    . grep undefined manual/manual.log    # try to remove some
+    . make aspect.tag
   . fix formatting, copyright years:
-      old:
       find . -name "*.h" -print | while read file;do $DEALSRCDIR/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
-      new: use the deal.II copyright script!
       ./doc/indent
-      find . -name "*.h" -o -name "*.cc" -print | while read file;do sed -i '0,/^.*Copyright.*/{s/^.*Copyright.*/  Copyright (C) 2011 - 2016 by the authors of the ASPECT code./}' $file; done
-      git status # check!
-      git commit -a -m "doxygen formatting, comment wrapping" # or rather create a pull-request
+      ./doc/update_copyright.sh
+      git commit -a -m "doxygen formatting, comment wrapping"
+      # create a pull-request
   . create branch for master PR to update changes.h in doc/modules:
       git checkout -b post-release-$VER
-      cd doc/modules; ./increment_version.sh $OLDVER $VER;cd ../..
+      cd doc/modules; rm -f changes/*~; ./increment_version.sh $OLDVER $VER;cd ../..
       cd doc;./bump_version.sh $NEXTVER; cd ..
       git commit -m "release task: update version and changes.h"
-  . create a branch, bump version:
+      # create a PR
+  . create a branch, bump version: # TODO: this should be 2.0.0-pre not 2.0.0
       git checkout post-release-$VER && \
       git checkout -b aspect-$VERSHORT && \
       cd doc && ./bump_version.sh $VER && cd .. && \
@@ -45,27 +47,30 @@
       cd doc && ./update_parameters.sh && make manual.pdf && cp manual.pdf manual-$VER.pdf && cd .. && \
       git add doc/manual/parameters.tex && \
       git commit -m "release task: update manual"
-  . create a RC tar file:
+  . Tag an RC:
       export TAG=$VER-rc1
+      cd doc && ./bump_version.sh $TAG && cd .. && \
+      git commit -m "version $TAG" && \
       git tag -s v$TAG -m "version $TAG"
+  . Tag the release:
+      export TAG=$VER
+      cd doc && ./bump_version.sh $TAG && cd .. && \
+      git tag -s v$TAG -m "version $TAG"
+  . create a tar file:
+      cd doc && make manual.pdf && cp manual.pdf manual-$TAG.pdf && cd ..
       export PREFIX=aspect-$TAG && rm -rf $PREFIX.tar.gz && \
       git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz && \
       rm -rf $PREFIX && tar xf $PREFIX.tar.gz && \
       rm $PREFIX.tar.gz &&  cp doc/manual.pdf $PREFIX/doc && \
       tar czf $PREFIX.tar.gz $PREFIX && rm -rf $PREFIX
-  . Tag the release:
-      git tag -s v$VER -m "version $VER"
-  . create the tar file:
-      export PREFIX=aspect-$VER && rm -rf $PREFIX.tar.gz && \
-      git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz && \
-      rm -rf $PREFIX && tar xf $PREFIX.tar.gz && \
-      rm $PREFIX.tar.gz &&  cp doc/manual.pdf $PREFIX/doc && \
-      tar czf $PREFIX.tar.gz $PREFIX && rm -rf $PREFIX
   . make public (branch and tag):
-      git push cig aspect-$VER
-      git push cig v$VER
+      git push cig aspect-$VERSHORT
+      git push cig v$TAG
   . create a release on github, upload tarball, upload manual-$VER.pdf
   . link it on download.html, update version info etc.
+  . create zenodo release for source code
+  . create figshare release for manual
+  . update aspect.geodynamics.org/cite.html
   . update http://geodynamics.org/cig/software/aspect/:
        update current release number
        create entry for the new release
@@ -124,7 +129,7 @@ This release includes the following changes:
   provided with the release.
 
 A complete list of changes can be found at
-  https://aspect.dealii.org/doc/doxygen/changes_between_1_85_80_and_2_80_80.html
+  https://aspect.geodynamics.org/doc/doxygen/changes_between_1_85_80_and_2_80_80.html
 
 Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister,
 Jacqueline Austermann, Menno Fraters, Anne Glerum, John Naliboff,
