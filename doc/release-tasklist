@@ -79,6 +79,58 @@
        dealii@googlegroups.com
 
 
+Announcement for 2.0.0 (May 1st, 2018)
+-----------------------------------------
+We are pleased to announce the release of ASPECT 2.0.0. ASPECT is the Advanced
+Solver for Problems in Earth's ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid, and a modular software design to
+provide a fast, flexible, and extensible mantle convection solver. ASPECT is
+available from
+
+                   https://aspect.geodynamics.org/
+
+and the release is available from
+
+        https://github.com/geodynamics/aspect/releases/tag/v2.0.0
+
+This release includes the following changes:
+- New: Newton solver and defect correction Picard iterations for nonlinear
+  problems (for the Stokes system)
+- Melt solver: Overhaul leading to improved performance and stability, better
+  integration with other plugins
+- New: Material model with grain size evolution
+- New: Boundary temperature plugin with evolving core-mantle boundary
+  temperature based on the heat flux through the core-mantle boundary
+- New: ASPECT can now compute the geoid in 3D spherical shell geometry
+- New: Operator splitting for reactions between compositional fields
+- New: Added a PREM gravity profile
+- Improved: Significantly reduced memory consumption in models that use many
+  compositional fields
+- Improved: A large number of performance improvements for preconditioners,
+  assembly, seismic tomography initial conditions, and lateral averaging
+- Improved: More flexibility for boundary and initial conditions, different
+  plugins can be combined
+- Improved: The dynamic topography postprocessor now uses the consistent
+  boundary flux method for computing surface stresses, which is significantly
+  more accurate
+- New: Additional RHS force terms in the Stokes system can be added
+- New particle interpolators: nearest neighbor, bilinear least squares,
+  harmonic average
+- New: Graphical user interface for the creation and modification of input
+  parameter files
+- Many other fixes and small improvements.
+- Rework: Updated parameter and section names to make them more consistent and
+  easier to understand. A script for updating parameter and source files is
+  provided with the release.
+
+A complete list of changes can be found at
+  https://aspect.dealii.org/doc/doxygen/changes_between_1_85_80_and_2_80_80.html
+
+Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister,
+Jacqueline Austermann, Menno Fraters, Anne Glerum, John Naliboff,
+and many other contributors.
+
+
 Announcement for 1.5.0 (February 28, 2017)
 -----------------------------------------
 We are pleased to announce the release of ASPECT 1.5.0. ASPECT is the Advanced
