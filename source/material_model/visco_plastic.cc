@@ -537,7 +537,7 @@ namespace aspect
           // which represents the second invariant of the strain tensor
           double edot_ii = 0.;
           double e_ii = 0.;
-          if  (use_strain_weakening == true && use_finite_strain_tensor == false && this->get_timestep_number() > 0)
+          if  (in.strain_rate.size() > 0 && use_strain_weakening == true && use_finite_strain_tensor == false && this->get_timestep_number() > 0)
             {
               edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(strain_rate)))),min_strain_rate);
               e_ii = edot_ii*this->get_timestep();
