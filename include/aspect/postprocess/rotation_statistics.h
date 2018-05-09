@@ -64,7 +64,7 @@ namespace aspect
       private:
         /**
          * Whether to use a constant density of one for the computation of the
-         * angular momentum, and moment of inertia. This is an approximation
+         * angular momentum and moment of inertia. This is an approximation
          * that assumes that the 'volumetric' rotation is equal to the 'mass'
          * rotation. If this parameter is true this postprocessor computes
          * 'net rotation' instead of 'angular momentum'.
@@ -75,7 +75,7 @@ namespace aspect
          * Whether to write the full moment of inertia tensor into the
          * statistics output instead of its norm for the current rotation
          * axis. This is a second-order symmetric tensor with
-         * 6 components in 3D. (in 2D this option has no effect, because
+         * 6 components in 3D. In 2D this option has no effect, because
          * the rotation axis is fixed and thus it is always a scalar.
          */
         bool output_full_tensor;
