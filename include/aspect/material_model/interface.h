@@ -781,17 +781,18 @@ namespace aspect
 
 
     /**
-     * For multicomponent material models: From a vector of compositional
-     * fields of length N, we return a N+1 length vector, which
-     * additionally includes the fraction of ``background material''.
-     * The returned vector will sum to one, and is interpreted as volume
-     * fractions. If the sum of the compositional_fields is greater than one,
-     * we assume that there is no background mantle (i.e., that field value is
-     * zero). Otherwise, the difference between the sum of the compositional
+     * For multicomponent material models: Given a vector of of compositional
+     * fields of length N, this function returns a vector of volume fractions
+     * of length N+1, corresponding to the volume fraction of a ``background
+     * material'' as the first entry, and volume fractions for each of the input
+     * fields as the following entries. The returned vector will sum to one.
+     * If the sum of the compositional_fields is greater than
+     * one, we assume that there is no background mantle (i.e., that field value
+     * is zero). Otherwise, the difference between the sum of the compositional
      * fields and 1.0 is assumed to be the amount of background mantle.
      * Optionally, one can input a component mask that determines, which of the
      * compositional fields to use during the computation (e.g. because
-     * some fields do not contain any volumetric quantity like strain,
+     * some fields do contain non-volumetric quantities like strain,
      * porosity, or trace elements). By default, all fields are included.
      */
     std::vector<double>

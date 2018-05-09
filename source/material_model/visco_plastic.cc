@@ -75,27 +75,11 @@ namespace aspect
     template <int dim>
     double
     ViscoPlastic<dim>::
-    average_value ( const std::vector<double> &composition,
+    average_value ( const std::vector<double> &volume_fractions,
                     const std::vector<double> &parameter_values,
                     const enum averaging_scheme &average_type) const
     {
       double averaged_parameter = 0.0;
-
-      // Store which components to exclude during volume fraction computation.
-      ComponentMask composition_mask(this->n_compositional_fields(),true);
-      if (use_strain_weakening == true)
-        {
-          if (use_finite_strain_tensor == false)
-            {
-              composition_mask.set(0,false);
-            }
-          else
-            {
-              for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
-                composition_mask.set(i,false);
-            }
-        }
-      const std::vector<double> volume_fractions = compute_volume_fractions(composition);
 
       switch (average_type)
         {
@@ -401,7 +385,7 @@ namespace aspect
               // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
               // creep (where n_diff=1) viscosities are stress and strain-rate independent, so the calculation
               // of compositional field viscosities is consistent with any averaging scheme.
-              out.viscosities[i] = average_value(composition, composition_viscosities, viscosity_averaging);
+              out.viscosities[i] = average_value(volume_fractions, composition_viscosities, viscosity_averaging);
 
               // compute derivatives if nessesary
               if (derivatives != NULL)

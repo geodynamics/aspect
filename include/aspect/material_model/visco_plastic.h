@@ -202,7 +202,7 @@ namespace aspect
           drucker_prager
         } yield_mechanism;
 
-        double average_value (const std::vector<double> &composition,
+        double average_value (const std::vector<double> &volume_fractions,
                               const std::vector<double> &parameter_values,
                               const averaging_scheme &average_type) const;
 
