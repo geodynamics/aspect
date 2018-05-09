@@ -1,7 +1,7 @@
 # Global parameters
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 0
+set End time                               = 1
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Max nonlinear iterations               = 1
