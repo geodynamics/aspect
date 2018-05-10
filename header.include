@@ -42,7 +42,8 @@
                 <li><a href="../doc/doxygen/index.html">Documentation</a></li>
                 <li><a href="../doc/doxygen/changes_current.html">Changes after v2.0.0</a></li>
 
-		<li><a href="../doc/doxygen/changes_between_1_85_80_and_2_80_80.html">Changes v1.5&#10142;2.0</a></li>
+                <li><a href="../doc/doxygen/changes_between_1_85_80_and_2_80_80.html">Changes v1.5&#10142;2.0</a></li>
+
                 <li><a href="../doc/doxygen/changes_between_1_84_80_and_1_85_80.html">Changes v1.4&#10142;1.5</a></li>
 
                 <li><a href="../doc/doxygen/changes_between_1_83_and_1_84_80.html">Changes v1.3&#10142;1.4</a></li>
