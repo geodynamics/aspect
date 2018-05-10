@@ -132,11 +132,11 @@ namespace aspect
           prm.declare_entry ("K0", "4.111e11",
                              Patterns::Double (0),
                              "Core compressibility at zero pressure. "
-                             "Referring to Nimmo et al. (2004) for more details.");
+                             "See Nimmo et al. (2004) for more details.");
           prm.declare_entry ("Rho0", "7.019e3",
                              Patterns::Double (0),
                              "Core density at zero pressure. Units: $kg/m^3$. "
-                             "Referring to Nimmo et al. (2004) for more details.");
+                             "See Nimmo et al. (2004) for more details.");
           prm.declare_entry ("Alpha", "1.35e-5",
                              Patterns::Double (0),
                              "Core thermal expansivity. Units: $1/K$.");
@@ -149,7 +149,7 @@ namespace aspect
           prm.declare_entry ("Beta composition", "1.1",
                              Patterns::Double (0),
                              "Compositional expansion coefficient $Beta_c$. "
-                             "Referring to Nimmo et al. (2004) for more details.");
+                             "See Nimmo et al. (2004) for more details.");
           prm.declare_entry ("Delta","0.5",
                              Patterns::Double (0,1),
                              "Partition coefficient of the light element.");
