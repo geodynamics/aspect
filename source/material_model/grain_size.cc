@@ -1650,11 +1650,11 @@ namespace aspect
           prm.declare_entry ("Minimum viscosity", "1e18",
                              Patterns::Double (0),
                              "The minimum viscosity that is allowed in the whole model domain. "
-                             "Units: Pa s.");
+                             "Units: Pa \\, s.");
           prm.declare_entry ("Maximum viscosity", "1e26",
                              Patterns::Double (0),
                              "The maximum viscosity that is allowed in the whole model domain. "
-                             "Units: Pa s.");
+                             "Units: Pa \\, s.");
           prm.declare_entry ("Minimum specific heat", "500",
                              Patterns::Double (0),
                              "The minimum specific heat that is allowed in the whole model domain. "

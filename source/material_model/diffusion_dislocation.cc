@@ -362,9 +362,9 @@ namespace aspect
           prm.declare_entry ("Minimum strain rate", "1.4e-20", Patterns::Double(0),
                              "Stabilizes strain dependent viscosity. Units: $1 / s$");
           prm.declare_entry ("Minimum viscosity", "1e17", Patterns::Double(0),
-                             "Lower cutoff for effective viscosity. Units: $Pa s$");
+                             "Lower cutoff for effective viscosity. Units: $Pa \\, s$");
           prm.declare_entry ("Maximum viscosity", "1e28", Patterns::Double(0),
-                             "Upper cutoff for effective viscosity. Units: $Pa s$");
+                             "Upper cutoff for effective viscosity. Units: $Pa \\, s$");
           prm.declare_entry ("Effective viscosity coefficient", "1.0", Patterns::Double(0),
                              "Scaling coefficient for effective viscosity.");
           prm.declare_entry ("Reference viscosity", "1e22", Patterns::Double(0),
@@ -387,7 +387,7 @@ namespace aspect
                              "magnitude of the viscosities that appear, such as an average "
                              "value or the value one would use to compute a Rayleigh number."
                              "\n\n"
-                             "Units: $Pa s$");
+                             "Units: $Pa \\, s$");
 
           // Viscosity iteration parameters
           prm.declare_entry ("Strain rate residual tolerance", "1e-22", Patterns::Double(0),

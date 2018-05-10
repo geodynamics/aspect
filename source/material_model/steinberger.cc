@@ -616,7 +616,7 @@ namespace aspect
                              "magnitude of the viscosities that appear, such as an average "
                              "value or the value one would use to compute a Rayleigh number."
                              "\n\n"
-                             "Units: $Pa s$");
+                             "Units: $Pa \\, s$");
           prm.declare_entry ("Minimum viscosity", "1e19",
                              Patterns::Double(0),
                              "The minimum viscosity that is allowed in the viscosity "

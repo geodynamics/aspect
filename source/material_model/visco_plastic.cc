@@ -663,9 +663,9 @@ namespace aspect
           prm.declare_entry ("Reference strain rate","1.0e-15",Patterns::Double(0),
                              "Reference strain rate for first time step. Units: $1 / s$");
           prm.declare_entry ("Minimum viscosity", "1e17", Patterns::Double(0),
-                             "Lower cutoff for effective viscosity. Units: $Pa s$");
+                             "Lower cutoff for effective viscosity. Units: $Pa \\, s$");
           prm.declare_entry ("Maximum viscosity", "1e28", Patterns::Double(0),
-                             "Upper cutoff for effective viscosity. Units: $Pa s$");
+                             "Upper cutoff for effective viscosity. Units: $Pa \\, s$");
           prm.declare_entry ("Reference viscosity", "1e22", Patterns::Double(0),
                              "Reference viscosity for nondimensionalization. "
                              "To understand how pressure scaling works, take a look at "
@@ -686,7 +686,7 @@ namespace aspect
                              "magnitude of the viscosities that appear, such as an average "
                              "value or the value one would use to compute a Rayleigh number."
                              "\n\n"
-                             "Units: $Pa s$");
+                             "Units: $Pa \\, s$");
 
           // Equation of state parameters
           prm.declare_entry ("Thermal diffusivities", "0.8e-6",
