@@ -8,12 +8,16 @@ pipeline {
     }
   }
 
+  options {
+    timeout(time: 1, unit: 'HOURS') 
+  }
+
   parameters {
     booleanParam(defaultValue: false, description: 'Is the pull request approved for testing?', name: 'TRUST_BUILD')
   }
 
   stages {
-    stage ("Check execution") {
+    stage ("Check permissions") {
       when {
 	allOf {
             environment name: 'TRUST_BUILD', value: 'false' 
@@ -44,9 +48,9 @@ pipeline {
     }
 
     stage('Build') {
+      options {timeout(time: 15, unit: 'MINUTES')}
       steps {
         sh '''
-          env
           mkdir -p /home/dealii/build-gcc-fast
           cd /home/dealii/build-gcc-fast
           cmake -G "Ninja" gcc -D ASPECT_TEST_GENERATOR=Ninja -D ASPECT_USE_PETSC=OFF -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_PRECOMPILE_HEADERS=ON $WORKSPACE/
@@ -56,20 +60,23 @@ pipeline {
     }
 
     stage('Run tests') {
+      options {timeout(time: 45, unit: 'MINUTES')}
       steps {
         sh '''
+          rm -f /home/dealii/build-gcc-fast/FAILED
           cd /home/dealii/build-gcc-fast/tests
-          echo "prebuilding tests..."
-          ninja -k 0 tests >/dev/null 2>&1
+          echo "Prebuilding tests..."
+          ninja -k 0 tests >/dev/null || { touch /home/dealii/build-gcc-fast/FAILED; }
           cd ..
-          echo "+ ctest --output-on-failure -j $NPROC"
-          ctest --output-on-failure -j $NPROC || { echo "test FAILED"; }
+          echo "Checking for test failures..."
+          ctest --output-on-failure -j4 || { echo "At least one test FAILED"; }
 
-          echo "+ ninja generate_reference_output"
+          echo "Generating reference output..."
           ninja generate_reference_output
-          echo "ok"
         '''
-        archiveArtifacts artifacts: '/home/dealii/build-gcc-fast/changes.diff', fingerprint: true
+        sh 'git diff tests > changes-test-results.diff'
+        archiveArtifacts artifacts: 'changes-test-results.diff', fingerprint: true
+        sh 'if [ -f /home/dealii/build-gcc-fast/FAILED ]; then exit 1; fi'
         sh 'git diff --exit-code --name-only'
       }
     }
