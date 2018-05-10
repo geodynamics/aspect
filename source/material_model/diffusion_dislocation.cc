@@ -394,15 +394,15 @@ namespace aspect
                              "List of viscosity prefactors, $A$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. "
-                             "Units: $Pa^{-1} m^{m_\\text{diffusion}} s^{-1}$");
+                             "Units: $Pa^{-1} m^{m_{\\text{diffusion}}} s^{-1}$");
           prm.declare_entry ("Stress exponents for diffusion creep", "1",
                              Patterns::List(Patterns::Double(0)),
-                             "List of stress exponents, $n_\\text{diffusion}$, for background mantle and compositional fields, "
+                             "List of stress exponents, $n_{\\text{diffusion}}$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value.  Units: None");
           prm.declare_entry ("Grain size exponents for diffusion creep", "3",
                              Patterns::List(Patterns::Double(0)),
-                             "List of grain size exponents, $m_\\text{diffusion}$, for background mantle and compositional fields, "
+                             "List of grain size exponents, $m_{\\text{diffusion}}$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value.  Units: None");
           prm.declare_entry ("Activation energies for diffusion creep", "375e3",
@@ -422,10 +422,10 @@ namespace aspect
                              "List of viscosity prefactors, $A$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. "
-                             "Units: $Pa^{-n_\\text{dislocation}} s^{-1}$");
+                             "Units: $Pa^{-n_{\\text{dislocation}}} s^{-1}$");
           prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
                              Patterns::List(Patterns::Double(0)),
-                             "List of stress exponents, $n_\\text{dislocation}$, for background mantle and compositional fields, "
+                             "List of stress exponents, $n_{\\text{dislocation}}$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value.  Units: None");
           prm.declare_entry ("Activation energies for dislocation creep", "530e3",
@@ -557,10 +557,10 @@ namespace aspect
                                    "activation energies, reference densities, thermal expansivities, "
                                    "and stress exponents. The effective viscosity is defined as "
                                    "\n\n"
-                                   "\\[\\eta_\\text{eff} = \\left(\\frac{1}{\\eta_\\text{eff}^\\text{diff}}+ "
-                                   "\\frac{1}{\\eta_\\text{eff}^\\text{dis}}\\right)^{-1}\\] "
+                                   "\\[\\eta_{\\text{eff}} = \\left(\\frac{1}{\\eta_{\\text{eff}}^\\text{diff}}+ "
+                                   "\\frac{1}{\\eta_{\\text{eff}}^\\text{dis}}\\right)^{-1}\\] "
                                    "where "
-                                   "\\[\\eta_\\text{i} = 0.5 A^{-\\frac{1}{n_i}} d^\\frac{m_i}{n_i} "
+                                   "\\[\\eta_{\\text{i}} = 0.5 A^{-\\frac{1}{n_i}} d^\\frac{m_i}{n_i} "
                                    "\\dot{\\varepsilon_i}^{\\frac{1-n_i}{n_i}} "
                                    "\\exp\\left(\\frac{E_i^* + PV_i^*}{n_iRT}\\right)\\] "
                                    "\n\n"

@@ -505,9 +505,9 @@ namespace aspect
                                    "material parameters required for the modelling of melt transport, "
                                    "including a source term for the porosity according to a simplified "
                                    "linear melting model similar to \\cite{schmeling2006}:\n"
-                                   "$\\phi_\\text{equilibrium} = \\frac{T-T_\\text{sol}}{T_\\text{liq}-T_\\text{sol}}$\n"
+                                   "$\\phi_{\\text{equilibrium}} = \\frac{T-T_{\\text{sol}}}{T_{\\text{liq}}-T_{\\text{sol}}}$\n"
                                    "with "
-                                   "$T_\\text{sol} = T_\\text{sol,0} + \\Delta T_p \\, p + \\Delta T_c \\, C$ \n"
-                                   "$T_\\text{liq} = T_\\text{sol}  + \\Delta T_\\text{sol-liq}$.")
+                                   "$T_{\\text{sol}} = T_{\\text{sol,0}} + \\Delta T_p \\, p + \\Delta T_c \\, C$ \n"
+                                   "$T_{\\text{liq}} = T_{\\text{sol}}  + \\Delta T_{\\text{sol-liq}}$.")
   }
 }

@@ -798,7 +798,7 @@ namespace aspect
                                    "$\\eta(\\phi,T) = \\eta_0 e^{\\alpha(\\phi-\\phi_0)} e^{-\\beta(T-T_0)/T_0}$, "
                                    "$\\xi(\\phi,T) = \\xi_0 \\frac{\\phi_0}{\\phi} e^{-\\beta(T-T_0)/T_0}$, "
                                    "$k=k_0 \\phi^n (1-\\phi)^m$, "
-                                   "$\\rho=\\rho_0 (1 - \\alpha (T - T_\\text{adi})) e^{\\kappa p}$."
+                                   "$\\rho=\\rho_0 (1 - \\alpha (T - T_{\\text{adi}})) e^{\\kappa p}$."
                                    "\n\n"
                                    "The model is compressible only if this is specified in the input file, "
                                    "and contains compressibility for both solid and melt.")
