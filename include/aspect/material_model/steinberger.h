@@ -271,7 +271,8 @@ namespace aspect
         bool use_lateral_average_temperature;
 
         /**
-         * Reference viscosity. Only used for pressure scaling purposes.
+         * Reference viscosity. Only used for pressure scaling purposes
+         * and returned by the reference_viscosity() function.
          */
         double reference_eta;
 
