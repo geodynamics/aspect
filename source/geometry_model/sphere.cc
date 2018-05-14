@@ -224,9 +224,22 @@ namespace aspect
   {
     ASPECT_REGISTER_GEOMETRY_MODEL(Sphere,
                                    "sphere",
-                                   "Geometry model for sphere with a user specified radius. This geometry "
-                                   "has only a single boundary, so the only valid boundary indicator to "
-                                   "specify in the input file is ``0''. It can also be referenced by the "
-                                   "symbolic name ``surface'' in input files.")
+                                   "A geometry model for a sphere with a user specified "
+                                   "radius. This geometry has only a single boundary, so "
+                                   "the only valid boundary indicator to "
+                                   "specify in input files is ``0''. It can also be "
+                                   "referenced by the symbolic name ``surface'' in "
+                                   "input files."
+                                   "\n\n"
+                                   "Despite the name, this geometry does not imply the use of "
+                                   "a spherical coordinate system when used in 2d. Indeed, "
+                                   "in 2d the geometry is simply a circle in a Cartesian "
+                                   "coordinate system and consequently would correspond to "
+                                   "a cross section of the fluid filled interior of an "
+                                   "infinite cylinder where one has made the assumption that "
+                                   "the velocity in direction of the cylinder axes is zero. "
+                                   "This is consistent with the definition of what we consider "
+                                   "the two-dimension case given in "
+                                   "Section~\\ref{sec:meaning-of-2d}.")
   }
 }
