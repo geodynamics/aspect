@@ -96,29 +96,29 @@ namespace aspect
         {
           prm.declare_entry ("Outer temperature", "0",
                              Patterns::Double (),
-                             "Temperature at the outer boundary (lithosphere water/air). Units: K.");
+                             "Temperature at the outer boundary (lithosphere water/air). Units: $K$.");
           prm.declare_entry ("Inner temperature", "6000",
                              Patterns::Double (),
                              "Temperature at the inner boundary (core mantle boundary) at the "
-                             "beginning. Units: K.");
+                             "beginning. Units: $K$.");
           prm.declare_entry ("dT over dt", "0",
                              Patterns::Double (),
-                             "Initial CMB temperature changing rate. Units: K/year");
+                             "Initial CMB temperature changing rate. Units: $K/year$.");
           prm.declare_entry ("dR over dt", "0",
                              Patterns::Double (),
-                             "Initial inner core radius changing rate. Units: km/year");
+                             "Initial inner core radius changing rate. Units: $km/year$.");
           prm.declare_entry ("dX over dt", "0",
                              Patterns::Double (),
-                             "Initial light composition changing rate. Units: 1/year");
+                             "Initial light composition changing rate. Units: $1/year$.");
           prm.declare_entry ("Core density", "12.5e3",
                              Patterns::Double (),
-                             "Density of the core. Units: $kg/m^3$");
+                             "Density of the core. Units: $kg/m^3$.");
           prm.declare_entry ("Gravity acceleration", "9.8",
                              Patterns::Double (),
                              "Gravitation acceleration at CMB. Units: $m/s^2$.");
           prm.declare_entry ("CMB pressure", "0.14e12",
                              Patterns::Double (),
-                             "Pressure at CMB. Units: Pa.");
+                             "Pressure at CMB. Units: $Pa$.");
           prm.declare_entry ("Initial light composition", "0.01",
                              Patterns::Double (0),
                              "Initial light composition (eg. S,O) concentration "
@@ -128,45 +128,45 @@ namespace aspect
                              "The max iterations for nonliner core energy solver.");
           prm.declare_entry ("Core heat capacity", "840",
                              Patterns::Double (0),
-                             "Heat capacity of the core. Units: $J/kg/K$");
+                             "Heat capacity of the core. Units: $J/kg/K$.");
           prm.declare_entry ("K0", "4.111e11",
                              Patterns::Double (0),
                              "Core compressibility at zero pressure. "
-                             "Referring to Nimmo et al. (2004) for more details.");
+                             "See Nimmo et al. (2004) for more details.");
           prm.declare_entry ("Rho0", "7.019e3",
                              Patterns::Double (0),
                              "Core density at zero pressure. Units: $kg/m^3$. "
-                             "Referring to Nimmo et al. (2004) for more details.");
+                             "See Nimmo et al. (2004) for more details.");
           prm.declare_entry ("Alpha", "1.35e-5",
                              Patterns::Double (0),
-                             "Core thermal expansivity. Unit: 1/K");
+                             "Core thermal expansivity. Units: $1/K$.");
           prm.declare_entry ("Lh", "750e3",
                              Patterns::Double (0),
-                             "The latent heat of core freeze. Unit: J/kg");
+                             "The latent heat of core freeze. Units: $J/kg$.");
           prm.declare_entry ("Rh","-27.7e6",
                              Patterns::Double (),
-                             "The heat of reaction. Unit: J/kg");
+                             "The heat of reaction. Units: $J/kg$.");
           prm.declare_entry ("Beta composition", "1.1",
                              Patterns::Double (0),
                              "Compositional expansion coefficient $Beta_c$. "
-                             "Referring to Nimmo et al. (2004) for more details.");
+                             "See Nimmo et al. (2004) for more details.");
           prm.declare_entry ("Delta","0.5",
                              Patterns::Double (0,1),
                              "Partition coefficient of the light element.");
           prm.declare_entry ("Core conductivity", "60",
                              Patterns::Double (0),
-                             "Core heat conductivity $k_c$. Unit: W/m/K");
+                             "Core heat conductivity $k_c$. Units: $W/m/K$.");
           prm.enter_subsection("Geotherm parameters");
           {
             prm.declare_entry ("Tm0","1695",
                                Patterns::Double (0),
-                               "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm0. Unit: K");
+                               "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm0. Units: $K$.");
             prm.declare_entry ("Tm1","10.9",
                                Patterns::Double (),
-                               "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm1. Unit: $1/Tpa$");
+                               "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm1. Units: $1/Tpa$.");
             prm.declare_entry ("Tm2","-8.0",
                                Patterns::Double (),
-                               "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm2. Unit: $1/TPa^2$");
+                               "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm2. Units: $1/TPa^2$.");
             prm.declare_entry ("Theta","0.11",
                                Patterns::Double (),
                                "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Theta.");
