@@ -55,9 +55,10 @@
   . Tag the release:
       export TAG=$VER
       cd doc && ./bump_version.sh $TAG && cd .. && \
+      git commit -m "version $TAG" && \
       git tag -s v$TAG -m "version $TAG"
   . create a tar file:
-      cd doc && make manual.pdf && cp manual.pdf manual-$TAG.pdf && cd ..
+      cd doc && make manual.pdf && cp manual.pdf aspect-manual-$TAG.pdf && cd ..
       export PREFIX=aspect-$TAG && rm -rf $PREFIX.tar.gz && \
       git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz && \
       rm -rf $PREFIX && tar xf $PREFIX.tar.gz && \
@@ -66,10 +67,21 @@
   . make public (branch and tag):
       git push cig aspect-$VERSHORT
       git push cig v$TAG
-  . create a release on github, upload tarball, upload manual-$VER.pdf
+  . sign:
+      gpg --detach-sign --armor aspect-$TAG.tar.gz
+      sha1sum aspect-$TAG.tar.gz
+      gpg --detach-sign --armor manual-$TAG.pdf
+      sha1sum aspect-$TAG.tar.gz manual-$TAG.pdf >sha1sum-$TAG.txt
+  . create a release on github, upload tar.gz and manual-$VER.pdf
   . link it on download.html, update version info etc.
-  . create zenodo release for source code
-  . create figshare release for manual
+  . create zenodo release for source code:
+    - https://zenodo.org/deposit?page=1&size=20
+    - title: ASPECT v2.0.0
+    - license: GPL 2
+    - check CIG comments: https://github.com/geodynamics/best_practices/blob/master/ZenodoBestPractices.md
+    - cig community!
+  . create figshare DOI for manual
+  . update doc/manual/aspect.bib with src and manual doi
   . update aspect.geodynamics.org/cite.html
   . update http://geodynamics.org/cig/software/aspect/:
        update current release number
@@ -84,7 +96,7 @@
        dealii@googlegroups.com
 
 
-Announcement for 2.0.0 (May 1st, 2018)
+Announcement for 2.0.0 (May 10, 2018)
 -----------------------------------------
 We are pleased to announce the release of ASPECT 2.0.0. ASPECT is the Advanced
 Solver for Problems in Earth's ConvecTion. It uses modern numerical methods such
