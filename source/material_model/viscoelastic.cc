@@ -20,7 +20,6 @@
 
 
 #include <aspect/material_model/viscoelastic.h>
-#include <aspect/simulator.h>
 #include <aspect/utilities.h>
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -174,8 +173,7 @@ namespace aspect
                                               const double average_elastic_shear_modulus,
                                               const double dte) const
     {
-      const double average_viscoelastic_viscosity = ( average_viscosity * dte ) / ( dte + ( average_viscosity / average_elastic_shear_modulus ) );
-      return average_viscoelastic_viscosity;
+      return ( average_viscosity * dte ) / ( dte + ( average_viscosity / average_elastic_shear_modulus ) );
     }
 
 
@@ -185,6 +183,11 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
+
+      // Elastic outputs interface
+      MaterialModel::ElasticOutputs<dim>
+      *force_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim> >();
+
 
       // The elastic time step (dte) is equal to the numerical time step if the time step number
       // is greater than 0 and the parameter 'use_fixed_elastic_time_step' is set to false.
@@ -252,12 +255,17 @@ namespace aspect
                                                                         average_elastic_shear_modulus,
                                                                         dte);
 
-          // Fill elastic outputs if they exist
+          // Fill elastic additional outputs if they exist
           if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim> >())
             {
               elastic_out->elastic_shear_moduli[i] = average_elastic_shear_modulus;
             }
 
+          // Fill elastic force outputs (assumed to be zero during intial time step)
+          if (force_out)
+            {
+              force_out->elastic_force[i] = 0.;
+            }
         }
 
       // Viscoelasticity section
@@ -328,7 +336,7 @@ namespace aspect
               // Fill elastic force outputs (See equation 30 in Moresi et al., 2003, J. Comp. Phys.)
               if (force_out)
                 {
-                  force_out->rhs_e[i] = -1. * ( ( average_viscoelastic_viscosity / ( average_elastic_shear_modulus * dte  ) ) * stress_old );
+                  force_out->elastic_force[i] = -1. * ( ( average_viscoelastic_viscosity / ( average_elastic_shear_modulus * dte  ) ) * stress_old );
                 }
 
             }
@@ -365,31 +373,31 @@ namespace aspect
                              "The reference temperature $T_0$. Units: $K$.");
           prm.declare_entry ("Densities", "3300.",
                              Patterns::List(Patterns::Double(0)),
-                             "List of densities for background mantle and compositional fields,"
-                             "for a total of N+1 values, where N is the number of compositional fields."
+                             "List of densities for background mantle and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value.  Units: $kg / m^3$");
           prm.declare_entry ("Viscosities", "1.e21",
                              Patterns::List(Patterns::Double(0)),
-                             "List of viscosities for background mantle and compositional fields,"
-                             "for a total of N+1 values, where N is the number of compositional fields."
+                             "List of viscosities for background mantle and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. Units: $Pa s$");
           prm.declare_entry ("Thermal expansivities", "4.e-5",
                              Patterns::List(Patterns::Double(0)),
-                             "List of thermal expansivities for background mantle and compositional fields,"
-                             "for a total of N+1 values, where N is the number of compositional fields."
+                             "List of thermal expansivities for background mantle and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. Units: $1/K$");
           prm.declare_entry ("Specific heats", "1250.",
                              Patterns::List(Patterns::Double(0)),
-                             "List of specific heats $C_p$ for background mantle and compositional fields,"
-                             "for a total of N+1 values, where N is the number of compositional fields."
+                             "List of specific heats $C_p$ for background mantle and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. Units: $J /kg /K$");
           prm.declare_entry ("Thermal conductivities", "4.7",
                              Patterns::List(Patterns::Double(0)),
-                             "List of thermal conductivities for background mantle and compositional fields,"
-                             "for a total of N+1 values, where N is the number of compositional fields."
+                             "List of thermal conductivities for background mantle and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. Units: $W/m/K$ ");
           prm.declare_entry ("Viscosity averaging scheme", "harmonic",
-                             Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
+                             Patterns::Selection("arithmetic|harmonic|geometric|maximum composition "),
                              "When more than one compositional field is present at a point "
                              "with different viscosities, we need to come up with an average "
                              "viscosity at that point.  Select a weighted harmonic, arithmetic, "
@@ -402,21 +410,23 @@ namespace aspect
                              "The default value of 75 GPa is representative of mantle rocks. Units: Pa.");
           prm.declare_entry ("Use fixed elastic time step", "false",
                              Patterns::Bool (),
-                             "Select whether the material time scale in the viscoelastic constitutive"
-                             "relationship uses the regular numerical time step or a separate fixed"
-                             "elastic time step throughout the model run. The fixed elastic time step"
-                             "is always used during the initial time step. If a fixed elastic time"
-                             "step is used throughout the model run, a stress averaging scheme can be"
-                             "applied to account for differences with the numerical time step. An"
-                             "alternative approach is to limit the maximum time step size so that it"
+                             "Select whether the material time scale in the viscoelastic constitutive "
+                             "relationship uses the regular numerical time step or a separate fixed "
+                             "elastic time step throughout the model run. The fixed elastic time step "
+                             "is always used during the initial time step. If a fixed elastic time "
+                             "step is used throughout the model run, a stress averaging scheme can be "
+                             "applied to account for differences with the numerical time step. An "
+                             "alternative approach is to limit the maximum time step size so that it "
                              "is equal to the elastic time step.");
           prm.declare_entry ("Fixed elastic time step", "1.e3",
                              Patterns::Double (0),
-                             "The fixed elastic time step $dte$. Units: $yr$.");
+                             "The fixed elastic time step $dte$. Units: years if the "
+                             "'Use years in output instead of seconds' parameter is set; "
+                             "seconds otherwise.");
           prm.declare_entry ("Use stress averaging","false",
                              Patterns::Bool (),
-                             "Whether to apply a stress averaging scheme to account for differences"
-                             "between the fixed elastic time step and numerical time step.");
+                             "Whether to apply a stress averaging scheme to account for differences "
+                             "between the fixed elastic time step and numerical time step. ");
         }
         prm.leave_subsection();
       }
@@ -487,7 +497,7 @@ namespace aspect
 
           // Check whether the compositional fields representing the viscoelastic
           // stress tensor are both named correctly and listed in the right order.
-          if ( dim == 2)
+          if (dim == 2)
             {
               AssertThrow(this->introspection().compositional_index_for_name("stress_xx") == 0,
                           ExcMessage("Material model Viscoelastic only works if the first "
@@ -499,7 +509,7 @@ namespace aspect
                           ExcMessage("Material model Viscoelastic only works if the third "
                                      "compositional field is called stress_xy."));
             }
-          if ( dim == 3)
+          if (dim == 3)
             {
               AssertThrow(this->introspection().compositional_index_for_name("stress_xx") == 0,
                           ExcMessage("Material model Viscoelastic only works if the first "
@@ -530,10 +540,17 @@ namespace aspect
                        ||
                        this->get_parameters().nonlinear_solver ==
                        Parameters<dim>::NonlinearSolver::single_Advection_iterated_Stokes),
-                      ExcMessage ("The material model will only work with the nonlinear "
-                                  "solver schemes 'single Advection, single Stokes' and "
-                                  "'single Advection, iterated Stokes'"));
+                      ExcMessage("The material model will only work with the nonlinear "
+                                 "solver schemes 'single Advection, single Stokes' and "
+                                 "'single Advection, iterated Stokes'"));
 
+          // Functionality to average the additional RHS terms over the cell is not implemented.
+          // This enforces that the variable 'Material averaging' is set to 'none'.
+          AssertThrow((this->get_parameters().material_averaging ==
+                       MaterialModel::MaterialAveraging::none),
+                      ExcMessage("The viscoelastic material model cannot be used with "
+                                 "material averaging. The variable 'Material averaging' "
+                                 "in the 'Material model' subsection must be set to 'none'."));
         }
         prm.leave_subsection();
       }
@@ -548,6 +565,8 @@ namespace aspect
       this->model_dependence.specific_heat = NonlinearDependence::compositional_fields;
       this->model_dependence.thermal_conductivity = NonlinearDependence::compositional_fields;
     }
+
+
 
     template <int dim>
     void
@@ -584,11 +603,9 @@ namespace aspect
                                    "and listed in a very specific format, which is designed to minimize"
                                    "mislabeling stress tensor components as distinct 'compositional "
                                    "rock types' (or vice versa). For 2D models, the first three "
-                                   "compositional fields must be labeled stress_xx, stress_yy and stress_xy. "
-                                   "In 3D, the first six compositional fields must be labeled stress_xx, "
-                                   "stress_yy, stress_zz, stress_xy, stress_xz, stress_yz. In both cases, "
-                                   "x, y and z correspond to the coordinate axes nomenclature used by the "
-                                   "Geometry model. "
+                                   "compositional fields must be labeled 'stress_xx', 'stress_yy' and 'stress_xy'. "
+                                   "In 3D, the first six compositional fields must be labeled 'stress_xx', "
+                                   "'stress_yy', 'stress_zz', 'stress_xy', 'stress_xz', 'stress_yz'. "
                                    "\n\n "
                                    "Expanding the model to include non-linear viscous flow (e.g., "
                                    "diffusion/dislocation creep) and plasticity would produce a "
@@ -612,8 +629,8 @@ namespace aspect
                                    "\n\n "
                                    "Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric "
                                    "rate of deformation ($\\hat{D}$) as the sum of elastic "
-                                   "(($\\hat{D_{e}}$) and viscous (($\\hat{D_{v}}$)) components: "
-                                   "$\\hat{D} = \\hat{D_{e}} + \\hat{D_{v}}$  "
+                                   "($\\hat{D_{e}}$) and viscous ($\\hat{D_{v}}$) components: "
+                                   "$\\hat{D} = \\hat{D_{e}} + \\hat{D_{v}}$.  "
                                    "These terms further decompose into "
                                    "$\\hat{D_{v}} = \\frac{\\tau}{2\\eta}$ and "
                                    "$\\hat{D_{e}} = \\frac{\\overset{\\triangledown}{\\tau}}{2\\mu}$, where "
@@ -625,7 +642,7 @@ namespace aspect
                                    "$\\overset{\\triangledown}{\\tau} = \\dot{\\tau} + {\\tau}W -W\\tau$. "
                                    "Above, $W$ is the material spin tensor (eqn. 25): "
                                    "$W_{ij} = \\frac{1}{2} \\left (\\frac{\\partial V_{i}}{\\partial x_{j}} - "
-                                   "\\frac{\\partial V_{j}}{\\partial x_{i}} \\right )$ "
+                                   "\\frac{\\partial V_{j}}{\\partial x_{i}} \\right )$. "
                                    "\n\n "
                                    "The Jaumann stress-rate can also be approximated using terms from the time "
                                    "at the previous time step ($t$) and current time step ($t + \\Delta t_^{e}$): "
@@ -643,7 +660,7 @@ namespace aspect
                                    "The formulation above allows rewriting the total rate of deformation (eqn. 29) as "
                                    "$\\tau^{t + \\Delta t^{e}} = \\eta_{eff} \\left ( "
                                    "2\\hat{D}^{t + \\triangle t^{e}} + \\frac{\\tau^{t}}{\\mu \\Delta t^{e}} + "
-                                   "\\frac{W^{t}\\tau^{t} - \\tau^{t}W^{t}}{\\mu}  \\right ) $ "
+                                   "\\frac{W^{t}\\tau^{t} - \\tau^{t}W^{t}}{\\mu}  \\right )$. "
                                    "\n\n "
                                    "The effective viscosity (eqn. 28) is a function of the viscosity ($\\eta$), "
                                    "elastic time step size ($\\Delta t^{e}$) and shear relaxation time "

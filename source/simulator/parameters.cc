@@ -484,8 +484,8 @@ namespace aspect
                          "of type AdditionalMaterialOutputsStokesRHS.");
       prm.declare_entry ("Enable elasticity", "false",
                          Patterns::Bool (),
-                         "Whether to ask the material model for additional terms for the right-hand side "
-                         "of the Stokes equation related to elasticity.");
+                         "Whether to include the additional elastic terms on the right-hand side of "
+                         "the Stokes equation.");
     }
     prm.leave_subsection();
 
@@ -586,7 +586,6 @@ namespace aspect
                          "\n\n"
                          "Note that while more than one operation can be selected it only makes sense to "
                          "pick one rotational and one translational operation.");
-
     }
     prm.leave_subsection();
 

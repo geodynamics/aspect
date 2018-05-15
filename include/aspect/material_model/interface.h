@@ -32,6 +32,7 @@
 #include <deal.II/fe/mapping.h>
 #include <deal.II/fe/component_mask.h>
 #include <deal.II/numerics/data_postprocessor.h>
+#include <deal.II/base/signaling_nan.h>
 
 namespace aspect
 {
@@ -776,7 +777,6 @@ namespace aspect
          * transport) in each quadrature point.
          */
         std::vector<double> rhs_melt_pc;
-
     };
 
     /**
@@ -790,17 +790,18 @@ namespace aspect
     {
       public:
         ElasticOutputs(const unsigned int n_points)
-          : rhs_e(n_points)
+          : elastic_force(n_points, numbers::signaling_nan<Tensor<2,dim> >() )
         {}
 
         virtual ~ElasticOutputs()
         {}
 
-        virtual void average (const MaterialAveraging::AveragingOperation /*operation*/,
+        virtual void average (const MaterialAveraging::AveragingOperation operation,
                               const FullMatrix<double>  &/*projection_matrix*/,
                               const FullMatrix<double>  &/*expansion_matrix*/)
         {
-          // TODO: not implemented
+          AssertThrow(operation == MaterialAveraging::AveragingOperation::none,ExcNotImplemented());
+          return;
         }
 
         /**
@@ -808,8 +809,7 @@ namespace aspect
          * momentum equation (first part of the Stokes equation) in each
          * quadrature point.
          */
-        std::vector<Tensor<2,dim> > rhs_e;
-
+        std::vector<Tensor<2,dim> > elastic_force;
     };
 
 

@@ -66,20 +66,74 @@ namespace aspect
      * as distinct 'compositional rock types' (or vice versa). For 2D models,
      * the first three compositional fields must be labeled stress_xx, stress_yy
      * and stress_xy. In 3D, the first six compositional fields must be labeled
-     * stress_xx, stress_yy, stress_zz, stress_xy, stress_xz, stress_yz. In both
-     * cases, x, y and z correspond to the coordinate axes nomenclature used by
-     * the Geometry model.
+     * stress_xx, stress_yy, stress_zz, stress_xy, stress_xz, stress_yz.
      *
-     * The viscoelastic constitutive relationship and implementation follows
-     * a method commonly used in the Geodynamics community, where only the
-     * elastic shear strength of rocks (e.g., shear modulus) is considered.
-     * The material model directly follows the work flow and terminology
-     * of Moresi et al. 2003 (J. Comp. Phys., v. 184, p. 476-497) equations
-     * 23-32, which is commonly referred to in proceeding geodynamic
-     * publications. However, a notable difference between this material
-     * model and that of previous work is the use of compositional fields,
-     * rather than tracers, to track and advect the stress tensor.
-     * TODO: Add option to track and advect stresses with tracers.
+     * Expanding the model to include non-linear viscous flow (e.g.,
+     * diffusion/dislocation creep) and plasticity would produce a constitutive
+     * relationship commonly referred to as partial elastoviscoplastic
+     * (e.g., pEVP) in the geodynamics community. While extensively discussed
+     * and applied within the geodynamics literature, notable references include:
+     * Moresi et al. (2003), J. Comp. Phys., v. 184, p. 476-497.
+     * Gerya and Yuen (2007), Phys. Earth. Planet. Inter., v. 163, p. 83-105.
+     * Gerya (2010), Introduction to Numerical Geodynamic Modeling.
+     * Kaus (2010), Tectonophysics, v. 484, p. 36-47.
+     * Choi et al. (2013), J. Geophys. Res., v. 118, p. 2429-2444.
+     * Keller et al. (2013), Geophys. J. Int., v. 195, p. 1406-1442.
+     *
+     * The overview below directly follows Moresi et al. (2003) eqns. 23-32.
+     * However, an important distinction between this material model and
+     * the studies above is the use of compositional fields, rather than
+     * tracers, to track individual components of the viscoelastic stress
+     * tensor. The material model will be udpated when an option to track
+     * and calculate viscoelastic stresses with tracers is implemented.
+     *
+     * Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric
+     * rate of deformation ($\hat{D}$) as the sum of elastic
+     * ($\hat{D_{e}}$) and viscous ($\hat{D_{v}}$) components:
+     * $\hat{D} = \hat{D_{e}} + \hat{D_{v}}$.
+     * These terms further decompose into
+     * $\hat{D_{v}} = \frac{\tau}{2\eta}$ and
+     * $\hat{D_{e}} = \frac{\overset{\triangledown}{\tau}}{2\mu}$, where
+     * $\tau$ is the viscous deviatoric stress, $\eta$ is the shear viscosity,
+     * $\mu$ is the shear modulus and $\overset{\triangledown}{\tau}$ is the
+     * Jaumann corotational stress rate. This later term (eqn. 24) contains the
+     * time derivative of the deviatoric stress ($\dot{\tau}$) and terms that
+     * account for material spin (e.g., rotation) due to advection:
+     * $\overset{\triangledown}{\tau} = \dot{\tau} + {\tau}W -W\tau$.
+     * Above, $W$ is the material spin tensor (eqn. 25):
+     * $W_{ij} = \frac{1}{2} \left (\frac{\partial V_{i}}{\partial x_{j}} -
+     * \frac{\partial V_{j}}{\partial x_{i}} \right )$.
+     *
+     * The Jaumann stress-rate can also be approximated using terms from the time
+     * at the previous time step ($t$) and current time step ($t + \Delta t_^{e}$):
+     * $\smash[t]{\overset{\triangledown}{\tau}}^{t + \Delta t^{e}} \approx
+     * \frac{\tau^{t + \Delta t^{e} - \tau^{t}}}{\Delta t^{e}} -
+     * W^{t}\tau^{t} + \tau^{t}W^{t}$.
+     * In this material model, the size of the time step above ($\\Delta t^{e}$)
+     * can be specified as the numerical time step size or an independent fixed time
+     * step. If the latter case is a selected, the user has an option to apply a
+     * stress averaging scheme to account for the differences between the numerical
+     * and fixed elastic time step (eqn. 32). If one selects to use a fixed elastic time
+     * step throughout the model run, this can still be achieved by using CFL and
+     * maximum time step values that restrict the numerical time step to a specific time.
+     *
+     * The formulation above allows rewriting the total rate of deformation (eqn. 29) as
+     * $\tau^{t + \Delta t^{e}} = \eta_{eff} \left (
+     * 2\\hat{D}^{t + \\triangle t^{e}} + \\frac{\\tau^{t}}{\\mu \\Delta t^{e}} +
+     * \\frac{W^{t}\\tau^{t} - \\tau^{t}W^{t}}{\\mu}  \\right )$.
+     *
+     * The effective viscosity (eqn. 28) is a function of the viscosity ($\eta$),
+     * elastic time step size ($\Delta t^{e}$) and shear relaxation time
+     * ($ \alpha = \frac{\eta}{\mu} $):
+     * $\eta_{eff} = \eta \frac{\Delta t^{e}}{\Delta t^{e} + \alpha}$
+     * The magnitude of the shear modulus thus controls how much the effective
+     * viscosity is reduced relative to the initial viscosity.
+     *
+     * Elastic effects are introduced into the governing stokes equations through
+     * an elastic force term (eqn. 30) using stresses from the previous time step:
+     * $F^{e,t} = -\frac{\eta_{eff}}{\mu \Delta t^{e}} \tau^{t}$.
+     * This force term is added onto the right-hand side force vector in the
+     * system of equations.
      *
      * The value of each compositional field representing distinct
      * rock types at a point is interpreted to be a volume fraction of that
@@ -180,7 +234,7 @@ namespace aspect
           const std::vector<double> &compositional_fields) const;
 
         /**
-         * Reference temperature for thermal expansion.  All components use
+         * Reference temperature for thermal expansion. All components use
          * the same reference_T.
          */
         double reference_T;

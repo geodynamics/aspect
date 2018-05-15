@@ -216,7 +216,7 @@ namespace aspect
                                      * JxW;
 
               if (elastic_outputs != NULL )
-                data.local_rhs(i) += (double_contract(elastic_outputs->rhs_e[q],Tensor<2,dim>(scratch.grads_phi_u[i])))
+                data.local_rhs(i) += (double_contract(elastic_outputs->elastic_force[q],Tensor<2,dim>(scratch.grads_phi_u[i])))
                                      * JxW;
 
               if (scratch.rebuild_stokes_matrix)
@@ -246,7 +246,7 @@ namespace aspect
     {
       const unsigned int n_points = outputs.viscosities.size();
 
-      if ((this->get_parameters().enable_additional_stokes_rhs || this->get_parameters().enable_elasticity)
+      if (this->get_parameters().enable_additional_stokes_rhs
           && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == NULL)
         {
           outputs.additional_outputs.push_back(
@@ -269,7 +269,7 @@ namespace aspect
 
       Assert(!this->get_parameters().enable_elasticity
              ||
-             outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >()->rhs_e.size()
+             outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >()->elastic_force.size()
              == n_points, ExcInternalError());
     }
 
