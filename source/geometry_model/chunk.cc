@@ -41,6 +41,8 @@ namespace aspect
       point1_lon(0.0)
     {}
 
+
+    
     template <int dim>
     Chunk<dim>::ChunkGeometry::ChunkGeometry(const ChunkGeometry &other)
       :
@@ -48,6 +50,8 @@ namespace aspect
       point1_lon(other.point1_lon)
     {}
 
+
+    
     template <int dim>
     DerivativeForm<1,dim,dim>
     Chunk<dim>::ChunkGeometry::
@@ -94,6 +98,7 @@ namespace aspect
       return DX;
     }
 
+    
 
     template <int dim>
     Point<dim>
@@ -122,6 +127,8 @@ namespace aspect
       return output_vertex;
     }
 
+
+    
     template <int dim>
     Point<dim>
     Chunk<dim>::ChunkGeometry::
@@ -166,6 +173,8 @@ namespace aspect
       return output_vertex;
     }
 
+
+    
     template <int dim>
     void
     Chunk<dim>::ChunkGeometry::
@@ -174,6 +183,8 @@ namespace aspect
       point1_lon = p1_lon;
     }
 
+
+    
 #if DEAL_II_VERSION_GTE(9,0,0)
     template <int dim>
     std::unique_ptr<Manifold<dim,dim> >
@@ -184,6 +195,8 @@ namespace aspect
     }
 #endif
 
+
+    
 #if !DEAL_II_VERSION_GTE(9,0,0)
     template <int dim>
     void
@@ -196,6 +209,8 @@ namespace aspect
     }
 #endif
 
+
+    
     template <int dim>
     void
     Chunk<dim>::
@@ -407,6 +422,7 @@ namespace aspect
     }
 
 
+    
     template <int dim>
     double
     Chunk<dim>::
@@ -421,6 +437,7 @@ namespace aspect
     }
 
 
+    
     template <int dim>
     double
     Chunk<dim>::depth(const Point<dim> &position) const
@@ -428,6 +445,8 @@ namespace aspect
       return std::min (std::max (point2[0]-position.norm(), 0.), maximal_depth());
     }
 
+
+    
     template <int dim>
     double
     Chunk<dim>::height_above_reference_surface(const Point<dim> &position) const
@@ -436,6 +455,7 @@ namespace aspect
     }
 
 
+    
     template <int dim>
     Point<dim>
     Chunk<dim>::representative_point(const double depth) const
@@ -462,12 +482,15 @@ namespace aspect
     }
 
 
+    
     template <int dim>
     double
     Chunk<dim>::east_longitude () const
     {
       return point2[1];
     }
+
+
 
     template <int dim>
     double
@@ -476,6 +499,8 @@ namespace aspect
       return point2[1] - point1[1];
     }
 
+
+    
     template <int dim>
     double
     Chunk<dim>::south_latitude () const
@@ -487,6 +512,7 @@ namespace aspect
     }
 
 
+    
     template <int dim>
     double
     Chunk<dim>::north_latitude () const
@@ -498,6 +524,7 @@ namespace aspect
     }
 
 
+    
     template <int dim>
     double
     Chunk<dim>::latitude_range () const
@@ -508,6 +535,7 @@ namespace aspect
         return 0;
     }
 
+    
 
     template <int dim>
     double
@@ -516,6 +544,8 @@ namespace aspect
       return point2[0]-point1[0];
     }
 
+
+    
     template <int dim>
     double
     Chunk<dim>::inner_radius () const
@@ -523,6 +553,8 @@ namespace aspect
       return point1[0];
     }
 
+
+    
     template <int dim>
     double
     Chunk<dim>::outer_radius () const
@@ -530,6 +562,8 @@ namespace aspect
       return point2[0];
     }
 
+
+    
     template <int dim>
     bool
     Chunk<dim>::has_curved_elements() const
@@ -537,6 +571,8 @@ namespace aspect
       return true;
     }
 
+
+    
     template <int dim>
     bool
     Chunk<dim>::point_is_in_domain(const Point<dim> &point) const
@@ -558,6 +594,8 @@ namespace aspect
       return true;
     }
 
+
+    
     template <int dim>
     std_cxx11::array<double,dim>
     Chunk<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
@@ -572,6 +610,7 @@ namespace aspect
       return position_array;
     }
 
+    
 
     template <int dim>
     aspect::Utilities::Coordinates::CoordinateSystem
@@ -594,6 +633,7 @@ namespace aspect
       return transformed_point;
     }
 
+    
 
     template <int dim>
     void
