@@ -23,7 +23,7 @@ pipeline {
             environment name: 'TRUST_BUILD', value: 'false' 
             not {branch 'master'}
             not {changeRequest authorEmail: "rene.gassmoeller@mailbox.org"}
-            not {changeRequest authorEmail: "timo.heister@gmail.com"}
+            not {changeRequest authorEmail: "heister@clemson.edu"}
             not {changeRequest authorEmail: "bangerth@colostate.edu"}
             not {changeRequest authorEmail: "judannberg@gmail.com"}
             not {changeRequest authorEmail: "ja3170@columbia.edu"}
