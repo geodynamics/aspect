@@ -17,6 +17,14 @@ pipeline {
   }
 
   stages {
+    stage ("info") {
+      steps {
+        echo "PR $CHANGE_ID '$CHANGE_TITLE'"
+    	echo "CHANGE_AUTHOR_EMAIL: $CHANGE_AUTHOR_EMAIL"
+	echo "building on node $NODE_NAME"
+      }
+    }
+
     stage ("Check permissions") {
       when {
 	allOf {
