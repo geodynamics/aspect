@@ -46,6 +46,19 @@ namespace aspect
     {
       public:
         /**
+         * Initialize the base model at the beginning of the run.
+         */
+        virtual
+        void initialize();
+
+        /**
+         * Update the base model and viscosity function at the beginning of
+         * each timestep.
+         */
+        virtual
+        void update();
+
+        /**
          * Function to compute the material properties in @p out given the
          * inputs in @p in.
          */
