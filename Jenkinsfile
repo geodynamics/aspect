@@ -19,9 +19,9 @@ pipeline {
   stages {
     stage ("info") {
       steps {
-        echo "PR $CHANGE_ID '$CHANGE_TITLE'"
-    	echo "CHANGE_AUTHOR_EMAIL: $CHANGE_AUTHOR_EMAIL"
-	echo "building on node $NODE_NAME"
+        echo "PR: ${env.CHANGE_ID} - ${env.CHANGE_TITLE}"
+        echo "CHANGE_AUTHOR_EMAIL: ${env.CHANGE_AUTHOR_EMAIL}"
+        echo "building on node ${env.NODE_NAME}"
       }
     }
 
