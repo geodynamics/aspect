@@ -95,6 +95,11 @@ namespace aspect
     template <int dim> class Interface;
   }
 
+  namespace MeshRefinement
+  {
+    template <int dim> class Manager;
+  }
+
   namespace AdiabaticConditions
   {
     template <int dim> class Interface;
@@ -669,6 +674,15 @@ namespace aspect
        */
       const HeatingModel::Manager<dim> &
       get_heating_model_manager () const;
+
+      /**
+       * Return a reference to the manager of the mesh refinement strategies.
+       * this can then i.e. be used to get the names of the active refinement
+       * strategies for such purposes as confirming that a particular one has
+       * been included.
+       */
+      const MeshRefinement::Manager<dim> &
+      get_mesh_refinement_manager () const;
 
       /**
        * Return a reference to the melt handler.

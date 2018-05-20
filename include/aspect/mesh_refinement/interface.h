@@ -223,6 +223,18 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
         /**
+         * Go through the list of all mesh refinement strategies that have been
+         * selected in the input file (and are consequently currently active)
+         * and see if one of them has the desired type specified by the
+         * template argument. If so, return a pointer to it. If no mesh
+         * refinement strategy is active that matches the given type, return a
+         * NULL pointer.
+         */
+        template <typename MeshRefinementType>
+        MeshRefinementType *
+        find_mesh_refinement_strategy () const;
+
+        /**
          * A function that is used to register mesh refinement objects in such
          * a way that the Manager can deal with all of them without having to
          * know them by name. This allows the files in which individual
@@ -298,6 +310,21 @@ namespace aspect
          */
         std::list<std_cxx11::shared_ptr<Interface<dim> > > mesh_refinement_objects;
     };
+
+
+    template <int dim>
+    template <typename MeshRefinementType>
+    inline
+    MeshRefinementType *
+    Manager<dim>::find_mesh_refinement_strategy () const
+    {
+      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+           p = mesh_refinement_objects.begin();
+           p != mesh_refinement_objects.end(); ++p)
+        if (MeshRefinementType *x = dynamic_cast<MeshRefinementType *> ( (*p).get()) )
+          return x;
+      return NULL;
+    }
 
 
 

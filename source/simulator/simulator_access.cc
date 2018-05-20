@@ -581,6 +581,13 @@ namespace aspect
   }
 
   template <int dim>
+  const MeshRefinement::Manager<dim> &
+  SimulatorAccess<dim>::get_mesh_refinement_manager () const
+  {
+    return simulator->mesh_refinement_manager;
+  }
+
+  template <int dim>
   const MeltHandler<dim> &
   SimulatorAccess<dim>::get_melt_handler () const
   {
