@@ -82,6 +82,12 @@ namespace aspect
          */
         std::vector<bool> fields_used_in_heat_production_averaging;
 
+        /**
+         * Similar to fields_used_in_heat_production_averaging, except it
+         * determines whether to include the background field in the heat
+         * production computation.
+         */
+        bool use_background_field_for_heat_production_averaging;
     };
   }
 }
