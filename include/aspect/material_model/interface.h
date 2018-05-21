@@ -790,9 +790,9 @@ namespace aspect
      * one, we assume that there is no background mantle (i.e., that field value
      * is zero). Otherwise, the difference between the sum of the compositional
      * fields and 1.0 is assumed to be the amount of background mantle.
-     * Optionally, one can input a component mask that determines, which of the
+     * Optionally, one can input a component mask that determines which of the
      * compositional fields to use during the computation (e.g. because
-     * some fields do contain non-volumetric quantities like strain,
+     * some fields contain non-volumetric quantities like strain,
      * porosity, or trace elements). By default, all fields are included.
      */
     std::vector<double>
