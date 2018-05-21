@@ -68,17 +68,17 @@ namespace aspect
 
       private:
         /**
-         * Magnitude of heat production in each compositional field
+         * Magnitude of heat production for each compositional field
          */
         std::vector<double> heating_values;
 
         /**
-         * User can choose whether the heat production value associated with
-         * each compositional field is used when the average value at each
-         * point is calculated. This is useful if some compositional fields
+         * A vector with as many entries as compositional fields.
+         * If the entry for a particular field is true the field is considered
+         * during the averaging of heat production rates, if not the field is
+         * ignored. This is useful if some compositional fields
          * are used to track properties like finite strain that should not
-         * contribute to material properties like viscosity, heat production,
-         * etc.
+         * contribute to heat production.
          */
         std::vector<bool> fields_used_in_heat_production_averaging;
 

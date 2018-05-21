@@ -64,12 +64,17 @@ namespace aspect
                             Patterns::List (Patterns::Double(0)),
                             "List of heat production per unit volume values for "
                             "background and compositional fields, for a total of "
-                            "N+1 values, where N is the number of compositional fields. "
+                            "N+1 values, where the first value correponds to the "
+                            "background material, and N is the number of compositional fields. "
                             "Units: $W/m^3$.");
           prm.declare_entry ("Use compositional field for heat production averaging", "1",
                              Patterns::List(Patterns::Integer(0,1)),
-                             "List of integers, detailing for each compositional field if it should be included in the "
-                             "averaging scheme when the heat production is computed (if 1) or not (if 0).");
+                             "A list of integers with as many entries as compositional fields. "
+                             "If the entry for a particular field is '1' this field is considered "
+                             "during the averaging of heat production rates, if it is '0' the field is "
+                             "ignored. This is useful if some compositional fields "
+                             "are used to track properties like finite strain that should not "
+                             "contribute to heat production.");
         }
         prm.leave_subsection();
       }
@@ -81,7 +86,6 @@ namespace aspect
     void
     CompositionalHeating<dim>::parse_parameters (ParameterHandler &prm)
     {
-
       // increment by one for background:
       const unsigned int n_fields = this->n_compositional_fields() + 1;
 
@@ -89,16 +93,16 @@ namespace aspect
       {
         prm.enter_subsection("Compositional heating");
         {
-          std::vector<int> used_fields = Utilities::possibly_extend_from_1_to_N (
-                                           Utilities::string_to_int(
-                                             Utilities::split_string_list(
-                                               prm.get("Use compositional field for heat production averaging"))),
-                                           n_fields,
-                                           "Use compositional field for heat production averaging");
+          const std::vector<int> used_fields = Utilities::possibly_extend_from_1_to_N (
+                                                 Utilities::string_to_int(
+                                                   Utilities::split_string_list(
+                                                     prm.get("Use compositional field for heat production averaging"))),
+                                                 this->n_compositional_fields(),
+                                                 "Use compositional field for heat production averaging");
 
           fields_used_in_heat_production_averaging.resize(used_fields.size());
           for (unsigned int i=0; i<used_fields.size(); ++i)
-            fields_used_in_heat_production_averaging[i] = used_fields[i];
+            fields_used_in_heat_production_averaging[i] = static_cast<bool>(used_fields[i]);
 
           heating_values = Utilities::possibly_extend_from_1_to_N (
                              Utilities::string_to_double(

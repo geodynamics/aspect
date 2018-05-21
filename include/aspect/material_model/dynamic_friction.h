@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -163,8 +163,8 @@ namespace aspect
         std::vector<double> densities;
 
         /**
-        * The dynamic coefficient of friction
-        */
+         * The dynamic coefficient of friction
+         */
         std::vector<double> mu_d;
 
         /**
