@@ -216,9 +216,9 @@ namespace aspect
 
           FEValues<dim> finite_element_values;
 
-          std_cxx11::shared_ptr<FEFaceValues<dim> >    face_finite_element_values;
-          std_cxx11::shared_ptr<FEFaceValues<dim> >    neighbor_face_finite_element_values;
-          std_cxx11::shared_ptr<FESubfaceValues<dim> > subface_finite_element_values;
+          std_cxx11::unique_ptr<FEFaceValues<dim> >    face_finite_element_values;
+          std_cxx11::unique_ptr<FEFaceValues<dim> >    neighbor_face_finite_element_values;
+          std_cxx11::unique_ptr<FESubfaceValues<dim> > subface_finite_element_values;
 
           std::vector<types::global_dof_index>   local_dof_indices;
 
