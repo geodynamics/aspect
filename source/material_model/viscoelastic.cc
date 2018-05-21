@@ -184,7 +184,8 @@ namespace aspect
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
 
-      // Elastic outputs interface
+      // Create the structure for the elastic force terms that are needed to compute the
+      // right-hand side of the Stokes system
       MaterialModel::ElasticOutputs<dim>
       *force_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim> >();
 
@@ -255,7 +256,7 @@ namespace aspect
                                                                         average_elastic_shear_modulus,
                                                                         dte);
 
-          // Fill elastic additional outputs if they exist
+          // Fill the material properties that are part of the elastic additional outputs
           if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim> >())
             {
               elastic_out->elastic_shear_moduli[i] = average_elastic_shear_modulus;
@@ -509,7 +510,7 @@ namespace aspect
                           ExcMessage("Material model Viscoelastic only works if the third "
                                      "compositional field is called stress_xy."));
             }
-          if (dim == 3)
+          else if (dim == 3)
             {
               AssertThrow(this->introspection().compositional_index_for_name("stress_xx") == 0,
                           ExcMessage("Material model Viscoelastic only works if the first "
@@ -530,6 +531,8 @@ namespace aspect
                           ExcMessage("Material model Viscoelastic only works if the sixth "
                                      "compositional field is called stress_yz."));
             }
+          else
+            ExcNotImplemented();
 
           // Currently, it only makes sense to use this material model when the nonlinear solver
           // scheme does a single Advection iteration and at minimum one Stokes iteration. More
