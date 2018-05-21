@@ -329,7 +329,7 @@ namespace aspect
     bool
     Manager<dim>::has_matching_mesh_refinement_strategy () const
     {
-      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p)
         if (Plugins::plugin_type_matches<MeshRefinementType>(*(*p)))
@@ -352,14 +352,14 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "mesh refinement strategy in the input file."));
 
-      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p)
         if (Plugins::plugin_type_matches<MeshRefinementType>(*(*p)))
           return Plugins::get_plugin_as_type<MeshRefinementType>(*(*p));
 
       // We will never get here, because we had the Assert above. Just to avoid warnings.
-      typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator mesh_refinement_strategy;
+      typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator mesh_refinement_strategy;
       return Plugins::get_plugin_as_type<MeshRefinementType>(*(*mesh_refinement_strategy));
     }
 
