@@ -223,16 +223,26 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
         /**
-         * Go through the list of all mesh refinement strategies that have been
-         * selected in the input file (and are consequently currently active)
-         * and see if one of them has the desired type specified by the
-         * template argument. If so, return a pointer to it. If no mesh
-         * refinement strategy is active that matches the given type, return a
-         * NULL pointer.
+         * Go through the list of all mesh refinement strategies that have been selected
+         * in the input file (and are consequently currently active) and return
+         * true if one of them has the desired type specified by the template
+         * argument.
          */
         template <typename MeshRefinementType>
-        MeshRefinementType *
-        find_mesh_refinement_strategy () const;
+        bool
+        has_matching_mesh_refinement_strategy () const;
+
+        /**
+         * Go through the list of all mesh refinement strategies that have been selected
+         * in the input file (and are consequently currently active) and see
+         * if one of them has the type specified by the template
+         * argument or can be casted to that type. If so, return a reference
+         * to it. If no mesh refinement strategy is active that matches the
+         * given type, throw an exception.
+         */
+        template <typename MeshRefinementType>
+        const MeshRefinementType &
+        get_matching_mesh_refinement_strategy () const;
 
         /**
          * A function that is used to register mesh refinement objects in such
@@ -312,18 +322,45 @@ namespace aspect
     };
 
 
+
     template <int dim>
     template <typename MeshRefinementType>
     inline
-    MeshRefinementType *
-    Manager<dim>::find_mesh_refinement_strategy () const
+    bool
+    Manager<dim>::has_matching_mesh_refinement_strategy () const
     {
-      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p)
-        if (MeshRefinementType *x = dynamic_cast<MeshRefinementType *> ( (*p).get()) )
-          return x;
-      return NULL;
+        if (Plugins::plugin_type_matches<MeshRefinementType>(*(*p)))
+          return true;
+
+      return false;
+    }
+
+
+
+    template <int dim>
+    template <typename MeshRefinementType>
+    inline
+    const MeshRefinementType &
+    Manager<dim>::get_matching_mesh_refinement_strategy () const
+    {
+      AssertThrow(has_matching_mesh_refinement_strategy<MeshRefinementType> (),
+                  ExcMessage("You asked MeshRefinement:Manager::get_matching_postprocessor() for a "
+                             "mesh refinement strategy of type <" + boost::core::demangle(typeid(MeshRefinementType).name()) + "> "
+                             "that could not be found in the current model. Activate this "
+                             "postprocessor in the input file."));
+
+      typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator postprocessor;
+      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+           p = mesh_refinement_objects.begin();
+           p != mesh_refinement_objects.end(); ++p)
+        if (Plugins::plugin_type_matches<MeshRefinementType>(*(*p)))
+          return Plugins::get_plugin_as_type<MeshRefinementType>(*(*p));
+
+      // We will never get here, because we had the Assert above. Just to avoid warnings.
+      return Plugins::get_plugin_as_type<MeshRefinementType>(*(*postprocessor));
     }
 
 
