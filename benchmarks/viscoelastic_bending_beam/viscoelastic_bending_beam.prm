@@ -180,5 +180,5 @@ subsection Termination criteria
 end
 
 subsection Checkpointing
-  set Time between checkpoint = 10000
+  set Steps between checkpoint = 10
 end
