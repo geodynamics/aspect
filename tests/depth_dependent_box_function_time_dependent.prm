@@ -1,8 +1,7 @@
 # Test depth-dependent material model using simple material model as
-# base model with depth-dependence specified by user-provided function
-
-# A description of convection in a 2d box. See the manual for more information.
-
+# base model with depth-dependence specified by user-provided function.
+# This is an extended copy from depth_dependent_box_function that
+# uses a time dependent function to prescribe depth dependent viscosity.
 
 # At the top, we define the number of space dimensions we would like to
 # work in:
