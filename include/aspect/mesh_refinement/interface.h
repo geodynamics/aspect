@@ -347,12 +347,11 @@ namespace aspect
     Manager<dim>::get_matching_mesh_refinement_strategy () const
     {
       AssertThrow(has_matching_mesh_refinement_strategy<MeshRefinementType> (),
-                  ExcMessage("You asked MeshRefinement:Manager::get_matching_postprocessor() for a "
+                  ExcMessage("You asked MeshRefinement:Manager::get_matching_mesh_refinement_strategy() for a "
                              "mesh refinement strategy of type <" + boost::core::demangle(typeid(MeshRefinementType).name()) + "> "
                              "that could not be found in the current model. Activate this "
-                             "postprocessor in the input file."));
+                             "mesh refinement strategy in the input file."));
 
-      typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator postprocessor;
       for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p)
@@ -360,7 +359,8 @@ namespace aspect
           return Plugins::get_plugin_as_type<MeshRefinementType>(*(*p));
 
       // We will never get here, because we had the Assert above. Just to avoid warnings.
-      return Plugins::get_plugin_as_type<MeshRefinementType>(*(*postprocessor));
+      typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator mesh_refinement_strategy;
+      return Plugins::get_plugin_as_type<MeshRefinementType>(*(*mesh_refinement_strategy));
     }
 
 
