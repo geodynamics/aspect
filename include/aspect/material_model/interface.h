@@ -30,6 +30,7 @@
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/dofs/dof_accessor.h>
 #include <deal.II/fe/mapping.h>
+#include <deal.II/fe/component_mask.h>
 #include <deal.II/numerics/data_postprocessor.h>
 
 namespace aspect
@@ -778,6 +779,25 @@ namespace aspect
     };
 
 
+
+    /**
+     * For multicomponent material models: Given a vector of of compositional
+     * fields of length N, this function returns a vector of volume fractions
+     * of length N+1, corresponding to the volume fraction of a ``background
+     * material'' as the first entry, and volume fractions for each of the input
+     * fields as the following entries. The returned vector will sum to one.
+     * If the sum of the compositional_fields is greater than
+     * one, we assume that there is no background mantle (i.e., that field value
+     * is zero). Otherwise, the difference between the sum of the compositional
+     * fields and 1.0 is assumed to be the amount of background mantle.
+     * Optionally, one can input a component mask that determines which of the
+     * compositional fields to use during the computation (e.g. because
+     * some fields contain non-volumetric quantities like strain,
+     * porosity, or trace elements). By default, all fields are included.
+     */
+    std::vector<double>
+    compute_volume_fractions(const std::vector<double> &compositional_fields,
+                             const ComponentMask &field_mask = ComponentMask());
 
     /**
      * A base class for parameterizations of material models. Classes derived
