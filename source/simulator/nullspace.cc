@@ -422,12 +422,12 @@ namespace aspect
                     local_angular_momentum[i] += r_cross_v[i] * rho * fe.JxW(k);
 
                   // calculate moment of inertia
-                  local_moment_of_inertia[0][0] += (r_vec.square() - r_vec[0]*r_vec[0])*rho * fe.JxW(k);
-                  local_moment_of_inertia[1][1] += (r_vec.square() - r_vec[1]*r_vec[1])*rho * fe.JxW(k);
-                  local_moment_of_inertia[2][2] += (r_vec.square() - r_vec[2]*r_vec[2])*rho * fe.JxW(k);
-                  local_moment_of_inertia[0][1] -= ( r_vec[0]*r_vec[1])*rho * fe.JxW(k);
-                  local_moment_of_inertia[0][2] -= ( r_vec[0]*r_vec[2])*rho * fe.JxW(k);
-                  local_moment_of_inertia[1][2] -= ( r_vec[1]*r_vec[2])*rho * fe.JxW(k);
+                  local_moment_of_inertia[0][0] += (r_vec.square() - r_vec[0] * r_vec[0]) * rho * fe.JxW(k);
+                  local_moment_of_inertia[1][1] += (r_vec.square() - r_vec[1] * r_vec[1]) * rho * fe.JxW(k);
+                  local_moment_of_inertia[2][2] += (r_vec.square() - r_vec[2] * r_vec[2]) * rho * fe.JxW(k);
+                  local_moment_of_inertia[0][1] -= (r_vec[0] * r_vec[1]) * rho * fe.JxW(k);
+                  local_moment_of_inertia[0][2] -= (r_vec[0] * r_vec[2]) * rho * fe.JxW(k);
+                  local_moment_of_inertia[1][2] -= (r_vec[1] * r_vec[2]) * rho * fe.JxW(k);
                 }
             }
         }
@@ -435,32 +435,33 @@ namespace aspect
     // vector for storing the correction to the velocity field
     LinearAlgebra::Vector correction(tmp_distributed_stokes.block(introspection.block_indices.velocities));
 
-    if ( dim == 2)
+    if (dim == 2)
       {
-        const double scalar_moment = Utilities::MPI::sum( local_scalar_moment, mpi_communicator);
-        const double scalar_angular_momentum = Utilities::MPI::sum( local_scalar_angular_momentum, mpi_communicator);
+        const double scalar_moment = Utilities::MPI::sum(local_scalar_moment, mpi_communicator);
+        const double scalar_angular_momentum = Utilities::MPI::sum(local_scalar_angular_momentum, mpi_communicator);
 
-        const double rotation_rate = scalar_angular_momentum/scalar_moment;  // solve for the rotation rate to cancel the angular momentum
+        // Solve for the rotation rate to cancel the angular momentum
+        const double rotation_rate = scalar_angular_momentum / scalar_moment;
 
         // Now construct a rotation vector with the desired rate and subtract it from our vector
-        internal::Rotation<dim> rot(0);
+        const internal::Rotation<dim> rot(0);
         interpolate_onto_velocity_system(rot, correction);
         tmp_distributed_stokes.block(introspection.block_indices.velocities).add(-1.0*rotation_rate,correction);
       }
     else
       {
         // sum up the local contributions to moment of inertia
-        const SymmetricTensor<2,dim> moment_of_inertia = Utilities::MPI::sum( local_moment_of_inertia,
-                                                                              mpi_communicator );
+        const SymmetricTensor<2,dim> moment_of_inertia = Utilities::MPI::sum(local_moment_of_inertia,
+                                                                             mpi_communicator);
         // sum up the local contributions to angular momentum
-        const Tensor<1,dim> angular_momentum = Utilities::MPI::sum( local_angular_momentum, mpi_communicator );
+        const Tensor<1,dim> angular_momentum = Utilities::MPI::sum(local_angular_momentum, mpi_communicator );
 
         // Solve for the rotation vector that cancels the net momentum
-        SymmetricTensor<2,dim> inverse_moment ( invert( Tensor<2,dim>(moment_of_inertia) ) );
-        Tensor<1,dim> omega = - inverse_moment * angular_momentum;
+        const SymmetricTensor<2,dim> inverse_moment (invert( Tensor<2,dim>(moment_of_inertia)));
+        const Tensor<1,dim> omega = - inverse_moment * angular_momentum;
 
         // Remove that rotation from the solution vector
-        internal::Rotation<dim> rot( omega );
+        const internal::Rotation<dim> rot(omega);
         interpolate_onto_velocity_system(rot, correction);
         tmp_distributed_stokes.block(introspection.block_indices.velocities).add(1.0,correction);
       }
