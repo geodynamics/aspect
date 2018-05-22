@@ -1,0 +1,29 @@
+
+Loading shared library <./libfind_mesh_refinement.so>
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+Density is found!
+Boundary is not found!
+Density is found!
+Boundary is not found!
+*** Timestep 0:  t=0 seconds
+Density is found!
+Boundary is not found!
+Density is found!
+Boundary is not found!
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 1.688e-07 W, 2.017e-05 W, 2.43e-07 W, 2.43e-07 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
