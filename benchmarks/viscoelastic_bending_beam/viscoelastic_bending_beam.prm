@@ -45,7 +45,7 @@ subsection Solver parameters
   end
 end
 
-# Model geometry (7.5x5 km, 0.025 km spacing)
+# Model geometry (7.5x5 km, 0.1 km spacing)
 subsection Geometry model
   set Model name = box
 

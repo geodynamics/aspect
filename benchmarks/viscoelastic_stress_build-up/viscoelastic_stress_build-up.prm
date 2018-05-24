@@ -129,10 +129,10 @@ subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top, left, right
   set List of model names = box
   subsection Box
-    set Bottom temperature = 273
-    set Left temperature   = 273
-    set Right temperature  = 273
-    set Top temperature    = 273
+    set Bottom temperature = 293
+    set Left temperature   = 293
+    set Right temperature  = 293
+    set Top temperature    = 293
   end
 end
 
@@ -140,7 +140,7 @@ end
 subsection Initial temperature model
   set Model name = function
   subsection Function
-    set Function expression = 273
+    set Function expression = 293
   end
 end
 

@@ -215,7 +215,7 @@ namespace aspect
                                       + pressure_scaling * force->rhs_p[q] * scratch.phi_p[i])
                                      * JxW;
 
-              if (elastic_outputs != NULL )
+              if (elastic_outputs != NULL && this->get_parameters().enable_elasticity)
                 data.local_rhs(i) += (double_contract(elastic_outputs->elastic_force[q],Tensor<2,dim>(scratch.grads_phi_u[i])))
                                      * JxW;
 

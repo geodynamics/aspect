@@ -409,8 +409,8 @@ namespace aspect
                              "for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "The default value of 75 GPa is representative of mantle rocks. Units: Pa.");
-          prm.declare_entry ("Use fixed elastic time step", "false",
-                             Patterns::Bool (),
+          prm.declare_entry ("Use fixed elastic time step", "unspecified",
+                             Patterns::Selection("true|false|unspecified"),
                              "Select whether the material time scale in the viscoelastic constitutive "
                              "relationship uses the regular numerical time step or a separate fixed "
                              "elastic time step throughout the model run. The fixed elastic time step "
@@ -418,7 +418,9 @@ namespace aspect
                              "step is used throughout the model run, a stress averaging scheme can be "
                              "applied to account for differences with the numerical time step. An "
                              "alternative approach is to limit the maximum time step size so that it "
-                             "is equal to the elastic time step.");
+                             "is equal to the elastic time step. The default value of this parameter is "
+                             "'unspecified', which throws an exception during runtime. In order for "
+                             "the model to run the user must select 'true' or 'false'.");
           prm.declare_entry ("Fixed elastic time step", "1.e3",
                              Patterns::Double (0),
                              "The fixed elastic time step $dte$. Units: years if the "
@@ -479,7 +481,12 @@ namespace aspect
                                                                          n_fields,
                                                                          "Elastic shear moduli");
 
-          use_fixed_elastic_time_step = prm.get_bool ("Use fixed elastic time step");
+          if (prm.get ("Use fixed elastic time step") == "true")
+            use_fixed_elastic_time_step = true;
+          else if (prm.get ("Use fixed elastic time step") == "false")
+            use_fixed_elastic_time_step = false;
+          else
+            AssertThrow(false, ExcMessage("'Use fixed elastic time step' must be set to 'true' or 'false'"));
 
           use_stress_averaging = prm.get_bool ("Use stress averaging");
           if (use_stress_averaging)

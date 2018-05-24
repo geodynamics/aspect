@@ -3,30 +3,16 @@
 # to a user-specified constant elastic time step. This
 # fixed elastic time step is double the numerical time step. 
 # Viscoelastic stresses (sigma_xx, sigma_yy, sigma_xy) 
-# are tracked with compositional fields.
+# are tracked with compositional fields. The parameter
+# file is derived from the 2D viscoelastic_stress_build-up 
+# benchmark with modifications to the resolution, end time,
+# material properties and postprocessors.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
 
 #  Global parameters
-set Dimension                              = 2
-set Start time                             = 0
 set End time                               = 1e3
-set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = single Advection, iterated Stokes
-set Max nonlinear iterations               = 1
-set CFL number                             = 0.5
-set Maximum time step                      = 1000
 set Output directory                       = viscoelastic_fixed_elastic_time_step
-set Timing output frequency                = 1
-set Pressure normalization                 = surface
-set Surface pressure                       = 0.
-
-# Solver settings
-subsection Solver parameters
-  subsection Stokes solver parameters
-    set Linear solver tolerance = 1e-7
-    set Number of cheap Stokes solver steps = 500
-  end
-end
-
 
 # Model geometry (100x100 km, 5 km spacing)
 subsection Geometry model
@@ -40,82 +26,6 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications 
-subsection Mesh refinement
-  set Initial adaptive refinement        = 0
-  set Initial global refinement          = 0
-  set Time steps between mesh refinement = 0
-end
-
-# Element types
-subsection Discretization
-  set Composition polynomial degree     = 2
-  set Stokes velocity polynomial degree = 2
-  set Temperature polynomial degree     = 1
-end
-
-# Formulation classification
-subsection Formulation
-  set Enable elasticity = true
-end
-
-# Temperature boundary conditions
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = bottom, top, left, right
-end
-
-# Velocity boundary conditions
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = bottom y:function, right x:function
-  set Tangential velocity boundary indicators = top, left
-  subsection Function
-    set Variable names      = x,y
-    set Function constants  = cm=0.01, year=1, vel=3.154
-    set Function expression = if (x>50e3 , vel*cm/year, 0.); if (y<50e3 , vel*cm/year, 0.); 
-  end
-end
-
-# Number and name of compositional fields
-subsection Compositional fields
-  set Number of fields = 3
-  set Names of fields  = stress_xx, stress_yy, stress_xy
-end
-
-# Spatial domain of different compositional fields
-subsection Initial composition model
-  set Model name = function
-  subsection Function
-    set Variable names      = x,y
-    set Function constants  = 
-    set Function expression = 0; 0; 0;
-  end
-end
-
-# Composition boundary conditions
-subsection Boundary composition model
-  set Fixed composition boundary indicators = bottom, top, left, right
-  set List of model names = initial composition
-end
-
-# Temperature initial conditions
-subsection Initial temperature model
-  set Model name = function
-  subsection Function
-    set Function expression = 293
-  end
-end
-
-# Temperature boundary conditions
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators = bottom, top, left, right
-  set List of model names = box
-  subsection Box
-    set Bottom temperature = 293
-    set Left temperature   = 293
-    set Right temperature  = 293
-    set Top temperature    = 293
-  end
-end
 
 # Material model
 subsection Material model
@@ -134,14 +44,6 @@ subsection Material model
 
 end
 
-# Gravity model
-subsection Gravity model
-  set Model name = vertical
-  subsection Vertical
-    set Magnitude = 0.
-  end
-end
-
 # Post processing
 subsection Postprocess
   set List of postprocessors = velocity statistics, depth average
@@ -153,7 +55,3 @@ subsection Postprocess
   end
 end
 
-# Termination criteria
-subsection Termination criteria
- set Termination criteria = end time
-end
