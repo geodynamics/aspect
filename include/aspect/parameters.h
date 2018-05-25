@@ -373,6 +373,12 @@ namespace aspect
     typename Formulation::TemperatureEquation::Kind formulation_temperature_equation;
 
     /**
+     * This variable determines whether additional terms related to elastic forces
+     * are added to the Stokes equation.
+    */
+    bool                           enable_elasticity;
+
+    /**
      * @}
      */
 

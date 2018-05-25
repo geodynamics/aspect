@@ -32,6 +32,7 @@
 #include <deal.II/fe/mapping.h>
 #include <deal.II/fe/component_mask.h>
 #include <deal.II/numerics/data_postprocessor.h>
+#include <deal.II/base/signaling_nan.h>
 
 namespace aspect
 {
@@ -778,6 +779,38 @@ namespace aspect
         std::vector<double> rhs_melt_pc;
     };
 
+    /**
+     * A class for an elastic force term to be added to the RHS of the
+     * Stokes system, which can be attached to the
+     * MaterialModel::MaterialModelOutputs structure and filled in the
+     * MaterialModel::Interface::evaluate() function.
+     */
+    template <int dim>
+    class ElasticOutputs: public AdditionalMaterialOutputs<dim>
+    {
+      public:
+        ElasticOutputs(const unsigned int n_points)
+          : elastic_force(n_points, numbers::signaling_nan<Tensor<2,dim> >() )
+        {}
+
+        virtual ~ElasticOutputs()
+        {}
+
+        virtual void average (const MaterialAveraging::AveragingOperation operation,
+                              const FullMatrix<double>  &/*projection_matrix*/,
+                              const FullMatrix<double>  &/*expansion_matrix*/)
+        {
+          AssertThrow(operation == MaterialAveraging::AveragingOperation::none,ExcNotImplemented());
+          return;
+        }
+
+        /**
+         * Force tensor (elastic terms) on the right-hand side for the conservation of
+         * momentum equation (first part of the Stokes equation) in each
+         * quadrature point.
+         */
+        std::vector<Tensor<2,dim> > elastic_force;
+    };
 
 
     /**
