@@ -466,11 +466,11 @@ namespace aspect
           prm.declare_entry ("Minimum viscosity", "1e19",
                              Patterns::Double (0),
                              "Limit for the minimum viscosity in the model. "
-                             "Units: Pa s.");
+                             "Units: Pa \\, s.");
           prm.declare_entry ("Maximum viscosity", "1e24",
                              Patterns::Double (0),
                              "Limit for the maximum viscosity in the model. "
-                             "Units: Pa s.");
+                             "Units: Pa \\, s.");
         }
         prm.leave_subsection();
       }

@@ -926,7 +926,9 @@ namespace aspect
          * numerical order of magnitude when solving linear systems.
          * Specifically, the reference viscosity appears in the factor scaling
          * the pressure against the velocity. It is also used in computing
-         * dimension-less quantities.
+         * dimension-less quantities. You may want to take a look at the
+         * Kronbichler, Heister, Bangerth 2012 paper that describes the
+         * design of ASPECT for a description of this pressure scaling.
          *
          * @note The reference viscosity should take into account the complete
          * constitutive relationship, defined as the scalar viscosity times the

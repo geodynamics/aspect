@@ -326,7 +326,7 @@ namespace aspect
 
       // apply the top right block
       {
-        stokes_matrix.block(0,1).vmult(utmp, dst.block(1)); // B^T
+        stokes_matrix.block(0,1).vmult(utmp, dst.block(1)); // B^T or J^{up}
         utmp *= -1.0;
         utmp += src.block(0);
       }
