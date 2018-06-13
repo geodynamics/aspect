@@ -10417,7 +10417,114 @@ organization point of view.}
   since we do not guarantee that the \aspect{} application binary interface
   (ABI) will remain stable, even if it may not be necessary to actually change
   anything in the \textit{implementation} of your plugin.}
+  
+\subsection{How to write a cookbook}
+\label{sec:write-cookbook}
 
+\aspect{} has a number of cookbooks (see Section~\ref{sec:cookbooks}) that introduce certain features of the code
+to new users or explain how to set up a certain type of application model.
+If you have a model setup that fits into one of those categories and are willing
+to share it and write some explanation about it, we are always happy about that!
+We also keep a list of cookbooks we think would be great additions to \aspect{} as
+an \href{https://github.com/geodynamics/aspect/issues/2110}{issue on github}.
+
+All cookbooks consist of an input file for the model run, which is located in the
+\href{cookbooks/.}{cookbooks} folder, a section in
+the manual describing the setup, and -- if additional plugins are required to run the
+model -- the corresponding .cc file(s) located in a subdirectory of the cookbooks
+folder corresponding to the individual cookbook.
+
+\subsubsection{Parameter file}
+
+You can create the parameter file in the same way you would do it for any other model. 
+Beyond that, make sure to start the file with a comment that explains what this cookbook
+is about in a few sentences. After that, you will list all of the input parameters.
+In general, it makes sense to begin with the ones that are most important for the
+setup you want to show, and otherwise to group parameters and sections that are related to
+each other (like all boundary conditions or all initial conditions).
+To make the input file easy to understand for other users, it is a good practice to
+add a short comment to each section or important parameter used in the file, explaining
+what this input option accomplishes and why it is needed for the model setup.
+
+Once you have finalized your input file, you can put it into the \href{cookbooks/.}{cookbooks} folder.
+
+\subsubsection{Plugins and other additional file}
+
+In case you need other files (like shared libraries) to run your cookbook, you have to create a 
+new folder in the \href{cookbooks/.}{cookbooks} directory that is named after your cookbook 
+(with words divided by underscores). 
+Section~\ref{sec:write-plugin} explains how to add a \texttt{CMakeLists.txt} file to that
+directory so that your plugin can be compiled easily (see the bullet point starting with 
+``Put the  \texttt{my\_plugin.cc} file into a directory of your choice...''). 
+Note that after you have copied and renamed the \url{doc/plugin-CMakeLists.txt} file, 
+you have to modify it in the following way: in the command \verb!SET(TARGET "my_plugin")!, 
+replace \verb!"my_plugin"! by the name you want your shared library to have (usually the name of the cookbook), and in 
+\verb!ADD_LIBRARY(${TARGET} SHARED source_1.cc source_2.cc)!, replace \verb!source_1.cc source_2.cc!
+by the name of your .cc file. 
+
+\subsubsection{Section in the manual}
+
+Then you have to decide if the cookbook you want to contribute is a \textit{Simple setup}
+(that explains how to use one specific feature, but does not try to reproduce any
+earth-like setting, see Section~\ref{sec:cookbooks-simple}), a \textit{Geophysical setup} 
+(that teaches how to setup a specific type of geodynamic model like a global convection model, 
+a subduction zone or a mid-ocean ridge, see Section~\ref{sec:cookbooks-geophysical})
+or a \textit{Benchmark} (see Section~\ref{sec:cookbooks-benchmarks}).
+Depending on that choice, you will then start a new \verb!\subsubsection! in the
+\href{doc/manual/manual.tex}{manual.tex} file at the end of the
+corresponding subsection (Simple setups, Geophysical setups or Benchmarks). This is where
+your description of the model will go.
+
+In addition to the text in the manual, you also have to create a subfolder
+in the \href{doc/manual/cookbooks/.}{doc/manual/cookbooks} directory.
+This is the place where all figures and input file/code snippets that accompany the description
+go into.
+
+Note also one special case: If your setup is a benchmark, you will have to put your input file into the 
+\href{benchmarks/.}{benchmarks} folder rather than into the \href{cookbooks/.}{cookbooks} folder, 
+and you have to create the subfolder for your figures and code snippets in the 
+\href{doc/manual/cookbooks/benchmarks/.}{doc/manual/cookbooks/benchmarks} directory.
+
+To give you some guidelines on how to write the section in the manual, you can follow this general structure:
+\begin{itemize}
+\item Start with a short description of what feature the cookbook introduces or what
+  the model setup is meant to accomplish. If the setup comes from a publication, make sure
+  to mention that and include the reference.
+\item If the model uses a new plugin, describe the new feature this plugin introduces
+  and how this is implemented in the code. Ideally, this paragraph includes essential code
+  snippets from the plugin file that complement and illustrate the description in the text.
+  Place the code snippet in the corresponding subfolder you created in the
+  \href{doc/manual/cookbooks/.}{doc/manual/cookbooks} directory and
+  use the command 
+  \begin{verbatim}
+  \lstinline{\lstinputlisting[language=C++]{cookbooks/subfolder_name/code_snippet.cc}!
+  \end{verbatim}
+  to insert the code in the manual.tex file.
+\item Explain what the important input parameters in this setup are, what values you
+  set them to and why. Ideally, this description includes snippets from
+  the input file. You can place these snippets in the subfolder you created in the
+  \href{doc/manual/cookbooks/.}{doc/manual/cookbooks}
+  directory and include them in the manual.tex file using a command like
+  \begin{verbatim}
+  \lstinputlisting[language=prmfile]{cookbooks/subfolder_name/input_snippet.prm}!
+  \end{verbatim}
+\item Show the model results in form of figures and/or plots, accompanied by an explanation
+  of what happens in the model. This can also include a link to an animation of the model
+  you made and uploaded somewhere, for example on youtube.
+\item Finally, mention some ways the users could modify or extend the cookbook, such as
+  parameters to vary to get new and interesting results, or to better understand
+  the numerical methods or the physical processes occurring in the model. These can just be
+  suggestions, or you can also extend on these ideas by adding subsections that illustrate
+  how these modifications influence the model results.
+\end{itemize}
+
+And that's it, you have just created your first cookbook! Make a
+\href{https://guides.github.com/introduction/flow/}{pull request} to contribute it to the
+main repository! You can find more information on how to do that on 
+\href{https://github.com/geodynamics/aspect/blob/master/CONTRIBUTING.md}{our github page}. 
+
+You will get bonus points if you also create a test (see Section~\ref{sec:writing_tests}) that only runs the first time step
+(or a lower resolution version) of your cookbook. 
 
 \subsection{Materials, geometries, gravitation and other plugin types}
 \label{sec:plugins-concrete}
@@ -12038,9 +12145,27 @@ the \texttt{tests/} directory, modify it to use the new feature, check that the
 new feature does what it is supposed to do, and then just add the parameter file to
 the tests directory. You will then need to add another folder to that directory
 that is named like the parameter file, and add the model output files that
-prove that the feature is working (rename \texttt{log.txt} to
+prove that the feature is working (usually, these are the log file and the statistics 
+file, and you will have to rename \texttt{log.txt} to
 \texttt{screen-output} for historical reasons). The test and output files should
 be as small and quick to run as possible.
+
+An easy way to create all of the files you need is to copy the folder of an existing 
+test and rename it to the name of your parameter file. you then have to run \texttt{cmake}
+so that your new test is added to the test suite. Then you can run it by executing 
+\begin{lstlisting}[frame=single,language=ksh] 
+    ctest -R name_of_your_test -V
+\end{lstlisting}
+in your \aspect{} build directory and you will get an output telling you if the test has 
+passed or failed (and why it failed). If you have just copied the output files of a different 
+tests in the \texttt{tests/} directory to make your test, you of course expect your test to fail. 
+In this case, the output you see should contain a line that starts with \texttt{******* Check} 
+and then just shows two paths. Those two paths are the one where the output files of the test 
+are located (the ones you just created by running the test) and where the reference output of the 
+test is located (the one you created by copying an existing test). So you can copy this whole line
+and replace \texttt{******* Check} by \texttt{cp} to copy the output you just created over the 
+reference output. Of course, you should only do that after you have made sure that these output 
+files show that the feature you want to test is working as expected. 
 
 When you make a new test part of a pull request on GitHub, then as explained
 above that will lead to a run of all tests -- including your new one -- on a
