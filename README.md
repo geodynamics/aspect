@@ -62,12 +62,25 @@ For more information see:
  - For questions on the source code of ASPECT, portability, installation, etc., use the [aspect-devel](http://lists.geodynamics.org/cgi-bin/mailman/listinfo/aspect-devel) mailing list. This mailing list is where the ASPECT users and developers all hang out.
  - ASPECT is primarily based on the deal.II library. If you have particular questions about deal.II, contact the [deal.II discussion groups](https://www.dealii.org/mail.html).
  - In case of more general questions about mantle convection, you can contact the [CIG mantle convection mailing lists](http://lists.geodynamics.org/cgi-bin/mailman/listinfo/cig-MC).
- - If you have specific questions about ASPECT that are not suitable for public and archived mailing lists, you can contact the primary developers:
+ - ASPECT is being developed by a large, collaborative, and inclusive community. It is currently maintained by the following people:
+     - Wolfgang Bangerth: bangerth@math.colostate.edu
+     - Juliane Dannberg: judannberg@gmail.com 
+     - Rene Gassmoeller: rene.gassmoeller@mailbox.org
+     - Timo Heister: heister@clemson.edu 
 
-    - Wolfgang Bangerth: bangerth@math.colostate.edu
-    - Timo Heister: heister@clemson.edu
-    - Rene Gassmoeller: rene.gassmoeller@mailbox.org
-    - Juliane Dannberg: judannberg@gmail.com
+ - The following people have significantly contributed and furthered ASPECT's goals and are therefore Principal Developers:
+
+   - Jacky Austermann
+   - Wolfgang Bangerth
+   - Juliane Dannberg
+   - Menno Fraters
+   - Rene Gassmoeller
+   - Anne Glerum
+   - Timo Heister
+   - John Naliboff
+
+ - A complete and growing list of the many authors that have contributed over the years can be found at [github](https://github.com/geodynamics/aspect/graphs/contributors)
+ - If you have specific questions about ASPECT that are not suitable for public and archived mailing lists, feel free to contact the maintainers or principle developers.
 
 
 
