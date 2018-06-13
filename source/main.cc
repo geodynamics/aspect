@@ -509,14 +509,14 @@ run_simulator(const std::string &input_as_string,
     }
   else if (output_plugin_graph)
     {
-      aspect::Simulator<dim> flow_problem(MPI_COMM_WORLD, prm);
+      aspect::Simulator<dim> simulator(MPI_COMM_WORLD, prm);
       if (i_am_proc_0)
-        flow_problem.write_plugin_graph (std::cout);
+        simulator.write_plugin_graph (std::cout);
     }
   else
     {
-      aspect::Simulator<dim> flow_problem(MPI_COMM_WORLD, prm);
-      flow_problem.run();
+      aspect::Simulator<dim> simulator(MPI_COMM_WORLD, prm);
+      simulator.run();
     }
 }
 
