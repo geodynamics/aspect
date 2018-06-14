@@ -155,7 +155,7 @@ namespace aspect
                                           "rk2",
                                           "Second Order Runge Kutta integrator "
                                           "$y_{n+1} = y_n + \\Delta t\\, v(t_{n+1/2}, y_{n} + \\frac{1}{2} k_1)$ "
-                                          "where $k_1 = y_n + \\frac{1}{2} \\Delta t\, v(t_{n}, y_{n})$")
+                                          "where $k_1 = \\Delta t\\, v(t_{n}, y_{n})$")
     }
   }
 }
