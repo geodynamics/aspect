@@ -744,15 +744,15 @@ namespace aspect
                              "List of viscosity prefactors, $A$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. "
-                             "Units: $Pa^{-1} m^{m_\\text{diffusion}} s^{-1}$");
+                             "Units: $Pa^{-1} m^{m_{\\text{diffusion}}} s^{-1}$");
           prm.declare_entry ("Stress exponents for diffusion creep", "1",
                              Patterns::List(Patterns::Double(0)),
-                             "List of stress exponents, $n_\\text{diffusion}$, for background material and compositional fields, "
+                             "List of stress exponents, $n_{\\text{diffusion}}$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value.  Units: None");
           prm.declare_entry ("Grain size exponents for diffusion creep", "3",
                              Patterns::List(Patterns::Double(0)),
-                             "List of grain size exponents, $m_\\text{diffusion}$, for background material and compositional fields, "
+                             "List of grain size exponents, $m_{\\text{diffusion{}$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. Units: None");
           prm.declare_entry ("Activation energies for diffusion creep", "375e3",
@@ -772,10 +772,10 @@ namespace aspect
                              "List of viscosity prefactors, $A$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. "
-                             "Units: $Pa^{-n_\\text{dislocation}} s^{-1}$");
+                             "Units: $Pa^{-n_{\\text{dislocation}}} s^{-1}$");
           prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
                              Patterns::List(Patterns::Double(0)),
-                             "List of stress exponents, $n_\\text{dislocation}$, for background material and compositional fields, "
+                             "List of stress exponents, $n_{\\text{dislocation}}$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value.  Units: None");
           prm.declare_entry ("Activation energies for dislocation creep", "530e3",
@@ -807,7 +807,7 @@ namespace aspect
           // Stress limiter parameters
           prm.declare_entry ("Stress limiter exponents", "1.0",
                              Patterns::List(Patterns::Double(0)),
-                             "List of stress limiter exponents, $n_\\text{lim}$, "
+                             "List of stress limiter exponents, $n_{\\text{lim}}$, "
                              "for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "Units: none.");
@@ -1022,9 +1022,9 @@ namespace aspect
                                    "should carefully check how the viscous prefactor and grain size "
                                    "terms are defined. "
                                    "\n\n "
-                                   "One may select to use the diffusion ($v_\\text{diff}$; $n=1$, $m!=0$), "
-                                   "dislocation ($v_\\text{disl}$, $n>1$, $m=0$) or composite "
-                                   "$\\frac{v_\\text{diff}*v_\\text{disl}}{v_\\text{diff}+v_\\text{disl}}$ equation form. "
+                                   "One may select to use the diffusion ($v_{\\text{diff}}$; $n=1$, $m!=0$), "
+                                   "dislocation ($v_{\\text{disl}}$, $n>1$, $m=0$) or composite "
+                                   "$\\frac{v_{\\text{diff}}*v_{\\text{disl}}}{v_{\\text{diff}}+v_{\\text{disl}}}$ equation form. "
                                    "\n\n "
                                    "Viscosity is limited through one of two different `yielding' mechanisms. "
                                    "\n\n"
@@ -1073,7 +1073,7 @@ namespace aspect
                                    "Viscous stress may also be limited by a non-linear stress limiter "
                                    "that has a form similar to the Peierls creep mechanism. "
                                    "This stress limiter assigns an effective viscosity "
-                                   "$\\sigma_\\text{eff} = \\frac{\\tau_y}{2\\varepsilon_y} "
+                                   "$\\sigma_{\\text{eff}} = \\frac{\\tau_y}{2\\varepsilon_y} "
                                    "{\\frac{\\varepsilon_{ii}}{\\varepsilon_y}}^{\\frac{1}{n_y}-1}$ "
                                    "Above $\\tau_y$ is a yield stress, $\\varepsilon_y$ is the "
                                    "reference strain rate, $\\varepsilon_{ii}$ is the strain rate "
