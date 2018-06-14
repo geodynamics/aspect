@@ -100,7 +100,7 @@ namespace aspect
      * includes this term explicitly in the right-hand side vector to preserve
      * the symmetry of the matrix.
      * This class approximates this term as
-     * $- \nabla \cdot \mathbf{u} = \frac{1}{\rho^{\ast}} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u}$
+     * $- \nabla \cdot \mathbf{u} = \frac{1}{\rho^{\ast}} \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u}$
      */
     template <int dim>
     class StokesReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>,
@@ -120,7 +120,7 @@ namespace aspect
      * includes this term implicitly in the matrix,
      * which is therefore not longer symmetric.
      * This class approximates this term as
-     * $ - \nabla \cdot \mathbf{u} - \frac{1}{\rho^{\ast}} * \frac{\partial rho{^\ast}}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u} = 0$
+     * $ - \nabla \cdot \mathbf{u} - \frac{1}{\rho^{\ast}} \frac{\partial rho{^\ast}}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u} = 0$
      */
     template <int dim>
     class StokesImplicitReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>,
@@ -140,7 +140,7 @@ namespace aspect
      * $ - \nabla \cdot \mathbf{u} = \kappa \rho \mathbf{g} \cdot \mathbf{u}$
      * where $\kappa$ is the compressibility provided by the material model,
      * which is frequently computed as
-     * $\kappa = \frac{1}{\rho} * \frac{\partial rho}{\partial p}$.
+     * $\kappa = \frac{1}{\rho} \frac{\partial rho}{\partial p}$.
      */
     template <int dim>
     class StokesIsothermalCompressionTerm : public Assemblers::Interface<dim>,
