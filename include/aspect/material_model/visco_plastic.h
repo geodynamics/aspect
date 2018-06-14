@@ -148,7 +148,7 @@ namespace aspect
 
         double get_min_strain_rate() const;
 
-      protected:
+      private:
 
         double reference_T;
 
@@ -160,8 +160,6 @@ namespace aspect
 
         double grain_size;
 
-        std::vector<double> compute_volume_fractions(
-          const std::vector<double> &compositional_fields) const;
         std::vector<double> densities;
         std::vector<double> thermal_expansivities;
         std::vector<double> thermal_diffusivities;
@@ -204,7 +202,7 @@ namespace aspect
           drucker_prager
         } yield_mechanism;
 
-        double average_value (const std::vector<double> &composition,
+        double average_value (const std::vector<double> &volume_fractions,
                               const std::vector<double> &parameter_values,
                               const averaging_scheme &average_type) const;
 
