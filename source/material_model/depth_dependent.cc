@@ -33,6 +33,31 @@ namespace aspect
   {
     template <int dim>
     void
+    DepthDependent<dim>::initialize()
+    {
+      base_model->initialize();
+    }
+
+
+
+    template <int dim>
+    void
+    DepthDependent<dim>::update()
+    {
+      base_model->update();
+
+      // we get time passed as seconds (always) but may want
+      // to reinterpret it in years
+      if (this->convert_output_to_years())
+        viscosity_function.set_time (this->get_time() / year_in_seconds);
+      else
+        viscosity_function.set_time (this->get_time());
+    }
+
+
+
+    template <int dim>
+    void
     DepthDependent<dim>::read_viscosity_file(const std::string &filename,
                                              const MPI_Comm &comm)
     {
