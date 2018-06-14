@@ -23,8 +23,10 @@
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
 #include <deal.II/grid/grid_generator.h>
-#include <deal.II/grid/tria_boundary_lib.h>
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
+#include <deal.II/grid/tria_boundary_lib.h>
+#endif
 
 namespace aspect
 {
