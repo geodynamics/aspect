@@ -80,7 +80,7 @@ For more information see:
    - John Naliboff
 
  - A complete and growing list of the many authors that have contributed over the years can be found at [github](https://github.com/geodynamics/aspect/graphs/contributors)
- - If you have specific questions about ASPECT that are not suitable for public and archived mailing lists, feel free to contact the maintainers or principle developers.
+ - If you have specific questions about ASPECT that are not suitable for public and archived mailing lists, feel free to contact the maintainers or principal developers.
 
 
 
