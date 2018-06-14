@@ -529,7 +529,7 @@ tangential type on subsets of the boundary $\Gamma=\partial\Omega$:
 \begin{align}
   \mathbf u &= 0 & \qquad &\textrm{on $\Gamma_{0,\mathbf u}$},
   \\
-  \mathbf u &= \mathbf u_\text{prescribed} & \qquad &\textrm{on
+  \mathbf u &= \mathbf u_{\text{prescribed}} & \qquad &\textrm{on
   $\Gamma_{\text{prescribed},\mathbf u}$},
   \\
   \mathbf n \cdot \mathbf u &= 0 & \qquad &\textrm{on $\Gamma_{\parallel,\mathbf
@@ -575,8 +575,8 @@ simulated).
 \end{itemize}
 We require that one of these boundary conditions hold at each
 point for both velocity and temperature, i.e.,
-$\Gamma_{0,\mathbf u}\cup\Gamma_{\text{prescribed},\mathbf
-  u}\cup\Gamma_{\parallel,\mathbf u}\cup\Gamma_{\text{traction},\mathbf
+$\Gamma_{0,\mathbf u}\cup\Gamma_{{\text{prescribed}}\mathbf
+  u}\cup\Gamma_{\parallel,\mathbf u}\cup\Gamma_{{\text{traction}}\mathbf
   u}=\Gamma$ and
 $\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$. 
 
@@ -1288,7 +1288,7 @@ form (assuming one uses only a single compositional field)
 \end{align*}
 where in the simplest case one could postulate
 \begin{align*}
-  q(T,c) = -A c + B \max\{T-T_\text{healing},0\} c.
+  q(T,c) = -A c + B \max\{T-T_{\text{healing}},0\} c.
 \end{align*}
 One would then use this compositional field in the definition of the viscosity
 of the material: more damage means lower viscosity because the rocks are weaker.
@@ -2143,7 +2143,7 @@ $\xi = \eta_0 \phi^{-n}$ with $n \approx 1$.
 To avoid the density gradients in Equation~\eqref{eq:stokes-2-melt}, which would have to be specified individually 
 for each material model by the user, we can use the same method as for the mass conservation (described in Section~\ref{sec:Boussinesq}) and assume the change in solid density is dominated by the change in static pressure, 
 which can be written as
-$\nabla p_s \approx \nabla p_\text{static} \approx \rho_s \textbf{g}$.
+$\nabla p_s \approx \nabla p_{\text{static}} \approx \rho_s \textbf{g}$.
 This finally allows us to write
 \begin{equation*}
 \frac{1}{\rho_s} \nabla \rho_s
@@ -2187,7 +2187,7 @@ Hence, we do not consider the elastic deformation terms that would appear on the
 \eqref{eq:stokes-1-melt} and Equation~\eqref{eq:stokes-3-melt} and that include the elastic and compaction stress 
 evolution parameters $\xi_\tau$ and $\xi_p$. Moreover, our viscosity parameters $\eta$ and $\xi$ only cover viscous 
 deformation instead of combining visco-elasticity and plastic failure. This would require a modification of the rheologic 
-law using effective shear and compaction viscosities $\eta_\text{eff}$ and $\xi_\text{eff}$ combining a failure criterion 
+law using effective shear and compaction viscosities $\eta_{\text{eff}}$ and $\xi_{\text{eff}}$ combining a failure criterion 
 and shear and compaction visco-elasticities.}
 
 Moreover, melt transport requires an advection equation for the porosity field $\phi$:
@@ -2290,7 +2290,7 @@ model in a 2D annulus with free-slip velocity boundary conditions.
 
 \begin{figure}[tbp]
   \centering
-  \includegraphics[width=0.8\textwidth]{rigid_rotation}
+  \includegraphics[width=0.8\textwidth]{rigid_rotation.png}
   \caption{\it Example of nullspace removal. 
 On the left the nullspace (a rigid rotation) is removed, and the velocity vectors accurately 
 show the mantle flow. On the right there is a significant clockwise rotation to the velocity 
@@ -3073,7 +3073,7 @@ The purpose of these files is as follows:
 
 \begin{figure}[tbp]
   \centering
-  \includegraphics[width=0.6\textwidth]{depthaverage2}
+  \includegraphics[width=0.6\textwidth]{depthaverage2.png}
   \caption{\it Example output for depth average statistics. On the left axis are 13 time
   steps, on the right is the depth (from the top at 0 to the bottom of the mantle on the
   far right), and the upwards pointing axis is the average temperature. This
@@ -3252,17 +3252,17 @@ In order to visualize one time step, follow these steps:%
   \phantom{.}
   \hfill
   \subfigure[]{
-    \includegraphics[width=0.24\textwidth]{viz/visit/visit-1}
+    \includegraphics[width=0.24\textwidth]{viz/visit/visit-1.png}
     \label{fig:visit-1:a}
   }
   \hfill
   \subfigure[]{
-    \includegraphics[width=0.24\textwidth]{viz/visit/visit-2}
+    \includegraphics[width=0.24\textwidth]{viz/visit/visit-2.png}
     \label{fig:visit-1:b}
   }
   \hfill
   \subfigure[]{
-    \includegraphics[width=0.24\textwidth]{viz/visit/visit-3}
+    \includegraphics[width=0.24\textwidth]{viz/visit/visit-3.png}
     \label{fig:visit-1:c}
   }
   \hfill
@@ -3276,12 +3276,12 @@ In order to visualize one time step, follow these steps:%
   \phantom{.}
   \hfill
   \subfigure[]{
-    \includegraphics[width=0.48\textwidth]{viz/visit/visit-4}
+    \includegraphics[width=0.48\textwidth]{viz/visit/visit-4.png}
     \label{fig:visit-2:a}
   }
   \hfill
   \subfigure[]{
-    \includegraphics[width=0.48\textwidth]{viz/visit/visit-5}
+    \includegraphics[width=0.48\textwidth]{viz/visit/visit-5.png}
     \label{fig:visit-2:b}
   }
   \hfill
@@ -3480,9 +3480,9 @@ the entire command into the width of the page.
   \centering
   \phantom.
   \hfill
-  \includegraphics[width=0.4\textwidth]{viz/statistics/1}
+  \includegraphics[width=0.4\textwidth]{viz/statistics/1.png}
   \hfill
-  \includegraphics[width=0.4\textwidth]{viz/statistics/2}
+  \includegraphics[width=0.4\textwidth]{viz/statistics/2.png}
   \hfill
   \phantom.
   \caption{\it Visualizing the statistics file obtained from the example in
@@ -4434,9 +4434,9 @@ simulation.
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/visit0000}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/visit0000.png}
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/visit0001}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/visit0001.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Initial temperature and velocity field (left)
@@ -4509,9 +4509,9 @@ through these two boundaries disappears as we refine the mesh further.
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/velocity}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/velocity.png}
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/heatflux}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/heatflux.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Root mean square and maximal velocity as a
@@ -4536,7 +4536,7 @@ more iterations to solve these equations.
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/iterations}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/iterations.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Number of linear iterations required to solve
@@ -4569,9 +4569,9 @@ The structures of the flow pattern also become smaller and smaller.
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/ra_1e2_visit0000}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/ra_1e2_visit0000.png}
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/ra_1e6_visit0001}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/ra_1e6_visit0001.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Temperature fields at the end of a
@@ -4584,9 +4584,9 @@ The mesh on the right is clearly too coarse to resolve the structure of the solu
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/ra_1e6_velocity}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/ra_1e6_velocity.png}
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/ra_1e6_heatflux}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/ra_1e6_heatflux.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Velocities (left) and heat flux across the
@@ -4662,9 +4662,9 @@ do another global refinement, bringing us to refinement levels 4, 5 and finally
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/steps_unknowns}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/steps_unknowns.png}
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/steps_heatflux}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/steps_heatflux.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Refinement in stages. Total number
@@ -6212,10 +6212,10 @@ it is possible to produce many interesting flow fields such as the ones visualiz
 \begin{figure}
     \centering
   \subfigure[]{
-    \includegraphics[width=.48\textwidth]{cookbooks/prescribed_velocity/corner_flow}}
+    \includegraphics[width=.48\textwidth]{cookbooks/prescribed_velocity/corner_flow.png}}
   ~
   \subfigure[]{
-    \includegraphics[width=.48\textwidth]{cookbooks/prescribed_velocity/circle}}
+    \includegraphics[width=.48\textwidth]{cookbooks/prescribed_velocity/circle.png}}
     \caption{Examples of flows with prescribed internal velocities, as described in Section \ref{sec:prescribed-velocities}.}
     \label{fig:prescribed-velocity}
 \end{figure}
@@ -6522,11 +6522,11 @@ player window to select the highest resolution to see all the details of this
 video.}
 
 \begin{figure}[tb]
-\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/x-movie0000}
+\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/x-movie0000.png}
 \hfill
-\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/x-movie0008}
+\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/x-movie0008.png}
 \hfill
-\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/x-movie1000}
+\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/x-movie1000.png}
 \caption{\it Simple convection in a quarter of an annulus: Snapshots of the
 temperature field at times $t=0$, $t=1.2\cdot 10^7$ years (time step 2135), and
 $t=10^9$ years (time step 25,662). The bottom right part of each figure shows an
@@ -6553,9 +6553,9 @@ In the following, let us pick apart this input file:
   the simplest material model \aspect{} has to offer where the viscosity is
   constant (here, we set it to $\eta=10^{22} \text{Pa}\;\text{s}$) and so are
   all other parameters except for the density which we choose to be
-  $\rho(T)=\rho_0(1-\alpha (T-T_\text{ref}))$ with $\rho_0=3300
+  $\rho(T)=\rho_0(1-\alpha (T-T_{\text{ref}}))$ with $\rho_0=3300
   \text{kg}\;\text{m}^{-3}$, $\alpha=4\cdot 10^{-5} \text{K}^{-1}$ and
-  $T_\text{ref}=293 \text{K}$. The remaining material parameters remain at their
+  $T_{\text{ref}}=293 \text{K}$. The remaining material parameters remain at their
   default values and you can find their values described in the documentation of
   the \texttt{simple} material model in
   Sections~\ref{parameters:Material_20model} and
@@ -6686,9 +6686,9 @@ overturning has been mixed sufficiently to allow plumes to rise or sink through
 the entire depth of the mantle.
 
 \begin{figure}[tb]
-\includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/rms}
+\includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/rms.png}
 \hfill
-\includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/depth_average_temperature}
+\includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/depth_average_temperature.png}
 \caption{\it Simple convection in a quarter of an annulus. Left: Root mean
 square values of the velocity field. The initial spike (off the scale) is due to
 the overturning of the unstable layering of the temperature. Convection is suppressed for the
@@ -6770,9 +6770,9 @@ other.
 
 
 \begin{figure}[tb]
-  \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d/heat-flux}
+  \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d/heat-flux.png}
   \hfill
-  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/heat-flux-noshear}
+  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/heat-flux-noshear.png}
   \caption{\it Simple convection in a quarter of an annulus. Left: Heat flux
   through the core-mantle and mantle-air boundaries of the domain for the
   model with shear heating. Right: Same for a model without shear heating.}
@@ -6781,9 +6781,9 @@ other.
 
 
 \begin{figure}[tb]
-  \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d/avg-temperature}
+  \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d/avg-temperature.png}
   \hfill
-  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/avg-temperature-noshear}
+  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/avg-temperature-noshear.png}
   \caption{\it Simple convection in a quarter of an annulus. Left: Average
   temperature throughout the model for the
   model with shear heating. Right: Same for a model without shear heating.}
@@ -6844,7 +6844,7 @@ corresponding movie can be found at \url{http://youtu.be/j63MkEc0RRw}.
 
 \begin{figure}[tb]
 \centering
-\includegraphics[width=0.7\textwidth]{cookbooks/shell_simple_3d/x-movie0700}
+\includegraphics[width=0.7\textwidth]{cookbooks/shell_simple_3d/x-movie0700.png}
 \caption{\it Convection in a spherical shell: Snapshot of
 isosurfaces of the temperature field at time $t\approx 1.06\cdot 10^9$ years
 with a quarter of the geometry cut away. The surface shows
@@ -6968,9 +6968,9 @@ TW for the core-mantle boundary, and an estimated heat loss due to cooling of
 the mantle of 7--15 TW (values again taken from Wikipedia).
 
 \begin{figure}
-  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_3d/heatflux}
+  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_3d/heatflux.png}
   \hfill
-  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_3d/velocities}
+  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_3d/velocities.png}
   \caption{\it Evaluating the 3d spherical shell model. Left: Outward heat
   fluxes through the inner and outer boundaries of the shell. Right: Average
   and maximal velocities in the mantle.}
@@ -7486,7 +7486,7 @@ adiabatic conditions and gravity model.
 The viscosity in this model is computed as the product of a profile $\eta_r(z)$, where $z$ corresponds to the depth direction of the chosen geometry model, and a 
 term that describes the dependence on temperature:
 \begin{align*}
-\eta(z,T) = \eta_r(z) \eta_0 \exp\left(-A \frac{T - T_\text{adi}}{T_\text{adi}}\right),
+\eta(z,T) = \eta_r(z) \eta_0 \exp\left(-A \frac{T - T_{\text{adi}}}{T_{\text{adi}}}\right),
 \end{align*}
 where $A$ and $\eta_0$ are constants determined in the input file via the parameters 
 \texttt{Viscosity} and \texttt{Thermal viscosity exponent}, and $\eta_r(z)$ is a stepwise constant 
@@ -7532,9 +7532,9 @@ the data we provided in the \url{data/adiabatic-conditions/ascii-data/isentrope_
 is used in our model. 
 
 \begin{figure}
-  \includegraphics[width=0.48\textwidth]{cookbooks/burnman/temperature}
+  \includegraphics[width=0.48\textwidth]{cookbooks/burnman/temperature.png}
   \hfill
-  \includegraphics[width=0.48\textwidth]{cookbooks/burnman/viscosity}
+  \includegraphics[width=0.48\textwidth]{cookbooks/burnman/viscosity.png}
   \caption{\it Compressible convection in a 2d spherical shell, using a reference profile exported 
                form BurnMan, which is based on the Birch-Murnaghan equation of state. The figure shows the
                state at the end of the model evolution over 260\,Ma.}
@@ -7574,7 +7574,7 @@ the state of the model -- such as the root mean square velocity -- are similar b
 
 \begin{figure}
 \centering
-  \includegraphics[width=0.95\textwidth]{cookbooks/burnman/comparison}
+  \includegraphics[width=0.95\textwidth]{cookbooks/burnman/comparison.pdf}
   \caption{\it Comparison between the anelastic liquid approximation, 
                the truncated anelastic liquid approximation 
                and the isothermal compression approximation, 
@@ -7585,7 +7585,7 @@ the state of the model -- such as the root mean square velocity -- are similar b
 
 \begin{figure}
 \centering
-  \includegraphics[width=0.5\textwidth]{cookbooks/burnman/vrms}
+  \includegraphics[width=0.5\textwidth]{cookbooks/burnman/vrms.pdf}
   \caption{\it Comparison between the anelastic liquid approximation, 
                the truncated anelastic liquid approximation 
                and the isothermal compression approximation,
@@ -7605,13 +7605,13 @@ will assign very high viscosities at low temperature thermal boundary layers. Th
 pseudo-brittle rheology described in \cite{MD04} was developed to limit the strength of
 lithosphere at low temperature. The effective viscosity can be described as the harmonic mean
 of two non-Newtonian rheologies:
-\[v_\text{eff} = \left(\frac{1}{v_\text{eff}^v}+\frac{1}{v_\text{eff}^p}\right)^{-1}\]
+\[v_{\text{eff}} = \left(\frac{1}{v_{\text{eff}}^v}+\frac{1}{v_{\text{eff}}^p}\right)^{-1}\]
 where
 \begin{align*}
-  v_\text{eff}^v = B \left(\frac{\dot{\epsilon}}{\dot{\epsilon}_{ref}}\right)^{-1+1/n_v}
+  v_{\text{eff}}^v = B \left(\frac{\dot{\epsilon}}{\dot{\epsilon}_{ref}}\right)^{-1+1/n_v}
   \exp\left(\frac{E_a +V_a \rho_m g z}{n_v R T}\right),
   \\
-  v_\text{eff}^p = (\tau_0 + \gamma \rho_m g z) \left( \frac{\dot{\epsilon}^{-1+1/n_p}}
+  v_{\text{eff}}^p = (\tau_0 + \gamma \rho_m g z) \left( \frac{\dot{\epsilon}^{-1+1/n_p}}
   {\dot{\epsilon}_{ref}^{1/n_p}} \right),
 \end{align*}
 where $B$ is a scaling constant; $\dot{\epsilon}$ is defined as the quadratic sum of the
@@ -7676,8 +7676,8 @@ The yield strength $\sigma_y$ is a function of pressure, cohesion and angle of f
 (see Drucker-Prager material model in Section \ref{parameters:Material_20model}),
 and the effective viscosity is then computed as follows:
 \[
-\mu_\text{eff} = \left( \frac{1}{ \frac{\sigma_y}{2 \dot{\epsilon}}+
-\mu_\text{min}} + \frac{1}{\mu_\text{max}}  \right)^{-1}
+\mu_{\text{eff}} = \left( \frac{1}{ \frac{\sigma_y}{2 \dot{\epsilon}}+
+\mu_{\text{min}}} + \frac{1}{\mu_{\text{max}}}  \right)^{-1}
 \]
 where $\dot{\epsilon}$ is the square root of the second invariant of the deviatoric strain rate.
 The viscosity cutoffs insure that the viscosity remains within computationally acceptable values.
@@ -7722,7 +7722,7 @@ shown in Fig. (\ref{fig:extcompr}).
 
 \begin{figure}
    \centering
-   \includegraphics[width=0.7\textwidth]{cookbooks/crustal_deformation/grids}
+   \includegraphics[width=0.7\textwidth]{cookbooks/crustal_deformation/grids.png}
    \caption{\it Mesh evolution during the first timestep (refinement is based on strain rate).}
    \label{fig:meshes}
 \end{figure}
@@ -7735,7 +7735,7 @@ $35^\circ$ in compression, both of which correspond to the reported Arthur angle
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{cookbooks/crustal_deformation/both}
+  \includegraphics[width=\textwidth]{cookbooks/crustal_deformation/both.png}
   \caption{\it Finite element mesh, velocity, viscosity and strain rate fields
   in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr.}
   \label{fig:extcompr}
@@ -7760,7 +7760,7 @@ fault which connects them.
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{cookbooks/crustal_deformation/bottombc2}
+  \includegraphics[width=\textwidth]{cookbooks/crustal_deformation/bottombc2.png}
   \caption{\it Basal velocity boundary conditions and corresponding 
   strain rate field for the 3D model.} 
   \label{fig:bottombc}
@@ -7860,7 +7860,7 @@ are chosen in a way so that the equations are non-dimensional.
 The required heating model and changes to the material model are implemented in a shared library
 (\url{cookbooks/inner_core_convection/inner_core_convection.cc}). 
 
-In the non-dimensional form of the equations derived by \cite{Deguen2013}, we solve for the potential temperature $T = \tilde{T}-T_\text{is}$ ($\tilde{T}$ is the temperature field, $T_\text{is}$ the isentropic -- also called adiabatic -- temperature). This allows to solve the temperature field with simple boundary conditions ($T=0$), even if the temperature of the inner core boundary evolves with time, defined as the intersection between the isentrope and the liquidus of the material in the outer core.  
+In the non-dimensional form of the equations derived by \cite{Deguen2013}, we solve for the potential temperature $T = \tilde{T}-T_{\text{is}}$ ($\tilde{T}$ is the temperature field, $T_{\text{is}}$ the isentropic -- also called adiabatic -- temperature). This allows to solve the temperature field with simple boundary conditions ($T=0$), even if the temperature of the inner core boundary evolves with time, defined as the intersection between the isentrope and the liquidus of the material in the outer core.  
 The equations for inner core convection in the approximation of no growth (equation 59 for the potential temperature) are
 
 \begin{align}
@@ -8571,9 +8571,9 @@ in sign between the implementation and the description in \cite{DMGT11}).
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solcx-solution}
+    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solcx-solution.png}
     \hfill
-    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solcx-solution-pressure}
+    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solcx-solution-pressure.png}
     \caption{\it SolCx Stokes benchmark. Left: The density perturbation field
     and overlaid to it some velocity vectors. The viscosity is very large in the
       right hand, leading to a stagnant flow in this region. Right: The
@@ -8709,9 +8709,9 @@ of global refinement is visualized in Fig.~\ref{fig:solkz}.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solkz-solution}
+    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solkz-solution.png}
     \hfill
-    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solkz-solution-pressure}
+    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solkz-solution-pressure.png}
     \caption{\it SolKz Stokes benchmark. Left: The density perturbation field
     and overlaid to it some velocity vectors. The viscosity grows exponentially
       in the vertical direction, leading to small velocities at the top
@@ -8740,9 +8740,9 @@ Fig.~\ref{fig:inclusion}. As before, for details we refer to
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/inclusion-solution}
+    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/inclusion-solution.png}
     \hfill
-    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/inclusion-solution-pressure}
+    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/inclusion-solution-pressure.png}
     \caption{\it Inclusion Stokes benchmark. Left: The viscosity field
       when interpolated onto the mesh (internally, the ``exact'' viscosity
       field -- large inside a circle, small outside -- is used),
@@ -8970,9 +8970,9 @@ and a second-order convergence rate for the pressure.
 
 \begin{figure}
 \centering
-\includegraphics[width=.3\textwidth]{cookbooks/benchmarks/hollow_sphere/vel}
-\includegraphics[width=.3\textwidth]{cookbooks/benchmarks/hollow_sphere/vel2}
-\includegraphics[width=.3\textwidth]{cookbooks/benchmarks/hollow_sphere/pressure}
+\includegraphics[width=.3\textwidth]{cookbooks/benchmarks/hollow_sphere/vel.png}
+\includegraphics[width=.3\textwidth]{cookbooks/benchmarks/hollow_sphere/vel2.png}
+\includegraphics[width=.3\textwidth]{cookbooks/benchmarks/hollow_sphere/pressure.png}
 \caption{Velocity and pressure fields for the hollow sphere benchmark.}
 \label{fig:hollow-sphere-vp}
 \end{figure}
@@ -9017,9 +9017,9 @@ as shown in Fig.~\ref{fig:annulus-vp}.
 
 \begin{figure}
 \centering
-\includegraphics[width=.9\textwidth]{cookbooks/benchmarks/annulus/pressures}
-\includegraphics[width=.9\textwidth]{cookbooks/benchmarks/annulus/density}
-\includegraphics[width=.9\textwidth]{cookbooks/benchmarks/annulus/velocities2}
+\includegraphics[width=.9\textwidth]{cookbooks/benchmarks/annulus/pressures.png}
+\includegraphics[width=.9\textwidth]{cookbooks/benchmarks/annulus/density.png}
+\includegraphics[width=.9\textwidth]{cookbooks/benchmarks/annulus/velocities2.png}
 \caption{Pressure, density and velocity fields for $k=0,1,2,3$ for the 2D annulus benchmark.}
 \label{fig:annulus-vp}
 \end{figure}
@@ -9135,9 +9135,9 @@ than 2\% is a good indication that \aspect{} implements the equations correctly.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.55\textwidth]{cookbooks/benchmarks/stokes/stokes-velocity}
+    \includegraphics[width=0.55\textwidth]{cookbooks/benchmarks/stokes/stokes-velocity.png}
     \hfill
-    \includegraphics[width=0.44\textwidth]{cookbooks/benchmarks/stokes/stokes-density}
+    \includegraphics[width=0.44\textwidth]{cookbooks/benchmarks/stokes/stokes-density.png}
   \end{center}
   \caption{\it Stokes benchmark. Both figures show only a 2D slice of the
       three-dimensional model.
@@ -9153,11 +9153,11 @@ than 2\% is a good indication that \aspect{} implements the equations correctly.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.3\textwidth]{cookbooks/benchmarks/stokes/composition}
+    \includegraphics[width=0.3\textwidth]{cookbooks/benchmarks/stokes/composition.png}
     \hfill
-    \includegraphics[width=0.3\textwidth]{cookbooks/benchmarks/stokes/mesh}
+    \includegraphics[width=0.3\textwidth]{cookbooks/benchmarks/stokes/mesh.png}
     \hfill
-    \includegraphics[width=0.3\textwidth]{cookbooks/benchmarks/stokes/velocity}
+    \includegraphics[width=0.3\textwidth]{cookbooks/benchmarks/stokes/velocity.png}
   \end{center}
   \caption{\it Stokes benchmark. Three-dimensional views of the compositional
   field (left), the adaptively refined mesh (center) and the resulting velocity field
@@ -9174,9 +9174,9 @@ than 2\% is a good indication that \aspect{} implements the equations correctly.
 The setup of this benchmark is taken from Schubert, Turcotte and Olson \cite{STO01} (part 1, p. 194) and is illustrated in Fig.~\ref{fig:latent-heat-benchmark}.
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.52\textwidth]{cookbooks/benchmarks/latent-heat/latent-heat-setup}
+    \includegraphics[width=0.52\textwidth]{cookbooks/benchmarks/latent-heat/latent-heat-setup.png}
     \hfill
-    \includegraphics[width=0.47\textwidth]{cookbooks/benchmarks/latent-heat/latent-heat-temperature}
+    \includegraphics[width=0.47\textwidth]{cookbooks/benchmarks/latent-heat/latent-heat-temperature.png}
   \end{center}
   \caption{\it Latent heat benchmark. Both figures show the 2D box model domain.
       Left: Setup of the benchmark together with a sketch of the expected
@@ -9226,7 +9226,7 @@ boundary conditions $T=T_1$ for $y \rightarrow \infty $ and $T=T_2$ for $y
 \rightarrow -\infty $) and get
 \begin{align*}
 T(y) =\begin{cases}
-T_1 + (T_2-T_1) e^\frac{v_y (y-y_{tr})}{\kappa}, & y>y_{tr}\\
+T_1 + (T_2-T_1) e^{\frac{v_y (y-y_{tr})}{\kappa}}, & y>y_{tr}\\
 T_2, & y<y_{tr}
 \end{cases}
 \end{align*}
@@ -9288,9 +9288,9 @@ to change the phase transition width to look how this influences the result.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/latent-heat/latent-heat-results-1}
+    \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/latent-heat/latent-heat-results-1.png}
     \hfill
-    \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/latent-heat/latent-heat-results-2}
+    \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/latent-heat/latent-heat-results-2.png}
   \end{center}
   \caption{\it Results of the latent heat benchmark. Both figures show the modelled temperature $T_2$ at the bottom of the model domain.
       Left: $T_2$ in dependence of resolution using a constant phase transition width of 20\,km. With an increasing number of global refinements of the mesh, the bottom temperature converges against a value of $T_2 = 1105.27 \, \text{K}$.
@@ -9549,13 +9549,13 @@ Rayleigh numbers (corresponding to lower viscosities) then lead to thinner
 plumes. This is nicely reflected in the visualizations.
 
 \begin{figure}[h]
-  \subfigure[Case 1.1]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case11_final}}
+  \subfigure[Case 1.1]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case11_final.png}}
   \hfill
-  \subfigure[Case 2.1]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case21_final}}
+  \subfigure[Case 2.1]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case21_final.png}}
   \hfill
-  \subfigure[Case 2.2]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case22_final}}
+  \subfigure[Case 2.2]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case22_final.png}}
   \hfill
-  \subfigure[Case 2.3]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case23_final}}
+  \subfigure[Case 2.3]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case23_final.png}}
   \hfill
   \caption{Davies et al.~benchmarks: Final steady state temperature fields for
     the 2D cylindrical benchmark cases.}
@@ -9570,15 +9570,15 @@ we switch from the model used to compute up to time $t=2$ to the
 different models used after that.
 
 \begin{figure}[h]
-  \subfigure[Case 1.1]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case11Vrms}}
+  \subfigure[Case 1.1]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case11Vrms.png}}
   \hfill
-  \subfigure[Case 2.1]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case21Vrms}}
+  \subfigure[Case 2.1]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case21Vrms.png}}
   \\
-  \subfigure[Case 2.2]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case22Vrms}}
+  \subfigure[Case 2.2]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case22Vrms.png}}
   \hfill
-  \subfigure[Case 2.3]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case23Vrms}}
+  \subfigure[Case 2.3]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case23Vrms.png}}
   \hfill
-  \caption{Davies et al.~benchmarks: $V_\text{rms}$ for 2D Cylindrical Cases. Large jumps occur when transitioning from case 2.1 to cases 2.2 and 2.3 due to the instantaneous change of parameter settings.}
+  \caption{Davies et al.~benchmarks: $V_{\text{rms}}$ for 2D Cylindrical Cases. Large jumps occur when transitioning from case 2.1 to cases 2.2 and 2.3 due to the instantaneous change of parameter settings.}
   \label{fig:davies-2DcylinderVrms}
 \end{figure}
 
@@ -9600,7 +9600,7 @@ of results are listed in Table~\ref{tab:davies-et-al-results}.%
   \centering
   \begin{tabular}{|l|c|c|c|c|}
     \hline
-    Case & $\left<T\right>$ & $Nu_T$ & $Nu_B$ & $V_\text{rms}$
+    Case & $\left<T\right>$ & $Nu_T$ & $Nu_B$ & $V_{\text{rms}}$
     \\ \hline
     1.1 & 0.403 & 2.464 & 2.468 & 19.053 
     \\ 
@@ -9634,7 +9634,7 @@ topography). Details for the benchmark setup are in Figure~\ref{fig:crameri-benc
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/initial_topography}
+    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/initial_topography.png}
   \end{center}
   \caption{\it Setup for the topography relaxation benchmark. The box is $2800$ km wide and $700$ km high, with 
     a $100$ km lid on top. The lid has a viscosity of $10^{23} \, {Pa\,s}$, while the mantle has a viscosity of $10^{21} \, {Pa\,s}$.  The sides are 
@@ -9665,7 +9665,7 @@ codes which are included in this comparison are basically indistinguishable.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/crameri_1_comparison}
+    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/crameri_1_comparison.pdf}
   \end{center}
   \caption{\it Results for the topography relaxation benchmark, showing maximum topography 
    versus time. Over about $100$ ka the topography completely disappears. The results of four 
@@ -9684,7 +9684,7 @@ are in the caption of Figure~\ref{fig:crameri-benchmark-rising-blob}.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/rising_blob}
+    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/rising_blob.png}
   \end{center}
   \caption{\it Setup for the dynamic topography benchmark. Again, the domain is $2800$ km 
   wide and $700$ km high.  A $100$ km thick lid with viscosity $10^{23}$ overlies a mantle
@@ -9699,7 +9699,7 @@ is over 20 million years and builds dynamic topography of $\sim 800$ meters.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/crameri_2_comparison}
+    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/crameri_2_comparison.pdf}
   \end{center}
   \caption{\it Evolution of topography for the dynamic topography benchmark. The maximum topography
    is shown as a function of time, for \aspect{} as well as for several other codes participating in
@@ -9734,7 +9734,7 @@ figure~\ref{fig:crameri-benchmark-convergence}.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=1.0\textwidth]{cookbooks/benchmarks/crameri/crameri_2_convergence}
+    \includegraphics[width=1.0\textwidth]{cookbooks/benchmarks/crameri/crameri_2_convergence.pdf}
   \end{center}
   \caption{\it Convergence for case two.  Left: Logarithm of the error with decreasing CFL number. 
 As the CFL number decreases, the error gets smaller. However, once it reaches a value of $\sim0.1$, there
@@ -10805,7 +10805,7 @@ Secondly, however, if you can only accurately determine which boundary
 indicator should hold where on a refined mesh -- for example because the
 coarse mesh is the cube $[0,L]^3$ and you want to have a fixed velocity
 boundary describing an extending slab only for those faces for which
-$z>L-L_\text{slab}$ -- then you need a way to set the boundary indicator
+$z>L-L_{\text{slab}}$ -- then you need a way to set the boundary indicator
 for all boundary faces either to the value representing the slab or the fluid
 underneath \textit{after every mesh refinement step}. By doing so, child faces
 can obtain boundary indicators different from that of their parents. \dealii{}
