@@ -806,7 +806,12 @@ namespace aspect
         // it in n_expensive_stokes_solver_steps steps or less.
         catch (SolverControl::NoConvergence)
           {
-            const unsigned int number_of_temporary_vectors = (parameters.include_melt_transport ? 100 : 50);
+            const unsigned int number_of_temporary_vectors = parameters.n_solver_restart_length;
+
+	    if (parameters.include_melt_transport &&
+		number_of_temporary_vectors < 100 )
+	      number_of_temporary_vectors = 100; 
+
             SolverFGMRES<LinearAlgebra::BlockVector>
             solver(solver_control_expensive, mem,
                    SolverFGMRES<LinearAlgebra::BlockVector>::

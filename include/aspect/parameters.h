@@ -337,6 +337,7 @@ namespace aspect
     double                         temperature_solver_tolerance;
     double                         composition_solver_tolerance;
     bool                           use_operator_splitting;
+    unsigned int                   n_solver_restart_length;
 
     /**
      * @}
