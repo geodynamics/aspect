@@ -806,8 +806,9 @@ namespace aspect
         // it in n_expensive_stokes_solver_steps steps or less.
         catch (SolverControl::NoConvergence)
           {
-            unsigned int number_of_temporary_vectors = parameters.n_solver_restart_length;
+            unsigned int number_of_temporary_vectors = parameters.stokes_gmres_restart_length;
 
+	    // use at least a restart length of 100 for melt models
 	    if (parameters.include_melt_transport &&
 		number_of_temporary_vectors < 100 )
 	      number_of_temporary_vectors = 100; 

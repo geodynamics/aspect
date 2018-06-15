@@ -334,10 +334,10 @@ namespace aspect
     unsigned int                   max_nonlinear_iterations_in_prerefinement;
     unsigned int                   n_cheap_stokes_solver_steps;
     unsigned int                   n_expensive_stokes_solver_steps;
+    unsigned int                   stokes_gmres_restart_length;
     double                         temperature_solver_tolerance;
     double                         composition_solver_tolerance;
     bool                           use_operator_splitting;
-    unsigned int                   n_solver_restart_length;
 
     /**
      * @}
