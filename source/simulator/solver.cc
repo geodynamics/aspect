@@ -806,7 +806,7 @@ namespace aspect
         // it in n_expensive_stokes_solver_steps steps or less.
         catch (SolverControl::NoConvergence)
           {
-            const unsigned int number_of_temporary_vectors = parameters.n_solver_restart_length;
+            unsigned int number_of_temporary_vectors = parameters.n_solver_restart_length;
 
 	    if (parameters.include_melt_transport &&
 		number_of_temporary_vectors < 100 )
