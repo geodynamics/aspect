@@ -25,7 +25,9 @@
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
 #include <deal.II/grid/tria_boundary_lib.h>
+#endif
 #include <deal.II/grid/manifold_lib.h>
 
 namespace aspect
