@@ -7,7 +7,11 @@ aspect-files      = $(shell echo ../include/aspect/*.h \
                             ../include/aspect/*/*/*.h   \
                             modules/*.h)
 aspect-manual-pix = $(shell find manual/cookbooks/ -name \*.png 2>/dev/null)
-change-files = $(shell ls modules/changes)
+
+# List all changelog files including the relative path and make sure to ignore
+# the .gitkeep file. Use find instead of ls because the directory might have
+# no changes in it:
+change-files = $(shell find modules/changes/ -type f -not -name '.*')
 
 aspect-prms = $(shell find manual/cookbooks/ -name \*.prm 2>/dev/null)
 aspect-prms-out = $(aspect-prms:=.out)
