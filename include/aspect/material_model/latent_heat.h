@@ -36,7 +36,7 @@ namespace aspect
      * is calculated as $Delta S = \gamma \frac{\Delta\rho}{\rho^2}$ with the
      * Clapeyron slope $\gamma$ and the density change $\Delta\rho$ of the
      * phase transition being input parameters. This model employs an analytic
-     * phase function in the form $X=0.5 \left( 1 + \tanh \left( \frac{\Delta
+     * phase function in the form $X=\frac{1}{2} \left( 1 + \tanh \left( \frac{\Delta
      * p}{\Delta p_0} \right) \right)$ with $\Delta p = p - p_transition -
      * \gamma \left( T - T_transition \right)$ and $\Delta p_0$ being the
      * pressure difference over the width of the phase transition (specified

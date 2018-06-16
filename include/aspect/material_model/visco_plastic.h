@@ -63,7 +63,7 @@ namespace aspect
      *
      * Viscous deformation is defined by a viscous flow law describing
      * dislocation and diffusion creep:
-     *   $ v = 0.5   A^{-\frac{1}{n}} d^{\frac{m}{n}}
+     *   $ v = \frac{1}{2}   A^{-\frac{1}{n}} d^{\frac{m}{n}}
      *               \dot{\varepsilon}_{ii}^{\frac{1-n}{n}}
      *               \exp\left(\frac{E + PV}{nRT}\right) $
      * where

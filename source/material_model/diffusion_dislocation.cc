@@ -560,7 +560,7 @@ namespace aspect
                                    "\\[\\eta_{\\text{eff}} = \\left(\\frac{1}{\\eta_{\\text{eff}}^\\text{diff}}+ "
                                    "\\frac{1}{\\eta_{\\text{eff}}^\\text{dis}}\\right)^{-1}\\] "
                                    "where "
-                                   "\\[\\eta_{\\text{i}} = 0.5 A^{-\\frac{1}{n_i}} d^\\frac{m_i}{n_i} "
+                                   "\\[\\eta_{\\text{i}} = \\frac{1}{2} A^{-\\frac{1}{n_i}} d^\\frac{m_i}{n_i} "
                                    "\\dot{\\varepsilon_i}^{\\frac{1-n_i}{n_i}} "
                                    "\\exp\\left(\\frac{E_i^* + PV_i^*}{n_iRT}\\right)\\] "
                                    "\n\n"
