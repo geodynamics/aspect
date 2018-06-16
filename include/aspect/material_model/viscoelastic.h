@@ -93,20 +93,20 @@ namespace aspect
      * $\hat{D} = \hat{D_{e}} + \hat{D_{v}}$.
      * These terms further decompose into
      * $\hat{D_{v}} = \frac{\tau}{2\eta}$ and
-     * $\hat{D_{e}} = \frac{\overset{\triangledown}{\tau}}{2\mu}$, where
+     * $\hat{D_{e}} = \frac{\overset{\nabla}{\tau}}{2\mu}$, where
      * $\tau$ is the viscous deviatoric stress, $\eta$ is the shear viscosity,
-     * $\mu$ is the shear modulus and $\overset{\triangledown}{\tau}$ is the
+     * $\mu$ is the shear modulus and $\overset{\nabla}{\tau}$ is the
      * Jaumann corotational stress rate. This later term (eqn. 24) contains the
      * time derivative of the deviatoric stress ($\dot{\tau}$) and terms that
      * account for material spin (e.g., rotation) due to advection:
-     * $\overset{\triangledown}{\tau} = \dot{\tau} + {\tau}W -W\tau$.
+     * $\overset{\nabla}{\tau} = \dot{\tau} + {\tau}W -W\tau$.
      * Above, $W$ is the material spin tensor (eqn. 25):
      * $W_{ij} = \frac{1}{2} \left (\frac{\partial V_{i}}{\partial x_{j}} -
      * \frac{\partial V_{j}}{\partial x_{i}} \right )$.
      *
      * The Jaumann stress-rate can also be approximated using terms from the time
-     * at the previous time step ($t$) and current time step ($t + \Delta t_^{e}$):
-     * $\smash[t]{\overset{\triangledown}{\tau}}^{t + \Delta t^{e}} \approx
+     * at the previous time step ($t$) and current time step ($t + \Delta t^{e}$):
+     * $\smash[t]{\overset{\nabla}{\tau}}^{t + \Delta t^{e}} \approx
      * \frac{\tau^{t + \Delta t^{e} - \tau^{t}}}{\Delta t^{e}} -
      * W^{t}\tau^{t} + \tau^{t}W^{t}$.
      * In this material model, the size of the time step above ($\\Delta t^{e}$)
