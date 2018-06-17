@@ -1036,7 +1036,7 @@ namespace aspect
         n_expensive_stokes_solver_steps = prm.get_integer ("Maximum number of expensive Stokes solver steps");
         linear_solver_A_block_tolerance = prm.get_double ("Linear solver A block tolerance");
         linear_solver_S_block_tolerance = prm.get_double ("Linear solver S block tolerance");
-	stokes_gmres_restart_length     = prm.get_integer("GMRES solver restart length");
+        stokes_gmres_restart_length     = prm.get_integer("GMRES solver restart length");
       }
       prm.leave_subsection ();
       prm.enter_subsection ("AMG parameters");
