@@ -12081,53 +12081,12 @@ in the main folder of the repository, and you can also access them online at \ur
 is an opportunity for you to ask your question on the mailing list (see 
 Section~\ref{sec:questions-and-answers}, and let us know that file needs improvement.
 
-\section{Future plans for \aspect}
+\subsection{Future plans for \aspect}
 \label{sec:future}
 
-We have a number of near-term plans for \aspect{} that we hope to implement
-soon:
-\begin{itemize}
-\item \textit{Better ways to deal with the nonlinearity:} The simplest algorithm
-to deal with the nonlinearity of the equations is to use the velocity, pressure and temperature of the
-previous time step to evaluate the coefficients that appear in the flow
-equations \eqref{eq:stokes-1}--\eqref{eq:stokes-2}; and the velocity and
-pressure of the current time step as well as the previous time step's
-temperature to evaluate the coefficients in the temperature equation
-\eqref{eq:temperature}. A slight improvement of this scheme -- and the one that
-is the default in \aspect{} -- is to use velocities, pressures, and temperatures
-that are extrapolated from previous time steps to the current time.
-This is an appropriate strategy if the model is not too
-nonlinear; however, it introduces inaccuracies and limits the size of the
-time step if coefficients strongly depend on the solution variables.
-
-  To avoid this, one can iterate out the equations using either a fixed point
-  or Newton scheme. Both approaches ensure that at the end of a time step, the
-  values of coefficients and solution variables are consistent. On the other
-  hand, one may have to solve the linear systems that describe a time step
-  more than once, increasing the computational effort.
-
-  \aspect{} currently already implements methods that iterate out the
-  nonlinearity based on various fixed point strategies. These are based on some
-  earlier experiments by Jennifer Worthen \cite{Wor12}. What is missing, though,
-  is a proper Newton method.
-
-\item \textit{Faster 3d computations:} Whichever way you look at it, 3d
-  computations are expensive. In parallel computations, the Stokes solve
-  currently takes upward of 90\% of the overall wallclock time, suggesting an
-  obvious target for improvements based on better algorithms as well as from
-  profiling the code to find hot spots. In particular, playing with better
-  solver and/or preconditioner options would seem to be a useful goal.
-
-\item \textit{More, and more realistic material models:} The number of
-  material models available in \aspect{} is sizeable, but it does not include
-  all models that have in the past been used in the literature. On the other
-  hand, how realistic a simulation is depends on how realistic the used
-  material model is. We hope to obtain more descriptions of realistic
-  material descriptions over time, either given analytically or based on
-  table-lookup of material properties.
-\end{itemize}
-
-
+The \aspect{} community is working on various future features. If you are
+curious or want to contribute, please see the ``future plans'' project page on
+github: \url{https://github.com/geodynamics/aspect/projects/2}.
 
 
 \section{Finding answers to more questions}
