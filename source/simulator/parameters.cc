@@ -347,6 +347,14 @@ namespace aspect
                            "not converge and return an error message pointing out that the user didn't allow "
                            "a sufficiently large number of iterations for the iterative solver to converge.");
 
+        prm.declare_entry("GMRES solver restart length", "50",
+                          Patterns::Integer(1),
+                          "This is the number of iterations that define the GMRES solver restart length. "
+                          "Increasing this parameter helps with convergence issues arising from high localized "
+                          "viscosity jumps in the domain. Be aware that increasing this number increases the "
+                          "memory usage of the Stokes solver, and makes individual Stokes iterations more "
+                          "expensive.");
+
         prm.declare_entry ("Linear solver A block tolerance", "1e-2",
                            Patterns::Double(0,1),
                            "A relative tolerance up to which the approximate inverse of the $A$ block "
@@ -1028,6 +1036,7 @@ namespace aspect
         n_expensive_stokes_solver_steps = prm.get_integer ("Maximum number of expensive Stokes solver steps");
         linear_solver_A_block_tolerance = prm.get_double ("Linear solver A block tolerance");
         linear_solver_S_block_tolerance = prm.get_double ("Linear solver S block tolerance");
+        stokes_gmres_restart_length     = prm.get_integer("GMRES solver restart length");
       }
       prm.leave_subsection ();
       prm.enter_subsection ("AMG parameters");
