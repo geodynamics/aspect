@@ -49,9 +49,12 @@ pipeline {
     stage('Check indentation') {
       steps {
         sh './doc/indent'
-        sh 'git diff | tee changes-astyle.diff'
+        sh 'git diff > changes-astyle.diff'
         archiveArtifacts artifacts: 'changes-astyle.diff', fingerprint: true
-        sh 'git diff --exit-code --name-only'
+        sh '''
+	  git diff --exit-code || \
+	  { echo "Please check indentation, see artifacts in the top right corner!"; exit 1; }
+	  '''
         }
     }
 
