@@ -579,7 +579,7 @@ namespace aspect
 
       /**
        * Return an reference to the manager of the boundary composition models.
-       * This can then i.e. be used to get the names of the boundary composition
+       * This can then, for example, be used to get the names of the boundary composition
        * models used in a computation, or to compute the boundary composition
        * for a given position.
        */
@@ -605,7 +605,7 @@ namespace aspect
 
       /**
        * Return a reference to the manager of the initial temperature models.
-       * This can then i.e. be used to get the names of the initial temperature
+       * This can then, for example, be used to get the names of the initial temperature
        * models used in a computation, or to compute the initial temperature
        * for a given position.
        */
@@ -622,7 +622,7 @@ namespace aspect
 
       /**
        * Return a pointer to the manager of the initial composition model.
-       * This can then i.e. be used to get the names of the initial composition
+       * This can then, for example, be used to get the names of the initial composition
        * models used in a computation.
        */
       const InitialComposition::Manager<dim> &
@@ -660,7 +660,7 @@ namespace aspect
 
       /**
        * Return an reference to the manager of the boundary velocity models.
-       * This can then i.e. be used to get the names of the boundary velocity
+       * This can then, for example, be used to get the names of the boundary velocity
        * models used in a computation, or to compute the boundary velocity
        * for a given position.
        */
@@ -669,7 +669,7 @@ namespace aspect
 
       /**
        * Return a pointer to the manager of the heating model.
-       * This can then i.e. be used to get the names of the heating models
+       * This can then,, for example, be used to get the names of the heating models
        * used in a computation.
        */
       const HeatingModel::Manager<dim> &
@@ -677,7 +677,7 @@ namespace aspect
 
       /**
        * Return a reference to the manager of the mesh refinement strategies.
-       * this can then i.e. be used to get the names of the active refinement
+       * this can then, for example, be used to get the names of the active refinement
        * strategies for such purposes as confirming that a particular one has
        * been included.
        */
