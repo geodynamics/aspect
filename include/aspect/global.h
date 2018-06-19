@@ -36,6 +36,9 @@ DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 #  include <deal.II/lac/trilinos_precondition.h>
 #endif
 
+#if DEAL_II_VERSION_GTE(9,1,0)
+#  include <deal.II/lac/affine_constraints.h>
+#endif
 #include <deal.II/lac/generic_linear_algebra.h>
 
 #include <boost/archive/binary_oarchive.hpp>
@@ -48,6 +51,18 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 namespace aspect
 {
+#if DEAL_II_VERSION_GTE(9,1,0)
+  /**
+   * The ConstraintMatrix class was deprecated in deal.II 9.1 in favor
+   * of AffineConstraints. To make the name available for ASPECT
+   * nonetheless, use a `using` declaration. This injects the name
+   * into the `aspect` namespace, where it is visible before the
+   * deprecated name in the `dealii` namespace, thereby suppressing
+   * the deprecation message.
+   */
+  using ConstraintMatrix = class dealii::AffineConstraints<double>;
+#endif
+
   /**
    * The following are a set of global constants which may be used by ASPECT:
    * (for sources of data and values used by ASPECT, see source/global.cc)
