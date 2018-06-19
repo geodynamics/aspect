@@ -551,7 +551,7 @@ namespace aspect
 
       /**
        * Return an reference to the manager of the boundary temperature models.
-       * This can then i.e. be used to get the names of the initial temperature
+       * This can then, for example, be used to get the names of the initial temperature
        * models used in a computation, or to compute the initial temperature
        * for a given position.
        */
