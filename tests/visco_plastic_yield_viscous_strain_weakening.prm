@@ -63,7 +63,7 @@ end
 # Compositional fields used to track finite strain invariant
 subsection Compositional fields
   set Number of fields = 1
-  set Names of fields = eii
+  set Names of fields = viscous_strain
 end
 
 # We prescribe some initial strain at the center of the domain

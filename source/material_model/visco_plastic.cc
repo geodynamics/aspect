@@ -225,11 +225,11 @@ namespace aspect
                   strain_ii = std::fabs(second_invariant(L));
                 }
               // Use the plastic or total strain
-              else if (use_plastic_strain_weakening == true || use_viscous_strain_weakening == false)
-                {
                   // Here the compositional field already contains the finite strain invariant magnitude
-                  strain_ii = composition[0];
-                }
+              else if (use_plastic_strain_weakening)
+                  strain_ii = composition[this->introspection().compositional_index_for_name("plastic_strain")];
+              else if (use_viscous_strain_weakening == false)
+                  strain_ii = composition[this->introspection().compositional_index_for_name("total_strain")];
 
               // Compute the weakened cohesions and friction angles for the current compositional field
               std::pair<double, double> weakening = calculate_plastic_weakening(strain_ii, j);
@@ -237,9 +237,9 @@ namespace aspect
               phi = weakening.second;
 
               // Compute the weakening of the diffusion and dislocation prefactors
-              // using the viscous strain
-              if (use_viscous_strain_weakening == true && use_plastic_strain_weakening == true)
-                strain_ii = composition[1];
+              // using the viscous strain or the already set total strain
+              if (use_viscous_strain_weakening == true)
+                strain_ii = composition[this->introspection().compositional_index_for_name("viscous_strain")];
 
               viscous_weakening = calculate_viscous_weakening(strain_ii, j);
             }
@@ -353,25 +353,22 @@ namespace aspect
       derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
 
       // Store which components to exclude during volume fraction computation.
-      // There are several possibilities for the number of fields used to track strain:
-      // 1) the total, plastic or viscous strain is tracked by one field;
-      // 2) both the plastic and viscous strain are tracked separately by two fields, or
-      // 3) the components of the total strain tensor are tracked individually.
       ComponentMask composition_mask(this->n_compositional_fields(),true);
       if (use_strain_weakening == true)
         {
-          if (use_finite_strain_tensor == false)
+          if (use_plastic_strain_weakening)
+            composition_mask.set(this->introspection().compositional_index_for_name("plastic_strain"),false);
+
+          if (use_viscous_strain_weakening)
+            composition_mask.set(this->introspection().compositional_index_for_name("viscous_strain"),false);
+
+          if (!use_plastic_strain_weakening && !use_viscous_strain_weakening && !use_finite_strain_tensor)
+            composition_mask.set(this->introspection().compositional_index_for_name("total_strain"),false);
+
+          if (use_finite_strain_tensor)
             {
-              // Option 1 (see above)
-              composition_mask.set(0,false);
-              // Option 2
-              if (use_plastic_strain_weakening && use_viscous_strain_weakening)
-                composition_mask.set(1,false);
-            }
-          else
-            {
-              // Option 3
-              for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
+             const unsigned int n_start = this->introspection().compositional_index_for_name("s11");
+             for (unsigned int i = n_start; i < n_start + Tensor<2,dim>::n_independent_components ; ++i)
                 composition_mask.set(i,false);
             }
         }
@@ -567,19 +564,12 @@ namespace aspect
             {
               edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(strain_rate)))),min_strain_rate);
               e_ii = edot_ii*this->get_timestep();
-              if  ((use_plastic_strain_weakening == true && plastic_yielding == true) ||
-                   (use_viscous_strain_weakening == true && plastic_yielding == false && use_plastic_strain_weakening == false) ||
-                   (use_plastic_strain_weakening == false && use_viscous_strain_weakening == false))
-                {
-                  // Update reaction term of the first compositional field which represents the total, plastic or viscous strain
-                  // (the latter only in case no plastic strain is tracked).
-                  out.reaction_terms[i][0] = e_ii;
-                }
-              else if (use_viscous_strain_weakening == true && plastic_yielding == false && use_plastic_strain_weakening == true)
-                {
-                  // Update reaction term of the second compositional field, which represents the viscous strain
-                  out.reaction_terms[i][1] = e_ii;
-                }
+              if (use_plastic_strain_weakening == true && plastic_yielding == true) 
+                  out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] = e_ii;
+              if (use_viscous_strain_weakening == true && plastic_yielding == false)
+                  out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] = e_ii;
+              if (use_plastic_strain_weakening == false && use_viscous_strain_weakening == false)
+                  out.reaction_terms[i][this->introspection().compositional_index_for_name("total_strain")] = e_ii;
             }
 
           // fill plastic outputs if they exist
@@ -592,14 +582,19 @@ namespace aspect
                 {
                   // the first compositional field contains the total strain or the plastic strain or, in case only viscous strain
                   // weakening is applied, the viscous strain.
-                  if (use_strain_weakening == true && (use_plastic_strain_weakening == true || use_viscous_strain_weakening == false))
+                  if (use_strain_weakening == true )
                     {
-                      double strain_invariant = composition[0];
-                      if (use_finite_strain_tensor == true)
+                      double strain_invariant = 0.;
+                      if (use_plastic_strain_weakening)
+                         strain_invariant = composition[this->introspection().compositional_index_for_name("plastic_strain")];
+                      else if (!use_viscous_strain_weakening)
+                         strain_invariant = composition[this->introspection().compositional_index_for_name("total_strain")];
+                      else if (use_finite_strain_tensor)
                         {
                           // Calculate second invariant of left stretching tensor "L"
                           Tensor<2,dim> strain;
-                          for (unsigned int q = 0; q < Tensor<2,dim>::n_independent_components ; ++q)
+                          const unsigned int n_first = this->introspection().compositional_index_for_name("s11");
+                          for (unsigned int q = n_first; q < n_first + Tensor<2,dim>::n_independent_components ; ++q)
                             strain[Tensor<2,dim>::unrolled_to_component_indices(q)] = composition[q];
                           const SymmetricTensor<2,dim> L = symmetrize( strain * transpose(strain) );
                           strain_invariant = std::fabs(second_invariant(L));
@@ -646,7 +641,8 @@ namespace aspect
             {
               // Convert the compositional fields into the tensor quantity they represent.
               Tensor<2,dim> strain;
-              for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
+                          const unsigned int n_first = this->introspection().compositional_index_for_name("s11");
+              for (unsigned int i = n_first; i < n_first + Tensor<2,dim>::n_independent_components ; ++i)
                 {
                   strain[Tensor<2,dim>::unrolled_to_component_indices(i)] = in.composition[q][i];
                 }
@@ -655,7 +651,7 @@ namespace aspect
               const Tensor<2,dim> strain_increment = this->get_timestep() * (velocity_gradients[q] * strain);
 
               // Output the strain increment component-wise to its respective compositional field's reaction terms.
-              for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
+              for (unsigned int i = n_first; i < n_first + Tensor<2,dim>::n_independent_components ; ++i)
                 {
                   out.reaction_terms[q][i] = strain_increment[Tensor<2,dim>::unrolled_to_component_indices(i)];
                 }
@@ -955,42 +951,68 @@ namespace aspect
 
           // Strain weakening parameters
           use_strain_weakening             = prm.get_bool ("Use strain weakening");
-          if (use_strain_weakening)
-            AssertThrow(this->n_compositional_fields() >= 1,
-                        ExcMessage("There must be at least one compositional field to track the strain. "));
 
           use_plastic_strain_weakening     = prm.get_bool ("Use plastic strain weakening");
           if (use_plastic_strain_weakening)
-            AssertThrow(use_strain_weakening,
-                        ExcMessage("If plastic strain weakening is to be used, strain weakening should also be set to true. "));
+            {
+              AssertThrow(use_strain_weakening,
+                          ExcMessage("If plastic strain weakening is to be used, strain weakening should also be set to true. "));
+              AssertThrow(this->introspection().compositional_name_exists("plastic_strain"),
+                          ExcMessage("Material model visco_plastic with plastic strain weakening only works if there is a "
+                                     "compositional field called plastic_strain."));
+            }
 
           use_viscous_strain_weakening     = prm.get_bool ("Use viscous strain weakening");
           if (use_viscous_strain_weakening)
-            AssertThrow(use_strain_weakening,
-                        ExcMessage("If viscous strain weakening is to be used, strain weakening should also be set to true. "));
-
-          // Make sure that if plastic and viscous strain weakening is set to true,
-          // there are 2 fields to track it.
-          if (use_plastic_strain_weakening && use_viscous_strain_weakening)
             {
-              AssertThrow(this->introspection().compositional_name_exists("plastic_strain"),
-                          ExcMessage("Material model visco_plastic with both plastic and viscous strain weakening only works if there is a "
-                                     "compositional field called plastic_strain."));
+              AssertThrow(use_strain_weakening,
+                          ExcMessage("If viscous strain weakening is to be used, strain weakening should also be set to true. "));
               AssertThrow(this->introspection().compositional_name_exists("viscous_strain"),
-                          ExcMessage("Material model visco_plastic with both plastic and viscous strain weakening only works if there is a "
+                          ExcMessage("Material model visco_plastic with viscous strain weakening only works if there is a "
                                      "compositional field called viscous_strain."));
             }
 
+
           use_finite_strain_tensor  = prm.get_bool ("Use finite strain tensor");
           if (use_finite_strain_tensor)
-            AssertThrow(this->n_compositional_fields() >= s,
-                        ExcMessage("There must be enough compositional fields to track all components of the finite strain tensor (4 in 2D, 9 in 3D). "));
-          if (use_finite_strain_tensor)
-            AssertThrow(use_strain_weakening,
-                        ExcMessage("If strain weakening using the full tensor is to be used, strain weakening should also be set to true. "));
-          if (use_finite_strain_tensor)
-            AssertThrow(use_plastic_strain_weakening == false && use_viscous_strain_weakening == false,
-                        ExcMessage("If strain weakening using the full tensor is to be used, the total strain will be used for weakening. "));
+            {
+              AssertThrow(this->n_compositional_fields() >= s,
+                          ExcMessage("There must be enough compositional fields to track all components of the finite strain tensor (4 in 2D, 9 in 3D). "));
+              AssertThrow(use_strain_weakening,
+                          ExcMessage("If strain weakening using the full tensor is to be used, strain weakening should also be set to true. "));
+              AssertThrow(use_plastic_strain_weakening == false && use_viscous_strain_weakening == false,
+                          ExcMessage("If strain weakening using the full tensor is to be used, the total strain will be used for weakening. "));
+              // Assert that fields exist and that they are in the right order
+              const unsigned int n_s11 = this->introspection().compositional_index_for_name("s11");
+              const unsigned int n_s12 = this->introspection().compositional_index_for_name("s12");
+              const unsigned int n_s21 = this->introspection().compositional_index_for_name("s21");
+              const unsigned int n_s22 = this->introspection().compositional_index_for_name("s22");
+              AssertThrow(n_s12>n_s11 && n_s21>n_s12 && n_s22 > n_s21,
+                          ExcMessage("Material model visco_plastic with strain weakening using the full strain tensor only works if there "
+                                     "are compositional fields called sij, with i=1,..,dim and j=1,...,dim in the order s11,s12,s21 etc."));
+              if (dim==3)
+              {
+              const unsigned int n_s13 = this->introspection().compositional_index_for_name("s13");
+              const unsigned int n_s23 = this->introspection().compositional_index_for_name("s23");
+              const unsigned int n_s31 = this->introspection().compositional_index_for_name("s31");
+              const unsigned int n_s32 = this->introspection().compositional_index_for_name("s32");
+              const unsigned int n_s33 = this->introspection().compositional_index_for_name("s33");
+                AssertThrow(n_s23 > n_s13 && n_s31 > n_s23 && n_s32 > n_s31 && n_s33 > n_s32,
+                            ExcMessage("Material model visco_plastic with strain weakening using the full strain tensor only works if there "
+                                     "are compositional fields called sij, with i=1,..,dim and j=1,...,dim in the order s11,s12,s21 etc."));
+                AssertThrow(n_s33 == n_s13+s-1, ExcMessage("The strain tensor components should be represented by consecutive fields."));
+}
+            }
+
+          if (use_strain_weakening)
+            {
+              if (!use_plastic_strain_weakening && !use_viscous_strain_weakening && !use_finite_strain_tensor)
+                {
+                  AssertThrow(this->introspection().compositional_name_exists("total_strain"),
+                              ExcMessage("Material model visco_plastic with total strain weakening only works if there is a "
+                                         "compositional field called total_strain."));
+                }
+            }
 
           start_plastic_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Start plasticity strain weakening intervals"))),
                                                      n_fields,
@@ -1000,7 +1022,7 @@ namespace aspect
                                                    "End plasticity strain weakening intervals");
           start_viscous_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Start prefactor strain weakening intervals"))),
                                                      n_fields,
-                                                     "Star prefactor strain weakening intervals");
+                                                     "Start prefactor strain weakening intervals");
           end_viscous_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("End prefactor strain weakening intervals"))),
                                                    n_fields,
                                                    "End prefactor strain weakening intervals");

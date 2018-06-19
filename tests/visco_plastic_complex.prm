@@ -99,7 +99,7 @@ end
 # Compositional fields used to track finite strain
 subsection Compositional fields
   set Number of fields = 2
-  set Names of fields = eii, crust
+  set Names of fields = total_strain, crust
 end
 
 # Initial composition model 
@@ -151,8 +151,9 @@ subsection Material model
 
     # Strain weakening
     set Use strain weakening = true
-    set Start strain weakening intervals = 0.
-    set End strain weakening intervals = 1.0
+    set Use plastic strain weakening = true
+    set Start plasticity strain weakening intervals = 0.
+    set End plasticity strain weakening intervals = 1.0
     set Cohesion strain weakening factors = 0.5
     set Friction strain weakening factors = 0.5
 

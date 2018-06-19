@@ -58,7 +58,7 @@ namespace aspect
         std::vector<double> friction_angles;
 
         /**
-         * The area where the viscous stress exceeds the plastic yield strenght,
+         * The area where the viscous stress exceeds the plastic yield strength,
          * and viscosity is rescaled back to the yield envelope.
          */
         std::vector<double> yielding;
@@ -246,25 +246,13 @@ namespace aspect
          */
         bool use_strain_weakening;
         /**
-         * Whether to use the accumulated plastic strain to weaken
+         * Whether to use only the accumulated plastic strain to weaken
          * plastic parameters cohesion and friction angle.
-         * When both use_plastic_strain_weakening and
-         * use_viscous_strain_weakening are true, it is assumed
-         * the first 2 compositional fields are tracking the
-         * plastic and viscous strain respectively.
-         * TODO: add check for fields named plastic_strain and
-         * viscous_strain?
          */
         bool use_plastic_strain_weakening;
         /**
          * Whether to use the accumulated viscous strain to weaken
          * the viscous parameters diffusion and dislocation prefactor.
-         * When both use_plastic_strain_weakening and
-         * use_viscous_strain_weakening are true, it is assumed
-         * the first 2 compositional fields are tracking the
-         * plastic and viscous strain respectively.
-         * TODO: add check for fields named plastic_strain and
-         * viscous_strain?
          */
         bool use_viscous_strain_weakening;
 
