@@ -820,6 +820,7 @@ namespace aspect
 
             try
               {
+                distributed_stokes_solution = linearized_stokes_initial_guess;
                 solver.solve(stokes_block,
                              distributed_stokes_solution,
                              distributed_stokes_rhs,
