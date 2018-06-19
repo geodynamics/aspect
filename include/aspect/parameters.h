@@ -105,7 +105,8 @@ namespace aspect
       {
         fem_field,
         particles,
-        static_field
+        static_field,
+        fem_melt_field
       };
     };
 

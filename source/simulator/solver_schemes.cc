@@ -177,6 +177,7 @@ namespace aspect
         switch (method)
           {
             case Parameters<dim>::AdvectionFieldMethod::fem_field:
+            case Parameters<dim>::AdvectionFieldMethod::fem_melt_field:
             {
               assemble_advection_system (adv_field);
 
