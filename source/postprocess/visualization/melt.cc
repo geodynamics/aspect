@@ -166,6 +166,12 @@ namespace aspect
                   {
                     computed_quantities[q][output_index] = this->get_melt_handler().is_melt_cell(in.current_cell)? 1.0 : 0.0;
                   }
+                else if (property_names[i] == "compaction length")
+                  {
+                    const double compaction_length = std::sqrt((out.viscosities[q] + 4./3. * melt_outputs->compaction_viscosities[q])
+                                                               * melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]);
+                    computed_quantities[q][output_index] = compaction_length;
+                  }
                 else
                   AssertThrow(false, ExcNotImplemented());
               }
@@ -185,7 +191,8 @@ namespace aspect
               const std::string pattern_of_names
                 = "compaction viscosity|fluid viscosity|permeability|"
                   "fluid density|fluid density gradient|is melt cell|"
-                  "darcy coefficient|darcy coefficient no cutoff";
+                  "darcy coefficient|darcy coefficient no cutoff|"
+                  "compaction length";
 
               prm.declare_entry("List of properties",
                                 "compaction viscosity,permeability",
