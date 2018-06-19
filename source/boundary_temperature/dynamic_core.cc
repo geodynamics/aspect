@@ -132,11 +132,11 @@ namespace aspect
           prm.declare_entry ("K0", "4.111e11",
                              Patterns::Double (0),
                              "Core compressibility at zero pressure. "
-                             "See Nimmo et al. (2004) for more details.");
+                             "See \\cite{NPB+04} for more details.");
           prm.declare_entry ("Rho0", "7.019e3",
                              Patterns::Double (0),
                              "Core density at zero pressure. Units: $kg/m^3$. "
-                             "See Nimmo et al. (2004) for more details.");
+                             "See \\cite{NPB+04} for more details.");
           prm.declare_entry ("Alpha", "1.35e-5",
                              Patterns::Double (0),
                              "Core thermal expansivity. Units: $1/K$.");
@@ -149,7 +149,7 @@ namespace aspect
           prm.declare_entry ("Beta composition", "1.1",
                              Patterns::Double (0),
                              "Compositional expansion coefficient $Beta_c$. "
-                             "See Nimmo et al. (2004) for more details.");
+                             "See \\cite{NPB+04} for more details.");
           prm.declare_entry ("Delta","0.5",
                              Patterns::Double (0,1),
                              "Partition coefficient of the light element.");
@@ -160,16 +160,16 @@ namespace aspect
           {
             prm.declare_entry ("Tm0","1695",
                                Patterns::Double (0),
-                               "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm0. Units: $K$.");
+                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm0. Units: $K$.");
             prm.declare_entry ("Tm1","10.9",
                                Patterns::Double (),
-                               "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm1. Units: $1/Tpa$.");
+                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm1. Units: $1/Tpa$.");
             prm.declare_entry ("Tm2","-8.0",
                                Patterns::Double (),
-                               "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Tm2. Units: $1/TPa^2$.");
+                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm2. Units: $1/TPa^2$.");
             prm.declare_entry ("Theta","0.11",
                                Patterns::Double (),
-                               "Melting curve (Nimmo et al. [2004] eq. (40)) parameter Theta.");
+                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Theta.");
             prm.declare_entry ("Composition dependency","true",
                                Patterns::Bool (),
                                "If melting curve dependent on composition.");
@@ -236,7 +236,7 @@ namespace aspect
           Cp                = prm.get_double ("Core heat capacity");
           CpRho             = Cp*Rho_cen;
 
-          //Nimmo et al. [2004]
+          //\cite{NPB+04}
           K0                = prm.get_double ("K0");
           Alpha             = prm.get_double ("Alpha");
           Rho_0             = prm.get_double ("Rho0");
@@ -985,7 +985,7 @@ namespace aspect
                                                "at the top is constant, and the core mantle boundary temperature "
                                                "is dynamically evolving through time by calculating the heat flux "
                                                "into the core and solving the core energy balance. The formulation "
-                                               "is mainly following Nimmo et al. [2004], and the plugin is used in "
+                                               "is mainly following \\cite{NPB+04}, and the plugin is used in "
                                                "Zhang et al. [2016]. The energy of core cooling and freeing of the "
                                                "inner core is included in the plugin. However, current plugin can not "
                                                "deal with the energy balance if the core is in the 'snowing core' regime "
