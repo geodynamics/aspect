@@ -159,7 +159,7 @@ namespace aspect
 
       /**
        * Return the Cartesian point of a ellipsoidal position defined by phi,
-       * phi and radius.
+       * theta and radius.
        */
       template <int dim>
       Point<3>
