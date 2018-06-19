@@ -669,7 +669,7 @@ namespace aspect
 
       /**
        * Return a pointer to the manager of the heating model.
-       * This can then,, for example, be used to get the names of the heating models
+       * This can then, for example, be used to get the names of the heating models
        * used in a computation.
        */
       const HeatingModel::Manager<dim> &
