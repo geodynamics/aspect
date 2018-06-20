@@ -870,11 +870,11 @@ simulation onto the screen, it typically does so by using a postfix such as
 \texttt{m/s} to indicate a velocity or \texttt{W/m\^{}2} to indicate a heat
 flux.
 
-\note{For some problems it is convenient to work with time units of \textit{years} 
-instead of \textit{seconds}. The flag ``\textt{Use years in output instead of seconds}'' 
-in the input file determines how the input and output parameters with units of time or 
-velocity are interpreted. For details, see Section~\ref{parameters:global} and 
-Section~\ref{sec:years-or-seconds} below.}
+\note{For mantle convection simulations, it is often convenient to work with 
+time units of \textit{years} instead of \textit{seconds}. The flag 
+``\texttt{Use years in output instead of seconds}'' (Section~\ref{parameters:global}) 
+in the input file determines how input and output parameters with units of time or 
+velocity are interpreted. For details, see Section~\ref{sec:years-or-seconds} below.}
 
 That said, in reality, \aspect{} has no preferred system of
 units as long as every material constant, geometry, time, etc., are all
@@ -977,6 +977,28 @@ core (see the corresponding section in \cite{KHB12}).
 
 \subsubsection{Years or seconds?}
 \label{sec:years-or-seconds}
+
+All internal calculations in \aspect{} are performed using time units of seconds. 
+Input quantities with units of time or velocity are assumed to be in 
+seconds or meters per second, and output quantities with units of time or velocity 
+will also be in seconds or meters per second, unless the input parameter 
+\texttt{Use years in output instead of seconds} is \texttt{true} 
+(see Section~\ref{parameters:global}).
+
+This parameter is somewhat deceptively named, as it influences how \aspect{} 
+treats inputs as well as outputs. For example, if \texttt{Use years in output instead 
+of seconds} is \texttt{true}, input values for \texttt{Start time}, 
+\texttt{End time}, and \texttt{Maximum time step} are assumed to be in years 
+instead of seconds. When the flag is set, \aspect{} converts input time and velocity 
+units to MKS internally, computes solutions, and converts time and velocity outputs 
+back to years and meters per year during postprocessing.
+
+By default, \texttt{Use years in output instead of seconds} is \texttt{true}, 
+since \aspect{} is designed primarily for models described in physical units rather 
+than in non-dimensionalized form, and years are often more intuitive time units 
+for mantle convection problems (see Section~\ref{non-dimensional}). For non-
+dimensional models the flag should be set to \texttt{false} since conversions 
+between years and seconds do not make sense for non-dimensional quantities. 
 
 \subsection{Static or dynamic pressure?}
 \label{sec:pressure-static-dyn}
