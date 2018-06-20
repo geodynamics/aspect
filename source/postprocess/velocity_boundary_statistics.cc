@@ -49,7 +49,7 @@ namespace aspect
 
       std::map<types::boundary_id, double> local_max_vel;
       std::map<types::boundary_id, double> local_min_vel;
-      std::map<types::boundary_id, double> local_boundary_sqvel;
+      std::map<types::boundary_id, double> local_velocity_square_integral;
       std::map<types::boundary_id, double> local_boundary_area;
 
       const std::set<types::boundary_id>
@@ -85,7 +85,7 @@ namespace aspect
                 double local_max = -std::numeric_limits<double>::max();
                 double local_min = std::numeric_limits<double>::max();
                 double local_sqvel = 0.0;
-                double local_fe_face_area= 0.0;
+                double local_fe_face_area = 0.0;
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                   {
                     const double vel_mag = velocities[q].norm();
@@ -106,21 +106,21 @@ namespace aspect
                                                              local_max_vel[boundary_indicator]);
                 local_min_vel[boundary_indicator] = std::min(local_min,
                                                              local_min_vel[boundary_indicator]);
-                local_boundary_sqvel[boundary_indicator] += local_sqvel;
+                local_velocity_square_integral[boundary_indicator] += local_sqvel;
                 local_boundary_area[boundary_indicator] += local_fe_face_area;
               }
 
       // now communicate to get the global values
       std::map<types::boundary_id, double> global_max_vel;
       std::map<types::boundary_id, double> global_min_vel;
-      std::map<types::boundary_id, double> boundary_vel_rms;
+      std::map<types::boundary_id, double> global_rms_vel;
       {
         // first collect local values in the same order in which they are listed
         // in the set of boundary indicators
         std::vector<double> local_max_values;
         std::vector<double> local_min_values;
-        std::vector<double> boundary_sqvel_values;
-        std::vector<double> boundary_area_values;
+        std::vector<double> local_velocity_square_integral_values;
+        std::vector<double> local_boundary_area_values;
 
         for (std::set<types::boundary_id>::const_iterator
              p = boundary_indicators.begin();
@@ -129,8 +129,8 @@ namespace aspect
             local_max_values.push_back (local_max_vel[*p]);
             local_min_values.push_back (local_min_vel[*p]);
 
-            boundary_sqvel_values.push_back (local_boundary_sqvel[*p]);
-            boundary_area_values.push_back (local_boundary_area[*p]);
+            local_velocity_square_integral_values.push_back (local_velocity_square_integral[*p]);
+            local_boundary_area_values.push_back (local_boundary_area[*p]);
           }
         // then collect contributions from all processors
         std::vector<double> global_max_values (local_max_values.size());
@@ -138,21 +138,13 @@ namespace aspect
         std::vector<double> global_min_values (local_min_values.size());
         Utilities::MPI::min (local_min_values, this->get_mpi_communicator(), global_min_values);
 
-        std::vector<double> boundary_vel_rms_values (boundary_sqvel_values.size());
-        std::vector<double> boundary_area (boundary_area_values.size());
-        for (std::set<types::boundary_id>::const_iterator
-             p = boundary_indicators.begin();
-             p != boundary_indicators.end(); ++p)
-          {
-            boundary_vel_rms_values[*p]
-              = Utilities::MPI::sum (boundary_sqvel_values[*p], this->get_mpi_communicator());
-            boundary_area[*p]
-              = Utilities::MPI::sum (boundary_area_values[*p], this->get_mpi_communicator());
-            // calculate the rms velocity for each boundary
-            boundary_vel_rms_values[*p] = std::sqrt(boundary_vel_rms_values[*p] / boundary_area[*p]);
-          }
+        std::vector<double> global_velocity_square_integral_values (local_velocity_square_integral_values.size());
+        Utilities::MPI::sum(local_velocity_square_integral_values,this->get_mpi_communicator(),global_velocity_square_integral_values);
+        std::vector<double> global_boundary_area_values (local_boundary_area_values.size());
+        Utilities::MPI::sum(local_boundary_area_values,this->get_mpi_communicator(),global_boundary_area_values);
 
         // and now take them apart into the global map again
+        // At the same time, calculate the rms velocity for each boundary
         unsigned int index = 0;
         for (std::set<types::boundary_id>::const_iterator
              p = boundary_indicators.begin();
@@ -160,7 +152,7 @@ namespace aspect
           {
             global_max_vel[*p] = global_max_values[index];
             global_min_vel[*p] = global_min_values[index];
-            boundary_vel_rms[*p] = boundary_vel_rms_values[index];
+            global_rms_vel[*p] = std::sqrt(global_velocity_square_integral_values[index] / global_boundary_area_values[index]);
           }
       }
 
@@ -169,8 +161,8 @@ namespace aspect
       std::ostringstream screen_text;
       unsigned int index = 0;
       for (std::map<types::boundary_id, double>::const_iterator
-           p = global_max_vel.begin(), a = global_min_vel.begin(), rms = boundary_vel_rms.begin();
-           p != global_max_vel.end() && a != global_min_vel.end() && rms != boundary_vel_rms.end();
+           p = global_max_vel.begin(), a = global_min_vel.begin(), rms = global_rms_vel.begin();
+           p != global_max_vel.end() && a != global_min_vel.end() && rms != global_rms_vel.end();
            ++p, ++a, ++rms, ++index)
         {
           if (this->convert_output_to_years() == true)
