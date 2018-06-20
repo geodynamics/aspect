@@ -303,8 +303,7 @@ namespace aspect
     data.extract_stokes_dof_indices(scratch.local_dof_indices, introspection, finite_element);
 
     // Prepare the data structures for assembly
-    scratch.finite_element_values.reinit (cell);
-    scratch.cell = cell;
+    scratch.reinit(cell);
     data.local_matrix = 0;
 
     compute_material_model_input_values (current_linearization_point,
@@ -530,8 +529,7 @@ namespace aspect
     data.extract_stokes_dof_indices (scratch.local_dof_indices, introspection, finite_element);
 
     // Prepare the data structures for assembly
-    scratch.finite_element_values.reinit (cell);
-    scratch.cell = cell;
+    scratch.reinit(cell);
 
     if (rebuild_stokes_matrix)
       data.local_matrix = 0;
@@ -807,8 +805,7 @@ namespace aspect
 
     const unsigned int solution_component = advection_field.component_index(introspection);
 
-    scratch.finite_element_values.reinit (cell);
-    scratch.cell = cell;
+    scratch.reinit(cell);
 
     // get all dof indices on the current cell, then extract those
     // that correspond to the solution_field we are interested in
