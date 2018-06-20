@@ -50,6 +50,22 @@ namespace aspect
 
     /**
      * This class assembles the face terms for the matrix and right-hand-side of
+     * the advection equation for a face at the boundary of the domain where
+     * Neumann boundary conditions are used (which allow to prescibe a heat flux).
+     */
+    template <int dim>
+    class AdvectionSystemBoundaryHeatFlux : public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        virtual
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+    };
+
+    /**
+     * This class assembles the face terms for the matrix and right-hand-side of
      * the discontinuous advection equation for a face at the boundary of the domain.
      */
     template <int dim>

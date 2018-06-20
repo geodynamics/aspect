@@ -95,12 +95,12 @@ namespace aspect
       std::string model_name;
       prm.enter_subsection ("Boundary heat flux model");
       {
-        model_name = prm.get ("Plugin name");
+        model_name = prm.get ("Model name");
       }
       prm.leave_subsection ();
 
       return std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                    "Boundary heat flux model::Plugin name");
+                                                                    "Boundary heat flux model::Model name");
     }
 
 
@@ -112,7 +112,7 @@ namespace aspect
       prm.enter_subsection ("Boundary heat flux model");
       const std::string pattern_of_names
         = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
-      prm.declare_entry ("Plugin name", "function",
+      prm.declare_entry ("Model name", "function",
                          Patterns::Selection (pattern_of_names),
                          "Select one of the following plugins:\n\n"
                          +

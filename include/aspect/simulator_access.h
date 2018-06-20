@@ -85,6 +85,11 @@ namespace aspect
     template <int dim> class Interface;
   }
 
+  namespace BoundaryHeatFlux
+  {
+    template <int dim> class Interface;
+  }
+
   namespace BoundaryComposition
   {
     template <int dim> class Manager;
@@ -575,6 +580,13 @@ namespace aspect
        */
       const BoundaryTemperature::Manager<dim> &
       get_boundary_temperature_manager () const;
+
+      /**
+       * Return a reference to the object that describes heat flux
+       * boundary conditions.
+       */
+      const std_cxx11::shared_ptr<BoundaryHeatFlux::Interface<dim> > &
+      get_boundary_heat_flux () const;
 
       /**
        * Return whether the current model has a boundary composition object

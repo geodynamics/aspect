@@ -1668,6 +1668,34 @@ namespace aspect
         }
     }
     prm.leave_subsection ();
+
+    prm.enter_subsection ("Boundary heat flux model");
+    {
+      try
+        {
+          const std::vector<types::boundary_id> x_fixed_heat_flux_boundary_indicators
+            = geometry_model.translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
+                                                                      (prm.get ("Fixed heat flux boundary indicators")));
+          fixed_heat_flux_boundary_indicators
+            = std::set<types::boundary_id> (x_fixed_heat_flux_boundary_indicators.begin(),
+            		                        x_fixed_heat_flux_boundary_indicators.end());
+
+          // If model names have been set, but no boundaries on which to use them,
+          // ignore the set values, do not create objects that are never used.
+          if (fixed_heat_flux_boundary_indicators.size() == 0)
+            {
+              model_names.clear();
+            }
+        }
+      catch (const std::string &error)
+        {
+          AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Fixed heat flux "
+                                          "boundary indicators>, there was an error. Specifically, "
+                                          "the conversion function complained as follows: "
+                                          + error));
+        }
+    }
+    prm.leave_subsection ();
   }
 
 

@@ -400,6 +400,12 @@ namespace aspect
     std::map<types::boundary_id, std::pair<std::string,std::string> > prescribed_traction_boundary_indicators;
 
     /**
+     * A set of boundary ids on which the boundary_heat_flux objects
+     * will be applied.
+     */
+    std::set<types::boundary_id> fixed_heat_flux_boundary_indicators;
+
+    /**
      * Selection of operations to perform to remove nullspace from velocity
      * field.
      */
