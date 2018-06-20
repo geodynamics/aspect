@@ -212,6 +212,7 @@ namespace aspect
     dof_handler (triangulation),
 
     last_pressure_normalization_adjustment (numbers::signaling_nan<double>()),
+    pressure_scaling (numbers::signaling_nan<double>()),
 
     rebuild_stokes_matrix (true),
     assemble_newton_stokes_matrix (true),
@@ -400,11 +401,7 @@ namespace aspect
         bv->initialize ();
       }
 
-    // determine how to treat the pressure. we have to scale it for the solver
-    // to make velocities and pressures of roughly the same (numerical) size,
-    // and we may have to fix up the right hand side vector before solving for
-    // compressible models if there are no in-/outflow boundaries
-    pressure_scaling = material_model->reference_viscosity() / geometry_model->length_scale();
+    compute_pressure_scaling_factor();
 
     std::set<types::boundary_id> open_velocity_boundary_indicators
       = geometry_model->get_used_boundary_indicators();
