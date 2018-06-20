@@ -419,9 +419,9 @@ namespace aspect
   const BoundaryHeatFlux::Interface<dim> &
   SimulatorAccess<dim>::get_boundary_heat_flux () const
   {
-	Assert (simulator->boundary_heat_flux.get() != 0,
-			ExcMessage("You can not call this function if no such model is actually available."));
-	return *simulator->boundary_heat_flux.get();
+    Assert (simulator->boundary_heat_flux.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
+    return *simulator->boundary_heat_flux.get();
   }
 
 

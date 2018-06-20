@@ -263,6 +263,7 @@ namespace aspect
       const typename DoFHandler<dim>::face_iterator face = scratch.cell->face(face_no);
 
       const unsigned int n_face_q_points    = scratch.face_finite_element_values->n_quadrature_points;
+      const double time_step = this->get_timestep();
 
       // also have the number of dofs that correspond just to the element for
       // the system we are currently trying to assemble
@@ -282,15 +283,15 @@ namespace aspect
 
           std::vector<Tensor<1,dim> > heat_flux(n_face_q_points);
           heat_flux = this->get_boundary_heat_flux().heat_flux(
-            face->boundary_id(),
-            scratch.face_material_model_inputs,
-            scratch.face_material_model_outputs,
-    #if DEAL_II_VERSION_GTE(9,0,0)
-            scratch.face_finite_element_values->get_normal_vectors()
-    #else
-            scratch.face_finite_element_values->get_all_normal_vectors()
-    #endif
-			);
+                        face->boundary_id(),
+                        scratch.face_material_model_inputs,
+                        scratch.face_material_model_outputs,
+#if DEAL_II_VERSION_GTE(9,0,0)
+                        scratch.face_finite_element_values->get_normal_vectors()
+#else
+                        scratch.face_finite_element_values->get_all_normal_vectors()
+#endif
+                      );
 
           for (unsigned int q=0; q<n_face_q_points; ++q)
             {
@@ -311,8 +312,8 @@ namespace aspect
               for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
                 {
                   data.local_rhs(i)
-                  -= scratch.face_phi_field[i] *
-				      (heat_flux[q] * scratch.face_finite_element_values->normal_vector(q))
+                  -= time_step * scratch.face_phi_field[i] *
+                     (heat_flux[q] * scratch.face_finite_element_values->normal_vector(q))
                      *
                      scratch.face_finite_element_values->JxW(q);
                 }
@@ -1234,7 +1235,7 @@ namespace aspect
   template class AdvectionSystemBoundaryFace<dim>; \
   template class AdvectionSystemInteriorFace<dim>; \
   template class AdvectionSystemBoundaryHeatFlux<dim>;
-   
+
     ASPECT_INSTANTIATE(INSTANTIATE)
   }
 }

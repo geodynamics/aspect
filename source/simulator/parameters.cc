@@ -565,29 +565,29 @@ namespace aspect
     prm.enter_subsection ("Boundary heat flux model");
     {
       prm.declare_entry ("Fixed heat flux boundary indicators", "",
-    		             Patterns::List (Patterns::Anything()),
-						 "A comma separated list of names denoting those boundaries "
-						 "on which the heat flux is fixed and described by the "
-						 "boundary heat flux object selected in the 'Model name' parameter. "
-						 "All boundary indicators used by the geometry but not explicitly "
-						 "listed here or in the list of 'Fixed temperature boundary indicators' "
-						 "in the 'Boundary temperature model' will end up with no-flux "
-						 "(insulating) boundary conditions."
-						 "\n\n"
-						 "The names of the boundaries listed here can either be "
-						 "numbers (in which case they correspond to the numerical "
-						 "boundary indicators assigned by the geometry object), or they "
-						 "can correspond to any of the symbolic names the geometry object "
-						 "may have provided for each part of the boundary. You may want "
-						 "to compare this with the documentation of the geometry model you "
-						 "use in your model."
-						 "\n\n"
-						 "This parameter only describes which boundaries have a fixed "
-						 "temperature, but not what heat flux should hold on these "
-						 "boundaries. The latter piece of information needs to be "
-						 "implemented in a plugin in the BoundaryHeatFlux "
-						 "group, unless an existing implementation in this group "
-						 "already provides what you want.");
+                         Patterns::List (Patterns::Anything()),
+                         "A comma separated list of names denoting those boundaries "
+                         "on which the heat flux is fixed and described by the "
+                         "boundary heat flux object selected in the 'Model name' parameter. "
+                         "All boundary indicators used by the geometry but not explicitly "
+                         "listed here or in the list of 'Fixed temperature boundary indicators' "
+                         "in the 'Boundary temperature model' will end up with no-flux "
+                         "(insulating) boundary conditions."
+                         "\n\n"
+                         "The names of the boundaries listed here can either be "
+                         "numbers (in which case they correspond to the numerical "
+                         "boundary indicators assigned by the geometry object), or they "
+                         "can correspond to any of the symbolic names the geometry object "
+                         "may have provided for each part of the boundary. You may want "
+                         "to compare this with the documentation of the geometry model you "
+                         "use in your model."
+                         "\n\n"
+                         "This parameter only describes which boundaries have a fixed "
+                         "temperature, but not what heat flux should hold on these "
+                         "boundaries. The latter piece of information needs to be "
+                         "implemented in a plugin in the BoundaryHeatFlux "
+                         "group, unless an existing implementation in this group "
+                         "already provides what you want.");
     }
     prm.leave_subsection();
 
@@ -1708,7 +1708,7 @@ namespace aspect
                                                                       (prm.get ("Fixed heat flux boundary indicators")));
           fixed_heat_flux_boundary_indicators
             = std::set<types::boundary_id> (x_fixed_heat_flux_boundary_indicators.begin(),
-            		                        x_fixed_heat_flux_boundary_indicators.end());
+                                            x_fixed_heat_flux_boundary_indicators.end());
         }
       catch (const std::string &error)
         {
