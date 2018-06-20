@@ -884,7 +884,7 @@ namespace aspect
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
       prm.declare_entry ("Compositional field methods", "",
-                         Patterns::List (Patterns::Selection("field|particles|static")),
+                         Patterns::List (Patterns::Selection("field|particles|static|melt field")),
                          "A comma separated list denoting the solution method of each "
                          "compositional field. Each entry of the list must be "
                          "one of the currently implemented field types: "
@@ -913,6 +913,16 @@ namespace aspect
                          "this way, then it does not evolve at all. Its values are "
                          "simply set to the initial conditions, and will then "
                          "never change."
+                         "\n"
+                         "\\item ``melt field'': If a compositional field is marked with this "
+                         "method, then its values are computed in each time step by "
+                         "advecting along the values of the previous time step using the "
+                         "melt velocity, and applying reaction rates to it. In other words, "
+                         "this corresponds to the usual notion of a composition field as "
+                         "mentioned in Section~\\ref{sec:compositional}, except that it is "
+                         "advected with the melt velocity instead of the solid velocity. "
+                         "This method can only be chosen if melt transport is active in the "
+                         "model."
                          "\\end{itemize}");
       prm.declare_entry ("Mapped particle properties", "",
                          Patterns::Map (Patterns::Anything(),
@@ -1403,10 +1413,17 @@ namespace aspect
             compositional_field_methods[i] = AdvectionFieldMethod::particles;
           else if (x_compositional_field_methods[i] == "static")
             compositional_field_methods[i] = AdvectionFieldMethod::static_field;
+          else if (x_compositional_field_methods[i] == "melt field")
+            compositional_field_methods[i] = AdvectionFieldMethod::fem_melt_field;
           else
             AssertThrow(false,ExcNotImplemented());
         }
 
+      if (std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::fem_melt_field)
+          != compositional_field_methods.end())
+        AssertThrow (this->include_melt_transport,
+                     ExcMessage ("The advection method 'melt field' can only be selected if melt "
+                                 "transport is used in the simulation."));
 
       const std::vector<std::string> x_mapped_particle_properties
         = Utilities::split_string_list

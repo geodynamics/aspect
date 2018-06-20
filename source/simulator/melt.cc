@@ -696,7 +696,7 @@ namespace aspect
           const double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.0);
           const double bulk_density = (1.0 - porosity) * scratch.material_model_outputs.densities[q] + porosity * melt_outputs->fluid_densities[q];
 
-          const double density_c_P              =
+          const double density_c_P =
             ((scratch.advection_field->is_temperature())
              ?
              bulk_density *
@@ -783,7 +783,8 @@ namespace aspect
           const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
                                                     (time_step + old_time_step)) : 1.0;
 
-          // for advective transport of heat by melt, we have to consider melt velocities
+          // for advective transport of heat by melt, or advecting compositional fields
+          // with the melt velocity, we have to consider melt velocities
           const Tensor<1,dim> current_u_f = fluid_velocity_values[q];
           double density_c_P_solid = density_c_P;
           double density_c_P_melt = 0.0;
@@ -793,6 +794,15 @@ namespace aspect
             {
               density_c_P_solid = (1.0 - porosity) * scratch.material_model_outputs.densities[q] * scratch.material_model_outputs.specific_heat[q];
               density_c_P_melt = porosity * melt_outputs->fluid_densities[q] * scratch.material_model_outputs.specific_heat[q];
+            }
+          else if (!scratch.advection_field->is_temperature()
+                   && !this->get_melt_handler().is_porosity(*scratch.advection_field)
+                   && scratch.advection_field->advection_method(this->introspection()) == Parameters<dim>::AdvectionFieldMethod::fem_melt_field)
+            {
+              // if the field is advected with the fem_melt_field method,
+              // we want to use the melt (fluid) velocity instead of the solid velocity for advecting it
+              density_c_P_solid = 0.0;
+              density_c_P_melt = 1.0;
             }
 
           // do the actual assembly. note that we only need to loop over the advection
