@@ -1,4 +1,4 @@
-# Test the compaction length visualization plug in.
+# Tests the compaction length visualization plugin.
 # Based on compaction_length_refinement.prm
 
 
@@ -130,7 +130,7 @@ subsection Postprocess
     end
 
     set Number of grouped files       = 0
-    set Output format                 = vtu
+    set Output format                 = gnuplot
     set Time between graphical output = 0
   end
 end
