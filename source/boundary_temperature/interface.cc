@@ -322,8 +322,8 @@ namespace aspect
                            Patterns::List (Patterns::Anything()),
                            "A comma separated list of names denoting those boundaries "
                            "on which the temperature is fixed and described by the "
-                           "boundary temperature object selected in its own section "
-                           "of this input file. All boundary indicators used by the geometry "
+                           "boundary temperature object selected in the 'List of model names' "
+                           "parameter. All boundary indicators used by the geometry "
                            "but not explicitly listed here will end up with no-flux "
                            "(insulating) boundary conditions, or, if they are listed in the "
                            "'Fixed heat flux boundary indicators', with Neumann boundary "

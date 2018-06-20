@@ -585,7 +585,7 @@ namespace aspect
        * Return a reference to the object that describes heat flux
        * boundary conditions.
        */
-      const std_cxx11::shared_ptr<BoundaryHeatFlux::Interface<dim> > &
+      const BoundaryHeatFlux::Interface<dim> &
       get_boundary_heat_flux () const;
 
       /**

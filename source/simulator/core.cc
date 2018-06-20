@@ -164,6 +164,7 @@ namespace aspect
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
     prescribed_stokes_solution (PrescribedStokesSolution::create_prescribed_stokes_solution<dim>(prm)),
     adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
+    boundary_heat_flux (BoundaryHeatFlux::create_boundary_heat_flux<dim>(prm)),
 
     time (numbers::signaling_nan<double>()),
     time_step (0),
@@ -267,6 +268,11 @@ namespace aspect
     // Create a boundary temperature manager
     boundary_temperature_manager.initialize_simulator (*this);
     boundary_temperature_manager.parse_parameters (prm);
+
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_heat_flux.get()))
+      sim->initialize_simulator (*this);
+    boundary_heat_flux->parse_parameters (prm);
+    boundary_heat_flux->initialize ();
 
     // Create a boundary composition manager
     boundary_composition_manager.initialize_simulator (*this);
