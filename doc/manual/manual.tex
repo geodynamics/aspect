@@ -4028,9 +4028,17 @@ syntax is mostly self-explanatory in that it allows to use the usual symbols
 \texttt{x}, \texttt{y} and \texttt{z} to reference coordinates (unless a
 particular plugin uses different variables, such as the depth), the symbol
 \texttt{t} for time in many situations, and allows you to use all of the
-typical mathematical functions such as sine and cosine. Another common case is
-an if-statement that has the general form
-\texttt{if(condition, true-expression, false-expression)}. For more examples of
+typical mathematical functions such as sine and cosine. Based on the muparser 
+library, deal.II supports additional functions, including \texttt{|} (the logical OR), \texttt{\&} (the logical AND),
+\texttt{int()}, \texttt{ceil()}, \texttt{floor()}, \texttt{cot()}, 
+\texttt{csc()}, \texttt{sec()}, \texttt{pow()}, \texttt{log()}, 
+\texttt{erfc()}, \texttt{rand()}, and \texttt{rand\_seed()}. 
+For more detailed information, see 
+\url{http://www.dealii.org/developer/doxygen/deal.II/classFunctionParser.html#details}. 
+A common case is an if-statement that has the general form
+\texttt{if(condition, true-expression, false-expression)}. As an example, 
+the statement ``if $1<x<4$ then output 1, else output 0'' can be expressed as
+\texttt{if(1<x \&\& x<4, 1, 0)}. For more examples of
 the syntax understood, reference the documentation of the muparser library
 linked to above.
 
