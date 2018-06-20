@@ -1,7 +1,7 @@
 # test checkpoint/resume.
 
 # This test is controlled via the plugin in checkpoint_03.cc. The plugin will
-# first execute ASPECT with the this .prm and write the output into
+# first execute ASPECT with this .prm and write the output into
 # output1.tmp/. This will generate a snapshot that is then resumed from. The
 # output for this second run will be written into output2.tmp/. Finally,
 # output files will be copied into the main output folder for comparison.
