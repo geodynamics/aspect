@@ -22,6 +22,7 @@
 
 #include <aspect/mesh_refinement/maximum_refinement_function.h>
 #include <aspect/utilities.h>
+#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -61,32 +62,10 @@ namespace aspect
               for ( unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell;  ++v)
                 {
                   const Point<dim> vertex = cell->vertex(v);
-                  double maximum_refinement_level = 0;
+                  Utilities::NaturalCoordinate<dim> point =
+                    this->get_geometry_model().cartesian_to_other_coordinates(vertex, coordinate_system);
 
-                  if (coordinate_system == Utilities::Coordinates::depth)
-                    {
-                      const double depth = this->get_geometry_model().depth(vertex);
-                      Point<dim> point;
-                      point(0) = depth;
-                      maximum_refinement_level = max_refinement_level.value(point);
-                    }
-                  else if (coordinate_system == Utilities::Coordinates::spherical)
-                    {
-                      const std_cxx11::array<double,dim> spherical_coordinates =
-                        aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(vertex);
-
-                      // Conversion to evaluate the spherical coordinates in the maximum
-                      // refinement level function.
-                      Point<dim> point;
-                      for (unsigned int i = 0; i<dim; ++i)
-                        point[i] = spherical_coordinates[i];
-
-                      maximum_refinement_level = max_refinement_level.value(point);
-                    }
-                  else if (coordinate_system == Utilities::Coordinates::cartesian)
-                    {
-                      maximum_refinement_level = max_refinement_level.value(vertex);
-                    }
+                  const double maximum_refinement_level = max_refinement_level.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()));
 
                   if (cell->level() >= rint(maximum_refinement_level))
                     clear_refine = true;

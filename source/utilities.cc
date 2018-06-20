@@ -2607,6 +2607,14 @@ namespace aspect
     }
 
     template <int dim>
+    NaturalCoordinate<dim>::NaturalCoordinate(const std_cxx11::array<double, dim> &coord,
+                                              const Utilities::Coordinates::CoordinateSystem &coord_system) :
+      coordinate_system (coord_system), coordinates (coord)
+    {}
+
+
+
+    template <int dim>
     std_cxx11::array<double,dim> &NaturalCoordinate<dim>::get_coordinates()
     {
       return coordinates;

@@ -43,38 +43,12 @@ namespace aspect
                        const Point<dim> &position) const
     {
       Tensor<1,dim> velocity;
-      if (coordinate_system == Utilities::Coordinates::cartesian)
-        {
-          for (unsigned int d=0; d<dim; ++d)
-            velocity[d] = boundary_velocity_function.value(position,d);
-        }
-      else if (coordinate_system == Utilities::Coordinates::spherical)
-        {
-          const std_cxx11::array<double,dim> spherical_coordinates =
-            aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
-          Point<dim> point;
 
-          for (unsigned int d=0; d<dim; ++d)
-            point[d] = spherical_coordinates[d];
+      Utilities::NaturalCoordinate<dim> point =
+        this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
 
-          for (unsigned int d=0; d<dim; ++d)
-            velocity[d] = boundary_velocity_function.value(point,d);
-        }
-      else if (coordinate_system == Utilities::Coordinates::depth)
-        {
-          const double depth = this->get_geometry_model().depth(position);
-          Point<dim> point;
-          point(0) = depth;
-
-          for (unsigned int d=0; d<dim; ++d)
-            velocity[d] = boundary_velocity_function.value(point,d);
-        }
-      else
-        {
-          AssertThrow(false, ExcNotImplemented());
-          return numbers::signaling_nan<Tensor<1,dim> >();
-        }
-
+      for (unsigned int d=0; d<dim; ++d)
+        velocity[d] = boundary_velocity_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()), d);
 
       // Aspect always wants things in MKS system. however, as described
       // in the documentation of this class, we interpret the formulas

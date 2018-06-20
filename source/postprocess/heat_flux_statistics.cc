@@ -21,6 +21,7 @@
 
 #include <aspect/postprocess/heat_flux_statistics.h>
 #include <aspect/utilities.h>
+#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>

@@ -32,7 +32,6 @@
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/fe/component_mask.h>
 
-#include <aspect/geometry_model/interface.h>
 #include <aspect/coordinate_systems.h>
 
 
@@ -1094,10 +1093,17 @@ namespace aspect
     {
       public:
         /**
-         * Constructor based on providing the geometry model as a pointer
+         * Constructor based on providing the geometry model as a pointer.
          */
         NaturalCoordinate(Point<dim> &position,
                           const GeometryModel::Interface<dim> &geometry_model);
+
+        /**
+         * Constructor based on providing the coordinates and associated
+         * coordinate system.
+         */
+        NaturalCoordinate(const std_cxx11::array<double, dim> &coord,
+                          const Utilities::Coordinates::CoordinateSystem &coord_system);
 
         /**
          * Returns the coordinates in the given coordinate system, which may
