@@ -1,5 +1,5 @@
 ############################################################
-# $Id$
+# Makefile for building documentation
 ############################################################
 
 aspect-files      = $(shell echo ../include/aspect/*.h \
