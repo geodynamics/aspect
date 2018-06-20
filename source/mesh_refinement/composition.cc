@@ -45,7 +45,7 @@ namespace aspect
           KellyErrorEstimator<dim>::estimate (this->get_mapping(),
                                               this->get_dof_handler(),
                                               quadrature,
-                                              typename FunctionMap<dim>::type(),
+                                              std::map<types::boundary_id,const Function<dim>*>(),
                                               this->get_solution(),
                                               this_indicator,
                                               this->introspection().component_masks.compositional_fields[c],
