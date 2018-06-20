@@ -208,7 +208,7 @@ namespace aspect
           std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemInteriorFace<dim> >());
       }
 
-    if(parameters.fixed_heat_flux_boundary_indicators.size != 0)
+    if(parameters.fixed_heat_flux_boundary_indicators.size() != 0)
       {
         assemblers->advection_system_on_boundary_face.push_back(
           std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim> >());
