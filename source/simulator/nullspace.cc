@@ -23,7 +23,9 @@
 #include <aspect/global.h>
 
 #include <deal.II/lac/solver_gmres.h>
-#include <deal.II/lac/constraint_matrix.h>
+#if !DEAL_II_VERSION_GTE(9,1,0)
+#  include <deal.II/lac/constraint_matrix.h>
+#endif
 
 #ifdef ASPECT_USE_PETSC
 #include <deal.II/lac/solver_cg.h>
