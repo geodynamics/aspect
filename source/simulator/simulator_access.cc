@@ -606,6 +606,16 @@ namespace aspect
   }
 
   template <int dim>
+  const WorldBuilder::Manager<dim> &
+  SimulatorAccess<dim>::get_world_builder () const
+  {
+    Assert (simulator->world_builder.get() != 0,
+            ExcMessage("You can not call this function if the World Builder is not enabled. "
+                       "Enable it by providing a path to a world builder file."));
+    return *(simulator->world_builder);
+  }
+
+  template <int dim>
   const FreeSurfaceHandler<dim> &
   SimulatorAccess<dim>::get_free_surface_handler () const
   {

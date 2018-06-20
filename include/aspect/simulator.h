@@ -75,6 +75,12 @@ namespace aspect
   template <int dim>
   class NewtonHandler;
 
+  namespace WorldBuilder
+  {
+    template <int dim>
+    class Manager;
+  }
+
   template <int dim>
   class FreeSurfaceHandler;
 
@@ -1474,10 +1480,10 @@ namespace aspect
        */
       std_cxx11::unique_ptr<NewtonHandler<dim> > newton_handler;
 
+
       SimulatorSignals<dim>               signals;
       const IntermediaryConstructorAction post_signal_creation;
       Introspection<dim>                  introspection;
-
 
       MPI_Comm                            mpi_communicator;
 
@@ -1539,6 +1545,7 @@ namespace aspect
       InitialComposition::Manager<dim>                                        initial_composition_manager;
       InitialTemperature::Manager<dim>                                        initial_temperature_manager;
       const std_cxx11::unique_ptr<AdiabaticConditions::Interface<dim> >       adiabatic_conditions;
+      std_cxx11::unique_ptr<WorldBuilder::Manager<dim> >                      world_builder;
       BoundaryVelocity::Manager<dim>                                          boundary_velocity_manager;
       std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryTraction::Interface<dim> > > boundary_traction;
 
