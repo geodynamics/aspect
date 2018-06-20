@@ -1005,6 +1005,26 @@ namespace aspect
     template <int dim>
     std_cxx11::array<double,dim> convert_point_to_array(const Point<dim> &point);
 
+
+    /**
+     * Converts a vector of vectors of doubles to a vector of Points.
+     */
+    template <int dim>
+    std::vector<Point<dim> >
+    vector_double_to_point(const std::vector<std::vector<double> > &s);
+
+    /**
+     * Converts a vector of doubles to a Point
+     */
+    template <int dim>
+    Point<dim>
+    vector_double_to_point(const std::vector<double> &s);
+
+    /**
+     * Converts a vector of vectors of strings to a vector of vectors of doubles
+     */
+    std::vector<std::vector<double> > vector_vector_string_to_double(const std::vector<std::vector<std::string> > &s);
+
     /**
      * A class that represents a binary operator between two doubles. The type of
      * operation is specified on construction time, and can be checked later
@@ -1088,7 +1108,7 @@ namespace aspect
          * Returns the coordinates in the given coordinate system, which may
          * not be Cartesian.
          */
-        std_cxx11::array<double,dim> &get_coordinates();
+        const std_cxx11::array<double,dim> get_coordinates() const;
 
         /**
          * The coordinate that represents the 'surface' directions in the
