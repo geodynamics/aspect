@@ -61,7 +61,13 @@ pipeline {
         sh '''
           mkdir -p /home/dealii/build-gcc-fast
           cd /home/dealii/build-gcc-fast
-          cmake -G "Ninja" -D ASPECT_TEST_GENERATOR=Ninja -D ASPECT_USE_PETSC=OFF -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_PRECOMPILE_HEADERS=ON $WORKSPACE/
+          cmake -G "Ninja" \
+	  	-D DEAL_II_CXX_FLAGS='-Werror' \
+	  	-D ASPECT_TEST_GENERATOR=Ninja \
+		-D ASPECT_USE_PETSC=OFF \
+		-D ASPECT_RUN_ALL_TESTS=ON \
+		-D ASPECT_PRECOMPILE_HEADERS=ON \
+		$WORKSPACE/
           ninja
         '''
       } 
