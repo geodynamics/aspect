@@ -1,0 +1,6 @@
+# first line is number of measurements
+# all next lines are measurements: longitude (deg E) | latitude (deg N) | magnitude | uncertainty
+3
+4450000	4510254	-1631	1
+2000000 6012000 144    1
+3000000 5580000 460    1

@@ -763,6 +763,19 @@ namespace aspect
   {
     return simulator->compute_net_angular_momentum(use_constant_density, solution, limit_to_top_faces);
   }
+
+  template <int dim>
+  bool SimulatorAccess<dim>::get_adjoint_problem () const
+  {
+    return simulator->adjoint_problem;
+  }
+
+  template <int dim>
+  const LinearAlgebra::BlockVector &
+  SimulatorAccess<dim>::get_current_adjoint_solution () const
+  {
+    return simulator->current_adjoint_solution;
+  }
 }
 
 

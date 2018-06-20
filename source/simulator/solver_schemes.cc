@@ -1452,6 +1452,80 @@ namespace aspect
     nonlinear_solver_control.check(1,0.0);
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
+
+  template <int dim>
+  void Simulator<dim>::solve_stokes_adjoint ()
+  {
+
+    // TODO iterate
+    // todo make number of interations a parameter and change Do iterations for inversion parameter
+    for (unsigned int i=0; i<parameters.num_it_adjoint; ++i)
+      {
+        // -------------------------------------------------------------
+        // SOLVE FORWARD PROBLEM
+
+        adjoint_problem = false;
+        rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+
+        assemble_stokes_system();
+        build_stokes_preconditioner();
+
+        solve_stokes(); // solves Ax=b, puts x into 'solution'
+        // put 'solution' into 'current_linearization_point' (=u/p)
+        current_linearization_point.block(introspection.block_indices.velocities)
+          = solution.block(introspection.block_indices.velocities);
+        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+          current_linearization_point.block(introspection.block_indices.pressure)
+            = solution.block(introspection.block_indices.pressure);
+
+
+        // -------------------------------------------------------------
+        // SOLVE ADJOINT PROBLEM
+
+        // postprocess forward solution to calculate DT and maybe geoid etc.
+        // TODO: only run the postprocessors I need, e.g. DT
+        postprocess ();
+
+        // only do adjoint if final (refined) mesh is reached
+        adjoint_problem = true;
+        rebuild_stokes_matrix = rebuild_stokes_preconditioner = false;
+
+        // the right hand side is assembled differently when adjoint_problem is true
+        assemble_stokes_system();
+        solve_stokes();  // solve Ax=b_adj
+
+        // put 'solution' into 'current_adjoint_solution' (=lambda_u/lambda_p)
+        current_adjoint_solution.block(introspection.block_indices.velocities)
+          = solution.block(introspection.block_indices.velocities);
+        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+          current_adjoint_solution.block(introspection.block_indices.pressure)
+            = solution.block(introspection.block_indices.pressure);
+
+        // put forward solution back into solution vector
+        solution.block(introspection.block_indices.velocities) =
+          current_linearization_point.block(introspection.block_indices.velocities);
+        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+          solution.block(introspection.block_indices.pressure)
+            = current_linearization_point.block(introspection.block_indices.pressure);
+
+        // -------------------------------------------------------------
+        // COMPUTE UPDATES FOR ETA AND RHO
+
+            // the inversion only works with a specific material model
+            // this doesn't actually check the material model yet just the number of comp fields, but okay
+            Assert(introspection.n_compositional_fields == 2,
+                   ExcMessage ("You're not using the right material model for the adjoint problem. "
+                               "The only model that is consistent is the additive material model."));
+
+            // set up rhs and mass matrix
+            // solve system for gradients in eta and rho
+            compute_parameter_update();
+
+            //in.composition[i][density_idx];
+            //in.composition[i][viscosity_idx];
+      }
+  }
+
 }
 
 // explicit instantiation of the functions we implement in this file
@@ -1473,7 +1547,8 @@ namespace aspect
   template void Simulator<dim>::solve_single_advection_iterated_newton_stokes(); \
   template void Simulator<dim>::solve_single_advection_no_stokes(); \
   template void Simulator<dim>::solve_first_timestep_only_single_stokes(); \
-  template void Simulator<dim>::solve_no_advection_no_stokes();
+  template void Simulator<dim>::solve_no_advection_no_stokes(); \
+  template void Simulator<dim>::solve_stokes_adjoint();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

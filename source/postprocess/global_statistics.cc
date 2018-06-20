@@ -130,6 +130,7 @@ namespace aspect
       // of nonlinear iterations since the last call is the maximum size of the
       // vectors in which we store our data.
       unsigned int nonlinear_iterations = stokes_iterations_cheap.size();
+      bool adjoint_problem = (this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::Stokes_adjoint);
 
       for (unsigned int column=0; column<advection_iterations.size(); ++column)
         nonlinear_iterations = std::max(nonlinear_iterations, static_cast<unsigned int> (advection_iterations[column].second.size()));
@@ -154,6 +155,12 @@ namespace aspect
                 statistics.add_value("Velocity iterations in Stokes preconditioner",
                                      list_of_A_iterations[iteration]);
                 statistics.add_value("Schur complement iterations in Stokes preconditioner",
+                                     list_of_S_iterations[iteration]);
+                statistics.add_value((adjoint_problem ? "Iterations for adjoint Stokes solver" : "Iterations for Stokes solver"),
+                                     stokes_iterations_cheap[iteration] + stokes_iterations_expensive[iteration]);
+                statistics.add_value((adjoint_problem ? "Velocity iterations in adjoint Stokes preconditioner": "Velocity iterations in Stokes preconditioner"),
+                                     list_of_A_iterations[iteration]);
+                statistics.add_value((adjoint_problem ? "Schur complement iterations in adjoint Stokes preconditioner": "Schur complement iterations in Stokes preconditioner"),
                                      list_of_S_iterations[iteration]);
               }
 
@@ -199,12 +206,9 @@ namespace aspect
           // object is still stored, so this line works in that case as well.
           if (stokes_iterations_cheap.size() > 0)
             {
-              statistics.add_value("Iterations for Stokes solver",
-                                   Stokes_outer_iterations);
-              statistics.add_value("Velocity iterations in Stokes preconditioner",
-                                   A_iterations);
-              statistics.add_value("Schur complement iterations in Stokes preconditioner",
-                                   S_iterations);
+              statistics.add_value((adjoint_problem ? "Iterations for adjoint Stokes solver" : "Iterations for Stokes solver"), Stokes_outer_iterations);
+              statistics.add_value((adjoint_problem ? "Velocity iterations in adjoint Stokes preconditioner": "Velocity iterations in Stokes preconditioner"), A_iterations);
+              statistics.add_value((adjoint_problem ? "Schur complement iterations in adjoint Stokes preconditioner": "Schur complement iterations in Stokes preconditioner"), S_iterations);
             }
         }
 

@@ -373,6 +373,11 @@ namespace aspect
         unsigned int polynomial_degree(const Introspection<dim> &introspection) const;
       };
 
+      virtual
+      std::list<std::string>
+      required_other_postprocessors() const;
+
+
     private:
 
       /**
@@ -717,6 +722,11 @@ namespace aspect
        * <code>source/simulator/solver_schemes.cc</code>.
        */
       void solve_no_advection_no_stokes ();
+
+      /** 
+       * This solves the adjoint equations
+       */
+      void solve_stokes_adjoint ();
 
       /**
        * Initiate the assembly of the Stokes preconditioner matrix via
@@ -2104,6 +2114,13 @@ namespace aspect
       template <int dimension, int velocity_degree>
       friend class StokesMatrixFreeHandlerImplementation;
       friend struct Parameters<dim>;
+
+      /** Parameters for the adjoint problem
+       */
+      bool                                                      adjoint_problem;
+      LinearAlgebra::BlockVector                                current_adjoint_solution;
+      void solve_stokes_adjoint ();
+      void compute_parameter_update ();
   };
 }
 
