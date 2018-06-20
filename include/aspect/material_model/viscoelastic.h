@@ -226,14 +226,6 @@ namespace aspect
 
       private:
         /**
-         * The first 3 (2D) or 6 (3D) compositional fields are assumed
-         * to be components of the viscoelastic stress tensor and
-         * assigned volume fractions of zero.
-         */
-        const std::vector<double> compute_volume_fractions(
-          const std::vector<double> &compositional_fields) const;
-
-        /**
          * Reference temperature for thermal expansion. All components use
          * the same reference_T.
          */
