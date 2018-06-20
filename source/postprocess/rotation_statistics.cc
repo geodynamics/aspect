@@ -47,7 +47,7 @@ namespace aspect
 
     template <int dim>
     std::pair<std::string,std::string>
-    RotationStatistics<dim>::execute (TableHandler &statistics)
+    RotationStatistics<dim>::execute (TableHandler &/*statistics*/)
     {
       AssertThrow(false,ExcNotImplemented());
       return std::pair<std::string, std::string>();
