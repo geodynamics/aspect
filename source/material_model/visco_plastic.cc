@@ -225,11 +225,11 @@ namespace aspect
                   strain_ii = std::fabs(second_invariant(L));
                 }
               // Use the plastic or total strain
-                  // Here the compositional field already contains the finite strain invariant magnitude
+              // Here the compositional field already contains the finite strain invariant magnitude
               else if (use_plastic_strain_weakening)
-                  strain_ii = composition[this->introspection().compositional_index_for_name("plastic_strain")];
+                strain_ii = composition[this->introspection().compositional_index_for_name("plastic_strain")];
               else if (use_viscous_strain_weakening == false)
-                  strain_ii = composition[this->introspection().compositional_index_for_name("total_strain")];
+                strain_ii = composition[this->introspection().compositional_index_for_name("total_strain")];
 
               // Compute the weakened cohesions and friction angles for the current compositional field
               std::pair<double, double> weakening = calculate_plastic_weakening(strain_ii, j);
@@ -367,8 +367,8 @@ namespace aspect
 
           if (use_finite_strain_tensor)
             {
-             const unsigned int n_start = this->introspection().compositional_index_for_name("s11");
-             for (unsigned int i = n_start; i < n_start + Tensor<2,dim>::n_independent_components ; ++i)
+              const unsigned int n_start = this->introspection().compositional_index_for_name("s11");
+              for (unsigned int i = n_start; i < n_start + Tensor<2,dim>::n_independent_components ; ++i)
                 composition_mask.set(i,false);
             }
         }
@@ -427,17 +427,17 @@ namespace aspect
               // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
               // creep (where n_diff=1) viscosities are stress and strain-rate independent, so the calculation
               // of compositional field viscosities is consistent with any averaging scheme.
-              out.viscosities[i] = average_value(composition, composition_viscosities, viscosity_averaging);
+              out.viscosities[i] = average_value(volume_fractions, composition_viscosities, viscosity_averaging);
+
               // Take the infinity norm to compute plastic yielding in this point.
               // This avoids for example division by zero for harmonic averaging (as compositional_yielding
               // holds values that are either 0 or 1), but might not be consistent with the viscosity
               // averaging chosen.
-              plastic_yielding   = average_value(composition, composition_yielding, maximum_composition);
+              plastic_yielding   = average_value(volume_fractions, composition_yielding, maximum_composition);
 
               // compute derivatives if necessary
               std::vector<SymmetricTensor<2,dim> > composition_viscosities_derivatives(volume_fractions.size());
               std::vector<double> composition_dviscosities_dpressure(volume_fractions.size());
-
               if (derivatives != NULL)
                 {
                   const double finite_difference_accuracy = 1e-7;
@@ -560,16 +560,16 @@ namespace aspect
           // If viscous strain is also tracked, overwrite the second rection term as well.
           double edot_ii = 0.;
           double e_ii = 0.;
-          if  (use_strain_weakening == true && use_finite_strain_tensor == false && this->get_timestep_number() > 0)
+          if  (use_strain_weakening == true && use_finite_strain_tensor == false && this->get_timestep_number() > 0 && in.strain_rate.size())
             {
               edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(strain_rate)))),min_strain_rate);
               e_ii = edot_ii*this->get_timestep();
-              if (use_plastic_strain_weakening == true && plastic_yielding == true) 
-                  out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] = e_ii;
+              if (use_plastic_strain_weakening == true && plastic_yielding == true)
+                out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] = e_ii;
               if (use_viscous_strain_weakening == true && plastic_yielding == false)
-                  out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] = e_ii;
+                out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] = e_ii;
               if (use_plastic_strain_weakening == false && use_viscous_strain_weakening == false)
-                  out.reaction_terms[i][this->introspection().compositional_index_for_name("total_strain")] = e_ii;
+                out.reaction_terms[i][this->introspection().compositional_index_for_name("total_strain")] = e_ii;
             }
 
           // fill plastic outputs if they exist
@@ -586,9 +586,9 @@ namespace aspect
                     {
                       double strain_invariant = 0.;
                       if (use_plastic_strain_weakening)
-                         strain_invariant = composition[this->introspection().compositional_index_for_name("plastic_strain")];
-                      else if (!use_viscous_strain_weakening)
-                         strain_invariant = composition[this->introspection().compositional_index_for_name("total_strain")];
+                        strain_invariant = composition[this->introspection().compositional_index_for_name("plastic_strain")];
+                      else if (!use_viscous_strain_weakening && !use_finite_strain_tensor)
+                        strain_invariant = composition[this->introspection().compositional_index_for_name("total_strain")];
                       else if (use_finite_strain_tensor)
                         {
                           // Calculate second invariant of left stretching tensor "L"
@@ -620,7 +620,7 @@ namespace aspect
       // We need the velocity gradient for the finite strain (they are not included in material model inputs),
       // so we get them from the finite element.
       if (in.current_cell.state() == IteratorState::valid && use_strain_weakening == true
-          && use_finite_strain_tensor == true && this->get_timestep_number() > 0)
+          && use_finite_strain_tensor == true && this->get_timestep_number() > 0 && in.strain_rate.size())
         {
           const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+1);
           FEValues<dim> fe_values (this->get_mapping(),
@@ -641,7 +641,7 @@ namespace aspect
             {
               // Convert the compositional fields into the tensor quantity they represent.
               Tensor<2,dim> strain;
-                          const unsigned int n_first = this->introspection().compositional_index_for_name("s11");
+              const unsigned int n_first = this->introspection().compositional_index_for_name("s11");
               for (unsigned int i = n_first; i < n_first + Tensor<2,dim>::n_independent_components ; ++i)
                 {
                   strain[Tensor<2,dim>::unrolled_to_component_indices(i)] = in.composition[q][i];
@@ -991,17 +991,17 @@ namespace aspect
                           ExcMessage("Material model visco_plastic with strain weakening using the full strain tensor only works if there "
                                      "are compositional fields called sij, with i=1,..,dim and j=1,...,dim in the order s11,s12,s21 etc."));
               if (dim==3)
-              {
-              const unsigned int n_s13 = this->introspection().compositional_index_for_name("s13");
-              const unsigned int n_s23 = this->introspection().compositional_index_for_name("s23");
-              const unsigned int n_s31 = this->introspection().compositional_index_for_name("s31");
-              const unsigned int n_s32 = this->introspection().compositional_index_for_name("s32");
-              const unsigned int n_s33 = this->introspection().compositional_index_for_name("s33");
-                AssertThrow(n_s23 > n_s13 && n_s31 > n_s23 && n_s32 > n_s31 && n_s33 > n_s32,
-                            ExcMessage("Material model visco_plastic with strain weakening using the full strain tensor only works if there "
-                                     "are compositional fields called sij, with i=1,..,dim and j=1,...,dim in the order s11,s12,s21 etc."));
-                AssertThrow(n_s33 == n_s13+s-1, ExcMessage("The strain tensor components should be represented by consecutive fields."));
-}
+                {
+                  const unsigned int n_s13 = this->introspection().compositional_index_for_name("s13");
+                  const unsigned int n_s23 = this->introspection().compositional_index_for_name("s23");
+                  const unsigned int n_s31 = this->introspection().compositional_index_for_name("s31");
+                  const unsigned int n_s32 = this->introspection().compositional_index_for_name("s32");
+                  const unsigned int n_s33 = this->introspection().compositional_index_for_name("s33");
+                  AssertThrow(n_s23 > n_s13 && n_s31 > n_s23 && n_s32 > n_s31 && n_s33 > n_s32,
+                              ExcMessage("Material model visco_plastic with strain weakening using the full strain tensor only works if there "
+                                         "are compositional fields called sij, with i=1,..,dim and j=1,...,dim in the order s11,s12,s21 etc."));
+                  AssertThrow(n_s33 == n_s13+s-1, ExcMessage("The strain tensor components should be represented by consecutive fields."));
+                }
             }
 
           if (use_strain_weakening)

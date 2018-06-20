@@ -99,7 +99,7 @@ end
 # Compositional fields used to track finite strain
 subsection Compositional fields
   set Number of fields = 2
-  set Names of fields = total_strain, crust
+  set Names of fields = plastic_strain, crust
 end
 
 # Initial composition model 

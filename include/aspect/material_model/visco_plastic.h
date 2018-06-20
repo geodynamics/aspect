@@ -242,7 +242,11 @@ namespace aspect
         /**
          * Whether to use the accumulated strain to weaken
          * plastic parameters cohesion and friction angle
-         * and viscous parameters diffusion and dislocation prefactor.
+         * and/or viscous parameters diffusion and dislocation prefactor.
+         * Additional flags can be set to specifically use the plastic
+         * strain for the plastic parameters and the viscous strain
+         * for the viscous parameters, instead of the total strain
+         * for all of them.
          */
         bool use_strain_weakening;
         /**
