@@ -452,6 +452,16 @@ namespace aspect
   }
 
 
+
+  template <int dim>
+  const std::set<types::boundary_id> &
+  SimulatorAccess<dim>::get_fixed_heat_flux_boundary_indicators () const
+  {
+    return simulator->parameters.fixed_heat_flux_boundary_indicators;
+  }
+
+
+
   template <int dim>
   const std::set<types::boundary_id> &
   SimulatorAccess<dim>::get_fixed_composition_boundary_indicators () const

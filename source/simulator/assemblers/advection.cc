@@ -251,13 +251,12 @@ namespace aspect
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>& > (data_base);
 
-      const Parameters<dim> &parameters = this->get_parameters();
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
 
       const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
 
-      if (!advection_field.is_temperature(introspection))
+      if (!advection_field.is_temperature())
         return;
 
       const unsigned int face_no = scratch.face_number;
@@ -1234,6 +1233,7 @@ namespace aspect
   template class AdvectionSystem<dim>; \
   template class AdvectionSystemBoundaryFace<dim>; \
   template class AdvectionSystemInteriorFace<dim>; \
+  template class AdvectionSystemBoundaryHeatFlux<dim>;
    
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

@@ -1679,13 +1679,6 @@ namespace aspect
           fixed_heat_flux_boundary_indicators
             = std::set<types::boundary_id> (x_fixed_heat_flux_boundary_indicators.begin(),
             		                        x_fixed_heat_flux_boundary_indicators.end());
-
-          // If model names have been set, but no boundaries on which to use them,
-          // ignore the set values, do not create objects that are never used.
-          if (fixed_heat_flux_boundary_indicators.size() == 0)
-            {
-              model_names.clear();
-            }
         }
       catch (const std::string &error)
         {
