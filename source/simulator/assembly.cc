@@ -214,7 +214,8 @@ namespace aspect
           std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim> >());
       }
 
-    if (parameters.use_discontinuous_temperature_discretization)
+    if (parameters.use_discontinuous_temperature_discretization
+        || parameters.fixed_heat_flux_boundary_indicators.size() != 0)
       {
         assemblers->advection_system_assembler_on_face_properties[0].need_face_material_model_data = true;
         assemblers->advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
