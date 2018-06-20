@@ -3,7 +3,7 @@
 
 /*
  * Launch the following function when this plugin is created. Launch ASPECT
- * twice to test checkpoint/resume and then abort the outer ASPECT run.
+ * twice to test checkpoint/resume and then terminate the outer ASPECT run.
  */
 int f()
 {
@@ -68,7 +68,7 @@ int f()
   if (ret!=0)
     std::cout << "system() returned error " << ret << std::endl;
 
-  // abort current process:
+  // terminate current process:
   exit (0);
   return 42;
 }
