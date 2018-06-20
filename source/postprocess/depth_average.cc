@@ -204,7 +204,8 @@ namespace aspect
                           DataOutBase::default_suffix(output_format));
               std::ofstream f (filename.c_str());
 
-              if (output_format == DataOutBase::gnuplot)
+              if (output_format == DataOutBase::gnuplot and
+                  DEAL_II_VERSION_GTE(9,0,0))
                 {
                   DataOutBase::GnuplotFlags gnuplot_flags;
                   gnuplot_flags.space_dimension_labels.resize(2);
