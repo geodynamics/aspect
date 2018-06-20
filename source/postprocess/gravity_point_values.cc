@@ -40,7 +40,7 @@ namespace aspect
     std::pair<std::string,std::string>
     GravityPointValues<dim>::execute (TableHandler &)
     {
-      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+1);
+      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
       const unsigned int number_quadrature_points_cell = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
@@ -52,7 +52,6 @@ namespace aspect
                                update_JxW_values);
 
       // Get the value of the outer radius and inner radius
-      // WHAT IF FULL SPHERE ???
       double model_outer_radius;
       double model_inner_radius;
       if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0)
@@ -73,7 +72,7 @@ namespace aspect
         {
           model_outer_radius = dynamic_cast<const GeometryModel::Sphere<dim>&>
                                (this->get_geometry_model()).radius();
-          model_inner_radius = 0; 
+          model_inner_radius = 0;
         }
       else
         {
@@ -86,7 +85,7 @@ namespace aspect
 
       // Get the value of the universal gravitational constant
       const double G = aspect::constants::big_g;
-      
+
       // now write all data to the file of choice. start with a pre-amble that
       // explains the meaning of the various fields
       const std::string filename = (this->get_output_directory() +
@@ -94,10 +93,10 @@ namespace aspect
       std::ofstream f (filename.c_str());
       f << "# 1: position_satellite_r" << '\n'
         << "# 2: position_satellite_phi" << '\n'
-        << "# 3: position_satellite_theta" << '\n' 
+        << "# 3: position_satellite_theta" << '\n'
         << "# 4: position_satellite_x" << '\n'
         << "# 5: position_satellite_y" << '\n'
-        << "# 6: position_satellite_z" << '\n' 
+        << "# 6: position_satellite_z" << '\n'
         << "# 7: gravity_x" << '\n'
         << "# 8: gravity_y" << '\n'
         << "# 9: gravity_z" << '\n'
@@ -109,24 +108,24 @@ namespace aspect
 
       // Temporary output during the build of this postprocessor WIP
       const std::string filename2 = (this->get_output_directory() +
-                                    "checks_wip.txt");
+                                     "checks_wip.txt");
       std::ofstream f2 (filename2.c_str());
       f2 << minimum_radius << ' ' << maximum_radius << '\n'
          << minimum_longitude << ' ' << maximum_longitude << '\n'
          << minimum_latitude << ' ' << maximum_latitude << '\n';
 
-      // Storing cartesian coordinate, density and JzW at quadrature points in a vector 
+      // Storing cartesian coordinate, density and JzW at quadrature points in a vector
       // avoids to use MaterialModel and fe_values within the loops.
       unsigned int local_cell_number = (this->get_triangulation().n_locally_owned_active_cells());
       const unsigned int number_quadrature_points_mpi = local_cell_number * number_quadrature_points_cell;
       std::vector<double> density_JxW (number_quadrature_points_mpi);
       std::vector<Point<dim> > position_point (number_quadrature_points_mpi);
 
-      // Store density and  from MaterialModel and allocate to density_all array: 
+      // Store density and  from MaterialModel and allocate to density_all array:
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
-      MaterialModel::MaterialModelInputs<dim> in(quadrature_formula.size(),this->n_compositional_fields());      
+      MaterialModel::MaterialModelInputs<dim> in(quadrature_formula.size(),this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature_formula.size(),this->n_compositional_fields());
       local_cell_number = 0;
       for (; cell!=endc; ++cell)
@@ -139,20 +138,20 @@ namespace aspect
               this->get_material_model().evaluate(in, out);
               for (unsigned int q = 0; q < number_quadrature_points_cell; ++q)
                 {
-                 density_JxW[local_cell_number * number_quadrature_points_cell + q] = out.densities[q] * fe_values.JxW(q);
-                 position_point[local_cell_number * number_quadrature_points_cell + q] = position_point_cell[q];
-                 
+                  density_JxW[local_cell_number * number_quadrature_points_cell + q] = out.densities[q] * fe_values.JxW(q);
+                  position_point[local_cell_number * number_quadrature_points_cell + q] = position_point_cell[q];
+
                 }
               ++local_cell_number;
             }
-         }
+        }
 
       // loop on r - satellite position [r, ,  ]
       for (unsigned int h=0; h < number_points_radius; ++h)
         {
           std_cxx11::array<double,dim> satellite_coordinate;
           satellite_coordinate[0] = minimum_radius + ((maximum_radius - minimum_radius) / number_points_radius) * h;
-          
+
           // loop on phi - satellite position [ , phi ,]
           for (unsigned int i=0; i < number_points_longitude; ++i)
             {
@@ -160,7 +159,7 @@ namespace aspect
 
               // loop on theta - satllite position [ , , theta]
               for (unsigned int j=0; j < number_points_latitude; ++j)
-                { 
+                {
                   satellite_coordinate[2] = minimum_latitude + ((maximum_latitude - minimum_latitude) / number_points_latitude) * j;
                   Tensor<1,dim> local_g;
                   double local_U = 0;
@@ -168,9 +167,9 @@ namespace aspect
                   // The spherical coordinates are shifted into cartesian to allow simplification in the mathematical equation.
                   const Point<dim> position_satellite = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(satellite_coordinate);
 
-                  // For each point (i.e. satellite), the fourth integral goes over cells and quadrature 
-                  // points to get the unique distance between those, indispensable to calculate 
-                  // gravity vector components x,y,z, and potential. 
+                  // For each point (i.e. satellite), the fourth integral goes over cells and quadrature
+                  // points to get the unique distance between those, indispensable to calculate
+                  // gravity vector components x,y,z, and potential.
                   cell = this->get_dof_handler().begin_active();
                   local_cell_number = 0;
                   for (; cell!=endc; ++cell)
@@ -198,8 +197,8 @@ namespace aspect
                   // analytical solution to calculate the theoritical gravity from a uniform desnity model.
                   // can only be used if concentric density profile
                   const double reference_density = (this->get_adiabatic_conditions().density(in.position[0])); //this->get_geometry_model.representative_point(0)));
-                  double g_theory = 0;      
-                  double g_diff = 0;      
+                  double g_theory = 0;
+                  double g_diff = 0;
                   if (satellite_coordinate[0] <= model_inner_radius)
                     {
                       g_theory = 0;
@@ -207,14 +206,14 @@ namespace aspect
                     }
                   else if ((satellite_coordinate[0] > model_inner_radius) && (satellite_coordinate[0] < model_outer_radius))
                     {
-                      g_theory = (G * numbers::PI * 4/3 * reference_density * (satellite_coordinate[0] - 
-                                 (pow(model_inner_radius,3) / pow(satellite_coordinate[0],2))));
+                      g_theory = (G * numbers::PI * 4/3 * reference_density * (satellite_coordinate[0] -
+                                                                               (pow(model_inner_radius,3) / pow(satellite_coordinate[0],2))));
                       g_diff = (g_theory - g.norm());
                     }
                   else
                     {
-                      g_theory = (G * numbers::PI * 4/3 * reference_density * (pow(model_outer_radius,3) - 
-                                  pow(model_inner_radius,3)) / pow(satellite_coordinate[0],2));
+                      g_theory = (G * numbers::PI * 4/3 * reference_density * (pow(model_outer_radius,3) -
+                                                                               pow(model_inner_radius,3)) / pow(satellite_coordinate[0],2));
                       g_diff = (g_theory - g.norm());
                     }
 
@@ -252,7 +251,7 @@ namespace aspect
           prm.declare_entry ("Number points longitude", "1",
                              Patterns::Double (0.0));
           prm.declare_entry ("Number points latitude", "1",
-                           Patterns::Double (0.0));
+                             Patterns::Double (0.0));
           prm.declare_entry ("Minimum radius", "0",
                              Patterns::Double (0.0));
           prm.declare_entry ("Maximum radius", "0",
@@ -281,9 +280,9 @@ namespace aspect
         {
           number_points_radius    = prm.get_double ("Number points radius");
           number_points_longitude = prm.get_double ("Number points longitude");
-	  number_points_latitude  = prm.get_double ("Number points latitude");
-	  minimum_radius    = prm.get_double ("Minimum radius");
-	  maximum_radius    = prm.get_double ("Maximum radius");
+          number_points_latitude  = prm.get_double ("Number points latitude");
+          minimum_radius    = prm.get_double ("Minimum radius");
+          maximum_radius    = prm.get_double ("Maximum radius");
           minimum_longitude = prm.get_double ("Minimum longitude");
           maximum_longitude = prm.get_double ("Maximum longitude");
           minimum_latitude  = prm.get_double ("Minimum latitude");
@@ -292,10 +291,10 @@ namespace aspect
                        dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != 0 ||
                        dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != 0,
                        ExcMessage ("This postprocessor can only be used if the geometry "
-                                   "is a sphere or spherical shell."));
-          AssertThrow (! this->get_material_model().is_compressible(), 
+                                   "is a sphere, spherical shell or spherical chunk."));
+          AssertThrow (! this->get_material_model().is_compressible(),
                        ExcMessage("This postprocessor was only tested for incompressible models so far."));
-          AssertThrow (dim==3, 
+          AssertThrow (dim==3,
                        ExcMessage("This postprocessor was only tested for 3D models."));
         }
         prm.leave_subsection();

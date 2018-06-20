@@ -32,10 +32,10 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes gravity and gravity potential for a set of points 
+     * A postprocessor that computes gravity and gravity potential for a set of points
      * (e.g. satellites) in or above the model surface for a user-defined range of latitudes,
-     * longitudes and radius. 
- 
+     * longitudes and radius.
+
      * @ingroup Postprocessing
      */
     template <int dim>
@@ -67,23 +67,23 @@ namespace aspect
 
       private:
         /**
-         * Gravity may be calculated for a sets of points along the radius (e.g. depth 
+         * Gravity may be calculated for a sets of points along the radius (e.g. depth
          * profile) between a minimum and maximum radius. Number of points along the radius
-         * is specified with number_points_radius. 
+         * is specified with number_points_radius.
          */
         double number_points_radius;
 
         /**
          * Gravity may be calculated for a sets of points along the longitude (e.g. satellite
          * mapping) between a minimum and maximum longitude. Number of points along the
-         * longitude is specified with number_points_longitude. 
+         * longitude is specified with number_points_longitude.
          */
         double number_points_longitude;
-        
+
         /**
          * Gravity may be calculated for a sets of points along the latitude (e.g. satellite
          * mapping) between a minimum and maximum latitude. Number of points along the
-         * latitude is specified with number_points_latitude. 
+         * latitude is specified with number_points_latitude.
          */
         double number_points_latitude;
 
@@ -91,7 +91,7 @@ namespace aspect
          * Minimum radius may be defined in or outside the model.
          */
         double minimum_radius;
-        
+
         /**
          * Maximum radius for depth-profile. Can be defined in or outside the model.
          * No need to specify maximum_radius if number_points_radius is 1;
@@ -104,18 +104,18 @@ namespace aspect
         double minimum_longitude;
 
         /**
-         * Maximum longitude.  
+         * Maximum longitude.
          * No need to specify maximum_longitude if number_points_longitude is 1;
          */
         double maximum_longitude;
-        
+
         /**
          * Minimum latitude
          */
         double minimum_latitude;
-    
+
         /**
-         * Maximum latitude 
+         * Maximum latitude
          * No need to specify maximum_latitude if number_points_latitude is 1;
          */
         double maximum_latitude;
