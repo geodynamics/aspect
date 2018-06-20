@@ -730,6 +730,10 @@ namespace aspect
 
               AssertThrow (point1[2] < point2[2],
                            ExcMessage ("Minimum latitude must be less than maximum latitude."));
+              AssertThrow (point1[2] > -0.5*numbers::PI,
+                           ExcMessage ("Minimum latitude needs to be larger than -90 degrees."));
+              AssertThrow (point2[2] < 0.5*numbers::PI,
+                           ExcMessage ("Maximum latitude needs to be less than 90 degrees."));
             }
 
         }
