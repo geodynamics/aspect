@@ -107,12 +107,7 @@ namespace aspect
 
           FEValues<dim> finite_element_values;
 
-          void reinit ( const typename DoFHandler<dim>::active_cell_iterator &cell_ref)
-          {
-            this->cell = cell_ref;
-            this->face_number = numbers::invalid_unsigned_int;
-            finite_element_values.reinit (cell_ref);
-          }
+          void reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref);
 
           std::vector<types::global_dof_index> local_dof_indices;
           std::vector<unsigned int>            dof_component_indices;
@@ -167,10 +162,10 @@ namespace aspect
 
           FEFaceValues<dim> face_finite_element_values;
 
-          void reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref, const unsigned face_number_ref)
-          {
-            face_finite_element_values.reinit(cell_ref, face_number_ref);
-          }
+          using StokesPreconditioner<dim>::reinit;
+
+          void reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref,
+                       const unsigned face_number_ref);
 
           std::vector<Tensor<1,dim> >          phi_u;
           std::vector<Tensor<1,dim> >          velocity_values;
@@ -228,12 +223,7 @@ namespace aspect
 
           FEValues<dim> finite_element_values;
 
-          void reinit ( const typename DoFHandler<dim>::active_cell_iterator &cell_ref)
-          {
-            this->cell = cell_ref;
-            this->face_number = numbers::invalid_unsigned_int;
-            finite_element_values.reinit (cell_ref);
-          }
+          void reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref);
 
           std_cxx11::unique_ptr<FEFaceValues<dim> >    face_finite_element_values;
           std_cxx11::unique_ptr<FEFaceValues<dim> >    neighbor_face_finite_element_values;

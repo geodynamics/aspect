@@ -585,11 +585,10 @@ namespace aspect
       {
         // then also work on possible face terms. if necessary, initialize
         // the material model data on faces
-        for (scratch.face_number=0; scratch.face_number<GeometryInfo<dim>::faces_per_cell; ++scratch.face_number)
-          if (cell->at_boundary(scratch.face_number))
+        for (unsigned int face_number=0; face_number<GeometryInfo<dim>::faces_per_cell; ++face_number)
+          if (cell->at_boundary(face_number))
             {
-              scratch.face_finite_element_values.reinit (cell, scratch.face_number);
-
+              scratch.reinit(cell, face_number);
               if (assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data)
                 {
                   const bool need_viscosity = rebuild_stokes_matrix |

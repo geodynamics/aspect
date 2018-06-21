@@ -92,6 +92,15 @@ namespace aspect
         {}
 
 
+        template <int dim>
+        void
+        StokesPreconditioner<dim>::
+        reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref)
+        {
+          this->cell = cell_ref;
+          this->face_number = numbers::invalid_unsigned_int;
+          finite_element_values.reinit (cell_ref);
+        }
 
 
         template <int dim>
@@ -156,6 +165,17 @@ namespace aspect
           reference_densities_depth_derivative(scratch.reference_densities_depth_derivative),
           rebuild_newton_stokes_matrix(scratch.rebuild_newton_stokes_matrix)
         {}
+
+        template <int dim>
+        void
+        StokesSystem<dim>::
+        reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref,
+                const unsigned face_number_ref)
+        {
+          this->cell = cell_ref;
+          this->face_number = face_number_ref;
+          face_finite_element_values.reinit(cell_ref, face_number_ref);
+        }
 
 
 
@@ -333,6 +353,18 @@ namespace aspect
           advection_field(scratch.advection_field),
           artificial_viscosity(scratch.artificial_viscosity)
         {}
+
+
+        template<int dim>
+        void
+        AdvectionSystem<dim>::
+        reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref)
+        {
+          this->cell = cell_ref;
+          this->face_number = numbers::invalid_unsigned_int;
+          finite_element_values.reinit (cell_ref);
+        }
+
       }
 
 
