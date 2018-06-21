@@ -585,6 +585,7 @@ int main (int argc, char *argv[])
       else if (arg == "--test")
         {
           run_unittests = true;
+          break;
         }
       else
         {
