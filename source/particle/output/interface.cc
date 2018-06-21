@@ -126,7 +126,7 @@ namespace aspect
                                Patterns::Selection (pattern_of_names + "|none"),
                                "File format to output raw particle data in. "
                                "If you select `none' no output will be "
-                               "written."
+                               "written. "
                                "Select one of the following models:\n\n"
                                +
                                std_cxx1x::get<dim>(registered_plugins).get_description_string());

@@ -618,8 +618,9 @@ namespace aspect
           // we now simply replace "ascii" by "gnuplot" should it be selected.
           prm.declare_entry ("Data output format", "vtu",
                              Patterns::MultipleSelection (DataOutBase::get_output_format_names ()+"|ascii"),
-                             "A comma seperated list of file formats to be used for graphical "
-                             "output.");
+                             "A comma separated list of file formats to be used for graphical "
+                             "output. See the corresponding appendix of the manual for possible "
+                             "output formats.");
 
           prm.declare_entry ("Number of grouped files", "16",
                              Patterns::Integer(0),
