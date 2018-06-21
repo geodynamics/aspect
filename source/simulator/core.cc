@@ -654,10 +654,10 @@ namespace aspect
     // Re-compute the pressure scaling factor. In some sense, it would be nice
     // if we did this not just once per time step, but once for each solve --
     // i.e., multiple times per time step if we iterate out the nonlinearity
-    // during during a Newton or Picard iteration. But that's more work,
+    // during a Newton or Picard iteration. But that's more work,
     // and the function would need to be called in more different places.
     // Unless we have evidence that that's necessary, let's assume that
-    // the reference viscosity does not change tooo much between nonlinear
+    // the reference viscosity does not change too much between nonlinear
     // iterations and that it's ok to update it only once per time step.
     compute_pressure_scaling_factor();
   }
