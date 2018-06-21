@@ -616,6 +616,21 @@ namespace aspect
 
     nonlinear_iteration = 0;
 
+    // Re-compute the pressure scaling factor. In some sense, it would be nice
+    // if we did this not just once per time step, but once for each solve --
+    // i.e., multiple times per time step if we iterate out the nonlinearity
+    // during a Newton or Picard iteration. But that's more work,
+    // and the function would need to be called in more different places.
+    // Unless we have evidence that that's necessary, let's assume that
+    // the reference viscosity does not change too much between nonlinear
+    // iterations and that it's ok to update it only once per time step.
+    //
+    // The call to this function must precede the one to the computation
+    // of constraints because some kinds of constraints require scaling
+    // pressure degrees of freedom to a size adjusted by the pressure_scaling
+    // factor.
+    compute_pressure_scaling_factor();
+
     // then interpolate the current boundary velocities. copy constraints
     // into current_constraints and then add to current_constraints
     compute_current_constraints ();
@@ -650,16 +665,6 @@ namespace aspect
     // above
     for (auto &p : boundary_traction)
       p.second->update ();
-
-    // Re-compute the pressure scaling factor. In some sense, it would be nice
-    // if we did this not just once per time step, but once for each solve --
-    // i.e., multiple times per time step if we iterate out the nonlinearity
-    // during a Newton or Picard iteration. But that's more work,
-    // and the function would need to be called in more different places.
-    // Unless we have evidence that that's necessary, let's assume that
-    // the reference viscosity does not change too much between nonlinear
-    // iterations and that it's ok to update it only once per time step.
-    compute_pressure_scaling_factor();
   }
 
 
