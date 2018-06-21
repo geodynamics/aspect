@@ -1,36 +1,34 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 
-   Loading Ascii data boundary file /home/ubuntu/aspect_dev/aspect/data/boundary-velocity/ascii-data/test/shell_3d_bottom_spherical.0.txt.
-
-
-   Loading new data file did not succeed.
-   Assuming constant boundary conditions for rest of model run.
-
-
-   Loading Ascii data boundary file /home/ubuntu/aspect_dev/aspect/data/boundary-velocity/ascii-data/test/shell_3d_top_spherical.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_bottom_spherical.0.txt.
 
 
    Loading new data file did not succeed.
    Assuming constant boundary conditions for rest of model run.
 
 
-   Loading Ascii data boundary file /home/ubuntu/aspect_dev/aspect/data/boundary-velocity/ascii-data/test/shell_3d_east_spherical.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_top_spherical.0.txt.
 
 
    Loading new data file did not succeed.
    Assuming constant boundary conditions for rest of model run.
 
 
-   Loading Ascii data boundary file /home/ubuntu/aspect_dev/aspect/data/boundary-velocity/ascii-data/test/shell_3d_west_spherical.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_east_spherical.0.txt.
 
 
    Loading new data file did not succeed.
    Assuming constant boundary conditions for rest of model run.
 
 
-   Loading Ascii data boundary file /home/ubuntu/aspect_dev/aspect/data/boundary-velocity/ascii-data/test/shell_3d_south_spherical.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_west_spherical.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_south_spherical.0.txt.
 
 
    Loading new data file did not succeed.
@@ -42,22 +40,22 @@ Number of degrees of freedom: 1,277 (915+57+305)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 101+0 iterations.
+   Solving Stokes system... 96+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  3.44 m/year, 10.9 m/year
-     Temperature min/avg/max:            273 K, 1489 K, 3000 K
-     Heat fluxes through boundary parts: -2.608e+11 W, 8.346e+11 W, 1.203e+07 W, -1.157e+07 W, 1.525e+05 W
+     RMS, max velocity:                  3.45 m/year, 10.9 m/year
+     Temperature min/avg/max:            273 K, 1482 K, 3000 K
+     Heat fluxes through boundary parts: -2.681e+11 W, 8.071e+11 W, 5.002e+09 W, 4.981e+09 W, 5.649e+09 W
 
 *** Timestep 1:  t=1000 years
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 19+0 iterations.
+   Solving Stokes system... 20+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  3.44 m/year, 10.9 m/year
-     Temperature min/avg/max:            273 K, 1488 K, 3000 K
-     Heat fluxes through boundary parts: -2.604e+11 W, 8.316e+11 W, 1.546e+07 W, -2.672e+07 W, 5.522e+06 W
+     RMS, max velocity:                  3.45 m/year, 10.9 m/year
+     Temperature min/avg/max:            273 K, 1481 K, 3000 K
+     Heat fluxes through boundary parts: -2.677e+11 W, 8.043e+11 W, 4.977e+09 W, 4.912e+09 W, 5.605e+09 W
 
 Termination requested by criterion: end time
 

@@ -1,7 +1,7 @@
 # Test data for ascii data boundary velocity.
 # Only next line is parsed in format: [nradius] [nlongitude] because of keyword "POINTS:"
 # POINTS: 3 3
-# Columns: radius longitude velocity_x velocity_y velocity_z
+# Columns: radius longitude velocity_r velocity_phi velocity_theta
 3481000.  0.      0.     0.    0.
 4908500   0.      0.     0.    0.
 6336000.  0.      0.     0.    0.

@@ -147,6 +147,17 @@ namespace aspect
       spherical_to_cartesian_coordinates(const std_cxx11::array<double,dim> &scoord);
 
       /**
+       * Given a vector defined in the radius, phi and theta directions, return
+       * a vector defined in Cartesian coordinates. If the dimension is set to 2
+       * theta is omitted. Position is given as a Point in Cartesian coordinates.
+       */
+      template <int dim>
+      Tensor<1,dim>
+      spherical_to_cartesian_vector(const Tensor<1,dim> &spherical_vector,
+                                    const Point<dim> &position);
+
+
+      /**
        * Returns ellipsoidal coordinates of a Cartesian point. The returned array
        * is filled with phi, theta and radius.
        *
