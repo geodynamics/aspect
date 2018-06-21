@@ -25,7 +25,7 @@ Number of degrees of freedom: 30,600 (8,450+4,161+8,450+1,089+4,225+4,225)
    Postprocessing:
      RMS, max velocity:                                                  8.19 m/s, 14.8 m/s
      Pressure min/avg/max:                                               0.6063 Pa, 1.042 Pa, 1.649 Pa
-     Max and min velocity along boundary parts:                          14.87 m/s, 13.45 m/s, 14.87 m/s, 13.45 m/s, 14.43 m/s, 0.3889 m/s, 14.43 m/s, 0.3889 m/s
+     Max, min, and rms velocity along boundary parts:                    14.87 m/s, 13.45 m/s, 14.16 m/s, 14.87 m/s, 13.45 m/s, 14.16 m/s, 14.43 m/s, 0.3889 m/s, 8.183 m/s, 14.43 m/s, 0.3889 m/s, 8.183 m/s
      Errors u_L2, p_L2, p_f_L2, p_c_bar_L2, p_c_L2, porosity_L2, u_f_L2: 2.079246e-02, 4.215268e-01, 9.083784e-02, 3.271462e-01, 1.621392e+00, 8.032470e-03, 5.875632e-02
 
 Termination requested by criterion: end time
