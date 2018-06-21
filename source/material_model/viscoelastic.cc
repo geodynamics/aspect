@@ -66,41 +66,6 @@ namespace aspect
       return elastic_shear_moduli;
     }
 
-    template <int dim>
-    const std::vector<double>
-    Viscoelastic<dim>::
-    compute_volume_fractions(const std::vector<double> &compositional_fields) const
-    {
-      std::vector<double> volume_fractions(compositional_fields.size()+1);
-
-      //clip the compositional fields so they are between zero and one
-      std::vector<double> x_comp = compositional_fields;
-      for (unsigned int i=0; i < x_comp.size(); ++i)
-        x_comp[i] = std::min(std::max(x_comp[i], 0.0), 1.0);
-
-      // assign compositional fields associated with viscoelastic stress a value of 0
-      for (unsigned int i=0; i < SymmetricTensor<2,dim>::n_independent_components; ++i)
-        x_comp[i] = 0.0;
-
-      //sum the compositional fields for normalization purposes
-      double sum_composition = 0.0;
-      for (unsigned int i=0; i < x_comp.size(); ++i)
-        sum_composition += x_comp[i];
-
-      if (sum_composition >= 1.0)
-        {
-          volume_fractions[0] = 0.0;  //background mantle
-          for (unsigned int i=1; i <= x_comp.size(); ++i)
-            volume_fractions[i] = x_comp[i-1]/sum_composition;
-        }
-      else
-        {
-          volume_fractions[0] = 1.0 - sum_composition; //background mantle
-          for (unsigned int i=1; i <= x_comp.size(); ++i)
-            volume_fractions[i] = x_comp[i-1];
-        }
-      return volume_fractions;
-    }
 
     template <int dim>
     double
@@ -189,6 +154,12 @@ namespace aspect
       MaterialModel::ElasticOutputs<dim>
       *force_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim> >();
 
+      // Store which components to exclude during volume fraction computation.
+      ComponentMask composition_mask(this->n_compositional_fields(),true);
+      // assign compositional fields associated with viscoelastic stress a value of 0
+      // assume these fields are listed first
+      for (unsigned int i=0; i < SymmetricTensor<2,dim>::n_independent_components; ++i)
+        composition_mask.set(i,false);
 
       // The elastic time step (dte) is equal to the numerical time step if the time step number
       // is greater than 0 and the parameter 'use_fixed_elastic_time_step' is set to false.
@@ -205,7 +176,7 @@ namespace aspect
         {
           const double temperature = in.temperature[i];
           const std::vector<double> composition = in.composition[i];
-          const std::vector<double> volume_fractions = compute_volume_fractions(composition);
+          const std::vector<double> volume_fractions = compute_volume_fractions(composition, composition_mask);
 
           out.specific_heat[i] = average_value(volume_fractions, specific_heats, arithmetic);
 
