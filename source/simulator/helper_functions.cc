@@ -1569,8 +1569,8 @@ namespace aspect
                            "solver scheme)."));
 
     // some heating models require the additional outputs
-    heating_model_manager.create_additional_material_model_outputs(out_C);
-    heating_model_manager.create_additional_material_model_outputs(out_T);
+    heating_model_manager.create_additional_material_model_inputs_and_outputs(in_C, out_C);
+    heating_model_manager.create_additional_material_model_inputs_and_outputs(in_T, out_T);
 
     // Make a loop first over all cells, than over all reaction time steps, and then over
     // all degrees of freedom in each element to compute the reactions. This is possible
@@ -1613,8 +1613,9 @@ namespace aspect
           for (unsigned int i=0; i<number_of_reaction_steps; ++i)
             {
               // Loop over composition element
-              material_model->evaluate(in_C, out_C);
+              heating_model_manager.fill_additional_material_model_inputs(in_C, solution, fe_values_C, introspection);
 
+              material_model->evaluate(in_C, out_C);
               heating_model_manager.evaluate(in_C, out_C, heating_model_outputs_C);
 
               for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).dofs_per_cell; ++j)
@@ -1631,8 +1632,9 @@ namespace aspect
                 }
 
               // loop over temperature element
-              material_model->evaluate(in_T, out_T);
+              heating_model_manager.fill_additional_material_model_inputs(in_T, solution, fe_values_T, introspection);
 
+              material_model->evaluate(in_T, out_T);
               heating_model_manager.evaluate(in_T, out_T, heating_model_outputs_T);
 
               for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.temperature).dofs_per_cell; ++j)

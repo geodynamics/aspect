@@ -857,7 +857,10 @@ namespace aspect
     for (unsigned int i=0; i<assemblers->advection_system.size(); ++i)
       assemblers->advection_system[i]->create_additional_material_model_outputs(scratch.material_model_outputs);
 
-    heating_model_manager.create_additional_material_model_outputs(scratch.material_model_outputs);
+    heating_model_manager.create_additional_material_model_inputs_and_outputs(scratch.material_model_inputs,
+                                                                              scratch.material_model_outputs);
+    heating_model_manager.fill_additional_material_model_inputs(scratch.material_model_inputs, current_linearization_point, scratch.finite_element_values, introspection);
+
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
@@ -967,7 +970,9 @@ namespace aspect
                 for (unsigned int i=0; i<assemblers->advection_system_on_interior_face.size(); ++i)
                   assemblers->advection_system_on_interior_face[i]->create_additional_material_model_outputs(scratch.face_material_model_outputs);
 
-                heating_model_manager.create_additional_material_model_outputs(scratch.face_material_model_outputs);
+                heating_model_manager.create_additional_material_model_inputs_and_outputs(scratch.face_material_model_inputs,
+                                                                                          scratch.face_material_model_outputs);
+                heating_model_manager.fill_additional_material_model_inputs(scratch.face_material_model_inputs, current_linearization_point, *scratch.face_finite_element_values, introspection);
 
                 material_model->evaluate(scratch.face_material_model_inputs,
                                          scratch.face_material_model_outputs);

@@ -53,7 +53,7 @@ namespace aspect
 
       MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
-      this->get_heating_model_manager().create_additional_material_model_outputs(out);
+      this->get_heating_model_manager().create_additional_material_model_inputs_and_outputs(in, out);
 
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
@@ -82,6 +82,8 @@ namespace aspect
 
             fe_values.reinit (cell);
             in.reinit(fe_values, cell, this->introspection(), this->get_solution());
+
+            this->get_heating_model_manager().fill_additional_material_model_inputs(in, this->get_solution(), fe_values, this->introspection());
 
             this->get_material_model().evaluate(in, out);
 

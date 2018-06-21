@@ -110,6 +110,13 @@ namespace aspect
     {}
 
 
+    template <int dim>
+    void
+    Interface<dim>::
+    create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> & /*inputs*/) const
+    {}
+
+
     // ------------------------------ Manager -----------------------------
 
     template <int dim>
@@ -260,14 +267,37 @@ namespace aspect
     template <int dim>
     void
     Manager<dim>::
-    create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const
+    create_additional_material_model_inputs_and_outputs(MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                                                        MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const
     {
       for (typename std::list<std::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
            heating_model = heating_model_objects.begin();
            heating_model != heating_model_objects.end(); ++heating_model)
         {
+          (*heating_model)->create_additional_material_model_inputs(material_model_inputs);
+        }
+
+      for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
+           heating_model = heating_model_objects.begin();
+           heating_model != heating_model_objects.end(); ++heating_model)
+        {
           (*heating_model)->create_additional_material_model_outputs(material_model_outputs);
         }
+    }
+
+
+
+    template <int dim>
+    void
+    Manager<dim>::
+    fill_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &input,
+                                          const LinearAlgebra::BlockVector        &solution,
+                                          const FEValuesBase<dim>                 &fe_values,
+                                          const Introspection<dim>                &introspection) const
+    {
+      // go through the list of additional inputs and fill them
+      for (unsigned int i=0; i<input.additional_inputs.size(); ++i)
+        input.additional_inputs[i]->fill(input.position.size(), solution, fe_values, introspection);
     }
 
 
