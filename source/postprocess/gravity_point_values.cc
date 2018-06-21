@@ -40,7 +40,7 @@ namespace aspect
     std::pair<std::string,std::string>
     GravityPointValues<dim>::execute (TableHandler &)
     {
-      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
+      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+3);
       const unsigned int number_quadrature_points_cell = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
@@ -140,7 +140,6 @@ namespace aspect
                 {
                   density_JxW[local_cell_number * number_quadrature_points_cell + q] = out.densities[q] * fe_values.JxW(q);
                   position_point[local_cell_number * number_quadrature_points_cell + q] = position_point_cell[q];
-
                 }
               ++local_cell_number;
             }
@@ -155,12 +154,12 @@ namespace aspect
           // loop on phi - satellite position [ , phi ,]
           for (unsigned int i=0; i < number_points_longitude; ++i)
             {
-              satellite_coordinate[1] = minimum_longitude + ((maximum_longitude - minimum_longitude) / number_points_longitude) * i;
+              satellite_coordinate[1] = (minimum_longitude + ((maximum_longitude - minimum_longitude) / number_points_longitude) * i) * numbers::PI / 180.;
 
               // loop on theta - satllite position [ , , theta]
               for (unsigned int j=0; j < number_points_latitude; ++j)
                 {
-                  satellite_coordinate[2] = minimum_latitude + ((maximum_latitude - minimum_latitude) / number_points_latitude) * j;
+                  satellite_coordinate[2] = (minimum_latitude + ((maximum_latitude - minimum_latitude) / number_points_latitude) * j) * numbers::PI / 180.;
                   Tensor<1,dim> local_g;
                   double local_U = 0;
 
@@ -176,7 +175,6 @@ namespace aspect
                     {
                       if (cell->is_locally_owned())
                         {
-                          //fe_values.reinit (cell);  // required if position_point out? because of fe_values.JxW(q)?
                           for (unsigned int q = 0; q < number_quadrature_points_cell; ++q)
                             {
                               double dist = (position_satellite - position_point[local_cell_number * number_quadrature_points_cell + q]).norm();
@@ -196,7 +194,7 @@ namespace aspect
 
                   // analytical solution to calculate the theoritical gravity from a uniform desnity model.
                   // can only be used if concentric density profile
-                  const double reference_density = (this->get_adiabatic_conditions().density(in.position[0])); //this->get_geometry_model.representative_point(0)));
+                  const double reference_density = (this->get_adiabatic_conditions().density(in.position[0]));
                   double g_theory = 0;
                   double g_diff = 0;
                   if (satellite_coordinate[0] <= model_inner_radius)
@@ -219,8 +217,8 @@ namespace aspect
 
                   // write output
                   f << satellite_coordinate[0] << ' '
-                    << satellite_coordinate[1] << ' '
-                    << satellite_coordinate[2] << ' '
+                    << satellite_coordinate[1] *180. / numbers::PI << ' '
+                    << satellite_coordinate[2] *180. / numbers::PI << ' '
                     << position_satellite[0] << ' '
                     << position_satellite[1] << ' '
                     << position_satellite[2] << ' '
