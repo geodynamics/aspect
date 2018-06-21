@@ -167,9 +167,9 @@ namespace aspect
     boundary_heat_flux (BoundaryHeatFlux::create_boundary_heat_flux<dim>(prm)),
 
     time (numbers::signaling_nan<double>()),
-    time_step (0),
-    old_time_step (0),
-    timestep_number (0),
+    time_step (numbers::signaling_nan<double>()),
+    old_time_step (numbers::signaling_nan<double>()),
+    timestep_number (numbers::invalid_unsigned_int),
     nonlinear_iteration (numbers::invalid_unsigned_int),
 
     triangulation (mpi_communicator,
@@ -1575,9 +1575,7 @@ namespace aspect
       }
     else
       {
-        time                      = parameters.start_time;
-        timestep_number           = 0;
-        time_step = old_time_step = 0;
+        time = parameters.start_time;
 
         // Instead of calling global_refine(n) we flag all cells for
         // refinement and then allow the mesh refinement plugins to unflag
@@ -1613,6 +1611,9 @@ namespace aspect
            && pre_refinement_step < parameters.initial_adaptive_refinement))
       {
         TimerOutput::Scope timer (computing_timer, "Setup initial conditions");
+
+        timestep_number           = 0;
+        time_step = old_time_step = 0;
 
         // Add topography to box models after all initial refinement
         // is completed.
