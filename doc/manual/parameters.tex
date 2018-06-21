@@ -5049,7 +5049,7 @@ The formula is interpreted as having units W/kg.
 {\it Default:} 0
 
 
-{\it Description:} List of heat production per unit volume values for background and compositional fields, for a total of N+1 values, where N is the number of compositional fields. Units: $W/m^3$.
+{\it Description:} List of heat production per unit volume values for background and compositional fields, for a total of N+1 values, where the first value correponds to the background material, and N is the number of compositional fields. Units: $W/m^3$.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -5065,7 +5065,7 @@ The formula is interpreted as having units W/kg.
 {\it Default:} 1
 
 
-{\it Description:} List of integers, detailing for each compositional field if it should be included in the averaging scheme when the heat production is computed (if 1) or not (if 0).
+{\it Description:} A list of integers with as many entries as compositional fields plus one. The first entry corresponds to the background material, each following entry corresponds to a particular compositional field. If the entry for a field is '1' this field is considered during the computation of volume fractions, if it is '0' the field is ignored. This is useful if some compositional fields are used to track properties like finite strain that should not contribute to heat production. The first entry determines whether the background field contributes to heat production or not (essentially similar to setting its 'Compositional heating values' to zero, but included for consistency in the length of the input lists).
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [An integer $n$ such that $0\leq n \leq 1$]
