@@ -1,6 +1,10 @@
-# Test for the visco_plastic composite viscosity option.
-# The user-defined diffusion and dislocation viscosity are
-# 1e22 Pa s and the composite viscosity should be 5e21 Pa s.
+# A test for diffusion creep in the visco_plastic material model.
+# The diffusion creep viscosity is defined as:
+#   0.5 * A^(-1/n) * d^(m/n) * exp((E + P*V)/(nRT)), with
+#   A = 2.37e-15, n = 1, d = 1e-3, m = 3, E = 375.e3, 
+#   V = 10e-6, P = 3e9, T = 1573 and R = 8.3144598.
+# Using these values, the computed viscosity should be
+#   ~ 5.9266e18 Pa s.     
 
 # Global parameters
 set Dimension                              = 2
@@ -9,6 +13,7 @@ set End time                               = 0
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Max nonlinear iterations               = 1
+set Surface pressure                       = 3.e9
 
 # Model geometry (100x100 km, 10 km spacing)
 subsection Geometry model
@@ -55,16 +60,16 @@ end
 subsection Boundary temperature model
   set List of model names = box
   subsection Box
-    set Bottom temperature = 273
-    set Left temperature   = 273
-    set Right temperature  = 273
-    set Top temperature    = 273
+    set Bottom temperature = 1573
+    set Left temperature   = 1573
+    set Right temperature  = 1573
+    set Top temperature    = 1573
   end
 end
 subsection Initial temperature model
   set Model name = function
   subsection Function
-    set Function expression = 273
+    set Function expression = 1573
   end
 end
 
@@ -73,15 +78,12 @@ subsection Material model
   set Model name = visco plastic
   subsection Visco Plastic
     set Reference strain rate = 1.e-16
-    set Viscous flow law = composite
-    set Prefactors for dislocation creep = 5.e-23
-    set Stress exponents for dislocation creep = 1.0
-    set Activation energies for dislocation creep = 0.
-    set Activation volumes for dislocation creep = 0.
-    set Prefactors for diffusion creep = 5.e-23
-    set Grain size exponents for diffusion creep = 0.
-    set Activation energies for diffusion creep = 0.
-    set Activation volumes for diffusion creep = 0.
+    set Viscous flow law = diffusion
+    set Grain size = 1.e-3
+    set Grain size exponents for diffusion creep = 3.
+    set Prefactors for diffusion creep = 2.37e-15
+    set Activation energies for diffusion creep = 375.e3
+    set Activation volumes for diffusion creep = 10.e-6
   end
 end
 
@@ -89,7 +91,7 @@ end
 subsection Gravity model
   set Model name = vertical
   subsection Vertical
-    set Magnitude = 10.0
+    set Magnitude = 0.0
   end
 end
 
@@ -97,7 +99,7 @@ end
 subsection Postprocess
   set List of postprocessors = velocity statistics, mass flux statistics, visualization
   subsection Visualization
-    set List of output variables = viscosity
+    set List of output variables = viscosity, strain rate
     set Output format            = gnuplot
   end
 end
