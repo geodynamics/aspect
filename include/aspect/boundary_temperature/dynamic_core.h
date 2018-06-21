@@ -91,9 +91,7 @@ namespace aspect
      * A class that implements a temperature boundary condition for a spherical
      * shell geometry in which the temperature at the outer surfaces are constant
      * and the core-mantle boundaries (CMB) temperature is calculated by core energy balance.
-     * The formulation of core energy balance are from \cite NPB+04
-     * The influence of potassium on core and geodynamo evolution.
-     *    Geophysical Journal International, 2004. 156(2): p. 363-376.
+     * The formulation of the core energy balance is from \cite NPB+04 .
      * @ingroup BoundaryTemperatures
      */
     template <int dim>
@@ -336,7 +334,7 @@ namespace aspect
         std::vector<double> initial_concentration;
 
         /**
-         * Two length scales in \cite NPB+04
+         * Two length scales in \cite NPB+04 .
          */
         double L;
         double D;
@@ -438,7 +436,7 @@ namespace aspect
         double get_Mass(double r) const;
 
         /**
-         * Calculate Sn(B,R), referring to \cite NPB+04
+         * Calculate Sn(B,R), referring to \cite NPB+04 .
          */
         double fun_Sn(double B,double R,double n) const;
 
