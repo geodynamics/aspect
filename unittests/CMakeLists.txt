@@ -1,0 +1,14 @@
+################### top matter ################
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
+
+SET(ASPECT_BINARY "${ASPECT_BINARY}" CACHE STRING "" FORCE)
+
+ENABLE_TESTING()
+
+MESSAGE(STATUS "creating unittests ctest in ${CMAKE_CURRENT_BINARY_DIR} binary=${ASPECT_BINARY}")
+
+ADD_TEST(NAME unittests
+      COMMAND
+	${ASPECT_BINARY} --test
+	  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+      )

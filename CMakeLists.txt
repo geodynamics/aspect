@@ -24,8 +24,8 @@ MESSAGE(STATUS "====================================================")
 # Set the name of the project and target:
 SET(TARGET "aspect")
 
-FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "include/*.h")
-INCLUDE_DIRECTORIES(include ${CMAKE_BINARY_DIR}/include)
+FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "unittests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
+INCLUDE_DIRECTORIES(include ${CMAKE_BINARY_DIR}/include contrib/catch)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
 
@@ -159,8 +159,24 @@ ADD_CUSTOM_TARGET(setup_tests
 SET(ASPECT_TEST_GENERATOR "Unix Makefiles" CACHE STRING 
   "Generator to use for the test cmake project. Using ninja instead of make is not recommended.")
 
+FILE(WRITE ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "# auto-generated ctest file\n")
+
+IF(EXISTS ${CMAKE_SOURCE_DIR}/unittests/CMakeLists.txt)
+  FILE(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(unittests)\n")
+  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unittests)
+  EXECUTE_PROCESS(
+    COMMAND ${CMAKE_COMMAND}
+	-D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+	-D ASPECT_BINARY=${CMAKE_BINARY_DIR}/aspect
+	${CMAKE_CURRENT_SOURCE_DIR}/unittests
+    OUTPUT_FILE setup_unittests.log
+    RESULT_VARIABLE test_cmake_result
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unittests
+   )
+ENDIF()
+
 IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
-  FILE(WRITE ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(tests)")
+  FILE(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(tests)\n")
 
   FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests)
 

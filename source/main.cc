@@ -42,6 +42,8 @@
 #  endif
 #endif
 
+#define CATCH_CONFIG_RUNNER
+#include "catch.hpp"
 
 
 // get the value of a particular parameter from the contents of the input
@@ -543,6 +545,7 @@ int main (int argc, char *argv[])
   bool output_version      = false;
   bool output_help         = false;
   bool use_threads         = false;
+  bool run_unittests       = false;
   int current_argument = 1;
 
   // Loop over all command line arguments. Handle a number of special ones
@@ -579,6 +582,10 @@ int main (int argc, char *argv[])
           use_threads = true;
 #endif
         }
+      else if (arg == "--test")
+        {
+          run_unittests = true;
+        }
       else
         {
           // Not a special argument, so we assume that this is the .prm
@@ -601,6 +608,19 @@ int main (int argc, char *argv[])
       // currently unwinding the stack if an unhandled exception is being
       // thrown to avoid MPI deadlocks.
       Utilities::MPI::MPI_InitFinalize mpi_initialization(n_remaining_arguments, remaining_arguments, use_threads ? numbers::invalid_unsigned_int : 1);
+
+      if (run_unittests)
+        {
+          int new_argc = n_remaining_arguments + 1;
+          std::vector<char *> args;
+          args.push_back(argv[0]);
+          for (int i=0; i<n_remaining_arguments; ++i)
+            args.push_back(argv[i+current_argument]);
+          char **new_argv = args.data();
+
+          return Catch::Session().run(new_argc, new_argv);
+        }
+
 
       deallog.depth_console(0);
 
