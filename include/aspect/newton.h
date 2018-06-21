@@ -277,7 +277,7 @@ namespace aspect
      * This class assembles the right-hand-side term of the Newton Stokes system
      * that is caused by the compressibility in the mass conservation equation.
      * This function approximates this term as
-     * $- \nabla \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u}$
+     * $- \nabla \mathbf{u} = \frac{1}{\rho} \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u}$
      */
     template <int dim>
     class NewtonStokesReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>,
@@ -298,7 +298,7 @@ namespace aspect
      * It includes this term implicitly in the matrix,
      * which is therefore not longer symmetric.
      * This function approximates this term as
-     * $ - \nabla \mathbf{u} - \frac{1}{\rho} * \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u} = 0$
+     * $ - \nabla \mathbf{u} - \frac{1}{\rho} \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u} = 0$
      */
     template <int dim>
     class NewtonStokesImplicitReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>,
@@ -317,7 +317,7 @@ namespace aspect
      * This class assembles the right-hand-side term of the Newton Stokes system
      * that is caused by the compressibility in the mass conservation equation.
      * This function approximates this term as
-     * $ - \nabla \mathbf{u} = \frac{1}{\rho} * \frac{\partial rho}{\partial p} \rho \mathbf{g} \cdot \mathbf{u}$
+     * $ - \nabla \mathbf{u} = \frac{1}{\rho} \frac{\partial rho}{\partial p} \rho \mathbf{g} \cdot \mathbf{u}$
      */
     template <int dim>
     class NewtonStokesIsothermalCompressionTerm : public Assemblers::Interface<dim>,

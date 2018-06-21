@@ -63,8 +63,8 @@ namespace aspect
      *
      * Viscous deformation is defined by a viscous flow law describing
      * dislocation and diffusion creep:
-     *   $ v = 0.5 * A^{-\frac{1}{n}} * d^{\frac{m}{n}} *
-     *               \dot{\varepsilon}_{ii}^{\frac{1-n}{n}} *
+     *   $ v = \frac{1}{2}   A^{-\frac{1}{n}} d^{\frac{m}{n}}
+     *               \dot{\varepsilon}_{ii}^{\frac{1-n}{n}}
      *               \exp\left(\frac{E + PV}{nRT}\right) $
      * where
      *   where $A$ is the prefactor, $n$ is the stress exponent,
@@ -76,19 +76,19 @@ namespace aspect
      *
      * One may select to use the diffusion ($v_{diff}$; $n=1$, $m!=0$),
      * dislocation ($v_{disl}$, $n>1$, $m=0$) or composite
-     * $\frac{v_{diff}*v_{disl}}{v_{diff}+v_{disl}}$ equation form.
+     * $\frac{v_{diff}v_{disl}}{v_{diff}+v_{disl}}$ equation form.
      *
      * Viscous stress is limited by plastic deformation, which follows
      * a Drucker Prager yield criterion:
-     *  $\sigma_y = C*\cos(\phi) + P*\sin(\phi)$  (2D)
+     *  $\sigma_y = C\cos(\phi) + P\sin(\phi)$  (2D)
      * or in 3D
-     *  $\sigma_y = \frac{6*C*\cos(\phi) + 2*P*\sin(\phi)}{\sqrt(3)*(3+\sin(\phi))}$
+     *  $\sigma_y = \frac{6C\cos(\phi) + 2P\sin(\phi)}{\sqrt{3}(3+\sin(\phi))}$
      * where
      *   $\sigma_y$ is the yield stress, $C$ is cohesion, $phi$ is the angle
      *   of internal friction and $P$ is pressure.
-     * If the viscous stress ($2*v*{\varepsilon}_{ii})$) exceeds the yield
+     * If the viscous stress ($2v{\varepsilon}_{ii})$) exceeds the yield
      * stress ($\sigma_{y}$), the viscosity is rescaled back to the yield
-     * surface: $v_{y}=\sigma_{y}/(2.*{\varepsilon}_{ii})$
+     * surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$
      *
      * Several model parameters (reference densities, thermal expansivities
      * thermal diffusivities, heat capacities and rheology parameters) can
