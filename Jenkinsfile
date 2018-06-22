@@ -37,7 +37,7 @@ pipeline {
             not {changeRequest authorEmail: "ja3170@columbia.edu"}
             not {changeRequest authorEmail: "jbnaliboff@ucdavis.edu"}
             not {changeRequest authorEmail: "menno.fraters@outlook.com"}
-            not {changeRequest authorEmail: "acglerum@gfz-potsdam.de"}
+            not {changeRequest authorEmail: "a.c.glerum@uu.nl"}
 	    }
       }
       steps {
