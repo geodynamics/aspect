@@ -54,7 +54,7 @@ end
 
 
 subsection Boundary temperature model
-  set List of model names = Dynamic core
+  set List of model names = dynamic core
   subsection Dynamic core
     set Inner temperature                 = 4100
     set Outer temperature                 = 300
