@@ -159,11 +159,23 @@ namespace aspect
 
 
     template <int dim>
+    S40RTSPerturbation<dim>::S40RTSPerturbation()
+      :
+      vs_to_density_index(numbers::invalid_unsigned_int)
+    {}
+
+    template <int dim>
     void
     S40RTSPerturbation<dim>::initialize()
     {
       spherical_harmonics_lookup.reset(new internal::S40RTS::SphericalHarmonicsLookup(data_directory+harmonics_coeffs_file_name,this->get_mpi_communicator()));
       spline_depths_lookup.reset(new internal::S40RTS::SplineDepthsLookup(data_directory+spline_depth_file_name,this->get_mpi_communicator()));
+
+      if (vs_to_density_method == file)
+        {
+          profile.initialize(this->get_mpi_communicator());
+          vs_to_density_index = profile.get_column_index_from_name("vs_to_density");
+        }
     }
 
     template <>
@@ -305,11 +317,24 @@ namespace aspect
       const double perturbation = get_Vs (position);
 
 
+      // Get the vs to density converstion
+      const double depth = this->get_geometry_model().depth(position);
+
+      double vs_to_density = 0.0;
+      if (vs_to_density_method == file)
+        vs_to_density = profile.get_data_component(Point<1>(depth), vs_to_density_index);
+      else if (vs_to_density_method == constant)
+        vs_to_density = vs_to_density_constant;
+      else
+        // we shouldn't get here but instead should already have been
+        // kicked out by the assertion in the parse_parameters()
+        // function
+        Assert (false, ExcNotImplemented());
+
       // scale the perturbation in seismic velocity into a density perturbation
       // vs_to_density is an input parameter
       const double density_perturbation = vs_to_density * perturbation;
 
-      const double depth = this->get_geometry_model().depth(position);
       double temperature_perturbation;
       if (depth > no_perturbation_depth)
         // scale the density perturbation into a temperature perturbation
@@ -342,6 +367,10 @@ namespace aspect
                              Patterns::Anything(),
                              "The file name of the spline knot locations from "
                              "Ritsema et al.");
+          prm.declare_entry ("vs to density scaling method", "constant",
+                             Patterns::Selection("file|constant"),
+                             "Method that is used to specify how the vs-to-density scaling varies "
+                             "with depth.");
           prm.declare_entry ("Vs to density scaling", "0.25",
                              Patterns::Double (0),
                              "This parameter specifies how the perturbation in shear wave velocity "
@@ -378,6 +407,11 @@ namespace aspect
                              "The maximum order the users specify when reading the data file of spherical harmonic "
                              "coefficients, which must be smaller than the maximum order the data file stored. "
                              "This parameter will be used only if 'Specify a lower maximum order' is set to true.");
+
+          aspect::Utilities::AsciiDataProfile<dim>::declare_parameters(prm,
+                                                                       "$ASPECT_SOURCE_DIR/data/initial-temperature/S40RTS/",
+                                                                       "vs_to_density_Steinberger.txt",
+                                                                       "Ascii data vs to density model");
         }
         prm.leave_subsection ();
       }
@@ -403,13 +437,24 @@ namespace aspect
             data_directory += "/";
           harmonics_coeffs_file_name = prm.get ("Initial condition file name");
           spline_depth_file_name  = prm.get ("Spline knots depth file name");
-          vs_to_density           = prm.get_double ("Vs to density scaling");
+          vs_to_density_constant           = prm.get_double ("Vs to density scaling");
           thermal_alpha           = prm.get_double ("Thermal expansion coefficient in initial temperature scaling");
           zero_out_degree_0       = prm.get_bool ("Remove degree 0 from perturbation");
           reference_temperature   = prm.get_double ("Reference temperature");
           no_perturbation_depth   = prm.get_double ("Remove temperature heterogeneity down to specified depth");
           lower_max_order         = prm.get_bool ("Specify a lower maximum order");
           max_order               = prm.get_integer ("Maximum order");
+
+          if (prm.get("vs to density scaling method") == "file")
+            vs_to_density_method = file;
+          else if (prm.get("vs to density scaling method") == "constant")
+            vs_to_density_method = constant;
+          else
+            {
+              AssertThrow(false, ExcMessage("Unknown method for vs to density scaling."));
+            }
+
+          profile.parse_parameters(prm,"Ascii data vs to density model");
         }
         prm.leave_subsection ();
       }
@@ -437,9 +482,10 @@ namespace aspect
                                               "wave dispersion, teleseismic traveltime and normal-mode "
                                               "splitting function measurements, Geophys. J. Int. 184, 1223-1236. "
                                               "The scaling between the shear wave perturbation and the "
-                                              "temperature perturbation can be set by the user with the "
-                                              "'Vs to density scaling' parameter and the 'Thermal "
-                                              "expansion coefficient in initial temperature scaling' "
+                                              "density perturbation can be constant and set by the user with the "
+                                              "'Vs to density scaling' parameter or depth-dependent and "
+                                              "read in from a file. To convert density the user can specify "
+                                              "the 'Thermal expansion coefficient in initial temperature scaling' "
                                               "parameter. The scaling is as follows: $\\delta ln \\rho "
                                               "(r,\\theta,\\phi) = \\xi \\cdot \\delta ln v_s(r,\\theta, "
                                               "\\phi)$ and $\\delta T(r,\\theta,\\phi) = - \\frac{1}{\\alpha} "
@@ -451,6 +497,25 @@ namespace aspect
                                               "adiabatic reference profile (compressible model). If a depth "
                                               "is specified in 'Remove temperature heterogeneity down to "
                                               "specified depth', there is no temperature perturbation "
-                                              "prescribed down to that depth.")
+                                              "prescribed down to that depth."
+                                              "\n"
+                                              "Note the required file format if the vs to density scaling is read in "
+                                              "from a file: The first lines may contain any number of comments "
+                                              "if they begin with '#', but one of these lines needs to "
+                                              "contain the number of points in the reference state as "
+                                              "for example '# POINTS: 3'. "
+                                              "Following the comment lines there has to be a single line "
+                                              "containing the names of all data columns, separated by arbitrarily "
+                                              "many spaces. Column names are not allowed to contain spaces. "
+                                              "The file can contain unnecessary columns, but for this plugin it "
+                                              "needs to at least provide the columns named `depth' and "
+                                              "`vs\\_to\\_density'. "
+                                              "Note that the data lines in the file need to be sorted in order "
+                                              "of increasing depth from 0 to the maximal depth in the model "
+                                              "domain. Points in the model that are outside of the provided "
+                                              "depth range will be assigned the maximum or minimum depth values, "
+                                              "respectively. Points do not need to be equidistant, "
+                                              "but the computation of properties is optimized in speed "
+                                              "if they are.")
   }
 }
