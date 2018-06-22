@@ -608,8 +608,6 @@ namespace aspect
           !=
           this->get_boundary_traction().end())
         {
-          scratch.face_finite_element_values.reinit (scratch.cell, scratch.face_number);
-
           for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
             {
               const Tensor<1,dim> traction

@@ -303,8 +303,7 @@ namespace aspect
     data.extract_stokes_dof_indices(scratch.local_dof_indices, introspection, finite_element);
 
     // Prepare the data structures for assembly
-    scratch.finite_element_values.reinit (cell);
-    scratch.cell = cell;
+    scratch.reinit(cell);
     data.local_matrix = 0;
 
     compute_material_model_input_values (current_linearization_point,
@@ -530,8 +529,7 @@ namespace aspect
     data.extract_stokes_dof_indices (scratch.local_dof_indices, introspection, finite_element);
 
     // Prepare the data structures for assembly
-    scratch.finite_element_values.reinit (cell);
-    scratch.cell = cell;
+    scratch.reinit(cell);
 
     if (rebuild_stokes_matrix)
       data.local_matrix = 0;
@@ -587,11 +585,10 @@ namespace aspect
       {
         // then also work on possible face terms. if necessary, initialize
         // the material model data on faces
-        for (scratch.face_number=0; scratch.face_number<GeometryInfo<dim>::faces_per_cell; ++scratch.face_number)
-          if (cell->at_boundary(scratch.face_number))
+        for (unsigned int face_number=0; face_number<GeometryInfo<dim>::faces_per_cell; ++face_number)
+          if (cell->at_boundary(face_number))
             {
-              scratch.face_finite_element_values.reinit (cell, scratch.face_number);
-
+              scratch.reinit(cell, face_number);
               if (assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data)
                 {
                   const bool need_viscosity = rebuild_stokes_matrix |
@@ -807,8 +804,7 @@ namespace aspect
 
     const unsigned int solution_component = advection_field.component_index(introspection);
 
-    scratch.finite_element_values.reinit (cell);
-    scratch.cell = cell;
+    scratch.reinit(cell);
 
     // get all dof indices on the current cell, then extract those
     // that correspond to the solution_field we are interested in
