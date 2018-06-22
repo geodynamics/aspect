@@ -250,7 +250,7 @@ namespace aspect
           && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == NULL)
         {
           outputs.additional_outputs.push_back(
-            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >
+            std::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >
             (new MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> (n_points)));
         }
 
@@ -263,7 +263,7 @@ namespace aspect
           outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >() == NULL)
         {
           outputs.additional_outputs.push_back(
-            std_cxx11::shared_ptr<MaterialModel::ElasticOutputs<dim> >
+            std::shared_ptr<MaterialModel::ElasticOutputs<dim> >
             (new MaterialModel::ElasticOutputs<dim> (n_points)));
         }
 

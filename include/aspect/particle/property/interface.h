@@ -632,7 +632,7 @@ namespace aspect
            * A list of property objects that have been requested in the
            * parameter file.
            */
-          std::list<std_cxx1x::shared_ptr<Interface<dim> > > property_list;
+          std::list<std::shared_ptr<Interface<dim> > > property_list;
 
           /**
            * A class that stores all information about the particle properties,

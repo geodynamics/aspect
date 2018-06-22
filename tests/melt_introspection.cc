@@ -19,7 +19,7 @@ namespace aspect
     std::cout << "* signals.edit_finite_element_variables:" << std::endl;
 
     VariableDeclaration<dim> dummy("dummy",
-                                   std_cxx11::shared_ptr<FiniteElement<dim> > (
+                                   std::shared_ptr<FiniteElement<dim> > (
                                      new dealii::FE_DGQ<dim>(4)),
                                    1,
                                    1);

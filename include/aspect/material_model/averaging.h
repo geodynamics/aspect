@@ -164,7 +164,7 @@ namespace aspect
         /**
          * Pointer to the material model used as the base model
          */
-        std_cxx11::shared_ptr<MaterialModel::Interface<dim> > base_model;
+        std::shared_ptr<MaterialModel::Interface<dim> > base_model;
     };
   }
 }

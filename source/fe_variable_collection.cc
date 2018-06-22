@@ -30,7 +30,7 @@ namespace aspect
 
   template <int dim>
   VariableDeclaration<dim>::VariableDeclaration(const std::string &name,
-                                                const std_cxx11::shared_ptr<FiniteElement<dim> > &fe,
+                                                const std::shared_ptr<FiniteElement<dim> > &fe,
                                                 const unsigned int multiplicity,
                                                 const unsigned int n_blocks)
     : name(name),

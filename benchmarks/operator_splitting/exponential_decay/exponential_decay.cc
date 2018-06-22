@@ -33,7 +33,7 @@ namespace aspect
         /**
          * Pointer to the material model used as the base model
          */
-        std_cxx11::shared_ptr<MaterialModel::Interface<dim> > base_model;
+        std::shared_ptr<MaterialModel::Interface<dim> > base_model;
 
         /**
          * Parameter determining the decay rate.
@@ -188,7 +188,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
             (new MaterialModel::ReactionRateOutputs<dim> (n_points, this->n_compositional_fields())));
         }
     }

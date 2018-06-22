@@ -142,7 +142,7 @@ namespace aspect
       // their own parameters
       for (unsigned int i=0; i<model_names.size(); ++i)
         {
-          initial_composition_objects.push_back (std_cxx11::shared_ptr<Interface<dim> >
+          initial_composition_objects.push_back (std::shared_ptr<Interface<dim> >
                                                  (std_cxx11::get<dim>(registered_plugins)
                                                   .create_plugin (model_names[i],
                                                                   "Initial composition model::Model names")));
@@ -164,7 +164,7 @@ namespace aspect
       double composition = 0.0;
       int i = 0;
 
-      for (typename std::list<std_cxx11::shared_ptr<InitialComposition::Interface<dim> > >::const_iterator
+      for (typename std::list<std::shared_ptr<InitialComposition::Interface<dim> > >::const_iterator
            initial_composition_object = initial_composition_objects.begin();
            initial_composition_object != initial_composition_objects.end();
            ++initial_composition_object)
@@ -187,7 +187,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::list<std_cxx11::shared_ptr<Interface<dim> > > &
+    const std::list<std::shared_ptr<Interface<dim> > > &
     Manager<dim>::get_active_initial_composition_conditions () const
     {
       return initial_composition_objects;

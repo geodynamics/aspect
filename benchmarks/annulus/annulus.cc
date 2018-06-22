@@ -409,7 +409,7 @@ namespace aspect
     std::pair<std::string,std::string>
     AnnulusPostprocessor<dim>::execute (TableHandler &)
     {
-      std_cxx1x::shared_ptr<Function<dim> > ref_func;
+      std::shared_ptr<Function<dim> > ref_func;
       {
         const AnnulusMaterial<dim> *
         material_model

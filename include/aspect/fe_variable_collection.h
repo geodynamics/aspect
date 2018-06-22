@@ -66,7 +66,7 @@ namespace aspect
      * component.
      */
     VariableDeclaration(const std::string &name,
-                        const std_cxx11::shared_ptr<FiniteElement<dim> > &fe,
+                        const std::shared_ptr<FiniteElement<dim> > &fe,
                         const unsigned int multiplicity,
                         const unsigned int n_blocks);
 
@@ -93,7 +93,7 @@ namespace aspect
     /**
      * The FiniteElement space.
      */
-    std_cxx11::shared_ptr<FiniteElement<dim> > fe;
+    std::shared_ptr<FiniteElement<dim> > fe;
 
     /**
      * The multiplicity used in FESystem: how many copies of @p fe are there?

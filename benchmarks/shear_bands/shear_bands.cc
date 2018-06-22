@@ -778,13 +778,13 @@ namespace aspect
       const Point<dim> lower_boundary_point = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
 
       // get the map of boundary indicators and velocity bounfary conditions
-      const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >
+      const std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >
       bvs = this->get_prescribed_boundary_velocity();
       types::boundary_id upper_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
       types::boundary_id lower_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
 
       // get the velocities at the upper and lower boundary
-      typename std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
+      typename std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
       it = bvs.find(upper_boundary);
       const double max_velocity = it->second->boundary_velocity(it->first,upper_boundary_point).norm();
       it = bvs.find(lower_boundary);

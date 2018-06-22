@@ -590,7 +590,7 @@ namespace aspect
        * Return a reference to the object that describes traction
        * boundary conditions.
        */
-      const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryTraction::Interface<dim> > > &
+      const std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > > &
       get_boundary_traction () const;
 
       /**
@@ -655,7 +655,7 @@ namespace aspect
        * @deprecated: Use get_boundary_velocity_manager() instead.
        */
       DEAL_II_DEPRECATED
-      const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >
+      const std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >
       get_prescribed_boundary_velocity () const;
 
       /**

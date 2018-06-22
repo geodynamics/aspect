@@ -670,7 +670,7 @@ namespace aspect
         unsigned int max_points;
         std::vector<double> initial_pressure;
         double maximum_pressure;
-        std_cxx1x::shared_ptr<AnalyticSolutions::FunctionSolitaryWave<dim> > ref_func;
+        std::shared_ptr<AnalyticSolutions::FunctionSolitaryWave<dim> > ref_func;
 
     };
 

@@ -317,7 +317,7 @@ namespace aspect
          * Return a list of pointers to all heating models currently used in the
          * computation, as specified in the input file.
          */
-        const std::list<std_cxx11::shared_ptr<Interface<dim> > > &
+        const std::list<std::shared_ptr<Interface<dim> > > &
         get_active_heating_models () const;
 
         /**
@@ -357,7 +357,7 @@ namespace aspect
          * A list of heating model objects that have been requested in the
          * parameter file.
          */
-        std::list<std_cxx11::shared_ptr<Interface<dim> > > heating_model_objects;
+        std::list<std::shared_ptr<Interface<dim> > > heating_model_objects;
 
         /**
          * A list of names of heating model objects that have been requested
@@ -374,7 +374,7 @@ namespace aspect
     HeatingModelType *
     Manager<dim>::find_heating_model () const
     {
-      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
            p = heating_model_objects.begin();
            p != heating_model_objects.end(); ++p)
         if (HeatingModelType *x = dynamic_cast<HeatingModelType *> ( (*p).get()) )

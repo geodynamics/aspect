@@ -195,7 +195,7 @@ namespace aspect
          * boundary velocity plugins for a particular boundary this boundary
          * identifier will not appear in the map.
          */
-        const std::map<types::boundary_id,std::vector<std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > > > &
+        const std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > > &
         get_active_boundary_velocity_conditions () const;
 
         /**
@@ -266,7 +266,7 @@ namespace aspect
          * A list of boundary velocity objects that have been requested in the
          * parameter file.
          */
-        std::map<types::boundary_id,std::vector<std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > > > boundary_velocity_objects;
+        std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > > boundary_velocity_objects;
 
         /**
          * Map from boundary id to a pair
@@ -299,10 +299,10 @@ namespace aspect
     BoundaryVelocityType *
     Manager<dim>::find_boundary_velocity_model () const
     {
-      for (typename std::map<types::boundary_id,std::vector<std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
+      for (typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
            boundary = boundary_velocity_objects.begin();
            boundary != boundary_velocity_objects.end(); ++boundary)
-        for (typename std::vector<std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim>>>::const_iterator
+        for (typename std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim>>>::const_iterator
              p = boundary->second.begin();
              p != boundary->second.end(); ++p)
           if (BoundaryVelocityType *x = dynamic_cast<BoundaryVelocityType *> ( (*p).get()) )
