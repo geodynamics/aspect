@@ -67,6 +67,13 @@ namespace aspect
 
       private:
         /**
+         * The model grid may alter the accuracy of the gravity solution when it is
+         * calculated near the surface or inside the model. Higher degrees of quadrature
+         * points refine the solution and may be required. 
+         */
+        double quadrature_degree;
+
+        /**
          * Gravity may be calculated for a sets of points along the radius (e.g. depth
          * profile) between a minimum and maximum radius. Number of points along the radius
          * is specified with number_points_radius.

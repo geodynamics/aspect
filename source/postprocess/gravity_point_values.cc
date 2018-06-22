@@ -40,7 +40,7 @@ namespace aspect
     std::pair<std::string,std::string>
     GravityPointValues<dim>::execute (TableHandler &)
     {
-      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+3);
+      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+quadrature_degree);
       const unsigned int number_quadrature_points_cell = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
@@ -121,7 +121,7 @@ namespace aspect
       std::vector<double> density_JxW (number_quadrature_points_mpi);
       std::vector<Point<dim> > position_point (number_quadrature_points_mpi);
 
-      // Store density and  from MaterialModel and allocate to density_all array:
+      // Store density and from MaterialModel and allocate to density_all array:
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
@@ -244,6 +244,8 @@ namespace aspect
       {
         prm.enter_subsection ("Gravity calculation");
         {
+          prm.declare_entry ("Quadrature degree", "1",
+                             Patterns::Double (0.0));
           prm.declare_entry ("Number points radius", "1",
                              Patterns::Double (0.0));
           prm.declare_entry ("Number points longitude", "1",
@@ -276,6 +278,7 @@ namespace aspect
       {
         prm.enter_subsection ("Gravity calculation");
         {
+          quadrature_degree = prm.get_double ("Quadrature degree");
           number_points_radius    = prm.get_double ("Number points radius");
           number_points_longitude = prm.get_double ("Number points longitude");
           number_points_latitude  = prm.get_double ("Number points latitude");
