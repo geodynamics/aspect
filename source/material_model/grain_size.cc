@@ -144,8 +144,8 @@ namespace aspect
       }
 
       std_cxx11::array<std::pair<double, unsigned int>,2>
-      MaterialLookup::enthalpy_derivatives(const std::vector<double> temperatures,
-                                           const std::vector<double> pressures,
+      MaterialLookup::enthalpy_derivatives(const std::vector<double> &temperatures,
+                                           const std::vector<double> &pressures,
                                            const unsigned int n_substeps) const
       {
         Assert(temperatures.size() == pressures.size(),ExcInternalError());
