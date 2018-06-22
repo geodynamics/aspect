@@ -27,7 +27,9 @@
 #include <aspect/parameters.h>
 
 #include <deal.II/base/parameter_handler.h>
-#include <deal.II/lac/constraint_matrix.h>
+#if !DEAL_II_VERSION_GTE(9,1,0)
+#  include <deal.II/lac/constraint_matrix.h>
+#endif
 
 #include <boost/signals2.hpp>
 
