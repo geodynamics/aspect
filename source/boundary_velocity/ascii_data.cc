@@ -38,13 +38,13 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      const std::map<types::boundary_id,std::vector<std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > > >
+      const std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >
       bvs = this->get_boundary_velocity_manager().get_active_boundary_velocity_conditions();
-      for (typename std::map<types::boundary_id,std::vector<std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
+      for (typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
            p = bvs.begin();
            p != bvs.end(); ++p)
         {
-          for (typename std::vector<std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
+          for (typename std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
                plugin = p->second.begin(); plugin != p->second.end(); ++plugin)
             if (plugin->get() == this)
               boundary_ids.insert(p->first);

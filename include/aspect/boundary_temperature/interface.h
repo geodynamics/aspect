@@ -244,7 +244,7 @@ namespace aspect
          * Return a list of pointers to all boundary temperature models
          * currently used in the computation, as specified in the input file.
          */
-        const std::vector<std_cxx11::shared_ptr<Interface<dim> > > &
+        const std::vector<std::shared_ptr<Interface<dim> > > &
         get_active_boundary_temperature_conditions () const;
 
         /**
@@ -292,7 +292,7 @@ namespace aspect
          * A list of boundary temperature objects that have been requested in the
          * parameter file.
          */
-        std::vector<std_cxx11::shared_ptr<Interface<dim> > > boundary_temperature_objects;
+        std::vector<std::shared_ptr<Interface<dim> > > boundary_temperature_objects;
 
         /**
          * A list of names of boundary temperature objects that have been requested
@@ -323,7 +323,7 @@ namespace aspect
     BoundaryTemperatureType *
     Manager<dim>::find_boundary_temperature_model () const
     {
-      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
            p = boundary_temperature_objects.begin();
            p != boundary_temperature_objects.end(); ++p)
         if (BoundaryTemperatureType *x = dynamic_cast<BoundaryTemperatureType *> ( (*p).get()) )

@@ -99,25 +99,25 @@ namespace aspect
     }
 
     template <int dim>
-    std_cxx11::shared_ptr<FiniteElement<dim> >
+    std::shared_ptr<FiniteElement<dim> >
     new_FE_Q_or_DGP(const bool discontinuous,
                     const unsigned int degree)
     {
       if (discontinuous)
-        return std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_DGP<dim>(degree));
+        return std::shared_ptr<FiniteElement<dim> >(new FE_DGP<dim>(degree));
       else
-        return std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(degree));
+        return std::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(degree));
     }
 
     template <int dim>
-    std_cxx11::shared_ptr<FiniteElement<dim> >
+    std::shared_ptr<FiniteElement<dim> >
     new_FE_Q_or_DGQ(const bool discontinuous,
                     const unsigned int degree)
     {
       if (discontinuous)
-        return std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_DGQ<dim>(degree));
+        return std::shared_ptr<FiniteElement<dim> >(new FE_DGQ<dim>(degree));
       else
-        return std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(degree));
+        return std::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(degree));
     }
   }
 
@@ -133,7 +133,7 @@ namespace aspect
     const unsigned int n_velocity_blocks = parameters.use_direct_stokes_solver ? 0 : 1;
     variables.push_back(
       VariableDeclaration<dim>("velocity",
-                               std_cxx11::shared_ptr<FiniteElement<dim> >(
+                               std::shared_ptr<FiniteElement<dim> >(
                                  new FE_Q<dim>(parameters.stokes_velocity_degree)),
                                dim,
                                n_velocity_blocks));

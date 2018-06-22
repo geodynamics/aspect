@@ -378,7 +378,7 @@ namespace aspect
 
 
   template <int dim>
-  const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryTraction::Interface<dim> > > &
+  const std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > > &
   SimulatorAccess<dim>::get_boundary_traction () const
   {
     return simulator->boundary_traction;
@@ -469,16 +469,16 @@ namespace aspect
 
 
   template <int dim>
-  const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >
+  const std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >
   SimulatorAccess<dim>::get_prescribed_boundary_velocity () const
   {
-    const std::map<types::boundary_id,std::vector<std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > > > &
+    const std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > > &
     boundary_map = simulator->boundary_velocity_manager.get_active_boundary_velocity_conditions();
 
-    std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >
+    std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >
     legacy_map;
 
-    for (typename std::map<types::boundary_id,std::vector<std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
+    for (typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
          boundary = boundary_map.begin(); boundary != boundary_map.end(); ++boundary)
       {
         Assert (boundary->second.size() <= 1,

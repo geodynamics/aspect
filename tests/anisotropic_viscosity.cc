@@ -223,7 +223,7 @@ namespace aspect
       if (outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >() == NULL)
         {
           outputs.additional_outputs.push_back(
-            std_cxx11::shared_ptr<MaterialModel::AnisotropicViscosity<dim> >
+            std::shared_ptr<MaterialModel::AnisotropicViscosity<dim> >
             (new MaterialModel::AnisotropicViscosity<dim> (n_points)));
         }
     }
@@ -406,7 +406,7 @@ namespace aspect
       if (outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >() == NULL)
         {
           outputs.additional_outputs.push_back(
-            std_cxx11::shared_ptr<MaterialModel::AnisotropicViscosity<dim> >
+            std::shared_ptr<MaterialModel::AnisotropicViscosity<dim> >
             (new MaterialModel::AnisotropicViscosity<dim> (n_points)));
         }
 
@@ -414,7 +414,7 @@ namespace aspect
           && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == NULL)
         {
           outputs.additional_outputs.push_back(
-            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >
+            std::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >
             (new MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> (n_points)));
         }
       Assert(!this->get_parameters().enable_additional_stokes_rhs
@@ -581,7 +581,7 @@ namespace aspect
       if (material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >() == NULL)
         {
           material_model_outputs.additional_outputs.push_back(
-            std_cxx11::shared_ptr<MaterialModel::AnisotropicViscosity<dim> >
+            std::shared_ptr<MaterialModel::AnisotropicViscosity<dim> >
             (new MaterialModel::AnisotropicViscosity<dim> (n_points)));
         }
 

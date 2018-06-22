@@ -123,7 +123,7 @@ namespace aspect
          * compositing.
          */
         std::vector<std::string>                             model_names;
-        std::vector<std_cxx11::shared_ptr<Interface<dim> > > models;
+        std::vector<std::shared_ptr<Interface<dim> > > models;
     };
   }
 }

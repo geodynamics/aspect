@@ -443,7 +443,7 @@ namespace aspect
        * objects that can then be added to MaterialModelOutputs. By default,
        * no outputs are added.
        */
-      std::vector<std_cxx11::shared_ptr<AdditionalMaterialOutputs<dim> > > additional_outputs;
+      std::vector<std::shared_ptr<AdditionalMaterialOutputs<dim> > > additional_outputs;
 
       /**
        * Given an additional material model output class as explicitly specified

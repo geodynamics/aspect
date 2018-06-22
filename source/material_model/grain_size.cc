@@ -620,12 +620,12 @@ namespace aspect
       for (unsigned i = 0; i < n_material_data; i++)
         {
           if (material_file_format == perplex)
-            material_lookup.push_back(std_cxx1x::shared_ptr<Lookup::MaterialLookup>
+            material_lookup.push_back(std::shared_ptr<Lookup::MaterialLookup>
                                       (new Lookup::PerplexReader(datadirectory+material_file_names[i],
                                                                  use_bilinear_interpolation,
                                                                  this->get_mpi_communicator())));
           else if (material_file_format == hefesto)
-            material_lookup.push_back(std_cxx1x::shared_ptr<Lookup::MaterialLookup>
+            material_lookup.push_back(std::shared_ptr<Lookup::MaterialLookup>
                                       (new Lookup::HeFESToReader(datadirectory+material_file_names[i],
                                                                  datadirectory+derivatives_file_names[i],
                                                                  use_bilinear_interpolation,
@@ -1980,7 +1980,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
             (new MaterialModel::DislocationViscosityOutputs<dim> (n_points)));
         }
 
@@ -1989,7 +1989,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
             (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
         }
     }

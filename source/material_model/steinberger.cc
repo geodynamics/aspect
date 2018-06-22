@@ -29,6 +29,7 @@
 #include <deal.II/base/table.h>
 #include <fstream>
 #include <iostream>
+#include <memory>
 
 
 namespace aspect
@@ -132,8 +133,8 @@ namespace aspect
     Steinberger<dim>::initialize()
     {
       for (unsigned i = 0; i < material_file_names.size(); i++)
-        material_lookup.push_back(std_cxx11::shared_ptr<Lookup::PerplexReader>
-                                  (new Lookup::PerplexReader(data_directory+material_file_names[i],interpolation,this->get_mpi_communicator())));
+        material_lookup.push_back(std::make_shared<Lookup::PerplexReader>
+                                  (data_directory+material_file_names[i],interpolation,this->get_mpi_communicator()));
       lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(data_directory+lateral_viscosity_file_name,this->get_mpi_communicator()));
       radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(data_directory+radial_viscosity_file_name,this->get_mpi_communicator()));
       avg_temp.resize(n_lateral_slices);
@@ -701,7 +702,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
             (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
         }
     }

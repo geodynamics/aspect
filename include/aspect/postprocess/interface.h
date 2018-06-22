@@ -345,7 +345,7 @@ namespace aspect
          * A list of postprocessor objects that have been requested in the
          * parameter file.
          */
-        std::vector<std_cxx11::shared_ptr<Interface<dim> > > postprocessors;
+        std::vector<std::shared_ptr<Interface<dim> > > postprocessors;
     };
 
 
@@ -359,7 +359,7 @@ namespace aspect
       // let all the postprocessors save their data in a map and then
       // serialize that
       std::map<std::string,std::string> saved_text;
-      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         (*p)->save (saved_text);
@@ -380,7 +380,7 @@ namespace aspect
       std::map<std::string,std::string> saved_text;
       ar &saved_text;
 
-      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::iterator
+      for (typename std::vector<std::shared_ptr<Interface<dim> > >::iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         (*p)->load (saved_text);
@@ -394,7 +394,7 @@ namespace aspect
     PostprocessorType *
     Manager<dim>::find_postprocessor () const
     {
-      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         if (PostprocessorType *x = dynamic_cast<PostprocessorType *> ( (*p).get()) )
@@ -410,7 +410,7 @@ namespace aspect
     bool
     Manager<dim>::has_matching_postprocessor () const
     {
-      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         if (Plugins::plugin_type_matches<PostprocessorType>(*(*p)))
@@ -433,8 +433,8 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "postprocessor in the input file."));
 
-      typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator postprocessor;
-      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator postprocessor;
+      for (typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         if (Plugins::plugin_type_matches<PostprocessorType>(*(*p)))

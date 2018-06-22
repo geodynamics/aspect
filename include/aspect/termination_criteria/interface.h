@@ -256,7 +256,7 @@ namespace aspect
          * A list of termination criterion objects that have been requested in
          * the parameter file.
          */
-        std::list<std_cxx11::shared_ptr<Interface<dim> > > termination_objects;
+        std::list<std::shared_ptr<Interface<dim> > > termination_objects;
 
         /**
          * A list of names corresponding to the termination criteria in the

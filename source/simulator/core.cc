@@ -617,7 +617,7 @@ namespace aspect
     // that end up in the bilinear form. we update those that end up in
     // the constraints object when calling compute_current_constraints()
     // above
-    for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryTraction::Interface<dim> > >::iterator
+    for (typename std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > >::iterator
          p = boundary_traction.begin();
          p != boundary_traction.end(); ++p)
       p->second->update ();

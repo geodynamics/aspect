@@ -211,7 +211,7 @@ namespace aspect
          * Return a list of pointers to all boundary composition models
          * currently used in the computation, as specified in the input file.
          */
-        const std::vector<std_cxx11::shared_ptr<Interface<dim> > > &
+        const std::vector<std::shared_ptr<Interface<dim> > > &
         get_active_boundary_composition_conditions () const;
 
         /**
@@ -259,7 +259,7 @@ namespace aspect
          * A list of boundary composition objects that have been requested in the
          * parameter file.
          */
-        std::vector<std_cxx11::shared_ptr<Interface<dim> > > boundary_composition_objects;
+        std::vector<std::shared_ptr<Interface<dim> > > boundary_composition_objects;
 
         /**
          * A list of names of boundary composition objects that have been requested
@@ -290,7 +290,7 @@ namespace aspect
     BoundaryCompositionType *
     Manager<dim>::find_boundary_composition_model () const
     {
-      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
            p = boundary_composition_objects.begin();
            p != boundary_composition_objects.end(); ++p)
         if (BoundaryCompositionType *x = dynamic_cast<BoundaryCompositionType *> ( (*p).get()) )

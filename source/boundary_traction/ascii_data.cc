@@ -35,9 +35,9 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryTraction::Interface<dim> > >
+      const std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > >
       bvs = this->get_boundary_traction();
-      for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryTraction::Interface<dim> > >::const_iterator
+      for (typename std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > >::const_iterator
            p = bvs.begin();
            p != bvs.end(); ++p)
         {

@@ -1584,7 +1584,7 @@ namespace aspect
            boundary_id = boundary_ids.begin();
            boundary_id != boundary_ids.end(); ++boundary_id)
         {
-          std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim-1> > lookup;
+          std::shared_ptr<Utilities::AsciiDataLookup<dim-1> > lookup;
           lookup.reset(new Utilities::AsciiDataLookup<dim-1> (components,
                                                               Utilities::AsciiDataBase<dim>::scale_factor));
           lookups.insert(std::make_pair(*boundary_id,lookup));
@@ -1810,7 +1810,7 @@ namespace aspect
               const bool load_both_files = std::abs(current_file_number - old_file_number) >= 1;
 
               for (typename std::map<types::boundary_id,
-                   std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim-1> > >::iterator
+                   std::shared_ptr<Utilities::AsciiDataLookup<dim-1> > >::iterator
                    boundary_id = lookups.begin();
                    boundary_id != lookups.end(); ++boundary_id)
                 update_data(boundary_id->first,load_both_files);

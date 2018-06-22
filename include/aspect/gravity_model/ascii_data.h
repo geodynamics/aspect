@@ -87,7 +87,7 @@ namespace aspect
         /**
          * Object containing the data profile.
          */
-        std_cxx11::shared_ptr<aspect::Utilities::AsciiDataLookup<1> > profile;
+        std::shared_ptr<aspect::Utilities::AsciiDataLookup<1> > profile;
 
         /**
          * The column index of the gravity column in the data file.

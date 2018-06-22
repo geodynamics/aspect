@@ -175,7 +175,7 @@ namespace aspect
          * Return a list of pointers to all initial composition models
          * currently used in the computation, as specified in the input file.
          */
-        const std::list<std_cxx11::shared_ptr<Interface<dim> > > &
+        const std::list<std::shared_ptr<Interface<dim> > > &
         get_active_initial_composition_conditions () const;
 
         /**
@@ -215,7 +215,7 @@ namespace aspect
          * A list of initial composition objects that have been requested in the
          * parameter file.
          */
-        std::list<std_cxx11::shared_ptr<Interface<dim> > > initial_composition_objects;
+        std::list<std::shared_ptr<Interface<dim> > > initial_composition_objects;
 
         /**
          * A list of names of initial composition objects that have been requested
@@ -250,7 +250,7 @@ namespace aspect
     InitialCompositionType *
     Manager<dim>::find_initial_composition_model () const
     {
-      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
            p = initial_composition_objects.begin();
            p != initial_composition_objects.end(); ++p)
         if (InitialCompositionType *x = dynamic_cast<InitialCompositionType *> ( (*p).get()) )

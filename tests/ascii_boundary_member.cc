@@ -64,7 +64,7 @@ namespace aspect
       void
       parse_parameters (ParameterHandler &prm);
 
-      std_cxx11::shared_ptr<Utilities::AsciiDataBoundary<dim> > member;
+      std::shared_ptr<Utilities::AsciiDataBoundary<dim> > member;
 
       std::set<types::boundary_id> boundary_ids;
   };
@@ -78,9 +78,9 @@ namespace aspect
   void
   AsciiBoundaryMember<dim>::initialize ()
   {
-    const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >
+    const std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >
     bvs = this->get_prescribed_boundary_velocity();
-    for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
+    for (typename std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
          p = bvs.begin();
          p != bvs.end(); ++p)
       {
