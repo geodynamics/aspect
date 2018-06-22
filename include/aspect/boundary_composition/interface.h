@@ -1,18 +1,14 @@
 /*
   Copyright (C) 2013 - 2018 by the authors of the ASPECT code.
-
   This file is part of ASPECT.
-
   ASPECT is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2, or (at your option)
   any later version.
-
   ASPECT is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-
   You should have received a copy of the GNU General Public License
   along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
@@ -27,8 +23,12 @@
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 
+#include <deal.II/base/std_cxx11/shared_ptr.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/distributed/tria.h>
+
+#include <boost/core/demangle.hpp>
+#include <typeinfo>
 
 
 namespace aspect
@@ -215,15 +215,26 @@ namespace aspect
         get_active_boundary_composition_conditions () const;
 
         /**
-         * Go through the list of all boundary composition models that have been selected in
-         * the input file (and are consequently currently active) and see if one
-         * of them has the desired type specified by the template argument. If so,
-         * return a pointer to it. If no boundary composition model is active
-         * that matches the given type, return a NULL pointer.
+         * Go through the list of all boundary composition models that have been selected
+         * in the input file (and are consequently currently active) and return
+         * true if one of them has the desired type specified by the template
+         * argument.
          */
         template <typename BoundaryCompositionType>
-        BoundaryCompositionType *
-        find_boundary_composition_model () const;
+        bool
+        has_matching_boundary_composition_model () const;
+
+        /**
+         * Go through the list of all boundary composition models that have been selected
+         * in the input file (and are consequently currently active) and see
+         * if one of them has the type specified by the template
+         * argument or can be casted to that type. If so, return a reference
+         * to it. If no boundary composition model is active that matches the given type,
+         * throw an exception.
+         */
+        template <typename BoundaryCompositionType>
+        const BoundaryCompositionType &
+        get_matching_boundary_composition_model () const;
 
         /*
          * Return a set of boundary indicators for which boundary
@@ -287,16 +298,44 @@ namespace aspect
     template <int dim>
     template <typename BoundaryCompositionType>
     inline
-    BoundaryCompositionType *
-    Manager<dim>::find_boundary_composition_model () const
+    bool
+    Manager<dim>::has_matching_boundary_composition_model () const
     {
       for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            p = boundary_composition_objects.begin();
            p != boundary_composition_objects.end(); ++p)
-        if (BoundaryCompositionType *x = dynamic_cast<BoundaryCompositionType *> ( (*p).get()) )
-          return x;
-      return NULL;
+        if (Plugins::plugin_type_matches<BoundaryCompositionType>(*(*p)))
+          return true;
+
+      return false;
     }
+
+
+
+    template <int dim>
+    template <typename BoundaryCompositionType>
+    inline
+    const BoundaryCompositionType &
+    Manager<dim>::get_matching_boundary_composition_model () const
+    {
+      AssertThrow(has_matching_boundary_composition_model<BoundaryCompositionType> (),
+                  ExcMessage("You asked BoundaryComposition:Manager::get_boundary_composition_model_of_type() for a "
+                             "boundary composition model of type <" + boost::core::demangle(typeid(BoundaryCompositionType).name()) + "> "
+                             "that could not be found in the current model. Activate this "
+                             "boundary composition model in the input file."));
+
+      typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator boundary_composition_model;
+      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+           p = boundary_composition_objects.begin();
+           p != boundary_composition_objects.end(); ++p)
+        if (Plugins::plugin_type_matches<BoundaryCompositionType>(*(*p)))
+          return Plugins::get_plugin_as_type<BoundaryCompositionType>(*(*p));
+
+      // We will never get here, because we had the Assert above. Just to avoid warnings.
+      return Plugins::get_plugin_as_type<BoundaryCompositionType>(*(*boundary_composition_model));
+    }
+
+
 
 
     /**
