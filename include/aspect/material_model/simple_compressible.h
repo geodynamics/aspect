@@ -100,7 +100,7 @@ namespace aspect
 
       private:
         /**
-         * The reference surface temperature
+         * The reference density
          */
         double reference_rho;
 
