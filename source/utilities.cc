@@ -1501,9 +1501,10 @@ namespace aspect
     void
     AsciiDataBase<dim>::declare_parameters (ParameterHandler  &prm,
                                             const std::string &default_directory,
-                                            const std::string &default_filename)
+                                            const std::string &default_filename,
+                                            const std::string &subsection_name)
     {
-      prm.enter_subsection ("Ascii data model");
+      prm.enter_subsection (subsection_name);
       {
         prm.declare_entry ("Data directory",
                            default_directory,
@@ -1540,9 +1541,10 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiDataBase<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiDataBase<dim>::parse_parameters (ParameterHandler &prm,
+                                          const std::string &subsection_name)
     {
-      prm.enter_subsection("Ascii data model");
+      prm.enter_subsection (subsection_name);
       {
         // Get the path to the data files. If it contains a reference
         // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
@@ -1938,13 +1940,15 @@ namespace aspect
     void
     AsciiDataBoundary<dim>::declare_parameters (ParameterHandler  &prm,
                                                 const std::string &default_directory,
-                                                const std::string &default_filename)
+                                                const std::string &default_filename,
+                                                const std::string &subsection_name)
     {
       Utilities::AsciiDataBase<dim>::declare_parameters(prm,
                                                         default_directory,
-                                                        default_filename);
+                                                        default_filename,
+                                                        subsection_name);
 
-      prm.enter_subsection ("Ascii data model");
+      prm.enter_subsection (subsection_name);
       {
         prm.declare_entry ("Data file time step", "1e6",
                            Patterns::Double (0),
@@ -1977,11 +1981,13 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiDataBoundary<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiDataBoundary<dim>::parse_parameters (ParameterHandler &prm,
+                                              const std::string &subsection_name)
     {
-      Utilities::AsciiDataBase<dim>::parse_parameters(prm);
+      Utilities::AsciiDataBase<dim>::parse_parameters(prm,
+                                                      subsection_name);
 
-      prm.enter_subsection("Ascii data model");
+      prm.enter_subsection(subsection_name);
       {
         data_file_time_step             = prm.get_double ("Data file time step");
         first_data_file_model_time      = prm.get_double ("First data file model time");
