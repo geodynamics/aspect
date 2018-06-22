@@ -199,14 +199,13 @@ namespace aspect
 
 
     /**
-    * Given a 2d point and a list of two points that define a line, compute the smallest
-    * distance of the point to the line segment. Note that when the point's perpendicular
-    * base does not lie on the line segment, the smallest distance to the segment's end
-    * points is calculated.
-    */
-    template <int dim>
+     * Given a 2d point and a list of two points that define a line, compute the smallest
+     * distance of the point to the line segment. When the point's perpendicular
+     * base does not lie on the line segment, the smallest distance to the segment's end
+     * points is calculated.
+     */
     double
-    distance_to_line(const std::vector<dealii::Point<2> > &point_list,
+    distance_to_line(const std::array<dealii::Point<2>,2 > &point_list,
                      const dealii::Point<2> &point);
 
     /**

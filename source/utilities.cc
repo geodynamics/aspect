@@ -479,17 +479,16 @@ namespace aspect
 
       for (unsigned int i = 0; i < n_poly_points; ++i)
         {
-          std::vector<Point<2> > list = {point_list[i], shifted_point_list[i]};
-          distances[i] = distance_to_line<dim>(list, point);
+          const std::array<Point<2>,2 > list = {point_list[i], shifted_point_list[i]};
+          distances[i] = distance_to_line(list, point);
         }
 
       // Return the minimum of the distances of the point to all polygon segments
       return *std::min_element(distances.begin(),distances.end()) * sign;
     }
 
-    template <int dim>
     double
-    distance_to_line(const std::vector<dealii::Point<2> > &point_list,
+    distance_to_line(const std::array<dealii::Point<2>,2 > &point_list,
                      const dealii::Point<2> &point)
     {
 
@@ -510,9 +509,9 @@ namespace aspect
       AssertThrow(n_poly_points == 2, ExcMessage("A list of points for a line segment should consist of 2 points."));
 
       // Create vector along the polygon line segment P0 to P1
-      Tensor<1,2> vector_segment = point_list[1] - point_list[0];
+      const Tensor<1,2> vector_segment = point_list[1] - point_list[0];
       // Create vector from point P to the second segment point
-      Tensor<1,2> vector_point_segment = point - point_list[0];
+      const Tensor<1,2> vector_point_segment = point - point_list[0];
 
       // Compute dot products to get angles
       const double c1 = vector_point_segment * vector_segment;
