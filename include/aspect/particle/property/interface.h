@@ -224,7 +224,7 @@ namespace aspect
           unsigned int number_of_components;
 
           /**
-           * The number of disctintly named particle property fields.
+           * The number of distinctly named particle property fields.
            */
           unsigned int number_of_fields;
 
