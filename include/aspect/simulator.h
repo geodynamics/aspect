@@ -97,6 +97,11 @@ namespace aspect
   template <int dim>
   class FreeSurfaceHandler;
 
+  namespace WorldBuilder
+  {
+    class World;
+  }
+
   namespace internal
   {
     namespace Assembly
@@ -1571,6 +1576,7 @@ namespace aspect
       InitialComposition::Manager<dim>                                        initial_composition_manager;
       InitialTemperature::Manager<dim>                                        initial_temperature_manager;
       const std_cxx11::unique_ptr<AdiabaticConditions::Interface<dim> >       adiabatic_conditions;
+      std_cxx11::unique_ptr<WorldBuilder::World>                              world_builder;
       BoundaryVelocity::Manager<dim>                                          boundary_velocity_manager;
       std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > > boundary_traction;
       const std_cxx11::unique_ptr<BoundaryHeatFlux::Interface<dim> >          boundary_heat_flux;

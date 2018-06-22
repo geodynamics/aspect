@@ -25,6 +25,7 @@
 #include <aspect/melt.h>
 #include <aspect/newton.h>
 #include <aspect/free_surface.h>
+#include <aspect/world_builder/world.h>
 
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
@@ -165,6 +166,7 @@ namespace aspect
     prescribed_stokes_solution (PrescribedStokesSolution::create_prescribed_stokes_solution<dim>(prm)),
     adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
     boundary_heat_flux (BoundaryHeatFlux::create_boundary_heat_flux<dim>(prm)),
+    world_builder (parameters.world_builder_file != "" ? new WorldBuilder::World (parameters.world_builder_file) : NULL),
 
     time (numbers::signaling_nan<double>()),
     time_step (numbers::signaling_nan<double>()),
