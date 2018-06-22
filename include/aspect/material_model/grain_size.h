@@ -128,8 +128,8 @@ namespace aspect
            * computed for each substep and then averaged.
            */
           std_cxx11::array<std::pair<double, unsigned int>,2>
-          enthalpy_derivatives(const std::vector<double> temperatures,
-                               const std::vector<double> pressures,
+          enthalpy_derivatives(const std::vector<double> &temperatures,
+                               const std::vector<double> &pressures,
                                const unsigned int n_substeps = 1) const;
 
           double
