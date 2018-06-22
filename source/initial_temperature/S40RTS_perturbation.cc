@@ -176,17 +176,19 @@ namespace aspect
 
     template <>
     double
-    S40RTSPerturbation<3>::
-    initial_temperature (const Point<3> &position) const
+    S40RTSPerturbation<2>::
+    get_Vs (const Point<2> &/*position*/) const
     {
-      const unsigned int dim = 3;
+      Assert (false, ExcNotImplemented());
+      return 0;
+    }
 
-      // use either the user-input reference temperature as background temperature
-      // (incompressible model) or the adiabatic temperature profile (compressible model)
-      const double background_temperature = this->get_material_model().is_compressible() ?
-                                            this->get_adiabatic_conditions().temperature(position) :
-                                            reference_temperature;
 
+    template <>
+    double
+    S40RTSPerturbation<3>::
+    get_Vs (const Point<3> &position) const
+    {
       // get the degree from the input file (20 or 40)
       unsigned int max_degree = spherical_harmonics_lookup->maxdegree();
 
@@ -214,7 +216,7 @@ namespace aspect
         depth_values[i] = rcmb+(rmoho-rcmb)*0.5*(r[i]+1);
 
       // convert coordinates from [x,y,z] to [r, phi, theta]
-      std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
+      std_cxx11::array<double,3> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
       // Evaluate the spherical harmonics at this position. Since they are the
       // same for all depth splines, do it once to avoid multiple evaluations.
@@ -276,8 +278,26 @@ namespace aspect
       aspect::Utilities::tk::spline s;
       s.set_points(depth_values,spline_values_inv);
 
-      // Get value at specific depth
-      const double perturbation = s(scoord[0]);
+      // Return value of Vs perturbation at specific depth
+      return s(scoord[0]);
+    }
+
+
+    template <>
+    double
+    S40RTSPerturbation<3>::
+    initial_temperature (const Point<3> &position) const
+    {
+
+      // use either the user-input reference temperature as background temperature
+      // (incompressible model) or the adiabatic temperature profile (compressible model)
+      const double background_temperature = this->get_material_model().is_compressible() ?
+                                            this->get_adiabatic_conditions().temperature(position) :
+                                            reference_temperature;
+
+      //Read in Vs perturbation data using function above
+      const double perturbation = get_Vs (position);
+
 
       // scale the perturbation in seismic velocity into a density perturbation
       // vs_to_density is an input parameter
