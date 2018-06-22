@@ -159,6 +159,16 @@ ADD_CUSTOM_TARGET(setup_tests
 SET(ASPECT_TEST_GENERATOR "Unix Makefiles" CACHE STRING 
   "Generator to use for the test cmake project. Using ninja instead of make is not recommended.")
 
+
+# Allow us to make a global "test" target:
+IF(POLICY CMP0037)
+  # allow to override "test" target
+  CMAKE_POLICY(SET CMP0037 OLD)
+ENDIF()
+
+# This is an empty target but we will make it depend on tests/ and unittests/ next:
+ADD_CUSTOM_TARGET(test)
+
 # Generate CTestTestfile.cmake in the main build folder that lists all subfolders
 # that contain tests. This way you can call "ctest" in the build directory.
 FILE(WRITE ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "# auto-generated ctest file\n")
@@ -177,9 +187,22 @@ IF(EXISTS ${CMAKE_SOURCE_DIR}/unittests/CMakeLists.txt)
     RESULT_VARIABLE test_cmake_result
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unittests
    )
+  IF(NOT test_cmake_result EQUAL 0)
+    MESSAGE(FATAL_ERROR "ERROR: unittest/ project could not be configured.")
+  ENDIF()
+
+  # Finally hook up that "make test" will execute the tests:
+  ADD_CUSTOM_TARGET(run_unittests
+    COMMAND ${CMAKE_BINARY_DIR}/aspect --test
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unittests
+    DEPENDS aspect
+    COMMENT "Running unittests ...")
+
+  ADD_DEPENDENCIES(test run_unittests)
 ENDIF()
 
 IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
+  # Hook up the tests:
   FILE(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(tests)\n")
 
   FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests)
@@ -200,24 +223,20 @@ IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
    )
   IF(NOT test_cmake_result EQUAL 0)
-    MESSAGE(FATAL_ERROR "ERROR: Test project could not be configured.")
+    MESSAGE(FATAL_ERROR "ERROR: tests/ project could not be configured.")
   ENDIF()
 
-
-  IF(POLICY CMP0037)
-    # allow to override "test" target
-    CMAKE_POLICY(SET CMP0037 OLD)
-  ENDIF()
-
-  ADD_CUSTOM_TARGET(test
+  # Finally hook up that "make test" will execute the tests:
+  ADD_CUSTOM_TARGET(run_tests
     COMMAND ${CMAKE_COMMAND} --build . --target test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
     DEPENDS aspect
     COMMENT "Running tests ...")
 
+  ADD_DEPENDENCIES(test run_tests)
 ENDIF()
 
-
+# Provide the "generate_reference_output" target:
 ADD_CUSTOM_TARGET(generate_reference_output
   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_reference_output.sh
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})

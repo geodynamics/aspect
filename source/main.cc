@@ -42,8 +42,9 @@
 #  endif
 #endif
 
+// This define has to be in exactly one translation unit and sets up the catch testing framework
 #define CATCH_CONFIG_RUNNER
-#include "catch.hpp"
+#include <catch.hpp>
 
 
 // get the value of a particular parameter from the contents of the input
@@ -612,13 +613,18 @@ int main (int argc, char *argv[])
 
       if (run_unittests)
         {
+	  // Construct new_argc, new_argv from argc, argv for catch without
+	  // the "--test" arg, so we can control catch from the command
+	  // line. It turns out catch needs argv[0] to be the executable name
+          	  // so we can not use remaining_arguments from above.
           int new_argc = n_remaining_arguments + 1;
-          std::vector<char *> args;
-          args.push_back(argv[0]);
+          std::vector<char *> args; // use to construct a new argv of type char **
+          args.emplace_back(argv[0]);
           for (int i=0; i<n_remaining_arguments; ++i)
-            args.push_back(argv[i+current_argument]);
+            args.emplace_back(argv[i+current_argument]);
           char **new_argv = args.data();
 
+	  // Finally run catch
           return Catch::Session().run(new_argc, new_argv);
         }
 
