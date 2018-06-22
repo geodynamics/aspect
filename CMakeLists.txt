@@ -159,9 +159,13 @@ ADD_CUSTOM_TARGET(setup_tests
 SET(ASPECT_TEST_GENERATOR "Unix Makefiles" CACHE STRING 
   "Generator to use for the test cmake project. Using ninja instead of make is not recommended.")
 
+# Generate CTestTestfile.cmake in the main build folder that lists all subfolders
+# that contain tests. This way you can call "ctest" in the build directory.
 FILE(WRITE ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "# auto-generated ctest file\n")
 
 IF(EXISTS ${CMAKE_SOURCE_DIR}/unittests/CMakeLists.txt)
+  # If we have the unittests directory, add it so ctest picks it up and configure
+  # the test project in the subfolder:
   FILE(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(unittests)\n")
   FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unittests)
   EXECUTE_PROCESS(
