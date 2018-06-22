@@ -638,7 +638,7 @@ namespace aspect
                          "Whether or not the postprocessors should be executed after "
                          "each of the initial adaptive refinement cycles that are run at "
                          "the start of the simulation.");
-      prm.declare_entry ("Solvers off during initial refinement", "false",
+      prm.declare_entry ("Solvers off on initial refinement", "false",
                          Patterns::Bool (),
                          "Whether or not solvers should be executed after the initial "
                          "adaptive refinement cycles that are run at the start of the "
@@ -1126,6 +1126,7 @@ namespace aspect
         for (unsigned int i=0; i<additional_refinement_times.size(); ++i)
           additional_refinement_times[i] *= year_in_seconds;
 
+      solvers_off_on_initial_refinement = prm.get_bool("Solvers off on initial refinement");
       run_postprocessors_on_initial_refinement = prm.get_bool("Run postprocessors on initial refinement");
     }
     prm.leave_subsection ();

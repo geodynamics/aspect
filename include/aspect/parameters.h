@@ -412,6 +412,7 @@ namespace aspect
     unsigned int                   min_grid_level;
     std::vector<double>            additional_refinement_times;
     unsigned int                   adaptive_refinement_interval;
+    bool                           solvers_off_on_initial_refinement;
     bool                           run_postprocessors_on_initial_refinement;
     bool                           run_postprocessors_on_nonlinear_iterations;
     /**
