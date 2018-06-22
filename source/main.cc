@@ -613,10 +613,10 @@ int main (int argc, char *argv[])
 
       if (run_unittests)
         {
-	  // Construct new_argc, new_argv from argc, argv for catch without
-	  // the "--test" arg, so we can control catch from the command
-	  // line. It turns out catch needs argv[0] to be the executable name
-          	  // so we can not use remaining_arguments from above.
+          // Construct new_argc, new_argv from argc, argv for catch without
+          // the "--test" arg, so we can control catch from the command
+          // line. It turns out catch needs argv[0] to be the executable name
+          // so we can not use remaining_arguments from above.
           int new_argc = n_remaining_arguments + 1;
           std::vector<char *> args; // use to construct a new argv of type char **
           args.emplace_back(argv[0]);
@@ -624,7 +624,7 @@ int main (int argc, char *argv[])
             args.emplace_back(argv[i+current_argument]);
           char **new_argv = args.data();
 
-	  // Finally run catch
+          // Finally run catch
           return Catch::Session().run(new_argc, new_argv);
         }
 
