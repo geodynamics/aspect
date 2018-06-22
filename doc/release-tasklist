@@ -96,6 +96,45 @@
        dealii@googlegroups.com
 
 
+Announcement for 2.0.1 (June 21, 2018)
+-----------------------------------------
+We are pleased to announce the release of ASPECT 2.0.1. ASPECT is the Advanced
+Solver for Problems in Earth's ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid, and a modular software design to
+provide a fast, flexible, and extensible mantle convection solver. ASPECT is
+available from
+
+                   https://aspect.geodynamics.org/
+
+and the release is available from
+
+        https://github.com/geodynamics/aspect/releases/tag/v2.0.1
+
+This release is a bugfix release for 2.0.0 and includes the following fixes:
+- Fixed: The 'compositional heating' heating plugin had a parameter
+  'Use compositional field for heat production averaging' that was used
+  inconsistently with its description. Its first entry did not correspond
+  to the background field, but to the first compositional field, and the
+  last value was ignored. This is fixed now, the first entry is used for
+  the background field, and all following values determine whether to include
+  the corresponding compositional fields.
+- Fixed: The 'depth dependent' material model did not properly initialize
+  the material model it uses as a base model. This caused crashes if the
+  base model requires an initialization (such as the 'steinberger' material
+  model). This is fixed now by properly initializing the base model.
+- Fixed: The advection assembler for DG elements was not thread-safe,
+  which led to wrong results or crashes if a discontinuous temperature
+  or composition discretization was combined with multithreading.
+- Disabled: The particle functionality was not tested when combined with a
+  free surface boundary, and this combination is currently not supported. This
+  limitation is now made clear by failing for such setups with a descriptive
+  error message.
+
+Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister,
+Jacqueline Austermann, Menno Fraters, Anne Glerum, John Naliboff,
+and many other contributors.
+
+
 Announcement for 2.0.0 (May 10, 2018)
 -----------------------------------------
 We are pleased to announce the release of ASPECT 2.0.0. ASPECT is the Advanced
