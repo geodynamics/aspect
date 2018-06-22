@@ -108,7 +108,7 @@ namespace aspect
                              "parameter is non-zero, which is interpreted to "
                              "be the depth of the point.");
 
-          Functions::ParsedFunction<dim>::declare_parameters (prm, dim);
+          Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
         }
         prm.leave_subsection();
       }
