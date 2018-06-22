@@ -69,7 +69,7 @@ namespace aspect
         /**
          * The model grid may alter the accuracy of the gravity solution when it is
          * calculated near the surface or inside the model. Higher degrees of quadrature
-         * points refine the solution and may be required. 
+         * points refine the solution and may be required.
          */
         double quadrature_degree;
 
