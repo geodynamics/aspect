@@ -21,6 +21,8 @@ pipeline {
       steps {
         echo "PR: ${env.CHANGE_ID} - ${env.CHANGE_TITLE}"
         echo "CHANGE_AUTHOR_EMAIL: ${env.CHANGE_AUTHOR_EMAIL}"
+        echo "CHANGE_AUTHOR: ${env.CHANGE_AUTHOR}"
+        echo "CHANGE_AUTHOR_DISPLAY_NAME: ${env.CHANGE_AUTHOR_DISPLAY_NAME}"
         echo "building on node ${env.NODE_NAME}"
       }
     }
