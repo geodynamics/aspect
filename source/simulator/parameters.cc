@@ -638,6 +638,11 @@ namespace aspect
                          "Whether or not the postprocessors should be executed after "
                          "each of the initial adaptive refinement cycles that are run at "
                          "the start of the simulation.");
+      prm.declare_entry ("Solvers off during initial refinement", "false",
+                         Patterns::Bool (),
+                         "Whether or not solvers should be executed after the initial "
+                         "adaptive refinement cycles that are run at the start of the "
+                         "simulation.");
     }
     prm.leave_subsection();
 
