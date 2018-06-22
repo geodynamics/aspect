@@ -37,7 +37,7 @@ namespace aspect
       std::vector<std::string> make_elastic_additional_outputs_names()
       {
         std::vector<std::string> names;
-        names.push_back("elastic_shear_modulus");
+        names.emplace_back("elastic_shear_modulus");
         return names;
       }
     }

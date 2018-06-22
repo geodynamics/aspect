@@ -68,7 +68,7 @@ namespace aspect
       PTPath<dim>::get_property_information() const
       {
         std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("p",1));
-        property_information.push_back(std::make_pair("T",1));
+        property_information.emplace_back("T",1);
         return property_information;
       }
     }

@@ -84,7 +84,7 @@ namespace aspect
         for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
           {
             const std::string field_name = this->introspection().name_for_compositional_index(i);
-            property_information.push_back(std::make_pair(field_name,1));
+            property_information.emplace_back(field_name,1);
           }
         return property_information;
       }

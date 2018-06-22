@@ -118,23 +118,23 @@ namespace aspect
       std::vector<std::string> names;
       std::vector<std::string> units;
 
-      names.push_back("Angular momentum");
-      names.push_back("Moment of inertia");
-      names.push_back("Angular velocity");
+      names.emplace_back("Angular momentum");
+      names.emplace_back("Moment of inertia");
+      names.emplace_back("Angular velocity");
 
       if (this->convert_output_to_years() == true)
         {
-          units.push_back("kg*m^2/year");
-          units.push_back("kg*m^2");
-          units.push_back("1/year");
+          units.emplace_back("kg*m^2/year");
+          units.emplace_back("kg*m^2");
+          units.emplace_back("1/year");
           global_angular_momentum *= year_in_seconds;
           global_angular_velocity *= year_in_seconds;
         }
       else
         {
-          units.push_back("kg*m^2/s");
-          units.push_back("kg*m^2");
-          units.push_back("1/s");
+          units.emplace_back("kg*m^2/s");
+          units.emplace_back("kg*m^2");
+          units.emplace_back("1/s");
         }
 
       add_scientific_column(names[0] + " (" + units[0] +")", global_angular_momentum, statistics);
@@ -232,23 +232,23 @@ namespace aspect
       std::vector<std::string> names;
       std::vector<std::string> units;
 
-      names.push_back("Angular momentum");
-      names.push_back("Moment of inertia");
-      names.push_back("Angular velocity");
+      names.emplace_back("Angular momentum");
+      names.emplace_back("Moment of inertia");
+      names.emplace_back("Angular velocity");
 
       if (this->convert_output_to_years() == true)
         {
-          units.push_back("kg*m^2/year");
-          units.push_back("kg*m^2");
-          units.push_back("1/year");
+          units.emplace_back("kg*m^2/year");
+          units.emplace_back("kg*m^2");
+          units.emplace_back("1/year");
           global_angular_momentum *= year_in_seconds;
           global_angular_velocity *= year_in_seconds;
         }
       else
         {
-          units.push_back("kg*m^2/s");
-          units.push_back("kg*m^2");
-          units.push_back("1/s");
+          units.emplace_back("kg*m^2/s");
+          units.emplace_back("kg*m^2");
+          units.emplace_back("1/s");
         }
 
       add_scientific_column(names[0] + " (" + units[0] +")", global_angular_momentum, statistics);

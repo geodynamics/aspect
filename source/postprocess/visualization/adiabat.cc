@@ -42,10 +42,10 @@ namespace aspect
       get_names () const
       {
         std::vector<std::string> solution_names;
-        solution_names.push_back("adiabatic_temperature");
-        solution_names.push_back("adiabatic_pressure");
-        solution_names.push_back("adiabatic_density");
-        solution_names.push_back("adiabatic_density_derivative");
+        solution_names.emplace_back("adiabatic_temperature");
+        solution_names.emplace_back("adiabatic_pressure");
+        solution_names.emplace_back("adiabatic_density");
+        solution_names.emplace_back("adiabatic_density_derivative");
         return solution_names;
       }
 

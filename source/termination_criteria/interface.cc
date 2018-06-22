@@ -235,7 +235,7 @@ namespace aspect
         // as described, the end time plugin is always active
         if (std::find (plugin_names.begin(), plugin_names.end(), "end time")
             == plugin_names.end())
-          plugin_names.push_back ("end time");
+          plugin_names.emplace_back("end time");
       }
       prm.leave_subsection();
 

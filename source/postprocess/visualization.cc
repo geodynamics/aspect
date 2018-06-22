@@ -79,14 +79,14 @@ namespace aspect
 
             if (this->include_melt_transport())
               {
-                solution_names.push_back ("p_f");
-                solution_names.push_back ("p_c_bar");
+                solution_names.emplace_back("p_f");
+                solution_names.emplace_back("p_c_bar");
                 for (unsigned int i=0; i<dim; ++i)
-                  solution_names.push_back ("u_f");
+                  solution_names.emplace_back("u_f");
               }
-            solution_names.push_back ("p");
+            solution_names.emplace_back("p");
 
-            solution_names.push_back ("T");
+            solution_names.emplace_back("T");
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               solution_names.push_back (this->introspection().name_for_compositional_index(c));
 
