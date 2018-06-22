@@ -38,9 +38,6 @@
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/signaling_nan.h>
-#if !DEAL_II_VERSION_GTE(9,1,0)
-#  include <deal.II/lac/constraint_matrix.h>
-#endif
 #include <deal.II/lac/block_sparsity_pattern.h>
 #include <deal.II/grid/grid_tools.h>
 
