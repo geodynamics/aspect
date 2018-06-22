@@ -41,6 +41,11 @@ namespace aspect
         // Ritsema et al. choose real sine and cosine coefficients that follow the normalization
         // by Dahlen & Tromp, Theoretical Global Seismology (equations B.58 and B.99).
 
+        // NOTE: There is a factor of sqrt(2) difference between the standard orthonormalized
+        // spherical harmonics used by Dahlen & Tromp and that used for S40RTS (see PR # 966).
+        // This might need adjusting if this code is used to read in spherical harmonic
+        // based tomography models that aren't S40RTS or S20RTS.
+
         class SphericalHarmonicsLookup
         {
           public:
@@ -252,6 +257,7 @@ namespace aspect
                                :
                                1.);
                   else if (order_m != 0)
+                    // this removes the sqrt(2) factor difference in normalization (see PR # 966)
                     prefact = 1./sqrt(2.);
                   else prefact = 1.0;
 
