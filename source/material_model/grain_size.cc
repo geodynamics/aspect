@@ -41,8 +41,8 @@ namespace aspect
       std::vector<std::string> make_dislocation_viscosity_outputs_names()
       {
         std::vector<std::string> names;
-        names.push_back("dislocation_viscosity");
-        names.push_back("boundary_area_change_work_fraction");
+        names.emplace_back("dislocation_viscosity");
+        names.emplace_back("boundary_area_change_work_fraction");
         return names;
       }
     }

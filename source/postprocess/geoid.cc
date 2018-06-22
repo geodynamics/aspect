@@ -435,7 +435,7 @@ namespace aspect
           const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(surface_cell_locations.at(i));
           const double phi = scoord[1];
           const double theta = scoord[2];
-          surface_cell_spherical_coordinates.push_back(std::make_pair(theta,phi));
+          surface_cell_spherical_coordinates.emplace_back(theta,phi);
         }
 
       // Compute the grid geoid anomaly based on spherical harmonics
@@ -659,7 +659,7 @@ namespace aspect
                      :
                      surface_cell_spherical_coordinates.at(i).second*(180./numbers::PI) - 360.);
 
-              stored_values_lon_lat.push_back(std::make_pair(std::make_pair(lon,lat),geoid_anomaly.at(i)));
+              stored_values_lon_lat.emplace_back(std::make_pair(lon,lat),geoid_anomaly.at(i));
             }
           // Write the solution to the stream output
           for (unsigned int i=0; i<stored_values_lon_lat.size(); ++i)
@@ -748,8 +748,8 @@ namespace aspect
     Geoid<dim>::required_other_postprocessors() const
     {
       std::list<std::string> deps;
-      deps.push_back("dynamic topography");
-      deps.push_back("boundary densities");
+      deps.emplace_back("dynamic topography");
+      deps.emplace_back("boundary densities");
       return deps;
     }
 

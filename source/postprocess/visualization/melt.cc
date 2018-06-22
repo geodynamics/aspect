@@ -53,10 +53,10 @@ namespace aspect
         for (unsigned int i=0; i<property_names.size(); ++i)
           if (property_names[i] == "fluid density gradient")
             for (unsigned int i=0; i<dim; ++i)
-              solution_names.push_back ("fluid_density_gradient");
+              solution_names.emplace_back("fluid_density_gradient");
           else if (property_names[i] == "compaction pressure")
             {
-              solution_names.push_back ("p_c");
+              solution_names.emplace_back("p_c");
             }
           else
             {

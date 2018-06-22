@@ -118,10 +118,10 @@ namespace aspect
             const unsigned int n_components = property_information.get_components_by_field_index(property);
 
             if (n_components == dim)
-              property_data.push_back(std::vector<double> (3 * n_local_particles,0.0));
+              property_data.emplace_back(3 * n_local_particles,0.0);
             else
               for (unsigned int component = 0; component < n_components; ++component)
-                property_data.push_back(std::vector<double> (1 * n_local_particles));
+                property_data.emplace_back(1 * n_local_particles);
           }
 
         // Write into the output vectors

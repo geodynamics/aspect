@@ -35,8 +35,8 @@ namespace aspect
       std::vector<std::string> make_plastic_additional_outputs_names()
       {
         std::vector<std::string> names;
-        names.push_back("current_cohesions");
-        names.push_back("current_friction_angles");
+        names.emplace_back("current_cohesions");
+        names.emplace_back("current_friction_angles");
         return names;
       }
     }

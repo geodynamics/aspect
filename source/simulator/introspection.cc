@@ -201,7 +201,7 @@ namespace aspect
     {
       std::vector<FEValuesExtractors::Scalar> x;
       for (unsigned int i=0; i<compositional_fields.size(); ++i)
-        x.push_back (FEValuesExtractors::Scalar(compositional_fields[i]));
+        x.emplace_back(compositional_fields[i]);
       return x;
     }
   }

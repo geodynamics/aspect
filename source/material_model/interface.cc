@@ -789,8 +789,8 @@ namespace aspect
       std::vector<std::string> make_seismic_additional_outputs_names()
       {
         std::vector<std::string> names;
-        names.push_back("seismic_Vs");
-        names.push_back("seismic_Vp");
+        names.emplace_back("seismic_Vs");
+        names.emplace_back("seismic_Vp");
         return names;
       }
     }
