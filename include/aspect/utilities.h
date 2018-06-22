@@ -615,13 +615,15 @@ namespace aspect
         void
         declare_parameters (ParameterHandler  &prm,
                             const std::string &default_directory,
-                            const std::string &default_filename);
+                            const std::string &default_filename,
+                            const std::string &subsection_name = "Ascii data model");
 
         /**
          * Read the parameters from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm,
+                          const std::string &subsection_name = "Ascii data model");
 
         /**
          * Directory in which the data files are present.
@@ -697,13 +699,15 @@ namespace aspect
         void
         declare_parameters (ParameterHandler  &prm,
                             const std::string &default_directory,
-                            const std::string &default_filename);
+                            const std::string &default_filename,
+                            const std::string &subsection_name = "Ascii data model");
 
         /**
          * Read the parameters from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm,
+                          const std::string &subsection_name = "Ascii data model");
 
       protected:
 
