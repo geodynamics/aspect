@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <common.h>
+#include "common.h"
 #include <aspect/utilities.h>
 
 TEST_CASE("floating point checks")
