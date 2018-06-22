@@ -988,8 +988,8 @@ namespace aspect
                                                "is mainly following \\cite{NPB+04}, and the plugin is used in "
                                                "Zhang et al. [2016]. The energy of core cooling and freeing of the "
                                                "inner core is included in the plugin. However, current plugin can not "
-                                               "deal with the energy balance if the core is in the 'snowing core' regime "
-                                               "(i.e. core solidifies from top instead of bottom)"
+                                               "deal with the energy balance if the core is in the `snowing core' regime "
+                                               "(i.e., the core solidifies from the top instead of bottom)."
                                               )
   }
 }
