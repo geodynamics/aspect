@@ -9,7 +9,7 @@ pipeline {
   }
 
   options {
-    timeout(time: 1, unit: 'HOURS') 
+    timeout(time: 2, unit: 'HOURS') 
   }
 
   parameters {
@@ -77,7 +77,7 @@ pipeline {
     }
 
     stage('Run tests') {
-      options {timeout(time: 45, unit: 'MINUTES')}
+      options {timeout(time: 90, unit: 'MINUTES')}
       steps {
         sh '''
           rm -f /home/dealii/build-gcc-fast/FAILED
