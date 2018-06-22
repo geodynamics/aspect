@@ -391,10 +391,11 @@ namespace aspect
 
           if (dim >= 3)
             {
-              box_origin[2] = prm.get_double ("Box origin Z coordinate");
-              extents[2] = prm.get_double ("Z extent");
-              periodic[2] = prm.get_bool ("Z periodic");
-              repetitions[2] = prm.get_integer ("Z repetitions");
+              // Use dim-1 instead of 2 to avoid compiler warning in 2d:
+              box_origin[dim-1] = prm.get_double ("Box origin Z coordinate");
+              extents[dim-1] = prm.get_double ("Z extent");
+              periodic[dim-1] = prm.get_bool ("Z periodic");
+              repetitions[dim-1] = prm.get_integer ("Z repetitions");
             }
         }
         prm.leave_subsection();
