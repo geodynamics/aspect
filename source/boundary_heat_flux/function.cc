@@ -20,7 +20,6 @@
 
 
 #include <aspect/boundary_heat_flux/function.h>
-#include <aspect/utilities.h>
 #include <aspect/global.h>
 #include <deal.II/base/signaling_nan.h>
 

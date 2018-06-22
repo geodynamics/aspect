@@ -707,9 +707,10 @@ namespace aspect
         }
     }
 
-    // If there is a fixed boundary temperature,
+    // If there is a fixed boundary temperature or heat flux,
     // update the temperature boundary condition.
     boundary_temperature_manager.update();
+    boundary_heat_flux->update();
 
     // if using continuous temperature FE, do the same for the temperature variable:
     // evaluate the current boundary temperature and add these constraints as well
