@@ -583,7 +583,7 @@ namespace aspect
                          "use in your model."
                          "\n\n"
                          "This parameter only describes which boundaries have a fixed "
-                         "temperature, but not what heat flux should hold on these "
+                         "heat flux, but not what heat flux should hold on these "
                          "boundaries. The latter piece of information needs to be "
                          "implemented in a plugin in the BoundaryHeatFlux "
                          "group, unless an existing implementation in this group "
@@ -1234,7 +1234,7 @@ namespace aspect
         Utilities::split_string_list(prm.get("Remove nullspace"));
       AssertThrow(Utilities::has_unique_entries(nullspace_names),
                   ExcMessage("The list of strings for the parameter "
-                             "'Model settings/Remove nullspace' contains entries more than once. "
+                             "'Nullspace removal/Remove nullspace' contains entries more than once. "
                              "This is not allowed. Please check your parameter file."));
 
       for (unsigned int i=0; i<nullspace_names.size(); ++i)
@@ -1598,7 +1598,7 @@ namespace aspect
         }
       catch (const std::string &error)
         {
-          AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Free surface "
+          AssertThrow (false, ExcMessage ("While parsing the entry <Free surface/Free surface "
                                           "boundary indicators>, there was an error. Specifically, "
                                           "the conversion function complained as follows: "
                                           + error));
@@ -1680,7 +1680,7 @@ namespace aspect
             }
           catch (const std::string &error)
             {
-              AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Prescribed "
+              AssertThrow (false, ExcMessage ("While parsing the entry <Boundary traction model/Prescribed "
                                               "traction indicators>, there was an error. Specifically, "
                                               "the conversion function complained as follows: "
                                               + error));
@@ -1712,7 +1712,7 @@ namespace aspect
         }
       catch (const std::string &error)
         {
-          AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Fixed heat flux "
+          AssertThrow (false, ExcMessage ("While parsing the entry <Boundary heat flux model/Fixed heat flux "
                                           "boundary indicators>, there was an error. Specifically, "
                                           "the conversion function complained as follows: "
                                           + error));

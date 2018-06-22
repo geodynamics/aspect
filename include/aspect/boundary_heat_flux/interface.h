@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -29,8 +29,7 @@ namespace aspect
 {
   /**
    * A namespace for the definition of things that have to do with describing
-   * the boundary values for fluid pressure for computations with melt
-   * transport.
+   * the boundary heat flux values.
    *
    * @ingroup BoundaryHeatFlux
    */
@@ -69,23 +68,18 @@ namespace aspect
          * The point of this function is to allow complex boundary heat flux
          * models to do an initialization step once at the beginning of each
          * time step. An example would be a model that needs to call an
-         * external program to compute heat flux change at bottom.
+         * external program to compute a heat flux change at bottom.
          */
         virtual
         void
         update ();
 
         /**
-         * Compute the component of the gradient of the fluid pressure
-         * in the direction normal to a boundary for a list of quadrature
-         * points.
+         * Compute the heat flux for a list of quadrature points.
          *
-         * The return value can typically contain @p material_model_outputs.fluid_densities[q]
-         * or @p material_model_outputs.densities[q], multiplied by the gravity vector
-         * and dotted with the normal.
-         * If the solid density is used, fluid is only fluxing in or out due to differences in
-         * dynamic pressure, if the fluid density is used, melt fluxs in with the same velocity
-         * as influxing solid material.
+         * The return value would typically be computed as the product of the thermal
+         * conductivity @p material_model_outputs.thermal_conductivities[q] and the
+         * temperature gradient at the boundary.
          *
          * @param boundary_indicator The boundary indicator of the part of the
          * boundary of the domain on which the point is located at which we
@@ -124,17 +118,17 @@ namespace aspect
 
 
     /**
-     * Register a fluid pressure boundary model so that it can be selected from
+     * Register a boundary heat flux model so that it can be selected from
      * the parameter file.
      *
      * @param name A string that identifies the fluid pressure boundary model
      * @param description A text description of what this model does and that
      * will be listed in the documentation of the parameter file.
      * @param declare_parameters_function A pointer to a function that can be
-     * used to declare the parameters that this fluid pressure boundary model
+     * used to declare the parameters that this boundary heat flux model
      * wants to read from input files.
      * @param factory_function A pointer to a function that can create an
-     * object of this fluid pressure boundary model.
+     * object of this boundary heat flux model.
      *
      * @ingroup BoundaryHeatFlux
      */
@@ -161,7 +155,7 @@ namespace aspect
 
 
     /**
-     * Declare the runtime parameters of the registered fluid pressure boundary
+     * Declare the runtime parameters of the registered boundary heat flux
      * models.
      *
      * @ingroup BoundaryHeatFlux
@@ -187,7 +181,7 @@ namespace aspect
 
     /**
      * Given a class name, a name, and a description for the parameter file
-     * for a fluid pressure boundary model, register it with the functions that
+     * for a boundary heat flux model, register it with the functions that
      * can declare their parameters and create these objects.
      *
      * @ingroup BoundaryHeatFlux

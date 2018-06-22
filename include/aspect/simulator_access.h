@@ -667,7 +667,7 @@ namespace aspect
 
       /**
        * Return a set of boundary indicators that describes which of the
-       * boundaries have a fixed temperature.
+       * boundaries have a fixed heat flux.
        */
       const std::set<types::boundary_id> &
       get_fixed_heat_flux_boundary_indicators () const;

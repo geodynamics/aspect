@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -156,25 +156,24 @@ namespace aspect
     ASPECT_REGISTER_BOUNDARY_HEAT_FLUX_MODEL(Function,
                                              "function",
                                              "Implementation of a model in which the boundary "
-                                             "velocity is given in terms of an explicit formula "
+                                             "heat flux is given in terms of an explicit formula "
                                              "that is elaborated in the parameters in section "
                                              "``Boundary heat flux model|Function''. The format of these "
                                              "functions follows the syntax understood by the "
                                              "muparser library, see Section~\\ref{sec:muparser-format}."
                                              "\n\n"
                                              "The formula you describe in the mentioned "
-                                             "section is a semicolon separated list of velocities "
-                                             "for each of the $d$ components of the velocity vector. "
-                                             "These $d$ formulas are interpreted as having units "
-                                             "m/s, unless the global input parameter ``Use "
-                                             "years in output instead of seconds'' is set, in "
-                                             "which case we interpret the formula expressions "
-                                             "as having units m/year."
+                                             "section is a scalar value for the heat flux that is assumed "
+                                             "to be the flux normal to the boundary, and that has the unit "
+                                             "W/(m$^2$) (in 3d) or W/m (in 2d). Negative fluxes are "
+                                             "interpreted as the flow of heat into the domain, and positive "
+                                             "fluxes are interpreted as heat flowing out of the domain."
                                              "\n\n"
-                                             "Likewise, since the symbol $t$ indicating time "
+                                             "The symbol $t$ indicating time that "
                                              "may appear in the formulas for the prescribed "
-                                             "velocities, it is interpreted as having units "
-                                             "seconds unless the global parameter above has "
+                                             "heat flux is interpreted as having units "
+                                             "seconds unless the global parameter ``Use "
+                                             "years in output instead of seconds'' has "
                                              "been set.")
   }
 }
