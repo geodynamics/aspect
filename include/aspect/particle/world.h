@@ -128,7 +128,7 @@ namespace aspect
         /**
          * Return the total number of particles in the simulation. This
          * function is useful for monitoring how many particles have been
-         * lost by falling out of the domain. Not that this function does
+         * lost by falling out of the domain. Note that this function does
          * not compute the number of particles, because that is an expensive
          * global MPI operation. Instead it returns the number, which is
          * updated internally every time it might change by a call to
@@ -229,7 +229,7 @@ namespace aspect
         std_cxx11::unique_ptr<Integrator::Interface<dim> > integrator;
 
         /**
-         * Integration scheme for moving particles in this world
+         * Interpolation scheme for moving particles in this world
          */
         std_cxx11::unique_ptr<Interpolator::Interface<dim> > interpolator;
 
