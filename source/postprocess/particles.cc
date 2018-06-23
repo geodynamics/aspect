@@ -619,8 +619,9 @@ namespace aspect
           prm.declare_entry ("Data output format", "vtu",
                              Patterns::MultipleSelection (DataOutBase::get_output_format_names ()+"|ascii"),
                              "A comma separated list of file formats to be used for graphical "
-                             "output. See the corresponding appendix of the manual for possible "
-                             "output formats.");
+                             "output. The list of possible output formats that can be given "
+                             "here is documented in the appendix of the manual where the current "
+                             "parameter is described.");
 
           prm.declare_entry ("Number of grouped files", "16",
                              Patterns::Integer(0),
