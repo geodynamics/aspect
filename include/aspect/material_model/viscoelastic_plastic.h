@@ -52,10 +52,10 @@ namespace aspect
     };
 
     /**
-     * A material model that combines non-linear plasticity with a simple linear 
+     * A material model that combines non-linear plasticity with a simple linear
      * viscoelastic material behavior. The model is incompressible. Note that
      * this material model is based heavily on and combines functionality from
-     * the following material models: DiffusionDislocation, DruckerPrager, 
+     * the following material models: DiffusionDislocation, DruckerPrager,
      * ViscoPlastic and Viscoelastic.
      *
      * Viscous stress is limited by plastic deformation, which follows
@@ -86,10 +86,10 @@ namespace aspect
      * and stress_xy. In 3D, the first six compositional fields must be labeled
      * stress_xx, stress_yy, stress_zz, stress_xy, stress_xz, stress_yz.
      *
-     * Combining this viscoelasticity implementation with non-linear viscous flow 
-     * and plasticity produces a constitutive relationship commonly referred to 
-     * as partial elastoviscoplastic (e.g., pEVP) in the geodynamics community. 
-     * While extensively discussed and applied within the geodynamics literature, 
+     * Combining this viscoelasticity implementation with non-linear viscous flow
+     * and plasticity produces a constitutive relationship commonly referred to
+     * as partial elastoviscoplastic (e.g., pEVP) in the geodynamics community.
+     * While extensively discussed and applied within the geodynamics literature,
      * notable references include:
      * Moresi et al. (2003), J. Comp. Phys., v. 184, p. 476-497.
      * Gerya and Yuen (2007), Phys. Earth. Planet. Inter., v. 163, p. 83-105.
@@ -256,9 +256,9 @@ namespace aspect
         double minimum_strain_rate;
 
         /**
-         * Strain-rate invariant used on the first iteration of the first time step 
-         * before the velocity is calculated. 
-         */        
+         * Strain-rate invariant used on the first iteration of the first time step
+         * before the velocity is calculated.
+         */
         double reference_strain_rate;
 
         /**

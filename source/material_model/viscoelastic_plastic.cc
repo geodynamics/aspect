@@ -129,7 +129,7 @@ namespace aspect
       ComponentMask composition_mask(this->n_compositional_fields(),true);
       // Elastic stress fields
       for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
-           composition_mask.set(i,false);
+        composition_mask.set(i,false);
 
       // Create the structure for the elastic force terms that are needed to compute the
       // right-hand side of the Stokes system
@@ -221,9 +221,9 @@ namespace aspect
               stresses_viscous[j] = 2. * viscosities_pre_yield[j] * edot_ii;
 
               stresses_yield[j] = ( (dim==3)
-                                     ?
-                                     ( 6.0 * coh[j] * std::cos(phi[j]) + 6.0 * std::max(pressure,0.0) * std::sin(phi[j]) )
-                                     / ( std::sqrt(3.0) * (3.0 + std::sin(phi[j]) ) )
+                                    ?
+                                    ( 6.0 * coh[j] * std::cos(phi[j]) + 6.0 * std::max(pressure,0.0) * std::sin(phi[j]) )
+                                    / ( std::sqrt(3.0) * (3.0 + std::sin(phi[j]) ) )
                                     :
                                     coh[j] * std::cos(phi[j]) + std::max(pressure,0.0) * std::sin(phi[j]) );
 
@@ -239,11 +239,11 @@ namespace aspect
               viscosities_yield[j] = viscosities_drucker_prager[j];
 
               viscosities_viscoelastic[j] = ( viscosities_yield[j] * dte ) / ( dte + ( viscosities_yield[j] / elastic_shear_moduli[j] ) );
-              
+
             }
 
-          out.viscosities[i] = average_value(volume_fractions,viscosities_viscoelastic,viscosity_averaging); 
-                                                       
+          out.viscosities[i] = average_value(volume_fractions,viscosities_viscoelastic,viscosity_averaging);
+
           if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim> >())
             {
               elastic_out->elastic_shear_moduli[i] = average_value(volume_fractions,elastic_shear_moduli,viscosity_averaging);
@@ -282,9 +282,9 @@ namespace aspect
           for (unsigned int i=0; i < in.position.size(); ++i)
             {
 
-              const std::vector<double> composition = in.composition[i]; 
+              const std::vector<double> composition = in.composition[i];
               const std::vector<double> volume_fractions = compute_volume_fractions(composition, composition_mask);
- 
+
               // Get old stresses from compositional fields
               SymmetricTensor<2,dim> stress_old;
               for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
@@ -422,7 +422,7 @@ namespace aspect
                              "viscosity at that point.  Select a weighted harmonic, arithmetic, "
                              "geometric, or maximum composition.");
 
-         prm.declare_entry ("Linear viscosities", "1.e21",
+          prm.declare_entry ("Linear viscosities", "1.e21",
                              Patterns::List(Patterns::Double(0)),
                              "List of linear (fixed) viscosities for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
@@ -524,8 +524,8 @@ namespace aspect
                                                               n_fields,
                                                               "Densities");
           linear_viscosities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Linear viscosities"))),
-                                                                n_fields,
-                                                                "Viscosities");
+                                                                       n_fields,
+                                                                       "Viscosities");
           thermal_conductivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal conductivities"))),
                                                                            n_fields,
                                                                            "Thermal conductivities");
@@ -662,7 +662,7 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(ViscoelasticPlastic,
                                    "viscoelastic plastic",
-                                   "A material model that combines non-linear plasticity with a simple " 
+                                   "A material model that combines non-linear plasticity with a simple "
                                    "linear viscoelastic material behavior. The model is incompressible. "
                                    "Note that this material model is based heavily on and combines "
                                    "functionality from the following material models: "
@@ -683,7 +683,7 @@ namespace aspect
                                    "surface: $v_{y}=\\sigma_{y}/(2{\\varepsilon}_{ii})$. "
                                    "This form of plasticity is commonly used in geodynamic models. "
                                    "See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. "
-                                   "\n\n" 
+                                   "\n\n"
                                    "The viscoelastic rheology behavior takes into account the elastic shear "
                                    "strength (e.g., shear modulus), while the tensile and volumetric "
                                    "strength (e.g., Young's and bulk modulus) are not considered. The "
