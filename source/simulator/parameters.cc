@@ -638,10 +638,15 @@ namespace aspect
                          "Whether or not the postprocessors should be executed after "
                          "each of the initial adaptive refinement cycles that are run at "
                          "the start of the simulation.");
-      prm.declare_entry ("Solvers off on initial refinement", "false",
+      prm.declare_entry ("Skip solvers on initial refinement", "false",
                          Patterns::Bool (),
-                         "Whether or not solvers should be executed after the initial "
+                         "Whether or not solvers should be executed during the initial "
                          "adaptive refinement cycles that are run at the start of the "
+                         "simulation.");
+      prm.declare_entry ("Skip setup initial conditions on initial refinement", "false",
+                         Patterns::Bool (),
+                         "Whether or not the initial conditions should be set up during the "
+                         "the adaptive refinement cycles that are run at the start of the "
                          "simulation.");
     }
     prm.leave_subsection();
@@ -1126,8 +1131,18 @@ namespace aspect
         for (unsigned int i=0; i<additional_refinement_times.size(); ++i)
           additional_refinement_times[i] *= year_in_seconds;
 
-      solvers_off_on_initial_refinement = prm.get_bool("Solvers off on initial refinement");
+      skip_solvers_on_initial_refinement = prm.get_bool("Skip solvers on initial refinement");
+      skip_setup_initial_conditions_on_initial_refinement = prm.get_bool("Skip setup initial conditions on initial refinement");
+      
+      //AssertThrow(skip_setup_initial_conditions_on_initial_refinement == true && skip_solvers_on_initial_refinement == false,  
+      //            ExcMessage("Cannot execute solvers if no initial conditions are set up. "
+      //                       "You must set skip_solvers_on_initial_refinement to true."));
+      
       run_postprocessors_on_initial_refinement = prm.get_bool("Run postprocessors on initial refinement");
+       
+      //AssertThrow(skip_setup_initial_conditions_on_initial_refinement == true && run_postprocessors_on_initial_refinement == true,  
+      //            ExcMessage("Cannot run postprocessors if no initial conditions are set up. "
+      //                       "You must set run_postprocessors_on_initial_refinement to false."));
     }
     prm.leave_subsection ();
 

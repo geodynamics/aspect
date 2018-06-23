@@ -1591,7 +1591,10 @@ namespace aspect
 
     if (parameters.resume_computation == false)
       {
-        if (parameters.solvers_off_on_initial_refinement)
+        // See if we want to skip the initial conditions setup during the pre-
+        // refinement phase. If set true, the solvers won't be executed. An 
+        // assertThrow will pop if the user tries to set solvers ON.
+        if (parameters.skip_setup_initial_conditions_on_initial_refinement)
           {
             const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
             if (initial_refinement_done) 
@@ -1609,6 +1612,14 @@ namespace aspect
         compute_initial_pressure_field ();
 
         signals.post_set_initial_state (*this);
+        
+        // See if we want to skip the solvers during the pre-refinement phase. 
+        if (parameters.skip_solvers_on_initial_refinement)
+          {
+            const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
+            if (initial_refinement_done) 
+              goto start_time_iteration;
+          }
       }
 
     // start the principal loop over time steps:
@@ -1620,12 +1631,17 @@ namespace aspect
         solve_timestep ();
 
         // see if we have to start over with a new adaptive refinement cycle
-        // at the beginning of the simulation
-        if (timestep_number == 0 && !parameters.solvers_off_on_initial_refinement)
+        // at the beginning of the simulation.  
+        if (timestep_number == 0)
           {
-            const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
-            if (initial_refinement_done)
-              goto start_time_iteration;
+            // Starting a new cycle only occurs if we do not want to skip the 
+            // initial conditions setup and the solvers. 
+            if (!parameters.skip_setup_initial_conditions_on_initial_refinement && !parameters.skip_solvers_on_initial_refinement)
+              {
+                const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
+                if (initial_refinement_done)
+                  goto start_time_iteration;
+              }
           }
 
         // if we postprocess nonlinear iterations, this function is called within
