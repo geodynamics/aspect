@@ -479,31 +479,59 @@ namespace aspect
 
       for (unsigned int i = 0; i < n_poly_points; ++i)
         {
-          // Create vector along the polygon line segment
-          Tensor<1,2> vector_segment = shifted_point_list[i] - point_list[i];
-          // Create vector from point to the second segment point
-          Tensor<1,2> vector_point_segment = point - point_list[i];
-
-          // Compute dot products to get angles
-          const double c1 = vector_point_segment * vector_segment;
-          const double c2 = vector_segment * vector_segment;
-
-          // point lies closer to not-shifted polygon point, but perpendicular base line lies outside segment
-          if (c1 <= 0.0)
-            distances[i] = (Tensor<1,2> (point_list[i] - point)).norm();
-          // point lies closer to shifted polygon point, but perpendicular base line lies outside segment
-          else if (c2 <= c1)
-            distances[i] = (Tensor<1,2> (shifted_point_list[i] - point)).norm();
-          // perpendicular base line lies on segment
-          else
-            {
-              const Point<2> point_on_segment = point_list[i] + (c1/c2) * vector_segment;
-              distances[i] = (Tensor<1,2> (point - point_on_segment)).norm();
-            }
+          const std::array<Point<2>,2 > list = {point_list[i], shifted_point_list[i]};
+          distances[i] = distance_to_line(list, point);
         }
 
       // Return the minimum of the distances of the point to all polygon segments
       return *std::min_element(distances.begin(),distances.end()) * sign;
+    }
+
+    double
+    distance_to_line(const std::array<dealii::Point<2>,2 > &point_list,
+                     const dealii::Point<2> &point)
+    {
+
+      /**
+       * This code is based on http://geomalgorithms.com/a02-_lines.html#Distance-to-Infinite-Line,
+       * and therefore requires the following copyright notice:
+       *
+       * Copyright 2000 softSurfer, 2012 Dan Sunday
+       * This code may be freely used and modified for any purpose
+       * providing that this copyright notice is included with it.
+       * SoftSurfer makes no warranty for this code, and cannot be held
+       * liable for any real or imagined damage resulting from its use.
+       * Users of this code must verify correctness for their application.
+       *
+       */
+
+      const unsigned int n_poly_points = point_list.size();
+      AssertThrow(n_poly_points == 2, ExcMessage("A list of points for a line segment should consist of 2 points."));
+
+      // Create vector along the polygon line segment P0 to P1
+      const Tensor<1,2> vector_segment = point_list[1] - point_list[0];
+      // Create vector from point P to the second segment point
+      const Tensor<1,2> vector_point_segment = point - point_list[0];
+
+      // Compute dot products to get angles
+      const double c1 = vector_point_segment * vector_segment;
+
+      // Point P's perpendicular base line lies outside segment, before P0.
+      // Return distance between points P and P0.
+      if (c1 <= 0.0)
+        return (Tensor<1,2> (point_list[0] - point)).norm();
+
+      const double c2 = vector_segment * vector_segment;
+
+      // Point P's perpendicular base line lies outside segment, after P1.
+      // Return distance between points P and P1.
+      if (c2 <= c1)
+        return (Tensor<1,2> (point_list[1] - point)).norm();
+
+      // Point P's perpendicular base line lies on the line segment.
+      // Return distance between point P and the base point.
+      const Point<2> point_on_segment = point_list[0] + (c1/c2) * vector_segment;
+      return (Tensor<1,2> (point - point_on_segment)).norm();
     }
 
     template <int dim>
