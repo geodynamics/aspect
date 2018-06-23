@@ -24,7 +24,7 @@ MESSAGE(STATUS "====================================================")
 # Set the name of the project and target:
 SET(TARGET "aspect")
 
-FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "unittests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
+FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
 INCLUDE_DIRECTORIES(include ${CMAKE_BINARY_DIR}/include contrib/catch)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
@@ -166,39 +166,39 @@ IF(POLICY CMP0037)
   CMAKE_POLICY(SET CMP0037 OLD)
 ENDIF()
 
-# This is an empty target but we will make it depend on tests/ and unittests/ next:
+# This is an empty target but we will make it depend on tests/ and unit_tests/ next:
 ADD_CUSTOM_TARGET(test)
 
 # Generate CTestTestfile.cmake in the main build folder that lists all subfolders
 # that contain tests. This way you can call "ctest" in the build directory.
 FILE(WRITE ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "# auto-generated ctest file\n")
 
-IF(EXISTS ${CMAKE_SOURCE_DIR}/unittests/CMakeLists.txt)
-  # If we have the unittests directory, add it so ctest picks it up and configure
+IF(EXISTS ${CMAKE_SOURCE_DIR}/unit_tests/CMakeLists.txt)
+  # If we have the unit_tests directory, add it so ctest picks it up and configure
   # the test project in the subfolder:
-  FILE(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(unittests)\n")
-  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unittests)
+  FILE(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(unit_tests)\n")
+  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests)
   EXECUTE_PROCESS(
     COMMAND ${CMAKE_COMMAND}
 	-D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 	-D ASPECT_BINARY=${CMAKE_BINARY_DIR}/aspect
-	${CMAKE_CURRENT_SOURCE_DIR}/unittests
-    OUTPUT_FILE setup_unittests.log
+	${CMAKE_CURRENT_SOURCE_DIR}/unit_tests
+    OUTPUT_FILE setup_unit_tests.log
     RESULT_VARIABLE test_cmake_result
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unittests
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests
    )
   IF(NOT test_cmake_result EQUAL 0)
     MESSAGE(FATAL_ERROR "ERROR: unittest/ project could not be configured.")
   ENDIF()
 
   # Finally hook up that "make test" will execute the tests:
-  ADD_CUSTOM_TARGET(run_unittests
+  ADD_CUSTOM_TARGET(run_unit_tests
     COMMAND ${CMAKE_BINARY_DIR}/aspect --test
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unittests
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests
     DEPENDS aspect
-    COMMENT "Running unittests ...")
+    COMMENT "Running unit_tests ...")
 
-  ADD_DEPENDENCIES(test run_unittests)
+  ADD_DEPENDENCIES(test run_unit_tests)
 ENDIF()
 
 IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)

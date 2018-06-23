@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_unittests_common_h
-#define _aspect_unittests_common_h
+#ifndef _aspect_unit_tests_common_h
+#define _aspect_unit_tests_common_h
 
 #include <catch.hpp>
 
