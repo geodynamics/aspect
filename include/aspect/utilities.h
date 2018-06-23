@@ -73,6 +73,54 @@ namespace aspect
                                  const unsigned int N,
                                  const std::string &id_text);
 
+
+
+    /**
+    * This function takes a string argument that is interpreted as a map
+    * of the form "key1 : value1, key2 : value2, etc", and then parses
+    * it to return a vector of these values where the values are ordered
+    * in the same order as a given set of keys.
+    *
+    * This function also considers a number of special cases:
+    * - If the input string consists of only a comma separated
+    *   set of values "value1, value2, value3, ..." (i.e., without
+    *   the "keyx :" part), then the input string is interpreted
+    *   as if it had had the form "key1 : value1, key2 : value2, ..."
+    *   where "key1", "key2", ... are exactly the keys provided by the
+    *   @p list_of_keys in the same order as provided. In this situation,
+    *   if a background field is required, the background value is
+    *   assigned to the first element of the output vector.
+    * - Whether or not a background field is required depends on
+    *   the parameter being parsed. Requiring a background field
+    *   increases the size of the output vector by 1. For example,
+    *   some Material models require background fields, but input
+    *   files may not.
+    * - Three special keys are recognized:
+    *      all --> Assign the associated value to all fields.
+    *              Only one value is allowed in this case.
+    *      background (or bg) --> Assign associated value to
+    *                             the background.
+    *
+    * @param[in] key_value_map The string representation of the map
+    *   to be parsed.
+    * @param[in] list_of_keys A list of valid key names that are allowed
+    *   to appear in the map. The order of these keys determines the order
+    *   of values that are returned by this function.
+    * @param[in] field_name A name that identifies the type of information
+    *   that is being parsed by this function and that is used in generating
+    *   error messages if the map does not conform to the expected format.
+    *
+    * @return A vector of values that are parsed from the map, provided
+    *   in the order in which the keys appear in the @p list_of_keys argument.
+    */
+    std::vector<double>
+    parse_map_to_double_array (const std::string &key_value_map,
+                               const std::vector<std::string> &list_of_keys,
+                               const bool allow_background_field,
+                               const std::string &field_name);
+
+
+
     /**
      * Given a vector @p var_declarations expand any entries of the form
      * vector(str) or tensor(str) to sublists with component names of the form

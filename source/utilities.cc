@@ -31,6 +31,12 @@
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
 
+#if DEAL_II_VERSION_GTE(9,0,0)
+#include <deal.II/base/patterns.h>
+#else
+#include <deal.II/base/parameter_handler.h>
+#endif
+
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/chunk.h>
@@ -53,6 +59,233 @@ namespace aspect
    */
   namespace Utilities
   {
+
+
+
+    std::vector<double> parse_map_to_double_array (const std::string &initial_field_array,
+                                                   const std::vector<std::string> &list_of_field_names,
+                                                   const bool allow_background_field,
+                                                   const std::string &field_name)
+
+    {
+      // Determine the total number of fields. If a background
+      // field is required, then this number equals the
+      // number of given keys plus one for the background
+      // field. Otherwise, the total number of fields is
+      // equal to the number of keys.
+      const unsigned int n_fields = (allow_background_field ?
+                                     list_of_field_names.size() + 1 :
+                                     list_of_field_names.size());
+
+      // Array of field values to be returned.
+      std::vector<double> x_mapped_values (n_fields,std::numeric_limits<double>::quiet_NaN());
+
+      // Split the comma separated values
+      const std::vector<std::string> x_mapped_field_entries = dealii::Utilities::split_string_list(initial_field_array, ',');
+
+
+      // Parse the string depending on what Pattern we are dealing with
+      // ---------------------------------------------------------------
+
+      // Split the list by comma delimited Map components,
+      // then by colon delimited string descriptor and value.
+      if (Patterns::Map(Patterns::Anything(),Patterns::Double(),1,n_fields).match(initial_field_array))
+        {
+
+          // Ensure there are values for all fields
+          AssertThrow ( (x_mapped_field_entries.size() == n_fields)
+                        || (x_mapped_field_entries.size() == 1),
+                        ExcMessage ("The number of "
+                                    + field_name
+                                    + " in the list must equal one of the following values:\n"
+                                    "1 (one value for all fields, including background, using the keyword=`all') \n"
+                                    "or the number of fields plus 1 "
+                                    "(one value for each field plus the background)."));
+
+          // Split each mapped entry into string and value
+          for (std::vector<std::string>::const_iterator p = x_mapped_field_entries.begin();
+               p != x_mapped_field_entries.end(); ++p)
+            {
+              // Look for the two special keyword descriptors:
+              //    all --> assign the associated value to all fields
+              //    background (or bg) --> assign associated value to
+              //                           the background
+              // All other keywords are used to assign the correct
+              // value to the correct position of the property array,
+              // and should match the list of field names, such as,
+              // for example, those found in the Compositional fields
+              // subsection.
+              //
+              // The user must input a background value.
+              //
+              // each entry must have the format:
+              // <id> : <value>
+
+
+              // First, split each mapped entry into string and value
+              const std::vector<std::string> split_parts = Utilities::split_string_list (*p, ':');
+
+              // Ensure that each entry has the correct form.
+              AssertThrow (split_parts.size() == 2,
+                           ExcMessage ("The format for mapped "
+                                       + field_name
+                                       + "requires that each entry has the "
+                                       "form `<id> : <value>' "
+                                       ", but the entry <"
+                                       + *p
+                                       + "> does not appear to follow this pattern."));
+
+              // The easy part: get the field names
+              const std::string keyword = split_parts[0];
+
+              // Handle the case when there is one entry in the list.
+              // The keyword "all" MUST be found.
+              if (x_mapped_field_entries.size() == 1)
+                {
+                  // Check that 'all' was used
+                  AssertThrow (keyword == "all",
+                               ExcMessage ("There is only one "
+                                           + field_name
+                                           + " value given. The keyword `all' is "
+                                           "expected but is not found. Please"
+                                           "check your "
+                                           + field_name
+                                           + " list."));
+
+                  // Assign all the elements to the "all" value
+                  for (unsigned int field_index=0; field_index<n_fields; ++field_index)
+                    {
+                      x_mapped_values[field_index] = Utilities::string_to_double(split_parts[1]);
+                    }
+                }
+
+              // Handle multiple entries
+              else if (x_mapped_field_entries.size()>1)
+                {
+                  // Ensure that the special keyword "all" was not used when multiple entries exist.
+                  AssertThrow (keyword != "all",
+                               ExcMessage ("There are multiple "
+                                           + field_name
+                                           + " values found, the keyword `all' is not "
+                                           "allowed. Please check your "
+                                           + field_name
+                                           + " list."));
+
+                  // Continue with placing values into the correct positions according to
+                  // the order of names passed to this function in the argument list_of_field_names.
+                  if (allow_background_field && (keyword == "background" || keyword == "bg"))
+                    {
+                      // Overwrite the default x_mapped_values to user input.
+                      // Element_0 is reserved for the background.
+                      x_mapped_values[0] = Utilities::string_to_double(split_parts[1]);
+                    }
+                  else
+                    {
+                      // Ensure that each non-special keyword found is also contained in
+                      // the list of field names, and insert the associated
+                      // values to the correct index position.
+                      for (unsigned int field_index=0; field_index<list_of_field_names.size(); ++field_index)
+                        {
+                          if (keyword == list_of_field_names[field_index])
+                            {
+                              const unsigned int map_index = (allow_background_field ?
+                                                              field_index + 1 :
+                                                              field_index);
+
+                              // Throw an error if a match was already found...there can be only one
+                              AssertThrow (std::isnan(x_mapped_values[map_index]) == true,
+                                           ExcMessage ("The keyword <"
+                                                       + keyword
+                                                       + "> in "
+                                                       + field_name
+                                                       + " is listed multiple times. "
+                                                       "Check that you have only one value for "
+                                                       "each field id in your list."
+                                                       "\n\n"
+                                                       "One example of where to check this is if "
+                                                       "Compositional fields are used, "
+                                                       "then check the id list "
+                                                       "from `set Names of fields' in the"
+                                                       "Compositional fields subsection. "
+                                                       "Alternatively, if `set Names of fields' "
+                                                       "is not set, the default names are "
+                                                       "C_1, C_2, ..., C_n."));
+
+                              // We passed the check above, so capture the value
+                              x_mapped_values[map_index] = Utilities::string_to_double(split_parts[1]);
+                            }
+                        }
+                    }
+                }
+            }
+
+          // Go through one more time to make sure everything was set.
+          // If a background is required, start at index one, i.e.,
+          // excluding the background field, because we will treat
+          // that separately below.
+          const unsigned int start_index = (allow_background_field ?
+                                            1 :
+                                            0);
+          const unsigned int list_index_offset = (allow_background_field ?
+                                                  -1 :
+                                                  0);
+
+          for (unsigned int field_index=start_index; field_index<n_fields; ++field_index)
+            {
+              AssertThrow (std::isnan(x_mapped_values[field_index]) == false,
+                           ExcMessage ("The keyword from <"
+                                       + list_of_field_names[field_index+list_index_offset]
+                                       + "> in "
+                                       + field_name
+                                       + " does not match any entries "
+                                       "from the list of field names. "
+                                       "Check that you have a value for "
+                                       "each field id in your list.\n\n"
+                                       "One example of where to check this is if "
+                                       "Compositional fields are used, "
+                                       "then check the id list "
+                                       "from `set Names of fields' in the"
+                                       "Compositional fields subsection. "
+                                       "Alternatively, if `set Names of fields' "
+                                       "is not set, the default names are "
+                                       "C_1, C_2, ..., C_n."));
+
+            }
+          // When required, ensure that the special keyword "background" or "bg" has an
+          // assigned value along with all the other names from list_of_field_names.
+          if (allow_background_field == true)
+            {
+              AssertThrow (std::isnan(x_mapped_values[0]) == false,
+                           ExcMessage ("The background field must be set in "
+                                       + field_name
+                                       + ". Set this value with the keyword id "
+                                       "`background' or `bg' with the format "
+                                       "`<id> : <value>'."));
+            }
+
+        }
+
+      else if (Patterns::List(Patterns::Double(),1,n_fields).match(initial_field_array))
+        {
+          // Handle the older format of a comma separated list of doubles, with no keywords
+          x_mapped_values = possibly_extend_from_1_to_N (dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(initial_field_array)),
+                                                         n_fields,
+                                                         field_name);
+        }
+      else
+        {
+          // No Patterns matches were found!
+          AssertThrow (false,
+                       ExcMessage ("The required format for field <"
+                                   + field_name
+                                   + "> was not found. Specify a comma separated "
+                                   "list of `<double>' or `<id> : <double>'."));
+        }
+      return x_mapped_values;
+    }
+
+
+
     /**
      * Split the set of DoFs (typically locally owned or relevant) in @p whole_set into blocks
      * given by the @p dofs_per_block structure.
