@@ -67,7 +67,7 @@ namespace aspect
   namespace MeshDeformation
   {
     /**
-     * A plugin that computes the deformation of surface "
+     * A plugin that computes the deformation of surface
      * vertices according to the solution of the flow problem.
      * In particular this means if the surface of the domain is
      * left open to flow, this flow will carry the mesh with it.

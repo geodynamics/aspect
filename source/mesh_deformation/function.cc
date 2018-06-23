@@ -39,7 +39,12 @@ namespace aspect
     void
     Function<dim>::update ()
     {
-      function.set_time(this->get_time());
+      // we get time passed as seconds (always) but may want
+      // to reinterpret it in years
+      if (this->convert_output_to_years())
+        function.set_time (this->get_time() / year_in_seconds);
+      else
+        function.set_time (this->get_time());
     }
 
 
@@ -115,8 +120,8 @@ namespace aspect
                                            "deform according to an analytically prescribed "
                                            "function. Note that the function prescribes a "
                                            "deformation velocity, i.e. the return value of "
-                                           "the function is multiplied by the time step length "
-                                           "to compute the total displacement for each time step. "
+                                           "this plugin is later multiplied by the time step length "
+                                           "to compute the displacement increment in this time step. "
                                            "The format of the "
                                            "functions follows the syntax understood by the "
                                            "muparser library, see Section~\\ref{sec:muparser-format}.")

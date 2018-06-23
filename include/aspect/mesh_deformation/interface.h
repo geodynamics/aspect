@@ -247,9 +247,9 @@ namespace aspect
          * Set the boundary conditions for the solution of the elliptic
          * problem, which computes the displacements of the internal
          * vertices so that the mesh does not become too distorted due to
-         * motion of the free surface.  Velocities of vertices on the free
-         * surface are set to be the normal of the Stokes velocity solution
-         * projected onto that surface.  Velocities of vertices on free-slip
+         * motion of the free surface.  Velocities of vertices on the
+         * deforming surface are fixed according to the selected deformation
+         * plugins.  Velocities of vertices on free-slip
          * boundaries are constrained to be tangential to those boundaries.
          * Velocities of vertices on no-slip boundaries are set to be zero.
          */

@@ -224,7 +224,8 @@ namespace aspect
     {
       if (!sim.parameters.free_surface_enabled)
         return;
-      sim.computing_timer.enter_section("Mesh deformation");
+
+      TimerOutput::Scope timer (sim.computing_timer, "Mesh deformation");
 
       // Make the constraints for the elliptic problem.  On the free surface, we
       // constrain mesh velocity to be v.n, on free slip it is constrained to
@@ -242,7 +243,6 @@ namespace aspect
 
       // After changing the mesh we need to rebuild things
       sim.rebuild_stokes_matrix = sim.rebuild_stokes_preconditioner = true;
-      sim.computing_timer.exit_section("Mesh deformation");
     }
 
 
