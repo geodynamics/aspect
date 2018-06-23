@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Number of active cells: 400 (on 1 levels)
 Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
@@ -14,7 +12,7 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
 
    Postprocessing:
      RMS, max velocity:     0.0258 m/year, 0.0444 m/year
-     Writing depth average: output-viscoelastic_plastic_numerical_elastic_time_step/depth_average.txt
+     Writing depth average: output-viscoelastic_plastic_numerical_elastic_time_step_yield/depth_average.txt
 
 
 
@@ -28,11 +26,11 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Solving stress_yy system ... 11 iterations.
    Solving stress_xy system ... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      RMS, max velocity:     0.0258 m/year, 0.0444 m/year
-     Writing depth average: output-viscoelastic_plastic_numerical_elastic_time_step/depth_average.txt
+     Writing depth average: output-viscoelastic_plastic_numerical_elastic_time_step_yield/depth_average.txt
 
 
 

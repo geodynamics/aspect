@@ -52,9 +52,27 @@ namespace aspect
     };
 
     /**
-     * An implementation of a simple linear viscoelastic rheology that only
-     * includes the deviatoric components of elasticity. Specifically, the
-     * viscoelastic rheology only takes into account the elastic shear
+     * A material model that combines non-linear plasticity with a simple linear 
+     * viscoelastic material behavior. The model is incompressible. Note that
+     * this material model is based heavily on and combines functionality from
+     * the following material models: DiffusionDislocation, DruckerPrager, 
+     * ViscoPlastic and Viscoelastic.
+     *
+     * Viscous stress is limited by plastic deformation, which follows
+     * a Drucker Prager yield criterion:
+     *  $\sigma_y = C*\cos(\phi) + P*\sin(\phi)$  (2D)
+     * or in 3D
+     *  $\sigma_y = \frac{6*C*\cos(\phi) + 2*P*\sin(\phi)}{\sqrt(3)*(3+\sin(\phi))}$
+     * where
+     *   $\sigma_y$ is the yield stress, $C$ is cohesion, $phi$ is the angle
+     *   of internal friction and $P$ is pressure.
+     * If the viscous stress ($2*v*{\varepsilon}_{ii})$) exceeds the yield
+     * stress ($\sigma_{y}$), the viscosity is rescaled back to the yield
+     * surface: $v_{y}=\sigma_{y}/(2.*{\varepsilon}_{ii})$
+     * This form of plasticity is commonly used in geodynamic models.
+     * See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. "
+     *
+     * The viscoelastic rheology takes into account the elastic shear
      * strength (e.g., shear modulus), while the tensile and volumetric
      * strength (e.g., Young's and bulk modulus) are not considered. The model
      * is incompressible and allows specifying an arbitrary number of
@@ -68,11 +86,11 @@ namespace aspect
      * and stress_xy. In 3D, the first six compositional fields must be labeled
      * stress_xx, stress_yy, stress_zz, stress_xy, stress_xz, stress_yz.
      *
-     * Expanding the model to include non-linear viscous flow (e.g.,
-     * diffusion/dislocation creep) and plasticity would produce a constitutive
-     * relationship commonly referred to as partial elastoviscoplastic
-     * (e.g., pEVP) in the geodynamics community. While extensively discussed
-     * and applied within the geodynamics literature, notable references include:
+     * Combining this viscoelasticity implementation with non-linear viscous flow 
+     * and plasticity produces a constitutive relationship commonly referred to 
+     * as partial elastoviscoplastic (e.g., pEVP) in the geodynamics community. 
+     * While extensively discussed and applied within the geodynamics literature, 
+     * notable references include:
      * Moresi et al. (2003), J. Comp. Phys., v. 184, p. 476-497.
      * Gerya and Yuen (2007), Phys. Earth. Planet. Inter., v. 163, p. 83-105.
      * Gerya (2010), Introduction to Numerical Geodynamic Modeling.
@@ -142,7 +160,7 @@ namespace aspect
      * 'background material'.
      *
      * Several model parameters (densities, elastic shear moduli,
-     * thermal expansivities, thermal conductivies, specific heats) can
+     * thermal expansivities, plasticity parameters, viscosity terms, etc) can
      * be defined per-compositional field. For each material parameter the
      * user supplies a comma delimited list of length N+1, where N is the
      * number of compositional fields. The additional field corresponds to
