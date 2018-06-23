@@ -264,7 +264,7 @@ namespace aspect
   }
 
   template <int dim>
-  const std::vector<std::string>&
+  const std::vector<std::string> &
   Introspection<dim>::get_composition_names () const
   {
     // Simply return the full list of composition names
