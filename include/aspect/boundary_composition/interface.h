@@ -224,8 +224,8 @@ namespace aspect
          * return a pointer to it. If no boundary composition model is active
          * that matches the given type, return a NULL pointer.
          *
-         * @deprecated Use has_matching_postprocessor() and
-         * get_matching_postprocessor() instead.
+         * @deprecated Use has_matching_boundary_composition_model() and
+         * get_matching_boundary_composition_model() instead.
          */
 
 
@@ -314,6 +314,7 @@ namespace aspect
     };
 
 
+
     template <int dim>
     template <typename BoundaryCompositionType>
     inline
@@ -353,7 +354,7 @@ namespace aspect
     Manager<dim>::get_matching_boundary_composition_model () const
     {
       AssertThrow(has_matching_boundary_composition_model<BoundaryCompositionType> (),
-                  ExcMessage("You asked BoundaryComposition:Manager::get_boundary_composition_model_of_type() for a "
+                  ExcMessage("You asked BoundaryComposition:Manager::get_boundary_composition_model() for a "
                              "boundary composition model of type <" + boost::core::demangle(typeid(BoundaryCompositionType).name()) + "> "
                              "that could not be found in the current model. Activate this "
                              "boundary composition model in the input file."));
