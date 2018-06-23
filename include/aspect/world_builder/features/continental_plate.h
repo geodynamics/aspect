@@ -23,7 +23,7 @@
 #ifndef _aspect_world_feature_features_continental_plate_h
 #define _aspect_world_feature_features_continental_plate_h
 
-#include <aspect/world_builder/feature.h>
+#include "interface.h"
 
 
 namespace aspect
@@ -33,7 +33,7 @@ namespace aspect
     namespace Features
     {
 
-      class ContinentalPlate : public Feature
+      class ContinentalPlate : public Interface
       {
         public:
           /**
@@ -47,11 +47,24 @@ namespace aspect
           ~ContinentalPlate();
 
           /**
-           * read in the world builder file
+           * Read in the world builder file
            */
-          void read(ptree property_tree);
+          virtual
+          void read(ptree &property_tree);
+
+          /**
+           * Returns a temperature based on the given position
+           */
+          virtual
+          double temperature(const std::array<double,3> position, double temperature) const;
+
+
 
         private:
+          std::string temperature_submodule_depth;
+          std::string temperature_submodule_temperature;
+          std::string composition_submodule_depth;
+          std::string composition_submodule_temperature;
 
       };
     }

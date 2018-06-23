@@ -18,13 +18,38 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/world_builder/feature.h>
+#include <aspect/world_builder/features/interface.h>
+#include <aspect/world_builder/features/continental_plate.h>
+
+#include <deal.II/base/exceptions.h>
+
+#include <boost/algorithm/string.hpp>
+
+using dealii::StandardExceptions::ExcMessage;
 
 namespace aspect
 {
   namespace WorldBuilder
   {
-    Feature::Feature()
-    {}
+    namespace Features
+    {
+      Interface::Interface()
+      {
+
+      }
+
+      Interface *
+      create_feature(const std::string name)
+      {
+        std::string feature_name = boost::algorithm::to_lower_copy(name);
+        boost::algorithm::trim(feature_name);
+        if (feature_name == "continental plate")
+          return new Features::ContinentalPlate();
+        else
+          AssertThrow(false, ExcMessage("Plugin not implemented."));
+
+        return NULL;
+      }
+    }
   }
 }

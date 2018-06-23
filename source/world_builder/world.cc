@@ -20,6 +20,7 @@
 
 #include <aspect/world_builder/world.h>
 #include <deal.II/base/exceptions.h>
+#include <deal.II/base/utilities.h>
 #include <sstream>
 #include <boost/property_tree/json_parser.hpp>
 
@@ -50,12 +51,37 @@ namespace aspect
     void
     World::read(ptree &tree)
     {
-      if (boost::optional<std::string> value  = tree.get_optional<std::string> ("Surface rotation angle"))
-        surface_rotation_angle = stod(value.get());
-      else
-        AssertThrow (false, ExcMessage("Entry undeclared:  Surface rotation angle"));
 
-      std::cout << "Surface rotation angle = " << surface_rotation_angle << std::endl;
+      //todo: wrap this into a convient function
+
+      boost::optional<std::string> value  = tree.get_optional<std::string> ("Surface rotation angle");
+      AssertThrow (value, ExcMessage("Entry undeclared:  Surface rotation angle"));
+      surface_rotation_angle = dealii::Utilities::string_to_double(value.get());
+
+      boost::optional<ptree &> child = tree.get_child("Surface rotation point");
+      AssertThrow (child, ExcMessage("Entry undeclared:  Surface rotation point"));
+      for (boost::property_tree::ptree::const_iterator it = child.get().begin(); it != child.get().end(); ++it)
+        {
+          surface_rotation_point.push_back(dealii::Utilities::string_to_double(it->second.get<std::string>("")));
+        }
+      AssertThrow (surface_rotation_point.size() == 2, ExcMessage("Only 2d coordinates allowed for Surface rotation point."));
+
+      value  = tree.get_optional<std::string> ("Minimum parts per distance unit");
+      AssertThrow (value, ExcMessage("Entry undeclared:  Minimum parts per distance unit"));
+      minimum_parts_per_distance_unit = dealii::Utilities::string_to_int(value.get());
+
+      value  = tree.get_optional<std::string> ("Minimum distance points");
+      AssertThrow (value, ExcMessage("Entry undeclared:  Minimum distance points"));
+      minimum_distance_points = dealii::Utilities::string_to_double(value.get());
+
+      child = tree.get_child("Surface objects");
+      AssertThrow (child, ExcMessage("Entry undeclared:  Surface rotation point"));
+      for (boost::property_tree::ptree::iterator it = child.get().begin(); it != child.get().end(); ++it)
+        {
+          features.push_back(Features::create_feature(it->first));
+          features.back()->read(it->second);
+        }
+
 
 
     }
@@ -63,13 +89,18 @@ namespace aspect
     double
     World::temperature(const std::array<double,2> point) const
     {
-    	// turn it into a 3d coordinate and call the 3d temperature function
+      // turn it into a 3d coordinate and call the 3d temperature function
       return 1;
     }
 
     double
     World::temperature(const std::array<double,3> point) const
     {
+      double temperature = 0;
+      for (std::vector<Features::Interface *>::const_iterator it = features.begin(); it != features.end(); ++it)
+        {
+          (*it)->temperature(point,temperature);
+        }
       return 1;
     }
   }

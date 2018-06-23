@@ -29,28 +29,51 @@ namespace aspect
 {
   namespace WorldBuilder
   {
-
-    class Feature
+    namespace Features
     {
-      public:
-        /**
-         * constructor
-         */
-        Feature();
 
-        /**
-         * Destructor
-         */
-        ~Feature();
+      class Interface
+      {
+        public:
+          /**
+           * constructor
+           */
+          Interface();
 
-        /**
-         * read in the world builder file
-         */
-        void read(ptree &property_tree);
+          /**
+           * Destructor
+           */
+          ~Interface();
 
-      private:
+          /**
+           * read in the world builder file
+           */
+          virtual
+          void read(ptree &property_tree) = 0;
 
-    };
+          /**
+           * takes temperature and position and returns a temperature.
+           */
+          virtual
+          double temperature(const std::array<double,3> position, double temperature) const = 0;
+
+
+        protected:
+          std::string name;
+          std::vector<std::vector<double> > coordinates;
+          std::string temperature_submodule_name;
+          std::string composition_submodule_name;
+
+      };
+
+
+      /**
+       * factory function
+       */
+      Interface *
+      create_feature(const std::string name);
+
+    }
   }
 }
 

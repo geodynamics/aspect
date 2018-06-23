@@ -25,7 +25,7 @@
 
 #include <boost/property_tree/ptree.hpp>
 
-#include <aspect/world_builder/feature.h>
+#include "features/interface.h"
 
 using boost::property_tree::ptree;
 
@@ -63,14 +63,14 @@ namespace aspect
          */
         std::vector<double> surface_rotation_point;
         double surface_rotation_angle;
-        unsigned int minimum_parts_per_distance;
+        unsigned int minimum_parts_per_distance_unit;
         double minimum_distance_points;
 
         /**
          * contains all the plugins.
          * todo: make a unique or shared pointer?
          */
-        std::vector<Feature *> features;
+        std::vector<Features::Interface *> features;
 
 
 
