@@ -349,7 +349,6 @@ namespace aspect
 
       /**
        * A function that returns the full list of compositional field names.
-       * No arguments needed.
        */
       const std::vector<std::string>&
       get_composition_names () const;
