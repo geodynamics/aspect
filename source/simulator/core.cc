@@ -1591,6 +1591,13 @@ namespace aspect
 
     if (parameters.resume_computation == false)
       {
+        if (parameters.solvers_off_on_initial_refinement)
+          {
+            const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
+            if (initial_refinement_done) 
+              goto start_time_iteration;
+          }
+
         TimerOutput::Scope timer (computing_timer, "Setup initial conditions");
 
         // Add topography to box models after all initial refinement
@@ -1614,7 +1621,7 @@ namespace aspect
 
         // see if we have to start over with a new adaptive refinement cycle
         // at the beginning of the simulation
-        if (timestep_number == 0)
+        if (timestep_number == 0 && !parameters.solvers_off_on_initial_refinement)
           {
             const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
             if (initial_refinement_done)
