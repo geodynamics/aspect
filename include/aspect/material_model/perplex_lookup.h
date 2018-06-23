@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_material_model_perplex_simpler_h
-#define _aspect_material_model_perplex_simpler_h
+#ifndef _aspect_material_model_perplex_lookup_h
+#define _aspect_material_model_perplex_lookup_h
 
 #include <aspect/material_model/interface.h>
 
@@ -30,17 +30,37 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A material model that consists of globally constant values for all
-     * material parameters except the density, which depends linearly on the
-     * temperature. The model is considered incompressible.
+     * A material model that calls the thermodynamic software PerpleX
+     * in order to evaluate material properties at a given point, namely
+     * the density, heat capacity, thermal expansivity and compressibility.
+     * The viscosity and thermal conductivity are globally constant.
      *
-     * This material model implements what the "Simple" model was originally
-     * intended to do, before it got too complicated.
+     * The usual PerpleX input files are required in the working directory:
+     * an endmember dataset file, solution model dataset file and
+     * option file. The path to a PerpleX input file must be given by
+     * the user in the ASPECT parameter file; this file may be in any
+     * directory. PerpleX output files will be written to the same
+     * directory.
+     *
+     * Compositional fields are used to define the bulk composition at
+     * each point. These compositional fields correspond to the
+     * components as given in the PerpleX input file. The order of
+     * components is preserved.
+     *
+     * This model requires PerpleX. A script to download and setup the
+     * required files can be found in contrib/perplex. If the default
+     * installation directory is not changed, cmake will automatically
+     * find the required files during creation of the ASPECT build files.
+     * See ./contrib/perplex/README.md
+     *
+     * WARNING: This model is extremely slow because there are many
+     * redundant calls to evaluate the material properties;
+     * it serves only as a proof of concept.
      *
      * @ingroup MaterialModels
      */
     template <int dim>
-    class PerpleXSimpler : public Interface<dim>
+    class PerpleXLookup : public Interface<dim>
     {
       public:
         /**
@@ -79,12 +99,7 @@ namespace aspect
         /**
          * @}
          */
-	
-	double *wtphases = 0;
-	double *cphases = 0;
-	char *namephases = 0;
-	double *sysprop = 0;
-	int phaseq_dbg = 0;
+
 
       private:
         std::string perplex_file_name;

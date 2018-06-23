@@ -1,0 +1,73 @@
+source/stx11ver.dat     thermodynamic data file                                                                                                    
+no_print | print generates print output
+plot     | no_plot suppresses plot output
+source/stx11_solution_model.dat     solution model file, blank = none                                                                                                                                                                                                  
+Pyrolite (McDonough and Sun, 1995)                                                                                                                                                                                                                                                        
+perplex_option.dat     computational option file                                                                                                                                                                                                                
+    5 calculation type: 0 - composition, 1 - Schreinemakers, 3 - Mixed, 4 - gwash, 5 - gridded min, 7 - 1d fract, 8 - gwash 9 - 2d fract, 10 - 7 w/file input
+    0 unused place holder, post 06
+    0 unused place holder, post 06
+    0 unused place holder, post 06
+    0 unused place holder, post 06
+    0 unused place holder, post 06
+    0 unused place holder, post 06
+    0 unused place holder, post 06
+    0 unused place holder, post 06
+    0 unused place holder, post 06
+    0 number component transformations
+    6 number of components in the data base
+    1 component amounts, 0 - molar, 1 weight
+    0 unused place holder, post 06
+    0 unused place holder, post 06
+    0 unused place holder, post 05
+    0 ifug EoS for saturated phase
+    2 gridded minimization dimension (1 or 2)
+    0 special dependencies: 0 - P and T independent, 1 - P(T), 2 - T(P)
+ 0.00000      0.00000      0.00000      0.00000      0.00000     Geothermal gradient polynomial coeffs.
+
+begin thermodynamic component list
+SIO2  1  45.0000      0.00000      0.00000     weight amount
+AL2O3 1  4.45000      0.00000      0.00000     weight amount
+FEO   1  8.05000      0.00000      0.00000     weight amount
+MGO   1  37.8000      0.00000      0.00000     weight amount
+end thermodynamic component list
+
+
+begin saturated component list
+end saturated component list
+
+
+begin saturated phase component list
+end saturated phase component list
+
+
+begin independent potential/fugacity/activity list
+end independent potential list
+
+
+begin excluded phase list
+end excluded phase list
+
+
+begin solution phase list
+C2/c      
+Wus       
+Pv        
+Pl        
+Sp        
+O         
+Wad       
+Ring      
+Opx       
+Cpx       
+Aki       
+Gt_maj      
+CF        
+end solution phase list
+
+0.15000E+07  4500.0     0.00000000  0.0000      0.0000     max p, t, xco2, u1, u2
+ 1.0000      300.00     0.00000000  0.0000      0.0000     min p, t, xco2, u1, u2
+ 0.0000      0.0000     0.00000000  0.0000      0.0000     unused place holder post 06
+
+ 1  2  4  5  3   indices of 1st & 2nd independent & sectioning variables
+

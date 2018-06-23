@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -18,34 +18,34 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/material_model/perplex_simpler.h>
+#include <aspect/material_model/perplex_lookup.h>
 
-extern "C" { 
+#ifdef ASPECT_WITH_PERPLEX
+extern "C" {
 #include <perplex_c.h>
 }
+#endif
 
 namespace aspect
 {
   namespace MaterialModel
   {
-    
+
     template <int dim>
     void
-    PerpleXSimpler<dim>::initialize()
+    PerpleXLookup<dim>::initialize()
     {
+      // TODO for Timo: Assert not run with multiple threads.
+#ifdef ASPECT_WITH_PERPLEX
       ini_phaseq(perplex_file_name.c_str()); // this line initializes meemum
-      
-      // Initialize the various arrays
-      wtphases = new double[p_size_phases];
-      cphases = new double[p_size_phases * p_size_components];
-      sysprop = new double[p_size_sysprops]; 
-      namephases = new char[p_size_phases * p_pname_len];
-	
+#else
+      Assert (false, ExcMessage("ASPECT has not been compiled with the PerpleX libraries"));
+#endif
     }
-    
+
     template <int dim>
     bool
-    PerpleXSimpler<dim>::
+    PerpleXLookup<dim>::
     is_compressible () const
     {
       return true;
@@ -53,7 +53,7 @@ namespace aspect
 
     template <int dim>
     double
-    PerpleXSimpler<dim>::
+    PerpleXLookup<dim>::
     reference_viscosity () const
     {
       return eta;
@@ -61,81 +61,88 @@ namespace aspect
 
     template <int dim>
     void
-    PerpleXSimpler<dim>::
+    PerpleXLookup<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       /* Instead of evaluating at every quadrature point per cell,
        * we here average the P, T and X values, and evaluate once.
-       * This is much quicker than evaluating at all quadrature 
+       * This is much quicker than evaluating at all quadrature
        * points, and if the grid is fine, it should be a reasonable
        * approximation
        */
 
+#ifdef ASPECT_WITH_PERPLEX
+      std::vector<double> wtphases(p_size_phases);
+      std::vector<double> cphases(p_size_phases * p_size_components);
+      std::vector<char> namephases(p_size_phases * p_pname_len);
+      std::vector<double> sysprop(p_size_sysprops);
+
+      int phaseq_dbg = 0;
+
       unsigned int n_quad = in.position.size(); // number of quadrature points in cell
       unsigned int n_comp = in.composition[0].size(); // number of components in rock
-      
+
       const double average_temperature = std::min(max_temperature,
-						  std::max(min_temperature,
-							   (accumulate( in.temperature.begin(), in.temperature.end(), 0.0) /
-							    n_quad)));
+                                                  std::max(min_temperature,
+                                                           (accumulate( in.temperature.begin(), in.temperature.end(), 0.0) /
+                                                            n_quad)));
       const double average_pressure = std::min(max_pressure,
-						  std::max(min_pressure,
-							   (accumulate( in.pressure.begin(), in.pressure.end(), 0.0) /
-							    n_quad)));
-      
+                                               std::max(min_pressure,
+                                                        (accumulate( in.pressure.begin(), in.pressure.end(), 0.0) /
+                                                         n_quad)));
+
       std::vector<double> comp;
       comp.resize(n_comp);
-      
+
       for (unsigned int c=0; c<n_comp; ++c)
-	{
-	  for (unsigned int i=0; i<n_quad; ++i)
-	    {   
-	      comp[c] += in.composition[i][c];
-	      out.reaction_terms[i][c] = 0.0;
-	    }
-	  comp[c] /= (double)n_quad;
-	}
+        {
+          for (unsigned int i=0; i<n_quad; ++i)
+            {
+              comp[c] += in.composition[i][c];
+              out.reaction_terms[i][c] = 0.0;
+            }
+          comp[c] /= (double)n_quad;
+        }
 
       // Here is the call to PerpleX/meemum
       int nphases;
-      phaseq(average_pressure/1.e5, average_temperature,
-	     n_comp, comp.data(), &nphases, wtphases, cphases,
-	     sysprop, namephases, phaseq_dbg);
 
-      const std::string condition = std::to_string(average_pressure) +" bar, " + std::to_string(average_temperature) + " K";
-      AssertThrow(isnan(sysprop[9]) == false, ExcMessage("PerpleX returned NaN for density at " + condition + ". Aborting. "
-							 "Please adjust the P-T bounds in the parameter file or adjust the PerpleX files."));
-      AssertThrow(isnan(sysprop[11]) == false, ExcMessage("PerpleX returned NaN for heat capacity at " + condition + ". Aborting. "
-							  "Please adjust the P-T bounds in the parameter file or adjust the PerpleX files."));
-      AssertThrow(isnan(sysprop[12]) == false, ExcMessage("PerpleX returned NaN for thermal expansivity at " + condition + ". Aborting. "
-							  "Please adjust the P-T bounds in the parameter file or adjust the PerpleX files."));
-      AssertThrow(isnan(sysprop[13]) == false, ExcMessage("PerpleX returned NaN for compressibility at " + condition + ". Aborting. "
-							  "Please adjust the P-T bounds in the parameter file or adjust the PerpleX files."));
-      
-      
+      phaseq(average_pressure/1.e5, average_temperature,
+             n_comp, comp.data(), &nphases, wtphases.data(), cphases.data(),
+             sysprop.data(), namephases.data(), phaseq_dbg);
+
+      AssertThrow(!isnan(sysprop[9]) && !isnan(sysprop[11]) && !isnan(sysprop[12]) && !isnan(sysprop[13]),
+                  ExcMessage("PerpleX returned NaN for at least one material property at " +
+                             std::to_string(average_pressure) +" bar, " +
+                             std::to_string(average_temperature) + " K. Aborting. " +
+                             "Please adjust the P-T bounds in the parameter file or adjust the PerpleX files."));
+
       for (unsigned int i=0; i<n_quad; ++i)
-        {   
+        {
           out.viscosities[i] = eta;
           out.thermal_conductivities[i] = k_value;
-	  out.densities[i] = sysprop[9];
-	  out.specific_heat[i] = sysprop[11]*(1000./sysprop[16]); // molar Cp * (1000/molar mass) (g)
-	  out.thermal_expansion_coefficients[i] = sysprop[12];
-	  out.compressibilities[i] = sysprop[13]*1.e5;
+          out.densities[i] = sysprop[9];
+          out.specific_heat[i] = sysprop[11]*(1000./sysprop[16]); // molar Cp * (1000/molar mass) (g)
+          out.thermal_expansion_coefficients[i] = sysprop[12];
+          out.compressibilities[i] = sysprop[13]*1.e5;
         }
+#else
+      Assert (false, ExcMessage("ASPECT has not been compiled with the PerpleX libraries"));
+#endif
 
     }
 
 
     template <int dim>
     void
-    PerpleXSimpler<dim>::declare_parameters (ParameterHandler &prm)
+    PerpleXLookup<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("PerpleX simpler model");
+        prm.enter_subsection("PerpleX lookup model");
         {
-	  
+
           prm.declare_entry ("PerpleX input file name", "rock.dat",
                              Patterns::Anything (),
                              "The name of the PerpleX input file (should end with .dat).");
@@ -173,13 +180,13 @@ namespace aspect
 
     template <int dim>
     void
-    PerpleXSimpler<dim>::parse_parameters (ParameterHandler &prm)
+    PerpleXLookup<dim>::parse_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("PerpleX simpler model");
+        prm.enter_subsection("PerpleX lookup model");
         {
-	  perplex_file_name   = prm.get ("PerpleX input file name");
+          perplex_file_name   = prm.get ("PerpleX input file name");
           eta                 = prm.get_double ("Viscosity");
           k_value             = prm.get_double ("Thermal conductivity");
           min_temperature     = prm.get_double ("Minimum material temperature");
@@ -194,10 +201,10 @@ namespace aspect
       // Declare dependencies on solution variables
       this->model_dependence.viscosity = NonlinearDependence::none;
       this->model_dependence.thermal_conductivity = NonlinearDependence::none;
-      
+
       this->model_dependence.density = NonlinearDependence::temperature
-	                               | NonlinearDependence::pressure
-	                               | NonlinearDependence::compositional_fields;
+                                       | NonlinearDependence::pressure
+                                       | NonlinearDependence::compositional_fields;
       this->model_dependence.compressibility = NonlinearDependence::temperature
                                                | NonlinearDependence::pressure
                                                | NonlinearDependence::compositional_fields;
@@ -213,13 +220,13 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(PerpleXSimpler,
-                                   "perplex simpler",
+    ASPECT_REGISTER_MATERIAL_MODEL(PerpleXLookup,
+                                   "perplex lookup",
                                    "A material model that has constant values "
                                    "for viscosity and thermal conductivity, and "
-				   "calculates other properties on-the-fly using "
-				   "PerpleX meemum. Compositional fields correspond "
-				   "to the individual components in the order given "
-				   "in the PerpleX file.")
+                                   "calculates other properties on-the-fly using "
+                                   "PerpleX meemum. Compositional fields correspond "
+                                   "to the individual components in the order given "
+                                   "in the PerpleX file.")
   }
 }

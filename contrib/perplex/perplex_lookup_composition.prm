@@ -1,0 +1,87 @@
+# This test ensures that the PerpleX lookup material model works 
+# with compositional fields enabled
+
+# WARNING: Please understand that the PerpleX Lookup material model is only a
+# proof-of-concept; the number of P-T-X evaluations is extremely large, which
+# means that ASPECT will be interminably slow for any real problems.
+# The development team are currently working on initialisation routines which
+# will store PerpleX data before any calls to the material model evaluate
+# function. Stay tuned!
+
+set Dimension                              = 2
+set End time                               = 0
+set Adiabatic surface temperature          = 1300
+
+
+# KLB composition in the CFMAS system
+# The bulk composition is given by five compositional fields
+# which correspond to the components in the PerpleX input
+# file (in this case, SiO2, Al2O3, FeO and MgO).
+# As defined in the PerpleX input file, the composition is
+# given in weight amount. The total amount is normalised
+# by the PerpleX routines, so it doesn't need to equal 1 or 100.
+
+subsection Compositional fields
+  set Number of fields          = 4
+end
+
+subsection Initial composition model
+  set List of model names = function
+  subsection Function
+    set Function expression = 0.44; 0.04; 0.08; 0.44
+  end
+end
+
+subsection Material model
+  set Model name                   = perplex lookup
+  subsection PerpleX lookup model
+    set PerpleX input file name	   = pyrolite
+    set Viscosity                  = 1e21
+  end
+end
+
+subsection Geometry model
+  set Model name = box 
+  subsection Box
+    set X extent                = 200e3 
+    set X repetitions           = 1      
+    set Y extent                = 800e3  
+    set Y repetitions           = 16
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = initial temperature 
+end
+
+subsection Initial temperature model
+  set Model name = function 
+  subsection Function
+    set Function expression = 1300
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, top, bottom
+end
+
+subsection Gravity model
+  set Model name = vertical 
+  subsection Vertical
+    set Magnitude = 9.81 
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0         
+  set Initial global refinement                = 1         
+end
+
+subsection Postprocess
+  set List of postprocessors = depth average
+
+  subsection Depth average
+    set Output format = gnuplot
+    set Number of zones = 200
+  end
+end
