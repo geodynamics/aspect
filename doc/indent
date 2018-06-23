@@ -46,10 +46,10 @@ fi
 # with up to 10 in parallel
 echo "--- Indenting all ASPECT header and source files"
 
-find tests include source benchmarks cookbooks unittests \( -name '*.cc' -o -name '*.h' \) -print | xargs -n 50 -P 10 astyle --options=doc/astyle.rc
+find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' \) -print | xargs -n 50 -P 10 astyle --options=doc/astyle.rc
 
 # remove execute permission on source files:
-find tests include source benchmarks cookbooks unittests \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 50 -P 10 chmod -x
+find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 50 -P 10 chmod -x
 
 # convert dos formatted files to unix file format by stripping out 
 # carriage returns (15=0x0D):
@@ -61,4 +61,4 @@ dos_to_unix()
     rm -f $f.tmp
 }
 export -f dos_to_unix
-find tests include source unittests \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 1 -P 10 -I {} bash -c 'dos_to_unix "$@"' _ {} 
+find tests include source unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 1 -P 10 -I {} bash -c 'dos_to_unix "$@"' _ {} 
