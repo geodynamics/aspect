@@ -1133,16 +1133,16 @@ namespace aspect
 
       skip_solvers_on_initial_refinement = prm.get_bool("Skip solvers on initial refinement");
       skip_setup_initial_conditions_on_initial_refinement = prm.get_bool("Skip setup initial conditions on initial refinement");
-      
-      //AssertThrow(skip_setup_initial_conditions_on_initial_refinement == true && skip_solvers_on_initial_refinement == false,  
-      //            ExcMessage("Cannot execute solvers if no initial conditions are set up. "
-      //                       "You must set skip_solvers_on_initial_refinement to true."));
-      
+     
+      if (skip_setup_initial_conditions_on_initial_refinement == true && skip_solvers_on_initial_refinement == false) 
+        AssertThrow(false, ExcMessage("Cannot execute solvers if no initial conditions are set up. "
+                                      "You must set skip_solvers_on_initial_refinement to true."));
+
       run_postprocessors_on_initial_refinement = prm.get_bool("Run postprocessors on initial refinement");
-       
-      //AssertThrow(skip_setup_initial_conditions_on_initial_refinement == true && run_postprocessors_on_initial_refinement == true,  
-      //            ExcMessage("Cannot run postprocessors if no initial conditions are set up. "
-      //                       "You must set run_postprocessors_on_initial_refinement to false."));
+
+      if (skip_setup_initial_conditions_on_initial_refinement == true && run_postprocessors_on_initial_refinement == true)
+        AssertThrow(false, ExcMessage("Cannot run postprocessors if no initial conditions are set up. "
+                                      "You must set run_postprocessors_on_initial_refinement to false."));
     }
     prm.leave_subsection ();
 
