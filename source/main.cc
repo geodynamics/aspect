@@ -109,20 +109,64 @@ get_last_value_of_parameter(const std::string &parameters,
 }
 
 
-// extract the dimension in which to run ASPECT from the
-// the contents of the parameter file. this is something that
+// Extract the dimension in which to run ASPECT from the
+// the contents of the parameter file. This is something that
 // we need to do before processing the parameter file since we
 // need to know whether to use the dim=2 or dim=3 instantiation
-// of the main classes
+// of the main classes.
+//
+// This function is essentially the first part of ASPECT to look at the input
+// file, so if something is wrong with it, this is the place to generate good
+// error messages.
 unsigned int
 get_dimension(const std::string &parameters)
 {
   const std::string dimension = get_last_value_of_parameter(parameters, "Dimension");
   if (dimension.size() > 0)
-    return dealii::Utilities::string_to_int (dimension);
+    {
+      // A common problem is that people have .prm files that were generated
+      // on Windows, but then run this on Linux where the line endings are
+      // different. This is pernicious because it means that the conversion
+      // of a string such as "2\r" to an integer fails, but if we print
+      // this string, it comes out completely garbled because it contains
+      // a carriage-return without a newline -- so the error message looks
+      // like this:
+      //
+      //    >.  While reading the dimension from the input file, ASPECT found a string that can not be converted to an integer: <2
+      //
+      // Note how the end of the error message overwrites the beginning
+      // of the line.
+      //
+      // To avoid this kind of error, specifically test up front that the
+      // text in question does not contain '\r' characters. If we are on
+      // linux, then this kind of character would means that the line endings
+      // are wrong. On the other hand, if we are on windows, then the
+      // getline command we have used in finding 'dimension' would have
+      // filtered it out. So its presence points to a problem.
+
+      AssertThrow (dimension.find('\r') == std::string::npos,
+                   dealii::ExcMessage ("It appears that your input file uses Windows-style "
+                                       "line endings ('\\r\\n') but you are running on a system where "
+                                       "the C++ run time environment expects input files to have "
+                                       "Unix-style line endings ('\\n'). You need to convert your "
+                                       "input file to use the correct line endings before running "
+                                       "ASPECT with it."));
+      try
+        {
+          return dealii::Utilities::string_to_int (dimension);
+        }
+      catch (...)
+        {
+          AssertThrow (false,
+                       dealii::ExcMessage("While reading the dimension from the input file, "
+                                          "ASPECT found a string that can not be converted to "
+                                          "an integer: <" + dimension + ">."));
+        }
+    }
   else
     return 2;
 }
+
 
 
 #if ASPECT_USE_SHARED_LIBS==1
