@@ -348,6 +348,12 @@ namespace aspect
       name_for_compositional_index (const unsigned int index) const;
 
       /**
+       * A function that returns the full list of compositional field names.
+       */
+      const std::vector<std::string> &
+      get_composition_names () const;
+
+      /**
        * A function that gets the name of a compositional field as an input
        * parameter and returns if the compositional field is used in this
        * simulation.
