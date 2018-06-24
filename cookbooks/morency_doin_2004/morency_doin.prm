@@ -2,6 +2,8 @@ set Dimension = 2
 set Maximum time step = 1e4
 set Nonlinear solver scheme = iterated Advection and Stokes
 
+set Output directory = output-morency_doin
+
 set Additional shared libraries            = ./libmorency_doin.so
 
 subsection Geometry model
