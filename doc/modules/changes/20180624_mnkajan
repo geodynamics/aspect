@@ -1,0 +1,3 @@
+New: ASPECT can now read in a depth-dependent initial temperature from ASCII data. This is intended to provide a background temperature profile on which to add perturbations for composite initial temperature models.
+<br>
+(Marie Kajan, 2018/06/24)
