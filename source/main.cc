@@ -44,6 +44,13 @@
 
 // This define has to be in exactly one translation unit and sets up the catch testing framework
 #define CATCH_CONFIG_RUNNER
+
+// work-around for clang 6 error:
+// "error: no member named 'uncaught_exceptions' in namespace 'std'"
+// see https://github.com/catchorg/Catch2/issues/1201
+#define CATCH_INTERNAL_CONFIG_NO_CPP17_UNCAUGHT_EXCEPTIONS
+#define CATCH_CONFIG_NO_CPP17_UNCAUGHT_EXCEPTIONS
+
 #include <catch.hpp>
 
 
