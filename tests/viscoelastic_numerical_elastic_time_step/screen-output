@@ -14,7 +14,7 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
 
    Postprocessing:
      RMS, max velocity:     0.0258 m/year, 0.0444 m/year
-     Writing depth average: output-viscoelastic_plastic_numerical_elastic_time_step/depth_average.txt
+     Writing depth average: output-viscoelastic_numerical_elastic_time_step/depth_average.txt
 
 
 
@@ -32,7 +32,7 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
 
    Postprocessing:
      RMS, max velocity:     0.0258 m/year, 0.0444 m/year
-     Writing depth average: output-viscoelastic_plastic_numerical_elastic_time_step/depth_average.txt
+     Writing depth average: output-viscoelastic_numerical_elastic_time_step/depth_average.txt
 
 
 

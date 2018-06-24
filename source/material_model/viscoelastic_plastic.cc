@@ -156,17 +156,6 @@ namespace aspect
           const SymmetricTensor<2,dim> strain_rate = in.strain_rate[i];
           const std::vector<double> volume_fractions = compute_volume_fractions(composition, composition_mask);
 
-          // Calculate the square root of the second moment invariant for the deviatoric strain rate tensor.
-          // The first time this function is called (first iteration of first time step)
-          // a specified "reference" strain rate is used as the returned value would
-          // otherwise be zero.
-          const double edot_ii = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
-                                   ?
-                                   reference_strain_rate
-                                   :
-                                   std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
-                                            minimum_strain_rate) );
-
           out.specific_heat[i] = average_value(volume_fractions, specific_heats, arithmetic);
 
           // Arithmetic averaging of thermal conductivities
@@ -201,58 +190,73 @@ namespace aspect
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
 
-          const std::vector<double> viscosities_pre_yield = linear_viscosities;
-
-          // TODO: Add strain-weakening of cohesion and friction
-          const std::vector<double> coh = cohesions;
-          const std::vector<double> phi = angles_internal_friction;
-
-          // Initialize variables
-          std::vector<double> stresses_viscous(volume_fractions.size());
-          std::vector<double> stresses_yield(volume_fractions.size());
-          std::vector<double> viscosities_drucker_prager(volume_fractions.size());
-          std::vector<double> viscosities_yield(volume_fractions.size());
-          std::vector<double> viscosities_viscoelastic(volume_fractions.size());
-
-          // Loop through all compositions
-          for (unsigned int j=0; j < volume_fractions.size(); ++j)
+          if (in.strain_rate.size())
             {
 
-              stresses_viscous[j] = 2. * viscosities_pre_yield[j] * edot_ii;
+              // Calculate the square root of the second moment invariant for the deviatoric strain rate tensor.
+              // The first time this function is called (first iteration of first time step)
+              // a specified "reference" strain rate is used as the returned value would
+              // otherwise be zero.
+              const double edot_ii = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min() )
+                                       ?
+                                       reference_strain_rate
+                                       :
+                                       std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
+                                                minimum_strain_rate) );
 
-              stresses_yield[j] = ( (dim==3)
-                                    ?
-                                    ( 6.0 * coh[j] * std::cos(phi[j]) + 6.0 * std::max(pressure,0.0) * std::sin(phi[j]) )
-                                    / ( std::sqrt(3.0) * (3.0 + std::sin(phi[j]) ) )
-                                    :
-                                    coh[j] * std::cos(phi[j]) + std::max(pressure,0.0) * std::sin(phi[j]) );
+              const std::vector<double> viscosities_pre_yield = linear_viscosities;
 
-              if ( stresses_viscous[j] >= stresses_yield[j]  )
+              // TODO: Add strain-weakening of cohesion and friction
+              const std::vector<double> coh = cohesions;
+              const std::vector<double> phi = angles_internal_friction;
+
+              // Initialize variables
+              std::vector<double> stresses_viscous(volume_fractions.size());
+              std::vector<double> stresses_yield(volume_fractions.size());
+              std::vector<double> viscosities_drucker_prager(volume_fractions.size());
+              std::vector<double> viscosities_yield(volume_fractions.size());
+              std::vector<double> viscosities_viscoelastic(volume_fractions.size());
+
+              // Loop through all compositions
+              for (unsigned int j=0; j < volume_fractions.size(); ++j)
                 {
-                  viscosities_drucker_prager[j] = stresses_yield[j] / (2.0 * edot_ii);
+
+                  stresses_viscous[j] = 2. * viscosities_pre_yield[j] * edot_ii;
+
+                  stresses_yield[j] = ( (dim==3)
+                                        ?
+                                        ( 6.0 * coh[j] * std::cos(phi[j]) + 6.0 * std::max(pressure,0.0) * std::sin(phi[j]) )
+                                        / ( std::sqrt(3.0) * (3.0 + std::sin(phi[j]) ) )
+                                        :
+                                        coh[j] * std::cos(phi[j]) + std::max(pressure,0.0) * std::sin(phi[j]) );
+
+                  if ( stresses_viscous[j] >= stresses_yield[j]  )
+                    {
+                      viscosities_drucker_prager[j] = stresses_yield[j] / (2.0 * edot_ii);
+                    }
+                  else
+                    {
+                      viscosities_drucker_prager[j] = viscosities_pre_yield[j];
+                    }
+
+                  viscosities_yield[j] = viscosities_drucker_prager[j];
+
+                  viscosities_viscoelastic[j] = ( viscosities_yield[j] * dte ) / ( dte + ( viscosities_yield[j] / elastic_shear_moduli[j] ) );
+
                 }
-              else
+
+              out.viscosities[i] = average_value(volume_fractions,viscosities_viscoelastic,viscosity_averaging);
+
+              if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim> >())
                 {
-                  viscosities_drucker_prager[j] = viscosities_pre_yield[j];
+                  elastic_out->elastic_shear_moduli[i] = average_value(volume_fractions,elastic_shear_moduli,viscosity_averaging);
                 }
 
-              viscosities_yield[j] = viscosities_drucker_prager[j];
-
-              viscosities_viscoelastic[j] = ( viscosities_yield[j] * dte ) / ( dte + ( viscosities_yield[j] / elastic_shear_moduli[j] ) );
-
-            }
-
-          out.viscosities[i] = average_value(volume_fractions,viscosities_viscoelastic,viscosity_averaging);
-
-          if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim> >())
-            {
-              elastic_out->elastic_shear_moduli[i] = average_value(volume_fractions,elastic_shear_moduli,viscosity_averaging);
-            }
-
-          // Fill elastic force outputs (assumed to be zero during intial time step)
-          if (force_out)
-            {
-              force_out->elastic_force[i] = 0.;
+              // Fill elastic force outputs (assumed to be zero during intial time step)
+              if (force_out)
+                {
+                  force_out->elastic_force[i] = 0.;
+                }
             }
         }
 
