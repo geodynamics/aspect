@@ -133,6 +133,11 @@ namespace aspect
 
   template <int dim> class NewtonHandler;
 
+  namespace WorldBuilder
+  {
+    template <int dim> class Manager;
+  }
+
   /**
    * SimulatorAccess is a base class for different plugins like postprocessors.
    * It provides access to the various variables of the main class that
@@ -714,6 +719,13 @@ namespace aspect
        */
       const NewtonHandler<dim> &
       get_newton_handler () const;
+
+      /**
+       * Return a reference to the world builder that controls the
+       * setup of initial conditions.
+       */
+      const WorldBuilder::Manager<dim> &
+      get_world_builder () const;
 
       /**
        * Return a reference to the free surface handler. This function will

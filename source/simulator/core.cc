@@ -24,6 +24,7 @@
 #include <aspect/utilities.h>
 #include <aspect/melt.h>
 #include <aspect/newton.h>
+#include <aspect/world_builder/interface.h>
 #include <aspect/free_surface.h>
 
 #include <aspect/simulator/assemblers/interface.h>
@@ -164,6 +165,7 @@ namespace aspect
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
     prescribed_stokes_solution (PrescribedStokesSolution::create_prescribed_stokes_solution<dim>(prm)),
     adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
+    world_builder (new WorldBuilder::Manager<dim> ()),
 
     time (numbers::signaling_nan<double>()),
     time_step (0),
@@ -256,6 +258,8 @@ namespace aspect
     gravity_model->parse_parameters (prm);
     gravity_model->initialize ();
 
+
+
     // Create the initial condition plugins
     initial_temperature_manager.initialize_simulator(*this);
     initial_temperature_manager.parse_parameters (prm);
@@ -274,6 +278,7 @@ namespace aspect
 
     boundary_velocity_manager.initialize_simulator (*this);
     boundary_velocity_manager.parse_parameters (prm);
+
 
     // Make sure we only have a prescribed Stokes plugin if needed
     if (parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes)
@@ -303,6 +308,12 @@ namespace aspect
       sim->initialize_simulator (*this);
     adiabatic_conditions->parse_parameters (prm);
     adiabatic_conditions->initialize ();
+
+
+    // Initialize and parse the world builder
+    world_builder->initialize();
+    world_builder->parse_parameters (prm);
+
 
     // Initialize the free surface handler
     if (parameters.free_surface_enabled)

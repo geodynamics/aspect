@@ -53,6 +53,8 @@ namespace aspect
    */
   namespace Utilities
   {
+
+
     /**
      * Split the set of DoFs (typically locally owned or relevant) in @p whole_set into blocks
      * given by the @p dofs_per_block structure.
@@ -2502,6 +2504,49 @@ namespace aspect
       return array;
     }
 
+    /**
+     * todo
+     */
+    template <int dim>
+    std::vector<Point<dim> >
+    vector_double_to_point(const std::vector<std::vector<double> > &s)
+    {
+      std::vector<Point<dim> > tmp(s.size());
+      for (unsigned int i = 0; i < s.size(); ++i)
+        tmp[i] = vector_double_to_point<dim>(s[i]);
+      return tmp;
+    }
+
+    /**
+     * todo
+     */
+    template <int dim>
+    Point<dim>
+    vector_double_to_point(const std::vector<double> &s)
+    {
+      AssertThrow(s.size() == dim, ExcMessage("The size of the vector is not equal "
+                                              " to the dimension. Dimension is " +
+                                              Utilities::to_string(s.size()) +
+                                              ", and the dimension is " +
+                                              Utilities::to_string(dim) + "."));
+      Point<dim> tmp;
+      for (unsigned int i = 0; i < dim; ++i)
+        tmp(i) = s[i];
+      return tmp;
+    }
+
+    /**
+     * todo
+     */
+    std::vector<std::vector<double> >
+    vector_vector_string_to_double(const std::vector<std::vector<std::string> > &s)
+    {
+      std::vector<std::vector<double> > tmp(s.size());
+      for (unsigned int i = 0; i < s.size(); ++i)
+        tmp[i] = string_to_double(s[i]);
+      return tmp;
+    }
+
 
 
     Operator::Operator()
@@ -2607,7 +2652,7 @@ namespace aspect
     }
 
     template <int dim>
-    std_cxx11::array<double,dim> &NaturalCoordinate<dim>::get_coordinates()
+    const std_cxx11::array<double,dim> NaturalCoordinate<dim>::get_coordinates() const
     {
       return coordinates;
     }
@@ -2771,6 +2816,12 @@ namespace aspect
 
     template Point<2> convert_array_to_point<2>(const std_cxx11::array<double,2> &array);
     template Point<3> convert_array_to_point<3>(const std_cxx11::array<double,3> &array);
+
+    template Point<2> vector_double_to_point(const std::vector<double> &s);
+    template Point<3> vector_double_to_point(const std::vector<double> &s);
+
+    template std::vector<Point<2> > vector_double_to_point(const std::vector<std::vector<double> > &s);
+    template std::vector<Point<3> > vector_double_to_point(const std::vector<std::vector<double> > &s);
 
     template std_cxx11::array<double,2> convert_point_to_array<2>(const Point<2> &point);
     template std_cxx11::array<double,3> convert_point_to_array<3>(const Point<3> &point);

@@ -1,0 +1,18 @@
+{
+    "Surface rotation point": ["165e3","165e3"],
+    "Surface rotation angle": 0,
+    "Minimum parts per distance unit": 5,
+    "Minimum distance points": 1e-5,
+    "Surface objects":
+    [
+     {"name":"Caribbean", "coordinates":[[-1e3,500e3],[500e3,500e3],[500e3,1000e3],[-1e3,1000e3]],
+       "module":{"name":"continental plate", 
+         "temperature submodule":{"name":"constant", "depth":250e3, "temperature":150},
+         "composition submodule":{"name":"none"}}},
+     
+     {"name":"Rest", "coordinates":[[2000e3,2000e3],[1000e3,2000e3],[1000e3,1000e3],[2000e3,1000e3]],
+       "module":{"name":"Continental plate",
+         "temperature submodule":{"name":"constant", "depth":250e3, "temperature":20},
+         "composition submodule":{"name":"constant", "depth":250e3, "composition":0}}}
+    ]
+}

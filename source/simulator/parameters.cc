@@ -24,6 +24,7 @@
 #include <aspect/utilities.h>
 #include <aspect/melt.h>
 #include <aspect/newton.h>
+#include <aspect/world_builder/interface.h>
 #include <aspect/free_surface.h>
 
 #include <deal.II/base/parameter_handler.h>
@@ -1089,6 +1090,7 @@ namespace aspect
                                  mpi_communicator,
                                  false);
 
+
     if (prm.get ("Resume computation") == "true")
       resume_computation = true;
     else if (prm.get ("Resume computation") == "false")
@@ -1678,6 +1680,7 @@ namespace aspect
     Parameters<dim>::declare_parameters (prm);
     Melt::Parameters<dim>::declare_parameters (prm);
     Newton::Parameters::declare_parameters (prm);
+    WorldBuilder::Manager<dim>::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
     MeshRefinement::Manager<dim>::declare_parameters (prm);
     TerminationCriteria::Manager<dim>::declare_parameters (prm);
