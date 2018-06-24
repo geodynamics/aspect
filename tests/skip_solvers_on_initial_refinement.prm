@@ -1,15 +1,13 @@
-##### simple test for ascii data initial temperature
+##### simple test for skipping solvers on initial refinement
 
 set Dimension                              = 2
-
 set Use years in output instead of seconds = true
 set End time                               = 1
 set Output directory                       = output-test
-#set Adiabatic surface temperature          = 1613.0
+
 
 subsection Geometry model
   set Model name = box
-
   subsection Box
     set X extent = 660000
     set Y extent = 660000
@@ -30,10 +28,6 @@ subsection Boundary temperature model
 end
 
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = bottom:function,left:function,right:function,top:function
 end
@@ -48,7 +42,6 @@ end
 
 subsection Gravity model
   set Model name = vertical
-
   subsection Vertical
     set Magnitude = 10
   end
