@@ -67,7 +67,6 @@ namespace aspect
           else
             {
               AssertThrow(false, ExcNotImplemented());
-              return std::vector<Tensor<1,dim> > (n_evaluation_points,numbers::signaling_nan<Tensor<1,dim> >());
             }
         }
 
