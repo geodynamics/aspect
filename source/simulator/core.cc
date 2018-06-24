@@ -1589,17 +1589,13 @@ namespace aspect
 
   start_time_iteration:
 
-    if (parameters.resume_computation == false)
+    // Only set initial conditions if we do not resume, and are not in pre-refinement,
+    // or we do not want to skip initial conditions in pre-refinement.
+    if (parameters.resume_computation == false
+        &&
+        ! (parameters.skip_setup_initial_conditions_on_initial_refinement
+           && pre_refinement_step < parameters.initial_adaptive_refinement))
       {
-        // See if we want to skip the initial conditions setup during the pre-
-        // refinement phase. If set to true, the solvers will not be executed.
-        if (parameters.skip_setup_initial_conditions_on_initial_refinement)
-          {
-            const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
-            if (initial_refinement_done)
-              goto start_time_iteration;
-          }
-
         TimerOutput::Scope timer (computing_timer, "Setup initial conditions");
 
         // Add topography to box models after all initial refinement
@@ -1611,36 +1607,29 @@ namespace aspect
         compute_initial_pressure_field ();
 
         signals.post_set_initial_state (*this);
-
-        // See if we want to skip the solvers during the pre-refinement phase.
-        if (parameters.skip_solvers_on_initial_refinement)
-          {
-            const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
-            if (initial_refinement_done)
-              goto start_time_iteration;
-          }
       }
 
     // start the principal loop over time steps:
     do
       {
-        start_timestep ();
+        // Only solve if we are not in pre-refinement, or we do not want to skip
+        // solving in pre-refinement.
+        if (! (parameters.skip_solvers_on_initial_refinement
+               && pre_refinement_step < parameters.initial_adaptive_refinement))
+          {
+            start_timestep ();
 
-        // then do the core work: assemble systems and solve
-        solve_timestep ();
+            // then do the core work: assemble systems and solve
+            solve_timestep ();
+          }
 
         // see if we have to start over with a new adaptive refinement cycle
         // at the beginning of the simulation.
         if (timestep_number == 0)
           {
-            // Starting a new cycle only occurs if we do not want to skip the
-            // initial conditions setup and the solvers.
-            if (!parameters.skip_setup_initial_conditions_on_initial_refinement && !parameters.skip_solvers_on_initial_refinement)
-              {
-                const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
-                if (initial_refinement_done)
-                  goto start_time_iteration;
-              }
+            const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
+            if (initial_refinement_done)
+              goto start_time_iteration;
           }
 
         // if we postprocess nonlinear iterations, this function is called within
