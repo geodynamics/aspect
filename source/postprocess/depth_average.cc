@@ -294,7 +294,10 @@ namespace aspect
                              Patterns::Selection(DataOutBase::get_output_format_names().append("|txt")),
                              "The format in which the output shall be produced. The "
                              "format in which the output is generated also determines "
-                             "the extension of the file into which data is written.");
+                             "the extension of the file into which data is written. "
+                             "The list of possible output formats that can be given "
+                             "here is documented in the appendix of the manual where "
+                             "the current parameter is described.");
           const std::string variables =
             "all|temperature|composition|"
             "adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|"
