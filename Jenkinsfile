@@ -82,6 +82,7 @@ pipeline {
       options {timeout(time: 90, unit: 'MINUTES')}
       steps {
         sh '''
+          export OMPI_MCA_btl=self,tcp
           cd /home/dealii/build-gcc-fast/tests
           echo "Prebuilding tests..."
 	  ninja -k 0 tests || true
@@ -93,6 +94,7 @@ pipeline {
       options {timeout(time: 90, unit: 'MINUTES')}
       steps {
         sh '''
+          export OMPI_MCA_btl=self,tcp
           rm -f /home/dealii/build-gcc-fast/FAILED
           cd /home/dealii/build-gcc-fast
           ctest --output-on-failure -j4 || { touch FAILED; }
