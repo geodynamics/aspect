@@ -1,3 +1,5 @@
+# This tests whether Aspect reads in the 
+# vs to density scaling form a file correctly
 set Dimension                              = 3
 set Use years in output instead of seconds = false
 set Start time                             = 0
@@ -58,7 +60,7 @@ subsection Initial temperature model
     set Thermal expansion coefficient in initial temperature scaling = 4e-5
     set Reference temperature                 = 1600
     set Remove degree 0 from perturbation     = true
-    set Vs to density scaling method          = File
+    set Vs to density scaling method          = file
     subsection Ascii data vs to density model
       set Data file name                      = vs_to_density_Steinberger.txt
     end

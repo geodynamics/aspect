@@ -367,7 +367,7 @@ namespace aspect
                              Patterns::Anything(),
                              "The file name of the spline knot locations from "
                              "Ritsema et al.");
-          prm.declare_entry ("vs to density scaling method", "constant",
+          prm.declare_entry ("Vs to density scaling method", "constant",
                              Patterns::Selection("file|constant"),
                              "Method that is used to specify how the vs-to-density scaling varies "
                              "with depth.");
@@ -445,9 +445,9 @@ namespace aspect
           lower_max_order         = prm.get_bool ("Specify a lower maximum order");
           max_order               = prm.get_integer ("Maximum order");
 
-          if (prm.get("vs to density scaling method") == "file")
+          if (prm.get("Vs to density scaling method") == "file")
             vs_to_density_method = file;
-          else if (prm.get("vs to density scaling method") == "constant")
+          else if (prm.get("Vs to density scaling method") == "constant")
             vs_to_density_method = constant;
           else
             {
