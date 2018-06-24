@@ -1639,7 +1639,7 @@ namespace aspect
               {
                 const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
                 if (initial_refinement_done)
-                goto start_time_iteration;
+                  goto start_time_iteration;
               }
           }
 
