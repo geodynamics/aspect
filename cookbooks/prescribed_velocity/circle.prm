@@ -2,6 +2,8 @@
 set Dimension   = 2
 set End time    = 0
 
+set Output directory = output-circle
+
 # Load the signal library.
 set Additional shared libraries = ./libprescribed_velocity.so
 
