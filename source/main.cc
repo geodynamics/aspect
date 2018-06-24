@@ -164,6 +164,7 @@ get_dimension(const std::string &parameters)
                        dealii::ExcMessage("While reading the dimension from the input file, "
                                           "ASPECT found a string that can not be converted to "
                                           "an integer: <" + dimension + ">."));
+          return 0; // we should never get here.
         }
     }
   else
