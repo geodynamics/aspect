@@ -183,6 +183,8 @@ namespace aspect
                                             "the conversion function complained as follows: "
                                             + error));
           }
+
+        allow_fixed_temperature_on_outflow_boundaries = prm.get_bool ("Allow fixed temperature on outflow boundaries");
       }
       prm.leave_subsection ();
 
@@ -278,6 +280,16 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    bool
+    Manager<dim>::allows_fixed_temperature_on_outflow_boundaries() const
+    {
+      return allow_fixed_temperature_on_outflow_boundaries;
+    }
+
+
+
     template <int dim>
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
@@ -343,6 +355,16 @@ namespace aspect
                            "implemented in a plugin in the BoundaryTemperature "
                            "group, unless an existing implementation in this group "
                            "already provides what you want.");
+        prm.declare_entry ("Allow fixed temperature on outflow boundaries", "true",
+                           Patterns::Bool (),
+                           "When the temperature is fixed on a given boundary as determined "
+                           "by the list of 'Fixed temperature boundary indicators', there "
+                           "might be parts of the boundary where material flows out and "
+                           "one may want to prescribe the temperature only on the parts of "
+                           "the boundary where there is inflow. This parameter determines "
+                           "if temperatures are only prescribed at these inflow parts of the "
+                           "boundary (if false) or everywhere on a given boundary, independent "
+                           "of the flow direction (if true).");
       }
       prm.leave_subsection ();
 
