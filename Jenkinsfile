@@ -78,18 +78,24 @@ pipeline {
       } 
     }
 
+    stage('Prebuild tests') {
+      options {timeout(time: 90, unit: 'MINUTES')}
+      steps {
+        sh '''
+          cd /home/dealii/build-gcc-fast/tests
+          echo "Prebuilding tests..."
+	  ninja -k 0 tests || true
+	  '''
+	  }
+    }
+
     stage('Run tests') {
       options {timeout(time: 90, unit: 'MINUTES')}
       steps {
         sh '''
           rm -f /home/dealii/build-gcc-fast/FAILED
-          cd /home/dealii/build-gcc-fast/tests
-          echo "Prebuilding tests..."
-          ninja -k 0 tests >/dev/null || { touch /home/dealii/build-gcc-fast/FAILED; }
-          cd ..
-          echo "Checking for test failures..."
-          ctest --output-on-failure -j4 || { echo "At least one test FAILED"; }
-
+          cd /home/dealii/build-gcc-fast
+          ctest --output-on-failure -j4 || { touch FAILED; }
           echo "Generating reference output..."
           ninja generate_reference_output
         '''
