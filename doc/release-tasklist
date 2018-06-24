@@ -60,10 +60,18 @@
   . create a tar file:
       cd doc && make manual.pdf && cp manual.pdf aspect-manual-$TAG.pdf && cd ..
       export PREFIX=aspect-$TAG && rm -rf $PREFIX.tar.gz && \
-      git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz && \
-      rm -rf $PREFIX && tar xf $PREFIX.tar.gz && \
-      rm $PREFIX.tar.gz &&  cp doc/manual.pdf $PREFIX/doc && \
-      tar czf $PREFIX.tar.gz $PREFIX && rm -rf $PREFIX
+      git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz && rm -rf $PREFIX
+  . final testing by extracting tarball, compiling, and running:
+      tar xf $PREFIX.tar.gz
+      cd $PREFIX
+      docker run --rm -it -v `pwd`:/home/dealii/aspect \
+      	     dealii/dealii:v8.5.0-gcc-mpi-fulldepscandi-debugrelease /bin/bash
+
+      mkdir build; cd build
+      cmake -G "Ninja" -D ASPECT_RUN_ALL_TESTS=ON -D \
+            ASPECT_PRECOMPILE_HEADERS=ON ~/aspect
+      ninja; ctest -j 8 -V
+
   . make public (branch and tag):
       git push cig aspect-$VERSHORT
       git push cig v$TAG
@@ -73,6 +81,7 @@
       gpg --detach-sign --armor manual-$TAG.pdf
       sha1sum aspect-$TAG.tar.gz manual-$TAG.pdf >sha1sum-$TAG.txt
   . create a release on github, upload tar.gz and manual-$VER.pdf
+  . readme / release notes: add zenodo DOI button
   . link it on download.html, update version info etc.
   . create zenodo release for source code:
     - https://zenodo.org/deposit?page=1&size=20
@@ -80,6 +89,8 @@
     - license: GPL 2
     - check CIG comments: https://github.com/geodynamics/best_practices/blob/master/ZenodoBestPractices.md
     - cig community!
+    - update zenodo badge in README.md to newest version (see badge button on the right of zenodo page)
+    - add zenodo badge also to the release on github (on top, see 2.0.1 for an example)
   . create figshare DOI for manual
   . update doc/manual/aspect.bib with src and manual doi
   . update aspect.geodynamics.org/cite.html
