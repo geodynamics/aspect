@@ -1592,8 +1592,7 @@ namespace aspect
     if (parameters.resume_computation == false)
       {
         // See if we want to skip the initial conditions setup during the pre-
-        // refinement phase. If set true, the solvers won't be executed. An
-        // assertThrow will pop if the user tries to set solvers ON.
+        // refinement phase. If set to true, the solvers will not be executed.
         if (parameters.skip_setup_initial_conditions_on_initial_refinement)
           {
             const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
@@ -1640,7 +1639,7 @@ namespace aspect
               {
                 const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
                 if (initial_refinement_done)
-                  goto start_time_iteration;
+                goto start_time_iteration;
               }
           }
 
