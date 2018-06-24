@@ -23,16 +23,24 @@
 #define _aspect_world_builder_world_h
 
 
+//#include "features/interface.h"
+#include <aspect/world_builder/coordinate_system/interface.h>
+#include <aspect/world_builder/features/interface.h>
+
 #include <boost/property_tree/ptree.hpp>
 
-#include "features/interface.h"
-
 using boost::property_tree::ptree;
+
+
 
 namespace aspect
 {
   namespace WorldBuilder
   {
+  namespace Features
+  {
+      class Interface;
+  }
 
     class World
     {
@@ -52,9 +60,14 @@ namespace aspect
          */
         void read(ptree &property_tree);
 
-        double temperature(const std::array<double, 2> point) const;
+        double temperature(const std::array<double, 2> point, const double depth, const double gravity_norm) const;
 
-        double temperature(const std::array<double, 3> point) const;
+        double temperature(const std::array<double, 3> point, const double depth, const double gravity_norm) const;
+
+        /**
+         * returs a pointer to the coordinate system
+         */
+        WorldBuilder::CoordinateSystem::Interface* get_coordinate_system() const;
 
       private:
         const char path_seperator = '.';
@@ -67,10 +80,20 @@ namespace aspect
         double minimum_distance_points;
 
         /**
+         * adiabatic parameters
+         */
+        double potential_mantle_temperature;
+        double thermal_expansion_coefficient_alfa;
+        double specific_heat_Cp;
+
+        /**
          * contains all the plugins.
          * todo: make a unique or shared pointer?
          */
-        std::vector<Features::Interface *> features;
+        std::vector<WorldBuilder::Features::Interface*> features;
+
+        // coordinate system
+        WorldBuilder::CoordinateSystem::Interface* coordinate_system;
 
 
 

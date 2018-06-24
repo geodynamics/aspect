@@ -23,7 +23,8 @@
 #ifndef _aspect_world_feature_features_continental_plate_h
 #define _aspect_world_feature_features_continental_plate_h
 
-#include "interface.h"
+#include <aspect/world_builder/features/interface.h>
+#include <aspect/world_builder/world.h>
 
 
 namespace aspect
@@ -39,7 +40,7 @@ namespace aspect
           /**
            * constructor
            */
-          ContinentalPlate();
+          ContinentalPlate(WorldBuilder::World* world);
 
           /**
            * Destructor
@@ -56,15 +57,19 @@ namespace aspect
            * Returns a temperature based on the given position
            */
           virtual
-          double temperature(const std::array<double,3> position, double temperature) const;
+          double temperature(const std::array<double,3> position,
+                             const double depth,
+                             const double gravity,
+                             double temperature) const;
 
 
 
         private:
-          std::string temperature_submodule_depth;
-          std::string temperature_submodule_temperature;
-          std::string composition_submodule_depth;
-          std::string composition_submodule_temperature;
+          // local parameters
+          double temperature_submodule_depth;
+          double temperature_submodule_temperature;
+          double composition_submodule_depth;
+          unsigned int composition_submodule_composition;
 
       };
     }

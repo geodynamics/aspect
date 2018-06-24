@@ -21,6 +21,7 @@
 
 #include <aspect/initial_temperature/world_builder.h>
 #include <aspect/world_builder/world.h>
+#include <aspect/gravity_model/interface.h>
 
 
 namespace aspect
@@ -36,7 +37,9 @@ namespace aspect
     WorldBuilder<dim>::
     initial_temperature (const Point<dim> &position) const
     {
-      return this->get_world_builder().temperature(Utilities::convert_point_to_array(position));
+      return this->get_world_builder().temperature(Utilities::convert_point_to_array(position),
+                                                   this->get_geometry_model().depth(position),
+                                                   this->get_gravity_model().gravity_vector(position).norm());
     }
 
     template <int dim>

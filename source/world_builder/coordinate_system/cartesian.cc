@@ -18,15 +18,12 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/world_builder/features/continental_plate.h>
-#include <aspect/world_builder/utilities.h>
-#include <aspect/utilities.h>
+#include <aspect/world_builder/coordinate_system/cartesian.h>
 
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/utilities.h>
 
 #include <boost/algorithm/string.hpp>
-
 
 using dealii::StandardExceptions::ExcMessage;
 
@@ -34,18 +31,16 @@ namespace aspect
 {
   namespace WorldBuilder
   {
-    namespace Features
+    namespace CoordinateSystem
     {
-      ContinentalPlate::ContinentalPlate(WorldBuilder::World* world_)
-      {
-    	  this->world = world_;
-      }
+	   Cartesian::Cartesian()
+      {}
 
-      // todo: add relative path somehow, to output when there are erros
+      // todo: add relative path somehow, to output when there are errors
       void
-      ContinentalPlate::read(ptree &tree)
+      Cartesian::read(ptree &/*tree*/)
       {
-        boost::optional<std::string> value  = tree.get_optional<std::string> ("name");
+        /*boost::optional<std::string> value  = tree.get_optional<std::string> ("name");
         AssertThrow (value, ExcMessage("Entry undeclared:  name"));
         name = boost::algorithm::to_lower_copy(value.get());
         boost::algorithm::trim(name);
@@ -65,10 +60,7 @@ namespace aspect
             AssertThrow (tmp.size() == 2, ExcMessage("These represent 2d coordinates, but there are " +
                                                      dealii::Utilities::to_string(tmp.size()) +
                                                      " coordinates specified."));
-
-            std::array<double,2> tmp_array;
-            std::copy(tmp.begin(), tmp.end(), tmp_array.begin());
-            coordinates.push_back(tmp_array);
+            coordinates.push_back(tmp);
           }
         AssertThrow (coordinates.size() > 2, ExcMessage("This feature requires at least 3 coordinates, but only " +
                                                         dealii::Utilities::to_string(coordinates.size()) +
@@ -80,17 +72,15 @@ namespace aspect
         temperature_submodule_name = boost::algorithm::to_lower_copy(value.get());
         boost::algorithm::trim(temperature_submodule_name);
 
-
-        if (temperature_submodule_name == "constant")
+        if (composition_submodule_name == "constant")
           {
             value  = tree.get_optional<std::string> ("temperature submodule.depth");
             AssertThrow (value, ExcMessage("Entry undeclared:  temperature submodule.depth"));
-            temperature_submodule_depth = dealii::Utilities::string_to_double(value.get());
+            temperature_submodule_depth = value.get();
 
             value  = tree.get_optional<std::string> ("temperature submodule.temperature");
             AssertThrow (value, ExcMessage("Entry undeclared:  temperature submodule.temperature"));
-            temperature_submodule_temperature = dealii::Utilities::string_to_double(value.get());
-            //std::cout << "value.get() = " << value.get() << ", temperature_submodule_temperature = " << temperature_submodule_temperature << std::endl;
+            temperature_submodule_temperature = value.get();
           }
 
         //Composition submodule parameters
@@ -103,38 +93,35 @@ namespace aspect
           {
             value  = tree.get_optional<std::string> ("composition submodule.depth");
             AssertThrow (value, ExcMessage("Entry undeclared:  composition submodule.depth"));
-            composition_submodule_depth = dealii::Utilities::string_to_double(value.get());
+            composition_submodule_depth = value.get();
 
             value  = tree.get_optional<std::string> ("composition submodule.composition");
             AssertThrow (value, ExcMessage("Entry undeclared:  composition submodule.temperature"));
-            composition_submodule_composition = dealii::Utilities::string_to_int(value.get());
-          }
+            composition_submodule_temperature = value.get();
+          }*/
 
 
       }
 
-      double
-      ContinentalPlate::temperature(const std::array<double,3> position,
-                                    const double depth,
-                                    const double /*gravity*/,
-                                    double temperature) const
+
+      aspect::WorldBuilder::Utilities::Coordinates::CoordinateSystem
+	  Cartesian::natural_coordinate_system() const
       {
-        if (temperature_submodule_name == "constant")
-          {
-            WorldBuilder::Utilities::NaturalCoordinate natural_coordinate = WorldBuilder::Utilities::NaturalCoordinate(position,*(world->get_coordinate_system()));
-                      // The constant temperature module should be used for this.
-                      if (depth <= temperature_submodule_depth &&
-                          Utilities::polygon_contains_point(coordinates, natural_coordinate.get_surface_coordinates()))
-                        {
-                          // We are in the the area where the contintal plate is defined. Set the constant temperature.
+        return aspect::WorldBuilder::Utilities::Coordinates::CoordinateSystem::cartesian;
+      }
 
-                          //std::cout << "; T = " << temperature << ", now = " << temperature_submodule_temperature;
-                          return temperature_submodule_temperature;
-                        }
 
-          }
+      std::array<double,3>
+      Cartesian::cartesian_to_natural_coordinates(const std::array<double,3> &position) const
+      {
+        return position;
+      }
 
-        return temperature;
+
+      std::array<double,3>
+      Cartesian::natural_to_cartesian_coordinates(const std::array<double,3> &position) const
+      {
+        return position;
       }
     }
   }

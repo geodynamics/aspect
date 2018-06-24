@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/world_builder/features/interface.h>
-#include <aspect/world_builder/features/continental_plate.h>
+#include <aspect/world_builder/coordinate_system/interface.h>
+#include <aspect/world_builder/coordinate_system/cartesian.h>
 
 #include <deal.II/base/exceptions.h>
 
@@ -31,7 +31,7 @@ namespace aspect
 {
   namespace WorldBuilder
   {
-    namespace Features
+    namespace CoordinateSystem
     {
       Interface::Interface()
       {
@@ -39,12 +39,12 @@ namespace aspect
       }
 
       Interface *
-      create_feature(const std::string name, World* world)
+      create_coordinate_system(const std::string name)
       {
         std::string feature_name = boost::algorithm::to_lower_copy(name);
         boost::algorithm::trim(feature_name);
-        if (feature_name == "continental plate")
-          return new Features::ContinentalPlate(world);
+        if (feature_name == "cartesian")
+          return new CoordinateSystem::Cartesian();
         else
           AssertThrow(false, ExcMessage("Plugin not implemented."));
 
