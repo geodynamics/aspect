@@ -230,8 +230,8 @@ namespace aspect
 
 
         template <typename BoundaryCompositionType>
-        BoundaryCompositionType *
         DEAL_II_DEPRECATED
+        BoundaryCompositionType *
         find_boundary_composition_model () const;
 
         /**
