@@ -322,6 +322,7 @@ namespace aspect
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>& > (data_base);
 
+      const Parameters<dim> &parameters = this->get_parameters();
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
 
@@ -340,6 +341,7 @@ namespace aspect
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
+
           // precompute the values of shape functions and their gradients.
           // We only need to look up values of shape functions if they
           // belong to 'our' component. They are zero otherwise anyway.
@@ -356,7 +358,17 @@ namespace aspect
             }
 
           // TODO: get the diffusivity from an input parameter
-          const double diffusivity = 0.0;
+
+          // Take diffusivity as an user input
+          const double diffusivity = (parameters.non_local_length * parameters.non_local_length) /
+                                     (parameters.diffusive_length * 4);
+
+          const double reaction_term =
+            ((advection_field.is_temperature())
+             ?
+             0.0
+             :
+             scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
 
           const double JxW = scratch.finite_element_values.JxW(q);
 
@@ -365,7 +377,8 @@ namespace aspect
           for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
             {
               data.local_rhs(i)
-              += (scratch.old_field_values[q] * scratch.phi_field[i])
+              += (scratch.old_field_values[q] * scratch.phi_field[i]
+                  + scratch.phi_field[i] * reaction_term)
                  *
                  JxW;
 

@@ -209,6 +209,12 @@ namespace aspect
             }
             break;
 
+            case Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field:
+            {
+
+            }
+            break;
+
             default:
               AssertThrow(false,ExcNotImplemented());
           }
@@ -218,13 +224,33 @@ namespace aspect
     for (unsigned int c=0; c < introspection.n_compositional_fields; ++c)
       {
         const AdvectionField adv_field (AdvectionField::composition(c));
+        const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
         // TODO: that will only work together with Arushi's branch that has the new advection method
-        if (true /*adv_field.advection_method(introspection) == Parameters<dim>::AdvectionFieldMethod::copy_and_diffusion_field*/)
+        if (/*parameters.enable_diffusion &&*/ method == Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field)
           {
-        	interpolate_material_output_into_field();
+            interpolate_material_output_into_field();
+
+            if (parameters.enable_diffusion)
+              {
+                assemble_advection_system (adv_field);
+
+                if (compute_initial_residual)
+                  (*initial_residual)[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
+
+                current_residual[c] = solve_advection(adv_field);
+
+                // free matrix:
+                const unsigned int block_idx = adv_field.block_index(introspection);
+                if (adv_field.compositional_variable!=0)
+                  system_matrix.block(block_idx, block_idx).clear();
+                break;
+
+
+              }
           }
 
         // TODO: if the field is a diffusion field, it will be solved here after the copying
+
       }
 
     // for consistency we update the current linearization point only after we have solved

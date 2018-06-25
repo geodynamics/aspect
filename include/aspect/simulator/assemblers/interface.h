@@ -626,6 +626,12 @@ namespace aspect
         std::vector<std::unique_ptr<Assemblers::Interface<dim> > > stokes_system_on_boundary_face;
 
         /**
+        * A vector of pointers containing all assemblers for the diffusion systems.
+        * These assemblers are called once per cell.
+        */
+        std::vector<std_cxx11::unique_ptr<Assemblers::Interface<dim> > > diffusion_system;
+
+        /**
          * A vector of pointers containing all assemblers for the advection systems.
          * These assemblers are called once per cell.
          */

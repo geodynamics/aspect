@@ -570,6 +570,18 @@ namespace aspect
        */
       void assemble_stokes_system ();
 
+
+//      /**
+//      * Initiate the assembly of the diffusion matrix and right hand side.
+//      *
+//      * This function is implemented in
+//      * <code>source/simulator/assembly.cc</code>.
+//      */
+//      void assemble_diffusion_system(const AdvectionField &advection_field,
+//          internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
+//          internal::Assembly::Scratch::AdvectionSystem<dim> &data);
+
+
       /**
        * Assemble and solve the temperature equation.
        * This function returns the residual after solving
@@ -595,7 +607,9 @@ namespace aspect
        * <code>source/simulator/solver_schemes.cc</code>.
        */
       std::vector<double> assemble_and_solve_composition (const bool compute_initial_residual = false,
-                                                          std::vector<double> *initial_residual = NULL);
+                                                          std::vector<double> *initial_residual = NULL );
+
+
 
       /**
        * Assemble and solve the Stokes equation.

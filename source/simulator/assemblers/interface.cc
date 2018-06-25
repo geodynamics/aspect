@@ -548,6 +548,7 @@ namespace aspect
       stokes_preconditioner.clear();
       stokes_system.clear();
       stokes_system_on_boundary_face.clear();
+      diffusion_system.clear();
       advection_system.clear();
       advection_system_on_boundary_face.clear();
       advection_system_on_interior_face.clear();
