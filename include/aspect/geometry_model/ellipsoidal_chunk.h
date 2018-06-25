@@ -39,11 +39,6 @@ namespace aspect
   {
     using namespace dealii;
 
-    namespace internal
-    {
-      template <int dim> void set_manifold_ids(Triangulation<dim> &triangulation);
-      template <int dim> void clear_manifold_ids(Triangulation<dim> &triangulation);
-    }
     /**
      * A class that describes a geometry for an ellipsoid such as the WGS84 model of the earth.
      */
