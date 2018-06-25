@@ -396,7 +396,6 @@ namespace aspect
                              "this geometry are 90, 180, and 360 in 2d; "
                              "and 90 and 360 in 3d. "
                              "Units: degrees.");
-
           prm.declare_entry ("Cells along circumference", "0",
                              Patterns::Integer (0),
                              "The number of cells in circumferential direction that are "
@@ -438,6 +437,9 @@ namespace aspect
           R1  = prm.get_double ("Outer radius");
           phi = prm.get_double ("Opening angle");
           n_cells_along_circumference = prm.get_integer ("Cells along circumference");
+
+          AssertThrow (R0 < R1,
+                       ExcMessage ("Inner radius must be less than outer radius."));
         }
         prm.leave_subsection();
       }
