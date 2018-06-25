@@ -48,7 +48,7 @@ namespace aspect
   declare_parameters (ParameterHandler &prm)
   {
     prm.declare_entry ("Dimension", "2",
-                       Patterns::Integer (2,4),
+                       Patterns::Integer (2,3),
                        "The number of space dimensions you want to run this program in. "
                        "ASPECT can run in 2 and 3 space dimensions.");
     prm.declare_entry ("Additional shared libraries", "",
