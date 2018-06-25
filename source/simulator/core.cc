@@ -54,10 +54,6 @@ namespace WorldBuilder
 #include <deal.II/dofs/dof_accessor.h>
 #include <deal.II/dofs/dof_tools.h>
 
-#include <deal.II/fe/fe_q.h>
-#include <deal.II/fe/fe_dgq.h>
-#include <deal.II/fe/fe_dgp.h>
-#include <deal.II/fe/fe_values.h>
 #include <deal.II/fe/mapping_q.h>
 #include <deal.II/fe/mapping_cartesian.h>
 
@@ -916,6 +912,12 @@ namespace aspect
             ||
             parameters.nonlinear_solver == NonlinearSolver::Kind::no_Advection_no_Stokes))
         coupling[x.temperature][x.temperature] = DoFTools::always;
+
+      // For equal-order interpolation, we need a stabilization term
+      // in the bottom right of Stokes matrix. Make sure we have the
+      // necessary entries.
+      if (parameters.use_equal_order_interpolation_for_stokes == true)
+        coupling[x.pressure][x.pressure] = DoFTools::always;
 
       // If we have at least one compositional field that is a FEM field, we
       // create a matrix block in the first compositional block. Its sparsity
