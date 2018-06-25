@@ -21,9 +21,18 @@
 #include "common.h"
 #include <aspect/utilities.h>
 
-TEST_CASE("floating point checks")
+TEST_CASE("floating point check example")
 {
   // this would fail because of floating point arithmetic, but using Approx(f) will work:
   //  REQUIRE(0.1*3.0 == 0.3);
   REQUIRE(0.1*3.0 == Approx(0.3));
+}
+
+TEST_CASE("floating point std::vector checks")
+{
+  // here is how you can compare two std::vector<double>:
+  std::vector<double> computed = {0.1*3.0, 1.0};
+  std::vector<double> expected = {0.3, 1.0};
+
+  compare_vectors_approx(computed, expected);
 }

@@ -24,4 +24,19 @@
 
 #include <catch.hpp>
 
+/**
+ * Compare the given two std::vector<double> entries with an epsilon (using Catch::Approx)
+ */
+inline void compare_vectors_approx(
+  const std::vector<double> &computed,
+  const std::vector<double> &expected)
+{
+  REQUIRE(computed.size() == expected.size());
+  for (unsigned int i=0; i<computed.size(); ++i)
+    {
+      INFO("array index i=" << i << ": ");
+      REQUIRE(computed[i] == Approx(expected[i]));
+    }
+}
+
 #endif
