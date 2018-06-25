@@ -209,7 +209,7 @@ namespace aspect
       // set global statistics about this time step
       statistics.add_value("Time step number", this->get_timestep_number());
 
-      if (this->get_parameters().convert_to_years == true)
+      if (this->convert_output_to_years() == true)
         {
           statistics.add_value("Time (years)", this->get_time() / year_in_seconds);
           statistics.set_precision("Time (years)", 12);
