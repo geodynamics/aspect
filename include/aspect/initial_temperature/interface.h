@@ -29,6 +29,10 @@
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
 
+#include <boost/core/demangle.hpp>
+#include <typeinfo>
+
+
 namespace aspect
 {
   template <int dim> class SimulatorAccess;
@@ -183,8 +187,26 @@ namespace aspect
          * that matches the given type, return a NULL pointer.
          */
         template <typename InitialTemperatureType>
+        DEAL_II_DEPRECATED
         InitialTemperatureType *
         find_initial_temperature_model () const;
+
+        template <typename InitialTemperatureType>
+        bool
+        has_matching_initial_temperature_model () const;
+
+        /**
+         * Go through the list of all initial temperature models that have been selected
+         * in the input file (and are consequently currently active) and see
+         * if one of them has the type specified by the template
+         * argument or can be casted to that type. If so, return a reference
+         * to it. If no initial temperature model is active that matches the given type,
+         * throw an exception.
+         */
+        template <typename InitialTemperatureType>
+        const InitialTemperatureType &
+        get_matching_initial_temperature_model () const;
+
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -245,6 +267,44 @@ namespace aspect
       return NULL;
     }
 
+
+    template <int dim>
+    template <typename InitialTemperatureType>
+    inline
+    bool
+    Manager<dim>::has_matching_initial_temperature_model () const
+    {
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+           p = initial_temperature_objects.begin();
+           p != initial_temperature_objects.end(); ++p)
+        if (Plugins::plugin_type_matches<InitialTemperatureType>(*(*p)))
+          return true;
+      return false;
+    }
+
+
+    template <int dim>
+    template <typename InitialTemperatureType>
+    inline
+    const InitialTemperatureType &
+    Manager<dim>::get_matching_initial_temperature_model () const
+    {
+      AssertThrow(has_matching_initial_temperature_model<InitialTemperatureType> (),
+                  ExcMessage("You asked InitialTemperature:Manager::get_initial_temperature_model() for a "
+                             "initial temperature model of type <" + boost::core::demangle(typeid(InitialTemperatureType).name()) + "> "
+                             "that could not be found in the current model. Activate this "
+                             "initial temperature model in the input file."));
+
+      typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator initial_temperature_model;
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+           p = initial_temperature_objects.begin();
+           p != initial_temperature_objects.end(); ++p)
+        if (Plugins::plugin_type_matches<InitialTemperatureType>(*(*p)))
+          return Plugins::get_plugin_as_type<InitialTemperatureType>(*(*p));
+
+      // We will never get here, because we had the Assert above. Just to avoid warnings.
+      return Plugins::get_plugin_as_type<InitialTemperatureType>(*(*initial_temperature_model));
+    }
 
 
     /**

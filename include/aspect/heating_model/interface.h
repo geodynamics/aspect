@@ -25,9 +25,14 @@
 #include <aspect/plugins.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
+
+#include <boost/core/demangle.hpp>
+#include <typeinfo>
+
 
 namespace aspect
 {
@@ -328,8 +333,26 @@ namespace aspect
          * given type, return a NULL pointer.
          */
         template <typename HeatingModelType>
+	DEAL_II_DEPRECATED
         HeatingModelType *
         find_heating_model () const;
+
+        template <typename HeatingModelType>
+        bool
+        has_matching_heating_model () const;
+
+        /**
+         * Go through the list of all heating models that have been selected
+         * in the input file (and are consequently currently active) and see
+         * if one of them has the type specified by the template
+         * argument or can be casted to that type. If so, return a reference
+         * to it. If no heating model is active that matches the given type,
+         * throw an exception.
+         */
+        template <typename HeatingModelType>
+        const HeatingModelType &
+        get_matching_heating_model () const;
+
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -382,6 +405,44 @@ namespace aspect
       return NULL;
     }
 
+
+    template <int dim>
+    template <typename HeatingModelType>
+    inline
+    bool
+    Manager<dim>::has_matching_heating_model () const
+    {
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+           p = heating_model_objects.begin();
+           p != heating_model_objects.end(); ++p)
+        if (Plugins::plugin_type_matches<HeatingModelType>(*(*p)))
+          return true;
+      return false;
+    }
+
+
+    template <int dim>
+    template <typename HeatingModelType>
+    inline
+    const HeatingModelType &
+    Manager<dim>::get_matching_heating_model () const
+    {
+      AssertThrow(has_matching_heating_model<HeatingModelType> (),
+                  ExcMessage("You asked HeatingModel:Manager::get_heating_model() for a "
+                             "heating model of type <" + boost::core::demangle(typeid(HeatingModelType).name()) + "> "
+                             "that could not be found in the current model. Activate this "
+                             "heating model in the input file."));
+
+      typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator heating_model;
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+           p = heating_model_objects.begin();
+           p != heating_model_objects.end(); ++p)
+        if (Plugins::plugin_type_matches<HeatingModelType>(*(*p)))
+          return Plugins::get_plugin_as_type<HeatingModelType>(*(*p));
+
+      // We will never get here, because we had the Assert above. Just to avoid warnings.
+      return Plugins::get_plugin_as_type<HeatingModelType>(*(*heating_model));
+    }
 
 
     /**

@@ -46,14 +46,10 @@ namespace aspect
       // and create a single string that can be output to the screen
       std::ostringstream screen_text;
 
-      const BoundaryTemperature::DynamicCore<dim> *dynamic_core =
-        this->get_boundary_temperature_manager().template find_boundary_temperature_model<BoundaryTemperature::DynamicCore<dim> >();
+      const BoundaryTemperature::DynamicCore<dim> &dynamic_core =
+        this->get_boundary_temperature_manager().template get_matching_boundary_temperature_model<BoundaryTemperature::DynamicCore<dim> >();
 
-      AssertThrow(dynamic_core != NULL,
-                  ExcMessage("Could not find the dynamic core temperature boundary conditions. "
-                             "Perhaps you forgot to include it?"));
-
-      core_data = dynamic_core->get_core_data();
+      core_data = dynamic_core.get_core_data();
 
       // now add core mantle boundary heat flux to the statistics object
       // and create a single string that can be output to the screen
@@ -136,7 +132,7 @@ namespace aspect
           statistics.set_scientific (name10, true);
         }
 
-      if (dynamic_core->is_OES_used())
+      if (dynamic_core.is_OES_used())
         {
           const std::string name11 = "Other energy source (W)";
           statistics.add_value (name11, core_data.Q_OES);

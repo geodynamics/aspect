@@ -25,9 +25,14 @@
 #include <aspect/plugins.h>
 #include <aspect/simulator_access.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
+
+#include <boost/core/demangle.hpp>
+#include <typeinfo>
+
 
 namespace aspect
 {
@@ -236,8 +241,25 @@ namespace aspect
          * that matches the given type, return a NULL pointer.
          */
         template <typename BoundaryVelocityType>
+        DEAL_II_DEPRECATED
         BoundaryVelocityType *
         find_boundary_velocity_model () const;
+
+        template <typename BoundaryVelocityType>
+        bool
+        has_matching_boundary_velocity_model () const;
+
+        /**
+         * Go through the list of all boundary velocity models that have been selected
+         * in the input file (and are consequently currently active) and see
+         * if one of them has the type specified by the template
+         * argument or can be casted to that type. If so, return a reference
+         * to it. If no boundary velocity model is active that matches the given type,
+         * throw an exception.
+         */
+        template <typename BoundaryVelocityType>
+        const BoundaryVelocityType &
+        get_matching_boundary_velocity_model () const;
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -308,6 +330,51 @@ namespace aspect
           if (BoundaryVelocityType *x = dynamic_cast<BoundaryVelocityType *> ( (*p).get()) )
             return x;
       return NULL;
+    }
+
+
+    template <int dim>
+    template <typename BoundaryVelocityType>
+    inline
+    bool
+    Manager<dim>::has_matching_boundary_velocity_model () const
+    {
+      for (typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
+           boundary = boundary_velocity_objects.begin();
+           boundary != boundary_velocity_objects.end(); ++boundary)
+        for (typename std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim>>>::const_iterator
+             p = boundary->second.begin();
+             p != boundary->second.end(); ++p)
+          if (Plugins::plugin_type_matches<BoundaryVelocityType>(*(*p)))
+            return true;
+      return false;
+    }
+
+
+    template <int dim>
+    template <typename BoundaryVelocityType>
+    inline
+    const BoundaryVelocityType &
+    Manager<dim>::get_matching_boundary_velocity_model () const
+    {
+      AssertThrow(has_matching_boundary_velocity_model<BoundaryVelocityType> (),
+                  ExcMessage("You asked BoundaryVelocity:Manager::get_boundary_velocity_model() for a "
+                             "boundary velocity model of type <" + boost::core::demangle(typeid(BoundaryVelocityType).name()) + "> "
+                             "that could not be found in the current model. Activate this "
+                             "boundary velocity model in the input file."));
+
+      typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator boundary_velocity_model;
+      for (typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
+           boundary = boundary_velocity_objects.begin();
+           boundary != boundary_velocity_objects.end(); ++boundary)
+        for (typename std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim>>>::const_iterator
+             p = boundary->second.begin();
+             p != boundary->second.end(); ++p)
+          if (Plugins::plugin_type_matches<BoundaryVelocityType>(*(*p)))
+            return Plugins::get_plugin_as_type<BoundaryVelocityType>(*(*p));
+
+      // We will never get here, because we had the Assert above. Just to avoid warnings.
+      return Plugins::get_plugin_as_type<BoundaryVelocityType>(*(*boundary_velocity_model));
     }
 
 

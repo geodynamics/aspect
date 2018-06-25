@@ -29,6 +29,10 @@
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
 
+#include <boost/core/demangle.hpp>
+#include <typeinfo>
+
+
 namespace aspect
 {
   template <int dim> class SimulatorAccess;
@@ -186,8 +190,25 @@ namespace aspect
          * given type, return a NULL pointer.
          */
         template <typename InitialCompositionType>
+        DEAL_II_DEPRECATED
         InitialCompositionType *
         find_initial_composition_model () const;
+
+        template <typename InitialCompositionType>
+        bool
+        has_matching_initial_composition_model () const;
+
+        /**
+         * Go through the list of all initial composition models that have been selected
+         * in the input file (and are consequently currently active) and see
+         * if one of them has the type specified by the template
+         * argument or can be casted to that type. If so, return a reference
+         * to it. If no initial composition model is active that matches the given type,
+         * throw an exception.
+         */
+        template <typename InitialCompositionType>
+        const InitialCompositionType &
+        get_matching_initial_composition_model () const;
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -258,6 +279,44 @@ namespace aspect
       return NULL;
     }
 
+
+    template <int dim>
+    template <typename InitialCompositionType>
+    inline
+    bool
+    Manager<dim>::has_matching_initial_composition_model () const
+    {
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+           p = initial_composition_objects.begin();
+           p != initial_composition_objects.end(); ++p)
+        if (Plugins::plugin_type_matches<InitialCompositionType>(*(*p)))
+          return true;
+      return false;
+    }
+
+
+    template <int dim>
+    template <typename InitialCompositionType>
+    inline
+    const InitialCompositionType &
+    Manager<dim>::get_matching_initial_composition_model () const
+    {
+      AssertThrow(has_matching_initial_composition_model<InitialCompositionType> (),
+                  ExcMessage("You asked InitialComposition:Manager::get_initial_composition_model() for a "
+                             "initial composition model of type <" + boost::core::demangle(typeid(InitialCompositionType).name()) + "> "
+                             "that could not be found in the current model. Activate this "
+                             "initial composition model in the input file."));
+
+      typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator initial_composition_model;
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+           p = initial_composition_objects.begin();
+           p != initial_composition_objects.end(); ++p)
+        if (Plugins::plugin_type_matches<InitialCompositionType>(*(*p)))
+          return Plugins::get_plugin_as_type<InitialCompositionType>(*(*p));
+
+      // We will never get here, because we had the Assert above. Just to avoid warnings.
+      return Plugins::get_plugin_as_type<InitialCompositionType>(*(*initial_composition_model));
+    }
 
 
     /**
