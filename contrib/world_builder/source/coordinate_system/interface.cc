@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/world_builder/coordinate_system/interface.h>
-#include <aspect/world_builder/coordinate_system/cartesian.h>
+#include <world_builder/coordinate_systems/interface.h>
+#include <world_builder/coordinate_systems/cartesian.h>
 
 #include <deal.II/base/exceptions.h>
 
@@ -27,11 +27,10 @@
 
 using dealii::StandardExceptions::ExcMessage;
 
-namespace aspect
-{
+
   namespace WorldBuilder
   {
-    namespace CoordinateSystem
+    namespace CoordinateSystems
     {
       Interface::Interface()
       {
@@ -44,7 +43,7 @@ namespace aspect
         std::string feature_name = boost::algorithm::to_lower_copy(name);
         boost::algorithm::trim(feature_name);
         if (feature_name == "cartesian")
-          return new CoordinateSystem::Cartesian();
+          return new CoordinateSystems::Cartesian();
         else
           AssertThrow(false, ExcMessage("Plugin not implemented."));
 
@@ -52,4 +51,4 @@ namespace aspect
       }
     }
   }
-}
+

@@ -21,36 +21,23 @@
 #ifndef _aspect_world_builder_coordinate_sytems_h
 #define _aspect_world_builder_coordinate_sytems_h
 
-namespace aspect
-{
   namespace WorldBuilder
   {
-    namespace Utilities
-    {
-      namespace Coordinates
-      {
         /**
          * This enum lists available coordinate systems that can be used for
          * the function variables. Allowed values are 'cartesian',
          * 'spherical', and 'depth'. 'spherical' coordinates follow: r, phi
          * (2D) or r, phi, theta (3D); where r is radius, phi is longitude,
-         * and theta is the polar angle (colatitude). The 'depth' is a
-         * one-dimensional coordinate system in which only the distance
-         * below the 'top' surface (depth) as defined by each geometry model,
-         * is used.
+         * and theta is the polar angle (colatitude).
          */
         enum CoordinateSystem
         {
-          depth,
           cartesian,
           spherical,
           ellipsoidal,
           invalid
         };
       }
-    }
-  }
-}
 
 #endif
 

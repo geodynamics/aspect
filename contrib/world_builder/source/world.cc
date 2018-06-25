@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/world_builder/world.h>
-#include <aspect/world_builder/utilities.h>
+#include <world_builder/world.h>
+#include <world_builder/utilities.h>
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/utilities.h>
 #include <sstream>
@@ -27,8 +27,7 @@
 
 using dealii::StandardExceptions::ExcMessage;
 
-namespace aspect
-{
+
   namespace WorldBuilder
   {
     World::World(std::string filename)
@@ -95,11 +94,11 @@ namespace aspect
           value = child.get().get_optional<std::string>("name");
 
           AssertThrow (value, ExcMessage("Entry undeclared:  Coordinate system.name"));
-          coordinate_system = CoordinateSystem::create_coordinate_system(value.get());
+          coordinate_system = CoordinateSystems::create_coordinate_system(value.get());
         }
       else
         {
-          coordinate_system = CoordinateSystem::create_coordinate_system("cartesian");
+          coordinate_system = CoordinateSystems::create_coordinate_system("cartesian");
         }
 
 
@@ -144,10 +143,10 @@ namespace aspect
       return composition;
     }
 
-    WorldBuilder::CoordinateSystem::Interface *
+    WorldBuilder::CoordinateSystems::Interface *
     World::get_coordinate_system() const
     {
       return coordinate_system;
     }
   }
-}
+

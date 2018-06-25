@@ -1,18 +1,23 @@
 
 
-#ifndef _aspect_world_builder_utilities_h
-#define _aspect_world_builder_utilities_h
+#ifndef _world_builder_utilities_h
+#define _world_builder_utilities_h
 
-#include <aspect/world_builder/coordinate_systems.h>
-#include <aspect/world_builder/coordinate_system/interface.h>
+
 #include <deal.II/base/point.h>
+#include <world_builder/coordinate_system.h>
+#include <world_builder/coordinate_systems/interface.h>
 
 using namespace dealii;
 
-namespace aspect
-{
+
   namespace WorldBuilder
   {
+
+  namespace CoordinateSystems
+	{
+  class Interface;
+	}
     namespace Utilities
     {
 
@@ -44,7 +49,7 @@ namespace aspect
            * Constructor based on providing the geometry model as a pointer
            */
           NaturalCoordinate(const std::array<double,3> &position,
-                            const CoordinateSystem::Interface &coordinate_system);
+                            const ::WorldBuilder::CoordinateSystems::Interface &coordinate_system);
 
           /**
            * Returns the coordinates in the given coordinate system, which may
@@ -69,7 +74,7 @@ namespace aspect
            * An enum which stores the the coordinate system of this natural
            * point
            */
-          WorldBuilder::Utilities::Coordinates::CoordinateSystem coordinate_system;
+          CoordinateSystem coordinate_system;
 
           /**
            * An array which stores the coordinates in the coordinates system
@@ -118,11 +123,10 @@ namespace aspect
        * coordinate system (as represented by the CoordinateSystem enum)
        * and returns the corresponding value.
        */
-      Coordinates::CoordinateSystem
+      CoordinateSystem
       string_to_coordinate_system (const std::string &);
     }
   }
-}
 
 
 #endif

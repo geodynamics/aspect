@@ -20,7 +20,7 @@
 
 
 #include <aspect/initial_composition/world_builder.h>
-#include <aspect/world_builder/world.h>
+#include <world_builder/world.h>
 
 
 namespace aspect
@@ -41,13 +41,13 @@ namespace aspect
 
     template <int dim>
     void
-    WorldBuilder<dim>::declare_parameters (ParameterHandler &prm)
+    WorldBuilder<dim>::declare_parameters (ParameterHandler &/*prm*/)
     {}
 
 
     template <int dim>
     void
-    WorldBuilder<dim>::parse_parameters (ParameterHandler &prm)
+    WorldBuilder<dim>::parse_parameters (ParameterHandler &/*prm*/)
     {}
 
   }

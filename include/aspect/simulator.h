@@ -72,6 +72,12 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 #include <boost/iostreams/stream.hpp>
 #include <deal.II/base/std_cxx11/shared_ptr.h>
 
+
+/*namespace WorldBuilder
+{
+  class World;
+}*/
+
 namespace aspect
 {
   using namespace dealii;
@@ -97,10 +103,6 @@ namespace aspect
   template <int dim>
   class FreeSurfaceHandler;
 
-  namespace WorldBuilder
-  {
-    class World;
-  }
 
   namespace internal
   {

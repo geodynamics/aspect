@@ -18,47 +18,46 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#ifndef _world_builder_coordinate_systems_interface_h
+#define _world_builder_coordinate_systems_interface_h
 
+//#include "../coordinate_systems/interface.h"
 
-#ifndef _aspect_world_feature_features_continental_plate_h
-#define _aspect_world_feature_features_continental_plate_h
+#include <world_builder/utilities.h>
+#include <world_builder/coordinate_system.h>
+#include <boost/property_tree/ptree.hpp>
 
-#include <aspect/world_builder/coordinate_system/interface.h>
-#include <aspect/world_builder/utilities.h>
-#include <aspect/world_builder/coordinate_systems.h>
+using boost::property_tree::ptree;
 
-
-namespace aspect
-{
   namespace WorldBuilder
   {
-    namespace CoordinateSystem
+    namespace CoordinateSystems
     {
 
-      class Cartesian : public Interface
+      class Interface
       {
         public:
           /**
            * constructor
            */
-          Cartesian();
+          Interface();
 
           /**
            * Destructor
            */
-          ~Cartesian();
+          ~Interface();
 
           /**
-           * Read in the world builder file
+           * read in the world builder file
            */
           virtual
-          void read(ptree &property_tree);
+          void read(ptree &property_tree) = 0;
 
           /**
            * Returns what the natural coordinate system for this geometry model is.
            */
           virtual
-          aspect::WorldBuilder::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const;
+		  CoordinateSystem natural_coordinate_system() const = 0;
 
           /**
            * Takes the Cartesian points (x,z or x,y,z) and returns standardized
@@ -68,7 +67,7 @@ namespace aspect
            * latitude) in 3d.
            */
           virtual
-          std::array<double,3> cartesian_to_natural_coordinates(const std::array<double,3> &position) const;
+          std::array<double,3> cartesian_to_natural_coordinates(const std::array<double,3> &position) const = 0;
 
           /**
            * Undoes the action of cartesian_to_natural_coordinates, and turns the
@@ -76,14 +75,20 @@ namespace aspect
            * Cartesian coordinates.
            */
           virtual
-          std::array<double,3> natural_to_cartesian_coordinates(const std::array<double,3> &position) const;
+          std::array<double,3> natural_to_cartesian_coordinates(const std::array<double,3> &position) const = 0;
 
-
-        private:
+        protected:
 
       };
+
+
+      /**
+       * factory function
+       */
+      Interface *
+      create_coordinate_system(const std::string name);
+
     }
   }
-}
 
 #endif

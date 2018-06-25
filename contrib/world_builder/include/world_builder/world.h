@@ -19,22 +19,18 @@
 */
 
 
-#ifndef _aspect_world_builder_world_h
-#define _aspect_world_builder_world_h
+#ifndef _world_builder_world_h
+#define _world_builder_world_h
 
 
-//#include "features/interface.h"
-#include <aspect/world_builder/coordinate_system/interface.h>
-#include <aspect/world_builder/features/interface.h>
+#include <world_builder/features/interface.h>
 
 #include <boost/property_tree/ptree.hpp>
+#include <world_builder/coordinate_systems/interface.h>
 
 using boost::property_tree::ptree;
 
 
-
-namespace aspect
-{
   namespace WorldBuilder
   {
     namespace Features
@@ -72,7 +68,7 @@ namespace aspect
         /**
          * returs a pointer to the coordinate system
          */
-        WorldBuilder::CoordinateSystem::Interface *get_coordinate_system() const;
+        WorldBuilder::CoordinateSystems::Interface *get_coordinate_system() const;
 
       private:
         const char path_seperator = '.';
@@ -98,12 +94,11 @@ namespace aspect
         std::vector<WorldBuilder::Features::Interface *> features;
 
         // coordinate system
-        WorldBuilder::CoordinateSystem::Interface *coordinate_system;
+        WorldBuilder::CoordinateSystems::Interface *coordinate_system;
 
 
 
     };
   }
-}
 
 #endif

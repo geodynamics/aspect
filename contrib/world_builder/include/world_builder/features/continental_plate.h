@@ -20,15 +20,13 @@
 
 
 
-#ifndef _aspect_world_feature_features_continental_plate_h
-#define _aspect_world_feature_features_continental_plate_h
+#ifndef _world_feature_features_continental_plate_h
+#define _world_feature_features_continental_plate_h
 
-#include <aspect/world_builder/features/interface.h>
-#include <aspect/world_builder/world.h>
+#include <world_builder/features/interface.h>
+#include <world_builder/world.h>
 
 
-namespace aspect
-{
   namespace WorldBuilder
   {
     namespace Features
@@ -84,6 +82,5 @@ namespace aspect
       };
     }
   }
-}
 
 #endif

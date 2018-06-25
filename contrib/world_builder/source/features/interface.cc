@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/world_builder/features/interface.h>
-#include <aspect/world_builder/features/continental_plate.h>
+#include <world_builder/features/interface.h>
+#include <world_builder/features/continental_plate.h>
 
 #include <deal.II/base/exceptions.h>
 
@@ -27,8 +27,7 @@
 
 using dealii::StandardExceptions::ExcMessage;
 
-namespace aspect
-{
+
   namespace WorldBuilder
   {
     namespace Features
@@ -52,4 +51,4 @@ namespace aspect
       }
     }
   }
-}
+

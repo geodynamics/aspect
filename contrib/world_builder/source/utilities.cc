@@ -1,13 +1,11 @@
 
 
-#include <aspect/world_builder/utilities.h>
+#include <world_builder/utilities.h>
 #include <aspect/utilities.h>
-#include <aspect/world_builder/coordinate_systems.h>
-#include <aspect/world_builder/coordinate_system/interface.h>
 #include <deal.II/base/exceptions.h>
+#include "../include/world_builder/coordinate_systems/interface.h"
 
-namespace aspect
-{
+
   namespace WorldBuilder
   {
     namespace Utilities
@@ -190,7 +188,7 @@ namespace aspect
       //typedef class Coordinates;
 
       NaturalCoordinate::NaturalCoordinate(const std::array<double,3> &position,
-                                           const CoordinateSystem::Interface &coordinate_system_)
+                                           const CoordinateSystems::Interface &coordinate_system_)
       {
         coordinate_system = coordinate_system_.natural_coordinate_system();
         coordinates = coordinate_system_.cartesian_to_natural_coordinates(position);
@@ -236,17 +234,17 @@ namespace aspect
 
         switch (coordinate_system)
           {
-            case Coordinates::CoordinateSystem::cartesian:
+            case CoordinateSystem::cartesian:
               coordinate[0] = coordinates[0];
               coordinate[1] = coordinates[1];
               break;
 
-            case Coordinates::CoordinateSystem::spherical:
+            case CoordinateSystem::spherical:
               coordinate[0] = coordinates[1];
               coordinate[1] = coordinates[2];
               break;
 
-            case Coordinates::CoordinateSystem::ellipsoidal:
+            case CoordinateSystem::ellipsoidal:
               coordinate[0] = coordinates[1];
               coordinate[1] = coordinates[2];
               break;
@@ -263,13 +261,13 @@ namespace aspect
       {
         switch (coordinate_system)
           {
-            case Coordinates::CoordinateSystem::cartesian:
+            case CoordinateSystem::cartesian:
               return coordinates[2];
 
-            case Coordinates::CoordinateSystem::spherical:
+            case CoordinateSystem::spherical:
               return coordinates[0];
 
-            case Coordinates::CoordinateSystem::ellipsoidal:
+            case CoordinateSystem::ellipsoidal:
               return coordinates[0];
 
             default:
@@ -355,22 +353,22 @@ namespace aspect
 
 
 
-      Coordinates::CoordinateSystem
+      CoordinateSystem
       string_to_coordinate_system(const std::string &coordinate_system)
       {
         if (coordinate_system == "cartesian")
-          return Coordinates::CoordinateSystem::cartesian;
+          return CoordinateSystem::cartesian;
         else if (coordinate_system == "spherical")
-          return Coordinates::CoordinateSystem::spherical;
+          return CoordinateSystem::spherical;
         else if (coordinate_system == "ellipsoidal")
-          return Coordinates::CoordinateSystem::ellipsoidal;
+          return CoordinateSystem::ellipsoidal;
         else
           AssertThrow(false, ExcNotImplemented());
 
-        return Coordinates::invalid;
+        return invalid;
       }
     }
   }
-}
+
 
 

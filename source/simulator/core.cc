@@ -25,7 +25,7 @@
 #include <aspect/melt.h>
 #include <aspect/newton.h>
 #include <aspect/free_surface.h>
-#include <aspect/world_builder/world.h>
+#include <world_builder/world.h>
 
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>

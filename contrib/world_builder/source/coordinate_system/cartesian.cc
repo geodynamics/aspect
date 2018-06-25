@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/world_builder/coordinate_system/cartesian.h>
+#include <world_builder/coordinate_systems/cartesian.h>
 
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/utilities.h>
@@ -27,11 +27,10 @@
 
 using dealii::StandardExceptions::ExcMessage;
 
-namespace aspect
-{
+
   namespace WorldBuilder
   {
-    namespace CoordinateSystem
+    namespace CoordinateSystems
     {
       Cartesian::Cartesian()
       {}
@@ -104,10 +103,10 @@ namespace aspect
       }
 
 
-      aspect::WorldBuilder::Utilities::Coordinates::CoordinateSystem
+      CoordinateSystem
       Cartesian::natural_coordinate_system() const
       {
-        return aspect::WorldBuilder::Utilities::Coordinates::CoordinateSystem::cartesian;
+        return CoordinateSystem::cartesian;
       }
 
 
@@ -125,4 +124,4 @@ namespace aspect
       }
     }
   }
-}
+

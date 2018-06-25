@@ -19,18 +19,17 @@
 */
 
 
-#ifndef _aspect_world_builder_features_interface_h
-#define _aspect_world_builder_features_interface_h
+#ifndef _world_builder_features_interface_h
+#define _world_builder_features_interface_h
 
 
-#include <aspect/world_builder/world.h>
+#include <world_builder/world.h>
 
 #include <boost/property_tree/ptree.hpp>
 
 using boost::property_tree::ptree;
 
-namespace aspect
-{
+
   namespace WorldBuilder
   {
     class World;
@@ -95,6 +94,5 @@ namespace aspect
 
     }
   }
-}
 
 #endif
