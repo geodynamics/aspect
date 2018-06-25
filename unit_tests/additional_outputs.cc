@@ -31,44 +31,42 @@
 
 #include <iostream>
 
-namespace aspect
+namespace
 {
-  namespace MaterialModel
+  using namespace dealii;
+  using namespace aspect;
+
+  template <int dim>
+  class AdditionalOutputs1 : public MaterialModel::AdditionalMaterialOutputs<dim>
   {
-    using namespace dealii;
-    template <int dim>
-    class AdditionalOutputs1 : public AdditionalMaterialOutputs<dim>
-    {
-      public:
-        AdditionalOutputs1 (const unsigned int n_points,
-                            const unsigned int /*n_comp*/)
-        {
-          additional_material_output1.resize(n_points);
-        }
+    public:
+      AdditionalOutputs1 (const unsigned int n_points,
+                          const unsigned int /*n_comp*/)
+      {
+        additional_material_output1.resize(n_points);
+      }
 
-        std::vector<double> additional_material_output1;
-    };
+      std::vector<double> additional_material_output1;
+  };
 
 
-    template <int dim>
-    class Material1 : public MaterialModel::Simple<dim>
-    {
-      public:
+  template <int dim>
+  class Material1 : public MaterialModel::Simple<dim>
+  {
+    public:
 
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &/*in*/,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const
-        {
-          AdditionalOutputs1<dim> *additional;
+      virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &/*in*/,
+                            MaterialModel::MaterialModelOutputs<dim> &out) const
+      {
+        AdditionalOutputs1<dim> *additional;
 
-          additional = out.template get_additional_output<AdditionalOutputs1<dim> >();
-          additional->additional_material_output1[0] = 42.0;
+        additional = out.template get_additional_output<AdditionalOutputs1<dim> >();
+        additional->additional_material_output1[0] = 42.0;
 
-        }
+      }
 
 
-    };
-
-  }
+  };
 }
 
 
