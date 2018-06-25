@@ -64,6 +64,7 @@ pipeline {
       options {timeout(time: 15, unit: 'MINUTES')}
       steps {
         sh '''
+          export NP=`grep -c ^processor /proc/cpuinfo`
           mkdir -p /home/dealii/build-gcc-fast
           cd /home/dealii/build-gcc-fast
           cmake -G "Ninja" \
@@ -73,7 +74,7 @@ pipeline {
 		-D ASPECT_RUN_ALL_TESTS=ON \
 		-D ASPECT_PRECOMPILE_HEADERS=ON \
 		$WORKSPACE/
-          ninja
+          ninja -j $NP
         '''
       } 
     }
