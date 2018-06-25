@@ -1531,6 +1531,12 @@ namespace aspect
           break;
         }
 
+        case NonlinearSolver::first_timestep_only_single_Stokes:
+        {
+          solve_first_timestep_only_single_stokes();
+          break;
+        }
+
         default:
           Assert (false, ExcNotImplemented());
       }
