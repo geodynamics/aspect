@@ -41,10 +41,10 @@
 #endif
 
 
-  namespace WorldBuilder
-  {
-    class World;
-  }
+namespace WorldBuilder
+{
+  class World;
+}
 
 namespace aspect
 {

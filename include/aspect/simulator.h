@@ -73,10 +73,6 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 #include <deal.II/base/std_cxx11/shared_ptr.h>
 
 
-/*namespace WorldBuilder
-{
-  class World;
-}*/
 
 namespace aspect
 {
