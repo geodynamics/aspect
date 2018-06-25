@@ -475,6 +475,19 @@ namespace aspect
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.
        *
+       * The `first timestep only, single Stokes' scheme only solves the Stokes system,
+       * for the initial timestep. This results in a `steady state' velocity field for
+       * particle calculations.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_first_timestep_only_single_stokes ();
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
        * The `iterated Advection and Stokes' scheme iterates
        * by alternating the solution of the temperature, composition and Stokes systems.
        * This is essentially a type of Picard iterations for the whole
