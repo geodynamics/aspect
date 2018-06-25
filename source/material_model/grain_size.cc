@@ -1481,7 +1481,7 @@ namespace aspect
         {
           prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0),
-                             "Reference density $\\rho_0$. Units: $kg/m^3$.");
+                             "The reference density $\\rho_0$. Units: $kg/m^3$.");
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. Units: $K$.");
@@ -1545,24 +1545,24 @@ namespace aspect
                              "Units: $m^3/mol$.");
           prm.declare_entry ("Grain growth exponent", "3",
                              Patterns::List (Patterns::Double(0)),
-                             "Exponent of the grain growth law $p_g$. This is an experimentally determined "
+                             "The exponent of the grain growth law $p_g$. This is an experimentally determined "
                              "grain growth constant. "
                              "Units: none.");
           prm.declare_entry ("Grain growth rate constant", "1.5e-5",
                              Patterns::List (Patterns::Double(0)),
-                             "Prefactor of the Ostwald ripening grain growth law $G_0$. "
+                             "The prefactor for the Ostwald ripening grain growth law $G_0$. "
                              "This is dependent on water content, which is assumed to be "
                              "50 H/$10^6$ Si for the default value. "
                              "Units: $m^{p_g}/s$.");
           prm.declare_entry ("Minimum grain size", "5e-6",
                              Patterns::Double(0),
-                             "Minimum allowable grain size. The grain size will be limited to be "
+                             "The minimum allowable grain size. The grain size will be limited to be "
                              "larger than this value. This can be used to damp out oscillations, or "
                              "to limit the viscosity variation due to grain size. "
                              "Units: $m$.");
           prm.declare_entry ("Reciprocal required strain", "10",
                              Patterns::List (Patterns::Double(0)),
-                             "This parameters $\\lambda$ gives an estimate of the strain necessary "
+                             "This parameter ($\\lambda$) gives an estimate of the strain necessary "
                              "to achieve a new grain size. ");
           prm.declare_entry ("Recrystallized grain size", "",
                              Patterns::List (Patterns::Double(0)),
@@ -1573,7 +1573,7 @@ namespace aspect
                              Patterns::Bool (),
                              "A flag indicating whether the computation should be use the "
                              "paleowattmeter approach of Austin and Evans (2007) for grain size reduction "
-                             "in the dislocation creep regime (if true) or the paleopiezometer aprroach "
+                             "in the dislocation creep regime (if true) or the paleopiezometer approach "
                              "from Hall and Parmetier (2003) (if false).");
           prm.declare_entry ("Average specific grain boundary energy", "1.0",
                              Patterns::List (Patterns::Double(0)),
@@ -1585,7 +1585,7 @@ namespace aspect
                              "Units: $J/m^2$.");
           prm.declare_entry ("Geometric constant", "3",
                              Patterns::List (Patterns::Double(0)),
-                             "Geometric constant $c$ used in the paleowattmeter grain size reduction law. "
+                             "The geometric constant $c$ used in the paleowattmeter grain size reduction law. "
                              "Units: none.");
           prm.declare_entry ("Dislocation viscosity iteration threshold", "1e-3",
                              Patterns::Double(0),
@@ -1604,7 +1604,7 @@ namespace aspect
                              "number of iterations that are performed. ");
           prm.declare_entry ("Dislocation creep exponent", "3.5",
                              Patterns::List (Patterns::Double(0)),
-                             "Power-law exponent $n_{dis}$ for dislocation creep. "
+                             "The power-law exponent $n_{dis}$ for dislocation creep. "
                              "Units: none.");
           prm.declare_entry ("Dislocation activation energy", "4.8e5",
                              Patterns::List (Patterns::Double(0)),
@@ -1616,11 +1616,11 @@ namespace aspect
                              "Units: $m^3/mol$.");
           prm.declare_entry ("Dislocation creep prefactor", "4.5e-15",
                              Patterns::List (Patterns::Double(0)),
-                             "Prefactor for the dislocation creep law $A_{dis}$. "
+                             "The prefactor for the dislocation creep law $A_{dis}$. "
                              "Units: $Pa^{-n_{dis}}/s$.");
           prm.declare_entry ("Diffusion creep exponent", "1",
                              Patterns::List (Patterns::Double(0)),
-                             "Power-law exponent $n_{diff}$ for diffusion creep. "
+                             "The power-law exponent $n_{diff}$ for diffusion creep. "
                              "Units: none.");
           prm.declare_entry ("Diffusion activation energy", "3.35e5",
                              Patterns::List (Patterns::Double(0)),
@@ -1632,11 +1632,11 @@ namespace aspect
                              "Units: $m^3/mol$.");
           prm.declare_entry ("Diffusion creep prefactor", "7.4e-15",
                              Patterns::List (Patterns::Double(0)),
-                             "Prefactor for the diffusion creep law $A_{diff}$. "
+                             "The prefactor for the diffusion creep law $A_{diff}$. "
                              "Units: $m^{p_{diff}} Pa^{-n_{diff}}/s$.");
           prm.declare_entry ("Diffusion creep grain size exponent", "3",
                              Patterns::List (Patterns::Double(0)),
-                             "Diffusion creep grain size exponent $p_{diff}$ that determines the "
+                             "The diffusion creep grain size exponent $p_{diff}$ that determines the "
                              "dependence of vescosity on grain size. "
                              "Units: none.");
           prm.declare_entry ("Maximum temperature dependence of viscosity", "100",
@@ -1694,8 +1694,8 @@ namespace aspect
                              "Units: none.");
           prm.declare_entry ("Advect logarithm of grain size", "false",
                              Patterns::Bool (),
-                             "Whether to advect the logarithm of the grain size or the "
-                             "grain size. The equation and the physics are the same, "
+                             "This parameter determines whether to advect the logarithm of the grain size "
+                             "or the grain size itself. The equation and the physics are the same, "
                              "but for problems with high grain size gradients it might "
                              "be preferable to advect the logarithm. ");
           prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/material-model/steinberger/",
@@ -1719,8 +1719,8 @@ namespace aspect
                              "be in order with the ordering of the fields). ");
           prm.declare_entry ("Use table properties", "false",
                              Patterns::Bool(),
-                             "Whether to use the table properties also for "
-                             "density, thermal expansivity and specific heat. "
+                             "This parameter determines whether to use the table properties "
+                             "also for density, thermal expansivity and specific heat. "
                              "If false the properties are generated as in the "
                              "simple compressible plugin.");
           prm.declare_entry ("Material file format", "perplex",
@@ -1729,14 +1729,14 @@ namespace aspect
                              "tables.");
           prm.declare_entry ("Use enthalpy for material properties", "true",
                              Patterns::Bool(),
-                             "Whether to use the enthalpy to calculate thermal "
-                             "expansivity and specific heat (if true) or use the "
+                             "This parameter determines whether to use the enthalpy to calculate "
+                             "the thermal expansivity and specific heat (if true) or use the "
                              "thermal expansivity and specific heat values from "
                              "the material properties table directly (if false).");
           prm.declare_entry ("Bilinear interpolation", "true",
                              Patterns::Bool (),
-                             "Whether to use bilinear interpolation to compute "
-                             "material properties (slower but more accurate).");
+                             "This parameter determines whether to use bilinear interpolation "
+                             "to compute material properties (slower but more accurate).");
         }
         prm.leave_subsection();
       }
@@ -2004,9 +2004,9 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(GrainSize,
                                    "grain size",
                                    "A material model that relies on compositional "
-                                   "fields that stand for average grain sizes of a mineral "
-                                   "phase and source terms for them that determine the grain "
-                                   "size evolution in dependence of the strain rate, "
+                                   "fields that correspond to the average grain sizes of a "
+                                   "mineral phase and source terms that determine the grain "
+                                   "size evolution in terms of the strain rate, "
                                    "temperature, phase transitions, and the creep regime. "
                                    "This material model only works if a compositional field "
                                    "named 'grain_size' is present. "
@@ -2019,7 +2019,7 @@ namespace aspect
                                    "Other material parameters are either prescribed similar "
                                    "to the 'simple' material model, or read from data files "
                                    "that were generated by the Perplex or Hefesto software. "
-                                   "The material model "
+                                   "This material model "
                                    "is described in more detail in Dannberg, J., Z. Eilon, "
                                    "U. Faul, R. Gassmoeller, P. Moulik, and R. Myhill (2017), "
                                    "The importance of grain size to mantle dynamics and "

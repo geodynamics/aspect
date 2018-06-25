@@ -1,8 +1,10 @@
-# A test for the grain size material model. The test produces nearly 
-# constant temperatures, pressures, strain rates and uses experimentally 
-# derived values for olivine. Therefore the grain size in the test approaches
-# the equilibrium grain size for t -> infinity. At 4e6 years the grain size
-# is 9.35850647e-04 m, which is close to the equilibrium value.
+# A test for the grain size material model. The test imposes simple shear
+# across a 100 km square domain with a rheology derived from experiments on
+# olivine. The model domain is isobaric and initially isothermal.
+# Over time the model maintains nearly constant temperatures, pressures and
+# strain rates. The grain size in the test approaches the equilibrium
+# grain size for t -> infinity. At 4 Myr the grain size is
+# 9.35850647e-04 m, which is close to the equilibrium value.
 
 set Dimension                              = 2
 set End time                               = 5000

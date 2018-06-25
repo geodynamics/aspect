@@ -1,9 +1,10 @@
-# This is a very simple testcase that checks
+# This is a very simple test case that checks
 # that the implementation of the grain growth
-# laws are correct. All parameters, including
-# temperature and pressure, are set to constant
-# values and no dynamic recrystallisation is 
-# included (the reciprocal required strain is
+# laws are correct when the logarithm of the grain size
+# is advected (rather than the grain size itself).
+# All parameters, including temperature and pressure,
+# are set to constant values and no dynamic recrystallisation
+# is included (the reciprocal required strain is
 # set to zero). Material flows in from the left
 # and flows out at the right boundary with a constant
 # velocity. The grain size
