@@ -198,6 +198,7 @@ namespace aspect
               break;
 
             case Parameters<dim>::AdvectionFieldMethod::static_field:
+            case Parameters<dim>::AdvectionFieldMethod::prescribed_field:
             {
               // Do nothing here, but at least call the signal in case the
               // user wants to do something with the variable:
@@ -212,6 +213,14 @@ namespace aspect
             default:
               AssertThrow(false,ExcNotImplemented());
           }
+      }
+
+    // Update the copy fields *after* we have solved all the other fields
+    for (unsigned int c=0; c < introspection.n_compositional_fields; ++c)
+      {
+        const AdvectionField adv_field (AdvectionField::composition(c));
+        if (adv_field.advection_method(introspection) == Parameters<dim>::AdvectionFieldMethod::prescribed_field)
+          interpolate_material_output_into_field();
       }
 
     // for consistency we update the current linearization point only after we have solved

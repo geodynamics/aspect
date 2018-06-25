@@ -48,6 +48,8 @@ namespace aspect
         compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch) const;
     };
 
+
+
     /**
      * This class assembles the face terms for the right-hand-side of the
      * advection equation for a face at the boundary of the domain where

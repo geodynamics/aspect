@@ -798,6 +798,35 @@ namespace aspect
 
 
     /**
+     * Additional output fields for prescribed field outputs to be added to
+     * the MaterialModel::MaterialModelOutputs structure and filled in the
+     * MaterialModel::Interface::evaluate() function.
+     *
+     * If the advection scheme "prescribed field" is selected, then these
+     * material model outputs will be interpolated onto the corresponding
+     * compositional field.
+     */
+    template <int dim>
+    class PrescribedFieldOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        PrescribedFieldOutputs (const unsigned int n_points,
+                                const unsigned int n_comp);
+
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+
+        /**
+         * Prescribed field outputs for all compositional fields at the evaluation points
+         * that are passed to the instance of MaterialModel::Interface::evaluate()
+         * that fills the current object.
+         * copy_properties[q][c] is the prescribed field output at the evaluation point q
+         * for the compositional field with the index c.
+         */
+        std::vector<std::vector<double> > copy_properties;
+    };
+
+
+    /**
      * A class for additional output fields to be added to the RHS of the
      * Stokes system, which can be attached to the
      * MaterialModel::MaterialModelOutputs structure and filled in the
