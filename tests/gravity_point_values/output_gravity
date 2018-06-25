@@ -10,6 +10,6 @@
 # 10: gravity_norm
 # 11: gravity_theory
 # 12: gravity_diff (theoric-norm)
-# 13: potential
+# 13: gravity potential
 
 4 200 35 -2.15594 -0.784699 3.27661 -6.59219e-05 -2.40322e-05 0.000100246 0.000122362 0.000123021 6.59112e-07 -0.000489341
