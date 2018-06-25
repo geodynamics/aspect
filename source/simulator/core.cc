@@ -28,6 +28,7 @@
 
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
+#include <aspect/postprocess/particles.h>
 
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
@@ -1487,7 +1488,18 @@ namespace aspect
     // free_surface_execute() after the Stokes solve, it will be before we know what the appropriate
     // time step to take is, and we will timestep the boundary incorrectly.
     if (parameters.free_surface_enabled)
+    {
       free_surface->execute ();
+      // if particles are used, update their reference_position by calling
+      // ParticleHandler<dim,spacedim>::sort_particles_into_subdomains_and_cells()
+//      if(postprocess_manager.template has_matching_postprocessor<Postprocess::Particles<dim> >())
+//      {
+//        Postprocess::Particles<dim> &particle_postprocessor =
+//           const_cast<Postprocess::Particles<dim> &>(postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim> >());
+//        Particle::ParticleHandler<dim> &particle_handler = const_cast<Particle::ParticleHandler<dim> &> (particle_postprocessor.get_particle_world().get_particle_handler());
+//        particle_handler.sort_particles_into_subdomains_and_cells();
+//      }
+    }
 
     // Compute the reactions of compositional fields and temperature in case of operator splitting.
     if (parameters.use_operator_splitting)
