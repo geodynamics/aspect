@@ -825,6 +825,7 @@ namespace aspect
 
     if (!mesh_has_changed)
       {
+#if DEAL_II_VERSION_GTE(9,0,0)
         for (auto &row: current_constraints.get_lines())
           {
             if (!new_current_constraints.is_constrained(row.index))
@@ -833,6 +834,17 @@ namespace aspect
                 break;
               }
           }
+#else
+        for (const auto row: current_constraints.get_local_lines())
+          {
+            if (current_constraints.is_constrained(row)
+                != new_current_constraints.is_constrained(row))
+              {
+                constraints_changed = true;
+                break;
+              }
+          }
+#endif
 
         const bool any_constraints_changed = Utilities::MPI::sum(constraints_changed ? 1 : 0,
                                                                  mpi_communicator) > 0;
@@ -840,7 +852,13 @@ namespace aspect
           rebuild_sparsity_and_matrices = true;
       }
 
+#if DEAL_II_VERSION_GTE(9,0,0)
     current_constraints.copy_from(new_current_constraints);
+#else
+    current_constraints.clear ();
+    current_constraints.reinit (introspection.index_sets.system_relevant_set);
+    current_constraints.merge (new_current_constraints);
+#endif
 
     if (time_step == 0 && parameters.include_melt_transport)
       melt_handler->add_current_constraints (current_constraints);
