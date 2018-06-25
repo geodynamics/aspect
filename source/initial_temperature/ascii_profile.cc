@@ -22,6 +22,7 @@
 #include <aspect/global.h>
 #include <aspect/initial_temperature/ascii_profile.h>
 #include <aspect/utilities.h>
+#include <aspect/geometry_model/interface.h>
 
 
 namespace aspect
