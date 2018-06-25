@@ -71,6 +71,8 @@ namespace aspect
       return b;
     }
 
+
+
     template <int dim>
     typename Introspection<dim>::BaseElements
     setup_base_elements (FEVariableCollection<dim> &fevs)
@@ -85,6 +87,8 @@ namespace aspect
       return base_elements;
     }
 
+
+
     template <int dim>
     typename Introspection<dim>::PolynomialDegree
     setup_polynomial_degree (const Parameters<dim> &parameters)
@@ -98,6 +102,8 @@ namespace aspect
       return polynomial_degree;
     }
 
+
+
     template <int dim>
     std::shared_ptr<FiniteElement<dim> >
     new_FE_Q_or_DGP(const bool discontinuous,
@@ -108,6 +114,8 @@ namespace aspect
       else
         return std::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(degree));
     }
+
+
 
     template <int dim>
     std::shared_ptr<FiniteElement<dim> >
@@ -189,9 +197,11 @@ namespace aspect
   {}
 
 
+
   template <int dim>
   Introspection<dim>::~Introspection ()
   {}
+
 
 
   namespace
@@ -206,6 +216,8 @@ namespace aspect
     }
   }
 
+
+
   template <int dim>
   Introspection<dim>::Extractors::Extractors (const Introspection<dim>::ComponentIndices &component_indices)
     :
@@ -214,6 +226,8 @@ namespace aspect
     temperature (component_indices.temperature),
     compositional_fields (make_extractor_sequence (component_indices.compositional_fields))
   {}
+
+
 
   namespace
   {
@@ -231,6 +245,8 @@ namespace aspect
     }
   }
 
+
+
   template <int dim>
   Introspection<dim>::ComponentMasks::ComponentMasks (FEVariableCollection<dim> &fevs)
     :
@@ -239,6 +255,7 @@ namespace aspect
     temperature (fevs.variable("temperature").component_mask),
     compositional_fields (make_component_mask_sequence (fevs.variable("compositions")))
   {}
+
 
 
   template <int dim>
@@ -254,6 +271,8 @@ namespace aspect
     return (it - composition_names.begin());
   }
 
+
+
   template <int dim>
   std::string
   Introspection<dim>::name_for_compositional_index (const unsigned int index) const
@@ -262,6 +281,8 @@ namespace aspect
     AssertIndexRange(index,composition_names.size());
     return composition_names[index];
   }
+
+
 
   template <int dim>
   bool
@@ -273,6 +294,8 @@ namespace aspect
             :
             false);
   }
+
+
 
   template <int dim>
   bool
