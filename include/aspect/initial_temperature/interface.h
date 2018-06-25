@@ -191,6 +191,12 @@ namespace aspect
         InitialTemperatureType *
         find_initial_temperature_model () const;
 
+        /**
+         * Go through the list of all initial temperature models that have been selected
+         * in the input file (and are consequently currently active) and return
+         * true if one of them has the desired type specified by the template
+         * argument.
+         */
         template <typename InitialTemperatureType>
         bool
         has_matching_initial_temperature_model () const;

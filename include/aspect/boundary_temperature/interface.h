@@ -262,6 +262,12 @@ namespace aspect
         BoundaryTemperatureType *
         find_boundary_temperature_model () const;
 
+        /**
+         * Go through the list of all boundary temperature models that have been selected
+         * in the input file (and are consequently currently active) and return
+         * true if one of them has the desired type specified by the template
+         * argument.
+         */
         template <typename BoundaryTemperatureType>
         bool
         has_matching_boundary_temperature_model () const;

@@ -194,6 +194,12 @@ namespace aspect
         InitialCompositionType *
         find_initial_composition_model () const;
 
+        /**
+         * Go through the list of all initial composition models that have been selected
+         * in the input file (and are consequently currently active) and return
+         * true if one of them has the desired type specified by the template
+         * argument.
+         */
         template <typename InitialCompositionType>
         bool
         has_matching_initial_composition_model () const;
