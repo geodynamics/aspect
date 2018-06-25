@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+#include <aspect/geometry_model/box.h>
 #include <aspect/boundary_velocity/ascii_data.h>
 
 #include <deal.II/base/parameter_handler.h>
@@ -77,6 +78,9 @@ namespace aspect
         velocity[i] = Utilities::AsciiDataBoundary<dim>::get_data_component(*(boundary_ids.begin()),
                                                                             position,
                                                                             i);
+      if (use_spherical_unit_vectors)
+        velocity = Utilities::Coordinates::spherical_to_cartesian_vector(velocity, position);
+
       return velocity;
     }
 
@@ -90,6 +94,17 @@ namespace aspect
         Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
                                                               "$ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/",
                                                               "box_2d_%s.%d.txt");
+        prm.enter_subsection("Ascii data model");
+        {
+          prm.declare_entry ("Use spherical unit vectors", "false",
+                             Patterns::Bool (),
+                             "Specify velocity as r, phi, and theta components "
+                             "instead of x, y, and z. Positive velocities point up, north, "
+                             "and east (in 3D) or out and clockwise (in 2D). "
+                             "This setting only makes sense for spherical geometries."
+                            );
+        }
+        prm.leave_subsection();
       }
       prm.leave_subsection();
     }
@@ -107,7 +122,15 @@ namespace aspect
           {
             this->scale_factor               /= year_in_seconds;
           }
-
+        prm.enter_subsection("Ascii data model");
+        {
+          use_spherical_unit_vectors = prm.get_bool("Use spherical unit vectors");
+          if (use_spherical_unit_vectors)
+            AssertThrow ((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) == 0,
+                         ExcMessage ("Spherical unit vectors should not be used "
+                                     "when geometry model is not spherical."));
+        }
+        prm.leave_subsection();
       }
       prm.leave_subsection();
     }
@@ -139,8 +162,7 @@ namespace aspect
                                             "followed by the second in order to "
                                             "assign the correct data to the prescribed coordinates."
                                             "If you use a spherical model, "
-                                            "then the velocities will still be handled as Cartesian, "
-                                            "however the assumed grid changes. `x' will be replaced by "
+                                            "then the assumed grid changes. `x' will be replaced by "
                                             "the radial distance of the point to the bottom of the model, "
                                             "`y' by the azimuth angle and `z' by the polar angle measured "
                                             "positive from the north pole. The grid will be assumed to be "
@@ -148,6 +170,8 @@ namespace aspect
                                             "of spherical coordinates is `r', `phi', `theta' "
                                             "and not `r', `theta', `phi', since this allows "
                                             "for dimension independent expressions. "
+                                            "Velocities can be specified using cartesian "
+                                            "(by default) or spherical unit vectors. "
                                             "No matter which geometry model is chosen, "
                                             "the unit of the velocities is assumed to be "
                                             "m/s or m/yr depending on the 'Use years in output "

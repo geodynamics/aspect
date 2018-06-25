@@ -323,6 +323,60 @@ namespace aspect
       }
 
 
+      template <int dim>
+      Tensor<1, dim>
+      spherical_to_cartesian_vector(const Tensor<1, dim> &spherical_vector,
+                                    const Point<dim> &position)
+      {
+        Tensor<1, dim> cartesian_vector;
+
+        const std_cxx11::array<double, dim> r_phi_theta = cartesian_to_spherical_coordinates(position);
+
+        switch (dim)
+          {
+            case 2:
+            {
+              const double phi = r_phi_theta[1];
+
+              const double u_r   = spherical_vector[0];
+              const double u_phi = spherical_vector[1];
+
+              cartesian_vector[0] = std::cos(phi)*u_r
+                                    - std::sin(phi)*u_phi; // X
+              cartesian_vector[1] = std::sin(phi)*u_r
+                                    + std::cos(phi)*u_phi; // Y
+
+              break;
+            }
+            case 3:
+            {
+              const double phi   = r_phi_theta[1];
+              const double theta = r_phi_theta[2];
+
+              const double u_r     = spherical_vector[0];
+              const double u_phi   = spherical_vector[1];
+              const double u_theta = spherical_vector[2];
+
+              cartesian_vector[0] = std::cos(phi)*std::sin(theta)*u_r
+                                    - std::sin(phi)*u_theta
+                                    - std::cos(phi)*std::cos(theta)*u_phi; // X
+              cartesian_vector[1] = std::sin(phi)*std::sin(theta)*u_r
+                                    + std::cos(phi)*u_theta
+                                    - std::sin(phi)*std::cos(theta)*u_phi; // Y
+              cartesian_vector[2] = std::cos(theta)*u_r
+                                    + std::sin(theta)*u_phi;                 // Z
+              break;
+            }
+
+            default:
+              Assert (false, ExcNotImplemented());
+              break;
+          }
+
+        return cartesian_vector;
+      }
+
+
 
       CoordinateSystem
       string_to_coordinate_system(const std::string &coordinate_system)
@@ -2731,6 +2785,11 @@ namespace aspect
 
     template std_cxx11::array<double,2> Coordinates::cartesian_to_spherical_coordinates<2>(const Point<2> &position);
     template std_cxx11::array<double,3> Coordinates::cartesian_to_spherical_coordinates<3>(const Point<3> &position);
+
+    template Tensor<1,2> Coordinates::spherical_to_cartesian_vector<2>(const Tensor<1,2> &spherical_vector,
+                                                                       const Point<2> &position);
+    template Tensor<1,3> Coordinates::spherical_to_cartesian_vector<3>(const Tensor<1,3> &spherical_vector,
+                                                                       const Point<3> &position);
 
 
     template std_cxx11::array<double,2> Coordinates::WGS84_coordinates<2>(const Point<2> &position);
