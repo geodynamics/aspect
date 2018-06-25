@@ -40,8 +40,8 @@ namespace aspect
     std::pair<std::string,std::string>
     GravityPointValues<dim>::execute (TableHandler &)
     {
-      // Get quadrature formula and increase the degree of quadrature over the velocity 
-      // element degree. 
+      // Get quadrature formula and increase the degree of quadrature over the velocity
+      // element degree.
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+quadrature_degree_increase);
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
@@ -107,12 +107,12 @@ namespace aspect
         << '\n';
 
       // Storing cartesian coordinate, density and JxW at local quadrature points in a vector
-      // avoids to use MaterialModel and fe_values within the loops. Because postprocessor 
+      // avoids to use MaterialModel and fe_values within the loops. Because postprocessor
       // run in parallel, the total number of local quadrature points has to be determined:
       const unsigned int n_locally_owned_cells = (this->get_triangulation().n_locally_owned_active_cells());
       const unsigned int n_quadrature_points_per_cell = quadrature_formula.size();
-      
-      // Declare the vector 'density_JxW' to store the density at quadrature points. The 
+
+      // Declare the vector 'density_JxW' to store the density at quadrature points. The
       // density and the JxW are here together for simplicity in the equation (both variables
       // only appear together):
       std::vector<double> density_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
@@ -120,8 +120,8 @@ namespace aspect
       // Declare the vector 'position_point' to store the position of quadrature points:
       std::vector<Point<dim> > position_point (n_locally_owned_cells * n_quadrature_points_per_cell);
 
-      // The following loop perform the storage of the position and density * JxW values 
-      // at local quadrature points: 
+      // The following loop perform the storage of the position and density * JxW values
+      // at local quadrature points:
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
@@ -145,7 +145,7 @@ namespace aspect
             }
         }
 
-      // This is the main loop which computes gravity acceleration and potential at a 
+      // This is the main loop which computes gravity acceleration and potential at a
       // point located at the spherical coordinate [r, phi, theta]:
       // loop on the radius - satellite position [r, , ]
       for (unsigned int h=0; h < number_points_radius; ++h)
@@ -251,7 +251,7 @@ namespace aspect
                              "Quadrature degree increase over the velocity element "
                              "degree may be required when gravity is calculated near "
                              "the surface or inside the model. An increase in the "
-                             "quadrature element adds accuracy to the gravity " 
+                             "quadrature element adds accuracy to the gravity "
                              "solution from noise due to the model grid.");
           prm.declare_entry ("Number points radius", "1",
                              Patterns::Double (0.0),

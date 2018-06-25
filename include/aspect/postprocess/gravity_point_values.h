@@ -67,9 +67,9 @@ namespace aspect
 
       private:
         /**
-         * Quadrature degree increase over the velocity element degree may be required when 
+         * Quadrature degree increase over the velocity element degree may be required when
          * gravity is calculated near the surface or inside the model. An increase in the
-         * quadrature element adds accuracy to the gravity solution from noise due to the 
+         * quadrature element adds accuracy to the gravity solution from noise due to the
          * model grid.
          */
         double quadrature_degree_increase;
