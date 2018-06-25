@@ -802,7 +802,7 @@ namespace aspect
                          "The polynomial degree to use for the velocity variables "
                          "in the Stokes system. The polynomial degree for the pressure "
                          "variable will then be one less in order to make the velocity/pressure "
-                         "pair conform with the usual LBB (Babuska-Brezzi) condition. In "
+                         "pair conform with the usual LBB (Babu{\v s}ka-Brezzi) condition. In "
                          "other words, we are using a Taylor-Hood element for the Stokes "
                          "equations and this parameter indicates the polynomial degree of it. "
                          "As an example, a value of 2 for this parameter will yield the "
@@ -868,7 +868,46 @@ namespace aspect
                          "the error is generally smaller with this choice."
                          "\n\n"
                          "For an in-depth discussion of these issues and a quantitative evaluation "
-                         "of the different choices, see \\cite {KHB12}.");
+                         "of the different choices, see \\cite{KHB12}.");
+      prm.declare_entry ("Use equal order interpolation for Stokes", "false",
+                         Patterns::Bool(),
+                         "By default (i.e., when this parameter is set to its default value "
+                         "`false') \\aspect{} uses finite element combinations in which the "
+                         "pressure shape functions are polynomials one degree lower than "
+                         "the shape functions for the velocity. An example is the "
+                         "Taylor-Hood element that uses $Q_k$ elements for the velocity "
+                         "and $Q_{k-1}$ for the pressure. This is because using the "
+                         "\\textit{same} polynomial degree for both the velocity and the "
+                         "pressure turns out to violate some mathematical properties "
+                         "necessary to make the problem solvable. (In particular, the"
+                         "condition in question goes by the name ``inf-sup'' or "
+                         "Babu{\v s}ka-Brezzi or LBB condition.) A consequence of "
+                         "violating this condition is that the pressure may show "
+                         "oscillations and not converge to the correct pressure."
+                         "\n\n"
+                         "That said, people have often used $Q_1$ elements for both the"
+                         "velocity and pressure anyway. This is commonly referred to as "
+                         "using the Q1-Q1 method. It is, by default, not stable as "
+                         "mentioned above, but it can be made stable by adding small "
+                         "amount of compressibility to the model. There are numerous "
+                         "ways to do that. Today, the way that is generally considered "
+                         "to be the best approach is the one by Dohrmann and Bochev "
+                         "\\cite{DohrmannBochev04}."
+                         "\n\n"
+                         "When this parameter is set to ``true'', then \\aspect{} "
+                         "will use this method by using $Q_k\times Q_k$ elements for "
+                         "velocity and pressure, respectively, where $k$ is the value "
+                         "provided for the parameter ``Stokes velocity polynomial "
+                         "degree''."
+                         "\n\n"
+                         "\\note{While \\aspect{} \\textit{allows} you to use this "
+                         "  method, it is generally understood that this is not a "
+                         "  great idea as it leads to rather low accuracy in "
+                         "  general. It also leads to substantial problems when "
+                         "  using free surfaces. As a consequence, the presence "
+                         "  of this parameter should not be seen as an "
+                         "  endorsement of the method, or a suggestion to "
+                         "  actually use it. It simply makes the method available.}");
       prm.declare_entry ("Use discontinuous temperature discretization", "false",
                          Patterns::Bool (),
                          "Whether to use a temperature discretization that is discontinuous "
@@ -1476,6 +1515,8 @@ namespace aspect
       composition_degree     = prm.get_integer ("Composition polynomial degree");
       use_locally_conservative_discretization
         = prm.get_bool ("Use locally conservative discretization");
+      use_equal_order_interpolation_for_stokes
+        = prm.get_bool ("Use equal order interpolation for Stokes");
       use_discontinuous_temperature_discretization
         = prm.get_bool("Use discontinuous temperature discretization");
       use_discontinuous_composition_discretization
@@ -1512,17 +1553,37 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      AssertThrow (use_locally_conservative_discretization ||
+      AssertThrow ((use_locally_conservative_discretization ||
+                    use_equal_order_interpolation_for_stokes)
+                   ||
                    (stokes_velocity_degree > 1),
                    ExcMessage ("The polynomial degree for the velocity field "
                                "specified in the 'Stokes velocity polynomial degree' "
                                "parameter must be at least 2, unless you are using "
+                               "the 'Use equal order interpolation for Stokes' parameter, "
+                               "or if you are using "
                                "a locally conservative discretization as specified by the "
                                "'Use locally conservative discretization' parameter. "
-                               "This is because in the former case, the pressure element "
+                               "In both of these cases, the polynomial degree used for the "
+                               "velocity may be equal to one."
+                               "\n\n"
+                               "The restriction exists because by default, the pressure element "
                                "is of one degree lower and continuous, and if you selected "
                                "a linear element for the velocity, you'd need a continuous "
-                               "element of degree zero for the pressure, which does not exist."))
+                               "element of degree zero for the pressure, which does not exist. "
+                               "On the other hand, if using equal-order interpolation, "
+                               "choosing the polynomial degree as one yields a Q1-Q1 "
+                               "element; using a locally conservative discretization "
+                               "with polynomial degree of one yields a Q1-P0 "
+                               "element."));
+
+      AssertThrow (! (use_locally_conservative_discretization &&
+                      use_equal_order_interpolation_for_stokes),
+                   ExcMessage ("You have tried to use both the 'Use locally "
+                               "conservative discretization' and 'Use equal order "
+                               "interpolation for Stokes' parameters in the input "
+                               "file. However, their use is incompatible: you "
+                               "can only select one of the two."));
     }
     prm.leave_subsection ();
 

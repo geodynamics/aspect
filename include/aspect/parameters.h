@@ -503,6 +503,7 @@ namespace aspect
      */
     unsigned int                   stokes_velocity_degree;
     bool                           use_locally_conservative_discretization;
+    bool                           use_equal_order_interpolation_for_stokes;
     bool                           use_discontinuous_temperature_discretization;
     bool                           use_discontinuous_composition_discretization;
     unsigned int                   temperature_degree;
