@@ -40,7 +40,7 @@ namespace aspect
           /**
            * constructor
            */
-          ContinentalPlate(WorldBuilder::World* world);
+          ContinentalPlate(WorldBuilder::World *world);
 
           /**
            * Destructor
@@ -60,6 +60,16 @@ namespace aspect
           double temperature(const std::array<double,3> position,
                              const double depth,
                              const double gravity,
+                             double temperature) const;
+
+          /**
+           * Returns a value for the reqeusted composition (0 is not present,
+           * 1 is present) based on the given position and
+           */
+          virtual
+          double composition(const std::array<double,3> position,
+                             const double depth,
+                             const unsigned int composition_number,
                              double temperature) const;
 
 

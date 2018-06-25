@@ -36,9 +36,14 @@ namespace aspect
   {
     namespace Features
     {
-      ContinentalPlate::ContinentalPlate(WorldBuilder::World* world_)
+      ContinentalPlate::ContinentalPlate(WorldBuilder::World *world_)
+        :
+        temperature_submodule_depth(std::numeric_limits<double>::signaling_NaN()),
+        temperature_submodule_temperature(std::numeric_limits<double>::signaling_NaN()),
+        composition_submodule_depth(std::numeric_limits<double>::signaling_NaN()),
+        composition_submodule_composition(std::numeric_limits<unsigned int>::signaling_NaN())
       {
-    	  this->world = world_;
+        this->world = world_;
       }
 
       // todo: add relative path somehow, to output when there are erros
@@ -90,7 +95,6 @@ namespace aspect
             value  = tree.get_optional<std::string> ("temperature submodule.temperature");
             AssertThrow (value, ExcMessage("Entry undeclared:  temperature submodule.temperature"));
             temperature_submodule_temperature = dealii::Utilities::string_to_double(value.get());
-            //std::cout << "value.get() = " << value.get() << ", temperature_submodule_temperature = " << temperature_submodule_temperature << std::endl;
           }
 
         //Composition submodule parameters
@@ -122,19 +126,58 @@ namespace aspect
         if (temperature_submodule_name == "constant")
           {
             WorldBuilder::Utilities::NaturalCoordinate natural_coordinate = WorldBuilder::Utilities::NaturalCoordinate(position,*(world->get_coordinate_system()));
-                      // The constant temperature module should be used for this.
-                      if (depth <= temperature_submodule_depth &&
-                          Utilities::polygon_contains_point(coordinates, natural_coordinate.get_surface_coordinates()))
-                        {
-                          // We are in the the area where the contintal plate is defined. Set the constant temperature.
+            // The constant temperature module should be used for this.
+            if (depth <= temperature_submodule_depth &&
+                Utilities::polygon_contains_point(coordinates, natural_coordinate.get_surface_coordinates()))
+              {
+                // We are in the the area where the contintal plate is defined. Set the constant temperature.
+                return temperature_submodule_temperature;
+              }
 
-                          //std::cout << "; T = " << temperature << ", now = " << temperature_submodule_temperature;
-                          return temperature_submodule_temperature;
-                        }
-
+          }
+        else if (temperature_submodule_name == "none")
+          {
+        	return temperature;
+          }
+        else
+          {
+            AssertThrow(false,ExcMessage("Given temperature module does not exist: " + temperature_submodule_name))
           }
 
         return temperature;
+      }
+
+      double
+      ContinentalPlate::composition(const std::array<double,3> position,
+                                    const double depth,
+                                    const unsigned int composition_number,
+                                    double composition) const
+      {
+        if (composition_submodule_name == "constant")
+          {
+            WorldBuilder::Utilities::NaturalCoordinate natural_coordinate = WorldBuilder::Utilities::NaturalCoordinate(position,*(world->get_coordinate_system()));
+            // The constant temperature module should be used for this.
+            if (depth <= composition_submodule_depth &&
+                Utilities::polygon_contains_point(coordinates, natural_coordinate.get_surface_coordinates()))
+              {
+                // We are in the the area where the contintal plate is defined. Set the constant temperature.
+            	if(composition_submodule_composition == composition_number)
+            	{
+                return 1.0;
+            	}
+              }
+
+          }
+        else if (composition_submodule_name == "none")
+          {
+        	return composition;
+          }
+        else
+          {
+            AssertThrow(false,ExcMessage("Given composition module does not exist: " + composition_submodule_name))
+          }
+
+        return composition;
       }
     }
   }

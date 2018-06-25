@@ -33,7 +33,7 @@ namespace aspect
   {
     namespace CoordinateSystem
     {
-	   Cartesian::Cartesian()
+      Cartesian::Cartesian()
       {}
 
       // todo: add relative path somehow, to output when there are errors
@@ -105,7 +105,7 @@ namespace aspect
 
 
       aspect::WorldBuilder::Utilities::Coordinates::CoordinateSystem
-	  Cartesian::natural_coordinate_system() const
+      Cartesian::natural_coordinate_system() const
       {
         return aspect::WorldBuilder::Utilities::Coordinates::CoordinateSystem::cartesian;
       }

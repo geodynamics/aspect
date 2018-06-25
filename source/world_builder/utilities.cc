@@ -16,11 +16,11 @@ namespace aspect
       polygon_contains_point(const std::vector<std::array<double,2> > &point_list_,
                              const std::array<double,2> &point_)
       {
-    	  std::vector<Point<2> > point_list(point_list_.size());
-    	  for(unsigned int i = 0; i < point_list_.size(); ++i)
-    		  point_list[i] = aspect::Utilities::convert_array_to_point<2>(point_list_[i]);
+        std::vector<Point<2> > point_list(point_list_.size());
+        for (unsigned int i = 0; i < point_list_.size(); ++i)
+          point_list[i] = aspect::Utilities::convert_array_to_point<2>(point_list_[i]);
 
-    	  const Point<2> point = aspect::Utilities::convert_array_to_point<2>(point_);
+        const Point<2> point = aspect::Utilities::convert_array_to_point<2>(point_);
 
         /**
          * This code has been based on http://geomalgorithms.com/a03-_inclusion.html,
@@ -125,11 +125,11 @@ namespace aspect
         // inside a positive sign.
         const double sign = polygon_contains_point(point_list_, point_) ? 1.0 : -1.0;
 
-  	  std::vector<Point<2> > point_list(point_list_.size());
-  	  for(unsigned int i = 0; i < point_list_.size(); ++i)
-  		  point_list[i] = aspect::Utilities::convert_array_to_point<2>(point_list_[i]);
+        std::vector<Point<2> > point_list(point_list_.size());
+        for (unsigned int i = 0; i < point_list_.size(); ++i)
+          point_list[i] = aspect::Utilities::convert_array_to_point<2>(point_list_[i]);
 
-  	  const Point<2> point = aspect::Utilities::convert_array_to_point<2>(point_);
+        const Point<2> point = aspect::Utilities::convert_array_to_point<2>(point_);
 
         /**
          * This code is based on http://geomalgorithms.com/a02-_lines.html#Distance-to-Infinite-Line,

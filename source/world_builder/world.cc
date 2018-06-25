@@ -110,7 +110,7 @@ namespace aspect
     World::temperature(const std::array<double,2> /*point*/, const double /*depth*/, const double /*gravity*/) const
     {
       // turn it into a 3d coordinate and call the 3d temperature function
-      return 1;
+      return 1.0;
     }
 
     double
@@ -125,10 +125,29 @@ namespace aspect
       return temperature;
     }
 
-    WorldBuilder::CoordinateSystem::Interface*
-	World::get_coordinate_system() const
+    double
+    World::composition(const std::array<double,2> /*point*/, const double /*depth*/, const unsigned int /*composition_number*/) const
     {
-    	return coordinate_system;
+      // turn it into a 3d coordinate and call the 3d temperature function
+      return 1.0;
+    }
+
+    double
+    World::composition(const std::array<double,3> point, const double depth, const unsigned int composition_number) const
+    {
+      double composition = 0;
+      for (std::vector<Features::Interface *>::const_iterator it = features.begin(); it != features.end(); ++it)
+        {
+          composition = (*it)->composition(point,depth,composition_number, composition);
+        }
+
+      return composition;
+    }
+
+    WorldBuilder::CoordinateSystem::Interface *
+    World::get_coordinate_system() const
+    {
+      return coordinate_system;
     }
   }
 }

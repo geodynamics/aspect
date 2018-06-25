@@ -33,7 +33,7 @@ namespace aspect
 {
   namespace WorldBuilder
   {
-  class World;
+    class World;
 
     namespace Features
     {
@@ -65,10 +65,19 @@ namespace aspect
                              const double depth,
                              const double gravity,
                              double temperature) const = 0;
+          /**
+           * Returns a value for the reqeusted composition (0 is not present,
+           * 1 is present) based on the given position and
+           */
+          virtual
+          double composition(const std::array<double,3> position,
+                             const double depth,
+                             const unsigned int composition_number,
+                             double temperature) const = 0;
 
 
         protected:
-          WorldBuilder::World* world;
+          WorldBuilder::World *world;
 
           std::string name;
           std::vector<std::array<double,2> > coordinates;
@@ -82,7 +91,7 @@ namespace aspect
        * factory function
        */
       Interface *
-      create_feature(const std::string name, WorldBuilder::World* world);
+      create_feature(const std::string name, WorldBuilder::World *world);
 
     }
   }

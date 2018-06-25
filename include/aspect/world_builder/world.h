@@ -37,10 +37,10 @@ namespace aspect
 {
   namespace WorldBuilder
   {
-  namespace Features
-  {
+    namespace Features
+    {
       class Interface;
-  }
+    }
 
     class World
     {
@@ -64,10 +64,15 @@ namespace aspect
 
         double temperature(const std::array<double, 3> point, const double depth, const double gravity_norm) const;
 
+
+        double composition(const std::array<double, 2> point, const double depth, const unsigned int composition_number) const;
+
+        double composition(const std::array<double, 3> point, const double depth, const unsigned int composition_number) const;
+
         /**
          * returs a pointer to the coordinate system
          */
-        WorldBuilder::CoordinateSystem::Interface* get_coordinate_system() const;
+        WorldBuilder::CoordinateSystem::Interface *get_coordinate_system() const;
 
       private:
         const char path_seperator = '.';
@@ -90,10 +95,10 @@ namespace aspect
          * contains all the plugins.
          * todo: make a unique or shared pointer?
          */
-        std::vector<WorldBuilder::Features::Interface*> features;
+        std::vector<WorldBuilder::Features::Interface *> features;
 
         // coordinate system
-        WorldBuilder::CoordinateSystem::Interface* coordinate_system;
+        WorldBuilder::CoordinateSystem::Interface *coordinate_system;
 
 
 
