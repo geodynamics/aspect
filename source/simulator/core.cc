@@ -1592,7 +1592,12 @@ namespace aspect
 
   start_time_iteration:
 
-    if (parameters.resume_computation == false)
+    // Only set initial conditions if we do not resume, and are not in pre-refinement,
+    // or we do not want to skip initial conditions in pre-refinement.
+    if (parameters.resume_computation == false
+        &&
+        ! (parameters.skip_setup_initial_conditions_on_initial_refinement
+           && pre_refinement_step < parameters.initial_adaptive_refinement))
       {
         TimerOutput::Scope timer (computing_timer, "Setup initial conditions");
 
@@ -1610,13 +1615,19 @@ namespace aspect
     // start the principal loop over time steps:
     do
       {
-        start_timestep ();
+        // Only solve if we are not in pre-refinement, or we do not want to skip
+        // solving in pre-refinement.
+        if (! (parameters.skip_solvers_on_initial_refinement
+               && pre_refinement_step < parameters.initial_adaptive_refinement))
+          {
+            start_timestep ();
 
-        // then do the core work: assemble systems and solve
-        solve_timestep ();
+            // then do the core work: assemble systems and solve
+            solve_timestep ();
+          }
 
         // see if we have to start over with a new adaptive refinement cycle
-        // at the beginning of the simulation
+        // at the beginning of the simulation.
         if (timestep_number == 0)
           {
             const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
