@@ -54,6 +54,7 @@ subsection Boundary temperature model
 end
 
 subsection Boundary composition model
+  set Allow fixed composition on outflow boundaries = true
   set List of model names = initial composition
 end
 

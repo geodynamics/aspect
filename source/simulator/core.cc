@@ -717,7 +717,9 @@ namespace aspect
     // we update the boundary indicators of all faces that belong to ouflow boundaries
     // so that they are not in the list of fixed temperature boundary indicators any more.
     // We will undo this change in a later step, after the constraints have been set.
-    const unsigned int boundary_id_offset = 10000;
+    // As long as we allow deal.II 8.5, we can not have boundary ids of more than 256,
+    // so we want to offset them by 128 and not allow more than 128 boundary ids.
+    const unsigned int boundary_id_offset = 128;
     if (!boundary_temperature_manager.allows_fixed_temperature_on_outflow_boundaries())
       replace_outflow_boundary_ids(boundary_id_offset);
 
@@ -811,20 +813,19 @@ namespace aspect
     // Now check if the current_constraints we just computed changed from before. Do this before the melt handler
     // adds constraints for the melt cells, because they are allowed to change (and often do) without us having
     // to reinit the sparsity pattern.
-    bool constraints_changed = false;
-
     // If the mesh got refined and the size of the linear system changed, the old and new constraint
     // matrices will have different entries, and we can not easily compare them.
     // However, in case of mesh refinement we have to rebuild the matrix anyway, so we can skip the
     // step that checks if constraints have changed.
     bool mesh_has_changed = false;
-    if (!(current_constraints.get_local_lines().size() == new_current_constraints.get_local_lines().size()))
-      mesh_has_changed = true;
-    else if (!(current_constraints.get_local_lines() == new_current_constraints.get_local_lines()))
+    if (!(current_constraints.get_local_lines().size() == new_current_constraints.get_local_lines().size())
+        || !(current_constraints.get_local_lines() == new_current_constraints.get_local_lines()))
       mesh_has_changed = true;
 
     if (!mesh_has_changed)
       {
+        bool constraints_changed = false;
+
 #if DEAL_II_VERSION_GTE(9,0,0)
         for (auto &row: current_constraints.get_lines())
           {
@@ -858,6 +859,7 @@ namespace aspect
     current_constraints.clear ();
     current_constraints.reinit (introspection.index_sets.system_relevant_set);
     current_constraints.merge (new_current_constraints);
+    current_constraints.close();
 #endif
 
     if (time_step == 0 && parameters.include_melt_transport)
