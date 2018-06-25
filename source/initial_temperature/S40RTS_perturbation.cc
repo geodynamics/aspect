@@ -317,7 +317,7 @@ namespace aspect
       const double perturbation = get_Vs (position);
 
 
-      // Get the vs to density converstion
+      // Get the vs to density conversion
       const double depth = this->get_geometry_model().depth(position);
 
       double vs_to_density = 0.0;
