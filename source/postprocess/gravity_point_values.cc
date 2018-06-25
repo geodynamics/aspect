@@ -40,9 +40,9 @@ namespace aspect
     std::pair<std::string,std::string>
     GravityPointValues<dim>::execute (TableHandler &)
     {
-      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+quadrature_degree);
-      const unsigned int number_quadrature_points_cell = quadrature_formula.size();
-
+      // Get quadrature formula and increase the degree of quadrature over the velocity 
+      // element degree. 
+      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+quadrature_degree_increase);
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
                                quadrature_formula,
@@ -103,31 +103,31 @@ namespace aspect
         << "# 10: gravity_norm" << '\n'
         << "# 11: gravity_theory" << '\n'
         << "# 12: gravity_diff (theoric-norm)" << '\n'
-        << "# 13: potential" << '\n'
+        << "# 13: gravity potential" << '\n'
         << '\n';
 
-      // Temporary output during the build of this postprocessor WIP
-      const std::string filename2 = (this->get_output_directory() +
-                                     "checks_wip.txt");
-      std::ofstream f2 (filename2.c_str());
-      f2 << minimum_radius << ' ' << maximum_radius << '\n'
-         << minimum_longitude << ' ' << maximum_longitude << '\n'
-         << minimum_latitude << ' ' << maximum_latitude << '\n';
+      // Storing cartesian coordinate, density and JxW at local quadrature points in a vector
+      // avoids to use MaterialModel and fe_values within the loops. Because postprocessor 
+      // run in parallel, the total number of local quadrature points has to be determined:
+      const unsigned int n_locally_owned_cells = (this->get_triangulation().n_locally_owned_active_cells());
+      const unsigned int n_quadrature_points_per_cell = quadrature_formula.size();
+      
+      // Declare the vector 'density_JxW' to store the density at quadrature points. The 
+      // density and the JxW are here together for simplicity in the equation (both variables
+      // only appear together):
+      std::vector<double> density_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
 
-      // Storing cartesian coordinate, density and JzW at quadrature points in a vector
-      // avoids to use MaterialModel and fe_values within the loops.
-      unsigned int local_cell_number = (this->get_triangulation().n_locally_owned_active_cells());
-      const unsigned int number_quadrature_points_mpi = local_cell_number * number_quadrature_points_cell;
-      std::vector<double> density_JxW (number_quadrature_points_mpi);
-      std::vector<Point<dim> > position_point (number_quadrature_points_mpi);
+      // Declare the vector 'position_point' to store the position of quadrature points:
+      std::vector<Point<dim> > position_point (n_locally_owned_cells * n_quadrature_points_per_cell);
 
-      // Store density and from MaterialModel and allocate to density_all array:
+      // The following loop perform the storage of the position and density * JxW values 
+      // at local quadrature points: 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
       MaterialModel::MaterialModelInputs<dim> in(quadrature_formula.size(),this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature_formula.size(),this->n_compositional_fields());
-      local_cell_number = 0;
+      unsigned int local_cell_number = 0;
       for (; cell!=endc; ++cell)
         {
           if (cell->is_locally_owned())
@@ -136,63 +136,65 @@ namespace aspect
               const std::vector<Point<dim> > &position_point_cell = fe_values.get_quadrature_points();
               in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
               this->get_material_model().evaluate(in, out);
-              for (unsigned int q = 0; q < number_quadrature_points_cell; ++q)
+              for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
                 {
-                  density_JxW[local_cell_number * number_quadrature_points_cell + q] = out.densities[q] * fe_values.JxW(q);
-                  position_point[local_cell_number * number_quadrature_points_cell + q] = position_point_cell[q];
+                  density_JxW[local_cell_number * n_quadrature_points_per_cell + q] = out.densities[q] * fe_values.JxW(q);
+                  position_point[local_cell_number * n_quadrature_points_per_cell + q] = position_point_cell[q];
                 }
               ++local_cell_number;
             }
         }
 
-      // loop on r - satellite position [r, ,  ]
+      // This is the main loop which computes gravity acceleration and potential at a 
+      // point located at the spherical coordinate [r, phi, theta]:
+      // loop on the radius - satellite position [r, , ]
       for (unsigned int h=0; h < number_points_radius; ++h)
         {
           std_cxx11::array<double,dim> satellite_coordinate;
           satellite_coordinate[0] = minimum_radius + ((maximum_radius - minimum_radius) / number_points_radius) * h;
 
-          // loop on phi - satellite position [ , phi ,]
+          // loop on the longitude - satellite position [ , phi, ] in radian:
           for (unsigned int i=0; i < number_points_longitude; ++i)
             {
               satellite_coordinate[1] = (minimum_longitude + ((maximum_longitude - minimum_longitude) / number_points_longitude) * i) * numbers::PI / 180.;
 
-              // loop on theta - satllite position [ , , theta]
+              // loop on latitude - satllite position [ , , theta] in radian:
               for (unsigned int j=0; j < number_points_latitude; ++j)
                 {
                   satellite_coordinate[2] = (minimum_latitude + ((maximum_latitude - minimum_latitude) / number_points_latitude) * j) * numbers::PI / 180.;
-                  Tensor<1,dim> local_g;
-                  double local_U = 0;
 
                   // The spherical coordinates are shifted into cartesian to allow simplification in the mathematical equation.
                   const Point<dim> position_satellite = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(satellite_coordinate);
 
                   // For each point (i.e. satellite), the fourth integral goes over cells and quadrature
                   // points to get the unique distance between those, indispensable to calculate
-                  // gravity vector components x,y,z, and potential.
+                  // gravity vector components x,y,z (in tensor), and potential.
+                  Tensor<1,dim> local_g;
+                  double local_gravity_potential = 0;
                   cell = this->get_dof_handler().begin_active();
                   local_cell_number = 0;
                   for (; cell!=endc; ++cell)
                     {
                       if (cell->is_locally_owned())
                         {
-                          for (unsigned int q = 0; q < number_quadrature_points_cell; ++q)
+                          for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
                             {
-                              double dist = (position_satellite - position_point[local_cell_number * number_quadrature_points_cell + q]).norm();
-                              double KK = G * density_JxW[local_cell_number * number_quadrature_points_cell + q] / pow(dist,3);
-                              local_g += KK * (position_satellite - position_point[local_cell_number * number_quadrature_points_cell + q]);
-                              local_U -= G * density_JxW[local_cell_number * number_quadrature_points_cell + q] / dist;
+                              const double dist = (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]).norm();
+                              const double KK = G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / pow(dist,3);
+                              local_g += KK * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
+                              local_gravity_potential -= G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / dist;
                             }
                           ++local_cell_number;
                         }
                     }
 
-                  // assemble gravity component results from the mpi
+                  // Sum local gravity components over global domain
                   const Tensor<1,dim> g
                     = Utilities::MPI::sum (local_g, this->get_mpi_communicator());
-                  const double U
-                    = Utilities::MPI::sum (local_U, this->get_mpi_communicator());
+                  const double gravity_potential
+                    = Utilities::MPI::sum (local_gravity_potential, this->get_mpi_communicator());
 
-                  // analytical solution to calculate the theoritical gravity from a uniform desnity model.
+                  // analytical solution to calculate the theoretical gravity from a uniform density model.
                   // can only be used if concentric density profile
                   const double reference_density = (this->get_adiabatic_conditions().density(in.position[0]));
                   double g_theory = 0;
@@ -226,7 +228,7 @@ namespace aspect
                     << g.norm() << ' '
                     << g_theory << ' '
                     << g_diff << ' '
-                    << U
+                    << gravity_potential
                     << '\n';
 
                 }
@@ -244,26 +246,50 @@ namespace aspect
       {
         prm.enter_subsection ("Gravity calculation");
         {
-          prm.declare_entry ("Quadrature degree", "1",
-                             Patterns::Double (0.0));
+          prm.declare_entry ("Quadrature degree increase", "1",
+                             Patterns::Double (0.0),
+                             "Quadrature degree increase over the velocity element "
+                             "degree may be required when gravity is calculated near "
+                             "the surface or inside the model. An increase in the "
+                             "quadrature element adds accuracy to the gravity " 
+                             "solution from noise due to the model grid.");
           prm.declare_entry ("Number points radius", "1",
-                             Patterns::Double (0.0));
+                             Patterns::Double (0.0),
+                             "Gravity may be calculated for a set of points along "
+                             "the radius (e.g. depth profile) between a minimum and "
+                             "maximum radius.");
           prm.declare_entry ("Number points longitude", "1",
-                             Patterns::Double (0.0));
+                             Patterns::Double (0.0),
+                             "Gravity may be calculated for a sets of points along "
+                             "the longitude (e.g. gravity map) between a minimum and "
+                             "maximum longitude.");
           prm.declare_entry ("Number points latitude", "1",
-                             Patterns::Double (0.0));
+                             Patterns::Double (0.0),
+                             "Gravity may be calculated for a sets of points along "
+                             "the latitude (e.g. gravity map) between a minimum and "
+                             "maximum latitude.");
           prm.declare_entry ("Minimum radius", "0",
-                             Patterns::Double (0.0));
+                             Patterns::Double (0.0),
+                             "Minimum radius may be defined in or outside the model.");
           prm.declare_entry ("Maximum radius", "0",
-                             Patterns::Double (0.0));
+                             Patterns::Double (0.0),
+                             "Maximum radius can be defined in or outside the model.");
           prm.declare_entry ("Minimum longitude", "0",
-                             Patterns::Double (0.0,360.0));
+                             Patterns::Double (0.0,360.0),
+                             "Gravity may be calculated for a sets of points along "
+                             "the longitude between a minimum and maximum longitude.");
           prm.declare_entry ("Minimum latitude", "0",
-                             Patterns::Double (0.0,180.0));
+                             Patterns::Double (0.0,180.0),
+                             "Gravity may be calculated for a sets of points along "
+                             "the latitude between a minimum and maximum latitude.");
           prm.declare_entry ("Maximum longitude", "360",
-                             Patterns::Double (0.0,360.0));
+                             Patterns::Double (0.0,360.0),
+                             "Gravity may be calculated for a sets of points along "
+                             "the longitude between a minimum and maximum longitude.");
           prm.declare_entry ("Maximum latitude", "180",
-                             Patterns::Double (0.0,180.0));
+                             Patterns::Double (0.0,180.0),
+                             "Gravity may be calculated for a sets of points along "
+                             "the latitude between a minimum and maximum latitude.");
         }
         prm.leave_subsection();
       }
@@ -278,7 +304,7 @@ namespace aspect
       {
         prm.enter_subsection ("Gravity calculation");
         {
-          quadrature_degree = prm.get_double ("Quadrature degree");
+          quadrature_degree_increase = prm.get_double ("Quadrature degree increase");
           number_points_radius    = prm.get_double ("Number points radius");
           number_points_longitude = prm.get_double ("Number points longitude");
           number_points_latitude  = prm.get_double ("Number points latitude");
@@ -317,6 +343,6 @@ namespace aspect
                                   "A postprocessor that computes gravity and gravity potential "
                                   "for a set of points (e.g. satellites) in or above the model "
                                   "surface for a user-defined range of latitudes, longitudes "
-                                  "and radius. ")
+                                  "and radius.")
   }
 }

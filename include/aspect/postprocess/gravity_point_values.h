@@ -67,11 +67,12 @@ namespace aspect
 
       private:
         /**
-         * The model grid may alter the accuracy of the gravity solution when it is
-         * calculated near the surface or inside the model. Higher degrees of quadrature
-         * points refine the solution and may be required.
+         * Quadrature degree increase over the velocity element degree may be required when 
+         * gravity is calculated near the surface or inside the model. An increase in the
+         * quadrature element adds accuracy to the gravity solution from noise due to the 
+         * model grid.
          */
-        double quadrature_degree;
+        double quadrature_degree_increase;
 
         /**
          * Gravity may be calculated for a sets of points along the radius (e.g. depth

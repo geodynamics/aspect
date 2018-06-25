@@ -1,5 +1,5 @@
-# A simple setup for gravity acceleration calculated at a point P
-# manual for more information.
+# A simple setup for gravity acceleration calculated at a point P.
+# See the corresponding section in the manual for more information.
 
 # General parameters
 set Dimension                              = 3
