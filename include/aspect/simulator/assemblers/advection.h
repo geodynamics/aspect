@@ -48,6 +48,23 @@ namespace aspect
         compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch) const;
     };
 
+
+    /**
+     * This class assembles the terms for the matrix and right-hand-side of the diffusion
+     * equation for the current cell.
+     */
+    template <int dim>
+    class DiffusionSystem : public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        virtual
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+    };
+
+
     /**
      * This class assembles the face terms for the right-hand-side of the
      * advection equation for a face at the boundary of the domain where

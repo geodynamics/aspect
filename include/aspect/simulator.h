@@ -1149,6 +1149,15 @@ namespace aspect
 
 
       /**
+       * TODO: documentation.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void interpolate_material_output_into_field ();
+
+
+      /**
        * Interpolate the given function onto the velocity FE space and write
        * it into the given vector.
        *
