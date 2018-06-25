@@ -33,7 +33,7 @@ namespace aspect
     Composition<dim>::execute(Vector<float> &indicators) const
     {
       AssertThrow (this->n_compositional_fields() >= 1,
-                   ExcMessage ("This refinement criterion can not be used when no "
+                   ExcMessage ("This refinement criterion cannot be used when no "
                                "compositional fields are active!"));
       indicators = 0;
       Vector<float> this_indicator (indicators.size());
@@ -70,7 +70,7 @@ namespace aspect
                             "",
                             Patterns::List (Patterns::Double(0)),
                             "A list of scaling factors by which every individual compositional "
-                            "field will be multiplied by. If only a single compositional "
+                            "field will be multiplied. If only a single compositional "
                             "field exists, then this parameter has no particular meaning. "
                             "On the other hand, if multiple criteria are chosen, then these "
                             "factors are used to weigh the various indicators relative to "
