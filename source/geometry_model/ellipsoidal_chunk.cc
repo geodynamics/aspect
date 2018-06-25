@@ -43,7 +43,7 @@ namespace aspect
 {
   namespace GeometryModel
   {
-    namespace internal
+    namespace
     {
       template <int dim>
       void
@@ -63,6 +63,9 @@ namespace aspect
           cell->set_all_manifold_ids (numbers::invalid_manifold_id);
       }
     }
+
+
+
     /*
      * the EllipsoidalChunkGeometry class
      */
@@ -280,9 +283,9 @@ namespace aspect
       // clear it again afterwards
       coarse_grid.set_manifold (15, manifold);
 
-      coarse_grid.signals.pre_refinement.connect (std_cxx11::bind (&internal::set_manifold_ids<dim>,
+      coarse_grid.signals.pre_refinement.connect (std_cxx11::bind (&set_manifold_ids<dim>,
                                                                    std_cxx11::ref(coarse_grid)));
-      coarse_grid.signals.post_refinement.connect (std_cxx11::bind (&internal::clear_manifold_ids<dim>,
+      coarse_grid.signals.post_refinement.connect (std_cxx11::bind (&clear_manifold_ids<dim>,
                                                                     std_cxx11::ref(coarse_grid)));
       coarse_grid.signals.post_refinement.connect(std_cxx11::bind (&EllipsoidalChunk<dim>::set_boundary_ids,
                                                                    std_cxx11::cref(*this),
