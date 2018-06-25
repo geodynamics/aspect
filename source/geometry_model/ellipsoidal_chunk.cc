@@ -43,6 +43,26 @@ namespace aspect
 {
   namespace GeometryModel
   {
+    namespace internal
+    {
+      template <int dim>
+      void
+      set_manifold_ids(Triangulation<dim> &triangulation)
+      {
+        for (typename Triangulation<dim>::active_cell_iterator cell =
+               triangulation.begin_active(); cell != triangulation.end(); ++cell)
+          cell->set_all_manifold_ids (15);
+      }
+
+      template <int dim>
+      void
+      clear_manifold_ids(Triangulation<dim> &triangulation)
+      {
+        for (typename Triangulation<dim>::active_cell_iterator cell =
+               triangulation.begin_active(); cell != triangulation.end(); ++cell)
+          cell->set_all_manifold_ids (numbers::invalid_manifold_id);
+      }
+    }
     /*
      * the EllipsoidalChunkGeometry class
      */
@@ -260,9 +280,9 @@ namespace aspect
       // clear it again afterwards
       coarse_grid.set_manifold (15, manifold);
 
-      coarse_grid.signals.pre_refinement.connect (std_cxx11::bind (&set_manifold_ids,
+      coarse_grid.signals.pre_refinement.connect (std_cxx11::bind (&internal::set_manifold_ids<dim>,
                                                                    std_cxx11::ref(coarse_grid)));
-      coarse_grid.signals.post_refinement.connect (std_cxx11::bind (&clear_manifold_ids,
+      coarse_grid.signals.post_refinement.connect (std_cxx11::bind (&internal::clear_manifold_ids<dim>,
                                                                     std_cxx11::ref(coarse_grid)));
       coarse_grid.signals.post_refinement.connect(std_cxx11::bind (&EllipsoidalChunk<dim>::set_boundary_ids,
                                                                    std_cxx11::cref(*this),
