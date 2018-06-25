@@ -144,6 +144,14 @@ namespace aspect
         virtual
         double height_above_reference_surface(const Point<dim> &position) const = 0;
 
+        /**
+         * Converts a Cartesian Point into another coordinate system and returns it
+         * as a NaturalCoordinate.
+         */
+
+        Utilities::NaturalCoordinate<dim>
+        cartesian_to_other_coordinates(const Point<dim> &position,
+                                       const Utilities::Coordinates::CoordinateSystem &coordinate_system) const;
 
         /**
          * Returns what the natural coordinate system for this geometry model is.

@@ -2,6 +2,7 @@
 #include <aspect/initial_composition/interface.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/gravity_model/interface.h>
+#include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 

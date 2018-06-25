@@ -22,7 +22,6 @@
 #include <aspect/boundary_traction/function.h>
 #include <aspect/utilities.h>
 #include <aspect/global.h>
-#include <deal.II/base/signaling_nan.h>
 
 namespace aspect
 {
@@ -40,43 +39,14 @@ namespace aspect
     Tensor<1,dim>
     Function<dim>::
     boundary_traction (const types::boundary_id,
-                       const Point<dim> &p,
+                       const Point<dim> &position,
                        const Tensor<1,dim> &) const
     {
       Tensor<1,dim> traction;
-      if (coordinate_system == Utilities::Coordinates::cartesian)
-        {
-          for (unsigned int d=0; d<dim; ++d)
-            traction[d] = boundary_traction_function.value(p,d);
-
-        }
-      else if (coordinate_system == Utilities::Coordinates::spherical)
-        {
-          const std_cxx11::array<double,dim> spherical_coordinates =
-            aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(p);
-          Point<dim> point;
-
-          for (unsigned int d=0; d<dim; ++d)
-            point[d] = spherical_coordinates[d];
-
-          for (unsigned int d=0; d<dim; ++d)
-            traction[d] = boundary_traction_function.value(point,d);
-
-        }
-      else if (coordinate_system == Utilities::Coordinates::depth)
-        {
-          const double depth = this->get_geometry_model().depth(p);
-          Point<dim> point;
-          point(0) = depth;
-
-          for (unsigned int d=0; d<dim; ++d)
-            traction[d] = boundary_traction_function.value(point,d);
-        }
-      else
-        {
-          AssertThrow(false, ExcNotImplemented());
-          return numbers::signaling_nan<Tensor<1,dim> >();
-        }
+      Utilities::NaturalCoordinate<dim> point =
+        this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
+      for (unsigned int d=0; d<dim; ++d)
+        traction[d] = boundary_traction_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()),d);
 
       return traction;
     }

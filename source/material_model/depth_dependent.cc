@@ -20,6 +20,7 @@
 
 #include <aspect/material_model/depth_dependent.h>
 #include <aspect/utilities.h>
+#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/std_cxx11/array.h>
 

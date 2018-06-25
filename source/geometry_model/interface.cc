@@ -81,6 +81,33 @@ namespace aspect
     }
 
 
+    template <int dim>
+    Utilities::NaturalCoordinate<dim>
+    Interface<dim>::cartesian_to_other_coordinates(const Point<dim> &position,
+                                                   const Utilities::Coordinates::CoordinateSystem &coordinate_system) const
+    {
+      std_cxx11::array<double, dim> other_coord;
+      switch (coordinate_system)
+        {
+          case Utilities::Coordinates::cartesian:
+            other_coord = Utilities::convert_point_to_array(position);
+            break;
+
+          case Utilities::Coordinates::spherical:
+            other_coord = Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
+            break;
+
+          case Utilities::Coordinates::depth:
+            other_coord[0] = depth(position);
+            break;
+
+          case Utilities::Coordinates::ellipsoidal:
+          default:
+            AssertThrow(false, ExcNotImplemented());
+        }
+
+      return Utilities::NaturalCoordinate<dim>(other_coord, coordinate_system);
+    }
 
     template <int dim>
     Point<dim>

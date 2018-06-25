@@ -22,8 +22,7 @@
 #include <aspect/initial_composition/function.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/utilities.h>
-#include <deal.II/base/signaling_nan.h>
-
+#include <aspect/geometry_model/interface.h>
 
 namespace aspect
 {
@@ -35,33 +34,10 @@ namespace aspect
     Function<dim>::
     initial_composition (const Point<dim> &position, const unsigned int n_comp) const
     {
-      if (coordinate_system == Utilities::Coordinates::cartesian)
-        {
-          return function->value(position,n_comp);
-        }
-      else if (coordinate_system == ::aspect::Utilities::Coordinates::spherical)
-        {
-          const std_cxx11::array<double,dim> spherical_coordinates =
-            aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
-          Point<dim> point;
+      Utilities::NaturalCoordinate<dim> point =
+        this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
 
-          for (unsigned int i = 0; i<dim; ++i)
-            point[i] = spherical_coordinates[i];
-
-          return function->value(point,n_comp);
-        }
-      else if (coordinate_system == Utilities::Coordinates::depth)
-        {
-          const double depth = this->get_geometry_model().depth(position);
-          Point<dim> point;
-          point(0) = depth;
-          return function->value(point,n_comp);
-        }
-      else
-        {
-          AssertThrow(false, ExcNotImplemented());
-          return numbers::signaling_nan<double>();
-        }
+      return function->value(Utilities::convert_array_to_point<dim>(point.get_coordinates()),n_comp);
     }
 
 
