@@ -21,6 +21,7 @@
 
 #include <aspect/boundary_heat_flux/function.h>
 #include <aspect/global.h>
+#include <aspect/geometry_model/interface.h>
 #include <deal.II/base/signaling_nan.h>
 
 namespace aspect
