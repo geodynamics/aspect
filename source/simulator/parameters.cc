@@ -562,6 +562,36 @@ namespace aspect
     }
     prm.leave_subsection();
 
+    prm.enter_subsection ("Boundary heat flux model");
+    {
+      prm.declare_entry ("Fixed heat flux boundary indicators", "",
+                         Patterns::List (Patterns::Anything()),
+                         "A comma separated list of names denoting those boundaries "
+                         "on which the heat flux is fixed and described by the "
+                         "boundary heat flux object selected in the 'Model name' parameter. "
+                         "All boundary indicators used by the geometry but not explicitly "
+                         "listed here or in the list of 'Fixed temperature boundary indicators' "
+                         "in the 'Boundary temperature model' will end up with no-flux "
+                         "(insulating) boundary conditions."
+                         "\n\n"
+                         "The names of the boundaries listed here can either be "
+                         "numbers (in which case they correspond to the numerical "
+                         "boundary indicators assigned by the geometry object), or they "
+                         "can correspond to any of the symbolic names the geometry object "
+                         "may have provided for each part of the boundary. You may want "
+                         "to compare this with the documentation of the geometry model you "
+                         "use in your model."
+                         "\n\n"
+                         "This parameter only describes which boundaries have a fixed "
+                         "heat flux, but not what heat flux should hold on these "
+                         "boundaries. The latter piece of information needs to be "
+                         "implemented in a plugin in the BoundaryHeatFlux "
+                         "group, unless an existing implementation in this group "
+                         "already provides what you want.");
+    }
+    prm.leave_subsection();
+
+
     prm.enter_subsection ("Nullspace removal");
     {
       prm.declare_entry ("Remove nullspace", "",
@@ -1225,7 +1255,7 @@ namespace aspect
         Utilities::split_string_list(prm.get("Remove nullspace"));
       AssertThrow(Utilities::has_unique_entries(nullspace_names),
                   ExcMessage("The list of strings for the parameter "
-                             "'Model settings/Remove nullspace' contains entries more than once. "
+                             "'Nullspace removal/Remove nullspace' contains entries more than once. "
                              "This is not allowed. Please check your parameter file."));
 
       for (unsigned int i=0; i<nullspace_names.size(); ++i)
@@ -1589,7 +1619,7 @@ namespace aspect
         }
       catch (const std::string &error)
         {
-          AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Free surface "
+          AssertThrow (false, ExcMessage ("While parsing the entry <Free surface/Free surface "
                                           "boundary indicators>, there was an error. Specifically, "
                                           "the conversion function complained as follows: "
                                           + error));
@@ -1671,7 +1701,7 @@ namespace aspect
             }
           catch (const std::string &error)
             {
-              AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Prescribed "
+              AssertThrow (false, ExcMessage ("While parsing the entry <Boundary traction model/Prescribed "
                                               "traction indicators>, there was an error. Specifically, "
                                               "the conversion function complained as follows: "
                                               + error));
@@ -1686,6 +1716,27 @@ namespace aspect
           // finally, put it into the list
           prescribed_traction_boundary_indicators[boundary_id] =
             std::pair<std::string,std::string>(comp,value);
+        }
+    }
+    prm.leave_subsection ();
+
+    prm.enter_subsection ("Boundary heat flux model");
+    {
+      try
+        {
+          const std::vector<types::boundary_id> x_fixed_heat_flux_boundary_indicators
+            = geometry_model.translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
+                                                                      (prm.get ("Fixed heat flux boundary indicators")));
+          fixed_heat_flux_boundary_indicators
+            = std::set<types::boundary_id> (x_fixed_heat_flux_boundary_indicators.begin(),
+                                            x_fixed_heat_flux_boundary_indicators.end());
+        }
+      catch (const std::string &error)
+        {
+          AssertThrow (false, ExcMessage ("While parsing the entry <Boundary heat flux model/Fixed heat flux "
+                                          "boundary indicators>, there was an error. Specifically, "
+                                          "the conversion function complained as follows: "
+                                          + error));
         }
     }
     prm.leave_subsection ();
@@ -1715,6 +1766,7 @@ namespace aspect
     AdiabaticConditions::declare_parameters<dim> (prm);
     BoundaryVelocity::Manager<dim>::declare_parameters (prm);
     BoundaryTraction::declare_parameters<dim> (prm);
+    BoundaryHeatFlux::declare_parameters<dim> (prm);
   }
 }
 

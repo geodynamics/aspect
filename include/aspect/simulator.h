@@ -55,6 +55,7 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
+#include <aspect/boundary_heat_flux/interface.h>
 #include <aspect/boundary_composition/interface.h>
 #include <aspect/initial_temperature/interface.h>
 #include <aspect/initial_composition/interface.h>
@@ -1559,6 +1560,7 @@ namespace aspect
       const std_cxx11::unique_ptr<AdiabaticConditions::Interface<dim> >       adiabatic_conditions;
       BoundaryVelocity::Manager<dim>                                          boundary_velocity_manager;
       std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > > boundary_traction;
+      const std_cxx11::unique_ptr<BoundaryHeatFlux::Interface<dim> >          boundary_heat_flux;
 
       /**
        * @}

@@ -416,6 +416,17 @@ namespace aspect
 
 
   template <int dim>
+  const BoundaryHeatFlux::Interface<dim> &
+  SimulatorAccess<dim>::get_boundary_heat_flux () const
+  {
+    Assert (simulator->boundary_heat_flux.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
+    return *simulator->boundary_heat_flux.get();
+  }
+
+
+
+  template <int dim>
   bool
   SimulatorAccess<dim>::has_boundary_composition () const
   {
@@ -450,6 +461,16 @@ namespace aspect
   {
     return get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators();
   }
+
+
+
+  template <int dim>
+  const std::set<types::boundary_id> &
+  SimulatorAccess<dim>::get_fixed_heat_flux_boundary_indicators () const
+  {
+    return simulator->parameters.fixed_heat_flux_boundary_indicators;
+  }
+
 
 
   template <int dim>

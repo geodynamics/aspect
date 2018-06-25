@@ -245,6 +245,86 @@ namespace aspect
 
     template <int dim>
     void
+    AdvectionSystemBoundaryHeatFlux<dim>::execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                                                  internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
+      internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>& > (data_base);
+
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
+
+      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+
+      if (!advection_field.is_temperature())
+        return;
+
+      const unsigned int face_no = scratch.face_number;
+      const typename DoFHandler<dim>::face_iterator face = scratch.cell->face(face_no);
+
+      const unsigned int n_face_q_points    = scratch.face_finite_element_values->n_quadrature_points;
+      const double time_step = this->get_timestep();
+
+      // also have the number of dofs that correspond just to the element for
+      // the system we are currently trying to assemble
+      const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
+
+      Assert (advection_dofs_per_cell < scratch.face_finite_element_values->get_fe().dofs_per_cell, ExcInternalError());
+      Assert (scratch.face_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
+
+      const unsigned int solution_component = advection_field.component_index(introspection);
+      const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
+
+      if (this->get_fixed_heat_flux_boundary_indicators().find(face->boundary_id())
+          != this->get_fixed_heat_flux_boundary_indicators().end())
+        {
+          // We are in the case of a Neumann temperature boundary.
+          // Impose the Neumann value weakly using a RHS term.
+
+          std::vector<Tensor<1,dim> > heat_flux(n_face_q_points);
+          heat_flux = this->get_boundary_heat_flux().heat_flux(
+                        face->boundary_id(),
+                        scratch.face_material_model_inputs,
+                        scratch.face_material_model_outputs,
+#if DEAL_II_VERSION_GTE(9,0,0)
+                        scratch.face_finite_element_values->get_normal_vectors()
+#else
+                        scratch.face_finite_element_values->get_all_normal_vectors()
+#endif
+                      );
+
+          for (unsigned int q=0; q<n_face_q_points; ++q)
+            {
+              // precompute the values of shape functions.
+              // We only need to look up values of shape functions if they
+              // belong to 'our' component. They are zero otherwise anyway.
+              // Note that we later only look at the values that we do set here.
+              for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell; /*increment at end of loop*/)
+                {
+                  if (fe.system_to_component_index(i).first == solution_component)
+                    {
+                      scratch.face_phi_field[i_advection]      = (*scratch.face_finite_element_values)[solution_field].value (i, q);
+                      ++i_advection;
+                    }
+                  ++i;
+                }
+
+              for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+                {
+                  data.local_rhs(i)
+                  -= time_step * scratch.face_phi_field[i] *
+                     (heat_flux[q] * scratch.face_finite_element_values->normal_vector(q))
+                     *
+                     scratch.face_finite_element_values->JxW(q);
+                }
+            }
+        }
+    }
+
+
+
+    template <int dim>
+    void
     AdvectionSystemBoundaryFace<dim>::execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                               internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
@@ -1154,7 +1234,8 @@ namespace aspect
   template class AdvectionSystem<dim>; \
   template class AdvectionSystemBoundaryFace<dim>; \
   template class AdvectionSystemInteriorFace<dim>; \
-   
+  template class AdvectionSystemBoundaryHeatFlux<dim>;
+
     ASPECT_INSTANTIATE(INSTANTIATE)
   }
 }

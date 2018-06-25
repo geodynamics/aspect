@@ -85,6 +85,11 @@ namespace aspect
     template <int dim> class Interface;
   }
 
+  namespace BoundaryHeatFlux
+  {
+    template <int dim> class Interface;
+  }
+
   namespace BoundaryComposition
   {
     template <int dim> class Manager;
@@ -577,6 +582,13 @@ namespace aspect
       get_boundary_temperature_manager () const;
 
       /**
+       * Return a reference to the object that describes heat flux
+       * boundary conditions.
+       */
+      const BoundaryHeatFlux::Interface<dim> &
+      get_boundary_heat_flux () const;
+
+      /**
        * Return whether the current model has a boundary composition object
        * set. This is useful because a simulation does not actually have to
        * declare any boundary composition model, for example if all
@@ -652,6 +664,13 @@ namespace aspect
        */
       const std::set<types::boundary_id> &
       get_fixed_temperature_boundary_indicators () const;
+
+      /**
+       * Return a set of boundary indicators that describes which of the
+       * boundaries have a fixed heat flux.
+       */
+      const std::set<types::boundary_id> &
+      get_fixed_heat_flux_boundary_indicators () const;
 
       /**
        * Return a set of boundary indicators that describes which of the
