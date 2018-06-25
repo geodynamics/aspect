@@ -493,23 +493,16 @@ parse_parameters (const std::string &input_as_string,
  */
 void print_help()
 {
-  std::cout << "Usage: ./aspect [args] <parameter_file.prm>   (to read from an input file)"
-            << std::endl
-            << "    or ./aspect [args] --                     (to read parameters from stdin)"
-            << std::endl
+  std::cout << "Usage: ./aspect [args] <parameter_file.prm>   (to read from an input file)\n"
+            << "    or ./aspect [args] --                     (to read parameters from stdin)\n"
             << std::endl;
-  std::cout << "    optional arguments [args]:"
-            << std::endl
-            << "       -h, --help             (for this usage help)"
-            << std::endl
-            << "       -v, --version          (for information about library versions)"
-            << std::endl
-            << "       -j, --threads          (to use multi-threading)"
-            << std::endl
-            << "       --output-xml           (print parameters in xml format to standard output and exit)"
-            << std::endl
-            << "       --output-plugin-graph  (write a representation of all plugins to standard output and exit)"
-            << std::endl
+  std::cout << "    optional arguments [args]:\n"
+            << "       -h, --help             (for this usage help)\n"
+            << "       -v, --version          (for information about library versions)\n"
+            << "       -j, --threads          (to use multi-threading)\n"
+            << "       --output-xml           (print parameters in xml format to standard output and exit)\n"
+            << "       --output-plugin-graph  (write a representation of all plugins to standard output and exit)\n"
+            << "       --test                 (run the unit tests from unit_tests/, run --test -h for more info)\n"
             << std::endl;
 }
 
