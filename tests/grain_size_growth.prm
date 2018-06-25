@@ -1,4 +1,4 @@
-# This is a very simple testcase that checks
+# This is a very simple test case that checks
 # that the implementation of the grain growth
 # laws are correct. All parameters, including
 # temperature and pressure, are set to constant

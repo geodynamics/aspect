@@ -1,8 +1,11 @@
-# This is a very simple testcase that checks
+# This is a very simple test case that checks
 # that the implementation of the grain growth
-# laws are correct, and if the work with the 
-# lower mantle grain size scaling. All parameters, including
-# temperature and pressure, are set to constant
+# laws are correct, and if they work with the 
+# lower mantle grain size scaling (which is
+# a parameter introduced to reduce numerical problems
+# resulting from large contrasts in grain size between
+# the lower mantle and transition zone. All parameters,
+# including temperature and pressure, are set to constant
 # values and no dynamic recrystallisation is 
 # included (the reciprocal required strain is
 # set to zero). Material flows in from the left

@@ -1,7 +1,7 @@
-# A test for the grain size model material model similar to 
+# A test for the grain size material model similar to 
 # damage-rheology-strain. The only difference is the activation of shear
-# heating, which is tested to be reduced by the work fraction that is used to
-# change the boundary area of grains.
+# heating. In the grain size model, a fraction of the energy dissipated by
+# dislocation creep increases the surface area of grains.
 
 set Dimension                              = 2
 set End time                               = 10000

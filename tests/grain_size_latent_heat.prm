@@ -1,9 +1,8 @@
-#########################################################
-# This is a model setup to test the latent heat generation. 
+# This is a model setup to test latent heat generation. 
 # It is identical to the latent_heat_enthalpy test, but utilizes
 # the grain size material model to ensure a correct 
 # implementation of the functionality. For details on the 
-# test see the latent_heat_enthalpy testcase.
+# test see the latent_heat_enthalpy test case.
 
 set Dimension = 2
 
