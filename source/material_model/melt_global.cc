@@ -457,7 +457,7 @@ namespace aspect
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model Melt simple with Thermal viscosity exponent can not have reference_T=0."));
 
-          if (this->get_parameters().convert_to_years == true)
+          if (this->convert_output_to_years() == true)
             melting_time_scale *= year_in_seconds;
 
           if (this->get_parameters().use_operator_splitting)
