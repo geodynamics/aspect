@@ -1,4 +1,29 @@
-// make sure we use the additional material model outputs
+/*
+  Copyright (C) 2018 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
+#include "common.h"
+#include <aspect/utilities.h>
+
+// A test that simply verifies that the additional material
+// model outputs can be accessed.
+
 #include <aspect/simulator.h>
 #include <deal.II/grid/tria.h>
 #include <aspect/material_model/simple.h>
@@ -16,7 +41,7 @@ namespace aspect
     {
       public:
         AdditionalOutputs1 (const unsigned int n_points,
-                            const unsigned int n_comp)
+                            const unsigned int /*n_comp*/)
         {
           additional_material_output1.resize(n_points);
         }
@@ -30,7 +55,7 @@ namespace aspect
     {
       public:
 
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &/*in*/,
                               MaterialModel::MaterialModelOutputs<dim> &out) const
         {
           AdditionalOutputs1<dim> *additional;
@@ -47,7 +72,7 @@ namespace aspect
 }
 
 
-int f()
+TEST_CASE("AdditionalOutputs works")
 {
   const int dim=2;
 
@@ -56,35 +81,22 @@ int f()
   MaterialModelOutputs<dim> out(1,1);
 
 
-  if (out.get_additional_output<AdditionalOutputs1<dim> >() != NULL)
-    throw "error";
+  REQUIRE(out.get_additional_output<AdditionalOutputs1<dim> >() == NULL);
 
   out.additional_outputs.push_back(std::make_shared<AdditionalOutputs1<dim> > (1, 1));
 
-  struct empty {};
-
-  if (out.get_additional_output<empty>() != NULL)
-    throw "error";
+  REQUIRE(out.get_additional_output<AdditionalOutputs1<dim> >() != NULL);
 
   Material1<dim> mat;
   mat.evaluate(in, out);
 
-  std::cout << out.get_additional_output<AdditionalOutputs1<dim> >()->additional_material_output1[0] << std::endl;
+  REQUIRE(out.get_additional_output<AdditionalOutputs1<dim> >()->additional_material_output1[0] == 42.0);
 
   // test const version of get_additional_output:
   {
     const MaterialModelOutputs<dim> &const_out = out;
-    if (const_out.get_additional_output<empty>() != NULL)
-      throw "error";
+    REQUIRE(const_out.get_additional_output<AdditionalOutputs1<dim> >() != NULL);
     const AdditionalOutputs1<dim> *a = const_out.get_additional_output<AdditionalOutputs1<dim> >();
-    if (a == NULL)
-      throw "error";
+    REQUIRE(a != NULL);
   }
-
-  std::cout << "OK" << std::endl;
-  exit(0);
-  return 42;
 }
-
-// run this function by initializing a global variable by it
-int i = f();
