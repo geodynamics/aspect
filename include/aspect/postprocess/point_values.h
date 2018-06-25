@@ -85,8 +85,20 @@ namespace aspect
         void serialize (Archive &ar, const unsigned int version);
 
       private:
-        std::vector<Point<dim> >                                       evaluation_points;
+        /**
+         * Vector of Points representing the points where the solution is to be evaluated
+         * that can be used by VectorTools.
+         */
+        std::vector<Point<dim> > evaluation_points_cartesian;
+        /**
+         * The values of the solution at the evaluation points.
+         */
         std::vector<std::pair<double, std::vector<Vector<double> > > > point_values;
+        /**
+         * Whether or not to interpret the evaluation points in the input file
+         * as natural coordinates or not.
+         */
+        bool use_natural_coordinates;
     };
   }
 }

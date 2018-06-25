@@ -20,6 +20,9 @@
 
 
 #include <aspect/postprocess/point_values.h>
+#include <aspect/geometry_model/interface.h>
+#include <aspect/geometry_model/sphere.h>
+#include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/global.h>
 #include <deal.II/numerics/vector_tools.h>
 
@@ -35,22 +38,23 @@ namespace aspect
     {
       // evaluate the solution at all of our evaluation points
       std::vector<Vector<double> >
-      current_point_values (evaluation_points.size(),
+      current_point_values (evaluation_points_cartesian.size(),
                             Vector<double> (this->introspection().n_components));
 
-      for (unsigned int p=0; p<evaluation_points.size(); ++p)
+      for (unsigned int p=0; p<evaluation_points_cartesian.size(); ++p)
         {
           // try to evaluate the solution at this point. in parallel, the point
           // will be on only one processor's owned cells, so the others are
           // going to throw an exception. make sure at least one processor
           // finds the given point
           bool point_found = false;
+
           try
             {
               VectorTools::point_value(this->get_mapping(),
                                        this->get_dof_handler(),
                                        this->get_solution(),
-                                       evaluation_points[p],
+                                       evaluation_points_cartesian[p],
                                        current_point_values[p]);
               point_found = true;
             }
@@ -63,11 +67,11 @@ namespace aspect
           const int n_procs = Utilities::MPI::sum (point_found ? 1 : 0, this->get_mpi_communicator());
           AssertThrow (n_procs > 0,
                        ExcMessage ("While trying to evaluate the solution at point " +
-                                   Utilities::to_string(evaluation_points[p][0]) + ", " +
-                                   Utilities::to_string(evaluation_points[p][1]) +
+                                   Utilities::to_string(evaluation_points_cartesian[p][0]) + ", " +
+                                   Utilities::to_string(evaluation_points_cartesian[p][1]) +
                                    (dim == 3
                                     ?
-                                    ", " + Utilities::to_string(evaluation_points[p][2])
+                                    ", " + Utilities::to_string(evaluation_points_cartesian[p][2])
                                     :
                                     "") + "), " +
                                    "no processors reported that the point lies inside the " +
@@ -110,13 +114,13 @@ namespace aspect
            time_point != point_values.end();
            ++time_point)
         {
-          Assert (time_point->second.size() == evaluation_points.size(),
+          Assert (time_point->second.size() == evaluation_points_cartesian.size(),
                   ExcInternalError());
-          for (unsigned int i=0; i<evaluation_points.size(); ++i)
+          for (unsigned int i=0; i<evaluation_points_cartesian.size(); ++i)
             {
               f << /* time = */ time_point->first / (this->convert_output_to_years() ? year_in_seconds : 1.)
                 << ' '
-                << /* location = */ evaluation_points[i] << ' ';
+                << /* location = */ evaluation_points_cartesian[i] << ' ';
 
               for (unsigned int c=0; c<time_point->second[i].size(); ++c)
                 {
@@ -166,6 +170,13 @@ namespace aspect
                             "The list of points at which the solution should be evaluated. "
                             "Points need to be separated by semicolons, and coordinates of "
                             "each point need to be separated by commas.");
+          prm.declare_entry("Use natural coordinates", "false",
+                            Patterns::Bool (),
+                            "Whether or not the Evaluation points are specified in "
+                            "the natural coordinates of the geometry model, e.g. "
+                            "radius, lon, lat for the chunk model. "
+                            "Currently, natural coordinates for the spherical shell "
+                            "and sphere geometries are not supported. ");
         }
         prm.leave_subsection();
       }
@@ -183,6 +194,9 @@ namespace aspect
         {
           const std::vector<std::string> point_list
             = Utilities::split_string_list(prm.get("Evaluation points"), ';');
+
+          std::vector<std::array<double,dim> > evaluation_points;
+
           for (unsigned int p=0; p<point_list.size(); ++p)
             {
               const std::vector<std::string> coordinates
@@ -194,10 +208,30 @@ namespace aspect
                                        ">, but this does not correspond to a list of numbers with "
                                        "as many coordinates as you run your simulation in."));
 
-              Point<dim> point;
+              std::array<double,dim> point;
               for (unsigned int d=0; d<dim; ++d)
                 point[d] = Utilities::string_to_double (coordinates[d]);
               evaluation_points.push_back (point);
+            }
+
+          use_natural_coordinates = prm.get_bool("Use natural coordinates");
+
+          if (use_natural_coordinates)
+            AssertThrow (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) == 0 &&
+                         dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) == 0,
+                         ExcMessage ("This postprocessor can not be used if the geometry "
+                                     "is a sphere or spherical shell, because these geometries have not implemented natural coordinates."));
+
+          // Convert the vector of coordinate arrays in Cartesian or natural
+          // coordinates to a vector of Point<dim> of Cartesian coordinates.
+          evaluation_points_cartesian.resize(evaluation_points.size());
+          for (unsigned int p=0; p<evaluation_points.size(); ++p)
+            {
+              if (use_natural_coordinates)
+                evaluation_points_cartesian[p] = this->get_geometry_model().natural_to_cartesian_coordinates(evaluation_points[p]);
+              else
+                for (unsigned int i = 0; i < dim; i++)
+                  evaluation_points_cartesian[p][i] = evaluation_points[p][i];
             }
         }
         prm.leave_subsection();
@@ -210,7 +244,7 @@ namespace aspect
     template <class Archive>
     void PointValues<dim>::serialize (Archive &ar, const unsigned int)
     {
-      ar &evaluation_points
+      ar &evaluation_points_cartesian
       & point_values;
     }
 
