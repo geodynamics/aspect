@@ -19,14 +19,17 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
+#include <stdexcept>
 
 #ifndef NDEBUG
 #   define Assert(condition, message) \
   do { \
       if (! (condition)) { \
-          std::cerr << "Assertion `" #condition "` failed in " << __FILE__ \
-                    << " line " << __LINE__ << ": " << message << std::endl; \
-          std::terminate(); \
+          std::stringstream smessage; \
+          smessage << "Assert `" #condition "` failed in " << __FILE__ \
+                   << " at line " << __LINE__ << ": " << message << std::endl; \
+          throw std::runtime_error(smessage.str()); \
         } \
     } while (false)
 #else
@@ -36,8 +39,9 @@
 #   define AssertThrow(condition, message) \
   do { \
       if (! (condition)) { \
-          std::cerr << "Assertion `" #condition "` failed in " << __FILE__ \
-                    << " line " << __LINE__ << ": " << message << std::endl; \
-          std::terminate(); \
+          std::stringstream smessage; \
+          smessage << "AssertThrow `" #condition "` failed in " << __FILE__ \
+                   << " at line " << __LINE__ << ": " << message << std::endl; \
+          throw std::runtime_error(smessage.str()); \
         } \
     } while (false)
