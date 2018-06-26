@@ -122,7 +122,7 @@ namespace aspect
     bool
     Manager<dim>::adiabatic_heating_enabled() const
     {
-      return find_heating_model<HeatingModel::AdiabaticHeating<dim> >() != NULL;
+      return has_matching_heating_model<HeatingModel::AdiabaticHeating<dim> >() ;
     }
 
 
@@ -131,7 +131,7 @@ namespace aspect
     bool
     Manager<dim>::shear_heating_enabled() const
     {
-      return find_heating_model<HeatingModel::ShearHeating<dim> >() != NULL;
+      return has_matching_heating_model<HeatingModel::ShearHeating<dim> >() ;
     }
 
 
