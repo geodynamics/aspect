@@ -1,34 +1,27 @@
 /*
-  Copyright (C) 2018 by the authors of the ASPECT code.
+  Copyright (C) 2018 by the authors of the World Builder code.
 
-  This file is part of ASPECT.
+  This file is part of the World Builder.
 
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published
+   by the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
+   You should have received a copy of the GNU Lesser General Public License
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
-#include <world_builder/features/continental_plate.h>
-#include <world_builder/utilities.h>
-#include <aspect/utilities.h>
-
-#include <deal.II/base/exceptions.h>
-#include <deal.II/base/utilities.h>
 
 #include <boost/algorithm/string.hpp>
 
-
-using dealii::StandardExceptions::ExcMessage;
+#include <world_builder/features/continental_plate.h>
+#include <world_builder/utilities.h>
+#include <world_builder/assert.h>
 
 
   namespace WorldBuilder
@@ -50,37 +43,37 @@ using dealii::StandardExceptions::ExcMessage;
       ContinentalPlate::read(ptree &tree)
       {
         boost::optional<std::string> value  = tree.get_optional<std::string> ("name");
-        AssertThrow (value, ExcMessage("Entry undeclared:  name"));
+        AssertThrow (value, "Entry undeclared:  name");
         name = boost::algorithm::to_lower_copy(value.get());
         boost::algorithm::trim(name);
 
 
         boost::optional<ptree &> child = tree.get_child("coordinates");
-        AssertThrow (child, ExcMessage("Entry undeclared:  coordinates"));
+        AssertThrow (child, "Entry undeclared:  coordinates");
         for (boost::property_tree::ptree::iterator it = child.get().begin(); it != child.get().end(); ++it)
           {
             std::vector<double> tmp;
             boost::optional<ptree &> child2 = it->second.get_child("");
-            AssertThrow (child, ExcMessage("This should be a 2d array, but only one dimension found."));
+            AssertThrow (child, "This should be a 2d array, but only one dimension found.");
             for (boost::property_tree::ptree::iterator it2 = child2.get().begin(); it2 != child2.get().end(); ++it2)
               {
-                tmp.push_back(dealii::Utilities::string_to_double(it2->second.get<std::string>("")));
+                tmp.push_back(stod(it2->second.get<std::string>("")));
               }
-            AssertThrow (tmp.size() == 2, ExcMessage("These represent 2d coordinates, but there are " +
-                                                     dealii::Utilities::to_string(tmp.size()) +
-                                                     " coordinates specified."));
+            AssertThrow (tmp.size() == 2, "These represent 2d coordinates, but there are " <<
+                                          tmp.size() <<
+                                          " coordinates specified.");
 
             std::array<double,2> tmp_array;
             std::copy(tmp.begin(), tmp.end(), tmp_array.begin());
             coordinates.push_back(tmp_array);
           }
-        AssertThrow (coordinates.size() > 2, ExcMessage("This feature requires at least 3 coordinates, but only " +
-                                                        dealii::Utilities::to_string(coordinates.size()) +
-                                                        " where provided."));
+        AssertThrow (coordinates.size() > 2, "This feature requires at least 3 coordinates, but only " <<
+                                             coordinates.size() <<
+                                             " where provided.");
 
         // Temperature submodule parameters
         value  = tree.get_optional<std::string> ("temperature submodule.name");
-        AssertThrow (value, ExcMessage("Entry undeclared:  temperature submodule.name"));
+        AssertThrow (value, "Entry undeclared:  temperature submodule.name");
         temperature_submodule_name = boost::algorithm::to_lower_copy(value.get());
         boost::algorithm::trim(temperature_submodule_name);
 
@@ -88,36 +81,36 @@ using dealii::StandardExceptions::ExcMessage;
         if (temperature_submodule_name == "constant")
           {
             value  = tree.get_optional<std::string> ("temperature submodule.depth");
-            AssertThrow (value, ExcMessage("Entry undeclared:  temperature submodule.depth"));
-            temperature_submodule_depth = dealii::Utilities::string_to_double(value.get());
+            AssertThrow (value, "Entry undeclared:  temperature submodule.depth");
+            temperature_submodule_depth = Utilities::string_to_double(value.get());
 
             value  = tree.get_optional<std::string> ("temperature submodule.temperature");
-            AssertThrow (value, ExcMessage("Entry undeclared:  temperature submodule.temperature"));
-            temperature_submodule_temperature = dealii::Utilities::string_to_double(value.get());
+            AssertThrow (value, "Entry undeclared:  temperature submodule.temperature");
+            temperature_submodule_temperature = Utilities::string_to_double(value.get());
           }
 
         //Composition submodule parameters
         value  = tree.get_optional<std::string> ("composition submodule.name");
-        AssertThrow (value, ExcMessage("Entry undeclared:  composition submodule.name"));
+        AssertThrow (value, "Entry undeclared:  composition submodule.name");
         composition_submodule_name = boost::algorithm::to_lower_copy(value.get());
         boost::algorithm::trim(composition_submodule_name);
 
         if (composition_submodule_name == "constant")
           {
             value  = tree.get_optional<std::string> ("composition submodule.depth");
-            AssertThrow (value, ExcMessage("Entry undeclared:  composition submodule.depth"));
-            composition_submodule_depth = dealii::Utilities::string_to_double(value.get());
+            AssertThrow (value, "Entry undeclared:  composition submodule.depth");
+            composition_submodule_depth = Utilities::string_to_double(value.get());
 
             value  = tree.get_optional<std::string> ("composition submodule.composition");
-            AssertThrow (value, ExcMessage("Entry undeclared:  composition submodule.temperature"));
-            composition_submodule_composition = dealii::Utilities::string_to_int(value.get());
+            AssertThrow (value, "Entry undeclared:  composition submodule.temperature");
+            composition_submodule_composition = Utilities::string_to_unsigned_int(value.get());
           }
 
 
       }
 
       double
-      ContinentalPlate::temperature(const std::array<double,3> position,
+      ContinentalPlate::temperature(const Point<3> position,
                                     const double depth,
                                     const double /*gravity*/,
                                     double temperature) const
@@ -140,14 +133,14 @@ using dealii::StandardExceptions::ExcMessage;
           }
         else
           {
-            AssertThrow(false,ExcMessage("Given temperature module does not exist: " + temperature_submodule_name))
+            AssertThrow(false,"Given temperature module does not exist: " + temperature_submodule_name);
           }
 
         return temperature;
       }
 
       double
-      ContinentalPlate::composition(const std::array<double,3> position,
+      ContinentalPlate::composition(const Point<3> position,
                                     const double depth,
                                     const unsigned int composition_number,
                                     double composition) const
@@ -173,7 +166,7 @@ using dealii::StandardExceptions::ExcMessage;
           }
         else
           {
-            AssertThrow(false,ExcMessage("Given composition module does not exist: " + composition_submodule_name))
+            AssertThrow(false,"Given composition module does not exist: " + composition_submodule_name);
           }
 
         return composition;

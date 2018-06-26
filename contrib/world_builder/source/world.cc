@@ -1,31 +1,30 @@
 /*
-  Copyright (C) 2018 by the authors of the ASPECT code.
+  Copyright (C) 2018 by the authors of the World Builder code.
 
-  This file is part of ASPECT.
+  This file is part of the World Builder.
 
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published
+   by the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
+   You should have received a copy of the GNU Lesser General Public License
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
+#include <sstream>
+
+#include <boost/property_tree/json_parser.hpp>
 
 #include <world_builder/world.h>
 #include <world_builder/utilities.h>
-#include <deal.II/base/exceptions.h>
-#include <deal.II/base/utilities.h>
-#include <sstream>
-#include <boost/property_tree/json_parser.hpp>
-
-using dealii::StandardExceptions::ExcMessage;
+#include <world_builder/assert.h>
+#include <world_builder/point.h>
 
 
   namespace WorldBuilder
@@ -39,7 +38,7 @@ using dealii::StandardExceptions::ExcMessage;
     {
       // Get world builder file and check wether it exists
       AssertThrow(access( filename.c_str(), F_OK ) != -1,
-                  ExcMessage("Could not find the world builder file at the specified location: " + filename));
+                  "Could not find the world builder file at the specified location: " + filename);
 
 
       // Now read in the world builder file into a file stream and
@@ -60,27 +59,27 @@ using dealii::StandardExceptions::ExcMessage;
       //todo: wrap this into a convient function
 
       boost::optional<std::string> value  = tree.get_optional<std::string> ("Surface rotation angle");
-      AssertThrow (value, ExcMessage("Entry undeclared:  Surface rotation angle"));
-      surface_rotation_angle = dealii::Utilities::string_to_double(value.get());
+      AssertThrow (value, "Entry undeclared:  Surface rotation angle");
+      surface_rotation_angle = Utilities::string_to_double(value.get());
 
       boost::optional<ptree &> child = tree.get_child("Surface rotation point");
-      AssertThrow (child, ExcMessage("Entry undeclared:  Surface rotation point"));
+      AssertThrow (child, "Entry undeclared:  Surface rotation point");
       for (boost::property_tree::ptree::const_iterator it = child.get().begin(); it != child.get().end(); ++it)
         {
-          surface_rotation_point.push_back(dealii::Utilities::string_to_double(it->second.get<std::string>("")));
+          surface_rotation_point.push_back(Utilities::string_to_double(it->second.get<std::string>("")));
         }
-      AssertThrow (surface_rotation_point.size() == 2, ExcMessage("Only 2d coordinates allowed for Surface rotation point."));
+      AssertThrow (surface_rotation_point.size() == 2, "Only 2d coordinates allowed for Surface rotation point.");
 
       value  = tree.get_optional<std::string> ("Minimum parts per distance unit");
-      AssertThrow (value, ExcMessage("Entry undeclared:  Minimum parts per distance unit"));
-      minimum_parts_per_distance_unit = dealii::Utilities::string_to_int(value.get());
+      AssertThrow (value, "Entry undeclared:  Minimum parts per distance unit");
+      minimum_parts_per_distance_unit = Utilities::string_to_unsigned_int(value.get());
 
       value  = tree.get_optional<std::string> ("Minimum distance points");
-      AssertThrow (value, ExcMessage("Entry undeclared:  Minimum distance points"));
-      minimum_distance_points = dealii::Utilities::string_to_double(value.get());
+      AssertThrow (value, "Entry undeclared:  Minimum distance points");
+      minimum_distance_points = Utilities::string_to_double(value.get());
 
       child = tree.get_child("Surface objects");
-      AssertThrow (child, ExcMessage("Entry undeclared:  Surface rotation point"));
+      AssertThrow (child, "Entry undeclared:  Surface rotation point");
       for (boost::property_tree::ptree::iterator it = child.get().begin(); it != child.get().end(); ++it)
         {
           features.push_back(Features::create_feature(it->first,this));
@@ -93,7 +92,7 @@ using dealii::StandardExceptions::ExcMessage;
         {
           value = child.get().get_optional<std::string>("name");
 
-          AssertThrow (value, ExcMessage("Entry undeclared:  Coordinate system.name"));
+          AssertThrow (value, "Entry undeclared:  Coordinate system.name");
           coordinate_system = CoordinateSystems::create_coordinate_system(value.get());
         }
       else
@@ -113,8 +112,9 @@ using dealii::StandardExceptions::ExcMessage;
     }
 
     double
-    World::temperature(const std::array<double,3> point, const double depth, const double gravity_norm) const
+    World::temperature(const std::array<double,3> point_, const double depth, const double gravity_norm) const
     {
+    	Point<3> point(point_);
       double temperature = potential_mantle_temperature + (((potential_mantle_temperature * thermal_expansion_coefficient_alfa * gravity_norm) / specific_heat_Cp) * 1000.0) * ((depth) / 1000.0);;
       for (std::vector<Features::Interface *>::const_iterator it = features.begin(); it != features.end(); ++it)
         {
@@ -132,8 +132,9 @@ using dealii::StandardExceptions::ExcMessage;
     }
 
     double
-    World::composition(const std::array<double,3> point, const double depth, const unsigned int composition_number) const
+    World::composition(const std::array<double,3> point_, const double depth, const unsigned int composition_number) const
     {
+    	Point<3> point(point_);
       double composition = 0;
       for (std::vector<Features::Interface *>::const_iterator it = features.begin(); it != features.end(); ++it)
         {

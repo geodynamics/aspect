@@ -17,34 +17,27 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <boost/algorithm/string.hpp>
+#include <iostream>
+#include <string>
 
-#include <world_builder/features/interface.h>
-#include <world_builder/features/continental_plate.h>
-#include <world_builder/assert.h>
+#ifndef NDEBUG
+#   define Assert(condition, message) \
+    do { \
+        if (! (condition)) { \
+            std::cerr << "Assertion `" #condition "` failed in " << __FILE__ \
+                      << " line " << __LINE__ << ": " << message << std::endl; \
+            std::terminate(); \
+        } \
+    } while (false)
+#else
+#   define Assert(condition, message) do { } while (false)
+#endif
 
-
-  namespace WorldBuilder
-  {
-    namespace Features
-    {
-      Interface::Interface()
-      {
-
-      }
-
-      Interface *
-      create_feature(const std::string name, World *world)
-      {
-        std::string feature_name = boost::algorithm::to_lower_copy(name);
-        boost::algorithm::trim(feature_name);
-        if (feature_name == "continental plate")
-          return new Features::ContinentalPlate(world);
-        else
-          AssertThrow(false, "Plugin not implemented.");
-
-        return NULL;
-      }
-    }
-  }
-
+#   define AssertThrow(condition, message) \
+    do { \
+        if (! (condition)) { \
+            std::cerr << "Assertion `" #condition "` failed in " << __FILE__ \
+                      << " line " << __LINE__ << ": " << message << std::endl; \
+            std::terminate(); \
+        } \
+    } while (false)

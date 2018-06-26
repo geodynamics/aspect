@@ -1,14 +1,30 @@
+/*
+  Copyright (C) 2018 by the authors of the World Builder code.
 
+  This file is part of the World Builder.
+
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published
+   by the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public License
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 #ifndef _world_builder_utilities_h
 #define _world_builder_utilities_h
 
+#include <vector>
 
-#include <deal.II/base/point.h>
+#include <world_builder/point.h>
 #include <world_builder/coordinate_system.h>
 #include <world_builder/coordinate_systems/interface.h>
-
-using namespace dealii;
 
 
   namespace WorldBuilder
@@ -26,8 +42,8 @@ using namespace dealii;
        * falls within the polygon.
        */
       bool
-      polygon_contains_point(const std::vector<std::array<double,2> > &point_list,
-                             const std::array<double,2> &point);
+      polygon_contains_point(const std::vector<Point<2> > &point_list,
+                             const Point<2> &point);
 
       /**
        * Given a 2d point and a list of points which form a polygon, compute the smallest
@@ -35,8 +51,8 @@ using namespace dealii;
        * the polygon and positive for points inside the polygon.
        */
       double
-      signed_distance_to_polygon(const std::vector<std::array<double,2> > &point_list_,
-                                 const std::array<double,2> &point_);
+      signed_distance_to_polygon(const std::vector<Point<2> > &point_list_,
+                                 const Point<2> &point_);
 
 
       /*
@@ -49,6 +65,12 @@ using namespace dealii;
            * Constructor based on providing the geometry model as a pointer
            */
           NaturalCoordinate(const std::array<double,3> &position,
+                            const ::WorldBuilder::CoordinateSystems::Interface &coordinate_system);
+
+          /**
+           * Constructor based on providing the geometry model as a pointer
+           */
+          NaturalCoordinate(const Point<3> &position,
                             const ::WorldBuilder::CoordinateSystems::Interface &coordinate_system);
 
           /**
@@ -125,6 +147,33 @@ using namespace dealii;
        */
       CoordinateSystem
       string_to_coordinate_system (const std::string &);
+
+
+      /**
+       * Convert point to array
+       */
+      template<int dim>
+      std::array<double,dim> convert_point_to_array(Point<dim>);
+
+      /**
+       * Converts a string to a double
+       */
+      double
+	  string_to_double(const std::string& string);
+
+      /**
+       * Converts a string to a double
+       */
+      double
+	  string_to_int(const std::string& string);
+
+
+      /**
+       * Converts a string to a double
+       */
+      double
+	  string_to_unsigned_int(const std::string& string);
+
     }
   }
 

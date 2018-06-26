@@ -1,9 +1,27 @@
+/*
+  Copyright (C) 2018 by the authors of the World Builder code.
 
+  This file is part of the World Builder.
+
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published
+   by the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public License
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+#include <boost/lexical_cast.hpp>
 
 #include <world_builder/utilities.h>
-#include <aspect/utilities.h>
-#include <deal.II/base/exceptions.h>
-#include "../include/world_builder/coordinate_systems/interface.h"
+#include <world_builder/assert.h>
+#include <world_builder/coordinate_systems/interface.h>
 
 
   namespace WorldBuilder
@@ -11,14 +29,9 @@
     namespace Utilities
     {
       bool
-      polygon_contains_point(const std::vector<std::array<double,2> > &point_list_,
-                             const std::array<double,2> &point_)
+      polygon_contains_point(const std::vector<Point<2> > &point_list,
+                             const Point<2> &point)
       {
-        std::vector<Point<2> > point_list(point_list_.size());
-        for (unsigned int i = 0; i < point_list_.size(); ++i)
-          point_list[i] = aspect::Utilities::convert_array_to_point<2>(point_list_[i]);
-
-        const Point<2> point = aspect::Utilities::convert_array_to_point<2>(point_);
 
         /**
          * This code has been based on http://geomalgorithms.com/a03-_inclusion.html,
@@ -116,18 +129,12 @@
       }
 
       double
-      signed_distance_to_polygon(const std::vector<std::array<double,2> > &point_list_,
-                                 const std::array<double,2> &point_)
+      signed_distance_to_polygon(const std::vector<Point<2> > &point_list,
+                                 const Point<2> &point)
       {
         // If the point lies outside polygon, we give it a negative sign,
         // inside a positive sign.
-        const double sign = polygon_contains_point(point_list_, point_) ? 1.0 : -1.0;
-
-        std::vector<Point<2> > point_list(point_list_.size());
-        for (unsigned int i = 0; i < point_list_.size(); ++i)
-          point_list[i] = aspect::Utilities::convert_array_to_point<2>(point_list_[i]);
-
-        const Point<2> point = aspect::Utilities::convert_array_to_point<2>(point_);
+        const double sign = polygon_contains_point(point_list, point) ? 1.0 : -1.0;
 
         /**
          * This code is based on http://geomalgorithms.com/a02-_lines.html#Distance-to-Infinite-Line,
@@ -143,7 +150,7 @@
          */
 
         const unsigned int n_poly_points = point_list.size();
-        AssertThrow(n_poly_points >= 3, ExcMessage("Not enough polygon points were specified."));
+        AssertThrow(n_poly_points >= 3, "Not enough polygon points were specified.");
 
         // Initialize a vector of distances for each point of the polygon with a very large distance
         std::vector<double> distances(n_poly_points, 1e23);
@@ -158,9 +165,9 @@
         for (unsigned int i = 0; i < n_poly_points; ++i)
           {
             // Create vector along the polygon line segment
-            Tensor<1,2> vector_segment = shifted_point_list[i] - point_list[i];
+            Point<2> vector_segment = shifted_point_list[i] - point_list[i];
             // Create vector from point to the second segment point
-            Tensor<1,2> vector_point_segment = point - point_list[i];
+            Point<2> vector_point_segment = point - point_list[i];
 
             // Compute dot products to get angles
             const double c1 = vector_point_segment * vector_segment;
@@ -168,15 +175,15 @@
 
             // point lies closer to not-shifted polygon point, but perpendicular base line lies outside segment
             if (c1 <= 0.0)
-              distances[i] = (Tensor<1,2> (point_list[i] - point)).norm();
+              distances[i] = (Point<2> (point_list[i] - point)).norm();
             // point lies closer to shifted polygon point, but perpendicular base line lies outside segment
             else if (c2 <= c1)
-              distances[i] = (Tensor<1,2> (shifted_point_list[i] - point)).norm();
+              distances[i] = (Point<2> (shifted_point_list[i] - point)).norm();
             // perpendicular base line lies on segment
             else
               {
                 const Point<2> point_on_segment = point_list[i] + (c1/c2) * vector_segment;
-                distances[i] = (Tensor<1,2> (point - point_on_segment)).norm();
+                distances[i] = (Point<2> (point - point_on_segment)).norm();
               }
           }
 
@@ -184,14 +191,20 @@
         return *std::min_element(distances.begin(),distances.end()) * sign;
       }
 
-      //typedef class NaturalCoordinate;
-      //typedef class Coordinates;
 
       NaturalCoordinate::NaturalCoordinate(const std::array<double,3> &position,
                                            const CoordinateSystems::Interface &coordinate_system_)
       {
         coordinate_system = coordinate_system_.natural_coordinate_system();
         coordinates = coordinate_system_.cartesian_to_natural_coordinates(position);
+      }
+
+      // todo, should be possible to make this without the interface, since the Point knows the coord system.
+      NaturalCoordinate::NaturalCoordinate(const Point<3> &position,
+                                           const CoordinateSystems::Interface &coordinate_system_)
+      {
+        coordinate_system = coordinate_system_.natural_coordinate_system();
+        coordinates = coordinate_system_.cartesian_to_natural_coordinates(position.get_array());
       }
 
       std::array<double,3> &NaturalCoordinate::get_coordinates()
@@ -211,10 +224,6 @@
               break;
 
             case Coordinates::CoordinateSystem::spherical:
-              coordinate[0] = coordinates[1];
-              break;
-
-            case Coordinates::CoordinateSystem::ellipsoidal:
               coordinate[0] = coordinates[1];
               break;
 
@@ -244,13 +253,8 @@
               coordinate[1] = coordinates[2];
               break;
 
-            case CoordinateSystem::ellipsoidal:
-              coordinate[0] = coordinates[1];
-              coordinate[1] = coordinates[2];
-              break;
-
             default:
-              Assert (false, ExcNotImplemented());
+              Assert (false, "Coordinate system not implemented.");
           }
 
         return coordinate;
@@ -267,11 +271,8 @@
             case CoordinateSystem::spherical:
               return coordinates[0];
 
-            case CoordinateSystem::ellipsoidal:
-              return coordinates[0];
-
             default:
-              Assert (false, ExcNotImplemented());
+              Assert (false, "Coordinate system not implemented.");
           }
 
         return 0;
@@ -286,7 +287,7 @@
         scoord[0] = position.norm(); // R
         scoord[1] = std::atan2(position(1),position(0)); // Phi
         if (scoord[1] < 0.0)
-          scoord[1] += 2.0*numbers::PI; // correct phi to [0,2*pi]
+          scoord[1] += 2.0*M_PI; // correct phi to [0,2*pi]
 
         if (scoord[0] > std::numeric_limits<double>::min())
           scoord[2] = std::acos(position(2)/scoord[0]);
@@ -309,48 +310,6 @@
         return ccoord;
       }
 
-      std::array<double,3>
-      cartesian_to_ellipsoidal_coordinates(const Point<3> &x,
-                                           const double semi_major_axis_a,
-                                           const double eccentricity)
-      {
-        const double R    = semi_major_axis_a;
-        const double b      = std::sqrt(R * R * (1 - eccentricity * eccentricity));
-        const double ep     = std::sqrt((R * R - b * b) / (b * b));
-        const double p      = std::sqrt(x(0) * x(0) + x(1) * x(1));
-        const double th     = std::atan2(R * x(2), b * p);
-        const double phi    = std::atan2(x(1), x(0));
-        const double theta  = std::atan2(x(2) + ep * ep * b * std::pow(std::sin(th),3),
-                                         (p - (eccentricity * eccentricity * R  * std::pow(std::cos(th),3))));
-        const double R_bar = R / (std::sqrt(1 - eccentricity * eccentricity * std::sin(theta) * std::sin(theta)));
-        const double R_plus_d = p / std::cos(theta);
-
-        std::array<double,3> phi_theta_d;
-        phi_theta_d[0] = phi;
-
-        phi_theta_d[1] = theta;
-        phi_theta_d[2] = R_plus_d - R_bar;
-        return phi_theta_d;
-      }
-
-      Point<3>
-      ellipsoidal_to_cartesian_coordinates(const std::array<double,3> &phi_theta_d,
-                                           const double semi_major_axis_a,
-                                           const double eccentricity)
-      {
-        const double phi   = phi_theta_d[0];
-        const double theta = phi_theta_d[1];
-        const double d     = phi_theta_d[2];
-
-        const double R_bar = semi_major_axis_a / std::sqrt(1 - (eccentricity * eccentricity *
-                                                                std::sin(theta) * std::sin(theta)));
-
-        return Point<3> ((R_bar + d) * std::cos(phi) * std::cos(theta),
-                         (R_bar + d) * std::sin(phi) * std::cos(theta),
-                         ((1 - eccentricity * eccentricity) * R_bar + d) * std::sin(theta));
-
-      }
-
 
 
       CoordinateSystem
@@ -360,13 +319,89 @@
           return CoordinateSystem::cartesian;
         else if (coordinate_system == "spherical")
           return CoordinateSystem::spherical;
-        else if (coordinate_system == "ellipsoidal")
-          return CoordinateSystem::ellipsoidal;
         else
-          AssertThrow(false, ExcNotImplemented());
+          AssertThrow(false, "Coordinate system not implemented.");
 
         return invalid;
       }
+
+
+      template<int dim>
+      std::array<double,dim>
+      convert_point_to_array(const Point<dim> point_)
+	  {
+    	  std::array<double,dim> array;
+    	  for(unsigned int i = 0; i < dim; ++i)
+    		  array[i] = point_[i];
+    	  return array;
+	  }
+
+      double
+	  string_to_double(const std::string& string)
+      {
+    	    // trim whitespace on either side of the text if necessary
+    	    std::string s = string;
+    	    while ((s.size() > 0) && (s[0] == ' '))
+    	      s.erase(s.begin());
+    	    while ((s.size() > 0) && (s[s.size() - 1] == ' '))
+    	      s.erase(s.end() - 1);
+
+    	    double d = 0;
+    	    try {
+    	        d =  boost::lexical_cast<double>(s);
+    	    }
+    	    catch (const boost::bad_lexical_cast& e) {
+    	    	AssertThrow(false, "Conversion of \"" << string << "\" to double failed (bad cast): " << e.what() << std::endl);
+    	    }
+
+    	return d;
+      }
+
+      double
+	  string_to_int(const std::string& string)
+      {
+    	    // trim whitespace on either side of the text if necessary
+    	    std::string s = string;
+    	    while ((s.size() > 0) && (s[0] == ' '))
+    	      s.erase(s.begin());
+    	    while ((s.size() > 0) && (s[s.size() - 1] == ' '))
+    	      s.erase(s.end() - 1);
+
+    	    double d = 0;
+    	    try {
+    	        d =  boost::lexical_cast<int>(s);
+    	    }
+    	    catch (const boost::bad_lexical_cast& e) {
+    	    	AssertThrow(false, "Conversion of \"" << string << "\" to double failed (bad cast): " << e.what() << std::endl);
+    	    }
+
+    	return d;
+      }
+
+
+      double
+	  string_to_unsigned_int(const std::string& string)
+      {
+    	    // trim whitespace on either side of the text if necessary
+    	    std::string s = string;
+    	    while ((s.size() > 0) && (s[0] == ' '))
+    	      s.erase(s.begin());
+    	    while ((s.size() > 0) && (s[s.size() - 1] == ' '))
+    	      s.erase(s.end() - 1);
+
+    	    double d = 0;
+    	    try {
+    	        d =  boost::lexical_cast<unsigned int>(s);
+    	    }
+    	    catch (const boost::bad_lexical_cast& e) {
+    	    	AssertThrow(false, "Conversion of \"" << string << "\" to double failed (bad cast): " << e.what() << std::endl);
+    	    }
+
+    	return d;
+      }
+
+      template std::array<double,2> convert_point_to_array<2>(const Point<2> point_);
+      template std::array<double,3> convert_point_to_array<3>(const Point<3> point_);
     }
   }
 
