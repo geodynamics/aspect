@@ -230,7 +230,7 @@ namespace aspect
                                    "The implementation of this material model is somewhat expensive "
                                    "because it has to evaluate all material coefficients of all underlying "
                                    "material models. Consequently, if performance of assembly and postprocessing "
-                                   "is important, then implementing a separate separate material model is "
+                                   "is important, then implementing a separate material model is "
                                    "a better choice than using this material model."
                                   )
   }
