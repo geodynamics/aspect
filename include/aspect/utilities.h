@@ -24,7 +24,7 @@
 
 #include <aspect/global.h>
 
-#include <deal.II/base/std_cxx11/array.h>
+#include <array>
 #include <deal.II/base/point.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/table_indices.h>
@@ -173,7 +173,7 @@ namespace aspect
        * the Earth with WGS84 parameters.
        */
       template <int dim>
-      std_cxx11::array<double,dim>
+      std::array<double,dim>
       WGS84_coordinates(const Point<dim> &position);
 
       /**
@@ -183,7 +183,7 @@ namespace aspect
        *
        */
       template <int dim>
-      std_cxx11::array<double,dim>
+      std::array<double,dim>
       cartesian_to_spherical_coordinates(const Point<dim> &position);
 
       /**
@@ -193,7 +193,7 @@ namespace aspect
        */
       template <int dim>
       Point<dim>
-      spherical_to_cartesian_coordinates(const std_cxx11::array<double,dim> &scoord);
+      spherical_to_cartesian_coordinates(const std::array<double,dim> &scoord);
 
       /**
        * Given a vector defined in the radius, phi and theta directions, return
@@ -212,7 +212,7 @@ namespace aspect
        *
        */
       template <int dim>
-      std_cxx11::array<double,3>
+      std::array<double,3>
       cartesian_to_ellipsoidal_coordinates(const Point<3> &position,
                                            const double semi_major_axis_a,
                                            const double eccentricity);
@@ -223,7 +223,7 @@ namespace aspect
        */
       template <int dim>
       Point<3>
-      ellipsoidal_to_cartesian_coordinates(const std_cxx11::array<double,3> &phi_theta_d,
+      ellipsoidal_to_cartesian_coordinates(const std::array<double,3> &phi_theta_d,
                                            const double semi_major_axis_a,
                                            const double eccentricity);
 
@@ -276,7 +276,7 @@ namespace aspect
      * represents a well-conditioned basis.
      */
     template <int dim>
-    std_cxx11::array<Tensor<1,dim>,dim-1>
+    std::array<Tensor<1,dim>,dim-1>
     orthogonal_vectors (const Tensor<1,dim> &v);
 
     /**
@@ -628,7 +628,7 @@ namespace aspect
         /**
          * The coordinate values in each direction as specified in the data file.
          */
-        std_cxx11::array<std::vector<double>,dim> coordinate_values;
+        std::array<std::vector<double>,dim> coordinate_values;
 
         /**
          * The maximum value of each component
@@ -638,7 +638,7 @@ namespace aspect
         /**
          * The min and max of the coordinates in the data file.
          */
-        std_cxx11::array<std::pair<double,double>,dim> grid_extent;
+        std::array<std::pair<double,double>,dim> grid_extent;
 
         /**
          * Number of points in the data grid as specified in the data file.
@@ -795,7 +795,7 @@ namespace aspect
          * the actual position (the function returns [0,1,2] or [0,1]), but
          * for the boundary conditions it matters.
          */
-        std_cxx11::array<unsigned int,dim-1>
+        std::array<unsigned int,dim-1>
         get_boundary_dimensions (const types::boundary_id boundary_id) const;
 
         /**
@@ -983,7 +983,7 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from text
          * files.
          */
-        std_cxx11::unique_ptr<aspect::Utilities::AsciiDataLookup<1> > lookup;
+        std::unique_ptr<aspect::Utilities::AsciiDataLookup<1> > lookup;
     };
 
 
@@ -1072,13 +1072,13 @@ namespace aspect
      * Converts an array of size dim to a Point of size dim.
      */
     template <int dim>
-    Point<dim> convert_array_to_point(const std_cxx11::array<double,dim> &array);
+    Point<dim> convert_array_to_point(const std::array<double,dim> &array);
 
     /**
      * Converts a Point of size dim to an array of size dim.
      */
     template <int dim>
-    std_cxx11::array<double,dim> convert_point_to_array(const Point<dim> &point);
+    std::array<double,dim> convert_point_to_array(const Point<dim> &point);
 
     /**
      * A class that represents a binary operator between two doubles. The type of
@@ -1163,20 +1163,20 @@ namespace aspect
          * Constructor based on providing the coordinates and associated
          * coordinate system.
          */
-        NaturalCoordinate(const std_cxx11::array<double, dim> &coord,
+        NaturalCoordinate(const std::array<double, dim> &coord,
                           const Utilities::Coordinates::CoordinateSystem &coord_system);
 
         /**
          * Returns the coordinates in the given coordinate system, which may
          * not be Cartesian.
          */
-        std_cxx11::array<double,dim> &get_coordinates();
+        std::array<double,dim> &get_coordinates();
 
         /**
          * The coordinate that represents the 'surface' directions in the
          * chosen coordinate system.
          */
-        std_cxx11::array<double,dim-1> get_surface_coordinates() const;
+        std::array<double,dim-1> get_surface_coordinates() const;
 
         /**
          * The coordinate that represents the 'depth' direction in the chosen

@@ -24,7 +24,7 @@
 #include <aspect/simulator_access.h>
 
 #include <deal.II/base/exceptions.h>
-#include <deal.II/base/std_cxx11/tuple.h>
+#include <tuple>
 
 #include <list>
 
@@ -95,7 +95,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx11::tuple
+      std::tuple
       <void *,
       void *,
       aspect::internal::Plugins::PluginList<Interface<2> >,
@@ -110,7 +110,7 @@ namespace aspect
                                               void (*declare_parameters_function) (ParameterHandler &),
                                               Interface<dim> *(*factory_function) ())
     {
-      std_cxx11::get<dim>(registered_plugins).register_plugin (name,
+      std::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
                                                                declare_parameters_function,
                                                                factory_function);
@@ -188,7 +188,7 @@ namespace aspect
       {
         prm.declare_entry ("Prescribed velocity boundary indicators", "",
                            Patterns::Map (Patterns::Anything(),
-                                          Patterns::Selection(std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ())),
+                                          Patterns::Selection(std::get<dim>(registered_plugins).get_pattern_of_names ())),
                            "A comma separated list denoting those boundaries "
                            "on which the velocity is prescribed, i.e., where unknown "
                            "external forces act to prescribe a particular velocity. This is "
@@ -221,7 +221,7 @@ namespace aspect
                            "to true, velocity should be given in m/yr. "
                            "The following boundary velocity models are available:\n\n"
                            +
-                           std_cxx11::get<dim>(registered_plugins).get_description_string());
+                           std::get<dim>(registered_plugins).get_description_string());
         prm.declare_entry ("Zero velocity boundary indicators", "",
                            Patterns::List (Patterns::Anything()),
                            "A comma separated list of names denoting those boundaries "
@@ -252,7 +252,7 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -406,7 +406,7 @@ namespace aspect
                name != boundary_id->second.second.end(); ++name)
             {
               boundary_velocity_objects[boundary_id->first].push_back(
-                std::shared_ptr<Interface<dim> > (std_cxx11::get<dim>(registered_plugins)
+                std::shared_ptr<Interface<dim> > (std::get<dim>(registered_plugins)
                                                   .create_plugin (*name,
                                                                   "Boundary velocity::Model names")));
 
@@ -425,7 +425,7 @@ namespace aspect
     void
     Manager<dim>::write_plugin_graph (std::ostream &out)
     {
-      std_cxx11::get<dim>(registered_plugins).write_plugin_graph ("Boundary velocity interface",
+      std::get<dim>(registered_plugins).write_plugin_graph ("Boundary velocity interface",
                                                                   out);
     }
   }

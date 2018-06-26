@@ -158,10 +158,10 @@ namespace dealii
      */
     template <typename T>
     inline
-    std_cxx11::unique_ptr<T>
+    std::unique_ptr<T>
     make_unique()
     {
-      return std_cxx11::unique_ptr<T>(new T());
+      return std::unique_ptr<T>(new T());
     }
 #endif
   }

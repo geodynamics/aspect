@@ -27,7 +27,7 @@
 
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
-#include <deal.II/base/std_cxx11/tuple.h>
+#include <tuple>
 
 #include <list>
 
@@ -145,7 +145,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx11::tuple
+      std::tuple
       <void *,
       void *,
       aspect::internal::Plugins::PluginList<Interface<2> >,
@@ -160,7 +160,7 @@ namespace aspect
                                           void (*declare_parameters_function) (ParameterHandler &),
                                           Interface<dim> *(*factory_function) ())
     {
-      std_cxx11::get<dim>(registered_plugins).register_plugin (name,
+      std::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
                                                                declare_parameters_function,
                                                                factory_function);
@@ -190,7 +190,7 @@ namespace aspect
       for (unsigned int name=0; name<model_names.size(); ++name)
         {
           heating_model_objects.push_back (std::shared_ptr<Interface<dim> >
-                                           (std_cxx11::get<dim>(registered_plugins)
+                                           (std::get<dim>(registered_plugins)
                                             .create_plugin (model_names[name],
                                                             "Heating model::Model names")));
 
@@ -311,7 +311,7 @@ namespace aspect
       prm.enter_subsection ("Heating model");
       {
         const std::string pattern_of_names
-          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+          = std::get<dim>(registered_plugins).get_pattern_of_names ();
 
         prm.declare_entry("List of model names",
                           "",
@@ -323,11 +323,11 @@ namespace aspect
                           "left hand side will be added.\n\n"
                           "The following heating models are available:\n\n"
                           +
-                          std_cxx11::get<dim>(registered_plugins).get_description_string());
+                          std::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection ();
 
-      std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -336,7 +336,7 @@ namespace aspect
     void
     Manager<dim>::write_plugin_graph (std::ostream &out)
     {
-      std_cxx11::get<dim>(registered_plugins).write_plugin_graph ("Heating model interface",
+      std::get<dim>(registered_plugins).write_plugin_graph ("Heating model interface",
                                                                   out);
     }
 
@@ -358,7 +358,7 @@ namespace aspect
     std::string
     get_valid_model_names_pattern ()
     {
-      return std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+      return std::get<dim>(registered_plugins).get_pattern_of_names ();
     }
 
   }

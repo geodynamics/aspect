@@ -502,7 +502,7 @@ namespace aspect
        * initialization can be done together with the other objects related to melt
        * transport.
        */
-      const std_cxx11::unique_ptr<aspect::BoundaryFluidPressure::Interface<dim> > boundary_fluid_pressure;
+      const std::unique_ptr<aspect::BoundaryFluidPressure::Interface<dim> > boundary_fluid_pressure;
 
       /**
        * is_melt_cell_vector[cell->active_cell_index()] says whether we want to

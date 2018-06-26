@@ -24,7 +24,7 @@
 #include <aspect/simulator_access.h>
 
 #include <deal.II/base/exceptions.h>
-#include <deal.II/base/std_cxx11/tuple.h>
+#include <tuple>
 #include <list>
 
 namespace aspect
@@ -59,7 +59,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx11::tuple
+      std::tuple
       <void *,
       void *,
       internal::Plugins::PluginList<Interface<2> >,
@@ -75,7 +75,7 @@ namespace aspect
                                        void (*declare_parameters_function) (ParameterHandler &),
                                        Interface<dim> *(*factory_function) ())
     {
-      std_cxx11::get<dim>(registered_plugins).register_plugin (name,
+      std::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
                                                                declare_parameters_function,
                                                                factory_function);
@@ -107,7 +107,7 @@ namespace aspect
                   ExcMessage("You need to select a Initial topography model "
                              "(`set Model name' in `subsection Initial topography model')."));
 
-      return std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
+      return std::get<dim>(registered_plugins).create_plugin (model_name,
                                                                     "Initial topography model::model name",
                                                                     prm);
     }
@@ -124,18 +124,18 @@ namespace aspect
         prm.enter_subsection ("Initial topography model");
         {
           const std::string pattern_of_names
-            = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+            = std::get<dim>(registered_plugins).get_pattern_of_names ();
           prm.declare_entry ("Model name", "zero topography",
                              Patterns::Selection (pattern_of_names),
                              "Select one of the following models:\n\n"
                              +
-                             std_cxx11::get<dim>(registered_plugins).get_description_string());
+                             std::get<dim>(registered_plugins).get_description_string());
         }
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
 
-      std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -144,7 +144,7 @@ namespace aspect
     void
     write_plugin_graph (std::ostream &out)
     {
-      std_cxx11::get<dim>(registered_plugins).write_plugin_graph ("Initial topography interface",
+      std::get<dim>(registered_plugins).write_plugin_graph ("Initial topography interface",
                                                                   out);
     }
 

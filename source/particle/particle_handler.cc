@@ -508,11 +508,11 @@ namespace aspect
 
             std::sort(neighbor_permutation.begin(),
                       neighbor_permutation.end(),
-                      std_cxx11::bind(&compare_particle_association<dim>,
-                                      std_cxx11::_1,
-                                      std_cxx11::_2,
-                                      std_cxx11::cref(vertex_to_particle),
-                                      std_cxx11::cref(vertex_to_cell_centers[closest_vertex_index])));
+                      std::bind(&compare_particle_association<dim>,
+                                      std::placeholders::_1,
+                                      std::placeholders::_2,
+                                      std::cref(vertex_to_particle),
+                                      std::cref(vertex_to_cell_centers[closest_vertex_index])));
 
             // Search all of the cells adjacent to the closest vertex of the previous cell
             // Most likely we will find the particle in them.
@@ -799,10 +799,10 @@ namespace aspect
 
     template <int dim, int spacedim>
     void
-    ParticleHandler<dim,spacedim>::register_additional_store_load_functions(const std_cxx11::function<std::size_t ()> &size_callb,
-                                                                            const std_cxx11::function<void *(const particle_iterator &,
+    ParticleHandler<dim,spacedim>::register_additional_store_load_functions(const std::function<std::size_t ()> &size_callb,
+                                                                            const std::function<void *(const particle_iterator &,
                                                                                 void *)> &store_callb,
-                                                                            const std_cxx11::function<const void *(const particle_iterator &,
+                                                                            const std::function<const void *(const particle_iterator &,
                                                                                 const void *)> &load_callb)
     {
       size_callback = size_callb;
@@ -825,13 +825,13 @@ namespace aspect
 
       if (global_max_particles_per_cell > 0)
         {
-          const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
+          const std::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
                                          const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
-            = std_cxx11::bind(&ParticleHandler<dim>::store_particles,
-                              std_cxx11::cref(*this),
-                              std_cxx11::_1,
-                              std_cxx11::_2,
-                              std_cxx11::_3);
+            = std::bind(&ParticleHandler<dim>::store_particles,
+                              std::cref(*this),
+                              std::placeholders::_1,
+                              std::placeholders::_2,
+                              std::placeholders::_3);
 
           // Compute the size per serialized particle. This is simple if we own
           // particles, simply ask one of them. Otherwise create a temporary particle,
@@ -878,13 +878,13 @@ namespace aspect
       // data correctly. Only do this if something was actually stored.
       if (serialization && (global_max_particles_per_cell > 0))
         {
-          const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
+          const std::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
                                          const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
-            = std_cxx11::bind(&ParticleHandler<dim>::store_particles,
-                              std_cxx11::cref(*this),
-                              std_cxx11::_1,
-                              std_cxx11::_2,
-                              std_cxx11::_3);
+            = std::bind(&ParticleHandler<dim>::store_particles,
+                              std::cref(*this),
+                              std::placeholders::_1,
+                              std::placeholders::_2,
+                              std::placeholders::_3);
 
           // Compute the size per serialized particle. This is simple if we own
           // particles, simply ask one of them. Otherwise create a temporary particle,
@@ -907,14 +907,14 @@ namespace aspect
       // Check if something was stored and load it
       if (data_offset != numbers::invalid_unsigned_int)
         {
-          const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
+          const std::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
                                          const typename parallel::distributed::Triangulation<dim>::CellStatus,
                                          const void *) > callback_function
-            = std_cxx11::bind(&ParticleHandler<dim>::load_particles,
-                              std_cxx11::ref(*this),
-                              std_cxx11::_1,
-                              std_cxx11::_2,
-                              std_cxx11::_3);
+            = std::bind(&ParticleHandler<dim>::load_particles,
+                              std::ref(*this),
+                              std::placeholders::_1,
+                              std::placeholders::_2,
+                              std::placeholders::_3);
 
           non_const_triangulation->notify_ready_to_unpack(data_offset,callback_function);
 

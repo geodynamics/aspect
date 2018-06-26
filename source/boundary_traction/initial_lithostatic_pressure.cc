@@ -25,7 +25,7 @@
 #include <aspect/gravity_model/interface.h>
 #include <aspect/global.h>
 #include <aspect/utilities.h>
-#include <deal.II/base/std_cxx11/array.h>
+#include <array>
 
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/spherical_shell.h>
@@ -73,7 +73,7 @@ namespace aspect
       // For spherical(-like) domains, modify the representative point:
       // go from degrees to radians...
       const double degrees_to_radians = dealii::numbers::PI/180.0;
-      std_cxx11::array<double, dim> spherical_representative_point;
+      std::array<double, dim> spherical_representative_point;
       for (unsigned int d=0; d<dim; d++)
         spherical_representative_point[d] = representative_point[d];
       spherical_representative_point[1] *= degrees_to_radians;

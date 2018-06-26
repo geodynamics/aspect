@@ -30,25 +30,25 @@ namespace aspect
     void
     GlobalStatistics<dim>::initialize()
     {
-      this->get_signals().post_stokes_solver.connect(std_cxx11::bind(&aspect::Postprocess::GlobalStatistics<dim>::store_stokes_solver_history,
-                                                                     std_cxx11::ref(*this),
+      this->get_signals().post_stokes_solver.connect(std::bind(&aspect::Postprocess::GlobalStatistics<dim>::store_stokes_solver_history,
+                                                                     std::ref(*this),
                                                                      /* Drop first argument of signal*/
-                                                                     std_cxx11::_2,
-                                                                     std_cxx11::_3,
-                                                                     std_cxx11::_4,
-                                                                     std_cxx11::_5));
-      this->get_signals().post_advection_solver.connect(std_cxx11::bind(&aspect::Postprocess::GlobalStatistics<dim>::store_advection_solver_history,
-                                                                        std_cxx11::ref(*this),
+                                                                     std::placeholders::_2,
+                                                                     std::placeholders::_3,
+                                                                     std::placeholders::_4,
+                                                                     std::placeholders::_5));
+      this->get_signals().post_advection_solver.connect(std::bind(&aspect::Postprocess::GlobalStatistics<dim>::store_advection_solver_history,
+                                                                        std::ref(*this),
                                                                         /* Drop first argument of signal*/
-                                                                        std_cxx11::_2,
-                                                                        std_cxx11::_3,
-                                                                        std_cxx11::_4));
+                                                                        std::placeholders::_2,
+                                                                        std::placeholders::_3,
+                                                                        std::placeholders::_4));
 
       // delete the data after the initial refinement steps, to not mix it up
       // with the first time step
       if (!this->get_parameters().run_postprocessors_on_initial_refinement)
-        this->get_signals().post_set_initial_state.connect(std_cxx11::bind(&aspect::Postprocess::GlobalStatistics<dim>::clear_data,
-                                                                           std_cxx11::ref(*this)));
+        this->get_signals().post_set_initial_state.connect(std::bind(&aspect::Postprocess::GlobalStatistics<dim>::clear_data,
+                                                                           std::ref(*this)));
     }
 
 

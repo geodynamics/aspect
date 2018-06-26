@@ -76,7 +76,7 @@ namespace aspect
     template <int dim>
     std::vector<VariableDeclaration<dim> > construct_variables(const Parameters<dim> &parameters,
                                                                SimulatorSignals<dim> &signals,
-                                                               std_cxx11::unique_ptr<MeltHandler<dim> > &melt_handler)
+                                                               std::unique_ptr<MeltHandler<dim> > &melt_handler)
     {
       std::vector<VariableDeclaration<dim> > variables
         = construct_default_variables (parameters);
@@ -117,7 +117,7 @@ namespace aspect
    */
   template <int dim>
   Simulator<dim>::IntermediaryConstructorAction::
-  IntermediaryConstructorAction (std_cxx11::function<void ()> action)
+  IntermediaryConstructorAction (std::function<void ()> action)
   {
     action();
   }
@@ -136,8 +136,8 @@ namespace aspect
     melt_handler (parameters.include_melt_transport ? new MeltHandler<dim> (prm) : NULL),
     newton_handler (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ? new NewtonHandler<dim> () : NULL),
     post_signal_creation(
-      std_cxx11::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
-                       std_cxx11::ref(signals))),
+      std::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
+                       std::ref(signals))),
     introspection (construct_variables<dim>(parameters, signals, melt_handler), parameters),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     iostream_tee_device(std::cout, log_file_stream),
@@ -156,10 +156,10 @@ namespace aspect
     // make sure the parameters object gets a chance to
     // parse those parameters that depend on symbolic names
     // for boundary components
-    post_geometry_model_creation_action (std_cxx11::bind (&Parameters<dim>::parse_geometry_dependent_parameters,
-                                                          std_cxx11::ref(parameters),
-                                                          std_cxx11::ref(prm),
-                                                          std_cxx11::cref(*geometry_model))),
+    post_geometry_model_creation_action (std::bind (&Parameters<dim>::parse_geometry_dependent_parameters,
+                                                          std::ref(parameters),
+                                                          std::ref(prm),
+                                                          std::cref(*geometry_model))),
     material_model (MaterialModel::create_material_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
     prescribed_stokes_solution (PrescribedStokesSolution::create_prescribed_stokes_solution<dim>(prm)),
@@ -488,7 +488,7 @@ namespace aspect
          *     of the resulting Function object.
          */
         VectorFunctionFromVelocityFunctionObject (const unsigned int n_components,
-                                                  const std_cxx11::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
+                                                  const std::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
 
         /**
          * Return the value of the
@@ -517,7 +517,7 @@ namespace aspect
          * The function object which we call when this class's value() or
          * value_list() functions are called.
          **/
-        const std_cxx11::function<Tensor<1,dim> (const Point<dim> &)> function_object;
+        const std::function<Tensor<1,dim> (const Point<dim> &)> function_object;
     };
 
 
@@ -525,7 +525,7 @@ namespace aspect
     VectorFunctionFromVelocityFunctionObject<dim>::
     VectorFunctionFromVelocityFunctionObject
     (const unsigned int n_components,
-     const std_cxx11::function<Tensor<1,dim> (const Point<dim> &)> &function_object)
+     const std::function<Tensor<1,dim> (const Point<dim> &)> &function_object)
       :
       Function<dim>(n_components),
       function_object (function_object)
@@ -645,12 +645,12 @@ namespace aspect
         {
           VectorFunctionFromVelocityFunctionObject<dim> vel
           (introspection.n_components,
-           std_cxx11::bind (static_cast<Tensor<1,dim> (BoundaryVelocity::Manager<dim>::*)(
+           std::bind (static_cast<Tensor<1,dim> (BoundaryVelocity::Manager<dim>::*)(
                               const types::boundary_id,
                               const Point<dim> &) const> (&BoundaryVelocity::Manager<dim>::boundary_velocity),
-                            std_cxx11::cref(boundary_velocity_manager),
+                            std::cref(boundary_velocity_manager),
                             p->first,
-                            std_cxx11::_1));
+                            std::placeholders::_1));
 
           // here we create a mask for interpolate_boundary_values out of the 'selector'
           std::vector<bool> mask(introspection.component_masks.velocities.size(), false);
@@ -726,10 +726,10 @@ namespace aspect
             VectorTools::interpolate_boundary_values (*mapping,
                                                       dof_handler,
                                                       *p,
-                                                      VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryTemperature::Manager<dim>::boundary_temperature,
-                                                          std_cxx11::cref(boundary_temperature_manager),
+                                                      VectorFunctionFromScalarFunctionObject<dim>(std::bind (&BoundaryTemperature::Manager<dim>::boundary_temperature,
+                                                          std::cref(boundary_temperature_manager),
                                                           *p,
-                                                          std_cxx11::_1),
+                                                          std::placeholders::_1),
                                                           introspection.component_masks.temperature.first_selected_component(),
                                                           introspection.n_components),
                                                       current_constraints,
@@ -755,10 +755,10 @@ namespace aspect
               VectorTools::interpolate_boundary_values (*mapping,
                                                         dof_handler,
                                                         *p,
-                                                        VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryComposition::Manager<dim>::boundary_composition,
-                                                            std_cxx11::cref(boundary_composition_manager),
+                                                        VectorFunctionFromScalarFunctionObject<dim>(std::bind (&BoundaryComposition::Manager<dim>::boundary_composition,
+                                                            std::cref(boundary_composition_manager),
                                                             *p,
-                                                            std_cxx11::_1,
+                                                            std::placeholders::_1,
                                                             c),
                                                             introspection.component_masks.compositional_fields[c].first_selected_component(),
                                                             introspection.n_components),
@@ -1297,7 +1297,7 @@ namespace aspect
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
     system_trans(dof_handler);
 
-    std_cxx11::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> >
+    std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> >
     freesurface_trans;
 
     {

@@ -28,7 +28,7 @@
 #include <aspect/particle/particle.h>
 
 #include <deal.II/base/data_out_base.h>
-#include <deal.II/base/std_cxx11/tuple.h>
+#include <tuple>
 
 namespace aspect
 {
@@ -91,7 +91,7 @@ namespace aspect
           /**
            * Store which of the data fields are vectors.
            */
-          std::vector<std_cxx11::tuple<unsigned int, unsigned int, std::string> > vector_datasets;
+          std::vector<std::tuple<unsigned int, unsigned int, std::string> > vector_datasets;
       };
     }
 #endif

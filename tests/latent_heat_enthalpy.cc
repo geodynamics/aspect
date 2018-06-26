@@ -27,7 +27,7 @@
 
 #include <iostream>
 #include <deal.II/base/quadrature_lib.h>
-#include <deal.II/base/std_cxx11/unique_ptr.h>
+#include <deal.II/base/std/unique_ptr.h>
 #include <deal.II/fe/fe_values.h>
 
 namespace aspect
@@ -175,7 +175,7 @@ namespace aspect
         }
 
       private:
-        std_cxx11::unique_ptr<Lookup::MaterialLookup> material_lookup;
+        std::unique_ptr<Lookup::MaterialLookup> material_lookup;
     };
   }
 }

@@ -68,7 +68,7 @@ namespace aspect
         // Generate particles
 
         types::particle_index particle_index = 0;
-        std_cxx11::array<double,dim> spherical_coordinates;
+        std::array<double,dim> spherical_coordinates;
         for (unsigned int i = 0; i < radial_layers; ++i)
           {
             spherical_coordinates[0] = P_min[0] + (radial_spacing * i);

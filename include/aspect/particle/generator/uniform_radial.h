@@ -23,7 +23,7 @@
 
 #include <aspect/particle/generator/interface.h>
 
-#include <deal.II/base/std_cxx11/array.h>
+#include <array>
 
 namespace aspect
 {
@@ -83,14 +83,14 @@ namespace aspect
            * the first radius, colatitude and longitude from the given
            * center position P_center where particles are generated.
            */
-          std_cxx11::array<double,dim> P_min;
+          std::array<double,dim> P_min;
 
           /**
            * The maximum spherical coordinates of the particle region, i.e.
            * the last radius, colatitude and longitude from the given
            * center position P_center where particles are generated.
            */
-          std_cxx11::array<double,dim> P_max;
+          std::array<double,dim> P_max;
 
           /**
            * The center of the particle region. Defaults to the origin.

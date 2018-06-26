@@ -26,7 +26,7 @@
 #include <aspect/plugins.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/base/std_cxx11/shared_ptr.h>
+#include <memory>
 #include <deal.II/base/table_handler.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/distributed/tria.h>

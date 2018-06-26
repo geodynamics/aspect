@@ -54,7 +54,7 @@ namespace aspect
          *     resulting Function object.
          **/
 
-        VectorFunctionFromVectorFunctionObject (const std_cxx1x::function<void (const Point<dim> &,Vector<double> &)> &function_object,
+        VectorFunctionFromVectorFunctionObject (const std::function<void (const Point<dim> &,Vector<double> &)> &function_object,
                                                 const unsigned int first_component,
                                                 const unsigned int n_object_components,
                                                 const unsigned int n_total_components)
@@ -115,7 +115,7 @@ namespace aspect
         /**
          * The function object which we call when this class's solution() function is called.
          **/
-        const std_cxx1x::function<void (const Point<dim> &,Vector<double> &)> function_object;
+        const std::function<void (const Point<dim> &,Vector<double> &)> function_object;
 
         /**
          * The first vector component whose value is to be filled by the given
@@ -841,10 +841,10 @@ namespace aspect
     // Assign Stokes solution
     LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
 
-    VectorFunctionFromVectorFunctionObject<dim> func(std_cxx1x::bind (&PrescribedStokesSolution::Interface<dim>::stokes_solution,
-                                                                      std_cxx1x::cref(*prescribed_stokes_solution),
-                                                                      std_cxx1x::_1,
-                                                                      std_cxx1x::_2),
+    VectorFunctionFromVectorFunctionObject<dim> func(std::bind (&PrescribedStokesSolution::Interface<dim>::stokes_solution,
+                                                                      std::cref(*prescribed_stokes_solution),
+                                                                      std::placeholders::_1,
+                                                                      std::placeholders::_2),
                                                      0,
                                                      parameters.include_melt_transport ? 2*dim+3 : dim+1, // velocity and pressure
                                                      introspection.n_components);

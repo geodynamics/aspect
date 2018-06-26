@@ -128,7 +128,7 @@ namespace aspect
                              "material model 'inner core material'!"));
 
     PhaseBoundaryAssembler<dim> *phase_boundary_assembler = new PhaseBoundaryAssembler<dim>();
-    assemblers.stokes_system_on_boundary_face.push_back (std_cxx11::unique_ptr<PhaseBoundaryAssembler<dim> > (phase_boundary_assembler));
+    assemblers.stokes_system_on_boundary_face.push_back (std::unique_ptr<PhaseBoundaryAssembler<dim> > (phase_boundary_assembler));
   }
 }
 

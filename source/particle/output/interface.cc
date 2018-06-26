@@ -63,7 +63,7 @@ namespace aspect
 
       namespace
       {
-        std_cxx1x::tuple
+        std::tuple
         <void *,
         void *,
         aspect::internal::Plugins::PluginList<Interface<2> >,
@@ -79,7 +79,7 @@ namespace aspect
                                 void (*declare_parameters_function) (ParameterHandler &),
                                 Interface<dim> *(*factory_function) ())
       {
-        std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
+        std::get<dim>(registered_plugins).register_plugin (name,
                                                                  description,
                                                                  declare_parameters_function,
                                                                  factory_function);
@@ -102,7 +102,7 @@ namespace aspect
         prm.leave_subsection ();
 
         if (name != "none")
-          return std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
+          return std::get<dim>(registered_plugins).create_plugin (name,
                                                                         "Particle::Output name");
         else
           return NULL;
@@ -120,7 +120,7 @@ namespace aspect
           prm.enter_subsection ("Particles");
           {
             const std::string pattern_of_names
-              = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
+              = std::get<dim>(registered_plugins).get_pattern_of_names ();
 
             prm.declare_entry ("Data output format", "vtu",
                                Patterns::Selection (pattern_of_names + "|none"),
@@ -129,13 +129,13 @@ namespace aspect
                                "written. "
                                "Select one of the following models:\n\n"
                                +
-                               std_cxx1x::get<dim>(registered_plugins).get_description_string());
+                               std::get<dim>(registered_plugins).get_description_string());
           }
           prm.leave_subsection ();
         }
         prm.leave_subsection ();
 
-        std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
+        std::get<dim>(registered_plugins).declare_parameters (prm);
       }
 
 
@@ -144,7 +144,7 @@ namespace aspect
       void
       write_plugin_graph (std::ostream &out)
       {
-        std_cxx11::get<dim>(registered_plugins).write_plugin_graph ("Particle output interface",
+        std::get<dim>(registered_plugins).write_plugin_graph ("Particle output interface",
                                                                     out);
       }
     }

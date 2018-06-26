@@ -61,7 +61,7 @@ namespace aspect
                               const double mmm)
       {
 
-        const std_cxx11::array<double,3> spos =
+        const std::array<double,3> spos =
           aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(pos);
 
         const double r=spos[0];
@@ -103,7 +103,7 @@ namespace aspect
       hollow_sphere_pressure (const Point<3> &pos,
                               const double mmm)
       {
-        const std_cxx11::array<double,3> spos =
+        const std::array<double,3> spos =
           aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(pos);
 
         const double r=spos[0];
@@ -287,7 +287,7 @@ namespace aspect
           for (unsigned int i=0; i < in.position.size(); ++i)
             {
               const Point<dim> &pos = in.position[i];
-              const std_cxx11::array<double,dim> spos = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(pos);
+              const std::array<double,dim> spos = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(pos);
               const double r = spos[0];
               const double mu = pow(r,mmm+1);
               out.viscosities[i] = mu;

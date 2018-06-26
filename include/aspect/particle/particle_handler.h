@@ -36,7 +36,7 @@
 #include <boost/serialization/map.hpp>
 #include <boost/range/iterator_range.hpp>
 
-#include <deal.II/base/std_cxx11/function.h>
+#include <functional>
 
 namespace aspect
 {
@@ -199,10 +199,10 @@ namespace aspect
          * right after its data block.
          */
         void
-        register_additional_store_load_functions(const std_cxx11::function<std::size_t ()> &size_callback,
-                                                 const std_cxx11::function<void *(const particle_iterator &,
+        register_additional_store_load_functions(const std::function<std::size_t ()> &size_callback,
+                                                 const std::function<void *(const particle_iterator &,
                                                                                   void *)> &store_callback,
-                                                 const std_cxx11::function<const void *(const particle_iterator &,
+                                                 const std::function<const void *(const particle_iterator &,
                                                                                         const void *)> &load_callback);
 
         /**
@@ -339,7 +339,7 @@ namespace aspect
          * This object owns and organizes the memory for all particle
          * properties.
          */
-        std_cxx11::unique_ptr<PropertyPool> property_pool;
+        std::unique_ptr<PropertyPool> property_pool;
 
         /**
          * A function that can be registered by calling
@@ -352,7 +352,7 @@ namespace aspect
          * movement might include temporary data, while a serialization after
          * movement was finished does not need to transfer this data).
          */
-        std_cxx11::function<std::size_t ()> size_callback;
+        std::function<std::size_t ()> size_callback;
 
         /**
          * A function that can be registered by calling
@@ -364,7 +364,7 @@ namespace aspect
          * return a void pointer pointing to a position right after its data
          * block.
          */
-        std_cxx11::function<void *(const particle_iterator &,
+        std::function<void *(const particle_iterator &,
                                    void *)> store_callback;
 
         /**
@@ -377,7 +377,7 @@ namespace aspect
          * is expected to return a void pointer pointing to a position right
          * after its data block.
          */
-        std_cxx11::function<const void *(const particle_iterator &,
+        std::function<const void *(const particle_iterator &,
                                          const void *)> load_callback;
 
         /**

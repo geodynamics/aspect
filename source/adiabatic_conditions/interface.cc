@@ -23,7 +23,7 @@
 #include <aspect/adiabatic_conditions/interface.h>
 
 #include <deal.II/base/exceptions.h>
-#include <deal.II/base/std_cxx11/tuple.h>
+#include <tuple>
 
 #include <list>
 
@@ -128,7 +128,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx11::tuple
+      std::tuple
       <void *,
       void *,
       aspect::internal::Plugins::PluginList<Interface<2> >,
@@ -144,7 +144,7 @@ namespace aspect
                                    void (*declare_parameters_function) (ParameterHandler &),
                                    Interface<dim> *(*factory_function) ())
     {
-      std_cxx11::get<dim>(registered_plugins).register_plugin (name,
+      std::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
                                                                declare_parameters_function,
                                                                factory_function);
@@ -162,7 +162,7 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      Interface<dim> *plugin = std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
+      Interface<dim> *plugin = std::get<dim>(registered_plugins).create_plugin (model_name,
                                                                                       "Adiabatic Conditions model::Model name");
 
       return plugin;
@@ -179,17 +179,17 @@ namespace aspect
       prm.enter_subsection ("Adiabatic conditions model");
       {
         const std::string pattern_of_names
-          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+          = std::get<dim>(registered_plugins).get_pattern_of_names ();
 
         prm.declare_entry ("Model name", "compute profile",
                            Patterns::Selection (pattern_of_names),
                            "Select one of the following models:\n\n"
                            +
-                           std_cxx11::get<dim>(registered_plugins).get_description_string());
+                           std::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection ();
 
-      std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -197,7 +197,7 @@ namespace aspect
     void
     write_plugin_graph (std::ostream &out)
     {
-      std_cxx11::get<dim>(registered_plugins).write_plugin_graph ("Adiabatic conditions interface",
+      std::get<dim>(registered_plugins).write_plugin_graph ("Adiabatic conditions interface",
                                                                   out);
     }
 

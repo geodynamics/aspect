@@ -235,7 +235,7 @@ namespace aspect
        */
       std::vector<std::vector<double> >
       compute_lateral_averages(const unsigned int n_slices,
-                               std::vector<std_cxx11::unique_ptr<internal::FunctorBase<dim> > > &functors) const;
+                               std::vector<std::unique_ptr<internal::FunctorBase<dim> > > &functors) const;
   };
 }
 

@@ -27,7 +27,7 @@
 #include <aspect/geometry_model/chunk.h>
 
 #include <deal.II/base/parameter_handler.h>
-#include <deal.II/base/std_cxx11/array.h>
+#include <array>
 
 
 
@@ -78,7 +78,7 @@ namespace aspect
         {
           // No need to set the radial coordinate correctly,
           // because it will be thrown away in get_data_component anyway
-          std_cxx11::array<double, dim> point;
+          std::array<double, dim> point;
           point[0] = 6371000.0;
           for (unsigned int d=0; d<dim-1; d++)
             point[d+1] = surface_point[d];

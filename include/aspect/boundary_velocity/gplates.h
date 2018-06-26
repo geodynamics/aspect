@@ -26,7 +26,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/compat.h>
 
-#include <deal.II/base/std_cxx11/array.h>
+#include <array>
 #include <deal.II/base/function_lib.h>
 
 
@@ -81,7 +81,7 @@ namespace aspect
           /**
            * Interpolation functions to access the velocities.
            */
-          std_cxx11::array<std_cxx11::unique_ptr<typename Functions::InterpolatedUniformGridData<2> >, 2> velocities;
+          std::array<std::unique_ptr<typename Functions::InterpolatedUniformGridData<2> >, 2> velocities;
 
           /**
            * Distances between adjacent point in the Lat/Long grid
@@ -103,7 +103,7 @@ namespace aspect
            * coordinate axes in the order y-x-z (instead of the often used
            * z-x-z)
            */
-          std_cxx11::array<double,3>
+          std::array<double,3>
           angles_from_matrix (const Tensor<2,3> &rotation_matrix) const;
 
           /**
@@ -143,7 +143,7 @@ namespace aspect
            * position and converts them to cartesian velocities.
            */
           Tensor<1,dim>
-          cartesian_velocity_at_surface_point(const std_cxx11::array<double,3> &spherical_point) const;
+          cartesian_velocity_at_surface_point(const std::array<double,3> &spherical_point) const;
 
           /**
            * Returns cartesian velocities calculated from surface velocities
@@ -155,7 +155,7 @@ namespace aspect
            * (radius,phi,theta)
            */
           Tensor<1,3> sphere_to_cart_velocity(const Tensor<1,2> &s_velocities,
-                                              const std_cxx11::array<double,3> &s_position) const;
+                                              const std::array<double,3> &s_position) const;
 
           /**
            * Check whether the gpml file was created by GPlates1.4 or later.

@@ -24,7 +24,7 @@ DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 #include <boost/random.hpp>
 DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
-#include <deal.II/base/std_cxx11/array.h>
+#include <array>
 #include <deal.II/base/exceptions.h>
 
 
@@ -44,8 +44,8 @@ namespace aspect
         for (unsigned int i = 0; i < dim; ++i)
           volume *= P_diff[i];
 
-        std_cxx11::array<unsigned int,dim> n_particles_per_direction;
-        std_cxx11::array<double,dim> spacing;
+        std::array<unsigned int,dim> n_particles_per_direction;
+        std::array<double,dim> spacing;
 
         // Calculate separation of particles
         for (unsigned int i = 0; i < dim; ++i)

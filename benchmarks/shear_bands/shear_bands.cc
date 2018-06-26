@@ -34,7 +34,7 @@
 #include <deal.II/numerics/vector_tools.h>
 #include <deal.II/base/table.h>
 #include <deal.II/base/table_indices.h>
-#include <deal.II/base/std_cxx1x/array.h>
+#include <array>
 
 
 namespace aspect
@@ -313,7 +313,7 @@ namespace aspect
       private:
         double noise_amplitude;
         double background_porosity;
-        std_cxx1x::array<unsigned int,dim> grid_intervals;
+        std::array<unsigned int,dim> grid_intervals;
         Functions::InterpolatedUniformGridData<dim> *interpolate_noise;
     };
 
@@ -349,7 +349,7 @@ namespace aspect
 
       Table<dim,double> white_noise;
       white_noise.TableBase<dim,double>::reinit(size_idx);
-      std_cxx1x::array<std::pair<double,double>,dim> grid_extents;
+      std::array<std::pair<double,double>,dim> grid_extents;
 
       if (dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model()) != NULL)
         {

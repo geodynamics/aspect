@@ -78,7 +78,7 @@ namespace aspect
             // then find a set of (dim-1) horizontal, unit-length, mutually orthogonal vectors
             const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector (in.position[q]);
             const Tensor<1,dim> vertical_direction = gravity/gravity.norm();
-            std_cxx11::array<Tensor<1,dim>,dim-1 > orthogonal_directions
+            std::array<Tensor<1,dim>,dim-1 > orthogonal_directions
               = Utilities::orthogonal_vectors(vertical_direction);
             for (unsigned int i=0; i<orthogonal_directions.size(); ++i)
               orthogonal_directions[i] /= orthogonal_directions[i].norm();

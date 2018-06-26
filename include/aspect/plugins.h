@@ -26,7 +26,7 @@
 
 #include <deal.II/base/utilities.h>
 #include <deal.II/base/parameter_handler.h>
-#include <deal.II/base/std_cxx11/tuple.h>
+#include <tuple>
 #include <deal.II/base/exceptions.h>
 
 #include <boost/core/demangle.hpp>
@@ -164,7 +164,7 @@ namespace aspect
          * - A function that can produce objects of this plugin type.
          */
         typedef
-        std_cxx11::tuple<std::string,
+        std::tuple<std::string,
                   std::string,
                   void ( *) (ParameterHandler &),
                   InterfaceClass *( *) ()>
@@ -327,7 +327,7 @@ namespace aspect
         for (typename std::list<PluginInfo>::const_iterator
              p = plugins->begin();
              p != plugins->end(); ++p)
-          Assert (std_cxx11::get<0>(*p) != name,
+          Assert (std::get<0>(*p) != name,
                   ExcMessage ("A plugin with name <" + name + "> has "
                               "already been registered!"));
 
@@ -354,7 +354,7 @@ namespace aspect
         for (typename std::list<PluginInfo>::const_iterator
              p = plugins->begin();
              p != plugins->end(); ++p)
-          names.insert (std_cxx11::get<0>(*p));
+          names.insert (std::get<0>(*p));
 
         // now create a pattern from all of these sorted names
         std::string pattern_of_names;
@@ -385,7 +385,7 @@ namespace aspect
         for (typename std::list<PluginInfo>::const_iterator
              p = plugins->begin();
              p != plugins->end(); ++p)
-          names_and_descriptions[std_cxx11::get<0>(*p)] = std_cxx11::get<1>(*p);;
+          names_and_descriptions[std::get<0>(*p)] = std::get<1>(*p);;
 
         // then output it all
         typename std::map<std::string,std::string>::const_iterator
@@ -428,7 +428,7 @@ namespace aspect
         for (typename std::list<PluginInfo>::const_iterator
              p = plugins->begin();
              p != plugins->end(); ++p)
-          (std_cxx11::get<2>(*p))(prm);
+          (std::get<2>(*p))(prm);
       }
 
 
@@ -461,9 +461,9 @@ namespace aspect
 
         for (typename std::list<PluginInfo>::const_iterator p = plugins->begin();
              p != plugins->end(); ++p)
-          if (std_cxx11::get<0>(*p) == name)
+          if (std::get<0>(*p) == name)
             {
-              InterfaceClass *i = std_cxx11::get<3>(*p)();
+              InterfaceClass *i = std::get<3>(*p)();
               return i;
             }
 
@@ -519,7 +519,7 @@ namespace aspect
         plugin_map;
         for (typename std::list<PluginInfo>::const_iterator p = plugins->begin();
              p != plugins->end(); ++p)
-          plugin_map[std_cxx11::get<0>(*p)] = p;
+          plugin_map[std::get<0>(*p)] = p;
 
         // now output the information sorted by the plugin names
         for (typename std::map<std::string, typename std::list<PluginInfo>::const_iterator>::const_iterator
@@ -540,7 +540,7 @@ namespace aspect
             // next create a (symbolic) node name for this plugin. because
             // each plugin corresponds to a particular class, use the mangled
             // name of the class
-            std_cxx11::unique_ptr<InterfaceClass> instance (create_plugin (p->first, ""));
+            std::unique_ptr<InterfaceClass> instance (create_plugin (p->first, ""));
             const std::string node_name = typeid(*instance).name();
 
             // then output the whole shebang describing this node

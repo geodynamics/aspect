@@ -22,7 +22,7 @@
 #include <aspect/utilities.h>
 #include <aspect/geometry_model/interface.h>
 
-#include <deal.II/base/std_cxx11/array.h>
+#include <array>
 
 #include <utility>
 #include <limits>
@@ -73,7 +73,7 @@ namespace aspect
       std::string header;
       getline(in, header);/* Discard header line */
       std::vector<double> visc_vec;
-      std_cxx11::array< std::vector<double>, 1 > depth_table;
+      std::array< std::vector<double>, 1 > depth_table;
       while (!in.eof())
         {
           double visc, depth;

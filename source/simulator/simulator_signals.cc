@@ -40,20 +40,20 @@ namespace aspect
   {
     namespace SimulatorSignals
     {
-      std::list<std_cxx11::function<void (aspect::SimulatorSignals<2> &)> > connector_functions_2d;
-      std::list<std_cxx11::function<void (aspect::SimulatorSignals<3> &)> > connector_functions_3d;
+      std::list<std::function<void (aspect::SimulatorSignals<2> &)> > connector_functions_2d;
+      std::list<std::function<void (aspect::SimulatorSignals<3> &)> > connector_functions_3d;
 
       static bool connector_functions_have_been_called = false;
 
       // add a user-provided connector to the list of connectors we keep
-      void register_connector_function_2d (const std_cxx11::function<void (aspect::SimulatorSignals<2> &)> &connector)
+      void register_connector_function_2d (const std::function<void (aspect::SimulatorSignals<2> &)> &connector)
       {
         Assert(!connector_functions_have_been_called,
                ExcMessage("Registration of signal connector happened after connection has already been called!"));
         connector_functions_2d.push_back (connector);
       }
 
-      void register_connector_function_3d (const std_cxx11::function<void (aspect::SimulatorSignals<3> &)> &connector)
+      void register_connector_function_3d (const std::function<void (aspect::SimulatorSignals<3> &)> &connector)
       {
         Assert(!connector_functions_have_been_called,
                ExcMessage("Registration of signal connector happened after connection has already been called!"));
@@ -68,7 +68,7 @@ namespace aspect
         Assert(!connector_functions_have_been_called,
                ExcInternalError());
 
-        for (std::list<std_cxx11::function<void (aspect::SimulatorSignals<2> &)> >::const_iterator
+        for (std::list<std::function<void (aspect::SimulatorSignals<2> &)> >::const_iterator
              p = connector_functions_2d.begin();
              p != connector_functions_2d.end();
              ++p)
@@ -83,7 +83,7 @@ namespace aspect
         Assert(!connector_functions_have_been_called,
                ExcInternalError());
 
-        for (std::list<std_cxx11::function<void (aspect::SimulatorSignals<3> &)> >::const_iterator
+        for (std::list<std::function<void (aspect::SimulatorSignals<3> &)> >::const_iterator
              p = connector_functions_3d.begin();
              p != connector_functions_3d.end();
              ++p)
