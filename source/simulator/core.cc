@@ -117,7 +117,7 @@ namespace aspect
    */
   template <int dim>
   Simulator<dim>::IntermediaryConstructorAction::
-  IntermediaryConstructorAction (std::function<void ()> action)
+  IntermediaryConstructorAction (const std::function<void ()> &action)
   {
     action();
   }
@@ -645,12 +645,8 @@ namespace aspect
         {
           VectorFunctionFromVelocityFunctionObject<dim> vel
           (introspection.n_components,
-           std::bind (static_cast<Tensor<1,dim> (BoundaryVelocity::Manager<dim>::*)(
-                        const types::boundary_id,
-                        const Point<dim> &) const> (&BoundaryVelocity::Manager<dim>::boundary_velocity),
-                      std::cref(boundary_velocity_manager),
-                      p->first,
-                      std::placeholders::_1));
+           [&] (const Point<dim> &x) -> Tensor<1,dim>
+          {return boundary_velocity_manager.boundary_velocity(p->first, x);});
 
           // here we create a mask for interpolate_boundary_values out of the 'selector'
           std::vector<bool> mask(introspection.component_masks.velocities.size(), false);
@@ -723,15 +719,20 @@ namespace aspect
              p = boundary_temperature_manager.get_fixed_temperature_boundary_indicators().begin();
              p != boundary_temperature_manager.get_fixed_temperature_boundary_indicators().end(); ++p)
           {
+            auto lambda = [&] (const Point<dim> &x) -> double
+            {
+              return boundary_temperature_manager.boundary_temperature(*p, x);
+            };
+
+            VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+              lambda,
+              introspection.component_masks.temperature.first_selected_component(),
+              introspection.n_components);
+
             VectorTools::interpolate_boundary_values (*mapping,
                                                       dof_handler,
                                                       *p,
-                                                      VectorFunctionFromScalarFunctionObject<dim>(std::bind (&BoundaryTemperature::Manager<dim>::boundary_temperature,
-                                                          std::cref(boundary_temperature_manager),
-                                                          *p,
-                                                          std::placeholders::_1),
-                                                          introspection.component_masks.temperature.first_selected_component(),
-                                                          introspection.n_components),
+                                                      vector_function_object,
                                                       current_constraints,
                                                       introspection.component_masks.temperature);
           }
@@ -752,16 +753,20 @@ namespace aspect
                p = boundary_composition_manager.get_fixed_composition_boundary_indicators().begin();
                p != boundary_composition_manager.get_fixed_composition_boundary_indicators().end(); ++p)
             {
+              auto lambda = [&] (const Point<dim> &x) -> double
+              {
+                return boundary_composition_manager.boundary_composition(*p, x, c);
+              };
+
+              VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+                lambda,
+                introspection.component_masks.compositional_fields[c].first_selected_component(),
+                introspection.n_components);
+
               VectorTools::interpolate_boundary_values (*mapping,
                                                         dof_handler,
                                                         *p,
-                                                        VectorFunctionFromScalarFunctionObject<dim>(std::bind (&BoundaryComposition::Manager<dim>::boundary_composition,
-                                                            std::cref(boundary_composition_manager),
-                                                            *p,
-                                                            std::placeholders::_1,
-                                                            c),
-                                                            introspection.component_masks.compositional_fields[c].first_selected_component(),
-                                                            introspection.n_components),
+                                                        vector_function_object,
                                                         current_constraints,
                                                         introspection.component_masks.compositional_fields[c]);
             }

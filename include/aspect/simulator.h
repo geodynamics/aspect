@@ -350,7 +350,7 @@ namespace aspect
        */
       struct IntermediaryConstructorAction
       {
-        IntermediaryConstructorAction (std::function<void ()> action);
+        IntermediaryConstructorAction (const std::function<void ()> &action);
       };
 
       /**

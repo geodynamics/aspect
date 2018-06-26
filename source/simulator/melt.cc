@@ -1574,6 +1574,18 @@ namespace aspect
                                               + fe.base_element(this->introspection().base_elements.pressure).dofs_per_cell
                                               + fe.base_element(this->introspection().base_elements.pressure).dofs_per_cell;
 
+    auto worker = [&](const typename DoFHandler<dim>::active_cell_iterator &cell,
+                      PcConstraintsAssembleData<dim> &scratch,
+                      PcConstraintsCopyData<dim> &data)
+    {
+      assembler.local_save_nonzero_pc_dofs(cell, scratch, data);
+    };
+
+    auto copier = [&](const PcConstraintsCopyData<dim> &data)
+    {
+      assembler.copy_local_to_global(data);
+    };
+
     // Here we call the assembler in order to save all compaction pressure dofs
     // that are in melt cells (and are nonzero) in the nonzero_pc_dofs index set.
     WorkStream::
@@ -1581,14 +1593,8 @@ namespace aspect
                      this->get_dof_handler().begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      this->get_dof_handler().end()),
-         std::bind (&PcNonZeroDofsAssembler<dim>::local_save_nonzero_pc_dofs,
-                    &assembler,
-                    std::placeholders::_1,
-                    std::placeholders::_2,
-                    std::placeholders::_3),
-         std::bind (&PcNonZeroDofsAssembler<dim>::copy_local_to_global,
-                    &assembler,
-                    std::placeholders::_1),
+         worker,
+         copier,
          PcConstraintsAssembleData<dim> (fe, quadrature_formula,
                                          this->get_mapping(),
                                          cell_update_flags,

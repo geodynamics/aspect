@@ -375,21 +375,25 @@ namespace aspect
     if (parameters.include_melt_transport)
       stokes_dofs_per_cell += finite_element.base_element(introspection.variable("compaction pressure").base_index).dofs_per_cell;
 
+    auto worker = [&](const typename DoFHandler<dim>::active_cell_iterator &cell,
+                      internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,
+                      internal::Assembly::CopyData::StokesPreconditioner<dim> &data)
+    {
+      this->local_assemble_stokes_preconditioner(cell, scratch, data);
+    };
+
+    auto copier = [&](const internal::Assembly::CopyData::StokesPreconditioner<dim> &data)
+    {
+      this->copy_local_to_global_stokes_preconditioner(data);
+    };
+
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std::bind (&Simulator<dim>::
-                    local_assemble_stokes_preconditioner,
-                    this,
-                    std::placeholders::_1,
-                    std::placeholders::_2,
-                    std::placeholders::_3),
-         std::bind (&Simulator<dim>::
-                    copy_local_to_global_stokes_preconditioner,
-                    this,
-                    std::placeholders::_1),
+         worker,
+         copier,
          internal::Assembly::Scratch::
          StokesPreconditioner<dim> (finite_element, quadrature_formula,
                                     *mapping,
@@ -727,21 +731,25 @@ namespace aspect
     const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile)
                                                || (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile);
 
+    auto worker = [&](const typename DoFHandler<dim>::active_cell_iterator &cell,
+                      internal::Assembly::Scratch::StokesSystem<dim> &scratch,
+                      internal::Assembly::CopyData::StokesSystem<dim> &data)
+    {
+      this->local_assemble_stokes_system(cell, scratch, data);
+    };
+
+    auto copier = [&](const internal::Assembly::CopyData::StokesSystem<dim> &data)
+    {
+      this->copy_local_to_global_stokes_system(data);
+    };
+
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std::bind (&Simulator<dim>::
-                    local_assemble_stokes_system,
-                    this,
-                    std::placeholders::_1,
-                    std::placeholders::_2,
-                    std::placeholders::_3),
-         std::bind (&Simulator<dim>::
-                    copy_local_to_global_stokes_system,
-                    this,
-                    std::placeholders::_1),
+         worker,
+         copier,
          internal::Assembly::Scratch::
          StokesSystem<dim> (finite_element, *mapping, quadrature_formula,
                             face_quadrature_formula,
@@ -1119,24 +1127,25 @@ namespace aspect
                                            :
                                            update_default);
 
+    auto worker = [&](const typename DoFHandler<dim>::active_cell_iterator &cell,
+                      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
+                      internal::Assembly::CopyData::AdvectionSystem<dim> &data)
+    {
+      this->local_assemble_advection_system(advection_field, viscosity_per_cell, cell, scratch, data);
+    };
+
+    auto copier = [&](const internal::Assembly::CopyData::AdvectionSystem<dim> &data)
+    {
+      this->copy_local_to_global_advection_system(advection_field, data);
+    };
+
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std::bind (&Simulator<dim>::
-                    local_assemble_advection_system,
-                    this,
-                    advection_field,
-                    std::cref(viscosity_per_cell),
-                    std::placeholders::_1,
-                    std::placeholders::_2,
-                    std::placeholders::_3),
-         std::bind (&Simulator<dim>::
-                    copy_local_to_global_advection_system,
-                    this,
-                    std::cref(advection_field),
-                    std::placeholders::_1),
+         worker,
+         copier,
          internal::Assembly::Scratch::
          AdvectionSystem<dim> (finite_element,
                                finite_element.base_element(advection_field.base_element(introspection)),

@@ -272,10 +272,12 @@ namespace aspect
       GridTools::shift(base_point,coarse_grid);
 
       // Transform to the ellipsoid surface
-      GridTools::transform (std::bind(&EllipsoidalChunk<3>::EllipsoidalChunkGeometry::push_forward,
-                                      std::cref(manifold),
-                                      std::placeholders::_1),
-                            coarse_grid);
+      GridTools::transform (
+        [&](const Point<dim> &x) -> Point<dim>
+      {
+        return manifold.push_forward(x);
+      },
+      coarse_grid);
 
       // also attach the real manifold to slot 15. we won't use it
       // during regular operation, but we set manifold_ids for all
@@ -283,13 +285,12 @@ namespace aspect
       // clear it again afterwards
       coarse_grid.set_manifold (15, manifold);
 
-      coarse_grid.signals.pre_refinement.connect (std::bind (&set_manifold_ids<dim>,
-                                                             std::ref(coarse_grid)));
-      coarse_grid.signals.post_refinement.connect (std::bind (&clear_manifold_ids<dim>,
-                                                              std::ref(coarse_grid)));
-      coarse_grid.signals.post_refinement.connect(std::bind (&EllipsoidalChunk<dim>::set_boundary_ids,
-                                                             std::cref(*this),
-                                                             std::ref(coarse_grid)));
+      coarse_grid.signals.pre_refinement.connect (
+        [&] {set_manifold_ids(coarse_grid);});
+      coarse_grid.signals.post_refinement.connect (
+        [&] {clear_manifold_ids(coarse_grid);});
+      coarse_grid.signals.post_refinement.connect (
+        [&] {this->set_boundary_ids(coarse_grid);});
     }
 
     template <int dim>

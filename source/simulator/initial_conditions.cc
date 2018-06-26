@@ -90,21 +90,21 @@ namespace aspect
 
         std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
 
-        const VectorFunctionFromScalarFunctionObject<dim, double> &advf_init_function =
-          (advf.is_temperature()
-           ?
-           VectorFunctionFromScalarFunctionObject<dim, double>(std::bind(&InitialTemperature::Manager<dim>::initial_temperature,
-                                                                         std::ref(initial_temperature_manager),
-                                                                         std::placeholders::_1),
-                                                               introspection.component_indices.temperature,
-                                                               introspection.n_components)
-           :
-           VectorFunctionFromScalarFunctionObject<dim, double>(std::bind(&InitialComposition::Manager<dim>::initial_composition,
-                                                                         std::ref(initial_composition_manager),
-                                                                         std::placeholders::_1,
-                                                                         n-1),
-                                                               introspection.component_indices.compositional_fields[n-1],
-                                                               introspection.n_components));
+        const VectorFunctionFromScalarFunctionObject<dim, double> &advf_init_function
+          =
+            (advf.is_temperature()
+             ?
+             VectorFunctionFromScalarFunctionObject<dim, double>(
+               [&](const Point<dim> &p) -> double
+        {return initial_temperature_manager.initial_temperature(p);},
+        introspection.component_indices.temperature,
+        introspection.n_components)
+        :
+        VectorFunctionFromScalarFunctionObject<dim, double>(
+          [&](const Point<dim> &p) -> double
+        {return initial_composition_manager.initial_composition(p, n-1);},
+        introspection.component_indices.compositional_fields[n-1],
+        introspection.n_components));
 
         const ComponentMask advf_mask =
           (advf.is_temperature()
@@ -342,12 +342,18 @@ namespace aspect
         // wants a function that represents all components of the
         // solution vector, so create such a function object
         // that is simply zero for all velocity components
+        auto lambda = [&](const Point<dim> &p) -> double
+        {
+          return adiabatic_conditions->pressure(p);
+        };
+
+        VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+          lambda,
+          pressure_comp,
+          introspection.n_components);
+
         VectorTools::interpolate (*mapping, dof_handler,
-                                  VectorFunctionFromScalarFunctionObject<dim> (std::bind (&AdiabaticConditions::Interface<dim>::pressure,
-                                                                               std::cref (*adiabatic_conditions),
-                                                                               std::placeholders::_1),
-                                                                               pressure_comp,
-                                                                               introspection.n_components),
+                                  vector_function_object,
                                   system_tmp,
                                   pressure_component_mask);
 
@@ -387,9 +393,9 @@ namespace aspect
         std::vector<double> rhs_values(n_q_points);
 
         ScalarFunctionFromFunctionObject<dim>
-        adiabatic_pressure (std::bind (&AdiabaticConditions::Interface<dim>::pressure,
-                                       std::cref(*adiabatic_conditions),
-                                       std::placeholders::_1));
+        adiabatic_pressure (
+          [&](const Point<dim> &p) -> double
+        {return adiabatic_conditions->pressure(p);});
 
 
         typename DoFHandler<dim>::active_cell_iterator

@@ -43,9 +43,12 @@ namespace aspect
       // If so, connect the initial topography function
       // to the right signal.
       if (dynamic_cast<InitialTopographyModel::ZeroTopography<dim>*>(topo_model) == 0)
-        this->get_signals().pre_set_initial_state.connect(std::bind(&Box<dim>::topography,
-                                                                    std::ref(*this),
-                                                                    std::placeholders::_1));
+        this->get_signals().pre_set_initial_state.connect(
+          [&](typename parallel::distributed::Triangulation<dim> &tria)
+        {
+          this->topography(tria);
+        }
+      );
     }
 
 
@@ -81,10 +84,10 @@ namespace aspect
     {
       // Here we provide GridTools with the function to displace vertices
       // in the vertical direction by an amount specified by the initial topography model
-      GridTools::transform(std::bind(&Box<dim>::add_topography,
-                                     this,
-                                     std::placeholders::_1),
-                           grid);
+      GridTools::transform(
+        [&](const Point<dim> &p) -> Point<dim>
+      {return this->add_topography(p);},
+      grid);
 
       this->get_pcout() << "   Added initial topography to grid" << std::endl << std::endl;
     }

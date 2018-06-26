@@ -48,10 +48,13 @@ namespace aspect
     World<dim>::initialize()
     {
       if (particle_load_balancing & ParticleLoadBalancing::repartition)
-        this->get_triangulation().signals.cell_weight.connect(std::bind(&aspect::Particle::World<dim>::cell_weight,
-                                                                        std::ref(*this),
-                                                                        std::placeholders::_1,
-                                                                        std::placeholders::_2));
+        this->get_triangulation().signals.cell_weight.connect(
+          [&] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+               const typename parallel::distributed::Triangulation<dim>::CellStatus status)
+          -> unsigned int
+        {
+          return this->cell_weight(cell, status);
+        });
 
       // Create a particle handler that stores the future particles.
       // If we restarted from a checkpoint we will fill this particle handler
@@ -61,23 +64,28 @@ namespace aspect
                                                       this->get_mpi_communicator(),
                                                       property_manager->get_n_property_components()));
 
-      const std::function<std::size_t ()> size_callback_function
-        = std::bind(&aspect::Particle::Integrator::Interface<dim>::get_data_size,
-                    std::ref(*integrator));
+      auto size_callback_function
+      = [&] () -> std::size_t
+      {
+        return integrator->get_data_size();
+      };
 
-      const std::function<void *(const typename ParticleHandler<dim>::particle_iterator &,
-                                 void *)> store_callback_function
-        = std::bind(&aspect::Particle::Integrator::Interface<dim>::write_data,
-                    std::ref(*integrator),
-                    std::placeholders::_1,
-                    std::placeholders::_2);
+      auto store_callback_function
+        = [&] (const typename ParticleHandler<dim>::particle_iterator &p,
+               void *data)
+          -> void *
+      {
+        return integrator->write_data(p, data);
+      };
 
-      const std::function<const void *(const typename ParticleHandler<dim>::particle_iterator &,
-                                       const void *)> load_callback_function
-        = std::bind(&aspect::Particle::Integrator::Interface<dim>::read_data,
-                    std::ref(*integrator),
-                    std::placeholders::_1,
-                    std::placeholders::_2);
+
+      const auto load_callback_function
+        = [&] (const typename ParticleHandler<dim>::particle_iterator &p,
+               const void *data)
+          -> const void *
+      {
+        return integrator->read_data(p, data);
+      };
 
       particle_handler->register_additional_store_load_functions(size_callback_function,
                                                                  store_callback_function,
@@ -140,37 +148,57 @@ namespace aspect
     void
     World<dim>::connect_to_signals(aspect::SimulatorSignals<dim> &signals)
     {
-      signals.post_set_initial_state.connect(std::bind(&World<dim>::setup_initial_state,
-                                                       std::ref(*this)));
+      signals.post_set_initial_state.connect(
+        [&] (const SimulatorAccess<dim> &)
+      {
+        this->setup_initial_state();
+      });
 
-      signals.pre_refinement_store_user_data.connect(std::bind(&ParticleHandler<dim>::register_store_callback_function,
-                                                               std::ref(*particle_handler),
-                                                               false));
+      signals.pre_refinement_store_user_data.connect(
+        [&] (typename parallel::distributed::Triangulation<dim> &)
+      {
+        particle_handler->register_store_callback_function(false);
+      });
 
-      signals.post_refinement_load_user_data.connect(std::bind(&ParticleHandler<dim>::register_load_callback_function,
-                                                               std::ref(*particle_handler),
-                                                               false));
+      signals.post_refinement_load_user_data.connect(
+        [&] (typename parallel::distributed::Triangulation<dim> &)
+      {
+        particle_handler->register_load_callback_function(false);
+      });
 
-      signals.pre_checkpoint_store_user_data.connect(std::bind(&ParticleHandler<dim>::register_store_callback_function,
-                                                               std::ref(*particle_handler),
-                                                               true));
+      signals.pre_checkpoint_store_user_data.connect(
+        [&] (typename parallel::distributed::Triangulation<dim> &)
+      {
+        particle_handler->register_store_callback_function(true);
+      });
 
-      signals.post_resume_load_user_data.connect(std::bind(&ParticleHandler<dim>::register_load_callback_function,
-                                                           std::ref(*particle_handler),
-                                                           true));
+      signals.post_resume_load_user_data.connect(
+        [&] (typename parallel::distributed::Triangulation<dim> &)
+      {
+        particle_handler->register_load_callback_function(true);
+      });
 
-      signals.post_refinement_load_user_data.connect(std::bind(&World<dim>::apply_particle_per_cell_bounds,
-                                                               std::ref(*this)));
-      signals.post_resume_load_user_data.connect(std::bind(&World<dim>::apply_particle_per_cell_bounds,
-                                                           std::ref(*this)));
+      signals.post_refinement_load_user_data.connect(
+        [&] (typename parallel::distributed::Triangulation<dim> &)
+      {
+        this->apply_particle_per_cell_bounds();
+      });
+
+      signals.post_resume_load_user_data.connect(
+        [&] (typename parallel::distributed::Triangulation<dim> &)
+      {
+        this->apply_particle_per_cell_bounds();
+      });
 
       if (update_ghost_particles &&
           dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
         {
-          signals.post_refinement_load_user_data.connect(std::bind(&ParticleHandler<dim>::exchange_ghost_particles,
-                                                                   std::ref(*particle_handler)));
-          signals.post_resume_load_user_data.connect(std::bind(&ParticleHandler<dim>::exchange_ghost_particles,
-                                                               std::ref(*particle_handler)));
+          auto lambda = [&] (typename parallel::distributed::Triangulation<dim> &)
+          {
+            particle_handler->exchange_ghost_particles();
+          };
+          signals.post_refinement_load_user_data.connect(lambda);
+          signals.post_resume_load_user_data.connect(lambda);
         }
     }
 

@@ -270,10 +270,9 @@ namespace aspect
 #endif
 
       // Transform box into spherical chunk
-      GridTools::transform (std::bind(&ChunkGeometry::push_forward,
-                                      std::cref(manifold),
-                                      std::placeholders::_1),
-                            coarse_grid);
+      GridTools::transform ([&](const Point<dim> &p) -> Point<dim>
+      {return manifold.push_forward(p);},
+      coarse_grid);
 
       // Deal with a curved mesh
       // Attach the real manifold to slot 15.
@@ -360,12 +359,17 @@ namespace aspect
     Chunk<dim>::connect_to_signal (SimulatorSignals<dim> &signals)
     {
       // Connect the topography function to the signal
-      signals.pre_compute_no_normal_flux_constraints.connect (std::bind (&Chunk<dim>::clear_manifold_ids,
-                                                                         std::ref(*this),
-                                                                         std::placeholders::_1));
-      signals.post_compute_no_normal_flux_constraints.connect (std::bind (&Chunk<dim>::set_manifold_ids,
-                                                                          std::ref(*this),
-                                                                          std::placeholders::_1));
+      signals.pre_compute_no_normal_flux_constraints.connect (
+        [&](typename parallel::distributed::Triangulation<dim> &tria)
+      {
+        this->clear_manifold_ids(tria);
+      });
+
+      signals.post_compute_no_normal_flux_constraints.connect (
+        [&](typename parallel::distributed::Triangulation<dim> &tria)
+      {
+        this->set_manifold_ids(tria);
+      });
     }
 #endif
 
