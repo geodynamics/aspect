@@ -333,7 +333,7 @@ ENDIF()
 
 DEAL_II_INVOKE_AUTOPILOT()
 
-FIND_PACKAGE(PerpleX HINTS ./contrib/perplex/install/ ../ ../../ $ENV{PERPLEX_DIR})
+FIND_PACKAGE(PerpleX QUIET HINTS ./contrib/perplex/install/ ../ ../../ $ENV{PERPLEX_DIR})
 IF(${PerpleX_FOUND})
   MESSAGE(STATUS "PerpleX found at ${PerpleX_INCLUDE_DIR}")
   INCLUDE_DIRECTORIES(${PerpleX_INCLUDE_DIR})
