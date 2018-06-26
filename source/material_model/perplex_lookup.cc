@@ -24,6 +24,7 @@
 extern "C" {
 #include <perplex_c.h>
 }
+#include <deal.II/base/multithread_info.h>
 #endif
 
 namespace aspect
@@ -35,8 +36,10 @@ namespace aspect
     void
     PerpleXLookup<dim>::initialize()
     {
-      // TODO for Timo: Assert not run with multiple threads.
 #ifdef ASPECT_WITH_PERPLEX
+      AssertThrow(dealii::MultithreadInfo::is_running_single_threaded(),
+                  ExcMessage("The PerpleXLookup MaterialModel only works in single threaded mode (do not use -j)!"));
+
       ini_phaseq(perplex_file_name.c_str()); // this line initializes meemum
 #else
       Assert (false, ExcMessage("ASPECT has not been compiled with the PerpleX libraries"));
