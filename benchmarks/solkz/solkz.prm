@@ -15,6 +15,7 @@ set Output directory                       = output
 set Pressure normalization                 = volume
 set Nonlinear solver scheme                = no Advection, iterated Stokes
 
+set Use years in output instead of seconds = false
 
 ############### Parameters describing the model
 
