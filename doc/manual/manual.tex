@@ -10514,8 +10514,9 @@ and you have to create the subfolder for your figures and code snippets in the
 To give you some guidelines on how to write the section in the manual, you can follow this general structure:
 \begin{itemize}
 \item Start with a short description of what feature the cookbook introduces or what
-  the model setup is meant to accomplish. If the setup comes from a publication, make sure
-  to mention that and include the reference.
+  the model setup is meant to accomplish, including the relevant physics. 
+  Specifically, this paragraph should also address the question of what motivates the model. 
+  If the setup comes from a publication, make sure to mention that and include the reference.
 \item If the model uses a new plugin, describe the new feature this plugin introduces
   and how this is implemented in the code. Ideally, this paragraph includes essential code
   snippets from the plugin file that complement and illustrate the description in the text.
@@ -10527,16 +10528,31 @@ To give you some guidelines on how to write the section in the manual, you can f
   \end{verbatim}
   to insert the code in the manual.tex file.
 \item Explain what the important input parameters in this setup are, what values you
-  set them to and why. Ideally, this description includes snippets from
+  set them to and why. This paragraph should give an overview of your model setup, 
+  including the initial conditions, boundary conditions, geometry, etc., and anything that 
+  is special about the setup. Ideally, this description includes snippets from
   the input file. You can place these snippets in the subfolder you created in the
   \href{doc/manual/cookbooks/.}{doc/manual/cookbooks}
-  directory and include them in the manual.tex file using a command like
+  directory and include them in the \texttt{manual.tex} file using a command like
   \begin{verbatim}
-  \lstinputlisting[language=prmfile]{cookbooks/subfolder_name/input_snippet.prm}!
+  \lstinputlisting[language=prmfile]{cookbooks/subfolder_name/input_snippet.prm}
   \end{verbatim}
 \item Show the model results in form of figures and/or plots, accompanied by an explanation
   of what happens in the model. This can also include a link to an animation of the model
-  you made and uploaded somewhere, for example on youtube.
+  you made and uploaded somewhere, for example on YouTube.
+  When creating figures or animations, you should think about the color scale that you use. 
+  Some colormaps -- like the rainbow color palette that is still the default in some 
+  visualization tools -- can obscure features present in the data and introduce 
+  artifacts, because the rainbow color scale is not perceptually uniform. For more background on this topic, 
+  there is a great summary on \url{https://matplotlib.org/users/colormaps.html}. 
+  To state some of their recommendations here, in most cases it is best to choose a perceptually uniform color palette. 
+  For representing information that has ordering, they recommend sequential color palettes 
+  that change in lightness/color incrementally like ``viridis'', ``inferno'', ``plasma'' and ``magma''. 
+  For representing data that deviates around zero, they recommend diverging color palettes
+  where two different colors change in lightness and meet at an unsaturated color in the middle 
+  such as ``BrBG'' and ``RdBu''. 
+  If you use a recent version of Paraview or VisIt, these color palettes are included with the preset
+  color maps under the names given above, and you may want to choose one of these options rather than the default. 
 \item Finally, mention some ways the users could modify or extend the cookbook, such as
   parameters to vary to get new and interesting results, or to better understand
   the numerical methods or the physical processes occurring in the model. These can just be
