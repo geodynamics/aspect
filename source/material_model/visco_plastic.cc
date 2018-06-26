@@ -232,9 +232,9 @@ namespace aspect
                 strain_ii = composition[this->introspection().compositional_index_for_name("total_strain")];
 
               // Compute the weakened cohesions and friction angles for the current compositional field
-              std::pair<double, double> weakening = calculate_plastic_weakening(strain_ii, j);
-              coh = weakening.first;
-              phi = weakening.second;
+              std::tuple<double, double, double> weakening = calculate_plastic_weakening(strain_ii, j);
+              coh = std::get<0>(weakening);
+              phi = std::get<1>(weakening);
 
               // Compute the weakening of the diffusion and dislocation prefactors
               // using the viscous strain or the already set total strain
@@ -308,7 +308,7 @@ namespace aspect
 
 
     template <int dim>
-    std::pair<double, double>
+    std::tuple<double, double, double >
     ViscoPlastic<dim>::
     calculate_plastic_weakening(const double strain_ii,
                                 const unsigned int j) const
@@ -319,10 +319,12 @@ namespace aspect
       // Linear strain weakening of cohesion and internal friction angle between specified strain values
       const double strain_fraction = ( cut_off_strain_ii - start_plastic_strain_weakening_intervals[j] ) /
                                      ( start_plastic_strain_weakening_intervals[j] - end_plastic_strain_weakening_intervals[j] );
-      const double current_coh = cohesions[j] + ( cohesions[j] - cohesions[j] * cohesion_strain_weakening_factors[j] ) * strain_fraction;
-      const double current_phi = angles_internal_friction[j] + ( angles_internal_friction[j] - angles_internal_friction[j] * friction_strain_weakening_factors[j] ) * strain_fraction;
 
-      return std::make_pair (current_coh, current_phi);
+      const double current_coh = cohesions[j] + ( cohesions[j] - cohesions[j] * cohesion_strain_weakening_factors[j] ) * strain_fraction;
+      const double current_phi = angles_internal_friction[j] + ( angles_internal_friction[j] - angles_internal_friction[j] *
+                                                                 friction_strain_weakening_factors[j] ) * strain_fraction;
+
+      return std::make_tuple (current_coh, current_phi, strain_fraction);
     }
 
     template <int dim>
@@ -351,6 +353,9 @@ namespace aspect
       // set up additional output for the derivatives
       MaterialModel::MaterialModelDerivatives<dim> *derivatives;
       derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+
+      // set up variable to copy outputs for diffusion
+      CopyOutputs<dim> *copy_out = out.template get_additional_output<CopyOutputs<dim> >();
 
       // Store which components to exclude during volume fraction computation.
       ComponentMask composition_mask(this->n_compositional_fields(),true);
@@ -419,7 +424,8 @@ namespace aspect
               // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
               // scheme is chosen. It would be useful to have a function to calculate isostress viscosities.
               const std::pair<std::vector<double>, std::vector<double> > calculate_viscosities =
-                calculate_isostrain_viscosities(volume_fractions, pressure, temperature, composition, strain_rate,viscous_flow_law,yield_mechanism);
+                calculate_isostrain_viscosities(volume_fractions, pressure, temperature, composition, strain_rate,
+                                                viscous_flow_law,yield_mechanism);
               const std::vector<double> composition_viscosities = calculate_viscosities.first;
               const std::vector<double> composition_yielding = calculate_viscosities.second;
 
@@ -577,6 +583,7 @@ namespace aspect
             {
               double C = 0.;
               double phi = 0.;
+              std::vector< std::vector<int> > sf;
               // set to weakened values, or unweakened values when strain weakening is not used
               for (unsigned int j=0; j < volume_fractions.size(); ++j)
                 {
@@ -600,9 +607,15 @@ namespace aspect
                           strain_invariant = std::fabs(second_invariant(L));
                         }
 
-                      std::pair<double, double> weakening = calculate_plastic_weakening(strain_invariant, j);
-                      C   += volume_fractions[j] * weakening.first;
-                      phi += volume_fractions[j] * weakening.second;
+                      std::tuple<double, double, double> weakening = calculate_plastic_weakening(strain_invariant, j);
+                      C   += volume_fractions[j] * std::get<0> (weakening);
+                      phi += volume_fractions[j] * std::get<1> (weakening);
+                      sf[i][j] = std::get<2> (weakening); // strain fraction at each point and composition
+                      // add copy fields here
+                      if  (copy_out != NULL)
+                        {
+                          copy_out-> copy_properties[i][j] = sf[i][j];
+                        }
                     }
                   else
                     {
@@ -1113,7 +1126,8 @@ namespace aspect
       prm.leave_subsection();
 
       // Declare dependencies on solution variables
-      this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::strain_rate | NonlinearDependence::compositional_fields;
+      this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::strain_rate |
+                                         NonlinearDependence::compositional_fields;
       this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
       this->model_dependence.compressibility = NonlinearDependence::none;
       this->model_dependence.specific_heat = NonlinearDependence::none;
@@ -1131,6 +1145,15 @@ namespace aspect
             std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
             (new MaterialModel::PlasticAdditionalOutputs<dim> (n_points)));
         }
+      // We want to diffuse the damage field after copy.
+      if (out.template get_additional_output<CopyOutputs<dim> >() == NULL)
+        {
+          const unsigned int n_points = out.viscosities.size();
+          out.additional_outputs.push_back(
+            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            (new MaterialModel::CopyOutputs<dim> (n_points, this->n_compositional_fields())));
+        }
+
     }
 
   }

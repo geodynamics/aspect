@@ -228,6 +228,7 @@ namespace aspect
           {
             interpolate_material_output_into_field();
 
+            // TODO: if the field is a diffusion field, it will be solved here after the copying
             if (parameters.enable_diffusion)
               {
                 assemble_advection_system (adv_field);
@@ -242,15 +243,11 @@ namespace aspect
                 if (adv_field.compositional_variable!=0)
                   system_matrix.block(block_idx, block_idx).clear();
                 break;
-
-
               }
           }
-        else if (method != Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field)
-          break;
-        // TODO: if the field is a diffusion field, it will be solved here after the copying
 
       }
+
 
     // for consistency we update the current linearization point only after we have solved
     // all fields, so that we use the same point in time for every field when solving

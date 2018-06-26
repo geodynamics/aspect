@@ -469,12 +469,12 @@ namespace aspect
       prm.enter_subsection("Diffusion parameters");
       {
         prm.declare_entry("Shape parameter", "2",
-                          Patterns::Integer(1),
+                          Patterns::Double(0),
                           "Determines the length scale around the local elements (where damage / strain is accumulated)"
                           "to which you want the damage to be diffused. A higher positive value will diffuse the damage "
                           "to smaller region around the elements.");
         prm.declare_entry("Non local length", "10",
-                          Patterns::Integer(1),
+                          Patterns::Double(0),
                           "Determines the length scale around the local elements (where damage / strain is accumulated)"
                           "to which you want the damage to be diffused. A higher positive value will diffuse the damage"
                           "to larger region around the elements.");
@@ -967,7 +967,7 @@ namespace aspect
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
       prm.declare_entry ("Compositional field methods", "",
-                         Patterns::List (Patterns::Selection("field|particles|static|melt field|copy_and_diffuse")),
+                         Patterns::List (Patterns::Selection("field|particles|static|melt field|copy and diffuse")),
                          "A comma separated list denoting the solution method of each "
                          "compositional field. Each entry of the list must be "
                          "one of the currently implemented field types: "
@@ -1159,8 +1159,8 @@ namespace aspect
       prm.leave_subsection ();
       prm.enter_subsection ("Diffusion parameters");
       {
-        diffusive_length              = prm.get_integer("Shape parameter");
-        non_local_length              = prm.get_integer("Non local length");
+        diffusive_length              = prm.get_double("Shape parameter");
+        non_local_length              = prm.get_double("Non local length");
       }
       prm.leave_subsection();
     }

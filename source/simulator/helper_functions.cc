@@ -1759,8 +1759,8 @@ namespace aspect
 
     // check if the material model computes copy outputs
     AssertThrow(copy_outputs != NULL,
-                ExcMessage("You are trying to use the a copy advection field, "
-                           "but the material model you use does not support copying material properties "
+                ExcMessage("You are trying to use a copy advection field, but the "
+                           " material model you use does not support copying material properties "
                            "(it does not create CopyOutputs, which are required for this "
                            "advection field type)."));
 

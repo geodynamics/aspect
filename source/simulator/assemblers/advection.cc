@@ -58,6 +58,7 @@ namespace aspect
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>& > (data_base);
 
+      const Parameters<dim> &parameters = this->get_parameters();
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
 
@@ -76,6 +77,10 @@ namespace aspect
       const unsigned int solution_component = advection_field.component_index(introspection);
 
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
+
+      if (parameters.enable_diffusion)
+        return;
+
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -364,8 +369,6 @@ namespace aspect
                 }
               ++i;
             }
-
-          // TODO: get the diffusivity from an input parameter
 
           // Take diffusivity as an user input
           const double diffusivity = (parameters.non_local_length * parameters.non_local_length) /

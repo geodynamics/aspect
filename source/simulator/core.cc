@@ -802,7 +802,8 @@ namespace aspect
       {
         const AdvectionField adv_field (AdvectionField::composition(c));
         if (adv_field.advection_method(introspection)==Parameters<dim>::AdvectionFieldMethod::fem_field
-            || adv_field.advection_method(introspection)==Parameters<dim>::AdvectionFieldMethod::fem_melt_field)
+            || adv_field.advection_method(introspection)==Parameters<dim>::AdvectionFieldMethod::fem_melt_field
+            || adv_field.advection_method(introspection)==Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field)
           {
             have_fem_compositional_field = true;
             break;

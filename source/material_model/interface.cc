@@ -854,6 +854,16 @@ namespace aspect
 
         return names;
       }
+
+
+      std::vector<std::string> make_copy_output_names(const unsigned int n_comp)
+      {
+        std::vector<std::string> names;
+        for (unsigned int c=0; c<n_comp; ++c)
+          names.push_back("copy_output_C" + Utilities::int_to_string(c));
+
+        return names;
+      }
     }
 
 
@@ -881,6 +891,31 @@ namespace aspect
         cth_reaction_rates[q] = reaction_rates[q][idx];
 
       return cth_reaction_rates;
+    }
+
+    template<int dim>
+    CopyOutputs<dim>::CopyOutputs (const unsigned int n_points,
+                                   const unsigned int n_comp)
+      :
+      NamedAdditionalMaterialOutputs<dim>(make_copy_output_names(n_comp)),
+      copy_properties(n_points, std::vector<double>(n_comp, std::numeric_limits<double>::quiet_NaN()))
+    {}
+
+
+
+    template<int dim>
+    std::vector<double>
+    CopyOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      // we have to extract the reaction rate outputs for one particular compositional
+      // field, but the vector in the material model outputs is sorted so that the
+      // number of evaluation points (and not the compositional fields) is the outer
+      // vector
+      std::vector<double> copy_outputs(copy_properties.size());
+      for (unsigned int q=0; q<copy_properties.size(); ++q)
+        copy_outputs[q] = copy_properties[q][idx];
+
+      return copy_outputs;
     }
   }
 }
@@ -943,6 +978,8 @@ namespace aspect
   template class NamedAdditionalMaterialOutputs<dim>; \
   \
   template class SeismicAdditionalOutputs<dim>; \
+  \
+  template class CopyOutputs <dim>;\
   \
   template class ReactionRateOutputs<dim>; \
   \

@@ -182,7 +182,7 @@ namespace aspect
     // Modify the assembler if you use diffused compositional field
     if (parameters.enable_diffusion)
       {
-        assemblers->diffusion_system.push_back(
+        assemblers->advection_system.push_back(
           std_cxx14::make_unique<aspect::Assemblers::DiffusionSystem<dim> >());
       }
 
@@ -1076,14 +1076,6 @@ namespace aspect
                                                 "   Assemble composition system"));
 
     const unsigned int block_idx = advection_field.block_index(introspection);
-
-//    const typename Parameters<dim>::AdvectionFieldMethod::Kind method =
-//      advection_field.advection_method(introspection);
-
-//    if (method == Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field)
-//      {
-//
-//      }
 
 
     if (!advection_field.is_temperature() && advection_field.compositional_variable!=0)

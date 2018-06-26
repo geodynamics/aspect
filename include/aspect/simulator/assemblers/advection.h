@@ -62,6 +62,10 @@ namespace aspect
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+
+        virtual
+        std::vector<double>
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch) const;
     };
 
 

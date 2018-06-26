@@ -226,9 +226,9 @@ namespace aspect
          * of cohesion and internal friction angle for a given
          * compositional field.
          */
-        std::pair<double, double>
+        std::tuple<double, double, double>
         calculate_plastic_weakening ( const double strain_ii,
-                                      const unsigned int j ) const;
+                                      const unsigned int j) const;
 
         /**
          * A function that computes the strain weakened values

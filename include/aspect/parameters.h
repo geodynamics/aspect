@@ -343,8 +343,8 @@ namespace aspect
     double                         composition_solver_tolerance;
     bool                           use_operator_splitting;
     bool                           enable_diffusion;
-    unsigned int                   diffusive_length;
-    unsigned int                   non_local_length;
+    double                         diffusive_length;
+    double                         non_local_length;
 
     /**
      * @}
