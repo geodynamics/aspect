@@ -1,0 +1,38 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libq1_q1.so>
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 7,492 (2,178+1,089+4,225)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+++++ 100
+**** 0 1
+**** 1 1
+**** 2 -0.474718
+**** 3 1
+**** 4 1
+**** 5 -0.474718
+**** 6 1
+**** 7 1
+**** 8 -0.474718
+**** 9 1
+**** 10 1
+**** 11 -0.474718
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+30 iterations.
+
+   Postprocessing:
+     Writing graphical output:      output-q1_q1/solution/solution-00000
+     RMS, max velocity:             0.00774 m/s, 0.012 m/s
+     Errors u_L1, p_L1, u_L2, p_L2: 7.176511e-05, 8.700577e-04, 6.231834e-05, 2.061629e-03
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
