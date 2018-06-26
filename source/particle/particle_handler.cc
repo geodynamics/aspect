@@ -110,7 +110,19 @@ namespace aspect
       particles.clear();
     }
 
+    template <int dim,int spacedim>
+    void
+    ParticleHandler<dim,spacedim>::clear_particle_handler_mapping()
+    {
+      mapping = nullptr;
+    }
 
+    template <int dim,int spacedim>
+    void
+    ParticleHandler<dim,spacedim>::set_particle_handler_mapping(const Mapping<dim,spacedim> &mapp)
+    {
+      mapping = &mapp;
+    }
 
     template <int dim,int spacedim>
     typename ParticleHandler<dim,spacedim>::particle_iterator

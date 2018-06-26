@@ -111,6 +111,10 @@ namespace aspect
          */
         void clear_particles();
 
+        void clear_particle_handler_mapping();
+
+        void set_particle_handler_mapping(const Mapping<dim,spacedim> &mapping);
+
         /**
          * Return an iterator to the first particle.
          */
