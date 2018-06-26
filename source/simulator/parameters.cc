@@ -56,7 +56,7 @@ namespace aspect
                        "A list of names of additional shared libraries that should be loaded "
                        "upon starting up the program. The names of these files can contain absolute "
                        "or relative paths (relative to the directory in which you call ASPECT). "
-                       "In fact, file names that are do not contain any directory "
+                       "In fact, file names that do not contain any directory "
                        "information (i.e., only the name of a file such as <myplugin.so> "
                        "will not be found if they are not located in one of the directories "
                        "listed in the \\texttt{LD_LIBRARY_PATH} environment variable. In order "
