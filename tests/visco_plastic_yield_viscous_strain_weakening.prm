@@ -1,12 +1,18 @@
 # Global parameters
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 1
+set End time                               = 0
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Max nonlinear iterations               = 1
-set Output directory                       = visco_plastic_yield_strain_weakening_composition
+set Output directory                       = visco_plastic_yield_viscous_strain_weakening
 set Timing output frequency                = 1
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+end
 
 # Model geometry (100x100 km, 10 km spacing)
 subsection Geometry model
@@ -68,8 +74,8 @@ end
 
 # Compositional fields used to track finite strain invariant
 subsection Compositional fields
-  set Number of fields = 2
-  set Names of fields = total_strain, weak_layer
+  set Number of fields = 1
+  set Names of fields = viscous_strain
 end
 
 # We prescribe some initial strain at the center of the domain
@@ -77,7 +83,7 @@ subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y
-    set Function expression = if(x>=45e3&x<=55e3&y>=45.3e3&y<=55.e3,0.2,0);if (y>50e3,1,0)
+    set Function expression = if(x>=45e3&x<=55e3&y>=45.3e3&y<=55.e3,0.2,0);
   end
 end
 
@@ -90,21 +96,20 @@ end
 subsection Material model
   set Model name = visco plastic
   subsection Visco Plastic
-    set Densities = 3300,10000,2700
     set Reference strain rate = 1.e-16
     set Viscous flow law = dislocation
-    set Prefactors for dislocation creep = 5.e-24
+    set Prefactors for dislocation creep = 5.e-23
     set Stress exponents for dislocation creep = 1.0
     set Activation energies for dislocation creep = 0.
     set Activation volumes for dislocation creep = 0.
     set Yield mechanism = drucker
     set Angles of internal friction = 0.
-    set Cohesions = 1.e6,1e1,1e7
+    set Cohesions = 1.e6
     set Use strain weakening = true
-    set Start plasticity strain weakening intervals = 0.
-    set End plasticity strain weakening intervals = 1.0
-    set Cohesion strain weakening factors = 0.5
-    set Friction strain weakening factors = 0.5
+    set Use viscous strain weakening = true
+    set Start prefactor strain weakening intervals = 0.
+    set End prefactor strain weakening intervals = 1.0
+    set Prefactor strain weakening factors = 0.5
   end
 end
 
@@ -112,7 +117,7 @@ end
 subsection Gravity model
   set Model name = vertical
   subsection Vertical
-    set Magnitude = 0.0
+    set Magnitude = 10.0
   end
 end
 
@@ -121,7 +126,13 @@ end
 subsection Postprocess
   set List of postprocessors = velocity statistics, mass flux statistics, visualization
   subsection Visualization
-    set List of output variables = strain rate, named additional outputs, material properties
+    set List of output variables = viscosity, strain rate, named additional outputs
     set Output format            = gnuplot
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
   end
 end

@@ -101,10 +101,13 @@ subsection Material model
     set Cohesions = 1.e6
     set Use strain weakening = true
     set Use finite strain tensor = true
-    set Start strain weakening intervals = 0.
-    set End strain weakening intervals = 1.0
+    set Start plasticity strain weakening intervals = 0.
+    set End plasticity strain weakening intervals = 1.0
+    set Start prefactor strain weakening intervals = 0.
+    set End prefactor strain weakening intervals = 1.0
     set Cohesion strain weakening factors = 0.5
     set Friction strain weakening factors = 0.5
+    set Prefactor strain weakening factors = 0.5
   end
 end
 

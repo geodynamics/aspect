@@ -4,7 +4,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
-   Solving eii system ... 0 iterations.
+   Solving total_strain system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+7 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
@@ -23,7 +23,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
 *** Timestep 1:  t=1 years
    Solving temperature system... 0 iterations.
-   Solving eii system ... 5 iterations.
+   Solving total_strain system ... 5 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+6 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000253206
