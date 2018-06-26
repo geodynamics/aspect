@@ -210,9 +210,7 @@ namespace aspect
             break;
 
             case Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field:
-            {
-
-            }
+            {}
             break;
 
             default:
@@ -248,7 +246,8 @@ namespace aspect
 
               }
           }
-
+        else if (method != Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field)
+          break;
         // TODO: if the field is a diffusion field, it will be solved here after the copying
 
       }

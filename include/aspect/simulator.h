@@ -571,16 +571,6 @@ namespace aspect
       void assemble_stokes_system ();
 
 
-//      /**
-//      * Initiate the assembly of the diffusion matrix and right hand side.
-//      *
-//      * This function is implemented in
-//      * <code>source/simulator/assembly.cc</code>.
-//      */
-//      void assemble_diffusion_system(const AdvectionField &advection_field,
-//          internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
-//          internal::Assembly::Scratch::AdvectionSystem<dim> &data);
-
 
       /**
        * Assemble and solve the temperature equation.

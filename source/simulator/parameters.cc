@@ -465,6 +465,7 @@ namespace aspect
                            "smaller time step. "
                            "Units: none.");
       }
+      prm.leave_subsection();
       prm.enter_subsection("Diffusion parameters");
       {
         prm.declare_entry("Shape parameter", "2",
@@ -1158,7 +1159,6 @@ namespace aspect
       prm.leave_subsection ();
       prm.enter_subsection ("Diffusion parameters");
       {
-        enable_diffusion              = prm.get_bool("Enable diffusion");
         diffusive_length              = prm.get_integer("Shape parameter");
         non_local_length              = prm.get_integer("Non local length");
       }
@@ -1534,6 +1534,12 @@ namespace aspect
         AssertThrow (this->include_melt_transport,
                      ExcMessage ("The advection method 'melt field' can only be selected if melt "
                                  "transport is used in the simulation."));
+
+      if (std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::copy_and_diffused_field)
+          != compositional_field_methods.end())
+        AssertThrow(this->enable_diffusion,
+                    ExcMessage ("The advection method 'copy and diffuse' can only be selected if "
+                                "diffusion is enabled."));
 
       const std::vector<std::string> x_mapped_particle_properties
         = Utilities::split_string_list
