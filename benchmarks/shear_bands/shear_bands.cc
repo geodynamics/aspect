@@ -1,6 +1,6 @@
 /*
   Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
-  
+
   This file is part of ASPECT.
 
   ASPECT is free software; you can redistribute it and/or modify
