@@ -7,10 +7,9 @@ Number of degrees of freedom: 89,654 (29,403+1,445+9,801+9,801+9,801+9,801+9,801
 *** Timestep 0:  t=0 seconds
 
    Postprocessing:
-     RMS, max velocity:                  0 m/s, 0 m/s
-     Temperature min/avg/max:            20 K, 1423 K, 1824 K
-     Heat fluxes through boundary parts: -4.821e-07 W, 2.692e-07 W, -8.192e-07 W, -6.146e-08 W, -1.792e+09 W, 1.199e+09 W
-     Writing graphical output:           output-world_builder_continental_plate_constant_temperature_composition/solution/solution-00000
+     RMS, max velocity:        0 m/s, 0 m/s
+     Temperature min/avg/max:  20 K, 1423 K, 1824 K
+     Writing graphical output: output-world_builder_continental_plate_constant_temperature_composition/solution/solution-00000
 
 Termination requested by criterion: end time
 
