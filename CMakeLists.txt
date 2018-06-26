@@ -333,6 +333,20 @@ ENDIF()
 
 DEAL_II_INVOKE_AUTOPILOT()
 
+FIND_PACKAGE(PerpleX HINTS ./contrib/perplex/install/ ../ ../../ $ENV{PERPLEX_DIR})
+IF(${PerpleX_FOUND})
+  MESSAGE(STATUS "PerpleX found at ${PerpleX_INCLUDE_DIR}")
+  INCLUDE_DIRECTORIES(${PerpleX_INCLUDE_DIR})
+  TARGET_LINK_LIBRARIES(${TARGET} ${PerpleX_LIBRARIES})
+  SET(ASPECT_WITH_PERPLEX ON)
+  FOREACH(_source_file ${TARGET_SRC})
+    SET_PROPERTY(SOURCE ${_source_file}
+      APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_WITH_PERPLEX="1")
+  ENDFOREACH()
+ELSE()
+  SET(ASPECT_WITH_PERPLEX OFF)
+ENDIF()
+
 
 IF (ASPECT_USE_SHARED_LIBS)
   # some systems need to explicitly link to some libraries to use dlopen
