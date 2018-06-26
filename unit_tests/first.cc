@@ -36,3 +36,16 @@ TEST_CASE("floating point std::vector checks")
 
   compare_vectors_approx(computed, expected);
 }
+
+TEST_CASE("Utilities::read_and_distribute_file_content")
+{
+  const std::string content =
+    aspect::Utilities::read_and_distribute_file_content(ASPECT_SOURCE_DIR "/VERSION",
+                                                        MPI_COMM_WORLD);
+  REQUIRE(content.size()>0);
+
+  REQUIRE_THROWS_WITH(
+    aspect::Utilities::read_and_distribute_file_content("does-not-exist.cc",
+                                                        MPI_COMM_WORLD),
+    Contains("Could not open"));
+}
