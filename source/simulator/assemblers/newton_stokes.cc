@@ -148,6 +148,11 @@ namespace aspect
                                    :
                                    1;
 
+              // pre-compute the tensor contractions
+              std::vector<SymmetricTensor<2,dim> > deta_deps_times_eps_times_phi(stokes_dofs_per_cell);
+              for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
+                deta_deps_times_eps_times_phi[i] = (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate;
+
               // symmetrize when the stabilization is symmetric or SPD
               if ((preconditioner_stabilization & Newton::Parameters::Stabilization::symmetric) != Newton::Parameters::Stabilization::none)
                 {
@@ -160,9 +165,9 @@ namespace aspect
                           += (
                                // top left block: approximate J^{uu}
                                (2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                               + derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate
+                               + derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * deta_deps_times_eps_times_phi[j]
                                                                       +
-                                                                      scratch.grads_phi_u[j] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate)
+                                                                      scratch.grads_phi_u[j] * deta_deps_times_eps_times_phi[i])
                                +
                                // bottom right block: approximate the
                                // pressure Schur complement by the
@@ -189,7 +194,7 @@ namespace aspect
                           += (
                                // top left block: approximate J^{uu}
                                (2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                               + derivative_scaling_factor * alpha * 2.0 * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate)
+                               + derivative_scaling_factor * alpha * 2.0 * (scratch.grads_phi_u[i] * deta_deps_times_eps_times_phi[j])
                                +
                                // bottom right block: approximate the
                                // pressure Schur complement by the
@@ -353,14 +358,20 @@ namespace aspect
                                         :
                                         1;
 
+                  // pre-compute the tensor contractions
+                  std::vector<SymmetricTensor<2,dim> > deta_deps_times_eps_times_phi(stokes_dofs_per_cell);
+                  for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
+                    deta_deps_times_eps_times_phi[i] = (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate;
+
+
                   // symmetrize when the stabilization is symmetric or SPD
                   if ((velocity_block_stabilization & Newton::Parameters::Stabilization::symmetric) != Newton::Parameters::Stabilization::none)
                     {
                       for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
                         for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                           {
-                            data.local_matrix(i,j) += ( derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate
-                                                                                             + scratch.grads_phi_u[j] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate)
+                            data.local_matrix(i,j) += ( derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * deta_deps_times_eps_times_phi[j]
+                                                                                             + scratch.grads_phi_u[j] * deta_deps_times_eps_times_phi[i])
                                                         + derivative_scaling_factor * pressure_scaling * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * scratch.grads_phi_u[i] * strain_rate )
                                                       * JxW;
 
@@ -375,7 +386,7 @@ namespace aspect
                       for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
                         for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                           {
-                            data.local_matrix(i,j) += ( derivative_scaling_factor * alpha * 2.0 * (scratch.grads_phi_u[i] * (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * strain_rate)
+                            data.local_matrix(i,j) += ( derivative_scaling_factor * alpha * 2.0 * (scratch.grads_phi_u[i] * deta_deps_times_eps_times_phi[j])
                                                         + derivative_scaling_factor * pressure_scaling * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * scratch.grads_phi_u[i] * strain_rate )
                                                       * JxW;
 
