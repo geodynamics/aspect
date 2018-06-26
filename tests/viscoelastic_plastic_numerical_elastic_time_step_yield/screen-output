@@ -9,6 +9,8 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Skipping stress_xy composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 27+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
 
    Postprocessing:
      RMS, max velocity:     0.0258 m/year, 0.0444 m/year
@@ -27,6 +29,8 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Solving stress_xy system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.1708e-06
+
 
    Postprocessing:
      RMS, max velocity:     0.0258 m/year, 0.0444 m/year
