@@ -790,7 +790,7 @@ namespace aspect
             SolverFGMRES<LinearAlgebra::BlockVector>
             solver(solver_control_cheap, mem,
                    SolverFGMRES<LinearAlgebra::BlockVector>::
-                   AdditionalData(50, true));
+                   AdditionalData(parameters.stokes_gmres_restart_length, true));
 
             solver.solve (stokes_block,
                           distributed_stokes_solution,
