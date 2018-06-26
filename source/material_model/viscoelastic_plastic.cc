@@ -156,11 +156,12 @@ namespace aspect
           const SymmetricTensor<2,dim> strain_rate = in.strain_rate[i];
           const std::vector<double> volume_fractions = compute_volume_fractions(composition, composition_mask);
 
+          // Arithmetic averaging of specific heat.
+          // This may not be strictly the most reasonable thing, but for most Earth materials we hope
+          // that they do not vary so much that it is a big problem. This statement also applies to
+          // the arithmetic averaging of density and thermal conductivity below.
           out.specific_heat[i] = average_value(volume_fractions, specific_heats, arithmetic);
 
-          // Arithmetic averaging of thermal conductivities
-          // This may not be strictly the most reasonable thing, but for most Earth materials we hope
-          // that they do not vary so much that it is a big problem.
           out.thermal_conductivities[i] = average_value(volume_fractions, thermal_conductivities, arithmetic);
 
           double density = 0.0;
@@ -168,7 +169,7 @@ namespace aspect
             {
               // not strictly correct if thermal expansivities are different, since we are interpreting
               // these compositions as volume fractions, but the error introduced should not be too bad.
-              const double temperature_factor= (1.0 - thermal_expansivities[j] * (temperature - reference_temperature));
+              const double temperature_factor = (1.0 - thermal_expansivities[j] * (temperature - reference_temperature));
               density += volume_fractions[j] * densities[j] * temperature_factor;
             }
           out.densities[i] = density;
@@ -192,7 +193,6 @@ namespace aspect
 
           if (in.strain_rate.size())
             {
-
               // Calculate the square root of the second moment invariant for the deviatoric strain rate tensor.
               // The first time this function is called (first iteration of first time step)
               // a specified "reference" strain rate is used as the returned value would
@@ -230,6 +230,8 @@ namespace aspect
                                         :
                                         coh[j] * std::cos(phi[j]) + std::max(pressure,0.0) * std::sin(phi[j]) );
 
+                  // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface.
+                  // If the viscous stress is less than the yield stress, the yield viscosity is equal to the pre-yield value.
                   if ( stresses_viscous[j] >= stresses_yield[j]  )
                     {
                       viscosities_drucker_prager[j] = stresses_yield[j] / (2.0 * edot_ii);
@@ -252,7 +254,7 @@ namespace aspect
                   elastic_out->elastic_shear_moduli[i] = average_value(volume_fractions,elastic_shear_moduli,viscosity_averaging);
                 }
 
-              // Fill elastic force outputs (assumed to be zero during intial time step)
+              // Fill elastic force outputs (assumed to be zero during initial time step)
               if (force_out)
                 {
                   force_out->elastic_force[i] = 0.;
@@ -269,7 +271,7 @@ namespace aspect
             quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
 
           // FEValues requires a quadrature and we provide the default quadrature
-          // as we only need to evaluate the solution and gradients.
+          // as we only need to evaluate the gradients of the solution.
           FEValues<dim> fe_values (this->get_mapping(),
                                    this->get_fe(),
                                    Quadrature<dim>(quadrature_positions),
@@ -315,10 +317,10 @@ namespace aspect
                                                   ( ( viscoelastic_viscosity / elastic_shear_modulus ) *
                                                     ( symmetrize(rotation * Tensor<2,dim>(stress_old) ) - symmetrize(Tensor<2,dim>(stress_old) * rotation) ) );
 
-              // Stress averaging scheme to account for difference betweed fixed elastic time step
+              // Stress averaging scheme to account for difference between fixed elastic time step
               // and numerical time step (see equation 32 in Moresi et al., 2003, J. Comp. Phys.)
               const double dt = this->get_timestep();
-              if (use_fixed_elastic_time_step == true && use_stress_averaging == true)
+              if (use_fixed_elastic_time_step == true && use_stress_averaging == true && dt < dte)
                 {
                   stress_new = ( ( 1. - ( dt / dte ) ) * stress_old ) + ( ( dt / dte ) * stress_new ) ;
                 }
@@ -493,6 +495,9 @@ namespace aspect
         prm.enter_subsection("Viscoelastic Plastic");
         {
 
+          AssertThrow(this->get_parameters().enable_elasticity == true,
+                      ExcMessage ("Material model Viscoelastic only works if 'Enable elasticity' is set to true"));
+
           reference_temperature = prm.get_double ("Reference temperature");
           minimum_strain_rate = prm.get_double("Minimum strain rate");
           reference_strain_rate = prm.get_double("Reference strain rate");
@@ -562,9 +567,6 @@ namespace aspect
           if (this->convert_output_to_years())
             fixed_elastic_time_step *= year_in_seconds;
 
-          AssertThrow(this->get_parameters().enable_elasticity == true,
-                      ExcMessage ("Material model Viscoelastic only works if 'Enable elasticity' is set to true"));
-
           // Check whether the compositional fields representing the viscoelastic
           // stress tensor are both named correctly and listed in the right order.
           if (dim == 2)
@@ -616,7 +618,7 @@ namespace aspect
                        ||
                        this->get_parameters().nonlinear_solver ==
                        Parameters<dim>::NonlinearSolver::iterated_Advection_and_Newton_Stokes),
-                      ExcMessage("The material model will now work with the nonlinear "
+                      ExcMessage("The material model will not work with the nonlinear "
                                  "solver schemes 'no Advection, iterated Stokes' and "
                                  "'single Advection, no Stokes'."));
 
@@ -635,7 +637,7 @@ namespace aspect
 
 
       // Declare dependencies on solution variables
-      this->model_dependence.viscosity = NonlinearDependence::compositional_fields;
+      this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::strain_rate | NonlinearDependence::compositional_fields;
       this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
       this->model_dependence.compressibility = NonlinearDependence::none;
       this->model_dependence.specific_heat = NonlinearDependence::compositional_fields;
@@ -696,7 +698,7 @@ namespace aspect
                                    "rock type or component of the viscoelastic stress tensor. The stress "
                                    "tensor in 2D and 3D, respectively, contains 3 or 6 components. The "
                                    "compositional fields representing these components must be named "
-                                   "and listed in a very specific format, which is designed to minimize"
+                                   "and listed in a very specific format, which is designed to minimize "
                                    "mislabeling stress tensor components as distinct 'compositional "
                                    "rock types' (or vice versa). For 2D models, the first three "
                                    "compositional fields must be labeled 'stress_xx', 'stress_yy' and 'stress_xy'. "
@@ -719,7 +721,7 @@ namespace aspect
                                    "However, an important distinction between this material model and "
                                    "the studies above is the use of compositional fields, rather than "
                                    "tracers, to track individual components of the viscoelastic stress "
-                                   "tensor. The material model will be udpated when an option to track "
+                                   "tensor. The material model will be updated when an option to track "
                                    "and calculate viscoelastic stresses with tracers is implemented. "
                                    "\n\n "
                                    "Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric "
@@ -764,13 +766,13 @@ namespace aspect
                                    "The magnitude of the shear modulus thus controls how much the effective "
                                    "viscosity is reduced relative to the initial viscosity. "
                                    "\n\n "
-                                   "Elastic effects are introduced into the governing stokes equations through "
+                                   "Elastic effects are introduced into the governing Stokes equations through "
                                    "an elastic force term (eqn. 30) using stresses from the previous time step: "
                                    "$F^{e,t} = -\\frac{\\eta_{eff}}{\\mu \\Delta t^{e}} \\tau^{t}$. "
                                    "This force term is added onto the right-hand side force vector in the "
                                    "system of equations. "
                                    "\n\n "
-                                   "The value of each compositional field representing distinck rock types at a "
+                                   "The value of each compositional field representing distinct rock types at a "
                                    "point is interpreted to be a volume fraction of that rock type. If the sum of "
                                    "the compositional field volume fractions is less than one, then the remainder "
                                    "of the volume is assumed to be 'background material'."

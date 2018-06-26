@@ -64,8 +64,8 @@ namespace aspect
      * or in 3D
      *  $\sigma_y = \frac{6*C*\cos(\phi) + 2*P*\sin(\phi)}{\sqrt(3)*(3+\sin(\phi))}$
      * where
-     *   $\sigma_y$ is the yield stress, $C$ is cohesion, $phi$ is the angle
-     *   of internal friction and $P$ is pressure.
+     *  $\sigma_y$ is the yield stress, $C$ is cohesion, $phi$ is the angle
+     *  of internal friction and $P$ is pressure.
      * If the viscous stress ($2*v*{\varepsilon}_{ii})$) exceeds the yield
      * stress ($\sigma_{y}$), the viscosity is rescaled back to the yield
      * surface: $v_{y}=\sigma_{y}/(2.*{\varepsilon}_{ii})$
@@ -147,7 +147,7 @@ namespace aspect
      * The magnitude of the shear modulus thus controls how much the effective
      * viscosity is reduced relative to the initial viscosity.
      *
-     * Elastic effects are introduced into the governing stokes equations through
+     * Elastic effects are introduced into the governing Stokes equations through
      * an elastic force term (eqn. 30) using stresses from the previous time step:
      * $F^{e,t} = -\frac{\eta_{eff}}{\mu \Delta t^{e}} \tau^{t}$.
      * This force term is added onto the right-hand side force vector in the
@@ -303,7 +303,7 @@ namespace aspect
         std::vector<double> densities;
 
         /**
-         * Vector for field thermal expnsivities, read from parameter file.
+         * Vector for field thermal expansivities, read from parameter file.
          */
         std::vector<double> thermal_expansivities;
 
@@ -324,12 +324,12 @@ namespace aspect
         std::vector<double> linear_viscosities;
 
         /**
-         * Vvector for field angles of internal friction, read from parameter file.
+         * Vector for field angles of internal friction, read from parameter file.
          */
         std::vector<double> angles_internal_friction;
 
         /**
-         * Vvector for field angles of internal friction, read from parameter file.
+         * Vector for cohesions, read from parameter file.
          */
         std::vector<double> cohesions;
 
