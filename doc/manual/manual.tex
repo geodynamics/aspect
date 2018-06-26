@@ -8059,6 +8059,7 @@ Figure~\ref{fig:global-melt} shows the time evolution of both models.
 A more complete comparison of the two models can be found in Section~4.7 ``Influence of melt migration on a global-scale 
 convection model'' in \cite{dannberg_melt}.
 
+<<<<<<< HEAD
 \subsubsection{Melt migration in a 2D mid-ocean ridge model}
 \label{sec:cookbooks-mid-ocean-ridge}
 
@@ -8212,6 +8213,28 @@ Some ideas for adapting the model setup:
         Introducing a temperature-dependent rheology could improve this behavior (and in reality, plastic
         effects might also play a role).
 \end{itemize}
+
+\subsubsection{Adiabatic boundary as initial temperature conditions}
+\textit{This section was contributed by Emmanuel Njinju, and D. Sarah Stamps}
+
+The adiabatic boundary is an initial temperature condition that allows for discretizing the model domain into layers separated by a user-defined isothermal boundary, which is an approximation of a thermal lithosphere definition. This geophysical set-up employs a table look-up approach. The user defines the adiabatic boundary, or lithospheric thickness in \aspect{} as an input ASCII data file that is formatted as 3 columns of `latitude', `longitude', and `depth', where `depth' is in kilometers. The lithospheric geothermal gradient is approximated linear from the surface at 273.15~K to the base at 1673.15~K. Below the isotherm the temperature increases approximately adiabatically at 0.5~K/km  (see Section~\ref{parameters:Initial-temperature_model}.
+
+\paragraph{Setting up the \aspect{} model.} For this cookbook we will use the parameter file \url{cookbooks/adiabatic_boundary/adiabatic_boundary.prm}  which was created by Tahiry Rajaonarison and D. Sarah Stamps. This plugin is designed specifically for the ellipsoidal chunk geometry, with the longitudes and latitudes of only three corners (NE, NW, and SW) defined by the user (see Section~\ref{parameters:Geometry_20model}). The parameter file is shown below. It uses the simple material model (see Sections~\ref{parameters:Material_20model} and  \ref{parameters:Material_20model/Simple_20model}.), radial Earth-like gravity model (Section~\ref{parameters:Gravity_20model}) and tangential velocity at the boundary of the model (Section~\ref{sec:equations}). 
+
+ \lstinputlisting[language=prmfile]{cookbooks/adiabatic_boundary/adiabatic_boundary.prm}
+ 
+ \paragraph{Visualizing the 3D model.} We can visualize the output of our initial temperature model using any visualization software (for example, VisIt or ParaView) by including `visualization' in the list of postprocessors in the parameter file with vtu as the output file format as shown below. 
+ 
+  \lstinputlisting[language=prmfile]{cookbooks/adiabatic_boundary/adiabatic_boundary_visualization.prm}
+  
+Figure~\ref{fig:adiabatic-boundary} shows the output of our initial temperature model as viewed in VisIt after modifying the above presented parameter file by setting ``\texttt{Initial global refinement = 6}''. Figure~\ref{fig:adiabatic-boundary} is characterized by a thermally defined lithosphere with temperature ranging between 273 K at the surface to 1673 K at the lithosphere-asthenosphere-boundary. While the temperature of the asthenosphere ranges between 1673 K to approximately 1900 K at the base of the model (500 km). 
+ 
+ \begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{cookbooks/adiabatic_boundary/initial_temperature_model.pdf}
+    \caption{Initial temperature model highlighting the outline of the isotherm (1673 K), which is an approximation of a thermal boundary separating the lithosphere and the asthenosphere.}
+    \label{fig:adiabatic-boundary}
+\end{figure}
 
 \subsection{Benchmarks}
 \label{sec:cookbooks-benchmarks}
