@@ -27,11 +27,6 @@
 #include <aspect/simulator_access.h>
 #include <deal.II/grid/manifold.h>
 
-/**
- * This geometry model implements an (3d) ellipsoidal chunk geometry where two of the axis have
- * the same length. The ellipsoidal chunk can be a non-coordinate parallel part of the ellipsoid.
- * @author This plugin is a joined effort of Menno Fraters, D Sarah Stamps and Wolfgang Bangerth
- */
 
 namespace aspect
 {
@@ -41,6 +36,11 @@ namespace aspect
 
     /**
      * A class that describes a geometry for an ellipsoid such as the WGS84 model of the earth.
+     *
+     * This geometry model implements a (3d) ellipsoidal chunk geometry where two of the axis have
+     * the same length. The ellipsoidal chunk can be a non-coordinate parallel part of the ellipsoid.
+     *
+     * @author This plugin is a joined effort of Menno Fraters, D. Sarah Stamps and Wolfgang Bangerth
      */
     template <int dim>
     class EllipsoidalChunk : public Interface<dim>, public SimulatorAccess<dim>
