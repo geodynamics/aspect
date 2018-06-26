@@ -80,9 +80,9 @@ namespace aspect
                                                Interface<dim> *(*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
-                                                               description,
-                                                               declare_parameters_function,
-                                                               factory_function);
+                                                         description,
+                                                         declare_parameters_function,
+                                                         factory_function);
     }
 
 
@@ -101,7 +101,7 @@ namespace aspect
         return NULL;
 
       Interface<dim> *plugin = std::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                                      "Prescribed Stokes solution::Model name");
+                                                                                "Prescribed Stokes solution::Model name");
       return plugin;
     }
 
@@ -134,7 +134,7 @@ namespace aspect
     write_plugin_graph (std::ostream &out)
     {
       std::get<dim>(registered_plugins).write_plugin_graph ("Prescribed Stokes solution interface",
-                                                                  out);
+                                                            out);
     }
   }
 }

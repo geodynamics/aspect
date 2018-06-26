@@ -273,8 +273,8 @@ namespace aspect
 
       // Transform to the ellipsoid surface
       GridTools::transform (std::bind(&EllipsoidalChunk<3>::EllipsoidalChunkGeometry::push_forward,
-                                            std::cref(manifold),
-                                            std::placeholders::_1),
+                                      std::cref(manifold),
+                                      std::placeholders::_1),
                             coarse_grid);
 
       // also attach the real manifold to slot 15. we won't use it
@@ -284,12 +284,12 @@ namespace aspect
       coarse_grid.set_manifold (15, manifold);
 
       coarse_grid.signals.pre_refinement.connect (std::bind (&set_manifold_ids<dim>,
-                                                                   std_cxx11::ref(coarse_grid)));
+                                                             std::ref(coarse_grid)));
       coarse_grid.signals.post_refinement.connect (std::bind (&clear_manifold_ids<dim>,
-                                                                    std_cxx11::ref(coarse_grid)));
+                                                              std::ref(coarse_grid)));
       coarse_grid.signals.post_refinement.connect(std::bind (&EllipsoidalChunk<dim>::set_boundary_ids,
-                                                                   std_cxx11::cref(*this),
-                                                                   std_cxx11::ref(coarse_grid)));
+                                                             std::cref(*this),
+                                                             std::ref(coarse_grid)));
     }
 
     template <int dim>

@@ -161,9 +161,9 @@ namespace aspect
                              Interface<dim> *(*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
-                                                               description,
-                                                               declare_parameters_function,
-                                                               factory_function);
+                                                         description,
+                                                         declare_parameters_function,
+                                                         factory_function);
     }
 
 
@@ -172,7 +172,7 @@ namespace aspect
     create_material_model (const std::string &model_name)
     {
       Interface<dim> *plugin = std::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                                      "Material model::Model name");
+                                                                                "Material model::Model name");
       return plugin;
     }
 
@@ -285,7 +285,7 @@ namespace aspect
     write_plugin_graph (std::ostream &out)
     {
       std::get<dim>(registered_plugins).write_plugin_graph ("Material model interface",
-                                                                  out);
+                                                            out);
     }
 
 

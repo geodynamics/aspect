@@ -128,8 +128,8 @@ namespace aspect
       // through the function set_boundary_indicators above
       total_coarse_grid.signals.post_refinement.connect
       (std::bind (&TwoMergedBoxes<dim>::set_boundary_indicators,
-                        std::cref(*this),
-                        std::ref(total_coarse_grid)));
+                  std::cref(*this),
+                  std::ref(total_coarse_grid)));
     }
 
 

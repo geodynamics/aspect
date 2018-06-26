@@ -654,9 +654,9 @@ namespace aspect
     initialize()
     {
       this->get_signals().set_assemblers.connect (std::bind(&Anisotropic<dim>::set_assemblers,
-                                                                  std::cref(*this),
-                                                                  std::placeholders::_1,
-                                                                  std::placeholders::_2));
+                                                            std::cref(*this),
+                                                            std::placeholders::_1,
+                                                            std::placeholders::_2));
     }
 
     template <int dim>

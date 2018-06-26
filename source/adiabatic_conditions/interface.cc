@@ -145,9 +145,9 @@ namespace aspect
                                    Interface<dim> *(*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
-                                                               description,
-                                                               declare_parameters_function,
-                                                               factory_function);
+                                                         description,
+                                                         declare_parameters_function,
+                                                         factory_function);
     }
 
 
@@ -163,7 +163,7 @@ namespace aspect
       prm.leave_subsection ();
 
       Interface<dim> *plugin = std::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                                      "Adiabatic Conditions model::Model name");
+                                                                                "Adiabatic Conditions model::Model name");
 
       return plugin;
 
@@ -198,7 +198,7 @@ namespace aspect
     write_plugin_graph (std::ostream &out)
     {
       std::get<dim>(registered_plugins).write_plugin_graph ("Adiabatic conditions interface",
-                                                                  out);
+                                                            out);
     }
 
   }

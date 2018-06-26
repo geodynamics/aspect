@@ -271,8 +271,8 @@ namespace aspect
 
       // Transform box into spherical chunk
       GridTools::transform (std::bind(&ChunkGeometry::push_forward,
-                                            std::cref(manifold),
-                                            std::placeholders::_1),
+                                      std::cref(manifold),
+                                      std::placeholders::_1),
                             coarse_grid);
 
       // Deal with a curved mesh
@@ -361,11 +361,11 @@ namespace aspect
     {
       // Connect the topography function to the signal
       signals.pre_compute_no_normal_flux_constraints.connect (std::bind (&Chunk<dim>::clear_manifold_ids,
-                                                                               std::ref(*this),
-                                                                               std::placeholders::_1));
+                                                                         std::ref(*this),
+                                                                         std::placeholders::_1));
       signals.post_compute_no_normal_flux_constraints.connect (std::bind (&Chunk<dim>::set_manifold_ids,
-                                                                                std::ref(*this),
-                                                                                std::placeholders::_1));
+                                                                          std::ref(*this),
+                                                                          std::placeholders::_1));
     }
 #endif
 

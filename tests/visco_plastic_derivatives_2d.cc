@@ -220,24 +220,24 @@ void signal_connector (aspect::SimulatorSignals<dim> &signals)
   using namespace dealii;
   std::cout << "* Connecting signals" << std::endl;
   signals.set_assemblers.connect (std::bind(&f<dim>,
-                                                  std::placeholders::_1,
-                                                  std::placeholders::_2,
-                                                  "harmonic"));
+                                            std::placeholders::_1,
+                                            std::placeholders::_2,
+                                            "harmonic"));
 
   signals.set_assemblers.connect (std::bind(&f<dim>,
-                                                  std::placeholders::_1,
-                                                  std::placeholders::_2,
-                                                  "geometric"));
+                                            std::placeholders::_1,
+                                            std::placeholders::_2,
+                                            "geometric"));
 
   signals.set_assemblers.connect (std::bind(&f<dim>,
-                                                  std::placeholders::_1,
-                                                  std::placeholders::_2,
-                                                  "arithmetic"));
+                                            std::placeholders::_1,
+                                            std::placeholders::_2,
+                                            "arithmetic"));
 
   signals.set_assemblers.connect (std::bind(&f<dim>,
-                                                  std::placeholders::_1,
-                                                  std::placeholders::_2,
-                                                  "maximum composition"));
+                                            std::placeholders::_1,
+                                            std::placeholders::_2,
+                                            "maximum composition"));
 }
 
 ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,

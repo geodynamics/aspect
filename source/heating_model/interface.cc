@@ -161,9 +161,9 @@ namespace aspect
                                           Interface<dim> *(*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
-                                                               description,
-                                                               declare_parameters_function,
-                                                               factory_function);
+                                                         description,
+                                                         declare_parameters_function,
+                                                         factory_function);
     }
 
 
@@ -277,7 +277,7 @@ namespace aspect
           (*heating_model)->create_additional_material_model_inputs(material_model_inputs);
         }
 
-      for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
+      for (typename std::list<std::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
            heating_model = heating_model_objects.begin();
            heating_model != heating_model_objects.end(); ++heating_model)
         {
@@ -337,7 +337,7 @@ namespace aspect
     Manager<dim>::write_plugin_graph (std::ostream &out)
     {
       std::get<dim>(registered_plugins).write_plugin_graph ("Heating model interface",
-                                                                  out);
+                                                            out);
     }
 
 

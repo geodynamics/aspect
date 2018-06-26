@@ -137,7 +137,7 @@ namespace aspect
     newton_handler (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ? new NewtonHandler<dim> () : NULL),
     post_signal_creation(
       std::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
-                       std::ref(signals))),
+                 std::ref(signals))),
     introspection (construct_variables<dim>(parameters, signals, melt_handler), parameters),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     iostream_tee_device(std::cout, log_file_stream),
@@ -157,9 +157,9 @@ namespace aspect
     // parse those parameters that depend on symbolic names
     // for boundary components
     post_geometry_model_creation_action (std::bind (&Parameters<dim>::parse_geometry_dependent_parameters,
-                                                          std::ref(parameters),
-                                                          std::ref(prm),
-                                                          std::cref(*geometry_model))),
+                                                    std::ref(parameters),
+                                                    std::ref(prm),
+                                                    std::cref(*geometry_model))),
     material_model (MaterialModel::create_material_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
     prescribed_stokes_solution (PrescribedStokesSolution::create_prescribed_stokes_solution<dim>(prm)),
@@ -646,11 +646,11 @@ namespace aspect
           VectorFunctionFromVelocityFunctionObject<dim> vel
           (introspection.n_components,
            std::bind (static_cast<Tensor<1,dim> (BoundaryVelocity::Manager<dim>::*)(
-                              const types::boundary_id,
-                              const Point<dim> &) const> (&BoundaryVelocity::Manager<dim>::boundary_velocity),
-                            std::cref(boundary_velocity_manager),
-                            p->first,
-                            std::placeholders::_1));
+                        const types::boundary_id,
+                        const Point<dim> &) const> (&BoundaryVelocity::Manager<dim>::boundary_velocity),
+                      std::cref(boundary_velocity_manager),
+                      p->first,
+                      std::placeholders::_1));
 
           // here we create a mask for interpolate_boundary_values out of the 'selector'
           std::vector<bool> mask(introspection.component_masks.velocities.size(), false);

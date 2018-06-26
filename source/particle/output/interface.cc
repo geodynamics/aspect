@@ -80,9 +80,9 @@ namespace aspect
                                 Interface<dim> *(*factory_function) ())
       {
         std::get<dim>(registered_plugins).register_plugin (name,
-                                                                 description,
-                                                                 declare_parameters_function,
-                                                                 factory_function);
+                                                           description,
+                                                           declare_parameters_function,
+                                                           factory_function);
       }
 
 
@@ -103,7 +103,7 @@ namespace aspect
 
         if (name != "none")
           return std::get<dim>(registered_plugins).create_plugin (name,
-                                                                        "Particle::Output name");
+                                                                  "Particle::Output name");
         else
           return NULL;
       }
@@ -145,7 +145,7 @@ namespace aspect
       write_plugin_graph (std::ostream &out)
       {
         std::get<dim>(registered_plugins).write_plugin_graph ("Particle output interface",
-                                                                    out);
+                                                              out);
       }
     }
   }

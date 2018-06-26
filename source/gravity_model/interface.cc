@@ -82,9 +82,9 @@ namespace aspect
                             Interface<dim> *(*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
-                                                               description,
-                                                               declare_parameters_function,
-                                                               factory_function);
+                                                         description,
+                                                         declare_parameters_function,
+                                                         factory_function);
     }
 
 
@@ -110,7 +110,7 @@ namespace aspect
                              "(`set Model name' in `subsection Gravity model')."));
 
       return std::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                    "Gravity model::Model name");
+                                                              "Gravity model::Model name");
     }
 
 
@@ -142,7 +142,7 @@ namespace aspect
     write_plugin_graph (std::ostream &out)
     {
       std::get<dim>(registered_plugins).write_plugin_graph ("Gravity model interface",
-                                                                  out);
+                                                            out);
     }
   }
 }

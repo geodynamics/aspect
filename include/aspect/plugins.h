@@ -165,10 +165,10 @@ namespace aspect
          */
         typedef
         std::tuple<std::string,
-                  std::string,
-                  void ( *) (ParameterHandler &),
-                  InterfaceClass *( *) ()>
-                  PluginInfo;
+            std::string,
+            void ( *) (ParameterHandler &),
+            InterfaceClass *( *) ()>
+            PluginInfo;
 
         /**
          * A pointer to a list of all registered plugins.

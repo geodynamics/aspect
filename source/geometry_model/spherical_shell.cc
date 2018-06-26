@@ -99,11 +99,11 @@ namespace aspect
       // because everything is handled by the manifold.
 #if !DEAL_II_VERSION_GTE(9,0,0)
       coarse_grid.signals.pre_refinement.connect (std::bind (&SphericalShell<dim>::set_manifold_ids,
-                                                                   std::cref(*this),
-                                                                   std::ref(coarse_grid)));
+                                                             std::cref(*this),
+                                                             std::ref(coarse_grid)));
       coarse_grid.signals.post_refinement.connect (std::bind (&SphericalShell<dim>::clear_manifold_ids,
-                                                                    std::cref(*this),
-                                                                    std::ref(coarse_grid)));
+                                                              std::cref(*this),
+                                                              std::ref(coarse_grid)));
 
       clear_manifold_ids(coarse_grid);
 

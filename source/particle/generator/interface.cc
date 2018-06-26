@@ -176,9 +176,9 @@ namespace aspect
                                    Interface<dim> *(*factory_function) ())
       {
         std::get<dim>(registered_plugins).register_plugin (name,
-                                                                 description,
-                                                                 declare_parameters_function,
-                                                                 factory_function);
+                                                           description,
+                                                           declare_parameters_function,
+                                                           factory_function);
       }
 
 
@@ -198,7 +198,7 @@ namespace aspect
         prm.leave_subsection ();
 
         return std::get<dim>(registered_plugins).create_plugin (name,
-                                                                      "Particle::Generator name");
+                                                                "Particle::Generator name");
       }
 
 
@@ -235,7 +235,7 @@ namespace aspect
       write_plugin_graph (std::ostream &out)
       {
         std::get<dim>(registered_plugins).write_plugin_graph ("Particle generator interface",
-                                                                    out);
+                                                              out);
       }
     }
   }

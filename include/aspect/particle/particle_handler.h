@@ -201,9 +201,9 @@ namespace aspect
         void
         register_additional_store_load_functions(const std::function<std::size_t ()> &size_callback,
                                                  const std::function<void *(const particle_iterator &,
-                                                                                  void *)> &store_callback,
+                                                                            void *)> &store_callback,
                                                  const std::function<const void *(const particle_iterator &,
-                                                                                        const void *)> &load_callback);
+                                                                                  const void *)> &load_callback);
 
         /**
          * Return the total number of particles that were managed by this class
@@ -365,7 +365,7 @@ namespace aspect
          * block.
          */
         std::function<void *(const particle_iterator &,
-                                   void *)> store_callback;
+                             void *)> store_callback;
 
         /**
          * A function that is called once per particle
@@ -378,7 +378,7 @@ namespace aspect
          * after its data block.
          */
         std::function<const void *(const particle_iterator &,
-                                         const void *)> load_callback;
+                                   const void *)> load_callback;
 
         /**
          * This variable is set by the register_store_callback_function()

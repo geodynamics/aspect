@@ -94,15 +94,15 @@ namespace aspect
           (advf.is_temperature()
            ?
            VectorFunctionFromScalarFunctionObject<dim, double>(std::bind(&InitialTemperature::Manager<dim>::initial_temperature,
-                                                                               std::ref(initial_temperature_manager),
-                                                                               std::placeholders::_1),
+                                                                         std::ref(initial_temperature_manager),
+                                                                         std::placeholders::_1),
                                                                introspection.component_indices.temperature,
                                                                introspection.n_components)
            :
            VectorFunctionFromScalarFunctionObject<dim, double>(std::bind(&InitialComposition::Manager<dim>::initial_composition,
-                                                                               std::ref(initial_composition_manager),
-                                                                               std::placeholders::_1,
-                                                                               n-1),
+                                                                         std::ref(initial_composition_manager),
+                                                                         std::placeholders::_1,
+                                                                         n-1),
                                                                introspection.component_indices.compositional_fields[n-1],
                                                                introspection.n_components));
 
@@ -388,8 +388,8 @@ namespace aspect
 
         ScalarFunctionFromFunctionObject<dim>
         adiabatic_pressure (std::bind (&AdiabaticConditions::Interface<dim>::pressure,
-                                             std::cref(*adiabatic_conditions),
-                                             std::placeholders::_1));
+                                       std::cref(*adiabatic_conditions),
+                                       std::placeholders::_1));
 
 
         typename DoFHandler<dim>::active_cell_iterator

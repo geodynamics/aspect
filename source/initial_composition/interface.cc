@@ -87,9 +87,9 @@ namespace aspect
                                                 Interface<dim> *(*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
-                                                               description,
-                                                               declare_parameters_function,
-                                                               factory_function);
+                                                         description,
+                                                         declare_parameters_function,
+                                                         factory_function);
     }
 
 
@@ -254,7 +254,7 @@ namespace aspect
     Manager<dim>::write_plugin_graph (std::ostream &out)
     {
       std::get<dim>(registered_plugins).write_plugin_graph ("Initial composition interface",
-                                                                  out);
+                                                            out);
     }
   }
 }

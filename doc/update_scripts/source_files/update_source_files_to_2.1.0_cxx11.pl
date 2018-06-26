@@ -10,6 +10,7 @@ while (<>)
   s:deal.II/base/std_cxx11/tuple.h:tuple:;
   s:deal.II/base/std_cxx11/array.h:array:;
   s:deal.II/base/std_cxx11/shared_ptr.h:memory:;
+  s:deal.II/base/std_cxx11/unique_ptr.h:memory:;
   s:deal.II/base/std_cxx11/bind.h:functional:;
   s:deal.II/base/std_cxx11/function.h:functional:;
 

@@ -147,14 +147,14 @@ namespace aspect
     {
       this->get_signals().post_stokes_solver.connect(
         std::bind(&StokesResidual<dim>::stokes_solver_callback,
-                        this,
-                        /* do not need the first arguments
-                         * std::placeholders::_1,
-                         * std::placeholders::_2,
-                         * std::placeholders::_3,
-                         */
-                        std::placeholders::_4,
-                        std::placeholders::_5)
+                  this,
+                  /* do not need the first arguments
+                   * std::placeholders::_1,
+                   * std::placeholders::_2,
+                   * std::placeholders::_3,
+                   */
+                  std::placeholders::_4,
+                  std::placeholders::_5)
       );
     }
 

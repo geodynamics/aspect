@@ -27,7 +27,7 @@
 
 #include <iostream>
 #include <deal.II/base/quadrature_lib.h>
-#include <deal.II/base/std/unique_ptr.h>
+#include <memory>
 #include <deal.II/fe/fe_values.h>
 
 namespace aspect

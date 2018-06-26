@@ -509,10 +509,10 @@ namespace aspect
             std::sort(neighbor_permutation.begin(),
                       neighbor_permutation.end(),
                       std::bind(&compare_particle_association<dim>,
-                                      std::placeholders::_1,
-                                      std::placeholders::_2,
-                                      std::cref(vertex_to_particle),
-                                      std::cref(vertex_to_cell_centers[closest_vertex_index])));
+                                std::placeholders::_1,
+                                std::placeholders::_2,
+                                std::cref(vertex_to_particle),
+                                std::cref(vertex_to_cell_centers[closest_vertex_index])));
 
             // Search all of the cells adjacent to the closest vertex of the previous cell
             // Most likely we will find the particle in them.
@@ -826,12 +826,12 @@ namespace aspect
       if (global_max_particles_per_cell > 0)
         {
           const std::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
-                                         const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
+                                   const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
             = std::bind(&ParticleHandler<dim>::store_particles,
-                              std::cref(*this),
-                              std::placeholders::_1,
-                              std::placeholders::_2,
-                              std::placeholders::_3);
+                        std::cref(*this),
+                        std::placeholders::_1,
+                        std::placeholders::_2,
+                        std::placeholders::_3);
 
           // Compute the size per serialized particle. This is simple if we own
           // particles, simply ask one of them. Otherwise create a temporary particle,
@@ -879,12 +879,12 @@ namespace aspect
       if (serialization && (global_max_particles_per_cell > 0))
         {
           const std::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
-                                         const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
+                                   const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
             = std::bind(&ParticleHandler<dim>::store_particles,
-                              std::cref(*this),
-                              std::placeholders::_1,
-                              std::placeholders::_2,
-                              std::placeholders::_3);
+                        std::cref(*this),
+                        std::placeholders::_1,
+                        std::placeholders::_2,
+                        std::placeholders::_3);
 
           // Compute the size per serialized particle. This is simple if we own
           // particles, simply ask one of them. Otherwise create a temporary particle,
@@ -908,13 +908,13 @@ namespace aspect
       if (data_offset != numbers::invalid_unsigned_int)
         {
           const std::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
-                                         const typename parallel::distributed::Triangulation<dim>::CellStatus,
-                                         const void *) > callback_function
+                                   const typename parallel::distributed::Triangulation<dim>::CellStatus,
+                                   const void *) > callback_function
             = std::bind(&ParticleHandler<dim>::load_particles,
-                              std::ref(*this),
-                              std::placeholders::_1,
-                              std::placeholders::_2,
-                              std::placeholders::_3);
+                        std::ref(*this),
+                        std::placeholders::_1,
+                        std::placeholders::_2,
+                        std::placeholders::_3);
 
           non_const_triangulation->notify_ready_to_unpack(data_offset,callback_function);
 

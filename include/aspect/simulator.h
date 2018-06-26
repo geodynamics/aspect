@@ -1560,20 +1560,20 @@ namespace aspect
        * @name Variables that describe the physical setup of the problem
        * @{
        */
-      const std::unique_ptr<InitialTopographyModel::Interface<dim> >    initial_topography_model;
-      const std::unique_ptr<GeometryModel::Interface<dim> >             geometry_model;
+      const std::unique_ptr<InitialTopographyModel::Interface<dim> >          initial_topography_model;
+      const std::unique_ptr<GeometryModel::Interface<dim> >                   geometry_model;
       const IntermediaryConstructorAction                                     post_geometry_model_creation_action;
-      const std::unique_ptr<MaterialModel::Interface<dim> >             material_model;
-      const std::unique_ptr<GravityModel::Interface<dim> >              gravity_model;
+      const std::unique_ptr<MaterialModel::Interface<dim> >                   material_model;
+      const std::unique_ptr<GravityModel::Interface<dim> >                    gravity_model;
       BoundaryTemperature::Manager<dim>                                       boundary_temperature_manager;
       BoundaryComposition::Manager<dim>                                       boundary_composition_manager;
-      const std::unique_ptr<PrescribedStokesSolution::Interface<dim> >  prescribed_stokes_solution;
+      const std::unique_ptr<PrescribedStokesSolution::Interface<dim> >        prescribed_stokes_solution;
       InitialComposition::Manager<dim>                                        initial_composition_manager;
       InitialTemperature::Manager<dim>                                        initial_temperature_manager;
-      const std::unique_ptr<AdiabaticConditions::Interface<dim> >       adiabatic_conditions;
+      const std::unique_ptr<AdiabaticConditions::Interface<dim> >             adiabatic_conditions;
       BoundaryVelocity::Manager<dim>                                          boundary_velocity_manager;
       std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > > boundary_traction;
-      const std::unique_ptr<BoundaryHeatFlux::Interface<dim> >          boundary_heat_flux;
+      const std::unique_ptr<BoundaryHeatFlux::Interface<dim> >                boundary_heat_flux;
 
       /**
        * @}
@@ -1629,7 +1629,7 @@ namespace aspect
        * a MappingQ1Eulerian object to describe the mesh deformation,
        * swapping it in for the original MappingQ or MappingCartesian object.
        */
-      std::unique_ptr<Mapping<dim> >                      mapping;
+      std::unique_ptr<Mapping<dim> >                            mapping;
 
       const FESystem<dim>                                       finite_element;
 
