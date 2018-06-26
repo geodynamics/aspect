@@ -754,7 +754,7 @@ namespace aspect
       }
 
     if (!boundary_temperature_manager.allows_fixed_temperature_on_outflow_boundaries())
-      reset_outflow_boundary_ids(boundary_id_offset);
+      restore_outflow_boundary_ids(boundary_id_offset);
 
     // If there are fixed boundary compositions,
     // update the composition boundary condition.
@@ -798,7 +798,7 @@ namespace aspect
       }
 
     if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
-      reset_outflow_boundary_ids(boundary_id_offset);
+      restore_outflow_boundary_ids(boundary_id_offset);
 
     // let plugins add more constraints if they so choose, then close the
     // constraints object

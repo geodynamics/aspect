@@ -1208,7 +1208,7 @@ namespace aspect
                                         LinearAlgebra::BlockVector &tmp_distributed_stokes);
 
       /**
-       * Offset the boundary id of all faces located on an outflow bounday
+       * Offset the boundary id of all faces located on an outflow boundary
        * by a fixed value given by the input parameter
        * @param boundary_id_offset.
        *
@@ -1224,7 +1224,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void reset_outflow_boundary_ids(const unsigned int boundary_id_offset);
+      void restore_outflow_boundary_ids(const unsigned int boundary_id_offset);
 
       /**
        * Remove the linear momentum of the given vector

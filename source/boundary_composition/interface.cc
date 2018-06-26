@@ -331,11 +331,22 @@ namespace aspect
                            "When the composition is fixed on a given boundary as determined "
                            "by the list of 'Fixed composition boundary indicators', there "
                            "might be parts of the boundary where material flows out and "
-                           "one may want to prescribe the composition only on the parts of "
+                           "one may want to prescribe the composition only on those parts of "
                            "the boundary where there is inflow. This parameter determines "
                            "if compositions are only prescribed at these inflow parts of the "
                            "boundary (if false) or everywhere on a given boundary, independent "
-                           "of the flow direction (if true).");
+                           "of the flow direction (if true)."
+                           "Mathematically speaking, the compositional fields satisfy an "
+                           "advection equation that has no diffusion. For this equation, one "
+                           "can only impose Dirichlet boundary conditions (i.e., prescribe a "
+                           "fixed compositional field value at the boundary) at those boundaries "
+                           "where material flows in. This would correspond to the ``false'' "
+                           "setting of this parameter, which is correspondingly the default. "
+                           "On the other hand, on a finite dimensional discretization such as "
+                           "the one one obtains from the finite element method, it is possible "
+                           "to also prescribe values on outflow boundaries, even though this may "
+                           "make no physical sense. This would then correspond to the ``true'' "
+                           "setting of this parameter.");
       }
       prm.leave_subsection ();
 

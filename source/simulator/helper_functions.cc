@@ -1874,7 +1874,7 @@ namespace aspect
 
   template <int dim>
   void
-  Simulator<dim>::reset_outflow_boundary_ids(const unsigned int offset)
+  Simulator<dim>::restore_outflow_boundary_ids(const unsigned int offset)
   {
     // Loop over all of the boundary faces...
     typename DoFHandler<dim>::active_cell_iterator
@@ -2257,7 +2257,7 @@ namespace aspect
   template void Simulator<dim>::compute_reactions(); \
   template void Simulator<dim>::check_consistency_of_formulation(); \
   template void Simulator<dim>::replace_outflow_boundary_ids(const unsigned int boundary_id_offset); \
-  template void Simulator<dim>::reset_outflow_boundary_ids(const unsigned int boundary_id_offset); \
+  template void Simulator<dim>::restore_outflow_boundary_ids(const unsigned int boundary_id_offset); \
   template void Simulator<dim>::check_consistency_of_boundary_conditions() const; \
   template double Simulator<dim>::compute_initial_newton_residual(const LinearAlgebra::BlockVector &linearized_stokes_initial_guess); \
   template double Simulator<dim>::compute_Eisenstat_Walker_linear_tolerance(const bool EisenstatWalkerChoiceOne, \

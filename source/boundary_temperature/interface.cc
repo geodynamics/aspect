@@ -364,7 +364,19 @@ namespace aspect
                            "the boundary where there is inflow. This parameter determines "
                            "if temperatures are only prescribed at these inflow parts of the "
                            "boundary (if false) or everywhere on a given boundary, independent "
-                           "of the flow direction (if true).");
+                           "of the flow direction (if true)."
+                           "Mathematically speaking, the temperature satisfies an "
+                           "advection-diffusion equation. For this type of equation, one can "
+                           "prescribe the temperature even on outflow boundaries as long as the "
+                           "diffusion coefficient is nonzero. This would correspond to the "
+                           "``true'' setting of this parameter, which is correspondingly the "
+                           "default. In practice, however, this would only make physical sense "
+                           "if the diffusion coefficient is actually quite large to prevent "
+                           "the creation of a boundary layer. "
+                           "In addition, if there is no diffusion, one can only impose "
+                           "Dirichlet boundary conditions (i.e., prescribe a fixed temperature "
+                           "value at the boundary) at those boundaries where material flows in. "
+                           "This would correspond to the ``false'' setting of this parameter.");
       }
       prm.leave_subsection ();
 
