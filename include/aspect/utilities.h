@@ -107,8 +107,8 @@ namespace aspect
      *   to appear in the map. The order of these keys determines the order
      *   of values that are returned by this function.
      * @param[in] allow_background_field If true, expect N+1 values and allow
-     *   setting of the background using "background" or "bg".
-     * @param[in] field_name A name that identifies the type of information
+     *   setting of the background using the key "background".
+     * @param[in] property_name A name that identifies the type of property
      *   that is being parsed by this function and that is used in generating
      *   error messages if the map does not conform to the expected format.
      *
@@ -118,8 +118,8 @@ namespace aspect
     std::vector<double>
     parse_map_to_double_array (const std::string &key_value_map,
                                const std::vector<std::string> &list_of_keys,
-                               const bool allow_background_field,
-                               const std::string &field_name);
+                               const bool has_background_field,
+                               const std::string &property_name);
 
 
 

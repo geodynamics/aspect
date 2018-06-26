@@ -135,23 +135,4 @@ TEST_CASE("Utilities::parse_map_to_double_array FAIL ON PURPOSE")
   {"C1","C2","C3","C4","C5"},
   true,
   "TestField"), Contains("The keyword `all' is expected but is not found"));
-
-
-  /*
-    try
-    {
-        aspect::Utilities::parse_map_to_double_array ("C1:100, C1:200, C3:300, C4:400, C5:500",
-    {"C1","C2","C3","C4","C5"},
-    false,
-    "TestField");
-    }
-    catch (dealii::ExceptionBase &e)
-    {
-      e.print_info(std::cerr);
-      std::cerr << "waht=" << e.what() << std::endl;
-      //INFO(e.what());
-      REQUIRE(false);
-    }
-  */
-
 }

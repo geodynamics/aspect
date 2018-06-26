@@ -218,7 +218,7 @@ namespace aspect
             AssertThrow(false, ExcMessage("Not a valid viscosity averaging scheme"));
 
           // Establish that a background field is required here
-          bool allow_background_field = true;
+          const bool has_background_field = true;
 
           // Retrieve the list of composition names
           const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
@@ -226,27 +226,27 @@ namespace aspect
           // Parse multicomponent properties
           densities = Utilities::parse_map_to_double_array (prm.get("Densities"),
                                                             list_of_composition_names,
-                                                            allow_background_field,
+                                                            has_background_field,
                                                             "Densities");
 
           viscosities = Utilities::parse_map_to_double_array (prm.get("Viscosities"),
                                                               list_of_composition_names,
-                                                              allow_background_field,
+                                                              has_background_field,
                                                               "Viscosities");
 
           thermal_conductivities = Utilities::parse_map_to_double_array (prm.get("Thermal conductivities"),
                                                                          list_of_composition_names,
-                                                                         allow_background_field,
+                                                                         has_background_field,
                                                                          "Thermal conductivities");
 
           thermal_expansivities = Utilities::parse_map_to_double_array (prm.get("Thermal expansivities"),
                                                                         list_of_composition_names,
-                                                                        allow_background_field,
+                                                                        has_background_field,
                                                                         "Thermal expansivities");
 
           specific_heats = Utilities::parse_map_to_double_array (prm.get("Specific heats"),
                                                                  list_of_composition_names,
-                                                                 allow_background_field,
+                                                                 has_background_field,
                                                                  "Specific heats");
 
         }
