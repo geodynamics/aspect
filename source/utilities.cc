@@ -1670,11 +1670,11 @@ namespace aspect
         {
           std::shared_ptr<Utilities::AsciiDataLookup<dim-1> > lookup;
           lookup.reset(new Utilities::AsciiDataLookup<dim-1> (components,
-                                                              Utilities::AsciiDataBase<dim>::scale_factor));
+                                                              this->scale_factor));
           lookups.insert(std::make_pair(*boundary_id,lookup));
 
           lookup.reset(new Utilities::AsciiDataLookup<dim-1> (components,
-                                                              Utilities::AsciiDataBase<dim>::scale_factor));
+                                                              this->scale_factor));
           old_lookups.insert(std::make_pair(*boundary_id,lookup));
 
 
@@ -1822,7 +1822,7 @@ namespace aspect
     AsciiDataBoundary<dim>::create_filename (const int filenumber,
                                              const types::boundary_id boundary_id) const
     {
-      std::string templ = Utilities::AsciiDataBase<dim>::data_directory + Utilities::AsciiDataBase<dim>::data_file_name;
+      std::string templ = this->data_directory + this->data_file_name;
 
       const std::string boundary_name = this->get_geometry_model().translate_id_to_symbol_name(boundary_id);
 
@@ -2101,16 +2101,15 @@ namespace aspect
                                "a spherical shell, chunk or box geometry."));
 
       lookup.reset(new Utilities::AsciiDataLookup<dim> (components,
-                                                        Utilities::AsciiDataBase<dim>::scale_factor));
+                                                        this->scale_factor));
 
-      const std::string filename = Utilities::AsciiDataBase<dim>::data_directory
-                                   + Utilities::AsciiDataBase<dim>::data_file_name;
+      const std::string filename = this->data_directory + this->data_file_name;
 
       this->get_pcout() << std::endl << "   Loading Ascii data initial file "
                         << filename << "." << std::endl << std::endl;
 
       if (Utilities::fexists(filename))
-        lookup->load_file(filename,this->get_mpi_communicator());
+        lookup->load_file(filename, this->get_mpi_communicator());
       else
         AssertThrow(false,
                     ExcMessage (std::string("Ascii data file <")
@@ -2150,10 +2149,9 @@ namespace aspect
     void
     AsciiDataProfile<dim>::initialize (const MPI_Comm &communicator)
     {
-      lookup.reset(new Utilities::AsciiDataLookup<1> (Utilities::AsciiDataBase<dim>::scale_factor));
+      lookup.reset(new Utilities::AsciiDataLookup<1> (this->scale_factor));
 
-      const std::string filename = Utilities::AsciiDataBase<dim>::data_directory
-                                   + Utilities::AsciiDataBase<dim>::data_file_name;
+      const std::string filename = this->data_directory + this->data_file_name;
 
       if (Utilities::fexists(filename))
         lookup->load_file(filename,communicator);
