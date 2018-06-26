@@ -69,6 +69,55 @@ namespace aspect
   }
 
 
+  namespace
+  {
+    /**
+     * Save a few of the critical parameters of the current run in the
+     * checkpoint file. We will load them again later during
+     * restart to verify that they are the same as the ones set
+     * in the input file active during restart.
+     */
+    template <int dim>
+    void save_critical_parameters (const Parameters<dim> &parameters,
+                                   aspect::oarchive &oa)
+    {
+      oa << parameters.n_compositional_fields;
+      oa << parameters.names_of_compositional_fields;
+    }
+
+
+
+    /**
+     * Load a few of the critical parameters from a checkpoint file during
+     * restart to verify that they are the same as the ones currently set
+     * in the input file active during restart.
+     */
+    template <int dim>
+    void load_and_check_critical_parameters (const Parameters<dim> &parameters,
+                                             aspect::iarchive &ia)
+    {
+      unsigned int n_compositional_fields;
+      ia >> n_compositional_fields;
+      AssertThrow (n_compositional_fields == parameters.n_compositional_fields,
+                   ExcMessage ("The number of compositional fields that were stored "
+                               "in the checkpoint file is not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
+
+      std::vector<std::string> names_of_compositional_fields;
+      ia >> names_of_compositional_fields;
+      AssertThrow (names_of_compositional_fields == parameters.names_of_compositional_fields,
+                   ExcMessage ("The names of compositional fields that were stored "
+                               "in the checkpoint file is not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
+
+    }
+  }
+
+
   template <int dim>
   void Simulator<dim>::create_snapshot()
   {
@@ -141,6 +190,8 @@ namespace aspect
       // serialize into a stringstream
       aspect::oarchive oa (oss);
       oa << (*this);
+
+      save_critical_parameters (this->parameters, oa);
 
       // compress with zlib and write to file on the root processor
 #ifdef DEAL_II_WITH_ZLIB
@@ -309,6 +360,8 @@ namespace aspect
           ss.str(std::string (&uncompressed[0], uncompressed_size));
           aspect::iarchive ia (ss);
           ia >> (*this);
+
+          load_and_check_critical_parameters(this->parameters, ia);
         }
 #else
         AssertThrow (false,
