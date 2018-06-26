@@ -1,4 +1,4 @@
-Viscosity (Pa s) Depth (m)
+Depth (m)        Viscosity (Pa s)
 0.0000000e+00    1.0000000e+21
 1.0000000e+06    5.0000000e+21
 2.0000000e+06    5.0000000e+22
