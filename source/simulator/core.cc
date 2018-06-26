@@ -165,8 +165,8 @@ namespace aspect
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
     prescribed_stokes_solution (PrescribedStokesSolution::create_prescribed_stokes_solution<dim>(prm)),
     adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
-    boundary_heat_flux (BoundaryHeatFlux::create_boundary_heat_flux<dim>(prm)),
     world_builder (parameters.world_builder_file != "" ? new WorldBuilder::World (parameters.world_builder_file) : NULL),
+    boundary_heat_flux (BoundaryHeatFlux::create_boundary_heat_flux<dim>(prm)),
 
     time (numbers::signaling_nan<double>()),
     time_step (numbers::signaling_nan<double>()),
