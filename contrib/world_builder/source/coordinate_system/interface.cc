@@ -25,27 +25,27 @@
 #include <world_builder/assert.h>
 
 
-  namespace WorldBuilder
+namespace WorldBuilder
+{
+  namespace CoordinateSystems
   {
-    namespace CoordinateSystems
+    Interface::Interface()
     {
-      Interface::Interface()
-      {
 
-      }
+    }
 
-      Interface *
-      create_coordinate_system(const std::string name)
-      {
-        std::string feature_name = boost::algorithm::to_lower_copy(name);
-        boost::algorithm::trim(feature_name);
-        if (feature_name == "cartesian")
-          return new CoordinateSystems::Cartesian();
-        else
-          AssertThrow(false, "Plugin not implemented.");
+    Interface *
+    create_coordinate_system(const std::string name)
+    {
+      std::string feature_name = boost::algorithm::to_lower_copy(name);
+      boost::algorithm::trim(feature_name);
+      if (feature_name == "cartesian")
+        return new CoordinateSystems::Cartesian();
+      else
+        AssertThrow(false, "Plugin not implemented.");
 
-        return NULL;
-      }
+      return NULL;
     }
   }
+}
 

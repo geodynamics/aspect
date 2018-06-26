@@ -24,27 +24,27 @@
 #include <world_builder/assert.h>
 
 
-  namespace WorldBuilder
+namespace WorldBuilder
+{
+  namespace Features
   {
-    namespace Features
+    Interface::Interface()
     {
-      Interface::Interface()
-      {
 
-      }
+    }
 
-      Interface *
-      create_feature(const std::string name, World *world)
-      {
-        std::string feature_name = boost::algorithm::to_lower_copy(name);
-        boost::algorithm::trim(feature_name);
-        if (feature_name == "continental plate")
-          return new Features::ContinentalPlate(world);
-        else
-          AssertThrow(false, "Plugin not implemented.");
+    Interface *
+    create_feature(const std::string name, World *world)
+    {
+      std::string feature_name = boost::algorithm::to_lower_copy(name);
+      boost::algorithm::trim(feature_name);
+      if (feature_name == "continental plate")
+        return new Features::ContinentalPlate(world);
+      else
+        AssertThrow(false, "Plugin not implemented.");
 
-        return NULL;
-      }
+      return NULL;
     }
   }
+}
 

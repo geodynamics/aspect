@@ -30,74 +30,74 @@
 using boost::property_tree::ptree;
 
 
-  namespace WorldBuilder
+namespace WorldBuilder
+{
+  namespace Features
   {
-    namespace Features
-    {
-      class Interface;
-    }
-
-    class World
-    {
-      public:
-        /**
-         * constructor
-         */
-        World(std::string filename);
-
-        /**
-         * Destructor
-         */
-        ~World();
-
-        /**
-         * read in the world builder file
-         */
-        void read(ptree &property_tree);
-
-        double temperature(const std::array<double, 2> point, const double depth, const double gravity_norm) const;
-
-        double temperature(const std::array<double, 3> point, const double depth, const double gravity_norm) const;
-
-
-        double composition(const std::array<double, 2> point, const double depth, const unsigned int composition_number) const;
-
-        double composition(const std::array<double, 3> point, const double depth, const unsigned int composition_number) const;
-
-        /**
-         * returs a pointer to the coordinate system
-         */
-        WorldBuilder::CoordinateSystems::Interface *get_coordinate_system() const;
-
-      private:
-        const char path_seperator = '.';
-        /**
-         * These are the top level parameters
-         */
-        std::vector<double> surface_rotation_point;
-        double surface_rotation_angle;
-        unsigned int minimum_parts_per_distance_unit;
-        double minimum_distance_points;
-
-        /**
-         * adiabatic parameters
-         */
-        double potential_mantle_temperature;
-        double thermal_expansion_coefficient_alfa;
-        double specific_heat_Cp;
-
-        /**
-         * contains all the plugins.
-         * todo: make a unique or shared pointer?
-         */
-        std::vector<WorldBuilder::Features::Interface *> features;
-
-        // coordinate system
-        WorldBuilder::CoordinateSystems::Interface *coordinate_system;
-
-
-
-    };
+    class Interface;
   }
+
+  class World
+  {
+    public:
+      /**
+       * constructor
+       */
+      World(std::string filename);
+
+      /**
+       * Destructor
+       */
+      ~World();
+
+      /**
+       * read in the world builder file
+       */
+      void read(ptree &property_tree);
+
+      double temperature(const std::array<double, 2> point, const double depth, const double gravity_norm) const;
+
+      double temperature(const std::array<double, 3> point, const double depth, const double gravity_norm) const;
+
+
+      double composition(const std::array<double, 2> point, const double depth, const unsigned int composition_number) const;
+
+      double composition(const std::array<double, 3> point, const double depth, const unsigned int composition_number) const;
+
+      /**
+       * returs a pointer to the coordinate system
+       */
+      WorldBuilder::CoordinateSystems::Interface *get_coordinate_system() const;
+
+    private:
+      const char path_seperator = '.';
+      /**
+       * These are the top level parameters
+       */
+      std::vector<double> surface_rotation_point;
+      double surface_rotation_angle;
+      unsigned int minimum_parts_per_distance_unit;
+      double minimum_distance_points;
+
+      /**
+       * adiabatic parameters
+       */
+      double potential_mantle_temperature;
+      double thermal_expansion_coefficient_alfa;
+      double specific_heat_Cp;
+
+      /**
+       * contains all the plugins.
+       * todo: make a unique or shared pointer?
+       */
+      std::vector<WorldBuilder::Features::Interface *> features;
+
+      // coordinate system
+      WorldBuilder::CoordinateSystems::Interface *coordinate_system;
+
+
+
+  };
+}
 
 #endif

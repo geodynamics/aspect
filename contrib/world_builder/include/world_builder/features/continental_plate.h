@@ -26,60 +26,60 @@
 #include <world_builder/world.h>
 
 
-  namespace WorldBuilder
+namespace WorldBuilder
+{
+  namespace Features
   {
-    namespace Features
+
+    class ContinentalPlate : public Interface
     {
+      public:
+        /**
+         * constructor
+         */
+        ContinentalPlate(WorldBuilder::World *world);
 
-      class ContinentalPlate : public Interface
-      {
-        public:
-          /**
-           * constructor
-           */
-          ContinentalPlate(WorldBuilder::World *world);
+        /**
+         * Destructor
+         */
+        ~ContinentalPlate();
 
-          /**
-           * Destructor
-           */
-          ~ContinentalPlate();
+        /**
+         * Read in the world builder file
+         */
+        virtual
+        void read(ptree &property_tree);
 
-          /**
-           * Read in the world builder file
-           */
-          virtual
-          void read(ptree &property_tree);
+        /**
+         * Returns a temperature based on the given position
+         */
+        virtual
+        double temperature(const Point<3> position,
+                           const double depth,
+                           const double gravity,
+                           double temperature) const;
 
-          /**
-           * Returns a temperature based on the given position
-           */
-          virtual
-          double temperature(const Point<3> position,
-                             const double depth,
-                             const double gravity,
-                             double temperature) const;
-
-          /**
-           * Returns a value for the reqeusted composition (0 is not present,
-           * 1 is present) based on the given position and
-           */
-          virtual
-          double composition(const Point<3> position,
-                             const double depth,
-                             const unsigned int composition_number,
-                             double temperature) const;
+        /**
+         * Returns a value for the reqeusted composition (0 is not present,
+         * 1 is present) based on the given position and
+         */
+        virtual
+        double composition(const Point<3> position,
+                           const double depth,
+                           const unsigned int composition_number,
+                           double temperature) const;
 
 
 
-        private:
-          // local parameters
-          double temperature_submodule_depth;
-          double temperature_submodule_temperature;
-          double composition_submodule_depth;
-          unsigned int composition_submodule_composition;
+      private:
+        // local parameters
+        double temperature_submodule_depth;
+        double temperature_submodule_temperature;
+        double composition_submodule_depth;
+        unsigned int composition_submodule_composition;
 
-      };
-    }
+    };
   }
+}
 
 #endif

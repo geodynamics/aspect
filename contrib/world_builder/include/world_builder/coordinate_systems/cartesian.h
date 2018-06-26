@@ -25,59 +25,59 @@
 #include <world_builder/coordinate_systems/interface.h>
 
 
-  namespace WorldBuilder
+namespace WorldBuilder
+{
+  namespace CoordinateSystems
   {
-    namespace CoordinateSystems
+
+    class Cartesian : public Interface
     {
+      public:
+        /**
+         * constructor
+         */
+        Cartesian();
 
-      class Cartesian : public Interface
-      {
-        public:
-          /**
-           * constructor
-           */
-          Cartesian();
+        /**
+         * Destructor
+         */
+        ~Cartesian();
 
-          /**
-           * Destructor
-           */
-          ~Cartesian();
+        /**
+         * Read in the world builder file
+         */
+        virtual
+        void read(ptree &property_tree);
 
-          /**
-           * Read in the world builder file
-           */
-          virtual
-          void read(ptree &property_tree);
+        /**
+         * Returns what the natural coordinate system for this geometry model is.
+         */
+        virtual
+        CoordinateSystem natural_coordinate_system() const;
 
-          /**
-           * Returns what the natural coordinate system for this geometry model is.
-           */
-          virtual
-		  CoordinateSystem natural_coordinate_system() const;
+        /**
+         * Takes the Cartesian points (x,z or x,y,z) and returns standardized
+         * coordinates which are most 'natural' to the geometry model. For a box
+         * this will  be (x,z) in 2d or (x,y,z) in 3d, and for a spheroid geometry
+         * model it  will be (radius, longitude) in 2d and (radius, longitude,
+         * latitude) in 3d.
+         */
+        virtual
+        std::array<double,3> cartesian_to_natural_coordinates(const std::array<double,3> &position) const;
 
-          /**
-           * Takes the Cartesian points (x,z or x,y,z) and returns standardized
-           * coordinates which are most 'natural' to the geometry model. For a box
-           * this will  be (x,z) in 2d or (x,y,z) in 3d, and for a spheroid geometry
-           * model it  will be (radius, longitude) in 2d and (radius, longitude,
-           * latitude) in 3d.
-           */
-          virtual
-          std::array<double,3> cartesian_to_natural_coordinates(const std::array<double,3> &position) const;
-
-          /**
-           * Undoes the action of cartesian_to_natural_coordinates, and turns the
-           * coordinate system which is most 'natural' to the geometry model into
-           * Cartesian coordinates.
-           */
-          virtual
-          std::array<double,3> natural_to_cartesian_coordinates(const std::array<double,3> &position) const;
+        /**
+         * Undoes the action of cartesian_to_natural_coordinates, and turns the
+         * coordinate system which is most 'natural' to the geometry model into
+         * Cartesian coordinates.
+         */
+        virtual
+        std::array<double,3> natural_to_cartesian_coordinates(const std::array<double,3> &position) const;
 
 
-        private:
+      private:
 
-      };
-    }
+    };
   }
+}
 
 #endif

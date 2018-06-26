@@ -31,69 +31,69 @@
 using boost::property_tree::ptree;
 
 
-  namespace WorldBuilder
+namespace WorldBuilder
+{
+  class World;
+
+  namespace Features
   {
-    class World;
 
-    namespace Features
+    class Interface
     {
+      public:
+        /**
+         * constructor
+         */
+        Interface();
 
-      class Interface
-      {
-        public:
-          /**
-           * constructor
-           */
-          Interface();
+        /**
+         * Destructor
+         */
+        ~Interface();
 
-          /**
-           * Destructor
-           */
-          ~Interface();
+        /**
+         * read in the world builder file
+         */
+        virtual
+        void read(ptree &property_tree) = 0;
 
-          /**
-           * read in the world builder file
-           */
-          virtual
-          void read(ptree &property_tree) = 0;
-
-          /**
-           * takes temperature and position and returns a temperature.
-           */
-          virtual
-          double temperature(const Point<3> position,
-                             const double depth,
-                             const double gravity,
-                             double temperature) const = 0;
-          /**
-           * Returns a value for the reqeusted composition (0 is not present,
-           * 1 is present) based on the given position and
-           */
-          virtual
-          double composition(const Point<3> position,
-                             const double depth,
-                             const unsigned int composition_number,
-                             double temperature) const = 0;
+        /**
+         * takes temperature and position and returns a temperature.
+         */
+        virtual
+        double temperature(const Point<3> position,
+                           const double depth,
+                           const double gravity,
+                           double temperature) const = 0;
+        /**
+         * Returns a value for the reqeusted composition (0 is not present,
+         * 1 is present) based on the given position and
+         */
+        virtual
+        double composition(const Point<3> position,
+                           const double depth,
+                           const unsigned int composition_number,
+                           double temperature) const = 0;
 
 
-        protected:
-          WorldBuilder::World *world;
+      protected:
+        WorldBuilder::World *world;
 
-          std::string name;
-          std::vector<Point<2> > coordinates;
-          std::string temperature_submodule_name;
-          std::string composition_submodule_name;
+        std::string name;
+        std::vector<Point<2> > coordinates;
+        std::string temperature_submodule_name;
+        std::string composition_submodule_name;
 
-      };
+    };
 
 
-      /**
-       * factory function
-       */
-      Interface *
-      create_feature(const std::string name, WorldBuilder::World *world);
+    /**
+     * factory function
+     */
+    Interface *
+    create_feature(const std::string name, WorldBuilder::World *world);
 
-    }
   }
+}
 
 #endif
