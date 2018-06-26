@@ -24,7 +24,6 @@
 
 #include <aspect/initial_composition/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/utilities.h>
 
 namespace aspect
 {

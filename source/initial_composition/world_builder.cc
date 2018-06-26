@@ -20,6 +20,7 @@
 
 
 #include <aspect/initial_composition/world_builder.h>
+#include <aspect/geometry_model/interface.h>
 #include <world_builder/world.h>
 
 

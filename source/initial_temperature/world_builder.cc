@@ -21,6 +21,7 @@
 
 #include <aspect/initial_temperature/world_builder.h>
 #include <world_builder/world.h>
+#include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
 
 
