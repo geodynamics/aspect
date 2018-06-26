@@ -7,6 +7,23 @@
 \usepackage{subfigure}
 \usepackage{textpos}
 
+% Make more space between the section number and the title in the 
+% table of contents.  
+
+% This uses the package titletoc, which might work, but is quite complex.
+%\usepackage{titletoc}
+
+%\dottedcontents{section}[3.8em]{}{3.3em}{1pc}
+
+% This modifies the internals of the LaTeX TOC internals
+
+% \makeatletter
+% \renewcommand{\l@section}{\@dottedtocline{1}{1.5em}{2.6em}}
+% \renewcommand{\l@subsection}{\@dottedtocline{2}{4.0em}{3.6em}}
+% \renewcommand{\l@subsubsection}{\@dottedtocline{3}{7.4em}{4.5em}}
+% \makeatother
+
+
 % use a larger page size; otherwise, it is difficult to have complete
 % code listings and output on a single page
 \usepackage{fullpage}
