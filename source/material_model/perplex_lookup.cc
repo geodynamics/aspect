@@ -128,6 +128,8 @@ namespace aspect
           out.compressibilities[i] = sysprop[13]*1.e5;
         }
 #else
+      (void)in;
+      (void)out;
       Assert (false, ExcMessage("ASPECT has not been compiled with the PerpleX libraries"));
 #endif
 
