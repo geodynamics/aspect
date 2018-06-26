@@ -962,12 +962,12 @@ namespace aspect
                                                      scratch.face_material_model_inputs);
 
                 for (unsigned int i=0; i<assemblers->advection_system_on_boundary_face.size(); ++i)
-                  assemblers->advection_system_on_boundary_face[i]->create_additional_material_model_outputs(scratch.material_model_outputs);
+                  assemblers->advection_system_on_boundary_face[i]->create_additional_material_model_outputs(scratch.face_material_model_outputs);
 
                 for (unsigned int i=0; i<assemblers->advection_system_on_interior_face.size(); ++i)
-                  assemblers->advection_system_on_interior_face[i]->create_additional_material_model_outputs(scratch.material_model_outputs);
+                  assemblers->advection_system_on_interior_face[i]->create_additional_material_model_outputs(scratch.face_material_model_outputs);
 
-                heating_model_manager.create_additional_material_model_outputs(scratch.material_model_outputs);
+                heating_model_manager.create_additional_material_model_outputs(scratch.face_material_model_outputs);
 
                 material_model->evaluate(scratch.face_material_model_inputs,
                                          scratch.face_material_model_outputs);
