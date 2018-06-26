@@ -1103,7 +1103,29 @@ namespace aspect
     // surface active, since the mapping must be in place before applying boundary
     // conditions that rely on it (such as no flux BCs).
     if (parameters.free_surface_enabled)
+    {
+      // if particles are used, update their reference_position by calling
+      const bool use_particles = postprocess_manager.template has_matching_postprocessor<Postprocess::Particles<dim> >();
+      // ParticleHandler<dim,spacedim>::sort_particles_into_subdomains_and_cells()
+      if(use_particles)
+      {
+        Postprocess::Particles<dim> &particle_postprocessor =
+           const_cast<Postprocess::Particles<dim> &>(postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim> >());
+        Particle::ParticleHandler<dim> &particle_handler = const_cast<Particle::ParticleHandler<dim> &> (particle_postprocessor.get_particle_world().get_particle_handler());
+        // reset ParticleHandler's pointer to mapping
+        particle_handler.clear_particle_handler_mapping();
+      }
       free_surface->setup_dofs();
+
+      // reset ParticleHandler's pointer to the current mapping
+      if(use_particles)
+      {
+        Postprocess::Particles<dim> &particle_postprocessor =
+                   const_cast<Postprocess::Particles<dim> &>(postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim> >());
+                Particle::ParticleHandler<dim> &particle_handler = const_cast<Particle::ParticleHandler<dim> &> (particle_postprocessor.get_particle_world().get_particle_handler());
+      particle_handler.set_particle_handler_mapping(*mapping);
+      }
+    }
 
 
     // reinit the constraints matrix and make hanging node constraints
@@ -1489,16 +1511,32 @@ namespace aspect
     // time step to take is, and we will timestep the boundary incorrectly.
     if (parameters.free_surface_enabled)
     {
-      free_surface->execute ();
+
       // if particles are used, update their reference_position by calling
+      const bool use_particles = postprocess_manager.template has_matching_postprocessor<Postprocess::Particles<dim> >();
       // ParticleHandler<dim,spacedim>::sort_particles_into_subdomains_and_cells()
-//      if(postprocess_manager.template has_matching_postprocessor<Postprocess::Particles<dim> >())
+//      if(use_particles)
 //      {
 //        Postprocess::Particles<dim> &particle_postprocessor =
 //           const_cast<Postprocess::Particles<dim> &>(postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim> >());
 //        Particle::ParticleHandler<dim> &particle_handler = const_cast<Particle::ParticleHandler<dim> &> (particle_postprocessor.get_particle_world().get_particle_handler());
-//        particle_handler.sort_particles_into_subdomains_and_cells();
+//        // reset ParticleHandler's pointer to mapping
+//        particle_handler.clear_particle_handler_mapping();
 //      }
+      free_surface->execute ();
+
+      // reset ParticleHandler's pointer to the current mapping
+      if(use_particles)
+      {
+        Postprocess::Particles<dim> &particle_postprocessor =
+                   const_cast<Postprocess::Particles<dim> &>(postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim> >());
+                Particle::ParticleHandler<dim> &particle_handler = const_cast<Particle::ParticleHandler<dim> &> (particle_postprocessor.get_particle_world().get_particle_handler());
+//      particle_handler.set_particle_handler_mapping(*mapping);
+      particle_handler.sort_particles_into_subdomains_and_cells();
+      }
+
+
+
     }
 
     // Compute the reactions of compositional fields and temperature in case of operator splitting.
