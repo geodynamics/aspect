@@ -13,15 +13,18 @@
 # conditions, which are based on the initial compositional values (e.g., zero).
 # This leads to oscillations in the stress field near the boundaries, which
 # decay towards a constant value in the model interior as the stresses build up to
-# 100 MPa. While the yield stress caps the viscoelastic stress at 100 MPa, further
-# oscillations arise due to the fixed compositional boundary conditions. As
-# noted in viscoelastic_stress_build-up.prm, this particular model setup would
-# benefit from tracking viscoelastic stress with particles, which do not require
-# defining compostional boundary conditions. Increasing the model resolution 
+# 100 MPa. While the yield stress caps the viscoelastic stress at 100 MPa, 
+# oscillations at the boundaries arise due to the fixed compositional boundary
+# conditions. As noted in viscoelastic_stress_build-up.prm, this particular model 
+# setup would benefit from tracking viscoelastic stress with particles, which do not
+# require defining compostional boundary conditions. Increasing the model resolution 
 # (currently 2 km) will also help mitigate these artifacts. 
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
 
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Nonlinear solver tolerance             = 1e-5
+set Max nonlinear iterations               = 100
 set End time  = 100e3
 
 # Material model
