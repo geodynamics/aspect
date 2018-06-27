@@ -920,7 +920,7 @@ namespace aspect
 
       if (Utilities::MPI::this_mpi_process(comm) == 0)
         {
-          // set file size to an invalid size (signalling an error if we can not read it)
+          // set file size to an invalid size (signaling an error if we can not read it)
           unsigned int filesize = numbers::invalid_unsigned_int;
 
           std::ifstream filestream(filename.c_str());
