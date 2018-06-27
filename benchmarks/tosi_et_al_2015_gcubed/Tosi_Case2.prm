@@ -1,0 +1,19 @@
+include Tosi_base.prm
+
+set Output directory                       = Case2_4
+
+# Between the cases the "Pressure viscosity parameter" ($\Delta_{\eta}_z$),
+# the "Yield stress" ($\sigma_y$) and the "Nonlinear viscosity constant" ($\eta^*$)
+# are varied, see Eq. (6-8) and Table 1 of the paper.
+subsection Material model
+  subsection Tosi benchmark
+    set Pressure viscosity parameter  = 1
+    set Yield stress		      = 1
+    set Nonlinear viscosity constant  = 1e-3
+    set Initial viscosity	      = 0.115
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 4
+end
