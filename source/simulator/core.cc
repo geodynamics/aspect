@@ -761,9 +761,8 @@ namespace aspect
     boundary_composition_manager.update();
 
     // If we do not want to prescribe Dirichlet boundary conditions on outflow boundaries,
-    // we update the boundary indicators of all faces that belong to ouflow boundaries
-    // so that they are not in the list of fixed composition boundary indicators any more.
-    // We will undo this change in a later step, after the constraints have been set.
+    // use the same trick for marking up outflow boundary conditions for compositional fields
+    // as we did above already for the temperature.
     if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
       replace_outflow_boundary_ids(boundary_id_offset);
 
@@ -806,7 +805,7 @@ namespace aspect
 
     new_current_constraints.close();
 
-    // let the melt handler add its constraints once before we solve the porosity system for the first time
+    // let the melt handler copy the constraints so that it can add its own constraints later on
     if (parameters.include_melt_transport)
       melt_handler->save_constraints (new_current_constraints);
 
@@ -817,10 +816,11 @@ namespace aspect
     // matrices will have different entries, and we can not easily compare them.
     // However, in case of mesh refinement we have to rebuild the matrix anyway, so we can skip the
     // step that checks if constraints have changed.
-    bool mesh_has_changed = false;
-    if (!(current_constraints.get_local_lines().size() == new_current_constraints.get_local_lines().size())
-        || !(current_constraints.get_local_lines() == new_current_constraints.get_local_lines()))
-      mesh_has_changed = true;
+    bool mesh_has_changed = (current_constraints.get_local_lines().size()
+                             != new_current_constraints.get_local_lines().size())
+                            ||
+                            (current_constraints.get_local_lines()
+                             != new_current_constraints.get_local_lines());
 
     if (!mesh_has_changed)
       {
@@ -862,6 +862,7 @@ namespace aspect
     current_constraints.close();
 #endif
 
+    // let the melt handler add its constraints once before we solve the porosity system for the first time
     if (time_step == 0 && parameters.include_melt_transport)
       melt_handler->add_current_constraints (current_constraints);
   }
