@@ -366,9 +366,18 @@ read_parameter_file(const std::string &parameter_file_name)
       std::ifstream parameter_file(parameter_file_name.c_str());
       if (!parameter_file)
         {
+          if (parameter_file_name=="parameter-file.prm"
+              || parameter_file_name=="parameter_file.prm")
+            {
+              std::cerr << "***          You should not take everything literally!          ***\n"
+                        << "*** Please pass the name of an existing parameter file instead. ***" << std::endl;
+              exit(1);
+            }
+
           if (i_am_proc_0)
-            AssertThrow(false, ExcMessage (std::string("Input parameter file <")
-                                           + parameter_file_name + "> not found."));
+            std::cerr << "Error: Input parameter file <" << parameter_file_name << "> not found."
+                      << std::endl;
+          throw aspect::QuietException();
           return "";
         }
 
