@@ -177,6 +177,12 @@ namespace aspect
          * The column index of the vs to density scaling in the data file
          */
         unsigned int vs_to_density_index;
+
+        /**
+         * Whether to use the thermal expansion coefficient from the material model
+         */
+        bool use_material_model_thermal_alpha;
+
     };
 
   }
