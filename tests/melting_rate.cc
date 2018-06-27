@@ -43,7 +43,6 @@ namespace aspect
           {
             const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
             const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
-            const double porosity = std::max(in.composition[i][porosity_idx],0.0);
 
             for (unsigned int c=0; c<in.composition[i].size(); ++c)
               {
