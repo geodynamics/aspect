@@ -378,7 +378,7 @@ namespace aspect
     /**
      * This variable determines whether additional terms related to elastic forces
      * are added to the Stokes equation.
-    */
+     */
     bool                           enable_elasticity;
 
     /**
@@ -515,7 +515,7 @@ namespace aspect
      * @{
      */
     bool                           free_surface_enabled;
-    std::set<types::boundary_id> free_surface_boundary_indicators;
+    std::set<types::boundary_id>   free_surface_boundary_indicators;
     /**
      * @}
      */
