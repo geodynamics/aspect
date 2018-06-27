@@ -1,5 +1,4 @@
-# A simple setup for convection in a quarter of a 2d shell. See the
-# manual for more information.
+# A simple setup for using the boundary heat flux in a ice viscoplatic model.
 
 
 set Dimension                              = 2
@@ -15,10 +14,8 @@ set Use conduction timestep                = true
 # Material model
 # Rheology: Non-linear viscous flow and Drucker Prager Plasticity
 # Values for most rheological parameters are specified for a background material and
-# each compositional field.  Values for viscous deformation are based on dislocation
-# creep flow-laws, with distinct values for the upper crust (wet quartzite), lower
-# crust (wet anorthite) and mantle (dry olivine).  Table 1 of Naliboff and Buiter (2015),
-# Earth Planet. Sci. Lett., v.421, p. 58-67 contains values for each of these flow laws.
+# each compositional field.  Values for viscous deformation are based on diffusion creep 
+# based on Dombard and McKinnon 2006. 
 subsection Material model
   set Model name = visco plastic
 
@@ -91,7 +88,7 @@ end
 # The vertical velocity at the base is 0.125 cm/year (balances outflow on sides)
 # Velocity components parallel to the base (x-velocity) and side walls (y-velocity)
 # are unconstrained (i.e. 'free').
-subsection Boundary velocity model
+subsection Boundary velocity model 
   set Prescribed velocity boundary indicators = left x: function, right x:function, bottom:function
 
   subsection Function
