@@ -126,7 +126,13 @@ namespace aspect
                               const std::vector<double> &parameter_values,
                               const enum AveragingScheme &average_type) const
     {
-      const std::vector<double> volume_fractions = compute_volume_fractions(composition);
+      // Store which components to exclude during volume fraction computation.
+      ComponentMask composition_mask(this->n_compositional_fields(),true);
+      // assign compositional fields associated with viscoelastic stress a value of 0
+      // assume these fields are listed first
+      for (unsigned int i=0; i < SymmetricTensor<2,dim>::n_independent_components; ++i)
+        composition_mask.set(i,false);
+      const std::vector<double> volume_fractions = compute_volume_fractions(composition, composition_mask);
       const double averaged_vector = average_value(volume_fractions, parameter_values, average_type);
       return averaged_vector;
     }
