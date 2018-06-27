@@ -11,6 +11,15 @@
 
 \renewcommand{\numberline}[1]{#1~}
 
+% If your page numbers stick out into the righthand margin but using lengths 
+% appropriate to your document.
+
+\makeatletter
+ \renewcommand{\@pnumwidth}{4em} 
+ \renewcommand{\@tocrmarg}{5em}
+\makeatother
+
+
 % use a larger page size; otherwise, it is difficult to have complete
 % code listings and output on a single page
 \usepackage{fullpage}
