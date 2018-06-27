@@ -310,7 +310,7 @@ namespace aspect
                            "time or nonlinear step should be solved. The absolute tolerance will "
                            "then be $\\| M x_0 - F \\| \\cdot \\text{tol}$, where $x_0 = (0,p_0)$ "
                            "is the initial guess of the pressure, $M$ is the system matrix, "
-                           "F is the right-hand side, and tol is the parameter specified here. "
+                           "$F$ is the right-hand side, and tol is the parameter specified here. "
                            "We include the initial guess of the pressure "
                            "to remove the dependency of the tolerance on the static pressure. "
                            "A given tolerance value of 1 would "
