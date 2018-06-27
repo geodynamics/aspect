@@ -165,6 +165,7 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
     Marine Lasbleis,
     Shangxin Liu,
     Elvira Mulyukova,
+    Bob Myhill,
     John Naliboff,
     Jonathan Perry-Houts,
     Elbridge Gerry Puckett,
@@ -10665,6 +10666,71 @@ Older versions of \aspect{} used to have individual functions like
 above. This old interface is no longer supported, restructure your plugin to
 implement \texttt{evaluate()} instead (even if this function only calls the old
 functions).
+
+\subsubsection{Material model self-consistency}
+\label{sec:material_model-self_consistency}
+
+\index[prmindex]{Model name}
+\index[prmindexfull]{Material model!Model name}
+
+\textit{This section was contributed by Bob Myhill.}
+
+\newcommand {\pddc}[3]{\left( \frac{\partial #1}{\partial #2} \right)_{#3}}
+\newcommand {\pddsq}[3]{\left( \frac{\partial^2 #1}{\partial {#2}^2}  \right)_{#3}}
+\newcommand {\pddsqc}[3]{\frac{\partial^2 #1}{\partial {#2} \partial {#3}}}
+\newcommand {\pddcbc}[3]{\frac{\partial^3 #1}{\partial {#2}^2 \partial {#3}}}
+
+In \aspect{}, each material model can assign values to the physical property vectors independently; there are no hard-coded dependencies between the density, compressibility, thermal expansivity and heat capacity. This is needed in order to reproduce many of the material models published in the geodynamic literature. However, there are thermodynamic relations between these properties which should ideally be satisfied. The following section describes the relations required for thermodynamic consistency, and presents some suggested ways by which consistency can be assured.
+
+Throughout this manual and within the code of \aspect{}, pressure and temperature are treated as independent thermodynamic variables, and so we here express the physical properties in terms of the pressure and temperature derivatives of the specific Gibbs free energy $\mathcal{G}^{*}(p, T)$ [\textit{J/kg}] (the asterisk indicates that this is a specific quantity, rather than a molar one):
+\begin{eqnarray}
+  S^{*} &=& -\pddc{\mathcal{G}^{*}}{T}{p} \\
+  \frac{1}{\rho} &=& \pddc{\mathcal{G}^{*}}{p}{T} \label{eq:mm_density} \\
+  \frac{\alpha}{\rho} &=& \pddsqc{\mathcal{G}^{*}}{p}{T} \label{eq:mm_alpha_g} \\
+  \beta_T &=& -\rho \pddsq{\mathcal{G}^{*}}{p}{T} \label{eq:mm_betaT_g} \\
+  C_p^{*} &=& -T \pddsq{\mathcal{G}^{*}}{T}{p} \label{eq:mm_isobaric_heat_capacity} \\
+  \beta_S &=& \beta_T - \frac{\alpha^2 T}{\rho C_p^{*}} \label{eq:mm_isentropic_compressibility} \\
+  \frac{C_V^{*}}{C_p^{*}} &=& \frac{\beta_S}{\beta_T} \\
+  \gamma &=& \frac{\alpha }{\beta_T \rho C_V^{*}} 
+\end{eqnarray}
+\noindent where $S^{*}$ is the specific entropy, $C_P^{*}$ and $C_V^{*}$ are the specific isobaric and isenchoric heat capacities, $\beta_T$ and $\beta_S$ are the isothermal and isotropic compressibilities, and $\gamma$ is the thermodynamic Gr\"{u}neisen parameter. The subscript indicates the thermodynamic variable ($P$ or $T$) that is held constant.
+
+
+Thermodynamically self-consistent material models must obey the explicit and implicit relations between the different properties \emph{at all pressures and temperatures}:
+
+\paragraph{Consistency in $\boldsymbol{\rho}$-$\boldsymbol{\alpha}$ and $\boldsymbol{\rho}$-$\boldsymbol{\beta_T}$}
+Using the chain rule to combine~\eqref{eq:mm_density},~\eqref{eq:mm_alpha_g} and~\eqref{eq:mm_betaT_g} yields the more familiar definitions of $\alpha$ and $\beta_T$:
+\begin{eqnarray}
+  \alpha &=& -\frac{1}{\rho} \pddc{\rho}{T}{p} \label{eq:mm_thermal_expansivity} \\
+  \beta_T &=& \frac{1}{\rho} \pddc{\rho}{p}{T} \label{eq:mm_isothermal_compressibility}
+\end{eqnarray}
+
+\paragraph{Isobaric heat capacity}
+
+We start by taking the partial derivative of the isobaric heat capacity~\eqref{eq:mm_isobaric_heat_capacity} with respect to pressure at constant temperature:
+\begin{eqnarray}
+  \pddc{C_p^{*}}{p}{T} &=& -T \pddcbc{\mathcal{G}^{*}}{T}{p} \\
+  &=& -T\pddc{\left(\alpha / \rho \right)}{T}{p} \label{eq:heat_capacity_p_dependence}
+\end{eqnarray}
+From this expression it becomes clear that if $\alpha / \rho$ has any temperature dependence, the heat capacity \emph{cannot} be globally constant. One way to solve this issue is to define heat capacity at constant pressure, and then integrate~\eqref{eq:heat_capacity_p_dependence} with respect to pressure:
+\begin{equation}
+  C_p^{*}(p, T) = C_p^{*}(p_{\textrm{ref}}, T) + \int_{p_{\textrm{ref}}}^p \pddc{C_p^{*}}{p}{T} dp
+\end{equation}
+
+\paragraph{Isentropic gradient}
+
+The isentropic gradient is defined as the change in temperature with pressure at constant entropy. Using the cyclic relation, we can define this in terms of partial differentials of the entropy with respect to pressure and temperature:
+\begin{eqnarray}
+  \pddc{T}{p}{S} &=& - \pddc{T}{S}{p} \pddc{S}{p}{T} \\
+  &=& - \left( \frac{T}{C_p^{*}} \right) \left( - \frac{\alpha}{\rho} \right) \\
+  &=& \frac{\alpha T}{\rho C_p^{*}} \label{eq:mm_isentropic_gradient}
+\end{eqnarray}
+
+
+For complex material models, obtaining analytical functions which obey all these relations may be a non-trivial exercise. Indeed, there are many equations of state which exist in the thermodynamic literature which do no obey these relations! 
+
+\emph{A final note of warning: some compressible formulations in \aspect{} (Section~\ref{sec:mass-conservation-approximation}) use the isothermal compressibility, while others use the isentropic compressibility. Fully self-consistent material models must have a switch so that they use the correct compressibility. Conversion between the compressibilities can be achieved using ~\eqref{eq:mm_isentropic_compressibility}.}
+
 
 \subsubsection{Heating models}
 \label{sec:heating-models}
