@@ -1925,15 +1925,14 @@ namespace aspect
           this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                             << filename << "." << std::endl << std::endl;
 
-          if (Utilities::fexists(filename))
-            lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
-          else
-            AssertThrow(false,
-                        ExcMessage (std::string("Ascii data file <")
-                                    +
-                                    filename
-                                    +
-                                    "> not found!"));
+
+          AssertThrow(Utilities::fexists(filename),
+                      ExcMessage (std::string("Ascii data file <")
+                                  +
+                                  filename
+                                  +
+                                  "> not found!"));
+          lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
 
           // If the boundary condition is constant, switch off time_dependence
           // immediately. If not, also load the second file for interpolation.
@@ -2341,15 +2340,14 @@ namespace aspect
       this->get_pcout() << std::endl << "   Loading Ascii data initial file "
                         << filename << "." << std::endl << std::endl;
 
-      if (Utilities::fexists(filename))
-        lookup->load_file(filename, this->get_mpi_communicator());
-      else
-        AssertThrow(false,
-                    ExcMessage (std::string("Ascii data file <")
-                                +
-                                filename
-                                +
-                                "> not found!"));
+
+      AssertThrow(Utilities::fexists(filename),
+                  ExcMessage (std::string("Ascii data file <")
+                              +
+                              filename
+                              +
+                              "> not found!"));
+      lookup->load_file(filename, this->get_mpi_communicator());
     }
 
     template <int dim>
@@ -2386,15 +2384,13 @@ namespace aspect
 
       const std::string filename = this->data_directory + this->data_file_name;
 
-      if (Utilities::fexists(filename))
-        lookup->load_file(filename,communicator);
-      else
-        AssertThrow(false,
-                    ExcMessage (std::string("Ascii data file <")
-                                +
-                                filename
-                                +
-                                "> not found!"));
+      AssertThrow(Utilities::fexists(filename),
+                  ExcMessage (std::string("Ascii data file <")
+                              +
+                              filename
+                              +
+                              "> not found!"));
+      lookup->load_file(filename,communicator);
     }
 
 
