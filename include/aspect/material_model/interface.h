@@ -616,8 +616,7 @@ namespace aspect
         {}
 
         virtual void
-        fill (const unsigned int                n_points,
-              const LinearAlgebra::BlockVector &solution,
+        fill (const LinearAlgebra::BlockVector &solution,
               const FEValuesBase<dim>          &fe_values,
               const Introspection<dim>         &introspection) = 0;
     };
@@ -1048,7 +1047,7 @@ namespace aspect
 
         /**
          * Fill the additional material model inputs that have been attached
-         * by the individual heating or material models models in the
+         * by the individual heating or material models in the
          * create_additional_material_model_inputs function.
          * This is done by looping over all material model inputs that have
          * been created and calling their respective member functions.

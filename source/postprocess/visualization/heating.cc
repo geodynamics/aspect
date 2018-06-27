@@ -70,7 +70,7 @@ namespace aspect
       Heating<dim>::
       get_needed_update_flags () const
       {
-        return update_gradients | update_values  | update_q_points;
+        return update_gradients | update_values  | update_q_points | update_JxW_values;
       }
 
       template <int dim>
@@ -81,17 +81,6 @@ namespace aspect
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         const std::list<std::shared_ptr<HeatingModel::Interface<dim> > > &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
-
-        // we need an fevalues object to get the melt velocities
-        const Quadrature<dim> quadrature_formula (input_data.evaluation_points);
-
-        FEValues<dim> fe_values (this->get_mapping(),
-                                 this->get_fe(),
-                                 quadrature_formula,
-                                 update_values   |
-                                 update_gradients |
-                                 update_quadrature_points |
-                                 update_JxW_values);
 
         // we do not want to write any output if there are no heating models
         // used in the computation
@@ -115,17 +104,27 @@ namespace aspect
 
         // we need the cell as input for the material model because some heating models
         // want to access the solution vector.
-        // To find the cell, we find a point in the middle of the cell by averaging over the quadrature points.
-        Point<dim> mid_point;
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
-          mid_point += input_data.evaluation_points[q]/n_quadrature_points;
+        in.current_cell = input_data.template get_cell<DoFHandler<dim> > ();
 
-        typename DoFHandler<dim>::active_cell_iterator cell;
-        cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_dof_handler(), mid_point)).first;
-        in.current_cell = cell;
+        // we need an fevalues object to get the melt velocities
+        std::vector<Point<dim> > quadrature_points(n_quadrature_points);
+        for (unsigned int q=0; q<n_quadrature_points; ++q)
+          quadrature_points[q] = this->get_mapping().transform_real_to_unit_cell(in.current_cell,input_data.evaluation_points[q]);
+
+        const Quadrature<dim> quadrature_formula (quadrature_points);
+        FEValues<dim> fe_values (this->get_mapping(),
+                                 this->get_fe(),
+                                 quadrature_formula,
+                                 update_values   |
+                                 update_gradients |
+                                 update_quadrature_points |
+                                 update_JxW_values);
 
         fe_values.reinit(in.current_cell);
-        this->get_material_model().fill_additional_material_model_inputs(in, this->get_solution(), fe_values, this->introspection());
+        this->get_material_model().fill_additional_material_model_inputs(in,
+                                                                         this->get_solution(),
+                                                                         fe_values,
+                                                                         this->introspection());
         this->get_material_model().evaluate(in, out);
 
         if (this->get_parameters().formulation_temperature_equation

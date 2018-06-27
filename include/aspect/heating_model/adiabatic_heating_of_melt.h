@@ -89,14 +89,14 @@ namespace aspect
          */
         virtual
         void
-        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
 
         /**
          * Allow the heating model to attach additional material model inputs it needs.
          */
         virtual
         void
-        create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &) const;
+        create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &inputs) const;
         /**
          * @}
          */

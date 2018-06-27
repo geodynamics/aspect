@@ -59,8 +59,7 @@ namespace aspect
          */
         std::vector<Tensor<1,dim> > fluid_velocities;
 
-        void fill (const unsigned int                n_points,
-                   const LinearAlgebra::BlockVector &solution,
+        void fill (const LinearAlgebra::BlockVector &solution,
                    const FEValuesBase<dim>          &fe_values,
                    const Introspection<dim>         &introspection);
     };

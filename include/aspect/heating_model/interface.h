@@ -29,7 +29,6 @@
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
-#include <deal.II/fe/fe_values.h>
 
 #include <boost/core/demangle.hpp>
 #include <typeinfo>
@@ -206,8 +205,7 @@ namespace aspect
          */
         virtual
         void
-        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
-
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
 
         /**
          * Allow the heating model to attach additional material model inputs
@@ -217,7 +215,7 @@ namespace aspect
          */
         virtual
         void
-        create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &) const;
+        create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &inputs) const;
     };
 
 

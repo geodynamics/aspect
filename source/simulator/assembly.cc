@@ -859,7 +859,10 @@ namespace aspect
 
     heating_model_manager.create_additional_material_model_inputs_and_outputs(scratch.material_model_inputs,
                                                                               scratch.material_model_outputs);
-    material_model->fill_additional_material_model_inputs(scratch.material_model_inputs, current_linearization_point, scratch.finite_element_values, introspection);
+    material_model->fill_additional_material_model_inputs(scratch.material_model_inputs,
+                                                          current_linearization_point,
+                                                          scratch.finite_element_values,
+                                                          introspection);
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
@@ -971,7 +974,10 @@ namespace aspect
 
                 heating_model_manager.create_additional_material_model_inputs_and_outputs(scratch.face_material_model_inputs,
                                                                                           scratch.face_material_model_outputs);
-                material_model->fill_additional_material_model_inputs(scratch.face_material_model_inputs, current_linearization_point, *scratch.face_finite_element_values, introspection);
+                material_model->fill_additional_material_model_inputs(scratch.face_material_model_inputs,
+                                                                      current_linearization_point,
+                                                                      *scratch.face_finite_element_values,
+                                                                      introspection);
 
                 material_model->evaluate(scratch.face_material_model_inputs,
                                          scratch.face_material_model_outputs);

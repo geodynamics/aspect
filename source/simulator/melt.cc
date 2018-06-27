@@ -52,13 +52,12 @@ namespace aspect
 
 
     template <int dim>
-    void MeltInputs<dim>::fill (const unsigned int                n_points,
-                                const LinearAlgebra::BlockVector &solution,
+    void MeltInputs<dim>::fill (const LinearAlgebra::BlockVector &solution,
                                 const FEValuesBase<dim>          &fe_values,
                                 const Introspection<dim>         &introspection)
     {
-      compaction_pressures.resize(n_points);
-      fluid_velocities.resize(n_points, Tensor<1,dim>());
+      compaction_pressures.resize(fe_values.n_quadrature_points);
+      fluid_velocities.resize(fe_values.n_quadrature_points, Tensor<1,dim>());
 
       const FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
       fe_values[ex_u_f].get_function_values (solution, fluid_velocities);

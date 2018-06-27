@@ -286,6 +286,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     const std::vector<std::string> &
     Manager<dim>::get_active_heating_model_names () const

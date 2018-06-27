@@ -91,6 +91,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     ShearHeatingMelt<dim>::

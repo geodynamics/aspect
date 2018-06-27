@@ -124,6 +124,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     AdiabaticHeatingMelt<dim>::
