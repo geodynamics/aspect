@@ -24,7 +24,8 @@ pipeline {
         echo "CHANGE_AUTHOR: ${env.CHANGE_AUTHOR}"
         echo "CHANGE_AUTHOR_DISPLAY_NAME: ${env.CHANGE_AUTHOR_DISPLAY_NAME}"
         echo "building on node ${env.NODE_NAME}"
-      }
+	githubNotify context: 'astyle', description: '', status: 'PENDING', targetUrl: ''
+	}
     }
 
     stage ("Check permissions") {
@@ -43,6 +44,7 @@ pipeline {
 	    }
       }
       steps {
+ 	  githubNotify context: 'trusted', description: '', status: 'PENDING', targetUrl: '${env.JOB_URL}/build?delay=0sec'
 	  echo "Please ask an admin to rerun jenkins with TRUST_BUILD=true"
 	    sh "exit 1"
       }
@@ -50,6 +52,8 @@ pipeline {
 
     stage('Check indentation') {
       steps {
+ 	  githubNotify context: 'trusted', description: '', status: 'SUCCESS', targetUrl: ''
+	  
         sh './doc/indent'
         sh 'git diff > changes-astyle.diff'
         archiveArtifacts artifacts: 'changes-astyle.diff', fingerprint: true
@@ -57,7 +61,16 @@ pipeline {
 	  git diff --exit-code || \
 	  { echo "Please check indentation, see artifacts in the top right corner!"; exit 1; }
 	  '''
-        }
+	  	githubNotify context: 'astyle', description: '', status: 'SUCCESS', targetUrl: ''
+	  }
+
+	  post {
+	  failure
+	  {
+	  	githubNotify context: 'astyle', description: '', status: 'FAILURE', targetUrl: ''
+	  }
+	  }
+
     }
 
     stage('Build') {
