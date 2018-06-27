@@ -163,6 +163,13 @@ ADD_CUSTOM_TARGET(setup_tests
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   COMMENT "Enabling all tests ...")
 
+# Disable the ability to run all tests in an in-source build:
+IF (("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}") AND ASPECT_RUN_ALL_TESTS)
+  MESSAGE(WARNING "\nEnabling all tests is not supported in in-source builds. Please create a separate build directory!\n")
+  SET(ASPECT_RUN_ALL_TESTS OFF CACHE BOOL "" FORCE)
+ENDIF()
+
+
 SET(ASPECT_TEST_GENERATOR "Unix Makefiles" CACHE STRING 
   "Generator to use for the test cmake project. Using ninja instead of make is not recommended.")
 
