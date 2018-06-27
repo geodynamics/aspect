@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,12 +33,13 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A material model that consists of globally constant values for all
-     * material parameters except that the density decays linearly with the
-     * temperature and increases linearly with pressure.
+     * A compressible material model that implements the thermal modified Tait
+     * equation of state as written in the paper of Holland and Powell, 2011
+     * "An improved and extended internally consistent thermodynamic dataset
+     * for phases of petrological interest, involving a new equation of state
+     * for solids".
      *
-     * The model is considered incompressible or compressible, depending on
-     * the compressibility.
+     * Constant values are used for the thermal conductivity and viscosity.
      *
      * @ingroup MaterialModels
      */
