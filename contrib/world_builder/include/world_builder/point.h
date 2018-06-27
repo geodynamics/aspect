@@ -38,22 +38,26 @@ namespace WorldBuilder
       Point();
 
       /**
-       * todo
+       * Constructor. Constructs a Point from a std::array<double,dim> and
+       * a coordinate system which is set by default to Cartesian.
        */
       Point(const std::array<double,dim> &array, CoordinateSystem coordinate_system = CoordinateSystem::cartesian);
 
       /**
-       * todo
+       * Constructor. Constructs a Point from an other Point and
+       * a coordinate system which is set by default to Cartesian.
        */
       Point(const Point<dim> &point, CoordinateSystem coordinate_system = CoordinateSystem::cartesian);
 
       /**
-       * todo
+       * Constructor. Constructs a 2d Point from two doubles and
+       * a coordinate system which is set by default to Cartesian.
        */
       Point(const double x, const double y, CoordinateSystem coordinate_system = CoordinateSystem::cartesian);
 
       /**
-       * todo
+       * Constructor. Constructs a 3d Point from three doubles and
+       * a coordinate system which is set by default to Cartesian.
        */
       Point(const double x, const double y, const double z, CoordinateSystem coordinate_system = CoordinateSystem::cartesian);
 
@@ -82,7 +86,7 @@ namespace WorldBuilder
 
 
       /**
-       * substract two points
+       * Substract two points
        */
       Point<dim> operator-(const Point<dim> &point) const;
 
