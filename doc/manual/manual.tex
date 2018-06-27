@@ -7,6 +7,10 @@
 \usepackage{subfigure}
 \usepackage{textpos}
 
+% This adds space between the Appendix number (e.g., A.101) and the title.
+
+\renewcommand{\numberline}[1]{#1~}
+
 % use a larger page size; otherwise, it is difficult to have complete
 % code listings and output on a single page
 \usepackage{fullpage}
