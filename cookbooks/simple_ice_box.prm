@@ -1,0 +1,177 @@
+# A simple setup for convection in a quarter of a 2d shell. See the
+# manual for more information.
+
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 1e6
+set Output directory                       = output-ice-box_2d
+set Nonlinear solver scheme                = single Advection, iterated Stokes 
+set Nonlinear solver tolerance             = 1e-5
+set Max nonlinear iterations               = 10
+set CFL number                             = 0.5
+set Pressure normalization                 = no
+set Use conduction timestep                = true
+# Material model
+# Rheology: Non-linear viscous flow and Drucker Prager Plasticity
+# Values for most rheological parameters are specified for a background material and
+# each compositional field.  Values for viscous deformation are based on dislocation
+# creep flow-laws, with distinct values for the upper crust (wet quartzite), lower
+# crust (wet anorthite) and mantle (dry olivine).  Table 1 of Naliboff and Buiter (2015),
+# Earth Planet. Sci. Lett., v.421, p. 58-67 contains values for each of these flow laws.
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+
+    # Reference temperature and viscosity
+    set Reference temperature = 273 
+    set Reference viscosity = 1e11
+
+    # The minimum strain-rate helps limit large viscosities values that arise
+    # as the strain-rate approaches zero.
+    # The reference strain-rate is used on the first non-linear iteration
+    # of the first time step when the velocity has not been determined yet.
+    set Minimum strain rate = 1.e-20
+    set Reference strain rate = 1.e-12
+
+    # Limit the viscosity with minimum and maximum values
+    set Minimum viscosity = 1e10
+    set Maximum viscosity = 1e22
+
+    # Thermal diffusivity is adjusted to match thermal conductivities
+    # assumed in assigning the initial geotherm
+    set Thermal diffusivities =        2.6e-6
+    set Heat capacities       =        1000
+    set Densities             =        930
+    set Thermal expansivities =        0     
+
+    # Harmonic viscosity averaging
+    set Viscosity averaging scheme = harmonic
+
+    # Choose to have the viscosity (pre-yield) follow a dislocation
+    # diffusion or composite flow law.  Here, dislocation is selected
+    # so no need to specify diffusion creep parameters below, which are
+    # only used if "diffusion" or "composite" option is selected.
+    set Viscous flow law = dislocation
+
+    # Dislocation creep parameters for
+    # Note that the viscous pre-factors below are scaled to plane strain from unixial strain experiments.
+    set Prefactors for dislocation creep          =   1.667e-7  
+    set Stress exponents for dislocation creep    =      4.8
+    set Activation energies for dislocation creep =    60e+3
+    set Activation volumes for dislocation creep  =        0
+
+    # Plasticity parameters
+    set Angles of internal friction =   30.
+    set Cohesions                   =  1e7     
+
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 100
+    set Y repetitions = 25
+    set X extent = 100e3
+    set Y extent = 25e3
+  end
+end
+
+subsection Free surface
+  set Free surface boundary indicators        = top
+  set Surface velocity projection = vertical
+end 
+
+# Velocity on boundaries characterized by functions
+# The outward velocity (x-direction) on the left and right walls is 1.25 cm/year
+# The vertical velocity at the base is 0.125 cm/year (balances outflow on sides)
+# Velocity components parallel to the base (x-velocity) and side walls (y-velocity)
+# are unconstrained (i.e. 'free').
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x: function, right x:function, bottom:function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = cm=0.01, year=1
+    set Function expression = if (x<50e3 ,     0*cm/year,    0*cm/year) ; 0          
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top
+  set List of model names = initial temperature
+end
+
+#This module introduces the heat flux boundary condition
+subsection Boundary heat flux model
+  set Fixed heat flux boundary indicators = bottom
+  set Model name = function
+
+  subsection Function
+    set Function expression = -0.04
+  end
+end
+
+#A variable surface tempreature is prescribed
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top
+  set List of model names = function
+  subsection Function
+  set Variable names = x,y
+#    set Top temperature =  90
+   set Function expression = 60+30*sin(asin((x/100000)))^.25
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Variable names = x,y
+    set Function expression = 60+30*sin(asin((x/100000)))^.25 + (25.e3-y)*0.00732;
+    end 
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-8
+    end
+end
+
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1.42
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 0
+  set Refinement fraction                = 0.95
+  set Strategy                           = strain rate
+  set Time steps between mesh refinement = 0 
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average
+
+  subsection Visualization
+    set List of output variables = density, viscosity, strain rate, stress, error indicator
+    set Output format                 = vtu
+    set Time between graphical output = 0  
+  end
+
+  subsection Depth average
+    set Time between graphical output = 0  
+  end
+end
