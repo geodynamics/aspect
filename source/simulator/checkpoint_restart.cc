@@ -189,9 +189,8 @@ namespace aspect
 
       // serialize into a stringstream
       aspect::oarchive oa (oss);
-      oa << (*this);
-
       save_critical_parameters (this->parameters, oa);
+      oa << (*this);
 
       // compress with zlib and write to file on the root processor
 #ifdef DEAL_II_WITH_ZLIB
@@ -358,10 +357,10 @@ namespace aspect
         {
           std::istringstream ss;
           ss.str(std::string (&uncompressed[0], uncompressed_size));
-          aspect::iarchive ia (ss);
-          ia >> (*this);
 
+          aspect::iarchive ia (ss);
           load_and_check_critical_parameters(this->parameters, ia);
+          ia >> (*this);
         }
 #else
         AssertThrow (false,
