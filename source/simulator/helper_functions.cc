@@ -1613,7 +1613,7 @@ namespace aspect
           for (unsigned int i=0; i<number_of_reaction_steps; ++i)
             {
               // Loop over composition element
-              heating_model_manager.fill_additional_material_model_inputs(in_C, solution, fe_values_C, introspection);
+              material_model->fill_additional_material_model_inputs(in_C, solution, fe_values_C, introspection);
 
               material_model->evaluate(in_C, out_C);
               heating_model_manager.evaluate(in_C, out_C, heating_model_outputs_C);
@@ -1632,7 +1632,7 @@ namespace aspect
                 }
 
               // loop over temperature element
-              heating_model_manager.fill_additional_material_model_inputs(in_T, solution, fe_values_T, introspection);
+              material_model->fill_additional_material_model_inputs(in_T, solution, fe_values_T, introspection);
 
               material_model->evaluate(in_T, out_T);
               heating_model_manager.evaluate(in_T, out_T, heating_model_outputs_T);

@@ -83,8 +83,7 @@ namespace aspect
             fe_values.reinit (cell);
             in.reinit(fe_values, cell, this->introspection(), this->get_solution());
 
-            this->get_heating_model_manager().fill_additional_material_model_inputs(in, this->get_solution(), fe_values, this->introspection());
-
+            this->get_material_model().fill_additional_material_model_inputs(in, this->get_solution(), fe_values, this->introspection());
             this->get_material_model().evaluate(in, out);
 
             if (this->get_parameters().formulation_temperature_equation

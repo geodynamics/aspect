@@ -1045,6 +1045,21 @@ namespace aspect
         void
         create_additional_named_outputs (MaterialModelOutputs &outputs) const;
 
+
+        /**
+         * Fill the additional material model inputs that have been attached
+         * by the individual heating or material models models in the
+         * create_additional_material_model_inputs function.
+         * This is done by looping over all material model inputs that have
+         * been created and calling their respective member functions.
+         */
+        virtual
+        void
+        fill_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &input,
+                                              const LinearAlgebra::BlockVector        &solution,
+                                              const FEValuesBase<dim>                 &fe_values,
+                                              const Introspection<dim>                &introspection) const;
+
       protected:
         /**
          * A structure that describes how each of the model's
