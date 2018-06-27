@@ -2756,19 +2756,20 @@ The development version of \aspect{} can be downloaded by executing the command
 If {\texttt{\$DEAL\_II\_DIR}} points to your \dealii{} installation, you can configure
 \aspect{} by running
 \begin{verbatim}
- cmake .
+ mkdir build; cd build; cmake ..
 \end{verbatim}
 in the \aspect{} directory created by the {\texttt{git clone}} command above.
 If you did not set {\texttt{\$DEAL\_II\_DIR}} you have to supply cmake with the location:
 \begin{verbatim}
- cmake -DDEAL_II_DIR=/u/username/deal-installed/ .
+ cmake -DDEAL_II_DIR=/u/username/deal-installed/ ..
 \end{verbatim}
 
-An alternative would be to configure \aspect{} as an out-of-source build. 
-You would need to create a separate build directory and
-specify \aspect{}'s source directory using \texttt{cmake PATH\_TO\_ASPECT\_SOURCE}
-from within the build directory. The
-instructions in the following sections assume an in-source build.
+This will create an ``out-of-source`` build, where the build directory is
+different from the source directory. While in-source builds (where you run
+\texttt{cmake .} in your source directory), are supported, we strongly
+recommend an out-of-source build as described above. Specifically, running
+the whole test suite (see Section~\ref{sec:running_tests}) is only supported
+this way.
 
 \subsubsection{Compiling \aspect{} and generating documentation}
 \label{sec:compiling}
@@ -2780,8 +2781,10 @@ can compile it by typing
 \end{verbatim}
 on the command line (or \texttt{make -jN} if you have multiple processors in
 your machine, where \texttt{N} is the number of processors). This builds the
-\aspect{} executable which will reside in
-the main directory and will be named \texttt{./aspect}. If you intend to
+\aspect{} executable which will reside in the \texttt{build} directory
+and will be named \texttt{aspect}. To run \aspect{} from the main source directory
+you would need to reference it as \texttt{./build/aspect}.
+If you intend to
 modify \aspect{} for your own experiments, you may want to also generate
 documentation about the source code. This can be done using the command
 \begin{verbatim}
@@ -2802,15 +2805,15 @@ point for exploring the documentation.
 \label{sec:running-overview}
 
 After compiling \aspect{} as described above, you should have an executable
-file in the main directory. It can be called as follows:
+file in the build directory. It can be called in the build directory as follows:
 \begin{verbatim}
   ./aspect parameter-file.prm
 \end{verbatim}
 or, if you want to run the program in parallel, using something like
 \begin{verbatim}
-  mpirun -np 32 ./aspect parameter-file.prm
+  mpirun -np 4 ./aspect parameter-file.prm
 \end{verbatim}
-to run with 32 processors. In either case, the argument denotes the (path and)
+to run with 4 processors. In either case, the argument denotes the (path and)
 name of a file that contains input parameters.%
 \footnote{As a special case, if you call \aspect{} with an argument that
 consists of two dashes, ``\texttt{--}'', then the arguments will be read from
@@ -2838,7 +2841,10 @@ in Section~\ref{sec:cookbooks-benchmarks} are located in the \texttt{benchmarks}
 directory. A full description of all parameters one can specify in these files
 is given in Section~\ref{sec:parameters}.
 
-Running \aspect{} with an input file will produce output that will look
+Running \aspect{} with an input file
+\footnote{For example by running \texttt{./aspect ../cookbooks/convection-box.prm} in
+your build directory.}
+will produce output that will look
 something like this (numbers will all be different, of course):
 \begin{lstlisting}[frame=single,language=ksh]
 -----------------------------------------------------------------------------
