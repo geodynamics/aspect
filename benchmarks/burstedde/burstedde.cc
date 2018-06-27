@@ -344,8 +344,8 @@ namespace aspect
     }
 
     /**
-     *gravity model for the Burstedde benchmark
-    */
+     * Gravity model for the Burstedde benchmark
+     */
 
     template <int dim>
     class BursteddeGravity : public aspect::GravityModel::Interface<dim>

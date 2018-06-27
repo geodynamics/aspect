@@ -369,8 +369,8 @@ namespace aspect
 
 
     /**
-     *gravity model for the Annulus benchmark
-    */
+     * Gravity model for the Annulus benchmark
+     */
 
     template <int dim>
     class AnnulusGravity : public aspect::GravityModel::Interface<dim>
