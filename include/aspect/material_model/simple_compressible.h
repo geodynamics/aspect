@@ -31,9 +31,18 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A material model that consists of globally constant values for all
-     * material parameters except that the density decays linearly with the
-     * temperature and increases linearly with pressure.
+     * A material model that consists of globally constant values for the
+     * viscosity, thermal conductivity, thermal expansivity
+     * and compressibility. The density decays linearly with the
+     * temperature and increases exponentially with pressure.
+     *
+     * The formulation for the density assumes that the compressibility
+     * provided by the user is the adiabatic compressibility ($\beta_S).
+     * The thermal expansivity and isentropic compressibility implied by
+     * the pressure and temperature dependence are equal to the
+     * user-defined constant values only along the reference isentrope, and
+     * there is also an implicit pressure dependence to the heat capacity
+     * $C_p$ via Maxwell's relations.
      *
      * The model is considered incompressible or compressible, depending on
      * the compressibility.
