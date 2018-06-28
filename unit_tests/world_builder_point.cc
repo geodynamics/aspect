@@ -22,7 +22,6 @@
 #include <world_builder/point.h>
 
 using namespace WorldBuilder;
-using Catch::Matchers::Contains;
 
 TEST_CASE("WorldBuilder Point: Initialize point to zero")
 {
