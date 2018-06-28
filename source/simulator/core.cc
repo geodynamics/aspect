@@ -1353,6 +1353,9 @@ namespace aspect
     if (do_pressure_rhs_compatibility_modification)
       pressure_shape_function_integrals.reinit (introspection.index_sets.system_partitioning, mpi_communicator);
 
+    if (parameters.use_wbfbt)
+      preconditioner_velocity_mass_lump.reinit (introspection.index_sets.system_partitioning, mpi_communicator);
+
     rebuild_stokes_matrix         = true;
     rebuild_stokes_preconditioner = true;
   }

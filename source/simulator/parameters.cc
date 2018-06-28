@@ -380,6 +380,10 @@ namespace aspect
                            "zero, i.e., we immediately start with the better but more expensive "
                            "preconditioner.");
 
+        prm.declare_entry ("Use weighted BFBT Stokes approximation", "false",
+                           Patterns::Bool(),
+                           "TODO");
+
         prm.declare_entry ("Maximum number of expensive Stokes solver steps", "1000",
                            Patterns::Integer(0),
                            "This sets the maximum number of iterations used in the expensive Stokes solver. "
@@ -1230,6 +1234,7 @@ namespace aspect
         linear_stokes_solver_tolerance  = prm.get_double ("Linear solver tolerance");
         n_cheap_stokes_solver_steps     = prm.get_integer ("Number of cheap Stokes solver steps");
         n_expensive_stokes_solver_steps = prm.get_integer ("Maximum number of expensive Stokes solver steps");
+        use_wbfbt = prm.get_bool("Use weighted BFBT Stokes approximation");
         linear_solver_A_block_tolerance = prm.get_double ("Linear solver A block tolerance");
         use_full_A_block_preconditioner = prm.get_bool ("Use full A block as preconditioner");
         linear_solver_S_block_tolerance = prm.get_double ("Linear solver S block tolerance");
