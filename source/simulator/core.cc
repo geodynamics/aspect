@@ -1104,15 +1104,18 @@ namespace aspect
     // conditions that rely on it (such as no flux BCs).
     if (parameters.free_surface_enabled)
     {
-      // if particles are used, update their reference_position by calling
+      // if particles are used, the ParticleHandler will have a pointer to the Mapping
+      // Mapping is reset by the free surface, so we need the ParticleHandler to release
+      // the Mapping object reference. After the free surface has updated the mapping,
+      // we set the pointer again.
+      // TODO dont get the ParticleHandler twice
       const bool use_particles = postprocess_manager.template has_matching_postprocessor<Postprocess::Particles<dim> >();
-      // ParticleHandler<dim,spacedim>::sort_particles_into_subdomains_and_cells()
+      // reset ParticleHandler's pointer to mapping
       if(use_particles)
       {
         Postprocess::Particles<dim> &particle_postprocessor =
            const_cast<Postprocess::Particles<dim> &>(postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim> >());
         Particle::ParticleHandler<dim> &particle_handler = const_cast<Particle::ParticleHandler<dim> &> (particle_postprocessor.get_particle_world().get_particle_handler());
-        // reset ParticleHandler's pointer to mapping
         particle_handler.clear_particle_handler_mapping();
       }
       free_surface->setup_dofs();
@@ -1121,9 +1124,9 @@ namespace aspect
       if(use_particles)
       {
         Postprocess::Particles<dim> &particle_postprocessor =
-                   const_cast<Postprocess::Particles<dim> &>(postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim> >());
-                Particle::ParticleHandler<dim> &particle_handler = const_cast<Particle::ParticleHandler<dim> &> (particle_postprocessor.get_particle_world().get_particle_handler());
-      particle_handler.set_particle_handler_mapping(*mapping);
+            const_cast<Postprocess::Particles<dim> &>(postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim> >());
+        Particle::ParticleHandler<dim> &particle_handler = const_cast<Particle::ParticleHandler<dim> &> (particle_postprocessor.get_particle_world().get_particle_handler());
+        particle_handler.set_particle_handler_mapping(*mapping);
       }
     }
 
@@ -1511,32 +1514,20 @@ namespace aspect
     // time step to take is, and we will timestep the boundary incorrectly.
     if (parameters.free_surface_enabled)
     {
-
-      // if particles are used, update their reference_position by calling
-      const bool use_particles = postprocess_manager.template has_matching_postprocessor<Postprocess::Particles<dim> >();
-      // ParticleHandler<dim,spacedim>::sort_particles_into_subdomains_and_cells()
-//      if(use_particles)
-//      {
-//        Postprocess::Particles<dim> &particle_postprocessor =
-//           const_cast<Postprocess::Particles<dim> &>(postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim> >());
-//        Particle::ParticleHandler<dim> &particle_handler = const_cast<Particle::ParticleHandler<dim> &> (particle_postprocessor.get_particle_world().get_particle_handler());
-//        // reset ParticleHandler's pointer to mapping
-//        particle_handler.clear_particle_handler_mapping();
-//      }
       free_surface->execute ();
+      const bool use_particles = postprocess_manager.template has_matching_postprocessor<Postprocess::Particles<dim> >();
+      // if particles are used, update their reference_position by calling
+      // ParticleHandler<dim,spacedim>::sort_particles_into_subdomains_and_cells()
+      std::cout << "Executing free surface" << std::endl;
 
-      // reset ParticleHandler's pointer to the current mapping
       if(use_particles)
       {
+        std::cout << "Updating particles " << std::endl;
         Postprocess::Particles<dim> &particle_postprocessor =
                    const_cast<Postprocess::Particles<dim> &>(postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim> >());
-                Particle::ParticleHandler<dim> &particle_handler = const_cast<Particle::ParticleHandler<dim> &> (particle_postprocessor.get_particle_world().get_particle_handler());
-//      particle_handler.set_particle_handler_mapping(*mapping);
-      particle_handler.sort_particles_into_subdomains_and_cells();
+        Particle::ParticleHandler<dim> &particle_handler = const_cast<Particle::ParticleHandler<dim> &> (particle_postprocessor.get_particle_world().get_particle_handler());
+        particle_handler.sort_particles_into_subdomains_and_cells();
       }
-
-
-
     }
 
     // Compute the reactions of compositional fields and temperature in case of operator splitting.
@@ -1736,7 +1727,18 @@ namespace aspect
 
         // see if we want to terminate
         if (termination.first)
+        {
+          const bool use_particles = postprocess_manager.template has_matching_postprocessor<Postprocess::Particles<dim> >();
+          // reset ParticleHandler's pointer to mapping
+          if(use_particles)
+          {
+            Postprocess::Particles<dim> &particle_postprocessor =
+               const_cast<Postprocess::Particles<dim> &>(postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim> >());
+            Particle::ParticleHandler<dim> &particle_handler = const_cast<Particle::ParticleHandler<dim> &> (particle_postprocessor.get_particle_world().get_particle_handler());
+            particle_handler.clear_particle_handler_mapping();
+          }
           break;
+        }
       }
     while (true);
 
