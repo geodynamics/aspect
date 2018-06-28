@@ -99,10 +99,10 @@ namespace aspect
 
           double sum_mass_fractions = 0.0;
           for (unsigned int j=0; j < n_fields; ++j)
-          {
+            {
               mass_fractions[j] = reference_volume_fractions[j] * reference_densities[j];
               sum_mass_fractions += mass_fractions[j];
-          }
+            }
 
           // Averaging of the material properties
           // These are correct when the compositional fields correspond to distinct phases, and all are at the same temperature and pressure
@@ -274,23 +274,23 @@ namespace aspect
 
           // Parse MulticomponentCompressible properties
           reference_temperatures = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference temperatures"))),
-                                                              n_fields,
-                                                              "Reference temperatures");
+                                                                           n_fields,
+                                                                           "Reference temperatures");
           reference_densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference densities"))),
-                                                              n_fields,
-                                                              "Reference densities");
+                                                                        n_fields,
+                                                                        "Reference densities");
           reference_isothermal_compressibilities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference isothermal compressibilities"))),
-                                                              n_fields,
-                                                              "Reference isothermal compressibilities");
+                                                   n_fields,
+                                                   "Reference isothermal compressibilities");
           reference_Kprimes = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference Kprimes"))),
-                                                              n_fields,
-                                                              "Reference Kprimes");
+                                                                      n_fields,
+                                                                      "Reference Kprimes");
           reference_thermal_expansivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference thermal expansivities"))),
-                                                                          n_fields,
-                                                                          "Reference thermal expansivities");
+                                                                                    n_fields,
+                                                                                    "Reference thermal expansivities");
           reference_specific_heats = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference specific heats"))),
-                                                                   n_fields,
-                                                                   "Reference specific heats");
+                                                                             n_fields,
+                                                                             "Reference specific heats");
           viscosities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Viscosities"))),
                                                                 n_fields,
                                                                 "Viscosities");
@@ -309,15 +309,15 @@ namespace aspect
 
       this->model_dependence.viscosity = NonlinearDependence::compositional_fields;
 
-          this->model_dependence.density |= NonlinearDependence::temperature
-                                            | NonlinearDependence::pressure
-                                            | NonlinearDependence::compositional_fields;
-          this->model_dependence.compressibility = NonlinearDependence::temperature
-                                                   | NonlinearDependence::pressure
-                                                   | NonlinearDependence::compositional_fields;
-          this->model_dependence.specific_heat = NonlinearDependence::temperature
-                                                 | NonlinearDependence::pressure
-                                                 | NonlinearDependence::compositional_fields;
+      this->model_dependence.density |= NonlinearDependence::temperature
+                                        | NonlinearDependence::pressure
+                                        | NonlinearDependence::compositional_fields;
+      this->model_dependence.compressibility = NonlinearDependence::temperature
+                                               | NonlinearDependence::pressure
+                                               | NonlinearDependence::compositional_fields;
+      this->model_dependence.specific_heat = NonlinearDependence::temperature
+                                             | NonlinearDependence::pressure
+                                             | NonlinearDependence::compositional_fields;
     }
   }
 }
@@ -329,9 +329,10 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(MulticomponentCompressible,
                                    "multicomponent compressible",
-                                   "This model is for use with an arbitrary number of compositional fields, where each field"
-                                   " represents a phase or rock type which can have completely different properties from the others."
-                                   " Each field has a pressure- and temperature-dependent density of the form:"
+                                   "This compressible model can accept an arbitrary number of compositional fields,"
+                                   " where each field represents a phase or rock type which can have completely"
+                                   " different properties from the others. Each field has a"
+                                   " pressure- and temperature-dependent density of the form:"
                                    "\\begin{align}"
                                    "  \\rho(p,T) = \\rho_0"
                                    "              \\left(1 + \\left(P - \\frac{\\alpha_0}{\\beta_{T0}} (T-T_0)"
@@ -341,6 +342,8 @@ namespace aspect
                                    " This density parameterization is based on the Murnaghan equation of state"
                                    " (a constant value of $K\'$. The thermal term assumes a constant value of "
                                    " $\\alpha / \\beta_T$ (giving a thermal pressure that is linear with temperature)."
+                                   " In the case where pressure is constant and $K\'=1$, this parameterization reduces"
+                                   " to the one in the Simpler model."
                                    " The value of each compositional field is interpreted as a volume fraction at the"
                                    " reference conditions. If the sum of the fields is greater than one, they are renormalized."
                                    " If it is less than one, material properties for ``background mantle'' make up the rest."
