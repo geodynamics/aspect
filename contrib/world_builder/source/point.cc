@@ -28,20 +28,21 @@ namespace WorldBuilder
   template<>
   Point<3>::Point()
     :
-    point({0,0,0})
+    point({0,0,0}),
+	coordinate_system(CoordinateSystem::cartesian)
   {}
 
   template<>
   Point<2>::Point()
     :
     point({0,0}),
-        coordinate_system(CoordinateSystem::cartesian)
+    coordinate_system(CoordinateSystem::cartesian)
   {}
 
   template<int dim>
-  Point<dim>::Point(const std::array<double,dim> &array, CoordinateSystem coordinate_system_)
+  Point<dim>::Point(const std::array<double,dim> &location, CoordinateSystem coordinate_system_)
     :
-    point(array),
+    point(location),
     coordinate_system(coordinate_system_)
   {}
 
@@ -122,10 +123,9 @@ namespace WorldBuilder
   template<int dim>
   Point<dim> Point<dim>::operator+(const Point<dim> &point_) const
   {
-    std::array<double,dim> array = point_.get_array();
-    for (unsigned int i = 0; i < dim; ++i)
-      array[i] += point[i];
-    return Point<dim>(array);
+    Point<dim> point;
+    point += point_;
+    return point;
   }
 
   template<int dim>
@@ -209,7 +209,7 @@ namespace WorldBuilder
   }
 
   template<int dim>
-  std::array<double,dim>
+  const std::array<double,dim>&
   Point<dim>::get_array() const
   {
     return point;

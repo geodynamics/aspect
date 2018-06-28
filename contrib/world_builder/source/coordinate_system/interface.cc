@@ -29,9 +29,10 @@ namespace WorldBuilder
   namespace CoordinateSystems
   {
     Interface::Interface()
-    {
+    {}
 
-    }
+    Interface::~Interface ()
+    {}
 
     Interface *
     create_coordinate_system(const std::string name)

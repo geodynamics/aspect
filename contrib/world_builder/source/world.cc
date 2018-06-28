@@ -31,10 +31,13 @@ namespace WorldBuilder
 {
   World::World(std::string filename)
     :
+    surface_rotation_angle(0.0),
+    minimum_parts_per_distance_unit(std::numeric_limits<unsigned int>::signaling_NaN()),
+	minimum_distance_points(std::numeric_limits<unsigned int>::signaling_NaN()),
     potential_mantle_temperature(1600),
-    thermal_expansion_coefficient_alfa(3.5e-5),
-    specific_heat_Cp(1250)
-
+    thermal_expansion_coefficient_alpha(3.5e-5),
+    specific_heat_Cp(1250),
+	coordinate_system(NULL)
   {
     // Get world builder file and check wether it exists
     AssertThrow(access( filename.c_str(), F_OK ) != -1,
@@ -80,10 +83,11 @@ namespace WorldBuilder
 
     child = tree.get_child("Surface objects");
     AssertThrow (child, "Entry undeclared:  Surface rotation point");
-    for (boost::property_tree::ptree::iterator it = child.get().begin(); it != child.get().end(); ++it)
+    for (boost::property_tree::ptree::const_iterator it = child.get().begin(); it != child.get().end(); ++it)
       {
-        features.push_back(Features::create_feature(it->first,this));
-        features.back()->read(it->second);
+        features.push_back(Features::create_feature(it->first,*this));
+        std::string path = "Surface objects -> " + it->first;
+        features.back()->read(it->second,path);
       }
 
 
@@ -105,17 +109,17 @@ namespace WorldBuilder
   }
 
   double
-  World::temperature(const std::array<double,2> /*point*/, const double /*depth*/, const double /*gravity*/) const
+  World::temperature(const std::array<double,2>& /*point*/, const double /*depth*/, const double /*gravity*/) const
   {
     // turn it into a 3d coordinate and call the 3d temperature function
     return 1.0;
   }
 
   double
-  World::temperature(const std::array<double,3> point_, const double depth, const double gravity_norm) const
+  World::temperature(const std::array<double,3>& point_, const double depth, const double gravity_norm) const
   {
     Point<3> point(point_);
-    double temperature = potential_mantle_temperature + (((potential_mantle_temperature * thermal_expansion_coefficient_alfa * gravity_norm) / specific_heat_Cp) * 1000.0) * ((depth) / 1000.0);;
+    double temperature = potential_mantle_temperature + (((potential_mantle_temperature * thermal_expansion_coefficient_alpha * gravity_norm) / specific_heat_Cp) * 1000.0) * ((depth) / 1000.0);;
     for (std::vector<Features::Interface *>::const_iterator it = features.begin(); it != features.end(); ++it)
       {
         temperature = (*it)->temperature(point,depth,gravity_norm,temperature);
@@ -124,15 +128,15 @@ namespace WorldBuilder
     return temperature;
   }
 
-  double
-  World::composition(const std::array<double,2> /*point*/, const double /*depth*/, const unsigned int /*composition_number*/) const
+  bool
+  World::composition(const std::array<double,2>& /*point*/, const double /*depth*/, const unsigned int /*composition_number*/) const
   {
     // turn it into a 3d coordinate and call the 3d temperature function
     return 1.0;
   }
 
-  double
-  World::composition(const std::array<double,3> point_, const double depth, const unsigned int composition_number) const
+  bool
+  World::composition(const std::array<double,3>& point_, const double depth, const unsigned int composition_number) const
   {
     Point<3> point(point_);
     double composition = 0;
@@ -144,10 +148,10 @@ namespace WorldBuilder
     return composition;
   }
 
-  WorldBuilder::CoordinateSystems::Interface *
+  WorldBuilder::CoordinateSystems::Interface &
   World::get_coordinate_system() const
   {
-    return coordinate_system;
+    return *coordinate_system;
   }
 }
 

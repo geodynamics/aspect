@@ -207,7 +207,7 @@ namespace WorldBuilder
       coordinates = coordinate_system_.cartesian_to_natural_coordinates(position.get_array());
     }
 
-    std::array<double,3> &NaturalCoordinate::get_coordinates()
+    const std::array<double,3> &NaturalCoordinate::get_coordinates()
     {
       return coordinates;
     }
@@ -237,7 +237,7 @@ namespace WorldBuilder
     }*/
 
 
-    std::array<double,2> NaturalCoordinate::get_surface_coordinates() const
+    const std::array<double,2>& NaturalCoordinate::get_surface_coordinates() const
     {
       std::array<double,2> coordinate;
 
@@ -327,8 +327,8 @@ namespace WorldBuilder
 
 
     template<int dim>
-    std::array<double,dim>
-    convert_point_to_array(const Point<dim> point_)
+    const std::array<double,dim> &
+    convert_point_to_array(const Point<dim>& point_)
     {
       std::array<double,dim> array;
       for (unsigned int i = 0; i < dim; ++i)
@@ -406,8 +406,8 @@ namespace WorldBuilder
       return d;
     }
 
-    template std::array<double,2> convert_point_to_array<2>(const Point<2> point_);
-    template std::array<double,3> convert_point_to_array<3>(const Point<3> point_);
+    template const std::array<double,2>& convert_point_to_array<2>(const Point<2>& point_);
+    template const std::array<double,3>& convert_point_to_array<3>(const Point<3>& point_);
   }
 }
 

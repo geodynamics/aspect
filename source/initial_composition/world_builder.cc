@@ -36,7 +36,7 @@ namespace aspect
     {
       return this->get_world_builder().composition(Utilities::convert_point_to_array(position),
                                                    this->get_geometry_model().depth(position),
-                                                   n_comp);
+                                                   n_comp) ? 1.0 : 0.0;
     }
 
 
@@ -61,8 +61,8 @@ namespace aspect
   {
     ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL(WorldBuilder,
                                               "world builder",
-                                              "Specify the composition in terms of an explicit formula. The format of these "
-                                              "functions follows the syntax understood by the "
-                                              "muparser library, see Section~\\ref{sec:muparser-format}.")
+                                              "Specify the composition in through the World Buider located"
+                                              "in the ASPECT contrib directory. Make sure to specify the "
+                                              "location of the World Builder file.")
   }
 }

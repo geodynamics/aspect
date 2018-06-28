@@ -27,6 +27,12 @@
 
 namespace WorldBuilder
 {
+/**
+ * A class which stores 2d and 3d arrays of doubles (depending on the dimension),
+ * and the coordinate system which the coordinates can be used for. It also
+ * implements several operations such as the computation of the l2 norm and the
+ * dot product.
+ */
   template<int dim>
   class Point
   {
@@ -41,7 +47,7 @@ namespace WorldBuilder
        * Constructor. Constructs a Point from a std::array<double,dim> and
        * a coordinate system which is set by default to Cartesian.
        */
-      Point(const std::array<double,dim> &array, CoordinateSystem coordinate_system = CoordinateSystem::cartesian);
+      Point(const std::array<double,dim> &location, CoordinateSystem coordinate_system = CoordinateSystem::cartesian);
 
       /**
        * Constructor. Constructs a Point from an other Point and
@@ -133,7 +139,7 @@ namespace WorldBuilder
       /**
        * return the internal array which stores the point data.
        */
-      std::array<double,dim> get_array() const;
+      const std::array<double,dim>& get_array() const;
 
 
       /**

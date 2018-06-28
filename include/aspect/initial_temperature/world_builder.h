@@ -34,7 +34,8 @@ namespace aspect
 
     /**
      * A class that implements temperature initial conditions based on a
-     * functional description provided in the input file.
+     * functional description provided in the input file through the
+     * World builder, currently located in the ASPECT contrib directory.
      *
      * @ingroup InitialTemperatures
      */

@@ -77,13 +77,13 @@ namespace WorldBuilder
          * Returns the coordinates in the given coordinate system, which may
          * not be Cartesian.
          */
-        std::array<double,3> &get_coordinates();
+        const std::array<double,3> &get_coordinates();
 
         /**
          * The coordinate that represents the 'surface' directions in the
          * chosen coordinate system.
          */
-        std::array<double,2> get_surface_coordinates() const;
+        const std::array<double,2>& get_surface_coordinates() const;
 
         /**
          * The coordinate that represents the 'depth' direction in the chosen
@@ -153,7 +153,7 @@ namespace WorldBuilder
      * Convert point to array
      */
     template<int dim>
-    std::array<double,dim> convert_point_to_array(Point<dim>);
+    const std::array<double,dim>& convert_point_to_array(Point<dim>& point);
 
     /**
      * Converts a string to a double
@@ -162,14 +162,14 @@ namespace WorldBuilder
     string_to_double(const std::string &string);
 
     /**
-     * Converts a string to a double
+     * Converts a string to a int
      */
     double
     string_to_int(const std::string &string);
 
 
     /**
-     * Converts a string to a double
+     * Converts a string to a unsigned int
      */
     double
     string_to_unsigned_int(const std::string &string);

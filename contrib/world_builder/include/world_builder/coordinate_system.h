@@ -25,8 +25,7 @@ namespace WorldBuilder
   /**
    * This enum lists available coordinate systems that can be used for
    * the function variables. Allowed values are 'cartesian',
-   * 'spherical', and 'depth'. 'spherical' coordinates follow: r, phi
-   * (2D) or r, phi, theta (3D); where r is radius, phi is longitude,
+   * 'spherical'. 'spherical' coordinates follow: r, phi (2D) or r, phi, theta (3D); where r is radius, phi is longitude,
    * and theta is the polar angle (colatitude).
    */
   enum CoordinateSystem

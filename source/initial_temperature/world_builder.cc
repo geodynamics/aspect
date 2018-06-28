@@ -64,9 +64,8 @@ namespace aspect
   {
     ASPECT_REGISTER_INITIAL_TEMPERATURE_MODEL(WorldBuilder,
                                               "world builder",
-                                              "Specify the initial temperature in terms of an "
-                                              "explicit formula. The format of these "
-                                              "functions follows the syntax understood by the "
-                                              "muparser library, see Section~\\ref{sec:muparser-format}.")
+                                              "Specify the initial temperature in through the World Buider located"
+                                              "in the ASPECT contrib directory. Make sure to specify the "
+                                              "location of the World Builder file.")
   }
 }

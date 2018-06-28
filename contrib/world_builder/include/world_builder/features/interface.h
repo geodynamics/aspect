@@ -34,6 +34,10 @@ namespace WorldBuilder
 {
   class World;
 
+  /**
+   * This class is an interface for the specific plate tectonic feature classes,
+   * such as continental plate, oceanic plate and subduction zone.
+   */
   namespace Features
   {
 
@@ -48,19 +52,20 @@ namespace WorldBuilder
         /**
          * Destructor
          */
+        virtual
         ~Interface();
 
         /**
          * read in the world builder file
          */
         virtual
-        void read(ptree &property_tree) = 0;
+        void read(const ptree &property_tree, std::string& path) = 0;
 
         /**
          * takes temperature and position and returns a temperature.
          */
         virtual
-        double temperature(const Point<3> position,
+        double temperature(const Point<3>& position,
                            const double depth,
                            const double gravity,
                            double temperature) const = 0;
@@ -69,14 +74,14 @@ namespace WorldBuilder
          * 1 is present) based on the given position and
          */
         virtual
-        double composition(const Point<3> position,
+        bool composition(const Point<3>& position,
                            const double depth,
                            const unsigned int composition_number,
-                           double temperature) const = 0;
+                           bool temperature) const = 0;
 
 
       protected:
-        WorldBuilder::World *world;
+        WorldBuilder::World* world;
 
         std::string name;
         std::vector<Point<2> > coordinates;
@@ -90,7 +95,7 @@ namespace WorldBuilder
      * factory function
      */
     Interface *
-    create_feature(const std::string name, WorldBuilder::World *world);
+    create_feature(const std::string name, WorldBuilder::World& world);
 
   }
 }

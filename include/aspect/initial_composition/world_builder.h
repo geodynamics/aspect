@@ -33,7 +33,8 @@ namespace aspect
 
     /**
      * A class that implements initial conditions for the compositional fields
-     * based on a functional description provided in the input file.
+     * based on a functional description provided in the input filethrough the
+     * World builder, currently located in the ASPECT contrib directory.
      *
      * @ingroup InitialCompositionModels
      */
