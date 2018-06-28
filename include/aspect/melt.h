@@ -458,16 +458,6 @@ namespace aspect
       void add_current_constraints(ConstraintMatrix &constraints);
 
       /**
-       * Copy the current constraints and store them in a private member
-       * variable so that we can use them later. This is necessary because
-       * we want to add the melt constraints, which depend on the solution
-       * of the porosity field, later on, after we have computed this solution.
-       * In this way, we only need to update the constraints matrix instead
-       * of computing all constraints again.
-       */
-      void save_constraints(ConstraintMatrix &constraints);
-
-      /**
        * Returns the entry of the private variable is_melt_cell_vector for the
        * cell given in the input, describing if we have melt transport in this
        * cell or not.

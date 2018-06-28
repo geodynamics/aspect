@@ -799,15 +799,14 @@ namespace aspect
     if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
       restore_outflow_boundary_ids(boundary_id_offset);
 
+    if (parameters.include_melt_transport)
+      melt_handler->add_current_constraints (current_constraints);
+
     // let plugins add more constraints if they so choose, then close the
     // constraints object
     signals.post_constraints_creation(*this, new_current_constraints);
 
     new_current_constraints.close();
-
-    // let the melt handler copy the constraints so that it can add its own constraints later on
-    if (parameters.include_melt_transport)
-      melt_handler->save_constraints (new_current_constraints);
 
     // Now check if the current_constraints we just computed changed from before. Do this before the melt handler
     // adds constraints for the melt cells, because they are allowed to change (and often do) without us having
@@ -863,8 +862,6 @@ namespace aspect
 #endif
 
     // let the melt handler add its constraints once before we solve the porosity system for the first time
-    if (time_step == 0 && parameters.include_melt_transport)
-      melt_handler->add_current_constraints (current_constraints);
   }
 
 

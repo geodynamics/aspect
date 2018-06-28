@@ -247,12 +247,14 @@ namespace aspect
     // set constraints for p_c if porosity is below a threshold
     if (nonlinear_iteration == 0 && parameters.include_melt_transport)
       {
-        melt_handler->add_current_constraints (current_constraints);
+        this->compute_current_constraints();
+        if (rebuild_sparsity_and_matrices)
+          {
+            setup_system_matrix (introspection.index_sets.system_partitioning);
+            setup_system_preconditioner (introspection.index_sets.system_partitioning);
 
-        setup_system_matrix (introspection.index_sets.system_partitioning);
-        setup_system_preconditioner (introspection.index_sets.system_partitioning);
-
-        rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+            rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+          }
       }
 
     assemble_stokes_system ();
