@@ -24,7 +24,6 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/postprocess/melt_statistics.h>
 #include <aspect/melt.h>
-#include <aspect/elastic.h>
 
 namespace aspect
 {
@@ -193,7 +192,7 @@ namespace aspect
         /**
          * Pointer to the material model used as the base model
          */
-        std_cxx11::shared_ptr<MaterialModel::Interface<dim> > base_model;
+        std::shared_ptr<MaterialModel::Interface<dim> > base_model;
     };
 
   }

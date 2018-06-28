@@ -37,18 +37,6 @@ namespace aspect
     MeltViscoPlastic<dim>::initialize ()
     {
       base_model->initialize();
-
-      // check if the applicable compositional fields exist
-      AssertThrow(this->introspection().compositional_name_exists("peridotite"),
-                  ExcMessage("Material model Melt peridotite eclogite only works if there is a "
-                             "compositional field called peridotite."));
-
-      if (this->include_melt_transport())
-        {
-          AssertThrow(this->introspection().compositional_name_exists("porosity"),
-                      ExcMessage("Material model Melt peridotite eclogite with melt transport only "
-                                 "works if there is a compositional field called porosity."));
-        }
     }
 
 
@@ -218,7 +206,7 @@ namespace aspect
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
           const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
 
-          if ( in.cell
+          if ( in.current_cell.state() == IteratorState::valid
                && this->get_timestep_number() > 0)
             {
               // Prepare the field function
@@ -226,7 +214,7 @@ namespace aspect
               fe_value(this->get_dof_handler(), this->get_old_solution(), this->get_mapping());
 
 
-              fe_value.set_active_cell(*in.cell);
+              fe_value.set_active_cell(in.current_cell);
               fe_value.value_list(in.position,
                                   maximum_melt_fractions,
                                   this->introspection().component_indices.compositional_fields[peridotite_idx]);
@@ -238,7 +226,7 @@ namespace aspect
               // get fluid pressure from the current solution
               Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
               fe_value_current(this->get_dof_handler(), this->get_solution(), this->get_mapping());
-              fe_value_current.set_active_cell(*in.cell);
+              fe_value_current.set_active_cell(in.current_cell);
 
               fe_value_current.value_list(in.position,
                                           fluid_pressures,
@@ -318,44 +306,13 @@ namespace aspect
       if ( in.strain_rate.size() )
         {
 
-          // 5) Compute elastic viscosities and evolutions, fill elastic outputs
-          std::vector<double > elastic_evolutions(in.position.size());
-          ElasticOutputs<dim> *elastic_out = out.template get_additional_output<ElasticOutputs<dim> >();
-
-          if (model_is_viscoelastic == true)
-            {
-              for (unsigned int i=0; i<in.position.size(); ++i)
-                {
-
-                  // Obtain melt-weakened viscosity output
-                  const double initial_viscosity = out.viscosities[i];
-
-                  // Compute average elastic shear modulus
-                  // Compute volume fractions
-                  const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i]);
-                  double elastic_shear_modulus = 0;
-                  for (unsigned int c=0; c< volume_fractions.size(); ++c)
-                    elastic_shear_modulus += volume_fractions[c] * elastic_shear_moduli[c];
-
-                  // Compute elastic viscosities and shear stress evolution parameters (Keller et al. eq. 29).
-                  out.viscosities[i] = 1. / ( ( 1. / initial_viscosity ) + ( 1. / ( elastic_shear_modulus * elastic_time_step ) ) );
-                  elastic_evolutions[i] = 1. / ( 1. + ( ( elastic_shear_modulus * elastic_time_step ) / initial_viscosity ) );
-                  // TODO multiply elastic_viscosities and elastic_evolutions by (1-porosity)
-                }
-            }
-
-          if (elastic_out != NULL)
-            {
-              elastic_out->elastic_viscosities = out.viscosities;
-              elastic_out->elastic_evolutions = elastic_evolutions;
-            }
-
-          // 6) Compute plastic weakening of visco(elastic) viscosity
+          // 5) Compute plastic weakening of visco(elastic) viscosity
           for (unsigned int i=0; i<in.position.size(); ++i)
             {
 
               // Compute volume fractions
               const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i]);
+
               // calculate deviatoric strain rate (Keller et al. eq. 13)
               const double edot_ii = ( (this->get_timestep_number() == 0 && in.strain_rate[i].norm() <= std::numeric_limits<double>::min())
                                        ?
@@ -381,7 +338,7 @@ namespace aspect
               // P_effective = P_bulk - P_f = (1-porosity) * P_s + porosity * P_f - P_f = (1-porosity) * (P_s - P_f)
               // otherwise,
               // P_effective = P_bulk, which equals P_solid (which is given by in.pressure[i])
-              const double effective_pressure = ((this->include_melt_transport() && porosity > this->get_melt_handler().melt_transport_threshold)
+              const double effective_pressure = ((this->include_melt_transport() && this->get_melt_handler().is_melt_cell(in.current_cell))
                                                  ?
                                                  (1. - porosity) * (in.pressure[i] - fluid_pressures[i])
                                                  :
@@ -441,7 +398,7 @@ namespace aspect
               const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
               porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
               melt_out->fluid_viscosities[i] = eta_f;
-              melt_out->permeabilities[i] = (porosity > this->get_melt_handler().melt_transport_threshold
+              melt_out->permeabilities[i] = (this->get_melt_handler().is_melt_cell(in.current_cell)
                                              ?
                                              std::max(reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2),0.0)
                                              :
@@ -718,6 +675,18 @@ namespace aspect
           AssertThrow( prm.get("Base model") != "melt visco plastic",
                        ExcMessage("You may not use ``melt visco plastic'' itself as the base model for "
                                   "the melt visco plastic model.") );
+
+          // check if the applicable compositional fields exist
+          AssertThrow(this->introspection().compositional_name_exists("peridotite"),
+                      ExcMessage("Material model Melt peridotite eclogite only works if there is a "
+                                 "compositional field called peridotite."));
+
+          if (this->include_melt_transport())
+            {
+              AssertThrow(this->introspection().compositional_name_exists("porosity"),
+                          ExcMessage("Material model Melt peridotite eclogite with melt transport only "
+                                     "works if there is a compositional field called porosity."));
+            }
 
           // create the base model and initialize its SimulatorAccess base
           // class; it will get a chance to read its parameters below after we
