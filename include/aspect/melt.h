@@ -34,6 +34,11 @@ namespace aspect
 
   namespace MaterialModel
   {
+    /**
+     * The MeltInputs provide the compaction pressures and
+     * melt (fluid) velocities, so that they can be used as
+     * additional inputs in heating or material models.
+     */
     template <int dim>
     class MeltInputs : public AdditionalMaterialInputs<dim>
     {
@@ -59,6 +64,9 @@ namespace aspect
          */
         std::vector<Tensor<1,dim> > fluid_velocities;
 
+        /**
+         * Fill the compaction pressures and fluid velocities.
+         */
         void fill (const LinearAlgebra::BlockVector &solution,
                    const FEValuesBase<dim>          &fe_values,
                    const Introspection<dim>         &introspection);

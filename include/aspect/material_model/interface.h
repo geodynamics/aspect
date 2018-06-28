@@ -326,7 +326,7 @@ namespace aspect
          * objects that can be added to MaterialModelInputs. By default,
          * no inputs are added.
          */
-        std::vector<std_cxx11::shared_ptr<AdditionalMaterialInputs<dim> > > additional_inputs;
+        std::vector<std::shared_ptr<AdditionalMaterialInputs<dim> > > additional_inputs;
 
         /**
          * Given an additional material model input class as explicitly specified
@@ -615,6 +615,10 @@ namespace aspect
         virtual ~AdditionalMaterialInputs()
         {}
 
+        /**
+         * Fill the additional inputs. Each additional input
+         * has to implement their own version of this function.
+         */
         virtual void
         fill (const LinearAlgebra::BlockVector &solution,
               const FEValuesBase<dim>          &fe_values,
