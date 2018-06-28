@@ -172,7 +172,12 @@ namespace aspect
       // On the first (0) time step the elastic time step is always equal to the value
       // specified in 'fixed_elastic_time_step', which is also used in all subsequent time
       // steps if 'use_fixed_elastic_time_step' is set to true.
-      const double dte = ( ( this->get_timestep_number() > 0 && use_fixed_elastic_time_step == false )
+      //
+      // We also use this parameter when we are still *before* the first time step,
+      // i.e., if the time step number is numbers::invalid_unsigned_int.
+      const double dte = ( ( this->get_timestep_number() > 0 &&
+                             this->get_timestep_number() != numbers::invalid_unsigned_int &&
+                             use_fixed_elastic_time_step == false )
                            ?
                            this->get_timestep()
                            :

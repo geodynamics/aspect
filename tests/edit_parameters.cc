@@ -35,7 +35,11 @@ namespace aspect
   void change_boundary_condition (const SimulatorAccess<dim> &simulator_access,
                                   Parameters<dim> &parameters)
   {
-    if ( simulator_access.get_timestep_number() >= switch_step && !switched )
+    if (simulator_access.get_timestep_number() != numbers::invalid_unsigned_int
+        &&
+        simulator_access.get_timestep_number() >= switch_step
+        &&
+        !switched )
       {
         simulator_access.get_pcout()<<"Reducing CFL number!"<<std::endl;
         parameters.CFL_number *= 0.5;

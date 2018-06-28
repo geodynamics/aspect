@@ -167,9 +167,9 @@ namespace aspect
     boundary_heat_flux (BoundaryHeatFlux::create_boundary_heat_flux<dim>(prm)),
 
     time (numbers::signaling_nan<double>()),
-    time_step (0),
-    old_time_step (0),
-    timestep_number (0),
+    time_step (numbers::signaling_nan<double>()),
+    old_time_step (numbers::signaling_nan<double>()),
+    timestep_number (numbers::invalid_unsigned_int),
     nonlinear_iteration (numbers::invalid_unsigned_int),
 
     triangulation (mpi_communicator,
@@ -1575,9 +1575,7 @@ namespace aspect
       }
     else
       {
-        time                      = parameters.start_time;
-        timestep_number           = 0;
-        time_step = old_time_step = 0;
+        time = parameters.start_time;
 
         // Instead of calling global_refine(n) we flag all cells for
         // refinement and then allow the mesh refinement plugins to unflag
@@ -1605,24 +1603,27 @@ namespace aspect
 
   start_time_iteration:
 
-    // Only set initial conditions if we do not resume, and are not in pre-refinement,
-    // or we do not want to skip initial conditions in pre-refinement.
-    if (parameters.resume_computation == false
-        &&
-        ! (parameters.skip_setup_initial_conditions_on_initial_refinement
-           && pre_refinement_step < parameters.initial_adaptive_refinement))
+    if (parameters.resume_computation == false)
       {
         TimerOutput::Scope timer (computing_timer, "Setup initial conditions");
 
-        // Add topography to box models after all initial refinement
-        // is completed.
-        if (pre_refinement_step == parameters.initial_adaptive_refinement)
-          signals.pre_set_initial_state (triangulation);
+        timestep_number           = 0;
+        time_step = old_time_step = 0;
 
-        set_initial_temperature_and_compositional_fields ();
-        compute_initial_pressure_field ();
+        if (! parameters.skip_setup_initial_conditions_on_initial_refinement
+            ||
+            ! (pre_refinement_step < parameters.initial_adaptive_refinement))
+          {
+            // Add topography to box models after all initial refinement
+            // is completed.
+            if (pre_refinement_step == parameters.initial_adaptive_refinement)
+              signals.pre_set_initial_state (triangulation);
 
-        signals.post_set_initial_state (*this);
+            set_initial_temperature_and_compositional_fields ();
+            compute_initial_pressure_field ();
+
+            signals.post_set_initial_state (*this);
+          }
       }
 
     // start the principal loop over time steps:

@@ -264,7 +264,8 @@ namespace aspect
     Box<dim>::point_is_in_domain(const Point<dim> &point) const
     {
       AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
-                  this->get_timestep_number() == 0,
+                  // we are still before the first time step has started
+                  this->get_timestep_number() == numbers::invalid_unsigned_int,
                   ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
