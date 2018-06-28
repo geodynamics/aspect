@@ -2033,14 +2033,14 @@ namespace aspect
                          ExcMessage ("One of the boundary indicators listed in the input file "
                                      "is not used by the geometry model."));
       }
-    else
-      {
-        // next make sure that there are no listed indicators
-        for (unsigned  int i = 0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-          AssertThrow (boundary_indicator_lists[i].empty(),
-                       ExcMessage ("With the solver scheme `single Advection, no Stokes', "
-                                   "one cannot set boundary conditions for velocity."));
-      }
+//    else
+//      {
+//        // next make sure that there are no listed indicators
+//        for (unsigned  int i = 0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
+//          AssertThrow (boundary_indicator_lists[i].empty(),
+//                       ExcMessage ("With the solver scheme `single Advection, no Stokes', "
+//                                   "one cannot set boundary conditions for velocity."));
+//      }
 
 
     // now do the same for the fixed temperature indicators and the
