@@ -800,7 +800,7 @@ namespace aspect
       restore_outflow_boundary_ids(boundary_id_offset);
 
     if (parameters.include_melt_transport)
-      melt_handler->add_current_constraints (current_constraints);
+      melt_handler->add_current_constraints (new_current_constraints);
 
     // let plugins add more constraints if they so choose, then close the
     // constraints object
