@@ -124,6 +124,8 @@ namespace aspect
                                  this->get_melt_handler(),
                                  true);
 
+        const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             unsigned output_index = 0;
@@ -172,6 +174,19 @@ namespace aspect
                                                                * melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]);
                     computed_quantities[q][output_index] = compaction_length;
                   }
+                else if (property_names[i] == "contiguity")
+                  {
+                    double porosity = std::max(in.composition[q][porosity_idx],0.0);
+                    const double p_1 = -8065.00;
+                    const double p_2 = 6149.00;
+                    const double p_3 = -1778.00;
+                    const double p_4 = 249.00;
+                    const double p_5 = -19.77;
+                    const double p_6 = 1.00;
+                    double contiguity = p_1 * std::pow(porosity,5) + p_2 * std::pow(porosity,4) + p_3 * std::pow(porosity,3) + p_4 * std::pow(porosity,2) + p_5 * porosity + p_6 ;
+
+                    computed_quantities[q][output_index] = contiguity;
+                  }
                 else
                   AssertThrow(false, ExcNotImplemented());
               }
@@ -192,7 +207,7 @@ namespace aspect
                 = "compaction viscosity|fluid viscosity|permeability|"
                   "fluid density|fluid density gradient|is melt cell|"
                   "darcy coefficient|darcy coefficient no cutoff|"
-                  "compaction length";
+                  "compaction length|contiguity";
 
               prm.declare_entry("List of properties",
                                 "compaction viscosity,permeability",
