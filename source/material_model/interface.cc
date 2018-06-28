@@ -225,6 +225,21 @@ namespace aspect
 
 
     template <int dim>
+    void
+    Interface<dim>::
+    fill_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &input,
+                                          const LinearAlgebra::BlockVector        &solution,
+                                          const FEValuesBase<dim>                 &fe_values,
+                                          const Introspection<dim>                &introspection) const
+    {
+      // go through the list of additional inputs and fill them
+      for (unsigned int i=0; i<input.additional_inputs.size(); ++i)
+        input.additional_inputs[i]->fill(solution, fe_values, introspection);
+    }
+
+
+
+    template <int dim>
     std::string
     get_valid_model_names_pattern ()
     {

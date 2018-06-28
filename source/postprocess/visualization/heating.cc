@@ -70,7 +70,7 @@ namespace aspect
       Heating<dim>::
       get_needed_update_flags () const
       {
-        return update_gradients | update_values  | update_q_points;
+        return update_gradients | update_values  | update_q_points | update_JxW_values;
       }
 
       template <int dim>
@@ -99,20 +99,32 @@ namespace aspect
 
         std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_quadrature_points));
 
-        this->get_heating_model_manager().create_additional_material_model_outputs(out);
+        this->get_heating_model_manager().create_additional_material_model_inputs_and_outputs(in, out);
         HeatingModel::HeatingModelOutputs heating_model_outputs(n_quadrature_points, this->n_compositional_fields());
 
         // we need the cell as input for the material model because some heating models
         // want to access the solution vector.
-        // To find the cell, we find a point in the middle of the cell by averaging over the quadrature points.
-        Point<dim> mid_point;
+        in.current_cell = input_data.template get_cell<DoFHandler<dim> > ();
+
+        // we need an fevalues object to get the melt velocities
+        std::vector<Point<dim> > quadrature_points(n_quadrature_points);
         for (unsigned int q=0; q<n_quadrature_points; ++q)
-          mid_point += input_data.evaluation_points[q]/n_quadrature_points;
+          quadrature_points[q] = this->get_mapping().transform_real_to_unit_cell(in.current_cell,input_data.evaluation_points[q]);
 
-        typename DoFHandler<dim>::active_cell_iterator cell;
-        cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_dof_handler(), mid_point)).first;
-        in.current_cell = cell;
+        const Quadrature<dim> quadrature_formula (quadrature_points);
+        FEValues<dim> fe_values (this->get_mapping(),
+                                 this->get_fe(),
+                                 quadrature_formula,
+                                 update_values   |
+                                 update_gradients |
+                                 update_quadrature_points |
+                                 update_JxW_values);
 
+        fe_values.reinit(in.current_cell);
+        this->get_material_model().fill_additional_material_model_inputs(in,
+                                                                         this->get_solution(),
+                                                                         fe_values,
+                                                                         this->introspection());
         this->get_material_model().evaluate(in, out);
 
         if (this->get_parameters().formulation_temperature_equation

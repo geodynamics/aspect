@@ -205,7 +205,17 @@ namespace aspect
          */
         virtual
         void
-        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+
+        /**
+         * Allow the heating model to attach additional material model inputs
+         * it needs. The default implementation of this function does not add any
+         * inputs. Consequently, derived classes do not have to overload
+         * this function if they do not need any additional inputs.
+         */
+        virtual
+        void
+        create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &inputs) const;
     };
 
 
@@ -276,12 +286,13 @@ namespace aspect
 
         /**
          * Allow the heating model plugins to attach additional material model
-         * outputs by looping over all registered plugins and calling their
-         * respective member functions.
+         * inputs and outputs by looping over all registered plugins and calling
+         * their respective member functions.
          */
         virtual
         void
-        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const;
+        create_additional_material_model_inputs_and_outputs(MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                                                            MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const;
 
 
         /**

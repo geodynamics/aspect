@@ -24,7 +24,7 @@ Number of degrees of freedom: 9,825 (2,898+1,365+2,898+405+1,449+405+405)
 
    Postprocessing:
      Temperature min/avg/max:       1723 K, 1755 K, 1788 K
-     Heating rate (average/total):  0 W/kg, 0 W
+     Heating rate (average/total):  -3.191e-11 W/kg, -177.4 W
 
 *** Timestep 1:  t=1.14712e+13 seconds
    Solving temperature system... 8 iterations.
@@ -63,7 +63,7 @@ Number of degrees of freedom: 9,825 (2,898+1,365+2,898+405+1,449+405+405)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
    Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.7975e-08, 2.2187e-16, 0, 1.19906e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.7975e-08, 2.21786e-16, 0, 1.19906e-09
       Relative nonlinear residual (total system) after nonlinear iteration 1: 4.7975e-08
 
 

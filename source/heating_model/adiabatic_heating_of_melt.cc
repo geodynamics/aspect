@@ -41,37 +41,17 @@ namespace aspect
       AssertThrow(this->include_melt_transport(),
                   ExcMessage ("Heating model Adiabatic heating with melt only works if melt transport is enabled."));
 
-      // get the melt velocity from the solution vector
-      std::vector<Tensor<1,dim> > melt_velocity (material_model_inputs.position.size());
-
-      if (material_model_inputs.current_cell.state() == IteratorState::valid
-          && this->get_timestep_number() > 0)
-        {
-          // we have to create a long vector, because that is the only way to extract the velocities
-          // from the solution vector
-          std::vector<std::vector<double> > melt_velocitiy_vector (dim, std::vector<double>(material_model_inputs.position.size()));
-          // Prepare the field function
-          Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
-          fe_value(this->get_dof_handler(), this->get_solution(), this->get_mapping());
-
-          fe_value.set_active_cell(material_model_inputs.current_cell);
-
-          for (unsigned int d=0; d<dim; ++d)
-            fe_value.value_list(material_model_inputs.position,
-                                melt_velocitiy_vector[d],
-                                this->introspection().variable("fluid velocity").first_component_index+d);
-
-          for (unsigned int i=0; i<material_model_inputs.position.size(); ++i)
-            for (unsigned int d=0; d<dim; ++d)
-              melt_velocity[i][d] = melt_velocitiy_vector[d][i];
-        }
+      // get the melt velocity
+      const MaterialModel::MeltInputs<dim> *melt_in = material_model_inputs.template get_additional_input<MaterialModel::MeltInputs<dim> >();
+      AssertThrow(melt_in != NULL,
+                  ExcMessage ("Need MeltInputs from the material model for adiabatic heating with melt!"));
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
           const double porosity = material_model_inputs.composition[q][this->introspection().compositional_index_for_name("porosity")];
 
           if (!simplified_adiabatic_heating)
-            heating_model_outputs.heating_source_terms[q] = ((-porosity * material_model_inputs.velocity[q] + porosity * melt_velocity[q])
+            heating_model_outputs.heating_source_terms[q] = ((-porosity * material_model_inputs.velocity[q] + porosity * melt_in->fluid_velocities[q])
                                                              * material_model_inputs.pressure_gradient[q])
                                                             * material_model_outputs.thermal_expansion_coefficients[q]
                                                             * material_model_inputs.temperature[q];
@@ -86,7 +66,7 @@ namespace aspect
                                                               * material_model_inputs.temperature[q]
                                                               * material_model_outputs.densities[q]
                                                               +
-                                                              ((porosity * melt_velocity[q])
+                                                              ((porosity * melt_in->fluid_velocities[q])
                                                                * this->get_gravity_model().gravity_vector(material_model_inputs.position[q]))
                                                               * material_model_outputs.thermal_expansion_coefficients[q]
                                                               * material_model_inputs.temperature[q]
@@ -141,6 +121,22 @@ namespace aspect
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output) const
     {
       MeltHandler<dim>::create_material_model_outputs(output);
+    }
+
+
+
+    template <int dim>
+    void
+    AdiabaticHeatingMelt<dim>::
+    create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &inputs) const
+    {
+      // we need the melt inputs for this adiabatic heating of melt
+      if (inputs.template get_additional_input<MaterialModel::MeltInputs<dim> >() != NULL)
+        return;
+
+      inputs.additional_inputs.push_back(
+        std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialInputs<dim> >
+        (new MaterialModel::MeltInputs<dim> (inputs.position.size())));
     }
   }
 }

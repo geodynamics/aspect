@@ -33,6 +33,7 @@
 #include <deal.II/fe/fe_values.h>
 
 #include <deal.II/base/quadrature_lib.h>
+#include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/work_stream.h>
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/grid/filtered_iterator.h>
@@ -42,6 +43,29 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    template <int dim>
+    MeltInputs<dim>::MeltInputs (const unsigned int n_points)
+      :
+      compaction_pressures(n_points, numbers::signaling_nan<double>()),
+      fluid_velocities(n_points, numbers::signaling_nan<Tensor<1,dim> >())
+    {}
+
+
+    template <int dim>
+    void MeltInputs<dim>::fill (const LinearAlgebra::BlockVector &solution,
+                                const FEValuesBase<dim>          &fe_values,
+                                const Introspection<dim>         &introspection)
+    {
+      compaction_pressures.resize(fe_values.n_quadrature_points);
+      fluid_velocities.resize(fe_values.n_quadrature_points, Tensor<1,dim>());
+
+      const FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
+      fe_values[ex_u_f].get_function_values (solution, fluid_velocities);
+
+      const FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
+      fe_values[ex_p_c].get_function_values (solution, compaction_pressures);
+    }
+
     template <int dim>
     void MeltOutputs<dim>::average (const MaterialAveraging::AveragingOperation operation,
                                     const FullMatrix<double>  &projection_matrix,
@@ -1933,6 +1957,13 @@ namespace aspect
   template \
   class \
   MeltHandler<dim>; \
+  \
+  namespace MaterialModel \
+  { \
+    template \
+    class \
+    MeltInputs<dim>; \
+  } \
   \
   namespace Melt \
   { \

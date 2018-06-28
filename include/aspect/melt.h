@@ -34,6 +34,44 @@ namespace aspect
 
   namespace MaterialModel
   {
+    /**
+     * The MeltInputs provide the compaction pressures and
+     * melt (fluid) velocities, so that they can be used as
+     * additional inputs in heating or material models.
+     */
+    template <int dim>
+    class MeltInputs : public AdditionalMaterialInputs<dim>
+    {
+      public:
+        /**
+         * Constructor. When the MeltInputs are created,
+         * all properties are initialized with signalingNaNs.
+         * This means that individual heating or material models
+         * can all attach the plugins they need, and in a later
+         * step they will all be filled together (using the fill
+         * function).
+         */
+        MeltInputs (const unsigned int n_points);
+
+        /**
+         * Compaction pressure values $\p_c$ at the given positions.
+         */
+        std::vector<double> compaction_pressures;
+
+        /**
+         * An approximation for the fluid (melt) velocities
+         * at the given positions.
+         */
+        std::vector<Tensor<1,dim> > fluid_velocities;
+
+        /**
+         * Fill the compaction pressures and fluid velocities.
+         */
+        void fill (const LinearAlgebra::BlockVector &solution,
+                   const FEValuesBase<dim>          &fe_values,
+                   const Introspection<dim>         &introspection);
+    };
+
     template <int dim>
     class MeltOutputs : public AdditionalMaterialOutputs<dim>
     {
