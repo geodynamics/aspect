@@ -1,0 +1,172 @@
+# A simple setup for thermal convection in a 3d shell based on 
+# CitcomS benchmark of Arrial et al. 2014. See the manual for more
+# information.
+
+############### Global parameters
+# We use a 3d setup. Here the equations of contuinity, momentum and
+# energy are nondimensionalized with the timescale chosen as the
+# thermal diffusion time of mantle minerals so that time t=1 which
+# corresponds to 265 billion years.
+set Dimension                              = 3
+set Start time                             = 0
+set End time                               = 1
+set CFL number                             = 1
+set Use years in output instead of seconds = false
+set Output directory                       = output-thermal_convection-0
+
+
+############### Parameters describing the model
+# The setup is a 3d spherical shell with a nondimensional length
+# scale chosen as the approximate thickness of the mantle (i.e.
+# mantle thickness = 1).
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Inner radius    = 1.2222222222
+    set Outer radius    = 2.2222222222
+    set Cells along circumference = 12
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top
+end
+
+# For some geometries and certain boundary conditions the velocity
+# field in not uniquely determined but contains free translations
+# and/or rotations. Angular momentum is here removed from the
+# velocity field at the end of the Stokes solver step so that the
+# net angular momentum is zero. See section 2.14 in the manual for
+# more information.
+subsection Nullspace removal
+  set Remove nullspace = angular momentum 
+end
+
+# The dynamics of the fluid are entirely governed by the Rayleigh
+# number Ra, which can be interpreted as a ratio of the destabilizing
+# force due to the buoyancy of the heated fluid to the stabilizing
+# force due to the the viscosity of the fluid and heat transfer by
+# conduction.
+# Therefore, we set here all the parameters which are parts of the 
+# Rayleigh formula to 1, except for the gravity component. The value
+# given to gravity then specifies the Rayleigh number value. 
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Reference temperature         = 0
+    # The 5 following parameters are set to 1 in the Rayleigh number
+    # equation.
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Thermal conductivity          = 1
+  end
+end
+
+# In our case, the gravity magnitude specifies the Rayleigh number.
+subsection Gravity model
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude = 7e3
+  end
+end
+
+
+############### Parameters describing the temperature field
+# The governing equations describe an incompressible Boussinesq fluid
+# at infinite Prandtl number 3D spherical shell that is heated from
+# below and cooled from above.
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+# The temperature scale is chosen as the difference between the
+# temperature at the inner and outer boundaries (equal to 1).
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top
+  set List of model names = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 1
+    set Outer temperature = 0
+  end
+end
+
+# The initial temperature is given by the sum of a conductive profile
+# together with a perturbation. The perturbation determines the final
+# patterns of the polyhedral symmetry which is here cubic.
+subsection Initial temperature model
+  set Model name = harmonic perturbation CitcomS
+  subsection Harmonic perturbation CitcomS
+    # The vertical (radial or depth) wave number allows the user to prescribe a single up-
+    # / downswing or half periods. 
+    set Vertical wave number   = 1
+    # For the cubic initial condition temperature, the axisymmetric
+    # spherical harmonic is of degree l = 4 and order m = 0. 
+    set Lateral wave number l1 = 4
+    set Lateral wave number m1 = 0
+    # For the cubic initial condition temperature, the nonaxisymmetric
+    # spherical harmonic is of degree l = 4 and order m = 4. 
+    set Lateral wave number l2 = 4
+    set Lateral wave number m2 = 4
+    # The magnitude specifies the magitude of the perturbation.
+    set Magnitude              = 0.01
+    # A perturbation parameter has been introduced to slowly perturb
+    # the amplitude of the nonaxisymmetric mode. Set to 0 means the
+    # perturbation is full; set to 1 and there is no perturbation (i.e
+    # the initial condition temperature profile is only axissymmetric)
+    set Delta                  = 0
+  end
+end
+
+
+############### Parameters describing the discretization
+# The following parameters describe how often we want to refine the
+# mesh globally and adaptively, what fraction of cells should be
+# refined in each adaptive refinement step, and what refinement
+# indicator to use when refining the mesh adaptively.
+subsection Mesh refinement
+  set Initial global refinement   = 2
+  set Initial adaptive refinement = 0
+  #set Strategy                    = temperature
+end
+
+# In order to get similar results to CitcomS, two factors in the
+# entropy viscosity (cR) and artificial viscosity (beta) stabilization
+# have to be set to 0. See the 2012 paper by Kronbichler, Heister and
+# Bangerth that describes ASPECT for more information.
+subsection Discretization
+  subsection Stabilization parameters
+    # beta controls the maximum dissipation of the entropy viscosity,
+    # which is the part that only scales with the cell diameter and
+    # the maximum velocity in the cell, but does not depend on the
+    # solution field itself nor its residual.
+    set beta = 0
+    # cR controls the part of the entropy viscosity that depends on
+    # the solution field itself and its residual in addition to the
+    # cell diameter and the maximum velocity in the cell.
+    set cR   = 0
+  end
+end
+
+
+############### Parameters describing what to do with the solution
+# The final section allows us to choose which postprocessors to run
+# at the end of each time step. We select to generate graphical
+# output that will consist of the primary variables (velocity and 
+# temperature) as well as the density, geoid, strain rate and 
+# dynamic topography. We also select to compute some statistics
+# about the velocity field, heat flow and temperature..
+subsection Postprocess
+  set List of postprocessors = heat flux statistics, temperature statistics, velocity statistics, visualization
+  subsection Visualization
+    set Output format                 = vtu
+    set List of output variables      = dynamic topography, density, strain rate
+    set Time between graphical output = 0
+    set Number of grouped files       = 1
+  end
+end
+
+subsection Checkpointing
+  set Steps between checkpoint = 50
+end
