@@ -28,7 +28,7 @@ namespace WorldBuilder
 {
   namespace Features
   {
-    ContinentalPlate::ContinentalPlate(WorldBuilder::World& world_)
+    ContinentalPlate::ContinentalPlate(WorldBuilder::World &world_)
       :
       temperature_submodule_depth(std::numeric_limits<double>::signaling_NaN()),
       temperature_submodule_temperature(std::numeric_limits<double>::signaling_NaN()),
@@ -43,7 +43,7 @@ namespace WorldBuilder
 
     // todo: add relative path somehow, to output when there are erros
     void
-    ContinentalPlate::read(const ptree &tree, std::string& path)
+    ContinentalPlate::read(const ptree &tree, std::string &path)
     {
       boost::optional<std::string> value  = tree.get_optional<std::string> ("name");
       AssertThrow (value, "Entry undeclared: " + path + " -> name");
@@ -111,7 +111,7 @@ namespace WorldBuilder
     }
 
     double
-    ContinentalPlate::temperature(const Point<3>& position,
+    ContinentalPlate::temperature(const Point<3> &position,
                                   const double depth,
                                   const double /*gravity*/,
                                   double temperature) const
@@ -141,7 +141,7 @@ namespace WorldBuilder
     }
 
     bool
-    ContinentalPlate::composition(const Point<3>& position,
+    ContinentalPlate::composition(const Point<3> &position,
                                   const double depth,
                                   const unsigned int composition_number,
                                   bool composition) const

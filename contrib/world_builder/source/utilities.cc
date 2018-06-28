@@ -237,7 +237,7 @@ namespace WorldBuilder
     }*/
 
 
-    const std::array<double,2>& NaturalCoordinate::get_surface_coordinates() const
+    const std::array<double,2> NaturalCoordinate::get_surface_coordinates() const
     {
       std::array<double,2> coordinate;
 
@@ -285,12 +285,12 @@ namespace WorldBuilder
       std::array<double,3> scoord;
 
       scoord[0] = position.norm(); // R
-      scoord[1] = std::atan2(position(1),position(0)); // Phi
+      scoord[1] = std::atan2(position[1],position[0]); // Phi
       if (scoord[1] < 0.0)
         scoord[1] += 2.0*M_PI; // correct phi to [0,2*pi]
 
       if (scoord[0] > std::numeric_limits<double>::min())
-        scoord[2] = std::acos(position(2)/scoord[0]);
+        scoord[2] = std::acos(position[2]/scoord[0]);
       else
         scoord[2] = 0.0;
 
@@ -327,8 +327,8 @@ namespace WorldBuilder
 
 
     template<int dim>
-    const std::array<double,dim> &
-    convert_point_to_array(const Point<dim>& point_)
+    const std::array<double,dim>
+    convert_point_to_array(const Point<dim> &point_)
     {
       std::array<double,dim> array;
       for (unsigned int i = 0; i < dim; ++i)
@@ -406,8 +406,8 @@ namespace WorldBuilder
       return d;
     }
 
-    template const std::array<double,2>& convert_point_to_array<2>(const Point<2>& point_);
-    template const std::array<double,3>& convert_point_to_array<3>(const Point<3>& point_);
+    template const std::array<double,2> convert_point_to_array<2>(const Point<2> &point_);
+    template const std::array<double,3> convert_point_to_array<3>(const Point<3> &point_);
   }
 }
 

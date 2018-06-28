@@ -33,11 +33,11 @@ namespace WorldBuilder
     :
     surface_rotation_angle(0.0),
     minimum_parts_per_distance_unit(std::numeric_limits<unsigned int>::signaling_NaN()),
-	minimum_distance_points(std::numeric_limits<unsigned int>::signaling_NaN()),
+    minimum_distance_points(std::numeric_limits<unsigned int>::signaling_NaN()),
     potential_mantle_temperature(1600),
     thermal_expansion_coefficient_alpha(3.5e-5),
     specific_heat_Cp(1250),
-	coordinate_system(NULL)
+    coordinate_system(NULL)
   {
     // Get world builder file and check wether it exists
     AssertThrow(access( filename.c_str(), F_OK ) != -1,
@@ -109,14 +109,14 @@ namespace WorldBuilder
   }
 
   double
-  World::temperature(const std::array<double,2>& /*point*/, const double /*depth*/, const double /*gravity*/) const
+  World::temperature(const std::array<double,2> & /*point*/, const double /*depth*/, const double /*gravity*/) const
   {
     // turn it into a 3d coordinate and call the 3d temperature function
     return 1.0;
   }
 
   double
-  World::temperature(const std::array<double,3>& point_, const double depth, const double gravity_norm) const
+  World::temperature(const std::array<double,3> &point_, const double depth, const double gravity_norm) const
   {
     Point<3> point(point_);
     double temperature = potential_mantle_temperature + (((potential_mantle_temperature * thermal_expansion_coefficient_alpha * gravity_norm) / specific_heat_Cp) * 1000.0) * ((depth) / 1000.0);;
@@ -129,14 +129,14 @@ namespace WorldBuilder
   }
 
   bool
-  World::composition(const std::array<double,2>& /*point*/, const double /*depth*/, const unsigned int /*composition_number*/) const
+  World::composition(const std::array<double,2> & /*point*/, const double /*depth*/, const unsigned int /*composition_number*/) const
   {
     // turn it into a 3d coordinate and call the 3d temperature function
     return 1.0;
   }
 
   bool
-  World::composition(const std::array<double,3>& point_, const double depth, const unsigned int composition_number) const
+  World::composition(const std::array<double,3> &point_, const double depth, const unsigned int composition_number) const
   {
     Point<3> point(point_);
     double composition = 0;

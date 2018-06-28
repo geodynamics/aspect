@@ -30,7 +30,7 @@ namespace WorldBuilder
     {}
 
     void
-    Cartesian::read(const ptree &/*tree*/, std::string& /*path*/)
+    Cartesian::read(const ptree &/*tree*/, std::string & /*path*/)
     {}
 
 

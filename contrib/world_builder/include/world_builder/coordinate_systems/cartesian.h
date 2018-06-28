@@ -29,11 +29,11 @@ namespace WorldBuilder
   namespace CoordinateSystems
   {
 
-  /**
-   * This implements a Cartesian geometry model.The Cartesian geometry model
-   * doesn't do anything with the coordinates, but is needed to have a common
-   * interface for all the geometry models.
-   */
+    /**
+     * This implements a Cartesian geometry model.The Cartesian geometry model
+     * doesn't do anything with the coordinates, but is needed to have a common
+     * interface for all the geometry models.
+     */
     class Cartesian : public Interface
     {
       public:
@@ -51,7 +51,7 @@ namespace WorldBuilder
          * Read in the world builder file
          */
         virtual
-        void read(const ptree &property_tree, std::string& path);
+        void read(const ptree &property_tree, std::string &path);
 
         /**
          * Returns what the natural coordinate system for this Coordinate System is.

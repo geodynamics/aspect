@@ -29,19 +29,19 @@ namespace WorldBuilder
   namespace Features
   {
 
-  /**
-   * This class represents a continental plate and can implement submodules
-   * for temperature and composition. These submodules determine what
-   * the returned temperature or composition of the temperature and composition
-   * functions of this class will be.
-   */
+    /**
+     * This class represents a continental plate and can implement submodules
+     * for temperature and composition. These submodules determine what
+     * the returned temperature or composition of the temperature and composition
+     * functions of this class will be.
+     */
     class ContinentalPlate : public Interface
     {
       public:
         /**
          * constructor
          */
-        ContinentalPlate(WorldBuilder::World& world);
+        ContinentalPlate(WorldBuilder::World &world);
 
         /**
          * Destructor
@@ -52,13 +52,13 @@ namespace WorldBuilder
          * Read in the world builder file
          */
         virtual
-        void read(const ptree &property_tree, std::string& path);
+        void read(const ptree &property_tree, std::string &path);
 
         /**
          * Returns a temperature based on the given position
          */
         virtual
-        double temperature(const Point<3>& position,
+        double temperature(const Point<3> &position,
                            const double depth,
                            const double gravity,
                            double temperature) const;
@@ -68,10 +68,10 @@ namespace WorldBuilder
          * 1 is present) based on the given position and
          */
         virtual
-        bool composition(const Point<3>& position,
-                           const double depth,
-                           const unsigned int composition_number,
-                           bool temperature) const;
+        bool composition(const Point<3> &position,
+                         const double depth,
+                         const unsigned int composition_number,
+                         bool temperature) const;
 
 
 

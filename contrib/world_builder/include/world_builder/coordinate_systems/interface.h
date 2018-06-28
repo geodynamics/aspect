@@ -51,7 +51,7 @@ namespace WorldBuilder
          * read in the world builder file
          */
         virtual
-        void read(const ptree &property_tree, std::string& paths) = 0;
+        void read(const ptree &property_tree, std::string &paths) = 0;
 
         /**
          * Returns what the natural coordinate system for this geometry model is.

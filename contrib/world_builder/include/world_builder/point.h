@@ -27,12 +27,12 @@
 
 namespace WorldBuilder
 {
-/**
- * A class which stores 2d and 3d arrays of doubles (depending on the dimension),
- * and the coordinate system which the coordinates can be used for. It also
- * implements several operations such as the computation of the l2 norm and the
- * dot product.
- */
+  /**
+   * A class which stores 2d and 3d arrays of doubles (depending on the dimension),
+   * and the coordinate system which the coordinates can be used for. It also
+   * implements several operations such as the computation of the l2 norm and the
+   * dot product.
+   */
   template<int dim>
   class Point
   {
@@ -72,7 +72,7 @@ namespace WorldBuilder
        */
       ~Point();
 
-      Point<dim> operator=(const Point<dim> &point);
+      Point<dim> &operator=(const Point<dim> &point);
 
       /**
        * dot product
@@ -125,21 +125,11 @@ namespace WorldBuilder
        */
       double &operator[](const unsigned int index);
 
-      /**
-       * access index (const)
-       */
-      const double &operator()(const unsigned int index) const;
-
-      /**
-       * access index
-       */
-      double &operator()(const unsigned int index);
-
 
       /**
        * return the internal array which stores the point data.
        */
-      const std::array<double,dim>& get_array() const;
+      const std::array<double,dim> &get_array() const;
 
 
       /**

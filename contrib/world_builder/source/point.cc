@@ -29,14 +29,14 @@ namespace WorldBuilder
   Point<3>::Point()
     :
     point({0,0,0}),
-	coordinate_system(CoordinateSystem::cartesian)
+        coordinate_system(CoordinateSystem::cartesian)
   {}
 
   template<>
   Point<2>::Point()
     :
     point({0,0}),
-    coordinate_system(CoordinateSystem::cartesian)
+        coordinate_system(CoordinateSystem::cartesian)
   {}
 
   template<int dim>
@@ -94,9 +94,11 @@ namespace WorldBuilder
   {}
 
   template<int dim>
-  Point<dim> Point<dim>::operator=(const Point<dim> &point_)
+  Point<dim> &Point<dim>::operator=(const Point<dim> &point_)
   {
-    return Point<dim>(point_);
+    for (unsigned int i = 0; i < dim; ++i)
+      point[i] = point_[i];
+    return *this;
   }
 
   template<int dim>
@@ -188,28 +190,9 @@ namespace WorldBuilder
     return point[index];
   }
 
-  /**
-   * access index
-   */
-  template<int dim>
-  const double &
-  Point<dim>::operator()(const unsigned int index) const
-  {
-    return point[index];
-  }
-
-  /**
-   * access index
-   */
-  template<int dim>
-  double &
-  Point<dim>::operator()(const unsigned int index)
-  {
-    return point[index];
-  }
 
   template<int dim>
-  const std::array<double,dim>&
+  const std::array<double,dim> &
   Point<dim>::get_array() const
   {
     return point;
