@@ -1603,27 +1603,27 @@ namespace aspect
 
   start_time_iteration:
 
-    // Only set initial conditions if we do not resume, and are not in pre-refinement,
-    // or we do not want to skip initial conditions in pre-refinement.
-    if (parameters.resume_computation == false
-        &&
-        ! (parameters.skip_setup_initial_conditions_on_initial_refinement
-           && pre_refinement_step < parameters.initial_adaptive_refinement))
+    if (parameters.resume_computation == false)
       {
         TimerOutput::Scope timer (computing_timer, "Setup initial conditions");
 
         timestep_number           = 0;
         time_step = old_time_step = 0;
 
-        // Add topography to box models after all initial refinement
-        // is completed.
-        if (pre_refinement_step == parameters.initial_adaptive_refinement)
-          signals.pre_set_initial_state (triangulation);
+        if (! parameters.skip_setup_initial_conditions_on_initial_refinement
+            ||
+            ! (pre_refinement_step < parameters.initial_adaptive_refinement))
+          {
+            // Add topography to box models after all initial refinement
+            // is completed.
+            if (pre_refinement_step == parameters.initial_adaptive_refinement)
+              signals.pre_set_initial_state (triangulation);
 
-        set_initial_temperature_and_compositional_fields ();
-        compute_initial_pressure_field ();
+            set_initial_temperature_and_compositional_fields ();
+            compute_initial_pressure_field ();
 
-        signals.post_set_initial_state (*this);
+            signals.post_set_initial_state (*this);
+          }
       }
 
     // start the principal loop over time steps:
