@@ -58,7 +58,6 @@ namespace aspect
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>& > (data_base);
 
-      const Parameters<dim> &parameters = this->get_parameters();
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
 
@@ -78,7 +77,8 @@ namespace aspect
 
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
-      if (parameters.enable_diffusion)
+      if (!advection_field_is_temperature && advection_field.advection_method (introspection)
+          != Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field )
         return;
 
 
@@ -406,6 +406,22 @@ namespace aspect
         }
     }
 
+
+    template <int dim>
+    std::vector<double>
+    DiffusionSystem<dim>::compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
+
+      const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+      std::vector<double> residuals(n_q_points);
+
+      for (unsigned int q=0; q < n_q_points; ++q)
+        {
+          residuals[q] = 0;
+        }
+      return residuals;
+    }
 
 
     template <int dim>

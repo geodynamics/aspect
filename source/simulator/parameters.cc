@@ -1535,11 +1535,10 @@ namespace aspect
                      ExcMessage ("The advection method 'melt field' can only be selected if melt "
                                  "transport is used in the simulation."));
 
-      if (std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::copy_and_diffused_field)
-          != compositional_field_methods.end())
-        AssertThrow(this->enable_diffusion,
-                    ExcMessage ("The advection method 'copy and diffuse' can only be selected if "
-                                "diffusion is enabled."));
+      if (enable_diffusion)
+        AssertThrow((std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::copy_and_diffused_field)
+                     != compositional_field_methods.end()),
+                    ExcMessage ("Diffusion needs to be enabled with the advection method 'copy and diffuse'."));
 
       const std::vector<std::string> x_mapped_particle_properties
         = Utilities::split_string_list

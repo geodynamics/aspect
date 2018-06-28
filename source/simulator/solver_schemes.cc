@@ -224,7 +224,7 @@ namespace aspect
         const AdvectionField adv_field (AdvectionField::composition(c));
         const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
         // TODO: that will only work together with Arushi's branch that has the new advection method
-        if (/*parameters.enable_diffusion &&*/ method == Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field)
+        if (method == Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field)
           {
             interpolate_material_output_into_field();
 
