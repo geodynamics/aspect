@@ -138,42 +138,9 @@ namespace aspect
                                "These need to be the same during restarting "
                                "from a checkpoint."));
 
-      bool use_operator_splitting;
-      ia >> use_operator_splitting;
-      AssertThrow (use_operator_splitting == parameters.use_operator_splitting,
-                   ExcMessage ("The value provided for `Use operator splitting' that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
-
-      bool include_melt_transport;
-      ia >> include_melt_transport;
-      AssertThrow (include_melt_transport == parameters.include_melt_transport,
-                   ExcMessage ("The value provided for `Include melt transport' that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
-
-      bool enable_additional_stokes_rhs;
-      ia >> enable_additional_stokes_rhs;
-      AssertThrow (enable_additional_stokes_rhs == parameters.enable_additional_stokes_rhs,
-                   ExcMessage ("The value provided for `Enable additional Stokes RHS' that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
-
-      unsigned int stokes_velocity_degree;
-      ia >> stokes_velocity_degree;
-      AssertThrow (stokes_velocity_degree == parameters.stokes_velocity_degree,
-                   ExcMessage ("The Stokes velocity polynomial degree that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
-
+      // It is conceivable that one could change this setting from one time
+      // step to another, but it is, at best, not tested. So disallow it for
+      // now, until someone tests it.
       bool use_locally_conservative_discretization;
       ia >> use_locally_conservative_discretization;
       AssertThrow (use_locally_conservative_discretization == parameters.use_locally_conservative_discretization,
@@ -219,6 +186,11 @@ namespace aspect
                                "These need to be the same during restarting "
                                "from a checkpoint."));
 
+      // One could allow changing the pressure normalization between runs, but
+      // the change would then lead to a jump in pressure from one time step
+      // to the next when we, for example, change from requiring the *surface*
+      // average to be zero, to requiring the *domain* average to be zero.
+      // That's unlikely what the user really wanted.
       std::string pressure_normalization;
       ia >> pressure_normalization;
       AssertThrow (pressure_normalization == parameters.pressure_normalization,
