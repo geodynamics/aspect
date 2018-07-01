@@ -82,7 +82,6 @@ namespace aspect
                                    aspect::oarchive &oa)
     {
       oa << parameters.convert_to_years;
-      oa << parameters.output_directory;
       oa << parameters.surface_pressure;
       oa << parameters.use_operator_splitting;
       oa << parameters.include_melt_transport;
@@ -115,15 +114,6 @@ namespace aspect
       ia >> convert_to_years;
       AssertThrow (convert_to_years == parameters.convert_to_years,
                    ExcMessage ("The value provided for `Use years in output instead of seconds' that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
-
-      std::string output_directory;
-      ia >> output_directory;
-      AssertThrow (output_directory == parameters.output_directory,
-                   ExcMessage ("The name of the output directory that was stored "
                                "in the checkpoint file is not the same as the one "
                                "you currently set in your input file. "
                                "These need to be the same during restarting "
