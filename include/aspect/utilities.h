@@ -98,8 +98,7 @@ namespace aspect
      * - Three special keys are recognized:
      *      all --> Assign the associated value to all fields.
      *              Only one value is allowed in this case.
-     *      background (or bg) --> Assign associated value to
-     *                             the background.
+     *      background --> Assign associated value to the background.
      *
      * @param[in] key_value_map The string representation of the map
      *   to be parsed.

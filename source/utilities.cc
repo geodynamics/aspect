@@ -103,9 +103,6 @@ namespace aspect
                                        + *field_entry
                                        + "> does not appear to follow this pattern."));
 
-              if (key_and_value[0] == "bg")
-                key_and_value[0] = "background";
-
               // If there is one entry in the list the keyword "all" must be found.
               if ((field_entries.size() == 1) && (n_fields != 1))
                 {
@@ -148,8 +145,13 @@ namespace aspect
                                            + "> in "
                                            + property_name
                                            + " does not match any entries "
-                                           "from the list of field names. "
-                                           "Check that you have a value for "
+                                           "from the list of field names"
+                                           + ((has_background_field)
+                                              ?
+                                              " (plus `background' for the background field). "
+                                              :
+                                              ". ")
+                                           + "Check that you have a value for "
                                            "each field id in your list.\n\n"
                                            "One example of where to check this is if "
                                            "Compositional fields are used, "
