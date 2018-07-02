@@ -327,6 +327,7 @@ namespace aspect
     bool                           use_direct_stokes_solver;
     double                         linear_stokes_solver_tolerance;
     double                         linear_solver_A_block_tolerance;
+    bool                           use_full_A_block_preconditioner;
     double                         linear_solver_S_block_tolerance;
     std::string                    AMG_smoother_type;
     unsigned int                   AMG_smoother_sweeps;
