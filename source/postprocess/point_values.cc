@@ -33,9 +33,32 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
+    PointValues<dim>::PointValues ()
+      :
+      // the following value is later read from the input file
+      output_interval (0),
+      // initialize this to a nonsensical value; set it to the actual time
+      // the first time around we get to check it
+      last_output_time (std::numeric_limits<double>::quiet_NaN()),
+      evaluation_points_cartesian (std::vector<Point<dim> >() ),
+      point_values (std::vector<std::pair<double, std::vector<Vector<double> > > >() ),
+      use_natural_coordinates (false)
+    {}
+
+    template <int dim>
     std::pair<std::string,std::string>
     PointValues<dim>::execute (TableHandler &)
     {
+      // if this is the first time we get here, set the next output time
+      // to the current time. this makes sure we always produce data during
+      // the first time step
+      if (std::isnan(last_output_time))
+        last_output_time = this->get_time() - output_interval;
+
+      // see if output is requested at this time
+      if (this->get_time() < last_output_time + output_interval)
+        return std::pair<std::string,std::string>();
+
       // evaluate the solution at all of our evaluation points
       std::vector<Vector<double> >
       current_point_values (evaluation_points_cartesian.size(),
@@ -147,6 +170,9 @@ namespace aspect
                                  "> did not succeed in the `point values' "
                                  "postprocessor."));
 
+      // Update time
+      set_last_output_time (this->get_time());
+
       // return what should be printed to the screen. note that we had
       // just incremented the number, so use the previous value
       return std::make_pair (std::string ("Writing point values:"),
@@ -162,6 +188,14 @@ namespace aspect
       {
         prm.enter_subsection("Point values");
         {
+          prm.declare_entry ("Time between point values output", "0",
+                             Patterns::Double (0),
+                             "The time interval between each generation of "
+                             "graphical output files. A value of zero indicates "
+                             "that output should be generated in each time step. "
+                             "Units: years if the "
+                             "'Use years in output instead of seconds' parameter is set; "
+                             "seconds otherwise.");
           prm.declare_entry("Evaluation points", "",
                             // a list of points, separated by semicolons; each point has
                             // exactly 'dim' components/coordinates, separated by commas
@@ -192,6 +226,10 @@ namespace aspect
       {
         prm.enter_subsection("Point values");
         {
+          output_interval = prm.get_double ("Time between point values output");
+          if (this->convert_output_to_years())
+            output_interval *= year_in_seconds;
+
           const std::vector<std::string> point_list
             = Utilities::split_string_list(prm.get("Evaluation points"), ';');
 
@@ -245,7 +283,8 @@ namespace aspect
     void PointValues<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &evaluation_points_cartesian
-      & point_values;
+      & point_values
+      & last_output_time;
     }
 
 
@@ -273,6 +312,26 @@ namespace aspect
           ia >> (*this);
         }
     }
+
+
+    template <int dim>
+    void
+    PointValues<dim>::set_last_output_time (const double current_time)
+    {
+      // if output_interval is positive, then set the next output interval to
+      // a positive multiple.
+      if (output_interval > 0)
+        {
+          // We need to find the last time output was supposed to be written.
+          // this is the last_output_time plus the largest positive multiple
+          // of output_intervals that passed since then. We need to handle the
+          // edge case where last_output_time+output_interval==current_time,
+          // we did an output and std::floor sadly rounds to zero. This is done
+          // by forcing std::floor to round 1.0-eps to 1.0.
+          const double magic = 1.0+2.0*std::numeric_limits<double>::epsilon();
+          last_output_time = last_output_time + std::floor((current_time-last_output_time)/output_interval*magic) * output_interval/magic;
+        }
+    }
   }
 }
 
@@ -286,7 +345,8 @@ namespace aspect
                                   "point values",
                                   "A postprocessor that evaluates the solution (i.e., velocity, pressure, "
                                   "temperature, and compositional fields along with other fields that "
-                                  "are treated as primary variables) at the end of every time step "
+                                  "are treated as primary variables) at the end of every time step or "
+                                  "after a user-specified time interval "
                                   "at a given set of points and then writes this data into the file "
                                   "<point\\_values.txt> in the output directory. The points at which "
                                   "the solution should be evaluated are specified in the section "
@@ -303,7 +363,7 @@ namespace aspect
                                   "\\note{Evaluating the solution of a finite element field at "
                                   "arbitrarily chosen points is an expensive process. Using this "
                                   "postprocessor will only be efficient if the number of evaluation "
-                                  "points is relatively small. If you need a very large number of "
+                                  "points or output times is relatively small. If you need a very large number of "
                                   "evaluation points, you should consider extracting this "
                                   "information from the visualization program you use to display "
                                   "the output of the `visualization' postprocessor.}")

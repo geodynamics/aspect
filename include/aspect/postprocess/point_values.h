@@ -44,6 +44,11 @@ namespace aspect
     {
       public:
         /**
+         * Constructor
+         */
+        PointValues ();
+
+        /**
          * Evaluate the solution and determine the values at the
          * selected points.
          */
@@ -85,6 +90,26 @@ namespace aspect
         void serialize (Archive &ar, const unsigned int version);
 
       private:
+        /**
+         * Set the time output was supposed to be written. In the simplest
+         * case, this is the previous last output time plus the interval, but
+         * in general we'd like to ensure that it is the largest supposed
+         * output time, which is smaller than the current time, to avoid
+         * falling behind with last_output_time and having to catch up once
+         * the time step becomes larger. This is done after every output.
+         */
+        void set_last_output_time (const double current_time);
+
+        /**
+         * Interval between the generation of output in seconds.
+         */
+        double output_interval;
+
+        /**
+         * A time (in seconds) the last output has been produced.
+         */
+        double last_output_time;
+
         /**
          * Vector of Points representing the points where the solution is to be evaluated
          * that can be used by VectorTools.
