@@ -171,7 +171,7 @@ namespace aspect
                                    "              \\exp{\\beta (P-P_0))}"
                                    "\\end{align}"
                                    "This formulation for the density assumes that the compressibility "
-                                   "provided by the user is the adiabatic compressibility ($\beta_S). "
+                                   "provided by the user is the adiabatic compressibility ($\\beta_S$). "
                                    "The thermal expansivity and isentropic compressibility implied by "
                                    "the pressure and temperature dependence are equal to the "
                                    "user-defined constant values only along the reference isentrope, and "

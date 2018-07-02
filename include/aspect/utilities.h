@@ -106,6 +106,8 @@ namespace aspect
      * @param[in] list_of_keys A list of valid key names that are allowed
      *   to appear in the map. The order of these keys determines the order
      *   of values that are returned by this function.
+     * @param[in] allow_background_field If true, expect N+1 values and allow
+     *   setting of the background using "background" or "bg".
      * @param[in] field_name A name that identifies the type of information
      *   that is being parsed by this function and that is used in generating
      *   error messages if the map does not conform to the expected format.

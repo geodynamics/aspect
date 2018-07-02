@@ -226,6 +226,9 @@ SimulatorAccess -> N6aspect18InitialTemperature17AdiabaticBoundaryILi2EEE [style
 N6aspect18InitialTemperature9AsciiDataILi2EEE [label="ascii data", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect18InitialTemperature9AsciiDataILi2EEE -> N6aspect18InitialTemperature9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect18InitialTemperature9AsciiDataILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect18InitialTemperature12AsciiProfileILi2EEE [label="ascii profile", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect18InitialTemperature12AsciiProfileILi2EEE -> N6aspect18InitialTemperature9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect18InitialTemperature12AsciiProfileILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect18InitialTemperature8FunctionILi2EEE [label="function", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect18InitialTemperature8FunctionILi2EEE -> N6aspect18InitialTemperature9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect18InitialTemperature8FunctionILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
@@ -301,6 +304,8 @@ SimulatorAccess -> N6aspect13MaterialModel14MulticomponentILi2EEE [style="dotted
 N6aspect13MaterialModel14NondimensionalILi2EEE [label="nondimensional", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect13MaterialModel14NondimensionalILi2EEE -> N6aspect13MaterialModel9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect13MaterialModel14NondimensionalILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect13MaterialModel13PerpleXLookupILi2EEE [label="perplex lookup", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect13MaterialModel13PerpleXLookupILi2EEE -> N6aspect13MaterialModel9InterfaceILi2EEE [len=3, weight=50];
 N6aspect13MaterialModel6SimpleILi2EEE [label="simple", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect13MaterialModel6SimpleILi2EEE -> N6aspect13MaterialModel9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect13MaterialModel6SimpleILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
@@ -502,6 +507,9 @@ SimulatorAccess -> N6aspect11Postprocess5GeoidILi2EEE [style="dotted", arrowhead
 N6aspect11Postprocess16GlobalStatisticsILi2EEE [label="global\nstatistics", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess16GlobalStatisticsILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess16GlobalStatisticsILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect11Postprocess18GravityPointValuesILi2EEE [label="gravity\ncalculation", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect11Postprocess18GravityPointValuesILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect11Postprocess18GravityPointValuesILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect11Postprocess17HeatFluxDensitiesILi2EEE [label="heat flux\ndensities", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess17HeatFluxDensitiesILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess17HeatFluxDensitiesILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];

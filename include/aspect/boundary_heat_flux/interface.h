@@ -86,7 +86,8 @@ namespace aspect
          * are requesting the fluid pressure gradients.
          * @param material_model_inputs The material property inputs.
          * @param material_model_outputs The material property outputs.
-         * @return A vector of heatflux values at the evaluation points.
+         * @param normal_vectors The normal vector at each quadrature point.
+         * @return A vector of heatflux vectors at the evaluation points.
          */
         virtual
         std::vector<Tensor<1,dim> >

@@ -37,7 +37,7 @@ namespace aspect
      * temperature and increases exponentially with pressure.
      *
      * The formulation for the density assumes that the compressibility
-     * provided by the user is the adiabatic compressibility ($\beta_S).
+     * provided by the user is the adiabatic compressibility ($\beta_S$).
      * The thermal expansivity and isentropic compressibility implied by
      * the pressure and temperature dependence are equal to the
      * user-defined constant values only along the reference isentrope, and
