@@ -22,6 +22,8 @@
 #include <sstream>
 #include <stdexcept>
 
+namespace WorldBuilder
+{
 #ifndef NDEBUG
 #   define Assert(condition, message) \
   do { \
@@ -45,3 +47,4 @@
           throw std::runtime_error(smessage.str()); \
         } \
     } while (false)
+}

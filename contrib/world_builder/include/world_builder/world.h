@@ -68,11 +68,18 @@ namespace WorldBuilder
        */
       WorldBuilder::CoordinateSystems::Interface &get_coordinate_system() const;
 
-    private:
+      /**
+       * Stores the path separtor used for the property tree.
+       */
       static const char path_seperator = '.';
+
+    private:
       /**
        * These are the top level parameters
        */
+      unsigned int dim;
+      std::vector<std::array<double,2> > cross_section;
+      std::vector<double> surface_coord_conversions;
       std::vector<double> surface_rotation_point;
       double surface_rotation_angle;
       unsigned int minimum_parts_per_distance_unit;

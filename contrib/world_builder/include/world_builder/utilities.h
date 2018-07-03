@@ -22,10 +22,13 @@
 
 #include <vector>
 
+#include <boost/property_tree/json_parser.hpp>
+
 #include <world_builder/point.h>
 #include <world_builder/coordinate_system.h>
 #include <world_builder/coordinate_systems/interface.h>
 
+using boost::property_tree::ptree;
 
 namespace WorldBuilder
 {
@@ -174,6 +177,16 @@ namespace WorldBuilder
     double
     string_to_unsigned_int(const std::string &string);
 
+    /**
+     * Returns a value from the property tree and asserts with
+     * the path and value in the error message when the value
+     * was not present.
+     */
+    std::string
+    get_from_ptree(const ptree &tree,
+                   const std::string &path,
+                   const std::string &key,
+                   const std::string &path_separator = ".");
   }
 }
 

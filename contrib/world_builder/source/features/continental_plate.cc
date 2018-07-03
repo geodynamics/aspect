@@ -22,18 +22,21 @@
 #include <world_builder/features/continental_plate.h>
 #include <world_builder/utilities.h>
 #include <world_builder/assert.h>
+#include <world_builder/nan.h>
 
 
 namespace WorldBuilder
 {
+  using namespace Utilities;
+
   namespace Features
   {
     ContinentalPlate::ContinentalPlate(WorldBuilder::World &world_)
       :
-      temperature_submodule_depth(std::numeric_limits<double>::signaling_NaN()),
-      temperature_submodule_temperature(std::numeric_limits<double>::signaling_NaN()),
-      composition_submodule_depth(std::numeric_limits<double>::signaling_NaN()),
-      composition_submodule_composition(std::numeric_limits<unsigned int>::signaling_NaN())
+      temperature_submodule_depth(NaN::DSNAN),
+      temperature_submodule_temperature(NaN::DSNAN),
+      composition_submodule_depth(NaN::DSNAN),
+      composition_submodule_composition(NaN::ISNAN)
     {
       this->world = &world_;
     }
@@ -41,28 +44,24 @@ namespace WorldBuilder
     ContinentalPlate::~ContinentalPlate()
     { }
 
-    // todo: add relative path somehow, to output when there are erros
     void
     ContinentalPlate::read(const ptree &tree, std::string &path)
     {
-      boost::optional<std::string> value  = tree.get_optional<std::string> ("name");
-      AssertThrow (value, "Entry undeclared: " + path + " -> name");
-      name = boost::algorithm::to_lower_copy(value.get());
+      name = boost::algorithm::to_lower_copy(get_from_ptree(tree,path,"name"));
       boost::algorithm::trim(name);
 
-
       boost::optional<const ptree &> child = tree.get_child("coordinates");
-      AssertThrow (child, "Entry undeclared: " + path + " -> coordinates");
+      AssertThrow (child, "Entry undeclared: " + path + World::path_seperator +"coordinates");
       for (boost::property_tree::ptree::const_iterator it = child.get().begin(); it != child.get().end(); ++it)
         {
           std::vector<double> tmp;
           boost::optional<const ptree &> child2 = it->second.get_child("");
-          AssertThrow (child, path + " -> coordinates: This should be a 2d array, but only one dimension found.");
+          AssertThrow (child, path + World::path_seperator + "coordinates: This should be a 2d array, but only one dimension found.");
           for (boost::property_tree::ptree::const_iterator it2 = child2.get().begin(); it2 != child2.get().end(); ++it2)
             {
               tmp.push_back(stod(it2->second.get<std::string>("")));
             }
-          AssertThrow (tmp.size() == 2, path + " -> coordinates: These represent 2d coordinates, but there are " <<
+          AssertThrow (tmp.size() == 2, path + World::path_seperator + "coordinates: These represent 2d coordinates, but there are " <<
                        tmp.size() <<
                        " coordinates specified.");
 
@@ -70,43 +69,29 @@ namespace WorldBuilder
           std::copy(tmp.begin(), tmp.end(), tmp_array.begin());
           coordinates.push_back(tmp_array);
         }
-      AssertThrow (coordinates.size() > 2, path + " -> coordinates: This feature requires at least 3 coordinates, but only " <<
+      AssertThrow (coordinates.size() > 2, path + World::path_seperator + "coordinates: This feature requires at least 3 coordinates, but only " <<
                    coordinates.size() <<
                    " where provided.");
 
       // Temperature submodule parameters
-      value  = tree.get_optional<std::string> ("temperature submodule.name");
-      AssertThrow (value, "Entry undeclared:" + path + " -> temperature submodule.name");
-      temperature_submodule_name = boost::algorithm::to_lower_copy(value.get());
+      temperature_submodule_name = boost::algorithm::to_lower_copy(get_from_ptree(tree,path,"temperature submodule.name"));
       boost::algorithm::trim(temperature_submodule_name);
 
 
       if (temperature_submodule_name == "constant")
         {
-          value  = tree.get_optional<std::string> ("temperature submodule.depth");
-          AssertThrow (value, "Entry undeclared: " + path + " -> temperature submodule.depth");
-          temperature_submodule_depth = Utilities::string_to_double(value.get());
-
-          value  = tree.get_optional<std::string> ("temperature submodule.temperature");
-          AssertThrow (value, "Entry undeclared: " + path + " -> temperature submodule.temperature");
-          temperature_submodule_temperature = Utilities::string_to_double(value.get());
+          temperature_submodule_depth = Utilities::string_to_double(get_from_ptree(tree,path,"temperature submodule.depth"));
+          temperature_submodule_temperature = Utilities::string_to_double(get_from_ptree(tree,path,"temperature submodule.temperature"));
         }
 
-      //Composition submodule parameters
-      value  = tree.get_optional<std::string> ("composition submodule.name");
-      AssertThrow (value, "Entry undeclared: " + path + " -> composition submodule.name");
-      composition_submodule_name = boost::algorithm::to_lower_copy(value.get());
+      // Composition submodule parameters
+      composition_submodule_name = boost::algorithm::to_lower_copy(get_from_ptree(tree,path,"composition submodule.name"));
       boost::algorithm::trim(composition_submodule_name);
 
       if (composition_submodule_name == "constant")
         {
-          value  = tree.get_optional<std::string> ("composition submodule.depth");
-          AssertThrow (value, "Entry undeclared:" + path + " ->  composition submodule.depth");
-          composition_submodule_depth = Utilities::string_to_double(value.get());
-
-          value  = tree.get_optional<std::string> ("composition submodule.composition");
-          AssertThrow (value, "Entry undeclared: " + path + " -> composition submodule.temperature");
-          composition_submodule_composition = Utilities::string_to_unsigned_int(value.get());
+          composition_submodule_depth = Utilities::string_to_double(get_from_ptree(tree,path,"composition submodule.depth"));
+          composition_submodule_composition = Utilities::string_to_unsigned_int(get_from_ptree(tree,path,"composition submodule.composition"));
         }
     }
 

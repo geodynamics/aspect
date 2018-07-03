@@ -406,6 +406,17 @@ namespace WorldBuilder
       return d;
     }
 
+    std::string
+    get_from_ptree(const ptree &tree,
+                   const std::string &path,
+                   const std::string &key,
+                   const std::string &path_separator)
+    {
+      boost::optional<std::string> value  = tree.get_optional<std::string> (key);
+      AssertThrow (value, "Entry undeclared: " + path + path_separator + key);
+      return value.get();
+    }
+
     template const std::array<double,2> convert_point_to_array<2>(const Point<2> &point_);
     template const std::array<double,3> convert_point_to_array<3>(const Point<3> &point_);
   }
