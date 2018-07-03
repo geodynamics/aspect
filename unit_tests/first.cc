@@ -20,6 +20,7 @@
 
 #include "common.h"
 #include <aspect/utilities.h>
+#include <deal.II/base/function_parser.h>
 
 TEST_CASE("floating point check example")
 {
@@ -49,3 +50,26 @@ TEST_CASE("Utilities::read_and_distribute_file_content")
                                                         MPI_COMM_WORLD),
     Contains("Could not open"));
 }
+
+TEST_CASE("function parser if() and division by zero")
+{
+  std::string variables = "x";
+  std::map<std::string,double> constants;
+
+  dealii::FunctionParser<1> fp(1);
+  fp.initialize(variables,
+                "if(x>0,1/x,-1)",
+                constants);
+  REQUIRE(fp.value(dealii::Point<1>(4.0)) == 0.25);
+  REQUIRE(fp.value(dealii::Point<1>(-5.0)) == -1.0);
+  // This will sadly trigger a floating point exception:
+  //REQUIRE(fp.value(dealii::Point<1>(0.0)) == -1.0);
+
+  fp.initialize(variables,
+                "(x>0) ? (1/x) : (-1)",
+                constants);
+  REQUIRE(fp.value(dealii::Point<1>(4.0)) == 0.25);
+  REQUIRE(fp.value(dealii::Point<1>(-5.0)) == -1.0);
+  REQUIRE(fp.value(dealii::Point<1>(0.0)) == -1.0);
+}
+
