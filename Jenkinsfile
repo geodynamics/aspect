@@ -4,7 +4,8 @@ pipeline {
   agent {
     docker {
         image 'dealii/dealii:v8.5.1-gcc-mpi-fulldepscandi-debugrelease'
-	label 'has-docker'
+        label 'has-docker'
+        args  '--rm'
     }
   }
 
@@ -107,6 +108,12 @@ pipeline {
         sh 'if [ -f /home/dealii/build-gcc-fast/FAILED ]; then exit 1; fi'
         sh 'git diff --exit-code --name-only'
       }
+    }
+  }
+/* Clean up remaining container instances to not clutter build agents */
+  post {
+    always {
+      sh 'docker container prune -f'
     }
   }
 }
