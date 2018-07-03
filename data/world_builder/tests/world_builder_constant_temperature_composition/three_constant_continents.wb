@@ -1,4 +1,5 @@
 {
+    "Cross section": [[100e3,100e3],[400e3,500e3]],
     "Coordinate system":{"name":"cartesian"},
     "Surface rotation point": ["165e3","166e3"],
     "Surface rotation angle": "0",

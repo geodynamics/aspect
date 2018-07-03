@@ -70,7 +70,7 @@ namespace WorldBuilder
     /**
      * get the cross section
      */
-    child = tree.get_child("Cross section");
+    child = tree.get_child_optional("Cross section");
     if (child)
       {
         dim = 2;

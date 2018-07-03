@@ -1,15 +1,15 @@
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
 
-Number of active cells: 1,024 (on 3 levels)
-Number of degrees of freedom: 89,654 (29,403+1,445+9,801+9,801+9,801+9,801+9,801+9,801)
+Number of active cells: 256 (on 3 levels)
+Number of degrees of freedom: 9,137 (2,210+297+1,105+1,105+1,105+1,105+1,105+1,105)
 
 *** Timestep 0:  t=0 seconds
 
    Postprocessing:
      RMS, max velocity:        0 m/s, 0 m/s
-     Temperature min/avg/max:  20 K, 1423 K, 1824 K
-     Writing graphical output: output-world_builder_continental_plate_constant_temperature_composition/solution/solution-00000
+     Temperature min/avg/max:  20 K, 1429 K, 1824 K
+     Writing graphical output: output-world_builder_continental_plate_constant_temperature_composition_2d/solution/solution-00000
 
 Termination requested by criterion: end time
 
