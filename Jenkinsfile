@@ -110,10 +110,4 @@ pipeline {
       }
     }
   }
-/* Clean up remaining container instances to not clutter build agents */
-  post {
-    always {
-      sh 'docker container prune -f'
-    }
-  }
 }
