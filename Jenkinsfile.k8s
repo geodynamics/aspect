@@ -10,6 +10,7 @@ pipeline {
         image 'gassmoeller/aspect-tester:8.5.0'
         ttyEnabled true
         command 'cat'
+        idleMinutes 20
       }
     }
   }
