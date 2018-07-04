@@ -108,7 +108,7 @@ namespace aspect
      * @note This benchmark only talks about the flow field, not about a
      * temperature field. All quantities related to the temperature are
      * therefore set to zero in the implementation of this class.
-     _r*
+     *
      * @ingroup MaterialModels
      */
     template <int dim>
