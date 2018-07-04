@@ -104,4 +104,4 @@ manual/manual.tex:
 clean:
 	-rm -f aspect.dox aspect.tag
 	-rm -rf doxygen
-	-rm -rf manual/*.{blg,toc,log,out,bbl}
+	-rm -rf manual/manual.blg manual/manual.toc manual/manual.log manual/manual.out manual/manual.bbl manual/manual.aux
