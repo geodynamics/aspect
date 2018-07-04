@@ -9,7 +9,7 @@ DOC_DIR=`dirname $0`
 BASE_DIR=`pwd $DOC_DIR/..`
 
 # Update source files
-SOURCE_FILES=`find $BASE_DIR -type f -name *.cc -or -name *.h -not -name *.bak -path doc/ -prune`
+SOURCE_FILES=`find $BASE_DIR -type f \( -name *.cc -or -name *.h \) -and -not -name *.bak | grep -v doc`
 bash ${DOC_DIR}/update_source_files.sh $SOURCE_FILES
 
 # Update prm files
