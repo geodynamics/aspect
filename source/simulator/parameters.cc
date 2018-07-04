@@ -367,6 +367,22 @@ namespace aspect
                            "block preconditioner for the Stokes equation can be found in "
                            "\\cite{KHB12}.");
 
+        prm.declare_entry ("Use full A block as preconditioner", "false",
+                           Patterns::Bool(),
+                           "This parameter determines whether we use an simplified approximation of the "
+                           "$A$ block as preconditioner for the Stokes solver, or the full $A$ block. The "
+                           "simplified approximation only contains the terms that describe the coupling of "
+                           "identical components (plus boundary conditions) as described in "
+                           "\\cite{KHB12}. The full block is closer to the description in "
+                           "\\cite{rudi2017weighted}. There is no clear way to determine, which preconditioner "
+                           "performs better in runtime, the default value (simplified approximation) requires "
+                           "more outer GMRES iterations, but is faster to apply in each iteration. The full block "
+                           "needs less assembly time (because the block is "
+                           "available anyway), converges in less GMRES iterations, but requires more time per "
+                           "iteration. The default value should be good for relatively simple models, but in "
+                           "particular for very strong viscosity contrasts the full $A$ block can be "
+                           "advantageous.");
+
         prm.declare_entry ("Linear solver S block tolerance", "1e-6",
                            Patterns::Double(0,1),
                            "A relative tolerance up to which the approximate inverse of the $S$ block "
@@ -1091,6 +1107,7 @@ namespace aspect
         n_cheap_stokes_solver_steps     = prm.get_integer ("Number of cheap Stokes solver steps");
         n_expensive_stokes_solver_steps = prm.get_integer ("Maximum number of expensive Stokes solver steps");
         linear_solver_A_block_tolerance = prm.get_double ("Linear solver A block tolerance");
+        use_full_A_block_preconditioner = prm.get_bool ("Use full A block as preconditioner");
         linear_solver_S_block_tolerance = prm.get_double ("Linear solver S block tolerance");
         stokes_gmres_restart_length     = prm.get_integer("GMRES solver restart length");
       }
