@@ -27,7 +27,7 @@ TEST_CASE("Utilities::parse_map_to_double_array")
 {
   // Parse multicomponent properties
   INFO("check 1: ");
-  compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("C1:100, C2:200, C3:300, C4:400, C5:500, bg:0",
+  compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("C1:100, C2:200, C3:300, C4:400, C5:500, background:0",
   {"C1","C2","C3","C4","C5"},
   true,
   "TestField"),
@@ -41,21 +41,21 @@ TEST_CASE("Utilities::parse_map_to_double_array")
   {100.0,100.0,100.0,100.0,100.0,100.0});
 
   INFO("check 3: ");
-  compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("bg:0, C1:100, C2:200, C3:300, C4:400, C5:500",
+  compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("background:0, C1:100, C2:200, C3:300, C4:400, C5:500",
   {"C1","C2","C3","C4","C5"},
   true,
   "TestField"),
   {0.0,100.0,200.0,300.0,400.0,500.0});
 
   INFO("check 4: ");
-  compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("bg:0, C2:200, C1:100, C4:400, C5:500, C3:300",
+  compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("background:0, C2:200, C1:100, C4:400, C5:500, C3:300",
   {"C1","C2","C3","C4","C5"},
   true,
   "TestField"),
   {0.0,100.0,200.0,300.0,400.0,500.0});
 
   INFO("check 5: ");
-  compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("C1:100, C2:200, bg:0, C3:300, C4:400, C5:500",
+  compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("C1:100, C2:200, background:0, C3:300, C4:400, C5:500",
   {"C1","C2","C3","C4","C5"},
   true,
   "TestField"),
@@ -135,23 +135,4 @@ TEST_CASE("Utilities::parse_map_to_double_array FAIL ON PURPOSE")
   {"C1","C2","C3","C4","C5"},
   true,
   "TestField"), Contains("The keyword `all' is expected but is not found"));
-
-
-  /*
-    try
-    {
-        aspect::Utilities::parse_map_to_double_array ("C1:100, C1:200, C3:300, C4:400, C5:500",
-    {"C1","C2","C3","C4","C5"},
-    false,
-    "TestField");
-    }
-    catch (dealii::ExceptionBase &e)
-    {
-      e.print_info(std::cerr);
-      std::cerr << "waht=" << e.what() << std::endl;
-      //INFO(e.what());
-      REQUIRE(false);
-    }
-  */
-
 }
