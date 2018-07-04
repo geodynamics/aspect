@@ -369,17 +369,15 @@ namespace aspect
 
         prm.declare_entry ("Use full A block as preconditioner", "false",
                            Patterns::Bool(),
-                           "This parameter determines whether we use an simplified approximation of the"
+                           "This parameter determines whether we use an simplified approximation of the "
                            "$A$ block as preconditioner for the Stokes solver, or the full $A$ block. The "
-                           "simplified approximation only contains the terms that describe the coupling of"
+                           "simplified approximation only contains the terms that describe the coupling of "
                            "identical components (plus boundary conditions) as described in "
                            "\\cite{KHB12}. The full block is closer to the description in "
                            "\\cite{rudi2017weighted}. There is no clear way to determine, which preconditioner "
                            "performs better in runtime, the default value (simplified approximation) requires "
-                           "more GMRES iterations, but is faster to apply in each iteration. On the downside it "
-                           "requires storing an additional matrix block, and such requires more memory, although "
-                           "the block is by a factor of 2 or 3 smaller than the original A block (depending on spatial "
-                           "dimension. The full block needs less memory and assembly time (because the block is "
+                           "more outer GMRES iterations, but is faster to apply in each iteration. The full block "
+                           "needs less assembly time (because the block is "
                            "available anyway), converges in less GMRES iterations, but requires more time per "
                            "iteration. The default value should be good for relatively simple models, but in "
                            "particular for very strong viscosity contrasts the full $A$ block can be "

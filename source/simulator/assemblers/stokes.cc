@@ -99,17 +99,18 @@ namespace aspect
             }
           else
             {
+              const unsigned int pressure_component_index = this->introspection().component_indices.pressure;
               for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
-                for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
-                  if (scratch.dof_component_indices[i] ==
-                      scratch.dof_component_indices[j])
-                    {
-                      data.local_matrix(i, j) += (one_over_eta * pressure_scaling
-                                                  * pressure_scaling
-                                                  * (scratch.phi_p[i]
-                                                     * scratch.phi_p[j]))
-                                                 * JxW;
-                    }
+                if (scratch.dof_component_indices[i] == pressure_component_index)
+                  for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
+                    if (scratch.dof_component_indices[j] == pressure_component_index)
+                      {
+                        data.local_matrix(i, j) += (one_over_eta * pressure_scaling
+                                                    * pressure_scaling
+                                                    * (scratch.phi_p[i]
+                                                       * scratch.phi_p[j]))
+                                                   * JxW;
+                      }
             }
         }
     }
