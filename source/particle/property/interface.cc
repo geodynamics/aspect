@@ -418,7 +418,7 @@ namespace aspect
 
       namespace
       {
-        std_cxx11::tuple
+        std::tuple
         <void *,
         void *,
         aspect::internal::Plugins::PluginList<Property::Interface<2> >,
@@ -437,7 +437,7 @@ namespace aspect
             // finally also construct a string for Patterns::MultipleSelection that
             // contains the names of all registered particle properties
             const std::string pattern_of_names
-              = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+              = std::get<dim>(registered_plugins).get_pattern_of_names ();
             prm.declare_entry("List of particle properties",
                               "",
                               Patterns::MultipleSelection(pattern_of_names),
@@ -446,7 +446,7 @@ namespace aspect
                               "and id of the particles are output. \n\n"
                               "The following properties are available:\n\n"
                               +
-                              std_cxx11::get<dim>(registered_plugins).get_description_string());
+                              std::get<dim>(registered_plugins).get_description_string());
           }
           prm.leave_subsection();
         }
@@ -454,7 +454,7 @@ namespace aspect
 
         // now declare the parameters of each of the registered
         // particle properties in turn
-        std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+        std::get<dim>(registered_plugins).declare_parameters (prm);
       }
 
 
@@ -462,7 +462,7 @@ namespace aspect
       void
       Manager<dim>::parse_parameters (ParameterHandler &prm)
       {
-        Assert (std_cxx11::get<dim>(registered_plugins).plugins != 0,
+        Assert (std::get<dim>(registered_plugins).plugins != 0,
                 ExcMessage ("No postprocessors registered!?"));
         std::vector<std::string> prop_names;
 
@@ -485,9 +485,9 @@ namespace aspect
               {
                 prop_names.clear();
                 for (typename std::list<typename aspect::internal::Plugins::PluginList<aspect::Particle::Property::Interface<dim> >::PluginInfo>::const_iterator
-                     p = std_cxx11::get<dim>(registered_plugins).plugins->begin();
-                     p != std_cxx11::get<dim>(registered_plugins).plugins->end(); ++p)
-                  prop_names.push_back (std_cxx11::get<0>(*p));
+                     p = std::get<dim>(registered_plugins).plugins->begin();
+                     p != std::get<dim>(registered_plugins).plugins->end(); ++p)
+                  prop_names.push_back (std::get<0>(*p));
               }
           }
           prm.leave_subsection();
@@ -499,7 +499,7 @@ namespace aspect
         for (unsigned int name=0; name<prop_names.size(); ++name)
           {
             aspect::Particle::Property::Interface<dim> *
-            particle_property = std_cxx11::get<dim>(registered_plugins)
+            particle_property = std::get<dim>(registered_plugins)
                                 .create_plugin (prop_names[name],
                                                 "Particle property plugins");
 
@@ -521,10 +521,10 @@ namespace aspect
                                   void (*declare_parameters_function) (ParameterHandler &),
                                   Property::Interface<dim> *(*factory_function) ())
       {
-        std_cxx11::get<dim>(registered_plugins).register_plugin (name,
-                                                                 description,
-                                                                 declare_parameters_function,
-                                                                 factory_function);
+        std::get<dim>(registered_plugins).register_plugin (name,
+                                                           description,
+                                                           declare_parameters_function,
+                                                           factory_function);
       }
 
 
@@ -533,8 +533,8 @@ namespace aspect
       void
       Manager<dim>::write_plugin_graph (std::ostream &out)
       {
-        std_cxx11::get<dim>(registered_plugins).write_plugin_graph ("Particle property interface",
-                                                                    out);
+        std::get<dim>(registered_plugins).write_plugin_graph ("Particle property interface",
+                                                              out);
       }
 
     }

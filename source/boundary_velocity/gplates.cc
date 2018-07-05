@@ -121,8 +121,8 @@ namespace aspect
             Tensor<1,3> rotation_axis;
             const double rotation_angle = rotation_axis_from_matrix(rotation_axis,rotation_matrix);
 
-            std_cxx11::array<double,3> angles = angles_from_matrix(rotation_matrix);
-            std_cxx11::array<double,3> back_angles = angles_from_matrix(transpose(rotation_matrix));
+            std::array<double,3> angles = angles_from_matrix(rotation_matrix);
+            std::array<double,3> back_angles = angles_from_matrix(transpose(rotation_matrix));
 
             output << "   Input point 1 spherical coordinates: " << surface_point_one  << std::endl
                    << "   Input point 1 normalized cartesian coordinates: " << point_one  << std::endl
@@ -209,12 +209,12 @@ namespace aspect
           }
 
         // number of intervals in the direction of theta and phi
-        std_cxx11::array<unsigned int,2> table_intervals;
+        std::array<unsigned int,2> table_intervals;
         table_intervals[0] = n_theta - 1;
         table_intervals[1] = n_phi - 1;
 
         // Min and Max coordinates in data file
-        std_cxx11::array<std::pair<double,double>,2> grid_extent;
+        std::array<std::pair<double,double>,2> grid_extent;
 
         // min and max extent of the grid in the direction of theta and phi (whole spheres in GPlates)
         // polar angle theta: from 0° to 180°(PI)
@@ -246,7 +246,7 @@ namespace aspect
                                           convert_tensor<dim,3>(position));
 
         // transform internal_position in spherical coordinates
-        std_cxx11::array<double,3> spherical_point =
+        std::array<double,3> spherical_point =
           Utilities::Coordinates::cartesian_to_spherical_coordinates(internal_position);
 
         Tensor<1,dim> output_boundary_velocity;
@@ -295,7 +295,7 @@ namespace aspect
 
       template <int dim>
       Tensor<1,dim>
-      GPlatesLookup<dim>::cartesian_velocity_at_surface_point(const std_cxx11::array<double,3> &spherical_point) const
+      GPlatesLookup<dim>::cartesian_velocity_at_surface_point(const std::array<double,3> &spherical_point) const
       {
         // Re-sort the components of the spherical position from [r,phi,theta] to [theta, phi]
         const Point<2> lookup_coordinates(spherical_point[2],spherical_point[1]);
@@ -334,7 +334,7 @@ namespace aspect
 
       template <int dim>
       Tensor<1,3>
-      GPlatesLookup<dim>::sphere_to_cart_velocity(const Tensor<1,2> &s_velocities, const std_cxx11::array<double,3> &s_position) const
+      GPlatesLookup<dim>::sphere_to_cart_velocity(const Tensor<1,2> &s_velocities, const std::array<double,3> &s_position) const
       {
         Tensor<1,3> velocity;
 
@@ -389,10 +389,10 @@ namespace aspect
       }
 
       template <int dim>
-      std_cxx11::array<double,3>
+      std::array<double,3>
       GPlatesLookup<dim>::angles_from_matrix(const Tensor<2,3> &rotation_matrix) const
       {
-        std_cxx11::array<double,3> orientation;
+        std::array<double,3> orientation;
 
         /*
          * The following code is part of the VTK project and copied here for

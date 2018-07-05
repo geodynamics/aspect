@@ -23,7 +23,7 @@
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <deal.II/base/exceptions.h>
-#include <deal.II/base/std_cxx11/tuple.h>
+#include <tuple>
 
 namespace aspect
 {
@@ -71,13 +71,13 @@ namespace aspect
 
 
     template <int dim>
-    std_cxx11::array<double,dim>
+    std::array<double,dim>
     Interface<dim>::cartesian_to_natural_coordinates(const Point<dim> &) const
     {
       Assert (false,
               ExcMessage ("The cartesian_to_natural_coordinates function has "
                           "not been implemented in this geometry model."));
-      return std_cxx11::array<double,dim>();
+      return std::array<double,dim>();
     }
 
 
@@ -86,7 +86,7 @@ namespace aspect
     Interface<dim>::cartesian_to_other_coordinates(const Point<dim> &position,
                                                    const Utilities::Coordinates::CoordinateSystem &coordinate_system) const
     {
-      std_cxx11::array<double, dim> other_coord;
+      std::array<double, dim> other_coord;
       switch (coordinate_system)
         {
           case Utilities::Coordinates::cartesian:
@@ -111,7 +111,7 @@ namespace aspect
 
     template <int dim>
     Point<dim>
-    Interface<dim>::natural_to_cartesian_coordinates(const std_cxx11::array<double,dim> &) const
+    Interface<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &) const
     {
       Assert (false,
               ExcMessage ("The natural_to_cartesian_coordinates function has "
@@ -246,7 +246,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx11::tuple
+      std::tuple
       <void *,
       void *,
       aspect::internal::Plugins::PluginList<Interface<2> >,
@@ -262,10 +262,10 @@ namespace aspect
                              void (*declare_parameters_function) (ParameterHandler &),
                              Interface<dim> *(*factory_function) ())
     {
-      std_cxx11::get<dim>(registered_plugins).register_plugin (name,
-                                                               description,
-                                                               declare_parameters_function,
-                                                               factory_function);
+      std::get<dim>(registered_plugins).register_plugin (name,
+                                                         description,
+                                                         declare_parameters_function,
+                                                         factory_function);
     }
 
 
@@ -290,9 +290,9 @@ namespace aspect
                   ExcMessage("You need to select a Geometry model "
                              "(`set Model name' in `subsection Geometry model')."));
 
-      return std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                    "Geometry model::model name",
-                                                                    prm);
+      return std::get<dim>(registered_plugins).create_plugin (model_name,
+                                                              "Geometry model::model name",
+                                                              prm);
     }
 
 
@@ -305,16 +305,16 @@ namespace aspect
       prm.enter_subsection ("Geometry model");
       {
         const std::string pattern_of_names
-          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+          = std::get<dim>(registered_plugins).get_pattern_of_names ();
         prm.declare_entry ("Model name", "unspecified",
                            Patterns::Selection (pattern_of_names+"|unspecified"),
                            "Select one of the following models:\n\n"
                            +
-                           std_cxx11::get<dim>(registered_plugins).get_description_string());
+                           std::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection ();
 
-      std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -323,8 +323,8 @@ namespace aspect
     void
     write_plugin_graph (std::ostream &out)
     {
-      std_cxx11::get<dim>(registered_plugins).write_plugin_graph ("Geometry model interface",
-                                                                  out);
+      std::get<dim>(registered_plugins).write_plugin_graph ("Geometry model interface",
+                                                            out);
     }
   }
 }

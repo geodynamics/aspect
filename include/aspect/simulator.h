@@ -70,7 +70,7 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 #include <boost/iostreams/tee.hpp>
 #include <boost/iostreams/stream.hpp>
-#include <deal.II/base/std_cxx11/shared_ptr.h>
+#include <memory>
 
 namespace aspect
 {
@@ -350,7 +350,7 @@ namespace aspect
        */
       struct IntermediaryConstructorAction
       {
-        IntermediaryConstructorAction (std_cxx11::function<void ()> action);
+        IntermediaryConstructorAction (std::function<void ()> action);
       };
 
       /**
@@ -843,7 +843,7 @@ namespace aspect
        * Consequently, we just store a pointer to such an object, and create
        * the object pointed to at the top of set_assemblers().
        */
-      std_cxx11::unique_ptr<Assemblers::Manager<dim> > assemblers;
+      std::unique_ptr<Assemblers::Manager<dim> > assemblers;
 
       /**
        * Determine, based on the run-time parameters of the current simulation,
@@ -1497,14 +1497,14 @@ namespace aspect
        * if we do not need the machinery for doing melt stuff, we do
        * not even allocate it.
        */
-      std_cxx11::unique_ptr<MeltHandler<dim> > melt_handler;
+      std::unique_ptr<MeltHandler<dim> > melt_handler;
 
       /**
        * Unique pointer for an instance of the NewtonHandler. This way,
        * if we do not need the machinery for doing Newton stuff, we do
        * not even allocate it.
        */
-      std_cxx11::unique_ptr<NewtonHandler<dim> > newton_handler;
+      std::unique_ptr<NewtonHandler<dim> > newton_handler;
 
       SimulatorSignals<dim>               signals;
       const IntermediaryConstructorAction post_signal_creation;
@@ -1560,20 +1560,20 @@ namespace aspect
        * @name Variables that describe the physical setup of the problem
        * @{
        */
-      const std_cxx11::unique_ptr<InitialTopographyModel::Interface<dim> >    initial_topography_model;
-      const std_cxx11::unique_ptr<GeometryModel::Interface<dim> >             geometry_model;
+      const std::unique_ptr<InitialTopographyModel::Interface<dim> >          initial_topography_model;
+      const std::unique_ptr<GeometryModel::Interface<dim> >                   geometry_model;
       const IntermediaryConstructorAction                                     post_geometry_model_creation_action;
-      const std_cxx11::unique_ptr<MaterialModel::Interface<dim> >             material_model;
-      const std_cxx11::unique_ptr<GravityModel::Interface<dim> >              gravity_model;
+      const std::unique_ptr<MaterialModel::Interface<dim> >                   material_model;
+      const std::unique_ptr<GravityModel::Interface<dim> >                    gravity_model;
       BoundaryTemperature::Manager<dim>                                       boundary_temperature_manager;
       BoundaryComposition::Manager<dim>                                       boundary_composition_manager;
-      const std_cxx11::unique_ptr<PrescribedStokesSolution::Interface<dim> >  prescribed_stokes_solution;
+      const std::unique_ptr<PrescribedStokesSolution::Interface<dim> >        prescribed_stokes_solution;
       InitialComposition::Manager<dim>                                        initial_composition_manager;
       InitialTemperature::Manager<dim>                                        initial_temperature_manager;
-      const std_cxx11::unique_ptr<AdiabaticConditions::Interface<dim> >       adiabatic_conditions;
+      const std::unique_ptr<AdiabaticConditions::Interface<dim> >             adiabatic_conditions;
       BoundaryVelocity::Manager<dim>                                          boundary_velocity_manager;
       std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > > boundary_traction;
-      const std_cxx11::unique_ptr<BoundaryHeatFlux::Interface<dim> >          boundary_heat_flux;
+      const std::unique_ptr<BoundaryHeatFlux::Interface<dim> >                boundary_heat_flux;
 
       /**
        * @}
@@ -1629,7 +1629,7 @@ namespace aspect
        * a MappingQ1Eulerian object to describe the mesh deformation,
        * swapping it in for the original MappingQ or MappingCartesian object.
        */
-      std_cxx11::unique_ptr<Mapping<dim> >                      mapping;
+      std::unique_ptr<Mapping<dim> >                            mapping;
 
       const FESystem<dim>                                       finite_element;
 

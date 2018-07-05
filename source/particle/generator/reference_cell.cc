@@ -69,7 +69,7 @@ namespace aspect
       ReferenceCell<dim>::generate_particle_positions_in_unit_cell()
       {
         std::vector<Point<dim> > particle_positions;
-        std_cxx11::array<double, dim> spacing;
+        std::array<double, dim> spacing;
 
         // Calculate separation of particles
         for (unsigned int i = 0; i < dim; ++i)

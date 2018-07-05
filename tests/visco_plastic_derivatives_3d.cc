@@ -9,8 +9,8 @@
 
 #include <deal.II/grid/tria.h>
 #include <deal.II/base/exceptions.h>
-#include <deal.II/base/std_cxx11/shared_ptr.h>
-#include <deal.II/base/std_cxx11/bind.h>
+#include <memory>
+#include <functional>
 
 #include <iostream>
 
@@ -132,7 +132,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
 
   const_cast<aspect::MaterialModel::Interface<dim> &>(simulator_access.get_material_model()).parse_parameters(prm);
 
-  out_base.additional_outputs.push_back(std_cxx11::make_shared<MaterialModelDerivatives<dim> > (5));
+  out_base.additional_outputs.push_back(std::make_shared<MaterialModelDerivatives<dim> > (5));
 
   simulator_access.get_material_model().evaluate(in_base, out_base);
 
@@ -234,25 +234,25 @@ void signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
   using namespace dealii;
   std::cout << "* Connecting signals" << std::endl;
-  signals.set_assemblers.connect (std_cxx11::bind(&f<dim>,
-                                                  std_cxx11::_1,
-                                                  std_cxx11::_2,
-                                                  "harmonic"));
+  signals.set_assemblers.connect (std::bind(&f<dim>,
+                                            std::placeholders::_1,
+                                            std::placeholders::_2,
+                                            "harmonic"));
 
-  signals.set_assemblers.connect (std_cxx11::bind(&f<dim>,
-                                                  std_cxx11::_1,
-                                                  std_cxx11::_2,
-                                                  "geometric"));
+  signals.set_assemblers.connect (std::bind(&f<dim>,
+                                            std::placeholders::_1,
+                                            std::placeholders::_2,
+                                            "geometric"));
 
-  signals.set_assemblers.connect (std_cxx11::bind(&f<dim>,
-                                                  std_cxx11::_1,
-                                                  std_cxx11::_2,
-                                                  "arithmetic"));
+  signals.set_assemblers.connect (std::bind(&f<dim>,
+                                            std::placeholders::_1,
+                                            std::placeholders::_2,
+                                            "arithmetic"));
 
-  signals.set_assemblers.connect (std_cxx11::bind(&f<dim>,
-                                                  std_cxx11::_1,
-                                                  std_cxx11::_2,
-                                                  "maximum composition"));
+  signals.set_assemblers.connect (std::bind(&f<dim>,
+                                            std::placeholders::_1,
+                                            std::placeholders::_2,
+                                            "maximum composition"));
 }
 
 ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,

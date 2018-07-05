@@ -135,7 +135,7 @@ namespace aspect
         return;
 
       inputs.additional_inputs.push_back(
-        std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialInputs<dim> >
+        std::shared_ptr<MaterialModel::AdditionalMaterialInputs<dim> >
         (new MaterialModel::MeltInputs<dim> (inputs.position.size())));
     }
   }

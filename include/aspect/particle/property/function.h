@@ -89,7 +89,7 @@ namespace aspect
           /**
            * A function object representing the particle property.
            */
-          std_cxx11::unique_ptr<Functions::ParsedFunction<dim> > function;
+          std::unique_ptr<Functions::ParsedFunction<dim> > function;
 
           /**
            * A private variable that stores the number of particle property

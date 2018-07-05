@@ -26,7 +26,7 @@
 #include <deal.II/fe/fe_q.h>
 #include <deal.II/fe/fe_dgq.h>
 #include <deal.II/fe/fe_dgp.h>
-#include <deal.II/base/std_cxx1x/tuple.h>
+#include <tuple>
 
 namespace aspect
 {

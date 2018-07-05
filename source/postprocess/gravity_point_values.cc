@@ -150,7 +150,7 @@ namespace aspect
       // loop on the radius - satellite position [r, , ]
       for (unsigned int h=0; h < number_points_radius; ++h)
         {
-          std_cxx11::array<double,dim> satellite_coordinate;
+          std::array<double,dim> satellite_coordinate;
           satellite_coordinate[0] = minimum_radius + ((maximum_radius - minimum_radius) / number_points_radius) * h;
 
           // loop on the longitude - satellite position [ , phi, ] in radian:

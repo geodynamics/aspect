@@ -274,8 +274,8 @@ namespace aspect
        * of functions that the Simulator object will later go through when
        * letting plugins connect their slots to signals.
        */
-      void register_connector_function_2d (const std_cxx11::function<void (aspect::SimulatorSignals<2> &)> &connector);
-      void register_connector_function_3d (const std_cxx11::function<void (aspect::SimulatorSignals<3> &)> &connector);
+      void register_connector_function_2d (const std::function<void (aspect::SimulatorSignals<2> &)> &connector);
+      void register_connector_function_3d (const std::function<void (aspect::SimulatorSignals<3> &)> &connector);
 
       /**
        * A function that is called by the Simulator object and that goes

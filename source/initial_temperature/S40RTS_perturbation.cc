@@ -27,7 +27,7 @@
 #include <aspect/material_model/interface.h>
 #include <fstream>
 #include <iostream>
-#include <deal.II/base/std_cxx11/array.h>
+#include <array>
 
 #include <boost/lexical_cast.hpp>
 
@@ -236,7 +236,7 @@ namespace aspect
         depth_values[i] = rcmb+(rmoho-rcmb)*0.5*(r[i]+1);
 
       // convert coordinates from [x,y,z] to [r, phi, theta]
-      std_cxx11::array<double,3> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
+      std::array<double,3> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
       // Evaluate the spherical harmonics at this position. Since they are the
       // same for all depth splines, do it once to avoid multiple evaluations.

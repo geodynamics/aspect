@@ -24,7 +24,7 @@
 #include <aspect/initial_composition/interface.h>
 
 #include <deal.II/base/exceptions.h>
-#include <deal.II/base/std_cxx11/tuple.h>
+#include <tuple>
 
 #include <list>
 
@@ -70,7 +70,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx11::tuple
+      std::tuple
       <void *,
       void *,
       aspect::internal::Plugins::PluginList<Interface<2> >,
@@ -86,10 +86,10 @@ namespace aspect
                                                 void (*declare_parameters_function) (ParameterHandler &),
                                                 Interface<dim> *(*factory_function) ())
     {
-      std_cxx11::get<dim>(registered_plugins).register_plugin (name,
-                                                               description,
-                                                               declare_parameters_function,
-                                                               factory_function);
+      std::get<dim>(registered_plugins).register_plugin (name,
+                                                         description,
+                                                         declare_parameters_function,
+                                                         factory_function);
     }
 
 
@@ -143,7 +143,7 @@ namespace aspect
       for (unsigned int i=0; i<model_names.size(); ++i)
         {
           initial_composition_objects.push_back (std::shared_ptr<Interface<dim> >
-                                                 (std_cxx11::get<dim>(registered_plugins)
+                                                 (std::get<dim>(registered_plugins)
                                                   .create_plugin (model_names[i],
                                                                   "Initial composition model::Model names")));
 
@@ -202,7 +202,7 @@ namespace aspect
       prm.enter_subsection ("Initial composition model");
       {
         const std::string pattern_of_names
-          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+          = std::get<dim>(registered_plugins).get_pattern_of_names ();
 
         prm.declare_entry("List of model names",
                           "",
@@ -214,7 +214,7 @@ namespace aspect
                           "in 'List of model operators'.\n\n"
                           "The following composition models are available:\n\n"
                           +
-                          std_cxx11::get<dim>(registered_plugins).get_description_string());
+                          std::get<dim>(registered_plugins).get_description_string());
 
         prm.declare_entry("List of model operators", "add",
                           Patterns::MultipleSelection("add|subtract|minimum|maximum"),
@@ -227,7 +227,7 @@ namespace aspect
                            Patterns::Selection (pattern_of_names+"|unspecified"),
                            "Select one of the following models:\n\n"
                            +
-                           std_cxx11::get<dim>(registered_plugins).get_description_string()
+                           std::get<dim>(registered_plugins).get_description_string()
                            + "\n\n" +
                            "\\textbf{Warning}: This parameter provides an old and "
                            "deprecated way of specifying "
@@ -236,7 +236,7 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -244,7 +244,7 @@ namespace aspect
     std::string
     get_valid_model_names_pattern ()
     {
-      return std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+      return std::get<dim>(registered_plugins).get_pattern_of_names ();
     }
 
 
@@ -253,8 +253,8 @@ namespace aspect
     void
     Manager<dim>::write_plugin_graph (std::ostream &out)
     {
-      std_cxx11::get<dim>(registered_plugins).write_plugin_graph ("Initial composition interface",
-                                                                  out);
+      std::get<dim>(registered_plugins).write_plugin_graph ("Initial composition interface",
+                                                            out);
     }
   }
 }

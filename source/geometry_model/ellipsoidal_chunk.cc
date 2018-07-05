@@ -272,9 +272,9 @@ namespace aspect
       GridTools::shift(base_point,coarse_grid);
 
       // Transform to the ellipsoid surface
-      GridTools::transform (std_cxx11::bind(&EllipsoidalChunk<3>::EllipsoidalChunkGeometry::push_forward,
-                                            std_cxx11::cref(manifold),
-                                            std_cxx11::_1),
+      GridTools::transform (std::bind(&EllipsoidalChunk<3>::EllipsoidalChunkGeometry::push_forward,
+                                      std::cref(manifold),
+                                      std::placeholders::_1),
                             coarse_grid);
 
       // also attach the real manifold to slot 15. we won't use it
@@ -283,13 +283,13 @@ namespace aspect
       // clear it again afterwards
       coarse_grid.set_manifold (15, manifold);
 
-      coarse_grid.signals.pre_refinement.connect (std_cxx11::bind (&set_manifold_ids<dim>,
-                                                                   std_cxx11::ref(coarse_grid)));
-      coarse_grid.signals.post_refinement.connect (std_cxx11::bind (&clear_manifold_ids<dim>,
-                                                                    std_cxx11::ref(coarse_grid)));
-      coarse_grid.signals.post_refinement.connect(std_cxx11::bind (&EllipsoidalChunk<dim>::set_boundary_ids,
-                                                                   std_cxx11::cref(*this),
-                                                                   std_cxx11::ref(coarse_grid)));
+      coarse_grid.signals.pre_refinement.connect (std::bind (&set_manifold_ids<dim>,
+                                                             std::ref(coarse_grid)));
+      coarse_grid.signals.post_refinement.connect (std::bind (&clear_manifold_ids<dim>,
+                                                              std::ref(coarse_grid)));
+      coarse_grid.signals.post_refinement.connect(std::bind (&EllipsoidalChunk<dim>::set_boundary_ids,
+                                                             std::cref(*this),
+                                                             std::ref(coarse_grid)));
     }
 
     template <int dim>
@@ -760,7 +760,7 @@ namespace aspect
     }
 
     template <int dim>
-    std_cxx11::array<double,dim>
+    std::array<double,dim>
     EllipsoidalChunk<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
     {
       Assert(dim == 3,ExcMessage("This geometry model doesn't support 2d."));
@@ -789,7 +789,7 @@ namespace aspect
 
     template <>
     Point<3>
-    EllipsoidalChunk<3>::natural_to_cartesian_coordinates(const std_cxx11::array<double,3> &position_tensor) const
+    EllipsoidalChunk<3>::natural_to_cartesian_coordinates(const std::array<double,3> &position_tensor) const
     {
       // We receive radius, longitude, latitude and we need to turn it first back into
       // longitude, latitude, depth for internal use, and push_forward to cartesian coordiantes.
@@ -807,7 +807,7 @@ namespace aspect
 
     template <>
     Point<2>
-    EllipsoidalChunk<2>::natural_to_cartesian_coordinates(const std_cxx11::array<double,2> &/*position_tensor*/) const
+    EllipsoidalChunk<2>::natural_to_cartesian_coordinates(const std::array<double,2> &/*position_tensor*/) const
     {
       Assert(false, ExcMessage("This geometry model doesn't support 2d."));
       return Point<2>();

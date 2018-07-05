@@ -21,7 +21,7 @@
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/base/std_cxx11/array.h>
+#include <array>
 #include <deal.II/base/point.h>
 
 #include <deal.II/base/mpi.h>
@@ -344,10 +344,10 @@ namespace aspect
     {
 
       template <int dim>
-      std_cxx11::array<double,dim>
+      std::array<double,dim>
       WGS84_coordinates(const Point<dim> &position)
       {
-        std_cxx11::array<double,dim> ecoord;
+        std::array<double,dim> ecoord;
 
         // Define WGS84 ellipsoid constants.
         const double radius = 6378137.;
@@ -385,10 +385,10 @@ namespace aspect
       }
 
       template <int dim>
-      std_cxx11::array<double,dim>
+      std::array<double,dim>
       cartesian_to_spherical_coordinates(const Point<dim> &position)
       {
-        std_cxx11::array<double,dim> scoord;
+        std::array<double,dim> scoord;
 
         scoord[0] = position.norm(); // R
         scoord[1] = std::atan2(position(1),position(0)); // Phi
@@ -406,7 +406,7 @@ namespace aspect
 
       template <int dim>
       Point<dim>
-      spherical_to_cartesian_coordinates(const std_cxx11::array<double,dim> &scoord)
+      spherical_to_cartesian_coordinates(const std::array<double,dim> &scoord)
       {
         Point<dim> ccoord;
 
@@ -434,7 +434,7 @@ namespace aspect
       }
 
       template <int dim>
-      std_cxx11::array<double,3>
+      std::array<double,3>
       cartesian_to_ellipsoidal_coordinates(const Point<3> &x,
                                            const double semi_major_axis_a,
                                            const double eccentricity)
@@ -450,7 +450,7 @@ namespace aspect
         const double R_bar = R / (std::sqrt(1 - eccentricity * eccentricity * std::sin(theta) * std::sin(theta)));
         const double R_plus_d = p / std::cos(theta);
 
-        std_cxx11::array<double,3> phi_theta_d;
+        std::array<double,3> phi_theta_d;
         phi_theta_d[0] = phi;
 
         phi_theta_d[1] = theta;
@@ -460,7 +460,7 @@ namespace aspect
 
       template <int dim>
       Point<3>
-      ellipsoidal_to_cartesian_coordinates(const std_cxx11::array<double,3> &phi_theta_d,
+      ellipsoidal_to_cartesian_coordinates(const std::array<double,3> &phi_theta_d,
                                            const double semi_major_axis_a,
                                            const double eccentricity)
       {
@@ -485,7 +485,7 @@ namespace aspect
       {
         Tensor<1, dim> cartesian_vector;
 
-        const std_cxx11::array<double, dim> r_phi_theta = cartesian_to_spherical_coordinates(position);
+        const std::array<double, dim> r_phi_theta = cartesian_to_spherical_coordinates(position);
 
         switch (dim)
           {
@@ -744,14 +744,14 @@ namespace aspect
     }
 
     template <int dim>
-    std_cxx11::array<Tensor<1,dim>,dim-1>
+    std::array<Tensor<1,dim>,dim-1>
     orthogonal_vectors (const Tensor<1,dim> &v)
     {
       Assert (v.norm() > 0,
               ExcMessage ("This function can not be called with a zero "
                           "input vector."));
 
-      std_cxx11::array<Tensor<1,dim>,dim-1> return_value;
+      std::array<Tensor<1,dim>,dim-1> return_value;
       switch (dim)
         {
           case 2:
@@ -1630,7 +1630,7 @@ namespace aspect
       // strictly ascending.
 
       // The number of intervals in each direction
-      std_cxx11::array<unsigned int,dim> table_intervals;
+      std::array<unsigned int,dim> table_intervals;
 
       // Whether or not the grid is equidistant
       coordinate_values_are_equidistant = true;
@@ -1882,10 +1882,10 @@ namespace aspect
 
 
     template <int dim>
-    std_cxx11::array<unsigned int,dim-1>
+    std::array<unsigned int,dim-1>
     AsciiDataBoundary<dim>::get_boundary_dimensions (const types::boundary_id boundary_id) const
     {
-      std_cxx11::array<unsigned int,dim-1> boundary_dimensions;
+      std::array<unsigned int,dim-1> boundary_dimensions;
 
       switch (dim)
         {
@@ -2136,14 +2136,14 @@ namespace aspect
           if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0
               || dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != 0)
             {
-              const std_cxx11::array<double,dim> spherical_position =
+              const std::array<double,dim> spherical_position =
                 Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
               for (unsigned int i = 0; i < dim; i++)
                 internal_position[i] = spherical_position[i];
             }
 
-          const std_cxx11::array<unsigned int,dim-1> boundary_dimensions =
+          const std::array<unsigned int,dim-1> boundary_dimensions =
             get_boundary_dimensions(boundary_indicator);
 
           Point<dim-1> data_position;
@@ -2283,7 +2283,7 @@ namespace aspect
       if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0
           || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0)
         {
-          const std_cxx11::array<double,dim> spherical_position =
+          const std::array<double,dim> spherical_position =
             Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
           for (unsigned int i = 0; i < dim; i++)
@@ -2684,7 +2684,7 @@ namespace aspect
 
 
     template <int dim>
-    Point<dim> convert_array_to_point(const std_cxx11::array<double,dim> &array)
+    Point<dim> convert_array_to_point(const std::array<double,dim> &array)
     {
       Point<dim> point;
       for (unsigned int i = 0; i < dim; i++)
@@ -2696,9 +2696,9 @@ namespace aspect
 
 
     template <int dim>
-    std_cxx11::array<double,dim> convert_point_to_array(const Point<dim> &point)
+    std::array<double,dim> convert_point_to_array(const Point<dim> &point)
     {
-      std_cxx11::array<double,dim> array;
+      std::array<double,dim> array;
       for (unsigned int i = 0; i < dim; i++)
         array[i] = point[i];
 
@@ -2810,7 +2810,7 @@ namespace aspect
     }
 
     template <int dim>
-    NaturalCoordinate<dim>::NaturalCoordinate(const std_cxx11::array<double, dim> &coord,
+    NaturalCoordinate<dim>::NaturalCoordinate(const std::array<double, dim> &coord,
                                               const Utilities::Coordinates::CoordinateSystem &coord_system) :
       coordinate_system (coord_system), coordinates (coord)
     {}
@@ -2818,15 +2818,15 @@ namespace aspect
 
 
     template <int dim>
-    std_cxx11::array<double,dim> &NaturalCoordinate<dim>::get_coordinates()
+    std::array<double,dim> &NaturalCoordinate<dim>::get_coordinates()
     {
       return coordinates;
     }
 
     template <>
-    std_cxx11::array<double,1> NaturalCoordinate<2>::get_surface_coordinates() const
+    std::array<double,1> NaturalCoordinate<2>::get_surface_coordinates() const
     {
-      std_cxx11::array<double,1> coordinate;
+      std::array<double,1> coordinate;
 
       switch (coordinate_system)
         {
@@ -2852,9 +2852,9 @@ namespace aspect
     }
 
     template <>
-    std_cxx11::array<double,2> NaturalCoordinate<3>::get_surface_coordinates() const
+    std::array<double,2> NaturalCoordinate<3>::get_surface_coordinates() const
     {
-      std_cxx11::array<double,2> coordinate;
+      std::array<double,2> coordinate;
 
       switch (coordinate_system)
         {
@@ -2929,11 +2929,11 @@ namespace aspect
     template class AsciiDataProfile<2>;
     template class AsciiDataProfile<3>;
 
-    template Point<2> Coordinates::spherical_to_cartesian_coordinates<2>(const std_cxx11::array<double,2> &scoord);
-    template Point<3> Coordinates::spherical_to_cartesian_coordinates<3>(const std_cxx11::array<double,3> &scoord);
+    template Point<2> Coordinates::spherical_to_cartesian_coordinates<2>(const std::array<double,2> &scoord);
+    template Point<3> Coordinates::spherical_to_cartesian_coordinates<3>(const std::array<double,3> &scoord);
 
-    template std_cxx11::array<double,2> Coordinates::cartesian_to_spherical_coordinates<2>(const Point<2> &position);
-    template std_cxx11::array<double,3> Coordinates::cartesian_to_spherical_coordinates<3>(const Point<3> &position);
+    template std::array<double,2> Coordinates::cartesian_to_spherical_coordinates<2>(const Point<2> &position);
+    template std::array<double,3> Coordinates::cartesian_to_spherical_coordinates<3>(const Point<3> &position);
 
     template Tensor<1,2> Coordinates::spherical_to_cartesian_vector<2>(const Tensor<1,2> &spherical_vector,
                                                                        const Point<2> &position);
@@ -2941,8 +2941,8 @@ namespace aspect
                                                                        const Point<3> &position);
 
 
-    template std_cxx11::array<double,2> Coordinates::WGS84_coordinates<2>(const Point<2> &position);
-    template std_cxx11::array<double,3> Coordinates::WGS84_coordinates<3>(const Point<3> &position);
+    template std::array<double,2> Coordinates::WGS84_coordinates<2>(const Point<2> &position);
+    template std::array<double,3> Coordinates::WGS84_coordinates<3>(const Point<3> &position);
 
     template bool polygon_contains_point<2>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
     template bool polygon_contains_point<3>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
@@ -2951,8 +2951,8 @@ namespace aspect
     template double signed_distance_to_polygon<3>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
 
 
-    template std_cxx11::array<Tensor<1,2>,1> orthogonal_vectors (const Tensor<1,2> &v);
-    template std_cxx11::array<Tensor<1,3>,2> orthogonal_vectors (const Tensor<1,3> &v);
+    template std::array<Tensor<1,2>,1> orthogonal_vectors (const Tensor<1,2> &v);
+    template std::array<Tensor<1,3>,2> orthogonal_vectors (const Tensor<1,3> &v);
 
     template double
     derivative_of_weighted_p_norm_average (const double averaged_parameter,
@@ -2985,11 +2985,11 @@ namespace aspect
                                        const SymmetricTensor<2,3> &dviscosities_dstrain_rate,
                                        const double safety_factor);
 
-    template Point<2> convert_array_to_point<2>(const std_cxx11::array<double,2> &array);
-    template Point<3> convert_array_to_point<3>(const std_cxx11::array<double,3> &array);
+    template Point<2> convert_array_to_point<2>(const std::array<double,2> &array);
+    template Point<3> convert_array_to_point<3>(const std::array<double,3> &array);
 
-    template std_cxx11::array<double,2> convert_point_to_array<2>(const Point<2> &point);
-    template std_cxx11::array<double,3> convert_point_to_array<3>(const Point<3> &point);
+    template std::array<double,2> convert_point_to_array<2>(const Point<2> &point);
+    template std::array<double,3> convert_point_to_array<3>(const Point<3> &point);
 
     template SymmetricTensor<2,2> nth_basis_for_symmetric_tensors (const unsigned int k);
     template SymmetricTensor<2,3> nth_basis_for_symmetric_tensors (const unsigned int k);

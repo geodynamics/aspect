@@ -653,10 +653,10 @@ namespace aspect
     Anisotropic<dim>::
     initialize()
     {
-      this->get_signals().set_assemblers.connect (std_cxx11::bind(&Anisotropic<dim>::set_assemblers,
-                                                                  std_cxx11::cref(*this),
-                                                                  std_cxx11::_1,
-                                                                  std_cxx11::_2));
+      this->get_signals().set_assemblers.connect (std::bind(&Anisotropic<dim>::set_assemblers,
+                                                            std::cref(*this),
+                                                            std::placeholders::_1,
+                                                            std::placeholders::_2));
     }
 
     template <int dim>

@@ -27,7 +27,7 @@
 #include <deal.II/grid/tria_accessor.h>
 #include <deal.II/grid/grid_tools.h>
 
-#include <deal.II/base/std_cxx1x/bind.h>
+#include <functional>
 
 namespace aspect
 {
@@ -127,9 +127,9 @@ namespace aspect
       // make sure the right boundary indicators are set after refinement
       // through the function set_boundary_indicators above
       total_coarse_grid.signals.post_refinement.connect
-      (std_cxx1x::bind (&TwoMergedBoxes<dim>::set_boundary_indicators,
-                        std_cxx1x::cref(*this),
-                        std_cxx1x::ref(total_coarse_grid)));
+      (std::bind (&TwoMergedBoxes<dim>::set_boundary_indicators,
+                  std::cref(*this),
+                  std::ref(total_coarse_grid)));
     }
 
 
@@ -301,7 +301,7 @@ namespace aspect
 
 
     template <int dim>
-    std_cxx11::array<double,dim>
+    std::array<double,dim>
     TwoMergedBoxes<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
     {
       std::array<double,dim> position_array;
@@ -315,7 +315,7 @@ namespace aspect
 
     template <int dim>
     Point<dim>
-    TwoMergedBoxes<dim>::natural_to_cartesian_coordinates(const std_cxx11::array<double,dim> &position_tensor) const
+    TwoMergedBoxes<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position_tensor) const
     {
       Point<dim> position_point;
       for (unsigned int i = 0; i < dim; i++)

@@ -24,7 +24,7 @@
 #include <aspect/simulator_access.h>
 
 #include <deal.II/base/exceptions.h>
-#include <deal.II/base/std_cxx11/tuple.h>
+#include <tuple>
 
 #include <list>
 
@@ -60,7 +60,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx1x::tuple
+      std::tuple
       <void *,
       void *,
       aspect::internal::Plugins::PluginList<Interface<2> >,
@@ -76,10 +76,10 @@ namespace aspect
                                       void (*declare_parameters_function) (ParameterHandler &),
                                       Interface<dim> *(*factory_function) ())
     {
-      std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
-                                                               description,
-                                                               declare_parameters_function,
-                                                               factory_function);
+      std::get<dim>(registered_plugins).register_plugin (name,
+                                                         description,
+                                                         declare_parameters_function,
+                                                         factory_function);
     }
 
 
@@ -94,8 +94,8 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      return std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                    "Boundary fluid pressure model::Plugin name");
+      return std::get<dim>(registered_plugins).create_plugin (model_name,
+                                                              "Boundary fluid pressure model::Plugin name");
     }
 
 
@@ -106,15 +106,15 @@ namespace aspect
     {
       prm.enter_subsection ("Boundary fluid pressure model");
       const std::string pattern_of_names
-        = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
+        = std::get<dim>(registered_plugins).get_pattern_of_names ();
       prm.declare_entry ("Plugin name", "density",
                          Patterns::Selection (pattern_of_names),
                          "Select one of the following plugins:\n\n"
                          +
-                         std_cxx1x::get<dim>(registered_plugins).get_description_string());
+                         std::get<dim>(registered_plugins).get_description_string());
       prm.leave_subsection ();
 
-      std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -123,8 +123,8 @@ namespace aspect
     void
     write_plugin_graph (std::ostream &out)
     {
-      std_cxx11::get<dim>(registered_plugins).write_plugin_graph ("Boundary fluid pressure interface",
-                                                                  out);
+      std::get<dim>(registered_plugins).write_plugin_graph ("Boundary fluid pressure interface",
+                                                            out);
     }
 
   }

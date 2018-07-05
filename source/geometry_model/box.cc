@@ -43,9 +43,9 @@ namespace aspect
       // If so, connect the initial topography function
       // to the right signal.
       if (dynamic_cast<InitialTopographyModel::ZeroTopography<dim>*>(topo_model) == 0)
-        this->get_signals().pre_set_initial_state.connect(std_cxx11::bind(&Box<dim>::topography,
-                                                                          std_cxx11::ref(*this),
-                                                                          std_cxx11::_1));
+        this->get_signals().pre_set_initial_state.connect(std::bind(&Box<dim>::topography,
+                                                                    std::ref(*this),
+                                                                    std::placeholders::_1));
     }
 
 
@@ -81,9 +81,9 @@ namespace aspect
     {
       // Here we provide GridTools with the function to displace vertices
       // in the vertical direction by an amount specified by the initial topography model
-      GridTools::transform(std_cxx11::bind(&Box<dim>::add_topography,
-                                           this,
-                                           std_cxx11::_1),
+      GridTools::transform(std::bind(&Box<dim>::add_topography,
+                                     this,
+                                     std::placeholders::_1),
                            grid);
 
       this->get_pcout() << "   Added initial topography to grid" << std::endl << std::endl;
@@ -280,7 +280,7 @@ namespace aspect
     }
 
     template <int dim>
-    std_cxx11::array<double,dim>
+    std::array<double,dim>
     Box<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
     {
       std::array<double,dim> position_array;
@@ -301,7 +301,7 @@ namespace aspect
 
     template <int dim>
     Point<dim>
-    Box<dim>::natural_to_cartesian_coordinates(const std_cxx11::array<double,dim> &position_tensor) const
+    Box<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position_tensor) const
     {
       Point<dim> position_point;
       for (unsigned int i = 0; i < dim; i++)

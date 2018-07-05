@@ -234,7 +234,7 @@ namespace aspect
          * this is (radius, longitude) in 2d and (radius, longitude, latitude) in 3d.
          */
         virtual
-        std_cxx11::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const;
+        std::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const;
 
         /**
          * Undoes the action of cartesian_to_natural_coordinates, and turns the
@@ -242,7 +242,7 @@ namespace aspect
          * Cartesian coordinates.
          */
         virtual
-        Point<dim> natural_to_cartesian_coordinates(const std_cxx11::array<double,dim> &position) const;
+        Point<dim> natural_to_cartesian_coordinates(const std::array<double,dim> &position) const;
 
         /**
          * Declare the parameters this class takes through input files.

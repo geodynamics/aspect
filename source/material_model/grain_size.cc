@@ -143,7 +143,7 @@ namespace aspect
         return (dh - h) / delta_press;
       }
 
-      std_cxx11::array<std::pair<double, unsigned int>,2>
+      std::array<std::pair<double, unsigned int>,2>
       MaterialLookup::enthalpy_derivatives(const std::vector<double> &temperatures,
                                            const std::vector<double> &pressures,
                                            const unsigned int n_substeps) const
@@ -205,7 +205,7 @@ namespace aspect
             dHdp /= n_p;
           }
 
-        std_cxx11::array<std::pair<double, unsigned int>,2> derivatives;
+        std::array<std::pair<double, unsigned int>,2> derivatives;
         derivatives[0] = std::make_pair(dHdT,n_T);
         derivatives[1] = std::make_pair(dHdp,n_p);
         return derivatives;
@@ -255,10 +255,10 @@ namespace aspect
           }
       }
 
-      std_cxx1x::array<double,2>
+      std::array<double,2>
       MaterialLookup::get_pT_steps() const
       {
-        std_cxx1x::array<double,2> pt_steps;
+        std::array<double,2> pt_steps;
         pt_steps[0] = delta_press;
         pt_steps[1] = delta_temp;
         return pt_steps;
@@ -1233,11 +1233,11 @@ namespace aspect
 
 
     template <int dim>
-    std_cxx1x::array<std::pair<double, unsigned int>,2>
+    std::array<std::pair<double, unsigned int>,2>
     GrainSize<dim>::
     enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const
     {
-      std_cxx1x::array<std::pair<double, unsigned int>,2> derivative;
+      std::array<std::pair<double, unsigned int>,2> derivative;
 
       if (in.current_cell.state() == IteratorState::valid)
         {
@@ -1416,7 +1416,7 @@ namespace aspect
       average_temperature /= in.position.size();
       average_density /= in.position.size();
 
-      std_cxx1x::array<std::pair<double, unsigned int>,2> dH;
+      std::array<std::pair<double, unsigned int>,2> dH;
 
       if (use_table_properties && use_enthalpy)
         dH = enthalpy_derivative(in);

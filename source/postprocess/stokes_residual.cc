@@ -146,15 +146,15 @@ namespace aspect
     StokesResidual<dim>::initialize ()
     {
       this->get_signals().post_stokes_solver.connect(
-        std_cxx11::bind(&StokesResidual<dim>::stokes_solver_callback,
-                        this,
-                        /* do not need the first arguments
-                         * std_cxx11::_1,
-                         * std_cxx11::_2,
-                         * std_cxx11::_3,
-                         */
-                        std_cxx11::_4,
-                        std_cxx11::_5)
+        std::bind(&StokesResidual<dim>::stokes_solver_callback,
+                  this,
+                  /* do not need the first arguments
+                   * std::placeholders::_1,
+                   * std::placeholders::_2,
+                   * std::placeholders::_3,
+                   */
+                  std::placeholders::_4,
+                  std::placeholders::_5)
       );
     }
 

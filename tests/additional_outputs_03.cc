@@ -128,7 +128,7 @@ namespace aspect
     quiet = false;
 
     TestAssembler<dim> *test_assembler = new TestAssembler<dim>();
-    assemblers.stokes_system.push_back(std_cxx11::unique_ptr<Assemblers::Interface<dim> >(test_assembler));
+    assemblers.stokes_system.push_back(std::unique_ptr<Assemblers::Interface<dim> >(test_assembler));
   }
 }
 

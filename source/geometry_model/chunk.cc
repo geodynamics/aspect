@@ -270,9 +270,9 @@ namespace aspect
 #endif
 
       // Transform box into spherical chunk
-      GridTools::transform (std_cxx11::bind(&ChunkGeometry::push_forward,
-                                            std_cxx11::cref(manifold),
-                                            std_cxx11::_1),
+      GridTools::transform (std::bind(&ChunkGeometry::push_forward,
+                                      std::cref(manifold),
+                                      std::placeholders::_1),
                             coarse_grid);
 
       // Deal with a curved mesh
@@ -360,12 +360,12 @@ namespace aspect
     Chunk<dim>::connect_to_signal (SimulatorSignals<dim> &signals)
     {
       // Connect the topography function to the signal
-      signals.pre_compute_no_normal_flux_constraints.connect (std_cxx11::bind (&Chunk<dim>::clear_manifold_ids,
-                                                                               std_cxx11::ref(*this),
-                                                                               std_cxx11::_1));
-      signals.post_compute_no_normal_flux_constraints.connect (std_cxx11::bind (&Chunk<dim>::set_manifold_ids,
-                                                                                std_cxx11::ref(*this),
-                                                                                std_cxx11::_1));
+      signals.pre_compute_no_normal_flux_constraints.connect (std::bind (&Chunk<dim>::clear_manifold_ids,
+                                                                         std::ref(*this),
+                                                                         std::placeholders::_1));
+      signals.post_compute_no_normal_flux_constraints.connect (std::bind (&Chunk<dim>::set_manifold_ids,
+                                                                          std::ref(*this),
+                                                                          std::placeholders::_1));
     }
 #endif
 
@@ -599,7 +599,7 @@ namespace aspect
 
 
     template <int dim>
-    std_cxx11::array<double,dim>
+    std::array<double,dim>
     Chunk<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
     {
       // the chunk manifold has a order of radius, longitude, latitude.
@@ -625,7 +625,7 @@ namespace aspect
 
     template <int dim>
     Point<dim>
-    Chunk<dim>::natural_to_cartesian_coordinates(const std_cxx11::array<double,dim> &position_tensor) const
+    Chunk<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position_tensor) const
     {
       Point<dim> position_point;
       for (unsigned int i = 0; i < dim; i++)

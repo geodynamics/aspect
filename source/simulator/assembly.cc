@@ -113,7 +113,7 @@ namespace aspect
     template <int dim, class AssemblerType>
     void
     initialize_simulator(const Simulator<dim> &simulator,
-                         std::vector<std_cxx11::unique_ptr<AssemblerType> > &assemblers)
+                         std::vector<std::unique_ptr<AssemblerType> > &assemblers)
     {
       for (unsigned int i=0; i<assemblers.size(); ++i)
         if (SimulatorAccess<dim> *p = dynamic_cast<SimulatorAccess<dim>* >(assemblers[i].get()))
@@ -380,16 +380,16 @@ namespace aspect
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std_cxx11::bind (&Simulator<dim>::
-                          local_assemble_stokes_preconditioner,
-                          this,
-                          std_cxx11::_1,
-                          std_cxx11::_2,
-                          std_cxx11::_3),
-         std_cxx11::bind (&Simulator<dim>::
-                          copy_local_to_global_stokes_preconditioner,
-                          this,
-                          std_cxx11::_1),
+         std::bind (&Simulator<dim>::
+                    local_assemble_stokes_preconditioner,
+                    this,
+                    std::placeholders::_1,
+                    std::placeholders::_2,
+                    std::placeholders::_3),
+         std::bind (&Simulator<dim>::
+                    copy_local_to_global_stokes_preconditioner,
+                    this,
+                    std::placeholders::_1),
          internal::Assembly::Scratch::
          StokesPreconditioner<dim> (finite_element, quadrature_formula,
                                     *mapping,
@@ -732,16 +732,16 @@ namespace aspect
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std_cxx11::bind (&Simulator<dim>::
-                          local_assemble_stokes_system,
-                          this,
-                          std_cxx11::_1,
-                          std_cxx11::_2,
-                          std_cxx11::_3),
-         std_cxx11::bind (&Simulator<dim>::
-                          copy_local_to_global_stokes_system,
-                          this,
-                          std_cxx11::_1),
+         std::bind (&Simulator<dim>::
+                    local_assemble_stokes_system,
+                    this,
+                    std::placeholders::_1,
+                    std::placeholders::_2,
+                    std::placeholders::_3),
+         std::bind (&Simulator<dim>::
+                    copy_local_to_global_stokes_system,
+                    this,
+                    std::placeholders::_1),
          internal::Assembly::Scratch::
          StokesSystem<dim> (finite_element, *mapping, quadrature_formula,
                             face_quadrature_formula,
@@ -1124,19 +1124,19 @@ namespace aspect
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std_cxx11::bind (&Simulator<dim>::
-                          local_assemble_advection_system,
-                          this,
-                          advection_field,
-                          std_cxx11::cref(viscosity_per_cell),
-                          std_cxx11::_1,
-                          std_cxx11::_2,
-                          std_cxx11::_3),
-         std_cxx11::bind (&Simulator<dim>::
-                          copy_local_to_global_advection_system,
-                          this,
-                          std_cxx11::cref(advection_field),
-                          std_cxx11::_1),
+         std::bind (&Simulator<dim>::
+                    local_assemble_advection_system,
+                    this,
+                    advection_field,
+                    std::cref(viscosity_per_cell),
+                    std::placeholders::_1,
+                    std::placeholders::_2,
+                    std::placeholders::_3),
+         std::bind (&Simulator<dim>::
+                    copy_local_to_global_advection_system,
+                    this,
+                    std::cref(advection_field),
+                    std::placeholders::_1),
          internal::Assembly::Scratch::
          AdvectionSystem<dim> (finite_element,
                                finite_element.base_element(advection_field.base_element(introspection)),

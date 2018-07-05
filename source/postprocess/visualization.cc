@@ -720,7 +720,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx11::tuple
+      std::tuple
       <void *,
       void *,
       aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<2> >,
@@ -849,7 +849,7 @@ namespace aspect
           // finally also construct a string for Patterns::MultipleSelection that
           // contains the names of all registered visualization postprocessors
           const std::string pattern_of_names
-            = std_cxx11::get<dim>(registered_visualization_plugins).get_pattern_of_names ();
+            = std::get<dim>(registered_visualization_plugins).get_pattern_of_names ();
           prm.declare_entry("List of output variables",
                             "",
                             Patterns::MultipleSelection(pattern_of_names),
@@ -866,7 +866,7 @@ namespace aspect
                             "to have in your output file.\n\n"
                             "The following postprocessors are available:\n\n"
                             +
-                            std_cxx11::get<dim>(registered_visualization_plugins).get_description_string());
+                            std::get<dim>(registered_visualization_plugins).get_description_string());
         }
         prm.leave_subsection();
       }
@@ -874,7 +874,7 @@ namespace aspect
 
       // now declare the parameters of each of the registered
       // visualization postprocessors in turn
-      std_cxx11::get<dim>(registered_visualization_plugins).declare_parameters (prm);
+      std::get<dim>(registered_visualization_plugins).declare_parameters (prm);
     }
 
 
@@ -882,7 +882,7 @@ namespace aspect
     void
     Visualization<dim>::parse_parameters (ParameterHandler &prm)
     {
-      Assert (std_cxx11::get<dim>(registered_visualization_plugins).plugins != 0,
+      Assert (std::get<dim>(registered_visualization_plugins).plugins != 0,
               ExcMessage ("No postprocessors registered!?"));
       std::vector<std::string> viz_names;
 
@@ -949,9 +949,9 @@ namespace aspect
             {
               viz_names.clear();
               for (typename std::list<typename aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<dim> >::PluginInfo>::const_iterator
-                   p = std_cxx11::get<dim>(registered_visualization_plugins).plugins->begin();
-                   p != std_cxx11::get<dim>(registered_visualization_plugins).plugins->end(); ++p)
-                viz_names.push_back (std_cxx11::get<0>(*p));
+                   p = std::get<dim>(registered_visualization_plugins).plugins->begin();
+                   p != std::get<dim>(registered_visualization_plugins).plugins->end(); ++p)
+                viz_names.push_back (std::get<0>(*p));
             }
         }
         prm.leave_subsection();
@@ -963,7 +963,7 @@ namespace aspect
       for (unsigned int name=0; name<viz_names.size(); ++name)
         {
           VisualizationPostprocessors::Interface<dim> *
-          viz_postprocessor = std_cxx11::get<dim>(registered_visualization_plugins)
+          viz_postprocessor = std::get<dim>(registered_visualization_plugins)
                               .create_plugin (viz_names[name],
                                               "Visualization plugins");
 
@@ -993,7 +993,7 @@ namespace aspect
       // Finally also set up a listener to check when the mesh changes
       mesh_changed = true;
       this->get_triangulation().signals.post_refinement
-      .connect(std_cxx11::bind(&Visualization::mesh_changed_signal, std_cxx11::ref(*this)));
+      .connect(std::bind(&Visualization::mesh_changed_signal, std::ref(*this)));
     }
 
 
@@ -1077,10 +1077,10 @@ namespace aspect
                                           void (*declare_parameters_function) (ParameterHandler &),
                                           VisualizationPostprocessors::Interface<dim> *(*factory_function) ())
     {
-      std_cxx11::get<dim>(registered_visualization_plugins).register_plugin (name,
-                                                                             description,
-                                                                             declare_parameters_function,
-                                                                             factory_function);
+      std::get<dim>(registered_visualization_plugins).register_plugin (name,
+                                                                       description,
+                                                                       declare_parameters_function,
+                                                                       factory_function);
     }
 
 
@@ -1117,7 +1117,7 @@ namespace aspect
       // Simulator class, but they are a sub-system of
       // the Postprocessor plugin system. indicate this
       // through the last argument of the function call
-      std_cxx11::get<dim>(registered_visualization_plugins)
+      std::get<dim>(registered_visualization_plugins)
       .write_plugin_graph ("Visualization postprocessor interface",
                            out,
                            typeid(Visualization<dim>).name());

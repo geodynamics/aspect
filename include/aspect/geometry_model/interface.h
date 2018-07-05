@@ -25,7 +25,7 @@
 #include <aspect/plugins.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/distributed/tria.h>
-#include <deal.II/base/std_cxx11/array.h>
+#include <array>
 #include <aspect/utilities.h>
 #include <aspect/coordinate_systems.h>
 
@@ -167,7 +167,7 @@ namespace aspect
          * latitude) in 3d.
          */
         virtual
-        std_cxx11::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const;
+        std::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const;
 
         /**
          * Undoes the action of cartesian_to_natural_coordinates, and turns the
@@ -175,7 +175,7 @@ namespace aspect
          * Cartesian coordinates.
          */
         virtual
-        Point<dim> natural_to_cartesian_coordinates(const std_cxx11::array<double,dim> &position) const;
+        Point<dim> natural_to_cartesian_coordinates(const std::array<double,dim> &position) const;
 
         /**
          * Returns a representative point for a given depth. Such a point must

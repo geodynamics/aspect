@@ -114,7 +114,7 @@ namespace aspect
       }
 
       template <int dim>
-      std::vector<std_cxx11::tuple<unsigned int, unsigned int, std::string> >
+      std::vector<std::tuple<unsigned int, unsigned int, std::string> >
       ParticleOutput<dim>::get_vector_data_ranges () const
       {
         return vector_datasets;

@@ -422,7 +422,7 @@ namespace aspect
 
 
     template <int dim>
-    std_cxx1x::array<std::pair<double, unsigned int>,2>
+    std::array<std::pair<double, unsigned int>,2>
     Steinberger<dim>::
     enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const
     {
@@ -430,7 +430,7 @@ namespace aspect
       // we use might be on a finer grid than our model. Because of that we compute the enthalpy
       // derivatives by using finite differences that average over the whole temperature and
       // pressure range that is used in this cell. This way we should not miss any phase transformation.
-      std_cxx1x::array<std::pair<double, unsigned int>,2> derivative;
+      std::array<std::pair<double, unsigned int>,2> derivative;
 
       // get the pressures and temperatures at the vertices of the cell
       const QTrapez<dim> quadrature_formula;
@@ -509,7 +509,7 @@ namespace aspect
           average_temperature /= in.position.size();
           average_density /= in.position.size();
 
-          std_cxx1x::array<std::pair<double, unsigned int>,2> dH;
+          std::array<std::pair<double, unsigned int>,2> dH;
           if (in.current_cell.state() == IteratorState::valid)
             dH = enthalpy_derivative(in);
 

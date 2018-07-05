@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <deal.II/base/std_cxx11/array.h>
+#include <array>
 #include <aspect/material_model/averaging.h>
 #include <utility>
 #include <limits>

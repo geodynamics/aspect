@@ -24,7 +24,7 @@
 #include <aspect/simulator_access.h>
 
 #include <deal.II/base/exceptions.h>
-#include <deal.II/base/std_cxx1x/tuple.h>
+#include <tuple>
 
 #include <list>
 
@@ -103,7 +103,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx1x::tuple
+      std::tuple
       <void *,
       void *,
       aspect::internal::Plugins::PluginList<Interface<2> >,
@@ -119,10 +119,10 @@ namespace aspect
                                 void (*declare_parameters_function) (ParameterHandler &),
                                 Interface<dim> *(*factory_function) ())
     {
-      std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
-                                                               description,
-                                                               declare_parameters_function,
-                                                               factory_function);
+      std::get<dim>(registered_plugins).register_plugin (name,
+                                                         description,
+                                                         declare_parameters_function,
+                                                         factory_function);
     }
 
 
@@ -130,8 +130,8 @@ namespace aspect
     Interface<dim> *
     create_boundary_traction (const std::string &name)
     {
-      Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
-                                                                                      "Boundary traction conditions");
+      Interface<dim> *plugin = std::get<dim>(registered_plugins).create_plugin (name,
+                                                                                "Boundary traction conditions");
       return plugin;
     }
 
@@ -141,7 +141,7 @@ namespace aspect
     std::string
     get_names ()
     {
-      return std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
+      return std::get<dim>(registered_plugins).get_pattern_of_names ();
     }
 
 
@@ -150,7 +150,7 @@ namespace aspect
     void
     declare_parameters (ParameterHandler &prm)
     {
-      std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -159,8 +159,8 @@ namespace aspect
     void
     write_plugin_graph (std::ostream &out)
     {
-      std_cxx11::get<dim>(registered_plugins).write_plugin_graph ("Boundary traction interface",
-                                                                  out);
+      std::get<dim>(registered_plugins).write_plugin_graph ("Boundary traction interface",
+                                                            out);
     }
   }
 }

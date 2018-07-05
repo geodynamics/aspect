@@ -196,7 +196,7 @@ namespace aspect
          * if the temperature and pressure on all vertices of the current
          * cell is identical.
          */
-        std_cxx1x::array<std::pair<double, unsigned int>,2>
+        std::array<std::pair<double, unsigned int>,2>
         enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const;
         /**
          * @}

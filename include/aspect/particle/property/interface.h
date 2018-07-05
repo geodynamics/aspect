@@ -29,7 +29,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/plugins.h>
 
-#include <deal.II/base/std_cxx1x/shared_ptr.h>
+#include <memory>
 #include <deal.II/fe/fe_update_flags.h>
 
 namespace aspect
