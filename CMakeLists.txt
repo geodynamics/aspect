@@ -24,8 +24,8 @@ MESSAGE(STATUS "====================================================")
 # Set the name of the project and target:
 SET(TARGET "aspect")
 
-FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
-INCLUDE_DIRECTORIES(include ${CMAKE_BINARY_DIR}/include contrib/catch)
+FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp" "contrib/world_builder/source/*.cc")
+INCLUDE_DIRECTORIES(include ${CMAKE_BINARY_DIR}/include contrib/catch contrib/world_builder/include/)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
 

@@ -41,6 +41,10 @@
 #endif
 
 
+namespace WorldBuilder
+{
+  class World;
+}
 
 namespace aspect
 {
@@ -117,6 +121,7 @@ namespace aspect
   {
     template <int dim> class Interface;
   }
+
 
   namespace MeshRefinement
   {
@@ -733,6 +738,13 @@ namespace aspect
        */
       const NewtonHandler<dim> &
       get_newton_handler () const;
+
+      /**
+       * Return a reference to the world builder that controls the
+       * setup of initial conditions.
+       */
+      const WorldBuilder::World &
+      get_world_builder () const;
 
       /**
        * Return a reference to the free surface handler. This function will

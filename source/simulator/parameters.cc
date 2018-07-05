@@ -281,6 +281,10 @@ namespace aspect
                        "heating\\_reaction\\_rates structures. Operator splitting can be used with any "
                        "existing solver schemes that solve the temperature/composition equations.");
 
+    prm.declare_entry ("World builder file", "",
+                       Patterns::FileName(),
+                       "Name of the world builder file. If empty, the world builder is not initialized.");
+
     prm.enter_subsection ("Solver parameters");
     {
       prm.declare_entry ("Temperature solver tolerance", "1e-12",
@@ -1073,6 +1077,7 @@ namespace aspect
     use_conduction_timestep = prm.get_bool ("Use conduction timestep");
     convert_to_years        = prm.get_bool ("Use years in output instead of seconds");
     timing_output_frequency = prm.get_integer ("Timing output frequency");
+    world_builder_file      = prm.get("World builder file");
 
     maximum_time_step       = prm.get_double("Maximum time step");
     if (convert_to_years == true)
