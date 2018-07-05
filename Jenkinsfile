@@ -3,8 +3,8 @@
 pipeline {
   agent {
     docker {
-        image 'dealii/dealii:v8.5.1-gcc-mpi-fulldepscandi-debugrelease'
-	label 'has-docker'
+      image 'dealii/dealii:v8.5.1-gcc-mpi-fulldepscandi-debugrelease'
+      label 'has-docker'
     }
   }
 
@@ -24,53 +24,49 @@ pipeline {
         echo "CHANGE_AUTHOR: ${env.CHANGE_AUTHOR}"
         echo "CHANGE_AUTHOR_DISPLAY_NAME: ${env.CHANGE_AUTHOR_DISPLAY_NAME}"
         echo "building on node ${env.NODE_NAME}"
-	githubNotify context: 'astyle', description: '', status: 'PENDING', targetUrl: ''
-	}
+        githubNotify context: 'astyle', description: '', status: 'PENDING', targetUrl: ''
+      }
     }
 
     stage ("Check permissions") {
       when {
-	allOf {
-            environment name: 'TRUST_BUILD', value: 'false' 
-            not {branch 'master'}
-            not {changeRequest authorEmail: "rene.gassmoeller@mailbox.org"}
-            not {changeRequest authorEmail: "heister@clemson.edu"}
-            not {changeRequest authorEmail: "bangerth@colostate.edu"}
-            not {changeRequest authorEmail: "judannberg@gmail.com"}
-            not {changeRequest authorEmail: "ja3170@columbia.edu"}
-            not {changeRequest authorEmail: "jbnaliboff@ucdavis.edu"}
-            not {changeRequest authorEmail: "menno.fraters@outlook.com"}
-            not {changeRequest authorEmail: "a.c.glerum@uu.nl"}
-	    }
+        allOf {
+          environment name: 'TRUST_BUILD', value: 'false'
+          not {branch 'master'}
+          not {changeRequest authorEmail: "rene.gassmoeller@mailbox.org"}
+          not {changeRequest authorEmail: "heister@clemson.edu"}
+          not {changeRequest authorEmail: "bangerth@colostate.edu"}
+          not {changeRequest authorEmail: "judannberg@gmail.com"}
+          not {changeRequest authorEmail: "ja3170@columbia.edu"}
+          not {changeRequest authorEmail: "jbnaliboff@ucdavis.edu"}
+          not {changeRequest authorEmail: "menno.fraters@outlook.com"}
+          not {changeRequest authorEmail: "a.c.glerum@uu.nl"}
+        }
       }
       steps {
- 	  githubNotify context: 'trusted', description: '', status: 'PENDING', targetUrl: '${env.JOB_URL}/build?delay=0sec'
-	  echo "Please ask an admin to rerun jenkins with TRUST_BUILD=true"
-	    sh "exit 1"
+        githubNotify context: 'trusted', description: '', status: 'PENDING', targetUrl: '${env.JOB_URL}/build?delay=0sec'
+        echo "Please ask an admin to rerun jenkins with TRUST_BUILD=true"
+        sh "exit 1"
       }
     }
 
     stage('Check indentation') {
       steps {
- 	  githubNotify context: 'trusted', description: '', status: 'SUCCESS', targetUrl: ''
-	  
+        githubNotify context: 'trusted', description: '', status: 'SUCCESS', targetUrl: ''
         sh './doc/indent'
         sh 'git diff > changes-astyle.diff'
         archiveArtifacts artifacts: 'changes-astyle.diff', fingerprint: true
         sh '''
-	  git diff --exit-code || \
-	  { echo "Please check indentation, see artifacts in the top right corner!"; exit 1; }
-	  '''
-	  	githubNotify context: 'astyle', description: '', status: 'SUCCESS', targetUrl: ''
-	  }
-
-	  post {
-	  failure
-	  {
-	  	githubNotify context: 'astyle', description: '', status: 'FAILURE', targetUrl: ''
-	  }
-	  }
-
+          git diff --exit-code || \
+          { echo "Please check indentation, see artifacts in the top right corner!"; exit 1; }
+        '''
+        githubNotify context: 'astyle', description: '', status: 'SUCCESS', targetUrl: ''
+      }
+      post {
+        failure {
+          githubNotify context: 'astyle', description: '', status: 'FAILURE', targetUrl: ''
+        }
+      }
     }
 
     stage('Build') {
@@ -81,15 +77,15 @@ pipeline {
           mkdir -p /home/dealii/build-gcc-fast
           cd /home/dealii/build-gcc-fast
           cmake -G "Ninja" \
-	  	-D DEAL_II_CXX_FLAGS='-Werror' \
-	  	-D ASPECT_TEST_GENERATOR=Ninja \
-		-D ASPECT_USE_PETSC=OFF \
-		-D ASPECT_RUN_ALL_TESTS=ON \
-		-D ASPECT_PRECOMPILE_HEADERS=ON \
-		$WORKSPACE/
+            -D DEAL_II_CXX_FLAGS='-Werror' \
+            -D ASPECT_TEST_GENERATOR=Ninja \
+            -D ASPECT_USE_PETSC=OFF \
+            -D ASPECT_RUN_ALL_TESTS=ON \
+            -D ASPECT_PRECOMPILE_HEADERS=ON \
+            $WORKSPACE/
           ninja -j $NP
         '''
-      } 
+      }
     }
 
     stage('Prebuild tests') {
@@ -99,9 +95,9 @@ pipeline {
           export OMPI_MCA_btl=self,tcp
           cd /home/dealii/build-gcc-fast/tests
           echo "Prebuilding tests..."
-	  ninja -k 0 tests || true
-	  '''
-	  }
+          ninja -k 0 tests || true
+        '''
+      }
     }
 
     stage('Run tests') {
