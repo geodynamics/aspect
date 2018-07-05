@@ -186,6 +186,11 @@ namespace aspect
          */
         unsigned int vs_to_density_index;
 
+        /**
+         * Whether to use the thermal expansion coefficient from the material model
+         */
+        bool use_material_model_thermal_alpha;
+
     };
 
   }

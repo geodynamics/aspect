@@ -22,6 +22,9 @@
 #include <aspect/initial_temperature/S40RTS_perturbation.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/utilities.h>
+#include <aspect/simulator_access.h>
+#include <aspect/initial_composition/interface.h>
+#include <aspect/material_model/interface.h>
 #include <fstream>
 #include <iostream>
 #include <deal.II/base/std_cxx11/array.h>
@@ -337,8 +340,28 @@ namespace aspect
 
       double temperature_perturbation;
       if (depth > no_perturbation_depth)
-        // scale the density perturbation into a temperature perturbation
-        temperature_perturbation =  -1./thermal_alpha * density_perturbation;
+        {
+          // scale the density perturbation into a temperature perturbation
+          // see if we need to ask material model for the thermal expansion coefficient
+          if (use_material_model_thermal_alpha)
+            {
+              MaterialModel::MaterialModelInputs<3> in(1, this->n_compositional_fields());
+              MaterialModel::MaterialModelOutputs<3> out(1, this->n_compositional_fields());
+              in.position[0] = position;
+              in.temperature[0] = background_temperature;
+              in.pressure[0] = this->get_adiabatic_conditions().pressure(position);
+              in.velocity[0] = Tensor<1,3> ();
+              for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                in.composition[0][c] = this->get_initial_composition_manager().initial_composition(position, c);
+              in.strain_rate.resize(0);
+
+              this->get_material_model().evaluate(in, out);
+
+              temperature_perturbation = -1./(out.thermal_expansion_coefficients[0]) * density_perturbation;
+            }
+          else
+            temperature_perturbation = -1./thermal_alpha * density_perturbation;
+        }
       else
         // set heterogeneity to zero down to a specified depth
         temperature_perturbation = 0.0;
@@ -356,9 +379,9 @@ namespace aspect
       {
         prm.enter_subsection("S40RTS perturbation");
         {
-          prm.declare_entry("Data directory", "$ASPECT_SOURCE_DIR/data/initial-temperature/S40RTS/",
-                            Patterns::DirectoryName (),
-                            "The path to the model data. ");
+          prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/initial-temperature/S40RTS/",
+                             Patterns::DirectoryName (),
+                             "The path to the model data. ");
           prm.declare_entry ("Initial condition file name", "S40RTS.sph",
                              Patterns::Anything(),
                              "The file name of the spherical harmonics coefficients "
@@ -380,6 +403,11 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the thermal expansion coefficient $\\beta$. "
                              "Units: $1/K$.");
+          prm.declare_entry ("Use thermal expansion coefficient from material model", "false",
+                             Patterns::Bool (),
+                             "Option to take the thermal expansion coefficient from the "
+                             "material model instead of from what is specified in this "
+                             "section.");
           prm.declare_entry ("Remove degree 0 from perturbation","true",
                              Patterns::Bool (),
                              "Option to remove the degree zero component from the perturbation, "
@@ -439,6 +467,7 @@ namespace aspect
           spline_depth_file_name  = prm.get ("Spline knots depth file name");
           vs_to_density_constant           = prm.get_double ("Vs to density scaling");
           thermal_alpha           = prm.get_double ("Thermal expansion coefficient in initial temperature scaling");
+          use_material_model_thermal_alpha = prm.get_bool ("Use thermal expansion coefficient from material model");
           zero_out_degree_0       = prm.get_bool ("Remove degree 0 from perturbation");
           reference_temperature   = prm.get_double ("Reference temperature");
           no_perturbation_depth   = prm.get_double ("Remove temperature heterogeneity down to specified depth");
