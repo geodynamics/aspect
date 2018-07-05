@@ -877,8 +877,8 @@ Units $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}} =
 
 \newcommand {\pddc}[3]{\left( \frac{\partial #1}{\partial #2} \right)_{#3}}
 \newcommand {\pddsq}[3]{\left( \frac{\partial^2 #1}{\partial {#2}^2}  \right)_{#3}}
-\newcommand {\pddsqc}[3]{\frac{\partial^2 #1}{\partial {#2} \partial {#3}}}
-\newcommand {\pddcbc}[3]{\frac{\partial^3 #1}{\partial {#2}^2 \partial {#3}}}
+\newcommand {\pddsqc}[3]{\frac{\partial^2 #1}{\partial {#2} \, \partial {#3}}}
+\newcommand {\pddcbc}[3]{\frac{\partial^3 #1}{\partial {#2}^2 \, \partial {#3}}}
 
 The coefficients in the previous section may at first appear independent.
 However, there are thermodynamic relations between these properties which must be
@@ -887,25 +887,27 @@ The following section describes the relations required for thermodynamic
 consistency, and presents some suggested ways by which consistency can be assured.
 
 In order to derive the relationships between different material properties, we must
-introduce a thermodynamic potential known as the specific Gibbs free energy
-$\mathcal{G}(p, T)$ [\textit{J/kg}]. The word ``specific'' indicates that the energy is
-given per unit mass, rather than volume or number of atoms/molecules. This potential is
+introduce a thermodynamic potential known as the
+\href{https://en.wikipedia.org/wiki/Gibbs_free_energy}{\textit{specific
+    Gibbs free energy}}
+$\mathcal{G}(p, T)$ with units $\text{J}/\text{kg}$. The word ``specific'' indicates that the energy is
+given per unit mass, rather than volume or number of atoms or molecules. This potential is
 equal to the maximum amount of non-expansion work that can be extracted from a
 thermodynamically closed system. At equilibrium conditions and fixed temperature and
 pressure, the Gibbs free energy is minimized. The following equations provide the
 definitions and relationships between thermodynamic properties in terms of the specific
 Gibbs free energy:
 \begin{eqnarray}
-  S &=& -\pddc{\mathcal{G}}{T}{p} \\
-  \frac{1}{\rho} &=& \pddc{\mathcal{G}}{p}{T} \label{eq:mm_density} \\
-  \frac{\alpha}{\rho} &=& \pddsqc{\mathcal{G}}{p}{T} \label{eq:mm_alpha_g} \\
-  \beta_T &=& -\rho \pddsq{\mathcal{G}}{p}{T} \label{eq:mm_betaT_g} \\
-  C_p &=& -T \pddsq{\mathcal{G}}{T}{p} \label{eq:mm_isobaric_heat_capacity} \\
-  \beta_S &=& \beta_T - \frac{\alpha^2 T}{\rho C_p} \label{eq:mm_isentropic_compressibility} \\
-  \frac{C_V}{C_p} &=& \frac{\beta_S}{\beta_T} \\
-  \gamma &=& \frac{\alpha }{\beta_T \rho C_V} 
+  S &=& -\pddc{\mathcal{G}}{T}{p}, \\
+  \frac{1}{\rho} &=& \pddc{\mathcal{G}}{p}{T}, \label{eq:mm_density} \\
+  \frac{\alpha}{\rho} &=& \pddsqc{\mathcal{G}}{p}{T}, \label{eq:mm_alpha_g} \\
+  \beta_T &=& -\rho \pddsq{\mathcal{G}}{p}{T}, \label{eq:mm_betaT_g} \\
+  C_p &=& -T \pddsq{\mathcal{G}}{T}{p}, \label{eq:mm_isobaric_heat_capacity} \\
+  \beta_S &=& \beta_T - \frac{\alpha^2 T}{\rho C_p}, \label{eq:mm_isentropic_compressibility} \\
+  \frac{C_V}{C_p} &=& \frac{\beta_S}{\beta_T}, \\
+  \gamma &=& \frac{\alpha }{\beta_T \rho C_V}. 
 \end{eqnarray}
-\noindent where $S$ is the specific entropy, $C_p$ and $C_V$ are the specific isobaric
+where $S$ is the specific entropy, $C_p$ and $C_V$ are the specific isobaric
 and isenchoric heat capacities, $\beta_T$ and $\beta_S$ are the isothermal and isotropic
 compressibilities, and $\gamma$ is the thermodynamic Gr\"{u}neisen parameter. The subscript
 indicates the thermodynamic variable ($p$ or $T$) that is held constant.
@@ -922,8 +924,8 @@ models in \aspect{}.
 Using the chain rule to combine~\eqref{eq:mm_density},~\eqref{eq:mm_alpha_g}
 and~\eqref{eq:mm_betaT_g} yields the more familiar definitions of $\alpha$ and $\beta_T$:
 \begin{eqnarray}
-  \alpha &=& -\frac{1}{\rho} \pddc{\rho}{T}{p} \label{eq:mm_thermal_expansivity} \\
-  \beta_T &=& \frac{1}{\rho} \pddc{\rho}{p}{T} \label{eq:mm_isothermal_compressibility}
+  \alpha &=& -\frac{1}{\rho} \pddc{\rho}{T}{p}, \label{eq:mm_thermal_expansivity} \\
+  \beta_T &=& \frac{1}{\rho} \pddc{\rho}{p}{T}. \label{eq:mm_isothermal_compressibility}
 \end{eqnarray}
 
 \paragraph{Isobaric heat capacity}
@@ -932,21 +934,25 @@ We start by taking the partial derivative of the isobaric heat
 capacity~\eqref{eq:mm_isobaric_heat_capacity} with respect to pressure at constant temperature:
 \begin{eqnarray}
   \pddc{C_p}{p}{T} &=& -T \pddcbc{\mathcal{G}}{T}{p} \\
-  &=& -T\pddc{\left(\alpha / \rho \right)}{T}{p} \label{eq:heat_capacity_p_dependence}
+  &=& -T\pddc{\left(\alpha / \rho \right)}{T}{p}. \label{eq:heat_capacity_p_dependence}
 \end{eqnarray}
 From this expression it becomes clear that if $\alpha / \rho$ has any temperature dependence,
-the heat capacity \emph{cannot} be globally constant. One way to solve this issue is to define
+the heat capacity $C_p$ \emph{cannot} be globally constant. One way to solve this issue is to define
 heat capacity at constant pressure, and then integrate~\eqref{eq:heat_capacity_p_dependence}
 with respect to pressure:
 \begin{equation}
-  C_p(p, T) = C_p(p_{\textrm{ref}}, T) -T \int_{p_{\textrm{ref}}}^p \pddc{\left(\alpha / \rho \right)}{T}{p} dp
+  C_p(p, T)
+  = C_p(p_{\textrm{ref}}, T) -T \int_{p_{\textrm{ref}}}^p
+  \pddc{\left(\alpha / \rho \right)}{T}{p}
+  \text{d}p.
 \end{equation}
-There is no guarantee that this expression will have a simple form. 
+There is no guarantee that this expression will have a simple form for
+which the integral can be found analytically. 
 
 \paragraph{Isentropic gradient}
 The material properties also define the slope of the adiabat (the change in temperature with
 pressure at constant entropy) at all pressures and temperatures. Using the cyclic relation,
-we can define this in terms of partial differentials of the entropy with respect to pressure
+we can define this slope in terms of partial differentials of the entropy with respect to pressure
 and temperature:
 \begin{eqnarray}
   \pddc{T}{p}{S} &=& - \pddc{T}{S}{p} \pddc{S}{p}{T} \\
@@ -958,10 +964,14 @@ self-consistent, the adiabat must be computed following this relation.
 
 For complex material models, obtaining analytical functions which obey all these relations
 may be a non-trivial exercise. Furthermore, it is often not immediately clear when a
-given formulation is thermodynamically inconsistent. Indeed, there are many equations
-of state which exist in the thermodynamic literature which do not obey these relations! 
+given formulation is thermodynamically inconsistent. Indeed, both the
+thermodynamic and the geodynamic literature contain many equations of
+state and material parameterizations which do not obey these
+relations! This may not invalidate the results obtained with these
+models, but it is a point worth keeping in mind as the geodynamics
+community moves to more complicated and more realistic parameterizations.
 
-\emph{A final note of warning: some compressible formulations in \aspect{}
+\emph{A final note of warning: Some compressible formulations in \aspect{}
   (Section~\ref{sec:mass-conservation-approximation}) use the isothermal compressibility,
   while others use the isentropic compressibility. Fully self-consistent material models must
   either specify what approximation of the compressible equations they are consistent with
