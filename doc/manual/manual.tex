@@ -10119,7 +10119,11 @@ The viscosity is defined as
 \mu(y)=\frac{1}{\frac{1}{\pi} \tan^{-1} (\frac{y-y_0}{\beta} ) + 1/2 + \epsilon}
 \]
 where $\beta$ and $\epsilon$ are chosen by the user. 
-Viscosity profiles for different values of $\beta$ and $\epsilon$ are shown in Fig.~\ref{fig:layeredflow1}.
+Viscosity profiles for different values of $\beta$ and $\epsilon$ are
+shown in Fig.~\ref{fig:layeredflow1}. The set up of this benchmark
+allows testing how discretizations deal with abrupt changes in the
+viscosity (if $\beta$ is small) as well as large changes in the
+viscosity (if $\epsilon$ is small).
 
 \begin{figure}
 \begin{center}
