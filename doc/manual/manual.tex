@@ -10142,17 +10142,20 @@ At the bottom we impose $v_x(y=-1)=0$, while we impose $v_x(y=+1)=1$ at the top.
 The density is set to 1 while the gravity is set to zero.
 Under these assumptions, the flow velocity and pressure fields are given by:
 \begin{eqnarray}
-v_x(x,y)&=&\frac{1}{2\pi} \left(  -\beta C_1 \log [\beta^2 + (z-z_0)^2]  + 2 (z-z_0)  C_1 \tan^{-1} \frac{z-z_0}{\beta} + \pi (1+2\epsilon) z C_1  + C_2 \right) \nonumber\\
-v_y(x,y) &=& 0 \nonumber\\ 
-p(x,y) &=& 0 
+v_x(x,y)&=&\frac{1}{2\pi} \left(  -\beta C_1 \log [\beta^2 + (z-z_0)^2]  + 2 (z-z_0)  C_1 \tan^{-1} \frac{z-z_0}{\beta} + \pi (1+2\epsilon) z C_1  + C_2 \right), \nonumber\\
+v_y(x,y) &=& 0, \nonumber\\ 
+p(x,y) &=& 0,
 \end{eqnarray}
 where $C_1$ and $C_2$ are integration constants:
-\begin{eqnarray}
-C_1 &=& 2\pi \left[ 
- \beta  \log [\beta^2 + (1+z_0)^2]  -  2(1+z_0) \tan^{-1} \frac{1+z_0}{\beta} 
--\beta  \log [\beta^2 + (1-z_0)^2]  +  2(1-z_0) \tan^{-1} \frac{1-z_0}{\beta} + 2\pi (1+2\epsilon)   \right]^{-1} \nonumber\\
-C_2 &=& \left[ \beta  \log [\beta^2 + (1+z_0)^2]  -  2(1+z_0) \tan^{-1} \frac{1+z_0}{\beta} + \pi(1+2\epsilon) \right]C_1, 
-\end{eqnarray}
+\begin{eqnarray*}
+C_1 &=& 2\pi \Bigl[ 
+ \beta  \log [\beta^2 + (1+z_0)^2]  -  2(1+z_0) \tan^{-1}
+ \frac{1+z_0}{\beta}
+ \\
+ &&\qquad\qquad
+-\beta  \log [\beta^2 + (1-z_0)^2]  +  2(1-z_0) \tan^{-1} \frac{1-z_0}{\beta} + 2\pi (1+2\epsilon)   \Bigr]^{-1},\\
+C_2 &=& \left[ \beta  \log [\beta^2 + (1+z_0)^2]  -  2(1+z_0) \tan^{-1} \frac{1+z_0}{\beta} + \pi(1+2\epsilon) \right]C_1.
+\end{eqnarray*}
 The viscosity and velocity fields are shown in Fig.~\ref{fig:layeredflow2} for $\beta=0.01$ and $\epsilon=0.05$. 
 
 \begin{figure}
