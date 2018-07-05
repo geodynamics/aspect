@@ -191,7 +191,7 @@ namespace aspect
           prm.declare_entry ("Time between point values output", "0",
                              Patterns::Double (0),
                              "The time interval between each generation of "
-                             "graphical output files. A value of zero indicates "
+                             "point values output. A value of zero indicates "
                              "that output should be generated in each time step. "
                              "Units: years if the "
                              "'Use years in output instead of seconds' parameter is set; "
