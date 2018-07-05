@@ -2027,20 +2027,20 @@ that it is compressible and ``incompressible'' otherwise.
 
 \note{\textbf{The stress tensor approximation.}
 
-Incompressibility in the mass conservation equation automatically simplifies the shear strain rate in the momentum and temperature equation from
+  If a medium is incompressible, that is if the mass conservation
+equation reads $\nabla \cdot \mathbf u =
+0$, then the shear stress in the momentum and temperature
+equation simplifies from
 \[
- \nabla \cdot \tau = 
- \nabla \cdot \left[
+ \tau = 
  2\eta \left(\varepsilon(\mathbf u)
                                   - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
-                                  \right]
 \]
 to
 \[
-  \nabla \cdot \tau =  \nabla \cdot \left[
- 2\eta \varepsilon(\mathbf u) \right], 
+  \tau =
+ 2\eta \varepsilon(\mathbf u). 
 \]
-as $\nabla \cdot \mathbf u = 0$.
 }
 
 \subsubsection{Temperature equation approximation}
