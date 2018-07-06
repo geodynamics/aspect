@@ -89,17 +89,31 @@ namespace aspect
                                          std::abs(strain_rate_eigenvalues[dim-1]));
                 const double tauISA = 1.0 / lambda1;
 
-                // Get the deformation gradient tensor in the limit of "infinite" time
-                // from the velocity gradient tensor. As per Kaminski and Ribe (2002),
-                // tmax = 75*tauISA is infinite enough for most applications.
-                unsigned int maxorder = 4;
-                Tensor<2, dim> F = unit_symmetric_tensor<dim, double>();
-                const double tmax = 75 * tauISA;
+                // Next, we want the ~infinite strain axis, so we start by
+                // calculating the deformation gradient tensor in the limit of "infinite"
+                // time using the velocity gradient tensor. The deformation gradient tensor (F) obeys
+                // dF/dt = LF
+                // where L is the velocity gradient tensor, and F(t=0) = I. The solution to this is
+                // F = exp(Lt)
+                // which can be written as an infinite sum:
+                // F = I + Lt + L^2/2! + L^3/3! + ...
+                // and then the "left stretch" tensor is U = F^T * F
+                // We truncate the series sum at the L^3 term. Note that L is sometimes
+                // taken to be the strain rate tensor (ie the velocity gradient without
+                // the rotational component).
+                // The eigenvectors of U are the directions of the major axes of the finite
+                // strain ellipsoid, so for the *infinite* strain axis, we want the eigenvector
+                // corresponding to the largest eigenvalue of U in the limit as t->infinity.
+                // As per Kaminski and Ribe (2002), tmax = 75*tauISA is infinite enough for
+                // most applications.
+                unsigned int maxorder = 4; // truncate at L^3
+                Tensor<2, dim> F = unit_symmetric_tensor<dim, double>(); // initialize as identity (first term of sum)
+                const double tmax = 75 * tauISA; // "infinite" time
 
-                for (unsigned int i = 0; i < maxorder; ++i)
+                for (unsigned int i = 0; i < maxorder; ++i) // loop and calculate terms of sum
                   {
-                    Tensor<2, dim> multiplier = unit_symmetric_tensor<dim, double>();
-                    double factor = 1.0;
+                    Tensor<2, dim> multiplier = unit_symmetric_tensor<dim, double>();  // to collect powers of L
+                    double factor = 1.0;  // to collect powers of tmax and factorials
                     for (unsigned int j = 0; j < i; ++j)
                       {
                         multiplier = multiplier
@@ -107,7 +121,7 @@ namespace aspect
                         factor *= tmax / (j + 1);
                       }
                     multiplier = factor * multiplier;
-                    F += multiplier;
+                    F += multiplier;  // sum terms
                   }
 
                 // The "left stretch" tensor is computed from the deformation gradient tensor
