@@ -45,6 +45,13 @@
   \end{center}
 }}
 
+
+% A few math commands to make typing partial derivatives at fixed conditions easier
+\newcommand {\pddc}[3]{\left( \frac{\partial #1}{\partial #2} \right)_{#3}} % du/dv|_w
+\newcommand {\pddsq}[3]{\frac{\partial^2 #1}{\partial {#2} \, \partial {#3}}} % d^2u/dvdw
+\newcommand {\pddsqc}[3]{\left( \frac{\partial^2 #1}{\partial {#2}^2}  \right)_{#3}} % d^2u/dv^2|_w
+\newcommand {\pddcbc}[3]{\frac{\partial^3 #1}{\partial {#2}^2 \, \partial {#3}}} % d^3u/dv^2dw
+
 % use the listings package for code snippets. define keywords for prm files
 % and for gnuplot
 \usepackage{listings}
@@ -875,11 +882,6 @@ Units $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}} =
 \label{sec:coefficient_self_consistency}
 \textit{This section was contributed by Bob Myhill.}
 
-\newcommand {\pddc}[3]{\left( \frac{\partial #1}{\partial #2} \right)_{#3}}
-\newcommand {\pddsq}[3]{\left( \frac{\partial^2 #1}{\partial {#2}^2}  \right)_{#3}}
-\newcommand {\pddsqc}[3]{\frac{\partial^2 #1}{\partial {#2} \, \partial {#3}}}
-\newcommand {\pddcbc}[3]{\frac{\partial^3 #1}{\partial {#2}^2 \, \partial {#3}}}
-
 The coefficients in the previous section may at first appear independent.
 However, there are thermodynamic relations between these properties which must be
 satisfied in any self-consistent material model.
@@ -900,9 +902,9 @@ Gibbs free energy:
 \begin{eqnarray}
   S &=& -\pddc{\mathcal{G}}{T}{p}, \\
   \frac{1}{\rho} &=& \pddc{\mathcal{G}}{p}{T}, \label{eq:mm_density} \\
-  \frac{\alpha}{\rho} &=& \pddsqc{\mathcal{G}}{p}{T}, \label{eq:mm_alpha_g} \\
-  \beta_T &=& -\rho \pddsq{\mathcal{G}}{p}{T}, \label{eq:mm_betaT_g} \\
-  C_p &=& -T \pddsq{\mathcal{G}}{T}{p}, \label{eq:mm_isobaric_heat_capacity} \\
+  \frac{\alpha}{\rho} &=& \pddsq{\mathcal{G}}{p}{T}, \label{eq:mm_alpha_g} \\
+  \beta_T &=& -\rho \pddsqc{\mathcal{G}}{p}{T}, \label{eq:mm_betaT_g} \\
+  C_p &=& -T \pddsqc{\mathcal{G}}{T}{p}, \label{eq:mm_isobaric_heat_capacity} \\
   \beta_S &=& \beta_T - \frac{\alpha^2 T}{\rho C_p}, \label{eq:mm_isentropic_compressibility} \\
   \frac{C_V}{C_p} &=& \frac{\beta_S}{\beta_T}, \\
   \gamma &=& \frac{\alpha }{\beta_T \rho C_V}. 
@@ -1567,7 +1569,7 @@ geosciences. For example, one frequently finds references to the anelastic liqui
 approximation (ALA), truncated anelastic liquid approximation (TALA), and the
 Boussinesq approximation (BA). These can all be derived from the basic
 equations~\eqref{eq:stokes-1}--\eqref{eq:temperature} via various approximations, 
-and we will discuss them in the following. Since they are typically only provided
+and we will discuss them in the following sections. Since they are typically only provided
 considering velocity, pressure and temperature, we will in the following omit
 the dependence on the compositional fields used in previous sections, though
 this dependence can easily be added back into the equations stated below. A
@@ -1645,22 +1647,21 @@ each of the forms below separately.
 \label{sec:ala}
 
 The \textit{anelastic liquid approximation (ALA)} is based on two assumptions.
-First, that the density variations $\rho(p,T)-\bar\rho$ are small and in
-particular can be accurately described by a Taylor expansion:
-\begin{align*}
-  \rho(p,T) \approx 
+First, that the density variations relative to the adiabatic reference state at
+any given depth $\rho(p,T)-\bar\rho (z)$ are small and in particular can be
+accurately described by a Taylor expansion in pressure and temperature:
+\begin{eqnarray}
+  \rho(p,T) &\approx& 
   \bar\rho 
-  + \frac{\partial \rho(\bar p,\bar T)}{\partial p} p'
-  + \frac{\partial \rho(\bar p,\bar T)}{\partial T} T'.
-\end{align*}
-Here, $\frac{\partial \rho(\bar p,\bar T)}{\partial T}$ is related to the
-thermal expansion coefficient $\alpha = -\frac{1}{\rho}\frac{\partial \rho}{\partial T}$, 
-and $\frac{\partial \rho(\bar p,\bar T)}{\partial p}$ to the compressibility
-$\kappa = \frac{1}{\rho}\frac{\partial \rho}{\partial p}$.
-
-The second assumption is that the variation of the density
-from the reference density can be neglected in the mass balance and
-temperature equations.
+  + \pddc{\rho(\bar p,\bar T)}{T}{p} T' 
+  + \pddc{\rho(\bar p,\bar T)}{p}{T} p' \\
+  \pddc{\rho(\bar p,\bar T)}{T}{p} &=& -\bar \rho \bar \alpha(\bar p,\bar T) \\
+  \pddc{\rho(\bar p,\bar T)}{p}{T} &=& \bar \rho \bar \beta_T(\bar p,\bar T) \\
+\end{eqnarray}
+where $\bar \alpha$ is the thermal expansion coefficient and $\bar \beta_T$ is
+the isothermal compressibility, both on the adiabatic reference curve.
+The second assumption is that the variation of the density from the reference
+density can be neglected in the mass balance and temperature equations.
 This yields the following system of equations for the velocity and pressure
 equations:
 \begin{align}
@@ -1668,8 +1669,7 @@ equations:
   -\nabla \cdot \left[2\eta \left(\varepsilon(\mathbf u)
                                   - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
                 \right] + \nabla p' &=
-  \left(\frac{\partial \rho(\bar p,\bar T)}{\partial p} p'
-  + \frac{\partial \rho(\bar p,\bar T)}{\partial T} T' \right) \mathbf g
+  \bar \rho \left(\bar \beta_T p' - \bar \alpha T' \right) \mathbf g
   & \qquad
   & \textrm{in $\Omega$},
   \\
@@ -1711,8 +1711,7 @@ the ALA by assuming that the variation of the density due to pressure variations
 is small, i.e., that
 \begin{align*}
   \rho(p,T) \approx 
-  \bar\rho 
-  + \frac{\partial \rho(\bar p,\bar T)}{\partial T} T'.
+  \bar\rho (1 - \bar \alpha T').
 \end{align*}
 This does not mean that the density is not pressure dependent -- it will, for
 example, continue to be depth dependent because the hydrostatic pressure grows
@@ -1732,7 +1731,7 @@ equations:
   -\nabla \cdot \left[2\eta \left(\varepsilon(\mathbf u)
                                   - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
                 \right] + \nabla p' &=
-  \frac{\partial \rho(\bar p,\bar T)}{\partial T} T' \mathbf g
+  -\bar\rho \bar \alpha T' \mathbf g
   & \qquad
   & \textrm{in $\Omega$},
   \\
@@ -1762,7 +1761,7 @@ equations that also uses the incompressibility in the definition of the strain r
   \label{eq:stokes-BA-1}
   -\nabla \cdot \left[2\eta \varepsilon(\mathbf u)
                 \right] + \nabla p' &=
-  \frac{\partial \rho(\bar p,\bar T)}{\partial T} T' \mathbf g
+  -\bar\rho \bar \alpha  T' \mathbf g
   & \qquad
   & \textrm{in $\Omega$},
   \\
@@ -1857,12 +1856,13 @@ satisfies a relationship of the form $\rho=\rho(T)=\rho_0(1-\alpha(T-T_0))$
 with a small thermal expansion coefficient $\alpha$ and a reference density
 $\rho_0$ that is attained at temperature $T_0$. Since the thermal expansion is
 considered small, this naturally leads to the following variant of the Boussinesq
-model discussed above:
+model discussed above, with the replacement of $\bar \rho(z) \bar \alpha(z)$ with a constant
+($\rho_0 \alpha$):
 \begin{align}
   \label{eq:stokes-1-Boussinesq-linear}
   -\nabla \cdot \left[2\eta \varepsilon(\mathbf u)
                 \right] + \nabla p' &=
-  -\alpha\rho_0 T \mathbf g
+  -\rho_0 \alpha T \mathbf g
   & \qquad
   & \textrm{in $\Omega$},
   \\
@@ -1909,7 +1909,7 @@ been rewritten to use an implicit time stepping algorithm also for the
 temperature equation because this allows to use larger time steps.}
 
 
-\subsubsection{The isothermal compression approximation (ICA)}
+\subsubsection{The isothermal/isentropic compression approximation (ICA)}
 \label{sec:ica}
 
 In the compressible case and without the assumption of a reference state, 
@@ -1939,10 +1939,23 @@ This finally allows us to write
 so we get
 \begin{equation}
 \label{eq:stokes-2-compressible}
-\nabla \cdot \textbf{u} = -\frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u}
+\nabla \cdot \textbf{u} = - \rho \frac{1}{\rho} \frac{\partial \rho}{\partial p} \textbf{g} \cdot \textbf{u}
 \end{equation}
 where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is often referred to
-as the compressibility.
+as the compressibility. Note that we have not yet made any assumptions about the
+change in temperature with pressure; we need to do this in order to calculate the
+compressibility. There are two simple choices we could make; either to ignore
+adiabatic heating and use the isothermal compressibility:
+\begin{equation}
+\nabla \cdot \textbf{u} = - \rho \beta_T \textbf{g} \cdot \textbf{u}
+\end{equation}
+or to assume that heating is everywhere adiabatic and use the isentropic compressibility:
+\begin{equation}
+\nabla \cdot \textbf{u} = -\rho \beta_S \textbf{g} \cdot \textbf{u}
+\end{equation}
+Both choices are possible in \aspect{}, the user simply needs to specify their preferred
+compressibility in the material model. The isentropic compressibility is likely to be
+the more accurate approximation in models of mantle convection. 
 
 For this approximation, Equation \eqref{eq:stokes-2-compressible} replaces
 Equation \eqref{eq:stokes-2}. It has the advantage that it retains the symmetry of the
