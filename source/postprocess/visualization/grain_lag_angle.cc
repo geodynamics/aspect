@@ -97,7 +97,7 @@ namespace aspect
                 // F = exp(Lt)
                 // which can be written as an infinite sum:
                 // F = I + Lt + L^2/2! + L^3/3! + ...
-                // and then the "left stretch" tensor is U = F^T * F
+                // and then the "left stretch" tensor is U = F * F^T
                 // We truncate the series sum at the L^4 term. Note that L is sometimes
                 // taken to be the strain rate tensor (ie the velocity gradient without
                 // the rotational component).
