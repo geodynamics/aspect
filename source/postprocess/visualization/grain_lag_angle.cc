@@ -98,7 +98,7 @@ namespace aspect
                 // which can be written as an infinite sum:
                 // F = I + Lt + L^2/2! + L^3/3! + ...
                 // and then the "left stretch" tensor is U = F^T * F
-                // We truncate the series sum at the L^3 term. Note that L is sometimes
+                // We truncate the series sum at the L^4 term. Note that L is sometimes
                 // taken to be the strain rate tensor (ie the velocity gradient without
                 // the rotational component).
                 // The eigenvectors of U are the directions of the major axes of the finite
@@ -106,11 +106,11 @@ namespace aspect
                 // corresponding to the largest eigenvalue of U in the limit as t->infinity.
                 // As per Kaminski and Ribe (2002), tmax = 75*tauISA is infinite enough for
                 // most applications.
-                unsigned int maxorder = 4; // truncate at L^3
+                unsigned int maxorder = 4; // truncate at L^4
                 Tensor<2, dim> F = unit_symmetric_tensor<dim, double>(); // initialize as identity (first term of sum)
                 const double tmax = 75 * tauISA; // "infinite" time
 
-                for (unsigned int i = 0; i < maxorder; ++i) // loop and calculate terms of sum
+                for (unsigned int i = 1; i <= maxorder; ++i) // loop and calculate terms of sum
                   {
                     Tensor<2, dim> multiplier = unit_symmetric_tensor<dim, double>();  // to collect powers of L
                     double factor = 1.0;  // to collect powers of tmax and factorials
