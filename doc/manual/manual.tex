@@ -4181,12 +4181,34 @@ library, deal.II supports additional functions, including \texttt{|} (the logica
 \texttt{csc()}, \texttt{sec()}, \texttt{pow()}, \texttt{log()}, 
 \texttt{erfc()}, \texttt{rand()}, and \texttt{rand\_seed()}. 
 For more detailed information, see 
-\url{http://www.dealii.org/developer/doxygen/deal.II/classFunctionParser.html#details}. 
-A common case is an if-statement that has the general form
-\texttt{if(condition, true-expression, false-expression)}. As an example, 
-the statement ``if $1<x<4$ then output 1, else output 0'' can be expressed as
-\texttt{if(1<x \&\& x<4, 1, 0)}. For more examples of
-the syntax understood, reference the documentation of the muparser library
+\url{http://www.dealii.org/developer/doxygen/deal.II/classFunctionParser.html#details}.
+
+A common need for function expresion is an if-else-statement, for example 
+``if $1<x<4$ then output 1, else output 0''.
+The muparser uses lazy-expression syntax \texttt{(if-condition ?\ true-expression :\ false-expression )}
+for if-else statements. This lazy-expression only evaluates the expression that meets the
+if-condition, rather than evaluating both expressions, which can be useful if one of the
+expression is not defined (e.g., has a divide by zero) when the if-condition is not met.
+Note it is also possible to use the syntax \texttt{if(condition, true-expression, false-expression)},
+but in this case both expressions are always evaluated.
+Therefore, the lazy-expression syntax is recommended.
+
+As a simple example using the lazy-expression syntax, the statement ``if $1<x<4$ then output 1, else output 0''
+can be expressed as \texttt{(1<x\ \&\&\ x<4\ ?\ 1\ :\ 0)}.  Multiple, nested if-else expressions
+can also be used. To extend the simple example, the statement  
+``if $1<x<4$ then, if 2<y<3, then output 2, else output 1, else output 0''
+can be expressed as \texttt{((1<x\ \&\&\ x<4)\ ?\ (2<y\ \&\&\ y<3)\ ?\ 2\ :\ 1\ :\ 0)}
+(the extra parenthesis around the if-conditions are not needed, but can be helpful for readability).
+An example for how to translate nested if-else statements into the lazy-expression syntax is given in the
+\texttt{cookbooks/muparser\_temperature\_example}. This cookbook includes a python script that defines
+the initial temperature structure using nested if-else statements and shows how this is then rewritten
+using the lazy-expression. The cookbook runs a single time-step to show the outcome of using the function
+option for the initial temperature. Quite complex initial conditions can be defined in this way, however,
+using something like python to debug these expressions before defining them in the parameter file is 
+recommended. For more examples of functions used in parameter files, go to the \texttt{cookbooks} 
+directory and use grep to search for ``Function expression'' in the parameters files. 
+You can also search ``Function expression'' on the \aspect\ github page.
+For more examples of the syntax understood, reference the documentation of the muparser library
 linked to above.
 
 \subsubsection{Compatibility of input files with newer \aspect{} versions}
