@@ -160,8 +160,7 @@ namespace aspect
     {
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(GrainLagAngle, "grain lag angle",
                                                   "A visualization output object that generates output "
-                                                  "showing the angle between the infinite strain axis "
-                                                  "(approximated by a truncated series solution) "
+                                                  "showing the angle between the ~infinite strain axis "
                                                   "and the flow velocity. Kaminski and Ribe "
                                                   "(2002, Gcubed) call this quantity $\Theta$ and "
                                                   "define it as "
