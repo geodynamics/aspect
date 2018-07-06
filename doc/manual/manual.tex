@@ -48,8 +48,8 @@
 
 % A few math commands to make typing partial derivatives at fixed conditions easier
 \newcommand {\pddc}[3]{\left( \frac{\partial #1}{\partial #2} \right)_{#3}} % du/dv|_w
-\newcommand {\pddsq}[3]{\frac{\partial^2 #1}{\partial {#2} \, \partial {#3}}} % d^2u/dvdw
-\newcommand {\pddsqc}[3]{\left( \frac{\partial^2 #1}{\partial {#2}^2}  \right)_{#3}} % d^2u/dv^2|_w
+\newcommand {\pddsq}[3]{\left( \frac{\partial^2 #1}{\partial {#2}^2}  \right)_{#3}} % d^2u/dv^2|_w
+\newcommand {\pddsqc}[3]{\frac{\partial^2 #1}{\partial {#2} \, \partial {#3}}} % d^2u/dvdw
 \newcommand {\pddcbc}[3]{\frac{\partial^3 #1}{\partial {#2}^2 \, \partial {#3}}} % d^3u/dv^2dw
 
 % use the listings package for code snippets. define keywords for prm files
@@ -902,9 +902,9 @@ Gibbs free energy:
 \begin{eqnarray}
   S &=& -\pddc{\mathcal{G}}{T}{p}, \\
   \frac{1}{\rho} &=& \pddc{\mathcal{G}}{p}{T}, \label{eq:mm_density} \\
-  \frac{\alpha}{\rho} &=& \pddsq{\mathcal{G}}{p}{T}, \label{eq:mm_alpha_g} \\
-  \beta_T &=& -\rho \pddsqc{\mathcal{G}}{p}{T}, \label{eq:mm_betaT_g} \\
-  C_p &=& -T \pddsqc{\mathcal{G}}{T}{p}, \label{eq:mm_isobaric_heat_capacity} \\
+  \frac{\alpha}{\rho} &=& \pddsqc{\mathcal{G}}{p}{T}, \label{eq:mm_alpha_g} \\
+  \beta_T &=& -\rho \pddsq{\mathcal{G}}{p}{T}, \label{eq:mm_betaT_g} \\
+  C_p &=& -T \pddsq{\mathcal{G}}{T}{p}, \label{eq:mm_isobaric_heat_capacity} \\
   \beta_S &=& \beta_T - \frac{\alpha^2 T}{\rho C_p}, \label{eq:mm_isentropic_compressibility} \\
   \frac{C_V}{C_p} &=& \frac{\beta_S}{\beta_T}, \\
   \gamma &=& \frac{\alpha }{\beta_T \rho C_V}. 
@@ -979,7 +979,7 @@ community moves to more complicated and more realistic parameterizations.
   either specify what approximation of the compressible equations they are consistent with
   (see Section~\ref{sec:approximate-equations}), or have a switch so that they use the correct
   compressibility for each of the different approximations. The conversion between isothermal
-  and isentropic compressibilities is given in ~\eqref{eq:mm_isentropic_compressibility}.}
+  and isentropic compressibilities is given in~\eqref{eq:mm_isentropic_compressibility}.}
 
 \subsection{Dimensional or non-dimensionalized equations?}
 \label{sec:non-dimensional}
@@ -2004,22 +2004,27 @@ We provide the following options, which can be selected in the parameter file in
 \item
 ``isothermal compression'':
 \[
- \nabla \cdot \textbf{u} = -\frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u},
+ \nabla \cdot \textbf{u} = -\rho \beta \textbf{g} \cdot \textbf{u},
 \]
-where $\frac{1}{\rho} \frac{\partial \rho}{\partial p} = \kappa$ is the compressibility, and 
-is defined in the material model. This is the explicit compressible mass equation where 
-the velocity $\textbf{u}$ on the right-hand side is an extrapolated velocity from the last timesteps.
+where $\beta = \frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is the compressibility, and 
+is defined in the material model. Despite the name, this approximation can be used either for
+isothermal compression (where $\beta = \beta_T$) or isentropic compression
+(where $\beta = \beta_S$). The material model determines which compressibility is used.
+This is an explicit compressible mass equation where 
+the velocity $\textbf{u}$ on the right-hand side is an extrapolated velocity
+from the last timesteps.
 
 \item
 ``hydrostatic compression'':
 \[
  \nabla \cdot \textbf{u}
-= - \left( \frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} + \frac{1}{\rho} \frac{\partial \rho}{\partial T} \nabla T \right) \cdot \textbf{u}
-= - \left( \kappa \rho \textbf{g} - \alpha \nabla T \right) \cdot \textbf{u}
+= - \left( \frac{1}{\rho} \pddc{\rho}{p}{T} \rho \textbf{g} + \frac{1}{\rho} \pddc{\rho}{T}{p} \nabla T \right) \cdot \textbf{u}
+= - \left( \beta_T \rho \textbf{g} - \alpha \nabla T \right) \cdot \textbf{u}
 \]
-where $\frac{1}{\rho} \frac{\partial \rho}{\partial p} = \kappa$ is the compressibility,
-$- \frac{1}{\rho}\frac{\partial \rho}{\partial T} = \alpha$ is the thermal expansion coefficient, 
-and both are defined in the material model. 
+where $\beta_T = \frac{1}{\rho} \pddc{\rho}{p}{T}$ is the isothermal compressibility,
+$\alpha = - \frac{1}{\rho}\frac{\partial \rho}{\partial T}$ is the
+thermal expansion coefficient, and both are defined in the material model. The
+approximation made here is that $\nabla p = \rho \textbf{g}$.
 
 \item
 ``reference density profile'':
@@ -2306,7 +2311,7 @@ This finally allows us to write
 \approx \frac{1}{\rho_s} \frac{\partial \rho_s}{\partial p_s} \nabla p_s
 \approx \frac{1}{\rho_s} \frac{\partial \rho_s}{\partial p_s} \nabla p_s
 \approx \frac{1}{\rho_s} \frac{\partial \rho_s}{\partial p_s} \rho_s \textbf{g}
-\approx \kappa_s \rho_s \textbf{g}. 
+\approx \beta_s \rho_s \textbf{g}. 
 \end{equation*}
 For the fluid pressure, choosing a good approximation depends on the model parameters and setup (see \cite{dannberg_melt}). 
 Hence, we make $\nabla \rho_{f}$ a model input parameter, which can be adapted based on the forces that are expected 
@@ -2324,7 +2329,7 @@ We can then replace the second equation by
   \\
   &\quad
   - \frac{\phi }{\rho_f} \mathbf{u}_s \cdot \nabla\rho_f
-  - (\mathbf{u}_s \cdot \mathbf g ) (1 - \phi) \kappa_s \rho_s
+  - (\mathbf{u}_s \cdot \mathbf g ) (1 - \phi) \beta_s \rho_s
   \notag
   \\
   &\quad
@@ -2368,13 +2373,13 @@ In order to solve this equation in the same way as the other advection equations
 Then we use the same method as described above and assume again that the change in density is dominated by the change in static pressure
 \begin{equation*}
 \frac{1}{\rho_s} \nabla \rho_s \cdot \mathbf{u}_s 
-\approx \kappa_s \rho_s \textbf{g} \cdot \mathbf{u}_s 
+\approx \beta_s \rho_s \textbf{g} \cdot \mathbf{u}_s 
 \end{equation*}
 so we get
 \begin{equation*}
 \frac{\partial \phi}{\partial t} + \mathbf{u}_s \cdot \nabla \phi
 = \frac{\Gamma}{\rho_s}
-+ (1 - \phi) (\nabla \cdot \mathbf{u}_s + \kappa_s \rho_s \textbf{g} \cdot \mathbf{u}_s ).
++ (1 - \phi) (\nabla \cdot \mathbf{u}_s + \beta_s \rho_s \textbf{g} \cdot \mathbf{u}_s ).
 \end{equation*}
 
 More details on the implementation can be found in \cite{dannberg_melt}. A benchmark case demonstrating the propagation of solitary waves can be found in Section~\ref{sec:benchmark-solitary_wave}.
