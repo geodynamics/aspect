@@ -38,7 +38,7 @@ namespace aspect
     /**
      * This postprocessor calculates and outputs the timescale for the rotation
      * of grains toward the infinite strain axis. Kaminski and Ribe (2002, Gcubed)
-     * call this quantity ~\tau_{ISA}$, and define it as
+     * call this quantity $\tau_{ISA}$, and define it as
      * $\tau_{ISA} \approx \frac{1}{\dot{\epsilon}}$
      * where $\dot{\epsilon}$ is the largest eigenvalue of the strain rate tensor.
      * It can be used, along with the grain lag angle

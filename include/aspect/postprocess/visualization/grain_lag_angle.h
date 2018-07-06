@@ -35,7 +35,7 @@ namespace aspect
 
     /**
      * This postprocessor calculates and outputs the angle between the ~infinite
-     * strain axis and the velocity. Kaminskin & Ribe (2002, Gcubed) call this quantity
+     * strain axis and the velocity. Kaminski & Ribe (2002, Gcubed) call this quantity
      * $\Theta$ and define it as
      * $\Theta = \cos^{-1}(\hat{u}\cdot\hat{e})$
      * where $\hat{u}=\vec{u}/|{u}|$, $\vec{u}$ is the local flow velocity, and
