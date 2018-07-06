@@ -26,26 +26,7 @@
 #include <aspect/simulator_access.h>
 
 
-/**
- * This postprocessor calculates and outputs two quantities:
 
- *   -> theta, the angle between the ~infinite strain axis and the velocity
- *   -> tauISA, the timescale for the rotation of grains toward the infinite strain axis.
-
- * Those two quantites can be used to calculate the grain orientation lag parameter (GOL)
- * defined by Kaminski and Ribe (2002, Gcubed). GOL is not calculated within ASPECT
- * right now because it is proportional to the spatial gradient of theta, but in the
- * future that calculation could be implemented in a material model with CopyOutputs
- * (once they exist). By tracking theta as a CopyOutput (ie, a compositional field
- * holding a calculated value that gets copied over instead of solved for), the spatial
- * gradient of theta could be calculated for the previous timestep by obtaining the
- * old solution for the input material model. That gradient, and also the time derivative
- * of theta, could then be used to calculate GOL at the previous timestep; theta could
- * be updated at the current timestep; and both quantities could be stored in CopyOutputs
- * to step forward in time. Basically, the calculation of GOL would have to lag one
- * timestep behind the other quantities in order to get the gradients, but we're
- * often interested in GOL in a steady-state flow anyway.
-*/
 
 
 namespace aspect
@@ -54,11 +35,20 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      /**
-       * A derived class that implements a function that provides the computed
-       * timescale for the rotation of grains toward the infinite strain axis
-       * for graphical output.
-       */
+    /**
+     * This postprocessor calculates and outputs the timescale for the rotation
+     * of grains toward the infinite strain axis. Kaminski and Ribe (2002, Gcubed)
+     * call this quantity ~\tau_{ISA}$, and define it as
+     * $\tau_{ISA} \approx \frac{1}{\dot{\epsilon}}$
+     * where $\dot{\epsilon}$ is the largest eigenvalue of the strain rate tensor.
+     * It can be used, along with the grain lag angle
+     * ($\Theta$), to calculate the grain orientation lag parameter (GOL).
+     * GOL is not calculated within ASPECT
+     * right now because it is proportional to the spatial gradient of theta, but in the
+     * future that calculation could be implemented in a material model with CopyOutputs
+     * (once they exist). For more thoughts on that, see the documentation for the
+     * grain lag angle postprocessor.
+    */
       template<int dim>
       class ISARotationTimescale: public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {
