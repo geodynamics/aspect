@@ -101,12 +101,12 @@ namespace aspect
                                                   "A visualization output object that generates output "
                                                   "showing the timescale for the rotation of grains "
                                                   "toward the infinite strain axis. Kaminski and Ribe "
-                                                  "(2002, Gcubed) call this quantity $\tau_{ISA}$ and "
+                                                  "(2002, Gcubed) call this quantity $\\tau_{ISA}$ and "
                                                   "define it as "
-                                                  "$\tau_{ISA} \approx \frac{1}{\dot{\epsilon}}$ "
-                                                  "where $\dot{\epsilon}$ is the largest eigenvalue "
+                                                  "$\\tau_{ISA} \\approx \\frac{1}{\\dot{\\epsilon}}$ "
+                                                  "where $\\dot{\\epsilon}$ is the largest eigenvalue "
                                                   "of the strain rate tensor. It can be used, "
-                                                  "along with the grain lag angle $\Theta$, "
+                                                  "along with the grain lag angle $\\Theta$, "
                                                   "to calculate the grain orientation lag parameter.")
     }
   }
