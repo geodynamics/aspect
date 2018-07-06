@@ -148,7 +148,17 @@ namespace aspect
                                                   "A visualization output object that generates output "
                                                   "showing the angle between the infinite strain axis "
                                                   "(approximated by a truncated series solution) "
-                                                  "and the flow velocity.")
+                                                  "and the flow velocity. Kaminski and Ribe "
+                                                  "(2002, Gcubed) call this quantity $\Theta$ and "
+                                                  "define it as "
+                                                  "$\Theta = \cos^{-1}(\hat{u}\cdot\hat{e})$ "
+    		  	  	  	  	  	  	  	  	  	  " where $\hat{u}=\vec{u}/|{u}|$, $\vec{u}$ "
+    		  	  	  	  	  	  	  	  	  	  "is the local flow velocity, and "
+    		  	  	  	  	  	  	  	  	  	  "$\hat{e}$ is the local infinite strain axis, "
+    		  	  	  	  	  	  	  	  	  	  "which we calculate as the first eigenvector of "
+    		  	  	  	  	  	  	  	  	  	  "the 'left stretch' tensor. "
+    		  	  	  	  	  	  	  	  	  	  "$\Theta$ can be used to calculate the grain "
+    		  	  	  	  	  	  	  	  	  	  "orientation lag parameter.")
     }
   }
 }
