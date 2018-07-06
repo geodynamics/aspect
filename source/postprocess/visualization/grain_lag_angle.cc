@@ -54,8 +54,8 @@ namespace aspect
 
         // Set up cell iterator for looping
         typename DoFHandler<dim>::active_cell_iterator
-          cell = this->get_dof_handler().begin_active(),
-          endc = this->get_dof_handler().end();
+        cell = this->get_dof_handler().begin_active(),
+        endc = this->get_dof_handler().end();
 
         // Loop over cells and calculate theta in each one
         // Note that we start after timestep 0 because we need the strain rate,
@@ -84,9 +84,9 @@ namespace aspect
                 // to get tauISA, the timescale for grain rotation toward the infinite strain axis
                 const SymmetricTensor<2, dim> strain_rate = in.strain_rate[0];
                 const std::array<double, dim> strain_rate_eigenvalues = eigenvalues(
-                                                                    strain_rate);
+                                                                          strain_rate);
                 const double lambda1 = std::max(std::abs(strain_rate_eigenvalues[0]),
-                                         std::abs(strain_rate_eigenvalues[dim-1]));
+                                                std::abs(strain_rate_eigenvalues[dim-1]));
                 const double tauISA = 1.0 / lambda1;
 
                 // Next, we want the ~infinite strain axis, so we start by
@@ -165,13 +165,13 @@ namespace aspect
                                                   "(2002, Gcubed) call this quantity $\Theta$ and "
                                                   "define it as "
                                                   "$\Theta = \cos^{-1}(\hat{u}\cdot\hat{e})$ "
-    		  	  	  	  	  	  	  	  	  	  " where $\hat{u}=\vec{u}/|{u}|$, $\vec{u}$ "
-    		  	  	  	  	  	  	  	  	  	  "is the local flow velocity, and "
-    		  	  	  	  	  	  	  	  	  	  "$\hat{e}$ is the local infinite strain axis, "
-    		  	  	  	  	  	  	  	  	  	  "which we calculate as the first eigenvector of "
-    		  	  	  	  	  	  	  	  	  	  "the 'left stretch' tensor. "
-    		  	  	  	  	  	  	  	  	  	  "$\Theta$ can be used to calculate the grain "
-    		  	  	  	  	  	  	  	  	  	  "orientation lag parameter.")
+                                                  " where $\hat{u}=\vec{u}/|{u}|$, $\vec{u}$ "
+                                                  "is the local flow velocity, and "
+                                                  "$\hat{e}$ is the local infinite strain axis, "
+                                                  "which we calculate as the first eigenvector of "
+                                                  "the 'left stretch' tensor. "
+                                                  "$\Theta$ can be used to calculate the grain "
+                                                  "orientation lag parameter.")
     }
   }
 }
