@@ -430,9 +430,8 @@ namespace aspect
     {
       std::shared_ptr<Function<dim> > ref_func;
       {
-        const AnnulusMaterial<dim> &
-        material_model
-		= Plugins::get_plugin_as_type<const AnnulusMaterial<dim> >(this->get_material_model());
+        const AnnulusMaterial<dim> &material_model
+          = Plugins::get_plugin_as_type<const AnnulusMaterial<dim> >(this->get_material_model());
 
         ref_func.reset (new AnalyticSolutions::FunctionAnnulus<dim>(material_model.get_beta()));
       }
