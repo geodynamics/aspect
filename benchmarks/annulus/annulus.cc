@@ -56,7 +56,7 @@ namespace aspect
     namespace AnalyticSolutions
     {
       const double A=2.0, B=-3.0/std::log(2.0), C=-1;
-      const double inner_radius = 1, outer_radius = 2.;
+      const double outer_radius = 2.;
       const double rho_0 = 1000.;
       const double gravity = 1.;
 
@@ -346,11 +346,11 @@ namespace aspect
                        const Point<2> &p) const
     {
 
-      const AnnulusMaterial<2> *
+      const AnnulusMaterial<2> &
       material_model
-        = dynamic_cast<const AnnulusMaterial<2> *>(&this->get_material_model());
+        = Plugins::get_plugin_as_type<const AnnulusMaterial<2> >(this->get_material_model());
 
-      return AnalyticSolutions::Annulus_velocity (p, material_model->get_beta());
+      return AnalyticSolutions::Annulus_velocity (p, material_model.get_beta());
     }
 
 
@@ -430,11 +430,10 @@ namespace aspect
     {
       std::shared_ptr<Function<dim> > ref_func;
       {
-        const AnnulusMaterial<dim> *
-        material_model
-          = dynamic_cast<const AnnulusMaterial<dim> *>(&this->get_material_model());
+        const AnnulusMaterial<dim> &material_model
+          = Plugins::get_plugin_as_type<const AnnulusMaterial<dim> >(this->get_material_model());
 
-        ref_func.reset (new AnalyticSolutions::FunctionAnnulus<dim>(material_model->get_beta()));
+        ref_func.reset (new AnalyticSolutions::FunctionAnnulus<dim>(material_model.get_beta()));
       }
 
       const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);
@@ -544,7 +543,7 @@ namespace aspect
                   MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, cell, this->introspection(), this->get_solution());
                   MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, this->n_compositional_fields());
                   fe_face_values[this->introspection().extractors.temperature].get_function_values(topo_vector, topo_values);
-                  this->get_material_model().evaluate(in_face, out_face);
+                  material_model.evaluate(in_face, out_face);
 
                   for (unsigned int q=0; q < quadrature_formula.size(); ++q)
                     {

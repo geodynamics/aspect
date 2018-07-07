@@ -227,8 +227,6 @@ namespace aspect
          * @deprecated Use has_matching_boundary_composition_model() and
          * get_matching_boundary_composition_model() instead.
          */
-
-
         template <typename BoundaryCompositionType>
         DEAL_II_DEPRECATED
         BoundaryCompositionType *

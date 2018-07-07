@@ -775,15 +775,12 @@ namespace aspect
                       ExcMessage("Postprocessor shear bands growth rate only works with the material model shear bands."));
         }
 
-      const PlaneWaveMeltBandsInitialCondition<dim> *
-      initial_composition
-        = this->get_initial_composition_manager().template find_initial_composition_model<PlaneWaveMeltBandsInitialCondition<dim> > ();
+      const PlaneWaveMeltBandsInitialCondition<dim> &initial_composition
+        = this->get_initial_composition_manager().template
+          get_matching_initial_composition_model<PlaneWaveMeltBandsInitialCondition<dim> > ();
 
-      AssertThrow(initial_composition != NULL,
-                  ExcMessage("Postprocessor shear bands growth rate only works with the plane wave melt bands initial composition."));
-
-      amplitude           = initial_composition->get_wave_amplitude();
-      initial_band_angle  = initial_composition->get_initial_band_angle();
+      amplitude           = initial_composition.get_wave_amplitude();
+      initial_band_angle  = initial_composition.get_initial_band_angle();
     }
 
 
