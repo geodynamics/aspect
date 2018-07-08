@@ -30,25 +30,38 @@ namespace aspect
     void
     GlobalStatistics<dim>::initialize()
     {
-      this->get_signals().post_stokes_solver.connect(std::bind(&aspect::Postprocess::GlobalStatistics<dim>::store_stokes_solver_history,
-                                                               std::ref(*this),
-                                                               /* Drop first argument of signal*/
-                                                               std::placeholders::_2,
-                                                               std::placeholders::_3,
-                                                               std::placeholders::_4,
-                                                               std::placeholders::_5));
-      this->get_signals().post_advection_solver.connect(std::bind(&aspect::Postprocess::GlobalStatistics<dim>::store_advection_solver_history,
-                                                                  std::ref(*this),
-                                                                  /* Drop first argument of signal*/
-                                                                  std::placeholders::_2,
-                                                                  std::placeholders::_3,
-                                                                  std::placeholders::_4));
+      this->get_signals().post_stokes_solver.connect(
+        [&](const SimulatorAccess<dim> &/*simulator_access*/,
+            const unsigned int number_S_iterations,
+            const unsigned int number_A_iterations,
+            const SolverControl &solver_control_cheap,
+            const SolverControl &solver_control_expensive)
+      {
+        this->store_stokes_solver_history(number_S_iterations,
+                                          number_A_iterations,
+                                          solver_control_cheap,
+                                          solver_control_expensive);
+      });
+
+      this->get_signals().post_advection_solver.connect(
+        [&](const SimulatorAccess<dim> &/*simulator_access*/,
+            const bool solved_temperature_field,
+            const unsigned int compositional_index,
+            const SolverControl &solver_control)
+      {
+        this->store_advection_solver_history(solved_temperature_field,
+                                             compositional_index,
+                                             solver_control);
+      });
 
       // delete the data after the initial refinement steps, to not mix it up
       // with the first time step
       if (!this->get_parameters().run_postprocessors_on_initial_refinement)
-        this->get_signals().post_set_initial_state.connect(std::bind(&aspect::Postprocess::GlobalStatistics<dim>::clear_data,
-                                                                     std::ref(*this)));
+        this->get_signals().post_set_initial_state.connect(
+          [&] (const SimulatorAccess<dim> &)
+        {
+          this->clear_data();
+        });
     }
 
 

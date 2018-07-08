@@ -126,10 +126,11 @@ namespace aspect
 
       // make sure the right boundary indicators are set after refinement
       // through the function set_boundary_indicators above
-      total_coarse_grid.signals.post_refinement.connect
-      (std::bind (&TwoMergedBoxes<dim>::set_boundary_indicators,
-                  std::cref(*this),
-                  std::ref(total_coarse_grid)));
+      total_coarse_grid.signals.post_refinement.connect (
+        [&]()
+      {
+        this->set_boundary_indicators(total_coarse_grid);
+      });
     }
 
 

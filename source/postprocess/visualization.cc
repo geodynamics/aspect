@@ -992,8 +992,11 @@ namespace aspect
 
       // Finally also set up a listener to check when the mesh changes
       mesh_changed = true;
-      this->get_triangulation().signals.post_refinement
-      .connect(std::bind(&Visualization::mesh_changed_signal, std::ref(*this)));
+      this->get_triangulation().signals.post_refinement.connect(
+        [&]()
+      {
+        this->mesh_changed_signal();
+      });
     }
 
 

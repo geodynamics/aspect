@@ -841,13 +841,16 @@ namespace aspect
     // Assign Stokes solution
     LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
 
-    VectorFunctionFromVectorFunctionObject<dim> func(std::bind (&PrescribedStokesSolution::Interface<dim>::stokes_solution,
-                                                                std::cref(*prescribed_stokes_solution),
-                                                                std::placeholders::_1,
-                                                                std::placeholders::_2),
-                                                     0,
-                                                     parameters.include_melt_transport ? 2*dim+3 : dim+1, // velocity and pressure
-                                                     introspection.n_components);
+    auto lambda = [&](const Point<dim> &p, Vector<double> &result)
+    {
+      prescribed_stokes_solution->stokes_solution(p, result);
+    };
+
+    VectorFunctionFromVectorFunctionObject<dim> func(
+      lambda,
+      0,
+      parameters.include_melt_transport ? 2*dim+3 : dim+1, // velocity and pressure
+      introspection.n_components);
 
     VectorTools::interpolate (*mapping, dof_handler, func, distributed_stokes_solution);
 
