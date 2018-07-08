@@ -830,7 +830,8 @@ namespace aspect
       if (global_max_particles_per_cell > 0)
         {
           auto callback_function = [&](const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                                       const typename parallel::distributed::Triangulation<dim>::CellStatus status, void *data)
+                                       const typename parallel::distributed::Triangulation<dim>::CellStatus status,
+                                       void *data)
           {
             this->store_particles(cell, status, data);
           };

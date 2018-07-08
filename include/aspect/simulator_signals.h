@@ -52,7 +52,7 @@ namespace aspect
    * not actually just pointers to functions, but std::function objects
    * that have a certain signature. Consequently, they can have much more
    * complicated types than just function pointers, such as objects with
-   * an <code>operator()</code> or lambdas.
+   * an <code>operator()</code> or lambda functions.
    *
    * The documentation of each of the signals below indicates when
    * exactly it is called.

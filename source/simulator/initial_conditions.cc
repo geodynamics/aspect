@@ -96,13 +96,17 @@ namespace aspect
              ?
              VectorFunctionFromScalarFunctionObject<dim, double>(
                [&](const Point<dim> &p) -> double
-        {return initial_temperature_manager.initial_temperature(p);},
+        {
+          return initial_temperature_manager.initial_temperature(p);
+        },
         introspection.component_indices.temperature,
         introspection.n_components)
         :
         VectorFunctionFromScalarFunctionObject<dim, double>(
           [&](const Point<dim> &p) -> double
-        {return initial_composition_manager.initial_composition(p, n-1);},
+        {
+          return initial_composition_manager.initial_composition(p, n-1);
+        },
         introspection.component_indices.compositional_fields[n-1],
         introspection.n_components));
 
@@ -395,7 +399,9 @@ namespace aspect
         ScalarFunctionFromFunctionObject<dim>
         adiabatic_pressure (
           [&](const Point<dim> &p) -> double
-        {return adiabatic_conditions->pressure(p);});
+        {
+          return adiabatic_conditions->pressure(p);
+        });
 
 
         typename DoFHandler<dim>::active_cell_iterator

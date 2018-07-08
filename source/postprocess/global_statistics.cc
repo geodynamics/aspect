@@ -44,7 +44,7 @@ namespace aspect
       });
 
       this->get_signals().post_advection_solver.connect(
-        [&](const SimulatorAccess<dim> &,
+        [&](const SimulatorAccess<dim> &/*simulator_access*/,
             const bool solved_temperature_field,
             const unsigned int compositional_index,
             const SolverControl &solver_control)

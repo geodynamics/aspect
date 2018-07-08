@@ -270,8 +270,11 @@ namespace aspect
 #endif
 
       // Transform box into spherical chunk
-      GridTools::transform ([&](const Point<dim> &p) -> Point<dim>
-      {return manifold.push_forward(p);},
+      GridTools::transform (
+        [&](const Point<dim> &p) -> Point<dim>
+      {
+        return manifold.push_forward(p);
+      },
       coarse_grid);
 
       // Deal with a curved mesh

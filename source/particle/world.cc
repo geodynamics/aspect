@@ -72,8 +72,7 @@ namespace aspect
 
       auto store_callback_function
         = [&] (const typename ParticleHandler<dim>::particle_iterator &p,
-               void *data)
-          -> void *
+               void *data) -> void *
       {
         return integrator->write_data(p, data);
       };
@@ -81,8 +80,7 @@ namespace aspect
 
       const auto load_callback_function
         = [&] (const typename ParticleHandler<dim>::particle_iterator &p,
-               const void *data)
-          -> const void *
+               const void *data) -> const void *
       {
         return integrator->read_data(p, data);
       };

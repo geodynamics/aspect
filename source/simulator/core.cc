@@ -646,7 +646,9 @@ namespace aspect
           VectorFunctionFromVelocityFunctionObject<dim> vel
           (introspection.n_components,
            [&] (const Point<dim> &x) -> Tensor<1,dim>
-          {return boundary_velocity_manager.boundary_velocity(p->first, x);});
+          {
+            return boundary_velocity_manager.boundary_velocity(p->first, x);
+          });
 
           // here we create a mask for interpolate_boundary_values out of the 'selector'
           std::vector<bool> mask(introspection.component_masks.velocities.size(), false);

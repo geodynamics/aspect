@@ -86,7 +86,9 @@ namespace aspect
       // in the vertical direction by an amount specified by the initial topography model
       GridTools::transform(
         [&](const Point<dim> &p) -> Point<dim>
-      {return this->add_topography(p);},
+      {
+        return this->add_topography(p);
+      },
       grid);
 
       this->get_pcout() << "   Added initial topography to grid" << std::endl << std::endl;
