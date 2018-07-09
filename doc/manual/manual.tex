@@ -4194,11 +4194,11 @@ but in this case both expressions are always evaluated.
 Therefore, the lazy-expression syntax is recommended.
 
 As a simple example using the lazy-expression syntax, the statement ``if $1<x<4$ then output 1, else output 0''
-can be expressed as \texttt{(1<x\ \&\&\ x<4\ ?\ 1\ :\ 0)}.  Multiple, nested if-else expressions
+can be expressed as \texttt{((1<x\ \&\&\ x<4\) ?\ (1)\ :\ (0))}.  Multiple, nested if-else expressions
 can also be used. To extend the simple example, the statement  
 ``if $1<x<4$ then, if 2<y<3, then output 2, else output 1, else output 0''
-can be expressed as \texttt{((1<x\ \&\&\ x<4)\ ?\ (2<y\ \&\&\ y<3)\ ?\ 2\ :\ 1\ :\ 0)}
-(the extra parenthesis around the if-conditions are not needed, but can be helpful for readability).
+can be expressed as \texttt{((1<x\ \&\&\ x<4)\ ?\ (2<y\ \&\&\ y<3)\ ?\ (2)\ :\ (1)\ :\ (0))}.
+
 An example for how to translate nested if-else statements into the lazy-expression syntax is given in the
 \texttt{cookbooks/muparser\_temperature\_example}. This cookbook includes a python script that defines
 the initial temperature structure using nested if-else statements and shows how this is then rewritten
