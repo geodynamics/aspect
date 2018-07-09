@@ -38,11 +38,6 @@ namespace aspect
     PatchOnS40RTS<dim>::initialize ()
     {
       Utilities::AsciiDataInitial<dim>::initialize(1);
-      if (s40rts.vs_to_density_method == s40rts.file)
-        {
-          s40rts.profile.initialize(this->get_mpi_communicator());
-          s40rts.vs_to_density_index = s40rts.profile.get_column_index_from_name("vs_to_density");
-        }
     }
 
 
@@ -99,7 +94,6 @@ namespace aspect
       // scale the perturbation in seismic velocity into a density perturbation
       // vs_to_density is read in from input file
       const double density_perturbation = vs_to_density * vs_perturbation;
-
       double temperature_perturbation;
       if (depth > s40rts.no_perturbation_depth)
         // scale the density perturbation into a temperature perturbation
@@ -181,7 +175,7 @@ namespace aspect
                                               "contain the number of grid points in each dimension as "
                                               "for example '# POINTS: 3 3 3'. "
                                               "The order of the data columns has to be "
-                                              " `x', `y', `z', 'Temperature [K]' in a 3d model, which means that "
+                                              " `x', `y', `z', 'Vs Perturbation [%]' in a 3d model, which means that "
                                               "there has to be a single column "
                                               "containing the temperature. "
                                               "Note that the data in the input "

@@ -103,9 +103,9 @@ namespace aspect
 
       private:
         /**
-        * Allows us to call functions from S40RTS_perturbation.cc.
-        * Declares class.
-        */
+         * Declare a member variable of type S40RTSPerturbation that allows us to call
+         * functions from S40RTS_perturbation.cc.
+         */
         S40RTSPerturbation<dim> s40rts;
 
     };
