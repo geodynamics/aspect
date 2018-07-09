@@ -200,6 +200,8 @@ namespace aspect
         return return_value;
       }
 
+
+
       template <int dim>
       std::pair<std::string, Vector<float> *>
       SeismicVpAnomaly<dim>::execute() const
@@ -229,19 +231,18 @@ namespace aspect
 
         std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
-        // Loop over the cells
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = this->get_dof_handler().begin_active(),
-        endc = this->get_dof_handler().end();
-
-
         switch (average_velocity_scheme)
           {
             case reference_profile:
             {
               MaterialModel::MaterialModelOutputs<dim> adiabatic_out(n_q_points, this->n_compositional_fields());
 
+              // Loop over the cells
+              typename DoFHandler<dim>::active_cell_iterator
+              cell = this->get_dof_handler().begin_active(),
+              endc = this->get_dof_handler().end();
               unsigned int cell_index = 0;
+
               for (; cell!=endc; ++cell,++cell_index)
                 if (cell->is_locally_owned())
                   {
@@ -301,7 +302,12 @@ namespace aspect
               std::copy ( Vp_depth_average.begin(), Vp_depth_average.end(), padded_Vp_depth_average.begin() + 1 );
 
 
+              // Loop over the cells
+              typename DoFHandler<dim>::active_cell_iterator
+              cell = this->get_dof_handler().begin_active(),
+              endc = this->get_dof_handler().end();
               unsigned int cell_index = 0;
+
               for (; cell!=endc; ++cell,++cell_index)
                 if (cell->is_locally_owned())
                   {
@@ -362,8 +368,11 @@ namespace aspect
               break;
             }
           }
+
         return return_value;
       }
+
+
 
       template <int dim>
       void
@@ -400,6 +409,8 @@ namespace aspect
         }
         prm.leave_subsection();
       }
+
+
 
       template <int dim>
       void
@@ -440,6 +451,8 @@ namespace aspect
         prm.leave_subsection();
       }
 
+
+
       template <int dim>
       void
       SeismicVpAnomaly<dim>::declare_parameters (ParameterHandler &prm)
@@ -475,6 +488,8 @@ namespace aspect
         }
         prm.leave_subsection();
       }
+
+
 
       template <int dim>
       void
@@ -517,6 +532,7 @@ namespace aspect
     }
   }
 }
+
 
 // explicit instantiations
 namespace aspect
