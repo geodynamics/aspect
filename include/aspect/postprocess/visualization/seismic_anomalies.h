@@ -100,6 +100,7 @@ namespace aspect
       };
 
 
+
       /**
        * A class derived that implements a function that provides the computed
        * computed seismic anomaly in $V_p$ for graphical output.

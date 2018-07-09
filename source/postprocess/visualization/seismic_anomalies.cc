@@ -200,6 +200,8 @@ namespace aspect
         return return_value;
       }
 
+
+
       template <int dim>
       std::pair<std::string, Vector<float> *>
       SeismicVpAnomaly<dim>::execute() const
@@ -365,6 +367,8 @@ namespace aspect
         return return_value;
       }
 
+
+
       template <int dim>
       void
       SeismicVsAnomaly<dim>::declare_parameters (ParameterHandler &prm)
@@ -400,6 +404,8 @@ namespace aspect
         }
         prm.leave_subsection();
       }
+
+
 
       template <int dim>
       void
@@ -440,6 +446,8 @@ namespace aspect
         prm.leave_subsection();
       }
 
+
+
       template <int dim>
       void
       SeismicVpAnomaly<dim>::declare_parameters (ParameterHandler &prm)
@@ -475,6 +483,8 @@ namespace aspect
         }
         prm.leave_subsection();
       }
+
+
 
       template <int dim>
       void
@@ -517,6 +527,7 @@ namespace aspect
     }
   }
 }
+
 
 // explicit instantiations
 namespace aspect
