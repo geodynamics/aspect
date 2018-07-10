@@ -62,19 +62,18 @@ namespace aspect
 
         std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
-        // Loop over the cells
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = this->get_dof_handler().begin_active(),
-        endc = this->get_dof_handler().end();
-
-
         switch (average_velocity_scheme)
           {
             case reference_profile:
             {
               MaterialModel::MaterialModelOutputs<dim> adiabatic_out(n_q_points, this->n_compositional_fields());
 
+              // Loop over the cells
+              typename DoFHandler<dim>::active_cell_iterator
+              cell = this->get_dof_handler().begin_active(),
+              endc = this->get_dof_handler().end();
               unsigned int cell_index = 0;
+
               for (; cell!=endc; ++cell,++cell_index)
                 if (cell->is_locally_owned())
                   {
@@ -135,8 +134,12 @@ namespace aspect
               padded_Vs_depth_average[n_slices+1] = 2.*Vs_depth_average[n_slices-1] - Vs_depth_average[n_slices-2];
               std::copy ( Vs_depth_average.begin(), Vs_depth_average.end(), padded_Vs_depth_average.begin() + 1 );
 
-
+              // Loop over the cells
+              typename DoFHandler<dim>::active_cell_iterator
+              cell = this->get_dof_handler().begin_active(),
+              endc = this->get_dof_handler().end();
               unsigned int cell_index = 0;
+
               for (; cell!=endc; ++cell,++cell_index)
                 if (cell->is_locally_owned())
                   {
