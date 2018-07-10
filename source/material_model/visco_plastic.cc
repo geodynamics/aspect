@@ -30,50 +30,6 @@ namespace aspect
   namespace MaterialModel
   {
 
-    namespace
-    {
-      std::vector<std::string> make_plastic_additional_outputs_names()
-      {
-        std::vector<std::string> names;
-        names.emplace_back("current_cohesions");
-        names.emplace_back("current_friction_angles");
-        names.emplace_back("plastic_yielding");
-        return names;
-      }
-    }
-
-    template <int dim>
-    PlasticAdditionalOutputs<dim>::PlasticAdditionalOutputs (const unsigned int n_points)
-      :
-      NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
-      cohesions(n_points, numbers::signaling_nan<double>()),
-      friction_angles(n_points, numbers::signaling_nan<double>()),
-      yielding(n_points, numbers::signaling_nan<double>())
-    {}
-
-    template <int dim>
-    std::vector<double>
-    PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
-    {
-      AssertIndexRange (idx, 3);
-      switch (idx)
-        {
-          case 0:
-            return cohesions;
-
-          case 1:
-            return friction_angles;
-
-          case 2:
-            return yielding;
-
-          default:
-            AssertThrow(false, ExcInternalError());
-        }
-      // We will never get here, so just return something
-      return cohesions;
-    }
-
 
     template <int dim>
     double
@@ -122,6 +78,7 @@ namespace aspect
         }
       return averaged_parameter;
     }
+
 
 
     template <int dim>
@@ -308,7 +265,7 @@ namespace aspect
 
 
     template <int dim>
-    std::tuple<double, double, double >
+    std::tuple<double, double, double>
     ViscoPlastic<dim>::
     calculate_plastic_weakening(const double strain_ii,
                                 const unsigned int j) const
@@ -354,8 +311,8 @@ namespace aspect
       MaterialModel::MaterialModelDerivatives<dim> *derivatives;
       derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
 
-      // set up variable to copy outputs for diffusion
-      CopyOutputs<dim> *copy_out = out.template get_additional_output<CopyOutputs<dim> >();
+//      // set up variable to copy outputs for diffusion
+//      CopyOutputs<dim> *copy_out = out.template get_additional_output<CopyOutputs<dim> >();
 
       // Store which components to exclude during volume fraction computation.
       ComponentMask composition_mask(this->n_compositional_fields(),true);
@@ -579,11 +536,12 @@ namespace aspect
             }
 
           // fill plastic outputs if they exist
-          if (PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim> >())
+          PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim> >();
+          if (plastic_out != NULL /*|| copy_out != NULL*/)
             {
               double C = 0.;
               double phi = 0.;
-              std::vector< std::vector<int> > sf;
+              std::vector< std::vector<double> > sf;
               // set to weakened values, or unweakened values when strain weakening is not used
               for (unsigned int j=0; j < volume_fractions.size(); ++j)
                 {
@@ -610,12 +568,17 @@ namespace aspect
                       std::tuple<double, double, double> weakening = calculate_plastic_weakening(strain_invariant, j);
                       C   += volume_fractions[j] * std::get<0> (weakening);
                       phi += volume_fractions[j] * std::get<1> (weakening);
-                      sf[i][j] = std::get<2> (weakening); // strain fraction at each point and composition
                       // add copy fields here
-                      if  (copy_out != NULL)
-                        {
-                          copy_out-> copy_properties[i][j] = sf[i][j];
-                        }
+//                      if  (copy_out != NULL)
+//                        {
+//                          if (this->get_timestep_number() > 0)
+//                            {
+//                              sf[i][j] = std::get<2> (weakening); // strain fraction at each point and composition
+//                              copy_out-> copy_properties[i][j] = (sf[i][j])/(this->get_timestep());
+//                            }
+//                          else
+//                            copy_out-> copy_properties[i][j] =0;
+//                        }
                     }
                   else
                     {
@@ -1146,13 +1109,13 @@ namespace aspect
             (new MaterialModel::PlasticAdditionalOutputs<dim> (n_points)));
         }
       // We want to diffuse the damage field after copy.
-      if (out.template get_additional_output<CopyOutputs<dim> >() == NULL)
-        {
-          const unsigned int n_points = out.viscosities.size();
-          out.additional_outputs.push_back(
-            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-            (new MaterialModel::CopyOutputs<dim> (n_points, this->n_compositional_fields())));
-        }
+//      if (out.template get_additional_output<CopyOutputs<dim> >() == NULL)
+//        {
+//          const unsigned int n_points = out.viscosities.size();
+//          out.additional_outputs.push_back(
+//            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+//            (new MaterialModel::CopyOutputs<dim> (n_points, this->n_compositional_fields())));
+//        }
 
     }
 

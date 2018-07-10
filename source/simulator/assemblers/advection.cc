@@ -78,7 +78,7 @@ namespace aspect
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
       if (!advection_field_is_temperature && advection_field.advection_method (introspection)
-          != Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field )
+          == Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field )
         return;
 
 

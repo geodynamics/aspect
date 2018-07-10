@@ -843,6 +843,51 @@ namespace aspect
     }
 
 
+    namespace
+    {
+      std::vector<std::string> make_plastic_additional_outputs_names()
+      {
+        std::vector<std::string> names;
+        names.emplace_back("current_cohesions");
+        names.emplace_back("current_friction_angles");
+        names.emplace_back("plastic_yielding");
+        return names;
+      }
+    }
+
+    template <int dim>
+    PlasticAdditionalOutputs<dim>::PlasticAdditionalOutputs (const unsigned int n_points)
+      :
+      NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
+      cohesions(n_points, numbers::signaling_nan<double>()),
+      friction_angles(n_points, numbers::signaling_nan<double>()),
+      yielding(n_points, numbers::signaling_nan<double>())
+    {}
+
+    template <int dim>
+    std::vector<double>
+    PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      AssertIndexRange (idx, 4);
+      switch (idx)
+        {
+          case 0:
+            return cohesions;
+
+          case 1:
+            return friction_angles;
+
+          case 2:
+            return yielding;
+
+          default:
+            AssertThrow(false, ExcInternalError());
+        }
+      // We will never get here, so just return something
+      return cohesions;
+    }
+
+
 
     namespace
     {
@@ -854,7 +899,6 @@ namespace aspect
 
         return names;
       }
-
 
       std::vector<std::string> make_copy_output_names(const unsigned int n_comp)
       {
@@ -978,6 +1022,8 @@ namespace aspect
   template class NamedAdditionalMaterialOutputs<dim>; \
   \
   template class SeismicAdditionalOutputs<dim>; \
+  \
+  template class PlasticAdditionalOutputs<dim>; \
   \
   template class CopyOutputs <dim>;\
   \
