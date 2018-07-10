@@ -108,6 +108,12 @@ namespace aspect
          */
         S40RTSPerturbation<dim> s40rts;
 
+        /**
+         * This parameter is the depth down to which shear wave perturbations are
+         * zeroed out.
+         */
+        double no_perturbation_depth_patch;
+
     };
   }
 }

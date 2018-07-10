@@ -24,6 +24,8 @@
 #include <aspect/initial_temperature/patch_on_S40RTS.h>
 #include <aspect/utilities.h>
 
+#include <boost/lexical_cast.hpp>
+
 namespace aspect
 {
   namespace InitialTemperature
@@ -95,7 +97,7 @@ namespace aspect
       // vs_to_density is read in from input file
       const double density_perturbation = vs_to_density * vs_perturbation;
       double temperature_perturbation;
-      if (depth > s40rts.no_perturbation_depth)
+      if (depth > no_perturbation_depth_patch)
         // scale the density perturbation into a temperature perturbation
         temperature_perturbation =  -1./s40rts.thermal_alpha * density_perturbation;
       else
@@ -122,6 +124,14 @@ namespace aspect
                              "The depth range (above maximum grid depth) over which to smooth. "
                              "The boundary is smoothed using a depth weighted combination of Vs "
                              "values from the ascii grid and S40RTS at each point in the region of smoothing.");
+          prm.declare_entry ("Remove temperature heterogeneity down to specified depth", boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+                             Patterns::Double (),
+                             "This will set the heterogeneity prescribed by the Vs ascii grid and S40RTS to zero "
+                             "down to the specified depth (in meters). Note that your resolution has "
+                             "to be adequate to capture this cutoff. For example if you specify a depth "
+                             "of 660km, but your closest spherical depth layers are only at 500km and "
+                             "750km (due to a coarse resolution) it will only zero out heterogeneities "
+                             "down to 500km. Similar caution has to be taken when using adaptive meshing.");
 
           Utilities::AsciiDataBase<dim>::declare_parameters(prm,
                                                             "$ASPECT_SOURCE_DIR/data/initial-temperature/patch-on-S40RTS/test/",
@@ -143,6 +153,7 @@ namespace aspect
         {
           max_grid_depth           = prm.get_double ("Maximum grid depth");
           smoothing_length_scale   = prm.get_double ("Smoothing length scale");
+          no_perturbation_depth_patch   = prm.get_double ("Remove temperature heterogeneity down to specified depth");
 
           Utilities::AsciiDataBase<dim>::parse_parameters(prm);
 
