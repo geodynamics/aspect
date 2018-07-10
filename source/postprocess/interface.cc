@@ -42,17 +42,18 @@ namespace aspect
 
     template <int dim>
     void
-    Interface<dim>::declare_parameters (ParameterHandler &)
+    Interface<dim>::update ()
     {}
 
-
+    template <int dim>
+    void
+    Interface<dim>::declare_parameters (ParameterHandler &)
+    {}
 
     template <int dim>
     void
     Interface<dim>::parse_parameters (ParameterHandler &)
     {}
-
-
 
     template <int dim>
     std::list<std::string>
@@ -61,13 +62,10 @@ namespace aspect
       return std::list<std::string>();
     }
 
-
-
     template <int dim>
     void
     Interface<dim>::save (std::map<std::string,std::string> &) const
     {}
-
 
     template <int dim>
     void
@@ -92,6 +90,9 @@ namespace aspect
         {
           try
             {
+              // first call the update() function.
+              (*p)->update();
+
               // call the execute() function. if it produces any output
               // then add it to the list
               std::pair<std::string,std::string> output

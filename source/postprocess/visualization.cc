@@ -167,6 +167,11 @@ namespace aspect
       Interface<dim>::initialize ()
       {}
 
+      template <int dim>
+      void
+      Interface<dim>::update ()
+      {}
+
 
       template <int dim>
       void
@@ -320,6 +325,17 @@ namespace aspect
                                                              output_file_names_by_timestep[timestep]));
       DataOutBase::write_visit_record (global_visit_master, times_and_output_file_names);
     }
+
+    template <int dim>
+    void
+    Visualization<dim>::update ()
+    {
+      //Call the .update() method for each visualization postprocessor.
+      for (typename std::list<std::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
+           p = postprocessors.begin(); p!=postprocessors.end(); ++p)
+        (*p)->update();
+    }
+
 
     template <int dim>
     std::pair<std::string,std::string>
