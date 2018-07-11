@@ -49,8 +49,7 @@ namespace aspect
         cell = this->get_dof_handler().begin_active(),
         endc = this->get_dof_handler().end();
 
-        unsigned int cell_index = 0;
-        for (; cell!=endc; ++cell,++cell_index)
+        for (; cell!=endc; ++cell)
           if (cell->is_locally_owned())
             {
               if (cell->at_boundary())
@@ -65,13 +64,13 @@ namespace aspect
                           break;
                         }
                     }
-                  (*return_value.second)(cell_index) = static_cast<float> (boundary_id);
+                  (*return_value.second)(cell->active_cell_index()) = static_cast<float> (boundary_id);
                 }
               // internal cells are all set to the same boundary indicator value
               // of the largest boundary indicator used for the current geometry plus one.
               else
                 {
-                  (*return_value.second)(cell_index) = largest_boundary_id_plus_one;
+                  (*return_value.second)(cell->active_cell_index()) = largest_boundary_id_plus_one;
                 }
             }
 

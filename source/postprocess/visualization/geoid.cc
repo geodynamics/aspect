@@ -53,11 +53,10 @@ namespace aspect
         cell = this->get_dof_handler().begin_active(),
         endc = this->get_dof_handler().end();
 
-        unsigned int cell_index = 0;
-        for (; cell!=endc; ++cell,++cell_index)
+        for (; cell!=endc; ++cell)
           if (cell->is_locally_owned())
             {
-              (*return_value.second)(cell_index) = 0.0;
+              (*return_value.second)(cell->active_cell_index()) = 0.0;
               if (cell->at_boundary())
                 {
                   for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
@@ -66,7 +65,7 @@ namespace aspect
                         {
                           // Get the location of the cell for the expansion
                           const Point<dim> p = cell->face(f)->center();
-                          (*return_value.second)(cell_index)  = geoid.evaluate(p);
+                          (*return_value.second)(cell->active_cell_index())  = geoid.evaluate(p);
 
                         }
                     }
