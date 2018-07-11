@@ -51,11 +51,10 @@ namespace aspect
         cell = this->get_dof_handler().begin_active(),
         endc = this->get_dof_handler().end();
 
-        unsigned int cell_index = 0;
-        for (; cell!=endc; ++cell,++cell_index)
+        for (; cell!=endc; ++cell)
           if (cell->is_locally_owned())
             {
-              (*return_value.second)(cell_index) = static_cast<float> (particle_handler.n_particles_in_cell(cell));
+              (*return_value.second)(cell->active_cell_index()) = static_cast<float> (particle_handler.n_particles_in_cell(cell));
             }
 
         return return_value;

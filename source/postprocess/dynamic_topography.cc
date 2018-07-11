@@ -244,7 +244,7 @@ namespace aspect
 
       cell = this->get_dof_handler().begin_active();
       endc = this->get_dof_handler().end();
-      for (unsigned int cell_index = 0; cell != endc; ++cell, ++cell_index)
+      for (; cell != endc; ++cell)
         if (cell->is_locally_owned())
           if (cell->at_boundary())
             {
@@ -374,7 +374,7 @@ namespace aspect
                 stored_values_bottom.push_back(std::make_pair(cell->face(face_idx)->center(), dynamic_topography));
 
               // Add the value to the vector for the visualization postprocessor.
-              visualization_values(cell_index) = dynamic_topography;
+              visualization_values(cell->active_cell_index()) = dynamic_topography;
             }
       distributed_topo_vector.compress(VectorOperation::insert);
       topo_vector = distributed_topo_vector;

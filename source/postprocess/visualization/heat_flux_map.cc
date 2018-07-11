@@ -61,11 +61,10 @@ namespace aspect
         cell = this->get_dof_handler().begin_active(),
         endc = this->get_dof_handler().end();
 
-        unsigned int cell_index = 0;
-        for (; cell!=endc; ++cell,++cell_index)
+        for (; cell!=endc; ++cell)
           if (cell->is_locally_owned())
             {
-              (*return_value.second)(cell_index) = 0;
+              (*return_value.second)(cell->active_cell_index()) = 0;
 
               for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
                 if (cell->at_boundary(f) &&
@@ -101,7 +100,7 @@ namespace aspect
                       }
 
                     // add heatflow for this face
-                    (*return_value.second)(cell_index) += normal_flux / face_area;
+                    (*return_value.second)(cell->active_cell_index()) += normal_flux / face_area;
                   }
             }
 
