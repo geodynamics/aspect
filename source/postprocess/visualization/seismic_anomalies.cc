@@ -72,9 +72,8 @@ namespace aspect
               typename DoFHandler<dim>::active_cell_iterator
               cell = this->get_dof_handler().begin_active(),
               endc = this->get_dof_handler().end();
-              unsigned int cell_index = 0;
 
-              for (; cell!=endc; ++cell,++cell_index)
+              for (; cell!=endc; ++cell)
                 if (cell->is_locally_owned())
                   {
                     // Get the pressure, temperature and composition in the cell
@@ -110,7 +109,7 @@ namespace aspect
                     const double adiabatic_Vs = adiabatic_seismic_outputs->vs[0];
 
                     // Compute the percentage deviation from the average
-                    (*return_value.second)(cell_index) = (Vs - adiabatic_Vs)/adiabatic_Vs*1e2;
+                    (*return_value.second)(cell->active_cell_index()) = (Vs - adiabatic_Vs)/adiabatic_Vs*1e2;
                   }
               break;
             }
@@ -138,9 +137,8 @@ namespace aspect
               typename DoFHandler<dim>::active_cell_iterator
               cell = this->get_dof_handler().begin_active(),
               endc = this->get_dof_handler().end();
-              unsigned int cell_index = 0;
 
-              for (; cell!=endc; ++cell,++cell_index)
+              for (; cell!=endc; ++cell)
                 if (cell->is_locally_owned())
                   {
                     // Get the pressure, temperature and composition in the cell
@@ -195,7 +193,7 @@ namespace aspect
 
                     // Compute the percentage deviation from the average
                     const double Vs_average = (1. - fractional_slice)*padded_Vs_depth_average[idx] + fractional_slice*padded_Vs_depth_average[idx+1];
-                    (*return_value.second)(cell_index) = (Vs - Vs_average)/Vs_average*1e2;
+                    (*return_value.second)(cell->active_cell_index()) = (Vs - Vs_average)/Vs_average*1e2;
                   }
               break;
             }
@@ -244,9 +242,8 @@ namespace aspect
               typename DoFHandler<dim>::active_cell_iterator
               cell = this->get_dof_handler().begin_active(),
               endc = this->get_dof_handler().end();
-              unsigned int cell_index = 0;
 
-              for (; cell!=endc; ++cell,++cell_index)
+              for (; cell!=endc; ++cell)
                 if (cell->is_locally_owned())
                   {
                     // Get the pressure, temperature and composition in the cell
@@ -280,7 +277,7 @@ namespace aspect
                     const double adiabatic_Vp = adiabatic_seismic_outputs->vp[0];
 
                     // Compute the percentage deviation from the average
-                    (*return_value.second)(cell_index) = (Vp - adiabatic_Vp)/adiabatic_Vp*1e2;
+                    (*return_value.second)(cell->active_cell_index()) = (Vp - adiabatic_Vp)/adiabatic_Vp*1e2;
                   }
               break;
             }
@@ -309,9 +306,8 @@ namespace aspect
               typename DoFHandler<dim>::active_cell_iterator
               cell = this->get_dof_handler().begin_active(),
               endc = this->get_dof_handler().end();
-              unsigned int cell_index = 0;
 
-              for (; cell!=endc; ++cell,++cell_index)
+              for (; cell!=endc; ++cell)
                 if (cell->is_locally_owned())
                   {
                     // Get the pressure, temperature and composition in the cell
@@ -366,7 +362,7 @@ namespace aspect
 
                     // Compute the percentage deviation from the average
                     const double Vp_average = (1. - fractional_slice)*padded_Vp_depth_average[idx] + fractional_slice*padded_Vp_depth_average[idx+1];
-                    (*return_value.second)(cell_index) = (Vp - Vp_average)/Vp_average*1e2;
+                    (*return_value.second)(cell->active_cell_index()) = (Vp - Vp_average)/Vp_average*1e2;
                   }
               break;
             }
