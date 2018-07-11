@@ -86,7 +86,7 @@ namespace aspect
         /**
          * Update function. This should be called before each postprocessor
          * is run and allows an opportunity to prepare/update temporary data
-	 */
+         */
         virtual void update ();
 
         /**
