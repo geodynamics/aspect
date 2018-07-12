@@ -1,0 +1,65 @@
+
+Number of active cells: 11 (on 1 levels)
+Number of degrees of freedom: 220 (132+22+66)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_specific_output_times/solution/solution-00000
+     Writing point values:     output-point_value_specific_output_times/point_values.txt
+
+Number of active cells: 11 (on 1 levels)
+Number of degrees of freedom: 220 (132+22+66)
+
+Number of active cells: 11 (on 1 levels)
+Number of degrees of freedom: 220 (132+22+66)
+
+*** Timestep 1:  t=5.57246e+15 seconds
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_specific_output_times/solution/solution-00001
+
+*** Timestep 2:  t=1.98981e+16 seconds
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 23+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_specific_output_times/solution/solution-00002
+
+Number of active cells: 11 (on 1 levels)
+Number of degrees of freedom: 220 (132+22+66)
+
+*** Timestep 3:  t=2.76408e+16 seconds
+   Solving temperature system... 7 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 24+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_specific_output_times/solution/solution-00003
+     Writing point values:     output-point_value_specific_output_times/point_values.txt
+
+*** Timestep 4:  t=3e+16 seconds
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 24+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_specific_output_times/solution/solution-00004
+
+Number of active cells: 11 (on 1 levels)
+Number of degrees of freedom: 220 (132+22+66)
+
+Termination requested by criterion: end time
+*** Snapshot created!
+
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

@@ -1,0 +1,132 @@
+# A variation of cell_in_circumference to test that the point values
+# postprocessor also works when requesting output at specific time intervals only.
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 3e16
+set Start time                             = 0
+set Adiabatic surface temperature          = 1613.0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+
+subsection Boundary temperature model
+  set List of model names = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 1613.0
+    set Outer temperature = 1613.0
+  end
+end
+
+subsection Termination criteria
+  set Checkpoint on termination = true
+  set Termination criteria      = end step
+  set End step                  = 10
+
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 9.81
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius = 5000000
+    set Outer radius = 6371000
+    set Opening angle = 360
+
+    # use a number of cells the is guaranteed to not create any
+    # symmetries
+    set Cells along circumference = 11
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1613.0
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1613 # default: 293
+    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 1e22    # default: 5e24
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Additional refinement times              = 0,0
+
+  set Strategy = velocity
+   set Time steps between mesh refinement       = 2
+
+  set Refinement fraction                      = 0.1
+  set Coarsening fraction                      = 0.0
+
+
+
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function 
+    set Variable names      = x,y
+    set Function expression = if((sqrt((x-3e6)^2+(y-2e6)^2)<1e6) , 800.0, 0)
+  end
+end
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 0, 1
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = 1
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, point values
+
+  # Choose points that are for sure in the domain but not
+  # at symmetry points
+  subsection Point values
+    set Time between point values output = 2e16
+    set Evaluation points = 6000000, 1000  ; \
+                            1000, 6000000  ; \
+                            4014515, 4234567
+  end
+
+  subsection Visualization
+     set Output format                 = gnuplot
+  end
+end
+
