@@ -60,15 +60,15 @@ namespace aspect
      *
      * Viscous stress is limited by plastic deformation, which follows
      * a Drucker Prager yield criterion:
-     *  $\sigma_y = C*\cos(\phi) + P*\sin(\phi)$  (2D)
+     *  $\sigma_y = C\cos(\phi) + P\sin(\phi)$  (2D)
      * or in 3D
-     *  $\sigma_y = \frac{6*C*\cos(\phi) + 2*P*\sin(\phi)}{\sqrt(3)*(3+\sin(\phi))}$
+     *  $\sigma_y = \frac{6C\cos(\phi) + 2P\sin(\phi)}{\sqrt(3)(3+\sin(\phi))}$
      * where
      *  $\sigma_y$ is the yield stress, $C$ is cohesion, $phi$ is the angle
      *  of internal friction and $P$ is pressure.
-     * If the viscous stress ($2*v*{\varepsilon}_{ii})$) exceeds the yield
+     * If the viscous stress ($2v{\varepsilon}_{ii})$) exceeds the yield
      * stress ($\sigma_{y}$), the viscosity is rescaled back to the yield
-     * surface: $v_{y}=\sigma_{y}/(2.*{\varepsilon}_{ii})$
+     * surface: $v_{y}=\sigma_{y}/(2.{\varepsilon}_{ii})$
      * This form of plasticity is commonly used in geodynamic models.
      * See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. "
      *
@@ -77,8 +77,8 @@ namespace aspect
      * strength (e.g., Young's and bulk modulus) are not considered. The model
      * is incompressible and allows specifying an arbitrary number of
      * compositional fields, where each field represents a different rock type
-     * or component of the viscoelastic stress tensor. The stress tensor in 2D
-     * and 3D, respectively, contains 3 or 6 components. The compositional fields
+     * or component of the viscoelastic stress tensor. The symmetric stress tensor in
+     * 2D and 3D, respectively, contains 3 or 6 components. The compositional fields
      * representing these components must be named and listed in a very specific
      * format, which is designed to minimize mislabeling stress tensor components
      * as distinct 'compositional rock types' (or vice versa). For 2D models,
@@ -114,9 +114,16 @@ namespace aspect
      * $\hat{D_{e}} = \frac{\overset{\triangledown}{\tau}}{2\mu}$, where
      * $\tau$ is the viscous deviatoric stress, $\eta$ is the shear viscosity,
      * $\mu$ is the shear modulus and $\overset{\triangledown}{\tau}$ is the
-     * Jaumann corotational stress rate. This later term (eqn. 24) contains the
-     * time derivative of the deviatoric stress ($\dot{\tau}$) and terms that
-     * account for material spin (e.g., rotation) due to advection:
+     * Jaumann corotational stress rate. If plasticity is included the
+     * deviatoric rate of deformation may be writted as:
+     * $\hat{D} = \hat{D_{e}} + \hat{D_{v}} + \hat{D_{p}$, where $\hat{D_{p}$
+     * is the plastic component. As defined in the second paragraph, $\hat{D_{p}$
+     * decomposes to $\frac{\tau_{y}}{2\eta_{y}}$, where $\tau_{y}$ is the yield
+     * stress and $\eta_{y}$ is the viscosity rescaled to the yield surface.
+     *
+     * Above, the Jaumann corotational stress rate (eqn. 24) from the elastic
+     * component contains the time derivative of the deviatoric stress ($\dot{\tau}$)
+     * and terms that  account for material spin (e.g., rotation) due to advection:
      * $\overset{\triangledown}{\tau} = \dot{\tau} + {\tau}W -W\tau$.
      * Above, $W$ is the material spin tensor (eqn. 25):
      * $W_{ij} = \frac{1}{2} \left (\frac{\partial V_{i}}{\partial x_{j}} -
@@ -132,8 +139,9 @@ namespace aspect
      * step. If the latter case is a selected, the user has an option to apply a
      * stress averaging scheme to account for the differences between the numerical
      * and fixed elastic time step (eqn. 32). If one selects to use a fixed elastic time
-     * step throughout the model run, this can still be achieved by using CFL and
-     * maximum time step values that restrict the numerical time step to a specific time.
+     * step throughout the model run, an equal numerical and elastic time step can be
+     * achieved by using CFL and maximum time step values that restrict the numerical
+     * time step to a specific time.
      *
      * The formulation above allows rewriting the total rate of deformation (eqn. 29) as
      * $\tau^{t + \Delta t^{e}} = \eta_{eff} \left (
@@ -290,7 +298,6 @@ namespace aspect
           maximum_composition
         };
 
-
         AveragingScheme viscosity_averaging;
 
         double average_value (const std::vector<double> &volume_fractions,
@@ -316,7 +323,6 @@ namespace aspect
          * Vector for field specific heats, read from parameter file.
          */
         std::vector<double> specific_heats;
-
 
         /**
          * Vector for field linear (fixed) viscosities, read from parameter file.

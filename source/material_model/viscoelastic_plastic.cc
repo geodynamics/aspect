@@ -213,8 +213,7 @@ namespace aspect
               // Initialize variables
               std::vector<double> stresses_viscous(volume_fractions.size());
               std::vector<double> stresses_yield(volume_fractions.size());
-              std::vector<double> viscosities_drucker_prager(volume_fractions.size());
-              std::vector<double> viscosities_yield(volume_fractions.size());
+              std::vector<double> viscosities_viscoplastic(volume_fractions.size());
               std::vector<double> viscosities_viscoelastic(volume_fractions.size());
 
               // Loop through all compositions
@@ -234,16 +233,15 @@ namespace aspect
                   // If the viscous stress is less than the yield stress, the yield viscosity is equal to the pre-yield value.
                   if ( stresses_viscous[j] >= stresses_yield[j]  )
                     {
-                      viscosities_drucker_prager[j] = stresses_yield[j] / (2.0 * edot_ii);
+                      viscosities_viscoplastic[j] = stresses_yield[j] / (2.0 * edot_ii);
                     }
                   else
                     {
-                      viscosities_drucker_prager[j] = viscosities_pre_yield[j];
+                      viscosities_viscoplastic[j] = viscosities_pre_yield[j];
                     }
 
-                  viscosities_yield[j] = viscosities_drucker_prager[j];
 
-                  viscosities_viscoelastic[j] = ( viscosities_yield[j] * dte ) / ( dte + ( viscosities_yield[j] / elastic_shear_moduli[j] ) );
+                  viscosities_viscoelastic[j] = ( viscosities_viscoplastic[j] * dte ) / ( dte + ( viscosities_viscoplastic[j] / elastic_shear_moduli[j] ) );
 
                 }
 
@@ -305,7 +303,7 @@ namespace aspect
                                                                  elastic_shear_moduli,
                                                                  viscosity_averaging);
 
-              // Average viscoelastic viscosity
+              // Average viscoelastic viscosity (viscoplastic viscosity modified for elastic contributions)
               const double viscoelastic_viscosity = out.viscosities[i];
 
               // Calculate the current (new) viscoelastic stress, which is a function of the material
@@ -618,9 +616,9 @@ namespace aspect
                        ||
                        this->get_parameters().nonlinear_solver ==
                        Parameters<dim>::NonlinearSolver::iterated_Advection_and_Newton_Stokes),
-                      ExcMessage("The material model will not work with the nonlinear "
-                                 "solver schemes 'no Advection, iterated Stokes' and "
-                                 "'single Advection, no Stokes'."));
+                      ExcMessage("The material model will only work with the solver schemes "
+                                 "'single Advection, single Stokes', 'single Advection, iterated Stokes' "
+                                 "and 'iterated Advection and Netwon Stokes'."));
 
           // Functionality to average the additional RHS terms over the cell is not implemented.
           // This enforces that the variable 'Material averaging' is set to 'none'.
@@ -654,7 +652,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
             (new MaterialModel::ElasticAdditionalOutputs<dim> (n_points)));
         }
     }
@@ -733,9 +731,16 @@ namespace aspect
                                    "$\\hat{D_{e}} = \\frac{\\overset{\\triangledown}{\\tau}}{2\\mu}$, where "
                                    "$\\tau$ is the viscous deviatoric stress, $\\eta$ is the shear viscosity, "
                                    "$\\mu$ is the shear modulus and $\\overset{\\triangledown}{\\tau}$ is the "
-                                   "Jaumann corotational stress rate. This later term (eqn. 24) contains the "
-                                   "time derivative of the deviatoric stress ($\\dot{\\tau}$) and terms that "
-                                   "account for material spin (e.g., rotation) due to advection: "
+                                   "Jaumann corotational stress rate. If plasticity is included the deviatoric "
+                                   "rate of deformation may be written as: "
+                                   "$\\hat{D} = \\hat{D_{e}} + \\hat{D_{v}} + \\hat{D_{p}}$, where $\\hat{D_{p}}$ "
+                                   "is the plastic component. As defined in the second paragraph, $\\hat{D_{p}}$ "
+                                   "decomposes to $\\frac{\\tau_{y}}{2\\eta_{y}}$, where $\\tau_{y}$ is the yield "
+                                   "stress and $\\eta_{y}}$ is the viscosity rescaled to the yield surface. "
+                                   "\n\n "
+                                   "Above, the Jaimann corotational stress rate (eqn. 24) from the elastic "
+                                   "component contains the time derivative of the deviatoric stress ($\\dot{\\tau}$) "
+                                   "and terms that account for material spin (e.g., rotation) due to advection: "
                                    "$\\overset{\\triangledown}{\\tau} = \\dot{\\tau} + {\\tau}W -W\\tau$. "
                                    "Above, $W$ is the material spin tensor (eqn. 25): "
                                    "$W_{ij} = \\frac{1}{2} \\left (\\frac{\\partial V_{i}}{\\partial x_{j}} - "

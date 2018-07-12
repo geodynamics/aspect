@@ -6,13 +6,13 @@
 # Kaus et al. models and this setup is the lack of cohesion strain-softerning,
 # which helps localize deformation along the shear bands.
 #
-# The key features of the model is the inclusion of viscoelasticity,
+# The key feature of the model is the inclusion of viscoelasticity,
 # which leads to a gradual (as opposed to instantaneous for visco-plasticity) 
 # development of the plastic shear bands above the weak viscous inclusion.
 # Kaus (2010) and many other studies (e.g., Glerum et al. 2018, Solid Earth)
 # have shown that the shear band angle is directly dependent on the mesh
 # resolution. Here, the model contains a very coarse resolution of 100x25
-# grid points (0.4 km grid spacing. Increase the "Initial global refinement"
+# grid points (0.4 km grid spacing. Increasing the "Initial global refinement"
 # parameter from 0 to 1 or 2 (resolution increases by 2x or 4x) should lead
 # to an increase in the shear band angle from 45 degrees to close to 60 
 # degrees.
