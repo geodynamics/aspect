@@ -1,0 +1,4 @@
+New: Added a postprocessor for the temperature anomaly, 
+defined as temperature - (depth average of temperature).
+<br>
+(Max Rudolph, 2018/07/11)

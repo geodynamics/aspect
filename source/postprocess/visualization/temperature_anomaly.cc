@@ -39,9 +39,6 @@ namespace aspect
         DataPostprocessorScalar<dim> ("temperature_anomaly",
                                       update_values | update_q_points )
       {
-        max_depth = 0.0;
-        std::vector<double> tmp(1);
-        padded_temperature_depth_average=tmp;
       }
 
       template <int dim>
@@ -80,7 +77,7 @@ namespace aspect
             padded_temperature_depth_average[n_slices+1] = 2.*bottom_temperature - temperature_depth_average[n_slices-1];
           }
         std::copy ( temperature_depth_average.begin(), temperature_depth_average.end(), padded_temperature_depth_average.begin() + 1 );
-        max_depth = this->get_geometry_model().maximal_depth();
+
       }
 
 
@@ -90,6 +87,7 @@ namespace aspect
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                             std::vector<Vector<double> > &computed_quantities) const
       {
+        const double max_depth = this->get_geometry_model().maximal_depth();
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
@@ -175,8 +173,8 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(TemperatureAnomaly,
                                                   "temperature anomaly",
                                                   "A visualization output postprocessor that outputs the temperature minus the depth-average of the temperature."
-                                                  "The average temperature is calculated using the ``depth average'' postprocessor and interpolated linearly "
-                                                  "between the layers layers specified through ``Number of depth slices''")
+                                                  "The average temperature is calculated using the lateral averaging function from the ``depth average'' "
+                                                  "postprocessor and interpolated linearly between the layers specified through ``Number of depth slices''")
     }
   }
 }

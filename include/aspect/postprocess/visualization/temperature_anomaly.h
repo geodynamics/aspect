@@ -71,9 +71,13 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
         private:
-          unsigned int n_slices;
-          double max_depth;
+          unsigned int n_slices; // number of slices to use when computing depth average of temperature
           std::vector<double> padded_temperature_depth_average;
+          /**
+           * Whether to extrapolate temperautres above/below the first/last depth-average slice
+           * or, alternatively, interpolate above the center of the first slice using the surface
+           * temperature or below the last slice using the bottom temperature.
+           */
           bool extrapolate_surface;
           bool extrapolate_bottom;
       };

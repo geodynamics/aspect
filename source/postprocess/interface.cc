@@ -35,25 +35,35 @@ namespace aspect
     Interface<dim>::~Interface ()
     {}
 
+
+
     template <int dim>
     void
     Interface<dim>::initialize ()
     {}
+
+
 
     template <int dim>
     void
     Interface<dim>::update ()
     {}
 
+
+
     template <int dim>
     void
     Interface<dim>::declare_parameters (ParameterHandler &)
     {}
 
+
+
     template <int dim>
     void
     Interface<dim>::parse_parameters (ParameterHandler &)
     {}
+
+
 
     template <int dim>
     std::list<std::string>
@@ -62,10 +72,14 @@ namespace aspect
       return std::list<std::string>();
     }
 
+
+
     template <int dim>
     void
     Interface<dim>::save (std::map<std::string,std::string> &) const
     {}
+
+
 
     template <int dim>
     void

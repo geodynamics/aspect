@@ -115,6 +115,9 @@ namespace aspect
            */
           virtual void initialize ();
 
+          /**
+           * Update any temporary information needed by the visualization postprocessor.
+           */
           virtual void update();
 
           /**
