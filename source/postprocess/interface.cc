@@ -35,10 +35,21 @@ namespace aspect
     Interface<dim>::~Interface ()
     {}
 
+
+
     template <int dim>
     void
     Interface<dim>::initialize ()
     {}
+
+
+
+    template <int dim>
+    void
+    Interface<dim>::update ()
+    {}
+
+
 
     template <int dim>
     void
@@ -69,6 +80,7 @@ namespace aspect
     {}
 
 
+
     template <int dim>
     void
     Interface<dim>::load (const std::map<std::string,std::string> &)
@@ -92,6 +104,9 @@ namespace aspect
         {
           try
             {
+              // first call the update() function.
+              (*p)->update();
+
               // call the execute() function. if it produces any output
               // then add it to the list
               std::pair<std::string,std::string> output

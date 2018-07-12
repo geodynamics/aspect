@@ -84,6 +84,12 @@ namespace aspect
         virtual void initialize ();
 
         /**
+         * Update function. This should be called before each postprocessor
+         * is run and allows an opportunity to prepare/update temporary data
+         */
+        virtual void update ();
+
+        /**
          * Execute this postprocessor. Derived classes will implement this
          * function to do whatever they want to do to evaluate the solution at
          * the current time step.

@@ -116,6 +116,11 @@ namespace aspect
           virtual void initialize ();
 
           /**
+           * Update any temporary information needed by the visualization postprocessor.
+           */
+          virtual void update();
+
+          /**
            * Declare the parameters this class takes through input files.
            * Derived classes should overload this function if they actually do
            * take parameters; this class declares a fall-back function that
@@ -277,6 +282,13 @@ namespace aspect
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
+
+        /**
+         * Update any temporary information needed by the visualization postprocessor.
+         */
+        virtual
+        void
+        update ();
 
         /**
          * A function that is used to register visualization postprocessor
