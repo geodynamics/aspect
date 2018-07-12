@@ -1,0 +1,6 @@
+subsection Initial temperature model
+  set Model name = adiabatic boundary
+  subsection Adiabatic boundary
+    set Isotherm depth filename = adiabatic_boundary.txt
+  end
+end
