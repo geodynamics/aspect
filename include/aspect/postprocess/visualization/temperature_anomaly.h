@@ -71,7 +71,15 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
         private:
-          unsigned int n_slices; // number of slices to use when computing depth average of temperature
+          /**
+           * Number of slices to use when computing depth average of temperature.
+           */
+          unsigned int n_slices;
+          /**
+           * Vector of temperature depth average values, padded to include two ghost values
+           * above and below the surface and bottom of the domain to allow interpolation at
+           * all depths.
+           */
           std::vector<double> padded_temperature_depth_average;
           /**
            * Whether to extrapolate temperautres above/below the first/last depth-average slice
