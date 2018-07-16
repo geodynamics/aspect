@@ -24,8 +24,8 @@ MESSAGE(STATUS "====================================================")
 # Set the name of the project and target:
 SET(TARGET "aspect")
 
-FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
-INCLUDE_DIRECTORIES(include ${CMAKE_BINARY_DIR}/include contrib/catch)
+FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp" "contrib/WorldBuilder/source/*.cc")
+INCLUDE_DIRECTORIES(include ${CMAKE_BINARY_DIR}/include contrib/catch contrib/WorldBuilder/include/)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
 
@@ -354,6 +354,19 @@ ELSE()
   SET(ASPECT_WITH_PERPLEX OFF)
 ENDIF()
 
+EXECUTE_PROCESS(COMMAND ls ${CMAKE_SOURCE_DIR}/contrib/WorldBuilder/VERSION RESULT_VARIABLE result OUTPUT_QUIET ERROR_QUIET)
+IF (result)
+	message("-- World Builder not found.")
+	SET(ASPECT_WITH_WORLD_BUILDER OFF CACHE BOOL "" FORCE)
+ELSE()
+	file (STRINGS "${CMAKE_SOURCE_DIR}/contrib/WorldBuilder/VERSION" WorldBuilderVersion)
+	message("-- World Builder version ${WorldBuilderVersion} found.")
+	SET(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "If ON the World Builder is compiled togheter with ASPECT.")
+	    FOREACH(_source_file ${TARGET_SRC})
+      SET_PROPERTY(SOURCE ${_source_file}
+	      APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_WORLD_BUILDER=1)
+ENDFOREACH()
+ENDIF()
 
 IF (ASPECT_USE_SHARED_LIBS)
   # some systems need to explicitly link to some libraries to use dlopen
