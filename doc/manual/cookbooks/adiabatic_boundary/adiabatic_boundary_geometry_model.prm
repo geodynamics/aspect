@@ -1,0 +1,14 @@
+# Model geometry.
+# The pair of numbers in the ellipsoidal chunk subsetion respectively represent the longitude and latidude of each corner of the model in degrees.
+# Note that the coordinates of only three corners of the model is required for an ellipsoidal chunk model geometry.
+
+subsection Geometry model
+  set Model name = ellipsoidal chunk
+  subsection Ellipsoidal chunk
+   set  NE corner = 131:-28
+   set  NW corner = 109:-28
+   set  SW corner = 109:-41
+   set  SE corner =
+  end
+end
+
