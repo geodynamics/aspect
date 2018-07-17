@@ -40,6 +40,10 @@ namespace aspect
       }
     }
 
+    template <int dim>
+    class PatchOnS40RTS;
+
+
     /**
      * A class that describes a perturbed initial temperature field for a
      * spherical shell geometry model. The perturbation is based on the S20RTS
@@ -90,7 +94,6 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
-
 
       private:
 
@@ -191,6 +194,7 @@ namespace aspect
          */
         bool use_material_model_thermal_alpha;
 
+        template <int dim2> friend class PatchOnS40RTS;
     };
 
   }
