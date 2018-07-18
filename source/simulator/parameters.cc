@@ -1536,9 +1536,9 @@ namespace aspect
                                  "transport is used in the simulation."));
 
       if (enable_diffusion)
-        AssertThrow((std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::copy_and_diffused_field)
-                     != compositional_field_methods.end()),
-                    ExcMessage ("Diffusion needs to be enabled with the advection method 'copy and diffuse'."));
+        AssertThrow((std::find(compositional_field_methods.begin(), compositional_field_methods.end(),
+        		AdvectionFieldMethod::copy_and_diffused_field) != compositional_field_methods.end()),
+                    ExcMessage ("Diffusion can only be enabled if one of the composition field method is 'copy and diffuse'."));
 
       const std::vector<std::string> x_mapped_particle_properties
         = Utilities::split_string_list

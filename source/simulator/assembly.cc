@@ -181,6 +181,7 @@ namespace aspect
 
     // Modify the assembler if you use diffused compositional field
     if (parameters.enable_diffusion)
+//            == Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field)
       {
         assemblers->advection_system.push_back(
           std_cxx14::make_unique<aspect::Assemblers::DiffusionSystem<dim> >());
