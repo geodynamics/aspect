@@ -1,0 +1,161 @@
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 4e5
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Stokes 
+set Nonlinear solver tolerance             = 1.e-3
+set Max nonlinear iterations               = 2000
+set Output directory                       = visco_plastic_copy_and_diffuse
+set Timing output frequency                = 1
+set Pressure normalization                 = no
+set CFL number                             = 0.5
+
+
+# Model geometry (100x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 20
+    set Y repetitions = 5
+    set X extent      = 40e3
+    set Y extent      = 10e3
+  end
+end
+
+
+# Mesh refinement specifications 
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+  set Time steps between mesh refinement = 0
+  set Strategy                           = strain rate
+end
+
+
+# Boundary classifications (fixed T boundaries, prescribed velocity) 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, left, right
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x: function, right x: function
+  set Tangential velocity boundary indicators = bottom
+end
+
+# Velocity on boundaries characterized by functions
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x, y
+    set Function constants  = v=3.14e-8
+    set Function expression = if (x<20e3, 20e3*v, -20e3*v); 0
+  end
+end
+
+# Free surface at top
+subsection Free surface
+  set Free surface boundary indicators = top
+  set Free surface stabilization theta = 0.5
+end
+
+# Temperature boundary and initial conditions
+subsection Boundary temperature model
+  set List of model names = box
+  subsection Box
+    set Bottom temperature = 273
+    set Left temperature   = 273
+    set Right temperature  = 273
+    set Top temperature    = 273
+  end
+end
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+# Compositional fields used to track finite strain invariant
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = plastic_strain, seed
+  set Compositional field methods = copy and diffuse, field
+end
+
+# We prescribe some initial strain at the center of the domain
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 1 ; if(x>=19.6e3&x<=20.4e3&y>=0&y<=.4e3, 1, 0)
+  end
+end
+
+# Boundary composition specification
+subsection Boundary composition model
+  set List of model names = initial composition
+end
+
+# Material model (values for background material)
+subsection Material model
+  set Model name = diffused plastic
+  subsection Diffused Plastic
+    set Reference strain rate = 1.e-15
+    set Viscous flow law = dislocation
+    set Prefactors for dislocation creep = 5.e-26, 5e-25, 5.e-21
+    set Stress exponents for dislocation creep = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep = 0.
+    set Densities = 2700
+    set Yield mechanism = drucker
+    set Angles of internal friction = 30
+    set Cohesions = 40.e6, 1.e20, 1.e20
+    set Use plastic strain weakening = true
+    set Use strain weakening         = true
+    set Start plasticity strain weakening intervals = 0.
+    set End plasticity strain weakening intervals = 0.1
+    set Cohesion strain weakening factors = 125
+    set Friction strain weakening factors = 1
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# Post processing
+# named additional outputs includes the weakened cohesions and friction angles
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization
+  subsection Visualization
+    set List of output variables = viscosity, strain rate, named additional outputs
+    set Output format            = vtu
+    set Time between graphical output = 5e3
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+end
+
+# Diffusion parameters
+subsection Formulation
+  set Enable diffusion = true
+end
+#
+subsection Solver parameters
+  subsection Diffusion parameters
+   set Shape parameter  = 10
+    set Non local length = 2  
+  end
+end
