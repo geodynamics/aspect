@@ -313,6 +313,8 @@ namespace aspect
         std::vector<double> angles_internal_friction;
         std::vector<double> cohesions;
         std::vector<double> exponents_stress_limiter;
+        
+         double max_yield_strength; // limit maximum yield stress from drucker-prager
 
     };
 
