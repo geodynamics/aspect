@@ -622,13 +622,17 @@ namespace aspect
       if (in.current_cell.state() == IteratorState::valid && use_strain_weakening == true
           && use_finite_strain_tensor == true && this->get_timestep_number() > 0 && in.strain_rate.size())
         {
-          const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+1);
+
+          std::vector<Point<dim> > quadrature_positions(in.position.size());
+          for (unsigned int i=0; i < in.position.size(); ++i)
+            quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
+
           FEValues<dim> fe_values (this->get_mapping(),
                                    this->get_fe(),
-                                   quadrature_formula,
+                                   Quadrature<dim>(quadrature_positions),
                                    update_gradients);
 
-          std::vector<Tensor<2,dim> > velocity_gradients (quadrature_formula.size(), Tensor<2,dim>());
+          std::vector<Tensor<2,dim> > velocity_gradients (quadrature_positions.size(), Tensor<2,dim>());
 
           fe_values.reinit (in.current_cell);
           fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_solution(),
