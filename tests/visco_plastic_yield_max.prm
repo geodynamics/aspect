@@ -1,3 +1,13 @@
+# This test check that the maximum yield stress is causing the
+# effective viscosity to change by the correct amount. The velocity
+# boundary conditions create a constant applied strain rate 3.1709e-16 1/s
+# (0.0005 m/y / 50e3 m / sec2yr). The drucker prager parameters create
+# a constant yield stress of 1e6 Pa, which would give a viscosity of
+# 1e6/2/3.17e-16 = 1.57e21 Pa s (this is the visco_plastic_yield test).
+# So, here we set maximum yield strength = 0.5e6 Pa, and so the effective
+# viscosity becomes 0.5e6/2/3.17e-16 = 7.88e20. The gnuplot output includes
+# the strain rate value and the viscosity.
+#
 # Global parameters
 set Dimension                              = 2
 set Start time                             = 0
