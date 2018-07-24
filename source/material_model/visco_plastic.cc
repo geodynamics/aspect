@@ -259,6 +259,9 @@ namespace aspect
                                     :
                                     coh * std::cos(phi) + std::max(pressure,0.0) * std::sin(phi) );
 
+          // Use max_yield_strength to limit the yield strength for depths beneath the lithosphere
+          yield_strength = std::min(yield_strength, max_yield_strength);
+
           // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface
           // Also, we use a value of 1 to indicate we're in the yielding regime.
           double viscosity_drucker_prager;
@@ -906,6 +909,13 @@ namespace aspect
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "Units: none.");
 
+          // Limit maximum value of the drucker-prager yield stress
+          prm.declare_entry ("Maximum yield stress", "1e12", Patterns::Double(0),
+                             "Limits the maximum value of the yield stress determined by the "
+                             "drucker-prager plasticity parameters. Default value is chosen so this "
+                             "is not automatically used. Values of 100e6--1000e6 $Pa$ have been used "
+                             "in previous models. Units: $Pa$");
+
         }
         prm.leave_subsection();
       }
@@ -1111,6 +1121,9 @@ namespace aspect
           exponents_stress_limiter  = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress limiter exponents"))),
                                                                               n_fields,
                                                                               "Stress limiter exponents");
+
+          // Limit maximum value of the drucker-prager yield stress
+          max_yield_strength = prm.get_double("Maximum yield stress");
         }
         prm.leave_subsection();
       }
