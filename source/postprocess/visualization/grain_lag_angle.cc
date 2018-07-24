@@ -60,8 +60,7 @@ namespace aspect
         // Loop over cells and calculate theta in each one
         // Note that we start after timestep 0 because we need the strain rate,
         // which doesn't exist during the initial step
-        unsigned int cell_index = 0;
-        for (; cell != endc; ++cell, ++cell_index)
+        for (; cell != endc; ++cell)
           {
             if (cell->is_locally_owned() && this->get_timestep_number() > 0)
               {
@@ -142,7 +141,7 @@ namespace aspect
                     if (theta_val > numbers::PI/2)
                       theta_val = fmod(theta_val, numbers::PI/2);
                   }
-                (*return_value.second)(cell_index) = theta_val;
+                (*return_value.second)(cell->active_cell_index()) = theta_val;
               }
           }
         return return_value;

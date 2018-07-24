@@ -60,8 +60,7 @@ namespace aspect
         // Loop over cells and calculate tauISA in each one
         // Note that we start after timestep 0 because we need the strain rate,
         // which doesn't exist during the initial step
-        unsigned int cell_index = 0;
-        for (; cell != endc; ++cell, ++cell_index)
+        for (; cell != endc; ++cell)
           {
             if (cell->is_locally_owned() && this->get_timestep_number() > 0)
               {
@@ -80,7 +79,7 @@ namespace aspect
                                                 std::abs(strain_rate_eigenvalues[dim-1]));
                 const double tauISA = 1.0 / lambda1;
 
-                (*return_value.second)(cell_index) = tauISA;
+                (*return_value.second)(cell->active_cell_index()) = tauISA;
               }
           }
 
