@@ -134,7 +134,7 @@ namespace aspect
                   {
                     theta_val = std::acos(std::abs((in.velocities[0] * ehat) / umag));
                     if (theta_val > numbers::PI/2)
-                      theta_val = fmod(theta_val, numbers::PI/2);
+                      theta_val = std::fmod(theta_val, numbers::PI/2);
                   }
                 (*return_value.second)(cell->active_cell_index()) = theta_val;
               }
