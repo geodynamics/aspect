@@ -69,13 +69,9 @@ namespace aspect
                 fe_values.reinit(cell);
                 in.reinit(fe_values, cell, this->introspection(),
                           this->get_solution(), true);
-                // Also get velocities and velocity gradients
-                std::vector<Tensor<1, dim> > velocities(n_q_points,
-                                                        Tensor<1, dim>());
+                // Also get velocity gradients
                 std::vector<Tensor<2, dim> > velocity_gradient(n_q_points,
                                                                Tensor<2, dim>());
-                fe_values[this->introspection().extractors.velocities].get_function_values(
-                  this->get_solution(), velocities);
                 fe_values[this->introspection().extractors.velocities].get_function_gradients(
                   this->get_solution(), velocity_gradient);
 
@@ -132,12 +128,12 @@ namespace aspect
 
                 // Calculate theta by dotting the ISA (ehat) and the velocity (scaled to a unit vector)
                 // theta is limited to be less than pi/2 (stay in the first quadrant)
-                const double umag = std::sqrt(velocities[0] * velocities[0]);
+                const double umag = std::sqrt(in.velocities[0] * in.velocities[0]);
                 const double umagmin = 1.0e-40;  // to avoid problems with /0 in acos
                 double theta_val = 0;
                 if (umag > umagmin)
                   {
-                    theta_val = std::acos(std::abs((velocities[0] * ehat) / umag));
+                    theta_val = std::acos(std::abs((in.velocities[0] * ehat) / umag));
                     if (theta_val > numbers::PI/2)
                       theta_val = fmod(theta_val, numbers::PI/2);
                   }
