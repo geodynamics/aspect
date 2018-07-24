@@ -101,7 +101,7 @@ namespace aspect
                 // corresponding to the largest eigenvalue of U in the limit as t->infinity.
                 // As per Kaminski and Ribe (2002), tmax = 75*tauISA is infinite enough for
                 // most applications.
-                unsigned int maxorder = 4; // truncate at L^4
+                const unsigned int maxorder = 4; // truncate at L^4
                 Tensor<2, dim> F = unit_symmetric_tensor<dim, double>(); // initialize as identity (first term of sum)
                 const double tmax = 75 * tauISA; // "infinite" time
 
