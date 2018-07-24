@@ -129,9 +129,8 @@ namespace aspect
                 // Calculate theta by dotting the ISA (ehat) and the velocity (scaled to a unit vector)
                 // theta is limited to be less than pi/2 (stay in the first quadrant)
                 const double umag = in.velocities[0].norm()
-                const double umagmin = 1.0e-40;  // to avoid problems with /0 in acos
                 double theta_val = 0;
-                if (umag > umagmin)
+                if (umag > 100.0 * std::numeric_limits<double>::min())
                   {
                     theta_val = std::acos(std::abs((in.velocities[0] * ehat) / umag));
                     if (theta_val > numbers::PI/2)
