@@ -96,7 +96,8 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(ISARotationTimescale, "ISA rotation timescale",
+      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(ISARotationTimescale,
+    		  	  	  	  	  	  	  	  	  	  "ISA rotation timescale",
                                                   "A visualization output object that generates output "
                                                   "showing the timescale for the rotation of grains "
                                                   "toward the infinite strain axis. Kaminski and Ribe "

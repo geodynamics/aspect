@@ -152,7 +152,8 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(GrainLagAngle, "grain lag angle",
+      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(GrainLagAngle,
+    		  	  	  	  	  	  	  	  	  	  "grain lag angle",
                                                   "A visualization output object that generates output "
                                                   "showing the angle between the ~infinite strain axis "
                                                   "and the flow velocity. Kaminski and Ribe "
