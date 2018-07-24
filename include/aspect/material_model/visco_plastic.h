@@ -314,7 +314,10 @@ namespace aspect
         std::vector<double> cohesions;
         std::vector<double> exponents_stress_limiter;
 
-        double max_yield_strength; // limit maximum yield stress from drucker-prager
+        /**
+        * Limit maximum yield stress from drucker-prager.
+        */
+        double max_yield_strength;
 
     };
 
