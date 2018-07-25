@@ -1,0 +1,81 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.1.0-pre (master, d9f25d661)
+--     . using deal.II 9.0.0
+--     . using Trilinos 12.10.1
+--     . using p4est 2.0.0
+--     . running in OPTIMIZED mode
+--     . running with 1 MPI process
+-- How to cite ASPECT: https://aspect.geodynamics.org/cite.html
+-----------------------------------------------------------------------------
+
+Number of active cells: 320 (on 4 levels)
+Number of degrees of freedom: 4,500 (2,754+369+1,377)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+
+Number of active cells: 560 (on 5 levels)
+Number of degrees of freedom: 8,034 (4,922+651+2,461)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13+0 iterations.
+
+Number of active cells: 1,280 (on 6 levels)
+Number of degrees of freedom: 18,215 (11,174+1,454+5,587)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14+0 iterations.
+
+Number of active cells: 3,680 (on 7 levels)
+Number of degrees of freedom: 51,050 (31,354+4,019+15,677)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15+0 iterations.
+
+Number of active cells: 14,120 (on 8 levels)
+Number of degrees of freedom: 190,061 (116,846+14,792+58,423)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-lazy-expression/solution/solution-00000
+     RMS, max velocity:        0.00253 m/year, 0.0137 m/year
+     Temperature min/avg/max:  273 K, 1621 K, 1675 K
+
+Number of active cells: 14,120 (on 8 levels)
+Number of degrees of freedom: 190,061 (116,846+14,792+58,423)
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      8.04s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         5 |      1.07s |        13% |
+| Assemble temperature system     |         5 |      1.02s |        13% |
+| Build Stokes preconditioner     |         5 |      1.27s |        16% |
+| Build temperature preconditioner|         5 |     0.204s |       2.5% |
+| Solve Stokes system             |         5 |      1.24s |        15% |
+| Solve temperature system        |         5 |    0.0178s |      0.22% |
+| Initialization                  |         1 |    0.0588s |      0.73% |
+| Postprocessing                  |         1 |      0.56s |         7% |
+| Refine mesh structure, part 1   |         5 |     0.334s |       4.1% |
+| Refine mesh structure, part 2   |         5 |     0.157s |         2% |
+| Setup dof systems               |         6 |     0.537s |       6.7% |
+| Setup initial conditions        |         5 |     0.606s |       7.5% |
++---------------------------------+-----------+------------+------------+
+
