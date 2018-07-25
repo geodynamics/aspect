@@ -30,10 +30,18 @@ namespace CitationInfo
 
   const std::string get_url_part ()
   {
+    // version:
     std::string url = "cite.html?ver=";
     url += ASPECT_PACKAGE_VERSION;
+
+    // sha1:
+    url += "&sha=";
+    url += ASPECT_GIT_SHORTREV;
+
+    // all ids:
     for (const auto &id : citation_ids)
       url += "&" + id + "=1";
+
     return url;
   }
 
