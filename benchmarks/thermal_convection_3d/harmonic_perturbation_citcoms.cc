@@ -48,7 +48,9 @@ namespace aspect
       double model_inner_radius = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
                                   (this->get_geometry_model()).inner_radius();
   
-      // epsilon specifies the amplitutude of the nonaxisymmetric perturbation
+      // epsilon specifies the amplitutude of the nonaxisymmetric perturbation. The epsilon here is only valid
+      // for the cubic steady-state case. For users who want to try the dodecahedral initial condition, epsilon
+      // has to be set at sqrt(14/11) (Arrial et al. 2014).
       const double epsilon = 5./7. * (1 - delta);
 
       // In case of spherical shell, calculate spherical coordinates

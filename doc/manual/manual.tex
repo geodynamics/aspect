@@ -9937,6 +9937,29 @@ If we increase the resolution by a factor of 4 (right panel), we see that that e
 
 The results shown here can be reproduced using the bash scripts \texttt{run.sh} in the corresponding benchmark folders. 
 
+\subsubsection{3D thermal convection benchmark}
+ilabel{sec:benchmark-thermal-convection}
+
+\textit{This section was contributed by L. Jeanniot and C. Thieulot.}
+
+We use an incompressible and isoviscous Rayleigh-Bénard thermal convection benchmark at infinite Prandtl number in a spherical shell to compare the results predicted by ASPECT with the previously benchmarked numerical code CitcomS. This benchmark follows the setup of Arrial et al. (2014) and Zhong et al. (2008). We explore the sensitivity of the initial and steady-state root mean square velocity $V_RMS$, average temperature $<T>$ and Nusselt number $Nu$ measured at both inner and outer boundaries to resolution for a Rayleigh number $Ra = 7000$ and $Ra = 70000$. 
+
+The setup is a 3d spherical shell with a nondimensional length scale chosen as the approximate thickness of the mantle of the Earth (i.e. mantle thickness = 1). For low resolution models (here global refinement of 3), specifying Cells along circumferences at 12 allows better and quickier convergence to the solution. Angular momentum is here removed from the velocity field at the end of the Stokes solver step so that the net angular momentum is zero because for some geometries and certain boundary conditions the velocity field in not uniquely determined but contains free translations and/or rotations. 
+The dynamics of the fluid are entirely governed by the Rayleigh number $Ra$, which can be interpreted as a ratio of the destabilizing force due to the buoyancy of the heated fluid to the stabilizing force due to the the viscosity of the fluid and heat transfer by conduction. Therefore, we set here all the parameters which are parts of the Rayleigh formula to 1, except for the gravity component. The value given to the gravity magnitude therefore specifies the Rayleigh number value.
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/thermal_convection_3d_1.prm}
+
+The governing equations describe an incompressible Boussinesq fluid at infinite Prandtl number 3D spherical shell that is heated from below and cooled from above. The temperature scale is chosen as the difference between the temperature at the inner and outer boundaries (equal to 1).
+The initial temperature is given by the sum of a conductive profile together with a perturbation. 
+\begin{align}
+
+\end{align}
+The perturbation determines the final patterns of the polyhedral symmetry which is here cubic .
+A perturbation parameter has been introduced to slowly perturb the amplitude of the nonaxisymmetric mode. Set to 0 means the perturbation is full; set to 1 and there is no perturbation (i.e the initial condition temperature profile is only axissymmetric)
+
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/thermal_convection_3d_2.prm}
+
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/thermal_convection_3d_3.prm}
+
 \section{Extending and contributing to \aspect}
 \label{sec:extending}
 
