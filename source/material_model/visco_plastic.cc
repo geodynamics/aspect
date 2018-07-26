@@ -149,6 +149,11 @@ namespace aspect
                                std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
                                         min_strain_rate) );
 
+      // Choice of activation volume depends on whether there is an adiabatic temperature
+      // gradient used when calculating the viscosity. This allows the same activation volume
+      // to be used in incompressible and compressible models. Default value is 0. Units [K/Pa]
+      const double temperature_for_viscosity = temperature + temperature_adiabat_for_viscosity*pressure;
+
       // Calculate viscosities for each of the individual compositional phases
       std::vector<double> composition_viscosities(volume_fractions.size());
       std::vector<double> composition_yielding(volume_fractions.size());
@@ -164,13 +169,13 @@ namespace aspect
           // Diffusion creep: viscosity is grain size dependent (m!=0) and strain-rate independent (n=1)
           double viscosity_diffusion = 0.5 / prefactors_diffusion[j] *
                                        std::exp((activation_energies_diffusion[j] + pressure*activation_volumes_diffusion[j])/
-                                                (constants::gas_constant*temperature)) *
+                                                (constants::gas_constant*temperature_for_viscosity)) *
                                        std::pow(grain_size, grain_size_exponents_diffusion[j]);
 
           // For dislocation creep, viscosity is grain size independent (m=0) and strain-rate dependent (n>1)
           double viscosity_dislocation = 0.5 * std::pow(prefactors_dislocation[j],-1/stress_exponents_dislocation[j]) *
                                          std::exp((activation_energies_dislocation[j] + pressure*activation_volumes_dislocation[j])/
-                                                  (constants::gas_constant*temperature*stress_exponents_dislocation[j])) *
+                                                  (constants::gas_constant*temperature_for_viscosity*stress_exponents_dislocation[j])) *
                                          std::pow(edot_ii,((1. - stress_exponents_dislocation[j])/stress_exponents_dislocation[j]));
 
           // Composite viscosity
@@ -916,6 +921,14 @@ namespace aspect
                              "is not automatically used. Values of 100e6--1000e6 $Pa$ have been used "
                              "in previous models. Units: $Pa$");
 
+          // Temperature in viscosity laws to include an adiabat (note units of K/Pa)
+          prm.declare_entry ("Temperature adiabat for viscosity", "0.0", Patterns::Double(0),
+                             "Add an adiabatic temperature gradient to the flow law so that the "
+                             "activation volume is consistent with what one would use in a "
+                             "earth-like (compressible) model. Default is set so this is off. "
+                             "Using a pressure gradient of 32436 Pa/m, then a value of "
+                             "0.3 $K/km$ = 0.0003 $K/m$ = 9.24e-09 $K/Pa$ gives an earth-like adiabat."
+                             "Units: $K/Pa$");
         }
         prm.leave_subsection();
       }
@@ -1124,6 +1137,10 @@ namespace aspect
 
           // Limit maximum value of the drucker-prager yield stress
           max_yield_strength = prm.get_double("Maximum yield stress");
+
+          // Include an adiabat temperature gradient in flow laws
+          temperature_adiabat_for_viscosity = prm.get_double("Temperature adiabat for viscosity");
+
         }
         prm.leave_subsection();
       }

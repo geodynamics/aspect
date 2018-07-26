@@ -1,0 +1,46 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.1.0-pre (temp-adiabat, 6ef3bf2e0)
+--     . using deal.II 9.0.0
+--     . using Trilinos 12.10.1
+--     . using p4est 2.0.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-- How to cite ASPECT: https://aspect.geodynamics.org/cite.html
+-----------------------------------------------------------------------------
+
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 1,444 (882+121+441)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+13 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
+     Mass fluxes through boundary parts: 1.576e+05 kg/yr, 1.576e+05 kg/yr, -1.576e+05 kg/yr, -1.576e+05 kg/yr
+     Writing graphical output:           visco_plastic_adiabat_temperature/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.231s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         1 |    0.0236s |        10% |
+| Assemble temperature system     |         1 |    0.0207s |         9% |
+| Build Stokes preconditioner     |         1 |    0.0211s |       9.1% |
+| Build temperature preconditioner|         1 |   0.00126s |      0.54% |
+| Solve Stokes system             |         1 |    0.0165s |       7.1% |
+| Solve temperature system        |         1 |  0.000468s |       0.2% |
+| Initialization                  |         1 |    0.0678s |        29% |
+| Postprocessing                  |         1 |    0.0144s |       6.2% |
+| Setup dof systems               |         1 |    0.0194s |       8.4% |
+| Setup initial conditions        |         1 |    0.0185s |         8% |
++---------------------------------+-----------+------------+------------+
+

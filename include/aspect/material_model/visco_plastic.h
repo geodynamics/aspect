@@ -319,6 +319,11 @@ namespace aspect
         */
         double max_yield_strength;
 
+        /**
+         * temperature gradient added to temperature used in the flow law.
+         */
+        double temperature_adiabat_for_viscosity;
+
     };
 
   }
