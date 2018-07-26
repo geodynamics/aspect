@@ -597,7 +597,7 @@ namespace aspect
         // then also work on possible face terms. if necessary, initialize
         // the material model data on faces
         for (unsigned int face_number=0; face_number<GeometryInfo<dim>::faces_per_cell; ++face_number)
-          if (cell->at_boundary(face_number))
+          if (cell->at_boundary(face_number) && !cell->has_periodic_neighbor(face_number))
             {
               scratch.reinit(cell, face_number);
               if (assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data)
