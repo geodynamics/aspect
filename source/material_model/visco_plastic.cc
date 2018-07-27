@@ -248,6 +248,28 @@ namespace aspect
           // Apply strain weakening of the viscous viscosity
           viscosity_pre_yield *= viscous_weakening;
 
+          // For composition spcrust, change from fixed *maximum* viscosity to flow-law viscosity
+          // over specified pressure range (strain weakening could make this lower)
+          if (use_fixed_spcrust_viscosity == true)
+            {
+              if (j == (this->introspection().compositional_index_for_name("spcrust") + 1))
+                {
+                  if (pressure <= spcrust_viscosity_minimum_pressure)
+                    {
+                      viscosity_pre_yield = std::min(maximum_spcrust_viscosity,viscosity_pre_yield);
+                    }
+                  else if ((pressure > spcrust_viscosity_minimum_pressure)
+                           && (pressure < spcrust_viscosity_maximum_pressure))
+                    {
+                      viscosity_pre_yield = std::min(maximum_spcrust_viscosity*
+                                                     std::pow(10,(pressure-spcrust_viscosity_minimum_pressure)*
+                                                              (std::log10(max_visc)-std::log10(maximum_spcrust_viscosity))/
+                                                              (spcrust_viscosity_maximum_pressure-spcrust_viscosity_minimum_pressure)),
+                                                     viscosity_pre_yield);
+                    }
+                }
+            }
+
           // Calculate viscous stress
           double viscous_stress = 2. * viscosity_pre_yield * edot_ii;
 
@@ -391,10 +413,26 @@ namespace aspect
           double density = 0.0;
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
             {
+              double delta_crust_density = 0.0;
+              if (use_spcrust_density_change)
+                {
+                  if (j == (this->introspection().compositional_index_for_name("spcrust") + 1))
+                    {
+                      if ((pressure > spcrust_density_minimum_pressure) && (pressure < spcrust_density_maximum_pressure))
+                        {
+                          delta_crust_density = (pressure-spcrust_density_minimum_pressure)*(spcrust_density_change)/
+                                                (spcrust_density_maximum_pressure-spcrust_density_minimum_pressure);
+                        }
+                      else if (pressure >= spcrust_density_maximum_pressure)
+                        {
+                          delta_crust_density = spcrust_density_change;
+                        }
+                    }
+                }
               // not strictly correct if thermal expansivities are different, since we are interpreting
               // these compositions as volume fractions, but the error introduced should not be too bad.
               const double temperature_factor = (1.0 - thermal_expansivities[j] * (temperature - reference_T));
-              density += volume_fractions[j] * densities[j] * temperature_factor;
+              density += volume_fractions[j] * (densities[j] + delta_crust_density) * temperature_factor;
             }
 
           // thermal expansivities
@@ -916,6 +954,45 @@ namespace aspect
                              "is not automatically used. Values of 100e6--1000e6 $Pa$ have been used "
                              "in previous models. Units: $Pa$");
 
+          // Transition from maximum spcrust viscosity to flow-law defined value
+          // over specified pressure range
+          prm.declare_entry ("Use fixed spcrust viscosity", "false", Patterns::Bool (),
+                             "Transition the viscosity of a compositional field called spcrust "
+                             "from a constant value to the value determined by the flow law parameters. "
+                             "Units: None");
+          prm.declare_entry ("Maximum spcrust viscosity", "1e28", Patterns::Double(0),
+                             "Maximum viscosity for the composition called spcrust. Using a value of 1e20 $Pa \\, s$"
+                             "would create a weak layer that smoothly increases to the viscosity "
+                             "determined by the flow law parameters (if these predict a higher "
+                             "value). Units: $Pa \\, s$");
+          prm.declare_entry ("Minimum transition pressure spcrust viscosity", "0.0", Patterns::Double(0),
+                             "Pressure at which to start the smooth transition from "
+                             "the maximum spcrust viscosity to the viscosity determined by"
+                             "the flow law. A value of 2.0e9 $Pa$ would correspond to a "
+                             "depth of about 60 km. Units: $Pa$");
+          prm.declare_entry ("Maximum transition pressure spcrust viscosity", "0.0", Patterns::Double(0),
+                             "Pressure at which to end smooth transition from "
+                             "the maximum spcrust viscosity to the viscosity determined by"
+                             "the flow law. A value of 3.9e9 $Pa$ would correspond to a "
+                             "depth of about 120 km. Units: $Pa$");
+
+          // Transition the spcrust density from defined value by a delta-rho
+          // given by spcrust_density_change over specified pressure range
+          prm.declare_entry ("Use spcrust density change", "false", Patterns::Bool (),
+                             "Change the density of a compositional field called spcrust"
+                             "over a specified pressure range.  Units: None");
+          prm.declare_entry ("Density change from spcrust", "0.0", Patterns::Double(0),
+                             "Density change for spcrust composition density to new value. "
+                             "Density changes smoothly from minimum to maximum transition pressure for spcrust."
+                             "For basalt density of 3000 and eclogite density of 3540, use a value of 540 $kg/m^3"
+                             "Units: $kg/m^3$");
+          prm.declare_entry ("Minimum transition pressure spcrust density", "0.0", Patterns::Double(0),
+                             "Pressure at which to start the smooth transition from  in density."
+                             "A value of 2.0e9 $Pa$ would correspond to a depth of about 60 km. Units: $Pa$");
+          prm.declare_entry ("Maximum transition pressure spcrust density", "0.0", Patterns::Double(0),
+                             "Pressure at which to end smooth transition in density. "
+                             "A value of 3.9e9 $Pa$ would correspond to a depth of about 120 km. Units: $Pa$");
+
         }
         prm.leave_subsection();
       }
@@ -1124,6 +1201,25 @@ namespace aspect
 
           // Limit maximum value of the drucker-prager yield stress
           max_yield_strength = prm.get_double("Maximum yield stress");
+
+          // spcrust composition with fixed viscosity that transitions over pressure range to flow-law rheology
+          use_fixed_spcrust_viscosity = prm.get_bool ("Use fixed spcrust viscosity");
+          if (use_fixed_spcrust_viscosity)
+            AssertThrow(this->introspection().compositional_name_exists("spcrust"),
+                        ExcMessage("There must be a compositional field called spcrust."));
+          maximum_spcrust_viscosity = prm.get_double("Maximum spcrust viscosity");
+          spcrust_viscosity_minimum_pressure = prm.get_double("Minimum transition pressure spcrust viscosity");
+          spcrust_viscosity_maximum_pressure = prm.get_double("Maximum transition pressure spcrust viscosity");
+
+          // spcrust composition with density change over pressure range
+          use_spcrust_density_change = prm.get_bool ("Use spcrust density change");
+          if (use_spcrust_density_change)
+            AssertThrow(this->introspection().compositional_name_exists("spcrust"),
+                        ExcMessage("There must be a compositional field called spcrust."));
+          spcrust_density_change = prm.get_double("Density change from spcrust");
+          spcrust_density_minimum_pressure = prm.get_double("Minimum transition pressure spcrust density");
+          spcrust_density_maximum_pressure = prm.get_double("Maximum transition pressure spcrust density");
+
         }
         prm.leave_subsection();
       }

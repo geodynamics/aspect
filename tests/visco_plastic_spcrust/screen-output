@@ -1,0 +1,50 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.1.0-pre (spcrust, 6ef3bf2e0)
+--     . using deal.II 9.0.0
+--     . using Trilinos 12.10.1
+--     . using p4est 2.0.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-- How to cite ASPECT: https://aspect.geodynamics.org/cite.html
+-----------------------------------------------------------------------------
+
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 1,885 (882+121+441+441)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving spcrust system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+17 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000412 m/year, 0.000697 m/year
+     Mass fluxes through boundary parts: 1.676e+05 kg/yr, 1.676e+05 kg/yr, -1.698e+05 kg/yr, -1.653e+05 kg/yr
+     Writing graphical output:           visco_plastic_spcrust/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.294s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         1 |    0.0253s |       8.6% |
+| Assemble composition system     |         1 |    0.0243s |       8.2% |
+| Assemble temperature system     |         1 |    0.0259s |       8.8% |
+| Build Stokes preconditioner     |         1 |    0.0229s |       7.8% |
+| Build composition preconditioner|         1 |   0.00121s |      0.41% |
+| Build temperature preconditioner|         1 |   0.00121s |      0.41% |
+| Solve Stokes system             |         1 |    0.0243s |       8.3% |
+| Solve composition system        |         1 |  0.000353s |      0.12% |
+| Solve temperature system        |         1 |    0.0005s |      0.17% |
+| Initialization                  |         1 |    0.0679s |        23% |
+| Postprocessing                  |         1 |    0.0183s |       6.2% |
+| Setup dof systems               |         1 |    0.0197s |       6.7% |
+| Setup initial conditions        |         1 |    0.0255s |       8.7% |
++---------------------------------+-----------+------------+------------+
+

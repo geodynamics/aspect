@@ -319,6 +319,24 @@ namespace aspect
         */
         double max_yield_strength;
 
+        /**
+              * Transition from maximum spcrust viscosity to flow-law defined value
+        * over specified pressure range
+              */
+        bool use_fixed_spcrust_viscosity;
+        double maximum_spcrust_viscosity;
+        double spcrust_viscosity_minimum_pressure;
+        double spcrust_viscosity_maximum_pressure;
+
+        /**
+        * Transition the spcrust density from defined value by a delta-rho
+        * given by spcrust_density_change over specified pressure range
+        * */
+        bool use_spcrust_density_change;
+        double spcrust_density_change;
+        double spcrust_density_minimum_pressure;
+        double spcrust_density_maximum_pressure;
+
     };
 
   }
