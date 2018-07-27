@@ -1,41 +1,50 @@
-# Basic parameters file for using a function expression to define the
+# Basic parameter file for using a function expression to define the
 # initial temperature structure using (? : ) syntax for if-else conditions.
 # 2D, Dimensional, Boussinesq, Simple Material Model
 
 # Dimension, end-time (years) and output directory
 # Only does zeroth time-step to show that initial condition works
+
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set Start time                             = 0
 set End time                               = 0
-set Output directory                       = output-lazy-expression
+set Output directory                       = output-muparser-temperature-example
 
 # Parameters Related to the Solver and Pressure Normalization
-# Normalization of the temperature
+
 set Pressure normalization                 = surface
 set Surface pressure                       = 0  
 
-# Default values are 1e-12 and 1e-7
-# Using larger values so this will just define initial condition and exit
+# Even when using the Boussinesq approximation you need to set this parameter
+# because this will be the temperature used to calculate the reference density
+# used in the advection equation (even if a separate reference temperature is
+# specified by the material model)
+
+set Adiabatic surface temperature          = 273 # K
+
+# If you have a large model or a model with large viscosity variation and you
+# want to run the 0th timestep more quickly in order to just check in the initial
+# condition (IC), you can set these solver tolerance values to larger numbers, but
+# this means the solution will not be converged.
+
 subsection Solver parameters
-  set Temperature solver tolerance         = 1e-6
+  set Temperature solver tolerance         = 1e-12 # can set to 1e-6 for checking IC
   
   subsection Stokes solver parameters
-    set Linear solver tolerance            = 1e-3
+    set Linear solver tolerance            = 1e-6 # can set to 1e-3 for checking IC 
   end
 end
 
+# The following is equivalent to the Boussinesq approximation
 
-# FORM OF THE EQUATIONS TO USE
-# These two choices are the same as using the Boussinesq approximation
 subsection Formulation
   set Formulation = custom
   set Mass conservation = incompressible
   set Temperature equation = reference density profile
 end
 
-# GEOMETRY AND MODEL SIZE
-# Want a 2D box 5000 km wide by 1000 km deep. In METERS  5e6 x 1e6 
+# Want a 2D box 5000 km wide by 1000 km deep (5e6 x 1e6 meters). 
 # The variable repetitions divides the whole domain into 5 boxes (1000 x 1000 km)
 # as the 0th level mesh refinement: this is needed so elements are squares
 # and not elongated rectangles.
@@ -51,27 +60,24 @@ subsection Geometry model
   end
 end
 
-# MESH INFORMATION
 # Refine the upper 150 km of the mesh so lithosphere structure is resolved.
-# For depth of 1000km, level =7  gives element size of 1000/(2^7) = 7.8125 km
-# Total refinements = initial global + intial adaptive = 7
-# Function expression asks: if ((ymax-y<=LITH) then refinement level = 7, else
-# refinement level = 0
+# Function expression asks if the depth is less than the lithosphere depth and
+# then refinement level = 5, else  refinement level = 0
+
 subsection Mesh refinement
-  set Initial global refinement                = 3
-  set Minimum refinement level		           = 3
-  set Initial adaptive refinement              = 4
-  set Time steps between mesh refinement       = 1
-  set Strategy 					= minimum refinement function
+  set Initial global refinement          = 1
+  set Minimum refinement level           = 1
+  set Initial adaptive refinement        = 2
+  set Time steps between mesh refinement = 1
+  set Strategy                           = minimum refinement function
   subsection Minimum refinement function
     set Coordinate system   = cartesian
     set Variable names      = x,y
-    set Function constants = YMAX=1e6,LITH=1.5e5
-    set Function expression = ((YMAX-y<=LITH) ? 7: 0)
+    set Function constants  = ymax=1e6,lith=1.5e5
+    set Function expression = ((lith-y<=lith) ? 5 : 0)
   end
 end
 
-# INITIAL TEMPERATURE  
 # Half-space cooling model increasing with age from x>0 to xtr
 # For x>xtr, half-space cooling model with a fixed age.
 # Note, we use 1-erfc instead of erf because the muparser in dealii 
@@ -83,18 +89,16 @@ subsection Initial temperature model
    subsection Function
       set Variable names = x,y
       set Function constants = ymax=1.0e6, xtrm=2.200e6, vsub=7.927e-10, \
-			       ageop=9.46e14, Tm=1673, Ts=273, kappa=1e-6 
+                               ageop=9.46e14, Tm=1673, Ts=273, kappa=1e-6 
       set Function expression = (((x>0.0) && (x<=xtrm)) ? \
-             (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*(x/vsub)))))) : \
-	  (x>xtrm) ? (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*ageop))))) :\
-             (Tm) ) 
+               (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*(x/vsub)))))) : \
+           (x>xtrm) ? (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*ageop))))) :\
+               (Tm) ) 
    end
 end 
  
-# TEMPERATURE/FLUX BOUNDARY CONDITIONS
 # Set boundary types and values for temperature
-# Default is zero-flux (keep for sidewalls), 
-# so only need set top and bottom to fixed temperature
+# Default is zero-flux (keep for sidewalls), so only need set top and bottom to fixed temperature
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
@@ -102,45 +106,28 @@ subsection Boundary temperature model
 
   subsection Box
     set Bottom temperature = 1673
-    set Left temperature   = 0
-    set Right temperature  = 0
     set Top temperature    = 273
   end
 end
 
-# VELOCITY BOUNDARY CONDITIONS
 # Free-slip on all sides (tangential velocity V-perp=0, dV/dn=0)
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
 
-# BASIC DIMENSIONAL *MATERIAL* MODEL FOR BOUSSINESQ APPROXIMATION
-# Material Properties
-# Reference density 3300. Units: kg/m^3.
-# The value of the specific heat 1250. Units: J/kg/K.
-# The reference temperature 1400. Units: C (or K-273).
-# The value of the thermal conductivity 4.125. Units: W/m/K.
-# The value of the thermal expansion coefficient 2e-5. Units: 1/K.
-# The value of the constant viscosity. 1e21 Units: kg/m/s = Pa-s.
-# Note, rho-ref=3300 with Tref=1400, will give rho=3390 at T=0
-
 subsection Material model
   set Model name = simple
 
   subsection Simple model
-    set Reference density             = 3300  
-    set Reference specific heat       = 1250
-    set Reference temperature         = 1400
-    set Thermal conductivity          = 4.125
-    set Thermal expansion coefficient = 2e-5
-    set Viscosity                     = 1e21
+    set Reference density             = 3300  # kg/m^3  
+    set Reference specific heat       = 1250  # J/kg/K
+    set Reference temperature         = 273   # K
+    set Thermal conductivity          = 4.125 # W/m/K
+    set Thermal expansion coefficient = 2e-5  # 1/K
+    set Viscosity                     = 1e21  # Pa s
   end
 end
-
-# GRAVITY
-# Constant gravity pointed in the vertical direction
-# Note, this should change for compressible, spherical models.
 
 subsection Gravity model
   set Model name = vertical
@@ -150,7 +137,6 @@ subsection Gravity model
   end
 end
 
-# INFORMATION ON OUTPUT TO BE CREATED
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics
 

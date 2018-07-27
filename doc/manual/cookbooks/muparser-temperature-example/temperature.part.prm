@@ -1,6 +1,5 @@
-# INITIAL TEMPERATURE  
 # Half-space cooling model increasing with age from x>0 to xtr
-# For x>xtrm, half-space cooling model with a fixed age.
+# For x>xtr, half-space cooling model with a fixed age.
 # Note, we use 1-erfc instead of erf because the muparser in dealii 
 # only knows about erfc. Also, we need to use ymax-y since y=0 at the
 # bottom of the box
@@ -10,15 +9,14 @@ subsection Initial temperature model
    subsection Function
       set Variable names = x,y
       set Function constants = ymax=1.0e6, xtr=2.200e6, vsub=7.927e-10, \
-			       ageop=9.46e14, Tm=1673, Ts=273, kappa=1e-6 
+                               ageop=9.46e14, Tm=1673, Ts=273, kappa=1e-6 
       set Function expression = (((x>0.0) && (x<=xtr)) ? \
              (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*(x/vsub)))))) : \
-	  (x>xtr) ? (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*ageop))))) :\
+          (x>xtr) ? (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*ageop))))) :\
              (Tm) ) 
    end
 end 
 
-# TEMPERATURE/FLUX BOUNDARY CONDITIONS
 # Set boundary types and values for temperature
 # Default is zero-flux (keep for sidewalls), 
 # so only need set top and bottom to fixed temperature
@@ -29,8 +27,6 @@ subsection Boundary temperature model
 
   subsection Box
     set Bottom temperature = 1673
-    set Left temperature   = 0
-    set Right temperature  = 0
     set Top temperature    = 273
   end
 end
