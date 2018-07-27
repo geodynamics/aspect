@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/material_model/visco_plastic.h>
+#include <aspect/material_model/diffused_plastic.h>
 #include <aspect/utilities.h>
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/base/signaling_nan.h>
@@ -33,7 +33,7 @@ namespace aspect
 
     template <int dim>
     double
-    ViscoPlastic<dim>::
+    DiffusedPlastic<dim>::
     average_value ( const std::vector<double> &volume_fractions,
                     const std::vector<double> &parameter_values,
                     const enum averaging_scheme &average_type) const
@@ -83,7 +83,7 @@ namespace aspect
 
     template <int dim>
     std::pair<std::vector<double>, std::vector<double> >
-    ViscoPlastic<dim>::
+    DiffusedPlastic<dim>::
     calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
                                       const double &pressure,
                                       const double &temperature,
@@ -216,9 +216,6 @@ namespace aspect
                                     :
                                     coh * std::cos(phi) + std::max(pressure,0.0) * std::sin(phi) );
 
-          // Use max_yield_strength to limit the yield strength for depths beneath the lithosphere
-          yield_strength = std::min(yield_strength, max_yield_strength);
-
           // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface
           // Also, we use a value of 1 to indicate we're in the yielding regime.
           double viscosity_drucker_prager;
@@ -269,7 +266,7 @@ namespace aspect
 
     template <int dim>
     std::tuple<double, double, double>
-    ViscoPlastic<dim>::
+    DiffusedPlastic<dim>::
     calculate_plastic_weakening(const double strain_ii,
                                 const unsigned int j) const
     {
@@ -289,7 +286,7 @@ namespace aspect
 
     template <int dim>
     double
-    ViscoPlastic<dim>::
+    DiffusedPlastic<dim>::
     calculate_viscous_weakening(const double strain_ii,
                                 const unsigned int j) const
     {
@@ -306,7 +303,7 @@ namespace aspect
 
     template <int dim>
     void
-    ViscoPlastic<dim>::
+    DiffusedPlastic<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
@@ -314,8 +311,8 @@ namespace aspect
       MaterialModel::MaterialModelDerivatives<dim> *derivatives;
       derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
 
-//      // set up variable to copy outputs for diffusion
-//      CopyOutputs<dim> *copy_out = out.template get_additional_output<CopyOutputs<dim> >();
+      // set up variable to copy outputs for diffusion
+      CopyOutputs<dim> *copy_out = out.template get_additional_output<CopyOutputs<dim> >();
 
       // Store which components to exclude during volume fraction computation.
       ComponentMask composition_mask(this->n_compositional_fields(),true);
@@ -538,61 +535,53 @@ namespace aspect
                 out.reaction_terms[i][this->introspection().compositional_index_for_name("total_strain")] = e_ii;
             }
 
-          // fill plastic outputs if they exist
-          PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim> >();
-          if (plastic_out != NULL /*|| copy_out != NULL*/)
+          // fill copy outputs if they exist
+          double C = 0.;
+          double phi = 0.;
+          double sf = 0;
+          // set to weakened values, or unweakened values when strain weakening is not used
+          for (unsigned int j=0; j < volume_fractions.size(); ++j)
             {
-              double C = 0.;
-              double phi = 0.;
-              std::vector< std::vector<double> > sf;
-              // set to weakened values, or unweakened values when strain weakening is not used
-              for (unsigned int j=0; j < volume_fractions.size(); ++j)
+              // the first compositional field contains the total strain or the plastic strain or, in case only viscous strain
+              // weakening is applied, the viscous strain.
+              if (use_strain_weakening == true )
                 {
-                  // the first compositional field contains the total strain or the plastic strain or, in case only viscous strain
-                  // weakening is applied, the viscous strain.
-                  if (use_strain_weakening == true )
+                  double strain_invariant = 0.;
+                  if (use_plastic_strain_weakening)
+                    strain_invariant = composition[this->introspection().compositional_index_for_name("plastic_strain")];
+                  else if (!use_viscous_strain_weakening && !use_finite_strain_tensor)
+                    strain_invariant = composition[this->introspection().compositional_index_for_name("total_strain")];
+                  else if (use_finite_strain_tensor)
                     {
-                      double strain_invariant = 0.;
-                      if (use_plastic_strain_weakening)
-                        strain_invariant = composition[this->introspection().compositional_index_for_name("plastic_strain")];
-                      else if (!use_viscous_strain_weakening && !use_finite_strain_tensor)
-                        strain_invariant = composition[this->introspection().compositional_index_for_name("total_strain")];
-                      else if (use_finite_strain_tensor)
-                        {
-                          // Calculate second invariant of left stretching tensor "L"
-                          Tensor<2,dim> strain;
-                          const unsigned int n_first = this->introspection().compositional_index_for_name("s11");
-                          for (unsigned int q = n_first; q < n_first + Tensor<2,dim>::n_independent_components ; ++q)
-                            strain[Tensor<2,dim>::unrolled_to_component_indices(q)] = composition[q];
-                          const SymmetricTensor<2,dim> L = symmetrize( strain * transpose(strain) );
-                          strain_invariant = std::fabs(second_invariant(L));
-                        }
-
-                      std::tuple<double, double, double> weakening = calculate_plastic_weakening(strain_invariant, j);
-                      C   += volume_fractions[j] * std::get<0> (weakening);
-                      phi += volume_fractions[j] * std::get<1> (weakening);
-                      // add copy fields here
-//                      if  (copy_out != NULL)
-//                        {
-//                          if (this->get_timestep_number() > 0)
-//                            {
-//                              sf[i][j] = std::get<2> (weakening); // strain fraction at each point and composition
-//                              copy_out-> copy_properties[i][j] = (sf[i][j])/(this->get_timestep());
-//                            }
-//                          else
-//                            copy_out-> copy_properties[i][j] =0;
-//                        }
+                      // Calculate second invariant of left stretching tensor "L"
+                      Tensor<2,dim> strain;
+                      const unsigned int n_first = this->introspection().compositional_index_for_name("s11");
+                      for (unsigned int q = n_first; q < n_first + Tensor<2,dim>::n_independent_components ; ++q)
+                        strain[Tensor<2,dim>::unrolled_to_component_indices(q)] = composition[q];
+                      const SymmetricTensor<2,dim> L = symmetrize( strain * transpose(strain) );
+                      strain_invariant = std::fabs(second_invariant(L));
                     }
-                  else
+
+                  std::tuple<double, double, double> weakening = calculate_plastic_weakening(strain_invariant, j);
+                  C   += volume_fractions[j] * std::get<0> (weakening);
+                  phi += volume_fractions[j] * std::get<1> (weakening);
+                  // add copy fields here
+                  if (copy_out != NULL)
                     {
-                      C   += volume_fractions[j] * cohesions[j];
-                      phi += volume_fractions[j] * angles_internal_friction[j];
+                      if (this->get_timestep_number() > 0)
+                        {
+                          sf  = std::get<2> (weakening); // strain fraction at each point and composition
+                          copy_out-> copy_properties[i][j] = (sf)/(this->get_timestep());
+                        }
+                      else
+                        copy_out-> copy_properties[i][j] =0;
                     }
                 }
-              plastic_out->cohesions[i] = C;
-              // convert radians to degrees
-              plastic_out->friction_angles[i] = phi * 180. / numbers::PI;
-              plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
+              else
+                {
+                  C   += volume_fractions[j] * cohesions[j];
+                  phi += volume_fractions[j] * angles_internal_friction[j];
+                }
             }
         }
 
@@ -601,17 +590,13 @@ namespace aspect
       if (in.current_cell.state() == IteratorState::valid && use_strain_weakening == true
           && use_finite_strain_tensor == true && this->get_timestep_number() > 0 && in.strain_rate.size())
         {
-
-          std::vector<Point<dim> > quadrature_positions(in.position.size());
-          for (unsigned int i=0; i < in.position.size(); ++i)
-            quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
-
+          const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+1);
           FEValues<dim> fe_values (this->get_mapping(),
                                    this->get_fe(),
-                                   Quadrature<dim>(quadrature_positions),
+                                   quadrature_formula,
                                    update_gradients);
 
-          std::vector<Tensor<2,dim> > velocity_gradients (quadrature_positions.size(), Tensor<2,dim>());
+          std::vector<Tensor<2,dim> > velocity_gradients (quadrature_formula.size(), Tensor<2,dim>());
 
           fe_values.reinit (in.current_cell);
           fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_solution(),
@@ -645,7 +630,7 @@ namespace aspect
 
     template <int dim>
     double
-    ViscoPlastic<dim>::
+    DiffusedPlastic<dim>::
     reference_viscosity () const
     {
       return ref_visc;
@@ -653,14 +638,14 @@ namespace aspect
 
     template <int dim>
     bool
-    ViscoPlastic<dim>::
+    DiffusedPlastic<dim>::
     is_compressible () const
     {
       return false;
     }
 
     template <int dim>
-    double ViscoPlastic<dim>::
+    double DiffusedPlastic<dim>::
     get_min_strain_rate () const
     {
       return min_strain_rate;
@@ -668,11 +653,11 @@ namespace aspect
 
     template <int dim>
     void
-    ViscoPlastic<dim>::declare_parameters (ParameterHandler &prm)
+    DiffusedPlastic<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection ("Visco Plastic");
+        prm.enter_subsection ("Diffused Plastic");
         {
           // Reference and minimum/maximum values
           prm.declare_entry ("Reference temperature", "293", Patterns::Double(0),
@@ -885,13 +870,6 @@ namespace aspect
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "Units: none.");
 
-          // Limit maximum value of the drucker-prager yield stress
-          prm.declare_entry ("Maximum yield stress", "1e12", Patterns::Double(0),
-                             "Limits the maximum value of the yield stress determined by the "
-                             "drucker-prager plasticity parameters. Default value is chosen so this "
-                             "is not automatically used. Values of 100e6--1000e6 $Pa$ have been used "
-                             "in previous models. Units: $Pa$");
-
         }
         prm.leave_subsection();
       }
@@ -902,7 +880,7 @@ namespace aspect
 
     template <int dim>
     void
-    ViscoPlastic<dim>::parse_parameters (ParameterHandler &prm)
+    DiffusedPlastic<dim>::parse_parameters (ParameterHandler &prm)
     {
       // increment by one for background:
       const unsigned int n_fields = this->n_compositional_fields() + 1;
@@ -912,7 +890,7 @@ namespace aspect
 
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection ("Visco Plastic");
+        prm.enter_subsection ("Diffused Plastic");
         {
           // Reference and minimum/maximum values
           reference_T = prm.get_double("Reference temperature");
@@ -1097,9 +1075,6 @@ namespace aspect
           exponents_stress_limiter  = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress limiter exponents"))),
                                                                               n_fields,
                                                                               "Stress limiter exponents");
-
-          // Limit maximum value of the drucker-prager yield stress
-          max_yield_strength = prm.get_double("Maximum yield stress");
         }
         prm.leave_subsection();
       }
@@ -1116,23 +1091,16 @@ namespace aspect
 
     template <int dim>
     void
-    ViscoPlastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    DiffusedPlastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<PlasticAdditionalOutputs<dim> >() == NULL)
+      // We want to diffuse the damage field after copy.
+      if (out.template get_additional_output<CopyOutputs<dim> >() == NULL)
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
             std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-            (new MaterialModel::PlasticAdditionalOutputs<dim> (n_points)));
+            (new MaterialModel::CopyOutputs<dim> (n_points, this->n_compositional_fields())));
         }
-      // We want to diffuse the damage field after copy.
-//      if (out.template get_additional_output<CopyOutputs<dim> >() == NULL)
-//        {
-//          const unsigned int n_points = out.viscosities.size();
-//          out.additional_outputs.push_back(
-//            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-//            (new MaterialModel::CopyOutputs<dim> (n_points, this->n_compositional_fields())));
-//        }
 
     }
 
@@ -1144,8 +1112,8 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(ViscoPlastic,
-                                   "visco plastic",
+    ASPECT_REGISTER_MATERIAL_MODEL(DiffusedPlastic,
+                                   "diffused plastic",
                                    "An implementation of a visco-plastic rheology with options for "
                                    "selecting dislocation creep, diffusion creep or composite "
                                    "viscous flow laws.  Plasticity limits viscous stresses through "
@@ -1262,3 +1230,6 @@ namespace aspect
                                    " 'Material model/Visco Plastic'.")
   }
 }
+
+
+

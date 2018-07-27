@@ -61,6 +61,13 @@ namespace aspect
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
         virtual bool is_compressible () const;
+
+//        /**
+//         * Create additional outputs to test diffusion
+//         */
+//
+//    void
+//    create_additional_named_outputs (MaterialModel::CopyOutputs<dim> &out) const;
         /**
          * @}
          */
@@ -91,6 +98,12 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
+
+        virtual
+        void
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+
         /**
          * @}
          */

@@ -179,6 +179,14 @@ namespace aspect
           std_cxx14::make_unique<aspect::Assemblers::StokesBoundaryTraction<dim> >());
       }
 
+    // Modify the assembler if you use diffused compositional field
+    if (parameters.enable_diffusion)
+//            == Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field)
+      {
+        assemblers->advection_system.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::DiffusionSystem<dim> >());
+      }
+
     // add the terms necessary to normalize the pressure
     if (do_pressure_rhs_compatibility_modification)
       assemblers->stokes_system.push_back(
@@ -1070,6 +1078,7 @@ namespace aspect
 
     const unsigned int block_idx = advection_field.block_index(introspection);
 
+
     if (!advection_field.is_temperature() && advection_field.compositional_variable!=0)
       {
         // Allocate the system matrix for the current compositional field by
@@ -1169,6 +1178,8 @@ namespace aspect
     system_rhs.compress(VectorOperation::add);
   }
 }
+
+
 
 
 

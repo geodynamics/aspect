@@ -570,6 +570,8 @@ namespace aspect
        */
       void assemble_stokes_system ();
 
+
+
       /**
        * Assemble and solve the temperature equation.
        * This function returns the residual after solving
@@ -595,7 +597,9 @@ namespace aspect
        * <code>source/simulator/solver_schemes.cc</code>.
        */
       std::vector<double> assemble_and_solve_composition (const bool compute_initial_residual = false,
-                                                          std::vector<double> *initial_residual = NULL);
+                                                          std::vector<double> *initial_residual = NULL );
+
+
 
       /**
        * Assemble and solve the Stokes equation.
@@ -1146,6 +1150,15 @@ namespace aspect
        * <code>source/simulator/helper_functions.cc</code>.
        */
       void compute_reactions ();
+
+
+      /**
+       * TODO: documentation.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void interpolate_material_output_into_field ();
 
 
       /**

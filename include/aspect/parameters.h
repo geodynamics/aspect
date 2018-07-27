@@ -107,7 +107,8 @@ namespace aspect
         fem_field,
         particles,
         static_field,
-        fem_melt_field
+        fem_melt_field,
+        copy_and_diffused_field
       };
     };
 
@@ -341,6 +342,9 @@ namespace aspect
     double                         temperature_solver_tolerance;
     double                         composition_solver_tolerance;
     bool                           use_operator_splitting;
+    bool                           enable_diffusion;
+    double                         diffusive_length;
+    double                         non_local_length;
 
     /**
      * @}

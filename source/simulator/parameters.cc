@@ -465,6 +465,20 @@ namespace aspect
                            "smaller time step. "
                            "Units: none.");
       }
+      prm.leave_subsection();
+      prm.enter_subsection("Diffusion parameters");
+      {
+        prm.declare_entry("Shape parameter", "2",
+                          Patterns::Double(0),
+                          "Determines the length scale around the local elements (where damage / strain is accumulated)"
+                          "to which you want the damage to be diffused. A higher positive value will diffuse the damage "
+                          "to smaller region around the elements.");
+        prm.declare_entry("Non local length", "10",
+                          Patterns::Double(0),
+                          "Determines the length scale around the local elements (where damage / strain is accumulated)"
+                          "to which you want the damage to be diffused. A higher positive value will diffuse the damage"
+                          "to larger region around the elements.");
+      }
       prm.leave_subsection ();
     }
     prm.leave_subsection ();
@@ -519,6 +533,10 @@ namespace aspect
                          Patterns::Bool (),
                          "Whether to include the additional elastic terms on the right-hand side of "
                          "the Stokes equation.");
+      prm.declare_entry ("Enable diffusion", "false",
+                         Patterns::Bool (),
+                         "Whether to include the diffusion when implementing local strain weakening "
+                         "in the visco plastic model.");
     }
     prm.leave_subsection();
 
@@ -949,7 +967,7 @@ namespace aspect
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
       prm.declare_entry ("Compositional field methods", "",
-                         Patterns::List (Patterns::Selection("field|particles|static|melt field")),
+                         Patterns::List (Patterns::Selection("field|particles|static|melt field|copy and diffuse")),
                          "A comma separated list denoting the solution method of each "
                          "compositional field. Each entry of the list must be "
                          "one of the currently implemented field types: "
@@ -988,6 +1006,10 @@ namespace aspect
                          "advected with the melt velocity instead of the solid velocity. "
                          "This method can only be chosen if melt transport is active in the "
                          "model."
+                         "\n"
+                         "\\item ``copy and diffuse field'': If a compositional field is marked"
+                         "with this method, then the value of a solution output is copied first"
+                         "and then diffused."
                          "\\end{itemize}");
       prm.declare_entry ("Mapped particle properties", "",
                          Patterns::Map (Patterns::Anything(),
@@ -1135,6 +1157,12 @@ namespace aspect
         reaction_steps_per_advection_step = prm.get_integer ("Reaction time steps per advection step");
       }
       prm.leave_subsection ();
+      prm.enter_subsection ("Diffusion parameters");
+      {
+        diffusive_length              = prm.get_double("Shape parameter");
+        non_local_length              = prm.get_double("Non local length");
+      }
+      prm.leave_subsection();
     }
     prm.leave_subsection ();
 
@@ -1266,6 +1294,7 @@ namespace aspect
 
       enable_additional_stokes_rhs = prm.get_bool ("Enable additional Stokes RHS");
       enable_elasticity = prm.get_bool("Enable elasticity");
+      enable_diffusion  = prm.get_bool("Enable diffusion");
     }
     prm.leave_subsection ();
 
@@ -1494,6 +1523,8 @@ namespace aspect
             compositional_field_methods[i] = AdvectionFieldMethod::static_field;
           else if (x_compositional_field_methods[i] == "melt field")
             compositional_field_methods[i] = AdvectionFieldMethod::fem_melt_field;
+          else if (x_compositional_field_methods[i] == "copy and diffuse")
+            compositional_field_methods[i] = AdvectionFieldMethod::copy_and_diffused_field;
           else
             AssertThrow(false,ExcNotImplemented());
         }
@@ -1503,6 +1534,11 @@ namespace aspect
         AssertThrow (this->include_melt_transport,
                      ExcMessage ("The advection method 'melt field' can only be selected if melt "
                                  "transport is used in the simulation."));
+
+      if (enable_diffusion)
+        AssertThrow((std::find(compositional_field_methods.begin(), compositional_field_methods.end(),
+        		AdvectionFieldMethod::copy_and_diffused_field) != compositional_field_methods.end()),
+                    ExcMessage ("Diffusion can only be enabled if one of the composition field method is 'copy and diffuse'."));
 
       const std::vector<std::string> x_mapped_particle_properties
         = Utilities::split_string_list

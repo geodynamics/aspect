@@ -1,25 +1,12 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+ * diffused_plastic.h
+ *
+ *  Created on: Jul 8, 2018
+ *      Author: asaxena
+ */
 
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
-
-#ifndef _aspect_material_model_visco_plastic_h
-#define _aspect_material_model_visco_plastic_h
+#ifndef INCLUDE_ASPECT_MATERIAL_MODEL_DIFFUSED_PLASTIC_H_
+#define INCLUDE_ASPECT_MATERIAL_MODEL_DIFFUSED_PLASTIC_H_
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
@@ -86,7 +73,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class ViscoPlastic : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class DiffusedPlastic : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
 
@@ -281,14 +268,10 @@ namespace aspect
         std::vector<double> cohesions;
         std::vector<double> exponents_stress_limiter;
 
-        /**
-        * Limit maximum yield stress from drucker-prager.
-        */
-        double max_yield_strength;
-
     };
 
   }
 }
 
-#endif
+
+#endif /* INCLUDE_ASPECT_MATERIAL_MODEL_DIFFUSED_PLASTIC_H_ */

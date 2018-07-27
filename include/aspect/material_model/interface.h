@@ -798,6 +798,72 @@ namespace aspect
 
 
     /**
+         * Additional output fields for the plastic parameters weakened (or hardened)
+         * by strain to be added to the MaterialModel::MaterialModelOutputs structure
+         * and filled in the MaterialModel::Interface::evaluate() function.
+         */
+    template <int dim>
+    class PlasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        PlasticAdditionalOutputs(const unsigned int n_points);
+
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+
+        /**
+         * Cohesions at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         */
+        std::vector<double> cohesions;
+
+        /**
+         * Internal angles of friction at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         */
+        std::vector<double> friction_angles;
+
+        /**
+         * The area where the viscous stress exceeds the plastic yield strength,
+         * and viscosity is rescaled back to the yield envelope.
+         */
+        std::vector<double> yielding;
+
+        std::vector<std::vector<double> > copy_properties;
+
+    };
+
+
+
+    /**
+     * Additional output fields for copy outputs to be added to
+     * the MaterialModel::MaterialModelOutputs structure and filled in the
+     * MaterialModel::Interface::evaluate() function.
+     *
+     * TODO: documentation.
+     */
+    template <int dim>
+    class CopyOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        CopyOutputs (const unsigned int n_points,
+                     const unsigned int n_comp);
+
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+
+        /**
+         * Copy outputs for all compositional fields at the evaluation points
+         * that are passed to the instance of MaterialModel::Interface::evaluate()
+         * that fills the current object.
+         * copy_outputs[q][c] is the copy output at the evaluation point q
+         * for the compositional field with the index c.
+         */
+        std::vector<std::vector<double> > copy_properties;
+    };
+
+
+    /**
      * A class for additional output fields to be added to the RHS of the
      * Stokes system, which can be attached to the
      * MaterialModel::MaterialModelOutputs structure and filled in the

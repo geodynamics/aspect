@@ -77,6 +77,11 @@ namespace aspect
 
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
+      if (!advection_field_is_temperature && advection_field.advection_method (introspection)
+          == Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field )
+        return;
+
+
       for (unsigned int q=0; q<n_q_points; ++q)
         {
           // precompute the values of shape functions and their gradients.
@@ -316,11 +321,107 @@ namespace aspect
                      (heat_flux[q] * scratch.face_finite_element_values->normal_vector(q))
                      *
                      scratch.face_finite_element_values->JxW(q);
+
                 }
             }
         }
     }
 
+    template <int dim>
+    void
+    DiffusionSystem<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                                   internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
+      internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>& > (data_base);
+
+      const Parameters<dim> &parameters = this->get_parameters();
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
+
+      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      if (advection_field.is_temperature())
+        return;
+
+      const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+      const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
+
+      const double time_step = this->get_timestep();
+
+      const unsigned int solution_component = advection_field.component_index(introspection);
+
+      const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
+
+      for (unsigned int q=0; q<n_q_points; ++q)
+        {
+
+          // precompute the values of shape functions and their gradients.
+          // We only need to look up values of shape functions if they
+          // belong to 'our' component. They are zero otherwise anyway.
+          // Note that we later only look at the values that we do set here.
+          for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell;/*increment at end of loop*/)
+            {
+              if (fe.system_to_component_index(i).first == solution_component)
+                {
+                  scratch.grad_phi_field[i_advection] = scratch.finite_element_values[solution_field].gradient (i,q);
+                  scratch.phi_field[i_advection]      = scratch.finite_element_values[solution_field].value (i,q);
+                  ++i_advection;
+                }
+              ++i;
+            }
+
+          // Take diffusivity as an user input
+          const double diffusivity = (parameters.non_local_length * parameters.non_local_length) /
+                                     (parameters.diffusive_length * 4);
+
+          const double reaction_term =
+            ((advection_field.is_temperature())
+             ?
+             0.0
+             :
+             scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
+
+          const double JxW = scratch.finite_element_values.JxW(q);
+
+          // do the actual assembly. note that we only need to loop over the advection
+          // shape functions because these are the only contributions we compute here
+          for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+            {
+              data.local_rhs(i)
+              += (scratch.old_field_values[q] * scratch.phi_field[i]
+                  + scratch.phi_field[i] * reaction_term)
+                 *
+                 JxW;
+
+              for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
+                {
+                  data.local_matrix(i,j)
+                  // TODO: you may want to combine time_step * diffusivity into one parameter?
+                  += (time_step * diffusivity * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j])
+                      + (scratch.phi_field[i] * scratch.phi_field[j])
+                     )
+                     * JxW;
+                }
+            }
+        }
+    }
+
+
+    template <int dim>
+    std::vector<double>
+    DiffusionSystem<dim>::compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
+
+      const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+      std::vector<double> residuals(n_q_points);
+
+      for (unsigned int q=0; q < n_q_points; ++q)
+        {
+          residuals[q] = 0;
+        }
+      return residuals;
+    }
 
 
     template <int dim>
@@ -1232,6 +1333,7 @@ namespace aspect
   {
 #define INSTANTIATE(dim) \
   template class AdvectionSystem<dim>; \
+  template class DiffusionSystem<dim>; \
   template class AdvectionSystemBoundaryFace<dim>; \
   template class AdvectionSystemInteriorFace<dim>; \
   template class AdvectionSystemBoundaryHeatFlux<dim>;

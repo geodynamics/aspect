@@ -209,10 +209,45 @@ namespace aspect
             }
             break;
 
+            case Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field:
+            {}
+            break;
+
             default:
               AssertThrow(false,ExcNotImplemented());
           }
       }
+
+    // Update the copy fields *after* we have solved all the other fields
+    for (unsigned int c=0; c < introspection.n_compositional_fields; ++c)
+      {
+        const AdvectionField adv_field (AdvectionField::composition(c));
+        const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
+        // TODO: that will only work together with Arushi's branch that has the new advection method
+        if (method == Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field)
+          {
+            interpolate_material_output_into_field();
+
+            // TODO: if the field is a diffusion field, it will be solved here after the copying
+            if (parameters.enable_diffusion)
+              {
+                assemble_advection_system (adv_field);
+
+                if (compute_initial_residual)
+                  (*initial_residual)[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
+
+                current_residual[c] = solve_advection(adv_field);
+
+                // free matrix:
+                const unsigned int block_idx = adv_field.block_index(introspection);
+                if (adv_field.compositional_variable!=0)
+                  system_matrix.block(block_idx, block_idx).clear();
+                break;
+              }
+          }
+
+      }
+
 
     // for consistency we update the current linearization point only after we have solved
     // all fields, so that we use the same point in time for every field when solving
