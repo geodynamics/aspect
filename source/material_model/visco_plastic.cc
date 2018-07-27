@@ -152,7 +152,7 @@ namespace aspect
       // Choice of activation volume depends on whether there is an adiabatic temperature
       // gradient used when calculating the viscosity. This allows the same activation volume
       // to be used in incompressible and compressible models. Default value is 0. Units [K/Pa]
-      const double temperature_for_viscosity = temperature + temperature_adiabat_for_viscosity*pressure;
+      const double temperature_for_viscosity = temperature + adiabatic_temperature_gradient_for_viscosity*pressure;
 
       // Calculate viscosities for each of the individual compositional phases
       std::vector<double> composition_viscosities(volume_fractions.size());
@@ -922,9 +922,9 @@ namespace aspect
                              "in previous models. Units: $Pa$");
 
           // Temperature in viscosity laws to include an adiabat (note units of K/Pa)
-          prm.declare_entry ("Temperature adiabat for viscosity", "0.0", Patterns::Double(0),
-                             "Add an adiabatic temperature gradient to the flow law so that the "
-                             "activation volume is consistent with what one would use in a "
+          prm.declare_entry ("Adiabat temperature gradient for viscosity", "0.0", Patterns::Double(0),
+                             "Add an adiabatic temperature gradient to the temperature used in the flow law "
+                             "so that the activation volume is consistent with what one would use in a "
                              "earth-like (compressible) model. Default is set so this is off. "
                              "Using a pressure gradient of 32436 Pa/m, then a value of "
                              "0.3 $K/km$ = 0.0003 $K/m$ = 9.24e-09 $K/Pa$ gives an earth-like adiabat."
@@ -1139,7 +1139,7 @@ namespace aspect
           max_yield_strength = prm.get_double("Maximum yield stress");
 
           // Include an adiabat temperature gradient in flow laws
-          temperature_adiabat_for_viscosity = prm.get_double("Temperature adiabat for viscosity");
+          adiabatic_temperature_gradient_for_viscosity = prm.get_double("Adiabat temperature gradient for viscosity");
 
         }
         prm.leave_subsection();

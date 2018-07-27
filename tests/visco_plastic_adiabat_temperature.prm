@@ -93,7 +93,7 @@ subsection Material model
     set Activation energies for dislocation creep = 530.e3
     set Activation volumes for dislocation creep = 18.e-6
     
-    set Temperature adiabat for viscosity = 9.24e-09 
+    set Adiabat temperature gradient for viscosity = 9.24e-09 
   end
 end
 

@@ -322,7 +322,7 @@ namespace aspect
         /**
          * temperature gradient added to temperature used in the flow law.
          */
-        double temperature_adiabat_for_viscosity;
+        double adiabatic_temperature_gradient_for_viscosity;
 
     };
 
