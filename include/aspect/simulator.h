@@ -1158,7 +1158,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void interpolate_material_output_into_field ();
+      void interpolate_material_output_into_field (const unsigned int c);
 
 
       /**

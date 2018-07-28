@@ -1729,7 +1729,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::interpolate_material_output_into_field ()
+  void Simulator<dim>::interpolate_material_output_into_field (const unsigned int c)
   {
     // we need some temporary vectors to store our updates to composition and temperature in
     // while we do the time stepping, before we copy them over to the solution vector in the end
@@ -1801,7 +1801,6 @@ namespace aspect
 
           // copy material properties into the compositional fields
           for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).dofs_per_cell; ++j)
-            for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
               {
                 const unsigned int composition_idx
                   = dof_handler.get_fe().component_to_system_index(introspection.component_indices.compositional_fields[c],
@@ -1816,8 +1815,7 @@ namespace aspect
         }
 
     // put the final values into the solution vector
-    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-      {
+
         const unsigned int block_c = introspection.block_indices.compositional_fields[c];
         distributed_vector.block(block_c).compress(VectorOperation::insert);
         solution.block(block_c) = distributed_vector.block(block_c);
@@ -1825,7 +1823,6 @@ namespace aspect
         // We also want to copy the values into the old solution, because it is used
         // later on in case we solve a diffusion equation for this field
         old_solution.block(block_c) = distributed_vector.block(block_c);
-      }
   }
 
 
@@ -2282,7 +2279,7 @@ namespace aspect
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
   template void Simulator<dim>::compute_reactions(); \
-  template void Simulator<dim>::interpolate_material_output_into_field(); \
+  template void Simulator<dim>::interpolate_material_output_into_field(const unsigned int c); \
   template void Simulator<dim>::check_consistency_of_formulation(); \
   template void Simulator<dim>::check_consistency_of_boundary_conditions() const; \
   template double Simulator<dim>::compute_initial_newton_residual(const LinearAlgebra::BlockVector &linearized_stokes_initial_guess); \

@@ -226,7 +226,7 @@ namespace aspect
         // TODO: that will only work together with Arushi's branch that has the new advection method
         if (method == Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field)
           {
-            interpolate_material_output_into_field();
+            interpolate_material_output_into_field(c);
 
             // TODO: if the field is a diffusion field, it will be solved here after the copying
             if (parameters.enable_diffusion)
