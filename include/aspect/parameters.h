@@ -341,6 +341,7 @@ namespace aspect
     double                         temperature_solver_tolerance;
     double                         composition_solver_tolerance;
     bool                           use_operator_splitting;
+    std::string                    world_builder_file;
 
     /**
      * @}
