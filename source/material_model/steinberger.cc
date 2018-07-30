@@ -393,7 +393,7 @@ namespace aspect
         {
           dRhodp = material_lookup[0]->dRhodp(temperature,pressure);
         }
-      if (material_lookup.size() == compositional_fields.size() + 1)
+      else if (material_lookup.size() == compositional_fields.size() + 1)
         {
           const double background_dRhodp = material_lookup[0]->dRhodp(temperature,pressure);
           dRhodp = background_dRhodp;
