@@ -12484,7 +12484,7 @@ The test suite is run using the \texttt{ctest} program that comes with
 compiled \aspect{}.
 
 After running \texttt{cmake} and then compiling \aspect{}, you can run the
-testsuite by saying \texttt{ctest}. By default, this will only run a small
+testsuite by using the command \texttt{ctest} in your build directory. By default, this will only run a small
 subset of all tests given that both setting up all tests (several hundred) and
 running them takes a non-trivial amount of time. To set up the full test suite,
 you can run
@@ -12581,25 +12581,33 @@ reference test results on the host system (i.e. your computer).
 \subsubsection{Writing tests}
 \label{sec:writing_tests}
 
-To write a test for a new feature, take one of the existing parameter files in
-the \texttt{tests/} directory, modify it to use the new feature, check that the
+To write a test for a new feature, copy one of the existing parameter files in
+the \texttt{tests/} folder in the \aspect{} source directory, or simply any other 
+parameter file, modify it to use the new feature, check that the
 new feature does what it is supposed to do, and then just add the parameter file to
 the tests directory. You will then need to add another folder to that directory
-that is named like the parameter file, and add the model output files that
+that is named exactly like the parameter file, and add the model output files that
 prove that the feature is working (usually, these are the log file and the statistics 
 file, and you will have to rename \texttt{log.txt} to
 \texttt{screen-output} for historical reasons). The test and output files should
-be as small and quick to run as possible.
-
+be as small and quick to run as possible. If you need to include graphical output to 
+test your feature, you will have to use the gnuplot output format, so that the tester 
+can compare the actual numbers (in the vtu format, the output files are compressed, 
+and can not be compared using Numdiff). 
 An easy way to create all of the files you need is to copy the folder of an existing 
-test and rename it to the name of your parameter file. you then have to run \texttt{cmake}
+test and rename it to the name of your parameter file. 
+
+To actually run the test, you have to go to your \aspect{} build directory and run 
+\begin{lstlisting}[frame=single,language=ksh] 
+    cmake .
+\end{lstlisting}
 so that your new test is added to the test suite. Then you can run it by executing 
 \begin{lstlisting}[frame=single,language=ksh] 
     ctest -R name_of_your_test -V
 \end{lstlisting}
-in your \aspect{} build directory and you will get an output telling you if the test has 
+and you will get an output telling you if the test has 
 passed or failed (and why it failed). If you have just copied the output files of a different 
-tests in the \texttt{tests/} directory to make your test, you of course expect your test to fail. 
+test in the \texttt{tests/} directory to make your test, you of course expect your test to fail. 
 In this case, the output you see should contain a line that starts with \texttt{******* Check} 
 and then just shows two paths. Those two paths are the one where the output files of the test 
 are located (the ones you just created by running the test) and where the reference output of the 
@@ -12614,8 +12622,20 @@ above that will lead to a run of all tests -- including your new one -- on a
 produce slightly different results than the machine on which a pull request was
 developed and from which the output was taken. If this has been confirmed to be
 the source of a failed test run, a file that contains the differences between
-the patch content and the tester output will be available from the GitHub page
-and can be applied to the patch to make it pass the tester. On the other hand,
+the test output you submitted as part of your pull request and the ``reference'' tester output 
+will be available from GitHub (You will have to click on the link labelled ``Details''
+next to the line that tells you if tests have failed; for the jenkins tester that 
+will bring you to a new page, where you have to go to the ``Artifacts'' tab in the top
+right corner. Depending on the tester, the file might be called \texttt{changes-gcc.diff}
+or \texttt{changes-test-results.diff}). To use this file to update your test output, you 
+will have to download it and put it into your top-level \aspect{} directory. There you
+can apply the .diff file using the program patch: 
+\begin{lstlisting}[frame=single,language=ksh] 
+  patch -p1 < changes-test-results.diff
+\end{lstlisting}
+This will update your test output so that it matches the results from the official tester.
+
+On the other hand,
 if a change leads to even a single \textit{existing} test failing on that
 system, then we know that some more investigation as to the causes is necessary.
 
