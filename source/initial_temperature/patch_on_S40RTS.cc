@@ -186,7 +186,7 @@ namespace aspect
                                               "contain the number of grid points in each dimension as "
                                               "for example '# POINTS: 3 3 3'. "
                                               "The order of the data columns has to be "
-                                              " `x', `y', `z', 'Vs Perturbation [%]' in a 3d model, which means that "
+                                              " `x', `y', `z', 'Vs Perturbation' in a 3d model, which means that "
                                               "there has to be a single column "
                                               "containing the temperature. "
                                               "Note that the data in the input "
