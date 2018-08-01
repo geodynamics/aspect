@@ -241,6 +241,9 @@ SimulatorAccess -> N6aspect18InitialTemperature17InclusionShapeBoxILi2EEE [style
 N6aspect18InitialTemperature9MandelBoxILi2EEE [label="mandelbox", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect18InitialTemperature9MandelBoxILi2EEE -> N6aspect18InitialTemperature9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect18InitialTemperature9MandelBoxILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect18InitialTemperature13PatchOnS40RTSILi2EEE [label="patch on\nS40RTS", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect18InitialTemperature13PatchOnS40RTSILi2EEE -> N6aspect18InitialTemperature9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect18InitialTemperature13PatchOnS40RTSILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect18InitialTemperature12PerturbedBoxILi2EEE [label="perturbed box", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect18InitialTemperature12PerturbedBoxILi2EEE -> N6aspect18InitialTemperature9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect18InitialTemperature12PerturbedBoxILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
@@ -657,6 +660,9 @@ SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors10StrainRat
 N6aspect11Postprocess27VisualizationPostprocessors6StressILi2EEE [label="stress", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess27VisualizationPostprocessors6StressILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors6StressILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect11Postprocess27VisualizationPostprocessors18TemperatureAnomalyILi2EEE [label="temperature\nanomaly", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect11Postprocess27VisualizationPostprocessors18TemperatureAnomalyILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors18TemperatureAnomalyILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect11Postprocess27VisualizationPostprocessors19ThermalConductivityILi2EEE [label="thermal\nconductivity", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess27VisualizationPostprocessors19ThermalConductivityILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors19ThermalConductivityILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
