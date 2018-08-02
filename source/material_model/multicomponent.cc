@@ -85,6 +85,9 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
+      // set up variable to copy outputs for diffusion
+      CopyOutputs<dim> *copy_out = out.template get_additional_output<CopyOutputs<dim> >();
+
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
           const double temperature = in.temperature[i];
@@ -110,7 +113,6 @@ namespace aspect
             }
           out.densities[i] = density;
 
-
           out.thermal_expansion_coefficients[i] = average_value ( volume_fractions, thermal_expansivities, arithmetic);
 
 
@@ -128,7 +130,11 @@ namespace aspect
           // change in compositional field c at point i.
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
-
+          if  (copy_out != NULL)
+            {
+              //   out.reaction_terms[i][0] = 0;
+              copy_out-> copy_properties[i][0] = out.densities[i];
+            }
         }
     }
 
@@ -146,6 +152,19 @@ namespace aspect
     is_compressible () const
     {
       return false;
+    }
+
+    template <int dim>
+    void
+    Multicomponent<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      if ( out.template get_additional_output<CopyOutputs<dim> >() == NULL)
+        {
+          const unsigned int n_points = out.viscosities.size();
+          out.additional_outputs.push_back(
+            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            (new MaterialModel::CopyOutputs<dim> (n_points, this->n_compositional_fields())));
+        }
     }
 
     template <int dim>

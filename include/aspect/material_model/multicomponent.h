@@ -72,6 +72,11 @@ namespace aspect
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const;
 
+        virtual
+        void
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+
         /**
          * @name Qualitative properties one can ask a material model
          * @{

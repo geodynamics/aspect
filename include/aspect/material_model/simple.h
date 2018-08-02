@@ -62,16 +62,6 @@ namespace aspect
          */
         virtual bool is_compressible () const;
 
-//        /**
-//         * Create additional outputs to test diffusion
-//         */
-//
-//    void
-//    create_additional_named_outputs (MaterialModel::CopyOutputs<dim> &out) const;
-        /**
-         * @}
-         */
-
         /**
          * @name Reference quantities
          * @{
