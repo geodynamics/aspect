@@ -48,6 +48,7 @@ sed -i 's/box_2d_%s./box\\_2d\\_\\%s./g' parameters.tex
 sed -i 's/box_2d\.txt/box\\_2d\.txt/g' parameters.tex
 sed -i 's/grain_size/grain\\_size/g' parameters.tex
 sed -i 's/simple_test.txt/simple\\_test.txt/g' parameters.tex
+sed -i 's/upper_shell_3d.txt/upper\\_shell\\_3d.txt/g' parameters.tex
 sed -i 's/vs_to_density_Steinberger.txt/vs\\_to\\_density\\_Steinberger.txt/g' parameters.tex
 sed -i 's/#/\\#/g' parameters.tex
 
@@ -59,7 +60,7 @@ for i in `seq 1 10`; do
   sed -i 's/{\([^!]*\)!\([^!]*\)!\([^!]*\)!\([^}]*\)}/{\1!\2!\3\/\4}/' parameters.tex
 done
 
-grep '[^\\]%' parameters.tex
+grep '[^\\]%' parameters.tex && echo "Error, please remove '%'!" && exit 1
 
 cd ../..
 

@@ -331,6 +331,22 @@ For more information, see the section in the manual that discusses the general m
 
 
 {\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt World builder file}
+\phantomsection\label{parameters:World builder file}
+
+
+\index[prmindex]{World builder file}
+\index[prmindexfull]{World builder file}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Name of the world builder file. If empty, the world builder is not initialized.
+
+
+{\it Possible values:} an input filename
 \end{itemize}
 
 
@@ -5730,6 +5746,8 @@ Note the required file format if the vs to density scaling is read in from a fil
 
 `mandelbox': Fractal-shaped temperature field.
 
+`patch on S40RTS': Implementation of a model in which the initial temperature is derived from a file containing shear wave velocity perturbations in ascii format (e.g. a high resolution upper mantle tomography) combined with S40RTS. Note the required format of the input ascii input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3 3'. The order of the data columns has to be  `x', `y', `z', 'Vs Perturbation [%]' in a 3d model, which means that there has to be a single column containing the temperature. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. In the spherical model data will be handled as Cartesian, however, `x' will be replaced by the radial distance of the point to the bottom of the model, `y' by the azimuth angle and `z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r', `phi', `theta' and not `r', `theta', `phi', since this allows for dimension independent expressions. See S40RTS documentation for details on input parameters in the S40RTS perturbation subsection. The boundary between the two tomography models is smoothed using a depth weighted combination of Vs values within the region of smoothing. 
+
 `perturbed box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is chosen in such a way that the initial temperature is constant to one along the entire boundary.
 
 `polar box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is such that there are two poles on opposing corners of the box. 
@@ -5739,7 +5757,7 @@ Note the required file format if the vs to density scaling is read in from a fil
 `spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following an $N$-fold pattern in a specified direction from an otherwise spherically symmetric state. The class's name comes from previous versions when the only option was $N=6$.
 
 
-{\it Possible values:} A comma-separated list of any of S40RTS perturbation, SAVANI perturbation, adiabatic, adiabatic boundary, ascii data, ascii profile, function, harmonic perturbation, inclusion shape perturbation, mandelbox, perturbed box, polar box, spherical gaussian perturbation, spherical hexagonal perturbation
+{\it Possible values:} A comma-separated list of any of S40RTS perturbation, SAVANI perturbation, adiabatic, adiabatic boundary, ascii data, ascii profile, function, harmonic perturbation, inclusion shape perturbation, mandelbox, patch on S40RTS, perturbed box, polar box, spherical gaussian perturbation, spherical hexagonal perturbation
 \item {\it Parameter name:} {\tt List of model operators}
 \phantomsection\label{parameters:Initial temperature model/List of model operators}
 
@@ -5792,6 +5810,8 @@ Note the required file format if the vs to density scaling is read in from a fil
 
 `mandelbox': Fractal-shaped temperature field.
 
+`patch on S40RTS': Implementation of a model in which the initial temperature is derived from a file containing shear wave velocity perturbations in ascii format (e.g. a high resolution upper mantle tomography) combined with S40RTS. Note the required format of the input ascii input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3 3'. The order of the data columns has to be  `x', `y', `z', 'Vs Perturbation [%]' in a 3d model, which means that there has to be a single column containing the temperature. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. In the spherical model data will be handled as Cartesian, however, `x' will be replaced by the radial distance of the point to the bottom of the model, `y' by the azimuth angle and `z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r', `phi', `theta' and not `r', `theta', `phi', since this allows for dimension independent expressions. See S40RTS documentation for details on input parameters in the S40RTS perturbation subsection. The boundary between the two tomography models is smoothed using a depth weighted combination of Vs values within the region of smoothing. 
+
 `perturbed box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is chosen in such a way that the initial temperature is constant to one along the entire boundary.
 
 `polar box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is such that there are two poles on opposing corners of the box. 
@@ -5803,7 +5823,7 @@ Note the required file format if the vs to density scaling is read in from a fil
 \textbf{Warning}: This parameter provides an old and deprecated way of specifying initial temperature models and shouldn't be used. Please use 'List of model names' instead.
 
 
-{\it Possible values:} Any one of S40RTS perturbation, SAVANI perturbation, adiabatic, adiabatic boundary, ascii data, ascii profile, function, harmonic perturbation, inclusion shape perturbation, mandelbox, perturbed box, polar box, spherical gaussian perturbation, spherical hexagonal perturbation, unspecified
+{\it Possible values:} Any one of S40RTS perturbation, SAVANI perturbation, adiabatic, adiabatic boundary, ascii data, ascii profile, function, harmonic perturbation, inclusion shape perturbation, mandelbox, patch on S40RTS, perturbed box, polar box, spherical gaussian perturbation, spherical hexagonal perturbation, unspecified
 \end{itemize}
 
 
@@ -6460,6 +6480,116 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \end{itemize}
 
+\subsection{Parameters in section \tt Initial temperature model/Patch on S40RTS}
+\label{parameters:Initial_20temperature_20model/Patch_20on_20S40RTS}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Maximum grid depth}
+\phantomsection\label{parameters:Initial temperature model/Patch on S40RTS/Maximum grid depth}
+
+
+\index[prmindex]{Maximum grid depth}
+\index[prmindexfull]{Initial temperature model!Patch on S40RTS!Maximum grid depth}
+{\it Value:} 700000.0
+
+
+{\it Default:} 700000.0
+
+
+{\it Description:} The maximum depth of the Vs ascii grid. The model will read in  Vs from S40RTS below this depth.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Remove temperature heterogeneity down to specified depth}
+\phantomsection\label{parameters:Initial temperature model/Patch on S40RTS/Remove temperature heterogeneity down to specified depth}
+
+
+\index[prmindex]{Remove temperature heterogeneity down to specified depth}
+\index[prmindexfull]{Initial temperature model!Patch on S40RTS!Remove temperature heterogeneity down to specified depth}
+{\it Value:} -1.7976931348623157e+308
+
+
+{\it Default:} -1.7976931348623157e+308
+
+
+{\it Description:} This will set the heterogeneity prescribed by the Vs ascii grid and S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660km, but your closest spherical depth layers are only at 500km and 750km (due to a coarse resolution) it will only zero out heterogeneities down to 500km. Similar caution has to be taken when using adaptive meshing.
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Smoothing length scale}
+\phantomsection\label{parameters:Initial temperature model/Patch on S40RTS/Smoothing length scale}
+
+
+\index[prmindex]{Smoothing length scale}
+\index[prmindexfull]{Initial temperature model!Patch on S40RTS!Smoothing length scale}
+{\it Value:} 200000.0
+
+
+{\it Default:} 200000.0
+
+
+{\it Description:} The depth range (above maximum grid depth) over which to smooth. The boundary is smoothed using a depth weighted combination of Vs values from the ascii grid and S40RTS at each point in the region of smoothing.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\end{itemize}
+
+
+
+\subsection{Parameters in section \tt Initial temperature model/Patch on S40RTS/Ascii data model}
+\label{parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Ascii_20data_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Data directory}
+\phantomsection\label{parameters:Initial temperature model/Patch on S40RTS/Ascii data model/Data directory}
+
+
+\index[prmindex]{Data directory}
+\index[prmindexfull]{Initial temperature model!Patch on S40RTS!Ascii data model/Data directory}
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/patch-on-S40RTS/test/
+
+
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/patch-on-S40RTS/test/
+
+
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
+
+
+{\it Possible values:} A directory name
+\item {\it Parameter name:} {\tt Data file name}
+\phantomsection\label{parameters:Initial temperature model/Patch on S40RTS/Ascii data model/Data file name}
+
+
+\index[prmindex]{Data file name}
+\index[prmindexfull]{Initial temperature model!Patch on S40RTS!Ascii data model/Data file name}
+{\it Value:} upper\_shell\_3d.txt
+
+
+{\it Default:} upper\_shell\_3d.txt
+
+
+{\it Description:} The file name of the material data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of a box or a spherical shell).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Scale factor}
+\phantomsection\label{parameters:Initial temperature model/Patch on S40RTS/Ascii data model/Scale factor}
+
+
+\index[prmindex]{Scale factor}
+\index[prmindexfull]{Initial temperature model!Patch on S40RTS!Ascii data model/Scale factor}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Scalar factor, which is applied to the boundary velocity. You might want to use this to scale the velocities to a reference model (e.g. with free-slip boundary) or another plate reconstruction. Another way to use this factor is to convert units of the input files. The unit is assumed to bem/s or m/yr depending on the 'Use years in output instead of seconds' flag. If you provide velocities in cm/yr set this factor to 0.01.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\end{itemize}
+
 \subsection{Parameters in section \tt Initial temperature model/S40RTS perturbation}
 \label{parameters:Initial_20temperature_20model/S40RTS_20perturbation}
 
@@ -6608,6 +6738,22 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Use thermal expansion coefficient from material model}
+\phantomsection\label{parameters:Initial temperature model/S40RTS perturbation/Use thermal expansion coefficient from material model}
+
+
+\index[prmindex]{Use thermal expansion coefficient from material model}
+\index[prmindexfull]{Initial temperature model!S40RTS perturbation!Use thermal expansion coefficient from material model}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Option to take the thermal expansion coefficient from the material model instead of from what is specified in this section.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Vs to density scaling}
 \phantomsection\label{parameters:Initial temperature model/S40RTS perturbation/Vs to density scaling}
 
@@ -6846,6 +6992,22 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Use thermal expansion coefficient from material model}
+\phantomsection\label{parameters:Initial temperature model/SAVANI perturbation/Use thermal expansion coefficient from material model}
+
+
+\index[prmindex]{Use thermal expansion coefficient from material model}
+\index[prmindexfull]{Initial temperature model!SAVANI perturbation!Use thermal expansion coefficient from material model}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Option to take the thermal expansion coefficient from the material model instead of from what is specified in this section.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Vs to density scaling}
 \phantomsection\label{parameters:Initial temperature model/SAVANI perturbation/Vs to density scaling}
 
@@ -12668,6 +12830,22 @@ Units: $Pa \, s$
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Maximum yield stress}
+\phantomsection\label{parameters:Material model/Visco Plastic/Maximum yield stress}
+
+
+\index[prmindex]{Maximum yield stress}
+\index[prmindexfull]{Material model!Visco Plastic!Maximum yield stress}
+{\it Value:} 1e12
+
+
+{\it Default:} 1e12
+
+
+{\it Description:} Limits the maximum value of the yield stress determined by the drucker-prager plasticity parameters. Default value is chosen so this is not automatically used. Values of 100e6--1000e6 $Pa$ have been used in previous models. Units: $Pa$
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Minimum strain rate}
 \phantomsection\label{parameters:Material model/Visco Plastic/Minimum strain rate}
 
@@ -14063,11 +14241,11 @@ As stated, this postprocessor computes the \textit{outbound} mass flux. If you a
 
 `particles': A Postprocessor that creates particles that follow the velocity field of the simulation. The particles can be generated and propagated in various ways and they can carry a number of constant or time-varying properties. The postprocessor can write output positions and properties of all particles at chosen intervals, although this is not mandatory. It also allows other parts of the code to query the particles for information.
 
-`point values': A postprocessor that evaluates the solution (i.e., velocity, pressure, temperature, and compositional fields along with other fields that are treated as primary variables) at the end of every time step at a given set of points and then writes this data into the file <point\_values.txt> in the output directory. The points at which the solution should be evaluated are specified in the section \texttt{Postprocess/Point values} in the input file.
+`point values': A postprocessor that evaluates the solution (i.e., velocity, pressure, temperature, and compositional fields along with other fields that are treated as primary variables) at the end of every time step or after a user-specified time interval at a given set of points and then writes this data into the file <point\_values.txt> in the output directory. The points at which the solution should be evaluated are specified in the section \texttt{Postprocess/Point values} in the input file.
 
 In the output file, data is organized as (i) time, (ii) the 2 or 3 coordinates of the evaluation points, and (iii) followed by the values of the solution vector at this point. The time is provided in seconds or, if the global ``Use years in output instead of seconds'' parameter is set, in years. In the latter case, the velocity is also converted to meters/year, instead of meters/second.
 
-\note{Evaluating the solution of a finite element field at arbitrarily chosen points is an expensive process. Using this postprocessor will only be efficient if the number of evaluation points is relatively small. If you need a very large number of evaluation points, you should consider extracting this information from the visualization program you use to display the output of the `visualization' postprocessor.}
+\note{Evaluating the solution of a finite element field at arbitrarily chosen points is an expensive process. Using this postprocessor will only be efficient if the number of evaluation points or output times is relatively small. If you need a very large number of evaluation points, you should consider extracting this information from the visualization program you use to display the output of the `visualization' postprocessor.}
 
 `pressure statistics': A postprocessor that computes some statistics about the pressure field.
 
@@ -15525,6 +15703,22 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements separated by <;> where each element is [A list of 2 to 2 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]]
+\item {\it Parameter name:} {\tt Time between point values output}
+\phantomsection\label{parameters:Postprocess/Point values/Time between point values output}
+
+
+\index[prmindex]{Time between point values output}
+\index[prmindexfull]{Postprocess!Point values!Time between point values output}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The time interval between each generation of point values output. A value of zero indicates that output should be generated in each time step. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Use natural coordinates}
 \phantomsection\label{parameters:Postprocess/Point values/Use natural coordinates}
 
@@ -15755,6 +15949,8 @@ This visualization postprocessor outputs whatever quantities the material model 
 
 `stress': A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case.
 
+`temperature anomaly': A visualization output postprocessor that outputs the temperature minus the depth-average of the temperature.The average temperature is calculated using the lateral averaging function from the ``depth average'' postprocessor and interpolated linearly between the layers specified through ``Number of depth slices''
+
 `thermal conductivity': A visualization output object that generates output for the thermal conductivity $k$.
 
 `thermal diffusivity': A visualization output object that generates output for the thermal diffusivity $\kappa$=$\frac{k}{\rho C_p}$, with $k$ the thermal conductivity.
@@ -15768,7 +15964,7 @@ This visualization postprocessor outputs whatever quantities the material model 
 `volumetric strain rate': A visualization output object that generates output for the volumetric strain rate, i.e., for the quantity $\nabla\cdot\mathbf u = \textrm{div}\; \mathbf u = \textrm{trace}\; \varepsilon(\mathbf u)$. This should be zero (in some average sense) in incompressible convection models, but can be non-zero in compressible models and models with melt transport.
 
 
-{\it Possible values:} A comma-separated list of any of Vp anomaly, Vs anomaly, adiabat, artificial viscosity, artificial viscosity composition, boundary indicators, compositional vector, density, depth, dynamic topography, error indicator, geoid, gravity, heat flux map, heating, material properties, maximum horizontal compressive stress, melt fraction, melt material properties, named additional outputs, nonadiabatic pressure, nonadiabatic temperature, particle count, partition, shear stress, spd factor, specific heat, strain rate, stress, thermal conductivity, thermal diffusivity, thermal expansivity, vertical heat flux, viscosity, volumetric strain rate
+{\it Possible values:} A comma-separated list of any of Vp anomaly, Vs anomaly, adiabat, artificial viscosity, artificial viscosity composition, boundary indicators, compositional vector, density, depth, dynamic topography, error indicator, geoid, gravity, heat flux map, heating, material properties, maximum horizontal compressive stress, melt fraction, melt material properties, named additional outputs, nonadiabatic pressure, nonadiabatic temperature, particle count, partition, shear stress, spd factor, specific heat, strain rate, stress, temperature anomaly, thermal conductivity, thermal diffusivity, thermal expansivity, vertical heat flux, viscosity, volumetric strain rate
 \item {\it Parameter name:} {\tt Number of grouped files}
 \phantomsection\label{parameters:Postprocess/Visualization/Number of grouped files}
 
@@ -16285,6 +16481,60 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 
 
 {\it Possible values:} A comma-separated list of any of compaction viscosity, fluid viscosity, permeability, fluid density, fluid density gradient, is melt cell, darcy coefficient, darcy coefficient no cutoff, compaction length
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Visualization/Temperature anomaly}
+\label{parameters:Postprocess/Visualization/Temperature_20anomaly}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Number of depth slices}
+\phantomsection\label{parameters:Postprocess/Visualization/Temperature anomaly/Number of depth slices}
+
+
+\index[prmindex]{Number of depth slices}
+\index[prmindexfull]{Postprocess!Visualization!Temperature anomaly/Number of depth slices}
+{\it Value:} 20
+
+
+{\it Default:} 20
+
+
+{\it Description:} Number of depth slices used to define average temperature.
+
+
+{\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Use maximal temperature for bottom}
+\phantomsection\label{parameters:Postprocess/Visualization/Temperature anomaly/Use maximal temperature for bottom}
+
+
+\index[prmindex]{Use maximal temperature for bottom}
+\index[prmindexfull]{Postprocess!Visualization!Temperature anomaly/Use maximal temperature for bottom}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} If true, use the specified boundary temepratures as average temperatures at the surface. If false, extrapolate the temperature gradient between the first and second cells to the surface. This option will only work for models with a fixed surface temperature. 
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Use minimal temperature for surface}
+\phantomsection\label{parameters:Postprocess/Visualization/Temperature anomaly/Use minimal temperature for surface}
+
+
+\index[prmindex]{Use minimal temperature for surface}
+\index[prmindexfull]{Postprocess!Visualization!Temperature anomaly/Use minimal temperature for surface}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} Whether to use the minimal speficied boundary temperature as the bottom boundary temperature. This option will only work for models with a fixed bottom boundary temperature. 
+
+
+{\it Possible values:} A boolean value (true or false)
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Visualization/Vp anomaly}
@@ -17168,6 +17418,26 @@ In practice, you should choose the value of this parameter to be so that if you 
 
 
 {\it Description:} If set to true the linear system for the Stokes equation will be solved using Trilinos klu, otherwise an iterative Schur complement solver is used. The direct solver is only efficient for small problems.
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Use full A block as preconditioner}
+\phantomsection\label{parameters:Solver parameters/Stokes solver parameters/Use full A block as preconditioner}
+
+
+\index[prmindex]{Use full A block as preconditioner}
+\index[prmindexfull]{Solver parameters!Stokes solver parameters!Use full A block as preconditioner}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} This parameter determines whether we use an simplified approximation of the $A$ block as preconditioner for the Stokes solver, or the full $A$ block. The simplified approximation only contains the terms that describe the coupling of identical components (plus boundary conditions) as described in \cite{KHB12}. The full block is closer to the description in \cite{rudi2017weighted}.
+
+There is no clear way to determine which preconditioner performs better. The default value (simplified approximation) requires more outer GMRES iterations, but is faster to apply in each iteration. The full block needs less assembly time (because the block is available anyway), converges in less GMRES iterations, but requires more time per iteration. There are also differences in the amount of memory consumption between the two approaches.
+
+The default value should be good for relatively simple models, but in particular for very strong viscosity contrasts the full $A$ block can be advantageous.
 
 
 {\it Possible values:} A boolean value (true or false)
