@@ -136,7 +136,7 @@ namespace aspect
             if (result)
               {
                 std::vector<double> outputs(n_quadrature_points);
-                for (unsigned int i=0; i<get_names().size(); ++i)
+                for (unsigned int i=0; i<result->get_names().size(); ++i)
                   {
                     outputs = result->get_nth_output(i);
 
