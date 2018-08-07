@@ -23,10 +23,10 @@
     <style type="text/css">
         .box {
         background: lightgray;
-	font-family: monospace;
+        font-family: monospace;
         width: 75%;
         padding: 10px;
-	word-wrap: break-word;
+        word-wrap: break-word;
         }
 
         .editbox {
@@ -39,10 +39,10 @@
             background: #c18166;
             width: 75%;
             font-size: 150%;
-	    margin: auto;
-	    border: 1px solid blue;
+            margin: auto;
+            border: 1px solid blue;
             padding: 5px;
-	text-align: center;
+            text-align: center;
         }
     </style>
 </head>
@@ -74,21 +74,20 @@ To give credit to the authors of significant pieces contributed to ASPECT, pleas
 
     <form action="" class="editbox">
         <label>Version: <select id="ver" onchange="update()">
-	    <option value="dev">dev</option>
-	    <option value="2.0.1">2.0.1</option>
-	    <option value="2.0.0">2.0.0</option>
-	    <option value="1.5.0">1.5.0</option>
-	    <option value="1.4.0">1.4.0</option>
-	</select></label>
-	<br/><br/>
+            <option value="dev">dev</option>
+            <option value="2.0.1">2.0.1</option>
+            <option value="2.0.0">2.0.0</option>
+            <option value="1.5.0">1.5.0</option>
+            <option value="1.4.0">1.4.0</option>
+        </select></label>
+        <br/><br/>
         <label><input type="checkbox" id="fs" onchange="update()">Free Surface</label>
         <label><input type="checkbox" id="melt" onchange="update()">Melt Transport</label>
         <label><input type="checkbox" id="particles" onchange="update()">Particles</label>
         <label><input type="checkbox" id="dg" onchange="update()">DG advection</label>
-	&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;
         <label><input type="checkbox" id="checkall" onchange="do_checkall()">(check all)</label>
-	<br/>
-	<!-- TODO: plasticity? Newton? vof? geoid? topography? -->
+        <br/>
     </form>
 
     <p><b>Please use the following notation to cite ASPECT:</b></p>
@@ -110,24 +109,24 @@ all the references below:
 
     <script type="text/javascript">
         function do_checkall() {
-	var all = document.getElementById("checkall").checked ? true : false;
-        for (var i = 0; i < checkboxes.length; ++i)
-                    document.getElementById(checkboxes[i]).checked = all;			
-		update();
-	}
+            var all = document.getElementById("checkall").checked ? true : false;
+            for (var i = 0; i < checkboxes.length; ++i)
+                document.getElementById(checkboxes[i]).checked = all;
+            update();
+        }
 
         function update() {
             var selected_groups = ["main"];
             var urlstuff = [];
-	    var version = document.getElementById('ver').value;
-			    urlstuff.push("ver="+version);
-                    selected_groups.push(version);			    
+            var version = document.getElementById('ver').value;
+            urlstuff.push("ver="+version);
+            selected_groups.push(version);
             for (var i = 0; i < checkboxes.length; ++i)
                 if (document.getElementById(checkboxes[i]).checked)
-{
+                {
                     selected_groups.push(checkboxes[i]);
-                urlstuff.push(checkboxes[i] + '=1');
-}
+                    urlstuff.push(checkboxes[i] + '=1');
+                }
 
             var keys = [];
             var txt = "";
@@ -135,18 +134,15 @@ all the references below:
 
 
             for (var i = 0; i < selected_groups.length; ++i) {
-	    for (var papername in papers)
-				{
-				var paper = papers[papername];
-				if (paper.group!=selected_groups[i])
-continue;
-
-		
+               for (var papername in papers) {
+                var paper = papers[papername];
+                if (paper.group!=selected_groups[i])
+                    continue;
 
                 txt += paper.text + "<br/><br/>";
                 bibtxt += paper.bibtex + "<br/><br/>";
                 keys.push(paper.bibtexkey);
-				}
+                }
             }
 
             document.getElementById('intext').innerHTML = intext.replace("CITEKEYS", keys.join(",")).replace("VERSION",version);
@@ -155,8 +151,8 @@ continue;
             document.getElementById('paper').innerHTML = txt.replace(/\n/g, "\n<br/>");
             document.getElementById('bibtex').innerHTML = bibtxt.replace(/\n/g, "\n<br/>");
             
-	var params = urlstuff.join('&');
-        if (params.length>0) params="?"+params;
+            var params = urlstuff.join('&');
+            if (params.length>0) params="?"+params;
             var url = "https://aspect.geodynamics.org/citing.html" + params;
             document.getElementById('onlineurl').innerText = url;
             document.getElementById('onlineurl').href = url;
@@ -166,7 +162,7 @@ continue;
             if (!url) url = window.location.href;
             name = name.replace(/[\[\]]/g, "\\$&");
             var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-                results = regex.exec(url);
+            results = regex.exec(url);
             if (!results) return null;
             if (!results[2]) return '';
             return decodeURIComponent(results[2].replace(/\+/g, " "));
@@ -174,16 +170,16 @@ continue;
 
         function autorun() {
             for (var i = 0; i < checkboxes.length; ++i)
-	    {
+            {
               if (getParameterByName(checkboxes[i]) == "1")
                 document.getElementById(checkboxes[i]).checked = true;
             }
 
-	var version = getParameterByName("ver");
-	if (version)
-				document.getElementById('ver').value = version;
-				if (document.getElementById('ver').selectedIndex==-1)
-				document.getElementById('ver').selectedIndex = 0;
+            var version = getParameterByName("ver");
+            if (version)
+                document.getElementById('ver').value = version;
+            if (document.getElementById('ver').selectedIndex==-1)
+                document.getElementById('ver').selectedIndex = 0;
             update();
         }
 
@@ -192,5 +188,4 @@ continue;
         else window.onload = autorun;
     </script>
 </body>
-
 </html>
