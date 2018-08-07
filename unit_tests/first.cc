@@ -77,9 +77,9 @@ TEST_CASE("function parser if() and division by zero")
 TEST_CASE("citation test")
 {
   using namespace aspect;
-  REQUIRE_THAT(CitationInfo::get_url_part(), StartsWith("cite.html?ver="));
+  REQUIRE_THAT(CitationInfo::get_url_part(), StartsWith("citing.html?ver="));
   CitationInfo::add("bla");
-  REQUIRE_THAT(CitationInfo::get_url_part(), StartsWith("cite.html?ver="));
+  REQUIRE_THAT(CitationInfo::get_url_part(), StartsWith("citing.html?ver="));
   REQUIRE_THAT(CitationInfo::get_url_part(), Contains("bla=1"));
   REQUIRE_THAT(CitationInfo::get_url_part(), !Contains("blub"));
   CitationInfo::add("blub");
