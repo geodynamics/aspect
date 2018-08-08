@@ -106,7 +106,6 @@ all the references below:
     <p><b>Bibtex:</b></p>
     <div id="bibtex" class="box"></div>
 
-
     <script type="text/javascript">
         function do_checkall() {
             var all = document.getElementById("checkall").checked ? true : false;
@@ -179,7 +178,7 @@ all the references below:
             if (version)
                 document.getElementById('ver').value = version;
             if (document.getElementById('ver').selectedIndex==-1)
-                document.getElementById('ver').selectedIndex = 0;
+                document.getElementById('ver').selectedIndex = 1; // latest release
             update();
         }
 
