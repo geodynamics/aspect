@@ -535,10 +535,11 @@ namespace aspect
                 out.reaction_terms[i][this->introspection().compositional_index_for_name("total_strain")] = e_ii;
             }
 
-          // fill copy outputs if they exist
+
           double C = 0.;
           double phi = 0.;
           double sf = 0;
+
           // set to weakened values, or unweakened values when strain weakening is not used
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
             {
@@ -565,6 +566,15 @@ namespace aspect
                   std::tuple<double, double, double> weakening = calculate_plastic_weakening(strain_invariant, j);
                   C   += volume_fractions[j] * std::get<0> (weakening);
                   phi += volume_fractions[j] * std::get<1> (weakening);
+
+                  if (in.position[i][0] < 20.4e3 && in.position[i][0] >= 19.6e3 && in.position[i][1] < 0.4e3)
+                    {
+                      out.viscosities[i] = 1.e21;
+                      C = 1.e20;
+                      phi = 0;
+                      sf = 0;
+                    }
+
                   // add copy fields here
                   if (copy_out != NULL)
                     {
@@ -573,7 +583,6 @@ namespace aspect
                           sf  = std::get<2> (weakening); // strain fraction at each point and composition
                           copy_out-> copy_properties[i][j] = (sf)/(this->get_timestep());
                         }
-                      else
                         copy_out-> copy_properties[i][j] =0;
                     }
                 }
@@ -583,7 +592,13 @@ namespace aspect
                   phi += volume_fractions[j] * angles_internal_friction[j];
                 }
             }
+
+
+//          if (plastic_out != NULL
+//          plastic_out->cohesions[i] = C;
         }
+
+
 
       // We need the velocity gradient for the finite strain (they are not included in material model inputs),
       // so we get them from the finite element.

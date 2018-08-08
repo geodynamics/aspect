@@ -11,7 +11,7 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 1
 set Use years in output instead of seconds = false
-set Output directory                       = output-copy_only
+set Output directory                       = output-copy-and-diffuse
 #set Nonlinear solver tolerance             = 1e-3
 
 subsection Geometry model
@@ -74,7 +74,7 @@ subsection Material model
     set Viscosity                                      = 1
     set Reference density                              = 1
     set Reference temperature                          = 0
-    set Density differential for compositional field 1 = 0.1
+    set Density differential for compositional field 1 = 0.4
   end
 end
 
@@ -112,17 +112,17 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,y
-    set Function expression =  if( (sqrt((x-0.5)^2+(y-0.5)^2)>0.22) , 0 , 1 )
+    set Function expression =  if( (sqrt((x-0.5)^2+(y-0.5)^2)>0.22) , 0 , 1 ); 
   end
 end
 
 subsection Formulation
   set Enable diffusion = true
 end
-
+#####
 subsection Solver parameters
   subsection Diffusion parameters
-    set Shape parameter  = 100
-    set Non local length = 4
+    set Shape parameter  = 10
+    set Non local length = 1 
   end
 end

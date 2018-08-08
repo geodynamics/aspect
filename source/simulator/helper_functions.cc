@@ -1801,28 +1801,28 @@ namespace aspect
 
           // copy material properties into the compositional fields
           for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).dofs_per_cell; ++j)
-              {
-                const unsigned int composition_idx
-                  = dof_handler.get_fe().component_to_system_index(introspection.component_indices.compositional_fields[c],
-                                                                   /*dof index within component=*/ j);
+            {
+              const unsigned int composition_idx
+                = dof_handler.get_fe().component_to_system_index(introspection.component_indices.compositional_fields[c],
+                                                                 /*dof index within component=*/ j);
 
-                // skip entries that are not locally owned:
-                if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[composition_idx]))
-                  {
-                    distributed_vector(local_dof_indices[composition_idx]) = copy_outputs->copy_properties[j][c];;
-                  }
-              }
+              // skip entries that are not locally owned:
+              if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[composition_idx]))
+                {
+                  distributed_vector(local_dof_indices[composition_idx]) = copy_outputs->copy_properties[j][c];;
+                }
+            }
         }
 
     // put the final values into the solution vector
 
-        const unsigned int block_c = introspection.block_indices.compositional_fields[c];
-        distributed_vector.block(block_c).compress(VectorOperation::insert);
-        solution.block(block_c) = distributed_vector.block(block_c);
+    const unsigned int block_c = introspection.block_indices.compositional_fields[c];
+    distributed_vector.block(block_c).compress(VectorOperation::insert);
+    solution.block(block_c) = distributed_vector.block(block_c);
 
-        // We also want to copy the values into the old solution, because it is used
-        // later on in case we solve a diffusion equation for this field
-        old_solution.block(block_c) = distributed_vector.block(block_c);
+    // We also want to copy the values into the old solution, because it is used
+    // later on in case we solve a diffusion equation for this field
+    old_solution.block(block_c) = distributed_vector.block(block_c);
   }
 
 

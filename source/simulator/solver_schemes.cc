@@ -229,7 +229,7 @@ namespace aspect
             interpolate_material_output_into_field(c);
 
             // TODO: if the field is a diffusion field, it will be solved here after the copying
-            if (parameters.enable_diffusion)
+            if (parameters.enable_diffusion)//&& parameters.non_local_length!=0)
               {
                 assemble_advection_system (adv_field);
 
