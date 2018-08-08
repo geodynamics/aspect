@@ -75,6 +75,14 @@ namespace aspect
         double
         evaluate (const Point<dim> &) const;
 
+        /**
+         * Evaluate the gravity anomaly solution at a point. The evaluation point
+         * must be outside of the model domain, and it must be called
+         * after execute().
+         */
+        double
+        evaluate_gravityanomaly (const Point<dim> &) const;
+
       private:
         /**
          * Parameters to set the maximum and minimum degree when computing geoid from spherical harmonics
@@ -128,8 +136,14 @@ namespace aspect
          * The input outer radius is needed to evaluate the density integral contribution of whole model domain at the surface
          * This function returns a pair containing real spherical harmonics of density integral (cos and sin part) from min degree to max degree.
          */
-        std::pair<std::vector<double>,std::vector<double> >
-        density_contribution (const double &outer_radius) const;
+        void
+        density_contribution ();
+
+        /**
+         * Pairs that store the spherical harmonic coefficients for the geoid and gravity anomaly, respectively
+         */
+        std::pair<std::vector<double>,std::vector<double> > SH_density_coes;
+        std::pair<std::vector<double>,std::vector<double> > SH_density_gravity_coes;
 
         /**
          * Function to compute the surface and CMB dynamic topography contribution in spherical harmonic expansion
@@ -150,6 +164,15 @@ namespace aspect
          * A vector to store the sine terms of the geoid anomaly spherical harmonic coefficients.
          */
         std::vector<double> geoid_coesin;
+
+        /**
+         * A vector to store the cosine terms of the gravity anomaly spherical harmonic coefficients.
+         */
+        std::vector<double> gravity_coecos;
+        /**
+         * A vector to store the sine terms of the gravity anomaly spherical harmonic coefficients.
+         */
+        std::vector<double> gravity_coesin;
     };
   }
 }

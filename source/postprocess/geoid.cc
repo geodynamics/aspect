@@ -79,8 +79,8 @@ namespace aspect
     }
 
     template <int dim>
-    std::pair<std::vector<double>,std::vector<double> >
-    Geoid<dim>::density_contribution (const double &outer_radius) const
+    void
+    Geoid<dim>::density_contribution ()
     {
       const unsigned int quadrature_degree = this->introspection().polynomial_degree.temperature;
       // need to evaluate density contribution of each volume quadrature point
@@ -103,6 +103,13 @@ namespace aspect
       // This work around ASPECT's adaptive mesh refinement feature.
       std::vector<double> SH_density_coecos;
       std::vector<double> SH_density_coesin;
+      std::vector<double> SH_density_gravity_coecos;
+      std::vector<double> SH_density_gravity_coesin;
+
+      // Get the value of the outer radius and inner radius
+      const double outer_radius = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
+                                  (this->get_geometry_model()).outer_radius();
+
       for (unsigned int ideg =  min_degree; ideg < max_degree+1; ideg++)
         {
           for (unsigned int iord = 0; iord < ideg+1; iord++)
@@ -110,6 +117,8 @@ namespace aspect
               // initialization of the density contribution integral per degree, order.
               double integrated_density_cos_component = 0;
               double integrated_density_sin_component = 0;
+              double integrated_density_gravity_cos_component = 0;
+              double integrated_density_gravity_sin_component = 0;
 
               // loop over all of the cells
               typename DoFHandler<dim>::active_cell_iterator
@@ -142,17 +151,29 @@ namespace aspect
 
                         integrated_density_cos_component += density * (1./r_q) * std::pow(r_q/outer_radius,ideg+1) * cos_component * fe_values.JxW(q);
                         integrated_density_sin_component += density * (1./r_q) * std::pow(r_q/outer_radius,ideg+1) * sin_component * fe_values.JxW(q);
+
+                        integrated_density_gravity_cos_component += density * (1./(r_q*r_q)) * ideg * std::pow(r_q/outer_radius,ideg+1) * cos_component * fe_values.JxW(q);
+                        integrated_density_gravity_sin_component += density * (1./(r_q*r_q)) * ideg * std::pow(r_q/outer_radius,ideg+1) * sin_component * fe_values.JxW(q);
                       }
                   }
               SH_density_coecos.push_back(integrated_density_cos_component);
               SH_density_coesin.push_back(integrated_density_sin_component);
+
+              SH_density_gravity_coecos.push_back(integrated_density_gravity_cos_component);
+              SH_density_gravity_coesin.push_back(integrated_density_gravity_sin_component);
             }
         }
       // sum over each processor
       dealii::Utilities::MPI::sum (SH_density_coecos,this->get_mpi_communicator(),SH_density_coecos);
       dealii::Utilities::MPI::sum (SH_density_coesin,this->get_mpi_communicator(),SH_density_coesin);
 
-      return std::make_pair(SH_density_coecos,SH_density_coesin);
+      // Get the spherical harmonic coefficients of the density contribution to the geoid.
+      SH_density_coes = std::make_pair(SH_density_coecos,SH_density_coesin);
+
+      // Get the spherical harmonic coefficients of the density contribution to the gravity anomaly.
+      SH_density_gravity_coes = std::make_pair(SH_density_gravity_coecos,SH_density_gravity_coesin);
+
+      return;
     }
 
     template <int dim>
@@ -332,8 +353,9 @@ namespace aspect
       // Get the value of the universal gravitational constant
       const double G = aspect::constants::big_g;
 
-      // Get the spherical harmonic coefficients of the density contribution.
-      std::pair<std::vector<double>,std::vector<double> > SH_density_coes = density_contribution(outer_radius);
+      // Get the spherical harmonic coefficients of the density contribution to the geoid and gravity
+      // writing them into SH_density_coes and SH_density_gravity_coes, respectively
+      density_contribution ();
 
       // Get the spherical harmonic coefficients of the surface and CMB dynamic topography
       std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double> > >, std::pair<double, std::pair<std::vector<double>,std::vector<double> > > > SH_dyna_topo_coes;
@@ -355,12 +377,23 @@ namespace aspect
       geoid_coecos.clear();
       geoid_coesin.clear();
 
+      // Compute the spherical harmonic coefficients of geoid anomaly
+      std::vector<double> density_anomaly_contribution_gravity_coecos; // a vector to store cos terms of density anomaly contribution SH coefficients
+      std::vector<double> density_anomaly_contribution_gravity_coesin; // a vector to store sin terms of density anomaly contribution SH coefficients
+      std::vector<double> surface_dyna_topo_contribution_gravity_coecos; // a vector to store cos terms of surface dynamic topography contribution SH coefficients
+      std::vector<double> surface_dyna_topo_contribution_gravity_coesin; // a vector to store sin terms of surface dynamic topography contribution SH coefficients
+      std::vector<double> CMB_dyna_topo_contribution_gravity_coecos; // a vector to store cos terms of CMB dynamic topography contribution SH coefficients
+      std::vector<double> CMB_dyna_topo_contribution_gravity_coesin; // a vector to store sin terms of CMB dynamic topography contribution SH coefficients
+      gravity_coecos.clear();
+      gravity_coesin.clear();
+
       // First compute the spherical harmonic contributions from density anomaly, surface dynamic topography and CMB dynamic topography
       int ind = 0; // coefficients index
       for (unsigned int ideg =  min_degree; ideg < max_degree+1; ideg++)
         {
           for (unsigned int iord = 0; iord < ideg+1; iord++)
             {
+              // geoid anomaly
               double coecos_density_anomaly = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1))) * SH_density_coes.first.at(ind);
               double coesin_density_anomaly = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1))) * SH_density_coes.second.at(ind);
               density_anomaly_contribution_coecos.push_back(coecos_density_anomaly);
@@ -380,6 +413,26 @@ namespace aspect
               CMB_dyna_topo_contribution_coecos.push_back(coecos_CMB_dyna_topo);
               CMB_dyna_topo_contribution_coesin.push_back(coesin_CMB_dyna_topo);
 
+              // gravity anomaly
+              coecos_density_anomaly = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1))) * SH_density_gravity_coes.first.at(ind);
+              coesin_density_anomaly = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1))) * SH_density_gravity_coes.second.at(ind);
+              density_anomaly_contribution_gravity_coecos.push_back(coecos_density_anomaly);
+              density_anomaly_contribution_gravity_coesin.push_back(coesin_density_anomaly);
+
+              coecos_surface_dyna_topo = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1)))
+                                         * surface_delta_rho*SH_surface_dyna_topo_coes.second.first.at(ind)*ideg;
+              coesin_surface_dyna_topo = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1)))
+                                         * surface_delta_rho*SH_surface_dyna_topo_coes.second.second.at(ind)*ideg;
+              surface_dyna_topo_contribution_gravity_coecos.push_back(coecos_surface_dyna_topo);
+              surface_dyna_topo_contribution_gravity_coesin.push_back(coesin_surface_dyna_topo);
+
+              coecos_CMB_dyna_topo = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1)))
+                                     * CMB_delta_rho*SH_CMB_dyna_topo_coes.second.first.at(ind)*std::pow(inner_radius/outer_radius,ideg+2) * (-1.) * (ideg+1);
+              coesin_CMB_dyna_topo = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1)))
+                                     * CMB_delta_rho*SH_CMB_dyna_topo_coes.second.second.at(ind)*std::pow(inner_radius/outer_radius,ideg+2) * (-1.) * (ideg+1);
+              CMB_dyna_topo_contribution_gravity_coecos.push_back(coecos_CMB_dyna_topo);
+              CMB_dyna_topo_contribution_gravity_coesin.push_back(coesin_CMB_dyna_topo);
+
               ++ind;
             }
         }
@@ -392,6 +445,18 @@ namespace aspect
             {
               geoid_coecos.push_back(density_anomaly_contribution_coecos.at(ind)+surface_dyna_topo_contribution_coecos.at(ind)+CMB_dyna_topo_contribution_coecos.at(ind));
               geoid_coesin.push_back(density_anomaly_contribution_coesin.at(ind)+surface_dyna_topo_contribution_coesin.at(ind)+CMB_dyna_topo_contribution_coesin.at(ind));
+              ind += 1;
+            }
+        }
+
+      // Sum the three contributions together to get the spherical harmonic coefficients of gravity anomaly
+      ind = 0; // coefficients index
+      for (unsigned int ideg =  min_degree; ideg < max_degree+1; ideg++)
+        {
+          for (unsigned int iord = 0; iord < ideg+1; iord++)
+            {
+              gravity_coecos.push_back(density_anomaly_contribution_gravity_coecos.at(ind)+surface_dyna_topo_contribution_gravity_coecos.at(ind)+CMB_dyna_topo_contribution_gravity_coecos.at(ind));
+              gravity_coesin.push_back(density_anomaly_contribution_gravity_coesin.at(ind)+surface_dyna_topo_contribution_gravity_coesin.at(ind)+CMB_dyna_topo_contribution_gravity_coesin.at(ind));
               ind += 1;
             }
         }
@@ -769,6 +834,27 @@ namespace aspect
 
             value += geoid_coecos[k] * val.first +
                      geoid_coesin[k] * val.second;
+
+          }
+      return value;
+    }
+
+    template <int dim>
+    double
+    Geoid<dim>::evaluate_gravityanomaly (const Point<dim> &p) const
+    {
+      const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(p);
+      const double theta = scoord[2];
+      const double phi = scoord[1];
+      double value = 0.;
+
+      for (unsigned int ideg=min_degree, k=0; ideg < max_degree+1; ideg++)
+        for (unsigned int iord = 0; iord < ideg+1; iord++, k++)
+          {
+            std::pair<double,double> val = aspect::Utilities::real_spherical_harmonic( ideg, iord, theta, phi );
+
+            value += gravity_coecos[k] * val.first +
+                     gravity_coesin[k] * val.second;
 
           }
       return value;
