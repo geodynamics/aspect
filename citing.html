@@ -1,0 +1,190 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>The ASPECT mantle convection code: How to cite?</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="icon" href="/favicon.ico"/>
+    <link rel="apple-touch-icon" href="/pictures/clover57.png"/>
+    <meta name="author" content="the deal.II authors"/>
+    <meta name="keywords" content="mantle convection, dealii, finite elements, finite element method, fem, finite element software, open source, adaptive, finite element method, finite element modeling, finite element modelling, finite element methods, numerical analysis, numerical analysis software, computational fluid dynamics software"/>
+    <meta name="robots" content="index, follow">
+
+    <!-- Include stylesheets -->
+    <link href="css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
+    <link href="css/global.less" type="text/less" rel="stylesheet"/>
+    <link href="css/index.less" type="text/less" rel="stylesheet"/>
+
+    <!-- LESS needs to come after the stylesheets -->
+    <script src="js/less-1.4.1.min.js"></script>
+  </head>
+
+    <style type="text/css">
+        .box {
+        background: lightgray;
+        font-family: monospace;
+        width: 75%;
+        padding: 10px;
+        word-wrap: break-word;
+        }
+
+        .editbox {
+            background-color: #5f79b8;
+            width: 75%;
+            padding: 10px;
+        }
+        
+        .note {
+            background: #c18166;
+            width: 75%;
+            font-size: 150%;
+            margin: auto;
+            border: 1px solid blue;
+            padding: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+  <body>
+
+    <!--#include file="header.include" -->
+
+    <div id="content" class="container">
+
+    <p class="note">NOTE: a link with your selection is available at:<br/>
+        <a style="font-size:75%" id="onlineurl" href="https://aspect.geodynamics.org/citing.html">https://aspect.geodynamics.org/citing.html</a>
+    </p>
+
+<script src="database.js"></script>
+        
+    <script type="text/javascript">
+        var checkboxes = ["fs", "melt","particles","dg"];
+
+        var intext = "Computations were done using the ASPECT code version <i>VERSION</i>, see \n\\cite{CITEKEYS}.";
+
+        var thanks = "We thank the Computational Infrastructure for Geodynamics (geodynamics.org) which is funded by the National Science Foundation under award EAR-0949446 and EAR-1550901 for supporting the development of ASPECT.";
+    </script>
+
+    <p><b>Please select the following features you used:</b>
+<br/>
+To give credit to the authors of significant pieces contributed to ASPECT, please select the version and check the following checkboxes of features that you feel were important to get your computational results. This will add relevant citations to the list of papers below:
+</p>
+
+    <form action="" class="editbox">
+        <label>Version: <select id="ver" onchange="update()">
+            <option value="dev">dev</option>
+            <option value="2.0.1">2.0.1</option>
+            <option value="2.0.0">2.0.0</option>
+            <option value="1.5.0">1.5.0</option>
+            <option value="1.4.0">1.4.0</option>
+        </select></label>
+        <br/><br/>
+        <label><input type="checkbox" id="fs" onchange="update()">Free Surface</label>
+        <label><input type="checkbox" id="melt" onchange="update()">Melt Transport</label>
+        <label><input type="checkbox" id="particles" onchange="update()">Particles</label>
+        <label><input type="checkbox" id="dg" onchange="update()">DG advection</label>
+        &nbsp;&nbsp;&nbsp;
+        <label><input type="checkbox" id="checkall" onchange="do_checkall()">(check all)</label>
+        <br/>
+    </form>
+
+    <p><b>Please use the following notation to cite ASPECT:</b></p>
+    <div id="intext" class="box"></div>
+
+    <p><b>Please add the following Acknowledgement:</b></p>
+    <div id="thanks" class="box"></div>
+
+    <p><b>Papers:</b>
+<br>
+The canonical reference for ASPECT is the first publication listed here, but please consider citing
+all the references below:
+</p>
+    <div id="paper" class="box"></div>
+
+    <p><b>Bibtex:</b></p>
+    <div id="bibtex" class="box"></div>
+
+    <script type="text/javascript">
+        function do_checkall() {
+            var all = document.getElementById("checkall").checked ? true : false;
+            for (var i = 0; i < checkboxes.length; ++i)
+                document.getElementById(checkboxes[i]).checked = all;
+            update();
+        }
+
+        function update() {
+            var selected_groups = ["main"];
+            var urlstuff = [];
+            var version = document.getElementById('ver').value;
+            urlstuff.push("ver="+version);
+            selected_groups.push(version);
+            for (var i = 0; i < checkboxes.length; ++i)
+                if (document.getElementById(checkboxes[i]).checked)
+                {
+                    selected_groups.push(checkboxes[i]);
+                    urlstuff.push(checkboxes[i] + '=1');
+                }
+
+            var keys = [];
+            var txt = "";
+            var bibtxt = "";
+
+
+            for (var i = 0; i < selected_groups.length; ++i) {
+               for (var papername in papers) {
+                var paper = papers[papername];
+                if (paper.group!=selected_groups[i])
+                    continue;
+
+                txt += paper.text + "<br/><br/>";
+                bibtxt += paper.bibtex + "<br/><br/>";
+                keys.push(paper.bibtexkey);
+                }
+            }
+
+            document.getElementById('intext').innerHTML = intext.replace("CITEKEYS", keys.join(",")).replace("VERSION",version);
+            document.getElementById('thanks').innerHTML = thanks;
+
+            document.getElementById('paper').innerHTML = txt.replace(/\n/g, "\n<br/>");
+            document.getElementById('bibtex').innerHTML = bibtxt.replace(/\n/g, "\n<br/>");
+            
+            var params = urlstuff.join('&');
+            if (params.length>0) params="?"+params;
+            var url = "https://aspect.geodynamics.org/citing.html" + params;
+            document.getElementById('onlineurl').innerText = url;
+            document.getElementById('onlineurl').href = url;
+        }
+
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        function autorun() {
+            for (var i = 0; i < checkboxes.length; ++i)
+            {
+              if (getParameterByName(checkboxes[i]) == "1")
+                document.getElementById(checkboxes[i]).checked = true;
+            }
+
+            var version = getParameterByName("ver");
+            if (version)
+                document.getElementById('ver').value = version;
+            if (document.getElementById('ver').selectedIndex==-1)
+                document.getElementById('ver').selectedIndex = 1; // latest release
+            update();
+        }
+
+        if (document.addEventListener) document.addEventListener("DOMContentLoaded", autorun, false);
+        else if (document.attachEvent) document.attachEvent("onreadystatechange", autorun);
+        else window.onload = autorun;
+    </script>
+</body>
+</html>
