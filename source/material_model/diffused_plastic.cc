@@ -567,13 +567,13 @@ namespace aspect
                   C   += volume_fractions[j] * std::get<0> (weakening);
                   phi += volume_fractions[j] * std::get<1> (weakening);
 
-                  if (in.position[i][0] < 20.4e3 && in.position[i][0] >= 19.6e3 && in.position[i][1] < 0.4e3)
-                    {
-                      out.viscosities[i] = 1.e21;
-                      C = 1.e20;
-                      phi = 0;
-                      sf = 0;
-                    }
+//                  if (in.position[i][0] < 20.4e3 && in.position[i][0] >= 19.6e3 && in.position[i][1] < 0.4e3)
+//                    {
+//                      out.viscosities[i] = 1.e21;
+//                      C = 1.e20;
+//                      phi = 0;
+//                      sf = 0;
+//                    }
 
                   // add copy fields here
                   if (copy_out != NULL)
@@ -583,7 +583,8 @@ namespace aspect
                           sf  = std::get<2> (weakening); // strain fraction at each point and composition
                           copy_out-> copy_properties[i][j] = (sf)/(this->get_timestep());
                         }
-                        copy_out-> copy_properties[i][j] =0;
+                      else
+                        copy_out-> copy_properties[i][j] = 0;
                     }
                 }
               else

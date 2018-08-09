@@ -340,7 +340,9 @@ namespace aspect
       const FiniteElement<dim> &fe = this->get_fe();
 
       const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
-      if (advection_field.is_temperature())
+
+      if (advection_field.is_temperature() || advection_field.advection_method (introspection)
+              != Parameters<dim>::AdvectionFieldMethod::copy_and_diffused_field)
         return;
 
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
