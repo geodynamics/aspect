@@ -31,10 +31,7 @@ done
 
 for script in `ls ${SCRIPT_FOLDER}/*.pl`; do
   for file in $@ ; do
-    cat "$file.bak" | perl $script > "$file"
+    cat "$file" | perl $script > "$file.tmp"
+    mv "$file.tmp" "$file"
   done
-done
-
-for source_file in "$@"; do
-  rm ${source_file}.tmp
 done
