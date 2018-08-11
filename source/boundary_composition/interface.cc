@@ -189,7 +189,7 @@ namespace aspect
           allow_fixed_composition_on_outflow_boundaries = true;
         else if (prm.get ("Allow fixed composition on outflow boundaries") == "false")
           allow_fixed_composition_on_outflow_boundaries = false;
-        else if (prm.get ("Allow fixed composition on outflow boundaries") == "true for models without melt")
+        else if (prm.get ("Allow fixed composition on outflow boundaries") == "false for models without melt")
           allow_fixed_composition_on_outflow_boundaries = this->get_parameters().include_melt_transport;
         else
           AssertThrow(false, ExcMessage("'Allow fixed composition on outflow boundaries' "
@@ -334,8 +334,8 @@ namespace aspect
                            "implemented in a plugin in the BoundaryComposition "
                            "group, unless an existing implementation in this group "
                            "already provides what you want.");
-        prm.declare_entry ("Allow fixed composition on outflow boundaries", "true for models without melt",
-                           Patterns::Selection("true|false|true for models without melt"),
+        prm.declare_entry ("Allow fixed composition on outflow boundaries", "false for models without melt",
+                           Patterns::Selection("true|false|false for models without melt"),
                            "When the composition is fixed on a given boundary as determined "
                            "by the list of 'Fixed composition boundary indicators', there "
                            "might be parts of the boundary where material flows out and "
