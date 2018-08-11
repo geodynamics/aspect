@@ -10333,43 +10333,80 @@ obtained with a resolution of $32\times 32$ elements. (a) Gravity field, (b) pre
 \section{Extending and contributing to \aspect}
 \label{sec:extending}
 
+After you have familiarized yourself with \aspect{} using the examples of
+Section~\ref{sec:cookbooks} you will invariably want to set up your own models.
+During this process you might experience that not all of your ideas are already possible
+with existing functionality, and you will need to make changes to the source code.
+
 \aspect{} is designed to be an extensible code. In particular, it
-uses both a plugin architecture and a set of signals through which it is
-trivial to replace or extend certain components of the program. Examples of
-things that are simple to extend are:
-\begin{itemize}
-\item the material description,
-\item the geometry,
-\item the gravity description,
-\item the initial conditions,
-\item the boundary conditions,
-\item the functions that postprocess the solution, i.e., that can compute
-  derived quantities such as heat fluxes over part of the boundary, mean
-  velocities, etc.,
-\item the functions that generate derived quantities that can be put into
-  graphical output files for visualization such as fields that depict the
-  strength of the friction heating term, spatially dependent actual
-  viscosities, and so on,
-\item the computation of refinement indicators,
-\item the determination of how long a computation should run.
-\end{itemize}
-This list may also have grown since this section was written.
-We will discuss the way this is achieved in Sections~\ref{sec:plugins} and
-\ref{sec:plugins-concrete}. Changing the core functionality, i.e., the basic equations
+uses a plugin architecture and a set of signals through which it is
+relatively easy to replace or extend certain components of the program. Examples of
+things that are simple to extend are the material description, the model geometry,
+the gravity field, the initial conditions, the boundary conditions,
+the functions that postprocess the solution, and the behavior of the adaptive mesh refinement.
+This list may also have grown since this section was written. Changing the core functionality, i.e., the basic equations
 \eqref{eq:stokes-1}--\eqref{eq:temperature}, and how they are solved is
 arguably more involved. We will discuss this in Section
 \ref{sec:extending-solver}.
 
-\note{The purpose of coming up with ways to make extensibility simple is that if
-you want to extend \aspect{} for your own purposes, you can do this in a
-separate set of files that describe your situation, rather than by modifying
-the \aspect{} source files themselves. This is important, because (i) it makes
-it possible for you to update \aspect{} itself to a newer version without
-losing the functionality you added (because you did not make any changes to
-the \aspect{} files themselves), (ii) because it makes it possible to keep
-unrelated changes separate in your own set of files, in a place where they are
-simple to find, and (iii) because it makes it much easier for you to share
-your modifications and additions with others.}
+There are several ways to add new functionality in plugins, and we want to highlight advantages
+and disadvantages of each of them:
+
+\begin{enumerate}
+\item Modify existing files: The simplest way to start modifying \aspect{} is
+to modify one of the existing source files and then recompile the program as
+described in Section~\ref{sec:compiling}. This process does not require any
+additional setup, and is therefore ideal for learning how to make simple
+modifications. However, it comes with several severe disadvantages. If you
+modify files the history of your local copy of \aspect{} diverges from the
+official development version. You will therefore run into conflicts if you want
+to update your version later, for example, because there are new features or
+bug fixes available in the development version. Also these modifications make
+your results less reproducible. If you used your results in a publication, you
+could no longer say \textit{which} version of \aspect{} was used to produce
+these results, because you modified it yourself. Therefore, we discourage this
+form of modification for productive use (it can still be helpful for teaching).
+
+\item Create a feature branch: If you are familiar with the version control
+system \texttt{git} that we use to organize the development of \aspect{} (an
+excellent tutorial is available at:
+\url{http://swcarpentry.github.io/git-novice/}) you might think of creating a
+separate branch inside your \aspect{} repository and making your changes in
+this branch. This way you keep the history of your local modifications separate
+from the changes made to the main version. You can also uniquely describe the
+\aspect{} version you used for a set of models, and you can upload your branch
+to make your changes reproducible. This approach is also the ideal starting
+point if you intend to contribute your changes back, as it already is the first
+step of our guide to contributing back (see also
+Section~\ref{sec:contributing}).  However, for projects with functionality that
+is not intended to be merged into the main version (e.g. because it is too
+specific to be of general use) we have found that this approach is not ideal,
+as you will still run into conflicts when you want to update your \aspect{}
+version, and you need to merge the main version into your branch, or rebase the
+branch every time you want to update. Thus, while ideal for contributing to
+\aspect{} we do not recommend this approach for keeping model-specific
+functionality around.
+
+\item Create a shared library than contains your changes: The main benefit of
+the plugin architecture described in the paragraph above is that if you want to
+extend \aspect{} for your own purposes, you can do this in a separate set of
+files that describe your situation, rather than by modifying the \aspect{}
+source files themselves. This is advantageous, because (i) it makes it possible
+for you to update \aspect{} itself to a newer version without losing the
+functionality you added (because you did not make any changes to the \aspect{}
+files themselves), (ii) because it makes it possible to keep unrelated changes
+separate in your own set of files, in a place where they are simple to find,
+and (iii) because it makes it much easier for you to share your modifications
+and additions with others, you can for example include them as supplementary
+material in your publications. Of course you can (and should) also use version
+control on your separate set of files to keep track of which version of files
+was used for a given set of models. Two examples for keeping a separate shared
+library for model specific changes are discussed in
+Section~\ref{sec:prescribed-velocities}, and in
+Section~\ref{sec:cookbooks-inner-core-convection}. We will discuss the concept
+begind plugins in Section~\ref{sec:plugins}, and how to write a plugin in
+Section~{sec:write-plugin}.
+\end{enumerate}
 
 Since \aspect{} is written in C++ using the \dealii{} library, you
 will have to be proficient in C++. You will also likely have
@@ -10400,7 +10437,7 @@ amount of documentation:
   visualizing data are given in Wolfgang Bangerth's video lectures. These
   are linked from the \dealii{} website at \url{https://www.dealii.org/}
   and directly available at
-  \url{http://www.math.tamu.edu/~bangerth/videos.html}.
+  \url{http://www.math.colostate.edu/~bangerth/videos.html}.
 \item The \dealii{} Frequently Asked Questions at
   \url{https://github.com/dealii/dealii/wiki/Frequently-Asked-Questions}
   that also have extensive sections on developing code with \dealii{} as well
@@ -10414,35 +10451,20 @@ amount of documentation:
   \cite{BHK07}.
 \end{itemize}
 
-As a general note, by default \aspect{} utilizes a \dealii{} feature called \textit{debug
-  mode}, see also the introduction to this topic in
-Section~\ref{sec:debug-mode}. If you develop code, you will definitely want
-this feature to be on, as it will capture the vast majority of bugs you
-will invariably introduce in your code.
+As described in Section~\ref{sec:debug-mode} you should always compile and run
+\aspect{} in \textit{debug mode} when you are making changes to the source
+code, as it will capture the vast majority of bugs everyone invariably
+introduces in the code.
 
 When you write new functionality and run
 the code for the first time, you will almost invariably first have to deal
-with a number of these assertions that point out problems in your code. While
+with a number of assertions that point out problems in your code. While
 this may be annoying at first, remember that these are actual bugs in your
 code that have to be fixed anyway and that are much easier to find if the
 program aborts than if you have to go by their more indirect results such as
 wrong answers. The Frequently Asked Questions at
 \url{https://github.com/dealii/dealii/wiki/Frequently-Asked-Questions}
 contain a section on how to debug \dealii{} programs.
-
-The downside of debug mode, as mentioned before, is that it makes the program
-much slower. Consequently, once you are
-confident that your program actually does what it is intended to do --
-\textbf{but no earlier!} --, you may want to switch to optimized mode that
-links \aspect{} with a version of the \dealii{} libraries that uses compiler
-optimizations and that does not contain the \texttt{assert} statements
-discussed above. This switch can be facilitated by editing the top of the
-\aspect{} \url{Makefile} and recompiling the program.
-
-In addition to these general comments, \aspect{} is itself extensively
-documented. You can find documentation on all classes, functions and
-namespaces starting from the \url{doc/doxygen/index.html} page.
-
 
 \subsection{The idea of plugins and the \texttt{SimulatorAccess} and \texttt{Introspection} classes}
 \label{sec:plugins}
@@ -10484,10 +10506,10 @@ following two steps:
   \url{include/aspect/geometry_model/interface.h}, etc., header files. These
   classes are always called \texttt{Interface}, are located in namespaces that
   identify their purpose, and their documentation can be found from the
-  general class overview in \url{doc/doxygen/classes.html}.
+  general class overview in \url{https://aspect.geodynamics.org/doc/doxygen/classes.html}.
 
   To show an example of a rather minimal case, here is the declaration of the
-\href{doc/doxygen/classaspect_1_1GravityModel_1_1Interface.html}{aspect::GravityModel::Interface} class (documentation comments have
+\href{https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1GravityModel_1_1Interface.html}{aspect::GravityModel::Interface} class (documentation comments have
   been removed):
   \begin{lstlisting}[frame=single,language=C++]
     class Interface
@@ -10961,7 +10983,7 @@ main repository! You can find more information on how to do that on
 You will get bonus points if you also create a test (see Section~\ref{sec:writing_tests}) that only runs the first time step
 (or a lower resolution version) of your cookbook. 
 
-\subsection{Materials, geometries, gravitation and other plugin types}
+\subsection{Available plugin types}
 \label{sec:plugins-concrete}
 
 \subsubsection{Material models}
@@ -12637,6 +12659,7 @@ system, then we know that some more investigation as to the causes is necessary.
 
 
 \subsection{Contributing to \aspect{}'s development}
+\label{sec:contributing}
 
 To end this section, let us repeat something already stated in the
 introduction:
