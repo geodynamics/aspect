@@ -1,9 +1,11 @@
-# A python3 script to generate the database.js file from manual/manual.bib for cite.html online
+# A python3 script to generate the database.js file from manual/manual.bib for citing.html online
 
 # What this does:
 # - read bibtex entries from "manual/manual.bib" that are specified below
 # - use the DOI and the online API to request a clean text form for citation for each entry
 # - write database.js (in the current directory) that contains a javascript object with all the information above
+#
+# Usage: python3 make_cite_html.py
 
 import requests
 import re
