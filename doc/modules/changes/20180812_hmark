@@ -1,0 +1,4 @@
+New: ASPECT has two visualization postprocessors which calculate and output the grain lag angle and the infinite strain axis (ISA) rotation timescale, respectively.
+These two quantities can be used to calculate the grain orientation lag parameter of Kaminski and Ribe (G3, 2002)
+<br>
+(Hannah Mark, 2018/08/12)
