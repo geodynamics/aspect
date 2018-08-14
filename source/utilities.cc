@@ -1747,30 +1747,27 @@ namespace aspect
                            default_directory,
                            Patterns::DirectoryName (),
                            "The name of a directory that contains the model data. This path "
-                           "may either be absolute (if starting with a '/') or relative to "
+                           "may either be absolute (if starting with a `/') or relative to "
                            "the current directory. The path may also include the special "
-                           "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
+                           "text `$ASPECT_SOURCE_DIR' which will be interpreted as the path "
                            "in which the ASPECT source files were located when ASPECT was "
                            "compiled. This interpretation allows, for example, to reference "
                            "files located in the `data/' subdirectory of ASPECT. ");
         prm.declare_entry ("Data file name",
                            default_filename,
                            Patterns::Anything (),
-                           "The file name of the material data. Provide file in format: "
+                           "The file name of the model data. Provide file in format: "
                            "(Velocity file name).\\%s\\%d where \\%s is a string specifying "
                            "the boundary of the model according to the names of the boundary "
-                           "indicators (of a box or a spherical shell).\\%d is any sprintf integer "
+                           "indicators (of the chosen geometry model).\\%d is any sprintf integer "
                            "qualifier, specifying the format of the current file number. ");
         prm.declare_entry ("Scale factor", "1",
                            Patterns::Double (0),
-                           "Scalar factor, which is applied to the boundary velocity. "
-                           "You might want to use this to scale the velocities to a "
-                           "reference model (e.g. with free-slip boundary) or another "
-                           "plate reconstruction. Another way to use this factor is to "
-                           "convert units of the input files. The unit is assumed to be"
-                           "m/s or m/yr depending on the 'Use years in output instead of "
-                           "seconds' flag. If you provide velocities in cm/yr set this "
-                           "factor to 0.01.");
+                           "Scalar factor, which is applied to the model data. "
+                           "You might want to use this to scale the input to a "
+                           "reference model. Another way to use this factor is to "
+                           "convert units of the input files. For instance, if you "
+                           "provide velocities in cm/yr set this factor to 0.01.");
       }
       prm.leave_subsection();
     }
@@ -2188,27 +2185,27 @@ namespace aspect
       {
         prm.declare_entry ("Data file time step", "1e6",
                            Patterns::Double (0),
-                           "Time step between following velocity files. "
-                           "Depending on the setting of the global 'Use years in output instead of seconds' flag "
+                           "Time step between following data files. "
+                           "Depending on the setting of the global `Use years in output instead of seconds' flag "
                            "in the input file, this number is either interpreted as seconds or as years. "
                            "The default is one million, i.e., either one million seconds or one million years.");
         prm.declare_entry ("First data file model time", "0",
                            Patterns::Double (0),
-                           "Time from which on the velocity file with number 'First velocity "
-                           "file number' is used as boundary condition. Previous to this "
-                           "time, a no-slip boundary condition is assumed. Depending on the setting "
-                           "of the global 'Use years in output instead of seconds' flag "
+                           "Time from which on the data file with number `First data "
+                           "file number' is used as boundary condition. Until this "
+                           "time, a boundary condition equal to zero everywhere is assumed. "
+                           "Depending on the setting of the global `Use years in output instead of seconds' flag "
                            "in the input file, this number is either interpreted as seconds or as years.");
         prm.declare_entry ("First data file number", "0",
                            Patterns::Integer (),
                            "Number of the first velocity file to be loaded when the model time "
-                           "is larger than 'First velocity file model time'.");
+                           "is larger than `First velocity file model time'.");
         prm.declare_entry ("Decreasing file order", "false",
                            Patterns::Bool (),
                            "In some cases the boundary files are not numbered in increasing "
-                           "but in decreasing order (e.g. 'Ma BP'). If this flag is set to "
-                           "'True' the plugin will first load the file with the number "
-                           "'First velocity file number' and decrease the file number during "
+                           "but in decreasing order (e.g. `Ma BP'). If this flag is set to "
+                           "`True' the plugin will first load the file with the number "
+                           "`First data file number' and decrease the file number during "
                            "the model run.");
       }
       prm.leave_subsection();

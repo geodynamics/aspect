@@ -149,9 +149,9 @@ namespace aspect
                                             "velocity is derived from files containing data "
                                             "in ascii format. Note the required format of the "
                                             "input data: The first lines may contain any number of comments "
-                                            "if they begin with '#', but one of these lines needs to "
+                                            "if they begin with `#', but one of these lines needs to "
                                             "contain the number of grid points in each dimension as "
-                                            "for example '# POINTS: 3 3'. "
+                                            "for example `# POINTS: 3 3'. "
                                             "The order of the data columns "
                                             "has to be `x', `velocity${}_x$', `velocity${}_y$' in a 2d model "
                                             "or `x', `y', `velocity${}_x$', `velocity${}_y$', "
@@ -174,7 +174,8 @@ namespace aspect
                                             "(by default) or spherical unit vectors. "
                                             "No matter which geometry model is chosen, "
                                             "the unit of the velocities is assumed to be "
-                                            "m/s or m/yr depending on the 'Use years in output "
-                                            "instead of seconds' flag.")
+                                            "m/s or m/yr depending on the `Use years in output "
+                                            "instead of seconds' flag. If you provide velocities "
+                                            "in cm/yr, set the `Scale factor' option to 0.01.")
   }
 }
