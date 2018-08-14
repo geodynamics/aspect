@@ -23,6 +23,7 @@
 #include <aspect/utilities.h>
 #include <aspect/compat.h>
 #include <aspect/geometry_model/box.h>
+#include <aspect/citation_info.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -47,6 +48,7 @@ namespace aspect
     void
     World<dim>::initialize()
     {
+      CitationInfo::add("particles");
       if (particle_load_balancing & ParticleLoadBalancing::repartition)
         this->get_triangulation().signals.cell_weight.connect(
           [&] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,

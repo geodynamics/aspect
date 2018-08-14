@@ -25,6 +25,7 @@
 #include <catch.hpp>
 
 using Catch::Matchers::Contains;
+using Catch::Matchers::StartsWith;
 
 /**
  * Compare the given two std::vector<double> entries with an epsilon (using Catch::Approx)

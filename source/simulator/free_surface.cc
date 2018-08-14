@@ -24,6 +24,7 @@
 #include <aspect/global.h>
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/melt.h>
+#include <aspect/citation_info.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
@@ -145,6 +146,7 @@ namespace aspect
       free_surface_dof_handler (sim.triangulation)
   {
     parse_parameters(prm);
+    CitationInfo::add("fs");
   }
 
   template <int dim>

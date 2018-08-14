@@ -20,6 +20,7 @@
 
 #include "common.h"
 #include <aspect/utilities.h>
+#include <aspect/citation_info.h>
 #include <deal.II/base/function_parser.h>
 
 TEST_CASE("floating point check example")
@@ -73,3 +74,15 @@ TEST_CASE("function parser if() and division by zero")
   REQUIRE(fp.value(dealii::Point<1>(0.0)) == -1.0);
 }
 
+TEST_CASE("citation test")
+{
+  using namespace aspect;
+  REQUIRE_THAT(CitationInfo::get_url_part(), StartsWith("citing.html?ver="));
+  CitationInfo::add("bla");
+  REQUIRE_THAT(CitationInfo::get_url_part(), StartsWith("citing.html?ver="));
+  REQUIRE_THAT(CitationInfo::get_url_part(), Contains("bla=1"));
+  REQUIRE_THAT(CitationInfo::get_url_part(), !Contains("blub"));
+  CitationInfo::add("blub");
+  REQUIRE_THAT(CitationInfo::get_url_part(), Contains("bla=1"));
+  REQUIRE_THAT(CitationInfo::get_url_part(), Contains("blub=1"));
+}
