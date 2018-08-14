@@ -5,7 +5,6 @@
 set Dimension = 2
 set End time = 5e5
 set Adiabatic surface temperature = 1570
-set Output directory = ISA_rotation_timescale
 
 # geometry
 subsection Geometry model
@@ -90,9 +89,7 @@ subsection Postprocess
    set List of postprocessors = visualization
    subsection Visualization
       set List of output variables = ISA rotation timescale
-      set Output format = vtu
-      set Time between graphical output = 0
-      set Interpolate output = true
+      set Output format = gnuplot
    end
 end
 
