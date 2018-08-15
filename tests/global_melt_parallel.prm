@@ -224,11 +224,6 @@ subsection Postprocess
 
 end
 
-subsection Checkpointing
-  set Time between checkpoint = 1700
-end
-
-
 subsection Solver parameters
   set Composition solver tolerance = 1e-14
   set Temperature solver tolerance = 1e-14
