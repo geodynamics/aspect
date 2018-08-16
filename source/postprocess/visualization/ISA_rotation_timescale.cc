@@ -73,6 +73,8 @@ namespace aspect
                 // Calculate eigenvalues of strain rate and take maximum (absolute value)
                 // to get tauISA, the timescale for grain rotation toward the infinite strain axis
                 const SymmetricTensor<2, dim> strain_rate = in.strain_rate[0];
+				#if DEAL_II_VERSION_GTE(9,0,0)
+                // eigenvalues() is not present in older dealii versions
                 const std::array<double, dim> strain_rate_eigenvalues = eigenvalues(
                                                                           strain_rate);
                 const double lambda1 = std::max(std::abs(strain_rate_eigenvalues[0]),
@@ -80,6 +82,9 @@ namespace aspect
                 const double tauISA = 1.0 / lambda1;
 
                 (*return_value.second)(cell->active_cell_index()) = tauISA;
+				#else
+                  Assert (false, ExcMessage ("This postprocessor cannot be used with deal.II versions before 9.0."));
+				#endif
               }
           }
 

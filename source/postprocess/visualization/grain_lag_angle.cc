@@ -78,8 +78,11 @@ namespace aspect
                 // Calculate eigenvalues of strain rate and take maximum (absolute value)
                 // to get tauISA, the timescale for grain rotation toward the infinite strain axis
                 const SymmetricTensor<2, dim> strain_rate = in.strain_rate[0];
+				#if DEAL_II_VERSION_GTE(9,0,0)
+                // eigenvalues() and eigenvectors() are not present in older dealii versions
                 const std::array<double, dim> strain_rate_eigenvalues = eigenvalues(
                                                                           strain_rate);
+
                 const double lambda1 = std::max(std::abs(strain_rate_eigenvalues[0]),
                                                 std::abs(strain_rate_eigenvalues[dim-1]));
                 const double tauISA = 1.0 / lambda1;
@@ -125,7 +128,6 @@ namespace aspect
                 const SymmetricTensor<2, dim> U = SymmetricTensor<2, dim>(F * Ft);
                 // The ~infinite strain axis is the first eigenvector of the "left stretch" tensor.
                 const Tensor<1, dim> ehat = eigenvectors(U)[0].second;
-
                 // Calculate theta by dotting the ISA (ehat) and the velocity (scaled to a unit vector)
                 // theta is limited to be less than pi/2 (stay in the first quadrant)
                 const double umag = in.velocity[0].norm();
@@ -142,6 +144,9 @@ namespace aspect
                       theta_val = std::fmod(theta_val, numbers::PI/2);
                   }
                 (*return_value.second)(cell->active_cell_index()) = theta_val;
+				#else
+                  Assert (false, ExcMessage ("This postprocessor cannot be used with deal.II versions before 9.0."));
+				#endif
               }
           }
         return return_value;
