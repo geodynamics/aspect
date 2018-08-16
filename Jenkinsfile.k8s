@@ -81,8 +81,8 @@ pipeline {
 
             # We need to add this option to mpirun, otherwise
             # openmpi complains about running as root. We need
-            # to run as root, because we are inside a docker container,
-            # and the surrounding containers assume we have root access.
+            # to run as root, because the surrounding Jenkins container
+            # assumes we have root access.
             sed -i 's/mpirun/mpirun --allow-run-as-root/' $WORKSPACE/tests/CMakeLists.txt
 
             # Set up build system and compile ASPECT
