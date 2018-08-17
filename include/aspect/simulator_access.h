@@ -40,12 +40,10 @@
 #  include <deal.II/lac/affine_constraints.h>
 #endif
 
-#ifdef ASPECT_USE_WORLD_BUILDER
 namespace WorldBuilder
 {
   class World;
 }
-#endif
 
 namespace aspect
 {
@@ -739,14 +737,15 @@ namespace aspect
       const NewtonHandler<dim> &
       get_newton_handler () const;
 
-#ifdef ASPECT_USE_WORLD_BUILDER
       /**
        * Return a reference to the world builder that controls the setup of
        * initial conditions.
+       *
+       * This call will only succeed if ASPECT was configured to use
+       * the WorldBuilder.
        */
       const WorldBuilder::World &
       get_world_builder () const;
-#endif
 
       /**
        * Return a reference to the free surface handler. This function will
