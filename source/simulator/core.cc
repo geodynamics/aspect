@@ -26,8 +26,9 @@
 #include <aspect/newton.h>
 #include <aspect/free_surface.h>
 #include <aspect/citation_info.h>
+
 #ifdef ASPECT_USE_WORLD_BUILDER
-#include <world_builder/world.h>
+#  include <world_builder/world.h>
 #endif
 
 #include <aspect/simulator/assemblers/interface.h>
