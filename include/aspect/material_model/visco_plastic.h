@@ -320,11 +320,11 @@ namespace aspect
         double max_yield_strength;
 
         /**
-	* Options to allow modification of the subducting plate crust (spcrust)
-	* composition parameters over a specific pressure range. These options are
-	* necessary to set-up a basic subduction model, but could be useful for
-	* other cases. 
-        * 1. A linear transition from maximum spcrust viscosity to the flow-law 
+        * Options to allow modification of the subducting plate crust (spcrust)
+        * composition parameters over a specific pressure range. These options are
+        * necessary to set-up a basic subduction model, but could be useful for
+        * other cases.
+        * 1. A linear transition from maximum spcrust viscosity to the flow-law
         * defined value over specified pressure range.
         */
         bool use_fixed_spcrust_viscosity;
@@ -333,9 +333,9 @@ namespace aspect
         double spcrust_viscosity_maximum_pressure;
 
         /**
-        * 2. A linear transition of the spcrust density occuring from the equation-of-state 
-	* defined value by a delta-rho given by spcrust_density_change
-	* occuring over specified pressure range
+        * 2. A linear transition of the spcrust density occuring from the equation-of-state
+        * defined value by a delta-rho given by spcrust_density_change
+        * occuring over specified pressure range
         * */
         bool use_spcrust_density_change;
         double spcrust_density_change;

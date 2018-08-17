@@ -249,13 +249,13 @@ namespace aspect
           viscosity_pre_yield *= viscous_weakening;
 
           // If this option is true, then the flow-law defined viscosity for the composition called
-	  // spcrust is modified such that it changes from a fixed *maximum* viscosity to the flow-law 
-	  // defined viscosity over specified pressure range (strain weakening could make this lower)
-	  // However, we also want to allow the viscosity to be lower if the composite rheology predicts
-	  // that it is lower (so we take the minimum of the two values).
-	  // At pressures less than the minimum pressure, the viscosity is set to the minimum of the
-	  // fixed maximum_spcrust_viscosity or the flow-law viscosity.
-	  // Above the maximum pressure, no change to the viscosity of the spcrust composition is made.
+          // spcrust is modified such that it changes from a fixed *maximum* viscosity to the flow-law
+          // defined viscosity over specified pressure range (strain weakening could make this lower)
+          // However, we also want to allow the viscosity to be lower if the composite rheology predicts
+          // that it is lower (so we take the minimum of the two values).
+          // At pressures less than the minimum pressure, the viscosity is set to the minimum of the
+          // fixed maximum_spcrust_viscosity or the flow-law viscosity.
+          // Above the maximum pressure, no change to the viscosity of the spcrust composition is made.
 
           if (use_fixed_spcrust_viscosity == true)
             {
@@ -420,9 +420,9 @@ namespace aspect
           double density = 0.0;
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
             {
-              // If this option is true, then the density defined by the equation of state (EOS) 
-	      // for the composition called spcrust is modified such that it linearly changes from 
-	      // the EOS-density to EOS-density + spcrust_density_change over specified pressure range. 
+              // If this option is true, then the density defined by the equation of state (EOS)
+              // for the composition called spcrust is modified such that it linearly changes from
+              // the EOS-density to EOS-density + spcrust_density_change over specified pressure range.
 
               double delta_crust_density = 0.0;
               if (use_spcrust_density_change)
