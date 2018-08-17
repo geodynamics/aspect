@@ -74,15 +74,20 @@ subsection Mesh refinement
     set Coordinate system   = cartesian
     set Variable names      = x,y
     set Function constants  = ymax=1e6,lith=1.5e5
-    set Function expression = ((lith-y<=lith) ? 5 : 0)
+    set Function expression = ((ymax-y<=lith) ? 7 : 0)
   end
 end
 
-# Half-space cooling model increasing with age from x>0 to xtr
-# For x>xtr, half-space cooling model with a fixed age.
+# Half-space cooling model increasing with age from x>0 to xtrm
+# For x>xtrm, half-space cooling model with a fixed age.
 # Note, we use 1-erfc instead of erf because the muparser in dealii 
 # only knows about erfc. Also, we need to use ymax-y since y=0 at the
-# bottom of the box
+# bottom of the box.
+# vsub is the velocity of the subducting plate in m/s 
+# (x/vsub is the age of the subducting plate)
+# ageop is the age of the overriding plate in seconds.
+# Tm is the mantle temperature, Ts is the surface temperature in kelvin
+# kappa is the thermal diffusivity (m^2/s)
 
 subsection Initial temperature model
    set Model name = function
@@ -91,9 +96,10 @@ subsection Initial temperature model
       set Function constants = ymax=1.0e6, xtrm=2.200e6, vsub=7.927e-10, \
                                ageop=9.46e14, Tm=1673, Ts=273, kappa=1e-6 
       set Function expression = (((x>0.0) && (x<=xtrm)) ? \
-               (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*(x/vsub)))))) : \
-           (x>xtrm) ? (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*ageop))))) :\
-               (Tm) ) 
+                                 (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*(x/vsub)))))) : \
+                                 (x>xtrm) ? \
+                                  (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*ageop))))) :\
+                                  (Tm) ) 
    end
 end 
  
