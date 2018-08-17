@@ -823,7 +823,7 @@ namespace aspect
                              "in the input file, this number is either interpreted as seconds or as years. "
                              "The default is one million, i.e., either one million seconds or one million years.");
           prm.declare_entry ("Scale factor", "1",
-                             Patterns::Double (0),
+                             Patterns::Double (),
                              "Scalar factor, which is applied to the boundary velocity. "
                              "You might want to use this to scale the velocities to a "
                              "reference model (e.g. with free-slip boundary) or another "

@@ -1762,7 +1762,7 @@ namespace aspect
                            "indicators (of a box or a spherical shell).\\%d is any sprintf integer "
                            "qualifier, specifying the format of the current file number. ");
         prm.declare_entry ("Scale factor", "1",
-                           Patterns::Double (0),
+                           Patterns::Double (),
                            "Scalar factor, which is applied to the boundary velocity. "
                            "You might want to use this to scale the velocities to a "
                            "reference model (e.g. with free-slip boundary) or another "
