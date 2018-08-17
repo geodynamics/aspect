@@ -248,8 +248,15 @@ namespace aspect
           // Apply strain weakening of the viscous viscosity
           viscosity_pre_yield *= viscous_weakening;
 
-          // For composition spcrust, change from fixed *maximum* viscosity to flow-law viscosity
-          // over specified pressure range (strain weakening could make this lower)
+          // If this option is true, then the flow-law defined viscosity for the composition called
+	  // spcrust is modified such that it changes from a fixed *maximum* viscosity to the flow-law 
+	  // defined viscosity over specified pressure range (strain weakening could make this lower)
+	  // However, we also want to allow the viscosity to be lower if the composite rheology predicts
+	  // that it is lower (so we take the minimum of the two values).
+	  // At pressures less than the minimum pressure, the viscosity is set to the minimum of the
+	  // fixed maximum_spcrust_viscosity or the flow-law viscosity.
+	  // Above the maximum pressure, no change to the viscosity of the spcrust composition is made.
+
           if (use_fixed_spcrust_viscosity == true)
             {
               if (j == (this->introspection().compositional_index_for_name("spcrust") + 1))
@@ -413,6 +420,10 @@ namespace aspect
           double density = 0.0;
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
             {
+              // If this option is true, then the density defined by the equation of state (EOS) 
+	      // for the composition called spcrust is modified such that it linearly changes from 
+	      // the EOS-density to EOS-density + spcrust_density_change over specified pressure range. 
+
               double delta_crust_density = 0.0;
               if (use_spcrust_density_change)
                 {
@@ -961,7 +972,7 @@ namespace aspect
                              "from a constant value to the value determined by the flow law parameters. "
                              "Units: None");
           prm.declare_entry ("Maximum spcrust viscosity", "1e28", Patterns::Double(0),
-                             "Maximum viscosity for the composition called spcrust. Using a value of 1e20 $Pa \\, s$"
+                             "Maximum viscosity for the composition called spcrust. Using a value of 1e20 $Pa \\, s$ "
                              "would create a weak layer that smoothly increases to the viscosity "
                              "determined by the flow law parameters (if these predict a higher "
                              "value). Units: $Pa \\, s$");
@@ -971,12 +982,12 @@ namespace aspect
                              "the flow law. A value of 2.0e9 $Pa$ would correspond to a "
                              "depth of about 60 km. Units: $Pa$");
           prm.declare_entry ("Maximum transition pressure spcrust viscosity", "0.0", Patterns::Double(0),
-                             "Pressure at which to end smooth transition from "
+                             "Pressure at which to end the smooth transition from "
                              "the maximum spcrust viscosity to the viscosity determined by"
                              "the flow law. A value of 3.9e9 $Pa$ would correspond to a "
                              "depth of about 120 km. Units: $Pa$");
 
-          // Transition the spcrust density from defined value by a delta-rho
+          // Transition the spcrust density from the equation of state defined value by a delta-rho
           // given by spcrust_density_change over specified pressure range
           prm.declare_entry ("Use spcrust density change", "false", Patterns::Bool (),
                              "Change the density of a compositional field called spcrust"
@@ -987,7 +998,7 @@ namespace aspect
                              "For basalt density of 3000 and eclogite density of 3540, use a value of 540 $kg/m^3"
                              "Units: $kg/m^3$");
           prm.declare_entry ("Minimum transition pressure spcrust density", "0.0", Patterns::Double(0),
-                             "Pressure at which to start the smooth transition from  in density."
+                             "Pressure at which to start the smooth transition from the equation of state defined density. "
                              "A value of 2.0e9 $Pa$ would correspond to a depth of about 60 km. Units: $Pa$");
           prm.declare_entry ("Maximum transition pressure spcrust density", "0.0", Patterns::Double(0),
                              "Pressure at which to end smooth transition in density. "
