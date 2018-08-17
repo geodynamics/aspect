@@ -19,7 +19,7 @@ pipeline {
   }
 
   stages {
-    stage ("info") {
+    stage ("Info") {
       steps {
         container('dealii') {
           echo "PR: ${env.CHANGE_ID} - ${env.CHANGE_TITLE}"
@@ -31,7 +31,7 @@ pipeline {
       }
     }
 
-    stage ("Check permissions") {
+    stage ("Check Permissions") {
       when {
         allOf {
           not {branch 'master'}
@@ -55,7 +55,7 @@ pipeline {
       }
     }
 
-    stage('Check indentation') {
+    stage('Check Indentation') {
       steps {
         container('dealii') {
           sh './doc/indent'
@@ -100,7 +100,7 @@ pipeline {
       }
     }
 
-    stage('Run tests') {
+    stage('Test') {
       options {
         timeout(time: 90, unit: 'MINUTES')
       }
