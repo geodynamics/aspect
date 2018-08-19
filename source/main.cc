@@ -511,7 +511,7 @@ void print_help()
             << "       -j, --threads          (to use multi-threading)\n"
             << "       --output-xml           (print parameters in xml format to standard output and exit)\n"
             << "       --output-plugin-graph  (write a representation of all plugins to standard output and exit)\n"
-            << "       --validate             (parse parameter file and exit)\n"
+            << "       --validate             (parse parameter file and exit or report errors)\n"
             << "       --test                 (run the unit tests from unit_tests/, run --test -h for more info)\n"
             << std::endl;
 }
@@ -571,7 +571,13 @@ run_simulator(const std::string &input_as_string,
           throw aspect::QuietException();
         }
       if (i_am_proc_0)
-        std::cout << "Valid parameter file." << std::endl;
+        std::cerr << "The provided parameter file is valid.\n\n"
+                  << "Note: This validation only checks high level "
+                  << "parameter file errors, like typos in keywords or "
+                  << "parameter names. It may miss more nuanced errors "
+                  << "that aren't encountered until the model actually "
+                  << "begins running."
+                  << std::endl;
       return;
     }
 
