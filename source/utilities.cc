@@ -1762,7 +1762,7 @@ namespace aspect
                            "indicators (of the chosen geometry model).\\%d is any sprintf integer "
                            "qualifier, specifying the format of the current file number. ");
         prm.declare_entry ("Scale factor", "1",
-                           Patterns::Double (0),
+                           Patterns::Double (),
                            "Scalar factor, which is applied to the model data. "
                            "You might want to use this to scale the input to a "
                            "reference model. Another way to use this factor is to "

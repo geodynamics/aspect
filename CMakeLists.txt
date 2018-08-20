@@ -194,9 +194,9 @@ IF(EXISTS ${CMAKE_SOURCE_DIR}/unit_tests/CMakeLists.txt)
   FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests)
   EXECUTE_PROCESS(
     COMMAND ${CMAKE_COMMAND}
-	-D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-	-D ASPECT_BINARY=${CMAKE_BINARY_DIR}/aspect
-	${CMAKE_CURRENT_SOURCE_DIR}/unit_tests
+        -D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        -D ASPECT_BINARY=${CMAKE_BINARY_DIR}/aspect
+        ${CMAKE_CURRENT_SOURCE_DIR}/unit_tests
     OUTPUT_FILE setup_unit_tests.log
     RESULT_VARIABLE test_cmake_result
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests
@@ -226,12 +226,12 @@ IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
   MESSAGE(STATUS "Setting up test project, see tests/setup_tests.log for details.")
   EXECUTE_PROCESS(
     COMMAND ${CMAKE_COMMAND} -G ${ASPECT_TEST_GENERATOR}
-	-D ASPECT_RUN_ALL_TESTS=${ASPECT_RUN_ALL_TESTS}
-	-D ASPECT_COMPARE_TEST_RESULTS=${ASPECT_COMPARE_TEST_RESULTS}
-	-D ASPECT_DIR=${CMAKE_BINARY_DIR}
-	-D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-	-D ASPECT_BINARY=${aspect_binary}
-	${CMAKE_CURRENT_SOURCE_DIR}/tests
+        -D ASPECT_RUN_ALL_TESTS=${ASPECT_RUN_ALL_TESTS}
+        -D ASPECT_COMPARE_TEST_RESULTS=${ASPECT_COMPARE_TEST_RESULTS}
+        -D ASPECT_DIR=${CMAKE_BINARY_DIR}
+        -D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        -D ASPECT_BINARY=${aspect_binary}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests
     OUTPUT_FILE setup_tests.log
     RESULT_VARIABLE test_cmake_result
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
@@ -354,18 +354,24 @@ ELSE()
   SET(ASPECT_WITH_PERPLEX OFF)
 ENDIF()
 
-EXECUTE_PROCESS(COMMAND ls ${CMAKE_SOURCE_DIR}/contrib/WorldBuilder/VERSION RESULT_VARIABLE result OUTPUT_QUIET ERROR_QUIET)
+
+# Check whether we can find the WorldBuilder files. If so, make sure we
+# add a preprocessor #define that says that the WorldBuilder exists.
+EXECUTE_PROCESS(COMMAND ls ${CMAKE_SOURCE_DIR}/contrib/WorldBuilder/VERSION
+                RESULT_VARIABLE result
+                OUTPUT_QUIET ERROR_QUIET)
 IF (result)
-	message("-- World Builder not found.")
-	SET(ASPECT_WITH_WORLD_BUILDER OFF CACHE BOOL "" FORCE)
+  MESSAGE("-- World Builder not found.")
+  SET(ASPECT_WITH_WORLD_BUILDER OFF CACHE BOOL "" FORCE)
 ELSE()
-	file (STRINGS "${CMAKE_SOURCE_DIR}/contrib/WorldBuilder/VERSION" WorldBuilderVersion)
-	message("-- World Builder version ${WorldBuilderVersion} found.")
-	SET(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "If ON the World Builder is compiled togheter with ASPECT.")
-	    FOREACH(_source_file ${TARGET_SRC})
-      SET_PROPERTY(SOURCE ${_source_file}
-	      APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_WORLD_BUILDER=1)
-ENDFOREACH()
+  FILE(STRINGS "${CMAKE_SOURCE_DIR}/contrib/WorldBuilder/VERSION" WorldBuilderVersion)
+  MESSAGE("-- World Builder version ${WorldBuilderVersion} found.")
+  SET(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "If ON the World Builder is compiled togheter with ASPECT.")
+
+  FOREACH(_source_file ${TARGET_SRC})
+    SET_PROPERTY(SOURCE ${_source_file}
+                 APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_WORLD_BUILDER=1)
+  ENDFOREACH()
 ENDIF()
 
 IF (ASPECT_USE_SHARED_LIBS)
@@ -427,14 +433,14 @@ ENDIF()
 
 # Find the deal.II parameter GUI and install helper script
 FIND_PROGRAM(PARAMETER_GUI_EXECUTABLE
-	parameter_gui
-	HINTS $ENV{PARAMETER_GUI_DIR} $ENV{PARAMETER_GUI_DIR}/bin ${PARAMETER_GUI_DIR} ${PARAMETER_GUI_DIR}/bin
-	PATH bin)
+        parameter_gui
+        HINTS $ENV{PARAMETER_GUI_DIR} $ENV{PARAMETER_GUI_DIR}/bin ${PARAMETER_GUI_DIR} ${PARAMETER_GUI_DIR}/bin
+        PATH bin)
 MARK_AS_ADVANCED(CLEAR PARAMETER_GUI_EXECUTABLE)
 
 # did the user specify something that doesn't exist?
 IF (PARAMETER_GUI_EXECUTABLE 
-	AND
+        AND
     (NOT EXISTS ${PARAMETER_GUI_EXECUTABLE} OR IS_DIRECTORY ${PARAMETER_GUI_EXECUTABLE}))
   MESSAGE(STATUS "Warning: PARAMETER_GUI_EXECUTABLE '${PARAMETER_GUI_EXECUTABLE}' does not exist")
   SET(PARAMETER_GUI_EXECUTABLE "PARAMETER_GUI_EXECUTABLE-NOTFOUND" CACHE FILEPATH "" FORCE)
@@ -450,10 +456,10 @@ ELSE()
   @ONLY
   )
 INSTALL(FILES ${CMAKE_BINARY_DIR}/aspect-gui
-	DESTINATION bin
-	PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
-		GROUP_READ GROUP_EXECUTE
-		WORLD_READ WORLD_EXECUTE)
+        DESTINATION bin
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+                GROUP_READ GROUP_EXECUTE
+                WORLD_READ WORLD_EXECUTE)
 ENDIF()
 
 #
@@ -475,7 +481,7 @@ INSTALL(DIRECTORY include/
 
 # cmake stuff:
 INSTALL(FILES ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake ${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake
-	DESTINATION "lib/cmake/Aspect/")
+        DESTINATION "lib/cmake/Aspect/")
 
 INSTALL(FILES ${CMAKE_BINARY_DIR}/include/aspect/revision.h DESTINATION "include/aspect/")
 

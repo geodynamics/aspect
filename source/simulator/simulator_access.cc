@@ -626,17 +626,26 @@ namespace aspect
     return *(simulator->newton_handler);
   }
 
-#ifdef ASPECT_USE_WORLD_BUILDER
+
+
   template <int dim>
   const WorldBuilder::World &
   SimulatorAccess<dim>::get_world_builder () const
   {
+#ifdef ASPECT_USE_WORLD_BUILDER
     Assert (simulator->world_builder.get() != 0,
             ExcMessage("You can not call this function if the World Builder is not enabled. "
                        "Enable it by providing a path to a world builder file."));
     return *(simulator->world_builder);
-  }
+#else
+    AssertThrow (false,
+                 ExcMessage ("Configuration of ASPECT did not find a copy of the "
+                             "WorldBuilder library. Consequently, accessing it "
+                             "can not work at runtime."));
 #endif
+  }
+
+
 
   template <int dim>
   const FreeSurfaceHandler<dim> &
