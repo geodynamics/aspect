@@ -75,9 +75,7 @@ pipeline {
       }
       steps {
         container('dealii') {
-          sh '''
-            mkdir -p /home/dealii/build-gcc-fast
-          '''
+          sh 'mkdir -p /home/dealii/build-gcc-fast'
           sh '''
             # We need to add this option to mpirun, otherwise
             # openmpi complains about running as root. We need
