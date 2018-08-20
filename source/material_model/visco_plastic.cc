@@ -927,8 +927,8 @@ namespace aspect
                              "so that the activation volume is consistent with what one would use in a "
                              "earth-like (compressible) model. Default is set so this is off. "
                              "Note that this is a linear approximation of the real adiabatic gradient, which "
-			     "is okay for the upper mantle, but is not really accurate for the lower mantle. "
-			     "Using a pressure gradient of 32436 Pa/m, then a value of "
+                             "is okay for the upper mantle, but is not really accurate for the lower mantle. "
+                             "Using a pressure gradient of 32436 Pa/m, then a value of "
                              "0.3 $K/km$ = 0.0003 $K/m$ = 9.24e-09 $K/Pa$ gives an earth-like adiabat."
                              "Units: $K/Pa$");
         }
@@ -1144,9 +1144,9 @@ namespace aspect
           adiabatic_temperature_gradient_for_viscosity = prm.get_double("Adiabat temperature gradient for viscosity");
           if (this->get_heating_model_manager().adiabatic_heating_enabled())
               AssertThrow (adiabatic_temperature_gradient_for_viscosity == 0.0,
-              ExcMessage("If adiabatic heating is enabled you should not add another adiabatic gradient 
-                         to the temperature for computing the viscosity, because the ambient 
-                         temperature profile already includes the adiabatic gradient.")
+              ExcMessage("If adiabatic heating is enabled you should not add another adiabatic gradient"
+                         "to the temperature for computing the viscosity, because the ambient" 
+                         "temperature profile already includes the adiabatic gradient."));
         }
         prm.leave_subsection();
       }
