@@ -6650,7 +6650,7 @@ To read in the file we just created (a copy is located in \aspect{}'s data direc
 we set up a model with a box geometry with the same extents we specified for the drawing in px 
 and one compositional field. We choose the \texttt{ascii data} compositional initial conditions and specify that we 
 want to read in our jellyfish. The relevant parts of the input file are listed below:
-\lstinputlisting[language=prmfile]{cookbooks/geomio/geomIO.prm}
+\lstinputlisting[language=prmfile]{cookbooks/geomio/geomIO.prm.out}
 
 If we look at the output in \texttt{paraview}, we can see our jellyfish, with the mesh refined at the 
 boundaries between the different phases (Figure~\ref{fig:jelly-paraview}). 
@@ -7749,20 +7749,20 @@ and between transition zone and lower mantle). The prefactors used here lead to 
 asthenosphere, and high viscosities in the lower mantle. To make sure that these viscosity jumps 
 do not lead to numerical problems in our computation (see Section~\ref{sec:sinker-with-averaging}), 
 we also use harmonic averaging of the material properties.
-\lstinputlisting[language=prmfile]{cookbooks/burnman/material_model.part.prm}
+\lstinputlisting[language=prmfile]{cookbooks/burnman/material_model.part.prm.out}
 As the reference profile has a depth dependent density and also contains data for the compressibility, 
 this material model supports compressible convection models. 
 
 For the adiabatic conditions and the gravity model, we also specify that we want to use the respective
 \texttt{ascii data} plugin, and provide the data directory in the same way as for the material 
 model. The gravity model automatically uses the same file as the adiabatic conditions model.
-\lstinputlisting[language=prmfile]{cookbooks/burnman/adiabatic_conditions.part.prm}
-\lstinputlisting[language=prmfile]{cookbooks/burnman/gravity_model.part.prm}
+\lstinputlisting[language=prmfile]{cookbooks/burnman/adiabatic_conditions.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/burnman/gravity_model.part.prm.out}
 
 To make use of the reference state we just imported from BurnMan, we choose a formulation of the 
 equations that employs a reference state and compressible convection, in this case the anelastic 
 liquid approximation (see Section~\ref{sec:ala}). 
-\lstinputlisting[language=prmfile]{cookbooks/burnman/formulation.part.prm}
+\lstinputlisting[language=prmfile]{cookbooks/burnman/formulation.part.prm.out}
 This means that the reference profiles are used for all material properties in the model, except for
 the density in the buoyancy term (on the right-hand side of the force balance equation~\eqref{eq:stokes-1}, 
 which in the limit of the anelastic liquid approximation becomes Equation~\eqref{eq:stokes-ALA-1}). 
@@ -7802,7 +7802,7 @@ instead of the reference density is used. For the TALA, this density only depend
 (and not on the dynamic pressure, as in the ALA). Hence, we have to make this change in the appropriate 
 place in the material model (while keeping the formulation of the equations set to 
 \texttt{anelastic liquid approximation}):
-\lstinputlisting[language=prmfile]{cookbooks/burnman/tala.part.prm}
+\lstinputlisting[language=prmfile]{cookbooks/burnman/tala.part.prm.out}
 
 We now want to compare these commonly used approximations to the ``isothermal compression approximation''
 (see Section~\ref{sec:ica}) that is unique to \aspect{}. It does not require a reference state and uses 
@@ -7813,7 +7813,7 @@ dependence of material properties on temperature and pressure in addition to tha
 deviations from the reference profile in both temperature and pressure. As this requires a modification 
 of the equations outside of the material model, we have to specify this change in the 
 \texttt{Formulation} (and remove the lines for the use of TALA discussed above). 
-\lstinputlisting[language=prmfile]{cookbooks/burnman/formulation_ica.part.prm}
+\lstinputlisting[language=prmfile]{cookbooks/burnman/formulation_ica.part.prm.out}
 As the ``isothermal compression approximation'' is also \aspect{}'s default for compressible models, 
 the same model setup can also be achieved by just removing the lines that specify which \texttt{Formulation}
 should be used. 
@@ -7921,7 +7921,7 @@ material model (see Section \ref{parameters:Material_20model}) in the
 The layer is assumed to have dimensions of 80km $\times$ 16km and to have a density  $\rho=2800$ kg/m$^3$. 
 The plasticity parameters are specified as follows:
 
-\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part1.prm}
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part1.prm.out}
 
 The yield strength $\sigma_y$ is a function of pressure, cohesion and angle of friction 
 (see Drucker-Prager material model in Section \ref{parameters:Material_20model}),
@@ -7940,7 +7940,7 @@ we avoid dividing by zero by setting the strain rate to {\tt Reference strain ra
 The top boundary is a free surface while the left, right and bottom boundaries are subjected 
 to the following boundary conditions:
 
-\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part2.prm}
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part2.prm.out}
 
 Note that compressive boundary conditions are simply achieved by reversing  
 the sign of the imposed velocity.
@@ -7952,11 +7952,11 @@ For small deformations, these directions are almost the same, but in this exampl
 are quite large. We have found that when the deformation is large, advecting the surface vertically 
 results in a better behaved mesh, so we set the following in the free surface subsection:
 
-\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part3.prm}
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part3.prm.out}
 
 We also make use of the strain rate-based mesh refinement plugin:
 
-\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part4.prm}
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part4.prm.out}
 
 Setting 
 {\tt   set Initial adaptive refinement        = 4}
@@ -8003,7 +8003,7 @@ The domain is now
 $128\times96\times16$km and the boundary conditions are implemented as
 follows:
 
-\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_3D_part1.prm}
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_3D_part1.prm.out}
 
 The presence of 
 an offset between the two velocity discontinuity zones leads to a transform 
@@ -8036,23 +8036,23 @@ the end of the first time step after one level of strain rate-based adaptive mes
 
 In the crustal deformation examples above, the viscosity depends solely on the Drucker Prager yield criterion defined by the cohesion and internal friction angle. While this approximation works reasonably well for the uppermost crust, deeper portions of the lithosphere may undergo either brittle or viscous deformation, with the latter depending on a combination of composition, temperature, pressure and strain-rate. In effect, a combination of the Drucker-Prager and Diffusion dislocation material models is required. The visco-plastic material model is designed to take into account both brittle (plastic) and non-linear viscous deformation, thus providing a template for modeling complex lithospheric processes. Such a material model can be used in \aspect{} using the following set of input parameters: 
 
-\lstinputlisting[language=prmfile]{cookbooks/continental_extension/continental_extension_material_model.prm}
+\lstinputlisting[language=prmfile]{cookbooks/continental_extension/continental_extension_material_model.prm.out}
 
 This cookbook provides one such example where the continental lithosphere undergoes extension. Notably, the model design follows that of numerous previously published continental extension studies~\cite[and references therein]{Hui11,Bru14,Nal15}.
 
 \paragraph{Continental Extension}
 The 2D Cartesian model spans 400 (x) by 100 (y) km and has a finite element grid with uniform 2 km spacing. Unlike the crustal deformation cookbook (see Section~\ref{sec:cookbooks-crustal-deformation}, the mesh is not refined with time.
 
-\lstinputlisting[language=prmfile]{cookbooks/continental_extension/continental_extension_geometry_mesh.prm}
+\lstinputlisting[language=prmfile]{cookbooks/continental_extension/continental_extension_geometry_mesh.prm.out}
 
 
 Similar to the crustal deformation examples above, this model contains a free surface. Deformation is driven by constant horizontal ($x$-component) velocities (0.25 cm/yr) on the side boundaries ($y$-velocity component unconstrained), while the bottom boundary has vertical inflow to balance the lateral outflow. The top, and bottom boundaries have fixed temperatures, while the sides are insulating. The bottom boundary is also assigned a fixed composition, while the top and sides are unconstrained.
 
-\lstinputlisting[language=prmfile]{cookbooks/continental_extension/continental_extension_boundary_conditions.prm}
+\lstinputlisting[language=prmfile]{cookbooks/continental_extension/continental_extension_boundary_conditions.prm.out}
 
 Sections of the lithosphere with distinct properties are represented by compositional fields for the upper crust (20 km thick), lower crust (10 km thick) and mantle lithosphere (70 km thick). A mechanically weak seed within the mantle lithosphere helps localize deformation. Material (viscous flow law parameters, cohesion, internal friction angle) and thermodynamic properties for each compositional field are based largely on previous numerical studies.   Dislocation creep viscous flow parameters are taken from published deformation experiments for wet quartzite \cite{RB04}, wet anorthite \cite{RGWD06} and dry olivine \cite{HK04}. 
 
-\lstinputlisting[language=prmfile]{cookbooks/continental_extension/continental_extension_composition.prm}
+\lstinputlisting[language=prmfile]{cookbooks/continental_extension/continental_extension_composition.prm.out}
 
 The initial thermal structure, radiogenic heating model and associated thermal properties are consistent with the prescribed thermal boundary conditions and produce a geotherm characteristic of the continental lithosphere. The equations defining the initial geotherm \cite{Cha86} follow the form
 \begin{align}
@@ -8180,10 +8180,10 @@ Three main areas can be distinguished: the stable area, the plume convection are
 
 Changing the values of $Ra$ and $\mathcal{P}$ in the input file allows switching between the different regimes.
 The Rayleigh number can be changed by adjusting the magnitude of the gravity:
-\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/inner_core_traction.part.2.prm}
+\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/inner_core_traction.part.2.prm.out}
 The phase change number is implemented as part of the material model, and as a function that can depend on the 
 spatial coordinates and/or on time: 
-\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/inner_core_traction.part.1.prm}
+\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/inner_core_traction.part.1.prm.out}
 
 Figure~\ref{fig:inner-core-regimes} shows examples of the three regimes with $Ra=3000, \mathcal{P}=1000$ (plume convection), 
 $Ra=10^5, \mathcal{P}=0.01$ (translation), $Ra=10, \mathcal{P}=30$ (no convection).
@@ -8211,7 +8211,7 @@ $Ra=10^5, \mathcal{P}=0.01$ (translation), $Ra=10, \mathcal{P}=30$ (no convectio
 The temperature is set to 0 at the outer boundary and a large temperature gradient can develop at the boundary layer, especially for the translation regime. The adaptive mesh refinement allows it to resolve this layer at the inner core boundary. Another solution is to apply a specific initial refinement, based on the boundary layer thickness scaling law $\delta \propto Ra^{-0.236}$, and to refine specifically the uppermost part of the inner core. 
 
 In order to have a mesh that is much finer at the outer boundary than in the center of the domain, this expression for the mesh refinement subsection can be used in the input file:
-\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/inner_core_traction.part.3.prm}
+\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/inner_core_traction.part.3.prm.out}
 
 \vspace{0.3cm}
 \textbf{Scaling laws.} 
@@ -8262,14 +8262,14 @@ In the first model we will look at, melting and freezing is only included passiv
 The following input file (which can be found in \url{cookbooks/global_no_melt.prm}) contains a detailed description of the 
 different options required to set up such a model:
 
-\lstinputlisting[language=prmfile]{cookbooks/global_melt/global_no_melt.prm}
+\lstinputlisting[language=prmfile]{cookbooks/global_melt/global_no_melt.prm.out}
 
 When we look at visualization output of this model, we can see that over time, first upwellings, and then downwellings start to form. Both are more or less stable over time, and only change their positions slowly. As melt does not move relative to the solid, broad stable zones of melting with melt fraction of 10\% or more form in areas where material is upwelling. 
 
 In the second model, melt is an active component of the model. Temperature, pressure and composition control how much of the rock melts, and as soon as that happens, melt can migrate relative to the solid rock. As material only melts partially, that means that the composition of the rock changes when it melts and melt is extracted, and we track this change in composition using a compositional field with the name \texttt{peridotite}. Positive values mark depletion (the composition of the residual host rock as more and more melt is extracted), and negative values mark enrichment (the composition of generated melt, or regions where melt freezes again). Both the fraction of melt (tracked by the compositional field with the name \texttt{porosity}) and the changes in composition influence the material properties such as density and viscosity. Moreover, there are additional material properties that describe how easily melt can move through the host rock, such as the \texttt{permeability}, or properties of the melt itself, such as the \texttt{fluid viscosity}. 
 The following input file (a complete version of which can be found in \url{cookbooks/global_melt.prm}) details the changes we have to make from the first model to set up a model with melt migration:
 
-\lstinputlisting[language=prmfile]{cookbooks/global_melt/global_melt.prm}
+\lstinputlisting[language=prmfile]{cookbooks/global_melt/global_melt.prm.out}
 
 In the first few tens of millions of years, this models evolves similarly to the model without melt migration. Upwellings rise in the same locations, and regions where material starts to melt are similar. However, once melt is formed, the model evolutions start to deviate. In the model with melt migration, melt moves upwards from the region where it is generated much faster than the flow of solid material, so that it reaches cold regions -- where it freezes again -- in a shorter amount of time. Because of that, the overall amount of melt is smaller in this model at any given point in time. In addition, enriched material, present in places where melt has crystallized, has a higher density than average or depleted mantle material. This means that in regions above stable upwellings, instabilities of dense, enriched material start to form, which leads to small-scale downwellings. Hence, both areas where material is partially molten and the location of the upwellings themselves have a much shorter wavelength and change much faster over time in comparison to the model without melt migration.
 
@@ -8317,7 +8317,7 @@ the reaction time scale.
 The melting model we use here is the anhydrous mantle melting model of \cite{KSL2003} for a peridotitic 
 rock composition, as implemented in the ``melt simple'' material model. 
 
-\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/melting_and_freezing.part.prm}
+\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/melting_and_freezing.part.prm.out}
 
 To make sure we reproduce the characteristic triangular melting region of a mid-ocean ridge, we have to  
 set up the boundary conditions in a way so that they will lead to corner flow. At the top boundary, we can 
@@ -8328,7 +8328,7 @@ pressure as a boundary condition for the stress. We accomplish this by using the
 ``initial lithostatic pressure'' model. This plugin will automatically compute a 1d lithostatic pressure 
 profile at a given point at the time of the model start and apply it as a boundary traction.
 
-\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/boundary_conditions.part.prm}
+\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/boundary_conditions.part.prm.out}
 
 Finally, we have to make sure that the resolution is high enough to model melt migration. 
 This is particularly important in regions where the porosity is low, but still high enough that 
@@ -8348,7 +8348,7 @@ As the length scale of melt migration is usually smaller than for mantle convect
 sure that regions where melt is present have a high resolution, and that this high resolution extends 
 to all cells where the two-phase flow equations are solved. 
 
-\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/mesh_refinement.part.prm}
+\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/mesh_refinement.part.prm.out}
 
 \aspect{} also supports an alternative method to make sure that regions with melt are sufficiently 
 well resolved, relying directly on the compaction length, and we will discuss this method as a possible 
@@ -8397,7 +8397,7 @@ Another option for making sure that melt migration is resolved properly in the m
 refinement criterion that directly relates to the compaction length. This can be done in the mesh 
 refinement section of the input file:
 
-\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/compaction_length.part.prm}
+\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/compaction_length.part.prm.out}
 
 This will lead to a higher resolution particularly in regions with low (but not zero) porosity, 
 and can be useful to resolve the strong gradients in the melt velocity and compaction pressure that 
@@ -9898,7 +9898,7 @@ topography). Details for the benchmark setup are in Figure~\ref{fig:crameri-benc
 The complete parameter file for this benchmark can be found in 
 \url{benchmarks/crameri_et_al/case_1/crameri_benchmark_1.prm}, 
 the  most relevant parts of which are excerpted here: 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/crameri/crameri_benchmark_1.prm}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/crameri/crameri_benchmark_1.prm.out}
 In particular, this benchmark uses a custom geometry model to set the initial geometry. 
 This geometry model, called ``\texttt{ReboundBox}'', is based on the \texttt{Box} geometry model. 
 It generates a domain in using the same parameters as \texttt{Box}, but then displaces all 
@@ -9970,7 +9970,7 @@ Furthermore, the results of this benchmark are sensitive to the mesh refinement 
 parameters. Here we have nine refinement levels, and refine according to density and the 
 compositional fields.
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/crameri/crameri_benchmark_2.prm}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/crameri/crameri_benchmark_2.prm.out}
 
 Unlike the first benchmark, for case two there is no (semi) analytical solution to compare against.
 Furthermore, the time integration for this benchmark is much longer, allowing for errors to 
@@ -10056,7 +10056,7 @@ This is only valid in the limit of small porosity $\phi_0 \ll 1$. Figure~\ref{fi
 
 The parameter file and material model for this setup can be found in \url{benchmarks/solitary_wave/solitary_wave.prm} and \url{benchmarks/solitary_wave/solitary_wave.cc}. The most relevant sections are shown in the following paragraph. 
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/solitary_wave/solitary_wave.prm}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/solitary_wave/solitary_wave.prm.out}
 
 The benchmark uses a custom model to generate the initial condition for the porosity field as specified by the analytical solution, and its own material model, which includes the additional material properties needed by models with melt migration, such as the permeability, melt density and compaction viscosity. The solitary wave postprocessor compares the porosity and pressure in the model to the analytical solution, and computes the errors for the shape of the porosity, shape of the compaction pressure and the phase speed. 
 We apply the negative phase speed of the solitary wave as a boundary condition for the solid velocity. This changes the reference frame, so that the solitary wave stays in the center of the domain, while the solid moves downwards. The temperature evolution does not play a role in this benchmark, so all temperature and heating-related parameters are disabled or set to zero. 
@@ -10192,7 +10192,7 @@ Case 2 includes a strain rate-dependent component in the viscosity, which is har
   \label{eq:tosi-benchmark-ave-visc}
 \end{equation}
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/tosi/tosi_benchmark_2.prm}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/tosi/tosi_benchmark_2.prm.out}
 
 This rheology leads to mobile-lid convection, with the descending cold lid cooling the cell's interior (Fig. 2 of \cite{T15}).
 
@@ -10950,7 +10950,7 @@ To give you some guidelines on how to write the section in the manual, you can f
   \href{doc/manual/cookbooks/.}{doc/manual/cookbooks}
   directory and include them in the \texttt{manual.tex} file using a command like
   \begin{verbatim}
-  \lstinputlisting[language=prmfile]{cookbooks/subfolder_name/input_snippet.prm}
+  \lstinputlisting[language=prmfile]{cookbooks/subfolder_name/input_snippet.prm.out}
   \end{verbatim}
 \item Show the model results in form of figures and/or plots, accompanied by an explanation
   of what happens in the model. This can also include a link to an animation of the model
