@@ -173,6 +173,22 @@ namespace aspect
                                                   (constants::gas_constant*temperature*stress_exponents_dislocation[j])) *
                                          std::pow(edot_ii,((1. - stress_exponents_dislocation[j])/stress_exponents_dislocation[j]));
 
+          // Allow for different flow-law parameters (grain-size and activation volume) in the lower mantle
+          if (pressure > pressure_lower_mantle)
+            {
+              // Diffusion creep: viscosity is grain size dependent (m!=0) and strain-rate independent (n=1)
+              viscosity_diffusion = 0.5 / prefactors_diffusion[j] *
+                                    std::exp((activation_energies_diffusion[j] + pressure*activation_volumes_diffusion_lower_mantle[j])/
+                                             (constants::gas_constant*temperature)) *
+                                    std::pow(grain_size_lower_mantle, grain_size_exponents_diffusion[j]);
+
+              // For dislocation creep, viscosity is grain size independent (m=0) and strain-rate dependent (n>1)
+              viscosity_dislocation = 0.5 * std::pow(prefactors_dislocation[j],-1/stress_exponents_dislocation[j]) *
+                                      std::exp((activation_energies_dislocation[j] + pressure*activation_volumes_dislocation_lower_mantle[j])/
+                                               (constants::gas_constant*temperature*stress_exponents_dislocation[j])) *
+                                      std::pow(edot_ii,((1. - stress_exponents_dislocation[j])/stress_exponents_dislocation[j]));
+            }
+
           // Composite viscosity
           double viscosity_composite = (viscosity_diffusion * viscosity_dislocation)/(viscosity_diffusion + viscosity_dislocation);
 
@@ -916,6 +932,25 @@ namespace aspect
                              "is not automatically used. Values of 100e6--1000e6 $Pa$ have been used "
                              "in previous models. Units: $Pa$");
 
+          // Modify flow law parameters in the lower mantle
+          prm.declare_entry ("Lower mantle pressure for rheology change","1e12", Patterns::Double(0),
+                             "Pressure at which the flow law parameters switch to use lower mantle"
+                             "values. Default value is chosen so this is not automatically used. "
+                             "Using a pressure gradient of 32436 Pa/m, then 660 km is at a pressure of 21.4e9 $Pa$."
+                             "Units: $Pa$");
+          prm.declare_entry ("Grain size lower mantle", "1.0e-3", Patterns::Double(0),
+                             "Grain size to use in diffusion creep flow law in the lower mantle. This can be "
+                             "used to create a viscosity jump. Units: $m$");
+          prm.declare_entry ("Activation volumes for diffusion lower mantle","6e-6", Patterns::List(Patterns::Double(0)),
+                             "List of activation volumes to use in diffusion creep flow law in the lower mantle, "
+                             "for background material and compositional field (total of N+1 values),where N is the "
+                             "number of compositional fields. This parameter controls the radial viscosity gradient. "
+                             "Units: $m^3/mol$");
+          prm.declare_entry ("Activation volumes for dislocation lower mantle","6e-6", Patterns::List(Patterns::Double(0)),
+                             "List of activation volumes to use in dislocation creep flow law in the lower mantle, "
+                             "for background material and compositional field (total of N+1 values),where N is the "
+                             "number of compositional fields. This parameter controls the radial viscosity gradient. "
+                             "Units: $m^3/mol$");
         }
         prm.leave_subsection();
       }
@@ -1124,6 +1159,21 @@ namespace aspect
 
           // Limit maximum value of the drucker-prager yield stress
           max_yield_strength = prm.get_double("Maximum yield stress");
+
+          // Modify flow law parameters in the lower mantle (at pressures above pressure_lower_mantle).
+          // Changing the grain size will adjust the pre-exponential factor.
+          // Changing the activation volumes will adjust the radial gradient of viscosity.
+          pressure_lower_mantle = prm.get_double("Lower mantle pressure for rheology change");
+          grain_size_lower_mantle = prm.get_double("Grain size lower mantle");
+          activation_volumes_diffusion_lower_mantle = Utilities::possibly_extend_from_1_to_N
+                                                      (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation volumes for diffusion lower mantle"))),
+                                                       n_fields,
+                                                       "Activation volumes for diffusion lower mantle");
+          activation_volumes_dislocation_lower_mantle = Utilities::possibly_extend_from_1_to_N
+                                                        (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation volumes for dislocation lower mantle"))),
+                                                         n_fields,
+                                                         "Activation volumes for dislocation lower mantle");
+
         }
         prm.leave_subsection();
       }

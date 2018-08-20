@@ -1,0 +1,131 @@
+# A test for adding an option to modify the flow law parameters below a certain pressure
+# in the flow laws for the visco_plastic material model.
+# This is useful for mantle simulation in which the lower mantle deforms differently from
+# the upper mantle. 
+# This option changes the grain size and activation volumes used in all compositions 
+# AND sets the activation volume for dislocation creep in the lower mantle very high so
+# that it uses the diffusion creep flow law only below the precribed pressure
+# This test modified the visco_plastic_diffusion_dislocation_composite test by setting
+# these parameters:
+# set Lower mantle pressure for rheology change = 4.65e9 # 50 km assuming 32496 Pa/m
+# set Grain size lower mantle = 10.0e-3  
+# set Activation volume lower mantle = 2.0e-6  
+# At the surface P = 3e9 Pa (as defined in original test) 
+# strain-rate = 4.48e-16 (from applied pure shear) and eta-comp ~ 3.43e18 Pa s.
+# At the bottom of the box (100 km) P = 3e9 + 3300*100e3*10 = 6.3e9 Pa (with g = 10 m/s^2)
+# but with dynamic pressure P=6.15e9. For this pressure, eta-diff ~ 2.45e21 Pa s
+# Also, the viscosity jumps between 40 km and 50 km depth as prescribed.
+
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Max nonlinear iterations               = 1
+set Output directory                       = visco_plastic_lower_mantle
+set Surface pressure                       = 3.e9
+
+# Model geometry (100x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications 
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+
+# Boundary classifications (fixed T boundaries, prescribed velocity) 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, left, right
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
+end
+
+# Velocity on boundaries characterized by functions
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = mm=0.001, year=1
+    set Function expression = if (x<50e3 , -0.5*mm/year, 0.5*mm/year); if (y<50e3 , 0.5*mm/year, -0.5*mm/year);
+  end
+end
+
+# Temperature boundary and initial conditions
+subsection Boundary temperature model
+  set List of model names = box
+  subsection Box
+    set Bottom temperature = 1573
+    set Left temperature   = 1573
+    set Right temperature  = 1573
+    set Top temperature    = 1573
+  end
+end
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1573
+  end
+end
+
+# Material model (values for background material)
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+    set Reference strain rate = 1.e-16
+    set Viscous flow law = composite
+    set Grain size = 1.e-3
+    set Grain size exponents for diffusion creep = 3.
+    set Prefactors for diffusion creep = 2.37e-15
+    set Activation energies for diffusion creep = 375.e3
+    set Activation volumes for diffusion creep = 10.e-6
+    set Prefactors for dislocation creep = 6.52e-16
+    set Stress exponents for dislocation creep = 3.5
+    set Activation energies for dislocation creep = 530.e3
+    set Activation volumes for dislocation creep = 18.e-6
+    
+    set Lower mantle pressure for rheology change = 4.65e9 # 50 km assuming 32496 Pa/m
+    set Grain size lower mantle = 10.0e-3  
+    set Activation volumes for diffusion lower mantle = 3.0e-6
+    set Activation volumes for dislocation lower mantle = 100.0e-6  
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization
+  subsection Visualization
+    set List of output variables = viscosity, strain rate
+    set Output format            = gnuplot
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+end

@@ -319,6 +319,15 @@ namespace aspect
         */
         double max_yield_strength;
 
+        /**
+        * Modify flow-law parameters for the lower mantle using grain-size to change
+        * the pre-exponent and the activation volume to change the radial viscosity
+        * gradient
+        */
+        double pressure_lower_mantle;
+        double grain_size_lower_mantle;
+        std::vector<double> activation_volumes_diffusion_lower_mantle;
+        std::vector<double> activation_volumes_dislocation_lower_mantle;
     };
 
   }
