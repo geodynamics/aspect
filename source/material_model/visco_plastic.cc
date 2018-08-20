@@ -125,7 +125,7 @@ namespace aspect
 
 
     template <int dim>
-    std::pair<std::vector<double>, std::vector<double> >
+    std::pair<std::vector<double>, std::vector<bool> >
     ViscoPlastic<dim>::
     calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
                                       const double &pressure,
@@ -151,7 +151,7 @@ namespace aspect
 
       // Calculate viscosities for each of the individual compositional phases
       std::vector<double> composition_viscosities(volume_fractions.size());
-      std::vector<double> composition_yielding(volume_fractions.size());
+      std::vector<bool> composition_yielding(volume_fractions.size());
       for (unsigned int j=0; j < volume_fractions.size(); ++j)
         {
           // Power law creep equation
@@ -268,7 +268,7 @@ namespace aspect
           if ( viscous_stress >= yield_strength )
             {
               viscosity_drucker_prager = yield_strength / (2.0 * edot_ii);
-              composition_yielding[j] = 1.0;
+              composition_yielding[j] = true;
             }
           else
             {
@@ -348,13 +348,219 @@ namespace aspect
     template <int dim>
     void
     ViscoPlastic<dim>::
-    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-             MaterialModel::MaterialModelOutputs<dim> &out) const
+    fill_plastic_outputs(const unsigned int i,
+                         const std::vector<double> &volume_fractions,
+                         const bool plastic_yielding,
+                         const MaterialModel::MaterialModelInputs<dim> &in,
+                         MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      // set up additional output for the derivatives
-      MaterialModel::MaterialModelDerivatives<dim> *derivatives;
-      derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+      PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim> >();
 
+      if (plastic_out != nullptr)
+        {
+          double C = 0.;
+          double phi = 0.;
+          // set to weakened values, or unweakened values when strain weakening is not used
+          for (unsigned int j=0; j < volume_fractions.size(); ++j)
+            {
+              // the first compositional field contains the total strain or the plastic strain or, in case only viscous strain
+              // weakening is applied, the viscous strain.
+              if (use_strain_weakening == true )
+                {
+                  double strain_invariant = 0.;
+                  if (use_plastic_strain_weakening)
+                    strain_invariant = in.composition[i][this->introspection().compositional_index_for_name("plastic_strain")];
+                  else if (!use_viscous_strain_weakening && !use_finite_strain_tensor)
+                    strain_invariant = in.composition[i][this->introspection().compositional_index_for_name("total_strain")];
+                  else if (use_finite_strain_tensor)
+                    {
+                      // Calculate second invariant of left stretching tensor "L"
+                      Tensor<2,dim> strain;
+                      const unsigned int n_first = this->introspection().compositional_index_for_name("s11");
+                      for (unsigned int q = n_first; q < n_first + Tensor<2,dim>::n_independent_components ; ++q)
+                        strain[Tensor<2,dim>::unrolled_to_component_indices(q)] = in.composition[i][q];
+                      const SymmetricTensor<2,dim> L = symmetrize( strain * transpose(strain) );
+                      strain_invariant = std::fabs(second_invariant(L));
+                    }
+
+                  std::pair<double, double> weakening = calculate_plastic_weakening(strain_invariant, j);
+                  C   += volume_fractions[j] * weakening.first;
+                  phi += volume_fractions[j] * weakening.second;
+                }
+              else
+                {
+                  C   += volume_fractions[j] * cohesions[j];
+                  phi += volume_fractions[j] * angles_internal_friction[j];
+                }
+            }
+          plastic_out->cohesions[i] = C;
+          // convert radians to degrees
+          plastic_out->friction_angles[i] = phi * 180. / numbers::PI;
+          plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
+        }
+    }
+
+
+
+    template <int dim>
+    void
+    ViscoPlastic<dim>::
+    compute_viscosity_derivatives(const unsigned int i,
+                                  const std::vector<double> &volume_fractions,
+                                  const std::vector<double> &composition_viscosities,
+                                  const MaterialModel::MaterialModelInputs<dim> &in,
+                                  MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      MaterialModel::MaterialModelDerivatives<dim> *derivatives =
+        out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+
+      if (derivatives != nullptr)
+        {
+          // compute derivatives if necessary
+          std::vector<SymmetricTensor<2,dim> > composition_viscosities_derivatives(volume_fractions.size());
+          std::vector<double> composition_dviscosities_dpressure(volume_fractions.size());
+
+          const double finite_difference_accuracy = 1e-7;
+
+          // For each independent component, compute the derivative.
+          for (unsigned int component = 0; component < SymmetricTensor<2,dim>::n_independent_components; ++component)
+            {
+              const TableIndices<2> strain_rate_indices = SymmetricTensor<2,dim>::unrolled_to_component_indices (component);
+
+              const SymmetricTensor<2,dim> strain_rate_difference = in.strain_rate[i]
+                                                                    + std::max(std::fabs(in.strain_rate[i][strain_rate_indices]), min_strain_rate)
+                                                                    * finite_difference_accuracy
+                                                                    * Utilities::nth_basis_for_symmetric_tensors<dim>(component);
+              std::vector<double> eta_component =
+                calculate_isostrain_viscosities(volume_fractions, in.pressure[i],
+                                                in.temperature[i], in.composition[i],
+                                                strain_rate_difference,
+                                                viscous_flow_law,yield_mechanism).first;
+
+              // For each composition of the independent component, compute the derivative.
+              for (unsigned int composition_index = 0; composition_index < eta_component.size(); ++composition_index)
+                {
+                  // compute the difference between the viscosity with and without the strain-rate difference.
+                  double viscosity_derivative = eta_component[composition_index] - composition_viscosities[composition_index];
+                  if (viscosity_derivative != 0)
+                    {
+                      // when the difference is non-zero, divide by the difference.
+                      viscosity_derivative /= std::max(std::fabs(strain_rate_difference[strain_rate_indices]), min_strain_rate)
+                                              * finite_difference_accuracy;
+                    }
+                  composition_viscosities_derivatives[composition_index][strain_rate_indices] = viscosity_derivative;
+                }
+            }
+
+          /**
+           * Now compute the derivative of the viscosity to the pressure
+           */
+          const double pressure_difference = in.pressure[i] + (std::fabs(in.pressure[i]) * finite_difference_accuracy);
+
+          const std::vector<double> viscosity_difference =
+            calculate_isostrain_viscosities(volume_fractions, pressure_difference,
+                                            in.temperature[i], in.composition[i], in.strain_rate[i],
+                                            viscous_flow_law, yield_mechanism).first;
+
+
+          for (unsigned int composition_index = 0; composition_index < viscosity_difference.size(); ++composition_index)
+            {
+              double viscosity_derivative = viscosity_difference[composition_index] - composition_viscosities[composition_index];
+              if (viscosity_difference[composition_index] != 0)
+                {
+                  if (in.pressure[i] != 0)
+                    {
+                      viscosity_derivative /= std::fabs(in.pressure[i]) * finite_difference_accuracy;
+                    }
+                  else
+                    {
+                      viscosity_derivative = 0;
+                    }
+                }
+              composition_dviscosities_dpressure[composition_index] = viscosity_derivative;
+            }
+
+          double viscosity_averaging_p = 0; // Geometric
+          if (viscosity_averaging == harmonic)
+            viscosity_averaging_p = -1;
+          if (viscosity_averaging == arithmetic)
+            viscosity_averaging_p = 1;
+          if (viscosity_averaging == maximum_composition)
+            viscosity_averaging_p = 1000;
+
+
+          derivatives->viscosity_derivative_wrt_strain_rate[i] =
+            Utilities::derivative_of_weighted_p_norm_average(out.viscosities[i],
+                                                             volume_fractions,
+                                                             composition_viscosities,
+                                                             composition_viscosities_derivatives,
+                                                             viscosity_averaging_p);
+          derivatives->viscosity_derivative_wrt_pressure[i] =
+            Utilities::derivative_of_weighted_p_norm_average(out.viscosities[i],
+                                                             volume_fractions,
+                                                             composition_viscosities,
+                                                             composition_dviscosities_dpressure,
+                                                             viscosity_averaging_p);
+        }
+    }
+
+
+
+    template <int dim>
+    void
+    ViscoPlastic<dim>::
+    compute_finite_strain_reaction_terms(const MaterialModel::MaterialModelInputs<dim> &in,
+                                         MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      // We need the velocity gradient for the finite strain (they are not included in material model inputs),
+      // so we get them from the finite element.
+
+      std::vector<Point<dim> > quadrature_positions(in.position.size());
+      for (unsigned int i=0; i < in.position.size(); ++i)
+        quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
+
+      FEValues<dim> fe_values (this->get_mapping(),
+                               this->get_fe(),
+                               Quadrature<dim>(quadrature_positions),
+                               update_gradients);
+
+      std::vector<Tensor<2,dim> > velocity_gradients (quadrature_positions.size(), Tensor<2,dim>());
+
+      fe_values.reinit (in.current_cell);
+      fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_solution(),
+                                                                                     velocity_gradients);
+
+      // Assign the strain components to the compositional fields reaction terms.
+      // If there are too many fields, we simply fill only the first fields with the
+      // existing strain tensor components.
+      for (unsigned int q=0; q < in.position.size(); ++q)
+        {
+          // Convert the compositional fields into the tensor quantity they represent.
+          Tensor<2,dim> strain;
+          const unsigned int n_first = this->introspection().compositional_index_for_name("s11");
+          for (unsigned int i = n_first; i < n_first + Tensor<2,dim>::n_independent_components ; ++i)
+            {
+              strain[Tensor<2,dim>::unrolled_to_component_indices(i)] = in.composition[q][i];
+            }
+
+          // Compute the strain accumulated in this timestep.
+          const Tensor<2,dim> strain_increment = this->get_timestep() * (velocity_gradients[q] * strain);
+
+          // Output the strain increment component-wise to its respective compositional field's reaction terms.
+          for (unsigned int i = n_first; i < n_first + Tensor<2,dim>::n_independent_components ; ++i)
+            {
+              out.reaction_terms[q][i] = strain_increment[Tensor<2,dim>::unrolled_to_component_indices(i)];
+            }
+        }
+    }
+
+
+
+    template <int dim>
+    ComponentMask
+    ViscoPlastic<dim>::
+    get_volumetric_composition_mask() const
+    {
       // Store which components to exclude during volume fraction computation.
       ComponentMask composition_mask(this->n_compositional_fields(),true);
       if (use_strain_weakening == true)
@@ -376,162 +582,42 @@ namespace aspect
             }
         }
 
-      // Loop through points
+      return composition_mask;
+    }
+
+
+
+    template <int dim>
+    void
+    ViscoPlastic<dim>::
+    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+             MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      // Store which components do not represent volumetric compositions (e.g. strain components).
+      const ComponentMask volumetric_compositions = get_volumetric_composition_mask();
+
+      // Loop through all requested points
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-          const double temperature = in.temperature[i];
-          const double pressure = in.pressure[i];
-          const std::vector<double> &composition = in.composition[i];
-          const std::vector<double> volume_fractions = compute_volume_fractions(composition, composition_mask);
-          const SymmetricTensor<2,dim> strain_rate = in.strain_rate[i];
+          // First compute the equation of state variables and thermodynamic properties
+          out.densities[i] = 0.0;
+          out.thermal_expansion_coefficients[i] = 0.0;
+          out.specific_heat[i] = 0.0;
+          double thermal_diffusivity = 0.0;
 
-          // Averaging composition-field dependent properties
-
-          // densities
-          double density = 0.0;
+          const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i], volumetric_compositions);
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
             {
               // not strictly correct if thermal expansivities are different, since we are interpreting
               // these compositions as volume fractions, but the error introduced should not be too bad.
-              const double temperature_factor = (1.0 - thermal_expansivities[j] * (temperature - reference_T));
-              density += volume_fractions[j] * densities[j] * temperature_factor;
+              const double temperature_factor = (1.0 - thermal_expansivities[j] * (in.temperature[i] - reference_T));
+
+              out.densities[i] += volume_fractions[j] * densities[j] * temperature_factor;
+              out.thermal_expansion_coefficients[i] += volume_fractions[j] * thermal_expansivities[j];
+              out.specific_heat[i] += volume_fractions[j] * heat_capacities[j];
+              thermal_diffusivity += volume_fractions[j] * thermal_diffusivities[j];
             }
 
-          // thermal expansivities
-          double thermal_expansivity = 0.0;
-          for (unsigned int j=0; j < volume_fractions.size(); ++j)
-            thermal_expansivity += volume_fractions[j] * thermal_expansivities[j];
-
-          // heat capacities
-          double heat_capacity = 0.0;
-          for (unsigned int j=0; j < volume_fractions.size(); ++j)
-            heat_capacity += volume_fractions[j] * heat_capacities[j];
-
-          // thermal diffusivities
-          double thermal_diffusivity = 0.0;
-          for (unsigned int j=0; j < volume_fractions.size(); ++j)
-            thermal_diffusivity += volume_fractions[j] * thermal_diffusivities[j];
-
-          // calculate effective viscosity
-          // and retrieve whether the material is plastically yielding
-          bool plastic_yielding = false;
-          if (in.strain_rate.size())
-            {
-              // Currently, the viscosities for each of the compositional fields are calculated assuming
-              // isostrain amongst all compositions, allowing calculation of the viscosity ratio.
-              // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
-              // scheme is chosen. It would be useful to have a function to calculate isostress viscosities.
-              const std::pair<std::vector<double>, std::vector<double> > calculate_viscosities =
-                calculate_isostrain_viscosities(volume_fractions, pressure, temperature, composition, strain_rate,viscous_flow_law,yield_mechanism);
-              const std::vector<double> composition_viscosities = calculate_viscosities.first;
-              const std::vector<double> composition_yielding = calculate_viscosities.second;
-
-              // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
-              // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
-              // creep (where n_diff=1) viscosities are stress and strain-rate independent, so the calculation
-              // of compositional field viscosities is consistent with any averaging scheme.
-              out.viscosities[i] = average_value(volume_fractions, composition_viscosities, viscosity_averaging);
-
-              // Take the infinity norm to compute plastic yielding in this point.
-              // This avoids for example division by zero for harmonic averaging (as compositional_yielding
-              // holds values that are either 0 or 1), but might not be consistent with the viscosity
-              // averaging chosen.
-              plastic_yielding   = average_value(volume_fractions, composition_yielding, maximum_composition);
-
-              // compute derivatives if necessary
-              std::vector<SymmetricTensor<2,dim> > composition_viscosities_derivatives(volume_fractions.size());
-              std::vector<double> composition_dviscosities_dpressure(volume_fractions.size());
-              if (derivatives != nullptr)
-                {
-                  const double finite_difference_accuracy = 1e-7;
-
-                  // For each independent component, compute the derivative.
-                  for (unsigned int component = 0; component < SymmetricTensor<2,dim>::n_independent_components; ++component)
-                    {
-                      const TableIndices<2> strain_rate_indices = SymmetricTensor<2,dim>::unrolled_to_component_indices (component);
-
-                      const SymmetricTensor<2,dim> strain_rate_difference = strain_rate
-                                                                            + std::max(std::fabs(strain_rate[strain_rate_indices]), min_strain_rate)
-                                                                            * finite_difference_accuracy
-                                                                            * Utilities::nth_basis_for_symmetric_tensors<dim>(component);
-                      std::vector<double> eta_component =
-                        calculate_isostrain_viscosities(volume_fractions, pressure,
-                                                        temperature, composition,
-                                                        strain_rate_difference,
-                                                        viscous_flow_law,yield_mechanism).first;
-
-                      // For each composition of the independent component, compute the derivative.
-                      for (unsigned int composition_index = 0; composition_index < eta_component.size(); ++composition_index)
-                        {
-                          // compute the difference between the viscosity with and without the strain-rate difference.
-                          double viscosity_derivative = eta_component[composition_index] - composition_viscosities[composition_index];
-                          if (viscosity_derivative != 0)
-                            {
-                              // when the difference is non-zero, divide by the difference.
-                              viscosity_derivative /= std::max(std::fabs(strain_rate_difference[strain_rate_indices]), min_strain_rate)
-                                                      * finite_difference_accuracy;
-                            }
-                          composition_viscosities_derivatives[composition_index][strain_rate_indices] = viscosity_derivative;
-                        }
-                    }
-
-                  /**
-                   * Now compute the derivative of the viscosity to the pressure
-                   */
-                  const double pressure_difference = in.pressure[i] + (std::fabs(in.pressure[i]) * finite_difference_accuracy);
-
-                  const std::vector<double> viscosity_difference =
-                    calculate_isostrain_viscosities(volume_fractions, pressure_difference,
-                                                    temperature, composition, strain_rate,
-                                                    viscous_flow_law, yield_mechanism).first;
-
-
-                  for (unsigned int composition_index = 0; composition_index < viscosity_difference.size(); ++composition_index)
-                    {
-                      double viscosity_derivative = viscosity_difference[composition_index] - composition_viscosities[composition_index];
-                      if (viscosity_difference[composition_index] != 0)
-                        {
-                          if (in.pressure[i] != 0)
-                            {
-                              viscosity_derivative /= std::fabs(in.pressure[i]) * finite_difference_accuracy;
-                            }
-                          else
-                            {
-                              viscosity_derivative = 0;
-                            }
-                        }
-                      composition_dviscosities_dpressure[composition_index] = viscosity_derivative;
-                    }
-
-                  double viscosity_averaging_p = 0; // Geometric
-                  if (viscosity_averaging == harmonic)
-                    viscosity_averaging_p = -1;
-                  if (viscosity_averaging == arithmetic)
-                    viscosity_averaging_p = 1;
-                  if (viscosity_averaging == maximum_composition)
-                    viscosity_averaging_p = 1000;
-
-
-                  derivatives->viscosity_derivative_wrt_strain_rate[i] =
-                    Utilities::derivative_of_weighted_p_norm_average(out.viscosities[i],
-                                                                     volume_fractions,
-                                                                     composition_viscosities,
-                                                                     composition_viscosities_derivatives,
-                                                                     viscosity_averaging_p);
-                  derivatives->viscosity_derivative_wrt_pressure[i] =
-                    Utilities::derivative_of_weighted_p_norm_average(out.viscosities[i],
-                                                                     volume_fractions,
-                                                                     composition_viscosities,
-                                                                     composition_dviscosities_dpressure,
-                                                                     viscosity_averaging_p);
-
-                }
-            }
-
-          out.densities[i] = density;
-          out.thermal_expansion_coefficients[i] = thermal_expansivity;
-          // Specific heat at the given positions.
-          out.specific_heat[i] = heat_capacity;
           // Thermal conductivity at the given positions. If the temperature equation uses
           // the reference density profile formulation, use the reference density to
           // calculate thermal conductivity. Otherwise, use the real density. If the adiabatic
@@ -539,34 +625,58 @@ namespace aspect
           if (this->get_parameters().formulation_temperature_equation ==
               Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile &&
               this->get_adiabatic_conditions().is_initialized())
-            out.thermal_conductivities[i] = thermal_diffusivity * heat_capacity *
+            out.thermal_conductivities[i] = thermal_diffusivity * out.specific_heat[i] *
                                             this->get_adiabatic_conditions().density(in.position[i]);
           else
-            out.thermal_conductivities[i] = thermal_diffusivity * heat_capacity * density;
-          // Compressibility at the given positions.
-          // The compressibility is given as
-          // $\frac 1\rho \frac{\partial\rho}{\partial p}$.
+            out.thermal_conductivities[i] = thermal_diffusivity * out.specific_heat[i] * out.densities[i];
+
           out.compressibilities[i] = 0.0;
-          // Pressure derivative of entropy at the given positions.
           out.entropy_derivative_pressure[i] = 0.0;
-          // Temperature derivative of entropy at the given positions.
           out.entropy_derivative_temperature[i] = 0.0;
-          // Change in composition due to chemical reactions at the
-          // given positions. The term reaction_terms[i][c] is the
-          // change in compositional field c at point i.
+
+          // Compute the effective viscosity if requested and retrieve whether the material is plastically yielding
+          bool plastic_yielding = false;
+          if (in.strain_rate.size())
+            {
+              // Currently, the viscosities for each of the compositional fields are calculated assuming
+              // isostrain amongst all compositions, allowing calculation of the viscosity ratio.
+              // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
+              // scheme is chosen. It would be useful to have a function to calculate isostress viscosities.
+              const std::pair<std::vector<double>, std::vector<bool> > calculate_viscosities =
+                calculate_isostrain_viscosities(volume_fractions, in.pressure[i], in.temperature[i], in.composition[i], in.strain_rate[i],viscous_flow_law,yield_mechanism);
+
+              // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
+              // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
+              // creep (where n_diff=1) viscosities are stress and strain-rate independent, so the calculation
+              // of compositional field viscosities is consistent with any averaging scheme.
+              out.viscosities[i] = average_value(volume_fractions, calculate_viscosities.first, viscosity_averaging);
+
+              // Decide based on the maximum composition if material is yielding.
+              // This avoids for example division by zero for harmonic averaging (as plastic_yielding
+              // holds values that are either 0 or 1), but might not be consistent with the viscosity
+              // averaging chosen.
+              std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(),volume_fractions.end());
+              plastic_yielding = calculate_viscosities.second[std::distance(volume_fractions.begin(),max_composition)];
+
+              // Compute viscosity derivatives if they are requested
+              if (MaterialModel::MaterialModelDerivatives<dim> *derivatives =
+                    out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >())
+                compute_viscosity_derivatives(i,volume_fractions, calculate_viscosities.first, in, out);
+            }
+
+          // Now compute changes in the compositional fields (i.e. the accumulated strain).
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
+
           // If strain weakening is used, overwrite the first reaction term,
           // which represents the second invariant of the (plastic) strain tensor.
           // If plastic strain is tracked (so not the total strain), only overwrite
           // when plastically yielding.
-          // If viscous strain is also tracked, overwrite the second rection term as well.
-          double edot_ii = 0.;
-          double e_ii = 0.;
+          // If viscous strain is also tracked, overwrite the second reaction term as well.
           if  (use_strain_weakening == true && use_finite_strain_tensor == false && this->get_timestep_number() > 0 && in.strain_rate.size())
             {
-              edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(strain_rate)))),min_strain_rate);
-              e_ii = edot_ii*this->get_timestep();
+              const double edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),min_strain_rate);
+              const double e_ii = edot_ii*this->get_timestep();
               if (use_plastic_strain_weakening == true && plastic_yielding == true)
                 out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] = e_ii;
               if (use_viscous_strain_weakening == true && plastic_yielding == false)
@@ -575,96 +685,14 @@ namespace aspect
                 out.reaction_terms[i][this->introspection().compositional_index_for_name("total_strain")] = e_ii;
             }
 
-          // fill plastic outputs if they exist
-          if (PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim> >())
-            {
-              double C = 0.;
-              double phi = 0.;
-              // set to weakened values, or unweakened values when strain weakening is not used
-              for (unsigned int j=0; j < volume_fractions.size(); ++j)
-                {
-                  // the first compositional field contains the total strain or the plastic strain or, in case only viscous strain
-                  // weakening is applied, the viscous strain.
-                  if (use_strain_weakening == true )
-                    {
-                      double strain_invariant = 0.;
-                      if (use_plastic_strain_weakening)
-                        strain_invariant = composition[this->introspection().compositional_index_for_name("plastic_strain")];
-                      else if (!use_viscous_strain_weakening && !use_finite_strain_tensor)
-                        strain_invariant = composition[this->introspection().compositional_index_for_name("total_strain")];
-                      else if (use_finite_strain_tensor)
-                        {
-                          // Calculate second invariant of left stretching tensor "L"
-                          Tensor<2,dim> strain;
-                          const unsigned int n_first = this->introspection().compositional_index_for_name("s11");
-                          for (unsigned int q = n_first; q < n_first + Tensor<2,dim>::n_independent_components ; ++q)
-                            strain[Tensor<2,dim>::unrolled_to_component_indices(q)] = composition[q];
-                          const SymmetricTensor<2,dim> L = symmetrize( strain * transpose(strain) );
-                          strain_invariant = std::fabs(second_invariant(L));
-                        }
-
-                      std::pair<double, double> weakening = calculate_plastic_weakening(strain_invariant, j);
-                      C   += volume_fractions[j] * weakening.first;
-                      phi += volume_fractions[j] * weakening.second;
-                    }
-                  else
-                    {
-                      C   += volume_fractions[j] * cohesions[j];
-                      phi += volume_fractions[j] * angles_internal_friction[j];
-                    }
-                }
-              plastic_out->cohesions[i] = C;
-              // convert radians to degrees
-              plastic_out->friction_angles[i] = phi * 180. / numbers::PI;
-              plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
-            }
+          // Fill plastic outputs if they exist.
+          fill_plastic_outputs(i,volume_fractions,plastic_yielding,in,out);
         }
 
-      // We need the velocity gradient for the finite strain (they are not included in material model inputs),
-      // so we get them from the finite element.
+      // If we use the full strain tensor, compute the change in the individual tensor components.
       if (in.current_cell.state() == IteratorState::valid && use_strain_weakening == true
           && use_finite_strain_tensor == true && this->get_timestep_number() > 0 && in.strain_rate.size())
-        {
-
-          std::vector<Point<dim> > quadrature_positions(in.position.size());
-          for (unsigned int i=0; i < in.position.size(); ++i)
-            quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
-
-          FEValues<dim> fe_values (this->get_mapping(),
-                                   this->get_fe(),
-                                   Quadrature<dim>(quadrature_positions),
-                                   update_gradients);
-
-          std::vector<Tensor<2,dim> > velocity_gradients (quadrature_positions.size(), Tensor<2,dim>());
-
-          fe_values.reinit (in.current_cell);
-          fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_solution(),
-                                                                                         velocity_gradients);
-
-          // Assign the strain components to the compositional fields reaction terms.
-          // If there are too many fields, we simply fill only the first fields with the
-          // existing strain tensor components.
-          for (unsigned int q=0; q < in.position.size(); ++q)
-            {
-              // Convert the compositional fields into the tensor quantity they represent.
-              Tensor<2,dim> strain;
-              const unsigned int n_first = this->introspection().compositional_index_for_name("s11");
-              for (unsigned int i = n_first; i < n_first + Tensor<2,dim>::n_independent_components ; ++i)
-                {
-                  strain[Tensor<2,dim>::unrolled_to_component_indices(i)] = in.composition[q][i];
-                }
-
-              // Compute the strain accumulated in this timestep.
-              const Tensor<2,dim> strain_increment = this->get_timestep() * (velocity_gradients[q] * strain);
-
-              // Output the strain increment component-wise to its respective compositional field's reaction terms.
-              for (unsigned int i = n_first; i < n_first + Tensor<2,dim>::n_independent_components ; ++i)
-                {
-                  out.reaction_terms[q][i] = strain_increment[Tensor<2,dim>::unrolled_to_component_indices(i)];
-                }
-            }
-
-        }
+        compute_finite_strain_reaction_terms(in,out);
     }
 
     template <int dim>

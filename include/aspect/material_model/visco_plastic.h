@@ -24,6 +24,8 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 
+#include<deal.II/fe/component_mask.h>
+
 namespace aspect
 {
   namespace MaterialModel
@@ -212,7 +214,7 @@ namespace aspect
                               const std::vector<double> &parameter_values,
                               const averaging_scheme &average_type) const;
 
-        std::pair<std::vector<double>, std::vector<double> >
+        std::pair<std::vector<double>, std::vector<bool> >
         calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
                                           const double &pressure,
                                           const double &temperature,
@@ -238,6 +240,45 @@ namespace aspect
         double
         calculate_viscous_weakening ( const double strain_ii,
                                       const unsigned int j ) const;
+
+        /**
+         * A function that fills the plastic additional output in the
+         * MaterialModelOutputs object that is handed over, if it exists.
+         * Does nothing otherwise.
+         */
+        void fill_plastic_outputs (const unsigned int point_index,
+                                   const std::vector<double> &volume_fractions,
+                                   const bool plastic_yielding,
+                                   const MaterialModel::MaterialModelInputs<dim> &in,
+                                   MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+        /**
+         * A function that fills the viscosity derivatives in the
+         * MaterialModelOutputs object that is handed over, if they exist.
+         * Does nothing otherwise.
+         */
+        void compute_viscosity_derivatives(const unsigned int point_index,
+                                           const std::vector<double> &volume_fractions,
+                                           const std::vector<double> &composition_viscosities,
+                                           const MaterialModel::MaterialModelInputs<dim> &in,
+                                           MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+        /**
+         * A function that fills the reaction terms for the finite strain tensor in
+         * MaterialModelOutputs object that is handed over. It assumes the first
+         * component of the finite strain tensor is named 's11' and all other
+         * components follow this compositional field.
+         */
+        void compute_finite_strain_reaction_terms (const MaterialModel::MaterialModelInputs<dim> &in,
+                                                   MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+        /**
+         * A function that returns a ComponentMask that represents all compositional
+         * fields that should be considered 'volumetric', that is representing a
+         * physical proportion of the material, e.g. volume fraction of peridotite
+         * (as opposed to non-volumetric quantities like the amount of finite-strain).
+         */
+        ComponentMask get_volumetric_composition_mask() const;
 
         /**
          * Whether to use the accumulated strain to weaken
