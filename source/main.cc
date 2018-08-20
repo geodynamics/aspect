@@ -571,7 +571,7 @@ run_simulator(const std::string &input_as_string,
           throw aspect::QuietException();
         }
       if (i_am_proc_0)
-        std::cerr << "The provided parameter file is valid.\n\n"
+        std::cout << "The provided parameter file is valid.\n\n"
                   << "Note: This validation only checks high level "
                   << "parameter file errors, like typos in keywords or "
                   << "parameter names. It may miss more nuanced errors "
