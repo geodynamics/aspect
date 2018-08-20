@@ -97,9 +97,8 @@ pipeline {
               ..
           '''
           sh '''
-            export NP=`grep -c ^processor /proc/cpuinfo`
             cd build-gcc-fast
-            ninja -j "${NP}"
+            ninja
           '''
         }
       }
