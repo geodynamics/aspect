@@ -83,24 +83,25 @@ pipeline {
             # openmpi complains about running as root. We need
             # to run as root, because the surrounding Jenkins container
             # assumes we have root access.
-            sed -i 's/mpirun/mpirun --allow-run-as-root/' $WORKSPACE/tests/CMakeLists.txt
+            sed -i 's/mpirun/mpirun --allow-run-as-root/' "${WORKSPACE}/tests/CMakeLists.txt"
           '''
           sh '''
             cd /home/dealii/build-gcc-fast
-            
+
             # Set up build system and compile ASPECT
-            cmake -G "Ninja" \
+            cmake \
+              -G 'Ninja' \
               -D DEAL_II_CXX_FLAGS='-Werror' \
-              -D ASPECT_TEST_GENERATOR=Ninja \
-              -D ASPECT_USE_PETSC=OFF \
-              -D ASPECT_RUN_ALL_TESTS=ON \
-              -D ASPECT_PRECOMPILE_HEADERS=ON \
-              $WORKSPACE/
+              -D ASPECT_TEST_GENERATOR='Ninja' \
+              -D ASPECT_USE_PETSC='OFF' \
+              -D ASPECT_RUN_ALL_TESTS='ON' \
+              -D ASPECT_PRECOMPILE_HEADERS='ON' \
+              "${WORKSPACE}/"
           '''
           sh '''
             export NP=`grep -c ^processor /proc/cpuinfo`
             cd /home/dealii/build-gcc-fast
-            ninja -j $NP
+            ninja -j "${NP}"
           '''
         }
       }
