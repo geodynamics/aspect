@@ -76,13 +76,13 @@ pipeline {
       steps {
         container('dealii') {
           sh 'mkdir build-gcc-fast'
-          sh '''
-            # We need to add this option to mpirun, otherwise
-            # openmpi complains about running as root. We need
-            # to run as root, because the surrounding Jenkins container
-            # assumes we have root access.
-            sed -i 's/mpirun/mpirun --allow-run-as-root/' 'tests/CMakeLists.txt'
-          '''
+
+          // We need to add this option to mpirun, otherwise
+          // openmpi complains about running as root. We need
+          // to run as root, because the surrounding Jenkins container
+          // assumes we have root access.
+          sh 'sed -i "s/mpirun/mpirun --allow-run-as-root/" "tests/CMakeLists.txt"'
+
           sh '''
             cd build-gcc-fast
 
@@ -96,6 +96,7 @@ pipeline {
               -D ASPECT_PRECOMPILE_HEADERS='ON' \
               ..
           '''
+
           sh '''
             cd build-gcc-fast
             ninja
@@ -125,6 +126,7 @@ pipeline {
             # most efficient way to build the tests).
             ninja -k 0 tests || true
           '''
+
           sh '''
             # Avoid the warning described above
             export OMPI_MCA_btl=self,tcp
