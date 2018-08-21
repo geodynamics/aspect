@@ -8438,6 +8438,28 @@ Some ideas for adapting the model setup:
         effects might also play a role).
 \end{itemize}
 
+\subsubsection{Adiabatic boundary as initial temperature conditions}
+\textit{This section was contributed by Emmanuel Njinju, and D. Sarah Stamps}
+
+Modeling convection in the Earth's mantle requires an initial condition for the temperature field that represents the Earth's buoyancy structure. The adiabatic boundary is an initial temperature condition that allows for discretizing the model domain into layers separated by a user-defined isothermal boundary, which is an approximation for the lithosphere's basal boundary. This geophysical set-up employs a table look-up approach. The user defines the adiabatic boundary, or lithospheric thickness in \aspect{} through an ASCII data file that contains columns for `latitude', `longitude', and `depth', where the `latitude' and `longitude' are in degrees and the `depth' is in kilometers. The first column must be in increasing latitude, then the corresponding second column in increasing longitude. The lithospheric geothermal gradient is linear with a default surface temperature of 273.15 K and a default temperature of 1673.15 K at the base of the lithosphere. Below the isotherm the temperature increases in an adiabatic manner at 0.5 K/km.
+
+\paragraph{Setting up the \aspect{} model.} For this cookbook we will use the parameter file \url{cookbooks/adiabatic_boundary/adiabatic_boundary.prm}, which was created for the adiabatic boundary plugin by Tahiry Rajaonarison and D. Sarah Stamps. This plugin is designed specifically for the ellipsoidal chunk geometry, with the longitudes and latitudes of three corners (NE, NW, and SW) defined by the user (see Section~\ref{parameters:Geometry_20model}).
+
+\lstinputlisting[language=prmfile]{cookbooks/adiabatic_boundary/adiabatic_boundary_geometry_model.prm.out}
+
+The adiabatic boundary plugin uses the simple material model (see Sections~\ref{parameters:Material_20model} and  \ref{parameters:Material_20model/Simple_20model}.), the ascii data gravity model (Section~\ref{parameters:Gravity_20model}) and tangential velocity boundary conditions (Section~\ref{sec:equations}).The adiabatic boundary is input in \aspect{} using the following set of input parameters:
+
+ \lstinputlisting[language=prmfile]{cookbooks/adiabatic_boundary/adiabatic_boundary_initial_temp_model.prm.out}
+
+Figure~\ref{fig:adiabatic-boundary} illustrates a thermally defined lithosphere with temperatures ranging from 273.15 K at the surface to 1673.15 K at the lithosphere-asthenosphere-boundary. Sharp variation in the thickness of the lithosphere-asthenosphere-boundary induces edge-driven convection as illustrated by the velocity fields. The temperature of the asthenosphere ranges from 1673.15 K to 1900.15 K at the base of the model (500 km).
+
+ \begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{cookbooks/adiabatic_boundary/initial_temperature_model.png}
+    \caption{Initial temperature model highlighting the 1673.15 K temperature contour or lithosphere-asthenosphere thermal boundary (LAB), and the resulting edge-driven flow due to variation in the thickness of the LAB.}
+    \label{fig:adiabatic-boundary}
+\end{figure}
+
 \subsection{Benchmarks}
 \label{sec:cookbooks-benchmarks}
 
