@@ -29,13 +29,13 @@ namespace aspect
     // make sure it is initialized right way as the programe starts.
     template <int dim>
     std::time_t
-    EndWalltime<dim>::start_walltime = std::time(NULL);
+    EndWalltime<dim>::start_walltime = std::time(nullptr);
 
     template <int dim>
     bool
     EndWalltime<dim>::execute()
     {
-      return ( (std::time(NULL)-start_walltime) >= (int)walltime_duration);
+      return ( (std::time(nullptr)-start_walltime) >= (int)walltime_duration);
     }
 
 
