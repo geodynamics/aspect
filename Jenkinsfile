@@ -12,10 +12,6 @@ pipeline {
     timeout(time: 2, unit: 'HOURS') 
   }
 
-  parameters {
-    booleanParam(defaultValue: false, description: 'Is the pull request approved for testing?', name: 'TRUST_BUILD')
-  }
-
   stages {
     stage ("info") {
       steps {
@@ -30,7 +26,6 @@ pipeline {
     stage ("Check permissions") {
       when {
 	allOf {
-            environment name: 'TRUST_BUILD', value: 'false' 
             not {branch 'master'}
             not {changeRequest authorEmail: "rene.gassmoeller@mailbox.org"}
             not {changeRequest authorEmail: "heister@clemson.edu"}
@@ -43,8 +38,10 @@ pipeline {
 	    }
       }
       steps {
-	  echo "Please ask an admin to rerun jenkins with TRUST_BUILD=true"
-	    sh "exit 1"
+        sh '''
+          wget -q -O - https://api.github.com/repos/geodynamics/aspect/issues/${CHANGE_ID}/labels | grep 'ready to test' || \
+          { echo "This commit will only be tested when it has the label 'ready to test'"; exit 1; }
+        '''
       }
     }
 
