@@ -42,7 +42,7 @@ namespace aspect
       // Check that initial topography is required.
       // If so, connect the initial topography function
       // to the right signal.
-      if (dynamic_cast<InitialTopographyModel::ZeroTopography<dim>*>(topo_model) == 0)
+      if (dynamic_cast<InitialTopographyModel::ZeroTopography<dim>*>(topo_model) == nullptr)
         this->get_signals().pre_set_initial_state.connect(
           [&](typename parallel::distributed::Triangulation<dim> &tria)
         {
@@ -273,7 +273,7 @@ namespace aspect
                   this->get_timestep_number() == numbers::invalid_unsigned_int,
                   ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
 
-      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
+      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr,
                   ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       for (unsigned int d = 0; d < dim; d++)

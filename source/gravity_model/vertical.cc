@@ -74,13 +74,13 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      Assert (dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) == 0,
+      Assert (dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) == nullptr,
               ExcMessage ("Gravity model 'vertical' should not be used with geometry model 'sphere'."));
-      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) == 0,
+      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) == nullptr,
               ExcMessage ("Gravity model 'vertical' should not be used with geometry model 'spherical shell'."));
-      Assert (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) == 0,
+      Assert (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) == nullptr,
               ExcMessage ("Gravity model 'vertical' should not be used with geometry model 'chunk'."));
-      Assert (dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*> (&this->get_geometry_model()) == 0,
+      Assert (dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*> (&this->get_geometry_model()) == nullptr,
               ExcMessage ("Gravity model 'vertical' should not be used with geometry model 'ellipsoidal chunk'."));
     }
   }

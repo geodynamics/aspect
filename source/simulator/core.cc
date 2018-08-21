@@ -107,7 +107,7 @@ namespace aspect
     {
       if (geometry_model.has_curved_elements())
         return new MappingQ<dim>(4, true);
-      if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&initial_topography_model) != 0)
+      if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&initial_topography_model) != nullptr)
         return new MappingCartesian<dim>();
 
       return new MappingQ1<dim>();

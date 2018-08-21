@@ -127,7 +127,7 @@ namespace aspect
           coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
           use_spherical_unit_vectors = prm.get_bool("Use spherical unit vectors");
           if (use_spherical_unit_vectors)
-            AssertThrow ((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) == 0,
+            AssertThrow ((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) == nullptr,
                          ExcMessage ("Spherical unit vectors should not be used "
                                      "when geometry model is not spherical."));
         }

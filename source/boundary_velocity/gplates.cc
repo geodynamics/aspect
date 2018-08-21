@@ -559,8 +559,8 @@ namespace aspect
                 ExcMessage ("To define a plane for the 2D model the two assigned points "
                             "may not be equal."));
 
-      if (((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model())) != 0)
-          || ((dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0))
+      if (((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model())) != nullptr)
+          || ((dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != nullptr))
         {
           lookup.reset(new internal::GPlatesLookup<dim>(pointone,pointtwo));
           old_lookup.reset(new internal::GPlatesLookup<dim>(pointone,pointtwo));
