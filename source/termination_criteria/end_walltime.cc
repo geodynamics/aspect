@@ -74,6 +74,6 @@ namespace aspect
   {
     ASPECT_REGISTER_TERMINATION_CRITERION(EndWalltime,
                                           "wall time",
-                                          "Terminate the simulation once the wall time limit has reached.");
+                                          "Terminate the simulation once the wall time limit has reached.")
   }
 }
