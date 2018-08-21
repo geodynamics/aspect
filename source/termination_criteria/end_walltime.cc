@@ -46,10 +46,9 @@ namespace aspect
       prm.enter_subsection("Termination criteria");
       {
         prm.declare_entry ("Wall time",
-                           "0",
+                           "24",
                            Patterns::Double (0),
-                           "The wall time of the simulation. The default value is zero, "
-                           "which disabled this termination criteria. Unit: hours.");
+                           "The wall time of the simulation. Unit: hours.");
       }
       prm.leave_subsection ();
     }
