@@ -25,7 +25,7 @@ namespace aspect
 {
   namespace Particle
   {
-    const PropertyPool::Handle PropertyPool::invalid_handle = NULL;
+    const PropertyPool::Handle PropertyPool::invalid_handle = nullptr;
 
 
     PropertyPool::PropertyPool (const unsigned int n_properties_per_slot)

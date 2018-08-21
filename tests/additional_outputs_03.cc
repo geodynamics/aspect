@@ -89,7 +89,7 @@ namespace aspect
       {
         std::cout << "* create_additional_material_model_outputs() called" << std::endl;
 
-        if (out.template get_additional_output<MaterialModel::AdditionalOutputs1<dim> >() != NULL)
+        if (out.template get_additional_output<MaterialModel::AdditionalOutputs1<dim> >() != nullptr)
           return;
 
         std::cout << "   creating additional output!" << std::endl;
@@ -105,8 +105,8 @@ namespace aspect
         MaterialModel::AdditionalOutputs1<dim> *additional
           = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalOutputs1<dim> >();
 
-        std::cout << "* local_assemble_stokes call, have additional? " << (additional!=NULL) << std::endl;
-        if (additional!=NULL)
+        std::cout << "* local_assemble_stokes call, have additional? " << (additional!=nullptr) << std::endl;
+        if (additional!=nullptr)
           std::cout << "   value = " << additional->additional_material_output1[0]
                     << " " << additional->additional_material_output1[1] << std::endl;
 

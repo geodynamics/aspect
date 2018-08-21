@@ -257,7 +257,7 @@ namespace aspect
       // If the heating model does not get the reaction rate outputs, it can not correctly compute
       // the rates of temperature change. To make sure these (incorrect) values are never used anywhere,
       // overwrite them with signaling_NaNs.
-      if (reaction_rate_outputs == NULL)
+      if (reaction_rate_outputs == nullptr)
         for (unsigned int q=0; q<heating_model_outputs.rates_of_temperature_change.size(); ++q)
           heating_model_outputs.rates_of_temperature_change[q] = numbers::signaling_nan<double>();
     }

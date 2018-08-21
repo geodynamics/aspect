@@ -165,7 +165,7 @@ namespace aspect
       const unsigned int n_points = outputs.viscosities.size();
 
       if (this->get_parameters().enable_additional_stokes_rhs
-          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == NULL)
+          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == nullptr)
         {
           outputs.additional_outputs.push_back(
             std::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >
@@ -202,7 +202,7 @@ namespace aspect
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 
       Assert(dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model()) !=
-             NULL, ExcMessage("Error: The current material model needs to be derived from MeltInterface to use melt transport."));
+             nullptr, ExcMessage("Error: The current material model needs to be derived from MeltInterface to use melt transport."));
 
       const FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
       const FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
@@ -320,7 +320,7 @@ namespace aspect
         const Introspection<dim> &introspection = simulator_access->introspection();
         const MaterialModel::MeltOutputs<dim> *melt_out = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 
-        Assert(melt_out != NULL, ExcInternalError());
+        Assert(melt_out != nullptr, ExcInternalError());
 
         const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
         const unsigned int is_compressible = simulator_access->get_material_model().is_compressible();
@@ -384,7 +384,7 @@ namespace aspect
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
       Assert(dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model()) !=
-             NULL, ExcMessage("Error: The current material model needs to be derived from MeltInterface to use melt transport."));
+             nullptr, ExcMessage("Error: The current material model needs to be derived from MeltInterface to use melt transport."));
 
       const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(scratch.material_model_inputs,
                                scratch.material_model_outputs,
@@ -490,7 +490,7 @@ namespace aspect
                                      (bulk_density * gravity * scratch.phi_u[i])
                                      +
                                      // add a force to the RHS if present
-                                     (force!=NULL ?
+                                     (force!=nullptr ?
                                       (force->rhs_u[q] * scratch.phi_u[i]
                                        + pressure_scaling * force->rhs_p[q] * scratch.phi_p[i]
                                        + pressure_scaling * force->rhs_melt_pc[q] * p_c_scale * scratch.phi_p_c[i])
@@ -1198,7 +1198,7 @@ namespace aspect
             const bool is_melt_cell = this->get_melt_handler().is_melt_cell(in.current_cell);
 
             MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-            Assert(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the melt variables."));
+            Assert(melt_outputs != nullptr, ExcMessage("Need MeltOutputs from the material model for computing the melt variables."));
             const FEValuesExtractors::Vector fluid_velocity_extractor = this->introspection().variable("fluid velocity").extractor_vector();
 
             std::vector<Tensor<1,dim> > phi_u_f(fluid_velocity_dofs_per_cell);
@@ -1535,7 +1535,7 @@ namespace aspect
       MaterialModel::MaterialModelOutputs<dim> material_model_outputs(quadrature_formula.size(), n_compositional_fields);
 
       MeltHandler<dim>::create_material_model_outputs(material_model_outputs);
-      Assert(dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model()) != NULL,
+      Assert(dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model()) != nullptr,
              ExcMessage("Your material model does not derive from MaterialModel::MeltInterface, which is required."));
 
       for (auto cell = this->get_dof_handler().begin_active();
@@ -1860,7 +1860,7 @@ namespace aspect
   MeltHandler<dim>::
   create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output)
   {
-    if (output.template get_additional_output<MaterialModel::MeltOutputs<dim> >() != NULL)
+    if (output.template get_additional_output<MaterialModel::MeltOutputs<dim> >() != nullptr)
       return;
 
     const unsigned int n_points = output.viscosities.size();

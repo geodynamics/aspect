@@ -132,7 +132,7 @@ namespace aspect
             {
               const MaterialModel::MaterialModelDerivatives<dim> *derivatives
                 = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
-              AssertThrow(derivatives != NULL,
+              AssertThrow(derivatives != nullptr,
                           ExcMessage ("Error: The newton method requires derivatives from the material model."));
 
               const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
@@ -343,7 +343,7 @@ namespace aspect
                   // This one is only available in debug mode, because normally
                   // the AssertTrow in the preconditioner should already have
                   // caught the problem.
-                  Assert(derivatives != NULL,
+                  Assert(derivatives != nullptr,
                          ExcMessage ("Error: The Newton method requires the material to "
                                      "compute derivatives."));
 
@@ -497,7 +497,7 @@ namespace aspect
               // This one is only avaiable in debug mode, because normally
               // the AssertTrow in the preconditioner should already have
               // caught the problem.
-              Assert(derivatives != NULL, ExcMessage ("Error: The newton method requires the derivatives"));
+              Assert(derivatives != nullptr, ExcMessage ("Error: The newton method requires the derivatives"));
 
               const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
               const double viscosity_derivative_wrt_pressure = derivatives->viscosity_derivative_wrt_pressure[q];

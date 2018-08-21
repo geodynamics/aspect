@@ -124,7 +124,7 @@ namespace aspect
       // fill melt outputs if they exist
       MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
 
-      if (melt_out != NULL)
+      if (melt_out != nullptr)
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 

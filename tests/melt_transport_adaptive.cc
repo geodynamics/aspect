@@ -114,7 +114,7 @@ namespace aspect
               this->get_material_model().evaluate(in, out);
 
               MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-              AssertThrow(melt_out != NULL,
+              AssertThrow(melt_out != nullptr,
                           ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
 
               const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(in, out, this->get_melt_handler(), true);
@@ -220,7 +220,7 @@ namespace aspect
         // fill melt outputs if they exist
         aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
 
-        if (melt_out != NULL)
+        if (melt_out != nullptr)
           {
             const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 

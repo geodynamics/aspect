@@ -135,7 +135,7 @@ namespace aspect
   NewtonHandler<dim>::
   create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output)
   {
-    if (output.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >() != NULL)
+    if (output.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >() != nullptr)
       return;
 
     const unsigned int n_points = output.viscosities.size();

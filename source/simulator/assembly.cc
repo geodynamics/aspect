@@ -893,7 +893,7 @@ namespace aspect
         MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs
           = scratch.material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
 
-        Assert(reaction_rate_outputs == NULL,
+        Assert(reaction_rate_outputs == nullptr,
                ExcMessage("You are using a material model where the reaction rate outputs "
                           "are created even though the operator splitting solver option is "
                           "not used in the model, this is not supported! "

@@ -105,7 +105,7 @@ namespace aspect
           return std::get<dim>(registered_plugins).create_plugin (name,
                                                                   "Particle::Output name");
         else
-          return NULL;
+          return nullptr;
       }
 
 

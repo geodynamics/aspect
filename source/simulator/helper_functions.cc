@@ -451,7 +451,7 @@ namespace aspect
     // This prevents race conditions where some processes will checkpoint and others won't
     if (parameters.checkpoint_time_secs > 0)
       {
-        int global_do_checkpoint = ((std::time(NULL)-last_checkpoint_time) >=
+        int global_do_checkpoint = ((std::time(nullptr)-last_checkpoint_time) >=
                                     parameters.checkpoint_time_secs);
         MPI_Bcast(&global_do_checkpoint, 1, MPI_INT, 0, mpi_communicator);
 
@@ -1562,7 +1562,7 @@ namespace aspect
     MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs_T
       = out_T.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
 
-    AssertThrow(reaction_rate_outputs_C != NULL && reaction_rate_outputs_T != NULL,
+    AssertThrow(reaction_rate_outputs_C != nullptr && reaction_rate_outputs_T != nullptr,
                 ExcMessage("You are trying to use the operator splitting solver scheme, "
                            "but the material model you use does not support operator splitting "
                            "(it does not create ReactionRateOutputs, which are required for this "

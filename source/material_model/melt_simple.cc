@@ -310,7 +310,7 @@ namespace aspect
               for (unsigned int c=0; c<in.composition[i].size(); ++c)
                 {
                   // fill reaction rate outputs
-                  if (reaction_rate_out != NULL)
+                  if (reaction_rate_out != nullptr)
                     {
                       if (c == peridotite_idx && this->get_timestep_number() > 0)
                         reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale
@@ -341,7 +341,7 @@ namespace aspect
                 {
                   out.reaction_terms[i][c] = 0.0;
 
-                  if (reaction_rate_out != NULL)
+                  if (reaction_rate_out != nullptr)
                     reaction_rate_out->reaction_rates[i][c] = 0.0;
                 }
             }
@@ -373,7 +373,7 @@ namespace aspect
       // fill melt outputs if they exist
       MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
 
-      if (melt_out != NULL)
+      if (melt_out != nullptr)
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
@@ -766,7 +766,7 @@ namespace aspect
     void
     MeltSimple<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (this->get_parameters().use_operator_splitting && out.template get_additional_output<ReactionRateOutputs<dim> >() == NULL)
+      if (this->get_parameters().use_operator_splitting && out.template get_additional_output<ReactionRateOutputs<dim> >() == nullptr)
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(

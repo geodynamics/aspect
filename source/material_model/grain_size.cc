@@ -1976,7 +1976,7 @@ namespace aspect
       // These properties are useful as output, but will also be used by the
       // heating model to reduce shear heating by the amount of work done to
       // reduce grain size.
-      if (out.template get_additional_output<DislocationViscosityOutputs<dim> >() == NULL)
+      if (out.template get_additional_output<DislocationViscosityOutputs<dim> >() == nullptr)
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
@@ -1985,7 +1985,7 @@ namespace aspect
         }
 
       // These properties are only output properties.
-      if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == NULL)
+      if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == nullptr)
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(

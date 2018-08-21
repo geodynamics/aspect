@@ -580,7 +580,7 @@ namespace aspect
        * <code>source/simulator/solver_schemes.cc</code>.
        */
       double assemble_and_solve_temperature (const bool compute_initial_residual = false,
-                                             double *initial_residual = NULL);
+                                             double *initial_residual = nullptr);
 
       /**
        * Solve the composition equations with whatever method is selected
@@ -595,7 +595,7 @@ namespace aspect
        * <code>source/simulator/solver_schemes.cc</code>.
        */
       std::vector<double> assemble_and_solve_composition (const bool compute_initial_residual = false,
-                                                          std::vector<double> *initial_residual = NULL);
+                                                          std::vector<double> *initial_residual = nullptr);
 
       /**
        * Assemble and solve the Stokes equation.
@@ -615,7 +615,7 @@ namespace aspect
        * <code>source/simulator/solver_schemes.cc</code>.
        */
       double assemble_and_solve_stokes (const bool compute_initial_residual = false,
-                                        double *initial_residual = NULL);
+                                        double *initial_residual = nullptr);
 
       /**
        * Initiate the assembly of one advection matrix and right hand side and

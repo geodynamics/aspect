@@ -441,7 +441,7 @@ namespace aspect
               // compute derivatives if necessary
               std::vector<SymmetricTensor<2,dim> > composition_viscosities_derivatives(volume_fractions.size());
               std::vector<double> composition_dviscosities_dpressure(volume_fractions.size());
-              if (derivatives != NULL)
+              if (derivatives != nullptr)
                 {
                   const double finite_difference_accuracy = 1e-7;
 
@@ -1141,7 +1141,7 @@ namespace aspect
     void
     ViscoPlastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<PlasticAdditionalOutputs<dim> >() == NULL)
+      if (out.template get_additional_output<PlasticAdditionalOutputs<dim> >() == nullptr)
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(

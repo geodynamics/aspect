@@ -234,7 +234,7 @@ namespace aspect
          * in the input file (and are consequently currently active) and see
          * if one of them has the desired type specified by the template
          * argument. If so, return a pointer to it. If no postprocessor is
-         * active that matches the given type, return a NULL pointer.
+         * active that matches the given type, return a nullptr.
          *
          * @deprecated Use has_matching_postprocessor() and
          * get_matching_postprocessor() instead.
@@ -405,7 +405,7 @@ namespace aspect
            p != postprocessors.end(); ++p)
         if (PostprocessorType *x = dynamic_cast<PostprocessorType *> ( (*p).get()) )
           return x;
-      return NULL;
+      return nullptr;
     }
 
 

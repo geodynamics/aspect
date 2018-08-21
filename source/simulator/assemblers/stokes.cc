@@ -233,12 +233,12 @@ namespace aspect
               data.local_rhs(i) += (density * gravity * scratch.phi_u[i])
                                    * JxW;
 
-              if (force != NULL && this->get_parameters().enable_additional_stokes_rhs)
+              if (force != nullptr && this->get_parameters().enable_additional_stokes_rhs)
                 data.local_rhs(i) += (force->rhs_u[q] * scratch.phi_u[i]
                                       + pressure_scaling * force->rhs_p[q] * scratch.phi_p[i])
                                      * JxW;
 
-              if (elastic_outputs != NULL && this->get_parameters().enable_elasticity)
+              if (elastic_outputs != nullptr && this->get_parameters().enable_elasticity)
                 data.local_rhs(i) += (scalar_product(elastic_outputs->elastic_force[q],Tensor<2,dim>(scratch.grads_phi_u[i])))
                                      * JxW;
 
@@ -270,7 +270,7 @@ namespace aspect
       const unsigned int n_points = outputs.viscosities.size();
 
       if (this->get_parameters().enable_additional_stokes_rhs
-          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == NULL)
+          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == nullptr)
         {
           outputs.additional_outputs.push_back(
             std::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >
@@ -283,7 +283,7 @@ namespace aspect
              == n_points, ExcInternalError());
 
       if ((this->get_parameters().enable_elasticity) &&
-          outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >() == NULL)
+          outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >() == nullptr)
         {
           outputs.additional_outputs.push_back(
             std::shared_ptr<MaterialModel::ElasticOutputs<dim> >

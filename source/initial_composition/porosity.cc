@@ -43,7 +43,7 @@ namespace aspect
 
       const MaterialModel::MeltFractionModel<dim> *material_model =
         dynamic_cast<const MaterialModel::MeltFractionModel<dim>* > (&this->get_material_model());
-      AssertThrow(material_model != NULL,
+      AssertThrow(material_model != nullptr,
                   ExcMessage("The used material model is not derived from the 'MeltFractionModel' class, "
                              "and therefore does not support computing equilibrium melt fractions. "
                              "This is incompatible with the `porosity' "
