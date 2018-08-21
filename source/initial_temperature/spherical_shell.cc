@@ -50,17 +50,17 @@ namespace aspect
       const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
       double R1;
 
-      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
+      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != nullptr)
         {
           R1 = dynamic_cast<const GeometryModel::Sphere<dim>&>
                (this->get_geometry_model()).radius();
         }
-      else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0)
+      else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != nullptr)
         {
           R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
                (this->get_geometry_model()).outer_radius();
         }
-      else if (dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0)
+      else if (dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != nullptr)
         {
           R1 = dynamic_cast<const GeometryModel::Chunk<dim>&>
                (this->get_geometry_model()).outer_radius();
@@ -201,20 +201,20 @@ namespace aspect
       const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
       double R0, R1;
 
-      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
+      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != nullptr)
         {
           R0 = 0.;
           R1 = dynamic_cast<const GeometryModel::Sphere<dim>&>
                (this->get_geometry_model()).radius();
         }
-      else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0)
+      else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != nullptr)
         {
           R0 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
                (this->get_geometry_model()).inner_radius();
           R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
                (this->get_geometry_model()).outer_radius();
         }
-      else if (dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0)
+      else if (dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != nullptr)
         {
           R0 = dynamic_cast<const GeometryModel::Chunk<dim>&>
                (this->get_geometry_model()).inner_radius();

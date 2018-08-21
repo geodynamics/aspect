@@ -40,8 +40,8 @@ namespace aspect
     std::pair<std::string,std::string>
     SphericalVelocityStatistics<dim>::execute (TableHandler &statistics)
     {
-      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0 ||
-              dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != 0,
+      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != nullptr ||
+              dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != nullptr,
               ExcMessage ("This postprocessor can only be used if the geometry "
                           "is a sphere or spherical shell."));
 

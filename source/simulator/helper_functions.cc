@@ -898,7 +898,7 @@ namespace aspect
         // consequently, adding the adjustment to the global function is
         // achieved by adding the adjustment to the first pressure degree
         // of freedom on each cell.
-        Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(introspection.base_elements.pressure)) != 0,
+        Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(introspection.base_elements.pressure)) != nullptr,
                 ExcInternalError());
         const unsigned int pressure_component = (parameters.include_melt_transport ?
                                                  introspection.variable("fluid pressure").first_component_index
@@ -998,7 +998,7 @@ namespace aspect
         // consequently, adding the adjustment to the global function is
         // achieved by adding the adjustment to the first pressure degree
         // of freedom on each cell.
-        Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(introspection.base_elements.pressure)) != 0,
+        Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(introspection.base_elements.pressure)) != nullptr,
                 ExcInternalError());
         Assert(!parameters.include_melt_transport, ExcNotImplemented());
         const unsigned int pressure_component = introspection.component_indices.pressure;

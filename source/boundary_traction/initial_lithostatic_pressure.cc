@@ -85,7 +85,7 @@ namespace aspect
         }
 
       // Check that the representative point lies in the domain.
-      AssertThrow((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())!=0) ?
+      AssertThrow((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) != nullptr) ?
                   (this->get_geometry_model().point_is_in_domain(representative_point)) :
                   (this->get_geometry_model().point_is_in_domain(Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_representative_point))),
                   ExcMessage("The reference point does not lie with the domain."));
@@ -125,7 +125,7 @@ namespace aspect
 
       // Where to calculate the density
       // for spherical domains
-      if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == 0)
+      if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == nullptr)
         in0.position[0] = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_representative_point);
       // and for cartesian domains
       else
@@ -171,7 +171,7 @@ namespace aspect
 
           // Where to calculate the density:
           // for spherical domains
-          if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == 0)
+          if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == nullptr)
             {
               // decrease radius with depth increment
               spherical_representative_point[0] -= delta_z;

@@ -175,9 +175,9 @@ namespace aspect
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
-      Assert (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == 0,
+      Assert (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == nullptr,
               ExcMessage ("Gravity model 'radial linear' should not be used with geometry model 'box'."));
-      Assert (dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*> (&this->get_geometry_model()) == 0,
+      Assert (dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*> (&this->get_geometry_model()) == nullptr,
               ExcMessage ("Gravity model 'radial linear' should not be used with geometry model 'box with "
                           "lithosphere boundary indicators'."));
 

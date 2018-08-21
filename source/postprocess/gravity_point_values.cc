@@ -54,21 +54,21 @@ namespace aspect
       // Get the value of the outer radius and inner radius
       double model_outer_radius;
       double model_inner_radius;
-      if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0)
+      if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != nullptr)
         {
           model_outer_radius = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
                                (this->get_geometry_model()).outer_radius();
           model_inner_radius = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
                                (this->get_geometry_model()).inner_radius();
         }
-      else if (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != 0)
+      else if (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr)
         {
           model_outer_radius = dynamic_cast<const GeometryModel::Chunk<dim>&>
                                (this->get_geometry_model()).outer_radius();
           model_inner_radius = dynamic_cast<const GeometryModel::Chunk<dim>&>
                                (this->get_geometry_model()).inner_radius();
         }
-      else if (dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != 0)
+      else if (dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != nullptr)
         {
           model_outer_radius = dynamic_cast<const GeometryModel::Sphere<dim>&>
                                (this->get_geometry_model()).radius();
@@ -314,9 +314,9 @@ namespace aspect
           maximum_longitude = prm.get_double ("Maximum longitude");
           minimum_latitude  = prm.get_double ("Minimum latitude");
           maximum_latitude  = prm.get_double ("Maximum latitude");
-          AssertThrow (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0 ||
-                       dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != 0 ||
-                       dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != 0,
+          AssertThrow (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != nullptr ||
+                       dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != nullptr ||
+                       dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr,
                        ExcMessage ("This postprocessor can only be used if the geometry "
                                    "is a sphere, spherical shell or spherical chunk."));
           AssertThrow (! this->get_material_model().is_compressible(),
