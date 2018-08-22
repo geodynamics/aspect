@@ -151,7 +151,7 @@ namespace aspect
 
       // Choice of activation volume depends on whether there is an adiabatic temperature
       // gradient used when calculating the viscosity. This allows the same activation volume
-      // to be used in incompressible and compressible models. 
+      // to be used in incompressible and compressible models.
       const double temperature_for_viscosity = temperature + adiabatic_temperature_gradient_for_viscosity*pressure;
 
       // Calculate viscosities for each of the individual compositional phases
@@ -1143,10 +1143,10 @@ namespace aspect
           // Include an adiabat temperature gradient in flow laws
           adiabatic_temperature_gradient_for_viscosity = prm.get_double("Adiabat temperature gradient for viscosity");
           if (this->get_heating_model_manager().adiabatic_heating_enabled())
-              AssertThrow (adiabatic_temperature_gradient_for_viscosity == 0.0,
-              ExcMessage("If adiabatic heating is enabled you should not add another adiabatic gradient"
-                         "to the temperature for computing the viscosity, because the ambient" 
-                         "temperature profile already includes the adiabatic gradient."));
+            AssertThrow (adiabatic_temperature_gradient_for_viscosity == 0.0,
+                         ExcMessage("If adiabatic heating is enabled you should not add another adiabatic gradient"
+                                    "to the temperature for computing the viscosity, because the ambient"
+                                    "temperature profile already includes the adiabatic gradient."));
         }
         prm.leave_subsection();
       }
