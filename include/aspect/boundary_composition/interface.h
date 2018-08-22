@@ -222,7 +222,7 @@ namespace aspect
          * the input file (and are consequently currently active) and see if one
          * of them has the desired type specified by the template argument. If so,
          * return a pointer to it. If no boundary composition model is active
-         * that matches the given type, return a NULL pointer.
+         * that matches the given type, return a nullptr.
          *
          * @deprecated Use has_matching_boundary_composition_model() and
          * get_matching_boundary_composition_model() instead.
@@ -324,7 +324,7 @@ namespace aspect
            p != boundary_composition_objects.end(); ++p)
         if (BoundaryCompositionType *x = dynamic_cast<BoundaryCompositionType *> ( (*p).get()) )
           return x;
-      return NULL;
+      return nullptr;
     }
 
 

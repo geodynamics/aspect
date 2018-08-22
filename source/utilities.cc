@@ -936,7 +936,7 @@ namespace aspect
       if ((Utilities::MPI::this_mpi_process(comm) == 0))
         {
           DIR *output_directory = opendir(pathname.c_str());
-          if (output_directory == NULL)
+          if (output_directory == nullptr)
             {
               if (!silent)
                 std::cout << "\n"

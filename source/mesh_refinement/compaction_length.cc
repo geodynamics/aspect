@@ -64,7 +64,7 @@ namespace aspect
               this->get_material_model().evaluate(in, out);
 
               MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-              AssertThrow(melt_out != NULL,
+              AssertThrow(melt_out != nullptr,
                           ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
 
               // for each composition dof, check if the compaction length exceeds the cell size

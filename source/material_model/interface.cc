@@ -303,7 +303,7 @@ namespace aspect
       velocity(n_points, numbers::signaling_nan<Tensor<1,dim> >()),
       composition(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>())),
       strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
-      cell (NULL),
+      cell (nullptr),
       current_cell()
     {}
 
@@ -359,7 +359,7 @@ namespace aspect
       velocity(fe_values.n_quadrature_points, numbers::signaling_nan<Tensor<1,dim> >()),
       composition(fe_values.n_quadrature_points, std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
       strain_rate(fe_values.n_quadrature_points, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
-      cell(cell_x.state() == IteratorState::valid ? &current_cell : NULL),
+      cell(cell_x.state() == IteratorState::valid ? &current_cell : nullptr),
 #if DEAL_II_VERSION_GTE(9,0,0)
       current_cell (cell_x)
 #else
@@ -419,7 +419,7 @@ namespace aspect
         }
 
       DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
-      this->cell = cell_x.state() == IteratorState::valid ? &cell_x : NULL;
+      this->cell = cell_x.state() == IteratorState::valid ? &cell_x : nullptr;
       DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 #if DEAL_II_VERSION_GTE(9,0,0)

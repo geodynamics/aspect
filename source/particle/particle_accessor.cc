@@ -27,7 +27,7 @@ namespace aspect
     template <int dim, int spacedim>
     ParticleAccessor<dim,spacedim>::ParticleAccessor ()
       :
-      map (NULL),
+      map (nullptr),
       particle ()
     {}
 

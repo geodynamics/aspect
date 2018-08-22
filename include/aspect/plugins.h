@@ -62,7 +62,7 @@ namespace aspect
     bool
     plugin_type_matches (const PluginType &object)
     {
-      return (dynamic_cast<const TestType *> (&object) != NULL);
+      return (dynamic_cast<const TestType *> (&object) != nullptr);
     }
 
     /**
@@ -562,9 +562,9 @@ namespace aspect
             // finally see if this plugin is derived from
             // SimulatorAccess; if so, draw an arrow from SimulatorAccess
             // also to the plugin's name
-            if (dynamic_cast<const SimulatorAccess<2>*>(instance.get()) != NULL
+            if (dynamic_cast<const SimulatorAccess<2>*>(instance.get()) != nullptr
                 ||
-                dynamic_cast<const SimulatorAccess<3>*>(instance.get()) != NULL)
+                dynamic_cast<const SimulatorAccess<3>*>(instance.get()) != nullptr)
               output_stream << "SimulatorAccess"
                             << " -> "
                             << node_name

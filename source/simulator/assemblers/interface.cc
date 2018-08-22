@@ -202,21 +202,21 @@ namespace aspect
                                                              finite_element, face_quadrature,
                                                              face_update_flags)
                                       :
-                                      NULL),
+                                      nullptr),
           neighbor_face_finite_element_values (face_quadrature.size() > 0
                                                ?
                                                new FEFaceValues<dim> (mapping,
                                                                       finite_element, face_quadrature,
                                                                       face_update_flags)
                                                :
-                                               NULL),
+                                               nullptr),
           subface_finite_element_values (face_quadrature.size() > 0
                                          ?
                                          new FESubfaceValues<dim> (mapping,
                                                                    finite_element, face_quadrature,
                                                                    face_update_flags)
                                          :
-                                         NULL),
+                                         nullptr),
           local_dof_indices (finite_element.dofs_per_cell),
 
           phi_field (advection_element.dofs_per_cell, numbers::signaling_nan<double>()),
@@ -290,7 +290,7 @@ namespace aspect
                                                              scratch.face_finite_element_values->get_quadrature(),
                                                              scratch.face_finite_element_values->get_update_flags())
                                       :
-                                      NULL),
+                                      nullptr),
           neighbor_face_finite_element_values (scratch.neighbor_face_finite_element_values.get()
                                                ?
                                                new FEFaceValues<dim> (scratch.neighbor_face_finite_element_values->get_mapping(),
@@ -298,7 +298,7 @@ namespace aspect
                                                                       scratch.neighbor_face_finite_element_values->get_quadrature(),
                                                                       scratch.neighbor_face_finite_element_values->get_update_flags())
                                                :
-                                               NULL),
+                                               nullptr),
           subface_finite_element_values (scratch.subface_finite_element_values.get()
                                          ?
                                          new FESubfaceValues<dim> (scratch.subface_finite_element_values->get_mapping(),
@@ -306,7 +306,7 @@ namespace aspect
                                                                    scratch.subface_finite_element_values->get_quadrature(),
                                                                    scratch.subface_finite_element_values->get_update_flags())
                                          :
-                                         NULL),
+                                         nullptr),
           local_dof_indices (scratch.finite_element_values.get_fe().dofs_per_cell),
 
           phi_field (scratch.phi_field),

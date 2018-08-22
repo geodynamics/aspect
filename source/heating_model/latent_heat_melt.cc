@@ -67,7 +67,7 @@ namespace aspect
                                                                   * melting_rate
                                                                   * material_model_inputs.temperature[q];
                 }
-              else if (use_operator_split && reaction_rate_out != NULL)
+              else if (use_operator_split && reaction_rate_out != nullptr)
                 {
                   // if operator splitting is used in the model, we have to use the reaction rates from the
                   // material model outputs instead of the reaction terms
@@ -89,7 +89,7 @@ namespace aspect
                                                                          * material_model_inputs.temperature[q]
                                                                          / material_model_outputs.specific_heat[q];
                 }
-              else if (use_operator_split && reaction_rate_out == NULL)
+              else if (use_operator_split && reaction_rate_out == nullptr)
                 {
                   // if operator plit is used, but the reaction rate outputs are not there,
                   // fill the rates of temperature change with NaNs, so that an error is thrown

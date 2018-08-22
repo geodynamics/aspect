@@ -138,8 +138,8 @@ namespace aspect
     :
     assemblers (new Assemblers::Manager<dim>()),
     parameters (prm, mpi_communicator_),
-    melt_handler (parameters.include_melt_transport ? new MeltHandler<dim> (prm) : NULL),
-    newton_handler (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ? new NewtonHandler<dim> () : NULL),
+    melt_handler (parameters.include_melt_transport ? new MeltHandler<dim> (prm) : nullptr),
+    newton_handler (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ? new NewtonHandler<dim> () : nullptr),
     post_signal_creation(
       std::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
                  std::ref(signals))),
@@ -170,7 +170,7 @@ namespace aspect
     prescribed_stokes_solution (PrescribedStokesSolution::create_prescribed_stokes_solution<dim>(prm)),
     adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
 #ifdef ASPECT_USE_WORLD_BUILDER
-    world_builder (parameters.world_builder_file != "" ? new WorldBuilder::World (parameters.world_builder_file) : NULL),
+    world_builder (parameters.world_builder_file != "" ? new WorldBuilder::World (parameters.world_builder_file) : nullptr),
 #endif
     boundary_heat_flux (BoundaryHeatFlux::create_boundary_heat_flux<dim>(prm)),
 
@@ -228,7 +228,7 @@ namespace aspect
     // the SimulatorAccess class via multiple inheritance, we need to
     // do a sideways dynamic_cast to this putative sibling of the
     // interface class, and investigate if the dynamic_cast
-    // succeeds. if it succeeds, the dynamic_cast returns a non-NULL
+    // succeeds. if it succeeds, the dynamic_cast returns a non-nullptr
     // result, and we can test this in an if-statement. there is a nice
     // idiom whereby we can write
     //    if (SiblingClass *ptr = dynamic_cast<SiblingClass*>(ptr_to_base))
@@ -292,13 +292,13 @@ namespace aspect
     // Make sure we only have a prescribed Stokes plugin if needed
     if (parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes)
       {
-        AssertThrow(prescribed_stokes_solution.get()!=NULL,
+        AssertThrow(prescribed_stokes_solution.get()!=nullptr,
                     ExcMessage("For the 'single Advection, no Stokes' solver scheme you need to provide a Stokes plugin!")
                    );
       }
     else
       {
-        AssertThrow(prescribed_stokes_solution.get()==NULL,
+        AssertThrow(prescribed_stokes_solution.get()==nullptr,
                     ExcMessage("The prescribed stokes plugin you selected only works with the solver "
                                "scheme 'single Advection, no Stokes'.")
                    );
@@ -1619,7 +1619,7 @@ namespace aspect
       }
 
     // start the timer for periodic checkpoints after the setup above
-    time_t last_checkpoint_time = std::time(NULL);
+    time_t last_checkpoint_time = std::time(nullptr);
 
   start_time_iteration:
 
@@ -1703,7 +1703,7 @@ namespace aspect
 
         const bool checkpoint_written = maybe_write_checkpoint(last_checkpoint_time,termination);
         if (checkpoint_written)
-          last_checkpoint_time = std::time(NULL);
+          last_checkpoint_time = std::time(nullptr);
 
         // see if we want to terminate
         if (termination.first)

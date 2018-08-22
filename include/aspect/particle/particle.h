@@ -186,7 +186,7 @@ namespace aspect
          * point to the first element in which the data should be written. This
          * function is meant for serializing all particle properties and
          * afterwards de-serializing the properties by calling the appropriate
-         * constructor Particle(void *&data, PropertyPool *property_pool = NULL);
+         * constructor Particle(void *&data, PropertyPool *property_pool = nullptr);
          *
          * @param [in,out] data The memory location to write particle data
          * into. This pointer points to the begin of the memory, in which the
@@ -355,7 +355,7 @@ namespace aspect
     void Particle<dim,spacedim>::save (Archive &ar, const unsigned int) const
     {
       unsigned int n_properties = 0;
-      if ((property_pool != NULL) && (properties != PropertyPool::invalid_handle))
+      if ((property_pool != nullptr) && (properties != PropertyPool::invalid_handle))
         n_properties = get_properties().size();
 
       ar &location

@@ -594,7 +594,7 @@ namespace aspect
 
           const GeometryModel::SphericalShell<dim> *spherical_shell_geometry =
             dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&(this->get_geometry_model()));
-          AssertThrow (spherical_shell_geometry != NULL,
+          AssertThrow (spherical_shell_geometry != nullptr,
                        ExcMessage ("This boundary model is only implemented if the geometry is "
                                    "in fact a spherical shell."));
           Rc=spherical_shell_geometry->inner_radius();

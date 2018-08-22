@@ -238,7 +238,7 @@ namespace aspect
          * the input file (and are consequently currently active) and see if one
          * of them has the desired type specified by the template argument. If so,
          * return a pointer to it. If no boundary velocity model is active
-         * that matches the given type, return a NULL pointer.
+         * that matches the given type, return a nullptr.
          */
         template <typename BoundaryVelocityType>
         DEAL_II_DEPRECATED
@@ -335,7 +335,7 @@ namespace aspect
              p != boundary->second.end(); ++p)
           if (BoundaryVelocityType *x = dynamic_cast<BoundaryVelocityType *> ( (*p).get()) )
             return x;
-      return NULL;
+      return nullptr;
     }
 
 

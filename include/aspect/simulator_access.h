@@ -830,7 +830,7 @@ namespace aspect
        * no postprocessor of this type has been selected in the input
        * file (or, has been required by another postprocessor using the
        * Postprocess::Interface::required_other_postprocessors()
-       * mechanism), then the function returns a NULL pointer.
+       * mechanism), then the function returns a nullptr.
        *
        * @deprecated Use get_postprocess_manager().has_matching_postprocessor()
        * and get_postprocess_manager().get_matching_postprocessor() instead.
@@ -864,7 +864,7 @@ namespace aspect
     if (get_postprocess_manager().template has_matching_postprocessor<PostprocessorType>())
       return &get_postprocess_manager().template get_matching_postprocessor<PostprocessorType>();
 
-    return NULL;
+    return nullptr;
   }
 }
 

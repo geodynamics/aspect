@@ -285,7 +285,7 @@ void possibly_load_shared_libs (const std::string &parameters)
                       << ">" << std::endl;
 
           void *handle = dlopen (shared_libs_list[i].c_str(), RTLD_LAZY);
-          AssertThrow (handle != NULL,
+          AssertThrow (handle != nullptr,
                        ExcMessage (std::string("Could not successfully load shared library <")
                                    + shared_libs_list[i] + ">. The operating system reports "
                                    + "that the error is this: <"
@@ -655,7 +655,7 @@ int main (int argc, char *argv[])
   // There might be remaining arguments for PETSc, only hand those over to
   // the MPI initialization, but not the ones we parsed above.
   int n_remaining_arguments = argc - current_argument;
-  char **remaining_arguments = (n_remaining_arguments > 0) ? &argv[current_argument] : NULL;
+  char **remaining_arguments = (n_remaining_arguments > 0) ? &argv[current_argument] : nullptr;
 
   try
     {

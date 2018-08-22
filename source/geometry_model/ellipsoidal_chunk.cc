@@ -78,7 +78,7 @@ namespace aspect
       eccentricity (-1),
       semi_minor_axis_b (-1),
       bottom_depth (-1),
-      topography(NULL)
+      topography(nullptr)
     {}
 
     // Copy constructor
@@ -160,7 +160,7 @@ namespace aspect
       const double rad_to_degree = 180/numbers::PI;
       if (dim == 3)
         phi_theta = Point<dim-1>(phi_theta_d_hat[0] * rad_to_degree,phi_theta_d_hat[1] * rad_to_degree);
-      const double h = topography != NULL ? topography->value(phi_theta) : 0;
+      const double h = topography != nullptr ? topography->value(phi_theta) : 0;
       const double d = d_hat + (d_hat + bottom_depth)/bottom_depth*h;
       const Point<3> phi_theta_d (phi_theta_d_hat[0],
                                   phi_theta_d_hat[1],
@@ -178,7 +178,7 @@ namespace aspect
       Point<dim-1> phi_theta;
       if (dim == 3)
         phi_theta = Point<dim-1>(phi_theta_d[0] * rad_to_degree,phi_theta_d[1] * rad_to_degree);
-      const double h = topography != NULL ? topography->value(phi_theta) : 0;
+      const double h = topography != nullptr ? topography->value(phi_theta) : 0;
       const double d_hat = bottom_depth * (d-h)/(bottom_depth+h);
       const Point<3> phi_theta_d_hat (phi_theta_d[0],
                                       phi_theta_d[1],

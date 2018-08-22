@@ -116,7 +116,7 @@ namespace aspect
 
         this->get_material_model().evaluate(in, out);
         MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-        AssertThrow(melt_outputs != NULL,
+        AssertThrow(melt_outputs != nullptr,
                     ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
 
         const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(in,

@@ -97,7 +97,7 @@ namespace aspect
               // (and then set the latter to zero).
               if (this->get_parameters().use_operator_splitting)
                 {
-                  if (reaction_rate_out != NULL)
+                  if (reaction_rate_out != nullptr)
                     reaction_rate_out->reaction_rates[i][c] = (this->get_timestep_number() > 0
                                                                ?
                                                                out.reaction_terms[i][c] / this->get_timestep()
@@ -265,7 +265,7 @@ namespace aspect
     CompositionReaction<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       if (this->get_parameters().use_operator_splitting
-          && out.template get_additional_output<ReactionRateOutputs<dim> >() == NULL)
+          && out.template get_additional_output<ReactionRateOutputs<dim> >() == nullptr)
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(

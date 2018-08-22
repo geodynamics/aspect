@@ -296,7 +296,7 @@ namespace aspect
          * and interpolating to the quadrature points, or to query the cell for
          * material ids, neighbors, or other information that is not available
          * solely from the locations. Note that not all calling functions can set
-         * this reference. In these cases it will be a NULL pointer, so make sure
+         * this reference. In these cases it will be a nullptr, so make sure
          * that your material model either fails with a proper error message
          * or provide an alternative calculation for these cases.
          *
@@ -1184,7 +1184,7 @@ namespace aspect
           if (result)
             return result;
         }
-      return NULL;
+      return nullptr;
     }
 
 
@@ -1198,7 +1198,7 @@ namespace aspect
           if (result)
             return result;
         }
-      return NULL;
+      return nullptr;
     }
 
 
@@ -1212,7 +1212,7 @@ namespace aspect
           if (result)
             return result;
         }
-      return NULL;
+      return nullptr;
     }
 
 
@@ -1226,7 +1226,7 @@ namespace aspect
           if (result)
             return result;
         }
-      return NULL;
+      return nullptr;
     }
 
 

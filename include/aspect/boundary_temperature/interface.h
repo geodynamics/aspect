@@ -255,7 +255,7 @@ namespace aspect
          * the input file (and are consequently currently active) and see if one
          * of them has the desired type specified by the template argument. If so,
          * return a pointer to it. If no boundary temperature model is active
-         * that matches the given type, return a NULL pointer.
+         * that matches the given type, return a nullptr.
          */
         template <typename BoundaryTemperatureType>
         DEAL_II_DEPRECATED
@@ -354,7 +354,7 @@ namespace aspect
            p != boundary_temperature_objects.end(); ++p)
         if (BoundaryTemperatureType *x = dynamic_cast<BoundaryTemperatureType *> ( (*p).get()) )
           return x;
-      return NULL;
+      return nullptr;
     }
 
 

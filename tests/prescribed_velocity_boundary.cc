@@ -340,7 +340,7 @@ namespace aspect
     InclusionPostprocessor<dim>::execute (TableHandler &statistics)
     {
       std::shared_ptr<Function<dim> > ref_func;
-      if (dynamic_cast<const InclusionMaterial<dim> *>(&this->get_material_model()) != NULL)
+      if (dynamic_cast<const InclusionMaterial<dim> *>(&this->get_material_model()) != nullptr)
         {
           const InclusionMaterial<dim> *
           material_model

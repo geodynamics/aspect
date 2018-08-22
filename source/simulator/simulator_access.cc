@@ -27,7 +27,7 @@ namespace aspect
   template <int dim>
   SimulatorAccess<dim>::SimulatorAccess ()
     :
-    simulator (NULL)
+    simulator (nullptr)
   {}
 
 
@@ -693,7 +693,7 @@ namespace aspect
   bool
   SimulatorAccess<dim>::simulator_is_initialized () const
   {
-    return (simulator != NULL);
+    return (simulator != nullptr);
   }
 
   template <int dim>

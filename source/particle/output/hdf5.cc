@@ -168,8 +168,8 @@ namespace aspect
         H5Pclose(plist_id);
 
         // Write the position data
-        const hid_t position_dataspace = H5Screate_simple(2, global_dataset_size, NULL);
-        const hid_t local_position_dataspace = H5Screate_simple(2, local_dataset_size, NULL);
+        const hid_t position_dataspace = H5Screate_simple(2, global_dataset_size, nullptr);
+        const hid_t local_position_dataspace = H5Screate_simple(2, local_dataset_size, nullptr);
 
 #if H5Dcreate_vers == 1
         hid_t position_dataset = H5Dcreate(h5_file, "nodes", H5T_NATIVE_DOUBLE, position_dataspace, H5P_DEFAULT);
@@ -178,7 +178,7 @@ namespace aspect
 #endif
 
         // Select the local hyperslab from the dataspace
-        H5Sselect_hyperslab(position_dataspace, H5S_SELECT_SET, offset, NULL, local_dataset_size, NULL);
+        H5Sselect_hyperslab(position_dataspace, H5S_SELECT_SET, offset, nullptr, local_dataset_size, nullptr);
 
         // Write position data to the HDF5 file
         H5Dwrite(position_dataset, H5T_NATIVE_DOUBLE, local_position_dataspace, position_dataspace, write_properties, &position_data[0]);
@@ -191,8 +191,8 @@ namespace aspect
 
         global_dataset_size[1] = 1;
         local_dataset_size[1] = 1;
-        const hid_t index_dataspace = H5Screate_simple(1, global_dataset_size, NULL);
-        const hid_t local_index_dataspace = H5Screate_simple(1, local_dataset_size, NULL);
+        const hid_t index_dataspace = H5Screate_simple(1, global_dataset_size, nullptr);
+        const hid_t local_index_dataspace = H5Screate_simple(1, local_dataset_size, nullptr);
 #if H5Dcreate_vers == 1
         const hid_t particle_index_dataset = H5Dcreate(h5_file, "id", HDF5_PARTICLE_INDEX_TYPE, index_dataspace, H5P_DEFAULT);
 #else
@@ -200,7 +200,7 @@ namespace aspect
 #endif
 
         // Select the local hyperslab from the dataspace
-        H5Sselect_hyperslab(index_dataspace, H5S_SELECT_SET, offset, NULL, local_dataset_size, NULL);
+        H5Sselect_hyperslab(index_dataspace, H5S_SELECT_SET, offset, nullptr, local_dataset_size, nullptr);
 
         // Write index data to the HDF5 file
         H5Dwrite(particle_index_dataset, HDF5_PARTICLE_INDEX_TYPE, local_index_dataspace, index_dataspace, write_properties, &index_data[0]);
@@ -233,8 +233,8 @@ namespace aspect
                 if (data_fields > 1)
                   field_name.append('_' + Utilities::to_string(i));
 
-                const hid_t property_dataspace = H5Screate_simple(2, global_dataset_size, NULL);
-                const hid_t local_property_dataspace = H5Screate_simple(2, local_dataset_size, NULL);
+                const hid_t property_dataspace = H5Screate_simple(2, global_dataset_size, nullptr);
+                const hid_t local_property_dataspace = H5Screate_simple(2, local_dataset_size, nullptr);
 #if H5Dcreate_vers == 1
                 const hid_t particle_property_dataset = H5Dcreate(h5_file, field_name.c_str(), H5T_NATIVE_DOUBLE, property_dataspace, H5P_DEFAULT);
 #else
@@ -242,7 +242,7 @@ namespace aspect
 #endif
 
                 // Select the local hyperslab from the dataspace
-                H5Sselect_hyperslab(property_dataspace, H5S_SELECT_SET, offset, NULL, local_dataset_size, NULL);
+                H5Sselect_hyperslab(property_dataspace, H5S_SELECT_SET, offset, nullptr, local_dataset_size, nullptr);
 
                 // Write index data to the HDF5 file
                 H5Dwrite(particle_property_dataset, H5T_NATIVE_DOUBLE, local_property_dataspace, property_dataspace, write_properties, &property_data[output_index][0]);

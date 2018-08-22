@@ -180,7 +180,7 @@ namespace aspect
           const double eta = scratch.material_model_outputs.viscosities[q];
           const double one_over_eta = 1. / eta;
 
-          const bool use_tensor = (anisotropic_viscosity != NULL);
+          const bool use_tensor = (anisotropic_viscosity != nullptr);
 
           const SymmetricTensor<4, dim> &stress_strain_director = (use_tensor)
                                                                   ?
@@ -220,7 +220,7 @@ namespace aspect
     {
       const unsigned int n_points = outputs.viscosities.size();
 
-      if (outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >() == NULL)
+      if (outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >() == nullptr)
         {
           outputs.additional_outputs.push_back(
             std::shared_ptr<MaterialModel::AnisotropicViscosity<dim> >
@@ -277,7 +277,7 @@ namespace aspect
 
           const double eta_two_thirds = scratch.material_model_outputs.viscosities[q] * 2.0 / 3.0;
 
-          const bool use_tensor = (anisotropic_viscosity != NULL);
+          const bool use_tensor = (anisotropic_viscosity != nullptr);
 
           const SymmetricTensor<4, dim> &stress_strain_director = (use_tensor)
                                                                   ?
@@ -349,7 +349,7 @@ namespace aspect
                               :
                               numbers::signaling_nan<double>());
 
-          const bool use_tensor = (anisotropic_viscosity != NULL);
+          const bool use_tensor = (anisotropic_viscosity != nullptr);
 
           const SymmetricTensor<4, dim> &stress_strain_director = (use_tensor)
                                                                   ?
@@ -368,7 +368,7 @@ namespace aspect
               data.local_rhs(i) += (density * gravity * scratch.phi_u[i])
                                    * JxW;
 
-              if (force != NULL)
+              if (force != nullptr)
                 data.local_rhs(i) += (force->rhs_u[q] * scratch.phi_u[i]
                                       + pressure_scaling * force->rhs_p[q] * scratch.phi_p[i])
                                      * JxW;
@@ -403,7 +403,7 @@ namespace aspect
     {
       const unsigned int n_points = outputs.viscosities.size();
 
-      if (outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >() == NULL)
+      if (outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >() == nullptr)
         {
           outputs.additional_outputs.push_back(
             std::shared_ptr<MaterialModel::AnisotropicViscosity<dim> >
@@ -411,7 +411,7 @@ namespace aspect
         }
 
       if (this->get_parameters().enable_additional_stokes_rhs
-          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == NULL)
+          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == nullptr)
         {
           outputs.additional_outputs.push_back(
             std::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >
@@ -462,7 +462,7 @@ namespace aspect
           // Viscosity scalar
           const double eta_two_thirds = scratch.material_model_outputs.viscosities[q] * 2.0 / 3.0;
 
-          const bool use_tensor = (anisotropic_viscosity != NULL);
+          const bool use_tensor = (anisotropic_viscosity != nullptr);
 
           const SymmetricTensor<4, dim> &stress_strain_director = (use_tensor)
                                                                   ?
@@ -534,7 +534,7 @@ namespace aspect
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
           // If there is an anisotropic viscosity, use it to compute the correct stress
-          const SymmetricTensor<2,dim> &directed_strain_rate = ((anisotropic_viscosity != NULL)
+          const SymmetricTensor<2,dim> &directed_strain_rate = ((anisotropic_viscosity != nullptr)
                                                                 ?
                                                                 anisotropic_viscosity->stress_strain_directors[q]
                                                                 * material_model_inputs.strain_rate[q]
@@ -578,7 +578,7 @@ namespace aspect
     {
       const unsigned int n_points = material_model_outputs.viscosities.size();
 
-      if (material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >() == NULL)
+      if (material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >() == nullptr)
         {
           material_model_outputs.additional_outputs.push_back(
             std::shared_ptr<MaterialModel::AnisotropicViscosity<dim> >
@@ -633,17 +633,17 @@ namespace aspect
     {
       for (unsigned int i=0; i<assemblers.stokes_preconditioner.size(); ++i)
         {
-          if (dynamic_cast<Assemblers::StokesPreconditioner<dim> *>(assemblers.stokes_preconditioner[i].get()) != NULL)
+          if (dynamic_cast<Assemblers::StokesPreconditioner<dim> *>(assemblers.stokes_preconditioner[i].get()) != nullptr)
             assemblers.stokes_preconditioner[i] = std_cxx14::make_unique<Assemblers::StokesPreconditionerAnisotropicViscosity<dim> > ();
-          if (dynamic_cast<Assemblers::StokesCompressiblePreconditioner<dim> *>(assemblers.stokes_preconditioner[i].get()) != NULL)
+          if (dynamic_cast<Assemblers::StokesCompressiblePreconditioner<dim> *>(assemblers.stokes_preconditioner[i].get()) != nullptr)
             assemblers.stokes_preconditioner[i] = std_cxx14::make_unique<Assemblers::StokesCompressiblePreconditionerAnisotropicViscosity<dim> > ();
         }
 
       for (unsigned int i=0; i<assemblers.stokes_system.size(); ++i)
         {
-          if (dynamic_cast<Assemblers::StokesIncompressibleTerms<dim> *>(assemblers.stokes_system[i].get()) != NULL)
+          if (dynamic_cast<Assemblers::StokesIncompressibleTerms<dim> *>(assemblers.stokes_system[i].get()) != nullptr)
             assemblers.stokes_system[i] = std_cxx14::make_unique<Assemblers::StokesIncompressibleTermsAnisotropicViscosity<dim> > ();
-          if (dynamic_cast<Assemblers::StokesCompressibleStrainRateViscosityTerm<dim> *>(assemblers.stokes_system[i].get()) != NULL)
+          if (dynamic_cast<Assemblers::StokesCompressibleStrainRateViscosityTerm<dim> *>(assemblers.stokes_system[i].get()) != nullptr)
             assemblers.stokes_system[i] = std_cxx14::make_unique<Assemblers::StokesCompressibleStrainRateViscosityTermAnisotropicViscosity<dim> > ();
         }
     }
@@ -681,7 +681,7 @@ namespace aspect
           out.compressibilities[i] = 1.0 / (1. + pressure);
           if ((in.position[i]-center).norm() < 0.25)
             {
-              if (anisotropic_viscosity != NULL)
+              if (anisotropic_viscosity != nullptr)
                 anisotropic_viscosity->stress_strain_directors[i] = C;
             }
         }

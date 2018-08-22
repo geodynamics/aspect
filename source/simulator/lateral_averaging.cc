@@ -191,7 +191,7 @@ namespace aspect
           const MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
             = out.template get_additional_output<const MaterialModel::SeismicAdditionalOutputs<dim> >();
 
-          Assert(seismic_outputs != NULL,ExcInternalError());
+          Assert(seismic_outputs != nullptr,ExcInternalError());
 
           if (vs_)
             for (unsigned int q=0; q<output.size(); ++q)

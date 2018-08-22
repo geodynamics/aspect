@@ -142,7 +142,7 @@ namespace aspect
 
     if (compute_initial_residual)
       {
-        Assert(initial_residual != NULL, ExcInternalError());
+        Assert(initial_residual != nullptr, ExcInternalError());
         *initial_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
       }
 
@@ -150,7 +150,7 @@ namespace aspect
     current_linearization_point.block(introspection.block_indices.temperature)
       = solution.block(introspection.block_indices.temperature);
 
-    if ((initial_residual != NULL) && (*initial_residual > 0))
+    if ((initial_residual != nullptr) && (*initial_residual > 0))
       return current_residual / *initial_residual;
 
     return 0.0;
@@ -166,7 +166,7 @@ namespace aspect
 
     if (compute_initial_residual)
       {
-        Assert(initial_residual != NULL, ExcInternalError());
+        Assert(initial_residual != nullptr, ExcInternalError());
         Assert(initial_residual->size() == introspection.n_compositional_fields, ExcInternalError());
       }
 
@@ -221,7 +221,7 @@ namespace aspect
         current_linearization_point.block(introspection.block_indices.compositional_fields[c])
           = solution.block(introspection.block_indices.compositional_fields[c]);
 
-        if ((initial_residual != NULL) && (*initial_residual)[c] > 0)
+        if ((initial_residual != nullptr) && (*initial_residual)[c] > 0)
           current_residual[c] /= (*initial_residual)[c];
         else
           current_residual[c] = 0.0;
@@ -260,7 +260,7 @@ namespace aspect
 
     if (compute_initial_residual)
       {
-        Assert(initial_nonlinear_residual != NULL, ExcInternalError());
+        Assert(initial_nonlinear_residual != nullptr, ExcInternalError());
         *initial_nonlinear_residual = compute_initial_stokes_residual();
       }
 
@@ -283,7 +283,7 @@ namespace aspect
         current_linearization_point.block(fluid_pressure_block) = solution.block(fluid_pressure_block);
       }
 
-    if ((initial_nonlinear_residual != NULL) && (*initial_nonlinear_residual > 0))
+    if ((initial_nonlinear_residual != nullptr) && (*initial_nonlinear_residual > 0))
       return current_nonlinear_residual / *initial_nonlinear_residual;
     else
       return 0.0;

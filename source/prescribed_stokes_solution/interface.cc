@@ -98,7 +98,7 @@ namespace aspect
       prm.leave_subsection ();
 
       if (model_name == "unspecified")
-        return NULL;
+        return nullptr;
 
       Interface<dim> *plugin = std::get<dim>(registered_plugins).create_plugin (model_name,
                                                                                 "Prescribed Stokes solution::Model name");

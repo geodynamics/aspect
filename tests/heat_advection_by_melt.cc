@@ -23,7 +23,7 @@ namespace aspect
       ) const
       {
         const MaterialModel::MeltOutputs<dim> *melt_outputs = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-        Assert(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for shear heating with melt."));
+        Assert(melt_outputs != nullptr, ExcMessage("Need MeltOutputs from the material model for shear heating with melt."));
 
         for (unsigned int q=0; q<fluid_pressure_gradient_outputs.size(); ++q)
           {
@@ -67,7 +67,7 @@ namespace aspect
           out.densities[i] = 2.0;
         }
 
-      if (melt_out != NULL)
+      if (melt_out != nullptr)
         {
           for (unsigned int i=0; i < in.position.size(); ++i)
             {
