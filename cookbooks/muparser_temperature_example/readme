@@ -1,0 +1,21 @@
+This cookbook provides an example of how to use the lazy-expression syntax
+for if-else statements in Function expressions in the parameters files for 
+aspect. In addition, the parameter file shows how to run aspect to just check
+initial conditions are set correctly (by using and End time of zero and 
+setting the solver tolerances to large values). It also uses a Function expression 
+to refine the initial mesh at the top of the box.
+
+The example includes these files:
+
+mu_parser_temperature_example.prm       parameter file for aspect
+
+muparser_if_temperature_example.py      python script that creates the same
+                                        initial temperature as defined in the
+                                        parameter file using lazy expression
+temperature_muparser_if.pdf             figure output from python script
+
+Figures showing the output of the cookbook are included in the cookbook section
+of the manual /doc/manual/cookbooks/muparser-temperature-example.
+
+- Magali Billen, UC Davis, mibillen@ucdavis.edu
+- July, 2018.

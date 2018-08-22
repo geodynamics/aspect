@@ -1,0 +1,155 @@
+# Basic parameter file for using a function expression to define the
+# initial temperature structure using (? : ) syntax for if-else conditions.
+# 2D, Dimensional, Boussinesq, Simple Material Model
+
+# Dimension, end-time (years) and output directory
+# Only does zeroth time-step to show that initial condition works
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set Start time                             = 0
+set End time                               = 0
+set Output directory                       = output-muparser-temperature-example
+
+# Parameters Related to the Solver and Pressure Normalization
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0  
+
+# Even when using the Boussinesq approximation you need to set this parameter
+# because this will be the temperature used to calculate the reference density
+# used in the advection equation (even if a separate reference temperature is
+# specified by the material model)
+
+set Adiabatic surface temperature          = 273 # K
+
+# If you have a large model or a model with large viscosity variation and you
+# want to run the 0th timestep more quickly in order to just check in the initial
+# condition (IC), you can set these solver tolerance values to larger numbers, but
+# this means the solution will not be converged.
+
+subsection Solver parameters
+  set Temperature solver tolerance         = 1e-12 # can set to 1e-6 for checking IC
+  
+  subsection Stokes solver parameters
+    set Linear solver tolerance            = 1e-6 # can set to 1e-3 for checking IC 
+  end
+end
+
+# The following is equivalent to the Boussinesq approximation
+
+subsection Formulation
+  set Formulation = custom
+  set Mass conservation = incompressible
+  set Temperature equation = reference density profile
+end
+
+# Want a 2D box 5000 km wide by 1000 km deep (5e6 x 1e6 meters). 
+# The variable repetitions divides the whole domain into 5 boxes (1000 x 1000 km)
+# as the 0th level mesh refinement: this is needed so elements are squares
+# and not elongated rectangles.
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 5e6
+    set Y extent = 1e6
+    set X repetitions = 5
+    set Y repetitions = 1
+  end
+end
+
+# Refine the upper 150 km of the mesh so lithosphere structure is resolved.
+# Function expression asks if the depth is less than the lithosphere depth and
+# then refinement level = 5, else  refinement level = 0
+
+subsection Mesh refinement
+  set Initial global refinement          = 1
+  set Minimum refinement level           = 1
+  set Initial adaptive refinement        = 2
+  set Time steps between mesh refinement = 1
+  set Strategy                           = minimum refinement function
+  subsection Minimum refinement function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y
+    set Function constants  = ymax=1e6,lith=1.5e5
+    set Function expression = ((ymax-y<=lith) ? 7 : 0)
+  end
+end
+
+# Half-space cooling model increasing with age from x>0 to xtrm
+# For x>xtrm, half-space cooling model with a fixed age.
+# Note, we use 1-erfc instead of erf because the muparser in dealii 
+# only knows about erfc. Also, we need to use ymax-y since y=0 at the
+# bottom of the box.
+# vsub is the velocity of the subducting plate in m/s 
+# (x/vsub is the age of the subducting plate)
+# ageop is the age of the overriding plate in seconds.
+# Tm is the mantle temperature, Ts is the surface temperature in kelvin
+# kappa is the thermal diffusivity (m^2/s)
+
+subsection Initial temperature model
+   set Model name = function
+   subsection Function
+      set Variable names = x,y
+      set Function constants = ymax=1.0e6, xtrm=2.200e6, vsub=7.927e-10, \
+                               ageop=9.46e14, Tm=1673, Ts=273, kappa=1e-6 
+      set Function expression = (((x>0.0) && (x<=xtrm)) ? \
+                                 (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*(x/vsub)))))) : \
+                                 (x>xtrm) ? \
+                                  (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*ageop))))) :\
+                                  (Tm) ) 
+   end
+end 
+ 
+# Set boundary types and values for temperature
+# Default is zero-flux (keep for sidewalls), so only need set top and bottom to fixed temperature
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1673
+    set Top temperature    = 273
+  end
+end
+
+# Free-slip on all sides (tangential velocity V-perp=0, dV/dn=0)
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 3300  # kg/m^3  
+    set Reference specific heat       = 1250  # J/kg/K
+    set Reference temperature         = 273   # K
+    set Thermal conductivity          = 4.125 # W/m/K
+    set Thermal expansion coefficient = 2e-5  # 1/K
+    set Viscosity                     = 1e21  # Pa s
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81   
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics
+
+  subsection Visualization
+    set Output format                 = gnuplot
+    set Time between graphical output = 1e6
+    set Number of grouped files       = 0
+  end
+end
+
