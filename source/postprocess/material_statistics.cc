@@ -101,7 +101,7 @@ namespace aspect
       output.precision(4);
 
       output << average_density << " kg/m^3, "
-          << average_viscosity << " Pa s, "
+             << average_viscosity << " Pa s, "
              << global_mass << " kg";
 
       return std::pair<std::string, std::string> ("Average density / Average viscosity / Total mass: ",
