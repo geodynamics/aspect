@@ -120,7 +120,25 @@ namespace aspect
                                const bool has_background_field,
                                const std::string &property_name);
 
-
+    /**
+     * This function takes a string argument that is assumed to represent
+     * an input table, in which each row is separated by
+     * semicolons, and each column separated by commas. The function
+     * returns the parsed entries as a table. In addition this function
+     * utilizes the possibly_extend_from_1_to_N() function to accept
+     * inputs with only a single column/row, which will be extended
+     * to @p n_rows or @p n_columns respectively, to allow abbreviating
+     * the input string (e.g. you can provide a single value instead of
+     * n_rows by n_columns identical values). This function can for example
+     * be used by material models to read densities for different
+     * compositions and different phases for each composition.
+     */
+    template <typename T>
+    Table<2,T>
+    parse_input_table (const std::string &input_string,
+                       const unsigned int n_rows,
+                       const unsigned int n_columns,
+                       const std::string &property_name);
 
     /**
      * Given a vector @p var_declarations expand any entries of the form
@@ -478,7 +496,8 @@ namespace aspect
           // Non-specified behavior
           AssertThrow(false,
                       ExcMessage("Length of " + id_text + " list must be " +
-                                 "either one or " + Utilities::to_string(N)));
+                                 "either one or " + Utilities::to_string(N) +
+                                 ". Currently it is " + Utilities::to_string(values.size()) + "."));
         }
 
       // This should never happen, but return an empty vector so the compiler

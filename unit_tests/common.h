@@ -24,6 +24,9 @@
 
 #include <catch.hpp>
 
+#include <deal.II/base/table.h>
+
+
 using Catch::Matchers::Contains;
 using Catch::Matchers::StartsWith;
 
@@ -39,6 +42,25 @@ inline void compare_vectors_approx(
     {
       INFO("array index i=" << i << ": ");
       REQUIRE(computed[i] == Approx(expected[i]));
+    }
+}
+
+/**
+ * Compare the given two table entries with an epsilon (using Catch::Approx)
+ */
+inline void compare_tables_approx(
+  const dealii::Table<2,double> &computed,
+  const dealii::Table<2,double> &expected)
+{
+  REQUIRE(computed.size() == expected.size());
+
+  for (unsigned int i=0; i<computed.n_rows(); ++i)
+    {
+      for (unsigned int j=0; j<computed.n_cols(); ++j)
+        {
+          INFO("array index i,j=" << i << "," << j << ": ");
+          REQUIRE(computed[i][j] == Approx(expected[i][j]));
+        }
     }
 }
 
