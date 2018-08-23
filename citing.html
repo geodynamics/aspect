@@ -30,18 +30,8 @@
 
       .editbox {
       background-color: lightgreen;
-      width: 75%;
-      padding: 10px;
-      }
-      
-      .note {
-      background: #df9f9f;
       width: 100%;
-      font-size: 150%;
-      margin: auto;
-      border: 1px solid black;
-      padding: 5px;
-      text-align: center;
+      padding: 10px;
       }
     </style>
   </head>
@@ -71,12 +61,8 @@
       <div class="row">
         <div class="well">
 
-          <p class="note">NOTE: a link with your selection is available at:<br/>
-            <a style="font-size:75%" id="onlineurl" href="https://aspect.geodynamics.org/citing.html">https://aspect.geodynamics.org/citing.html</a>
-          </p>
-
           <script src="database.js"></script>
-          
+
           <script type="text/javascript">
             var checkboxes = ["fs", "melt","particles","dg"];
 
@@ -134,8 +120,15 @@
             <br/>
             <p>The bibtex data for these papers is as follows:</p>
             <div id="bibtex" class="box"></div>
+	  </div>
 
-            <script type="text/javascript">
+	  <div class="well well-sm">
+            <p class="note">A link with your selection is available at:<br/>
+              <a id="onlineurl" href="https://aspect.geodynamics.org/citing.html">https://aspect.geodynamics.org/citing.html</a>
+            </p>
+	  </div>
+
+          <script type="text/javascript">
         function do_checkall() {
             var all = document.getElementById("checkall").checked ? true : false;
             for (var i = 0; i < checkboxes.length; ++i)
@@ -215,7 +208,6 @@
         else if (document.attachEvent) document.attachEvent("onreadystatechange", autorun);
         else window.onload = autorun;
             </script>
-          </div>
 	</div>
       </div>
     </div>
