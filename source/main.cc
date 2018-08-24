@@ -511,6 +511,7 @@ void print_help()
             << "       -j, --threads          (to use multi-threading)\n"
             << "       --output-xml           (print parameters in xml format to standard output and exit)\n"
             << "       --output-plugin-graph  (write a representation of all plugins to standard output and exit)\n"
+            << "       --validate             (parse parameter file and exit or report errors)\n"
             << "       --test                 (run the unit tests from unit_tests/, run --test -h for more info)\n"
             << std::endl;
 }
@@ -550,13 +551,36 @@ template<int dim>
 void
 run_simulator(const std::string &input_as_string,
               const bool output_xml,
-              const bool output_plugin_graph)
+              const bool output_plugin_graph,
+              const bool validate_only)
 {
   using namespace dealii;
 
   ParameterHandler prm;
   const bool i_am_proc_0 = (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0);
   aspect::Simulator<dim>::declare_parameters(prm);
+
+  if (validate_only)
+    {
+      try
+        {
+          parse_parameters (input_as_string, prm);
+        }
+      catch (...)
+        {
+          throw aspect::QuietException();
+        }
+      if (i_am_proc_0)
+        std::cout << "The provided parameter file is valid.\n\n"
+                  << "Note: This validation only checks high level "
+                  << "parameter file errors, like typos in keywords or "
+                  << "parameter names. It may miss more nuanced errors "
+                  << "that aren't encountered until the model actually "
+                  << "begins running."
+                  << std::endl;
+      return;
+    }
+
   parse_parameters (input_as_string, prm);
 
   if (output_xml)
@@ -601,6 +625,7 @@ int main (int argc, char *argv[])
   bool output_help         = false;
   bool use_threads         = false;
   bool run_unittests       = false;
+  bool validate_only       = false;
   int current_argument = 1;
 
   // Loop over all command line arguments. Handle a number of special ones
@@ -641,6 +666,10 @@ int main (int argc, char *argv[])
         {
           run_unittests = true;
           break;
+        }
+      else if (arg == "--validate")
+        {
+          validate_only = true;
         }
       else
         {
@@ -690,7 +719,7 @@ int main (int argc, char *argv[])
       if (i_am_proc_0)
         {
           // Output header, except for a clean output for xml or plugin graph
-          if (!output_xml && !output_plugin_graph)
+          if (!output_xml && !output_plugin_graph && !validate_only)
             print_aspect_header(std::cout);
 
           if (output_help)
@@ -754,12 +783,12 @@ int main (int argc, char *argv[])
         {
           case 2:
           {
-            run_simulator<2>(input_as_string,output_xml,output_plugin_graph);
+            run_simulator<2>(input_as_string,output_xml,output_plugin_graph,validate_only);
             break;
           }
           case 3:
           {
-            run_simulator<3>(input_as_string,output_xml,output_plugin_graph);
+            run_simulator<3>(input_as_string,output_xml,output_plugin_graph,validate_only);
             break;
           }
           default:
