@@ -4,7 +4,8 @@ pipeline {
   agent {
     docker {
         image 'dealii/dealii:v8.5.1-gcc-mpi-fulldepscandi-debugrelease'
-	label 'has-docker'
+        label 'has-docker'
+        args  '--rm'
     }
   }
 
