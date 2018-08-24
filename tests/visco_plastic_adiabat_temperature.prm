@@ -1,0 +1,119 @@
+# A test for adding an adiabatic temperature gradient to the temperature 
+# in the flow laws for the visco_plastic material model.
+# This is useful for incompressible models that do not include an adiabatic
+# temperature gradient.
+# This test modifies the visco_plastic_diffusion_dislocation_composite test
+# by adding a temperature gradient to the otherwise uniform temperature (1573).
+# The gradient is added in terms of pressure rather than depth.
+# Using a pressure gradient of 32436 Pa/m, then a value of  
+# 0.3 K/km = 0.0003 K/m = 9.24e-09 K/Pa gives an earth-like adiabat.
+# At the surface P = 3e9 Pa (as defined in original test) so Tv = T + Tad ~ 1600
+# strain-rate = 4.48e-16 (from applied pure shear) and eta-comp ~ 3.43e18 Pa s.
+# At the bottom of the box (100 km, P = 3e9 + 3300*100e3*10 = 6.3e9 Pa, with g = 10 m/s^2)
+# In the test, there is some dynamic pressure, so the pressure at the bottom is 6.15e9 Pa
+# For this pressure, eta-comp ~ 20.016e18 Pa s
+
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Max nonlinear iterations               = 1
+set Output directory                       = visco_plastic_adiabat_temperature
+set Surface pressure                       = 3.e9
+
+# Model geometry (100x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+
+# Boundary classifications (fixed T boundaries, prescribed velocity) 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, left, right
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = mm=0.001, year=1
+    set Function expression = if (x<50e3 , -0.5*mm/year, 0.5*mm/year); if (y<50e3 , 0.5*mm/year, -0.5*mm/year);
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = box
+  subsection Box
+    set Bottom temperature = 1573
+    set Left temperature   = 1573
+    set Right temperature  = 1573
+    set Top temperature    = 1573
+  end
+end
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1573
+  end
+end
+
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+    set Reference strain rate = 1.e-16
+    set Viscous flow law = composite
+    set Grain size = 1.e-3
+    set Grain size exponents for diffusion creep = 3.
+    set Prefactors for diffusion creep = 2.37e-15
+    set Activation energies for diffusion creep = 375.e3
+    set Activation volumes for diffusion creep = 10.e-6
+    set Prefactors for dislocation creep = 6.52e-16
+    set Stress exponents for dislocation creep = 3.5
+    set Activation energies for dislocation creep = 530.e3
+    set Activation volumes for dislocation creep = 18.e-6
+    
+    set Adiabat temperature gradient for viscosity = 9.24e-09 
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization
+  subsection Visualization
+    set List of output variables = viscosity, strain rate
+    set Output format            = gnuplot
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+end
