@@ -3026,7 +3026,7 @@ or, if you want to run the program in parallel, using something like
 to run with 4 processors. In either case, the argument denotes the (path and)
 name of a file that contains input parameters.%
 \footnote{As a special case, if you call \aspect{} with an argument that
-consists of two dashes, ``\texttt{--}'', then the arguments will be read from
+consists of two dashes, ``\texttt{-{}-}'', then the arguments will be read from
 the standard input stream of the program. In other words, you could type the
 input parameters into your shell window in this case (though that would be
 cumbersome, \aspect{} would seem to hang until you finish typing all of your
@@ -3034,14 +3034,14 @@ input into the window and then terminating the input stream by typing
 \texttt{Ctrl-D}). A more common case would be to use Unix pipes so that the
 default 
 input of \aspect{} is the output of another program, as in a command like
-\texttt{cat parameter-file.prm.in | mypreprocessor | ./aspect --}, where
+\texttt{cat parameter-file.prm.in | mypreprocessor | ./aspect -{}-}, where
 \texttt{mypreprocessor} would be a program of your choice that somehow
 transforms the file \texttt{parameter-file.prm.in} into a valid input file,
 for example to systematically vary one of the input parameters.
 
 If you want to run \aspect{} in parallel, you can do something like
 \texttt{cat parameter-file.prm.in | mypreprocessor | mpirun -np 4 ./aspect
-  --}. In cases like this, \texttt{mpirun} only forwards the output of
+  -{}-}. In cases like this, \texttt{mpirun} only forwards the output of
 \texttt{mypreprocessor} to the first of the four MPI processes, which then
 sends the text to all other processors.}
 When you download \aspect{}, there are a number of sample input files in the
