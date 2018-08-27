@@ -1,6 +1,6 @@
-# A simple setup for thermal convection in a 3d shell based on 
-# CitcomS benchmark of Arrial et al. 2014. See the manual for more
-# information.
+# A simple setup for thermal convection in a hollow sphere. The setup
+# is based from Arrial et al. (2014) benchmark of CitcomS and a RBF-PS 
+# model.
 
 ############### Global parameters
 # We use a 3d setup. Here the equations of contuinity, momentum and
@@ -33,7 +33,7 @@ subsection Boundary velocity model
 end
 
 # For some geometries and certain boundary conditions the velocity
-# field in not uniquely determined but contains free translations
+# field is not uniquely determined but contains free translations
 # and/or rotations. Angular momentum is here removed from the
 # velocity field at the end of the Stokes solver step so that the
 # net angular momentum is zero. See section 2.14 in the manual for
@@ -98,8 +98,8 @@ end
 subsection Initial temperature model
   set Model name = harmonic perturbation CitcomS
   subsection Harmonic perturbation CitcomS
-    # The vertical (radial or depth) wave number allows the user to prescribe a single up-
-    # / downswing or half periods. 
+    # The vertical (radial or depth) wave number allows the user to prescribe 
+    # a single up/downswing or half periods. 
     set Vertical wave number   = 1
     # For the cubic initial condition temperature, the axisymmetric
     # spherical harmonic is of degree l = 4 and order m = 0. 
@@ -122,19 +122,16 @@ end
 
 ############### Parameters describing the discretization
 # The following parameters describe how often we want to refine the
-# mesh globally and adaptively, what fraction of cells should be
-# refined in each adaptive refinement step, and what refinement
-# indicator to use when refining the mesh adaptively.
+# mesh globally and adaptively.
 subsection Mesh refinement
   set Initial global refinement   = 2
   set Initial adaptive refinement = 0
-  #set Strategy                    = temperature
 end
 
-# In order to get similar results to CitcomS, two factors in the
-# entropy viscosity (cR) and artificial viscosity (beta) stabilization
-# have to be set to 0. See the 2012 paper by Kronbichler, Heister and
-# Bangerth that describes ASPECT for more information.
+# In order to get similar results to CitcomS at low resolution, 2 factors
+# in the entropy viscosity (cR) and artificial viscosity (beta) stabilization
+# have to be set to 0 (or at least one of them). See the 2012 paper by 
+# Kronbichler, Heister and Bangerth that describes ASPECT for more information.
 subsection Discretization
   subsection Stabilization parameters
     # beta controls the maximum dissipation of the entropy viscosity,
@@ -154,15 +151,15 @@ end
 # The final section allows us to choose which postprocessors to run
 # at the end of each time step. We select to generate graphical
 # output that will consist of the primary variables (velocity and 
-# temperature) as well as the density, geoid, strain rate and 
-# dynamic topography. We also select to compute some statistics
-# about the velocity field, heat flow and temperature..
+# temperature) as well as the density and stain. We also select to
+# compute some statistics about the velocity field, heat flow and 
+# temperature.
 subsection Postprocess
   set List of postprocessors = heat flux statistics, temperature statistics, velocity statistics, visualization
   subsection Visualization
     set Output format                 = vtu
-    set List of output variables      = dynamic topography, density, strain rate
-    set Time between graphical output = 0
+    set List of output variables      = density, strain rate
+    set Time between graphical output = 0.01
     set Number of grouped files       = 1
   end
 end

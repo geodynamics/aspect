@@ -19,11 +19,9 @@
 */
 
 
-#include <aspect/initial_temperature/harmonic_perturbation_citcoms.h>
+#include "harmonic_perturbation_citcoms.h"
 #include <aspect/adiabatic_conditions/interface.h>
-#include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/geometry_model/chunk.h>
 #include <aspect/utilities.h>
 
 
@@ -48,7 +46,7 @@ namespace aspect
       double model_inner_radius = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
                                   (this->get_geometry_model()).inner_radius();
   
-      // epsilon specifies the amplitutude of the nonaxisymmetric perturbation. The epsilon here is only valid
+      // epsilon specifies the amplitude of the nonaxisymmetric perturbation. epsilon here is only valid
       // for the cubic steady-state case. For users who want to try the dodecahedral initial condition, epsilon
       // has to be set at sqrt(14/11) (Arrial et al. 2014).
       const double epsilon = 5./7. * (1 - delta);
@@ -56,7 +54,7 @@ namespace aspect
       // In case of spherical shell, calculate spherical coordinates
       const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
-      // In contrast to the original harmonic perturbation, 
+      // This is different than the standard harmonic perturbation in ASPECT 
       double background_temperature = model_inner_radius * (scoord[0] - model_outer_radius) / scoord[0] / (model_inner_radius - model_outer_radius);
 
       // Use a spherical harmonic function as lateral perturbation
@@ -171,11 +169,12 @@ namespace aspect
   {
     ASPECT_REGISTER_INITIAL_TEMPERATURE_MODEL(HarmonicPerturbationCitcomS,
                                               "harmonic perturbation CitcomS",
-                                              "An initial temperature field in which the temperature "
-                                              "is perturbed following a harmonic function (spherical "
-                                              "harmonic or sine depending on geometry and dimension) "
-                                              "in lateral and radial direction from an otherwise "
-                                              "constant temperature (incompressible model) or adiabatic "
-                                              "reference profile (compressible model).")
+                                              "This setup is a different implementation than the one "
+                                              "in the main code and it is based on the Arrial et al. "
+                                              "(2014) setup. It generates an initial constant "
+                                              "temperature field which is perturbed following a "
+                                              "spherical harmonic function in lateral and radial "
+                                              "direction. This setup can only be used for a hollow "
+                                              "sphere.")
   }
 }

@@ -31,13 +31,12 @@ namespace aspect
   namespace InitialTemperature
   {
     using namespace dealii;
-
     /**
-     * A class that describes a perturbed initially constant temperature field
-     * for any geometry model or dimension in shape of a harmonic function.
-     * For 3D spherical shell models this is achieved by using spherical
-     * harmonics, in any other case sine function are scaled to fit the model
-     * geometry.
+     * This setup is a different implementation than the one in the main code 
+     * and it is based on the Arrial et al. (2014) setup. It generates an
+     * initial constant temperature field which is perturbed following a
+     * spherical harmonic function in lateral and radial direction. This
+     * setup can only be used for a hollow sphere. 
      *
      * @ingroup InitialTemperatures
      */
