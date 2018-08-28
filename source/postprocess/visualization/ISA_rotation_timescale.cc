@@ -83,7 +83,7 @@ namespace aspect
 
                 (*return_value.second)(cell->active_cell_index()) = tauISA;
 				#else
-                  Assert (false, ExcMessage ("This postprocessor cannot be used with deal.II versions before 9.0."));
+                  AssertThrow (false, ExcMessage ("This postprocessor cannot be used with deal.II versions before 9.0."));
 				#endif
               }
           }
