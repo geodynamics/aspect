@@ -143,7 +143,7 @@ namespace aspect
                     //contiguity relation from Wimert and Hier-Majumder 2011
                     contiguity = p1 * std::pow(porosity,5) + p2 * std::pow(porosity,4) + p3 * std::pow(porosity,3) + p4 * std::pow(porosity,2) + p5 * porosity + p6 ;
                     if (contiguity < 0)
-                    	contiguity = 0.0;
+                      contiguity = 0.0;
 
                     // following from Takei (1998), Takei (2000), and Takei (2001)
                     const double a_hat [3][4] =
@@ -185,7 +185,7 @@ namespace aspect
 
                 else
                   {
-                	contiguity = 1.0;
+                    contiguity = 1.0;
                     const double H_no_melt = solid_bulk_modulus + (4 * shear_modulus / 3);
                     Vp = std::sqrt( H_no_melt / out.densities[q]);
                     Vs = std::sqrt(shear_modulus / out.densities[q]);
@@ -265,45 +265,45 @@ namespace aspect
                                  "Units: non-dimensional.");
 
               prm.declare_entry ("p1", "-8065.00",
-            		  	  	  	 Patterns::Double (),
-								 "The first coefficient, associated with "
-								 "porosity to the fifth power, in the fifth "
-								 "order polynomial contiguity equation "
-								 "of Wimert and Hier-Majumder (2012).");
+                                 Patterns::Double (),
+                                 "The first coefficient, associated with "
+                                 "porosity to the fifth power, in the fifth "
+                                 "order polynomial contiguity equation "
+                                 "of Wimert and Hier-Majumder (2012).");
 
-			  prm.declare_entry ("p2", "6149.00",
-					             Patterns::Double (),
-								 "The second coefficient, associated with "
-								 "porosity to the fourth power, in the fifth "
-								 "order polynomial contiguity equation "
-								 "of Wimert and Hier-Majumder (2012).");
+              prm.declare_entry ("p2", "6149.00",
+                                 Patterns::Double (),
+                                 "The second coefficient, associated with "
+                                 "porosity to the fourth power, in the fifth "
+                                 "order polynomial contiguity equation "
+                                 "of Wimert and Hier-Majumder (2012).");
 
-			  prm.declare_entry ("p3", "-1778.00",
-								 Patterns::Double (),
-								 "The third coefficient, associated with "
-								 "porosity to the third power, in the fifth "
-								 "order polynomial contiguity equation "
-								 "of Wimert and Hier-Majumder (2012).");
+              prm.declare_entry ("p3", "-1778.00",
+                                 Patterns::Double (),
+                                 "The third coefficient, associated with "
+                                 "porosity to the third power, in the fifth "
+                                 "order polynomial contiguity equation "
+                                 "of Wimert and Hier-Majumder (2012).");
 
-		      prm.declare_entry ("p4", "249.00",
-								 Patterns::Double (),
-								 "The fourth coefficient, associated with "
-								 "porosity to the second power, in the fifth "
-								 "order polynomial contiguity equation "
-								 "of Wimert and Hier-Majumder (2012).");
+              prm.declare_entry ("p4", "249.00",
+                                 Patterns::Double (),
+                                 "The fourth coefficient, associated with "
+                                 "porosity to the second power, in the fifth "
+                                 "order polynomial contiguity equation "
+                                 "of Wimert and Hier-Majumder (2012).");
 
-			  prm.declare_entry ("p5", "-19.77",
-								 Patterns::Double (),
-								 "The fifth coefficient, associated with "
-								 "porosity to the first power, in the fifth "
-								 "order polynomial contiguity equation "
-								 "of Wimert and Hier-Majumder (2012).");
+              prm.declare_entry ("p5", "-19.77",
+                                 Patterns::Double (),
+                                 "The fifth coefficient, associated with "
+                                 "porosity to the first power, in the fifth "
+                                 "order polynomial contiguity equation "
+                                 "of Wimert and Hier-Majumder (2012).");
 
-			  prm.declare_entry ("p6", "1.00",
-								 Patterns::Double (),
-								 "The sixth coefficient in the fifth "
-								 "order polynomial contiguity equation "
-								 "of Wimert and Hier-Majumder (2012).");
+              prm.declare_entry ("p6", "1.00",
+                                 Patterns::Double (),
+                                 "The sixth coefficient in the fifth "
+                                 "order polynomial contiguity equation "
+                                 "of Wimert and Hier-Majumder (2012).");
 
             }
             prm.leave_subsection();
