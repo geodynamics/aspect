@@ -50,7 +50,6 @@
 
 #include <boost/math/special_functions/spherical_harmonic.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string/trim.hpp>
 
 namespace aspect
 {
@@ -82,7 +81,7 @@ namespace aspect
           for (unsigned int j=0; j<current_columns.size(); ++j)
             {
               // get rid of surrounding whitespace
-              boost::algorithm::trim(current_columns[j]);
+              trim(current_columns[j]);
 
               input_table[i][j] = boost::lexical_cast<T>(current_columns[j]);
             }
