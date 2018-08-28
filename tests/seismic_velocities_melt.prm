@@ -47,10 +47,18 @@ subsection Initial temperature model
   end
 end
 
+subsection Boundary composition model
+  set Model name = box
+  subsection Box
+    set Left composition = 0, 0
+    set Right composition = 0.3, 0
+  end
+end
+
 subsection Initial composition model
   set Model name = function
   subsection Function
-    set Function expression = 0.15 - 0.075 * x; 0 
+    set Function expression = 0.3*x; 0      #0.15 - 0.075 * x; 0 
     set Variable names      = x,y
   end
 end
@@ -83,7 +91,7 @@ subsection Mesh refinement
   set Refinement fraction                      = 0.5
 
   set Initial adaptive refinement              = 0
-  set Initial global refinement                = 2
+  set Initial global refinement                = 6
   set Strategy                                 = compaction length
   set Time steps between mesh refinement       = 0
 
@@ -93,12 +101,12 @@ subsection Mesh refinement
 end
 
 
-subsection Boundary fluid pressure model
-  set Plugin name = density
-  subsection Density
-    set Density formulation = solid density
-  end
-end
+#subsection Boundary fluid pressure model
+#  set Plugin name = density
+#  subsection Density
+#    set Density formulation = solid density
+#  end
+#end
 
 # The parameters below this comment were created by the update script
 # as replacement for the old 'Model settings' subsection. They can be
@@ -130,7 +138,7 @@ subsection Postprocess
     end
 
     subsection Melt seismic properties
-      set List of properties  = Vp, Vs, Vp_anomaly, Vs_anomaly
+      set List of properties  = Vp, Vs, Vp_anomaly, Vs_anomaly, contiguity
       set Solid bulk modulus  = 120
       set Liquid bulk modulus = 40
       set Shear modulus       = 60
