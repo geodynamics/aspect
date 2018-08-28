@@ -78,7 +78,7 @@ namespace aspect
                 // Calculate eigenvalues of strain rate and take maximum (absolute value)
                 // to get tauISA, the timescale for grain rotation toward the infinite strain axis
                 const SymmetricTensor<2, dim> strain_rate = in.strain_rate[0];
-				#if DEAL_II_VERSION_GTE(9,0,0)
+#if DEAL_II_VERSION_GTE(9,0,0)
                 // eigenvalues() and eigenvectors() are not present in older dealii versions
                 const std::array<double, dim> strain_rate_eigenvalues = eigenvalues(
                                                                           strain_rate);
@@ -134,19 +134,19 @@ namespace aspect
                 double theta_val = 0;
                 if (umag > 100.0 * std::numeric_limits<double>::min())
                   {
-                	double dotprod = 0;
-                	for (unsigned int iq = 0; iq < dim; ++iq)
-                	{
-                		dotprod = dotprod + in.velocity[0][iq]*ehat[iq];
-                	}
+                    double dotprod = 0;
+                    for (unsigned int iq = 0; iq < dim; ++iq)
+                      {
+                        dotprod = dotprod + in.velocity[0][iq]*ehat[iq];
+                      }
                     theta_val = std::acos(std::abs(dotprod / umag));
                     if (theta_val > numbers::PI/2)
                       theta_val = std::fmod(theta_val, numbers::PI/2);
                   }
                 (*return_value.second)(cell->active_cell_index()) = theta_val;
-				#else
-                  AssertThrow (false, ExcMessage ("This postprocessor cannot be used with deal.II versions before 9.0."));
-				#endif
+#else
+                AssertThrow (false, ExcMessage ("This postprocessor cannot be used with deal.II versions before 9.0."));
+#endif
               }
           }
         return return_value;
@@ -163,7 +163,7 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(GrainLagAngle,
-    		  	  	  	  	  	  	  	  	  	  "grain lag angle",
+                                                  "grain lag angle",
                                                   "A visualization output object that generates output "
                                                   "showing the angle between the ~infinite strain axis "
                                                   "and the flow velocity. Kaminski and Ribe "
