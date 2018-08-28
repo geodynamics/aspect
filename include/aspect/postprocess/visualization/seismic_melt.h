@@ -85,6 +85,12 @@ namespace aspect
           double liquid_bulk_modulus_GPa;
           double shear_modulus_GPa;
           double poisson;
+          double p1;
+		  double p2;
+		  double p3;
+		  double p4;
+		  double p5;
+		  double p6;
       };
 
     }
