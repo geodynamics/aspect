@@ -1,0 +1,24 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Visualization file name
+# 14: RMS velocity (m/year)
+# 15: Max. velocity (m/year)
+# 16: Minimal temperature (K)
+# 17: Average temperature (K)
+# 18: Maximal temperature (K)
+# 19: Average nondimensional temperature (K)
+# 20: Outward heat flux through boundary with indicator 0 ("bottom") (W)
+# 21: Outward heat flux through boundary with indicator 1 ("top") (W)
+0 0.000000000000e+00 0.000000000000e+00 768 21760 6930 6930  0  0 112 116 691 output-shell_simple_3d/solution/solution-00000 1.84918394e-03 3.39349378e-03 9.73000000e+02 1.44942934e+03 1.97300000e+03 4.76429336e-01 -1.50404525e+12 4.98291172e+12 
+1 8.365071938929e+07 8.365071938929e+07 768 21760 6930 6930 12 10 110 114 689 output-shell_simple_3d/solution/solution-00001 1.38464014e-03 2.95225092e-03 9.73000000e+02 1.46769458e+03 1.97300000e+03 4.94694577e-01 -1.76704855e+12 5.66403564e+12 
+2 1.703583813782e+08 8.670766198889e+07 768 21760 6930 6930 10 11 109 113 684 output-shell_simple_3d/solution/solution-00002 1.17337555e-03 2.75328646e-03 9.73000000e+02 1.47835739e+03 1.97300000e+03 5.05357391e-01 -1.88800397e+12 5.81502183e+12 

@@ -195,11 +195,11 @@ namespace aspect
     // surprising at first that only the conductivity remains, but remember
     // that this actually *is* an additional artificial diffusion.
     if (std::abs(global_u_infty) < 1e-50)
-      return parameters.stabilization_beta *
+      return parameters.stabilization_beta[advection_field.field_index()] *
              max_conductivity / geometry_model->length_scale() *
              cell_diameter;
 
-    const double max_viscosity = parameters.stabilization_beta *
+    const double max_viscosity = parameters.stabilization_beta[advection_field.field_index()] *
                                  max_density *
                                  max_specific_heat *
                                  max_velocity * cell_diameter;
@@ -216,12 +216,12 @@ namespace aspect
 
         double entropy_viscosity;
         if (parameters.stabilization_alpha == 2)
-          entropy_viscosity = (parameters.stabilization_c_R *
+          entropy_viscosity = (parameters.stabilization_c_R[advection_field.field_index()] *
                                cell_diameter * cell_diameter *
                                max_residual /
                                global_entropy_variation);
         else
-          entropy_viscosity = (parameters.stabilization_c_R *
+          entropy_viscosity = (parameters.stabilization_c_R[advection_field.field_index()] *
                                cell_diameter * global_Omega_diameter *
                                max_velocity * max_residual /
                                (global_u_infty * global_field_variation));

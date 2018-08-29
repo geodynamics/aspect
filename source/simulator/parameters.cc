@@ -848,7 +848,7 @@ namespace aspect
                            "thermal expansion coefficient, also commonly referred to as $\\alpha$."
                            "Units: None.");
         prm.declare_entry ("cR", "0.33",
-                           Patterns::Double (0),
+                           Patterns::List(Patterns::Double (0)),
                            "The $c_R$ factor in the entropy viscosity "
                            "stabilization. This parameter controls the part of the entropy viscosity "
                            "that depends on the solution field itself and its residual in addition "
@@ -861,7 +861,7 @@ namespace aspect
                            "the paper. After further experiments, we have also chosen to use a "
                            "different value than described there.) Units: None.");
         prm.declare_entry ("beta", "0.078",
-                           Patterns::Double (0),
+                           Patterns::List(Patterns::Double (0)),
                            "The $\\beta$ factor in the artificial viscosity "
                            "stabilization. This parameter controls the maximum dissipation of the "
                            "entropy viscosity, which is the part that only scales with the cell diameter "
@@ -1349,6 +1349,12 @@ namespace aspect
     }
     prm.leave_subsection ();
 
+    prm.enter_subsection ("Compositional fields");
+    {
+      n_compositional_fields = prm.get_integer ("Number of fields");
+    }
+    prm.leave_subsection();
+
     prm.enter_subsection ("Discretization");
     {
       stokes_velocity_degree = prm.get_integer ("Stokes velocity polynomial degree");
@@ -1364,8 +1370,14 @@ namespace aspect
       {
         use_artificial_viscosity_smoothing  = prm.get_bool ("Use artificial viscosity smoothing");
         stabilization_alpha                 = prm.get_integer ("alpha");
-        stabilization_c_R                   = prm.get_double ("cR");
-        stabilization_beta                  = prm.get_double ("beta");
+
+        stabilization_c_R                   = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("cR"))),
+                                                                                      n_compositional_fields+1,
+                                                                                      "cR");
+        stabilization_beta                  = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("beta"))),
+                                                                                      n_compositional_fields+1,
+                                                                                      "beta");
+
         stabilization_gamma                 = prm.get_double ("gamma");
         discontinuous_penalty               = prm.get_double ("Discontinuous penalty");
         use_limiter_for_discontinuous_temperature_solution
