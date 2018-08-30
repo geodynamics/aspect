@@ -524,6 +524,7 @@ namespace aspect
                                                               scratch.finite_element_values,
                                                               introspection);
         material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
+        heating_model_manager.evaluate(scratch.material_model_inputs,scratch.material_model_outputs,scratch.heating_model_outputs);
 
         if (parameters.formulation_temperature_equation
             == Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
@@ -563,28 +564,32 @@ namespace aspect
         //nu = 1e-3;
         // Compute norm of advection field
         double norm_of_advection_field = 0.0;
-        for (unsigned int q=0; q<n_q_points; ++q)
-          norm_of_advection_field =
-            ((advection_field.is_temperature())
-             ?
-             std::max(scratch.current_velocity_values[q].norm()*
-                      (scratch.material_model_outputs.densities[q] *
-                       scratch.material_model_outputs.specific_heat[q] +
-                       scratch.heating_model_outputs.lhs_latent_heat_terms[q]),
-                      norm_of_advection_field)
-             :
-             std::max(scratch.current_velocity_values[q].norm(),norm_of_advection_field));
         // things needed for the calculating of tau for SUPG loop
         double max_conductivity_on_cell = 0.0;
+
         for (unsigned int q=0; q<n_q_points; ++q)
           {
-            max_conductivity_on_cell =
-              ((advection_field.is_temperature())
-               ?
-               std::max(scratch.material_model_outputs.thermal_conductivities[q],max_conductivity_on_cell)
-               :
-               0.0);
+            if (advection_field.is_temperature())
+              {
+                norm_of_advection_field =
+                std::max(scratch.current_velocity_values[q].norm()*
+                         (scratch.material_model_outputs.densities[q] *
+                          scratch.material_model_outputs.specific_heat[q] +
+                          scratch.heating_model_outputs.lhs_latent_heat_terms[q]),
+                         norm_of_advection_field);
+
+                max_conductivity_on_cell =
+                std::max(scratch.material_model_outputs.thermal_conductivities[q],max_conductivity_on_cell);
+              }
+            else
+              {
+                norm_of_advection_field =
+                std::max(scratch.current_velocity_values[q].norm(),norm_of_advection_field);
+
+                max_conductivity_on_cell = 0.0;
+              }
           }
+
         double fe_order
           = (advection_field.is_temperature()
              ?
@@ -592,6 +597,7 @@ namespace aspect
              :
              parameters.composition_degree
             );
+
         // Compute tau for SUPG
         if (parameters.use_supg == true)
           {
