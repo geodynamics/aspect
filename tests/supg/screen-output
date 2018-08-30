@@ -1,0 +1,63 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 740 (578+81+81)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            0 K, 0.08282 K, 1 K
+     Heat fluxes through boundary parts: 3.349e-07 W, 0 W, 1.667e-06 W, 1e-05 W
+     Writing graphical output:           output-supg/solution-00000
+
+*** Timestep 1:  t=0.176777 seconds
+   Solving temperature system... 6 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.03863 K, 0.08353 K, 0.7203 K
+     Heat fluxes through boundary parts: -1.054e-07 W, -1.609e-07 W, 1.5e-06 W, 1.023e-05 W
+     Writing graphical output:           output-supg/solution-00001
+
+*** Timestep 2:  t=0.353553 seconds
+   Solving temperature system... 6 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.05528 K, 0.0845 K, 0.5747 K
+     Heat fluxes through boundary parts: 4.784e-07 W, -5.038e-07 W, 9.558e-07 W, 9.725e-06 W
+     Writing graphical output:           output-supg/solution-00002
+
+*** Timestep 3:  t=0.5 seconds
+   Solving temperature system... 6 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.07105 K, 0.08557 K, 0.558 K
+     Heat fluxes through boundary parts: 1.812e-06 W, -5.295e-07 W, 5.304e-07 W, 8.719e-06 W
+     Writing graphical output:           output-supg/solution-00003
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.477s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble temperature system     |         4 |     0.102s |        21% |
+| Build temperature preconditioner|         4 |   0.00159s |      0.33% |
+| Solve temperature system        |         4 |   0.00307s |      0.64% |
+| Initialization                  |         2 |    0.0784s |        16% |
+| Postprocessing                  |         4 |    0.0814s |        17% |
+| Setup dof systems               |         1 |    0.0254s |       5.3% |
++---------------------------------+-----------+------------+------------+
+

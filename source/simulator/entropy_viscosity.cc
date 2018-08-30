@@ -547,6 +547,8 @@ namespace aspect
                                                    scratch.finite_element_values.get_mapping(),
                                                    scratch.material_model_outputs);
 
+        if (parameters.use_supg == false)
+          {
         viscosity_per_cell[cell->active_cell_index()] = compute_viscosity(scratch,
                                                                           global_max_velocity,
                                                                           global_field_range.second - global_field_range.first,
@@ -554,6 +556,91 @@ namespace aspect
                                                                           global_entropy_variation,
                                                                           cell->diameter(),
                                                                           advection_field);
+          }
+        else
+          {
+            // RG: remove me
+        //nu = 1e-3;
+        // Compute norm of advection field
+        double norm_of_advection_field = 0.0;
+        for (unsigned int q=0; q<n_q_points; ++q)
+          norm_of_advection_field =
+            ((advection_field.is_temperature())
+             ?
+             std::max(scratch.current_velocity_values[q].norm()*
+                      (scratch.material_model_outputs.densities[q] *
+                       scratch.material_model_outputs.specific_heat[q] +
+                       scratch.heating_model_outputs.lhs_latent_heat_terms[q]),
+                      norm_of_advection_field)
+             :
+             std::max(scratch.current_velocity_values[q].norm(),norm_of_advection_field));
+        // things needed for the calculating of tau for SUPG loop
+        double max_conductivity_on_cell = 0.0;
+        for (unsigned int q=0; q<n_q_points; ++q)
+          {
+            max_conductivity_on_cell =
+              ((advection_field.is_temperature())
+               ?
+               std::max(scratch.material_model_outputs.thermal_conductivities[q],max_conductivity_on_cell)
+               :
+               0.0);
+          }
+        double fe_order
+          = (advection_field.is_temperature()
+             ?
+             parameters.temperature_degree
+             :
+             parameters.composition_degree
+            );
+        // Compute tau for SUPG
+        if (parameters.use_supg == true)
+          {
+            double h = cell->diameter();
+            //nu = .1*h*h*norm_of_advection_field; //RG: temp
+            if (norm_of_advection_field>1e-8)
+            {
+              if (max_conductivity_on_cell>1e-8)
+                viscosity_per_cell[cell->active_cell_index()] = 1*(h/fe_order)/(2*norm_of_advection_field)*(1/tanh(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell))-
+                                                                  1/(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell)));
+              else
+              {
+                  viscosity_per_cell[cell->active_cell_index()] = 1*(h/fe_order)/(2*norm_of_advection_field);
+                //nu = h*h*norm_of_advection_field; //SOV
+              }
+            }
+            else
+            {
+                std::cout << "Cell " << cell->index() << " has advection field below 1e-8" << std::endl;
+                norm_of_advection_field=1e-8; // can do as max (old,10-8)
+                if (max_conductivity_on_cell>1e-8)
+                {
+                                const double term = std::max((1/tanh(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell))-
+                                    1/(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell))),term);
+                                viscosity_per_cell[cell->active_cell_index()] = 1*(h/fe_order)/(2*norm_of_advection_field)*term;
+                }
+                          else
+                          {
+                              viscosity_per_cell[cell->active_cell_index()] = 1*(h/fe_order)/(2*norm_of_advection_field);
+                            //nu = h*h*norm_of_advection_field; //SOV
+                          }
+            }
+          }
+        if (viscosity_per_cell[cell->active_cell_index()] < 0) // RG: delete me eventually
+        {
+                std::cout << "tau = " << viscosity_per_cell[cell->active_cell_index()] <<std::endl;
+                std::cout << "tau long = " << 1*(cell->diameter()/fe_order)/(2*norm_of_advection_field)*(1/tanh(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell))-
+                    1/(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell)))<<std::endl;
+                std::cout << "norm_of_advection_field = " << norm_of_advection_field <<std::endl;
+                std::cout << "h = " << cell->diameter() <<std::endl;
+                std::cout << "fe_order = " << fe_order <<std::endl;
+                std::cout << "max_conductivity_on_cell = " << max_conductivity_on_cell <<std::endl;
+                std::cout << "first term = " << 1/tanh(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell)) <<std::endl;
+                std::cout << "second term = " << 1/(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell)) <<std::endl;
+                std::cout << "first and second term = " << (1/tanh(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell))-
+                    1/(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell))) <<std::endl;
+        }
+        Assert (viscosity_per_cell[cell->active_cell_index()] >= 0, ExcMessage ("tau (for SUPG) needs to be a nonnegative constant."));
+          }
       }
 
     // if set to true, the maximum of the artificial viscosity in the cell as well

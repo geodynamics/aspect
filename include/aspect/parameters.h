@@ -325,6 +325,7 @@ namespace aspect
     double                         maximum_relative_increase_time_step;
     double                         maximum_first_time_step;
     bool                           use_artificial_viscosity_smoothing;
+    bool                           use_supg;
     bool                           use_conduction_timestep;
     bool                           convert_to_years;
     std::string                    output_directory;

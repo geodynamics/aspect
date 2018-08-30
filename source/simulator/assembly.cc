@@ -1140,6 +1140,7 @@ namespace aspect
 
     const UpdateFlags update_flags = update_values |
                                      update_gradients |
+                                     update_hessians |
                                      update_quadrature_points |
                                      update_JxW_values;
 

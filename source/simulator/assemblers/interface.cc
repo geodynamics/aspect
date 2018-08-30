@@ -221,6 +221,7 @@ namespace aspect
 
           phi_field (advection_element.dofs_per_cell, numbers::signaling_nan<double>()),
           grad_phi_field (advection_element.dofs_per_cell, numbers::signaling_nan<Tensor<1,dim> >()),
+          hessian_phi_field (advection_element.dofs_per_cell, numbers::signaling_nan<Tensor<2,dim> >()),
           face_phi_field ((face_quadrature.size() > 0 ? advection_element.dofs_per_cell : 0),
                           numbers::signaling_nan<double>()),
           face_grad_phi_field ((face_quadrature.size() > 0 ? advection_element.dofs_per_cell : 0),
@@ -311,6 +312,7 @@ namespace aspect
 
           phi_field (scratch.phi_field),
           grad_phi_field (scratch.grad_phi_field),
+          hessian_phi_field (scratch.hessian_phi_field),
           face_phi_field (scratch.face_phi_field),
           face_grad_phi_field (scratch.face_grad_phi_field),
           neighbor_face_phi_field (scratch.neighbor_face_phi_field),
