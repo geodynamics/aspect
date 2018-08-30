@@ -3,14 +3,206 @@ Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
 *** Timestep 0:  t=0 seconds
+Cell 0 has advection field below 1e-8
+Cell 1 has advection field below 1e-8
+Cell 2 has advection field below 1e-8
+Cell 3 has advection field below 1e-8
+Cell 4 has advection field below 1e-8
+Cell 5 has advection field below 1e-8
+Cell 6 has advection field below 1e-8
+Cell 7 has advection field below 1e-8
+Cell 8 has advection field below 1e-8
+Cell 9 has advection field below 1e-8
+Cell 10 has advection field below 1e-8
+Cell 11 has advection field below 1e-8
+Cell 12 has advection field below 1e-8
+Cell 13 has advection field below 1e-8
+Cell 14 has advection field below 1e-8
+Cell 15 has advection field below 1e-8
+Cell 16 has advection field below 1e-8
+Cell 17 has advection field below 1e-8
+Cell 18 has advection field below 1e-8
+Cell 19 has advection field below 1e-8
+Cell 20 has advection field below 1e-8
+Cell 21 has advection field below 1e-8
+Cell 22 has advection field below 1e-8
+Cell 23 has advection field below 1e-8
+Cell 24 has advection field below 1e-8
+Cell 25 has advection field below 1e-8
+Cell 26 has advection field below 1e-8
+Cell 27 has advection field below 1e-8
+Cell 28 has advection field below 1e-8
+Cell 29 has advection field below 1e-8
+Cell 30 has advection field below 1e-8
+Cell 31 has advection field below 1e-8
+Cell 32 has advection field below 1e-8
+Cell 33 has advection field below 1e-8
+Cell 34 has advection field below 1e-8
+Cell 35 has advection field below 1e-8
+Cell 36 has advection field below 1e-8
+Cell 37 has advection field below 1e-8
+Cell 38 has advection field below 1e-8
+Cell 39 has advection field below 1e-8
+Cell 40 has advection field below 1e-8
+Cell 41 has advection field below 1e-8
+Cell 42 has advection field below 1e-8
+Cell 43 has advection field below 1e-8
+Cell 44 has advection field below 1e-8
+Cell 45 has advection field below 1e-8
+Cell 46 has advection field below 1e-8
+Cell 47 has advection field below 1e-8
+Cell 48 has advection field below 1e-8
+Cell 49 has advection field below 1e-8
+Cell 50 has advection field below 1e-8
+Cell 51 has advection field below 1e-8
+Cell 52 has advection field below 1e-8
+Cell 53 has advection field below 1e-8
+Cell 54 has advection field below 1e-8
+Cell 55 has advection field below 1e-8
+Cell 56 has advection field below 1e-8
+Cell 57 has advection field below 1e-8
+Cell 58 has advection field below 1e-8
+Cell 59 has advection field below 1e-8
+Cell 60 has advection field below 1e-8
+Cell 61 has advection field below 1e-8
+Cell 62 has advection field below 1e-8
+Cell 63 has advection field below 1e-8
    Solving temperature system... 0 iterations.
+Cell 0 has advection field below 1e-8
+Cell 1 has advection field below 1e-8
+Cell 2 has advection field below 1e-8
+Cell 3 has advection field below 1e-8
+Cell 4 has advection field below 1e-8
+Cell 5 has advection field below 1e-8
+Cell 6 has advection field below 1e-8
+Cell 7 has advection field below 1e-8
+Cell 8 has advection field below 1e-8
+Cell 9 has advection field below 1e-8
+Cell 10 has advection field below 1e-8
+Cell 11 has advection field below 1e-8
+Cell 12 has advection field below 1e-8
+Cell 13 has advection field below 1e-8
+Cell 14 has advection field below 1e-8
+Cell 15 has advection field below 1e-8
+Cell 16 has advection field below 1e-8
+Cell 17 has advection field below 1e-8
+Cell 18 has advection field below 1e-8
+Cell 19 has advection field below 1e-8
+Cell 20 has advection field below 1e-8
+Cell 21 has advection field below 1e-8
+Cell 22 has advection field below 1e-8
+Cell 23 has advection field below 1e-8
+Cell 24 has advection field below 1e-8
+Cell 25 has advection field below 1e-8
+Cell 26 has advection field below 1e-8
+Cell 27 has advection field below 1e-8
+Cell 28 has advection field below 1e-8
+Cell 29 has advection field below 1e-8
+Cell 30 has advection field below 1e-8
+Cell 31 has advection field below 1e-8
+Cell 32 has advection field below 1e-8
+Cell 33 has advection field below 1e-8
+Cell 34 has advection field below 1e-8
+Cell 35 has advection field below 1e-8
+Cell 36 has advection field below 1e-8
+Cell 37 has advection field below 1e-8
+Cell 38 has advection field below 1e-8
+Cell 39 has advection field below 1e-8
+Cell 40 has advection field below 1e-8
+Cell 41 has advection field below 1e-8
+Cell 42 has advection field below 1e-8
+Cell 43 has advection field below 1e-8
+Cell 44 has advection field below 1e-8
+Cell 45 has advection field below 1e-8
+Cell 46 has advection field below 1e-8
+Cell 47 has advection field below 1e-8
+Cell 48 has advection field below 1e-8
+Cell 49 has advection field below 1e-8
+Cell 50 has advection field below 1e-8
+Cell 51 has advection field below 1e-8
+Cell 52 has advection field below 1e-8
+Cell 53 has advection field below 1e-8
+Cell 54 has advection field below 1e-8
+Cell 55 has advection field below 1e-8
+Cell 56 has advection field below 1e-8
+Cell 57 has advection field below 1e-8
+Cell 58 has advection field below 1e-8
+Cell 59 has advection field below 1e-8
+Cell 60 has advection field below 1e-8
+Cell 61 has advection field below 1e-8
+Cell 62 has advection field below 1e-8
+Cell 63 has advection field below 1e-8
    Solving C_1 system ... 0 iterations.
+Cell 0 has advection field below 1e-8
+Cell 1 has advection field below 1e-8
+Cell 2 has advection field below 1e-8
+Cell 3 has advection field below 1e-8
+Cell 4 has advection field below 1e-8
+Cell 5 has advection field below 1e-8
+Cell 6 has advection field below 1e-8
+Cell 7 has advection field below 1e-8
+Cell 8 has advection field below 1e-8
+Cell 9 has advection field below 1e-8
+Cell 10 has advection field below 1e-8
+Cell 11 has advection field below 1e-8
+Cell 12 has advection field below 1e-8
+Cell 13 has advection field below 1e-8
+Cell 14 has advection field below 1e-8
+Cell 15 has advection field below 1e-8
+Cell 16 has advection field below 1e-8
+Cell 17 has advection field below 1e-8
+Cell 18 has advection field below 1e-8
+Cell 19 has advection field below 1e-8
+Cell 20 has advection field below 1e-8
+Cell 21 has advection field below 1e-8
+Cell 22 has advection field below 1e-8
+Cell 23 has advection field below 1e-8
+Cell 24 has advection field below 1e-8
+Cell 25 has advection field below 1e-8
+Cell 26 has advection field below 1e-8
+Cell 27 has advection field below 1e-8
+Cell 28 has advection field below 1e-8
+Cell 29 has advection field below 1e-8
+Cell 30 has advection field below 1e-8
+Cell 31 has advection field below 1e-8
+Cell 32 has advection field below 1e-8
+Cell 33 has advection field below 1e-8
+Cell 34 has advection field below 1e-8
+Cell 35 has advection field below 1e-8
+Cell 36 has advection field below 1e-8
+Cell 37 has advection field below 1e-8
+Cell 38 has advection field below 1e-8
+Cell 39 has advection field below 1e-8
+Cell 40 has advection field below 1e-8
+Cell 41 has advection field below 1e-8
+Cell 42 has advection field below 1e-8
+Cell 43 has advection field below 1e-8
+Cell 44 has advection field below 1e-8
+Cell 45 has advection field below 1e-8
+Cell 46 has advection field below 1e-8
+Cell 47 has advection field below 1e-8
+Cell 48 has advection field below 1e-8
+Cell 49 has advection field below 1e-8
+Cell 50 has advection field below 1e-8
+Cell 51 has advection field below 1e-8
+Cell 52 has advection field below 1e-8
+Cell 53 has advection field below 1e-8
+Cell 54 has advection field below 1e-8
+Cell 55 has advection field below 1e-8
+Cell 56 has advection field below 1e-8
+Cell 57 has advection field below 1e-8
+Cell 58 has advection field below 1e-8
+Cell 59 has advection field below 1e-8
+Cell 60 has advection field below 1e-8
+Cell 61 has advection field below 1e-8
+Cell 62 has advection field below 1e-8
+Cell 63 has advection field below 1e-8
    Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-supg-compositional-passive/solution-00000
+     Writing graphical output:  output-supg-compositional-passive/solution/solution-00000
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
      Compositions min/max/mass: 0/1/0.4583 // 0/1/0.4583
 
@@ -19,7 +211,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 13 iterations.
    Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12 iterations.
+   Solving Stokes system... 9+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
@@ -30,10 +222,10 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 13 iterations.
    Solving C_2 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-supg-compositional-passive/solution-00001
+     Writing graphical output:  output-supg-compositional-passive/solution/solution-00001
      Temperature min/avg/max:   0 K, 0.4999 K, 1 K
      Compositions min/max/mass: -0.05554/1.264/0.4583 // -0.05154/1.178/0.4582
 
@@ -42,7 +234,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.4999 K, 1 K
@@ -53,10 +245,10 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-supg-compositional-passive/solution-00002
+     Writing graphical output:  output-supg-compositional-passive/solution/solution-00002
      Temperature min/avg/max:   0 K, 0.4998 K, 1 K
      Compositions min/max/mass: -0.1002/1.309/0.4583 // -0.07521/1.23/0.4581
 
@@ -65,10 +257,10 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 13 iterations.
    Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-supg-compositional-passive/solution-00003
+     Writing graphical output:  output-supg-compositional-passive/solution/solution-00003
      Temperature min/avg/max:   -0.00316 K, 0.4998 K, 1 K
      Compositions min/max/mass: -0.1109/1.305/0.4583 // -0.06775/1.162/0.458
 
@@ -77,7 +269,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   -0.006056 K, 0.4998 K, 1 K
@@ -88,10 +280,10 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 13 iterations.
    Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-supg-compositional-passive/solution-00004
+     Writing graphical output:  output-supg-compositional-passive/solution/solution-00004
      Temperature min/avg/max:   -0.006995 K, 0.4997 K, 1 K
      Compositions min/max/mass: -0.1143/1.294/0.4583 // -0.06457/1.236/0.4581
 
@@ -100,10 +292,10 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-supg-compositional-passive/solution-00005
+     Writing graphical output:  output-supg-compositional-passive/solution/solution-00005
      Temperature min/avg/max:   -0.00854 K, 0.4996 K, 1 K
      Compositions min/max/mass: -0.136/1.264/0.4583 // -0.06523/1.181/0.4581
 
@@ -112,7 +304,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 13 iterations.
    Solving C_2 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   -0.009015 K, 0.4995 K, 1 K
@@ -123,10 +315,10 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-supg-compositional-passive/solution-00006
+     Writing graphical output:  output-supg-compositional-passive/solution/solution-00006
      Temperature min/avg/max:   -0.009199 K, 0.4994 K, 1 K
      Compositions min/max/mass: -0.1321/1.216/0.4583 // -0.07344/1.245/0.4581
 
@@ -135,7 +327,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   -0.009233 K, 0.4994 K, 1 K
@@ -146,10 +338,10 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-supg-compositional-passive/solution-00007
+     Writing graphical output:  output-supg-compositional-passive/solution/solution-00007
      Temperature min/avg/max:   -0.008914 K, 0.4993 K, 1 K
      Compositions min/max/mass: -0.165/1.154/0.4583 // -0.08125/1.216/0.4581
 
@@ -158,10 +350,10 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-supg-compositional-passive/solution-00008
+     Writing graphical output:  output-supg-compositional-passive/solution/solution-00008
      Temperature min/avg/max:   -0.008641 K, 0.4993 K, 1 K
      Compositions min/max/mass: -0.1612/1.162/0.4583 // -0.08139/1.221/0.4581
 
@@ -170,7 +362,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   -0.009029 K, 0.4993 K, 1 K
@@ -181,10 +373,10 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-supg-compositional-passive/solution-00009
+     Writing graphical output:  output-supg-compositional-passive/solution/solution-00009
      Temperature min/avg/max:   -0.008508 K, 0.4993 K, 1 K
      Compositions min/max/mass: -0.1252/1.143/0.4583 // -0.09607/1.252/0.4581
 
@@ -193,10 +385,10 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-supg-compositional-passive/solution-00010
+     Writing graphical output:  output-supg-compositional-passive/solution/solution-00010
      Temperature min/avg/max:   -0.00875 K, 0.4993 K, 1 K
      Compositions min/max/mass: -0.1481/1.161/0.4583 // -0.1157/1.266/0.4581
 

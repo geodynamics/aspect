@@ -201,18 +201,18 @@ namespace aspect
 
               if (this->get_parameters().use_supg == true)
                 data.local_rhs(i)
-                              += tau *
-                              (
-                                (current_u * (density_c_P + latent_heat_LHS)) *
-                                scratch.grad_phi_field[i] *
-                                (
-                                  field_term_for_rhs
-                                  +
-                                  time_step * gamma
-                                  +
-                                  reaction_term
-                                )
-                              ) * JxW;
+                += tau *
+                   (
+                     (current_u * (density_c_P + latent_heat_LHS)) *
+                     scratch.grad_phi_field[i] *
+                     (
+                       field_term_for_rhs
+                       +
+                       time_step * gamma
+                       +
+                       reaction_term
+                     )
+                   ) * JxW;
 
 
               for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
@@ -232,22 +232,22 @@ namespace aspect
                 {
                   for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
                     {
-                  data.local_matrix(i,j)
-                                    += tau *
-                                    (
-                                      (current_u * (density_c_P + latent_heat_LHS)) *
-                                      scratch.grad_phi_field[i] *
-                                      (
-                                        -time_step * conductivity * trace(scratch.hessian_phi_field[j])
-                                        +
-                                        (
-                                          (time_step * current_u * scratch.grad_phi_field[j])
-                                          +
-                                          (bdf2_factor * scratch.phi_field[j])
-                                        ) *
-                                        (density_c_P + latent_heat_LHS)
-                                      )
-                                    ) * JxW;
+                      data.local_matrix(i,j)
+                      += tau *
+                         (
+                           (current_u * (density_c_P + latent_heat_LHS)) *
+                           scratch.grad_phi_field[i] *
+                           (
+                             -time_step * conductivity * trace(scratch.hessian_phi_field[j])
+                             +
+                             (
+                               (time_step * current_u * scratch.grad_phi_field[j])
+                               +
+                               (bdf2_factor * scratch.phi_field[j])
+                             ) *
+                             (density_c_P + latent_heat_LHS)
+                           )
+                         ) * JxW;
                     }
                 }
             }

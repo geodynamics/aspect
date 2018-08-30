@@ -1,63 +1,201 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.4.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Number of active cells: 64 (on 4 levels)
-Number of degrees of freedom: 740 (578+81+81)
+Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 0:  t=0 seconds
+Cell 0 has advection field below 1e-8
+Cell 1 has advection field below 1e-8
+Cell 2 has advection field below 1e-8
+Cell 3 has advection field below 1e-8
+Cell 4 has advection field below 1e-8
+Cell 5 has advection field below 1e-8
+Cell 6 has advection field below 1e-8
+Cell 7 has advection field below 1e-8
+Cell 8 has advection field below 1e-8
+Cell 9 has advection field below 1e-8
+Cell 10 has advection field below 1e-8
+Cell 11 has advection field below 1e-8
+Cell 12 has advection field below 1e-8
+Cell 13 has advection field below 1e-8
+Cell 14 has advection field below 1e-8
+Cell 15 has advection field below 1e-8
+Cell 16 has advection field below 1e-8
+Cell 17 has advection field below 1e-8
+Cell 18 has advection field below 1e-8
+Cell 19 has advection field below 1e-8
+Cell 20 has advection field below 1e-8
+Cell 21 has advection field below 1e-8
+Cell 22 has advection field below 1e-8
+Cell 23 has advection field below 1e-8
+Cell 24 has advection field below 1e-8
+Cell 25 has advection field below 1e-8
+Cell 26 has advection field below 1e-8
+Cell 27 has advection field below 1e-8
+Cell 28 has advection field below 1e-8
+Cell 29 has advection field below 1e-8
+Cell 30 has advection field below 1e-8
+Cell 31 has advection field below 1e-8
+Cell 32 has advection field below 1e-8
+Cell 33 has advection field below 1e-8
+Cell 34 has advection field below 1e-8
+Cell 35 has advection field below 1e-8
+Cell 36 has advection field below 1e-8
+Cell 37 has advection field below 1e-8
+Cell 38 has advection field below 1e-8
+Cell 39 has advection field below 1e-8
+Cell 40 has advection field below 1e-8
+Cell 41 has advection field below 1e-8
+Cell 42 has advection field below 1e-8
+Cell 43 has advection field below 1e-8
+Cell 44 has advection field below 1e-8
+Cell 45 has advection field below 1e-8
+Cell 46 has advection field below 1e-8
+Cell 47 has advection field below 1e-8
+Cell 48 has advection field below 1e-8
+Cell 49 has advection field below 1e-8
+Cell 50 has advection field below 1e-8
+Cell 51 has advection field below 1e-8
+Cell 52 has advection field below 1e-8
+Cell 53 has advection field below 1e-8
+Cell 54 has advection field below 1e-8
+Cell 55 has advection field below 1e-8
+Cell 56 has advection field below 1e-8
+Cell 57 has advection field below 1e-8
+Cell 58 has advection field below 1e-8
+Cell 59 has advection field below 1e-8
+Cell 60 has advection field below 1e-8
+Cell 61 has advection field below 1e-8
+Cell 62 has advection field below 1e-8
+Cell 63 has advection field below 1e-8
    Solving temperature system... 0 iterations.
 
    Postprocessing:
+Cell 0 has advection field below 1e-8
+Cell 1 has advection field below 1e-8
+Cell 2 has advection field below 1e-8
+Cell 3 has advection field below 1e-8
+Cell 4 has advection field below 1e-8
+Cell 5 has advection field below 1e-8
+Cell 6 has advection field below 1e-8
+Cell 7 has advection field below 1e-8
+Cell 8 has advection field below 1e-8
+Cell 9 has advection field below 1e-8
+Cell 10 has advection field below 1e-8
+Cell 11 has advection field below 1e-8
+Cell 12 has advection field below 1e-8
+Cell 13 has advection field below 1e-8
+Cell 14 has advection field below 1e-8
+Cell 15 has advection field below 1e-8
+Cell 16 has advection field below 1e-8
+Cell 17 has advection field below 1e-8
+Cell 18 has advection field below 1e-8
+Cell 19 has advection field below 1e-8
+Cell 20 has advection field below 1e-8
+Cell 21 has advection field below 1e-8
+Cell 22 has advection field below 1e-8
+Cell 23 has advection field below 1e-8
+Cell 24 has advection field below 1e-8
+Cell 25 has advection field below 1e-8
+Cell 26 has advection field below 1e-8
+Cell 27 has advection field below 1e-8
+Cell 28 has advection field below 1e-8
+Cell 29 has advection field below 1e-8
+Cell 30 has advection field below 1e-8
+Cell 31 has advection field below 1e-8
+Cell 32 has advection field below 1e-8
+Cell 33 has advection field below 1e-8
+Cell 34 has advection field below 1e-8
+Cell 35 has advection field below 1e-8
+Cell 36 has advection field below 1e-8
+Cell 37 has advection field below 1e-8
+Cell 38 has advection field below 1e-8
+Cell 39 has advection field below 1e-8
+Cell 40 has advection field below 1e-8
+Cell 41 has advection field below 1e-8
+Cell 42 has advection field below 1e-8
+Cell 43 has advection field below 1e-8
+Cell 44 has advection field below 1e-8
+Cell 45 has advection field below 1e-8
+Cell 46 has advection field below 1e-8
+Cell 47 has advection field below 1e-8
+Cell 48 has advection field below 1e-8
+Cell 49 has advection field below 1e-8
+Cell 50 has advection field below 1e-8
+Cell 51 has advection field below 1e-8
+Cell 52 has advection field below 1e-8
+Cell 53 has advection field below 1e-8
+Cell 54 has advection field below 1e-8
+Cell 55 has advection field below 1e-8
+Cell 56 has advection field below 1e-8
+Cell 57 has advection field below 1e-8
+Cell 58 has advection field below 1e-8
+Cell 59 has advection field below 1e-8
+Cell 60 has advection field below 1e-8
+Cell 61 has advection field below 1e-8
+Cell 62 has advection field below 1e-8
+Cell 63 has advection field below 1e-8
      RMS, max velocity:                  0.816 m/s, 1.37 m/s
-     Temperature min/avg/max:            0 K, 0.08282 K, 1 K
-     Heat fluxes through boundary parts: 3.349e-07 W, 0 W, 1.667e-06 W, 1e-05 W
-     Writing graphical output:           output-supg/solution-00000
+     Temperature min/avg/max:            0 K, 0.1027 K, 1 K
+     Heat fluxes through boundary parts: -1.881e-07 W, 0 W, -1.466e-06 W, -1.667e-05 W
+     Writing graphical output:           output-supg/solution/solution-00000
 
-*** Timestep 1:  t=0.176777 seconds
-   Solving temperature system... 6 iterations.
+*** Timestep 1:  t=0.0883883 seconds
+   Solving temperature system... 9 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.816 m/s, 1.37 m/s
-     Temperature min/avg/max:            -0.03863 K, 0.08353 K, 0.7203 K
-     Heat fluxes through boundary parts: -1.054e-07 W, -1.609e-07 W, 1.5e-06 W, 1.023e-05 W
-     Writing graphical output:           output-supg/solution-00001
+     Temperature min/avg/max:            -0.07756 K, 0.1026 K, 1.184 K
+     Heat fluxes through boundary parts: -1.237e-07 W, -1.039e-08 W, -1.449e-06 W, -1.713e-05 W
 
-*** Timestep 2:  t=0.353553 seconds
-   Solving temperature system... 6 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                  0.816 m/s, 1.37 m/s
-     Temperature min/avg/max:            -0.05528 K, 0.0845 K, 0.5747 K
-     Heat fluxes through boundary parts: 4.784e-07 W, -5.038e-07 W, 9.558e-07 W, 9.725e-06 W
-     Writing graphical output:           output-supg/solution-00002
-
-*** Timestep 3:  t=0.5 seconds
-   Solving temperature system... 6 iterations.
+*** Timestep 2:  t=0.176777 seconds
+   Solving temperature system... 9 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.816 m/s, 1.37 m/s
-     Temperature min/avg/max:            -0.07105 K, 0.08557 K, 0.558 K
-     Heat fluxes through boundary parts: 1.812e-06 W, -5.295e-07 W, 5.304e-07 W, 8.719e-06 W
-     Writing graphical output:           output-supg/solution-00003
+     Temperature min/avg/max:            -0.1149 K, 0.1024 K, 1.194 K
+     Heat fluxes through boundary parts: -3.842e-07 W, -2.128e-08 W, -1.364e-06 W, -1.737e-05 W
+     Writing graphical output:           output-supg/solution/solution-00001
+
+*** Timestep 3:  t=0.265165 seconds
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.1392 K, 0.1023 K, 1.062 K
+     Heat fluxes through boundary parts: -3.955e-07 W, -5.799e-08 W, -1.264e-06 W, -1.718e-05 W
+     Writing graphical output:           output-supg/solution/solution-00002
+
+*** Timestep 4:  t=0.353553 seconds
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.1428 K, 0.1022 K, 1.044 K
+     Heat fluxes through boundary parts: 3.558e-07 W, -8.041e-08 W, -1.14e-06 W, -1.631e-05 W
+     Writing graphical output:           output-supg/solution/solution-00003
+
+*** Timestep 5:  t=0.441942 seconds
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.1388 K, 0.102 K, 1.017 K
+     Heat fluxes through boundary parts: 1.433e-06 W, -3.743e-08 W, -9.456e-07 W, -1.467e-05 W
+     Writing graphical output:           output-supg/solution/solution-00004
+
+*** Timestep 6:  t=0.5 seconds
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.1352 K, 0.1019 K, 0.9727 K
+     Heat fluxes through boundary parts: 1.917e-06 W, 3.535e-08 W, -7.646e-07 W, -1.317e-05 W
+     Writing graphical output:           output-supg/solution/solution-00005
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.477s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble temperature system     |         4 |     0.102s |        21% |
-| Build temperature preconditioner|         4 |   0.00159s |      0.33% |
-| Solve temperature system        |         4 |   0.00307s |      0.64% |
-| Initialization                  |         2 |    0.0784s |        16% |
-| Postprocessing                  |         4 |    0.0814s |        17% |
-| Setup dof systems               |         1 |    0.0254s |       5.3% |
 +---------------------------------+-----------+------------+------------+
 
