@@ -106,12 +106,22 @@ namespace aspect
                   ExcMessage ("The product of density and c_P needs to be a "
                               "non-negative quantity."));
 
-          const double conductivity =
+          double conductivity =
             ((advection_field_is_temperature)
              ?
              scratch.material_model_outputs.thermal_conductivities[q]
              :
              0.0);
+
+          if (!this->get_parameters().use_streamline_entropy_viscosity)
+            conductivity += scratch.artificial_viscosity;
+
+          const double anisotropic_artificial_viscosity = (this->get_parameters().use_streamline_entropy_viscosity)
+                                                          ?
+                                                          scratch.artificial_viscosity
+                                                          :
+                                                          0.0;
+
           const double latent_heat_LHS =
             ((advection_field_is_temperature)
              ?
@@ -154,6 +164,11 @@ namespace aspect
           if (this->get_parameters().free_surface_enabled)
             current_u -= scratch.mesh_velocity_values[q];
 
+          Tensor<1,dim> current_unit_u = current_u;
+
+          if (current_u.norm() > std::numeric_limits<double>::min())
+            current_unit_u /= current_u.norm();
+
           const double JxW = scratch.finite_element_values.JxW(q);
 
           // do the actual assembly. note that we only need to loop over the advection
@@ -174,8 +189,10 @@ namespace aspect
                 {
                   data.local_matrix(i,j)
                   += (
-                       (time_step * (conductivity + scratch.artificial_viscosity)
+                       (time_step * conductivity
                         * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
+                       + time_step * anisotropic_artificial_viscosity
+                       * ((current_unit_u * scratch.grad_phi_field[i]) * (current_unit_u * scratch.grad_phi_field[j]))
                        + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
                           + (bdf2_factor * scratch.phi_field[i] * scratch.phi_field[j])) *
                        (density_c_P + latent_heat_LHS)

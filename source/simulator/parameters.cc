@@ -836,6 +836,15 @@ namespace aspect
                            "If set to true, the maximum of the artificial viscosity in "
                            "the cell as well as the neighbors of the cell is computed and used "
                            "instead.");
+        prm.declare_entry ("Use streamline entropy viscosity", "true",
+                           Patterns::Bool (),
+                           "If set to true (the default), the computed entropy viscosity is"
+                           "only applied in streamline direction, equivalent to an anisotropic "
+                           "stabilizing diffusion in the direction of the flow. If false, the "
+                           "artificial diffusion will be applied isotropically in all directions. "
+                           "While reducing oscillations, setting this option to false can "
+                           "significantly increase the amount of numerical diffusion across "
+                           "boundary layers, and should thus be only used if necessary.");
         prm.declare_entry ("alpha", "2",
                            Patterns::Integer (1, 2),
                            "The exponent $\\alpha$ in the entropy viscosity stabilization. Valid "
@@ -1381,6 +1390,7 @@ namespace aspect
       prm.enter_subsection ("Stabilization parameters");
       {
         use_artificial_viscosity_smoothing  = prm.get_bool ("Use artificial viscosity smoothing");
+        use_streamline_entropy_viscosity    = prm.get_bool ("Use streamline entropy viscosity");
         stabilization_alpha                 = prm.get_integer ("alpha");
 
         stabilization_c_R                   = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("cR"))),

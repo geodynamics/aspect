@@ -1,0 +1,110 @@
+# This is a test for the streamline entropy viscosity method that is a setup
+# described in Thieulot, PEPI, 2011, Appendix A. It creates a lateral pipe
+# with a prescribed flow and a temperature jump that moves with the flow.
+# With sufficient stabilization, no oscillations should occur. Since the
+# flow is always parallel to the temperature gradient, in this setup there
+# should be no difference between the entropy viscosity method, and streamline
+# entropy viscosity method.
+
+set CFL number                             = 0.2
+set Dimension                              = 2
+
+set Nonlinear solver scheme                = single Advection, no Stokes
+set Use years in output instead of seconds = false
+set End time                               = 0.5
+
+subsection Prescribed Stokes solution  
+  set Model name = function
+  subsection Pressure function
+    set Function expression = 0.0
+  end
+  subsection Velocity function
+    set Function expression = 1.0;0.0
+  end
+end
+
+
+subsection Discretization
+  subsection Stabilization parameters
+    set Use artificial viscosity smoothing = true
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 0.02
+    set X repetitions = 50
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = 
+    set Function expression = (x<0.25) ? 1.0 : 0.0 
+  end
+end
+
+
+subsection Boundary temperature model
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 0
+    set Left temperature   = 1.0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = left, right
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 0
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 0
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = temperature statistics, visualization
+
+  subsection Visualization
+    set Time between graphical output = .1
+    set List of output variables = artificial viscosity
+  end
+end

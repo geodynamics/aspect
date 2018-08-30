@@ -225,6 +225,12 @@ namespace aspect
                                max_velocity * max_residual /
                                (global_u_infty * global_field_variation));
 
+        // If there is physical conductivity it already stabilizes the equation,
+        // thus reduce the artificial stabilization by this amount.
+        if (entropy_viscosity >= max_conductivity)
+          entropy_viscosity -= max_conductivity;
+        else
+          entropy_viscosity = 0.0;
 
         return std::min (max_viscosity, entropy_viscosity);
       }
