@@ -1,55 +1,34 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.1.0-pre (stabilization_parameters_vector, 7345fcaf4)
---     . using deal.II 9.0.0
---     . using Trilinos 12.10.1
---     . using p4est 2.0.0
---     . running in DEBUG mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.1.0-pre&sha=7345fcaf4&src=code
------------------------------------------------------------------------------
-Number of active cells: 768 (on 2 levels)
-Number of degrees of freedom: 35,620 (20,790+970+6,930+6,930)
+Number of active cells: 48 (on 2 levels)
+Number of degrees of freedom: 1,032 (480+72+240+240)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 113+0 iterations.
+   Solving Stokes system... 20+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-shell_simple_3d/solution/solution-00000
-     RMS, max velocity:                  0.00185 m/year, 0.00339 m/year
+     Writing graphical output:           output-artificial_viscosity_list/solution/solution-00000
+     RMS, max velocity:                  0.0184 m/year, 0.0311 m/year
      Temperature min/avg/max:            973 K, 1449 K, 1973 K
-     Heat fluxes through boundary parts: -1.504e+12 W, 4.983e+12 W
-     Writing depth average:              output-shell_simple_3d/depth_average.txt
+     Heat fluxes through boundary parts: -1.08e+05 W, 1.966e+05 W
 
-*** Timestep 1:  t=8.36507e+07 years
-   Solving temperature system... 12 iterations.
-   Solving C_1 system ... 10 iterations.
-   Solving Stokes system... 111+0 iterations.
-
-   Postprocessing:
-     Writing graphical output:           output-shell_simple_3d/solution/solution-00001
-     RMS, max velocity:                  0.00138 m/year, 0.00295 m/year
-     Temperature min/avg/max:            973 K, 1468 K, 1973 K
-     Heat fluxes through boundary parts: -1.767e+12 W, 5.664e+12 W
-     Writing depth average:              output-shell_simple_3d/depth_average.txt
-
-*** Timestep 2:  t=1.70358e+08 years
-   Solving temperature system... 10 iterations.
-   Solving C_1 system ... 11 iterations.
-   Solving Stokes system... 110+0 iterations.
+*** Timestep 1:  t=1e+06 years
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 9 iterations.
+   Solving Stokes system... 14+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-shell_simple_3d/solution/solution-00002
-     RMS, max velocity:                  0.00117 m/year, 0.00275 m/year
-     Temperature min/avg/max:            973 K, 1478 K, 1973 K
-     Heat fluxes through boundary parts: -1.888e+12 W, 5.815e+12 W
-     Writing depth average:              output-shell_simple_3d/depth_average.txt
+     Writing graphical output:           output-artificial_viscosity_list/solution/solution-00001
+     RMS, max velocity:                  0.0184 m/year, 0.0311 m/year
+     Temperature min/avg/max:            973 K, 1444 K, 1973 K
+     Heat fluxes through boundary parts: -1.097e+05 W, 1.941e+05 W
 
-*** Timestep 3:  t=2.55587e+08 years
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
