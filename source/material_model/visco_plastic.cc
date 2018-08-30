@@ -568,17 +568,6 @@ namespace aspect
                       std::tuple<double, double, double> weakening = calculate_plastic_weakening(strain_invariant, j);
                       C   += volume_fractions[j] * std::get<0> (weakening);
                       phi += volume_fractions[j] * std::get<1> (weakening);
-                      // add copy fields here
-//                      if  (copy_out != NULL)
-//                        {
-//                          if (this->get_timestep_number() > 0)
-//                            {
-//                              sf[i][j] = std::get<2> (weakening); // strain fraction at each point and composition
-//                              copy_out-> copy_properties[i][j] = (sf[i][j])/(this->get_timestep());
-//                            }
-//                          else
-//                            copy_out-> copy_properties[i][j] =0;
-//                        }
                     }
                   else
                     {
