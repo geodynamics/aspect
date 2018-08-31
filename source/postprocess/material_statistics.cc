@@ -121,6 +121,7 @@ namespace aspect
                                   "A postprocessor that computes some statistics about "
                                   "the material properties. In particular, it computes the "
                                   "volume-averaged density, volume-averaged viscosity, and "
-                                  "total mass in the model.")
+                                  "total mass in the model. Currently, only arithmetic "
+                                  "averaging is supported.")
   }
 }

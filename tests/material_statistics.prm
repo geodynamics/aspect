@@ -1,6 +1,6 @@
 # This is a benchmark to check that the 'Material statistics'
 # postprocessor works correctly. It creates a model with lateral
-# flow. The density is the model is constant and the volume is known,
+# flow. The density in the model is constant and the volume is known,
 # so it is easy to compute the expected output. Over time material
 # with a different density flows in until it fills the whole domain.
 
