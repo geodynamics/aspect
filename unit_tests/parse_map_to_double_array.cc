@@ -136,3 +136,86 @@ TEST_CASE("Utilities::parse_map_to_double_array FAIL ON PURPOSE")
   true,
   "TestField"), Contains("The keyword `all' is expected but is not found"));
 }
+
+
+TEST_CASE("Utilities::parse_input_table")
+{
+  // Parse multicomponent properties
+  INFO("check 1: ");
+
+  dealii::Table<2,double> expected_result(3,3);
+
+  expected_result[0][0] = 100.0;
+  expected_result[0][1] = 10.0;
+  expected_result[0][2] = 30.0;
+  expected_result[1][0] = 25.0;
+  expected_result[1][1] = 5.0;
+  expected_result[1][2] = 1500.0;
+  expected_result[2][0] = 0.001;
+  expected_result[2][1] = 0.1;
+  expected_result[2][2] = 3.5;
+
+
+  compare_tables_approx(aspect::Utilities::parse_input_table<double> ("100,10,30; 25.0,5.0 ,1.5e3; 0.001,10e-2,3.5",
+                                                                      3, 3, "TestField"),
+                        expected_result);
+
+  expected_result[0][0] = 100.0;
+  expected_result[0][1] = 10.0;
+  expected_result[0][2] = 30.0;
+  expected_result[1][0] = 100.0;
+  expected_result[1][1] = 10.0;
+  expected_result[1][2] = 30.0;
+  expected_result[2][0] = 100.0;
+  expected_result[2][1] = 10.0;
+  expected_result[2][2] = 30.0;
+
+
+  compare_tables_approx(aspect::Utilities::parse_input_table<double> ("100,10,30",
+                                                                      3, 3, "TestField"),
+                        expected_result);
+
+  expected_result[0][0] = 100.0;
+  expected_result[0][1] = 100.0;
+  expected_result[0][2] = 100.0;
+  expected_result[1][0] = 10.0;
+  expected_result[1][1] = 10.0;
+  expected_result[1][2] = 10.0;
+  expected_result[2][0] = 30.0;
+  expected_result[2][1] = 30.0;
+  expected_result[2][2] = 30.0;
+
+
+  compare_tables_approx(aspect::Utilities::parse_input_table<double> ("100;10;30",
+                                                                      3, 3, "TestField"),
+                        expected_result);
+
+  INFO("check complete");
+
+}
+
+using Catch::Matchers::Contains;
+
+TEST_CASE("Utilities::parse_input_table FAIL ON PURPOSE")
+{
+  // Purposefully fail Parse multicomponent properties
+  INFO("check fail 1: ");
+  REQUIRE_THROWS_WITH(
+    aspect::Utilities::parse_input_table<double> ("100,10,30; 25.0,5.0 ,1.5e3",
+                                                  3,3,
+                                                  "TestField"), Contains("Length of TestField"));
+
+  // Purposefully fail Parse multicomponent properties
+  INFO("check fail 2: ");
+  REQUIRE_THROWS_WITH(
+    aspect::Utilities::parse_input_table<double> ("100,10; 25.0,5.0; 5.0,2.5",
+                                                  3,3,
+                                                  "TestField"), Contains("Length of TestField"));
+
+  // Purposefully fail Parse multicomponent properties
+  INFO("check fail 3: ");
+  REQUIRE_THROWS_WITH(
+    aspect::Utilities::parse_input_table<double> ("100,10; a,5.0; 5.0,2.5",
+                                                  3,2,
+                                                  "TestField"), Contains("bad lexical cast"));
+}

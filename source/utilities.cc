@@ -59,6 +59,39 @@ namespace aspect
    */
   namespace Utilities
   {
+    template <typename T>
+    Table<2,T>
+    parse_input_table (const std::string &input_string,
+                       const unsigned int n_rows,
+                       const unsigned int n_columns,
+                       const std::string &property_name)
+    {
+      Table<2,T> input_table(n_rows,n_columns);
+
+      const std::vector<std::string> rows = Utilities::possibly_extend_from_1_to_N(Utilities::split_string_list(input_string,';'),
+                                                                                   n_rows,
+                                                                                   property_name);
+
+      for (unsigned int i=0; i<rows.size(); ++i)
+        {
+          std::vector<std::string> current_columns = Utilities::possibly_extend_from_1_to_N(Utilities::split_string_list(rows[i]),
+                                                     n_columns,
+                                                     property_name);
+
+          for (unsigned int j=0; j<current_columns.size(); ++j)
+            {
+              // get rid of surrounding whitespace
+              trim(current_columns[j]);
+
+              input_table[i][j] = boost::lexical_cast<T>(current_columns[j]);
+            }
+        }
+
+      return input_table;
+    }
+
+
+
     std::vector<double> parse_map_to_double_array (const std::string &input_string,
                                                    const std::vector<std::string> &input_field_names,
                                                    const bool has_background_field,
@@ -2993,5 +3026,11 @@ namespace aspect
 
     template class NaturalCoordinate<2>;
     template class NaturalCoordinate<3>;
+
+
+    template Table<2,double> parse_input_table(const std::string &input_string,
+                                               const unsigned int n_rows,
+                                               const unsigned int n_columns,
+                                               const std::string &property_name);
   }
 }
