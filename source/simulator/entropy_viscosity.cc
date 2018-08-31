@@ -286,8 +286,7 @@ namespace aspect
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
     for (; cell<dof_handler.end(); ++cell)
       {
-        if (cell->is_artificial()
-            || (parameters.use_artificial_viscosity_smoothing  == false  &&  cell->is_ghost()))
+        if (cell->is_artificial())
           {
             viscosity_per_cell[cell->active_cell_index()]=-1;
             continue;
