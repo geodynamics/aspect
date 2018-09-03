@@ -54,7 +54,7 @@ namespace aspect
         MeltInputs (const unsigned int n_points);
 
         /**
-         * Compaction pressure values $\p_c$ at the given positions.
+         * Compaction pressure values $p_c$ at the given positions.
          */
         std::vector<double> compaction_pressures;
 
