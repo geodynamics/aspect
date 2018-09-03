@@ -286,8 +286,9 @@ namespace aspect
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
     for (; cell<dof_handler.end(); ++cell)
       {
-        if (!cell->is_locally_owned()
-            || (parameters.use_artificial_viscosity_smoothing  == true  &&  cell->is_artificial()))
+        // Skip cells for which we can not / do not need to compute the stabilization
+        if (cell->is_artificial()
+            || (cell->is_ghost() && parameters.use_artificial_viscosity_smoothing == false))
           {
             viscosity_per_cell[cell->active_cell_index()]=-1;
             continue;
