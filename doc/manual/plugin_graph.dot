@@ -528,6 +528,9 @@ SimulatorAccess -> N6aspect11Postprocess17HeatingStatisticsILi2EEE [style="dotte
 N6aspect11Postprocess18MassFluxStatisticsILi2EEE [label="mass flux\nstatistics", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess18MassFluxStatisticsILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess18MassFluxStatisticsILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect11Postprocess18MaterialStatisticsILi2EEE [label="material\nstatistics", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect11Postprocess18MaterialStatisticsILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect11Postprocess18MaterialStatisticsILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect11Postprocess16MatrixStatisticsILi2EEE [label="matrix\nstatistics", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess16MatrixStatisticsILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess16MatrixStatisticsILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
@@ -573,6 +576,9 @@ SimulatorAccess -> N6aspect11Postprocess13VisualizationILi2EEE [style="dotted", 
 N6aspect11Postprocess9InterfaceILi2EEE -> Simulator [len=15, weight=50];
 
 N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [label="Visualization postprocessor interface", height=.8,width=.8,shape="rect",fillcolor="green"]
+N6aspect11Postprocess27VisualizationPostprocessors20ISARotationTimescaleILi2EEE [label="ISA rotation\ntimescale", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect11Postprocess27VisualizationPostprocessors20ISARotationTimescaleILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors20ISARotationTimescaleILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect11Postprocess27VisualizationPostprocessors16SeismicVpAnomalyILi2EEE [label="Vp anomaly", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess27VisualizationPostprocessors16SeismicVpAnomalyILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors16SeismicVpAnomalyILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
@@ -609,6 +615,9 @@ SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors14ErrorIndi
 N6aspect11Postprocess27VisualizationPostprocessors5GeoidILi2EEE [label="geoid", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess27VisualizationPostprocessors5GeoidILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors5GeoidILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect11Postprocess27VisualizationPostprocessors13GrainLagAngleILi2EEE [label="grain lag\nangle", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect11Postprocess27VisualizationPostprocessors13GrainLagAngleILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors13GrainLagAngleILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect11Postprocess27VisualizationPostprocessors7GravityILi2EEE [label="gravity", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess27VisualizationPostprocessors7GravityILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors7GravityILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
@@ -708,6 +717,9 @@ SimulatorAccess -> N6aspect19TerminationCriteria17SteadyRMSVelocityILi2EEE [styl
 N6aspect19TerminationCriteria11UserRequestILi2EEE [label="user request", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect19TerminationCriteria11UserRequestILi2EEE -> N6aspect19TerminationCriteria9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect19TerminationCriteria11UserRequestILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect19TerminationCriteria11EndWalltimeILi2EEE [label="wall time", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect19TerminationCriteria11EndWalltimeILi2EEE -> N6aspect19TerminationCriteria9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect19TerminationCriteria11EndWalltimeILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect19TerminationCriteria9InterfaceILi2EEE -> Simulator [len=15, weight=50];
 
 }
