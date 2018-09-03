@@ -452,8 +452,6 @@ namespace aspect
     if (parameters.use_discontinuous_temperature_discretization || parameters.use_discontinuous_composition_discretization)
       CitationInfo::add("dg");
 
-    CitationInfo::print_info_block(pcout);
-
     // now that all member variables have been set up, also
     // connect the functions that will actually do the assembly
     set_assemblers();
@@ -1579,6 +1577,8 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::run ()
   {
+    CitationInfo::print_info_block(pcout);
+
     unsigned int max_refinement_level = parameters.initial_global_refinement +
                                         parameters.initial_adaptive_refinement;
     pre_refinement_step = 0;
