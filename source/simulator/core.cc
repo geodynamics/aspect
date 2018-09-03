@@ -29,6 +29,13 @@
 
 #ifdef ASPECT_USE_WORLD_BUILDER
 #  include <world_builder/world.h>
+#else
+// We need a definition of World to be able to compile, so just provide an empty class:
+namespace WorldBuilder
+{
+  class World
+  {};
+}
 #endif
 
 #include <aspect/simulator/assemblers/interface.h>

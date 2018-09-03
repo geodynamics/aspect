@@ -77,9 +77,9 @@ namespace aspect
 
                 // Calculate eigenvalues of strain rate and take maximum (absolute value)
                 // to get tauISA, the timescale for grain rotation toward the infinite strain axis
-                const SymmetricTensor<2, dim> strain_rate = in.strain_rate[0];
 #if DEAL_II_VERSION_GTE(9,0,0)
                 // eigenvalues() and eigenvectors() are not present in older dealii versions
+                const SymmetricTensor<2, dim> strain_rate = in.strain_rate[0];
                 const std::array<double, dim> strain_rate_eigenvalues = eigenvalues(
                                                                           strain_rate);
 
