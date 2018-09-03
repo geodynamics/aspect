@@ -43,9 +43,8 @@ namespace aspect
     if (parameters.stabilization_alpha != 2)
       return numbers::signaling_nan<double>();
 
-    // record maximal entropy on Gauss quadrature
-    // points
-    const QGauss<dim> quadrature_formula (parameters.temperature_degree+1);
+    // record maximal entropy on Gauss quadrature points
+    const QGauss<dim> quadrature_formula (advection_field.polynomial_degree(introspection)+1);
     const unsigned int n_q_points = quadrature_formula.size();
 
     const FEValuesExtractors::Scalar field = advection_field.scalar_extractor(introspection);
@@ -77,10 +76,10 @@ namespace aspect
                                                 old_old_field_values);
           for (unsigned int q=0; q<n_q_points; ++q)
             {
-              const double T = (old_field_values[q] +
-                                old_old_field_values[q]) / 2;
-              const double entropy = ((T-average_field) *
-                                      (T-average_field));
+              const double field_value = (old_field_values[q] +
+                                          old_old_field_values[q]) / 2;
+              const double entropy = ((field_value-average_field) *
+                                      (field_value-average_field));
 
               min_entropy = std::min (min_entropy, entropy);
               max_entropy = std::max (max_entropy, entropy);
@@ -253,10 +252,10 @@ namespace aspect
 
     const std::pair<double,double>
     global_field_range = get_extrapolated_advection_field_range (advection_field);
-    double global_entropy_variation = get_entropy_variation ((global_field_range.first +
-                                                              global_field_range.second) / 2,
-                                                             advection_field);
-    double global_max_velocity = get_maximal_velocity(old_solution);
+    const double global_entropy_variation = get_entropy_variation ((global_field_range.first +
+                                                                    global_field_range.second) / 2,
+                                                                   advection_field);
+    const double global_max_velocity = get_maximal_velocity(old_solution);
 
     const UpdateFlags update_flags = update_values |
                                      update_gradients |
@@ -459,7 +458,7 @@ namespace aspect
                       viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
                                                                                viscosity_per_cell_temp[cell->neighbor(face_no)->active_cell_index()]);
                     else
-                      for (unsigned int l=0; l<cell->neighbor(face_no)->n_children(); l++)
+                      for (unsigned int l=0; l<cell->neighbor(face_no)->n_children(); ++l)
                         if (cell->neighbor(face_no)->child(l)->active())
                           viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
                                                                                    viscosity_per_cell_temp[cell->neighbor(face_no)->child(l)->active_cell_index()]);

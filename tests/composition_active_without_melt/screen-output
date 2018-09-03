@@ -35,7 +35,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5021 K, 1 K
-     Compositions min/max/mass: -0.04298/1.053/0.375 // 0/0/0
+     Compositions min/max/mass: -0.04295/1.053/0.375 // 0/0/0
 
 *** Timestep 3:  t=0.1875 seconds
    Solving temperature system... 8 iterations.
@@ -46,7 +46,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5032 K, 1 K
-     Compositions min/max/mass: -0.04938/1.073/0.375 // 0/0/0
+     Compositions min/max/mass: -0.04935/1.073/0.375 // 0/0/0
 
 *** Timestep 4:  t=0.25 seconds
    Solving temperature system... 8 iterations.
@@ -68,7 +68,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5044 K, 1 K
-     Compositions min/max/mass: -0.05308/1.095/0.375 // 0/0/0
+     Compositions min/max/mass: -0.0531/1.095/0.375 // 0/0/0
 
 *** Timestep 6:  t=0.375 seconds
    Solving temperature system... 8 iterations.
@@ -79,7 +79,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5045 K, 1 K
-     Compositions min/max/mass: -0.05287/1.099/0.375 // 0/0/0
+     Compositions min/max/mass: -0.05292/1.099/0.375 // 0/0/0
 
 *** Timestep 7:  t=0.4375 seconds
    Solving temperature system... 8 iterations.
@@ -90,7 +90,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5046 K, 1 K
-     Compositions min/max/mass: -0.05192/1.1/0.375 // 0/0/0
+     Compositions min/max/mass: -0.05199/1.1/0.375 // 0/0/0
 
 *** Timestep 8:  t=0.5 seconds
    Solving temperature system... 9 iterations.
@@ -101,7 +101,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5049 K, 1 K
-     Compositions min/max/mass: -0.05058/1.098/0.375 // 0/0/0
+     Compositions min/max/mass: -0.05066/1.098/0.375 // 0/0/0
 
 *** Timestep 9:  t=0.5625 seconds
    Solving temperature system... 8 iterations.
@@ -112,7 +112,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5049 K, 1 K
-     Compositions min/max/mass: -0.04894/1.093/0.375 // 0/0/0
+     Compositions min/max/mass: -0.04902/1.093/0.375 // 0/0/0
 
 *** Timestep 10:  t=0.625 seconds
    Solving temperature system... 8 iterations.
@@ -123,7 +123,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5051 K, 1 K
-     Compositions min/max/mass: -0.04715/1.086/0.375 // 0/0/0
+     Compositions min/max/mass: -0.04721/1.086/0.375 // 0/0/0
 
 *** Timestep 11:  t=0.6875 seconds
    Solving temperature system... 9 iterations.
@@ -134,7 +134,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5055 K, 1 K
-     Compositions min/max/mass: -0.04531/1.077/0.375 // 0/0/0
+     Compositions min/max/mass: -0.04537/1.077/0.375 // 0/0/0
 
 *** Timestep 12:  t=0.75 seconds
    Solving temperature system... 9 iterations.
@@ -145,7 +145,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5065 K, 1 K
-     Compositions min/max/mass: -0.0436/1.067/0.375 // 0/0/0
+     Compositions min/max/mass: -0.04363/1.067/0.375 // 0/0/0
 
 *** Timestep 13:  t=0.8125 seconds
    Solving temperature system... 9 iterations.
@@ -156,7 +156,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5074 K, 1 K
-     Compositions min/max/mass: -0.04201/1.055/0.375 // 0/0/0
+     Compositions min/max/mass: -0.04203/1.055/0.375 // 0/0/0
 
 *** Timestep 14:  t=0.875 seconds
    Solving temperature system... 8 iterations.
@@ -167,7 +167,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5084 K, 1 K
-     Compositions min/max/mass: -0.04052/1.043/0.375 // 0/0/0
+     Compositions min/max/mass: -0.04053/1.043/0.375 // 0/0/0
 
 *** Timestep 15:  t=0.9375 seconds
    Solving temperature system... 8 iterations.
@@ -189,7 +189,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5097 K, 1 K
-     Compositions min/max/mass: -0.03779/1.015/0.375 // 0/0/0
+     Compositions min/max/mass: -0.03778/1.015/0.375 // 0/0/0
 
 Termination requested by criterion: end time
 
