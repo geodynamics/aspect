@@ -120,8 +120,12 @@ namespace aspect
                                   "material statistics",
                                   "A postprocessor that computes some statistics about "
                                   "the material properties. In particular, it computes the "
-                                  "volume-averaged density, volume-averaged viscosity, and "
-                                  "total mass in the model. Currently, only arithmetic "
-                                  "averaging is supported.")
+                                  "volume-averages of the density and viscosity, and the "
+                                  "total mass in the model. Specifically, it implements "
+                                  "the following formulas in each time step: "
+                                  "$\\left<\\rho\\right> = \\frac{1}{|\\Omega|} \\int_\\Omega \\rho(\\mathbf x) \\, \\text{d}x$, "
+                                  "$\\left<\\eta\\right> = \\frac{1}{|\\Omega|} \\int_\\Omega \\eta(\\mathbf x) \\, \\text{d}x$, "
+                                  "$M = \\int_\\Omega \\rho(\\mathbf x) \\, \\text{d}x$, "
+                                  "where $|\\Omega|$ is the volume of the domain.")
   }
 }
