@@ -106,12 +106,6 @@ namespace aspect
                   ExcMessage ("The product of density and c_P needs to be a "
                               "non-negative quantity."));
 
-          const double conductivity =
-            ((advection_field_is_temperature)
-             ?
-             scratch.material_model_outputs.thermal_conductivities[q]
-             :
-             0.0);
           const double latent_heat_LHS =
             ((advection_field_is_temperature)
              ?
@@ -156,6 +150,24 @@ namespace aspect
 
           const double JxW = scratch.finite_element_values.JxW(q);
 
+          // For the diffusion constant, use the larger of the physical
+          // and the artificial viscosity/conductivity/diffusion constant.
+          // One could also choose the sum of the two, but if the
+          // physical diffusion is larger than the artificial one,
+          // then (because the latter is chosen sufficiently large to
+          // make the problem stable) one may as well stick with the
+          // physical one. And if the physical diffusion is too small to
+          // make the problem stable, then we ought to choose the smallest
+          // diffusivity value that makes the problem stable -- which is
+          // exactly the artificial viscosity.
+          const double conductivity = (advection_field_is_temperature
+                                       ?
+                                       scratch.material_model_outputs.thermal_conductivities[q]
+                                       :
+                                       0.0);
+          const double diffusion_constant = std::max (conductivity,
+                                                      scratch.artificial_viscosity);
+
           // do the actual assembly. note that we only need to loop over the advection
           // shape functions because these are the only contributions we compute here
           for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
@@ -174,7 +186,7 @@ namespace aspect
                 {
                   data.local_matrix(i,j)
                   += (
-                       (time_step * (conductivity + scratch.artificial_viscosity)
+                       (time_step * diffusion_constant
                         * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
                        + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
                           + (bdf2_factor * scratch.phi_field[i] * scratch.phi_field[j])) *
