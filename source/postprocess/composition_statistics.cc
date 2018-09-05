@@ -174,6 +174,6 @@ namespace aspect
                                   "In particular, it computes maximal and minimal values of "
                                   "each field, as well as the total mass contained in this "
                                   "field as defined by the integral "
-                                  "$m_i(t) = \\int_\\Omega c_i(\\mathbf x,t) \\; dx$.")
+                                  "$m_i(t) = \\int_\\Omega c_i(\\mathbf x,t) \\; \\text{d}x$.")
   }
 }
