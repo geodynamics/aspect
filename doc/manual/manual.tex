@@ -8211,7 +8211,7 @@ instantaneous melting/freezing (or a zero normal stress, corresponding to an ope
 In the weak form, this results in boundary conditions of the form
 of a surface integral:
 \begin{equation*}
-\int_S \mathcal{P} (\mathbf u \cdot \mathbf n) (\mathbf v \cdot \mathbf n) dS,
+\int_S \mathcal{P} (\mathbf u \cdot \mathbf n) (\mathbf v \cdot \mathbf n) \text{d}S,
 \end{equation*}
 with the normal vector $\mathbf n$.
 
@@ -8685,7 +8685,7 @@ than 1\% accuracy) with the results in the van Keken paper.
   \caption{\it Van Keken benchmark with discontinuous (left) and smoothed,
   continuous (right) initial conditions for the compositional field:
   Evolution of the root mean square velocity $\left(\frac 1{|\Omega|}\int_\Omega |\mathbf u(\mathbf x,t)|^2 \;
-  dx\right)^{1/2}$ as a function of time for different numbers of global mesh
+  \text{d}x\right)^{1/2}$ as a function of time for different numbers of global mesh
   refinements. 5 global refinements correspond to a $32\times 32$ mesh, 9
   refinements to a $512\times 512$ mesh.}
   \label{fig:vk-2}
@@ -9672,12 +9672,12 @@ The Nusselt number of the top and bottom surfaces, ${Nu}_T$ and ${Nu}_B$,
 respectively, are defined by the authors of the benchmarks as
 \begin{equation}
 \label{eq:davies-NuTop}
-{Nu}_{T} = \frac{\ln(f)}{2{\pi}r_{\max}(1-f)}\int \limits_{0}^{2\pi} \frac{\partial T}{\partial r}\, d\theta  \\
+{Nu}_{T} = \frac{\ln(f)}{2{\pi}r_{\max}(1-f)}\int \limits_{0}^{2\pi} \frac{\partial T}{\partial r}\, \text{d}\theta  \\
 \end{equation}
 and
 \begin{equation*}
 \label{eq:davies-NuBottom}
-{Nu}_{B} = \frac{f \ln(f)}{2{\pi}r_{\min}(1-f)}\int \limits_{0}^{2\pi} \frac{\partial T}{\partial r}\, d\theta \\
+{Nu}_{B} = \frac{f \ln(f)}{2{\pi}r_{\min}(1-f)}\int \limits_{0}^{2\pi} \frac{\partial T}{\partial r}\, \text{d}\theta \\
 \end{equation*}
 where $f$ is the ratio $\frac{r_{\min}}{r_{\max}}$.
 
@@ -9688,7 +9688,7 @@ We can put this in terms of heat flux
 through the inner and outer surfaces,
 where $q_r$ is heat flux in the radial direction. Let $Q$ be the total heat that flows through a surface,
 \begin{equation*}
-  Q = \int \limits_{0}^{2\pi} q_r\, d\theta,
+  Q = \int \limits_{0}^{2\pi} q_r\, \text{d}\theta,
 \end{equation*}
 then \eqref{eq:davies-NuTop} becomes
 \begin{equation*}
@@ -10366,7 +10366,7 @@ u(x,y) &=& x^2(1- x)^2 (2y - 6y^2 + 4y^3)  \nonumber\\
 v(x,y) &=& -y^2 (1 - y)^2 (2x - 6x^2 + 4x^3) \nonumber\\
 p(x,y) &=& x(1 -x) -1/6. 
 \end{eqnarray}
-Note that the pressure satisfies $\int_{\Omega} p \; d\Omega = 0$.
+Note that the pressure satisfies $\int_{\Omega} p \; \text{d}x = 0$.
 The gravity, pressure and velocity fields are shown in Fig.~\ref{fig:doneahuerta-benchmark}.
 
 The convergence of the numerical error of this benchmark has been analyzed by
