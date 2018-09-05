@@ -168,10 +168,35 @@ namespace aspect
 
         double grain_size;
 
-        std::vector<double> densities;
+        // list of depth (or pressure), width and Clapeyron slopes
+        // for the different phase transitions
+        std::vector<double> transition_depths;
+        std::vector<double> transition_pressures;
+        std::vector<double> transition_temperatures;
+        std::vector<double> transition_widths;
+        std::vector<double> transition_pressure_widths;
+        std::vector<double> transition_slopes;
+
+        // Number of phase changes
+        unsigned int number_of_phase_transitions;
+
+        // Use depth (if true) instead of pressure to define phase transitions
+        bool use_depth;
+
+        dealii::Table<2,double> densities;
         std::vector<double> thermal_expansivities;
         std::vector<double> thermal_diffusivities;
         std::vector<double> heat_capacities;
+
+        /**
+         * Percentage of material that has already undergone the phase
+         * transition to the higher-pressure material (this is done
+         * individually for each transition and summed up in the end)
+         */
+        std::vector<double>
+        compute_phase_fractions (const Point<dim> &position,
+                                 const double temperature,
+                                 const double pressure) const;
 
         /**
          * Enumeration for selecting which viscosity averaging scheme to use.

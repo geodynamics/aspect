@@ -1,0 +1,87 @@
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Max nonlinear iterations               = 1
+set Surface pressure                       = 3.e9
+
+# Model geometry (100x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications 
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, left, right
+  set List of model names = initial temperature
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top, left, right
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+# Material model
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+
+    set Reference temperature = 273
+
+    set Define transition by depth instead of pressure = false
+
+    set Phase transition pressures = 2.9e9
+    set Phase transition pressure widths = 0.
+    set Phase transition temperatures = 273.
+    set Phase transition Clapeyron slopes = 0.
+
+    set Densities = 2700; 3400
+
+    set Viscous flow law = dislocation
+    set Densities = 2700; 3400
+    set Prefactors for dislocation creep = 5.e-23
+    set Stress exponents for dislocation creep = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep = 0.
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization
+  subsection Visualization
+    set List of output variables = viscosity, strain rate, density
+    set Output format            = gnuplot
+  end
+end
+
+set Output directory = output-visco_plastic_transition_pressures_simple
+
