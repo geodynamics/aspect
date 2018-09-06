@@ -285,11 +285,19 @@ namespace aspect
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
     for (; cell<dof_handler.end(); ++cell)
       {
-        // Skip cells for which we can not / do not need to compute the stabilization
+        // Skip cells for which we can not/do not need to compute the
+        // stabilization. We need to compute the artificial viscosity
+        // on all locally owned cells, but if we want to
+        // smooth/average it over a neighborhood of a locally owned
+        // cell, then we also need it on ghost cells; we could get it
+        // there through parallel communication, but the easier way is
+        // to simply compute it there as well
         if (cell->is_artificial()
-            || (cell->is_ghost() && parameters.use_artificial_viscosity_smoothing == false))
+            ||
+            (cell->is_ghost() &&
+             parameters.use_artificial_viscosity_smoothing == false))
           {
-            viscosity_per_cell[cell->active_cell_index()]=-1;
+            viscosity_per_cell[cell->active_cell_index()] = -1;
             continue;
           }
 
