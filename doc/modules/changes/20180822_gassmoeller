@@ -1,5 +1,5 @@
 New: There is now a 'material statistics' postprocessor that computes the
-averaged density, averaged viscosity, and total mass in a
+average density, average viscosity, and total mass in a
 model.
 <br>
 (Rene Gassmoeller, 2018/08/22)
