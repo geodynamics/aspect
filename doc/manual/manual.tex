@@ -10533,13 +10533,38 @@ contain a section on how to debug \dealii{} programs.
 \subsection{The main control flow and the \texttt{Simulator} class}
 \label{sec:simulator}
 
-In order to modify \aspect{} it is helpful to have a general understanding of the structure of the program. Even though you will most likely not need to change something in these high-level routines, it will give a better overview of how all the individual plugin systems (see Section \ref{sec:plugins}) work together. \aspect{}'s execution begins in \url{source/main.cc} in the function \texttt{main()}. This function has a number of initialization tasks (see Figure~\ref{fig:program-structure}), and finally creates an object of the class \href{https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1Simulator.html}{aspect::Simulator}, and calls the function \texttt{Simulator::run()} that contains the main loop that advances the model in time (see Panel 3 in Figure~\ref{fig:program-structure}), until its termination criteria are fulfilled. You can imagine the \texttt{Simulator} class as \textbf{the} particular model you are running, it is meant to represent everything that encompasses your model, its matrices, solution vectors, geometries, material properties, and so on. All of this is created in the constructor of the \texttt{Simulator} class (Panel 2 of Figure \ref{fig:program-structure}). However, the \texttt{Simulator} class does not contain all of this functionality in itself (that would be overwhelming and bad software design). Instead it owns a number of other objects that do many sub-tasks, from setting boundary conditions, to assembling specific terms in the matrices, to prescribing the material properties. The main simulator object only orchestrates all of these member objects to create a succesful model run. Many of these sub-objects need to look very differently for different models, and therefore they are designed as plugin systems as described in the next section.
+In order to modify \aspect{} it is helpful to have a general understanding of
+the structure of the program. Even though you will most likely not need to
+change anything in these high-level routines, it will give a better overview of
+how all the individual plugin systems (see Section \ref{sec:plugins}) work
+together. \aspect{}'s execution begins in \url{source/main.cc} in the function
+\texttt{main()}. This function has a number of initialization tasks (see
+Figure~\ref{fig:program-structure}), creates an object of class
+\href{https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1Simulator.html}{aspect::Simulator},
+and calls the function \texttt{Simulator::run()} that contains the main loop
+and advances the model in time, until its termination criteria are fulfilled
+(see Panel 3 in Figure~\ref{fig:program-structure}). You can imagine the
+\texttt{Simulator} class as \textem{the} particular model you are running, it
+is meant to represent everything that encompasses your model, its matrices,
+solution vectors, geometries, material properties, and so on. All of this is
+created in the constructor of the \texttt{Simulator} class (Panel 2 of Figure
+\ref{fig:program-structure}).  However, the \texttt{Simulator} class does not
+contain all of this functionality in itself (that would be overwhelming and bad
+software design). Instead it owns a number of other objects that do many
+sub-tasks, from setting boundary conditions, to assembling specific terms in
+the matrices, to prescribing the material properties. The main simulator object
+only orchestrates all of these member objects to create a succesful model run.
+Many of these sub-objects need to look very differently for different models,
+and therefore they are designed as plugin systems as described in the next
+section.
 
 \begin{figure}[tbp]
   \centering
   \includegraphics[width=0.95\textwidth]{program_structure.pdf}
-  \caption{\it \aspect{}'s main control flow starts in \url{source/main.cc}, which creates an object of type Simulator.
-  This object orchestrates the model, and its run function contains the main time loop.}
+  \caption{\it \aspect{}'s main control flow starts in \url{source/main.cc}
+which creates an object of type
+\href{https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1Simulator.html}{aspect::Simulator}.
+  This object orchestrates the model, and its \texttt{run()} function contains the main time loop.}
   \label{fig:program-structure}
 \end{figure}
 
