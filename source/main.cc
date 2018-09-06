@@ -571,12 +571,17 @@ run_simulator(const std::string &input_as_string,
           throw aspect::QuietException();
         }
       if (i_am_proc_0)
-        std::cout << "The provided parameter file is valid.\n\n"
-                  << "Note: This validation only checks high level "
-                  << "parameter file errors, like typos in keywords or "
-                  << "parameter names. It may miss more nuanced errors "
-                  << "that aren't encountered until the model actually "
-                  << "begins running."
+        std::cout << "The provided parameter file is valid."
+                  "\n\n"
+                  "Note: This validation only checks parameter file syntax errors, like typos\n"
+                  "in keywords or parameter names, and that each parameter value satisfies a\n"
+                  "basic check by itself. However, it may miss more nuanced errors that\n"
+                  "are only checked when the model actually begins running. In particular,\n"
+                  "checks that involve two or more parameters can not be verified at this\n"
+                  "stage of an ASPECT run. Examples for such errors that can not already\n"
+                  "be reported here are: (i) That every boundary is assigned exactly one type\n"
+                  "of boundary condition; (ii) that parameters that take a list with values for\n"
+                  "each composition field receive a list of the correct size."
                   << std::endl;
       return;
     }
