@@ -91,7 +91,6 @@ namespace aspect
     std::pair<std::string,std::string>
     HeatFluxMap<dim>::execute (TableHandler &)
     {
-
       std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area =
         internal::compute_heat_flux_through_boundary_faces (*this);
 
@@ -115,8 +114,8 @@ namespace aspect
                 // evaluate position of heat flow to write into output file
                 const Point<dim> midpoint_at_surface = cell->face(f)->center();
 
-                const double flux_density = heat_flux_and_area[cell->active_cell_index()][f].first
-                                            / heat_flux_and_area[cell->active_cell_index()][f].second;
+                const double flux_density = heat_flux_and_area[cell->active_cell_index()][f].first /
+                                            heat_flux_and_area[cell->active_cell_index()][f].second;
 
                 // store final position and heat flow
                 stored_values.push_back (std::make_pair(midpoint_at_surface, flux_density));
