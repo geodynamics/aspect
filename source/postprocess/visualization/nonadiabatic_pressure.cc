@@ -72,7 +72,17 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(NonadiabaticPressure,
                                                   "nonadiabatic pressure",
                                                   "A visualization output object that generates output "
-                                                  "for the non-adiabatic component of the pressure.")
+                                                  "for the non-adiabatic component of the pressure."
+                                                  "\n\n"
+                                                  "The variable that is outputted this way is computed by "
+                                                  "taking the pressure at each point and subtracting "
+                                                  "from it the adiabatic pressure computed at the beginning "
+                                                  "of the simulation. Because the adiabatic pressure is "
+                                                  "one way of defining a static pressure background field, "
+                                                  "what this visualization postprocessor therefore produces is "
+                                                  "\\textit{one} way to compute a \\textit{dynamic "
+                                                  "pressure}. There are, however, other ways as well, "
+                                                  "depending on the choice of the ``background pressure''.")
     }
   }
 }
