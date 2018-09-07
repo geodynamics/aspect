@@ -28,7 +28,7 @@ Number of degrees of freedom: 430 (162+25+81+81+81)
      Writing graphical output:           output-graphical_output_02/solution/solution-00000
      RMS, max velocity:                  3.43e-08 m/s, 1.21e-07 m/s
      Temperature min/avg/max:            0 K, 0.9989 K, 1.1 K
-     Heat fluxes through boundary parts: 1.748e-07 W, 1.017e-05 W, 2.517e-07 W, 2.517e-07 W
+     Heat fluxes through boundary parts: 1.501e-07 W, 3.483e-06 W, -2.807e-06 W, 3.239e-06 W
 
 Termination requested by criterion: end time
 

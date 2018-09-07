@@ -35,7 +35,7 @@ Number of free surface degrees of freedom: 142
      Reference thermal diffusivity (m^2/s):         1.13939e-06
      Rayleigh number:                               0
 
-     Topography min/max:       0 m, 0 m, 
+     Topography min/max:       0 m, 0 m
      RMS, max velocity:        0.000648 m/year, 0.00217 m/year
      Writing graphical output: output-mesh_velocity_output/solution/solution-00000
 
@@ -46,19 +46,19 @@ Number of free surface degrees of freedom: 142
    Solving Stokes system... 0+10 iterations.
 
    Postprocessing:
-     Topography min/max:       -1507 m, 3580 m, 
+     Topography min/max:       -1507 m, 3580 m
      RMS, max velocity:        0.000782 m/year, 0.00234 m/year
      Writing graphical output: output-mesh_velocity_output/solution/solution-00001
 
-*** Timestep 2:  t=6.85344e+06 years
+*** Timestep 2:  t=6.8455e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+11 iterations.
 
    Postprocessing:
-     Topography min/max:       -6031 m, 2618 m, 
-     RMS, max velocity:        0.00095 m/year, 0.00362 m/year
+     Topography min/max:       -6011 m, 2609 m
+     RMS, max velocity:        0.000949 m/year, 0.0036 m/year
      Writing graphical output: output-mesh_velocity_output/solution/solution-00002
 
 Termination requested by criterion: end step

@@ -11,7 +11,7 @@ Number of degrees of freedom: 792 (480+72+240)
      Writing graphical output:           output-symbolic_boundary_names_spherical_shell_2d_full/solution/solution-00000
      RMS, max velocity:                  5.46e+09 m/s, 9.17e+09 m/s
      Temperature min/avg/max:            0 K, 2709 K, 6000 K
-     Heat fluxes through boundary parts: -0.04597 W, 0.08366 W
+     Heat fluxes through boundary parts: -1.174e+22 W, 3.211e+22 W
 
 Termination requested by criterion: end time
 

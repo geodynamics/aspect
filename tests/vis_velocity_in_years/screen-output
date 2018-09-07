@@ -26,7 +26,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Writing graphical output:           output-vis_velocity_in_years/solution/solution-00000
      RMS, max velocity:                  0.284 m/year, 1.02 m/year
      Temperature min/avg/max:            0 K, 1.035 K, 1.1 K
-     Heat fluxes through boundary parts: 1.668e-07 W, 8.017e-05 W, 2.402e-07 W, 2.402e-07 W
+     Heat fluxes through boundary parts: 1.664e-07 W, 2.683e-05 W, 2.316e-07 W, 2.476e-07 W
 
 Termination requested by criterion: end time
 

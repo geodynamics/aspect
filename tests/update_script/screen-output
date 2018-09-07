@@ -18,7 +18,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
      Writing graphical output:           output-update_script/solution/solution-00000
      RMS, max velocity:                  0.581 m/year, 1.12 m/year
      Temperature min/avg/max:            273 K, 2272 K, 4250 K
-     Heat fluxes through boundary parts: -2.273e+05 W, 5.442e+05 W, 2170 W, 2170 W
+     Heat fluxes through boundary parts: -6.045e+06 W, 4.553e+06 W, -2.457e+06 W, -2.455e+06 W
      Writing depth average:              output-update_script/depth_average.gnuplot
      Writing particle output:            output-update_script/particles/particles-00000
      Heating rate (average/total):       -3.452e-10 W/kg, -2.902e+07 W
@@ -26,7 +26,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
      Computing dynamic topography        
 
 *** Timestep 1:  t=100000 years
-   Solving temperature system... 11 iterations.
+   Solving temperature system... 12 iterations.
    Skipping C_1 composition solve because RHS is zero.
    Solving Stokes system... 15+0 iterations.
 
@@ -34,11 +34,11 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
      Writing graphical output:           output-update_script/solution/solution-00001
      RMS, max velocity:                  0.575 m/year, 1.11 m/year
      Temperature min/avg/max:            273 K, 2269 K, 4250 K
-     Heat fluxes through boundary parts: -2.156e+05 W, 5.195e+05 W, 1931 W, 1931 W
+     Heat fluxes through boundary parts: -8.25e+06 W, 5.096e+06 W, -1.443e+06 W, -1.445e+06 W
      Writing depth average:              output-update_script/depth_average.gnuplot
      Number of advected particles:       50
      Heating rate (average/total):       -3.399e-10 W/kg, -2.858e+07 W
-     Pressure at top/bottom of domain:   6.401e-08 Pa, 1.08e+11 Pa
+     Pressure at top/bottom of domain:   5.757e-08 Pa, 1.08e+11 Pa
      Computing dynamic topography        
 
 Termination requested by criterion: end time

@@ -38,7 +38,7 @@ Number of degrees of freedom: 7,056 (4,320+576+2,160)
    Postprocessing:
      RMS, max velocity:                  0.0611 m/year, 0.159 m/year
      Temperature min/avg/max:            273 K, 2048 K, 3500 K
-     Heat fluxes through boundary parts: -3.864e+05 W, 1.856e+06 W
+     Heat fluxes through boundary parts: 8.73e+07 W, -5.704e+05 W
      Writing depth average:              output-depth_dependent_initialize_base_model/depth_average.gnuplot
 
 *** Timestep 1:  t=892758 years
@@ -49,7 +49,7 @@ Number of degrees of freedom: 7,056 (4,320+576+2,160)
    Postprocessing:
      RMS, max velocity:                  0.0613 m/year, 0.16 m/year
      Temperature min/avg/max:            273 K, 2032 K, 3500 K
-     Heat fluxes through boundary parts: -4.129e+05 W, 1.789e+06 W
+     Heat fluxes through boundary parts: 1.051e+08 W, -7.473e+05 W
 
 *** Timestep 2:  t=1e+06 years
    Solving temperature system... 8 iterations.
@@ -59,7 +59,7 @@ Number of degrees of freedom: 7,056 (4,320+576+2,160)
    Postprocessing:
      RMS, max velocity:                  0.0614 m/year, 0.16 m/year
      Temperature min/avg/max:            273 K, 2030 K, 3500 K
-     Heat fluxes through boundary parts: -4.138e+05 W, 1.775e+06 W
+     Heat fluxes through boundary parts: 1.065e+08 W, -7.62e+05 W
      Writing depth average:              output-depth_dependent_initialize_base_model/depth_average.gnuplot
 
 Termination requested by criterion: end time

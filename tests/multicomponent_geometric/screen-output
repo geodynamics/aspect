@@ -25,7 +25,7 @@ Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
      Writing graphical output: output-multicomponent_geometric/solution/solution-00000
 
 *** Timestep 1:  t=58643.7 years
-   Solving temperature system... 10 iterations.
+   Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 15 iterations.
    Solving C_3 system ... 11 iterations.

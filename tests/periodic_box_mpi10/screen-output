@@ -80,41 +80,41 @@ Number of degrees of freedom: 268 (162+25+81)
    Postprocessing:
      RMS, max velocity: 401 m/year, 1.2e+03 m/year
 
-Number of active cells: 16 (on 3 levels)
-Number of degrees of freedom: 268 (162+25+81)
+Number of active cells: 22 (on 4 levels)
+Number of degrees of freedom: 376 (228+34+114)
 
 *** Timestep 7:  t=234.03 years
-   Solving temperature system... 14 iterations.
+   Solving temperature system... 15 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
-     RMS, max velocity: 401 m/year, 1.2e+03 m/year
+     RMS, max velocity: 403 m/year, 1.39e+03 m/year
 
-*** Timestep 8:  t=267.465 years
-   Solving temperature system... 14 iterations.
-   Solving Stokes system... 14+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity: 401 m/year, 1.2e+03 m/year
-
-*** Timestep 9:  t=300.902 years
-   Solving temperature system... 14 iterations.
-   Solving Stokes system... 14+0 iterations.
+*** Timestep 8:  t=251.477 years
+   Solving temperature system... 16 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
-     RMS, max velocity: 401 m/year, 1.2e+03 m/year
+     RMS, max velocity: 403 m/year, 1.39e+03 m/year
 
-Number of active cells: 22 (on 4 levels)
-Number of degrees of freedom: 382 (232+34+116)
+*** Timestep 9:  t=268.925 years
+   Solving temperature system... 15 iterations.
+   Solving Stokes system... 15+0 iterations.
 
-*** Timestep 10:  t=334.338 years
+   Postprocessing:
+     RMS, max velocity: 403 m/year, 1.39e+03 m/year
+
+Number of active cells: 28 (on 4 levels)
+Number of degrees of freedom: 490 (298+43+149)
+
+*** Timestep 10:  t=286.372 years
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
-     RMS, max velocity: 398 m/year, 1.49e+03 m/year
+     RMS, max velocity: 400 m/year, 1.49e+03 m/year
 
 Termination requested by criterion: end step
 

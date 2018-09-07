@@ -17,4 +17,4 @@
 # 17: Average nondimensional temperature (K)
 # 18: Outward heat flux through boundary with indicator 0 ("bottom") (W)
 # 19: Outward heat flux through boundary with indicator 1 ("top") (W)
-0 0.000000000000e+00 0.000000000000e+00 3072 28608 12672 0 138 141 563 output-burnman_seismic_test/solution/solution-00000 3.18545026e-01 1.61198421e+00 2.73000000e+02 2.08226130e+03 3.50000000e+03 5.60663559e-01 -1.31460700e+06 3.03305814e+06 
+0 0.000000000000e+00 0.000000000000e+00 3072 28608 12672 0 138 141 563 output-burnman_seismic_test/solution/solution-00000 3.18545026e-01 1.61198421e+00 2.73000000e+02 2.08226130e+03 3.50000000e+03 5.60663559e-01 -2.73034853e+07 1.10711921e+06 

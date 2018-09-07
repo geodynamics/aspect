@@ -39,8 +39,8 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution/solution-00001
      RMS, max velocity:                  5.11e-08 m/s, 6.3e-08 m/s
-     Temperature min/avg/max:            0 K, 0.0001673 K, 0.0008321 K
-     Heat fluxes through boundary parts: -0.07712 W, -0.06017 W
+     Temperature min/avg/max:            0 K, 0.0001673 K, 0.0008324 K
+     Heat fluxes through boundary parts: 0.05405 W, 0.07849 W
      Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 *** Timestep 2:  t=5.6325e+12 seconds
@@ -52,8 +52,8 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution/solution-00002
      RMS, max velocity:                  5.11e-08 m/s, 6.3e-08 m/s
-     Temperature min/avg/max:            0 K, 0.0003354 K, 0.001386 K
-     Heat fluxes through boundary parts: 0.01161 W, -0.03265 W
+     Temperature min/avg/max:            0 K, 0.0003354 K, 0.001387 K
+     Heat fluxes through boundary parts: 0.106 W, 0.1367 W
      Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 *** Timestep 3:  t=8e+12 seconds
@@ -65,8 +65,8 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution/solution-00003
      RMS, max velocity:                  5.11e-08 m/s, 6.3e-08 m/s
-     Temperature min/avg/max:            0 K, 0.000476 K, 0.001749 K
-     Heat fluxes through boundary parts: 0.1414 W, -0.05169 W
+     Temperature min/avg/max:            0 K, 0.000476 K, 0.00175 K
+     Heat fluxes through boundary parts: 0.148 W, 0.1974 W
      Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 Termination requested by criterion: end time

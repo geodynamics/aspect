@@ -13,7 +13,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
      Writing graphical output:           output-inner_core/solution/solution-00000
      RMS, max velocity:                  0.000194 m/s, 0.000551 m/s
      Temperature min/avg/max:            0 K, 0.1998 K, 0.8 K
-     Heat fluxes through boundary parts: 9.353 W
+     Heat fluxes through boundary parts: 9.938 W
 
 *** Timestep 1:  t=50 seconds
    Solving temperature system... 61 iterations.
@@ -23,7 +23,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
      Writing graphical output:           output-inner_core/solution/solution-00001
      RMS, max velocity:                  7.28e-05 m/s, 0.000177 m/s
      Temperature min/avg/max:            0 K, 0.3993 K, 0.9985 K
-     Heat fluxes through boundary parts: 23.31 W
+     Heat fluxes through boundary parts: 21.83 W
 
 Termination requested by criterion: end time
 
