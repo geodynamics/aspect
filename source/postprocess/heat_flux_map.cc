@@ -40,16 +40,25 @@ namespace aspect
                                                                                      std::pair<double,double>()));
 
         // create a quadrature formula based on the temperature element alone.
-        const QGauss<dim-1> quadrature_formula (simulator_access.get_fe().base_element(simulator_access.introspection().base_elements.temperature).degree+1);
+        const QGauss<dim> quadrature_formula (simulator_access.get_fe().base_element(simulator_access.introspection().base_elements.temperature).degree+1);
+        // create a quadrature formula based on the temperature element alone.
+        const QGauss<dim-1> quadrature_formula_face (simulator_access.get_fe().base_element(simulator_access.introspection().base_elements.temperature).degree+1);
+
+        FEValues<dim> fe_values (simulator_access.get_mapping(),
+                                 simulator_access.get_fe(),
+                                 quadrature_formula,
+                                 update_gradients      | update_values |
+                                 update_q_points       | update_JxW_values);
+
         FEFaceValues<dim> fe_face_values (simulator_access.get_mapping(),
                                           simulator_access.get_fe(),
-                                          quadrature_formula,
-                                          update_gradients      | update_values |
+                                          quadrature_formula_face,
                                           update_normal_vectors |
-                                          update_q_points       | update_JxW_values);
+                                          update_JxW_values);
 
-        typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, simulator_access.n_compositional_fields());
-        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, simulator_access.n_compositional_fields());
+
+        typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_values.n_quadrature_points, simulator_access.n_compositional_fields());
+        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_values.n_quadrature_points, simulator_access.n_compositional_fields());
 
         std::vector<Tensor<1,dim> > temperature_gradients (quadrature_formula.size());
 
@@ -59,30 +68,51 @@ namespace aspect
         endc = simulator_access.get_dof_handler().end();
 
         for (; cell!=endc; ++cell)
-          if (cell->is_locally_owned())
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-              if (cell->at_boundary(f))
-                {
-                  fe_face_values.reinit (cell, f);
-                  in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution(), false);
-                  simulator_access.get_material_model().evaluate(in, out);
+          if (cell->is_locally_owned() && cell->at_boundary())
+            {
+              fe_values.reinit (cell);
+              // Set use_strain_rates to false since we don't need viscosity
+              in.reinit(fe_values, cell, simulator_access.introspection(), simulator_access.get_solution(), false);
+              simulator_access.get_material_model().evaluate(in, out);
 
-                  fe_face_values[simulator_access.introspection().extractors.temperature].get_function_gradients (simulator_access.get_solution(),
-                      temperature_gradients);
+              // Get the temperature gradients from the solution.
+              fe_values[simulator_access.introspection().extractors.temperature].get_function_gradients (simulator_access.get_solution(), temperature_gradients);
 
-                  // Calculate the normal conductive heat flux given by the formula
-                  //   j = - k * n . grad T
-                  for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                    {
-                      const double thermal_conductivity
-                        = out.thermal_conductivities[q];
+              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                if (cell->at_boundary(f))
+                  {
+                    fe_face_values.reinit (cell, f);
 
-                      heat_flux_and_area[cell->active_cell_index()][f].first += -thermal_conductivity *
-                                                                                (temperature_gradients[q] * fe_face_values.normal_vector(q)) *
-                                                                                fe_face_values.JxW(q);
-                      heat_flux_and_area[cell->active_cell_index()][f].second += fe_face_values.JxW(q);
-                    }
-                }
+                    Tensor<1,dim> local_normal_vector;
+                    for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                      {
+                        local_normal_vector += fe_face_values.normal_vector(q) *
+                                               fe_face_values.JxW(q);
+
+                        heat_flux_and_area[cell->active_cell_index()][f].second += fe_face_values.JxW(q);
+                      }
+
+                    local_normal_vector /= local_normal_vector.norm();
+
+                    double local_volume = 0;
+                    for (unsigned int q=0; q<fe_values.n_quadrature_points; ++q)
+                      {
+                        const double thermal_conductivity
+                          = out.thermal_conductivities[q];
+
+                        heat_flux_and_area[cell->active_cell_index()][f].first
+                        +=  local_normal_vector *
+                            (-thermal_conductivity *
+                             temperature_gradients[q] + in.velocity[q] * out.densities[q] * out.specific_heat[q] * in.temperature[q]) *
+                            fe_values.JxW(q);
+
+                        local_volume += fe_values.JxW(q);
+                      }
+
+                    heat_flux_and_area[cell->active_cell_index()][f].first *= heat_flux_and_area[cell->active_cell_index()][f].second /
+                                                                              local_volume;
+                  }
+            }
         return heat_flux_and_area;
       }
     }
